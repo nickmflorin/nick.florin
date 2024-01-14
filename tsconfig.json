@@ -21,7 +21,7 @@
     ],
     "paths": {
       "~/*": ["./src/*"]
-    },
+    }
   },
   "ts-node": {
     "compilerOptions": {
@@ -30,6 +30,5 @@
     "require": ["tsconfig-paths/register"]
   },
   "include": ["next-env.d.ts", "src", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "**/.*/"],
-  // "files": ["node_modules/jest-expect-message/types/index.d.ts"]
+  "exclude": ["node_modules", "**/.*/"]
 }

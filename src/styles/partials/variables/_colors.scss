@@ -1,0 +1,273 @@
+@use "sass:color";
+@use "sass:map";
+@use "sass:list";
+@use "sass:meta";
+@use "sass:string";
+
+@use "throw";
+
+@use "../functions" as fn;
+@use "../mixins" as mixins;
+
+$app-background-color: #fbfbfb;
+$disabled-background-color: #efefef;
+$disabled-border-color: #f5f5f5;
+$disabled-color: #f5f5f5; // Text Color
+$placeholder-color: color.change(#606873, $alpha: 0.6);
+
+$body-color: #231f20;
+$heading-color: #111827;
+
+$white: #ffffff;
+$black: #000000;
+$transparent: transparent;
+
+$blue-shades: (
+  #b8d1ee,
+  #acc9ec,
+  #a0c1e9,
+  #94bae6,
+  #88b2e3,
+  #7caae1,
+  #70a3de,
+  #649bdb,
+  #5893d8,
+  #4c8cd6,
+  #4084d3,
+  #357cd0,
+  #2e75c8,
+  #2c6ebc,
+  #2967b0
+);
+
+$green-shades: (
+  #cae6cd,
+  #b8ddbc,
+  #a6d5ab,
+  #94cc9a,
+  #82c489,
+  #71bb79,
+  #5fb368,
+  #4daa57,
+  #45994e,
+  #3e8846,
+  #36773d,
+  #2e6634,
+  #27552c,
+  #1f4423,
+  #17331a
+);
+
+// Color Scheme Color: #f19953
+$orange-shades: (
+  #fbe2ce,
+  #faddc6,
+  #fad8bd,
+  #f9d3b5,
+  #f8cead,
+  #f8caa5,
+  #f7c59d,
+  #f6c095,
+  #f6bb8c,
+  #f5b684,
+  #f4b17c,
+  #f4ac74,
+  #f3a86c,
+  #f2a363,
+  #f29e5b
+);
+
+$gray-shades: (#f9f9fa, #f1f3f5, #eaecef, #dee2e6, #cfd4d9, #aeb5bc, #878e95, #494056, #353a3f, #222529);
+$border-shades: $gray-shades;
+
+// Color Scheme Color: #881600
+$red-shades: (
+  #fdd5d3,
+  #fdc0be,
+  #fcaba8,
+  #fb9692,
+  #fa807c,
+  #f96b66,
+  #f95651,
+  #f8413b,
+  #f72c25,
+  #de2821,
+  #c6231e,
+  #ad1f1a,
+  #941a16
+);
+$yellow-shades: (#fff5eb, #fef3c7, #fde68a, #fbd34d, #fbbf24);
+
+$colors: (
+  "border": $border-shades,
+  "blue": $blue-shades,
+  "green": $green-shades,
+  "red": $red-shades,
+  "yellow": $yellow-shades,
+  "success": $green-shades,
+  "error": $red-shades,
+  "warning": $yellow-shades,
+  "body": $body-color,
+  "heading": $heading-color,
+  "orange": $orange-shades,
+  "gray": $gray-shades,
+  "neutral": $gray-shades,
+  "white": $white,
+  "black": $black,
+);
+
+$color-names: map.keys($colors);
+
+$default-shades: (
+  "border": 4,
+  "blue": 12,
+  "green": 9,
+  "red": 11,
+  "yellow": 5,
+  "success": 15,
+  "error": 14,
+  "warning": 5,
+  "orange": 15,
+  "gray": 6,
+  "neutral": 6,
+);
+
+@function get-default-shade($name) {
+  @if map.has-key($default-shades, $name) {
+    @return map.get($default-shades, $name);
+  }
+  @return null;
+}
+
+@function get-color($name, $shade: null) {
+  @if not map.has-key($colors, $name) {
+    @return throw.error("The provided name #{$name} is invalid.", $name: $name, $source: "get-color()");
+  }
+  $cs: fn.mapget($colors, $name);
+  @if $shade {
+    @if meta.type-of($cs) != list {
+      @return $cs;
+    } @else if list.length($cs) < $shade {
+      @return list.nth($cs, list.length($cs));
+    } @else if not list.nth($cs, $shade) {
+      @if $shade < 1 {
+        @return throw.error("The provided shade #{$shade} is invalid.", $shade: $shade, $source: "get-color()");
+      }
+      // Return the last shade that is available if the shade exceeds the number of available shades.
+      @return list.nth($cs, list.length($cs));
+    } @else {
+      @return list.nth($cs, $shade);
+    }
+  }
+  $default-shade: get-default-shade($name);
+  @if $default-shade {
+    @return get-color($name, $shade: $default-shade);
+  }
+  @return $cs;
+}
+
+@mixin background-color($color, $shade: null) {
+  background-color: get-color($color, $shade);
+}
+
+@mixin border-color($color, $shade: null) {
+  border-color: get-color($color, $shade);
+}
+
+@mixin background($color, $shade: null) {
+  background: get-color($color, $shade);
+}
+
+@mixin color($color, $shade: null) {
+  color: get-color($color, $shade);
+}
+
+@mixin with-state-bg-color($states, $args...) {
+  @include mixins.with-state($states, $args...) {
+    background-color: $hovered-bg-color;
+    @content;
+  }
+}
+
+@function get-color-class-name($c, $prefix: null, $shade: null, $state: null) {
+  @if $prefix and $shade and $state {
+    @return #{$prefix}-#{$c}-#{$shade}-#{$state};
+  } @else if $prefix and $shade {
+    @return #{$prefix}-#{$c}-#{$shade};
+  } @else if $shade and $state {
+    @return #{$c}-#{$shade}-#{$state};
+  } @else if $prefix and $state {
+    @return #{$prefix}-#{$c}-#{$state};
+  } @else if $shade {
+    @return #{$c}-#{$shade};
+  } @else if $prefix {
+    @return #{$prefix}-#{$c};
+  } @else if $state {
+    @return #{$c}-#{$state};
+  }
+  @return $c;
+}
+
+@mixin with-colors($prefix: null, $state: null) {
+  @each $name in $color-names {
+    $default-color: get-color($name);
+    $n: get-color-class-name($name, $prefix: $prefix, $state: $state);
+    @content ($n, $default-color, $name);
+
+    @for $i from 1 through list.length(fn.mapget($colors, $name)) {
+      $color: get-color($name, $i);
+      $name-with-shade: get-color-class-name($name, $shade: $i, $prefix: $prefix, $state: $state);
+      $n2: get-color-class-name($name, $shade: $i);
+      @content ($name-with-shade, $color, $n2);
+    }
+  }
+}
+
+@mixin with-color-classes($color-type, $state: null) {
+  @include with-colors($prefix: $color-type, $state: $state) using ($name, $color, $color-name) {
+    @content ($name, $color, $color-name);
+  }
+}
+
+@mixin with-focused-color-classes($color-type) {
+  @include with-color-classes($color-type, $state: "focused") using ($name, $color, $color-name) {
+    @content ($name, $color, $color-name);
+  }
+}
+
+@mixin with-hovered-color-classes($color-type) {
+  @include with-color-classes($color-type, $state: "hovered") using ($name, $color, $color-name) {
+    @content ($name, $color, $color-name);
+  }
+}
+
+@mixin colors($color-type) {
+  @include with-color-classes($color-type) using ($name, $color, $color-name) {
+    .#{$name} {
+      #{$color-type}: $color;
+    }
+  }
+}
+
+@mixin hovered-colors($color-type) {
+  @include with-hovered-color-classes($color-type) using ($name, $color, $color-name) {
+    .#{$name} {
+      @include mixins.hovered {
+        #{$color-type}: $color;
+      }
+    }
+  }
+}
+
+@mixin focused-colors($color-type) {
+  @include with-focused-color-classes($color-type) using ($name, $color, $color-name) {
+    .#{$name} {
+      @include mixins.focused {
+        #{$color-type}: $color;
+      }
+    }
+  }
+}
+
+$hovered-bg-color: get-color("gray", $shade: 1);
+$focused-bg-color: get-color("gray", $shade: 1);

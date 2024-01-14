@@ -1,0 +1,357 @@
+@use "sass:map";
+@use "sass:meta";
+
+@use "../../../functions" as fn;
+@use "../../../mixins" as mixins;
+
+@use "../../colors" as colors;
+
+@use "./mixins" as button-mixins;
+
+/*
+Buttons  need to leverage an outline instead of a border, because an outline is inset and a border is outset. In other
+words, the border will contribute size to the overall Button, while the outline will not.
+*/
+$button-outline-width: 1px;
+
+/* ------------------------------------------------------- Colors --------------------------------------------------- */
+$button-state-names: ("hovered", "focused", "disabled");
+
+@function map-has-state-key($data) {
+  @each $state-name in $button-state-names {
+    @if map.has-key($data, $state-name) {
+      @return true;
+    }
+  }
+  @return false;
+}
+
+$themes: (
+  "danger": (
+    base: colors.get-color("red", $shade: 7),
+    hovered: colors.get-color("red", $shade: 8),
+    focused: colors.get-color("red", $shade: 8),
+  ),
+  "primary": (
+    base: colors.get-color("blue", $shade: 9),
+    hovered: colors.get-color("blue", $shade: 11),
+    focused: colors.get-color("blue", $shade: 11),
+  ),
+  "secondary": (
+    base: colors.get-color("gray", $shade: 2),
+    hovered: colors.get-color("gray", $shade: 3),
+    focused: colors.get-color("gray", $shade: 3),
+  ),
+  "outline": (
+    base: colors.get-color("gray", $shade: 4),
+    hovered: colors.get-color("gray", $shade: 5),
+    focused: colors.get-color("gray", $shade: 5),
+  ),
+  "bare": (),
+);
+
+$button-color-properties: (
+  "solid": (
+    "primary": (
+      background-color: fn.mapget($themes, "primary", "base"),
+      color: colors.$white,
+      outline-color: fn.mapget($themes, "primary", "base"),
+      hovered: (
+        background-color: fn.mapget($themes, "primary", "hovered"),
+        outline-color: fn.mapget($themes, "primary", "hovered"),
+      ),
+      focused: (
+        background-color: fn.mapget($themes, "primary", "focused"),
+        outline-color: fn.mapget($themes, "primary", "focused"),
+      ),
+      disabled: (
+        background-color: colors.$disabled-background-color,
+        outline-color: colors.$disabled-border-color,
+      ),
+    ),
+    "secondary": (
+      background-color: fn.mapget($themes, "secondary", "base"),
+      color: colors.get-color("gray", $shade: 8),
+      outline-color: fn.mapget($themes, "secondary", "base"),
+      hovered: (
+        background-color: fn.mapget($themes, "secondary", "hovered"),
+        outline-color: fn.mapget($themes, "secondary", "hovered"),
+      ),
+      focused: (
+        background-color: fn.mapget($themes, "secondary", "focused"),
+        outline-color: fn.mapget($themes, "secondary", "focused"),
+      ),
+      disabled: (
+        background-color: colors.$disabled-background-color,
+        outline-color: colors.$disabled-border-color,
+      ),
+    ),
+    "danger": (
+      background-color: fn.mapget($themes, "danger", "base"),
+      color: colors.$white,
+      outline-color: fn.mapget($themes, "danger", "base"),
+      hovered: (
+        background-color: fn.mapget($themes, "danger", "hovered"),
+        outline-color: fn.mapget($themes, "danger", "hovered"),
+      ),
+      focused: (
+        background-color: fn.mapget($themes, "danger", "focused"),
+        outline-color: fn.mapget($themes, "danger", "focused"),
+      ),
+      disabled: (
+        background-color: colors.get-color("red", $shade: 4),
+        outline-color: colors.get-color("red", $shade: 4),
+      ),
+    ),
+    "outline": (
+      outline-color: fn.mapget($themes, "outline", "base"),
+      background-color: colors.get-color("white"),
+      color: colors.get-color("gray", $shade: 8),
+      hovered: (
+        outline-color: fn.mapget($themes, "outline", "hovered"),
+      ),
+      focused: (
+        outline-color: fn.mapget($themes, "outline", "hovered"),
+      ),
+      disabled: (
+        outline-color: colors.$disabled-border-color,
+      ),
+    ),
+    "bare": (),
+  ),
+  "action": (
+    "primary": (
+      background-color: fn.mapget($themes, "primary", "base"),
+      color: colors.$white,
+      outline-color: fn.mapget($themes, "primary", "base"),
+      hovered: (
+        background-color: fn.mapget($themes, "primary", "hovered"),
+        outline-color: fn.mapget($themes, "primary", "hovered"),
+      ),
+      focused: (
+        background-color: fn.mapget($themes, "primary", "focused"),
+        outline-color: fn.mapget($themes, "primary", "focused"),
+      ),
+      disabled: (
+        background-color: colors.$disabled-background-color,
+        outline-color: colors.$disabled-border-color,
+      ),
+    ),
+    "secondary": (
+      background-color: fn.mapget($themes, "secondary", "base"),
+      color: colors.get-color("gray", $shade: 8),
+      outline-color: fn.mapget($themes, "secondary", "base"),
+      hovered: (
+        background-color: fn.mapget($themes, "secondary", "hovered"),
+        outline-color: fn.mapget($themes, "secondary", "hovered"),
+      ),
+      focused: (
+        background-color: fn.mapget($themes, "secondary", "focused"),
+        outline-color: fn.mapget($themes, "secondary", "focused"),
+      ),
+      disabled: (
+        background-color: colors.$disabled-background-color,
+        outline-color: colors.$disabled-border-color,
+      ),
+    ),
+    "danger": (
+      background-color: fn.mapget($themes, "danger", "base"),
+      color: colors.$white,
+      outline-color: fn.mapget($themes, "danger", "base"),
+      hovered: (
+        background-color: fn.mapget($themes, "danger", "hovered"),
+        outline-color: fn.mapget($themes, "danger", "hovered"),
+      ),
+      focused: (
+        background-color: fn.mapget($themes, "danger", "focused"),
+        outline-color: fn.mapget($themes, "danger", "focused"),
+      ),
+      disabled: (
+        background-color: colors.get-color("red", $shade: 4),
+        outline-color: colors.get-color("red", $shade: 4),
+      ),
+    ),
+    "outline": (
+      outline-color: fn.mapget($themes, "outline", "base"),
+      background-color: colors.get-color("white"),
+      color: fn.mapget($themes, "outline", "base"),
+      hovered: (
+        outline-color: fn.mapget($themes, "outline", "hovered"),
+      ),
+      focused: (
+        outline-color: fn.mapget($themes, "outline", "hovered"),
+      ),
+      disabled: (
+        outline-color: colors.$disabled-border-color,
+      ),
+    ),
+    "bare": (),
+  ),
+  "alternate": (
+    "primary": (
+      background-color: colors.$transparent,
+      color: fn.mapget($themes, "primary", "base"),
+      outline-color: colors.$transparent,
+      hovered: (
+        color: fn.mapget($themes, "primary", "hovered"),
+      ),
+      focused: (
+        color: fn.mapget($themes, "primary", "focused"),
+      ),
+      disabled: (
+        color: colors.$disabled-color,
+      ),
+    ),
+    "secondary": (
+      background-color: colors.$transparent,
+      color: colors.get-color("gray", $shade: 8),
+      outline-color: colors.$transparent,
+      hovered: (
+        color: colors.get-color("gray", $shade: 9),
+      ),
+      focused: (
+        color: colors.get-color("gray", $shade: 9),
+      ),
+      disabled: (
+        color: colors.$disabled-color,
+      ),
+    ),
+    // The outline variant for an alternate button is not applicable.
+    "outline": (),
+    "danger": (
+      background-color: colors.$transparent,
+      color: fn.mapget($themes, "danger", "base"),
+      outline-color: colors.$transparent,
+      hovered: (
+        color: fn.mapget($themes, "danger", "hovered"),
+      ),
+      focused: (
+        color: fn.mapget($themes, "danger", "focused"),
+      ),
+      disabled: (
+        color: colors.get-color("red", $shade: 4),
+      ),
+    ),
+    "bare": (),
+  ),
+);
+
+@function parse-state-colors($attributes, $state-name, $args...) {
+  $state-name: fn.validate-value($state-name, $button-state-names);
+  $arguments: meta.keywords($args);
+  @if map.has-key($arguments, $state-name) {
+    $state: fn.mapget($arguments, $state-name);
+    @if map-has-state-key($state) {
+      @return throw.error(
+        "Detected nested state key(s) in state attribute #{$state-name}.  This will cause an infinite recursion.",
+        $source: "button-colors()"
+      );
+    }
+    // If the state defines an override for the outline-color, we need to also override the outline
+    // because it will have been defaulted in the original base set of attributes based on the
+    // outline color of the base state.
+    @if map.has-key($state, outline-color) and not map.has-key($state, outline) {
+      $state: map.set($state, outline, $button-outline-width solid fn.mapget($state, outline-color));
+    }
+
+    @return map.merge($attributes, $state);
+  }
+  @return null;
+}
+
+@mixin button-colors($args...) {
+  $arguments: meta.keywords($args);
+
+  $type: map.get($arguments, "type");
+  $variant: map.get($arguments, "variant");
+
+  @if $variant or $type {
+    @if not $variant or not $type {
+      @include throw.error-mixin(
+        "If the 'type' argument is provided, the 'variant' must also be provided, and vice versa.",
+        $source: "button-colors()",
+        $type: $type,
+        $variant: $variant
+      );
+    } @else {
+      $colors: fn.mapget($button-color-properties, $type, $variant);
+      @include button-colors($colors...);
+    }
+  } @else {
+    $background-color: fn.get-optional-kwarg(background-color, $default: colors.$transparent, $args...);
+    $outline-color: fn.get-optional-kwarg(outline-color, $default: $background-color, $args...);
+    $outline: fn.get-optional-kwarg(outline, $default: $button-outline-width solid $outline-color, $args...);
+
+    $attributes: (
+      background-color: $background-color,
+      outline-color: $outline-color,
+      outline: $outline,
+      color: fn.get-optional-kwarg(color, $default: null, $args...),
+    );
+
+    @each $attr in map.keys($attributes) {
+      // Do not set null keys.
+      @if fn.mapget($attributes, $attr) {
+        #{$attr}: fn.mapget($attributes, $attr);
+      }
+    }
+
+    @include button-mixins.button-placeholder {
+      color: colors.$placeholder-color;
+    }
+
+    // If a 'hovered' argument is provided, include this mixin recursively to define the colors of the button when it
+    // is hovered.
+    $hovered: parse-state-colors($attributes, "hovered", $args...);
+    @if $hovered {
+      @include button-mixins.button-hovered {
+        // Use the original, non-hovered and non-focused attributes as defaults such that only the hovered attributes
+        // that are provided are overridden when the button is hovered.
+        $hovered: map.merge($attributes, $hovered);
+        @include button-colors($hovered...);
+      }
+    }
+    // If a 'focused' argument is provided, include this mixin recursively to define the colors of the button when it is
+    // focused.
+    $focused: parse-state-colors($attributes, "focused", $args...);
+    @if $focused {
+      @include button-mixins.button-focused {
+        // Use the original, non-hovered and non-focused attributes as defaults such that only the hovered attributes
+        // that are provided are overridden when the button is hovered.
+        $focused: map.merge($attributes, $focused);
+        @include button-colors($focused...);
+      }
+    }
+    // If a 'disabled' argument is provided, include this mixin recursively to define the colors of the button when it
+    // is disabled.
+    $disabled: parse-state-colors($attributes, "disabled", $args...);
+    @if $disabled {
+      @include mixins.disabled {
+        // Use the original, non-hovered and non-focused attributes as defaults such that only
+        // the hovered attributes that are provided are overridden when the button is hovered.
+        $disabled: map.merge($attributes, $disabled);
+        @include button-colors($disabled...);
+      }
+    }
+  }
+}
+
+@mixin button-hovered-colors($color-type) {
+  @include colors.with-color-classes($color-type) using ($name, $color, $color-name) {
+    &.#{$name}-hovered {
+      @include button-mixins.button-hovered {
+        #{$color-type}: $color;
+      }
+    }
+  }
+}
+
+@mixin button-focused-colors($color-type) {
+  @include colors.with-color-classes($color-type) using ($name, $color, $color-name) {
+    &.#{$name}-focused {
+      @include button-mixins.button-focused {
+        #{$color-type}: $color;
+      }
+    }
+  }
+}

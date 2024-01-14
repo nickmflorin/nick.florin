@@ -23,6 +23,5 @@
   "less.validate": false,
   "scss.validate": false,
   "stylelint.validate": ["css", "scss", "less", "postcss"],
-  "stylelint.configBasedir": "/",
-  "stylelint.configFile": "stylelint.config.js"
+  "stylelint.configBasedir": "/"
 }

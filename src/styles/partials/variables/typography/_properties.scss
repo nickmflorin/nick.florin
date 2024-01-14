@@ -1,0 +1,383 @@
+@use "sass:map";
+@use "sass:meta";
+
+@use "throw";
+
+@use "../../functions" as fn;
+@use "../../mixins" as mixins;
+
+@use "../colors" as colors;
+
+$typography-types: ("body", "heading", "label");
+
+/* -------------------------------------- Font Families ----------------------------------------- */
+$font-family-avenir: avenir;
+$font-family-roboto: roboto;
+$font-family-inter: var(--font-inter);
+$font-families: ($font-family-avenir, $font-family-roboto, $font-family-inter);
+
+$heading-font-family: $font-family-avenir;
+$body-font-family: $font-family-inter;
+$label-font-family: $font-family-avenir;
+
+$typography-font-families: (
+  "heading": $heading-font-family,
+  "body": $body-font-family,
+  "label": $label-font-family,
+);
+
+@function get-font-family($type) {
+  $type: fn.validate-value($type, $typography-types);
+  @return fn.mapget($typography-font-families, $type);
+}
+
+@mixin font-family($type) {
+  font-family: get-font-family($type);
+}
+
+@mixin body-font-family() {
+  @include font-family("body");
+}
+
+@mixin heading-font-family() {
+  @include font-family("heading");
+}
+
+@mixin label-font-family() {
+  @include font-family("label");
+}
+
+/* --------------------------------------- Font Weights ----------------------------------------- */
+$font-weight-names: ("bold", "semibold", "medium", "regular", "light");
+$font-weights: (
+  "light": 300,
+  "regular": 400,
+  "medium": 500,
+  "semibold": 600,
+  "bold": 700,
+);
+
+// // Used in cases where we are setting the font-weight based on a family but not a weight name.
+$font-family-default-weights: (
+  avenir: "medium",
+  roboto: "regular",
+  inter: "regular",
+);
+
+@function get-font-weight($type: null, $size: null, $weight: null) {
+  @if $weight {
+    $weight: fn.validate-value($weight, $font-weight-names);
+    @return fn.mapget($font-weights, $weight);
+  } @else if $type or $size {
+    @if not $type {
+      @return throw.error(
+        "Invalid arguments: the 'type' must be provided if the 'size' is provided.",
+        $source: "get-font-weight()"
+      );
+    }
+    $size: parse-size($type, $size);
+    @return fn.mapget($font-weights, fn.mapget($typography-size-properties, $type, $size, font-weight));
+  } @else {
+    @return throw.error(
+      "Invalid arguments: the 'type'/'size' or 'weight' arguments be provided.",
+      $source: "get-font-weight()"
+    );
+  }
+}
+
+@mixin font-weight($args...) {
+  font-weight: get-font-weight($args...);
+}
+
+@mixin body-font-weight($args...) {
+  font-weight: get-font-weight($type: "body", $args...);
+}
+
+@mixin heading-font-weight($args...) {
+  font-weight: get-font-weight($type: "heading", $args...);
+}
+
+@mixin label-font-weight($args...) {
+  font-weight: get-font-weight($type: "label", $args...);
+}
+
+@mixin with-font-weights() {
+  @each $weight in $font-weight-names {
+    @content ($weight, get-font-weight($weight: $weight));
+  }
+}
+
+/* --------------------------------------- Font Sizes ----------------------------------------- */
+$typography-sizes: ("xxxs", "xxs", "xs", "sm", "md", "lg", "xl");
+
+$typography-size-properties: (
+  "body": (
+    "xxxs": (
+      font-size: 10px,
+      line-height: 12px,
+      font-weight: "regular",
+    ),
+    "xxs": (
+      font-size: 11px,
+      line-height: 14px,
+      font-weight: "regular",
+    ),
+    "xs": (
+      font-size: 12px,
+      line-height: 16px,
+      font-weight: "regular",
+    ),
+    "sm": (
+      font-size: 13px,
+      line-height: 18px,
+      font-weight: "regular",
+    ),
+    "md": (
+      font-size: 14px,
+      line-height: 20px,
+      font-weight: "regular",
+    ),
+    "lg": (
+      font-size: 16px,
+      line-height: 24px,
+      font-weight: "regular",
+    ),
+    "xl": (
+      font-size: 18px,
+      line-height: 28px,
+      font-weight: "regular",
+    ),
+  ),
+  "heading": (
+    "xxxs": (
+      font-size: 12px,
+      line-height: 16px,
+      font-weight: "medium",
+    ),
+    "xxs": (
+      font-size: 14px,
+      line-height: 20px,
+      font-weight: "medium",
+    ),
+    "xs": (
+      font-size: 16px,
+      line-height: 22px,
+      font-weight: "medium",
+    ),
+    "sm": (
+      font-size: 18px,
+      line-height: 24px,
+      font-weight: "semibold",
+    ),
+    "md": (
+      font-size: 24px,
+      line-height: 30px,
+      font-weight: "semibold",
+    ),
+    "lg": (
+      font-size: 28px,
+      line-height: 34px,
+      font-weight: "semibold",
+    ),
+    "xl": (
+      font-size: 32px,
+      line-height: 36px,
+      font-weight: "bold",
+    ),
+  ),
+  "label": (
+    "xxxs": (
+      font-size: 10px,
+      line-height: 12px,
+      font-weight: "regular",
+    ),
+    "xxs": (
+      font-size: 11px,
+      line-height: 14px,
+      font-weight: "regular",
+    ),
+    "xs": (
+      font-size: 12px,
+      line-height: 16px,
+      font-weight: "regular",
+    ),
+    "sm": (
+      font-size: 13px,
+      line-height: 18px,
+      font-weight: "medium",
+    ),
+    "md": (
+      font-size: 14px,
+      line-height: 20px,
+      font-weight: "medium",
+    ),
+    "lg": (
+      font-size: 16px,
+      line-height: 24px,
+      font-weight: "semibold",
+    ),
+    "xl": (
+      font-size: 18px,
+      line-height: 28px,
+      font-weight: "semibold",
+    ),
+  ),
+);
+
+$heading-default-size: "md";
+$body-default-size: "md";
+$label-default-size: "md";
+
+$typography-default-sizes: (
+  "body": $body-default-size,
+  "heading": $heading-default-size,
+  "label": $label-default-size,
+);
+
+@function get-default-size($type) {
+  $type: fn.validate-value($type, $typography-types);
+  @return fn.mapget($typography-default-sizes, $type);
+}
+
+@function parse-size($type, $size: null) {
+  @return if($size, fn.validate-value($size, $typography-sizes), get-default-size($type));
+}
+
+@function get-font-size($type, $size: null) {
+  @return fn.mapget($typography-size-properties, $type, parse-size($type, $size: $size), font-size);
+}
+
+@function get-line-height($type, $size: null) {
+  @return fn.mapget($typography-size-properties, $type, parse-size($type, $size: $size), line-height);
+}
+
+@mixin font-size($type, $size: null) {
+  font-size: get-font-size($type, $size);
+}
+
+@mixin heading-font-size($size: null) {
+  @include font-size("heading", $size);
+}
+
+@mixin body-font-size($size: null) {
+  @include font-size("body", $size);
+}
+
+@mixin label-font-size($size: null) {
+  @include font-size("label", $size);
+}
+
+@mixin line-height($type, $size: null) {
+  line-height: get-line-height($type, $size);
+}
+
+@mixin heading-line-height($size: null) {
+  @include line-height("heading", $size);
+}
+
+@mixin body-line-height($size: null) {
+  @include line-height("body", $size);
+}
+
+@mixin label-line-height($size: null) {
+  @include line-height("label", $size);
+}
+
+/* --------------------------------------- Font Colors ------------------------------------------ */
+$default-label-color-shade: 7;
+$default-heading-color-shade: 7;
+$default-body-color-shade: 7;
+
+$typography-default-color-shades: (
+  "heading": $default-heading-color-shade,
+  "body": $default-body-color-shade,
+  "label": $default-label-color-shade,
+);
+
+$default-label-color-name: "body";
+$default-body-color-name: "body";
+$default-heading-color-name: "heading";
+
+$typography-default-color-names: (
+  "heading": $default-heading-color-name,
+  "body": $default-body-color-name,
+  "label": $default-label-color-name,
+);
+
+$default-label-color: colors.get-color($default-label-color-name, $default-label-color-shade);
+$default-heading-color: colors.get-color($default-heading-color-name, $default-heading-color-shade);
+$default-body-color: colors.get-color($default-body-color-name, $default-body-color-shade);
+
+$typography-default-colors: (
+  "heading": $default-heading-color,
+  "body": $default-body-color,
+  "label": $default-label-color,
+);
+
+@function get-font-color($type, $color: null, $shade: null) {
+  $type: fn.validate-value($type, $typography-types);
+  $color: if($color, $color, fn.mapget($typography-default-color-names, $type));
+  $shade: if($shade, $shade, fn.mapget($typography-default-color-shades, $type));
+  @return colors.get-color($color, $shade);
+}
+
+@mixin font-color($type, $color: null, $shade: null) {
+  color: get-font-color($type, $color, $shade);
+}
+
+@mixin body-font-color($args...) {
+  @include font-color("body", $args...);
+}
+
+@mixin heading-font-color($args...) {
+  @include font-color("heading", $args...);
+}
+
+@mixin label-font-color($args...) {
+  @include font-color("label", $args...);
+}
+
+/* --------------------------------------- Font Specs ------------------------------------------ */
+@function get-font($type, $size: null, $weight: null, $family: null, $args...) {
+  $properties: (
+    font-family: if($family, $family, get-font-family($type)),
+    font-weight:
+      get-font-weight(
+        $type: $type,
+        $size: $size,
+        $weight: $weight,
+      ),
+    color: fn.get-optional-kwarg(color, $default: get-font-color($type), $args...),
+    line-height: fn.get-optional-kwarg(line-height, $default: get-line-height($type, $size: $size), $args...),
+    font-size: fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...),
+  );
+  $overrides: map.get(meta.keywords($args), "override");
+  @if $overrides {
+    $properties: map.merge($properties, $overrides);
+  }
+  @return fn.pick-or-ignore($properties, $args...);
+}
+
+@mixin font($type, $args...) {
+  $properties: get-font($type, $args...);
+  @include mixins.mapped-properties($properties);
+}
+
+@mixin with-font-sizes($type) {
+  @each $size in $typography-sizes {
+    $properties: get-font($type, $size: $size);
+    @content ($size, $properties);
+  }
+}
+
+@mixin heading($args...) {
+  @include font("heading", $args...);
+}
+
+@mixin body($args...) {
+  @include font("body", $args...);
+}
+
+@mixin label($args...) {
+  @include font("label", $args...);
+}

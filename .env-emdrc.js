@@ -49,7 +49,9 @@ const loadNextJSEnvironmentVariables = (environment, variables) => {
         throw parsed.error;
       }
       /* eslint-disable-next-line no-console */
-      console.warn(`Skipping environment variables in file ${filename} because the file does not exist.`);
+      console.warn(
+        `Skipping environment variables in file ${filename} because the file does not exist.`,
+      );
     } else {
       for (const v of variables) {
         if (parsed.parsed[v] !== undefined) {

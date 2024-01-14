@@ -30,7 +30,9 @@ const BASE_RULES = {
           position: "after",
         },
         {
-          pattern: "{@prisma,@prisma/**,prisma,prisma/**,server,server/**,application,application/**}",
+          /* eslint-disable-next-line max-len */
+          pattern:
+            "{@prisma,@prisma/**,prisma,prisma/**,server,server/**,application,application/**}",
           group: "external",
           position: "after",
         },
@@ -45,16 +47,18 @@ const BASE_RULES = {
           position: "after",
         },
         {
-          pattern: `{${FIRST_INTERNAL_MODULE_GROUP.reduce((prev, v) => [...prev, ...toAbsoluteImports(v)], []).join(
-            ",",
-          )}}`,
+          pattern: `{${FIRST_INTERNAL_MODULE_GROUP.reduce(
+            (prev, v) => [...prev, ...toAbsoluteImports(v)],
+            [],
+          ).join(",")}}`,
           group: "internal",
           position: "before",
         },
         {
-          pattern: `{${SECOND_INTERNAL_MODULE_GROUP.reduce((prev, v) => [...prev, ...toAbsoluteImports(v)], []).join(
-            ",",
-          )}}`,
+          pattern: `{${SECOND_INTERNAL_MODULE_GROUP.reduce(
+            (prev, v) => [...prev, ...toAbsoluteImports(v)],
+            [],
+          ).join(",")}}`,
           group: "internal",
           position: "before",
         },
@@ -71,7 +75,7 @@ const BASE_RULES = {
   "import/no-unresolved": "error",
   "import/no-useless-path-segments": ["error", { noUselessIndex: true }],
   "max-len": [
-    "warn",
+    "error",
     {
       code: 100,
       comments: 100,
@@ -84,7 +88,7 @@ const BASE_RULES = {
   ],
   "arrow-body-style": ["error", "as-needed"],
   // This should eventually be an error...
-  "no-console": "warn",
+  "no-console": "error",
   "no-unused-vars": "warn",
   "no-multiple-empty-lines": "error",
   "multiline-comment-style": ["warn", "bare-block"],
@@ -106,15 +110,16 @@ const TS_BASE_RULES = {
       fixStyle: "inline-type-imports",
     },
   ],
-  /* The `no-explicit-any` rule does not play nicely with TypeScript when defining general forms of function or array
-     types that require generic spread type arguments.  Specifying the 'ignoreRestArgs' rule alleviates the problem to
-     some degree, but does not introduce type safety concerns. */
+  /* The `no-explicit-any` rule does not play nicely with TypeScript when defining general forms of
+     function or array types that require generic spread type arguments.  Specifying the
+     'ignoreRestArgs' rule alleviates the problem to some degree, but does not introduce type safety
+     concerns. */
   "@typescript-eslint/no-explicit-any": ["error", { ignoreRestArgs: true }],
   "@typescript-eslint/no-non-null-assertion": "error",
-  /* In TypeScript projects, the root "no-unused-vars" rule does not work properly with types, and sometimes clashes
-     with the "@typescript-eslint" version of the rule.  The "@typescript-eslint" version covers all the cases that the
-     root "no-unused-vars" rule does, but works properly with types - so it is used in favor of the root
-     "no-unused-vars" rule, not in conjunction with. */
+  /* In TypeScript projects, the root "no-unused-vars" rule does not work properly with types, and
+     sometimes clashes with the "@typescript-eslint" version of the rule.  The "@typescript-eslint"
+     version covers all the cases that the root "no-unused-vars" rule does, but works properly with
+     types - so it is used in favor of the root "no-unused-vars" rule, not in conjunction with. */
   "no-unused-vars": "off",
   "@typescript-eslint/no-unused-vars": ["warn", { destructuredArrayIgnorePattern: "^_" }],
   "react/jsx-newline": [1, { prevent: true }],
