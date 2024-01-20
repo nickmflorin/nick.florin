@@ -34,7 +34,7 @@
 
 .icon {
   @extend %icon-svg-base;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
 
   @include partials.disabled {

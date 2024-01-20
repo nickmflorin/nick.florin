@@ -38,6 +38,12 @@ dependencies:
   lodash.intersection:
     specifier: ^4.4.0
     version: 4.4.0
+  lodash.omit:
+    specifier: ^4.5.0
+    version: 4.5.0
+  lodash.pick:
+    specifier: ^4.4.0
+    version: 4.4.0
   lodash.uniq:
     specifier: ^4.5.0
     version: 4.5.0
@@ -103,6 +109,12 @@ devDependencies:
   '@types/lodash.intersection':
     specifier: ^4.4.9
     version: 4.4.9
+  '@types/lodash.omit':
+    specifier: ^4.5.9
+    version: 4.5.9
+  '@types/lodash.pick':
+    specifier: ^4.4.9
+    version: 4.4.9
   '@types/lodash.uniq':
     specifier: ^4.5.9
     version: 4.5.9
@@ -128,7 +140,7 @@ devDependencies:
     specifier: ^6.18.1
     version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
   autoprefixer:
-    specifier: ^10.0.1
+    specifier: ^10.4.16
     version: 10.4.16(postcss@8.4.33)
   cross-env:
     specifier: ^7.0.3
@@ -167,7 +179,7 @@ devDependencies:
     specifier: ^2.3.7
     version: 2.3.7(stylelint@16.1.0)
   postcss:
-    specifier: ^8
+    specifier: ^8.4.33
     version: 8.4.33
   prisma:
     specifier: ^5.8.0
@@ -182,7 +194,7 @@ devDependencies:
     specifier: ^6.0.0
     version: 6.0.0(stylelint@16.1.0)
   tailwindcss:
-    specifier: ^3.3.0
+    specifier: ^3.4.1
     version: 3.4.1(ts-node@10.9.2)
   ts-jest:
     specifier: ^29.1.1
@@ -1453,6 +1465,18 @@ packages:
 
   /@types/lodash.intersection@4.4.9:
     resolution: {integrity: sha512-AenZXU5mbikacV1LyGTFIP7s94s0UyscACObGMrqDvKjZfRj+PpmAVvhNeLUMCBLi7RMlLgHic53J/LbaciEmg==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
+  /@types/lodash.omit@4.5.9:
+    resolution: {integrity: sha512-zuAVFLUPJMOzsw6yawshsYGgq2hWUHtsZgeXHZmSFhaQQFC6EQ021uDKHkSjOpNhSvtNSU9165/o3o/Q51GpTw==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
+  /@types/lodash.pick@4.4.9:
+    resolution: {integrity: sha512-hDpr96x9xHClwy1KX4/RXRejqjDFTEGbEMT3t6wYSYeFDzxmMnSKB/xHIbktRlPj8Nii2g8L5dtFDRaNFBEzUQ==}
     dependencies:
       '@types/lodash': 4.14.202
     dev: true
@@ -5195,6 +5219,14 @@ packages:
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
+
+  /lodash.omit@4.5.0:
+    resolution: {integrity: sha512-XeqSp49hNGmlkj2EJlfrQFIzQ6lXdNro9sddtQzcJY8QaoC2GO0DT7xaIokHeyM+mIT0mPMlPvkYzg2xCuHdZg==}
+    dev: false
+
+  /lodash.pick@4.4.0:
+    resolution: {integrity: sha512-hXt6Ul/5yWjfklSGvLQl8vM//l3FtyHZeuelpzK6mm99pNvN9yTDruNZPEJZD1oWrqo+izBmB7oUfWgcCX7s4Q==}
+    dev: false
 
   /lodash.truncate@4.4.2:
     resolution: {integrity: sha512-jttmRe7bRse52OsWIMDLaXxWqRAmtIUccAQ3garviCqJjafXOfNMO0yMfNpdD6zbGaTU0P5Nz7e7gAT6cKmJRw==}

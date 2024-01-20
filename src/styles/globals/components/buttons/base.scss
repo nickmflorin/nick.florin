@@ -1,15 +1,43 @@
 @use "partials";
+@use "./colors" as button-colors;
+@use "./sizing" as sizing;
+@use "./mixins" as mixins;
+@use "./constants" as *;
 
-@mixin button-link-structure($form) {
-  $form: partials.validate-value($form, ("button", "link"));
+@mixin button-base() {
+  @include partials.transition(none);
+  appearance: none;
+  background-color: transparent;
+  /* When providing a border, we need to use the outline property - not the border property.  This
+     is because a border will contribute to the size of the button, whereas an outline will not. */
+  border: none;
+  border-radius: $button-border-radius;
+  box-shadow: none !important;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: $button-font-family;
+  font-stretch: normal;
+  font-weight: $button-font-weight;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  min-height: 0px;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  vertical-align: middle;
+  outline-offset: -1 * $button-outline-width;
+}
 
+@mixin button-structure() {
   min-width: fit-content;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   align-items: center;
 
-  > .#{$form}__content {
+  > .button__content {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -24,8 +52,9 @@
     overflow: hidden;
     max-width: 100%;
     flex-grow: 100;
+    gap: 8px;
 
-    > .#{$form}__sub-content {
+    > .button__sub-content {
       text-align: inherit;
       vertical-align: middle;
       line-height: inherit;
@@ -35,30 +64,107 @@
       @include partials.truncate();
     }
 
-    > .#{$form}__icon-wrapper {
-      @include partials.flex-c;
+    // > .button__icon-wrapper {
+    //   @include partials.flex-c;
 
-      height: 100%;
+    //   height: 100%;
 
-      // The aspect-ratio should be 1 inherently, based on the size specifications of the Spinner component when an icon
-      // is being used.
-      width: fit-content;
+    //   // The aspect-ratio should be 1 inherently, based on the size specifications of the Spinner component when an icon
+    //   // is being used.
+    //   width: fit-content;
 
-      // Include 8px of spacing between the wrapped icon/spinner and the text if the icon/spinner
-      // is before the text.
-      + * {
-        margin-left: 8px;
-      }
-    }
+    //   // Include 8px of spacing between the wrapped icon/spinner and the text if the icon/spinner
+    //   // is before the text.
+    //   + * {
+    //     margin-left: 8px;
+    //   }
+    // }
 
     // Include 8px of spacing between the wrapped icon/spinner and the text if the icon/spinner is after the text.
-    > * + .#{$form}__icon-wrapper {
-      margin-left: 8px;
-    }
+    // > * + .button__icon-wrapper {
+    //   margin-left: 8px;
+    // }
   }
 
   .icon {
     color: inherit;
     filter: inherit;
+  }
+}
+
+@mixin button-properties($type, $variant: null, $size: null) {
+  @if $variant {
+    @include button-colors.button-colors($type: $type, $variant: $variant);
+  } @else {
+    @each $variant in $button-variants {
+      &.button--variant-#{$variant} {
+        @include button-colors.button-colors($type: $type, $variant: $variant);
+      }
+    }
+  }
+  @if $size {
+    @include sizing.button-size($type, $size);
+  } @else {
+    @each $size in $button-size-names {
+      &.button--size-#{$size} {
+        @include sizing.button-size($type, $size);
+      }
+    }
+  }
+}
+
+@mixin button($type, $variant: null, $size: null, $weight: null) {
+  @include button-base();
+  @include button-structure();
+  @include button-properties($type, $variant: $variant, $size: $size);
+
+  @include partials.disabled;
+  @include partials.with-selectors((mixins.$button-locked-class, mixins.$button-loading-class)) {
+    pointer-events: none;
+  }
+
+  @if $type == "button" {
+    font-weight: partials.get-font-weight($weight: "semibold");
+
+    &.button--outline {
+      font-weight: partials.get-font-weight($weight: "regular");
+    }
+
+    > .button__content {
+      // > .button__icon-wrapper {
+      //   padding-bottom: sizing.$button-icon-padding;
+      //   // When an icon or loading indicator is in the button, we want the height to slightly smaller than the line height
+      //   // of the accompanying text - so we subtract a little height from the wrapper.
+      //   padding-top: sizing.$button-icon-padding;
+
+      //   &:not(:last-of-type) {
+      //     margin-right: 2px;
+      //   }
+      // }
+
+      // > .button__action-icon-wrapper {
+      //   > .icon {
+      //     color: colors.get-color("gray", $shade: 4);
+
+      //     @include mixins.with-state(("hovered", "focused")) {
+      //       color: colors.get-color("gray", $shade: 5);
+      //     }
+      //   }
+      // }
+    }
+  } @else if $type == "link" {
+    font-weight: partials.get-font-weight($weight: "medium");
+    padding: sizing.get-button-padding("link");
+
+    @if $weight {
+      font-weight: partials.get-font-weight($weight: $weight);
+    } @else {
+      // Allow the font-weight to be overridden.
+      @include partials.with-font-weights() using ($weight, $value) {
+        &.button--font-weight-#{$weight} {
+          font-weight: $value;
+        }
+      }
+    }
   }
 }

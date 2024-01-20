@@ -3,36 +3,30 @@
 
 @use "partials";
 @use "./base" as *;
+@use "./constants" as constants;
 
 button {
-  @include partials.button-base;
+  @include button-base;
 }
 
 .button {
-  @include partials.disabled;
-  @include partials.with-selectors((partials.$button-locked-class, partials.$button-loading-class)) {
-    pointer-events: none;
-  }
-  @include button-link-structure("button");
-
-  &--corner-style-square {
-    border-radius: 0px !important;
+  &--type-button {
+    @include button("button");
   }
 
-  &--corner-style-rounded {
-    border-radius: 50px !important;
-  }
-  /*
-  For each variant, use the variant mixin that it is associated with as long as it is the only variant (i.e. distinct)
-  on the class:
+  &--type-link {
+    @include button("link");
 
-  &--primary:not(&--alternate, &--secondary, &--action, &--bare) {
-    ...
-  }
-  */
-  @each $type in partials.$button-types {
-    @include partials.with-distinct-selector($type, partials.$button-types, $prefix: ".button--") {
-      @include partials.button($type);
+    text-decoration: none;
+    line-height: 1;
+
+    @layer {
+      font-weight: constants.$link-font-weight;
+      color: inherit;
     }
+  }
+
+  &--type-icon-button {
+    @include button("icon-button");
   }
 }

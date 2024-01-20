@@ -1,0 +1,28 @@
+@use "partials";
+
+/*
+Buttons  need to leverage an outline instead of a border, because an outline is inset and a border
+is outset. In other words, the border will contribute size to the overall Button, while the outline
+will not.
+*/
+$button-outline-width: 1px;
+
+$button-state-names: ("hovered", "focused", "disabled");
+
+$button-font-family: partials.$font-family-inter;
+$button-border-radius: partials.get-radius("sm");
+
+// The button font-weight here is used as the default - the font-weight will usually depend on the variant.
+$button-font-weight: partials.get-font-weight(
+  $weight: "medium",
+);
+$link-font-weight: partials.get-font-weight(
+  $weight: "medium",
+);
+
+$button-types: ("button", "link", "icon-button");
+$button-default-type: "button";
+$button-variants: ("primary", "secondary", "danger", "outline");
+
+$button-size-names: ("xsmall", "small", "medium", "large");
+$button-default-size: "small";

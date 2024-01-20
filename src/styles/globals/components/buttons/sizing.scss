@@ -1,0 +1,139 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:meta";
+
+@use "partials";
+@use "./constants" as *;
+
+$button-padding: (
+  "button": (
+    "xsmall": 6px 14px,
+    "small": 8px 16px,
+    "medium": 10px 20px,
+    "large": 14px 30px,
+  ),
+  "icon-button": (
+    "xsmall": 6px,
+    "small": 8px,
+    "medium": 10px,
+    "large": 12px,
+  ),
+);
+
+@function get-button-padding($type, $size: null) {
+  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
+  $type: partials.validate-value($type, $button-types);
+  @if $type == "link" {
+    @return 0px;
+  }
+  @return partials.mapget(partials.mapget($button-padding, $type), $size);
+}
+
+$button-sizes: (
+  "button": (
+    "xsmall": 28px,
+    "small": 32px,
+    "medium": 40px,
+    "large": 48px,
+  ),
+  "link": (
+    "xsmall": 12px,
+    "small": 13px,
+    "medium": 14px,
+    "large": 16px,
+  ),
+  "icon-button": (
+    "xsmall": 28px,
+    "small": 32px,
+    "medium": 36px,
+    "large": 40px,
+  ),
+);
+
+@function get-button-size($type, $size: null) {
+  $type: partials.validate-value($type, $button-types);
+  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
+  @return partials.mapget($button-sizes, $type, $size);
+}
+
+$button-icon-sizes: (
+  "button": (
+    "xsmall": partials.mapget($button-sizes, "button", "xsmall") - 2 *
+      list.nth(partials.mapget($button-padding, "button", "xsmall"), 1),
+    "small": partials.mapget($button-sizes, "button", "small") - 2 *
+      list.nth(partials.mapget($button-padding, "button", "small"), 1),
+    "medium": partials.mapget($button-sizes, "button", "medium") - 2 *
+      list.nth(partials.mapget($button-padding, "button", "medium"), 1),
+    "large": partials.mapget($button-sizes, "button", "large") - 2 *
+      list.nth(partials.mapget($button-padding, "button", "large"), 1),
+  ),
+  "icon-button": (
+    "xsmall": partials.mapget($button-sizes, "icon-button", "xsmall") - 2 *
+      partials.mapget($button-padding, "icon-button", "xsmall"),
+    "small": partials.mapget($button-sizes, "icon-button", "small") - 2 *
+      partials.mapget($button-padding, "icon-button", "small"),
+    "medium": partials.mapget($button-sizes, "icon-button", "medium") - 2 *
+      partials.mapget($button-padding, "icon-button", "medium"),
+    "large": partials.mapget($button-sizes, "icon-button", "large") - 2 *
+      partials.mapget($button-padding, "icon-button", "large"),
+  ),
+);
+
+@function get-button-icon-size($type, $size: null) {
+  $type: partials.validate-value($type, $button-types);
+  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
+  @return partials.mapget($button-icon-sizes, $type, $size);
+}
+
+$button-font-sizes: (
+  "button": (
+    "xsmall": 12px,
+    "small": 13px,
+    "medium": 14px,
+    "large": 16px,
+  ),
+  "link": (
+    "xsmall": 12px,
+    "small": 13px,
+    "medium": 14px,
+    "large": 16px,
+  ),
+);
+
+@function get-button-font-size($type, $size: null) {
+  $type: partials.validate-value($type, ("link", "button"));
+  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
+  @return partials.mapget($button-font-sizes, $type, $size);
+}
+
+@mixin button-size($type, $size: null) {
+  $type: partials.validate-value($type, $button-types);
+  $height: get-button-size($type, $size: $size);
+  $padding: get-button-padding($type, $size: $size);
+
+  height: $height;
+  padding: $padding;
+
+  @if $type == "button" {
+    font-size: get-button-font-size("button", $size: $size);
+    line-height: $height - 2 * list.nth($padding, 1);
+
+    .icon {
+      height: get-button-icon-size("button", $size: $size);
+      aspect-ratio: 1;
+      width: auto;
+    }
+  } @else if $type == "icon-button" {
+    width: $height;
+    aspect-ratio: 1;
+
+    .icon {
+      height: get-button-icon-size("icon-button", $size: $size);
+      aspect-ratio: 1;
+      width: auto;
+    }
+  } @else {
+    font-size: get-button-font-size("link", $size: $size);
+    line-height: $height;
+  }
+}

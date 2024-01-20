@@ -7,18 +7,22 @@ import {
   type IconLookup as RootIconLookup,
 } from "@fortawesome/fontawesome-svg-core";
 import clsx from "clsx";
+import { type Optional } from "utility-types";
 
-import { enumeratedLiterals, type EnumeratedLiteralType } from "~/lib/literals";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ComponentProps } from "~/components/types";
 
-export const IconDimensions = enumeratedLiterals(["height", "width"] as const);
-export type IconDimension = EnumeratedLiteralType<typeof IconDimensions>;
+export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
+export type IconDimension = EnumeratedLiteralsType<typeof IconDimensions>;
 
-export const IconFits = enumeratedLiterals(["square", "fit"] as const);
-export type IconFit = EnumeratedLiteralType<typeof IconFits>;
+export const IconFits = enumeratedLiterals(["square", "fit"] as const, {});
+export type IconFit = EnumeratedLiteralsType<typeof IconFits>;
 
-export const IconSizes = enumeratedLiterals(["xxs", "xs", "sm", "md", "lg", "xl", "fill"] as const);
-export type IconSize = EnumeratedLiteralType<typeof IconSizes>;
+export const IconSizes = enumeratedLiterals(
+  ["xxs", "xs", "sm", "md", "lg", "xl", "fill"] as const,
+  {},
+);
+export type IconSize = EnumeratedLiteralsType<typeof IconSizes>;
 
 export type IconFamily = Exclude<RootIconFamily, "duotone">;
 
@@ -269,3 +273,37 @@ export type SpinnerProps = Omit<
 > & {
   readonly loading: boolean;
 };
+
+export type IconProps<
+  I extends IconProp | DynamicIconProp | IconElement = IconProp | DynamicIconProp,
+> =
+  | (Optional<EmbeddedIconComponentProps, "name"> & { readonly loading?: boolean })
+  | (Optional<BasicIconComponentProps<Extract<I, IconProp>>, "icon"> & {
+      readonly loading?: boolean;
+    })
+  | (Optional<BasicIconComponentProps<DynamicIconProp>, "icon"> & { readonly loading?: boolean });
+
+export type IconElement = React.ReactElement<IconProps>;
+
+export type MultipleIconProp<
+  T extends IconProp | DynamicIconProp | IconElement = IconProp | DynamicIconProp | IconElement,
+> = T | { left?: T; right: T };
+
+export const parseMultipleIconProp = <T extends IconProp | DynamicIconProp | IconElement>(
+  prop: MultipleIconProp<T>,
+  location: "left" | "right",
+): T | null => {
+  if (typeof prop === "object" && prop !== null && (prop as { right: T }).right !== undefined) {
+    return location === "left" ? (prop as { left?: T }).left || null : (prop as { right: T }).right;
+  } else if (location === "left") {
+    return prop as T;
+  }
+  return null;
+};
+
+export const parseMultipleIconsProp = <T extends IconProp | DynamicIconProp | IconElement>(
+  prop: MultipleIconProp<T>,
+): [T | null, T | null] => [
+  parseMultipleIconProp(prop, "left"),
+  parseMultipleIconProp(prop, "right"),
+];

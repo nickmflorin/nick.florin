@@ -77,7 +77,18 @@ $orange-shades: (
   #f29e5b
 );
 
-$gray-shades: (#f9f9fa, #f1f3f5, #eaecef, #dee2e6, #cfd4d9, #aeb5bc, #878e95, #494056, #353a3f, #222529);
+$gray-shades: (
+  #f9f9fa,
+  #f1f3f5,
+  #eaecef,
+  #dee2e6,
+  #cfd4d9,
+  #aeb5bc,
+  #878e95,
+  #494056,
+  #353a3f,
+  #222529
+);
 $border-shades: $gray-shades;
 
 // Color Scheme Color: #881600
@@ -141,7 +152,11 @@ $default-shades: (
 
 @function get-color($name, $shade: null) {
   @if not map.has-key($colors, $name) {
-    @return throw.error("The provided name #{$name} is invalid.", $name: $name, $source: "get-color()");
+    @return throw.error(
+      "The provided name #{$name} is invalid.",
+      $name: $name,
+      $source: "get-color()"
+    );
   }
   $cs: fn.mapget($colors, $name);
   @if $shade {
@@ -151,7 +166,11 @@ $default-shades: (
       @return list.nth($cs, list.length($cs));
     } @else if not list.nth($cs, $shade) {
       @if $shade < 1 {
-        @return throw.error("The provided shade #{$shade} is invalid.", $shade: $shade, $source: "get-color()");
+        @return throw.error(
+          "The provided shade #{$shade} is invalid.",
+          $shade: $shade,
+          $source: "get-color()"
+        );
       }
       // Return the last shade that is available if the shade exceeds the number of available shades.
       @return list.nth($cs, list.length($cs));
@@ -186,86 +205,6 @@ $default-shades: (
   @include mixins.with-state($states, $args...) {
     background-color: $hovered-bg-color;
     @content;
-  }
-}
-
-@function get-color-class-name($c, $prefix: null, $shade: null, $state: null) {
-  @if $prefix and $shade and $state {
-    @return #{$prefix}-#{$c}-#{$shade}-#{$state};
-  } @else if $prefix and $shade {
-    @return #{$prefix}-#{$c}-#{$shade};
-  } @else if $shade and $state {
-    @return #{$c}-#{$shade}-#{$state};
-  } @else if $prefix and $state {
-    @return #{$prefix}-#{$c}-#{$state};
-  } @else if $shade {
-    @return #{$c}-#{$shade};
-  } @else if $prefix {
-    @return #{$prefix}-#{$c};
-  } @else if $state {
-    @return #{$c}-#{$state};
-  }
-  @return $c;
-}
-
-@mixin with-colors($prefix: null, $state: null) {
-  @each $name in $color-names {
-    $default-color: get-color($name);
-    $n: get-color-class-name($name, $prefix: $prefix, $state: $state);
-    @content ($n, $default-color, $name);
-
-    @for $i from 1 through list.length(fn.mapget($colors, $name)) {
-      $color: get-color($name, $i);
-      $name-with-shade: get-color-class-name($name, $shade: $i, $prefix: $prefix, $state: $state);
-      $n2: get-color-class-name($name, $shade: $i);
-      @content ($name-with-shade, $color, $n2);
-    }
-  }
-}
-
-@mixin with-color-classes($color-type, $state: null) {
-  @include with-colors($prefix: $color-type, $state: $state) using ($name, $color, $color-name) {
-    @content ($name, $color, $color-name);
-  }
-}
-
-@mixin with-focused-color-classes($color-type) {
-  @include with-color-classes($color-type, $state: "focused") using ($name, $color, $color-name) {
-    @content ($name, $color, $color-name);
-  }
-}
-
-@mixin with-hovered-color-classes($color-type) {
-  @include with-color-classes($color-type, $state: "hovered") using ($name, $color, $color-name) {
-    @content ($name, $color, $color-name);
-  }
-}
-
-@mixin colors($color-type) {
-  @include with-color-classes($color-type) using ($name, $color, $color-name) {
-    .#{$name} {
-      #{$color-type}: $color;
-    }
-  }
-}
-
-@mixin hovered-colors($color-type) {
-  @include with-hovered-color-classes($color-type) using ($name, $color, $color-name) {
-    .#{$name} {
-      @include mixins.hovered {
-        #{$color-type}: $color;
-      }
-    }
-  }
-}
-
-@mixin focused-colors($color-type) {
-  @include with-focused-color-classes($color-type) using ($name, $color, $color-name) {
-    .#{$name} {
-      @include mixins.focused {
-        #{$color-type}: $color;
-      }
-    }
   }
 }
 

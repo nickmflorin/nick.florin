@@ -1,3 +1,45 @@
+@use "partials";
+
+:root {
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+.sidebar {
+  background-color: partials.get-color("gray", 1);
+}
+
+.header {
+  background-color: partials.get-color("gray", 1);
+}
+
 .layout {
-  color: green;
+  background-color: partials.$app-background-color;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  > .header {
+    height: 60px;
+    width: 100%;
+    background-color: partials.get-color("blue", 2);
+  }
+
+  > .layout__content {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 100;
+
+    > .sidebar {
+      width: 60px;
+    }
+
+    > .content {
+      flex-grow: 100;
+      background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
+        rgb(var(--background-start-rgb));
+    }
+  }
 }
