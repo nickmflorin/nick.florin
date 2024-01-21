@@ -8,6 +8,6 @@
 @tailwind utilities;
 
 body {
-  color: partials.$body-color;
+  color: theme("colors.body");
   margin: 0;
 }

@@ -11,7 +11,7 @@ $icon-size-names: ("xxs", "xs", "sm", "md", "lg", "xl", "fill");
 $default-icon-size: "sm";
 $default-icon-size-fit: "square";
 $default-icon-size-dimension: "height";
-$default-icon-color: colors.get-color("gray", 8);
+$default-icon-color: theme("colors.gray.500");
 
 $icon-sizes: (
   "xxs": 10px,

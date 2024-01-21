@@ -1,4 +1,4 @@
-import type * as types from "../types";
+import type * as types from "./types";
 
 import { type MultipleIconProp, parseMultipleIconsProp } from "~/components/icons";
 

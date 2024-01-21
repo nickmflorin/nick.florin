@@ -6,11 +6,12 @@
 }
 
 .sidebar {
-  background-color: partials.get-color("gray", 1);
+  background-color: theme("colors.gray.200");
+  padding: 6px;
 }
 
 .header {
-  background-color: partials.get-color("gray", 1);
+  background-color: theme("colors.gray.100");
 }
 
 .layout {
@@ -24,7 +25,7 @@
   > .header {
     height: 60px;
     width: 100%;
-    background-color: partials.get-color("blue", 2);
+    background-color: theme("colors.blue.200");
   }
 
   > .layout__content {

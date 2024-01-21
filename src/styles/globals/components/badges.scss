@@ -13,7 +13,7 @@ $badge-vertical-padding: 2px;
 .badge {
   text-decoration: none;
   display: inline-flex;
-  border-radius: partials.get-radius("md");
+  border-radius: theme("borderRadius.md");
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
   -webkit-box-pack: center;

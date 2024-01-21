@@ -7,7 +7,6 @@
 @use "../../mixins" as mixins;
 
 @use "../colors" as colors;
-@use "../radius" as radius;
 @use "../typography" as typography;
 @use "./icons" as icons;
 
@@ -15,22 +14,22 @@ $input-sizes: ("xs", "sm", "md", "lg");
 $input-default-size: "md";
 
 // ---------------------------------- Agnostic Properties (The same for all input forms) ---------------------------- //
-$input-color: colors.get-color("gray", $shade: 8);
+$input-color: theme("colors.gray.700");
 $input-font-family: typography.$font-family-inter;
 $input-default-font-size: typography.get-font-size("body", $size: "sm");
 $input-font-weight: typography.get-font-weight(
   $weight: "regular",
 );
-$input-bg-color: colors.get-color("white");
-$input-border-color: colors.get-color("gray", $shade: 4);
-$input-focused-border-color: colors.get-color("blue", $shade: 7);
-$input-border-radius: radius.get-radius("sm");
+$input-bg-color: theme("colors.white");
+$input-border-color: theme("colors.border");
+$input-focused-border-color: theme("colors.blue.400");
+$input-border-radius: theme("borderRadius.sm");
 $input-disabled-bg-color: #efefef;
 $input-icon-color: icons.$default-icon-color;
 $input-border-width: 1px;
 $input-border: $input-border-width solid $input-border-color;
 $input-placeholder-color: colors.$placeholder-color;
-$input-caret-color: colors.get-color("gray", $shade: 8);
+$input-caret-color: theme("colors.gray.600");
 
 @mixin input-placeholder-properties {
   color: $input-placeholder-color;
@@ -369,15 +368,15 @@ $menu-item-font-weight: typography.get-font-weight(
   }
 
   @include colors.with-state-bg-color(("hovered", "focused")) {
-    color: colors.get-color("gray", 8);
+    color: theme("colors.gray.600");
   }
 
   &.selected {
-    background-color: colors.get-color("white");
-    color: colors.get-color("gray", 8);
+    background-color: theme("colors.white");
+    color: theme("colors.gray.600");
 
     @include colors.with-state-bg-color(("hovered", "focused")) {
-      color: colors.get-color("gray", 8);
+      color: theme("colors.gray.700");
     }
   }
 }

@@ -32,6 +32,7 @@ const STYLELINT_RULES = {
   "selector-max-compound-selectors": null,
   "selector-max-id": null,
   "no-descending-specificity": null,
+  "selector-pseudo-class-no-unknown": [true, { ignorePseudoClasses: ["export"] }],
 };
 
 const SCSS_RULES = {

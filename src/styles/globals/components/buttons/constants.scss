@@ -10,7 +10,7 @@ $button-outline-width: 1px;
 $button-state-names: ("hovered", "focused", "disabled");
 
 $button-font-family: partials.$font-family-inter;
-$button-border-radius: partials.get-radius("sm");
+$button-border-radius: theme("borderRadius.md");
 
 // The button font-weight here is used as the default - the font-weight will usually depend on the variant.
 $button-font-weight: partials.get-font-weight(

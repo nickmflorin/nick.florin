@@ -16,24 +16,24 @@
 
 $themes: (
   "danger": (
-    base: partials.get-color("red", $shade: 7),
-    hovered: partials.get-color("red", $shade: 8),
-    focused: partials.get-color("red", $shade: 8),
+    base: theme("colors.danger.700"),
+    hovered: theme("colors.danger.800"),
+    focused: theme("colors.danger.800"),
   ),
   "primary": (
-    base: partials.get-color("blue", $shade: 9),
-    hovered: partials.get-color("blue", $shade: 11),
-    focused: partials.get-color("blue", $shade: 11),
+    base: theme("colors.blue.600"),
+    hovered: theme("colors.blue.800"),
+    focused: theme("colors.blue.800"),
   ),
   "secondary": (
-    base: partials.get-color("gray", $shade: 2),
-    hovered: partials.get-color("gray", $shade: 3),
-    focused: partials.get-color("gray", $shade: 3),
+    base: theme("colors.gray.200"),
+    hovered: theme("colors.gray.300"),
+    focused: theme("colors.gray.300"),
   ),
   "outline": (
-    base: partials.get-color("gray", $shade: 4),
-    hovered: partials.get-color("gray", $shade: 5),
-    focused: partials.get-color("gray", $shade: 5),
+    base: theme("colors.gray.400"),
+    hovered: theme("colors.gray.500"),
+    focused: theme("colors.gray.500"),
   ),
   "bare": (),
 );
@@ -42,7 +42,7 @@ $button-color-properties: (
   "button": (
     "primary": (
       background-color: partials.mapget($themes, "primary", "base"),
-      color: partials.$white,
+      color: theme("colors.white"),
       outline-color: partials.mapget($themes, "primary", "base"),
       hovered: (
         background-color: partials.mapget($themes, "primary", "hovered"),
@@ -59,7 +59,7 @@ $button-color-properties: (
     ),
     "secondary": (
       background-color: partials.mapget($themes, "secondary", "base"),
-      color: partials.get-color("gray", $shade: 8),
+      color: theme("colors.gray.700"),
       outline-color: partials.mapget($themes, "secondary", "base"),
       hovered: (
         background-color: partials.mapget($themes, "secondary", "hovered"),
@@ -76,7 +76,7 @@ $button-color-properties: (
     ),
     "danger": (
       background-color: partials.mapget($themes, "danger", "base"),
-      color: partials.$white,
+      color: theme("colors.white"),
       outline-color: partials.mapget($themes, "danger", "base"),
       hovered: (
         background-color: partials.mapget($themes, "danger", "hovered"),
@@ -87,14 +87,14 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "danger", "focused"),
       ),
       disabled: (
-        background-color: partials.get-color("red", $shade: 4),
-        outline-color: partials.get-color("red", $shade: 4),
+        background-color: theme("colors.red.200"),
+        outline-color: theme("colors.red.200"),
       ),
     ),
     "outline": (
       outline-color: partials.mapget($themes, "outline", "base"),
-      background-color: partials.get-color("white"),
-      color: partials.get-color("gray", $shade: 8),
+      background-color: theme("colors.white"),
+      color: theme("colors.gray.700"),
       hovered: (
         outline-color: partials.mapget($themes, "outline", "hovered"),
       ),
@@ -110,7 +110,7 @@ $button-color-properties: (
   "icon-button": (
     "primary": (
       background-color: partials.mapget($themes, "primary", "base"),
-      color: partials.$white,
+      color: theme("colors.white"),
       outline-color: partials.mapget($themes, "primary", "base"),
       hovered: (
         background-color: partials.mapget($themes, "primary", "hovered"),
@@ -127,7 +127,7 @@ $button-color-properties: (
     ),
     "secondary": (
       background-color: partials.mapget($themes, "secondary", "base"),
-      color: partials.get-color("gray", $shade: 8),
+      color: theme("colors.gray.700"),
       outline-color: partials.mapget($themes, "secondary", "base"),
       hovered: (
         background-color: partials.mapget($themes, "secondary", "hovered"),
@@ -144,7 +144,7 @@ $button-color-properties: (
     ),
     "danger": (
       background-color: partials.mapget($themes, "danger", "base"),
-      color: partials.$white,
+      color: theme("colors.white"),
       outline-color: partials.mapget($themes, "danger", "base"),
       hovered: (
         background-color: partials.mapget($themes, "danger", "hovered"),
@@ -155,13 +155,13 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "danger", "focused"),
       ),
       disabled: (
-        background-color: partials.get-color("red", $shade: 4),
-        outline-color: partials.get-color("red", $shade: 4),
+        background-color: theme("colors.red.200"),
+        outline-color: theme("colors.red.200"),
       ),
     ),
     "outline": (
       outline-color: partials.mapget($themes, "outline", "base"),
-      background-color: partials.get-color("white"),
+      background-color: theme("colors.white"),
       color: partials.mapget($themes, "outline", "base"),
       hovered: (
         outline-color: partials.mapget($themes, "outline", "hovered"),
@@ -177,9 +177,9 @@ $button-color-properties: (
   ),
   "link": (
     "primary": (
-      background-color: partials.$transparent,
+      background-color: theme("colors.transparent"),
       color: partials.mapget($themes, "primary", "base"),
-      outline-color: partials.$transparent,
+      outline-color: theme("colors.transparent"),
       hovered: (
         color: partials.mapget($themes, "primary", "hovered"),
       ),
@@ -191,14 +191,14 @@ $button-color-properties: (
       ),
     ),
     "secondary": (
-      background-color: partials.$transparent,
-      color: partials.get-color("gray", $shade: 8),
-      outline-color: partials.$transparent,
+      background-color: theme("colors.transparent"),
+      color: theme("colors.gray.600"),
+      outline-color: theme("colors.transparent"),
       hovered: (
-        color: partials.get-color("gray", $shade: 9),
+        color: theme("colors.gray.700"),
       ),
       focused: (
-        color: partials.get-color("gray", $shade: 9),
+        color: theme("colors.gray.800"),
       ),
       disabled: (
         color: partials.$disabled-color,
@@ -207,9 +207,9 @@ $button-color-properties: (
     // The outline variant for an alternate button is not applicable.
     "outline": (),
     "danger": (
-      background-color: partials.$transparent,
+      background-color: theme("colors.transparent"),
       color: partials.mapget($themes, "danger", "base"),
-      outline-color: partials.$transparent,
+      outline-color: theme("colors.transparent"),
       hovered: (
         color: partials.mapget($themes, "danger", "hovered"),
       ),
@@ -217,7 +217,7 @@ $button-color-properties: (
         color: partials.mapget($themes, "danger", "focused"),
       ),
       disabled: (
-        color: partials.get-color("red", $shade: 4),
+        color: theme("colors.red.200"),
       ),
     ),
     "bare": (),
@@ -272,7 +272,7 @@ $button-color-properties: (
   } @else {
     $background-color: partials.get-optional-kwarg(
       background-color,
-      $default: partials.$transparent,
+      $default: theme("colors.transparent"),
       $args...
     );
     $outline-color: partials.get-optional-kwarg(

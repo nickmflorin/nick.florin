@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import { type Config } from "tailwindcss";
+
+const config: Config = {
   content: ["./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
   presets: [],
   darkMode: "media", // or 'class'
@@ -162,6 +163,22 @@ module.exports = {
       fuchsia: colors.fuchsia,
       pink: colors.pink,
       rose: colors.rose,
+      heading: "#111827",
+      body: "#231f20",
+      border: colors.gray[300],
+      danger: {
+        "50": "#fef2f2",
+        "100": "#fee2e2",
+        "200": "#fecaca",
+        "300": "#fca5a5",
+        "400": "#f87171",
+        "500": "#ef4444",
+        "600": "#dc2626",
+        "700": "#b91c1c",
+        "800": "#991b1b",
+        "900": "#7f1d1d",
+        "950": "#450a0a",
+      },
     }),
     columns: {
       auto: "auto",
@@ -308,11 +325,14 @@ module.exports = {
         "ui-sans-serif",
         "system-ui",
         "sans-serif",
+        /* eslint-disable quotes */
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
         '"Segoe UI Symbol"',
         '"Noto Color Emoji"',
+        /* eslint-enable quotes */
       ],
+      /* eslint-disable-next-line quotes */
       serif: ["ui-serif", "Georgia", "Cambria", '"Times New Roman"', "Times", "serif"],
       mono: [
         "ui-monospace",
@@ -320,8 +340,10 @@ module.exports = {
         "Menlo",
         "Monaco",
         "Consolas",
+        /* eslint-disable quotes */
         '"Liberation Mono"',
         '"Courier New"',
+        /* eslint-enable quotes */
         "monospace",
       ],
     },
@@ -1065,3 +1087,5 @@ module.exports = {
   },
   plugins: [],
 };
+
+export default config;

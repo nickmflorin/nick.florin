@@ -1,6 +1,6 @@
 @use "./colors" as colors;
 
-@mixin scrollbar($color: "gray", $shade: 3, $width: 4px, $spacing-left: 4px, $spacing-right: 2px) {
+@mixin scrollbar($width: 4px, $spacing-left: 4px, $spacing-right: 2px) {
   $total-width: $width + $spacing-left + $spacing-right;
   ::-webkit-scrollbar {
     width: $total-width;
@@ -8,7 +8,7 @@
 
   ::-webkit-scrollbar-thumb {
     border-radius: 9999px;
-    background: colors.get-color($color, $shade: $shade);
+    background: theme("colors.gray.200");
     border-right: $spacing-right solid white;
     border-left: $spacing-left solid white;
     background-clip: padding-box;

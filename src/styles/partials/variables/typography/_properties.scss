@@ -76,7 +76,10 @@ $font-family-default-weights: (
       );
     }
     $size: parse-size($type, $size);
-    @return fn.mapget($font-weights, fn.mapget($typography-size-properties, $type, $size, font-weight));
+    @return fn.mapget(
+      $font-weights,
+      fn.mapget($typography-size-properties, $type, $size, font-weight)
+    );
   } @else {
     @return throw.error(
       "Invalid arguments: the 'type'/'size' or 'weight' arguments be provided.",
@@ -248,7 +251,12 @@ $typography-default-sizes: (
 }
 
 @function get-line-height($type, $size: null) {
-  @return fn.mapget($typography-size-properties, $type, parse-size($type, $size: $size), line-height);
+  @return fn.mapget(
+    $typography-size-properties,
+    $type,
+    parse-size($type, $size: $size),
+    line-height
+  );
 }
 
 @mixin font-size($type, $size: null) {
@@ -284,29 +292,9 @@ $typography-default-sizes: (
 }
 
 /* --------------------------------------- Font Colors ------------------------------------------ */
-$default-label-color-shade: 7;
-$default-heading-color-shade: 7;
-$default-body-color-shade: 7;
-
-$typography-default-color-shades: (
-  "heading": $default-heading-color-shade,
-  "body": $default-body-color-shade,
-  "label": $default-label-color-shade,
-);
-
-$default-label-color-name: "body";
-$default-body-color-name: "body";
-$default-heading-color-name: "heading";
-
-$typography-default-color-names: (
-  "heading": $default-heading-color-name,
-  "body": $default-body-color-name,
-  "label": $default-label-color-name,
-);
-
-$default-label-color: colors.get-color($default-label-color-name, $default-label-color-shade);
-$default-heading-color: colors.get-color($default-heading-color-name, $default-heading-color-shade);
-$default-body-color: colors.get-color($default-body-color-name, $default-body-color-shade);
+$default-label-color: theme("colors.body");
+$default-heading-color: theme("colors.heading");
+$default-body-color: theme("colors.body");
 
 $typography-default-colors: (
   "heading": $default-heading-color,
@@ -314,15 +302,12 @@ $typography-default-colors: (
   "label": $default-label-color,
 );
 
-@function get-font-color($type, $color: null, $shade: null) {
-  $type: fn.validate-value($type, $typography-types);
-  $color: if($color, $color, fn.mapget($typography-default-color-names, $type));
-  $shade: if($shade, $shade, fn.mapget($typography-default-color-shades, $type));
-  @return colors.get-color($color, $shade);
+@function get-font-color($type, $color: null) {
+  @return if($color, $color, fn.mapget($typography-default-colors, $type));
 }
 
-@mixin font-color($type, $color: null, $shade: null) {
-  color: get-font-color($type, $color, $shade);
+@mixin font-color($type, $color: null) {
+  color: get-font-color($type, $color);
 }
 
 @mixin body-font-color($args...) {
@@ -348,8 +333,10 @@ $typography-default-colors: (
         $weight: $weight,
       ),
     color: fn.get-optional-kwarg(color, $default: get-font-color($type), $args...),
-    line-height: fn.get-optional-kwarg(line-height, $default: get-line-height($type, $size: $size), $args...),
-    font-size: fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...),
+    line-height:
+      fn.get-optional-kwarg(line-height, $default: get-line-height($type, $size: $size), $args...),
+    font-size:
+      fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...),
   );
   $overrides: map.get(meta.keywords($args), "override");
   @if $overrides {

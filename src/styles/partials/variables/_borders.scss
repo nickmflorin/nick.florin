@@ -1,4 +1,4 @@
 @use "./colors" as colors;
 
-$default-border-color: colors.get-color("border");
+$default-border-color: theme("colors.neutral.300");
 $default-border: 1px solid $default-border-color;
