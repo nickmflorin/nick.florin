@@ -34,13 +34,13 @@ const config = {
   images: {
     domains: ["images.clerk.dev"],
   },
-  /* redirects: async () => [
-       {
-         source: "/",
-         destination: "/dashboard",
-         permanent: false,
-       },
-     ], */
+  redirects: async () => [
+    {
+      source: "/",
+      destination: "/resume",
+      permanent: false,
+    },
+  ],
 };
 
 const bundled = (phase, { defaultConfig }) =>

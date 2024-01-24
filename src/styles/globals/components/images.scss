@@ -1,0 +1,32 @@
+@use "partials";
+
+.model-image {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+
+  @layer {
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1;
+  }
+
+  > .model-image__fallback {
+    @include partials.flex-c;
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1;
+    background-color: theme("colors.neutral.200");
+    padding: 6px;
+
+    > .body {
+      font-weight: partials.get-font-weight($weight: "medium");
+      color: theme("colors.neutral.500");
+
+      @layer {
+        font-size: inherit;
+      }
+    }
+  }
+}

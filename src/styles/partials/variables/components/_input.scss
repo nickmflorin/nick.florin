@@ -6,7 +6,6 @@
 @use "../../functions" as fn;
 @use "../../mixins" as mixins;
 
-@use "../colors" as colors;
 @use "../typography" as typography;
 @use "./icons" as icons;
 
@@ -15,7 +14,7 @@ $input-default-size: "md";
 
 // ---------------------------------- Agnostic Properties (The same for all input forms) ---------------------------- //
 $input-color: theme("colors.gray.700");
-$input-font-family: typography.$font-family-inter;
+$input-font-family: theme("fontFamily.body");
 $input-default-font-size: typography.get-font-size("body", $size: "sm");
 $input-font-weight: typography.get-font-weight(
   $weight: "regular",
@@ -28,7 +27,7 @@ $input-disabled-bg-color: #efefef;
 $input-icon-color: icons.$default-icon-color;
 $input-border-width: 1px;
 $input-border: $input-border-width solid $input-border-color;
-$input-placeholder-color: colors.$placeholder-color;
+$input-placeholder-color: theme("colors.placeholder");
 $input-caret-color: theme("colors.gray.600");
 
 @mixin input-placeholder-properties {

@@ -38,7 +38,7 @@
   flex-direction: column;
 
   @include partials.disabled {
-    color: partials.$disabled-color;
+    color: theme("colors.disabled");
   }
 
   > svg {

@@ -113,6 +113,11 @@ export const env = createEnv({
       development: z.string().startsWith("sk_test"),
       production: z.string().startsWith("sk_live"),
     }[process.env.NODE_ENV],
+    PERSONAL_CLERK_USER_ID: {
+      test: STRICT_OMISSION,
+      development: z.string().startsWith("user_"),
+      production: z.string().startsWith("user_"),
+    }[process.env.NODE_ENV],
     /* ~~~~~~~~~~ Database Configuration ~~~~~~~ */
     DATABASE_URL: testRestricted(z.string().url().optional()),
     MIGRATE_DATABASE_URL: testRestricted(z.string().url()),
@@ -161,6 +166,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     PRETTY_LOGGING: process.env.PRETTY_LOGGING,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+    PERSONAL_CLERK_USER_ID: process.env.PERSONAL_CLERK_USER_ID,
     APP_NAME_FORMAL: process.env.APP_NAME_FORMAL,
     FONT_AWESOME_KIT_TOKEN: process.env.FONT_AWESOME_KIT_TOKEN,
     /* ------------------------------ Client Environment Variables ------------------------------ */

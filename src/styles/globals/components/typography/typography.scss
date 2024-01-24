@@ -1,0 +1,223 @@
+@use "sass:map";
+@use "partials";
+
+@include partials.font-faces;
+
+%typography-base {
+  font-feature-settings:
+    "tnum" on,
+    "lnum" on;
+  font-style: normal !important;
+  font-variant: tabular-nums;
+  margin: 0;
+  padding: 0;
+
+  em,
+  b {
+    font-style: normal !important;
+  }
+
+  i {
+    font-style: normal !important;
+  }
+}
+
+html,
+body {
+  @extend %typography-base;
+  font-family: theme("fontFamily.body");
+  color: theme("colors.body");
+  margin: 0;
+}
+
+p {
+  @extend %typography-base;
+  @include partials.font("body");
+
+  em,
+  b {
+    font-family: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+  }
+}
+
+@mixin with-fonts($type) {
+  @include partials.with-font-sizes($type) using ($size, $data) {
+    &.font-size-#{$size} {
+      font-size: partials.mapget($data, font-size);
+      line-height: partials.mapget($data, line-height);
+      font-weight: partials.mapget($data, font-weight);
+      @content ($data);
+    }
+  }
+}
+
+.label {
+  // Do not define defaults for the typography properties.  This allows the typography properties to only be applied if
+  // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
+  // in cases where the component is not provided with those props.
+  @extend %typography-base;
+
+  // Allow the font-weight to be overridden for each size.
+  @include partials.with-font-weights() using ($weight, $value) {
+    &.font-weight-#{$weight} {
+      font-weight: $value;
+    }
+  }
+
+  @include with-fonts("label") using ($data) {
+    $font-size: partials.mapget($data, font-size);
+    $line-height: partials.mapget($data, line-height);
+
+    > .icon {
+      height: $font-size;
+      margin-right: 6px;
+      padding-bottom: 0.5 * ($line-height - $font-size);
+      padding-top: 0.5 * ($line-height - $font-size);
+      width: auto;
+    }
+  }
+
+  display: flex;
+  width: 100%;
+
+  &--transform-underline {
+    text-decoration: underline;
+  }
+
+  &--transform-caps {
+    text-transform: uppercase;
+  }
+}
+
+@mixin title() {
+  @include with-fonts("heading");
+
+  // Allow the font-weight to be overridden for each size.
+  @include partials.with-font-weights() using ($weight, $value) {
+    &.font-weight-#{$weight} {
+      font-weight: $value;
+    }
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @extend %typography-base;
+  width: 100%;
+
+  em,
+  b {
+    font-family: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+  }
+}
+
+h1 {
+  @include partials.font("heading", $size: "xl");
+  @include title();
+}
+
+h2 {
+  @include partials.font("heading", $size: "lg");
+  @include title();
+}
+
+h3 {
+  @include partials.font("heading", $size: "md");
+  @include title();
+}
+
+h4 {
+  @include partials.font("heading", $size: "sm");
+  @include title();
+}
+
+h5 {
+  @include partials.font("heading", $size: "xs");
+  @include title();
+}
+
+h6 {
+  @include partials.font("heading", $size: "xxs");
+  @include title();
+}
+
+.body {
+  // Do not define defaults for the typography properties.  This allows the typography properties to only be applied if
+  // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
+  // in cases where the component is not provided with those props.
+  @extend %typography-base;
+
+  // Allow the font-weight to be overridden for each size.
+  @include partials.with-font-weights() using ($weight, $value) {
+    &.font-weight-#{$weight} {
+      font-weight: $value;
+    }
+  }
+
+  @include with-fonts("body") using ($data) {
+    $font-size: partials.mapget($data, font-size);
+    $line-height: partials.mapget($data, line-height);
+
+    > .icon {
+      height: $font-size;
+      margin-right: 6px;
+      padding-bottom: 0.5 * ($line-height - $font-size);
+      padding-top: 0.5 * ($line-height - $font-size);
+      width: auto;
+    }
+  }
+
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+
+  &--transform-underline {
+    text-decoration: underline;
+  }
+
+  &--transform-caps {
+    text-transform: uppercase;
+  }
+
+  &.truncate {
+    @include partials.truncate();
+  }
+
+  &.clamp {
+    @include partials.clamp(2);
+  }
+
+  // @include partials.with-alignment() using ($alignment) {
+  //   &--align-#{$alignment} {
+  //     justify-content: $alignment;
+  //   }
+  // }
+
+  > .icon {
+    color: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  > .span {
+    @layer {
+      color: inherit;
+      font-size: inherit;
+      font-style: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      text-transform: inherit;
+      text-decoration: inherit;
+    }
+  }
+}

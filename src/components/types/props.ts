@@ -4,9 +4,11 @@ import { type ClassArray, type ClassValue } from "clsx";
 
 export type ClassName = ClassValue | ClassArray;
 
+export type Style = React.CSSProperties;
+
 export type ComponentProps = {
   readonly className?: ClassName;
-  readonly style?: React.CSSProperties;
+  readonly style?: Style;
 };
 
 /**

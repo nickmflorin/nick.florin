@@ -1,0 +1,41 @@
+{
+  "schools": [
+    {
+      "name": "The Johns Hopkins University",
+      "city": "Baltimore",
+      "state": "MD",
+      "logoImageUrl": "/education/jhu.svg",
+      "educations": [
+        {
+          "major": "Financial Mathematics",
+          "degree": "MASTERS_OF_SCIENCE_IN_ENGINEERING",
+          "startDate": "2014-08-01T00:00:00Z",
+          "endDate": "2016-01-01T00:00:00Z"
+        },
+        {
+          "major": "Computational Mathematics",
+          "degree": "MASTERS_OF_SCIENCE",
+          "startDate": "2016-01-01T00:00:00Z",
+          "postPoned": true,
+          "note": "Ongoing coursework towards additional degree, temporarily post-poned. Completed approximately 50% of coursework, focusing on Neural Networks, Queueing Theory, Probabilistic Models in Computer Science & Machine Learning."
+        }
+      ]
+    },
+    {
+      "name": "Rensselaer Polytechnic Institute",
+      "city": "Troy",
+      "state": "NY",
+      "logoImageUrl": "/education/rpi.svg",
+      "educations": [
+        {
+          "major": "Electrical Engineering",
+          "minor": "Economics",
+          "degree": "BACHELORS_OF_SCIENCE",
+          "concentration": "Robotics & Control Systems",
+          "startDate": "2014-08-01T00:00:00Z",
+          "endDate": "2016-01-01T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

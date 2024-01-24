@@ -5,39 +5,60 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+$sidebar-width: 60px;
+$header-height: 60px;
+
 .sidebar {
   background-color: theme("colors.gray.200");
-  padding: 6px;
+  border-right: partials.$default-border;
+  width: $sidebar-width;
+  display: flex;
+  flex-direction: column;
+  padding-top: $header-height + 6px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 6px;
 }
 
 .header {
-  background-color: theme("colors.gray.100");
+  background-color: theme("colors.gray.200");
+  width: 100%;
+  max-width: 100%;
+  height: $header-height;
+  min-height: $header-height;
+  padding: 12px;
+  border-bottom: partials.$default-border;
+
+  &__left,
+  &__right {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  &__right {
+    flex-grow: 100;
+    justify-content: right;
+    gap: 12px;
+  }
 }
 
 .layout {
-  background-color: partials.$app-background-color;
+  background-color: theme("colors.appBackground");
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
 
-  > .header {
-    height: 60px;
-    width: 100%;
-    background-color: theme("colors.blue.200");
-  }
-
   > .layout__content {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-grow: 100;
 
-    > .sidebar {
-      width: 60px;
-    }
-
     > .content {
+      max-height: calc(100% - #{$header-height});
+      overflow-y: scroll;
+      padding: 15px;
       flex-grow: 100;
       background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
         rgb(var(--background-start-rgb));

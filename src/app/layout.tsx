@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 
+import { AppConfig } from "~/components/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
 import "~/styles/globals/index.scss";
 import { env } from "~/env.mjs";
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48" />
         <Script
           type="text/javascript"
           src={`https://kit.fontawesome.com/${env.FONT_AWESOME_KIT_TOKEN}.js`}
@@ -32,7 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={InterFont.className}>
-        <Layout>{children}</Layout>
+        <AppConfig>
+          <Layout>{children}</Layout>
+        </AppConfig>
       </body>
     </html>
   );

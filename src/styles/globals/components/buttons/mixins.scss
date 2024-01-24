@@ -25,3 +25,9 @@ $button-loading-class: ".button--loading";
     @content;
   }
 }
+
+@mixin button-active {
+  &.button--active {
+    @content;
+  }
+}

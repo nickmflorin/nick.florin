@@ -11,12 +11,14 @@ $button-padding: (
     "small": 8px 16px,
     "medium": 10px 20px,
     "large": 14px 30px,
+    "xlarge": 16px 30px,
   ),
   "icon-button": (
     "xsmall": 6px,
     "small": 8px,
     "medium": 10px,
     "large": 12px,
+    "xlarge": 14px,
   ),
 );
 
@@ -33,20 +35,23 @@ $button-sizes: (
   "button": (
     "xsmall": 28px,
     "small": 32px,
-    "medium": 40px,
-    "large": 48px,
+    "medium": 36px,
+    "large": 40px,
+    "xlarge": 48px,
   ),
   "link": (
     "xsmall": 12px,
     "small": 13px,
     "medium": 14px,
     "large": 16px,
+    "xlarge": 18px,
   ),
   "icon-button": (
     "xsmall": 28px,
     "small": 32px,
     "medium": 36px,
     "large": 40px,
+    "xlarge": 48px,
   ),
 );
 
@@ -66,6 +71,8 @@ $button-icon-sizes: (
       list.nth(partials.mapget($button-padding, "button", "medium"), 1),
     "large": partials.mapget($button-sizes, "button", "large") - 2 *
       list.nth(partials.mapget($button-padding, "button", "large"), 1),
+    "xlarge": partials.mapget($button-sizes, "button", "xlarge") - 2 *
+      list.nth(partials.mapget($button-padding, "button", "xlarge"), 1),
   ),
   "icon-button": (
     "xsmall": partials.mapget($button-sizes, "icon-button", "xsmall") - 2 *
@@ -76,6 +83,8 @@ $button-icon-sizes: (
       partials.mapget($button-padding, "icon-button", "medium"),
     "large": partials.mapget($button-sizes, "icon-button", "large") - 2 *
       partials.mapget($button-padding, "icon-button", "large"),
+    "xlarge": partials.mapget($button-sizes, "icon-button", "xlarge") - 2 *
+      partials.mapget($button-padding, "icon-button", "xlarge"),
   ),
 );
 
@@ -91,12 +100,14 @@ $button-font-sizes: (
     "small": 13px,
     "medium": 14px,
     "large": 16px,
+    "xlarge": 18px,
   ),
   "link": (
     "xsmall": 12px,
     "small": 13px,
     "medium": 14px,
     "large": 16px,
+    "xlarge": 18px,
   ),
 );
 
@@ -112,6 +123,7 @@ $button-font-sizes: (
   $padding: get-button-padding($type, $size: $size);
 
   height: $height;
+  min-height: $height;
   padding: $padding;
 
   @if $type == "button" {

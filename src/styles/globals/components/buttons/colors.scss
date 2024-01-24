@@ -21,9 +21,9 @@ $themes: (
     focused: theme("colors.danger.800"),
   ),
   "primary": (
-    base: theme("colors.blue.600"),
-    hovered: theme("colors.blue.800"),
-    focused: theme("colors.blue.800"),
+    base: theme("colors.sky.600"),
+    hovered: theme("colors.sky.800"),
+    focused: theme("colors.sky.800"),
   ),
   "secondary": (
     base: theme("colors.gray.200"),
@@ -53,8 +53,8 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "primary", "focused"),
       ),
       disabled: (
-        background-color: partials.$disabled-background-color,
-        outline-color: partials.$disabled-border-color,
+        background-color: theme("colors.disabledBackground"),
+        outline-color: theme("colors.disabledBorder"),
       ),
     ),
     "secondary": (
@@ -70,8 +70,8 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "secondary", "focused"),
       ),
       disabled: (
-        background-color: partials.$disabled-background-color,
-        outline-color: partials.$disabled-border-color,
+        background-color: theme("colors.disabledBackground"),
+        outline-color: theme("colors.disabledBorder"),
       ),
     ),
     "danger": (
@@ -102,7 +102,7 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "outline", "hovered"),
       ),
       disabled: (
-        outline-color: partials.$disabled-border-color,
+        outline-color: theme("colors.disabledBorder"),
       ),
     ),
     "bare": (),
@@ -121,8 +121,8 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "primary", "focused"),
       ),
       disabled: (
-        background-color: partials.$disabled-background-color,
-        outline-color: partials.$disabled-border-color,
+        background-color: theme("colors.disabledBackground"),
+        outline-color: theme("colors.disabledBorder"),
       ),
     ),
     "secondary": (
@@ -138,8 +138,8 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "secondary", "focused"),
       ),
       disabled: (
-        background-color: partials.$disabled-background-color,
-        outline-color: partials.$disabled-border-color,
+        background-color: theme("colors.disabledBackground"),
+        outline-color: theme("colors.disabledBorder"),
       ),
     ),
     "danger": (
@@ -170,7 +170,7 @@ $button-color-properties: (
         outline-color: partials.mapget($themes, "outline", "hovered"),
       ),
       disabled: (
-        outline-color: partials.$disabled-border-color,
+        outline-color: theme("colors.disabledBorder"),
       ),
     ),
     "bare": (),
@@ -187,7 +187,7 @@ $button-color-properties: (
         color: partials.mapget($themes, "primary", "focused"),
       ),
       disabled: (
-        color: partials.$disabled-color,
+        color: theme("colors.disabled"),
       ),
     ),
     "secondary": (
@@ -201,7 +201,7 @@ $button-color-properties: (
         color: theme("colors.gray.800"),
       ),
       disabled: (
-        color: partials.$disabled-color,
+        color: theme("colors.disabled"),
       ),
     ),
     // The outline variant for an alternate button is not applicable.
@@ -301,38 +301,50 @@ $button-color-properties: (
     }
 
     @include mixins.button-placeholder {
-      color: partials.$placeholder-color;
+      color: theme("colors.placeholder");
     }
 
-    // If a 'hovered' argument is provided, include this mixin recursively to define the colors of the button when it
-    // is hovered.
+    // If a 'hovered' argument is provided, include this mixin recursively to define the colors of
+    // the button when it is hovered.
     $hovered: parse-state-colors($attributes, "hovered", $args...);
     @if $hovered {
       @include mixins.button-hovered {
-        // Use the original, non-hovered and non-focused attributes as defaults such that only the hovered attributes
-        // that are provided are overridden when the button is hovered.
+        // Use the original, non-hovered and non-focused attributes as defaults such that only the
+        // hovered attributes that are provided are overridden when the button is hovered.
         $hovered: map.merge($attributes, $hovered);
         @include button-colors($hovered...);
       }
     }
-    // If a 'focused' argument is provided, include this mixin recursively to define the colors of the button when it is
-    // focused.
+    // If a 'focused' argument is provided, include this mixin recursively to define the colors of
+    // the button when it is focused.
     $focused: parse-state-colors($attributes, "focused", $args...);
     @if $focused {
       @include mixins.button-focused {
-        // Use the original, non-hovered and non-focused attributes as defaults such that only the hovered attributes
-        // that are provided are overridden when the button is hovered.
+        // Use the original, non-hovered and non-focused attributes as defaults such that only the
+        // focused attributes that are provided are overridden when the button is focused.
         $focused: map.merge($attributes, $focused);
         @include button-colors($focused...);
       }
     }
-    // If a 'disabled' argument is provided, include this mixin recursively to define the colors of the button when it
-    // is disabled.
+
+    $active: parse-state-colors($attributes, "active", $args...);
+    $active: if($active, $active, if($focused, $focused, $hovered));
+    @if $active {
+      @include mixins.button-active {
+        // Use the original, non-hovered and non-focused attributes as defaults such that only the
+        // active attributes that are provided are overridden when the button is active.
+        $active: map.merge($attributes, $active);
+        @include button-colors($active...);
+      }
+    }
+
+    // If a 'disabled' argument is provided, include this mixin recursively to define the colors of
+    // the button when it is disabled.
     $disabled: parse-state-colors($attributes, "disabled", $args...);
     @if $disabled {
       @include partials.disabled {
         // Use the original, non-hovered and non-focused attributes as defaults such that only
-        // the hovered attributes that are provided are overridden when the button is hovered.
+        // the disabled attributes that are provided are overridden when the button is disabled.
         $disabled: map.merge($attributes, $disabled);
         @include button-colors($disabled...);
       }

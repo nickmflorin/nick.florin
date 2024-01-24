@@ -1,21 +1,19 @@
 @use "sass:map";
 @use "sass:meta";
+@use "sass:list";
 
 @use "throw";
 
 @use "../../functions" as fn;
 @use "../../mixins" as mixins;
 
-@use "../colors" as colors;
-
 $typography-types: ("body", "heading", "label");
-
-/* -------------------------------------- Font Families ----------------------------------------- */
 $font-family-avenir: avenir;
 $font-family-roboto: roboto;
 $font-family-inter: var(--font-inter);
 $font-families: ($font-family-avenir, $font-family-roboto, $font-family-inter);
 
+/* -------------------------------------- Font Families ----------------------------------------- */
 $heading-font-family: $font-family-avenir;
 $body-font-family: $font-family-inter;
 $label-font-family: $font-family-avenir;
@@ -50,11 +48,11 @@ $typography-font-families: (
 /* --------------------------------------- Font Weights ----------------------------------------- */
 $font-weight-names: ("bold", "semibold", "medium", "regular", "light");
 $font-weights: (
-  "light": 300,
-  "regular": 400,
-  "medium": 500,
-  "semibold": 600,
-  "bold": 700,
+  "light": theme("fontWeight.light"),
+  "regular": theme("fontWeight.regular"),
+  "medium": theme("fontWeight.medium"),
+  "semibold": theme("fontWeight.semibold"),
+  "bold": theme("fontWeight.bold"),
 );
 
 // // Used in cases where we are setting the font-weight based on a family but not a weight name.

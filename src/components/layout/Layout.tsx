@@ -9,10 +9,10 @@ export interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => (
   <div className="layout">
-    <Header />
+    <Sidebar />
     <div className="layout__content">
-      <Sidebar />
-      <div className="content">{children}</div>
+      <Header />
+      <main className="content">{children}</main>
     </div>
   </div>
 );

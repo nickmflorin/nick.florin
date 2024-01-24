@@ -1,5 +1,3 @@
-@use "./colors" as colors;
-
 @mixin scrollbar($width: 4px, $spacing-left: 4px, $spacing-right: 2px) {
   $total-width: $width + $spacing-left + $spacing-right;
   ::-webkit-scrollbar {

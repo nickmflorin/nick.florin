@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "Degree" ADD VALUE 'MASTERS_OF_SCIENCE';

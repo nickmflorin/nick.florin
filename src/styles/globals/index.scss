@@ -1,13 +1,6 @@
+@use "./tailwind";
+
 @use "partials";
 
-@forward "./components";
-@forward "./layout";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-  color: theme("colors.body");
-  margin: 0;
-}
+@use "./components";
+@use "./layout";

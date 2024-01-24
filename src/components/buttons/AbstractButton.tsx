@@ -3,15 +3,22 @@ import NextLink from "next/link";
 import clsx from "clsx";
 import { type Required } from "utility-types";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
 const getButtonClassName = <O extends types.ButtonOptions>(
   props: Required<
     Pick<
       types.AbstractButtonProps<O>,
-      "variant" | "locked" | "loading" | "disabled" | "buttonType" | "className" | "size"
+      | "variant"
+      | "isLocked"
+      | "isActive"
+      | "isLoading"
+      | "isDisabled"
+      | "buttonType"
+      | "className"
+      | "size"
     >,
-    "variant" | "locked" | "loading" | "disabled" | "buttonType"
+    "variant" | "isLocked" | "isActive" | "isLoading" | "isDisabled" | "buttonType"
   >,
 ) =>
   clsx(
@@ -20,17 +27,19 @@ const getButtonClassName = <O extends types.ButtonOptions>(
     `button--type-${props.buttonType}`,
     props.size && `button--size-${props.size}`,
     {
-      "button--locked": props.locked,
-      "button--loading": props.loading,
-      "button--disabled": props.disabled,
+      "button--locked": props.isLocked,
+      "button--loading": props.isLoading,
+      "button--disabled": props.isDisabled,
+      "button--active": props.isActive,
     },
     props.className,
   );
 
 export const AbstractButton = <O extends types.ButtonOptions>({
-  disabled = false,
-  locked = false,
-  loading = false,
+  isDisabled = false,
+  isLocked = false,
+  isLoading = false,
+  isActive = false,
   buttonType,
   variant = "primary",
   size = "small",
@@ -39,13 +48,15 @@ export const AbstractButton = <O extends types.ButtonOptions>({
   onClick,
   options,
   children,
+  onMouseEnter,
   ...props
 }: types.AbstractButtonProps<O>): JSX.Element => {
   const as = options?.as ?? "button";
   const className = getButtonClassName({
-    disabled,
-    locked,
-    loading,
+    isDisabled,
+    isLocked,
+    isLoading,
+    isActive,
     buttonType,
     variant,
     className: props.className,
@@ -54,7 +65,12 @@ export const AbstractButton = <O extends types.ButtonOptions>({
 
   if (as === "a") {
     return (
-      <a {...props} className={className} href={href}>
+      <a
+        {...props}
+        className={className}
+        href={href}
+        onMouseEnter={onMouseEnter as types.AbstractButtonProps<{ as: "a" }>["onMouseEnter"]}
+      >
         <div className="button__content">{children}</div>
       </a>
     );
@@ -63,13 +79,23 @@ export const AbstractButton = <O extends types.ButtonOptions>({
       throw new Error("");
     }
     return (
-      <NextLink {...props} href={to} className={className}>
+      <NextLink
+        {...props}
+        href={to}
+        className={className}
+        onMouseEnter={onMouseEnter as types.AbstractButtonProps<{ as: "link" }>["onMouseEnter"]}
+      >
         <div className="button__content">{children}</div>
       </NextLink>
     );
   }
   return (
-    <button {...props} className={className} onClick={onClick}>
+    <button
+      {...props}
+      className={className}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter as types.AbstractButtonProps<{ as: "button" }>["onMouseEnter"]}
+    >
       <div className="button__content">{children}</div>
     </button>
   );

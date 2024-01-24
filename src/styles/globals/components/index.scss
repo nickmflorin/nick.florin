@@ -1,4 +1,6 @@
-@forward "./badges";
-@forward "./buttons";
-@forward "./icons";
-@forward "./loading";
+@use "./badges";
+@use "./buttons";
+@use "./icons";
+@use "./images";
+@use "./loading";
+@use "./typography";

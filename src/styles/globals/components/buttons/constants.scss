@@ -7,9 +7,9 @@ will not.
 */
 $button-outline-width: 1px;
 
-$button-state-names: ("hovered", "focused", "disabled");
+$button-state-names: ("hovered", "focused", "disabled", "active");
 
-$button-font-family: partials.$font-family-inter;
+$button-font-family: theme("colors.body");
 $button-border-radius: theme("borderRadius.md");
 
 // The button font-weight here is used as the default - the font-weight will usually depend on the variant.
@@ -24,5 +24,5 @@ $button-types: ("button", "link", "icon-button");
 $button-default-type: "button";
 $button-variants: ("primary", "secondary", "danger", "outline");
 
-$button-size-names: ("xsmall", "small", "medium", "large");
+$button-size-names: ("xsmall", "small", "medium", "large", "xlarge");
 $button-default-size: "small";

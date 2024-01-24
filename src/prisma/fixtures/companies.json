@@ -1,0 +1,146 @@
+{
+  "companies": [
+    {
+      "name": "The Rock Creek Group",
+      "city": "Washington",
+      "state": "DC",
+      "logoImageUrl": "/experience/rock-creek.svg",
+      "websiteUrl": "https://therockcreekgroup.com/",
+      "experiences": [
+        {
+          "title": "Quantitative Analyst: Investment Analytics & Data",
+          "startDate": "2016-07-01T00:00:00Z",
+          "endDate": "2018-04-01T00:00:00Z",
+          "description": "My responsibilities involved building internal analytical tools around the massive sets of financial data the firm had assembled."
+        }
+      ]
+    },
+    {
+      "name": "Northbeam",
+      "city": "San Francisco",
+      "state": "CA",
+      "logoImageUrl": "/experience/northbeam.svg",
+      "websiteUrl": "https://www.northbeam.io/",
+      "description": "The marketing intelligence platform for profitable growth.",
+      "experiences": [
+        {
+          "startDate": "2023-08-01T00:00:00Z",
+          "endDate": "2024-01-01T00:00:00Z",
+          "title": "Senior Software Engineer",
+          "isRemote": true,
+          "description": "As a member of the Product Development Team, I contributed to the ongoing development of the company's flagship web-based and mobile products."
+        }
+      ]
+    },
+    {
+      "name": "ShelfCycle",
+      "city": "Washington",
+      "state": "DC",
+      "logoImageUrl": "/experience/shelf-cycle.svg",
+      "websiteUrl": "https://shelfcycle.com/",
+      "description": "The Modern Operating System for Chemical Distribution",
+      "experiences": [
+        {
+          "startDate": "2023-04-01T00:00:00Z",
+          "endDate": "2023-08-01T00:00:00Z",
+          "title": "Founding Engineer",
+          "isRemote": true,
+          "description": "Contributed to the early development of the platform's MVP, building a web-based inventory management, order management and accounting system for the chemical supply chain industry."
+        }
+      ]
+    },
+    {
+      "name": "Corsha",
+      "city": "Vienna",
+      "state": "VA",
+      "logoImageUrl": "/experience/corsha.svg",
+      "websiteUrl": "https://corsha.com/",
+      "description": "Corsha is the only identity-first API security platform providing automated multi-factor authentication for your machine-to-machine connections.",
+      "experiences": [
+        {
+          "startDate": "2022-06-01T00:00:00Z",
+          "endDate": "2023-03-01T00:00:00Z",
+          "title": "Software Engineer",
+          "description": "Team lead for the \"Corsha Console\" team, responsible for building a modern, customer facing, web-based  platform that allows customers to manage, monitor, configure and interact with proprietary security technology running on their network."
+        }
+      ]
+    },
+    {
+      "name": "GreenBudget",
+      "city": "Los Angeles",
+      "state": "VA",
+      "logoImageUrl": "/experience/greenbudget.svg",
+      "websiteUrl": "https://saturation.io/",
+      "description": "Financial software tailored towards film production.",
+      "experiences": [
+        {
+          "startDate": "2021-02-01T00:00:00Z",
+          "endDate": "2022-05-01T00:00:00Z",
+          "title": "Co-Founder & Creator",
+          "description": "Architected, built and lead the development of a web-based platform with the purpose of modernizing and streamlining budgeting, payroll and other production flows in the film industry.",
+          "isRemote": true
+        }
+      ]
+    },
+    {
+      "name": "Nirveda Cognition",
+      "city": "Los Angeles",
+      "state": "VA",
+      "logoImageUrl": "/experience/nirveda.svg",
+      "experiences": [
+        {
+          "startDate": "2020-09-01T00:00:00Z",
+          "endDate": "2021-03-01T00:00:00Z",
+          "title": "Technical Lead",
+          "description": "At Nirveda Cognition, I was responsible for the development of the entire consumer facing product.  This included the development of the application infrastructure/architecture and leading smaller teams of developers to reach our product goals.",
+          "isRemote": true
+        }
+      ]
+    },
+    {
+      "name": "Saracen Energy",
+      "city": "Houston",
+      "state": "TX",
+      "websiteUrl": "http://www.saracenenergy.com/",
+      "logoImageUrl": "/experience/saracen.svg",
+      "experiences": [
+        {
+          "startDate": "2020-04-01T00:00:00Z",
+          "endDate": "2020-09-01T00:00:00Z",
+          "title": "Full Stack Software Engineer",
+          "description": "My responsibilities at Saracen involved the front end and backend development of internal analytical tools that the firm uses to make trading decisions.",
+          "isRemote": true
+        }
+      ]
+    },
+    {
+      "name": "The Atlantic",
+      "city": "Washington",
+      "state": "DC",
+      "websiteUrl": "http://www.theatlantic.com/",
+      "logoImageUrl": "/experience/the-atlantic.svg",
+      "experiences": [
+        {
+          "startDate": "2018-04-01T00:00:00Z",
+          "endDate": "2020-04-01T00:00:00Z",
+          "title": "Platform Developer",
+          "description": "Responsibilities centered around the backend Python development that supported the Content Management System (CMS), accounts and subscriptions, and the wide range of digital products offered by the company."
+        }
+      ]
+    },
+    {
+      "name": "PI Analytics",
+      "city": "Olney",
+      "state": "MD",
+      "logoImageUrl": "/experience/pi-analytics.svg",
+      "experiences": [
+        {
+          "startDate": "2015-04-01T00:00:00Z",
+          "endDate": "2016-07-01T00:00:00Z",
+          "title": "Quantitative Research Analytics",
+          "description": "Responsibilities involved the research and implementation of complex models for credit default risk in a variety of exotic derivatives and structured products. "
+        }
+      ]
+    }
+  ]
+}
