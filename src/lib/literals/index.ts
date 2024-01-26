@@ -13,6 +13,10 @@ import {
   type ExcludeLiterals,
   type ExtractLiterals,
   isLiteralModel,
+  type LiteralsModels,
+  type LiteralsAttributeValues,
+  type LiteralsAttributeValue,
+  type LiteralsModelAttributeName,
 } from "./core";
 import {
   type EnumeratedLiterals,
@@ -27,7 +31,11 @@ import {
   type OptionsWithNewSet,
 } from "./options";
 
-export { type EnumeratedLiterals, type EnumeratedLiteralsType } from "./exposed";
+export {
+  type EnumeratedLiterals,
+  type EnumeratedLiteralsType,
+  type EnumeratedLiteralsModel,
+} from "./exposed";
 
 type MoreThan2Array<V> = [V, V, ...V[]];
 
@@ -61,6 +69,9 @@ export const enumeratedLiterals = <L extends Literals, O extends EnumeratedLiter
   let seen: [string, string][] = [];
 
   const values = [...literals].map(l => (isLiteralModel(l) ? l.value : l)) as LiteralsValues<L>;
+  const models = [...literals].map(l =>
+    isLiteralModel(l) ? l : { value: l },
+  ) as LiteralsModels<L>;
 
   const accessors: EnumeratedLiteralsAccessors<L, O> = [...literals].reduce<
     EnumeratedLiteralsAccessors<L, O>
@@ -81,7 +92,7 @@ export const enumeratedLiterals = <L extends Literals, O extends EnumeratedLiter
         );
       }
       seen = [...seen, [key, accessor]];
-      return { ...acc, [accessor]: curr };
+      return { ...acc, [accessor]: isLiteralModel(curr) ? curr.value : curr };
     },
     {} as EnumeratedLiteralsAccessors<L, O>,
   );
@@ -90,18 +101,33 @@ export const enumeratedLiterals = <L extends Literals, O extends EnumeratedLiter
     ...accessors,
     options,
     values,
+    models,
+    getAttributes<N extends LiteralsModelAttributeName<L>>(
+      attribute: N,
+    ): LiteralsAttributeValues<L, N> {
+      const attrs: LiteralsAttributeValues<L, N>[number][] = [];
+      for (const m of this.models) {
+        attrs.push(m[attribute]);
+      }
+      return attrs as LiteralsAttributeValues<L, N>;
+    },
+    getAttribute<V extends LiteralsValue<L>, N extends LiteralsModelAttributeName<L>>(
+      value: V,
+      attribute: N,
+    ): LiteralsAttributeValue<L, V, N> {
+      const attr = this.getModel(value)[attribute];
+      return attr as LiteralsAttributeValue<L, V, N>;
+    },
     getModel<V extends LiteralsValue<L>>(
       this: EnumeratedLiterals<L, O>,
       v: V,
     ): LiteralsModel<L, V> {
       this.assert(v);
-      const found = [...literals].find(l => (isLiteralModel(l) ? l.value : l) === v);
+      const found = this.models.find(l => l.value === v);
       if (!found) {
-        throw new Error("");
+        this.throwInvalidValue(v);
       }
-      return isLiteralModel(found)
-        ? (found as LiteralsModel<L, V>)
-        : ({ value: found } as LiteralsModel<L, V>);
+      return found as LiteralsModel<L, V>;
     },
     getModelSafe<Og extends GetModelSafeOptions>(
       this: EnumeratedLiterals<L, O>,
@@ -124,11 +150,21 @@ export const enumeratedLiterals = <L extends Literals, O extends EnumeratedLiter
       if (errorMessage === undefined && this.options.invalidValueErrorMessage !== undefined) {
         throw new Error(this.options.invalidValueErrorMessage(this.values, v));
       }
+      if (errorMessage) {
+        throw new Error(errorMessage);
+      } else if (this.values.length === 0) {
+        throw new Error(
+          "The values on the literals instance are empty, this should not be allowed!",
+        );
+      } else if (this.values.length === 1) {
+        throw new Error(
+          `The value ${JSON.stringify(v)} is not valid, it must be ${this.values[0]}.`,
+        );
+      }
       const humanizedValues = humanizeList([...this.values], { conjunction: "or" });
-      const msg =
-        errorMessage ||
-        `The value ${JSON.stringify(v)} is not valid, it must be one of ${humanizedValues}.`;
-      throw new Error(msg);
+      throw new Error(
+        `The value ${JSON.stringify(v)} is not valid, it must be one of ${humanizedValues}.`,
+      );
     },
     contains(this: EnumeratedLiterals<L, O>, v: unknown): v is LiteralsValue<L> {
       return this.schema.safeParse(v).success;

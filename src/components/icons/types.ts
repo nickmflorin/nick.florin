@@ -1,16 +1,12 @@
 import {
-  type IconDefinition as RootIconDefinition,
   type IconStyle as RootIconStyle,
   type IconFamily as RootIconFamily,
   type IconName,
-  type IconPrefix as RootIconPrefix,
-  type IconLookup as RootIconLookup,
 } from "@fortawesome/fontawesome-svg-core";
-import clsx from "clsx";
 import { type Optional } from "utility-types";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps, type Size } from "~/components/types";
 
 export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
 export type IconDimension = EnumeratedLiteralsType<typeof IconDimensions>;
@@ -18,11 +14,11 @@ export type IconDimension = EnumeratedLiteralsType<typeof IconDimensions>;
 export const IconFits = enumeratedLiterals(["square", "fit"] as const, {});
 export type IconFit = EnumeratedLiteralsType<typeof IconFits>;
 
-export const IconSizes = enumeratedLiterals(
+export const IconDiscreteSizes = enumeratedLiterals(
   ["xxs", "xs", "sm", "md", "lg", "xl", "fill"] as const,
   {},
 );
-export type IconSize = EnumeratedLiteralsType<typeof IconSizes>;
+export type IconDiscreteSize = EnumeratedLiteralsType<typeof IconDiscreteSizes>;
 
 export type IconFamily = Exclude<RootIconFamily, "duotone">;
 
@@ -52,44 +48,14 @@ export const IconStyleClassNameMap: { [key in IconStyle]: string } = {
   solid: "fa-solid",
 };
 
-/* The prefixes used for this application will be restricted to solid, regular, sharp solid and
-   sharp regular. */
-export type IconPrefix = Extract<RootIconPrefix, "fas" | "far" | "fass" | "fasr">;
-
-export enum IconPrefixes {
-  SOLID = "fas",
-  REGULAR = "far",
-  SHARP_SOLID = "fass",
-  SHARP_REGULAR = "fasr",
-}
-
-export const IconPrefixClassNameMap: { [key in IconPrefix]: string } = {
-  far: clsx(IconFamilyClassNameMap.classic, IconStyleClassNameMap.regular),
-  fas: clsx(IconFamilyClassNameMap.classic, IconStyleClassNameMap.solid),
-  fasr: clsx(IconFamilyClassNameMap.sharp, IconStyleClassNameMap.regular),
-  fass: clsx(IconFamilyClassNameMap.sharp, IconStyleClassNameMap.solid),
-};
-
-export type IconDefinitionParams = {
+/**
+ * Defines the way that an "Icon" can be specified in the props for components in the application.
+ */
+export type IconProp = {
   readonly name: IconName;
   readonly family?: IconFamily;
   readonly iconStyle?: IconStyle;
 };
-
-// Create our own version of the IconLookup with the restricted prefix.
-export type IconLookup = Pick<RootIconLookup, "iconName"> & {
-  readonly prefix: IconPrefix;
-};
-
-// Create our own version of the IconDefinition with the restricted prefix.
-export interface IconDefinition extends Omit<RootIconDefinition, "prefix"> {
-  readonly prefix: IconPrefix;
-}
-
-/**
- * Defines the way that an "Icon" can be specified in the props for components in the application.
- */
-export type IconProp = IconDefinition | IconDefinitionParams;
 
 export type DynamicIcon = {
   readonly icon: IconProp;
@@ -220,7 +186,7 @@ type _BaseIconProps = ComponentProps &
      * Default: "square"
      */
     readonly fit?: IconFit;
-    readonly size?: IconSize;
+    readonly size: IconDiscreteSize | Size;
     /**
      * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
      * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.
@@ -246,13 +212,13 @@ export type BasicIconComponentProps<I extends IconProp | DynamicIconProp = IconP
   _BaseIconProps,
   "loading"
 > & {
-  [key in keyof IconDefinitionParams]?: never;
+  [key in keyof IconProp]?: never;
 } & {
   readonly icon: I;
 };
 
 export type EmbeddedIconComponentProps = Omit<_BaseIconProps, "loading"> &
-  IconDefinitionParams & {
+  IconProp & {
     readonly icon?: never;
   };
 
@@ -262,14 +228,7 @@ export type IconComponentProps<I extends IconProp | DynamicIconProp = IconProp> 
 
 export type SpinnerProps = Omit<
   IconComponentProps,
-  | keyof IconDefinitionParams
-  | "spin"
-  | "icon"
-  | "contain"
-  | "loading"
-  | "spinnerColor"
-  | "hoveredColor"
-  | "focusedColor"
+  keyof IconProp | "spin" | "icon" | "contain" | "loading"
 > & {
   readonly loading: boolean;
 };

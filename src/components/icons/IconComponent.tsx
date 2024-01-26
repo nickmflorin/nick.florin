@@ -2,37 +2,36 @@
 import React from "react";
 
 import clsx from "clsx";
+import pick from "lodash.pick";
 
 import { logger } from "~/application/logger";
+import { type Style } from "~/components/types";
 
 import {
-  IconSizes,
   type IconProp,
-  type IconDefinitionParams,
   type DynamicIconProp,
   type BasicIconComponentProps,
   type EmbeddedIconComponentProps,
   type IconComponentProps,
+  IconDiscreteSizes,
+  IconFits,
+  IconDimensions,
 } from "./types";
 import {
-  isIconDefinitionParams,
+  isIconProp,
   getIconFamilyClassName,
   getIconNameClassName,
-  getIconPrefixClassName,
   getIconStyleClassName,
   isBasicIconComponentProps,
 } from "./util";
 
 export type GetNativeIconClassNameParams =
   | Pick<BasicIconComponentProps, "icon">
-  | Pick<EmbeddedIconComponentProps, keyof IconDefinitionParams>;
+  | Pick<EmbeddedIconComponentProps, keyof IconProp>;
 
 export const getNativeIconName = (params: IconComponentProps<IconProp>): string => {
   if (isBasicIconComponentProps(params)) {
-    if (isIconDefinitionParams(params.icon)) {
-      return params.icon.name;
-    }
-    return params.icon.iconName;
+    return params.icon.name;
   }
   return params.name;
 };
@@ -63,26 +62,27 @@ export const getNativeIconName = (params: IconComponentProps<IconProp>): string 
  * getNativeIconClassName({ family: "sharp", name: "house", style: "regular" })
  *
  */
-export const getNativeIconClassName = (params: IconComponentProps<IconProp>): string => {
-  if (isBasicIconComponentProps(params)) {
-    if (isIconDefinitionParams(params.icon)) {
-      return clsx(
-        getIconFamilyClassName(params.icon.family),
-        getIconStyleClassName(params.icon.iconStyle),
-        getIconNameClassName(params.icon.name),
-      );
-    }
-    return clsx(
-      getIconPrefixClassName(params.icon.prefix),
-      getIconNameClassName(params.icon.iconName),
-    );
-  }
-  const { iconStyle, name, family } = params;
+export const getNativeIconClassName = (params: IconProp): string => {
+  const { family, iconStyle, name } = params as IconProp;
   return clsx(
     getIconFamilyClassName(family),
     getIconStyleClassName(iconStyle),
     getIconNameClassName(name),
   );
+};
+
+export const getNativeIconStyle = ({
+  size,
+  dimension = IconDimensions.HEIGHT,
+  fit = IconFits.FIT,
+}: Pick<IconComponentProps<IconProp>, "size" | "dimension" | "fit">): Style => {
+  if (IconDiscreteSizes.contains(size)) {
+    return {};
+  } else if (dimension === IconDimensions.HEIGHT) {
+    return { height: size, width: "auto", aspectRatio: fit === IconFits.SQUARE ? 1 : undefined };
+  } else {
+    return { width: size, height: "auto", aspectRatio: fit === IconFits.SQUARE ? 1 : undefined };
+  }
 };
 
 const DynamicIconClassNamePropNames = ["fit", "size", "dimension", "disabled"] as const;
@@ -100,7 +100,9 @@ const DynamicClassNameConfig: {
 } = {
   disabled: v => (v !== undefined ? "disabled" : null),
   fit: v => (v !== undefined ? `icon--fit-${v}` : null),
-  size: v => (v !== undefined ? `icon--size-${v}` : null),
+  /* The size class is only applicable if the size is provided as a discrete size string, not a
+     literal size value (e.g. "sm", not "30px"). */
+  size: v => (v !== undefined && IconDiscreteSizes.contains(v) ? `icon--size-${v}` : null),
   dimension: v => (v !== undefined ? `icon--dimension-${v}` : null),
 };
 
@@ -117,35 +119,50 @@ const getDynamicIconClassName = (
 
 const getIconClassName = ({
   icon,
-  name,
-  iconStyle,
-  family,
+  spin,
+  className,
   ...props
-}: IconComponentProps): string =>
+}: Pick<BasicIconComponentProps<IconProp>, "className" | "spin" | DynamicIconClassNamePropName> & {
+  icon: IconProp;
+}): string =>
   clsx(
     "icon",
-    getNativeIconClassName({ icon, name, iconStyle, family } as GetNativeIconClassNameParams),
+    getNativeIconClassName(icon),
     getDynamicIconClassName(props),
-    { "fa-spin": props.spin },
-    props.className,
+    { "fa-spin": spin },
+    className,
   );
 
 const iconIsDynamic = (icon: IconProp | DynamicIconProp): icon is DynamicIconProp =>
   Array.isArray(icon);
 
+/**
+ * Renders an icon element, <i>, with the appropriate class name, style and data-attributes that
+ * allow the FontAwesome package to replace the <i> element with an <svg> element corresponding to
+ * the appropriate FontAwesome icon.
+ *
+ * Note:
+ * -----
+ * The "@fortawesome/react-fontawesome" package's <FontAwesomeIcon /> component does not work
+ * properly with the FontAwesome Icon Kit.  We use the Icon Kit because it dynamically loads just
+ * the icons that we need from a CDN - which is much faster and easier to maintain.
+ *
+ * However, it does not work with React - only CSS classes.  Since the <FontAwesomeIcon /> component
+ * simply renders an SVG element, we can mimic its behavior by rendering an SVG inside of an <i>
+ * element, where the <i> element is given the Font Awesome class names that are defined in the
+ * content loaded from the CDN (these class names are generated via the 'getNativeIconClassName'
+ * method.
+ */
 export const IconComponent = ({
-  size = IconSizes.MD,
-  dimension,
-  fit,
-  style,
   icon,
   visible,
   hidden,
-  onClick,
   ...props
 }: IconComponentProps<IconProp | DynamicIconProp>) => {
   const isVisible = hidden !== true && visible !== false;
   if (icon !== undefined || props.name !== undefined) {
+    /* If the icon is dynamic, it will not be included in the component's props as explicit parts
+       (i.e. there will be an 'icon' prop, not 'name', 'family', and 'iconStyle' props). */
     if (icon !== undefined && iconIsDynamic(icon)) {
       const visibleIcons = icon.filter(i => i.visible === true);
       if (visibleIcons.length === 0) {
@@ -170,41 +187,47 @@ export const IconComponent = ({
             const ps = {
               ...props,
               icon: i.icon,
-              size,
-              fit,
-              dimension,
             } as IconComponentProps<IconProp>;
             if (i.visible && !visibleIconEncountered) {
               visibleIconEncountered = true;
               // The hidden prop will cause all dynamic icons to be hidden.
-              return (
-                <IconComponent {...ps} visible={isVisible && true} onClick={onClick} key={index} />
-              );
+              return <IconComponent {...ps} visible={isVisible && true} key={index} />;
             }
             return <IconComponent {...ps} visible={false} key={index} />;
           })}
         </>
       );
     }
-    /* The "@fortawesome/react-fontawesome" package's <FontAwesomeIcon /> component does not work
-       properly with the FontAwesome Icon Kit.  We use the Icon Kit because it dynamically loads
-       just the icons that we need from a CDN - which is much faster and easier to maintain.
-
-       However, it does not work with React - only CSS classes.  Since the <FontAwesomeIcon />
-       component simply renders an SVG element, we can mimic its behavior by rendering an SVG inside
-       of an <i> element, where the <i> element is given the Font Awesome class names that are
-       defined in the content loaded from the CDN (these class names are generated via
-        'getNativeIconClassName' below). */
-    const ps = { ...props, icon, size, dimension, fit } as IconComponentProps<IconProp>;
+    const ic = icon || pick(props, ["name", "family", "iconStyle"]);
+    /* We have to perform this typeguard check to satisfy TS, because TS is not aware that since
+       the IconComponentProps are a union type of the two methods of defining the 'icon' for the
+       component: with an 'icon' prop or the explicit 'name', 'iconStyle' and 'family' props.
+       When we spread the props to the component, TS loses this understanding - and thinks that
+       all of the props ('icon', 'name', 'iconStyle', 'family') can be undefined - when in reality,
+       as it is typed for this component's prop interface, if the 'icon' is undefined, then the
+       'name', 'iconStyle' and 'family' props must all be defined, and vice versa. */
+    if (!isIconProp(ic)) {
+      throw new Error(
+        "Improper implementation of the IconComponent!  The props are invalid, and this error " +
+          "should have been prevented by type checks at compile time.",
+      );
+    }
     return (
       <i
         onClick={e => {
           if (props.disabled !== true) {
-            onClick?.(e);
+            props.onClick?.(e);
           }
         }}
-        style={isVisible === false ? { ...style, display: "none" } : style}
-        className={getIconClassName(ps)}
+        style={
+          isVisible === false
+            ? { ...props.style, display: "none", ...getNativeIconStyle(props) }
+            : { ...props.style, ...getNativeIconStyle(props) }
+        }
+        className={getIconClassName({
+          ...props,
+          icon: ic,
+        })}
       />
     );
   } else {

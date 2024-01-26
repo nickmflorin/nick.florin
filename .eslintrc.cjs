@@ -91,7 +91,7 @@ const BASE_RULES = {
   "no-console": "error",
   "no-unused-vars": "warn",
   "no-multiple-empty-lines": "error",
-  "multiline-comment-style": ["warn", "bare-block"],
+  "multiline-comment-style": ["error", "bare-block"],
   "no-unexpected-multiline": "error",
   "object-curly-spacing": [1, "always"],
   "prefer-const": "error",

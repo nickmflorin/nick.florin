@@ -36,6 +36,7 @@
   @extend %icon-svg-base;
   display: flex !important;
   flex-direction: column;
+  line-height: unset !important;
 
   @include partials.disabled {
     color: theme("colors.disabled");

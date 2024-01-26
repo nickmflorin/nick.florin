@@ -11,6 +11,9 @@ export type ComponentProps = {
   readonly style?: Style;
 };
 
+export type SizeUnit = "px" | "rem";
+export type Size = `${number}${SizeUnit}` | number;
+
 /**
  * A type that represents the string, lowercase name of a native HTML element (i.e. "div" or "p").
  */

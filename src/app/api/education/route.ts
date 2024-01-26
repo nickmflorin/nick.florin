@@ -1,6 +1,6 @@
 import { type NextRequest } from "next/server";
 
-import { ServerResponse } from "~/application/response";
+import { ClientResponse } from "~/application/http";
 import { prisma } from "~/prisma/client";
 
 export async function GET(request: NextRequest) {
@@ -8,5 +8,5 @@ export async function GET(request: NextRequest) {
     include: { school: true },
     orderBy: { startDate: "desc" },
   });
-  return ServerResponse.OK(educations).toResponse();
+  return ClientResponse.OK(educations).toResponse();
 }

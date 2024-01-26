@@ -44,11 +44,62 @@ export type LiteralsBaseModelArrayValues<L extends LiteralsBaseModelArray> = L e
     ? readonly [Li["value"], ...LiteralsBaseModelArrayValues<R>]
     : never;
 
+export type LiteralsArrayModels<L extends readonly string[]> = L extends readonly [
+  infer Li extends string,
+]
+  ? readonly [{ value: Li }]
+  : L extends readonly [infer Li extends string, ...infer R extends string[]]
+    ? readonly [{ value: Li }, ...LiteralsArrayModels<R>]
+    : never;
+
 export type LiteralsValues<L extends Literals> = L extends LiteralsArray
   ? L
   : L extends LiteralsBaseModelArray
     ? LiteralsBaseModelArrayValues<L>
     : never;
+
+export type LiteralsModelAttributeName<L extends Literals> = L extends LiteralsArray
+  ? "value"
+  : L extends LiteralsBaseModelArray
+    ? Exclude<keyof L[number], "accessor">
+    : never;
+
+export type LiteralsBaseModelArrayAttributeValues<
+  L extends readonly LiteralsBaseModel[],
+  N extends string,
+> = N extends LiteralsModelAttributeName<L>
+  ? L extends readonly [infer Li extends LiteralsBaseModel]
+    ? readonly [Li[N]]
+    : L extends readonly [
+          infer Li extends LiteralsBaseModel,
+          ...infer R extends LiteralsBaseModel[],
+        ]
+      ? readonly [Li[N], ...LiteralsBaseModelArrayAttributeValues<R, N>]
+      : never
+  : never;
+
+export type LiteralsAttributeValues<
+  L extends Literals,
+  N extends LiteralsModelAttributeName<L>,
+> = L extends LiteralsBaseModelArray
+  ? LiteralsBaseModelArrayAttributeValues<L, N>
+  : L extends LiteralsArray
+    ? L
+    : never;
+
+export type LiteralsAttributeValue<
+  L extends Literals,
+  V extends LiteralsValue<L>,
+  N extends LiteralsModelAttributeName<L>,
+> = L extends LiteralsBaseModelArray
+  ? Extract<L[number], { value: V }>[N]
+  : N extends "value"
+    ? Extract<L[number], V>
+    : never;
+
+export type LiteralsModels<L extends Literals> = L extends LiteralsArray
+  ? LiteralsArrayModels<L>
+  : L;
 
 export type ExtractLiteralsFromModelArray<
   L extends LiteralsBaseModelArray,

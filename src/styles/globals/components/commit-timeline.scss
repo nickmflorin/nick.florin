@@ -1,0 +1,19 @@
+.commit-timeline {
+  display: flex;
+  flex-direction: column;
+
+  .commit-timeline__inner {
+    padding-top: 18px;
+    display: flex;
+    flex-direction: column;
+
+    .commit-timeline__item {
+      .commit-timeline__item__body {
+        .commit-timeline__item__body__content {
+          position: relative;
+          top: -18px;
+        }
+      }
+    }
+  }
+}

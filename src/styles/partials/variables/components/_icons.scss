@@ -42,34 +42,40 @@ $icon-sizes: (
   }
 }
 
-@mixin icon-sizing(
-  $size: $default-icon-size,
-  $dimension: $default-icon-size-dimension,
-  $fit: null
-) {
+@mixin icon-sizing($size: null, $dimension: $default-icon-size-dimension, $fit: null) {
   $size-value: null;
-  @if map.has-key($icon-sizes, $size) {
-    $size-value: fn.mapget($icon-sizes, $size);
-  } @else {
-    // Allow regular CSS sizes to be provided.
-    $size-value: $size;
+  // If the size is provided to the component as a literal size (e.g. "30px"), and not a discrete
+  // size string (e.g. "sm"), do not apply any specific sizing in either dimension to the Icon.
+  // The sizing will be applied in React via inline-styles based on the literal size prop value.
+  @if $size {
+    @if map.has-key($icon-sizes, $size) {
+      $size-value: fn.mapget($icon-sizes, $size);
+    } @else {
+      // Allow regular CSS sizes to be provided.
+      $size-value: $size;
+    }
   }
 
   $dimension: fn.validate-value($dimension, ("width", "height"));
 
   @if $dimension == "height" {
     width: auto;
-    @layer {
-      height: fn.mapget($icon-sizes, $size);
+    // See comment above regarding a literal size value vs. discrete size string.
+    @if $size-value {
+      @layer {
+        height: fn.mapget($icon-sizes, $size);
+      }
     }
-
     > svg {
       height: 100%;
       width: auto;
     }
   } @else {
-    @layer {
-      width: fn.mapget($icon-sizes, $size);
+    // See comment above regarding a literal size value vs. discrete size string.
+    @if $size-value {
+      @layer {
+        width: fn.mapget($icon-sizes, $size);
+      }
     }
     height: auto;
 
@@ -78,7 +84,8 @@ $icon-sizes: (
       height: auto;
     }
   }
-
+  /* The fit should be applied regardless of whether or not the Icon's size is provided as one of
+     the discrete size strings. */
   @if $fit {
     @include icon-fit($fit);
   }

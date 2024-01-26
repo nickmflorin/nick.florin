@@ -1,22 +1,26 @@
-"use client";
-import { useEducation } from "~/hooks";
-import { type ComponentProps } from "~/components/types";
+import clsx from "clsx";
 
+import { type ComponentProps } from "~/components/types";
+import { prisma } from "~/prisma/client";
+
+import { CommitTimeline } from "./CommitTimeline";
 import { EducationTile } from "./EducationTile";
 import { ResumeSection } from "./ResumeSection";
 
 export type EducationProps = ComponentProps;
 
-export const Education = (props: EducationProps): JSX.Element => {
-  const { data, error, isLoading } = useEducation();
-
+export const Education = async (props: EducationProps): Promise<JSX.Element> => {
+  const educations = await prisma.education.findMany({
+    include: { school: true },
+    orderBy: { startDate: "desc" },
+  });
   return (
-    <ResumeSection className="flex flex-col gap-[18px]">
-      {data ? (
-        data.map(education => <EducationTile key={education.id} education={education} />)
-      ) : (
-        <></>
-      )}
+    <ResumeSection {...props} title="Education">
+      <CommitTimeline>
+        {educations.map(education => (
+          <EducationTile key={education.id} education={education} />
+        ))}
+      </CommitTimeline>
     </ResumeSection>
   );
 };

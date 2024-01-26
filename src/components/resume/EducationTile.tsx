@@ -11,7 +11,7 @@ export interface EducationTileProps extends ComponentProps {
 }
 
 export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col w-full gap-[6px]", props.className)}>
+  <div {...props} className={clsx("flex flex-col w-full gap-[6px] max-w-[400px]", props.className)}>
     <div className="flex flex-row gap-[8px]">
       <EducationImage size={60} image={{ url: education.school.logoImageUrl }} />
       <div className="flex flex-col gap-[6px] h-[60px] pt-[4px]">

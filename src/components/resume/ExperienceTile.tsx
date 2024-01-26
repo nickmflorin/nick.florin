@@ -2,6 +2,7 @@ import clsx from "clsx";
 
 import { ExperienceImage } from "~/components/images/ExperienceImage";
 import { type ComponentProps } from "~/components/types";
+import { Text } from "~/components/typography/Text";
 import { Title } from "~/components/typography/Title";
 import { type Company, type Experience } from "~/prisma/model";
 
@@ -10,13 +11,16 @@ export interface ExperienceTileProps extends ComponentProps {
 }
 
 export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col w-full gap-[6px]", props.className)}>
+  <div {...props} className={clsx("flex flex-col w-full gap-[6px] max-w-100%", props.className)}>
     <div className="flex flex-row gap-[8px]">
       <ExperienceImage size={60} image={{ url: experience.company.logoImageUrl }} />
       <div className="flex flex-col gap-[6px] h-[60px] pt-[4px]">
         <Title order={4}>{experience.title}</Title>
         <Title order={5}>{experience.company.name}</Title>
       </div>
+    </div>
+    <div className="pl-[68px]">
+      <Text className="text-gray-600 text-sm">{experience.description}</Text>
     </div>
   </div>
 );

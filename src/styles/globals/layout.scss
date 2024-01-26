@@ -1,15 +1,10 @@
 @use "partials";
 
-:root {
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
 $sidebar-width: 60px;
 $header-height: 60px;
 
 .sidebar {
-  background-color: theme("colors.gray.200");
+  // background-color: theme("colors.gray.200");
   border-right: partials.$default-border;
   width: $sidebar-width;
   display: flex;
@@ -18,16 +13,20 @@ $header-height: 60px;
   padding-left: 6px;
   padding-right: 6px;
   padding-bottom: 6px;
+  background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
+    theme("colors.gray.50");
 }
 
 .header {
-  background-color: theme("colors.gray.200");
+  // background-color: theme("colors.gray.200");
   width: 100%;
   max-width: 100%;
   height: $header-height;
   min-height: $header-height;
   padding: 12px;
   border-bottom: partials.$default-border;
+  background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
+    theme("colors.gray.50");
 
   &__left,
   &__right {
@@ -60,8 +59,6 @@ $header-height: 60px;
       overflow-y: scroll;
       padding: 15px;
       flex-grow: 100;
-      background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
-        rgb(var(--background-start-rgb));
     }
   }
 }

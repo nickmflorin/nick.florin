@@ -15,7 +15,7 @@ const Spinner = dynamic(() => import("./Spinner"));
 const IconComponent = dynamic(() => import("./IconComponent"));
 
 const _Icon = (props: IconComponentProps): JSX.Element => {
-  if (isBasicIconComponentProps<IconComponentProps>(props)) {
+  if (isBasicIconComponentProps(props)) {
     const { icon, ...rest } = props;
     return <IconComponent icon={icon} {...rest} />;
   }

@@ -9,6 +9,10 @@ import {
   type ExcludeLiterals,
   type ExtractLiterals,
   type LiteralsBaseModelArray,
+  type LiteralsModels,
+  type LiteralsModelAttributeName,
+  type LiteralsAttributeValues,
+  type LiteralsAttributeValue,
 } from "./core";
 import {
   type EnumeratedLiteralsOptions,
@@ -56,6 +60,14 @@ export type EnumeratedLiteralsType<L> = L extends EnumeratedLiterals<
   ? LiteralsValue<Ll>
   : never;
 
+export type EnumeratedLiteralsModel<L> = L extends EnumeratedLiterals<
+  infer Ll extends Literals,
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  infer O
+>
+  ? LiteralsModel<Ll, LiteralsValue<Ll>>
+  : never;
+
 /**
  * A generic type that results in a type referred to internally as a set of "EnumeratedLiterals",
  * which is formed from the strings defined in the read-only array type defined by the generic type
@@ -84,10 +96,18 @@ export type EnumeratedLiterals<
   O extends EnumeratedLiteralsOptions<L>,
 > = EnumeratedLiteralsAccessors<L, O> & {
   readonly values: LiteralsValues<L>;
+  readonly models: LiteralsModels<L>;
   readonly options: O;
   readonly schema: z.ZodUnion<
     readonly [z.ZodLiteral<LiteralsValues<L>[number]>, ...z.ZodLiteral<LiteralsValues<L>[number]>[]]
   >;
+  readonly getAttributes: <N extends LiteralsModelAttributeName<L>>(
+    attribute: N,
+  ) => LiteralsAttributeValues<L, N>;
+  readonly getAttribute: <V extends LiteralsValue<L>, N extends LiteralsModelAttributeName<L>>(
+    value: V,
+    attribute: N,
+  ) => LiteralsAttributeValue<L, V, N>;
   readonly getModel: <V extends LiteralsValue<L>>(v: V) => LiteralsModel<L, V>;
   readonly getModelSafe: GetModelSafe<L>;
   /**
