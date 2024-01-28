@@ -18,6 +18,8 @@ export async function seedProfile(ctx: SeedContext) {
         createdById: ctx.user.id,
       },
     });
+    /* eslint-disable-next-line no-console */
+    console.info("Created New Profile");
   } else {
     await prisma.profile.update({
       where: { id: profile.id },
@@ -26,5 +28,7 @@ export async function seedProfile(ctx: SeedContext) {
         updatedById: ctx.user.id,
       },
     });
+    /* eslint-disable-next-line no-console */
+    console.info("Updated Profile");
   }
 }

@@ -1,6 +1,6 @@
-import { type School, type Education } from "~/prisma/model";
+import { type ApiEducation } from "~/prisma/model";
 
 import { useSWR, type SWRConfig } from "./useSWR";
 
-export const useEducation = (config?: SWRConfig<(Education & { readonly school: School })[]>) =>
-  useSWR<(Education & { readonly school: School })[]>("/api/education", config ?? {});
+export const useEducation = (config?: SWRConfig<ApiEducation[]>) =>
+  useSWR<ApiEducation[]>("/api/education", config ?? {});

@@ -80,7 +80,7 @@ export async function seedSchools(ctx: SeedContext) {
     }
   }
 
-  await Promise.all(
+  const createdSchools = await Promise.all(
     schoolChanges.create.map(({ educations: jsonEducations, ...school }) =>
       prisma.school.create({
         data: {
@@ -101,8 +101,12 @@ export async function seedSchools(ctx: SeedContext) {
       }),
     ),
   );
+  if (createdSchools.length !== 0) {
+    /* eslint-disable-next-line no-console */
+    console.info(`Created ${createdSchools.length} New School(s)`);
+  }
 
-  await Promise.all(
+  const createdEducations = await Promise.all(
     schoolChanges.createEducations.map(({ education: jsonEducation, school }) =>
       prisma.education.create({
         data: {
@@ -117,8 +121,12 @@ export async function seedSchools(ctx: SeedContext) {
       }),
     ),
   );
+  if (createdEducations.length !== 0) {
+    /* eslint-disable-next-line no-console */
+    console.info(`Created ${createdEducations.length} New Education(s)`);
+  }
 
-  await Promise.all(
+  const updatedSchools = await Promise.all(
     schoolChanges.update.map(({ id, json }) =>
       prisma.school.update({
         where: { id },
@@ -129,8 +137,12 @@ export async function seedSchools(ctx: SeedContext) {
       }),
     ),
   );
+  if (updatedSchools.length !== 0) {
+    /* eslint-disable-next-line no-console */
+    console.info(`Updated ${updatedSchools.length} School(s)`);
+  }
 
-  await Promise.all(
+  const updatedEducations = await Promise.all(
     schoolChanges.updateEducations.map(({ id, json }) =>
       prisma.education.update({
         where: { id },
@@ -144,4 +156,8 @@ export async function seedSchools(ctx: SeedContext) {
       }),
     ),
   );
+  if (updatedEducations.length !== 0) {
+    /* eslint-disable-next-line no-console */
+    console.info(`Updated ${updatedEducations.length} Education(s)`);
+  }
 }

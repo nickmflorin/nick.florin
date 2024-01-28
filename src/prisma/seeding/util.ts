@@ -14,6 +14,7 @@ type FindCorrespondingFieldOptions<
   M extends Record<string, unknown>,
   J extends Record<string, unknown>,
 > = {
+  readonly strict?: boolean;
   readonly field: StringRequiredKeys<M | J>;
   readonly reference: string;
   readonly comparator?: never;
@@ -25,6 +26,7 @@ type FindCorrespondingGetterOptions<
   M extends Record<string, unknown>,
   J extends Record<string, unknown>,
 > = {
+  readonly strict?: boolean;
   readonly field?: never;
   readonly reference: string;
   readonly comparator?: never;
@@ -36,6 +38,7 @@ type FindCorrespondingComparatorOptions<
   M extends Record<string, unknown>,
   J extends Record<string, unknown>,
 > = {
+  readonly strict?: boolean;
   readonly reference: string;
   readonly field?: never;
   readonly getModelComparisonValue?: never;
@@ -77,20 +80,21 @@ export function getModelValue<P extends Record<string, unknown>>(
   return v;
 }
 
+type FindCorrespondingRT<
+  M extends Record<string, unknown>,
+  J extends Record<string, unknown>,
+  O extends FindCorrespondingOptions<M, J>,
+> = O extends { strict: true } ? M : M | null;
+
 export const findCorresponding = <
   M extends Record<string, unknown>,
   J extends Record<string, unknown>,
+  O extends FindCorrespondingOptions<M, J>,
 >(
   models: M[],
   json: J,
-  {
-    comparator,
-    reference,
-    field,
-    getModelComparisonValue,
-    getJsonComparisonValue,
-  }: FindCorrespondingOptions<M, J>,
-): M | null => {
+  { comparator, reference, field, strict, getModelComparisonValue, getJsonComparisonValue }: O,
+): FindCorrespondingRT<M, J, O> => {
   const throwErr = (msg: string): never => {
     throw new Error(`[reference = ${reference}] ${msg}`);
   };
@@ -121,7 +125,12 @@ export const findCorresponding = <
 
   const filtered = models.filter(m => compareFn(m, json));
   if (filtered.length === 0) {
-    return null;
+    if (strict) {
+      return throwErr(
+        `The provided ${reference} could not be found in the set of provided models.`,
+      );
+    }
+    return null as FindCorrespondingRT<M, J, O>;
   } else if (filtered.length > 1) {
     if (comparator) {
       return throwErr(

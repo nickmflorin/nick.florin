@@ -58,6 +58,7 @@ p {
   // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
   // in cases where the component is not provided with those props.
   @extend %typography-base;
+  @include partials.with-default-font-size("label");
 
   // Allow the font-weight to be overridden for each size.
   @include partials.with-font-weights() using ($weight, $value) {
@@ -154,6 +155,7 @@ h6 {
   // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
   // in cases where the component is not provided with those props.
   @extend %typography-base;
+  @include partials.with-default-font-size("body");
 
   // Allow the font-weight to be overridden for each size.
   @include partials.with-font-weights() using ($weight, $value) {
@@ -194,12 +196,6 @@ h6 {
   &.clamp {
     @include partials.clamp(2);
   }
-
-  // @include partials.with-alignment() using ($alignment) {
-  //   &--align-#{$alignment} {
-  //     justify-content: $alignment;
-  //   }
-  // }
 
   > .icon {
     color: inherit;

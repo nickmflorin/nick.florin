@@ -1,4 +1,12 @@
-import { Prisma } from "@prisma/client";
+import {
+  type Experience,
+  Prisma,
+  type School,
+  type Detail,
+  type Education,
+  type Company,
+  type Skill,
+} from "@prisma/client";
 
 export * from "@prisma/client";
 
@@ -28,4 +36,15 @@ export const safeEnumValue = <E extends Record<string, string>>(
     );
   }
   return v as E[keyof E];
+};
+
+export type ApiExperience = Experience & {
+  readonly company: Company;
+  readonly details: Detail[];
+  readonly skills: Skill[];
+};
+
+export type ApiEducation = Education & {
+  readonly school: School;
+  readonly details: Detail[];
 };

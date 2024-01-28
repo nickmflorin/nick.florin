@@ -11,7 +11,22 @@
           "title": "Quantitative Analyst: Investment Analytics & Data",
           "startDate": "2016-07-01T00:00:00Z",
           "endDate": "2018-04-01T00:00:00Z",
-          "description": "My responsibilities involved building internal analytical tools around the massive sets of financial data the firm had assembled."
+          "description": "My responsibilities involved building internal analytical tools around the massive sets of financial data the firm had assembled.",
+          "skills": ["Python", "Javascript", "Data Scraping", "React", "React Redux", "nodeJS"],
+          "details": [
+            {
+              "label": "Transparency",
+              "description": "Rebuilt the firm's primary internal analytical tool into a more interactive/dynamical tool using a React/Redux front-end consuming an API built using Django REST Framework."
+            },
+            {
+              "label": "Asset Visualizations",
+              "description": "Created a custom, flexible and proprietry charting package using D3.js that the firm now uses in a variety of applications to visualize data in more than 2 dimensions and animate the visualization over time."
+            },
+            {
+              "label": "Rock Creek Insights",
+              "description": "Constructed an application, Rock Creek Insights, using MeteorJS that the firm uses to provide client risk reporting, monitor risk and compare performances of managed pension funds."
+            }
+          ]
         }
       ]
     },
@@ -28,7 +43,14 @@
           "endDate": "2024-01-01T00:00:00Z",
           "title": "Senior Software Engineer",
           "isRemote": true,
-          "description": "As a member of the Product Development Team, I contributed to the ongoing development of the company's flagship web-based and mobile products."
+          "skills": ["TypeScript", "Javascript", "GraphQL", "React"],
+          "description": "As a member of the Product Development Team, I contributed to the ongoing development of the company's flagship web-based and mobile products.",
+          "details": [
+            {
+              "label": "Foreign Currencies",
+              "description": "Created the system that allowed all marketing analytics in the application to be quoted in a currency configurable by the user, attracting additional international customers to the platform and improving existing customers' usage of the product."
+            }
+          ]
         }
       ]
     },
@@ -61,7 +83,34 @@
           "startDate": "2022-06-01T00:00:00Z",
           "endDate": "2023-03-01T00:00:00Z",
           "title": "Software Engineer",
-          "description": "Team lead for the \"Corsha Console\" team, responsible for building a modern, customer facing, web-based  platform that allows customers to manage, monitor, configure and interact with proprietary security technology running on their network."
+          "description": "Team lead for the \"Corsha Console\" team, responsible for building a modern, customer facing, web-based  platform that allows customers to manage, monitor, configure and interact with proprietary security technology running on their network.",
+          "details": [
+            {
+              "label": "Planning & Road Mapping",
+              "description": "Planned and organized the future development of the Corsha Console product between June 2022 and late November 2022, when actual development began."
+            },
+            {
+              "label": "Design",
+              "description": "Responsible for establishing and coordinating relationships with external UI/UX design firms for purposes of designing the Corsha Console.  Worked with a UI/UX design firm between Aug 2022 and late Nov 2022 on the product’s UI/UX, design, user flow and structure of the application."
+            },
+            {
+              "label": "Leadership",
+              "description": "Organized workflows and Agile processes for the team, lead team meetings and planned each step of the product's implementation.  Worked closely with engineers who were less familiar with the technologies being used to help teach, guide and improve their understanding."
+            },
+            {
+              "label": "Notable Technical Contributions",
+              "nestedDetails": [
+                {
+                  "label": "Error Communication Protocols",
+                  "description": "Established protocols for communicating errors between the client and the server and incorporated these methods into UI components responsible for making server requests, communicating feedback to users and making decisions based on error control flow."
+                },
+                {
+                  "label": "Component Library",
+                  "description": "Led the development of an internal component library and established patterns associated with resusable components, component documentation and component testing."
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -78,7 +127,13 @@
           "endDate": "2022-05-01T00:00:00Z",
           "title": "Co-Founder & Creator",
           "description": "Architected, built and lead the development of a web-based platform with the purpose of modernizing and streamlining budgeting, payroll and other production flows in the film industry.",
-          "isRemote": true
+          "isRemote": true,
+          "details": [
+            {
+              "label": "Release",
+              "description": "The application was released in Feb 2022, with paid subscriptions following shortly thereafter.  The application was adopted by several small film studios, who agreed to test the software while still in beta.  The software platform is now called Saturation, and can be found at https://saturation.io."
+            }
+          ]
         }
       ]
     },
@@ -93,7 +148,21 @@
           "endDate": "2021-03-01T00:00:00Z",
           "title": "Technical Lead",
           "description": "At Nirveda Cognition, I was responsible for the development of the entire consumer facing product.  This included the development of the application infrastructure/architecture and leading smaller teams of developers to reach our product goals.",
-          "isRemote": true
+          "isRemote": true,
+          "details": [
+            {
+              "label": "Rebuild",
+              "description": "I was brought on at Nirveda at a time when significant parts of the code application(s) had to be re-designed to support the size and scale of current and future customers.  I led the architecture re-design and implementation, addressing scalability and maintainability concerns while simultaneously onboarding new customers.  As a direct result of my contributions, the sales team was able to onboard several new top-tier Enterprise level customers."
+            },
+            {
+              "label": "Leadership",
+              "description": "Organized, managed and led large scale initiatives around the development of new features, improvement of existing functionality and re-architecting of the application."
+            },
+            {
+              "label": "Testing",
+              "description": "Spearheaded the implementation of our entire automated testing suite and CI/CD pipeline, which increased test coverage by roughly 70% and improved the stability of the development of new features."
+            }
+          ]
         }
       ]
     },
@@ -109,7 +178,13 @@
           "endDate": "2020-09-01T00:00:00Z",
           "title": "Full Stack Software Engineer",
           "description": "My responsibilities at Saracen involved the front end and backend development of internal analytical tools that the firm uses to make trading decisions.",
-          "isRemote": true
+          "isRemote": true,
+          "details": [
+            {
+              "label": "Diff Reporting",
+              "description": "Created a sub-application used daily by traders that allowed them to analyze the differences, modifications and frequencies of changes between electricity grid data at different points in time.  With this application, traders were able to more efficiently track outages and other important events in different electrical grids."
+            }
+          ]
         }
       ]
     },
@@ -124,7 +199,17 @@
           "startDate": "2018-04-01T00:00:00Z",
           "endDate": "2020-04-01T00:00:00Z",
           "title": "Platform Developer",
-          "description": "Responsibilities centered around the backend Python development that supported the Content Management System (CMS), accounts and subscriptions, and the wide range of digital products offered by the company."
+          "description": "Responsibilities centered around the backend Python development that supported the Content Management System (CMS), accounts and subscriptions, and the wide range of digital products offered by the company.",
+          "details": [
+            {
+              "label": "Apple News",
+              "description": "Created the Apple News syndication platform supporting the syndication of digital content through Apple News at company, directly contributing another source of revenue and increased visibility of the company's content."
+            },
+            {
+              "label": "Accounts API",
+              "description": "Spent a year overhauling the entire revenue/subscription model and its applicable services as a decoupled REST API using Django REST Framework that could independently support subscriptions and memberships at The Atlantic."
+            }
+          ]
         }
       ]
     },
@@ -137,7 +222,7 @@
         {
           "startDate": "2015-04-01T00:00:00Z",
           "endDate": "2016-07-01T00:00:00Z",
-          "title": "Quantitative Research Analytics",
+          "title": "Quantitative Research Analyst",
           "description": "Responsibilities involved the research and implementation of complex models for credit default risk in a variety of exotic derivatives and structured products. "
         }
       ]

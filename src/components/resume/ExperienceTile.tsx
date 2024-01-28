@@ -1,26 +1,23 @@
-import clsx from "clsx";
-
-import { ExperienceImage } from "~/components/images/ExperienceImage";
 import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography/Text";
-import { Title } from "~/components/typography/Title";
-import { type Company, type Experience } from "~/prisma/model";
+import { type ApiExperience, type Company, type Experience } from "~/prisma/model";
+
+import { ResumeTile } from "./ResumeTile";
 
 export interface ExperienceTileProps extends ComponentProps {
-  readonly experience: Experience & { readonly company: Company };
+  readonly experience: ApiExperience;
 }
 
 export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col w-full gap-[6px] max-w-100%", props.className)}>
-    <div className="flex flex-row gap-[8px]">
-      <ExperienceImage size={60} image={{ url: experience.company.logoImageUrl }} />
-      <div className="flex flex-col gap-[6px] h-[60px] pt-[4px]">
-        <Title order={4}>{experience.title}</Title>
-        <Title order={5}>{experience.company.name}</Title>
-      </div>
-    </div>
-    <div className="pl-[68px]">
-      <Text className="text-gray-600 text-sm">{experience.description}</Text>
-    </div>
-  </div>
+  <ResumeTile
+    title={experience.title}
+    subTitle={experience.company.name}
+    description={experience.description}
+    startDate={experience.startDate}
+    endDate={experience.endDate ?? "current"}
+    fallbackImageIcon={{ name: "briefcase" }}
+    imageUrl={experience.company.logoImageUrl}
+    details={experience.details}
+    skills={experience.skills}
+    {...props}
+  />
 );

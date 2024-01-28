@@ -348,6 +348,16 @@ $typography-default-colors: (
   @include mixins.mapped-properties($properties);
 }
 
+@mixin with-default-font-size($type) {
+  $size: get-default-size($type);
+  $properties: get-font($type, $size: $size);
+
+  font-size: fn.mapget($properties, font-size);
+  line-height: fn.mapget($properties, line-height);
+  font-weight: fn.mapget($properties, font-weight);
+  font-family: fn.mapget($properties, font-family);
+}
+
 @mixin with-font-sizes($type) {
   @each $size in $typography-sizes {
     $properties: get-font($type, $size: $size);

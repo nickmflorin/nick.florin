@@ -15,7 +15,7 @@ export const ResumeSection = ({
   ...props
 }: ResumeSectionProps): JSX.Element => (
   <div {...props} className={clsx("flex flex-col gap-[12px] max-w-[600px]", props.className)}>
-    <Title order={2}>{title}</Title>
+    <Title order={3}>{title}</Title>
     <div className={clsx("flex flex-col", contentClassName)}>{props.children}</div>
   </div>
 );
