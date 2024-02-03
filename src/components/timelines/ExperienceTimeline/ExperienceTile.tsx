@@ -1,14 +1,14 @@
 import { type ComponentProps } from "~/components/types";
-import { type ApiExperience, type Company, type Experience } from "~/prisma/model";
+import { type ApiExperience } from "~/prisma/model";
 
-import { ResumeTile } from "./ResumeTile";
+import { TimelineTile } from "../TimelineTile";
 
 export interface ExperienceTileProps extends ComponentProps {
   readonly experience: ApiExperience;
 }
 
 export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): JSX.Element => (
-  <ResumeTile
+  <TimelineTile
     title={experience.title}
     subTitle={experience.company.name}
     description={experience.description}
@@ -18,6 +18,9 @@ export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): J
     imageUrl={experience.company.logoImageUrl}
     details={experience.details}
     skills={experience.skills}
+    location={
+      experience.isRemote ? "Remote" : `${experience.company.city}, ${experience.company.state}`
+    }
     {...props}
   />
 );

@@ -76,7 +76,7 @@ export const getNativeIconStyle = ({
   dimension = IconDimensions.HEIGHT,
   fit = IconFits.FIT,
 }: Pick<IconComponentProps<IconProp>, "size" | "dimension" | "fit">): Style => {
-  if (IconDiscreteSizes.contains(size)) {
+  if (size === undefined || IconDiscreteSizes.contains(size)) {
     return {};
   } else if (dimension === IconDimensions.HEIGHT) {
     return { height: size, width: "auto", aspectRatio: fit === IconFits.SQUARE ? 1 : undefined };

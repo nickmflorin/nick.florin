@@ -8,7 +8,7 @@ import { IconButton, type IconButtonProps } from "./IconButton";
 
 export interface SidebarAnchorProps
   extends Omit<IconButtonProps<{ as: "link" }>, "options" | "isActive" | "icon"> {
-  readonly item: Pick<ISidebarItem, "icon" | "queryParam" | "path" | "children">;
+  readonly item: Pick<ISidebarItem, "active" | "icon" | "queryParam" | "path" | "children">;
 }
 
 export const SidebarAnchor = ({ item, ...props }: SidebarAnchorProps) => {

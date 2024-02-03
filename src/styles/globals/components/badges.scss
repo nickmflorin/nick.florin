@@ -20,7 +20,6 @@ $badge-vertical-padding: 2px;
   -ms-flex-pack: center;
   justify-content: center;
   width: fit-content;
-  text-transform: uppercase;
   letter-spacing: 0.0156em;
   cursor: inherit;
   overflow: hidden;
@@ -31,6 +30,8 @@ $badge-vertical-padding: 2px;
   padding-bottom: $badge-vertical-padding;
   font-family: partials.get-font-family("body");
   align-items: center;
+  background-color: theme("colors.gray.200");
+  color: theme("colors.body");
 
   > .badge__content {
     @include inherit-font-properties();
@@ -64,15 +65,12 @@ $badge-vertical-padding: 2px;
       height: $height;
 
       // Allow the font-weight to be overridden for each size.
-      @include partials.with-font-weights() using ($weight, $value) {
-        &.font-weight-#{$weight} {
-          font-weight: $value;
-        }
-      }
+      @include partials.with-font-weights();
 
       > .badge__content {
         > .badge__icon {
           height: $line-height - 4px;
+          width: auto;
         }
       }
     }

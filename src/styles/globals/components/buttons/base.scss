@@ -20,7 +20,6 @@
   font-weight: $button-font-weight;
   justify-content: center;
   margin: 0;
-  padding: 0;
   min-height: 0px;
   -webkit-tap-highlight-color: transparent;
   text-align: center;
@@ -36,6 +35,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 0;
 
   > .button__content {
     display: flex;
@@ -63,27 +63,6 @@
       flex-grow: 100;
       @include partials.truncate();
     }
-
-    // > .button__icon-wrapper {
-    //   @include partials.flex-c;
-
-    //   height: 100%;
-
-    //   // The aspect-ratio should be 1 inherently, based on the size specifications of the Spinner component when an icon
-    //   // is being used.
-    //   width: fit-content;
-
-    //   // Include 8px of spacing between the wrapped icon/spinner and the text if the icon/spinner
-    //   // is before the text.
-    //   + * {
-    //     margin-left: 8px;
-    //   }
-    // }
-
-    // Include 8px of spacing between the wrapped icon/spinner and the text if the icon/spinner is after the text.
-    // > * + .button__icon-wrapper {
-    //   margin-left: 8px;
-    // }
   }
 
   .icon {
@@ -113,6 +92,12 @@
   }
 }
 
+@mixin third-party-button() {
+  @include button-base();
+  @include button-properties("button", $variant: "primary", $size: "medium");
+  font-weight: partials.get-font-weight($weight: "semibold");
+}
+
 @mixin button($type, $variant: null, $size: null, $weight: null) {
   @include button-base();
   @include button-structure();
@@ -131,26 +116,7 @@
     }
 
     > .button__content {
-      // > .button__icon-wrapper {
-      //   padding-bottom: sizing.$button-icon-padding;
-      //   // When an icon or loading indicator is in the button, we want the height to slightly smaller than the line height
-      //   // of the accompanying text - so we subtract a little height from the wrapper.
-      //   padding-top: sizing.$button-icon-padding;
-
-      //   &:not(:last-of-type) {
-      //     margin-right: 2px;
-      //   }
-      // }
-
-      // > .button__action-icon-wrapper {
-      //   > .icon {
-      //     color: colors.get-color("gray", $shade: 4);
-
-      //     @include mixins.with-state(("hovered", "focused")) {
-      //       color: colors.get-color("gray", $shade: 5);
-      //     }
-      //   }
-      // }
+      // TODO
     }
   } @else if $type == "link" {
     font-weight: partials.get-font-weight($weight: "medium");
@@ -160,11 +126,7 @@
       font-weight: partials.get-font-weight($weight: $weight);
     } @else {
       // Allow the font-weight to be overridden.
-      @include partials.with-font-weights() using ($weight, $value) {
-        &.button--font-weight-#{$weight} {
-          font-weight: $value;
-        }
-      }
+      @include partials.with-font-weights();
     }
   }
 }

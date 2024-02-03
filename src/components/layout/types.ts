@@ -2,12 +2,14 @@ import { type ReadonlyURLSearchParams } from "next/navigation";
 
 import { type Required } from "utility-types";
 
+import { type PathActive, pathIsActive } from "~/lib/paths";
 import { type IconProp } from "~/components/icons";
 
 export interface ISidebarItem {
   readonly icon: IconProp;
   readonly label: string;
   readonly path: `/${string}`;
+  readonly active: PathActive;
   readonly queryParam?: { key: string; value: string };
   readonly children?: [Omit<ISidebarItem, "children">, ...Omit<ISidebarItem, "children">[]];
 }
@@ -29,39 +31,18 @@ export const sidebarItemHasChildren = (
   (item as Required<ISidebarItem, "children">).children !== undefined &&
   (item as Required<ISidebarItem, "children">).children.length !== 0;
 
-export const SidebarItems: ISidebarItem[] = [
-  {
-    label: "Resume",
-    icon: { name: "file-user" },
-    path: "/resume",
-    children: [
-      {
-        label: "Experience",
-        icon: { name: "briefcase" },
-        path: "/resume",
-        queryParam: { key: "section", value: "experience" },
-      },
-      {
-        label: "Education",
-        icon: { name: "building-columns" },
-        path: "/resume",
-        queryParam: { key: "section", value: "education" },
-      },
-    ],
-  },
-  {
-    label: "Projects",
-    icon: { name: "file-user" },
-    path: "/projects",
-  },
-];
-
 export const sidebarItemIsActive = (
-  { path, queryParam, children }: Pick<ISidebarItem, "path" | "queryParam" | "children">,
+  {
+    path,
+    active,
+    queryParam,
+    children,
+  }: Pick<ISidebarItem, "active" | "path" | "queryParam" | "children">,
   { pathname, searchParams }: { pathname: string; searchParams: ReadonlyURLSearchParams },
 ): boolean => {
   if (children === undefined || children.length === 0) {
-    if (path === pathname) {
+    const pathActive = pathIsActive(active, pathname);
+    if (pathActive) {
       if (queryParam === undefined) {
         return true;
       }
@@ -72,7 +53,10 @@ export const sidebarItemIsActive = (
     }
     return false;
   }
-  const baseIsActive = sidebarItemIsActive({ path, queryParam }, { pathname, searchParams });
+  const baseIsActive = sidebarItemIsActive(
+    { path, active, queryParam },
+    { pathname, searchParams },
+  );
   return (
     baseIsActive || children.some(child => sidebarItemIsActive(child, { pathname, searchParams }))
   );

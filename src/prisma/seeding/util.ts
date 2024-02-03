@@ -7,7 +7,7 @@ const modelStringValueComparator = (name1: string, name2: string) =>
   modelStringValueStandardizer(name1) === modelStringValueStandardizer(name2);
 
 type StringRequiredKeys<M extends Record<string, unknown>> = keyof {
-  [key in keyof M as M[key] extends string ? key : never]: M[key];
+  [key in keyof M as [M[key]] extends [string] ? key : never]: M[key];
 };
 
 type FindCorrespondingFieldOptions<
@@ -95,8 +95,15 @@ export const findCorresponding = <
   json: J,
   { comparator, reference, field, strict, getModelComparisonValue, getJsonComparisonValue }: O,
 ): FindCorrespondingRT<M, J, O> => {
-  const throwErr = (msg: string): never => {
-    throw new Error(`[reference = ${reference}] ${msg}`);
+  const throwErr = (msg: string, data?: { [key in string]: string }): never => {
+    const d: Record<string, string> = field
+      ? { ...data, reference, field: String(field) }
+      : { ...data, reference };
+    const dataStrings = Object.keys(d).reduce(
+      (prev: string[], k: string) => [...prev, `${k} = '${d[k]}'`],
+      [],
+    );
+    throw new Error(`[${dataStrings.join(", ")}] ${msg}`);
   };
 
   function _getValue(m: M | J, isJson?: boolean): string {
@@ -127,7 +134,8 @@ export const findCorresponding = <
   if (filtered.length === 0) {
     if (strict) {
       return throwErr(
-        `The provided ${reference} could not be found in the set of provided models.`,
+        `The provided ${reference} could not be found in the set of provided models`,
+        { jsonValue: _getValue(json, true) },
       );
     }
     return null as FindCorrespondingRT<M, J, O>;
@@ -136,6 +144,7 @@ export const findCorresponding = <
       return throwErr(
         `The provided comparator returned true for ${filtered.length} existing models in the ` +
           "database.  The comparator must uniquely identify a model.",
+        { jsonValue: _getValue(json, true) },
       );
     }
     const uniqValues = uniq(filtered.map(m => _getValue(m)));

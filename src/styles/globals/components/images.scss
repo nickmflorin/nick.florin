@@ -12,6 +12,12 @@
     aspect-ratio: 1;
   }
 
+  @include partials.with-radius using ($size, $value) {
+    &--radius-#{$size} {
+      clip-path: inset(0px round $value);
+    }
+  }
+
   > .model-image__fallback {
     @include partials.flex-c;
     height: 100%;

@@ -3,14 +3,13 @@ import React from "react";
 import clsx from "clsx";
 
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
-import { type FontWeight, type TypographySize } from "~/components/typography";
 
-export interface TextProps extends ComponentProps {
+import { type BaseTypographyProps, getTypographyClassName } from "./types";
+
+export interface TextProps extends BaseTypographyProps {
   readonly children: React.ReactNode;
   readonly span?: true;
-  readonly size?: TypographySize;
   readonly truncate?: boolean;
-  readonly fontWeight?: FontWeight;
   readonly lineClamp?: number;
 }
 
@@ -24,8 +23,6 @@ const Div = (
 
 export const Text = ({
   children,
-  size,
-  fontWeight,
   style,
   span,
   lineClamp,
@@ -39,10 +36,11 @@ export const Text = ({
       className={clsx(
         "body",
         { span },
-        size && `font-size-${size}`,
-        fontWeight && `font-weight-${fontWeight}`,
-        { truncate: truncate, clamp: lineClamp !== undefined },
-        props.className,
+        {
+          truncate: truncate,
+          clamp: lineClamp !== undefined,
+        },
+        getTypographyClassName(props),
       )}
     >
       {children}

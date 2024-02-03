@@ -1,0 +1,34 @@
+@use "sass:map";
+@use "throw";
+@use "../functions" as fn;
+
+$radius-sizes: ("none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full");
+
+$radius: (
+  "none": theme("borderRadius.none"),
+  "xs": theme("borderRadius.xs"),
+  "sm": theme("borderRadius.sm"),
+  "md": theme("borderRadius.md"),
+  "lg": theme("borderRadius.lg"),
+  "xl": theme("borderRadius.xl"),
+  "2xl": theme("borderRadius.2xl"),
+  "3xl": theme("borderRadius.3xl"),
+  "full": theme("borderRadius.full"),
+);
+
+@function get-radius($size) {
+  @if not map.has-key($radius, $size) {
+    @return throw.error(
+      "The provided size #{$size} is invalid.",
+      $size: $size,
+      $source: "get-radius()"
+    );
+  }
+  @return fn.mapget($radius, $size);
+}
+
+@mixin with-radius() {
+  @each $size in $radius-sizes {
+    @content ($size, fn.mapget($radius, $size));
+  }
+}

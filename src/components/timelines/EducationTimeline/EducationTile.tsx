@@ -2,14 +2,14 @@ import { type ComponentProps } from "~/components/types";
 import { getDegreeData } from "~/prisma/enums";
 import { type School, type Education } from "~/prisma/model";
 
-import { ResumeTile } from "./ResumeTile";
+import { TimelineTile } from "../TimelineTile";
 
 export interface EducationTileProps extends ComponentProps {
   readonly education: Education & { readonly school: School };
 }
 
 export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.Element => (
-  <ResumeTile
+  <TimelineTile
     title={`${getDegreeData(education.degree).abbreviatedLabel} in ${education.major}`}
     subTitle={education.school.name}
     description={education.description}
@@ -21,6 +21,7 @@ export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.
     imageUrl={education.school.logoImageUrl}
     skills={[]}
     details={[]}
+    location={`${education.school.city}, ${education.school.state}`}
     {...props}
   />
 );

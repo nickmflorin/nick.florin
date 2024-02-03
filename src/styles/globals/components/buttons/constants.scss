@@ -9,7 +9,7 @@ $button-outline-width: 1px;
 
 $button-state-names: ("hovered", "focused", "disabled", "active");
 
-$button-font-family: theme("colors.body");
+$button-font-family: theme("fontFamily.sans");
 $button-border-radius: theme("borderRadius.md");
 
 // The button font-weight here is used as the default - the font-weight will usually depend on the variant.

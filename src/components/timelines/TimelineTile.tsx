@@ -1,15 +1,17 @@
 import clsx from "clsx";
 import { DateTime } from "luxon";
 
+import { Badge } from "~/components/badges/Badge";
 import { ModelImage, type ModelImageProps } from "~/components/images/ModelImage";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 import { Title } from "~/components/typography/Title";
 import { type Detail, type Skill } from "~/prisma/model";
 
-import { Label } from "../typography/Label";
+import { Details } from "./Details";
+import { Skills } from "./Skills";
 
-export interface ResumeTileProps extends ComponentProps {
+export interface TimelineTileProps extends ComponentProps {
   readonly title: string;
   readonly subTitle: string;
   readonly description?: string | null;
@@ -19,6 +21,7 @@ export interface ResumeTileProps extends ComponentProps {
   readonly imageUrl?: string | null;
   readonly details: Detail[];
   readonly skills: Skill[];
+  readonly location: string;
 }
 
 const parseDateInterval = (startDate: Date, endDate: Date | "postponed" | "current"): string => {
@@ -34,55 +37,24 @@ const parseDateInterval = (startDate: Date, endDate: Date | "postponed" | "curre
   return `${start} - ${end}`;
 };
 
-const ResumeTileDetail = ({
-  detail,
-}: {
-  detail: ResumeTileProps["details"][number];
-}): JSX.Element => (
-  <div className="flex flex-col gap-[2px]">
-    <Label size="sm">{detail.label}</Label>
-    <Text size="sm" className="text-gray-600">
-      {detail.description}
-    </Text>
-  </div>
-);
-
-const ResumeTileDetails = ({ details }: Pick<ResumeTileProps, "details">): JSX.Element => (
-  <div className="flex flex-col gap-[8px]">
-    {details
-      .filter(d => d.visible !== false)
-      .map(detail => (
-        <ResumeTileDetail key={detail.id} detail={detail} />
-      ))}
-  </div>
-);
-
-const ResumeTileBody = ({
+const TimelineTileBody = ({
   description,
-  startDate,
-  endDate,
   details,
-  skills,
-}: Pick<
-  ResumeTileProps,
-  "description" | "startDate" | "endDate" | "skills" | "details"
->): JSX.Element => (
-  <div className="flex flex-col pl-[68px] gap-[6px]">
+}: Pick<TimelineTileProps, "description" | "details">): JSX.Element => (
+  <div className="flex flex-col gap-[6px] max-w-[700px]">
     {description && (
       <Text size="sm" className="text-gray-600">
         {description}
       </Text>
     )}
-    <Text size="sm" className="text-body tracking-tighter font-medium">
-      {parseDateInterval(startDate, endDate)}
-    </Text>
-    <ResumeTileDetails details={details} />
+    <Details details={details} />
   </div>
 );
 
-export const ResumeTile = ({
+export const TimelineTile = ({
   title,
   subTitle,
+  location,
   description,
   startDate,
   imageUrl,
@@ -91,21 +63,28 @@ export const ResumeTile = ({
   skills,
   details,
   ...props
-}: ResumeTileProps): JSX.Element => (
+}: TimelineTileProps): JSX.Element => (
   <div {...props} className={clsx("flex flex-col w-full gap-[6px] max-w-100%", props.className)}>
     <div className="flex flex-row gap-[8px]">
       <ModelImage size={60} fallbackIcon={fallbackImageIcon} image={{ url: imageUrl }} />
-      <div className="flex flex-col gap-[2px] h-[60px] pt-[4px]">
-        <Title order={4}>{title}</Title>
-        <Title order={5}>{subTitle}</Title>
+      <div className="flex flex-col gap-[6px]">
+        <div className="flex flex-col gap-[2px] pt-[4px]">
+          <Title order={4}>{title}</Title>
+          <Title order={5}>{subTitle}</Title>
+        </div>
+        <div className="flex flex-row gap-[8px]">
+          <Badge size="xs" icon={{ name: "calendar" }} className="font-medium">
+            {parseDateInterval(startDate, endDate)}
+          </Badge>
+          <Badge size="xs" icon={{ name: "location-dot" }} className="font-medium">
+            {location}
+          </Badge>
+        </div>
       </div>
     </div>
-    <ResumeTileBody
-      description={description}
-      startDate={startDate}
-      endDate={endDate}
-      details={details}
-      skills={skills}
-    />
+    <div className="flex flex-col pl-[68px] gap-[12px]">
+      <TimelineTileBody description={description} details={details} />
+      <Skills skills={skills} className="max-w-[800px]" />
+    </div>
   </div>
 );

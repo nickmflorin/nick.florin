@@ -1,24 +1,24 @@
 @use "partials";
 
 $sidebar-width: 60px;
-$header-height: 60px;
+
+// 60px for the avatar image in the top left, and then 12px on the top and bottom for the padding.
+$header-height: 84px;
 
 .sidebar {
-  // background-color: theme("colors.gray.200");
   border-right: partials.$default-border;
   width: $sidebar-width;
   display: flex;
   flex-direction: column;
-  padding-top: $header-height + 6px;
-  padding-left: 6px;
-  padding-right: 6px;
-  padding-bottom: 6px;
+  padding: 6px;
   background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
     theme("colors.gray.50");
 }
 
 .header {
-  // background-color: theme("colors.gray.200");
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
   max-width: 100%;
   height: $header-height;
@@ -38,24 +38,27 @@ $header-height: 60px;
     flex-grow: 100;
     justify-content: right;
     gap: 12px;
+    display: flex;
+    align-items: center;
   }
 }
 
 .layout {
   background-color: theme("colors.appBackground");
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
 
   > .layout__content {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-grow: 100;
+    max-height: calc(100% - #{$header-height});
+    overflow: hidden;
 
     > .content {
-      max-height: calc(100% - #{$header-height});
       overflow-y: scroll;
       padding: 15px;
       flex-grow: 100;

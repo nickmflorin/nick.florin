@@ -4,25 +4,29 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { type Required } from "utility-types";
 
-import { type ISidebarItem, SidebarItems, sidebarItemHasChildren } from "../types";
+import { type ISidebarItem, sidebarItemHasChildren } from "../types";
 
 import { SidebarGroup } from "./SidebarGroup";
 import { SidebarItem } from "./SidebarItem";
 
-const solo = {
+const ItemVariants = {
   offset: ({ offset }: { offset: number }) => ({
     y: `${offset}px`,
   }),
   normal: () => ({}),
 };
 
-export const Sidebar = () => {
+export interface SidebarProps {
+  readonly items: ISidebarItem[];
+}
+
+export const Sidebar = ({ items }: SidebarProps) => {
   const [groupOpenIndex, setGroupOpenIndex] = useState<number | null>(null);
 
   return (
     <div className="sidebar" onMouseLeave={() => setGroupOpenIndex(null)}>
       <div className="flex flex-col gap-[8px] items-center">
-        {SidebarItems.map((item, i) => {
+        {items.map((item, i) => {
           if (sidebarItemHasChildren(item)) {
             return (
               <SidebarGroup
@@ -33,7 +37,8 @@ export const Sidebar = () => {
               />
             );
           }
-          const previousWithChildren = SidebarItems.slice(0, i)
+          const previousWithChildren = items
+            .slice(0, i)
             .map((it, ind) => ({ ind, item: it }))
             .filter(
               (d): d is { item: Required<ISidebarItem, "children">; ind: number } =>
@@ -53,7 +58,7 @@ export const Sidebar = () => {
           return (
             <motion.div
               key={i}
-              variants={solo}
+              variants={ItemVariants}
               initial={false}
               animate={previous !== undefined ? "offset" : "normal"}
               custom={{ offset }}

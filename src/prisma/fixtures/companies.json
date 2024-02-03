@@ -1,36 +1,6 @@
 {
   "companies": [
     {
-      "name": "The Rock Creek Group",
-      "city": "Washington",
-      "state": "DC",
-      "logoImageUrl": "/experience/rock-creek.svg",
-      "websiteUrl": "https://therockcreekgroup.com/",
-      "experiences": [
-        {
-          "title": "Quantitative Analyst: Investment Analytics & Data",
-          "startDate": "2016-07-01T00:00:00Z",
-          "endDate": "2018-04-01T00:00:00Z",
-          "description": "My responsibilities involved building internal analytical tools around the massive sets of financial data the firm had assembled.",
-          "skills": ["Python", "Javascript", "Data Scraping", "React", "React Redux", "nodeJS"],
-          "details": [
-            {
-              "label": "Transparency",
-              "description": "Rebuilt the firm's primary internal analytical tool into a more interactive/dynamical tool using a React/Redux front-end consuming an API built using Django REST Framework."
-            },
-            {
-              "label": "Asset Visualizations",
-              "description": "Created a custom, flexible and proprietry charting package using D3.js that the firm now uses in a variety of applications to visualize data in more than 2 dimensions and animate the visualization over time."
-            },
-            {
-              "label": "Rock Creek Insights",
-              "description": "Constructed an application, Rock Creek Insights, using MeteorJS that the firm uses to provide client risk reporting, monitor risk and compare performances of managed pension funds."
-            }
-          ]
-        }
-      ]
-    },
-    {
       "name": "Northbeam",
       "city": "San Francisco",
       "state": "CA",
@@ -40,10 +10,20 @@
       "experiences": [
         {
           "startDate": "2023-08-01T00:00:00Z",
-          "endDate": "2024-01-01T00:00:00Z",
           "title": "Senior Software Engineer",
           "isRemote": true,
-          "skills": ["TypeScript", "Javascript", "GraphQL", "React"],
+          "skills": [
+            "TypeScript",
+            "Javascript",
+            "GraphQL",
+            "React",
+            "Floating UI",
+            "TailwindCSS",
+            "React Native",
+            "SCSS/SASS",
+            "ChartJS",
+            "pnpm"
+          ],
           "description": "As a member of the Product Development Team, I contributed to the ongoing development of the company's flagship web-based and mobile products.",
           "details": [
             {
@@ -67,7 +47,9 @@
           "endDate": "2023-08-01T00:00:00Z",
           "title": "Founding Engineer",
           "isRemote": true,
-          "description": "Contributed to the early development of the platform's MVP, building a web-based inventory management, order management and accounting system for the chemical supply chain industry."
+          "description": "Contributed to the early development of the platform's MVP, building a web-based inventory management, order management and accounting system for the chemical supply chain industry.",
+          "skills": ["NextJS", "TRPC", "React", "PrismaJS", "Vercel", "SSR", "TypeScript"],
+          "details": []
         }
       ]
     },
@@ -84,6 +66,25 @@
           "endDate": "2023-03-01T00:00:00Z",
           "title": "Software Engineer",
           "description": "Team lead for the \"Corsha Console\" team, responsible for building a modern, customer facing, web-based  platform that allows customers to manage, monitor, configure and interact with proprietary security technology running on their network.",
+          "skills": [
+            "NextJS",
+            "TypeScript",
+            "React",
+            "SCSS/SASS",
+            "PrismaJS",
+            "SSR",
+            "docker",
+            "Jenkins",
+            "SonarQube",
+            "PostgreSQL",
+            "nodeJS",
+            "Agile Software Development",
+            "Project Planning & Roadmapping",
+            "Security Practices",
+            "CI/CD",
+            "jest",
+            "StorybookJS"
+          ],
           "details": [
             {
               "label": "Planning & Road Mapping",
@@ -128,6 +129,27 @@
           "title": "Co-Founder & Creator",
           "description": "Architected, built and lead the development of a web-based platform with the purpose of modernizing and streamlining budgeting, payroll and other production flows in the film industry.",
           "isRemote": true,
+          "skills": [
+            "Python",
+            "Django REST Framework",
+            "React",
+            "React Redux",
+            "Redux-Sagas",
+            "AWS S3 Storage",
+            "CircleCI",
+            "poetry",
+            "docker",
+            "TypeScript",
+            "Redis",
+            "tox",
+            "codecov",
+            "pytest",
+            "CI/CD",
+            "JWT Authentication",
+            "PostgreSQL",
+            "AWS EC2",
+            "celery"
+          ],
           "details": [
             {
               "label": "Release",
@@ -149,6 +171,32 @@
           "title": "Technical Lead",
           "description": "At Nirveda Cognition, I was responsible for the development of the entire consumer facing product.  This included the development of the application infrastructure/architecture and leading smaller teams of developers to reach our product goals.",
           "isRemote": true,
+          "skills": [
+            "Python",
+            "Django REST Framework",
+            "React",
+            "React Redux",
+            "AWS",
+            "AWS Cloudwatch",
+            "TypeScript",
+            "Auth0",
+            "tox",
+            "codecov",
+            "pytest",
+            "CI/CD",
+            "Redix",
+            "JWT Authentication",
+            "PostgreSQL",
+            "Django Channels",
+            "Application Security",
+            "celery",
+            "poetry",
+            "docker",
+            "Agile Software Development",
+            "Web Sockets",
+            "Jenkins",
+            "AWS EC2"
+          ],
           "details": [
             {
               "label": "Rebuild",
@@ -179,6 +227,30 @@
           "title": "Full Stack Software Engineer",
           "description": "My responsibilities at Saracen involved the front end and backend development of internal analytical tools that the firm uses to make trading decisions.",
           "isRemote": true,
+          "skills": [
+            "Python",
+            "Flask",
+            "Data Scraping",
+            "React",
+            "React Redux",
+            "TypeScript",
+            "Redux-Sagas",
+            "docker",
+            "Jenkins",
+            "Rundeck",
+            "pytest",
+            "JWT Authentication",
+            "Unit TEsting",
+            "SQLAlchemy",
+            "bash",
+            "linux",
+            "ElasticSearch",
+            "Session Authentication",
+            "SCSS/SASS",
+            "RabbitMQ",
+            "PostgreSQL",
+            "Message Buses"
+          ],
           "details": [
             {
               "label": "Diff Reporting",
@@ -200,6 +272,48 @@
           "endDate": "2020-04-01T00:00:00Z",
           "title": "Platform Developer",
           "description": "Responsibilities centered around the backend Python development that supported the Content Management System (CMS), accounts and subscriptions, and the wide range of digital products offered by the company.",
+          "skills": [
+            "Python",
+            "Python 2/3 Compatibility",
+            "Package & Dependency Management",
+            "Relational Databases",
+            "nodeJS",
+            "Django",
+            "Django REST Framework",
+            "REST API Design",
+            "AWS S3 Storage",
+            "Jenkins",
+            "mySQL",
+            "linux",
+            "bash",
+            "git",
+            "Jinja",
+            "Sentry",
+            "Unit Testing",
+            "Integration Testing",
+            "unittest",
+            "pytest",
+            "mock",
+            "Agile Software Development",
+            "Jira",
+            "HTML Templating",
+            "celery",
+            "poetry",
+            "flake8",
+            "tox",
+            "docker",
+            "asyncio",
+            "mongooseJS",
+            "expressJS",
+            "AWS",
+            "JWT Authentication",
+            "jQuery",
+            "Javascript",
+            "Authentication Protocols",
+            "Session Authentication",
+            "Application Middleware",
+            "AWS Elastic Beanstalk"
+          ],
           "details": [
             {
               "label": "Apple News",
@@ -208,6 +322,60 @@
             {
               "label": "Accounts API",
               "description": "Spent a year overhauling the entire revenue/subscription model and its applicable services as a decoupled REST API using Django REST Framework that could independently support subscriptions and memberships at The Atlantic."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Rock Creek Group",
+      "city": "Washington",
+      "state": "DC",
+      "logoImageUrl": "/experience/rock-creek.svg",
+      "websiteUrl": "https://therockcreekgroup.com/",
+      "experiences": [
+        {
+          "title": "Quantitative Analyst: Investment Analytics & Data",
+          "startDate": "2016-07-01T00:00:00Z",
+          "endDate": "2018-04-01T00:00:00Z",
+          "description": "My responsibilities involved building internal analytical tools around the massive sets of financial data the firm had assembled.",
+          "skills": [
+            "Python",
+            "Javascript",
+            "Data Scraping",
+            "React",
+            "React Redux",
+            "nodeJS",
+            "Django REST Framework",
+            "Django",
+            "CSS",
+            "SCSS/SASS",
+            "HTML Templating",
+            "mySQL",
+            "jQuery",
+            "noSQL Databases",
+            "mongoDB",
+            "npm",
+            "pandas",
+            "MeteorJS",
+            "d3.js",
+            "AWS Lambdas",
+            "Handlebars",
+            "AWS S3 Storage",
+            "git"
+          ],
+          "details": [
+            {
+              "label": "Transparency",
+              "description": "Rebuilt the firm's primary internal analytical tool into a more interactive/dynamical tool using a React/Redux front-end consuming an API built using Django REST Framework."
+            },
+            {
+              "label": "Asset Visualizations",
+              "description": "Created a custom, flexible and proprietry charting package using D3.js that the firm now uses in a variety of applications to visualize data in more than 2 dimensions and animate the visualization over time."
+            },
+            {
+              "label": "Rock Creek Insights",
+              "description": "Constructed an application, Rock Creek Insights, using MeteorJS that the firm uses to provide client risk reporting, monitor risk and compare performances of managed pension funds."
             }
           ]
         }
@@ -223,7 +391,17 @@
           "startDate": "2015-04-01T00:00:00Z",
           "endDate": "2016-07-01T00:00:00Z",
           "title": "Quantitative Research Analyst",
-          "description": "Responsibilities involved the research and implementation of complex models for credit default risk in a variety of exotic derivatives and structured products. "
+          "description": "Responsibilities involved the research and implementation of complex models for credit default risk in a variety of exotic derivatives and structured products.",
+          "skills": [
+            "Python",
+            "Javascript",
+            "Flask",
+            "Django",
+            "Credit Default Risk Modeling",
+            "Numerical Computation",
+            "Monte Carlo Methods"
+          ],
+          "details": []
         }
       ]
     }

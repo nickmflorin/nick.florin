@@ -7,6 +7,12 @@
 
 button {
   @include button-base;
+
+  // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
+  // primary buttons.
+  &:not(.button) {
+    @include third-party-button();
+  }
 }
 
 .button {

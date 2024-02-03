@@ -7,7 +7,7 @@ import { type Optional } from "utility-types";
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { Loading } from "~/components/loading/Loading";
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps, type BorderRadius, BorderRadii } from "~/components/types";
 
 import { type ImageProp } from "./types";
 
@@ -15,6 +15,7 @@ type BaseModelImageProps = ComponentProps & {
   readonly fallbackIcon?: IconProp;
   readonly alt?: string;
   readonly loading?: boolean;
+  readonly radius?: BorderRadius;
 };
 
 type ModelImageSpreadProps = BaseModelImageProps &
@@ -61,12 +62,16 @@ export const ModelImage = ({
   className,
   style,
   image,
+  radius = BorderRadii.NONE,
   loading,
 }: ModelImageProps) => {
   const _url = getImageVar("url", { image, url });
   const _size = getImageVar("size", { image, size });
   return (
-    <div style={{ ...style, height: size, width: size }} className={clsx("model-image", className)}>
+    <div
+      style={{ ...style, height: size, width: size }}
+      className={clsx("model-image", `model-image--radius-${radius}`, className)}
+    >
       <Loading loading={loading === true} />
       {_url !== undefined && _url !== null ? (
         <Image height={_size} width={_size} src={_url} alt={alt} />

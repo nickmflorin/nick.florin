@@ -4,7 +4,7 @@ import { env } from "~/env.mjs";
 
 import { upsertUserFromClerk } from "./clerk";
 import { prisma } from "./client";
-import { seedSchools, seedCompanies, type SeedContext, seedProfile } from "./seeding";
+import { seedSchools, seedCompanies, type SeedContext, seedProfile, seedSkills } from "./seeding";
 
 async function main() {
   if (env.PERSONAL_CLERK_USER_ID === undefined) {
@@ -20,9 +20,10 @@ async function main() {
     clerkUser,
     user: await upsertUserFromClerk(clerkUser),
   };
+  await seedProfile(ctx);
+  await seedSkills(ctx); // Must be done first
   await seedSchools(ctx);
   await seedCompanies(ctx);
-  await seedProfile(ctx);
 }
 
 main()

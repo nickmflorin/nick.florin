@@ -186,7 +186,7 @@ type _BaseIconProps = ComponentProps &
      * Default: "square"
      */
     readonly fit?: IconFit;
-    readonly size: IconDiscreteSize | Size;
+    readonly size?: IconDiscreteSize | Size;
     /**
      * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
      * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.

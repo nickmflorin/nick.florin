@@ -1,15 +1,26 @@
+import dynamic from "next/dynamic";
+
 import { DetailEntityType } from "@prisma/client";
 
 import { type ComponentProps } from "~/components/types";
 import { prisma } from "~/prisma/client";
 
-import { CommitTimeline } from "./CommitTimeline";
 import { ExperienceTile } from "./ExperienceTile";
-import { ResumeSection } from "./ResumeSection";
 
-export type ExperienceProps = ComponentProps;
+const CommitTimeline = dynamic(
+  async () => {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return await import("../CommitTimeline");
+  },
+  {
+    ssr: false,
+    loading: () => <div>Loading...</div>,
+  },
+);
 
-export const Experience = async (props: ExperienceProps): Promise<JSX.Element> => {
+export type ExperienceTimelineProps = ComponentProps;
+
+export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promise<JSX.Element> => {
   const _experiences = await prisma.experience.findMany({
     include: { company: true },
     orderBy: { startDate: "desc" },
@@ -19,6 +30,7 @@ export const Experience = async (props: ExperienceProps): Promise<JSX.Element> =
       entityType: DetailEntityType.EXPERIENCE,
       entityId: { in: _experiences.map(e => e.id) },
     },
+    include: { nestedDetails: true },
     orderBy: { createdAt: "desc" },
   });
   const skills = await prisma.skill.findMany({
@@ -31,12 +43,10 @@ export const Experience = async (props: ExperienceProps): Promise<JSX.Element> =
     skills: skills.filter(s => s.experiences.some(e => e.experienceId === exp.id)),
   }));
   return (
-    <ResumeSection title="Experience" {...props}>
-      <CommitTimeline>
-        {experiences.map(experience => (
-          <ExperienceTile key={experience.id} experience={experience} />
-        ))}
-      </CommitTimeline>
-    </ResumeSection>
+    <CommitTimeline {...props}>
+      {experiences.map(experience => (
+        <ExperienceTile key={experience.id} experience={experience} />
+      ))}
+    </CommitTimeline>
   );
 };

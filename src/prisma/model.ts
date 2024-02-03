@@ -47,4 +47,5 @@ export type ApiExperience = Experience & {
 export type ApiEducation = Education & {
   readonly school: School;
   readonly details: Detail[];
+  readonly skills: Skill[];
 };

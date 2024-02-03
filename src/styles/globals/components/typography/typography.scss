@@ -43,11 +43,19 @@ p {
 }
 
 @mixin with-fonts($type) {
+  @include partials.with-font-weights();
+  @include partials.with-font-families();
+  @include partials.with-text-transforms();
+
   @include partials.with-font-sizes($type) using ($size, $data) {
     &.font-size-#{$size} {
       font-size: partials.mapget($data, font-size);
       line-height: partials.mapget($data, line-height);
       font-weight: partials.mapget($data, font-weight);
+
+      // Allow the font-weight to be overridden for each size.
+      @include partials.with-font-weights();
+
       @content ($data);
     }
   }
@@ -59,13 +67,6 @@ p {
   // in cases where the component is not provided with those props.
   @extend %typography-base;
   @include partials.with-default-font-size("label");
-
-  // Allow the font-weight to be overridden for each size.
-  @include partials.with-font-weights() using ($weight, $value) {
-    &.font-weight-#{$weight} {
-      font-weight: $value;
-    }
-  }
 
   @include with-fonts("label") using ($data) {
     $font-size: partials.mapget($data, font-size);
@@ -81,7 +82,6 @@ p {
   }
 
   display: flex;
-  width: 100%;
 
   &--transform-underline {
     text-decoration: underline;
@@ -94,13 +94,6 @@ p {
 
 @mixin title() {
   @include with-fonts("heading");
-
-  // Allow the font-weight to be overridden for each size.
-  @include partials.with-font-weights() using ($weight, $value) {
-    &.font-weight-#{$weight} {
-      font-weight: $value;
-    }
-  }
 }
 
 h1,
@@ -157,13 +150,6 @@ h6 {
   @extend %typography-base;
   @include partials.with-default-font-size("body");
 
-  // Allow the font-weight to be overridden for each size.
-  @include partials.with-font-weights() using ($weight, $value) {
-    &.font-weight-#{$weight} {
-      font-weight: $value;
-    }
-  }
-
   @include with-fonts("body") using ($data) {
     $font-size: partials.mapget($data, font-size);
     $line-height: partials.mapget($data, line-height);
@@ -180,14 +166,6 @@ h6 {
   align-items: center;
   display: flex;
   flex-direction: row;
-
-  &--transform-underline {
-    text-decoration: underline;
-  }
-
-  &--transform-caps {
-    text-transform: uppercase;
-  }
 
   &.truncate {
     @include partials.truncate();

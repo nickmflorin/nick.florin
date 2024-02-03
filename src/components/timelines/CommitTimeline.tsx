@@ -13,7 +13,6 @@ export const CommitTimeline = ({ children, ...props }: CommitTimelineProps) => (
   <div {...props} className={clsx("commit-timeline", props.className)}>
     <div className="commit-timeline__inner">
       <Timeline
-        active={1}
         bulletSize={24}
         lineWidth={2}
         classNames={{
@@ -43,3 +42,5 @@ export const CommitTimeline = ({ children, ...props }: CommitTimelineProps) => (
     </div>
   </div>
 );
+
+export default CommitTimeline;

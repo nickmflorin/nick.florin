@@ -1,0 +1,253 @@
+{
+  "skills": [
+    {
+      "label": "TypeScript",
+      "slug": "typescript",
+      "categories": ["PROGRAMMING_LANGUAGE"],
+      "programmingLanguages": ["TYPESCRIPT"],
+      "programmingDomains": ["BACKEND", "FRONTEND", "MOBILE"],
+      "experience": 4,
+      "includeInTopSkills": true
+    },
+    {
+      "label": "Swift",
+      "slug": "swift",
+      "categories": ["PROGRAMMING_LANGUAGE"],
+      "programmingDomains": ["MOBILE"],
+      "programmingLanguages": ["SWIFT"],
+      "experience": 3,
+      "includeInTopSkills": true
+    },
+    {
+      "label": "NextJS",
+      "slug": "nextjs",
+      "categories": ["WEB_FRAMEWORK"],
+      "programmingDomains": ["BACKEND", "FRONTEND"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT", "CSS", "SCSS"],
+      "includeInTopSkills": true
+    },
+    {
+      "label": "Javascript",
+      "slug": "javascript",
+      "categories": ["PROGRAMMING_LANGUAGE"],
+      "programmingLanguages": ["TYPESCRIPT"],
+      "programmingDomains": ["BACKEND", "FRONTEND", "MOBILE"],
+      "experience": 9,
+      "includeInTopSkills": true
+    },
+    {
+      "label": "GraphQL",
+      "slug": "graphql",
+      "categories": ["API_DEVELOPMENT", "PROGRAMMING_LANGUAGE"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["BACKEND", "FRONTEND"],
+      "includeInTopSkills": true
+    },
+    {
+      "label": "React",
+      "slug": "react",
+      "categories": ["PROGRAMMING_LANGUAGE"],
+      "programmingLanguages": ["REACT"],
+      "programmingDomains": ["FRONTEND"],
+      "includeInTopSkills": true
+    },
+    {
+      "label": "Python",
+      "slug": "python",
+      "categories": ["PROGRAMMING_LANGUAGE"],
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["PYTHON"],
+      "experience": 11,
+      "includeInTopSkills": true
+    },
+    {
+      "label": "Django REST Framework",
+      "slug": "django-rest-framework",
+      "categories": ["WEB_FRAMEWORK", "API_DEVELOPMENT"],
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["PYTHON"],
+      "includeInTopSkills": true
+    },
+    {
+      "label": "Flask",
+      "slug": "flask",
+      "includeInTopSkills": true,
+      "categories": ["WEB_FRAMEWORK", "API_DEVELOPMENT"],
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["PYTHON"]
+    },
+    {
+      "label": "Django",
+      "slug": "django",
+      "includeInTopSkills": true,
+      "categories": ["WEB_FRAMEWORK"],
+      "programmingDomains": ["BACKEND", "FRONTEND"],
+      "programmingLanguages": ["PYTHON"]
+    },
+    {
+      "label": "TailwindCSS",
+      "slug": "tailwindcss",
+      "includeInTopSkills": true,
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["SCSS", "CSS"],
+      "programmingDomains": ["FRONTEND"]
+    },
+    {
+      "label": "React Native",
+      "slug": "react-native",
+      "categories": ["PACKAGE"],
+      "includeInTopSkills": true,
+      "programmingLanguages": ["REACT_NATIVE"],
+      "programmingDomains": ["MOBILE"],
+      "experience": 2
+    },
+    {
+      "label": "SCSS/SASS",
+      "slug": "scss",
+      "programmingLanguages": ["SCSS"],
+      "programmingDomains": ["FRONTEND"],
+      "experience": 5,
+      "includeInTopSkills": true
+    },
+    {
+      "label": "Floating UI",
+      "slug": "floating-ui",
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["REACT", "TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FRONTEND"]
+    },
+    {
+      "label": "pnpm",
+      "slug": "pnpm",
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["JAVASCRIPT", "TYPESCRIPT"]
+    },
+    {
+      "label": "npm",
+      "slug": "npm",
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["JAVASCRIPT", "TYPESCRIPT"]
+    },
+    {
+      "label": "yarn",
+      "slug": "yarn",
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["JAVASCRIPT", "TYPESCRIPT"]
+    },
+    {
+      "label": "TRPC",
+      "slug": "trpc",
+      "categories": ["WEB_FRAMEWORK", "API_DEVELOPMENT"],
+      "programmingDomains": ["BACKEND", "FRONTEND"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "includeInTopSkills": true
+    },
+    {
+      "label": "PrismaJS",
+      "slug": "prismajs",
+      "categories": ["PACKAGE", "DATABASE"],
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"]
+    },
+    { "label": "Vercel", "slug": "vercel", "categories": ["DEVOPS"] },
+    { "label": "SSR", "slug": "ssr" },
+    { "label": "docker", "slug": "docker", "includeInTopSkills": true },
+    { "label": "Jenkins", "slug": "jenkins" },
+    { "label": "SonarQube", "slug": "sonarqube" },
+    { "label": "PostgreSQL", "slug": "postgresql", "includeInTopSkills": true },
+    { "label": "Agile Software Development", "slug": "agile-software-development" },
+    { "label": "Project Planning & Roadmapping", "slug": "project-planning-&-roadmapping" },
+    { "label": "Security Practices", "slug": "security-practices" },
+    { "label": "CI/CD", "slug": "ci/cd", "categories": ["DEVOPS"], "includeInTopSkills": true },
+    { "label": "jest", "slug": "jest" },
+    {
+      "label": "StorybookJS",
+      "slug": "storybookjs",
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["JAVASCRIPT", "TYPESCRIPT", "REACT"],
+      "programmingDomains": ["FRONTEND"]
+    },
+    {
+      "label": "React Redux",
+      "slug": "react-redux",
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["JAVASCRIPT", "TYPESCRIPT", "REACT"],
+      "programmingDomains": ["FRONTEND"],
+      "includeInTopSkills": true
+    },
+    {
+      "label": "Redux-Sagas",
+      "slug": "redux-sagas",
+      "categories": ["PACKAGE"],
+      "programmingLanguages": ["JAVASCRIPT", "TYPESCRIPT", "REACT"],
+      "programmingDomains": ["FRONTEND"],
+      "includeInTopSkills": true
+    },
+    { "label": "AWS S3 Storage", "slug": "aws-s3-storage", "includeInTopSkills": true },
+    { "label": "CircleCI", "slug": "circleci" },
+    { "label": "poetry", "slug": "poetry" },
+    { "label": "Redis", "slug": "redis" },
+    { "label": "tox", "slug": "tox" },
+    { "label": "codecov", "slug": "codecov" },
+    { "label": "pytest", "slug": "pytest" },
+    { "label": "JWT Authentication", "slug": "jwt-authentication" },
+    { "label": "AWS EC2", "slug": "aws-ec2", "includeInTopSkills": true },
+    { "label": "celery", "slug": "celery" },
+    { "label": "AWS", "slug": "aws", "includeInTopSkills": true },
+    { "label": "AWS Cloudwatch", "slug": "aws-cloudwatch" },
+    { "label": "Auth0", "slug": "auth0" },
+    { "label": "Redix", "slug": "redix" },
+    { "label": "Django Channels", "slug": "django-channels" },
+    { "label": "Application Security", "slug": "application-security" },
+    { "label": "Web Sockets", "slug": "web-sockets" },
+    { "label": "Data Scraping", "slug": "data-scraping" },
+    { "label": "Rundeck", "slug": "rundeck" },
+    {
+      "label": "SQLAlchemy",
+      "slug": "sqlalchemy",
+      "categories": ["DATABASE", "PACKAGE"],
+      "programmingLanguage": ["PYTHON"],
+      "programmingDomains": ["BACKEND"]
+    },
+    { "label": "bash", "slug": "bash" },
+    { "label": "linux", "slug": "linux" },
+    { "label": "ElasticSearch", "slug": "elasticsearch" },
+    { "label": "Session Authentication", "slug": "session-authentication" },
+    { "label": "RabbitMQ", "slug": "rabbitmq" },
+    { "label": "Message Buses", "slug": "message-buses" },
+    { "label": "Python 2/3 Compatibility", "slug": "python-2/3-compatibility" },
+    { "label": "Package & Dependency Management", "slug": "package-&-dependency-management" },
+    { "label": "Relational Databases", "slug": "relational-databases", "includeInTopSkills": true },
+    { "label": "nodeJS", "slug": "nodejs", "includeInTopSkills": true },
+    { "label": "REST API Design", "slug": "rest-api-design", "categories": ["API_DEVELOPMENT"] },
+    { "label": "mySQL", "slug": "mysql" },
+    { "label": "git", "slug": "git", "includeInTopSkills": true },
+    { "label": "Jinja", "slug": "jinja" },
+    { "label": "Sentry", "slug": "sentry" },
+    { "label": "Unit Testing", "slug": "unit-testing" },
+    { "label": "Integration Testing", "slug": "integration-testing" },
+    { "label": "unittest", "slug": "unittest" },
+    { "label": "mock", "slug": "mock" },
+    { "label": "Jira", "slug": "jira" },
+    { "label": "HTML Templating", "slug": "html-templating" },
+    { "label": "flake8", "slug": "flake8" },
+    { "label": "asyncio", "slug": "asyncio" },
+    { "label": "mongooseJS", "slug": "mongoosejs" },
+    { "label": "expressJS", "slug": "expressjs" },
+    { "label": "jQuery", "slug": "jquery" },
+    { "label": "Authentication Protocols", "slug": "authentication-protocols" },
+    { "label": "Application Middleware", "slug": "application-middleware" },
+    { "label": "AWS Elastic Beanstalk", "slug": "aws-elastic-beanstalk" },
+    { "label": "CSS", "slug": "css", "includeInTopSkills": true },
+    { "label": "noSQL Databases", "slug": "nosql-databases" },
+    { "label": "mongoDB", "slug": "mongodb", "includeInTopSkills": true },
+    { "label": "pandas", "slug": "pandas" },
+    { "label": "MeteorJS", "slug": "meteorjs", "includeInTopSkills": true },
+    { "label": "d3.js", "slug": "d3js" },
+    { "label": "AWS Lambdas", "slug": "aws-lambdas", "includeInTopSkills": true },
+    { "label": "Handlebars", "slug": "handlebars" },
+    { "label": "Credit Default Risk Modeling", "slug": "credit-default-risk-modeling" },
+    { "label": "Numerical Computation", "slug": "numerical-computation" },
+    { "label": "Monte Carlo Methods", "slug": "monte-carlo-methods" }
+  ]
+}

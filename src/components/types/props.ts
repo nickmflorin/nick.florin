@@ -2,6 +2,8 @@ import type React from "react";
 
 import { type ClassArray, type ClassValue } from "clsx";
 
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+
 export type ClassName = ClassValue | ClassArray;
 
 export type Style = React.CSSProperties;
@@ -10,6 +12,12 @@ export type ComponentProps = {
   readonly className?: ClassName;
   readonly style?: Style;
 };
+
+export const BorderRadii = enumeratedLiterals(
+  ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full"] as const,
+  {},
+);
+export type BorderRadius = EnumeratedLiteralsType<typeof BorderRadii>;
 
 export type SizeUnit = "px" | "rem";
 export type Size = `${number}${SizeUnit}` | number;

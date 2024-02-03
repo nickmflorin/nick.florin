@@ -12,11 +12,12 @@ $font-family-avenir: avenir;
 $font-family-roboto: roboto;
 $font-family-inter: var(--font-inter);
 $font-families: ($font-family-avenir, $font-family-roboto, $font-family-inter);
+$text-transforms: ("uppercase", "lowercase", "capitalize", "underline");
 
 /* -------------------------------------- Font Families ----------------------------------------- */
 $heading-font-family: $font-family-avenir;
 $body-font-family: $font-family-inter;
-$label-font-family: $font-family-avenir;
+$label-font-family: $font-family-inter;
 
 $typography-font-families: (
   "heading": $heading-font-family,
@@ -100,12 +101,6 @@ $font-family-default-weights: (
 
 @mixin label-font-weight($args...) {
   font-weight: get-font-weight($type: "label", $args...);
-}
-
-@mixin with-font-weights() {
-  @each $weight in $font-weight-names {
-    @content ($weight, get-font-weight($weight: $weight));
-  }
 }
 
 /* --------------------------------------- Font Sizes ----------------------------------------- */
@@ -362,6 +357,34 @@ $typography-default-colors: (
   @each $size in $typography-sizes {
     $properties: get-font($type, $size: $size);
     @content ($size, $properties);
+  }
+}
+
+@mixin with-font-weights() {
+  @each $weight in $font-weight-names {
+    &.font-weight-#{$weight} {
+      font-weight: get-font-weight($weight: $weight);
+    }
+  }
+}
+
+@mixin with-font-families() {
+  &.font-family-inter {
+    font-family: $font-family-inter;
+  }
+  &.font-family-roboto {
+    font-family: $font-family-roboto;
+  }
+  &.font-family-avenir {
+    font-family: $font-family-avenir;
+  }
+}
+
+@mixin with-text-transforms() {
+  @each $transform in $text-transforms {
+    &.transform-#{$transform} {
+      text-transform: $transform;
+    }
   }
 }
 

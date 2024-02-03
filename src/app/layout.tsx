@@ -34,7 +34,41 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={InterFont.className}>
         <AppConfig>
-          <Layout>{children}</Layout>
+          <Layout
+            sidebar={[
+              {
+                label: "Resume",
+                icon: { name: "file-user" },
+                path: "/resume",
+                active: [
+                  { leadingPath: "/resume/experience" },
+                  { leadingPath: "/resume/education" },
+                ],
+                children: [
+                  {
+                    label: "Experience",
+                    icon: { name: "briefcase" },
+                    path: "/resume/experience",
+                    active: [{ leadingPath: "/resume/experience" }],
+                  },
+                  {
+                    label: "Education",
+                    icon: { name: "building-columns" },
+                    path: "/resume/education",
+                    active: [{ leadingPath: "/resume/education" }],
+                  },
+                ],
+              },
+              {
+                label: "Projects",
+                icon: { name: "file-user" },
+                path: "/projects",
+                active: [{ leadingPath: "/projects" }],
+              },
+            ]}
+          >
+            {children}
+          </Layout>
         </AppConfig>
       </body>
     </html>

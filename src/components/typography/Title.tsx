@@ -1,8 +1,9 @@
 import clsx from "clsx";
 
 import { ensuresDefinedValue } from "~/lib/typeguards";
-import { type ComponentProps, type Style } from "~/components/types";
-import { type FontWeight } from "~/components/typography";
+import { type Style } from "~/components/types";
+
+import { type BaseTypographyProps, getTypographyClassName } from "./types";
 
 type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -23,16 +24,14 @@ const factories: Factories = {
   6: props => <h6 {...props} />,
 };
 
-export interface TitleProps extends ComponentProps {
+export interface TitleProps extends Omit<BaseTypographyProps, "size"> {
   readonly children: string | number | undefined | null | false;
   readonly order?: TitleOrder;
-  // Let the weight default in SASS baed on the size.
-  readonly fontWeight?: FontWeight;
 }
 
-export const Title = ({ order = 3, fontWeight, children, ...props }: TitleProps): JSX.Element =>
+export const Title = ({ order = 3, children, ...props }: TitleProps): JSX.Element =>
   ensuresDefinedValue(factories[order])({
     ...props,
     children,
-    className: clsx("title", fontWeight && `font-weight-${fontWeight}`),
+    className: clsx("title", getTypographyClassName(props)),
   });

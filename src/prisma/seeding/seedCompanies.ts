@@ -63,60 +63,26 @@ export async function seedCompanies(ctx: SeedContext) {
           }),
         ),
       );
-      /* Create or establish relationships for all skills associated with the experience.  Since
-         our fixtures reference skills as string labels, two different experiences may have the
-         same skill, we need to check current skills and skill/experience relationships in the
-         database before creating new skills or establishing relationships between existing skills
-         and new experiences. */
       const allSkills = await prisma.skill.findMany({});
-      for (const skillLabel of jsonExperience.skills ?? []) {
+      for (const jsonSkill of jsonExperience.skills ?? []) {
         /* Determine whether or not the skill label in the JSON fixture is already associated with
-           a skill in the database. */
+           a skill in the database.  If it is not, an error will be thrown. */
         const correspondingSkill = findCorresponding(
           allSkills,
-          { label: skillLabel },
+          { label: jsonSkill },
           {
             field: "label",
             reference: "skill",
+            strict: true,
           },
         );
-        /* If the skill does not exist in the database, the skill needs to be created along with the
-           relationship between the skill and the experience. */
-        if (!correspondingSkill) {
-          await prisma.skill.create({
-            data: {
-              label: skillLabel,
-              createdBy: { connect: { id: ctx.user.id } },
-              updatedBy: { connect: { id: ctx.user.id } },
-              experiences: {
-                create: [
-                  {
-                    assignedById: ctx.user.id,
-                    experience: { connect: { id: experience.id } },
-                  },
-                ],
-              },
-            },
-          });
-        } else {
-          /* If the skill does exist in the database, we need to determine whether or not that skill
-             is already associated with the experience.  If it is not, the relationship needs to be
-             established. */
-          const experienceSkill = await prisma.skill.findUnique({
-            where: {
-              id: correspondingSkill.id,
-            },
-          });
-          if (!experienceSkill) {
-            await prisma.experienceOnSkills.create({
-              data: {
-                assignedById: ctx.user.id,
-                skillId: correspondingSkill.id,
-                experienceId: experience.id,
-              },
-            });
-          }
-        }
+        await prisma.experienceOnSkills.create({
+          data: {
+            assignedById: ctx.user.id,
+            skillId: correspondingSkill.id,
+            experienceId: experience.id,
+          },
+        });
       }
     }
   }
