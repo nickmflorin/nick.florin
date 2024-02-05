@@ -1,22 +1,25 @@
-import dynamic from "next/dynamic";
+import { type NextRequest } from "next/server";
 
 import { DateTime } from "luxon";
 
+import { ClientResponse } from "~/application/http";
 import { minDate, strictArrayLookup } from "~/lib";
-import { type ComponentProps } from "~/components/types";
 import { prisma } from "~/prisma/client";
+import { type ApiSkill } from "~/prisma/model";
 
-const SkillsBarChart = dynamic(() => import("~/components/charts/SkillsBarChart/index"), {
-  ssr: true,
-  loading: () => <div>Loading...</div>,
-});
+import { SkillQuerySchema } from "../types";
 
-type Datum = { experience: number; id: string; skill: string };
+export async function GET(request: NextRequest) {
+  const query = { showTopSkills: request.nextUrl.searchParams.get("showTopSkills") };
+  const parsedQuery = SkillQuerySchema.safeParse(query);
+  if (!parsedQuery.success) {
+    return ClientResponse.BadRequest("Invalid query parameters!").toResponse();
+  }
+  const { showTopSkills } = parsedQuery.data;
 
-export type SkillsBarChartProps = ComponentProps;
-
-const SkillsServerBarChart = async (props: SkillsBarChartProps): Promise<JSX.Element> => {
-  const skills = await prisma.skill.findMany({ where: { includeInTopSkills: true } });
+  const skills = await prisma.skill.findMany({
+    where: { includeInTopSkills: true },
+  });
 
   const experiences = await prisma.experience.findMany({
     where: {
@@ -38,10 +41,10 @@ const SkillsServerBarChart = async (props: SkillsBarChartProps): Promise<JSX.Ele
     include: { skills: true },
   });
 
-  const data: Datum[] = [];
+  const data: ApiSkill[] = [];
   for (const skill of skills) {
     if (skill.experience !== null) {
-      data.push({ skill: skill.label, experience: skill.experience, id: skill.slug });
+      data.push(skill as ApiSkill);
     } else {
       /* Since the educations are already ordered by their start date, we can just take the first
          one from the filtered results. */
@@ -57,25 +60,19 @@ const SkillsServerBarChart = async (props: SkillsBarChartProps): Promise<JSX.Ele
         0,
         {},
       );
-      const oldestDate =
-        oldestEducation && oldestExperience
-          ? DateTime.fromJSDate(minDate(oldestEducation.startDate, oldestExperience.startDate))
-          : oldestEducation
-            ? DateTime.fromJSDate(oldestEducation.startDate)
-            : oldestExperience
-              ? DateTime.fromJSDate(oldestExperience.startDate)
-              : null;
+      const oldestDate = minDate(oldestEducation?.startDate, oldestExperience?.startDate);
       if (oldestDate) {
         data.push({
-          skill: skill.label,
-          id: skill.slug,
-          experience: Math.round(DateTime.now().diff(oldestDate, "years").years),
+          ...skill,
+          experience: Math.round(
+            DateTime.now().diff(DateTime.fromJSDate(oldestDate), "years").years,
+          ),
         });
       }
     }
   }
   const sorted = data.sort((a, b) => b.experience - a.experience);
-  return <SkillsBarChart {...props} data={sorted} />;
-};
-
-export default SkillsServerBarChart;
+  return ClientResponse.OK(
+    showTopSkills === "all" ? sorted : sorted.slice(0, showTopSkills),
+  ).toResponse();
+}

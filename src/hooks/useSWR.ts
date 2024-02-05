@@ -1,5 +1,5 @@
 import superjson, { type SuperJSONResult } from "superjson";
-import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse } from "swr";
+import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
 import {
@@ -11,13 +11,19 @@ import {
   type HttpError,
   isHttpError,
 } from "~/application/errors";
+import { type QueryParams, addQueryParamsToUrl } from "~/lib/urls";
+
+type ApiPath = `/api/${string}`;
+type Args = Exclude<Arguments, string> | ApiPath;
+type Key = Args | (() => Args);
 
 type FetchResponseBody = { data: SuperJSONResult } | SuperJSONResult;
 
 const isSuccessResponseBody = (b: FetchResponseBody): b is { data: SuperJSONResult } =>
   typeof b === "object" && b !== null && (b as { data: SuperJSONResult }).data != undefined;
 
-export const swrFetcher = async <T>(url: string) => {
+export const swrFetcher = async <T>(path: ApiPath, query?: QueryParams) => {
+  const url = query ? addQueryParamsToUrl(path, query) : path;
   let response: Response | null = null;
   try {
     response = await fetch(url);
@@ -78,35 +84,42 @@ export type SWRConfig<T> = Omit<
      and should not be overridden. */
   "shouldRetryOnError" | "onError" | "onSuccess"
 > & {
+  readonly query?: QueryParams;
   readonly onError?: (e: HttpError) => void;
   readonly onSuccess?: (data: T) => void;
 };
 
 export type SWRResponse<T> = RootSWRResponse<T, HttpError>;
 
+const shouldFetch = (k: Key) => ![null, undefined, false].includes(k as null | undefined | boolean);
+
 export const useSWR = <T>(
-  url: string,
-  { onError: _onError, ...config }: SWRConfig<T>,
+  path: Key,
+  { onError: _onError, query, ...config }: SWRConfig<T>,
 ): SWRResponse<T> => {
   /* If the `onError` configuration callback is provided, it is very important that the globally
        configured `onError` configuration callback is *still* called beforehand. */
   const { onError } = useSWRConfig();
 
-  const { data, error, ...others } = useRootSWR(url, swrFetcher<T>, {
-    ...config,
-    onError: (e: unknown, key, c) => {
-      // It is important that the globally configured onError callback is called first.
-      onError(e, key, c as PublicConfiguration);
-      if (isHttpError(e)) {
-        return _onError?.(e);
-      }
-      if (e instanceof NetworkError || e instanceof ClientError) {
-        return _onError?.(e);
-      }
-      /* This will force the useSWR call to throw the error, instead of embedding the error in the
+  const { data, error, ...others } = useRootSWR(
+    shouldFetch(path) ? [path, query] : null,
+    ([p, q]) => swrFetcher<T>(p as ApiPath, q),
+    {
+      ...config,
+      onError: (e: unknown, key, c) => {
+        // It is important that the globally configured onError callback is called first.
+        onError(e, key, c as PublicConfiguration);
+        if (isHttpError(e)) {
+          return _onError?.(e);
+        }
+        if (e instanceof NetworkError || e instanceof ClientError) {
+          return _onError?.(e);
+        }
+        /* This will force the useSWR call to throw the error, instead of embedding the error in the
          hook's return. */
-      throw e;
+        throw e;
+      },
     },
-  });
+  );
   return { data, error, ...others } as SWRResponse<T>;
 };

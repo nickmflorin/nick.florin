@@ -1,4 +1,5 @@
 export { useSWR } from "./useSWR";
-export * from "./useEducation";
-export * from "./useExperience";
+export * from "./api";
+export * from "./useDeep";
+export * from "./useReferentialCallback";
 export * from "./useQueryParams";

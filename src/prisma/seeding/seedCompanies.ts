@@ -1,11 +1,13 @@
 import { prisma } from "../client";
-import { json } from "../fixtures";
+import { json } from "../fixtures/json";
 import { DetailEntityType } from "../model";
 
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
 export async function seedCompanies(ctx: SeedContext) {
+  /* eslint-disable-next-line no-console */
+  console.info("Generating Companies...");
   const companies = await Promise.all(
     json.companies.map(({ experiences: jsonExperiences, ...jsonCompany }) =>
       prisma.company.create({
@@ -31,6 +33,11 @@ export async function seedCompanies(ctx: SeedContext) {
       }),
     ),
   );
+  /* eslint-disable-next-line no-console */
+  console.info(`Generated ${companies.length} Companies`);
+
+  /* eslint-disable-next-line no-console */
+  console.info("Generating Company Experiences...");
   for (const company of companies) {
     const jsonCompany = findCorresponding(json.companies, company, {
       field: "name",
@@ -65,17 +72,31 @@ export async function seedCompanies(ctx: SeedContext) {
       );
       const allSkills = await prisma.skill.findMany({});
       for (const jsonSkill of jsonExperience.skills ?? []) {
+        let correspondingSkill: (typeof allSkills)[number];
         /* Determine whether or not the skill label in the JSON fixture is already associated with
            a skill in the database.  If it is not, an error will be thrown. */
-        const correspondingSkill = findCorresponding(
+        const corresponding = findCorresponding(
           allSkills,
           { label: jsonSkill },
           {
             field: "label",
             reference: "skill",
-            strict: true,
+            strict: false,
           },
         );
+        if (!corresponding) {
+          correspondingSkill = findCorresponding(
+            allSkills,
+            { slug: jsonSkill },
+            {
+              field: "slug",
+              reference: "skill",
+              strict: true,
+            },
+          );
+        } else {
+          correspondingSkill = corresponding;
+        }
         await prisma.experienceOnSkills.create({
           data: {
             assignedById: ctx.user.id,
@@ -85,5 +106,9 @@ export async function seedCompanies(ctx: SeedContext) {
         });
       }
     }
+    /* eslint-disable-next-line no-console */
+    console.info(
+      `Successfully Generated ${company.experiences.length} Experiences for Company ${company.name}`,
+    );
   }
 }

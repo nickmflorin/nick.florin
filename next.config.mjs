@@ -41,7 +41,7 @@ const config = {
   redirects: async () => [
     {
       source: "/",
-      destination: "/resume/experience",
+      destination: "/resume",
       permanent: false,
     },
     {

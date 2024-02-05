@@ -42,6 +42,7 @@ export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promis
     details: details.filter(d => d.entityId === exp.id),
     skills: skills.filter(s => s.experiences.some(e => e.experienceId === exp.id)),
   }));
+
   return (
     <CommitTimeline {...props}>
       {experiences.map(experience => (

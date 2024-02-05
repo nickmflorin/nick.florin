@@ -49,3 +49,7 @@ export type ApiEducation = Education & {
   readonly details: Detail[];
   readonly skills: Skill[];
 };
+
+export type ApiSkill = Omit<Skill, "experience"> & {
+  readonly experience: number;
+};

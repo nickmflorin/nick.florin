@@ -48,13 +48,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   {
                     label: "Experience",
                     icon: { name: "briefcase" },
-                    path: "/resume/experience",
+                    path: { pathname: "/resume/experience", maintainQuery: true },
                     active: [{ leadingPath: "/resume/experience" }],
                   },
                   {
                     label: "Education",
                     icon: { name: "building-columns" },
-                    path: "/resume/education",
+                    path: { pathname: "/resume/education", maintainQuery: true },
                     active: [{ leadingPath: "/resume/education" }],
                   },
                 ],

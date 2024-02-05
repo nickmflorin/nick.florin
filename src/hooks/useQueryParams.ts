@@ -2,18 +2,12 @@
 import { ReadonlyURLSearchParams, useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useTransition } from "react";
 
-import { mergeQueryParams } from "~/lib/urls";
+import { addQueryParamsToUrl, mergeQueryParams, type QueryParams } from "~/lib/urls";
 
 import { useReferentialCallback } from "./useReferentialCallback";
 
-type Params<
-  K extends string = string,
-  V extends string | null | undefined = string | null,
-> = Record<K, V>;
-
 type MutableReturnType = {
   readonly href: string;
-  readonly queryString: string | null;
   readonly params: ReadonlyURLSearchParams;
 };
 
@@ -27,8 +21,8 @@ export interface IQueryParams {
   readonly pathname: string;
   readonly pending: boolean;
   readonly updateParams: (
-    params: Params<string, string | null | undefined>,
-    options?: MutableOptions & { readonly clearOthers?: true },
+    params: QueryParams,
+    options?: MutableOptions & { readonly replaceExisting?: boolean },
   ) => MutableReturnType;
 }
 
@@ -44,19 +38,16 @@ export const useQueryParams = (): IQueryParams => {
      their values remains the same. */
   const updateParams = useReferentialCallback(
     (
-      params: Params<string, string | null | undefined>,
-      options?: MutableOptions & { readonly clearOthers?: true },
+      params: QueryParams,
+      options?: MutableOptions & { readonly replaceExisting?: boolean },
     ): MutableReturnType => {
-      const toUpdate = options?.clearOthers
-        ? new URLSearchParams()
-        : new URLSearchParams(searchParams.toString());
+      const toUpdate =
+        options?.replaceExisting === false
+          ? new URLSearchParams()
+          : new URLSearchParams(searchParams.toString());
       const newParams = mergeQueryParams(toUpdate, params);
 
-      let href = pathname;
-      const queryString = newParams.toString();
-      if (newParams.size !== 0 && queryString.length !== 0) {
-        href = `${pathname}?${queryString}`;
-      }
+      const href = addQueryParamsToUrl(pathname, newParams, {});
       if (options?.push === true) {
         if (options?.useTransition !== false) {
           startTransition(() => push(href));
@@ -64,7 +55,7 @@ export const useQueryParams = (): IQueryParams => {
           push(href);
         }
       }
-      return { params: new ReadonlyURLSearchParams(newParams), queryString, href };
+      return { params: new ReadonlyURLSearchParams(newParams), href };
     },
   );
 

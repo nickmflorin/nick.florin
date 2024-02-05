@@ -1,5 +1,5 @@
 import { prisma } from "../client";
-import { json } from "../fixtures";
+import { json } from "../fixtures/json";
 import { type Profile } from "../model";
 
 import { type SeedContext } from "./types";

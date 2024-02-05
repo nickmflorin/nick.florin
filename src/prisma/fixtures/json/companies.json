@@ -13,15 +13,14 @@
           "title": "Senior Software Engineer",
           "isRemote": true,
           "skills": [
-            "TypeScript",
-            "Javascript",
-            "GraphQL",
-            "React",
-            "Floating UI",
-            "TailwindCSS",
-            "React Native",
-            "SCSS/SASS",
-            "ChartJS",
+            "typescript",
+            "javascript",
+            "graphql",
+            "react",
+            "floating-ui",
+            "tailwindcss",
+            "react-native",
+            "scss-sass",
             "pnpm"
           ],
           "description": "As a member of the Product Development Team, I contributed to the ongoing development of the company's flagship web-based and mobile products.",
@@ -48,7 +47,7 @@
           "title": "Founding Engineer",
           "isRemote": true,
           "description": "Contributed to the early development of the platform's MVP, building a web-based inventory management, order management and accounting system for the chemical supply chain industry.",
-          "skills": ["NextJS", "TRPC", "React", "PrismaJS", "Vercel", "SSR", "TypeScript"],
+          "skills": ["nextjs", "trpc", "react", "prismajs", "vercel", "ssr", "typescript"],
           "details": []
         }
       ]
@@ -67,8 +66,8 @@
           "title": "Software Engineer",
           "description": "Team lead for the \"Corsha Console\" team, responsible for building a modern, customer facing, web-based  platform that allows customers to manage, monitor, configure and interact with proprietary security technology running on their network.",
           "skills": [
-            "NextJS",
-            "TypeScript",
+            "nextjs",
+            "typescript",
             "React",
             "SCSS/SASS",
             "PrismaJS",
@@ -184,7 +183,7 @@
             "codecov",
             "pytest",
             "CI/CD",
-            "Redix",
+            "Redis",
             "JWT Authentication",
             "PostgreSQL",
             "Django Channels",
@@ -311,7 +310,6 @@
             "Javascript",
             "Authentication Protocols",
             "Session Authentication",
-            "Application Middleware",
             "AWS Elastic Beanstalk"
           ],
           "details": [

@@ -679,7 +679,7 @@ digest those changes and make the appropriate updates to the database structure.
 follows:
 
 ```bash
-$ npx prisma migrate dev
+$ pnpm db-migrate-dev
 ```
 
 This command will prompt [prisma] to update the database structure if changes were detected. If
@@ -692,7 +692,7 @@ If it is desired that just the migration file is created (without actually updat
 the `--create-only` flag can be used:
 
 ```bash
-$ npx prisma migrate dev --create-only
+$ pnpm create-migrations
 ```
 
 This will create the migration file, but will not apply it.
@@ -708,7 +708,7 @@ until the [`PrismaClient`](./src/server/db/index.ts) is regenerated.
 This can be done as follows:
 
 ```bash
-$ npx prisma db push
+$ pnpm pushdb
 ```
 
 Note that when running the `reset` command (discussed below), the
@@ -721,7 +721,7 @@ The application comes equipped with a databae seed file
 data/fixtures for development. This script can be run as:
 
 ```bash
-$ npx prisma db seed
+$ pnpm seeddb
 ```
 
 That being said, this seed process _only_ works when the database state is empty - if the database
@@ -730,7 +730,7 @@ Therefore, in order to run the [`./src/prisma/seed.ts](./src/prisma/seed.ts) scr
 as a part of [prisma]'s `reset` flow:
 
 ```bash
-$ npx prisma migrate reset
+$ pnpm migrate-reset
 ```
 
 This command will wipe the current database, run all migrations and _then_ run the

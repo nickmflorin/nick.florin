@@ -8,7 +8,7 @@ import { IconButton, type IconButtonProps } from "./IconButton";
 
 export interface SidebarAnchorProps
   extends Omit<IconButtonProps<{ as: "link" }>, "options" | "isActive" | "icon"> {
-  readonly item: Pick<ISidebarItem, "active" | "icon" | "queryParam" | "path" | "children">;
+  readonly item: Pick<ISidebarItem, "active" | "icon" | "path" | "children">;
 }
 
 export const SidebarAnchor = ({ item, ...props }: SidebarAnchorProps) => {
@@ -24,10 +24,16 @@ export const SidebarAnchor = ({ item, ...props }: SidebarAnchorProps) => {
     <IconButton
       {...props}
       options={{ as: "link" }}
-      to={{
-        pathname: item.path,
-        query: item.queryParam ? { [item.queryParam.key]: item.queryParam.value } : undefined,
-      }}
+      to={
+        typeof item.path === "string"
+          ? {
+              pathname: item.path,
+            }
+          : {
+              pathname: item.path.pathname,
+              query: searchParams.toString(),
+            }
+      }
       size="xlarge"
       icon={item.icon}
       isActive={isActive}

@@ -1,11 +1,13 @@
 import { prisma } from "../client";
-import { json } from "../fixtures";
+import { json } from "../fixtures/json";
 import { DetailEntityType } from "../model";
 
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
 export async function seedSchools(ctx: SeedContext) {
+  /* eslint-disable-next-line no-console */
+  console.info("Generating Schools...");
   const schools = await Promise.all(
     json.schools.map(({ educations: jsonEducations, ...jsonSchool }) =>
       prisma.school.create({
@@ -30,6 +32,11 @@ export async function seedSchools(ctx: SeedContext) {
       }),
     ),
   );
+  /* eslint-disable-next-line no-console */
+  console.info(`Generated ${schools.length} Schools`);
+
+  /* eslint-disable-next-line no-console */
+  console.info("Generating School Educations...");
   for (const school of schools) {
     const jsonSchool = findCorresponding(json.schools, school, {
       field: "name",
@@ -64,17 +71,31 @@ export async function seedSchools(ctx: SeedContext) {
       );
       const allSkills = await prisma.skill.findMany({});
       for (const jsonSkill of jsonEducation.skills ?? []) {
+        let correspondingSkill: (typeof allSkills)[number];
         /* Determine whether or not the skill label in the JSON fixture is already associated with
            a skill in the database.  If it is not, an error will be thrown. */
-        const correspondingSkill = findCorresponding(
+        const corresponding = findCorresponding(
           allSkills,
           { label: jsonSkill },
           {
             field: "label",
             reference: "skill",
-            strict: true,
+            strict: false,
           },
         );
+        if (!corresponding) {
+          correspondingSkill = findCorresponding(
+            allSkills,
+            { slug: jsonSkill },
+            {
+              field: "slug",
+              reference: "skill",
+              strict: true,
+            },
+          );
+        } else {
+          correspondingSkill = corresponding;
+        }
         await prisma.educationOnSkills.create({
           data: {
             assignedById: ctx.user.id,
@@ -84,5 +105,9 @@ export async function seedSchools(ctx: SeedContext) {
         });
       }
     }
+    /* eslint-disable-next-line no-console */
+    console.info(
+      `Successfully Generated ${school.educations.length} Educations for School ${school.name}`,
+    );
   }
 }

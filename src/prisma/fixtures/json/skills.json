@@ -1,0 +1,435 @@
+{
+  "skills": [
+    {
+      "includeInTopSkills": true,
+      "label": "TypeScript",
+      "programmingLanguages": ["TYPESCRIPT"],
+      "programmingDomains": ["FULL_STACK"],
+      "experience": 5,
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Swift",
+      "programmingDomains": ["MOBILE"],
+      "programmingLanguages": ["SWIFT"],
+      "experience": 2,
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "C++",
+      "slug": "c-plus-plus",
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["CPLUSPLUS"],
+      "experience": 2,
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Javascript",
+      "programmingLanguages": ["JAVASCRIPT"],
+      "programmingDomains": ["FULL_STACK"],
+      "experience": 9,
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Python",
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["PYTHON"],
+      "experience": 11,
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "SCSS/SASS",
+      "programmingLanguages": ["SCSS"],
+      "programmingDomains": ["FRONTEND"],
+      "experience": 5,
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Matlab",
+      "programmingLanguages": ["MATLAB"],
+      "experience": 5,
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "bash",
+      "experience": 2,
+      "programmingLanguages": ["BASH"],
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "CSS",
+      "experience": 11,
+      "programmingLanguages": ["CSS"],
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "jQuery",
+      "programmingLanguages": ["JQUERY", "JAVASCRIPT"],
+      "categories": ["PROGRAMMING_LANGUAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "NextJS",
+      "programmingDomains": ["FULL_STACK"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT", "CSS", "SCSS"],
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "GraphQL",
+      "categories": ["API_DEVELOPMENT", "FRAMEWORK", "PACKAGE"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FULL_STACK"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "React",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FRONTEND"],
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "TRPC",
+      "categories": ["API_DEVELOPMENT", "FRAMEWORK", "PACKAGE"],
+      "programmingDomains": ["FULL_STACK"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "nodeJS",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["BACKEND"],
+      "experience": 6,
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Django REST Framework",
+      "categories": ["API_DEVELOPMENT", "FRAMEWORK", "PACKAGE"],
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["PYTHON"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Flask",
+      "categories": ["API_DEVELOPMENT", "FRAMEWORK", "PACKAGE"],
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["PYTHON"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Django",
+      "programmingDomains": ["FULL_STACK"],
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "TailwindCSS",
+      "programmingLanguages": ["SCSS", "CSS"],
+      "programmingDomains": ["FRONTEND"],
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "SCSS/CSS Modules",
+      "programmingDomains": ["FRONTEND"],
+      "programmingLanguages": ["SCSS", "CSS"],
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "React Native",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["MOBILE"],
+      "experience": 2,
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "MeteorJS",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FULL_STACK"],
+      "categories": ["FRAMEWORK", "PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "pnpm",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "categories": ["PACKAGE_MANAGER"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "npm",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "categories": ["PACKAGE_MANAGER"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "yarn",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "categories": ["PACKAGE_MANAGER"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "pip",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["PACKAGE_MANAGER"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "poetry",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["PACKAGE_MANAGER"]
+    },
+    { "includeInTopSkills": false, "label": "nvm", "categories": ["VERSION_MANAGER"] },
+    {
+      "includeInTopSkills": false,
+      "label": "pyenv",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["VERSION_MANAGER"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "tox",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["PACKAGE", "TESTING"]
+    },
+    { "includeInTopSkills": true, "label": "codecov", "categories": ["TESTING"] },
+    {
+      "includeInTopSkills": true,
+      "label": "pytest",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["PACKAGE", "TESTING"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "unittest",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["PACKAGE", "TESTING"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "mock",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["PACKAGE", "TESTING"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "jest",
+      "slug": "jest",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "categories": ["PACKAGE", "TESTING"]
+    },
+    { "includeInTopSkills": true, "label": "Unit Testing", "categories": ["TESTING"] },
+    { "includeInTopSkills": true, "label": "Integration Testing", "categories": ["TESTING"] },
+    {
+      "includeInTopSkills": true,
+      "label": "PrismaJS",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "categories": ["ORM", "PACKAGE", "DATABASE"],
+      "programmingDomains": ["BACKEND"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "SQLAlchemy",
+      "programmingLanguages": ["PYTHON"],
+      "categories": ["ORM", "PACKAGE", "DATABASE"],
+      "programmingDomains": ["BACKEND"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "mongooseJS",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "categories": ["ORM", "PACKAGE", "DATABASE"],
+      "programmingDomains": ["BACKEND"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "Floating UI",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FRONTEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "StorybookJS",
+      "slug": "storybookjs",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FRONTEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "React Redux",
+      "slug": "react-redux",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FRONTEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": true,
+      "label": "Redux-Sagas",
+      "slug": "redux-sagas",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FRONTEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "celery",
+      "slug": "celery",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "Django Channels",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "flake8",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "pylint",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "numpy",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "scipy",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "scikit-learn",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "black",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "asyncio",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "expressJS",
+      "programmingDomains": ["BACKEND"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "pandas",
+      "programmingLanguages": ["PYTHON"],
+      "programmingDomains": ["BACKEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "d3.js",
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": ["FRONTEND"],
+      "categories": ["PACKAGE"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "Agile Software Development",
+      "categories": ["WORKFLOW"]
+    },
+    {
+      "includeInTopSkills": false,
+      "label": "Project Planning & Roadmapping",
+      "categories": ["WORKFLOW"]
+    },
+    { "includeInTopSkills": true, "label": "git", "slug": "git", "categories": ["WORKFLOW"] },
+    { "includeInTopSkills": false, "label": "Jira", "categories": ["WORKFLOW"] },
+    { "includeInTopSkills": false, "label": "Notion", "categories": ["WORKFLOW"] },
+    { "includeInTopSkills": false, "label": "Clubhouse", "categories": ["WORKFLOW"] },
+    { "includeInTopSkills": false, "label": "ClickUp", "categories": ["WORKFLOW"] },
+    { "label": "Vercel", "categories": ["DEVOPS"] },
+    { "label": "SSR" },
+    { "label": "docker", "includeInTopSkills": true },
+    { "label": "Jenkins" },
+    { "label": "SonarQube" },
+    { "label": "PostgreSQL", "includeInTopSkills": true },
+    { "label": "Security Practices" },
+    { "label": "CI/CD", "categories": ["DEVOPS"], "includeInTopSkills": true },
+    { "label": "AWS S3 Storage", "includeInTopSkills": true },
+    { "label": "CircleCI" },
+    { "label": "Redis" },
+    { "label": "JWT Authentication" },
+    { "label": "AWS EC2", "includeInTopSkills": true },
+    { "label": "AWS", "includeInTopSkills": true },
+    { "label": "AWS Cloudwatch" },
+    { "label": "Auth0" },
+    { "label": "Clerk" },
+    { "label": "Application Security" },
+    { "label": "Web Sockets" },
+    { "label": "Data Scraping" },
+    { "label": "Rundeck" },
+    { "label": "linux" },
+    { "label": "ElasticSearch" },
+    { "label": "Session Authentication" },
+    { "label": "RabbitMQ" },
+    { "label": "Message Buses" },
+    { "label": "Python 2/3 Compatibility" },
+    { "label": "Package & Dependency Management" },
+    { "label": "Relational Databases", "includeInTopSkills": true },
+    { "label": "REST API Design", "categories": ["API_DEVELOPMENT"] },
+    { "label": "mySQL" },
+    { "label": "Jinja" },
+    { "label": "Sentry" },
+    { "label": "Amplitude" },
+    { "label": "BugSnag" },
+    { "label": "HTML Templating" },
+    { "label": "Authentication Protocols" },
+    { "label": "AWS Elastic Beanstalk" },
+    { "label": "noSQL Databases" },
+    { "label": "mongoDB", "includeInTopSkills": true },
+    { "label": "AWS Lambdas", "includeInTopSkills": true },
+    { "label": "Handlebars" },
+    { "label": "Credit Default Risk Modeling" },
+    { "label": "Numerical Computation" },
+    { "label": "Monte Carlo Methods" },
+    { "label": "Neural Networks" }
+  ]
+}
