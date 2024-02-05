@@ -10,8 +10,13 @@ button {
 
   // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
   // primary buttons.
-  &:not(.button) {
-    @include third-party-button();
+  &:not(
+      .button,
+      .cl-userButtonTrigger,
+      .cl-userButtonPopoverActionButton,
+      .cl-formFieldInputShowPasswordButton
+    ) {
+    @include third-party-button("button", $size: "medium", $variant: "primary");
   }
 }
 

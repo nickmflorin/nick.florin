@@ -92,10 +92,16 @@
   }
 }
 
-@mixin third-party-button() {
+@mixin third-party-button($type, $variant: null, $size: null, $weight: null) {
   @include button-base();
-  @include button-properties("button", $variant: "primary", $size: "medium");
-  font-weight: partials.get-font-weight($weight: "semibold");
+  @include button-properties($type, $variant: $variant, $size: $size);
+
+  @if $type == "button" {
+    font-weight: partials.get-font-weight($weight: "semibold");
+  } @else if $type == "link" {
+    font-weight: partials.get-font-weight($weight: "medium");
+    padding: sizing.get-button-padding("link");
+  }
 }
 
 @mixin button($type, $variant: null, $size: null, $weight: null) {
