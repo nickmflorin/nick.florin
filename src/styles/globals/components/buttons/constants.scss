@@ -25,4 +25,10 @@ $button-default-type: "button";
 $button-variants: ("primary", "secondary", "danger", "outline");
 
 $button-size-names: ("xsmall", "small", "medium", "large", "xlarge");
+
+// The button's icon size will be sized based on the button's primary 'size', unless the 'icon-size'
+// is explicitly included as a class name as well
+// (e.g. button--size-small button--icon-size-xlarge).
+$button-icon-size-names: ("xsmall", "small", "medium", "large", "xlarge", "full");
+
 $button-default-size: "small";

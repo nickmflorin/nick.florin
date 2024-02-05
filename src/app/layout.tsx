@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 
 import { AppConfig } from "~/components/config/AppConfig";
-import { Layout } from "~/components/layout/Layout";
 import { env } from "~/env.mjs";
+
+/* Note: The reason we dynamically import the layout is because it accesses server side data to
+   fetch the profile - which is only needed for the social buttons in the header.  We may want to
+   instead fetch the profile data in the Header component itself, and only dynamically load the
+   part of the Header component that shows the social buttons. */
+const Layout = dynamic(() => import("~/components/layout/Layout"), {
+  loading: () => <p>Loading...</p>,
+});
 
 const InterFont = Inter({
   weight: ["400", "500", "600", "700"],
@@ -27,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="text/javascript"
           src={`https://kit.fontawesome.com/${env.FONT_AWESOME_KIT_TOKEN}.js`}
           crossOrigin="anonymous"
-          data-auto-replace-svg="nest"
+          data-auto-replace-svg="replace"
           data-mutate-approach="sync"
           data-observe-mutations
         />

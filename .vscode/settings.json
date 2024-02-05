@@ -20,6 +20,7 @@
   "eslint.codeActionsOnSave.rules": [
     "@typescript-eslint/semi",
     "@typescript-eslint/indent",
+    "@typescript-eslint/consistent-type-imports",
     "!@typescript-eslint/*",
     "*"
   ],

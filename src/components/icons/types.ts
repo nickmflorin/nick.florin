@@ -34,11 +34,12 @@ export const IconFamilyClassNameMap: { [key in IconFamily]: string } = {
 
 export const DEFAULT_ICON_FAMILY = IconFamilies.SHARP;
 
-export type IconStyle = Exclude<RootIconStyle, "duotone" | "light" | "thin" | "brands">;
+export type IconStyle = Exclude<RootIconStyle, "duotone" | "light" | "thin">;
 
 export enum IconStyles {
   SOLID = "solid",
   REGULAR = "regular",
+  BRANDS = "brands",
 }
 
 export const DEFAULT_ICON_STYLE = IconStyles.REGULAR;
@@ -46,6 +47,7 @@ export const DEFAULT_ICON_STYLE = IconStyles.REGULAR;
 export const IconStyleClassNameMap: { [key in IconStyle]: string } = {
   regular: "fa-regular",
   solid: "fa-solid",
+  brands: "fa-brands",
 };
 
 /**

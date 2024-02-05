@@ -13,19 +13,12 @@ $button-padding: (
     "large": 14px 30px,
     "xlarge": 16px 30px,
   ),
-  "icon-button": (
-    "xsmall": 6px,
-    "small": 8px,
-    "medium": 10px,
-    "large": 12px,
-    "xlarge": 14px,
-  ),
 );
 
 @function get-button-padding($type, $size: null) {
   $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
   $type: partials.validate-value($type, $button-types);
-  @if $type == "link" {
+  @if $type == "link" or $type == "icon-button" {
     @return 0px;
   }
   @return partials.mapget(partials.mapget($button-padding, $type), $size);
@@ -73,24 +66,21 @@ $button-icon-sizes: (
       list.nth(partials.mapget($button-padding, "button", "large"), 1),
     "xlarge": partials.mapget($button-sizes, "button", "xlarge") - 2 *
       list.nth(partials.mapget($button-padding, "button", "xlarge"), 1),
+    "full": 100%,
   ),
   "icon-button": (
-    "xsmall": partials.mapget($button-sizes, "icon-button", "xsmall") - 2 *
-      partials.mapget($button-padding, "icon-button", "xsmall"),
-    "small": partials.mapget($button-sizes, "icon-button", "small") - 2 *
-      partials.mapget($button-padding, "icon-button", "small"),
-    "medium": partials.mapget($button-sizes, "icon-button", "medium") - 2 *
-      partials.mapget($button-padding, "icon-button", "medium"),
-    "large": partials.mapget($button-sizes, "icon-button", "large") - 2 *
-      partials.mapget($button-padding, "icon-button", "large"),
-    "xlarge": partials.mapget($button-sizes, "icon-button", "xlarge") - 2 *
-      partials.mapget($button-padding, "icon-button", "xlarge"),
+    "xsmall": 13px,
+    "small": 14px,
+    "medium": 16px,
+    "large": 18px,
+    "xlarge": 20px,
+    "full": 100%,
   ),
 );
 
 @function get-button-icon-size($type, $size: null) {
   $type: partials.validate-value($type, $button-types);
-  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
+  $size: partials.validate-value(if($size, $size, $button-default-size), $button-icon-size-names);
   @return partials.mapget($button-icon-sizes, $type, $size);
 }
 
@@ -117,7 +107,15 @@ $button-font-sizes: (
   @return partials.mapget($button-font-sizes, $type, $size);
 }
 
-@mixin button-size($type, $size: null) {
+@mixin button-icon-size($type, $size) {
+  .icon {
+    height: get-button-icon-size($type, $size: $size);
+    aspect-ratio: 1;
+    width: auto;
+  }
+}
+
+@mixin button-size($type, $size) {
   $type: partials.validate-value($type, $button-types);
   $height: get-button-size($type, $size: $size);
   $padding: get-button-padding($type, $size: $size);
@@ -126,26 +124,39 @@ $button-font-sizes: (
   min-height: $height;
   padding: $padding;
 
-  @if $type == "button" {
-    font-size: get-button-font-size("button", $size: $size);
-    line-height: $height - 2 * list.nth($padding, 1);
+  @if $type != "link" {
+    $type: partials.validate-value($type, ("button", "icon-button"));
 
-    .icon {
-      height: get-button-icon-size("button", $size: $size);
+    @include button-icon-size($type, $size);
+    @if $type == "button" {
+      font-size: get-button-font-size("button", $size: $size);
+      line-height: $height - 2 * list.nth($padding, 1);
+    } @else {
+      width: $height;
       aspect-ratio: 1;
-      width: auto;
-    }
-  } @else if $type == "icon-button" {
-    width: $height;
-    aspect-ratio: 1;
-
-    .icon {
-      height: get-button-icon-size("icon-button", $size: $size);
-      aspect-ratio: 1;
-      width: auto;
     }
   } @else {
     font-size: get-button-font-size("link", $size: $size);
     line-height: $height;
+  }
+}
+
+@mixin button-sizes($type) {
+  $type: partials.validate-value($type, $button-types);
+
+  @each $size in $button-size-names {
+    &.button--size-#{$size} {
+      @include button-size($type, $size);
+
+      @if $type != "link" {
+        // Allow the icon size in the button to be controlled independently of the button's primary
+        // size if the class name is present.
+        @each $size in $button-icon-size-names {
+          &.button--icon-size-#{$size} {
+            @include button-icon-size($type, $size);
+          }
+        }
+      }
+    }
   }
 }

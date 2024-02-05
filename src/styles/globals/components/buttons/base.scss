@@ -1,32 +1,54 @@
+@use "sass:map";
+
 @use "partials";
-@use "./colors" as button-colors;
+
+@use "./variants" as variants;
 @use "./sizing" as sizing;
 @use "./mixins" as mixins;
 @use "./constants" as *;
 
+$button-font-weights: (
+  "button":
+    partials.get-font-weight(
+      $weight: "semibold",
+    ),
+  "link":
+    partials.get-font-weight(
+      $weight: "medium",
+    ),
+  "a":
+    partials.get-font-weight(
+      $weight: "regular",
+    ),
+);
+
+@mixin button-font-weights($type) {
+  font-weight: map.get($button-font-weights, $type);
+  // Allow the font-weight to be overridden.
+  @include partials.with-font-weights();
+}
+
 @mixin button-base() {
   @include partials.transition(none);
+  @include partials.disabled;
+
   appearance: none;
   background-color: transparent;
-  /* When providing a border, we need to use the outline property - not the border property.  This
-     is because a border will contribute to the size of the button, whereas an outline will not. */
-  border: none;
   border-radius: $button-border-radius;
   box-shadow: none !important;
   box-sizing: border-box;
   cursor: pointer;
-  font-family: $button-font-family;
   font-stretch: normal;
+  // The default font family.
+  font-family: $button-font-family;
+  // The default font weight.
   font-weight: $button-font-weight;
-  justify-content: center;
   margin: 0;
   min-height: 0px;
   -webkit-tap-highlight-color: transparent;
-  text-align: center;
   text-decoration: none;
   user-select: none;
   vertical-align: middle;
-  outline-offset: -1 * $button-outline-width;
 }
 
 @mixin button-structure() {
@@ -71,68 +93,34 @@
   }
 }
 
-@mixin button-properties($type, $variant: null, $size: null) {
+@mixin button-properties($type, $variant: null, $size: null, $weight: null) {
   @if $variant {
-    @include button-colors.button-colors($type: $type, $variant: $variant);
+    @include variants.button-variant($type: $type, $variant: $variant);
   } @else {
-    @each $variant in $button-variants {
-      &.button--variant-#{$variant} {
-        @include button-colors.button-colors($type: $type, $variant: $variant);
-      }
-    }
+    @include variants.button-variants($type);
   }
   @if $size {
     @include sizing.button-size($type, $size);
   } @else {
-    @each $size in $button-size-names {
-      &.button--size-#{$size} {
-        @include sizing.button-size($type, $size);
-      }
-    }
+    @include sizing.button-sizes($type);
+  }
+  @if $weight {
+    font-weight: partials.get-font-weight($weight: "medium");
+  } @else {
+    @include button-font-weights($type);
   }
 }
 
 @mixin third-party-button($type, $variant: null, $size: null, $weight: null) {
   @include button-base();
-  @include button-properties($type, $variant: $variant, $size: $size);
-
-  @if $type == "button" {
-    font-weight: partials.get-font-weight($weight: "semibold");
-  } @else if $type == "link" {
-    font-weight: partials.get-font-weight($weight: "medium");
-    padding: sizing.get-button-padding("link");
-  }
+  @include button-properties($type, $variant: $variant, $size: $size, $weight: $weight);
 }
 
 @mixin button($type, $variant: null, $size: null, $weight: null) {
   @include button-base();
   @include button-structure();
-  @include button-properties($type, $variant: $variant, $size: $size);
-
-  @include partials.disabled;
+  @include button-properties($type, $variant: $variant, $size: $size, $weight: $weight);
   @include partials.with-selectors((mixins.$button-locked-class, mixins.$button-loading-class)) {
     pointer-events: none;
-  }
-
-  @if $type == "button" {
-    font-weight: partials.get-font-weight($weight: "semibold");
-
-    &.button--outline {
-      font-weight: partials.get-font-weight($weight: "regular");
-    }
-
-    > .button__content {
-      // TODO
-    }
-  } @else if $type == "link" {
-    font-weight: partials.get-font-weight($weight: "medium");
-    padding: sizing.get-button-padding("link");
-
-    @if $weight {
-      font-weight: partials.get-font-weight($weight: $weight);
-    } @else {
-      // Allow the font-weight to be overridden.
-      @include partials.with-font-weights();
-    }
   }
 }

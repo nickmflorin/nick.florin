@@ -251,7 +251,7 @@ $button-color-properties: (
   @return null;
 }
 
-@mixin button-colors($args...) {
+@mixin button-variant($args...) {
   $arguments: meta.keywords($args);
 
   $type: map.get($arguments, "type");
@@ -267,7 +267,7 @@ $button-color-properties: (
       );
     } @else {
       $colors: partials.mapget($button-color-properties, $type, $variant);
-      @include button-colors($colors...);
+      @include button-variant($colors...);
     }
   } @else {
     $background-color: partials.get-optional-kwarg(
@@ -312,7 +312,7 @@ $button-color-properties: (
         // Use the original, non-hovered and non-focused attributes as defaults such that only the
         // hovered attributes that are provided are overridden when the button is hovered.
         $hovered: map.merge($attributes, $hovered);
-        @include button-colors($hovered...);
+        @include button-variant($hovered...);
       }
     }
     // If a 'focused' argument is provided, include this mixin recursively to define the colors of
@@ -323,7 +323,7 @@ $button-color-properties: (
         // Use the original, non-hovered and non-focused attributes as defaults such that only the
         // focused attributes that are provided are overridden when the button is focused.
         $focused: map.merge($attributes, $focused);
-        @include button-colors($focused...);
+        @include button-variant($focused...);
       }
     }
 
@@ -334,7 +334,7 @@ $button-color-properties: (
         // Use the original, non-hovered and non-focused attributes as defaults such that only the
         // active attributes that are provided are overridden when the button is active.
         $active: map.merge($attributes, $active);
-        @include button-colors($active...);
+        @include button-variant($active...);
       }
     }
 
@@ -346,8 +346,16 @@ $button-color-properties: (
         // Use the original, non-hovered and non-focused attributes as defaults such that only
         // the disabled attributes that are provided are overridden when the button is disabled.
         $disabled: map.merge($attributes, $disabled);
-        @include button-colors($disabled...);
+        @include button-variant($disabled...);
       }
+    }
+  }
+}
+
+@mixin button-variants($type) {
+  @each $variant in $button-variants {
+    &.button--variant-#{$variant} {
+      @include button-variant($type: $type, $variant: $variant);
     }
   }
 }

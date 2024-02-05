@@ -3,6 +3,7 @@ import { type ReactNode } from "react";
 
 import { type EnumeratedLiteralsType, enumeratedLiterals } from "~/lib/literals";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type FontWeight } from "~/components/typography";
 
 export const ButtonVariants = enumeratedLiterals(
   ["primary", "secondary", "bare", "outline", "danger"] as const,
@@ -16,44 +17,53 @@ export const ButtonSizes = enumeratedLiterals(
 );
 export type ButtonSize = EnumeratedLiteralsType<typeof ButtonSizes>;
 
+export const ButtonIconSizes = enumeratedLiterals(
+  ["xsmall", "small", "medium", "large", "xlarge", "full"] as const,
+  {},
+);
+export type ButtonIconSize = EnumeratedLiteralsType<typeof ButtonIconSizes>;
+
 export const ButtonTypes = enumeratedLiterals(["button", "icon-button"] as const, {});
 export type ButtonType = EnumeratedLiteralsType<typeof ButtonTypes>;
 
 export const ButtonForms = enumeratedLiterals(["button", "a", "link"] as const, {});
 export type ButtonForm = EnumeratedLiteralsType<typeof ButtonForms>;
 
-export type ButtonOptions = { as: "link" } | { as: "a" } | { as?: "button" };
+export type ButtonOptions = { as: "a" } | { as: "link" } | { as: "button" };
 
-type GetButtonForm<O extends ButtonOptions> = O extends { readonly as: "link" }
-  ? "link"
-  : O extends { readonly as: "a" }
-    ? "a"
-    : "button";
+type IfText<V, T extends ButtonType> = T extends "icon-button" ? never : V;
 
-type IfForm<
-  T,
-  F extends ButtonForm,
-  O extends ButtonOptions,
-  R = never,
-> = F extends GetButtonForm<O> ? T : R;
-
-export type AbstractButtonProps<O extends ButtonOptions> = ComponentProps & {
+export type AbstractProps<T extends ButtonType, O extends ButtonOptions> = ComponentProps & {
+  readonly buttonType: T;
   readonly variant?: ButtonVariant;
-  readonly buttonType: ButtonType;
-  readonly children: ReactNode;
   readonly isLocked?: boolean;
   readonly isLoading?: boolean;
   readonly isDisabled?: boolean;
   readonly isActive?: boolean;
   readonly options?: O;
+  readonly fontWeight?: IfText<FontWeight, T>;
   readonly size?: ButtonSize;
-  readonly to?: IfForm<NextLinkProps["href"], "link", O>;
-  readonly href?: IfForm<HTMLElementProps<"a">["href"], "a", O>;
-  readonly onClick?: IfForm<HTMLElementProps<"button">["onClick"], "button", O>;
-  readonly onMouseEnter?: IfForm<
-    HTMLElementProps<"button">["onMouseEnter"],
-    "button",
-    O,
-    IfForm<HTMLElementProps<"a">["onMouseEnter"], "link" | "a", O>
-  >;
+  readonly children: ReactNode;
+  readonly iconSize?: ButtonIconSize;
+} & PolymorphicAbstractButtonProps<O["as"]>;
+
+export type AbstractButtonProps = {
+  readonly onClick?: HTMLElementProps<"button">["onClick"];
+  readonly onMouseEnter?: HTMLElementProps<"button">["onMouseEnter"];
 };
+
+export type AbstractLinkProps = {
+  readonly href: NextLinkProps["href"];
+  readonly onMouseEnter?: HTMLElementProps<"a">["onMouseEnter"];
+};
+
+export type AbstractAnchorProps = {
+  readonly href: string;
+  readonly onMouseEnter?: HTMLElementProps<"a">["onMouseEnter"];
+};
+
+export type PolymorphicAbstractButtonProps<F extends ButtonForm> = {
+  link: AbstractLinkProps;
+  button: AbstractButtonProps;
+  a: AbstractAnchorProps;
+}[F];

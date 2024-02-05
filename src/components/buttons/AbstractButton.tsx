@@ -1,31 +1,33 @@
 import NextLink from "next/link";
+import React from "react";
 
 import clsx from "clsx";
-import { type Required } from "utility-types";
+import omit from "lodash.omit";
 
 import type * as types from "./types";
 
-const getButtonClassName = <O extends types.ButtonOptions>(
-  props: Required<
-    Pick<
-      types.AbstractButtonProps<O>,
-      | "variant"
-      | "isLocked"
-      | "isActive"
-      | "isLoading"
-      | "isDisabled"
-      | "buttonType"
-      | "className"
-      | "size"
-    >,
-    "variant" | "isLocked" | "isActive" | "isLoading" | "isDisabled" | "buttonType"
+const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOptions>(
+  props: Pick<
+    types.AbstractProps<T, O>,
+    | "variant"
+    | "isLocked"
+    | "isActive"
+    | "isLoading"
+    | "isDisabled"
+    | "className"
+    | "size"
+    | "iconSize"
+    | "fontWeight"
+    | "buttonType"
   >,
 ) =>
   clsx(
     "button",
-    `button--variant-${props.variant}`,
+    `button--variant-${props.variant ?? "primary"}`,
     `button--type-${props.buttonType}`,
-    props.size && `button--size-${props.size}`,
+    `button--size-${props.size ?? "small"}`,
+    props.iconSize && `button--icon-size-${props.iconSize}`,
+    props.fontWeight && `font-weight-${props.fontWeight}`,
     {
       "button--locked": props.isLocked,
       "button--loading": props.isLoading,
@@ -35,68 +37,48 @@ const getButtonClassName = <O extends types.ButtonOptions>(
     props.className,
   );
 
-export const AbstractButton = <O extends types.ButtonOptions>({
-  isDisabled = false,
-  isLocked = false,
-  isLoading = false,
-  isActive = false,
-  buttonType,
-  variant = "primary",
-  size = "small",
-  to,
-  href,
-  onClick,
-  options,
-  children,
-  onMouseEnter,
-  ...props
-}: types.AbstractButtonProps<O>): JSX.Element => {
-  const as = options?.as ?? "button";
-  const className = getButtonClassName({
-    isDisabled,
-    isLocked,
-    isLoading,
-    isActive,
-    buttonType,
-    variant,
-    className: props.className,
-    size,
-  });
+const INTERNAL_BUTTON_PROPS = [
+  "options",
+  "variant",
+  "isLocked",
+  "isActive",
+  "isDisabled",
+  "isLoading:",
+  "iconSize",
+  "fontWeight",
+  "buttonType",
+] as const;
 
-  if (as === "a") {
+const toCoreButtonProps = <T extends Record<string, unknown>>(
+  props: T,
+): Omit<T, (typeof INTERNAL_BUTTON_PROPS)[number]> => omit(props, INTERNAL_BUTTON_PROPS);
+
+export const AbstractButton = <T extends types.ButtonType, O extends types.ButtonOptions>(
+  props: types.AbstractProps<T, O>,
+): JSX.Element => {
+  const className = getButtonClassName(props);
+
+  if (props.options?.as === "a") {
+    const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "a" }>);
     return (
-      <a
-        {...props}
-        className={className}
-        href={href}
-        onMouseEnter={onMouseEnter as types.AbstractButtonProps<{ as: "a" }>["onMouseEnter"]}
-      >
-        <div className="button__content">{children}</div>
+      <a {...ps} className={className}>
+        <div className="button__content">{ps.children}</div>
       </a>
     );
-  } else if (as === "link") {
-    if (to === undefined) {
-      throw new Error("");
-    }
+  } else if (props.options?.as === "link") {
+    const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "link" }>);
     return (
-      <NextLink
-        {...props}
-        href={to}
-        className={className}
-        onMouseEnter={onMouseEnter as types.AbstractButtonProps<{ as: "link" }>["onMouseEnter"]}
-      >
-        <div className="button__content">{children}</div>
+      <NextLink {...ps} className={className}>
+        <div className="button__content">{ps.children}</div>
       </NextLink>
     );
   }
+  const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "button" }>);
   return (
-    <button
-      {...props}
-      className={className}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter as types.AbstractButtonProps<{ as: "button" }>["onMouseEnter"]}
-    >
-      <div className="button__content">{children}</div>
+    <button {...ps} className={className}>
+      <div className="button__content">{ps.children}</div>
     </button>
   );
 };
+
+type R = React.FC;

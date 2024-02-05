@@ -1,26 +1,51 @@
-import type * as types from "./types";
-
+import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp, parseMultipleIconsProp } from "~/components/icons";
 
 import { AbstractButton } from "./AbstractButton";
+import * as types from "./types";
 
 export type ButtonProps<O extends types.ButtonOptions> = Omit<
-  types.AbstractButtonProps<O>,
-  "buttonType" | "children"
+  types.AbstractProps<"button", O>,
+  "buttonType"
 > & {
-  readonly children: string;
   readonly icon?: MultipleIconProp;
 };
 
-export const Button = <O extends types.ButtonOptions>({
-  icon,
+const Base = AbstractButton as React.FC<types.AbstractProps<"button", types.ButtonOptions>>;
+
+const LocalButton = <O extends types.ButtonOptions>({
   children,
+  icon,
   ...props
 }: ButtonProps<O>) => {
   const icons = icon ? parseMultipleIconsProp(icon) : [null, null];
+
+  const ps = {
+    ...props,
+    buttonType: "button",
+  } as types.AbstractProps<"button", O>;
+
   return (
-    <AbstractButton<O> {...({ ...props, buttonType: "button" } as types.AbstractButtonProps<O>)}>
+    <Base {...ps}>
       <div className="button__sub-content">{children}</div>
-    </AbstractButton>
+    </Base>
   );
 };
+
+type VariantPartial = {
+  <O extends types.ButtonOptions>(props: Omit<ButtonProps<O>, "variant">): JSX.Element;
+};
+
+type WithVariants = { [key in Capitalize<types.ButtonVariant>]: VariantPartial };
+
+const withVariants = types.ButtonVariants.values.reduce<WithVariants>(
+  (acc, variant) => ({
+    ...acc,
+    [capitalize(variant)]: <O extends types.ButtonOptions>(
+      props: Omit<ButtonProps<O>, "variant">,
+    ) => <Button<O> {...({ ...props, variant } as ButtonProps<O>)} />,
+  }),
+  {} as WithVariants,
+);
+
+export const Button = Object.assign(LocalButton, withVariants);
