@@ -8,10 +8,10 @@
   },
   "scripts": {
     "requirements-check": "ts-node --project=./tsconfig.json  src/application/support/enforce-node-version.ts",
-    "setup-env": "env-cmd -r ./.env-emdrc.js -e all npm run requirements-check && prisma generate",
-    "preinstall": "env-cmd -r ./.env-emdrc.js -e all npm run requirements-check",
+    "setup-env": "npm run requirements-check && prisma generate",
     "postinstall": "prisma generate",
-    "install:ci": "npm run requirements-check && pnpm install && prisma generate",
+    "preinstall": "npm run requirements-check",
+    "install:local": "env-cmd -r ./.env-emdrc.js -e all pnpm install",
     "prebuild": "npm run setup-env",
     "analyze-build": "ANALYZE_BUILD=true npm run build",
     "build": "next build",
