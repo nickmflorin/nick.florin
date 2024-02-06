@@ -75,20 +75,26 @@ const DEFAULT_LOG_LEVELS = {
 };
 
 /**
- * @type {Record<"test" | "development" | "production", boolean>}
+ * @typedef {("test" | "development" | "production" | "preview")} EnvName
+ */
+
+/**
+ * @type {Record<EnvName, boolean>}
  */
 const DEFAULT_PRETTY_LOGGING = {
   development: true,
   production: false,
+  preview: false,
   test: true,
 };
 
 /**
- * @type {Record<"test" | "development" | "production", boolean>}
+ * @type {Record<EnvName, boolean>}
  */
 const DEFAULT_BUNDLE_ANALYZE = {
   development: false,
-  production: true,
+  production: false,
+  preview: false,
   test: false,
 };
 
@@ -101,23 +107,40 @@ const testRestricted = schema => {
   return schema;
 };
 
+/**
+ * @type {<T>(map: {[key in EnvName]: T}) => T}
+ */
+const environmentLookup = map => {
+  if (["test", "development"].includes(process.env.NODE_ENV)) {
+    return map[process.env.NODE_ENV];
+  } else if (process.env.VERCEL_ENV !== undefined) {
+    return map[process.env.VERCEL_ENV];
+  }
+  throw new Error(
+    "The 'NODE_ENV' environment variable points to production, but the 'VERCEL_ENV'" +
+      "environment variable is not set.  This is an unexpected state.",
+  );
+};
+
 export const env = createEnv({
   /* ------------------------------ Server Environment Variables -------------------------------- */
   server: {
     APP_NAME_FORMAL: z.string(),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    PRETTY_LOGGING: StringBooleanFlagSchema.default(DEFAULT_PRETTY_LOGGING[process.env.NODE_ENV]),
-    ANALYZE_BUNDLE: StringBooleanFlagSchema.default(DEFAULT_BUNDLE_ANALYZE[process.env.NODE_ENV]),
-    CLERK_SECRET_KEY: {
+    PRETTY_LOGGING: StringBooleanFlagSchema.default(environmentLookup(DEFAULT_PRETTY_LOGGING)),
+    ANALYZE_BUNDLE: StringBooleanFlagSchema.default(environmentLookup(DEFAULT_BUNDLE_ANALYZE)),
+    CLERK_SECRET_KEY: environmentLookup({
       test: STRICT_OMISSION,
       development: z.string().startsWith("sk_test"),
+      preview: z.string().startsWith("sk_test"),
       production: z.string().startsWith("sk_live"),
-    }[process.env.NODE_ENV],
-    PERSONAL_CLERK_USER_ID: {
+    }),
+    PERSONAL_CLERK_USER_ID: environmentLookup({
       test: STRICT_OMISSION,
+      preview: z.string().startsWith("user_"),
       development: z.string().startsWith("user_"),
       production: z.string().startsWith("user_"),
-    }[process.env.NODE_ENV],
+    }),
     /* ~~~~~~~~~~ Database Configuration ~~~~~~~ */
     DATABASE_URL: testRestricted(z.string().url().optional()),
     MIGRATE_DATABASE_URL: testRestricted(z.string().url()),
@@ -134,10 +157,14 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NODE_ENV === "test"
         ? z.literal("")
-        : z.string().startsWith(process.env.NODE_ENV === "development" ? "pk_test" : "pk_live"),
+        : z.string().startsWith(
+            environmentLookup({
+              development: "pk_test",
+              production: "pk_live",
+              preview: "pk_test",
+            }),
+          ),
     NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
-    /* NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string(),
-       NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string(), */
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
     NEXT_PUBLIC_LOG_LEVEL: z
       .union([
@@ -149,7 +176,7 @@ export const env = createEnv({
         z.literal("trace"),
         z.literal("silent"),
       ])
-      .default(DEFAULT_LOG_LEVELS[process.env.NODE_ENV]),
+      .default(environmentLookup(DEFAULT_LOG_LEVELS)),
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
   },
   runtimeEnv: {
