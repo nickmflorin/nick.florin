@@ -62,9 +62,13 @@ const loadNextJSEnvironmentVariables = (environment, variables) => {
   }
   for (const v of variables) {
     if (ENV[v] === undefined) {
-      console.error(
-        `The environment variable '${v}' is required for this npm script but was not found in the environment!`,
-      );
+      const msg = `The environment variable '${v}' is required for this npm script but was not found in the environment!`;
+      /* We are temporarily issuing a console.error here to ensure that we can see the failure
+         message in Vercel deployment logs.  For whatever reason, throwing an error causes the
+         deployment to fail, but does not indicate the error message in the logs. */
+      /* eslint-disable-next-line no-console */
+      console.error(msg);
+      throw new Error(msg);
     }
   }
   return ENV;
