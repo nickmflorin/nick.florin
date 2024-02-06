@@ -4,7 +4,7 @@ import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 
 import { Header } from "./Header";
-import { Sidebar } from "./Sidebar";
+import { Sidebar } from "./sidebar";
 import { type ISidebarItem } from "./types";
 
 export interface LayoutProps {
