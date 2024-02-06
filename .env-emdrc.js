@@ -38,6 +38,7 @@ const NEXT_JS_ENVIRONMENT_VARIABLE_FILES = {
 };
 
 const loadNextJSEnvironmentVariables = (environment, variables) => {
+  let missingVariables = [];
   let ENV = {};
   for (const filename of NEXT_JS_ENVIRONMENT_VARIABLE_FILES[environment]) {
     if (filename === undefined) {
@@ -62,14 +63,20 @@ const loadNextJSEnvironmentVariables = (environment, variables) => {
   }
   for (const v of variables) {
     if (ENV[v] === undefined) {
-      const msg = `The environment variable '${v}' is required for this npm script but was not found in the environment!`;
-      /* We are temporarily issuing a console.error here to ensure that we can see the failure
-         message in Vercel deployment logs.  For whatever reason, throwing an error causes the
-         deployment to fail, but does not indicate the error message in the logs. */
-      /* eslint-disable-next-line no-console */
-      console.error(msg);
-      throw new Error(msg);
+      missingVariables = [...missingVariables, v];
     }
+  }
+  if (missingVariables.length !== 0) {
+    const stringified = missingVariables.map(v => `'${v}'`).join(", ");
+    const msg =
+      `The environment variable(s) '${stringified}' is/are required for this npm ` +
+      "script but was not found in the environment!";
+    /* We are temporarily issuing a console.error here to ensure that we can see the failure
+       message in Vercel deployment logs.  For whatever reason, throwing an error causes the
+       deployment to fail, but does not indicate the error message in the logs. */
+    /* eslint-disable-next-line no-console */
+    console.error(msg);
+    throw new Error(msg);
   }
   return ENV;
 };
