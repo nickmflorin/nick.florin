@@ -143,7 +143,6 @@ export const env = createEnv({
     }),
     /* ~~~~~~~~~~ Database Configuration ~~~~~~~ */
     DATABASE_URL: testRestricted(z.string().url().optional()),
-    MIGRATE_DATABASE_URL: testRestricted(z.string().url()),
     DATABASE_NAME: testRestricted(z.string().optional()),
     DATABASE_PASSWORD: testRestricted(z.string().optional()),
     DATABASE_USER: testRestricted(z.string().optional()),
