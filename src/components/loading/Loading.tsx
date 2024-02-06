@@ -3,7 +3,7 @@ import React, { type ReactNode } from "react";
 
 import clsx from "clsx";
 
-import { type IconSizes, type SpinnerProps } from "~/components/icons";
+import { type SpinnerProps } from "~/components/icons";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -11,7 +11,7 @@ const Spinner = dynamic(() => import("~/components/icons/Spinner"), { ssr: false
 
 type BaseLoadingProps = ComponentProps &
   Pick<SpinnerProps, "size" | "loading"> & {
-    readonly size?: Exclude<SpinnerProps["size"], typeof IconSizes.FILL>;
+    readonly size?: Exclude<SpinnerProps["size"], "full">;
   };
 
 type LoadingChildProps = BaseLoadingProps & {

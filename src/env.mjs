@@ -65,27 +65,31 @@ const StringBooleanFlagSchema = z.union([
 ]);
 
 /**
+ * @typedef {("test" | "local" | "development" | "production" | "preview")} EnvName
+ */
+
+/**
  * @typedef {("warn" | "fatal" | "error" | "info" | "debug" | "trace" | "silent")} LogLevel
- * @type {Record<"test" | "development" | "production", LogLevel>}
+ * @type {Record<EnvName, LogLevel>}
  */
 const DEFAULT_LOG_LEVELS = {
   development: "debug",
   production: "info",
   test: "debug",
+  local: "debug",
+  development: "info",
+  preview: "info",
 };
-
-/**
- * @typedef {("test" | "development" | "production" | "preview")} EnvName
- */
 
 /**
  * @type {Record<EnvName, boolean>}
  */
 const DEFAULT_PRETTY_LOGGING = {
-  development: true,
+  development: false,
   production: false,
   preview: false,
   test: true,
+  local: true,
 };
 
 /**
@@ -96,6 +100,7 @@ const DEFAULT_BUNDLE_ANALYZE = {
   production: false,
   preview: false,
   test: false,
+  local: false,
 };
 
 const STRICT_OMISSION = z.literal("").optional();
@@ -111,15 +116,12 @@ const testRestricted = schema => {
  * @type {<T>(map: {[key in EnvName]: T}) => T}
  */
 const environmentLookup = map => {
-  if (["test", "development"].includes(process.env.NODE_ENV)) {
-    return map[process.env.NODE_ENV];
-  } else if (process.env.VERCEL_ENV !== undefined) {
+  if (process.env.VERCEL_ENV !== undefined) {
     return map[process.env.VERCEL_ENV];
+  } else if (process.env.NODE_ENV === "test") {
+    return map["test"];
   }
-  throw new Error(
-    "The 'NODE_ENV' environment variable points to production, but the 'VERCEL_ENV'" +
-      "environment variable is not set.  This is an unexpected state.",
-  );
+  return map.local;
 };
 
 export const env = createEnv({
@@ -132,12 +134,14 @@ export const env = createEnv({
     CLERK_SECRET_KEY: environmentLookup({
       test: STRICT_OMISSION,
       development: z.string().startsWith("sk_test"),
+      local: z.string().startsWith("sk_test"),
       preview: z.string().startsWith("sk_test"),
       production: z.string().startsWith("sk_live"),
     }),
     PERSONAL_CLERK_USER_ID: environmentLookup({
       test: STRICT_OMISSION,
       preview: z.string().startsWith("user_"),
+      local: z.string().startsWith("user_"),
       development: z.string().startsWith("user_"),
       production: z.string().startsWith("user_"),
     }),
@@ -161,6 +165,7 @@ export const env = createEnv({
               development: "pk_test",
               production: "pk_live",
               preview: "pk_test",
+              local: "pk_test",
             }),
           ),
     NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),

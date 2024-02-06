@@ -19,6 +19,7 @@ export const IconDiscreteSizes = enumeratedLiterals(
   {},
 );
 export type IconDiscreteSize = EnumeratedLiteralsType<typeof IconDiscreteSizes>;
+export type IconSize = IconDiscreteSize | Size;
 
 export type IconFamily = Exclude<RootIconFamily, "duotone">;
 
@@ -188,7 +189,7 @@ type _BaseIconProps = ComponentProps &
      * Default: "square"
      */
     readonly fit?: IconFit;
-    readonly size?: IconDiscreteSize | Size;
+    readonly size?: IconSize;
     /**
      * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
      * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.
