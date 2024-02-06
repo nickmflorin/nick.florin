@@ -38,45 +38,49 @@ const NEXT_JS_ENVIRONMENT_VARIABLE_FILES = {
 };
 
 const loadNextJSEnvironmentVariables = (environment, variables) => {
-  let missingVariables = [];
-  let ENV = {};
-  for (const filename of NEXT_JS_ENVIRONMENT_VARIABLE_FILES[environment]) {
-    if (filename === undefined) {
-      throw new Error("Filename is unexpectedly undefined!");
-    }
-    const parsed = dotenv.config({ path: filename });
-    if (parsed.error) {
-      if (parsed.error.code !== "ENOENT") {
-        throw parsed.error;
+  /* Note: Because environment variables in Vercel are not stored in the .env files, this command is
+     for development purposes only (at least for now). */
+  if (process.env.VERCEL === undefined) {
+    let missingVariables = [];
+    let ENV = {};
+    for (const filename of NEXT_JS_ENVIRONMENT_VARIABLE_FILES[environment]) {
+      if (filename === undefined) {
+        throw new Error("Filename is unexpectedly undefined!");
       }
-      /* eslint-disable-next-line no-console */
-      console.warn(
-        `Skipping environment variables in file ${filename} because the file does not exist.`,
-      );
-    } else {
-      for (const v of variables) {
-        if (parsed.parsed[v] !== undefined) {
-          ENV = { ...ENV, [v]: parsed.parsed[v] };
+      const parsed = dotenv.config({ path: filename });
+      if (parsed.error) {
+        if (parsed.error.code !== "ENOENT") {
+          throw parsed.error;
+        }
+        /* eslint-disable-next-line no-console */
+        console.warn(
+          `Skipping environment variables in file ${filename} because the file does not exist.`,
+        );
+      } else {
+        for (const v of variables) {
+          if (parsed.parsed[v] !== undefined) {
+            ENV = { ...ENV, [v]: parsed.parsed[v] };
+          }
         }
       }
     }
-  }
-  for (const v of variables) {
-    if (ENV[v] === undefined) {
-      missingVariables = [...missingVariables, v];
+    for (const v of variables) {
+      if (ENV[v] === undefined) {
+        missingVariables = [...missingVariables, v];
+      }
     }
-  }
-  if (missingVariables.length !== 0) {
-    const stringified = missingVariables.map(v => `'${v}'`).join(", ");
-    const msg =
-      `The environment variable(s) '${stringified}' is/are required for this npm ` +
-      "script but was not found in the environment!";
-    /* We are temporarily issuing a console.error here to ensure that we can see the failure
+    if (missingVariables.length !== 0) {
+      const stringified = missingVariables.map(v => `'${v}'`).join(", ");
+      const msg =
+        `The environment variable(s) ${stringified} is/are required for this npm ` +
+        "script but was/were not found in the environment!";
+      /* We are temporarily issuing a console.error here to ensure that we can see the failure
        message in Vercel deployment logs.  For whatever reason, throwing an error causes the
        deployment to fail, but does not indicate the error message in the logs. */
-    /* eslint-disable-next-line no-console */
-    console.error(msg);
-    throw new Error(msg);
+      /* eslint-disable-next-line no-console */
+      console.error(msg);
+      throw new Error(msg);
+    }
   }
   return ENV;
 };
