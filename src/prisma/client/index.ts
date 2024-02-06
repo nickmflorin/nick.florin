@@ -26,7 +26,6 @@ import { logger } from "~/application/logger";
 import { env } from "~/env.mjs";
 
 import { ModelMetaDataMiddleware } from "./middleware";
-import { getDatabaseUrl, type DatabaseParams } from "./urls";
 
 export * from "./errors";
 
@@ -36,12 +35,10 @@ export * from "./errors";
  *
  * @returns {{ xprisma: PrismaClientWithExtensions, prisma: PrismaClient }}
  */
-export const initializePrismaClient = (params?: DatabaseParams) => {
+export const initializePrismaClient = () => {
   logger.info("Initializing Prisma Client");
-  const url = getDatabaseUrl(params);
   const prisma = new RootPrismaClient({
     log: env.DATABASE_LOG_LEVEL,
-    datasources: { db: { url } },
   });
   prisma.$use(ModelMetaDataMiddleware);
   return prisma;

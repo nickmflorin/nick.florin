@@ -187,7 +187,6 @@ export const env = createEnv({
     /* ------------------------------ Server Environment Variables ------------------------------ */
     DATABASE_URL: process.env.DATABASE_URL,
     ANALYZE_BUNDLE: process.env.ANALYZE_BUNDLE,
-    MIGRATE_DATABASE_URL: process.env.MIGRATE_DATABASE_URL,
     DATABASE_HOST: process.env.DATABASE_HOST,
     DATABASE_USER: process.env.DATABASE_USER,
     DATABASE_PORT: process.env.DATABASE_PORT,
