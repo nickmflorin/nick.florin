@@ -62,7 +62,7 @@ const loadNextJSEnvironmentVariables = (environment, variables) => {
   }
   for (const v of variables) {
     if (ENV[v] === undefined) {
-      throw new Error(
+      console.error(
         `The environment variable '${v}' is required for this npm script but was not found in the environment!`,
       );
     }
