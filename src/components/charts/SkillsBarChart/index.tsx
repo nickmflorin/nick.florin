@@ -1,13 +1,15 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 import clsx from "clsx";
+import { type z } from "zod";
 
 import { SkillQuerySchema } from "~/app/api/types";
 import { useSkills, useQueryParams } from "~/hooks";
 import { generateChartColors } from "~/lib/charts";
 import { parseQueryParams } from "~/lib/urls";
+import { Form } from "~/components/forms/Form";
 import { CircleIcon } from "~/components/icons/CircleIcon";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
@@ -16,9 +18,35 @@ import { Text } from "~/components/typography/Text";
 import { BarChart } from "../BarChart";
 import { Legend } from "../Legend";
 
-const SkillsBarChartControl = dynamic(() => import("./SkillsBarChartControl"), {
+import { SkillBarChartFormSchema } from "./types";
+
+const SkillBarChartForm = dynamic(() => import("./SkillBarChartForm"), {
   ssr: false,
 });
+
+const SkillsBarChartTooltip = (props: {
+  color: string;
+  data: { experience: number; skill: string };
+}) => (
+  <div
+    className={clsx(
+      "flex flex-row gap-[4px] elevation-1",
+      "bg-white border-gray-200 border rounded-xs p-1 items-center",
+    )}
+  >
+    <div className="flex flex-row gap-[2px] items-center">
+      <CircleIcon color={props.color} size={12} />
+      <Label size="xs" className="leading-[14px]">
+        {props.data.skill}
+      </Label>
+    </div>
+    <Text
+      size="xs"
+      fontWeight="bold"
+      className="leading-[14px]"
+    >{`${props.data.experience} years`}</Text>
+  </div>
+);
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
   const { params, updateParams } = useQueryParams();
@@ -31,6 +59,18 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     }
     return { showTopSkills: 8 as const };
   }, [params]);
+
+  const { setValues, ...form } = Form.useForm<z.infer<typeof SkillBarChartFormSchema>>({
+    schema: SkillBarChartFormSchema,
+    defaultValues: { showTopSkills: 8 },
+    onChange: ({ values }) => {
+      updateParams(values, { push: true, useTransition: false });
+    },
+  });
+
+  useEffect(() => {
+    setValues(skillsQuery);
+  }, [skillsQuery, setValues]);
 
   // TODO: Handle loading & error states.
   const { data: _data, isLoading, error } = useSkills({ query: skillsQuery });
@@ -53,13 +93,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
 
   return (
     <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
-      <SkillsBarChartControl
-        className="px-[20px]"
-        value={skillsQuery}
-        onChange={query => {
-          updateParams(query, { push: true, useTransition: false });
-        }}
-      />
+      <SkillBarChartForm className="px-[20px]" form={{ ...form, setValues }} />
       <BarChart
         data={data ?? []}
         skeletonVisible={isLoading}
@@ -85,26 +119,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
           legendOffset: -40,
           truncateTickAt: 0,
         }}
-        tooltip={props => (
-          <div
-            className={clsx(
-              "flex flex-row gap-[4px] elevation-1",
-              "bg-white border-gray-200 border rounded-xs p-1 items-center",
-            )}
-          >
-            <div className="flex flex-row gap-[2px] items-center">
-              <CircleIcon color={props.color} size={12} />
-              <Label size="xs" className="leading-[14px]">
-                {props.data.skill}
-              </Label>
-            </div>
-            <Text
-              size="xs"
-              fontWeight="bold"
-              className="leading-[14px]"
-            >{`${props.data.experience} years`}</Text>
-          </div>
-        )}
+        tooltip={props => <SkillsBarChartTooltip {...props} />}
       />
       <Legend items={legendItems} className="px-[20px]" />
     </div>

@@ -25,11 +25,9 @@ export type Size = `${number}${SizeUnit}` | number;
 /**
  * A type that represents the string, lowercase name of a native HTML element (i.e. "div" or "p").
  */
-export type HTMLElementName = keyof HTMLElementTagNameMap;
+export type HTMLElementName = keyof JSX.IntrinsicElements;
 
-export type RawHTMLElementProps<E extends keyof HTMLElementTagNameMap> = React.HTMLAttributes<
-  HTMLElementTagNameMap[E]
->;
+export type RawHTMLElementProps<E extends HTMLElementName> = JSX.IntrinsicElements[E];
 
 /**
  * The props that are associated with the {@link HTMLElement} dictated by the generic type argument,

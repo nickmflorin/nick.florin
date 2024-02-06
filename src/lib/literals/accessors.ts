@@ -120,7 +120,7 @@ export type EnumeratedLiteralsArrayAccessors<
   L extends LiteralsArray,
   O extends EnumeratedLiteralsOptions<L>,
 > = {
-  [key in keyof L as L[key] extends string ? LiteralsAccessor<L[key], L, O> : never]: L[key];
+  [key in L[number] as key extends string ? LiteralsAccessor<key, L, O> : never]: key;
 };
 
 export type EnumeratedLiteralsAccessors<

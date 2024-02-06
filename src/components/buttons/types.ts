@@ -29,13 +29,29 @@ export type ButtonType = EnumeratedLiteralsType<typeof ButtonTypes>;
 export const ButtonForms = enumeratedLiterals(["button", "a", "link"] as const, {});
 export type ButtonForm = EnumeratedLiteralsType<typeof ButtonForms>;
 
-export type ButtonOptions = { as: "a" } | { as: "link" } | { as: "button" };
+export type ButtonOptions = {
+  as?: ButtonForm;
+};
+
+type InferForm<O extends ButtonOptions> = O extends { as: infer F extends ButtonForm }
+  ? F
+  : "button";
 
 type IfText<V, T extends ButtonType> = T extends "icon-button" ? never : V;
 
 export type AbstractProps<T extends ButtonType, O extends ButtonOptions> = ComponentProps & {
   readonly buttonType: T;
   readonly variant?: ButtonVariant;
+  /**
+   * Sets the element in a "locked" state, which is a state in which the non-visual characteristics
+   * of the "disabled" state should be used, but the element should not be styled as if it is
+   * disabled.
+   *
+   * This prop should be used for cases where the click behavior of the element should be
+   * restricted, but we do not want to treat the element, visually, as being disabled.  For
+   * instance, if the element is in a "loading" state, we do not want it to look as if it is
+   * disabled - but we do not want to allow click events.
+   */
   readonly isLocked?: boolean;
   readonly isLoading?: boolean;
   readonly isDisabled?: boolean;
@@ -45,11 +61,13 @@ export type AbstractProps<T extends ButtonType, O extends ButtonOptions> = Compo
   readonly size?: ButtonSize;
   readonly children: ReactNode;
   readonly iconSize?: ButtonIconSize;
-} & PolymorphicAbstractButtonProps<O["as"]>;
+} & PolymorphicAbstractButtonProps<InferForm<O>>;
 
-export type AbstractButtonProps = {
-  readonly onClick?: HTMLElementProps<"button">["onClick"];
-  readonly onMouseEnter?: HTMLElementProps<"button">["onMouseEnter"];
+export type AbstractButtonProps = Pick<
+  HTMLElementProps<"button">,
+  "onClick" | "onMouseEnter" | "onMouseLeave" | "onFocus" | "onBlur"
+> & {
+  readonly type?: "submit" | "button";
 };
 
 export type AbstractLinkProps = {

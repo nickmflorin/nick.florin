@@ -1,0 +1,91 @@
+@use "partials";
+
+@mixin error-text-properties {
+  color: theme("colors.danger.600");
+  line-height: partials.get-line-height("body", $size: "xs");
+  font-size: partials.get-font-size("body", $size: "xs");
+  font-weight: partials.get-font-weight("body", $weight: "regular");
+}
+
+.form,
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-field {
+  .form-field__header {
+    width: 100%;
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: row;
+    height: 20px;
+
+    > .form-field__label {
+      color: theme("colors.gray.700");
+      font-size: partials.get-font-size("label", $size: "sm");
+      line-height: 20px;
+      font-weight: partials.get-font-weight("label", $weight: "medium");
+    }
+
+    > .form-field__condition {
+      flex-grow: 100;
+      justify-content: right;
+      display: flex;
+      flex-direction: row;
+      font-size: partials.get-font-size("label", $size: "xs");
+
+      > * {
+        line-height: 20px;
+      }
+    }
+  }
+
+  > .form-field__description {
+    font-size: partials.get-font-size("body", $size: "xs");
+    color: theme("colors.gray.500");
+    line-height: 16px;
+    font-weight: partials.get-font-weight("body", $weight: "regular");
+    margin-bottom: 6px;
+  }
+
+  .form-field__errors {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    > .form-field__error {
+      @include error-text-properties();
+    }
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: theme("spacing.2");
+  position: relative;
+
+  > .form__content {
+    flex-grow: 100;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  > .form__footer {
+    > .form__errors {
+      margin-top: 4px;
+      margin-bottom: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      > .form__error {
+        @include error-text-properties();
+      }
+    }
+  }
+}

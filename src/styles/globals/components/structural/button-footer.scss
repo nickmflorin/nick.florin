@@ -1,0 +1,23 @@
+@use "partials";
+
+.button-footer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  gap: theme("spacing.2");
+
+  &.button-footer--right {
+    justify-content: flex-end;
+  }
+
+  &.button-footer--left {
+    justify-content: flex-start;
+  }
+
+  &.button-footer--full-width {
+    > .button-footer__button {
+      flex: 1;
+    }
+  }
+}
