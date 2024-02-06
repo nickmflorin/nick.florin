@@ -11,6 +11,7 @@
     "setup-env": "env-cmd -r ./.env-emdrc.js -e all npm run requirements-check && prisma generate",
     "preinstall": "env-cmd -r ./.env-emdrc.js -e all npm run requirements-check",
     "postinstall": "prisma generate",
+    "install:ci": "npm run requirements-check && pnpm install && prisma generate",
     "prebuild": "npm run setup-env",
     "analyze-build": "ANALYZE_BUILD=true npm run build",
     "build": "next build",
