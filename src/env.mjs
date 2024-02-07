@@ -218,6 +218,14 @@ export const env = createEnv({
       .join("\n");
     const divider = "-".repeat(32);
     /* eslint-disable-next-line no-console */
-    console.error("\n" + [divider, "Environment Configuration Error", message, divider].join("\n"));
+    console.error(
+      "\n" +
+        [
+          divider,
+          `Environment Configuration Error: VERCEL_ENV='${process.env.VERCEL_ENV}' NODE_ENV='${process.env.NODE_ENV}'`,
+          message,
+          divider,
+        ].join("\n"),
+    );
   },
 });
