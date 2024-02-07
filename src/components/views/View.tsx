@@ -6,14 +6,28 @@ export interface ViewProps extends ComponentProps {
   readonly children?: React.ReactNode;
   readonly screen?: boolean;
   readonly overlay?: boolean;
+  readonly dimmed?: boolean;
+  readonly blurred?: boolean;
 }
 
-export const View = ({ children, screen = false, overlay = false, ...props }: ViewProps) => (
+export const View = ({
+  children,
+  screen = false,
+  dimmed = false,
+  blurred = false,
+  overlay = false,
+  ...props
+}: ViewProps) => (
   <div
     {...props}
     className={clsx(
-      "loading",
-      { "view--overlay": overlay, "view--screen": screen },
+      "view",
+      {
+        "view--overlay": overlay,
+        "view--screen": screen,
+        "view--blurred": blurred,
+        "view--dimmed": dimmed,
+      },
       props.className,
     )}
   >

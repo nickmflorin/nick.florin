@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import React from "react";
 
+import clsx from "clsx";
+
 import { type SpinnerProps } from "~/components/icons";
 import { ShowHide } from "~/components/util";
 import { View, type ViewProps } from "~/components/views/View";
@@ -14,10 +16,11 @@ export interface LoadingProps extends ViewProps {
 }
 
 const _WrappedSpinner = ({
-  spinnerSize,
+  spinnerSize = "24px",
+  dimmed = true,
   ...props
 }: Omit<LoadingProps, "loading" | "children" | "hideWhenLoading">) => (
-  <View {...props}>
+  <View {...props} dimmed={dimmed} className={clsx("loading", props.className)}>
     <Spinner size={spinnerSize} loading={true} />
   </View>
 );

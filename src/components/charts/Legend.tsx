@@ -14,7 +14,7 @@ export interface LegendProps extends ComponentProps {
 }
 
 export const LegendItem = ({ color, label }: ILegendItem) => (
-  <div className="flex flex-row gap-[4px]">
+  <div className="flex flex-row gap-[3px]">
     <CircleIcon color={color} size={18} />
     <Label size="sm" fontWeight="regular" className="leading-[18px]" fontFamily="inter">
       {label}
@@ -23,7 +23,7 @@ export const LegendItem = ({ color, label }: ILegendItem) => (
 );
 
 export const Legend = ({ items, ...props }: LegendProps) => (
-  <div {...props} className={clsx("flex flex-wrap gap-y-[4px] gap-x-[4px]", props.className)}>
+  <div {...props} className={clsx("flex flex-wrap gap-y-[4px] gap-x-[6px]", props.className)}>
     {items.map((item, i) => (
       <LegendItem key={i} {...item} />
     ))}

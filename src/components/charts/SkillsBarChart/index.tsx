@@ -95,7 +95,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
       <SkillBarChartForm className="px-[20px]" form={{ ...form, setValues }} />
       <BarChart
-        error={error ? "There was an error rendering the chart." : null}
+        error="There was an error rendering the chart."
         data={data ?? []}
         isLoading={isLoading}
         isInitialLoading={isInitialLoading}

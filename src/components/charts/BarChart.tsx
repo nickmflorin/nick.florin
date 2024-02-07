@@ -44,7 +44,7 @@ export const BarChart = <D extends BarDatum>({
   className,
   ...props
 }: BarChartProps<D>): JSX.Element => (
-  <div style={style} className={clsx("w-full h-full", className)}>
+  <div style={style} className={clsx("w-full h-full relative", className)}>
     {isInitialLoading ? (
       <div className="px-[20px] py-[20px] w-full h-full">
         <BarChartSkeleton {...skeletonProps} />

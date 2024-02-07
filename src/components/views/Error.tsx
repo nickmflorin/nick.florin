@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Icon } from "~/components/icons/Icon";
 import { Text } from "~/components/typography/Text";
 import { View, type ViewProps } from "~/components/views/View";
 
@@ -15,7 +16,14 @@ const _WrappedError = ({
   readonly error: JSX.Element | string;
 }) => (
   <View {...props}>
-    {typeof error === "string" ? <Text className="text-danger-500">{error}</Text> : error}
+    {typeof error === "string" ? (
+      <div className="flex flex-col gap-[12px]">
+        <Text className="text-gray-500">{error}</Text>
+        <Icon name="exclamation-circle" size="16px" className="text-danger-500" />
+      </div>
+    ) : (
+      error
+    )}
   </View>
 );
 

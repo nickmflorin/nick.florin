@@ -9,7 +9,7 @@ export const Spinner = ({ loading, ...props }: SpinnerProps): JSX.Element =>
   loading === true ? (
     <IconComponent
       {...props}
-      className={clsx("spinner", props.className)}
+      className={clsx("spinner text-blue-400", props.className)}
       spin={true}
       icon={{ name: "circle-notch" }}
       fit="square"
