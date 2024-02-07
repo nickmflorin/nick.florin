@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 
 import { AppConfig } from "~/components/config/AppConfig";
+import { ScreenLoading } from "~/components/loading/ScreenLoading";
 import { env } from "~/env.mjs";
 
 /* Note: The reason we dynamically import the layout is because it accesses server side data to
@@ -11,7 +12,7 @@ import { env } from "~/env.mjs";
    instead fetch the profile data in the Header component itself, and only dynamically load the
    part of the Header component that shows the social buttons. */
 const Layout = dynamic(() => import("~/components/layout/Layout"), {
-  loading: () => <p>Loading...</p>,
+  loading: () => <ScreenLoading />,
 });
 
 const InterFont = Inter({

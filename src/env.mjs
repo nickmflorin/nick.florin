@@ -118,10 +118,10 @@ const testRestricted = schema => {
 const environmentLookup = map => {
   if (process.env.VERCEL_ENV !== undefined) {
     return map[process.env.VERCEL_ENV];
-  } else if (process.env.NODE_ENV === "test") {
-    return map["test"];
+  } else if (process.env.NODE_ENV === "development") {
+    return map.local;
   }
-  return map.local;
+  return map[process.env.NODE_ENV];
 };
 
 export const env = createEnv({
