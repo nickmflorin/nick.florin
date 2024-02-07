@@ -1,12 +1,16 @@
 "use client";
 import { SignInButton as RootSignInButton, SignedOut } from "@clerk/nextjs";
 
+import { type ComponentProps } from "~/components/types";
+
 import { IconButton } from "./IconButton";
 
-export const SignInButton = () => (
+export interface SignInButtonProps extends ComponentProps {}
+
+export const SignInButton = (props: SignInButtonProps) => (
   <SignedOut>
     <RootSignInButton>
-      <IconButton.Primary icon={{ name: "gear" }} size="xlarge" iconSize="medium" />
+      <IconButton.Primary {...props} icon={{ name: "gear" }} size="xlarge" iconSize="medium" />
     </RootSignInButton>
   </SignedOut>
 );

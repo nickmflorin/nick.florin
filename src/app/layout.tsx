@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             sidebar={[
               {
                 label: "Resume",
-                icon: { name: "file-user" },
+                icon: { name: "list-check" },
                 path: "/resume",
                 active: [
                   { leadingPath: "/resume/experience" },
@@ -70,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               },
               {
                 label: "Projects",
-                icon: { name: "file-user" },
+                icon: { name: "hammer" },
                 path: "/projects",
                 active: [{ leadingPath: "/projects" }],
               },

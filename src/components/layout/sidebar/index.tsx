@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import { motion } from "framer-motion";
 import { type Required } from "utility-types";
@@ -18,12 +18,49 @@ const ItemVariants = {
   normal: () => ({}),
 };
 
+const getPreviousOpenedGroup = ({
+  previousItems,
+  groupOpenIndex,
+}: {
+  previousItems: ISidebarItem[];
+  groupOpenIndex: number | null;
+}) => {
+  const previousOpenedGroup = previousItems
+    .map((it, ind) => ({ ind, item: it }))
+    .filter(
+      (d): d is { item: Required<ISidebarItem, "children">; ind: number } =>
+        sidebarItemHasChildren(d.item) && d.ind === groupOpenIndex,
+    );
+  if (previousOpenedGroup.length === 0) {
+    return null;
+  }
+  return previousOpenedGroup[0];
+};
+
+const getAnimatedOffset = ({
+  previousItems,
+  groupOpenIndex,
+}: {
+  previousItems: ISidebarItem[];
+  groupOpenIndex: number | null;
+}) => {
+  const previousOpenedGroup = getPreviousOpenedGroup({ previousItems, groupOpenIndex });
+  if (previousOpenedGroup) {
+    return (previousOpenedGroup.item.children.length - 1) * 48;
+  }
+  return 0;
+};
+
 export interface SidebarProps {
   readonly items: ISidebarItem[];
 }
 
 export const Sidebar = ({ items }: SidebarProps) => {
   const [groupOpenIndex, setGroupOpenIndex] = useState<number | null>(null);
+  const signInOffset = useMemo(
+    () => getAnimatedOffset({ previousItems: items, groupOpenIndex }),
+    [items, groupOpenIndex],
+  );
 
   return (
     <div className="sidebar" onMouseLeave={() => setGroupOpenIndex(null)}>
@@ -31,40 +68,39 @@ export const Sidebar = ({ items }: SidebarProps) => {
         <>
           {items.map((item, i) => {
             if (sidebarItemHasChildren(item)) {
+              const offset = getAnimatedOffset({
+                previousItems: items.slice(0, i),
+                groupOpenIndex,
+              });
               return (
-                <SidebarGroup
+                <motion.div
                   key={i}
-                  item={item}
-                  isOpen={groupOpenIndex === i}
-                  onOpen={() => setGroupOpenIndex(i)}
-                />
+                  variants={ItemVariants}
+                  initial={false}
+                  animate={offset !== 0 ? "offset" : "normal"}
+                  custom={{
+                    offset,
+                  }}
+                  className="w-full"
+                >
+                  <SidebarGroup
+                    item={item}
+                    isOpen={groupOpenIndex === i}
+                    onOpen={() => setGroupOpenIndex(i)}
+                  />
+                </motion.div>
               );
             }
-            const previousWithChildren = items
-              .slice(0, i)
-              .map((it, ind) => ({ ind, item: it }))
-              .filter(
-                (d): d is { item: Required<ISidebarItem, "children">; ind: number } =>
-                  sidebarItemHasChildren(d.item) && d.ind === groupOpenIndex,
-              );
-            let previous: { item: Required<ISidebarItem, "children">; ind: number } | undefined =
-              undefined;
-            if (previousWithChildren.length > 0) {
-              previous = previousWithChildren[0];
-            }
-
-            let offset = 0;
-            if (previous) {
-              offset = (previous.item.children.length - 1) * 48;
-            }
-
+            const offset = getAnimatedOffset({ previousItems: items.slice(0, i), groupOpenIndex });
             return (
               <motion.div
                 key={i}
                 variants={ItemVariants}
                 initial={false}
-                animate={previous !== undefined ? "offset" : "normal"}
-                custom={{ offset }}
+                animate={offset !== 0 ? "offset" : "normal"}
+                custom={{
+                  offset,
+                }}
                 className="w-full h-[48px] aspect-square"
               >
                 <SidebarItem item={item} />
@@ -72,7 +108,15 @@ export const Sidebar = ({ items }: SidebarProps) => {
             );
           })}
         </>
-        <SignInButton />
+        <motion.div
+          variants={ItemVariants}
+          initial={false}
+          animate={signInOffset !== 0 ? "offset" : "normal"}
+          custom={{ offset: signInOffset }}
+          className="w-full h-[48px] aspect-square"
+        >
+          <SignInButton className="w-full h-[48px] aspect-square" />
+        </motion.div>
       </div>
     </div>
   );
