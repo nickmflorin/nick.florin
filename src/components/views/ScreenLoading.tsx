@@ -1,7 +1,5 @@
 import React from "react";
 
-import clsx from "clsx";
-
 import { Loading, type LoadingProps } from "./Loading";
 
 /**
@@ -9,6 +7,6 @@ import { Loading, type LoadingProps } from "./Loading";
  * center.  This component should be used to show loading state when there is nothing rendered in
  * the content area yet.
  */
-export const ScreenLoading = (props: Omit<LoadingProps, "loading">): JSX.Element => (
-  <Loading loading={true} className={clsx("loading--screen", props.className)} size="40px" />
-);
+export const ScreenLoading = (
+  props: Omit<LoadingProps, "loading" | "screen" | "spinnerSize">,
+): JSX.Element => <Loading loading={true} screen {...props} />;

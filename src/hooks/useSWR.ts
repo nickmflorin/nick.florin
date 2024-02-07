@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import superjson, { type SuperJSONResult } from "superjson";
 import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
@@ -89,7 +91,10 @@ export type SWRConfig<T> = Omit<
   readonly onSuccess?: (data: T) => void;
 };
 
-export type SWRResponse<T> = RootSWRResponse<T, HttpError>;
+export type SWRResponse<T> = RootSWRResponse<T, HttpError> & {
+  readonly initialResponseReceived: boolean;
+  readonly isInitialLoading: boolean;
+};
 
 const shouldFetch = (k: Key) => ![null, undefined, false].includes(k as null | undefined | boolean);
 
@@ -97,6 +102,8 @@ export const useSWR = <T>(
   path: Key,
   { onError: _onError, query, ...config }: SWRConfig<T>,
 ): SWRResponse<T> => {
+  const initialResponseReceived = useRef<boolean>(false);
+
   /* If the `onError` configuration callback is provided, it is very important that the globally
        configured `onError` configuration callback is *still* called beforehand. */
   const { onError } = useSWRConfig();
@@ -106,7 +113,12 @@ export const useSWR = <T>(
     ([p, q]) => swrFetcher<T>(p as ApiPath, q),
     {
       ...config,
+      onSuccess: d => {
+        initialResponseReceived.current = true;
+        config.onSuccess?.(d);
+      },
       onError: (e: unknown, key, c) => {
+        initialResponseReceived.current = true;
         // It is important that the globally configured onError callback is called first.
         onError(e, key, c as PublicConfiguration);
         if (isHttpError(e)) {
@@ -121,5 +133,11 @@ export const useSWR = <T>(
       },
     },
   );
-  return { data, error, ...others } as SWRResponse<T>;
+  return {
+    data,
+    error,
+    initialResponseReceived: initialResponseReceived.current,
+    isInitialLoading: others.isLoading && !initialResponseReceived.current,
+    ...others,
+  } as SWRResponse<T>;
 };

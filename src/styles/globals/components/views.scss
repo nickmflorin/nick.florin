@@ -1,0 +1,26 @@
+@use "sass:map";
+@use "partials";
+
+@mixin screen-view() {
+  height: 100vh;
+  width: 100vw;
+}
+
+.view {
+  @include partials.flex-c;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+  overflow: hidden;
+
+  &--screen {
+    @include screen-view();
+  }
+
+  &--overlay {
+    background: rgba(255, 255, 255, 0.75);
+  }
+}

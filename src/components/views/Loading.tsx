@@ -1,41 +1,25 @@
 import dynamic from "next/dynamic";
-import React, { type ReactNode } from "react";
-
-import clsx from "clsx";
+import React from "react";
 
 import { type SpinnerProps } from "~/components/icons";
-import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
+import { View, type ViewProps } from "~/components/views/View";
 
 const Spinner = dynamic(() => import("~/components/icons/Spinner"), { ssr: false });
 
-type BaseLoadingProps = ComponentProps &
-  Pick<SpinnerProps, "size" | "loading"> & {
-    readonly size?: Exclude<SpinnerProps["size"], "full">;
-  };
-
-type LoadingChildProps = BaseLoadingProps & {
-  readonly children?: ReactNode;
+export interface LoadingProps extends ViewProps {
+  readonly loading?: boolean;
   readonly hideWhenLoading?: boolean;
-  readonly overlay?: never;
-};
-
-type LoadingOverlayProps = BaseLoadingProps & {
-  readonly overlay: true;
-  readonly hideWhenLoading?: never;
-  readonly children?: never;
-};
-
-export type LoadingProps = LoadingChildProps | LoadingOverlayProps;
+  readonly spinnerSize?: Exclude<SpinnerProps["size"], "full">;
+}
 
 const _WrappedSpinner = ({
-  size,
-  overlay,
+  spinnerSize,
   ...props
 }: Omit<LoadingProps, "loading" | "children" | "hideWhenLoading">) => (
-  <div {...props} className={clsx("loading", { "loading--overlay": overlay }, props.className)}>
-    <Spinner size={size} loading={true} />
-  </div>
+  <View {...props}>
+    <Spinner size={spinnerSize} loading={true} />
+  </View>
 );
 
 const WrappedSpinner = React.memo(_WrappedSpinner);

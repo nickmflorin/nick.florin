@@ -6,7 +6,7 @@ import { type SubmitErrorHandler } from "react-hook-form";
 
 import { FieldConditions } from "~/components/fields";
 import { Field, ControlledField } from "~/components/fields/Field";
-import { Loading } from "~/components/loading/Loading";
+import { Loading } from "~/components/views/Loading";
 import { ButtonFooter, type ButtonFooterProps } from "~/components/structural/ButtonFooter";
 import { type ComponentProps } from "~/components/types";
 

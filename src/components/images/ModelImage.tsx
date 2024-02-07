@@ -6,7 +6,7 @@ import { type Optional } from "utility-types";
 
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import { Loading } from "~/components/loading/Loading";
+import { Loading } from "~/components/views/Loading";
 import { type ComponentProps, type BorderRadius, BorderRadii } from "~/components/types";
 
 import { type ImageProp } from "./types";

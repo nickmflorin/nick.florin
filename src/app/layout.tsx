@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 
 import { AppConfig } from "~/components/config/AppConfig";
-import { ScreenLoading } from "~/components/loading/ScreenLoading";
+import { ScreenLoading } from "~/components/views/ScreenLoading";
 import { env } from "~/env.mjs";
 
 /* Note: The reason we dynamically import the layout is because it accesses server side data to

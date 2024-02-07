@@ -73,7 +73,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
   }, [skillsQuery, setValues]);
 
   // TODO: Handle loading & error states.
-  const { data: _data, isLoading, error } = useSkills({ query: skillsQuery });
+  const { data: _data, error, isInitialLoading, isLoading } = useSkills({ query: skillsQuery });
 
   const data = useMemo(
     () => (_data ?? []).map(skill => ({ skill: skill.label, experience: skill.experience })),
@@ -95,8 +95,10 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
       <SkillBarChartForm className="px-[20px]" form={{ ...form, setValues }} />
       <BarChart
+        error={error ? "There was an error rendering the chart." : null}
         data={data ?? []}
-        skeletonVisible={isLoading}
+        isLoading={isLoading}
+        isInitialLoading={isInitialLoading}
         skeletonProps={{
           numBars: skillsQuery.showTopSkills === "all" ? 12 : skillsQuery.showTopSkills,
         }}
