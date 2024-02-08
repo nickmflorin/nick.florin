@@ -26,7 +26,7 @@ production deployments, see the Section 2: Development.
 development on MacOSX. Many of the steps outlined in this section may also be applicable for a
 Windows/Ubuntu machine as well, but the steps will not be exactly as they are described here._
 
-### Step 1.1: Repository
+### 1.1: Repository
 
 Clone this repository locally and `cd` into the directory.
 
@@ -34,7 +34,7 @@ Clone this repository locally and `cd` into the directory.
 $ git clone git@github.com:nickmflorin/nick.florin.git
 ```
 
-### Step 1.2: Installing System Requirements
+### 1.2: Installing System Requirements
 
 This section walks through how to install and configure the prerequisites (System Requirements) for
 this project.
@@ -168,7 +168,7 @@ installation of [node], something went awry - consult a team member before proce
 
 If on MacOSX, you will need to install [homebrew], which is a MacOSX package manager.
 
-### Step 1.3: Environment
+### 1.3: Environment
 
 #### 1.3.a ENV File
 
@@ -280,7 +280,7 @@ This will install the project dependencies in the `package.json` file.
 Currently, this application uses a "pro" license for [FontAwesome][fontawesome] to support the icons
 in the application. There
 
-### Step 1.4: Database
+### 1.4: Database
 
 This project uses a [postgres] database for both production and local development. First, check to
 see if your machine already has [postgres] installed:
@@ -309,31 +309,22 @@ $ brew services start postgresql
 
 The database connection parameters for the application are defined in the relevant `.env.*` files.
 In local development, they will be defaulted in the `.env.development` file, but can be overridden
-in your `.env.local` or `.env.development.local` files.
+in your `.env.local` or `.env.development.local` files if desired.
 
-These database connection parameters are used to construct a URL connection string that points to
-the application database, which is used by the [prisma] ORM (more on this later) to connect to the
-application database.
-
-When defining the parameters, they can either be defined explicitly as the `DATABASE_URL`:
-
-```bash
-DATABASE_URL=postgresql://${user}:${password}@${host}:${port}/${name}
-```
-
-or each parameter in the URL connection string can be defined individually:
+The database connection parameters are used directly by the application's ORM, [Prisma][prisma], to
+establish a connection to the application database and allow the application to run. The following
+parameters must be in the environment for [Prisma][prisma] to properly connect to the database, both
+in local development and in production:
 
 ```bash
-DATABSE_NAME="..."
-DATABASE_PORT=xxxx
-DATABASE_HOST="..."
-DATABASE_USER="..."
-DATABASE_PASSWORD="..."
+POSTGRES_URL="postgresql://..."
+POSTGRES_PRISMA_URL="postgresql://..."
+POSTGRES_URL_NON_POOLING="postgresql://..."
+POSTGRES_USER="..."
+POSTGRES_HOST="..."
+POSTGRES_PASSWORD="..."
+POSTGRES_DATABASE="..."
 ```
-
-If the `DATABASE_URL` parameter is defined in the environment, the application will connect to the
-database at that URL. If it is not defined, the application will attempt to connect to a database at
-a URL constructed with the other parameters.
 
 #### 1.4.b Setting Up Application Database
 
@@ -415,7 +406,7 @@ $ \q
 
 The application should now be ready to connect to the database for local development.
 
-## 2. Development
+## 2. Local Development
 
 This section of the documentation describes various interactions that you will need to understand in
 order to properly work with this application locally. This section assumes that you have already
@@ -736,6 +727,55 @@ $ pnpm migrate-reset
 This command will wipe the current database, run all migrations and _then_ run the
 [`./src/prisma/seed.ts](./src/prisma/seed.ts) script.
 
+## 3. Production
+
+This section of the documentation describes how to work with the application in a production
+setting.
+
+This application uses [Vercel][vercel] for its production infrastructure.
+
+### 3.1 Deploying
+
+The application's instance in [Vercel][vercel] is automatically configured to listen to changes on
+either the `master` or `develop` branch, and automatically deploy.
+
+When the `develop` branch changes, [Vercel][vercel] will automatically redeploy the application in a
+`preview` environment. The URL of the deployed instance is dynamic, and can be retrieved directly
+from the [Vercel][vercel] deployments dashboard.
+
+When the `master` branch changes, [Vercel][vercel] will automatically redeploy the application in a
+`production` environment, at the application's public and primary URL.
+
+With this in mind, deploying the application is as simple as merging the most up to date changes
+into the `master` branch (from the `develop` branch) and pushing up to the remote. When this
+happens, [Vercel][vercel] will automatically redeploy the production instance.
+
+First, checkout the `master` branch:
+
+```bash
+$ git checkout master
+```
+
+Then, make sure you have the latest changes from the `develop` branch on the remote:
+
+```bash
+$ git fetch origin develop
+```
+
+Then, merge the changes from `origin/develop` into `master`, making sure to use the `--ff-only` flag
+to ensure that the commits are linear and can be applied directly on top of the last commit on
+`master`:
+
+```bash
+$ git merge --ff-only origin/develop
+```
+
+Finally, push the changes up to `master` to trigger the deploy:
+
+```bash
+$ git push origin master
+```
+
 [psql]: https://www.postgresql.org/docs/current/app-psql.html
 [homebrew]: https://brew.sh/
 [postgresql]: https://www.postgresql.org/docs/current/app-psql.html
@@ -755,3 +795,4 @@ This command will wipe the current database, run all migrations and _then_ run t
 [fontawesome]: https://fontawesome.com/docs
 [pnpm]: https://pnpm.io/installation
 [corepack]: https://nodejs.org/api/corepack.html
+[vercel]: https://vercel.com/
