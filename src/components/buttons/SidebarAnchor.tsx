@@ -33,7 +33,7 @@ export const SidebarAnchor = forwardRef<
     );
 
     return (
-      <Tooltip content={item.tooltipLabel} placement="right">
+      <Tooltip content={item.tooltipLabel} placement="right" variant="secondary">
         {({ ref, params }) => (
           <IconButton<{ as: "link" }>
             {...props}

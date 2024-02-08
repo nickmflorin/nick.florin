@@ -1,19 +1,19 @@
-import clsx from "clsx";
+import { type ReactNode } from "react";
+
+import { Text } from "~/components/typography/Text";
 
 import { Floating, type FloatingProps } from "./Floating";
 
 export interface TooltipProps extends Omit<FloatingProps, "content"> {
-  readonly content: string;
+  readonly content: ReactNode;
 }
 
 export const Tooltip = ({ children, content, ...props }: TooltipProps) => (
   <Floating
     {...props}
-    content={content}
-    contentClassName={clsx(
-      "bg-blue-500 text-white rounded-sm py-[4px] px-[6px] text-xs leading-[14px] z-50",
-      props.contentClassName,
-    )}
+    content={
+      typeof content === "string" ? <Text className="whitespace-nowrap">{content}</Text> : content
+    }
   >
     {children}
   </Floating>

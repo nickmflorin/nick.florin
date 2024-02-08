@@ -14,6 +14,9 @@ import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
 
+import { FloatingContent } from "./FloatingContent";
+import * as types from "./types";
+
 export type FloatingRenderProps = {
   readonly params: ReturnType<ReturnType<typeof useInteractions>["getReferenceProps"]>;
   readonly ref: (node: ReferenceType | null) => void;
@@ -29,6 +32,7 @@ export interface FloatingProps {
   readonly contentClassName?: ComponentProps["className"];
   readonly isOpen?: boolean;
   readonly triggers?: FloatingTrigger[];
+  readonly variant?: types.FloatingVariant;
   /**
    * The element that should trigger the floating content to apper and/or disappear, depending on
    * its interactions state - such as hovered, clicked, etc.  Can be provided either as a render
@@ -63,6 +67,7 @@ export const Floating = ({
   isOpen: propIsOpen,
   content,
   placement,
+  variant = types.FloatingVariants.PRIMARY,
   onOpenChange,
 }: FloatingProps) => {
   const [_isOpen, setIsOpen] = useState(false);
@@ -110,13 +115,14 @@ export const Floating = ({
     <>
       {children}
       {isOpen && (
-        <div
+        <FloatingContent
           ref={refs.setFloating}
+          variant={variant}
           style={floatingStyles}
           {...floatingProps}
           className={clsx(
             /* Typically, the floating props do not include a class name - but just in case, we want
-             to merge it with the content class name, if it exists. */
+               to merge it with the content class name, if it exists. */
             typeof floatingProps.className === "string" ? floatingProps.className : undefined,
             contentClassName,
           )}
@@ -127,13 +133,9 @@ export const Floating = ({
             context={context}
             height={4}
             width={9}
-            className={clsx(
-              "fill-blue-500",
-              "[&>path:first-of-type]:stroke-blue-500",
-              "[&>path:last-of-type]:stroke-blue-500",
-            )}
+            className={types.getFloatingArrowVariantClassName(variant)}
           />
-        </div>
+        </FloatingContent>
       )}
     </>
   );

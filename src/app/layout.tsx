@@ -74,6 +74,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 path: "/projects",
                 active: [{ leadingPath: "/projects" }],
               },
+              {
+                tooltipLabel: "Admin CMS",
+                icon: { name: "gear" },
+                path: "/admin",
+                active: [{ leadingPath: "/admin" }],
+              },
             ]}
           >
             {children}
