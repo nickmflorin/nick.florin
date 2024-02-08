@@ -4,7 +4,7 @@ import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals"
 import { type ComponentProps } from "~/components/types";
 
 export const TypographySizes = enumeratedLiterals(
-  ["xxxs", "xxs", "xs", "sm", "md", "lg", "xl"] as const,
+  ["xxxs", "xxs", "xs", "sm", "md", "mdl", "lg", "xl"] as const,
   {},
 );
 export type TypographySize = EnumeratedLiteralsType<typeof TypographySizes>;

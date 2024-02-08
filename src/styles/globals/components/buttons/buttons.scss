@@ -49,6 +49,7 @@ a:not(.button--type-link) {
     text-decoration: none;
     line-height: inherit;
     font-size: inherit;
+    max-width: fit-content;
 
     @layer {
       color: inherit;

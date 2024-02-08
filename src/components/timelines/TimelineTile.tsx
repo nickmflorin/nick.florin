@@ -45,7 +45,7 @@ const TimelineTileBody = ({
 }: Pick<TimelineTileProps, "description" | "details">): JSX.Element => (
   <div className="flex flex-col gap-[6px] max-w-[700px]">
     {description && (
-      <Text size="sm" className="text-gray-600">
+      <Text size="md" className="text-gray-600">
         {description}
       </Text>
     )}
@@ -61,8 +61,8 @@ const TimelineTileSubTitle = ({
     return (
       <Link
         href={subTitleHref}
-        fontSize="md"
-        fontFamily="avenir"
+        fontSize="mdl"
+        fontFamily="inter"
         fontWeight="medium"
         options={{ as: "a" }}
       >
@@ -71,7 +71,7 @@ const TimelineTileSubTitle = ({
     );
   }
   return (
-    <Text size="md" fontFamily="avenir" fontWeight="medium">
+    <Text size="mdl" fontFamily="inter" fontWeight="medium">
       {children}
     </Text>
   );
@@ -91,10 +91,10 @@ export const TimelineTile = ({
   details,
   ...props
 }: TimelineTileProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col w-full gap-[6px] max-w-100%", props.className)}>
+  <div {...props} className={clsx("flex flex-col w-full gap-[10px] max-w-100%", props.className)}>
     <div className="flex flex-row gap-[8px]">
       <ModelImage size={60} fallbackIcon={fallbackImageIcon} image={{ url: imageUrl }} />
-      <div className="flex flex-col gap-[6px]">
+      <div className="flex flex-col gap-[12px]">
         <div className="flex flex-col gap-[2px] pt-[4px]">
           <Title order={4}>{title}</Title>
           <TimelineTileSubTitle subTitleHref={subTitleHref}>{subTitle}</TimelineTileSubTitle>
