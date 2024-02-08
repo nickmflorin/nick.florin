@@ -1,0 +1,101 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:meta";
+
+@use "partials";
+
+@use "./constants" as *;
+@use "./sizing" as sizing;
+
+$button-font-sizes: (
+  "button": (
+    "xsmall": 12px,
+    "small": 13px,
+    "medium": 14px,
+    "large": 16px,
+    "xlarge": 18px,
+  ),
+);
+
+@function get-button-font-size($type, $size: null) {
+  @if $type != "button" {
+    @return throw.error(
+      "The font size can only be retrieved for a button type of 'button'.",
+      $source: "get-button-font-size()"
+    );
+  }
+  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
+  @return partials.mapget($button-font-sizes, $type, $size);
+}
+
+$button-font-weights: (
+  "button":
+    partials.get-font-weight(
+      $weight: "semibold",
+    ),
+  "link":
+    partials.get-font-weight(
+      $weight: "medium",
+    ),
+  "a":
+    partials.get-font-weight(
+      $weight: "regular",
+    ),
+);
+
+@function get-button-font-weight($type, $size: null) {
+  $type: partials.validate-value($type, $button-types);
+  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
+  @return partials.mapget($button-font-sizes, $type, $size);
+}
+
+@mixin button-font-weights($type) {
+  font-weight: map.get($button-font-weights, $type);
+  // Allow the font-weight to be overridden.
+  @include partials.with-font-weights();
+}
+
+@mixin button-font($type, $size: null) {
+  $type: partials.validate-value($type, ("button", "link"));
+  font-family: $button-font-family;
+
+  @if $type == "button" {
+    @if not $size {
+      @include throw.error(
+        "The size must be provided for a button type of 'button'.",
+        $source: "button-font()"
+      );
+    }
+    $padding: sizing.get-button-padding($type, $size);
+    $height: sizing.get-button-size($type, $size: $size);
+    font-size: get-button-font-size("button", $size: $size);
+    line-height: $height - 2 * list.nth($padding, 1);
+  } @else {
+    font-size: inherit;
+    line-height: inherit;
+  }
+}
+
+@mixin button-fonts($type) {
+  $type: partials.validate-value($type, ("button", "link"));
+
+  @include partials.with-font-families();
+  @include partials.with-text-transforms();
+  @include button-font-weights($type);
+
+  @if $type == "button" {
+    @each $size in $button-size-names {
+      &.font-size-#{$size} {
+        @include button-font($type, $size);
+      }
+    }
+  } @else {
+    @include button-font("link");
+    @include partials.with-font-sizes("body") using ($size, $data) {
+      &.font-size-#{$size} {
+        font-size: partials.mapget($data, font-size);
+        line-height: partials.mapget($data, line-height);
+      }
+    }
+  }
+}

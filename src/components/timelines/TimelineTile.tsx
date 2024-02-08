@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { DateTime } from "luxon";
 
 import { Badge } from "~/components/badges/Badge";
+import { Link } from "~/components/buttons";
 import { ModelImage, type ModelImageProps } from "~/components/images/ModelImage";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
@@ -14,6 +15,7 @@ import { Skills } from "./Skills";
 export interface TimelineTileProps extends ComponentProps {
   readonly title: string;
   readonly subTitle: string;
+  readonly subTitleHref?: string | null;
   readonly description?: string | null;
   readonly startDate: Date;
   readonly endDate: Date | "postponed" | "current";
@@ -51,9 +53,34 @@ const TimelineTileBody = ({
   </div>
 );
 
+const TimelineTileSubTitle = ({
+  children,
+  subTitleHref,
+}: Pick<TimelineTileProps, "subTitleHref"> & { readonly children: string }): JSX.Element => {
+  if (subTitleHref) {
+    return (
+      <Link
+        href={subTitleHref}
+        fontSize="md"
+        fontFamily="avenir"
+        fontWeight="medium"
+        options={{ as: "a" }}
+      >
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <Text size="md" fontFamily="avenir" fontWeight="medium">
+      {children}
+    </Text>
+  );
+};
+
 export const TimelineTile = ({
   title,
   subTitle,
+  subTitleHref,
   location,
   description,
   startDate,
@@ -70,7 +97,7 @@ export const TimelineTile = ({
       <div className="flex flex-col gap-[6px]">
         <div className="flex flex-col gap-[2px] pt-[4px]">
           <Title order={4}>{title}</Title>
-          <Title order={5}>{subTitle}</Title>
+          <TimelineTileSubTitle subTitleHref={subTitleHref}>{subTitle}</TimelineTileSubTitle>
         </div>
         <div className="flex flex-row gap-[8px]">
           <Badge size="xs" icon={{ name: "calendar" }} className="font-medium">

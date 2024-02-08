@@ -3,7 +3,7 @@ import { useFormStatus } from "react-dom";
 
 import { logger } from "~/application/logger";
 import { type ButtonSize } from "~/components/buttons";
-import { Button } from "~/components/buttons/Button";
+import { Button } from "~/components/buttons/generic/Button";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 

@@ -1,8 +1,9 @@
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp, parseMultipleIconsProp } from "~/components/icons";
 
+import * as types from "../types";
+
 import { AbstractButton } from "./AbstractButton";
-import * as types from "./types";
 
 export type ButtonProps<O extends types.ButtonOptions> = Omit<
   types.AbstractProps<"button", O>,

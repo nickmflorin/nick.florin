@@ -5,8 +5,9 @@ import { type IconProp, type IconElement } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { isIconProp } from "~/components/icons/util";
 
+import * as types from "../types";
+
 import { AbstractButton } from "./AbstractButton";
-import * as types from "./types";
 
 export type IconButtonProps<O extends types.ButtonOptions> = Optional<
   Omit<types.AbstractProps<"icon-button", O>, "buttonType">,

@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import { type EnumeratedLiteralsType, enumeratedLiterals } from "~/lib/literals";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
-import { type FontWeight } from "~/components/typography";
+import { type BaseTypographyProps } from "~/components/typography";
 
 export const ButtonVariants = enumeratedLiterals(
   ["primary", "secondary", "bare", "outline", "danger"] as const,
@@ -23,7 +23,7 @@ export const ButtonIconSizes = enumeratedLiterals(
 );
 export type ButtonIconSize = EnumeratedLiteralsType<typeof ButtonIconSizes>;
 
-export const ButtonTypes = enumeratedLiterals(["button", "icon-button"] as const, {});
+export const ButtonTypes = enumeratedLiterals(["button", "icon-button", "link"] as const, {});
 export type ButtonType = EnumeratedLiteralsType<typeof ButtonTypes>;
 
 export const ButtonForms = enumeratedLiterals(["button", "a", "link"] as const, {});
@@ -37,31 +37,43 @@ type InferForm<O extends ButtonOptions> = O extends { as: infer F extends Button
   ? F
   : "button";
 
-type IfText<V, T extends ButtonType> = T extends "icon-button" ? never : V;
+type IfButton<V, T extends ButtonType, R = never> = T extends "button" ? V : R;
+type IfLink<V, T extends ButtonType, R = never> = T extends "link" ? V : R;
 
-export type AbstractProps<T extends ButtonType, O extends ButtonOptions> = ComponentProps & {
-  readonly buttonType: T;
-  readonly variant?: ButtonVariant;
-  /**
-   * Sets the element in a "locked" state, which is a state in which the non-visual characteristics
-   * of the "disabled" state should be used, but the element should not be styled as if it is
-   * disabled.
-   *
-   * This prop should be used for cases where the click behavior of the element should be
-   * restricted, but we do not want to treat the element, visually, as being disabled.  For
-   * instance, if the element is in a "loading" state, we do not want it to look as if it is
-   * disabled - but we do not want to allow click events.
-   */
-  readonly isLocked?: boolean;
-  readonly isLoading?: boolean;
-  readonly isDisabled?: boolean;
-  readonly isActive?: boolean;
-  readonly options?: O;
-  readonly fontWeight?: IfText<FontWeight, T>;
-  readonly size?: ButtonSize;
-  readonly children: ReactNode;
-  readonly iconSize?: ButtonIconSize;
-} & PolymorphicAbstractButtonProps<InferForm<O>>;
+type P = Pick<BaseTypographyProps, "fontFamily" | "fontWeight" | "transform">;
+type ButtonTypographyProps<T extends ButtonType> = {
+  [key in keyof P]?: IfButton<P[key], T, IfLink<P[key], T, never>>;
+} & {
+  readonly fontSize?: IfButton<ButtonSize, T, IfLink<BaseTypographyProps["size"], T, never>>;
+};
+
+export type AbstractProps<
+  T extends ButtonType,
+  O extends ButtonOptions,
+> = ButtonTypographyProps<T> &
+  ComponentProps & {
+    readonly fontSize?: BaseTypographyProps["size"];
+    readonly buttonType: T;
+    readonly variant?: ButtonVariant;
+    /**
+     * Sets the element in a "locked" state, which is a state in which the non-visual
+     * characteristics of the "disabled" state should be used, but the element should not be styled
+     * as if it is disabled.
+     *
+     * This prop should be used for cases where the click behavior of the element should be
+     * restricted, but we do not want to treat the element, visually, as being disabled.  For
+     * instance, if the element is in a "loading" state, we do not want it to look as if it is
+     * disabled - but we do not want to allow click events.
+     */
+    readonly isLocked?: boolean;
+    readonly isLoading?: boolean;
+    readonly isDisabled?: boolean;
+    readonly isActive?: boolean;
+    readonly options?: O;
+    readonly size?: ButtonSize;
+    readonly children: ReactNode;
+    readonly iconSize?: ButtonIconSize;
+  } & PolymorphicAbstractButtonProps<InferForm<O>>;
 
 export type AbstractButtonProps = Pick<
   HTMLElementProps<"button">,

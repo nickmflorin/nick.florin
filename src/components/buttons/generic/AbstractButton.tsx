@@ -3,8 +3,11 @@ import React from "react";
 
 import clsx from "clsx";
 import omit from "lodash.omit";
+import pick from "lodash.pick";
 
-import type * as types from "./types";
+import type * as types from "../types";
+
+import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
 
 const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOptions>(
   props: Pick<
@@ -18,6 +21,9 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
     | "size"
     | "iconSize"
     | "fontWeight"
+    | "fontSize"
+    | "fontFamily"
+    | "transform"
     | "buttonType"
   >,
 ) =>
@@ -25,15 +31,24 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
     "button",
     `button--variant-${props.variant ?? "primary"}`,
     `button--type-${props.buttonType}`,
-    `button--size-${props.size ?? "small"}`,
+    props.buttonType !== "link" ? `button--size-${props.size ?? "small"}` : null,
+    props.buttonType === "button" && props.fontSize ? `font-size-${props.fontSize}` : null,
     props.iconSize && `button--icon-size-${props.iconSize}`,
-    props.fontWeight && `font-weight-${props.fontWeight}`,
     {
       "button--locked": props.isLocked,
       "button--loading": props.isLoading,
       "button--disabled": props.isDisabled,
       "button--active": props.isActive,
     },
+    props.buttonType !== "icon-button"
+      ? getTypographyClassName({
+          ...pick(props, ["fontFamily", "fontWeight", "transform"] as const),
+          size:
+            props.buttonType === "link"
+              ? (props.fontSize as BaseTypographyProps["size"] | undefined)
+              : undefined,
+        } as BaseTypographyProps)
+      : "",
     props.className,
   );
 
@@ -53,6 +68,15 @@ const toCoreButtonProps = <T extends Record<string, unknown>>(
   props: T,
 ): Omit<T, (typeof INTERNAL_BUTTON_PROPS)[number]> => omit(props, INTERNAL_BUTTON_PROPS);
 
+const AbstractButtonContent = <T extends types.ButtonType, O extends types.ButtonOptions>(
+  props: Pick<types.AbstractProps<T, O>, "buttonType" | "children">,
+): JSX.Element => {
+  if (props.buttonType === "link") {
+    return <>{props.children}</>;
+  }
+  return <div className="button__content">{props.children}</div>;
+};
+
 export const AbstractButton = <T extends types.ButtonType, O extends types.ButtonOptions>(
   props: types.AbstractProps<T, O>,
 ): JSX.Element => {
@@ -62,23 +86,21 @@ export const AbstractButton = <T extends types.ButtonType, O extends types.Butto
     const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "a" }>);
     return (
       <a {...ps} className={className}>
-        <div className="button__content">{ps.children}</div>
+        <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
       </a>
     );
   } else if (props.options?.as === "link") {
     const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "link" }>);
     return (
       <NextLink {...ps} className={className}>
-        <div className="button__content">{ps.children}</div>
+        <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
       </NextLink>
     );
   }
   const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "button" }>);
   return (
     <button {...ps} className={className}>
-      <div className="button__content">{ps.children}</div>
+      <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
     </button>
   );
 };
-
-type R = React.FC;

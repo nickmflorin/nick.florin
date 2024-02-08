@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import { type ISidebarItem, sidebarItemIsActive } from "~/components/layout";
 
-import { IconButton, type IconButtonProps } from "./IconButton";
+import { IconButton, type IconButtonProps } from "./generic";
 
 export interface SidebarAnchorProps
   extends Omit<IconButtonProps<{ as: "link" }>, "options" | "isActive" | "icon" | "href"> {

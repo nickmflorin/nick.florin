@@ -11,6 +11,7 @@ export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): J
   <TimelineTile
     title={experience.title}
     subTitle={experience.company.name}
+    subTitleHref={experience.company.websiteUrl}
     description={experience.description}
     startDate={experience.startDate}
     endDate={experience.endDate ?? "current"}

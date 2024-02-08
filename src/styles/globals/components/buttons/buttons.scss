@@ -2,17 +2,25 @@
 @use "sass:map";
 
 @use "partials";
+
 @use "./base" as *;
 @use "./constants" as constants;
+@use "./mixins" as mixins;
 
-button {
+button:not(.button) {
   @include button-base;
 
   // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
   // primary buttons.
-  &:not(.button, .cl-userButtonTrigger, .cl-userButtonPopoverActionButton) {
-    @include third-party-button("button", $size: "medium", $variant: "primary");
+  &:not(.cl-userButtonTrigger, .cl-userButtonPopoverActionButton) {
+    @include button("button", $size: "medium", $variant: "primary");
   }
+}
+
+a:not(.button--type-link) {
+  @include button-base();
+  color: inherit;
+  text-decoration: none;
 }
 
 .button {
@@ -20,27 +28,38 @@ button {
      is because a border will contribute to the size of the button, whereas an outline will not. */
   border: none;
   border-radius: constants.$button-border-radius;
-  justify-content: center;
-  text-align: center;
   outline-offset: -1 * constants.$button-outline-width;
 
+  @include partials.with-selectors((mixins.$button-locked-class, mixins.$button-loading-class)) {
+    pointer-events: none;
+  }
+
   &--type-button {
-    @include button("button");
+    @include button-properties("button");
+    @include button-structure();
+
+    justify-content: center;
+    text-align: center;
   }
 
   &--type-link {
-    @include button("link");
+    @include button-properties("link");
 
+    color: inherit;
     text-decoration: none;
-    line-height: 1;
+    line-height: inherit;
+    font-size: inherit;
 
     @layer {
-      font-weight: constants.$link-font-weight;
       color: inherit;
     }
   }
 
   &--type-icon-button {
-    @include button("icon-button");
+    @include button-properties("icon-button");
+    @include button-structure();
+
+    justify-content: center;
+    text-align: center;
   }
 }

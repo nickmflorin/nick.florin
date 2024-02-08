@@ -46,9 +46,9 @@ h6.cl-headerTitle {
 }
 
 button.cl-formButtonPrimary {
-  @include buttons.third-party-button("button", $variant: "primary", $size: "small");
+  @include buttons.button("button", $variant: "primary", $size: "small");
 }
 
 button.cl-socialButtonsBlockButton__google {
-  @include buttons.third-party-button("button", $variant: "secondary", $size: "small");
+  @include buttons.button("button", $variant: "secondary", $size: "small");
 }

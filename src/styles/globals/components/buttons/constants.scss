@@ -12,17 +12,10 @@ $button-state-names: ("hovered", "focused", "disabled", "active");
 $button-font-family: theme("fontFamily.sans");
 $button-border-radius: theme("borderRadius.md");
 
-// The button font-weight here is used as the default - the font-weight will usually depend on the variant.
-$button-font-weight: partials.get-font-weight(
-  $weight: "medium",
-);
-$link-font-weight: partials.get-font-weight(
-  $weight: "medium",
-);
-
 $button-types: ("button", "link", "icon-button");
 $button-default-type: "button";
 $button-variants: ("primary", "secondary", "danger", "outline");
+$button-default-variant: "primary";
 
 $button-size-names: ("xsmall", "small", "medium", "large", "xlarge");
 
@@ -31,4 +24,4 @@ $button-size-names: ("xsmall", "small", "medium", "large", "xlarge");
 // (e.g. button--size-small button--icon-size-xlarge).
 $button-icon-size-names: ("xsmall", "small", "medium", "large", "xlarge", "full");
 
-$button-default-size: "small";
+$button-default-size: "medium";

@@ -1,4 +1,4 @@
-import { type IconButtonProps, IconButton } from "./IconButton";
+import { type IconButtonProps, IconButton } from "./generic";
 
 export interface SocialButtonProps extends Omit<IconButtonProps<{ as: "a" }>, "options"> {}
 
