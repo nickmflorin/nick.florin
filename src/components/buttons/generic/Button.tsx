@@ -1,3 +1,5 @@
+import { forwardRef } from "react";
+
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp, parseMultipleIconsProp } from "~/components/icons";
 
@@ -14,27 +16,34 @@ export type ButtonProps<O extends types.ButtonOptions> = Omit<
 
 const Base = AbstractButton as React.FC<types.AbstractProps<"button", types.ButtonOptions>>;
 
-const LocalButton = <O extends types.ButtonOptions>({
-  children,
-  icon,
-  ...props
-}: ButtonProps<O>) => {
-  const icons = icon ? parseMultipleIconsProp(icon) : [null, null];
+const LocalButton = forwardRef(
+  <O extends types.ButtonOptions>(
+    { children, icon, ...props }: ButtonProps<O>,
+    ref: types.PolymorphicButtonRef<O>,
+  ) => {
+    const icons = icon ? parseMultipleIconsProp(icon) : [null, null];
 
-  const ps = {
-    ...props,
-    buttonType: "button",
-  } as types.AbstractProps<"button", O>;
+    const ps = {
+      ...props,
+      buttonType: "button",
+    } as types.AbstractProps<"button", O>;
 
-  return (
-    <Base {...ps}>
-      <div className="button__sub-content">{children}</div>
-    </Base>
-  );
+    return (
+      <Base {...ps} ref={ref}>
+        <div className="button__sub-content">{children}</div>
+      </Base>
+    );
+  },
+) as {
+  <O extends types.ButtonOptions>(
+    props: ButtonProps<O> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  ): JSX.Element;
 };
 
 type VariantPartial = {
-  <O extends types.ButtonOptions>(props: Omit<ButtonProps<O>, "variant">): JSX.Element;
+  <O extends types.ButtonOptions>(
+    props: Omit<ButtonProps<O>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  ): JSX.Element;
 };
 
 type WithVariants = { [key in Capitalize<types.ButtonVariant>]: VariantPartial };
@@ -42,9 +51,16 @@ type WithVariants = { [key in Capitalize<types.ButtonVariant>]: VariantPartial }
 const withVariants = types.ButtonVariants.values.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
-    [capitalize(variant)]: <O extends types.ButtonOptions>(
-      props: Omit<ButtonProps<O>, "variant">,
-    ) => <Button<O> {...({ ...props, variant } as ButtonProps<O>)} />,
+    [capitalize(variant)]: forwardRef(
+      <O extends types.ButtonOptions>(
+        props: Omit<ButtonProps<O>, "variant">,
+        ref: types.PolymorphicButtonRef<O>,
+      ) => <Button<O> {...({ ...props, variant } as ButtonProps<O>)} ref={ref} />,
+    ) as {
+      <O extends types.ButtonOptions>(
+        props: Omit<ButtonProps<O>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<O> },
+      ): JSX.Element;
+    },
   }),
   {} as WithVariants,
 );

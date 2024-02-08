@@ -25,8 +25,9 @@ export const SidebarItem = <I extends ISidebarItem | Required<ISidebarItem, "chi
 }: SidebarItemParentProps<I>) => (
   <SidebarAnchor
     item={item}
-    className={clsx("z-10", {
-      "mb-[6px]": item.children !== undefined && item.children.length !== 0 && isOpen,
+    className={clsx({
+      "z-10": item.children !== undefined && item.children.length !== 0,
+      "mb-[6px] z-10": item.children !== undefined && item.children.length !== 0 && isOpen,
       "mb-[6px] last:mb-0": item.children === undefined || item.children.length === 0,
     })}
     onMouseEnter={() => onOpen?.()}

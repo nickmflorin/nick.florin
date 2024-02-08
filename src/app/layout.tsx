@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Layout
             sidebar={[
               {
-                label: "Resume",
+                tooltipLabel: "Resume",
                 icon: { name: "list-check" },
                 path: "/resume",
                 active: [
@@ -55,13 +55,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ],
                 children: [
                   {
-                    label: "Experience",
+                    tooltipLabel: "Experience",
                     icon: { name: "briefcase" },
                     path: { pathname: "/resume/experience", maintainQuery: true },
                     active: [{ leadingPath: "/resume/experience" }],
                   },
                   {
-                    label: "Education",
+                    tooltipLabel: "Education",
                     icon: { name: "building-columns" },
                     path: { pathname: "/resume/education", maintainQuery: true },
                     active: [{ leadingPath: "/resume/education" }],
@@ -69,7 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 ],
               },
               {
-                label: "Projects",
+                tooltipLabel: "Projects",
                 icon: { name: "hammer" },
                 path: "/projects",
                 active: [{ leadingPath: "/projects" }],

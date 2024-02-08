@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import React from "react";
+import React, { forwardRef } from "react";
 
 import clsx from "clsx";
 import omit from "lodash.omit";
@@ -62,6 +62,9 @@ const INTERNAL_BUTTON_PROPS = [
   "iconSize",
   "fontWeight",
   "buttonType",
+  "fontSize",
+  "transform",
+  "fontFamily",
 ] as const;
 
 const toCoreButtonProps = <T extends Record<string, unknown>>(
@@ -77,30 +80,44 @@ const AbstractButtonContent = <T extends types.ButtonType, O extends types.Butto
   return <div className="button__content">{props.children}</div>;
 };
 
-export const AbstractButton = <T extends types.ButtonType, O extends types.ButtonOptions>(
-  props: types.AbstractProps<T, O>,
-): JSX.Element => {
-  const className = getButtonClassName(props);
-
-  if (props.options?.as === "a") {
-    const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "a" }>);
+export const AbstractButton = forwardRef(
+  <T extends types.ButtonType, O extends types.ButtonOptions>(
+    props: types.AbstractProps<T, O>,
+    ref: types.PolymorphicButtonRef<O>,
+  ): JSX.Element => {
+    const className = getButtonClassName(props);
+    if (props.options?.as === "a") {
+      const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "a" }>);
+      return (
+        <a {...ps} className={className} ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}>
+          <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
+        </a>
+      );
+    } else if (props.options?.as === "link") {
+      const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "link" }>);
+      return (
+        <NextLink
+          {...ps}
+          className={className}
+          ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}
+        >
+          <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
+        </NextLink>
+      );
+    }
+    const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "button" }>);
     return (
-      <a {...ps} className={className}>
+      <button
+        {...ps}
+        className={className}
+        ref={ref as types.PolymorphicButtonRef<{ as: "button" }>}
+      >
         <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
-      </a>
+      </button>
     );
-  } else if (props.options?.as === "link") {
-    const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "link" }>);
-    return (
-      <NextLink {...ps} className={className}>
-        <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
-      </NextLink>
-    );
-  }
-  const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "button" }>);
-  return (
-    <button {...ps} className={className}>
-      <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
-    </button>
-  );
+  },
+) as {
+  <T extends types.ButtonType, O extends types.ButtonOptions>(
+    props: types.AbstractProps<T, O> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  ): JSX.Element;
 };

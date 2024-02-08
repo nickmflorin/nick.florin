@@ -1,5 +1,5 @@
 import { type LinkProps as NextLinkProps } from "next/link";
-import { type ReactNode } from "react";
+import { type ReactNode, type ForwardedRef } from "react";
 
 import { type EnumeratedLiteralsType, enumeratedLiterals } from "~/lib/literals";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
@@ -41,6 +41,7 @@ type IfButton<V, T extends ButtonType, R = never> = T extends "button" ? V : R;
 type IfLink<V, T extends ButtonType, R = never> = T extends "link" ? V : R;
 
 type P = Pick<BaseTypographyProps, "fontFamily" | "fontWeight" | "transform">;
+
 type ButtonTypographyProps<T extends ButtonType> = {
   [key in keyof P]?: IfButton<P[key], T, IfLink<P[key], T, never>>;
 } & {
@@ -75,21 +76,26 @@ export type AbstractProps<
     readonly iconSize?: ButtonIconSize;
   } & PolymorphicAbstractButtonProps<InferForm<O>>;
 
-export type AbstractButtonProps = Pick<
-  HTMLElementProps<"button">,
-  "onClick" | "onMouseEnter" | "onMouseLeave" | "onFocus" | "onBlur"
-> & {
+type CommonEventProps =
+  | "onMouseEnter"
+  | "onMouseLeave"
+  | "onFocus"
+  | "onBlur"
+  | "onPointerDown"
+  | "onPointerEnter"
+  | "onMouseMove";
+
+export type AbstractButtonProps = Pick<HTMLElementProps<"button">, "onClick" | CommonEventProps> & {
   readonly type?: "submit" | "button";
 };
 
-export type AbstractLinkProps = {
-  readonly href: NextLinkProps["href"];
-  readonly onMouseEnter?: HTMLElementProps<"a">["onMouseEnter"];
-};
+export type AbstractLinkProps = Pick<
+  NextLinkProps,
+  "href" | (CommonEventProps & keyof NextLinkProps)
+>;
 
-export type AbstractAnchorProps = {
+export type AbstractAnchorProps = Pick<HTMLElementProps<"a">, CommonEventProps> & {
   readonly href: string;
-  readonly onMouseEnter?: HTMLElementProps<"a">["onMouseEnter"];
 };
 
 export type PolymorphicAbstractButtonProps<F extends ButtonForm> = {
@@ -97,3 +103,15 @@ export type PolymorphicAbstractButtonProps<F extends ButtonForm> = {
   button: AbstractButtonProps;
   a: AbstractAnchorProps;
 }[F];
+
+export type PolymorphicButtonElement<O extends ButtonOptions> = {
+  link: HTMLAnchorElement;
+  a: HTMLAnchorElement;
+  button: HTMLButtonElement;
+}[InferForm<O>];
+
+export type PolymorphicButtonRef<O extends ButtonOptions> = {
+  link: ForwardedRef<HTMLAnchorElement>;
+  a: ForwardedRef<HTMLAnchorElement>;
+  button: ForwardedRef<HTMLButtonElement>;
+}[InferForm<O>];

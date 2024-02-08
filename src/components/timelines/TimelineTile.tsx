@@ -1,8 +1,10 @@
+"use client";
 import clsx from "clsx";
 import { DateTime } from "luxon";
 
 import { Badge } from "~/components/badges/Badge";
 import { Link } from "~/components/buttons";
+import { Tooltip } from "~/components/floating/Tooltip";
 import { ModelImage, type ModelImageProps } from "~/components/images/ModelImage";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
@@ -59,15 +61,30 @@ const TimelineTileSubTitle = ({
 }: Pick<TimelineTileProps, "subTitleHref"> & { readonly children: string }): JSX.Element => {
   if (subTitleHref) {
     return (
-      <Link
-        href={subTitleHref}
-        fontSize="mdl"
-        fontFamily="inter"
-        fontWeight="medium"
-        options={{ as: "a" }}
-      >
-        {children}
-      </Link>
+      <Tooltip content="View website">
+        {/* <Link
+          href={subTitleHref}
+          fontSize="mdl"
+          fontFamily="inter"
+          fontWeight="medium"
+          options={{ as: "a" }}
+        >
+          {children}
+        </Link> */}
+        {({ ref, params }) => (
+          <Link
+            {...params}
+            ref={ref}
+            href={subTitleHref}
+            fontSize="mdl"
+            fontFamily="inter"
+            fontWeight="medium"
+            options={{ as: "a" }}
+          >
+            {children}
+          </Link>
+        )}
+      </Tooltip>
     );
   }
   return (

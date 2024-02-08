@@ -1,3 +1,5 @@
+import { forwardRef } from "react";
+
 import { type Optional } from "utility-types";
 
 import { capitalize } from "~/lib/formatters";
@@ -18,23 +20,31 @@ export type IconButtonProps<O extends types.ButtonOptions> = Optional<
 
 const Base = AbstractButton as React.FC<types.AbstractProps<"icon-button", types.ButtonOptions>>;
 
-const LocalIconButton = <O extends types.ButtonOptions>({
-  children,
-  icon,
-  ...props
-}: IconButtonProps<O>) => {
-  const ps = {
-    ...props,
-    buttonType: "icon-button",
-  } as types.AbstractProps<"icon-button", O>;
-
-  return (
-    <Base {...ps}>{children ? children : isIconProp(icon) ? <Icon icon={icon} /> : icon}</Base>
-  );
+const LocalIconButton = forwardRef(
+  <O extends types.ButtonOptions>(
+    { children, icon, ...props }: IconButtonProps<O>,
+    ref: types.PolymorphicButtonRef<O>,
+  ) => {
+    const ps = {
+      ...props,
+      buttonType: "icon-button",
+    } as types.AbstractProps<"icon-button", O>;
+    return (
+      <Base {...ps} ref={ref}>
+        {children ? children : isIconProp(icon) ? <Icon icon={icon} /> : icon}
+      </Base>
+    );
+  },
+) as {
+  <O extends types.ButtonOptions>(
+    props: IconButtonProps<O> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  ): JSX.Element;
 };
 
 type VariantPartial = {
-  <O extends types.ButtonOptions>(props: Omit<IconButtonProps<O>, "variant">): JSX.Element;
+  <O extends types.ButtonOptions>(
+    props: Omit<IconButtonProps<O>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  ): JSX.Element;
 };
 
 type WithVariants = { [key in Capitalize<types.ButtonVariant>]: VariantPartial };

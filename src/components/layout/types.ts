@@ -8,7 +8,7 @@ import { type IconProp } from "~/components/icons";
 
 export interface ISidebarItem {
   readonly icon: IconProp;
-  readonly label: string;
+  readonly tooltipLabel: string;
   readonly path: Path | { pathname: Path; maintainQuery: true };
   readonly active: PathActive;
   readonly children?: [Omit<ISidebarItem, "children">, ...Omit<ISidebarItem, "children">[]];

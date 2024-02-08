@@ -1,4 +1,3 @@
-"use client";
 import { motion } from "framer-motion";
 import { type Required } from "utility-types";
 
@@ -27,7 +26,7 @@ const groupVariants = {
   }),
 };
 
-export const SidebarGroup = ({ item, onOpen, isOpen }: SidebarGroupProps) => (
+export const SidebarGroup = ({ item, isOpen, onOpen }: SidebarGroupProps) => (
   <motion.div
     className="flex flex-col min-h-[48px] items-center w-full"
     initial={false}
