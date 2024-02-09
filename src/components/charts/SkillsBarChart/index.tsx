@@ -53,12 +53,12 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     if (parsed.success) {
       return parsed.data;
     }
-    return { showTopSkills: 8 as const };
+    return { showTopSkills: 12 as const };
   }, [params]);
 
   const { setValues, ...form } = Form.useForm<z.infer<typeof SkillBarChartFormSchema>>({
     schema: SkillBarChartFormSchema,
-    defaultValues: { showTopSkills: 8 },
+    defaultValues: { showTopSkills: 12 },
     onChange: ({ values }) => {
       updateParams(values, { push: true, useTransition: false });
     },

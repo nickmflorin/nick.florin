@@ -2,8 +2,8 @@
 
 @mixin error-text-properties {
   color: theme("colors.danger.600");
-  line-height: partials.get-line-height("body", $size: "xs");
-  font-size: partials.get-font-size("body", $size: "xs");
+  line-height: partials.get-line-height("body", $size: "sm");
+  font-size: partials.get-font-size("body", $size: "sm");
   font-weight: partials.get-font-weight("body", $weight: "regular");
 }
 
@@ -24,7 +24,7 @@
 
     > .form-field__label {
       color: theme("colors.gray.700");
-      font-size: partials.get-font-size("label", $size: "sm");
+      font-size: partials.get-font-size("label", $size: "md");
       line-height: 20px;
       font-weight: partials.get-font-weight("label", $weight: "medium");
     }
@@ -34,7 +34,7 @@
       justify-content: right;
       display: flex;
       flex-direction: row;
-      font-size: partials.get-font-size("label", $size: "xs");
+      font-size: partials.get-font-size("label", $size: "sm");
 
       > * {
         line-height: 20px;
@@ -43,7 +43,7 @@
   }
 
   > .form-field__description {
-    font-size: partials.get-font-size("body", $size: "xs");
+    font-size: partials.get-font-size("body", $size: "sm");
     color: theme("colors.gray.500");
     line-height: 16px;
     font-weight: partials.get-font-weight("body", $weight: "regular");

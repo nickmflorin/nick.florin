@@ -67,7 +67,7 @@ const TimelineTileSubTitle = ({
             {...params}
             ref={ref}
             href={subTitleHref}
-            fontSize="mdl"
+            fontSize="md"
             fontFamily="inter"
             fontWeight="medium"
             options={{ as: "a" }}
@@ -79,7 +79,7 @@ const TimelineTileSubTitle = ({
     );
   }
   return (
-    <Text size="mdl" fontFamily="inter" fontWeight="medium">
+    <Text size="md" fontFamily="inter" fontWeight="medium">
       {children}
     </Text>
   );
@@ -100,24 +100,24 @@ export const TimelineTile = ({
   ...props
 }: TimelineTileProps): JSX.Element => (
   <div {...props} className={clsx("flex flex-col w-full gap-[10px] max-w-100%", props.className)}>
-    <div className="flex flex-row gap-[8px]">
-      <ModelImage size={60} fallbackIcon={fallbackImageIcon} image={{ url: imageUrl }} />
+    <div className="flex flex-row gap-[10px]">
+      <ModelImage size={72} fallbackIcon={fallbackImageIcon} image={{ url: imageUrl }} />
       <div className="flex flex-col gap-[12px]">
-        <div className="flex flex-col gap-[2px] pt-[4px]">
-          <Title order={4}>{title}</Title>
+        <div className="flex flex-col gap-[4px] pt-[4px]">
+          <Title order={2}>{title}</Title>
           <TimelineTileSubTitle subTitleHref={subTitleHref}>{subTitle}</TimelineTileSubTitle>
         </div>
         <div className="flex flex-row gap-[8px]">
-          <Badge size="xs" icon={{ name: "calendar" }} className="font-medium">
+          <Badge size="sm" icon={{ name: "calendar" }} className="font-medium">
             {parseDateInterval(startDate, endDate)}
           </Badge>
-          <Badge size="xs" icon={{ name: "location-dot" }} className="font-medium">
+          <Badge size="sm" icon={{ name: "location-dot" }} className="font-medium">
             {location}
           </Badge>
         </div>
       </div>
     </div>
-    <div className="flex flex-col pl-[68px] gap-[12px]">
+    <div className="flex flex-col pl-[82px] gap-[12px]">
       <TimelineTileBody description={description} details={details} />
       <Skills skills={skills} className="max-w-[800px]" />
     </div>

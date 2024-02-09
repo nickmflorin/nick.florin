@@ -1,0 +1,53 @@
+@use "partials";
+
+$input-sizes: ("small", "medium", "large");
+$input-default-size: "medium";
+
+$input-size-properties: (
+  "small": (
+    "height": 28px,
+    "font-size": 13px,
+    "line-height": 16px,
+    "padding": 6px 10px,
+  ),
+  "medium": (
+    "height": 32px,
+    "font-size": 14px,
+    "line-height": 18px,
+    "padding": 7px 12px,
+  ),
+  "large": (
+    "height": 36px,
+    "font-size": 14px,
+    "line-height": 18px,
+    "padding": 9px 12px,
+  ),
+);
+
+@function get-input-size-properties($size) {
+  $size: partials.validate-value($size, $input-sizes);
+  @return partials.mapget($input-size-properties, $size);
+}
+
+@function get-input-font-size($size) {
+  $size: partials.validate-value($size, $input-sizes);
+  @return partials.mapget($input-size-properties, $size, font-size);
+}
+
+@mixin input-size($size) {
+  $properties: get-input-size-properties($size);
+  height: partials.mapget($properties, "height");
+  font-size: partials.mapget($properties, "font-size");
+  line-height: partials.mapget($properties, "line-height");
+  padding: partials.mapget($properties, "padding");
+}
+
+@mixin input-sizes() {
+  @include input-size($input-default-size);
+
+  @each $size in $input-sizes {
+    &--size-#{$size} {
+      @include input-size($size);
+    }
+  }
+}

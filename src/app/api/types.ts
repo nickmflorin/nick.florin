@@ -16,7 +16,7 @@ export const SHOW_TOP_SKILLS_STRINGS = ["5", "8", "12", "all"] as const;
 export type ShowTopSkillsString = (typeof SHOW_TOP_SKILLS_STRINGS)[number];
 
 export const SkillQuerySchema = z.object({
-  showTopSkills: showTopSkillsSchema.default(8),
+  showTopSkills: showTopSkillsSchema.default(12),
 });
 
 export type SkillQuery = z.infer<typeof SkillQuerySchema>;

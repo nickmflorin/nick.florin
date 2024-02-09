@@ -1,0 +1,102 @@
+@use "sass:color";
+@use "sass:map";
+
+@use "partials";
+@use "throw";
+
+$input-variants: ("primary", "bare");
+$input-default-variant: "primary";
+
+$input-variant-properties: (
+  "primary": (
+    background-color: theme("colors.white"),
+    outline-color: theme("colors.border"),
+    color: theme("colors.body"),
+    caret-color: theme("colors.body"),
+    // TODO: Add to Tailwind Config instead.
+    placeholder-color: color.change(#606873, $alpha: 0.6),
+    disabled: (
+      color: theme("colors.disabled"),
+      placeholder-color: theme("colors.disabled"),
+      background-color: theme("colors.disabledBackground"),
+      outline-color: theme("colors.disabledBorder"),
+    ),
+    focused: (
+      outline-color: theme("colors.blue.400"),
+    ),
+  ),
+  "bare": (
+    background-color: theme("colors.gray.100"),
+    outline-color: theme("colors.transparent"),
+    color: theme("colors.body"),
+    caret-color: theme("colors.body"),
+    // TODO: Add to Tailwind Config instead.
+    placeholder-color: color.change(#606873, $alpha: 0.6),
+    disabled: (
+      color: theme("colors.disabled"),
+      placeholder-color: theme("colors.disabled"),
+      background-color: theme("colors.disabledBackground"),
+    ),
+    focused: (
+      background-color: theme("colors.gray.200"),
+    ),
+  ),
+);
+
+@function get-input-property($variant, $property, $state: null) {
+  $variant: partials.validate-value($variant, $input-variants);
+  $state: if($state, partials.validate-value($state, ("focused", "disabled")), $state);
+  $properties: partials.mapget($input-variant-properties, $variant);
+
+  @if $property == "disabled" or $property == "focused" {
+    @return throw.error("The property cannot be a state.");
+  }
+
+  $stateless: partials.mapget($properties, $property);
+  @if not $state {
+    @return $stateless;
+  }
+  @return if(
+    map.has-key($properties, $state) and
+      map.has-key(partials.mapget($properties, $state), $property),
+    partials.mapget($properties, $state, $property),
+    $stateless
+  );
+}
+
+@mixin input-variant-state($variant, $state: null) {
+  background-color: get-input-property($variant, background-color, $state: $state);
+  color: get-input-property($variant, color, $state: $state);
+  caret-color: get-input-property($variant, caret-color, $state: $state);
+  outline: 1px solid get-input-property($variant, outline-color, $state: $state);
+
+  &::placeholder {
+    color: get-input-property($variant, placeholder-color, $state: $state);
+  }
+}
+
+@mixin input-variant($variant) {
+  @include input-variant-state($variant);
+
+  @include partials.disabled {
+    @include input-variant-state($variant, $state: "disabled");
+  }
+
+  @include partials.focused {
+    @include input-variant-state($variant, $state: "focused");
+  }
+
+  @include partials.focused-within {
+    @include input-variant-state($variant, $state: "focused");
+  }
+}
+
+@mixin input-variants() {
+  @include input-variant($input-default-variant);
+
+  @each $variant in $input-variants {
+    &--variant-#{$variant} {
+      @include input-variant($variant);
+    }
+  }
+}

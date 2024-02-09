@@ -27,13 +27,13 @@ const DetailComponent = <D extends TopLevelDetail | NestedDetail>({
     <div className="flex flex-col gap-[2px]">
       {index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
-          <Label size="md" className="w-[8px]">
+          <Label size="lg" className="w-[8px]">
             {`${index}.`}
           </Label>
-          <Label size="md">{detail.label}</Label>
+          <Label size="lg">{detail.label}</Label>
         </div>
       ) : (
-        <Label size="md">{index !== undefined ? `${index}. ${detail.label}` : detail.label}</Label>
+        <Label size="lg">{index !== undefined ? `${index}. ${detail.label}` : detail.label}</Label>
       )}
       {detail.description && (
         <Text size="md" className={clsx("text-gray-600", { "pl-[16px]": index !== undefined })}>

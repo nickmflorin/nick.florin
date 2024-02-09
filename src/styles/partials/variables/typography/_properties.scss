@@ -104,47 +104,42 @@ $font-family-default-weights: (
 }
 
 /* --------------------------------------- Font Sizes ----------------------------------------- */
-$typography-sizes: ("xxxs", "xxs", "xs", "sm", "md", "mdl", "lg", "xl");
+$typography-sizes: ("xxxs", "xxs", "xs", "sm", "md", "lg", "xl");
 
 $typography-size-properties: (
   "body": (
     "xxxs": (
-      font-size: 10px,
-      line-height: 12px,
-      font-weight: "regular",
-    ),
-    "xxs": (
       font-size: 11px,
       line-height: 14px,
       font-weight: "regular",
     ),
-    "xs": (
+    "xxs": (
       font-size: 12px,
+      line-height: 14px,
+      font-weight: "regular",
+    ),
+    "xs": (
+      font-size: 13px,
       line-height: 16px,
       font-weight: "regular",
     ),
     "sm": (
-      font-size: 13px,
+      font-size: 14px,
       line-height: 18px,
       font-weight: "regular",
     ),
     "md": (
-      font-size: 14px,
-      line-height: 20px,
-      font-weight: "regular",
-    ),
-    "mdl": (
-      font-size: 15px,
+      font-size: 16px,
       line-height: 20px,
       font-weight: "regular",
     ),
     "lg": (
-      font-size: 16px,
+      font-size: 18px,
       line-height: 24px,
       font-weight: "regular",
     ),
     "xl": (
-      font-size: 18px,
+      font-size: 20px,
       line-height: 28px,
       font-weight: "regular",
     ),
@@ -156,38 +151,33 @@ $typography-size-properties: (
       font-weight: "medium",
     ),
     "xxs": (
-      font-size: 14px,
+      font-size: 13px,
       line-height: 20px,
       font-weight: "medium",
     ),
     "xs": (
-      font-size: 16px,
-      line-height: 22px,
+      font-size: 14px,
+      line-height: 20px,
       font-weight: "medium",
     ),
     "sm": (
-      font-size: 18px,
-      line-height: 24px,
+      font-size: 16px,
+      line-height: 22px,
       font-weight: "semibold",
     ),
     "md": (
-      font-size: 24px,
-      line-height: 30px,
-      font-weight: "semibold",
-    ),
-    "mdl": (
-      font-size: 26px,
-      line-height: 30px,
+      font-size: 18px,
+      line-height: 26px,
       font-weight: "semibold",
     ),
     "lg": (
-      font-size: 28px,
-      line-height: 34px,
+      font-size: 22px,
+      line-height: 28px,
       font-weight: "semibold",
     ),
     "xl": (
-      font-size: 32px,
-      line-height: 36px,
+      font-size: 24px,
+      line-height: 30px,
       font-weight: "bold",
     ),
   ),
@@ -217,20 +207,15 @@ $typography-size-properties: (
       line-height: 20px,
       font-weight: "medium",
     ),
-    "mdl": (
-      font-size: 15px,
-      line-height: 20px,
-      font-weight: "medium",
-    ),
     "lg": (
       font-size: 16px,
       line-height: 24px,
-      font-weight: "semibold",
+      font-weight: "medium",
     ),
     "xl": (
       font-size: 18px,
       line-height: 28px,
-      font-weight: "semibold",
+      font-weight: "medium",
     ),
   ),
 );
