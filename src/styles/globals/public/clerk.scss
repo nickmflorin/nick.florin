@@ -50,5 +50,35 @@ button.cl-formButtonPrimary {
 }
 
 button.cl-socialButtonsBlockButton__google {
-  @include buttons.button("button", $variant: "secondary", $size: "small");
+  @include buttons.button("button", $variant: "secondary", $size: "medium");
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.cl-userButtonPopoverCard {
+  padding: 12px 0px;
+
+  .cl-userPreview {
+    padding: 0px 12px;
+  }
+
+  .cl-userButtonPopoverActions {
+    .cl-userButtonPopoverActionButton {
+      padding: 0.875rem 12px;
+    }
+  }
+
+  // This contains the "Powered by Clerk" watermark.
+  .cl-userButtonPopoverFooter {
+    display: none;
+  }
+}
+
+.cl-userButtonTrigger {
+  > .cl-avatarBox {
+    height: 36px;
+    width: auto;
+    aspect-ratio: 1;
+  }
 }

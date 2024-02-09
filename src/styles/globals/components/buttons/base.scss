@@ -72,8 +72,10 @@
   }
 }
 
-@mixin button($type, $variant: $button-default-variant, $size: $button-default-size) {
+@mixin button($type, $variant: null, $size: null) {
   @include button-base();
+  $variant: if($variant, $variant, $button-default-variant);
+  $size: if($size, $size, $button-default-size);
   @include variants.button-variant($type: $type, $variant: $variant);
 
   @if $type != "icon-button" {

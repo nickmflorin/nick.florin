@@ -61,7 +61,7 @@ const TimelineTileSubTitle = ({
 }: Pick<TimelineTileProps, "subTitleHref"> & { readonly children: string }): JSX.Element => {
   if (subTitleHref) {
     return (
-      <Tooltip content="View website" placement="bottom-end">
+      <Tooltip content="Visit website" placement="bottom-end">
         {({ ref, params }) => (
           <Link
             {...params}

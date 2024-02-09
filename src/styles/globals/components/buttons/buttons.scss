@@ -12,7 +12,7 @@ button:not(.button) {
 
   // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
   // primary buttons.
-  &:not(.cl-userButtonTrigger, .cl-userButtonPopoverActionButton) {
+  &:not(.cl-userButtonTrigger, .cl-userButtonPopoverActionButton, .cl-socialButtonsBlockButton) {
     @include button("button", $size: "medium", $variant: "primary");
   }
 }
