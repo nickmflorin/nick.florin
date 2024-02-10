@@ -1,0 +1,227 @@
+"use client";
+import React, {
+  useId,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
+
+import clsx from "clsx";
+import omit from "lodash.omit";
+import pick from "lodash.pick";
+
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import { type ComponentProps } from "~/components/types";
+
+import { type InputProps, Input, NativeInput, type NativeInputProps } from "./generic";
+
+export const ReadWriteTextInputStates = enumeratedLiterals(["reading", "writing"] as const, {});
+export type ReadWriteTextInputState = EnumeratedLiteralsType<typeof ReadWriteTextInputStates>;
+
+export type ReadWriteTextInputInstance = {
+  readonly clear: () => void;
+  readonly setValue: (v: string, opts?: { state?: ReadWriteTextInputState }) => void;
+  readonly cancel: () => void;
+  readonly setState: (s: ReadWriteTextInputState) => void;
+};
+
+export interface ReadWriteTextInputProps
+  extends Omit<InputProps, "children">,
+    Omit<NativeInputProps, keyof InputProps> {
+  readonly value?: string;
+  readonly initialValue?: string;
+  readonly initialState?: ReadWriteTextInputState;
+  readonly state?: ReadWriteTextInputState;
+  readonly persistOnEnter?: boolean;
+  readonly cancelOnEscape?: boolean;
+  readonly readingClassName?: ComponentProps["className"];
+  readonly writingClassName?: ComponentProps["className"];
+  readonly onPersist?: (
+    text: string,
+    instance: ReadWriteTextInputInstance,
+  ) => void | boolean | undefined | Promise<boolean | void | undefined>;
+  readonly onCancel?: (text: string) => void;
+}
+
+export const useReadWriteTextInput = () => {
+  const ref = useRef<ReadWriteTextInputInstance>({
+    setValue: () => {},
+    clear: () => {},
+    cancel: () => {},
+    setState: () => {},
+  });
+  return ref;
+};
+
+const isEnterEvent = (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && !e.shiftKey;
+
+const isEscapeEvent = (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Escape";
+
+const INPUT_PROPS = ["className", "style", "variant", "size"] as const;
+
+export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWriteTextInputProps>(
+  function _ReadWriteTextInput(
+    {
+      initialState = ReadWriteTextInputStates.READING,
+      disabled,
+      initialValue,
+      // value: _propValue,
+      state: _propState,
+      persistOnEnter = true,
+      cancelOnEscape = true,
+      readingClassName = "outline-transparent",
+      writingClassName = "",
+      onPersist,
+      onCancel,
+      ...props
+    },
+    ref,
+  ): JSX.Element {
+    const [_state, _setState] = useState<ReadWriteTextInputState>(initialState);
+    const state = _propState === undefined ? _state : _propState;
+
+    /* Keep track of the Cancel/Save button IDs so that the component can detect if blur events on
+       the TextInput element come from the button clicks. */
+    const cancelId = useId();
+    const saveId = useId();
+
+    const internalRef = useRef<HTMLInputElement | null>(null);
+    const lastPersisted = useRef<string | null>(initialValue || null);
+
+    useEffect(() => {
+      if (initialValue !== undefined && internalRef.current) {
+        internalRef.current.value = initialValue;
+      }
+      /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    }, []);
+
+    const setState = useCallback((s: ReadWriteTextInputState) => {
+      if (s === ReadWriteTextInputStates.READING && internalRef.current) {
+        internalRef.current.blur();
+      } else if (s === ReadWriteTextInputStates.WRITING && internalRef.current) {
+        internalRef.current.focus();
+      }
+      _setState(s);
+    }, []);
+
+    const cancel = useCallback(() => {
+      if (internalRef.current) {
+        // Blurring will cause the state to be set to "reading" via 'onBlur'.
+        internalRef.current.blur();
+
+        if (lastPersisted.current) {
+          internalRef.current.value = lastPersisted.current;
+        } else {
+          internalRef.current.value = initialValue || "";
+        }
+        onCancel?.(internalRef.current.value);
+      }
+    }, [initialValue, onCancel]);
+
+    const setValue = useCallback(
+      (v: string, options?: { state?: ReadWriteTextInputState }) => {
+        if (internalRef.current) {
+          internalRef.current.value = v;
+          if (options?.state !== undefined) {
+            setState(options.state);
+          }
+        }
+      },
+      [setState],
+    );
+
+    const refObj = useMemo(
+      () => ({
+        setValue,
+        setState,
+        cancel,
+        clear: () => {
+          if (internalRef.current) {
+            internalRef.current.value = "";
+          }
+        },
+      }),
+      [setState, setValue, cancel],
+    );
+
+    const persist = useCallback(async () => {
+      const _persist = (instance: HTMLInputElement) => {
+        // Blurring will cause the state to be set to "reading" via 'onBlur'.
+        instance.blur();
+        lastPersisted.current = instance.value;
+      };
+      if (internalRef.current) {
+        if (typeof onPersist === "function") {
+          const result = await onPersist(internalRef.current.value, refObj);
+          if (result !== false) {
+            _persist(internalRef.current);
+          }
+        } else {
+          _persist(internalRef.current);
+        }
+      }
+    }, [onPersist, refObj]);
+
+    useImperativeHandle(ref, () => refObj);
+
+    return (
+      <Input
+        {...pick(props, INPUT_PROPS)}
+        className={clsx(
+          "text-input",
+          {
+            [clsx(writingClassName)]: state === ReadWriteTextInputStates.WRITING,
+            [clsx(readingClassName)]: state === ReadWriteTextInputStates.READING,
+          },
+          props.className,
+        )}
+        disabled={disabled}
+        onFocus={e => {
+          e.preventDefault();
+          setState(ReadWriteTextInputStates.WRITING);
+          props.onFocus?.(e);
+        }}
+        onBlur={e => {
+          /* If the reason the text input is blurring is due to a click of the Cancel or Save
+             button, changing the state of the text area via _setState will cause the text area to
+             rerender in a blurred state before the button's onClick handler fires - which will
+             prevent the 'internalRef' from being accessed properly outside of the TextInput
+             element. */
+          if (
+            !e.relatedTarget ||
+            (e.relatedTarget.id !== cancelId && e.relatedTarget.id !== saveId)
+          ) {
+            setState(ReadWriteTextInputStates.READING);
+          }
+          props.onBlur?.(e);
+        }}
+      >
+        <NativeInput
+          {...omit(props, INPUT_PROPS)}
+          disabled={disabled}
+          ref={internalRef}
+          onKeyDown={e => {
+            if (internalRef.current) {
+              if (
+                state === ReadWriteTextInputStates.WRITING &&
+                (isEnterEvent(e) || isEscapeEvent(e))
+              ) {
+                e.preventDefault();
+                if (isEnterEvent(e) && persistOnEnter) {
+                  persist();
+                } else if (cancelOnEscape) {
+                  cancel();
+                }
+              }
+            }
+            props.onKeyDown?.(e);
+          }}
+        />
+      </Input>
+    );
+  },
+);

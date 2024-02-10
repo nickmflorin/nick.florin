@@ -91,12 +91,16 @@ export const getTransformedClerkData = (u: ClerkUser): ClerkTransformedFields =>
   };
 };
 
-export const upsertUserFromClerk = async (u: ClerkUser): Promise<User> =>
+export const upsertUserFromClerk = async (
+  u: ClerkUser,
+  options?: { isAdmin?: boolean },
+): Promise<User> =>
   await prisma.user.upsert({
     where: { clerkId: u.id },
-    update: getTransformedClerkData(u),
+    update: { ...getTransformedClerkData(u), isAdmin: options?.isAdmin },
     create: {
       ...getTransformedClerkData(u),
       clerkId: u.id,
+      isAdmin: options?.isAdmin,
     },
   });

@@ -18,7 +18,7 @@ async function main() {
   const clerkUser = await clerk.users.getUser(env.PERSONAL_CLERK_USER_ID);
   const ctx: SeedContext = {
     clerkUser,
-    user: await upsertUserFromClerk(clerkUser),
+    user: await upsertUserFromClerk(clerkUser, { isAdmin: true }),
   };
   await seedProfile(ctx);
   await seedSkills(ctx); // Must be done first

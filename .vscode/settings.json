@@ -4,12 +4,23 @@
   "editor.rulers": [100],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
+    "source.fixAll.eslint": "explicit"
   },
   "editor.trimAutoWhitespace": true,
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "explicit"
+    }
+  },
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "explicit"
+    }
   },
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
@@ -30,5 +41,6 @@
   "less.validate": false,
   "scss.validate": false,
   "stylelint.validate": ["css", "scss", "less", "postcss"],
-  "stylelint.configBasedir": "/"
+  "stylelint.configBasedir": "/",
+  "stylelint.packageManager": "pnpm"
 }

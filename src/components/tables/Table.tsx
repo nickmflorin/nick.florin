@@ -1,35 +1,13 @@
 "use client";
-import {
-  Table as RootTable,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-  getKeyValue,
-} from "@nextui-org/table";
+import { DataTable, type DataTableColumn } from "mantine-datatable";
 
-export interface TableProps<C extends { key: string; label: string }, T extends { id: string }> {
+export interface TableProps<T extends { id: string }> {
   readonly data: T[];
-  readonly columns: C[];
+  readonly columns: DataTableColumn<T>[];
 }
 
-export const Table = <C extends { key: string; label: string }, T extends { id: string }>({
-  data,
-  columns,
-}: TableProps<C, T>): JSX.Element => (
-  <RootTable>
-    <TableHeader<C> columns={columns}>
-      {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
-    </TableHeader>
-    <TableBody items={data}>
-      {datum => (
-        <TableRow key={datum.id}>
-          {columnKey => <TableCell>{getKeyValue(datum, columnKey)}</TableCell>}
-        </TableRow>
-      )}
-    </TableBody>
-  </RootTable>
+export const Table = <T extends { id: string }>({ data, columns }: TableProps<T>): JSX.Element => (
+  <DataTable columns={columns} records={data} />
 );
 
 export default Table;
