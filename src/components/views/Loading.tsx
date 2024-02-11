@@ -21,7 +21,7 @@ const _WrappedSpinner = ({
   ...props
 }: Omit<LoadingProps, "loading" | "children" | "hideWhenLoading">) => (
   <View {...props} dimmed={dimmed} className={clsx("loading", props.className)}>
-    <Spinner size={spinnerSize} loading={true} />
+    <Spinner size={spinnerSize} isLoading={true} />
   </View>
 );
 
