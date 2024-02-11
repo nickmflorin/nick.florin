@@ -25,6 +25,10 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
     | "fontFamily"
     | "transform"
     | "buttonType"
+    | "lockedClassName"
+    | "disabledClassName"
+    | "loadingClassName"
+    | "activeClassName"
   >,
 ) =>
   clsx(
@@ -35,10 +39,10 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
     props.buttonType === "button" && props.fontSize ? `font-size-${props.fontSize}` : null,
     props.iconSize && `button--icon-size-${props.iconSize}`,
     {
-      "button--locked": props.isLocked,
-      "button--loading": props.isLoading,
-      "button--disabled": props.isDisabled,
-      "button--active": props.isActive,
+      [clsx("button--locked", props.lockedClassName)]: props.isLocked,
+      [clsx("button--loading", props.loadingClassName)]: props.isLoading,
+      [clsx("button--disabled", props.disabledClassName)]: props.isDisabled,
+      [clsx("button--active", props.activeClassName)]: props.isActive,
     },
     props.buttonType !== "icon-button"
       ? getTypographyClassName({
@@ -58,13 +62,17 @@ const INTERNAL_BUTTON_PROPS = [
   "isLocked",
   "isActive",
   "isDisabled",
-  "isLoading:",
+  "isLoading",
   "iconSize",
   "fontWeight",
   "buttonType",
   "fontSize",
   "transform",
   "fontFamily",
+  "lockedClassName",
+  "loadingClassName",
+  "activeClassName",
+  "disabledClassName",
 ] as const;
 
 const toCoreButtonProps = <T extends Record<string, unknown>>(
@@ -110,6 +118,7 @@ export const AbstractButton = forwardRef(
       <button
         {...ps}
         className={className}
+        disabled={props.isDisabled}
         ref={ref as types.PolymorphicButtonRef<{ as: "button" }>}
       >
         <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>

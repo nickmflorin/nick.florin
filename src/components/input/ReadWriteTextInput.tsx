@@ -27,6 +27,7 @@ export type ReadWriteTextInputInstance = {
   readonly setValue: (v: string, opts?: { state?: ReadWriteTextInputState }) => void;
   readonly cancel: () => void;
   readonly setState: (s: ReadWriteTextInputState) => void;
+  readonly setLoading: (v: boolean) => void;
 };
 
 export interface ReadWriteTextInputProps
@@ -53,6 +54,7 @@ export const useReadWriteTextInput = () => {
     clear: () => {},
     cancel: () => {},
     setState: () => {},
+    setLoading: () => {},
   });
   return ref;
 };
@@ -67,9 +69,9 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
   function _ReadWriteTextInput(
     {
       initialState = ReadWriteTextInputStates.READING,
-      disabled,
+      isDisabled = false,
       initialValue,
-      // value: _propValue,
+      isLoading = false,
       state: _propState,
       persistOnEnter = true,
       cancelOnEscape = true,
@@ -83,6 +85,7 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
   ): JSX.Element {
     const [_state, _setState] = useState<ReadWriteTextInputState>(initialState);
     const state = _propState === undefined ? _state : _propState;
+    const [_loading, setLoading] = useState(false);
 
     /* Keep track of the Cancel/Save button IDs so that the component can detect if blur events on
        the TextInput element come from the button clicks. */
@@ -136,6 +139,7 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
 
     const refObj = useMemo(
       () => ({
+        setLoading,
         setValue,
         setState,
         cancel,
@@ -154,15 +158,17 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
         instance.blur();
         lastPersisted.current = instance.value;
       };
-      if (internalRef.current) {
+      if (internalRef.current && internalRef.current.value !== lastPersisted.current) {
         if (typeof onPersist === "function") {
           const result = await onPersist(internalRef.current.value, refObj);
-          if (result !== false) {
+          if (result !== false && internalRef.current) {
             _persist(internalRef.current);
           }
         } else {
           _persist(internalRef.current);
         }
+      } else if (internalRef.current) {
+        internalRef.current.blur();
       }
     }, [onPersist, refObj]);
 
@@ -171,6 +177,7 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
     return (
       <Input
         {...pick(props, INPUT_PROPS)}
+        isLoading={isLoading || _loading}
         className={clsx(
           "text-input",
           {
@@ -179,7 +186,7 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
           },
           props.className,
         )}
-        disabled={disabled}
+        isDisabled={isDisabled}
         onFocus={e => {
           e.preventDefault();
           setState(ReadWriteTextInputStates.WRITING);
@@ -202,7 +209,7 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
       >
         <NativeInput
           {...omit(props, INPUT_PROPS)}
-          disabled={disabled}
+          isDisabled={isDisabled}
           ref={internalRef}
           onKeyDown={e => {
             if (internalRef.current) {

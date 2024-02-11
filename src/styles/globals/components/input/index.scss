@@ -12,6 +12,10 @@
   @include sizing.input-sizes();
   @include variants.input-variants();
 
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: theme("spacing.1");
   outline-offset: -1px;
   border-radius: constants.$input-border-radius;
 
@@ -21,13 +25,21 @@
       @include sizing.input-size($size);
     }
   }
+
+  > .input__content {
+    flex-grow: 100;
+    align-items: center;
+    height: 100%;
+  }
 }
 
 .text-input {
-  > .native-input {
-    font-size: inherit;
-    line-height: inherit;
-    padding: 0;
-    width: 100%;
+  > .input__content {
+    > .native-input {
+      font-size: inherit;
+      line-height: inherit;
+      padding: 0;
+      width: 100%;
+    }
   }
 }

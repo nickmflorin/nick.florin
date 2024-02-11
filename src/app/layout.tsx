@@ -33,12 +33,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48" />
         <Script
+          async
           type="text/javascript"
           src={`https://kit.fontawesome.com/${env.FONT_AWESOME_KIT_TOKEN}.js`}
           crossOrigin="anonymous"
-          data-auto-replace-svg="replace"
-          data-mutate-approach="sync"
-          data-observe-mutations
+          /* Using "nest" instead of "replace" avoids errors related to
+             NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is \
+             not a child of this node */
+          data-auto-replace-svg="nest"
+          /* data-mutate-approach="sync"
+             data-observe-mutations */
         />
       </head>
       <body className={InterFont.className}>

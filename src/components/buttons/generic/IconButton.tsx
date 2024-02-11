@@ -1,11 +1,12 @@
-import { forwardRef } from "react";
+import { forwardRef, type ReactNode } from "react";
 
 import { type Optional } from "utility-types";
 
 import { capitalize } from "~/lib/formatters";
-import { type IconProp, type IconElement } from "~/components/icons";
+import { type IconProp } from "~/components/icons";
+import { isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import { isIconProp } from "~/components/icons/util";
+import Spinner from "~/components/icons/Spinner";
 
 import * as types from "../types";
 
@@ -15,14 +16,27 @@ export type IconButtonProps<O extends types.ButtonOptions> = Optional<
   Omit<types.AbstractProps<"icon-button", O>, "buttonType">,
   "children"
 > & {
-  readonly icon?: IconProp | IconElement;
+  readonly icon?: IconProp;
 };
 
 const Base = AbstractButton as React.FC<types.AbstractProps<"icon-button", types.ButtonOptions>>;
 
+const WithLoading = ({
+  children,
+  isLoading,
+}: {
+  children: ReactNode;
+  isLoading?: boolean;
+}): JSX.Element => {
+  if (isLoading) {
+    return <Spinner isLoading />;
+  }
+  return <>{children}</>;
+};
+
 const LocalIconButton = forwardRef(
   <O extends types.ButtonOptions>(
-    { children, icon, ...props }: IconButtonProps<O>,
+    { children, icon, isLoading, ...props }: IconButtonProps<O>,
     ref: types.PolymorphicButtonRef<O>,
   ) => {
     const ps = {
@@ -30,8 +44,14 @@ const LocalIconButton = forwardRef(
       buttonType: "icon-button",
     } as types.AbstractProps<"icon-button", O>;
     return (
-      <Base {...ps} ref={ref}>
-        {children ? children : isIconProp(icon) ? <Icon icon={icon} /> : icon}
+      <Base {...ps} ref={ref} isLoading={isLoading}>
+        {children ? (
+          <WithLoading isLoading={isLoading}>{children}</WithLoading>
+        ) : isIconProp(icon) ? (
+          <Icon icon={icon} isLoading={isLoading} fit="square" dimension="height" />
+        ) : (
+          <WithLoading isLoading={isLoading}>{icon}</WithLoading>
+        )}
       </Base>
     );
   },
@@ -47,9 +67,9 @@ type VariantPartial = {
   ): JSX.Element;
 };
 
-type WithVariants = { [key in Capitalize<types.ButtonVariant>]: VariantPartial };
+type WithVariants = { [key in Capitalize<types.ButtonVariant<"icon-button">>]: VariantPartial };
 
-const withVariants = types.ButtonVariants.values.reduce<WithVariants>(
+const withVariants = types.ButtonVariants["icon-button"].values.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
     [capitalize(variant)]: <O extends types.ButtonOptions>(

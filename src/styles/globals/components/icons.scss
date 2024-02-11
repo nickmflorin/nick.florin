@@ -34,7 +34,7 @@
 
 .icon {
   @extend %icon-svg-base;
-  display: flex !important;
+  display: flex;
   flex-direction: column;
   line-height: unset !important;
 
@@ -170,4 +170,9 @@
   &:not(&--dimension-width, &--dimension-height) {
     @include icon-size-classes(partials.$default-icon-size-dimension);
   }
+}
+
+.spinner {
+  // The default color, unless overridden via Tailwind classes or elsewhere in the SASS files.
+  color: theme("colors.blue.400");
 }

@@ -3,7 +3,7 @@ import {
   type IconFamily as RootIconFamily,
   type IconName,
 } from "@fortawesome/fontawesome-svg-core";
-import { type Optional } from "utility-types";
+import { z } from "zod";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ComponentProps, type Size } from "~/components/types";
@@ -59,6 +59,15 @@ export type IconProp = {
   readonly family?: IconFamily;
   readonly iconStyle?: IconStyle;
 };
+
+const IconPropSchema = z.object({
+  name: z.string(),
+  family: z.nativeEnum(IconFamilies).optional(),
+  iconStyle: z.nativeEnum(IconStyles).optional(),
+});
+
+export const isIconProp = (value: unknown): value is IconProp =>
+  IconPropSchema.safeParse(value).success;
 
 export type DynamicIcon = {
   readonly icon: IconProp;
@@ -179,7 +188,7 @@ type _BaseIconProps = ComponentProps &
      * component contains an Icon but needs to replace it with a loading indicator when in a loading
      * state.
      */
-    readonly loading?: boolean;
+    readonly isLoading?: boolean;
     /**
      * A string, "fit" or "square", that defines whether or not the `svg` element should fit snuggly
      * around the inner `path` element of the Icon or SVG ("fit") or the `svg` element should have
@@ -211,39 +220,30 @@ type _BaseIconProps = ComponentProps &
 /**
  * The props that the component responsible for rendering the Icon component.
  */
-export type BasicIconComponentProps<I extends IconProp | DynamicIconProp = IconProp> = Omit<
-  _BaseIconProps,
-  "loading"
-> & {
-  [key in keyof IconProp]?: never;
-} & {
-  readonly icon: I;
-};
+export type BasicIconComponentProps<I extends IconProp | DynamicIconProp = IconProp> =
+  _BaseIconProps & {
+    [key in keyof IconProp]?: never;
+  } & {
+    readonly icon: I;
+  };
 
-export type EmbeddedIconComponentProps = Omit<_BaseIconProps, "loading"> &
+export type EmbeddedIconComponentProps = _BaseIconProps &
   IconProp & {
     readonly icon?: never;
   };
 
-export type IconComponentProps<I extends IconProp | DynamicIconProp = IconProp> =
-  | BasicIconComponentProps<I>
-  | EmbeddedIconComponentProps;
+export type SpinnerProps = Omit<BasicIconComponentProps, keyof IconProp | "spin" | "icon" | "fit">;
 
-export type SpinnerProps = Omit<
-  IconComponentProps,
-  keyof IconProp | "spin" | "icon" | "contain" | "loading"
-> & {
-  readonly loading: boolean;
-};
+export type IconProps =
+  | EmbeddedIconComponentProps
+  | BasicIconComponentProps<IconProp>
+  | BasicIconComponentProps<DynamicIconProp>;
 
-export type IconProps<
-  I extends IconProp | DynamicIconProp | IconElement = IconProp | DynamicIconProp,
-> =
-  | (Optional<EmbeddedIconComponentProps, "name"> & { readonly loading?: boolean })
-  | (Optional<BasicIconComponentProps<Extract<I, IconProp>>, "icon"> & {
-      readonly loading?: boolean;
-    })
-  | (Optional<BasicIconComponentProps<DynamicIconProp>, "icon"> & { readonly loading?: boolean });
+export const isBasicIconComponentProps = (
+  params: IconProps,
+): params is BasicIconComponentProps<IconProp> | BasicIconComponentProps<DynamicIconProp> =>
+  (params as BasicIconComponentProps<IconProp> | BasicIconComponentProps<DynamicIconProp>).icon !==
+  undefined;
 
 export type IconElement = React.ReactElement<IconProps>;
 

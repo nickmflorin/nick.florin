@@ -13,13 +13,13 @@ export interface TextInputProps
 const INPUT_PROPS = ["className", "style", "variant", "size"] as const;
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-  ({ disabled, ...props }: TextInputProps, ref) => (
+  ({ isDisabled, ...props }: TextInputProps, ref) => (
     <Input
       {...pick(props, INPUT_PROPS)}
-      disabled={disabled}
+      isDisabled={isDisabled}
       className={clsx("text-input", props.className)}
     >
-      <NativeInput {...omit(props, INPUT_PROPS)} disabled={disabled} ref={ref} />
+      <NativeInput {...omit(props, INPUT_PROPS)} isDisabled={isDisabled} ref={ref} />
     </Input>
   ),
 );

@@ -5,11 +5,32 @@ import { type EnumeratedLiteralsType, enumeratedLiterals } from "~/lib/literals"
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import { type BaseTypographyProps } from "~/components/typography";
 
-export const ButtonVariants = enumeratedLiterals(
-  ["primary", "secondary", "bare", "outline", "danger"] as const,
+export const ButtonButtonVariants = enumeratedLiterals(
+  ["primary", "secondary", "bare", "danger"] as const,
   {},
 );
-export type ButtonVariant = EnumeratedLiteralsType<typeof ButtonVariants>;
+export type ButtonButtonVariant = EnumeratedLiteralsType<typeof ButtonButtonVariants>;
+
+export const IconButtonVariants = enumeratedLiterals(
+  ["primary", "secondary", "bare", "transparent", "danger"] as const,
+  {},
+);
+export type IconButtonVariant = EnumeratedLiteralsType<typeof IconButtonVariants>;
+
+export const LinkVariants = enumeratedLiterals(["primary", "secondary", "danger"] as const, {});
+export type LinkVariant = EnumeratedLiteralsType<typeof LinkVariants>;
+
+export type ButtonVariant<T extends ButtonType> = {
+  button: ButtonButtonVariant;
+  "icon-button": IconButtonVariant;
+  link: LinkVariant;
+}[T];
+
+export const ButtonVariants = {
+  button: ButtonButtonVariants,
+  "icon-button": IconButtonVariants,
+  link: LinkVariants,
+};
 
 export const ButtonSizes = enumeratedLiterals(
   ["xsmall", "small", "medium", "large", "xlarge"] as const,
@@ -55,7 +76,7 @@ export type AbstractProps<
   ComponentProps & {
     readonly fontSize?: BaseTypographyProps["size"];
     readonly buttonType: T;
-    readonly variant?: ButtonVariant;
+    readonly variant?: ButtonVariant<T>;
     /**
      * Sets the element in a "locked" state, which is a state in which the non-visual
      * characteristics of the "disabled" state should be used, but the element should not be styled
@@ -72,6 +93,10 @@ export type AbstractProps<
     readonly isActive?: boolean;
     readonly options?: O;
     readonly size?: ButtonSize;
+    readonly disabledClassName?: ComponentProps["className"];
+    readonly lockedClassName?: ComponentProps["className"];
+    readonly loadingClassName?: ComponentProps["className"];
+    readonly activeClassName?: ComponentProps["className"];
     readonly children: ReactNode;
     readonly iconSize?: ButtonIconSize;
   } & PolymorphicAbstractButtonProps<InferForm<O>>;

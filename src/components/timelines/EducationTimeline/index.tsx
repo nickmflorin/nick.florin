@@ -7,16 +7,10 @@ import { prisma } from "~/prisma/client";
 
 import { EducationTile } from "./EducationTile";
 
-const CommitTimeline = dynamic(
-  async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    return await import("../CommitTimeline");
-  },
-  {
-    ssr: false,
-    loading: () => <div>Loading...</div>,
-  },
-);
+const CommitTimeline = dynamic(async () => await import("../CommitTimeline"), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+});
 
 export type EducationTimelineProps = ComponentProps;
 

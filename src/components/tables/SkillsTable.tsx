@@ -1,8 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState, useTransition, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 
 import { updateSkill } from "~/app/actions/updateSkill";
+import { slugify } from "~/lib/formatters";
 import { IconButton } from "~/components/buttons";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import { type Skill } from "~/prisma/model";
@@ -15,16 +16,29 @@ interface LabelCellProps {
 
 const LabelCell = ({ skill }: LabelCellProps): JSX.Element => {
   const input = useReadWriteTextInput();
+  const router = useRouter();
+  const [_, transition] = useTransition();
 
   return (
     <ReadWriteTextInput
       ref={input}
       initialValue={skill.label}
       onPersist={async (label, instance) => {
-        /* TODO: Handle the error here, return false if there is an error to prevent persisting of
-           value. */
-        const updated = await updateSkill(skill.id, { label });
-        instance.setValue(updated.label, { state: "reading" });
+        instance.setLoading(true);
+        let updatedSkill: Skill;
+        try {
+          updatedSkill = await updateSkill(skill.id, { label });
+        } catch (e) {
+          /* eslint-disable-next-line no-console -- Need to handle the error better! */
+          console.error(e);
+          return false;
+        } finally {
+          instance.setLoading(false);
+        }
+        instance.setValue(updatedSkill.label, { state: "reading" });
+        transition(() => {
+          router.refresh();
+        });
       }}
     />
   );
@@ -32,6 +46,9 @@ const LabelCell = ({ skill }: LabelCellProps): JSX.Element => {
 
 const SlugCell = ({ skill }: LabelCellProps): JSX.Element => {
   const input = useReadWriteTextInput();
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [_, transition] = useTransition();
 
   return (
     <div className="flex flex-row justify-between gap-[12px]">
@@ -39,19 +56,46 @@ const SlugCell = ({ skill }: LabelCellProps): JSX.Element => {
         ref={input}
         initialValue={skill.slug}
         onPersist={async (slug, instance) => {
-          const updatedSkill = await updateSkill(skill.id, { slug });
-          /* TODO: Handle the error here, return false if there is an error to prevent persisting of
-             value. */
+          instance.setLoading(true);
+          let updatedSkill: Skill;
+          try {
+            updatedSkill = await updateSkill(skill.id, { slug });
+          } catch (e) {
+            /* eslint-disable-next-line no-console -- Need to handle the error better! */
+            console.error(e);
+            return false;
+          } finally {
+            instance.setLoading(false);
+          }
           instance.setValue(updatedSkill.slug, { state: "reading" });
+          transition(() => {
+            router.refresh();
+          });
         }}
       />
-      <IconButton
+      <IconButton.Transparent
         icon={{ name: "refresh" }}
+        className="text-blue-600"
+        disabledClassName="text-disabled"
+        isLoading={loading}
+        isDisabled={skill.slug === slugify(skill.label)}
         onClick={async () => {
-          const updatedSkill = await updateSkill(skill.id, { refreshSlug: true });
-          if (input.current) {
-            input.current.setValue(updatedSkill.slug, { state: "reading" });
+          setLoading(true);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          let updatedSkill: Skill;
+          try {
+            updatedSkill = await updateSkill(skill.id, { refreshSlug: true });
+          } catch (e) {
+            /* eslint-disable-next-line no-console -- Need to handle the error better! */
+            console.error(e);
+            return false;
+          } finally {
+            setLoading(false);
           }
+          input.current.setValue(updatedSkill.slug, { state: "reading" });
+          transition(() => {
+            router.refresh();
+          });
         }}
       />
     </div>

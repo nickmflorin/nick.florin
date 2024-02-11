@@ -23,7 +23,7 @@ export const RadioGroup = <T extends RadioGroupDatum<RadioGroupValue>>({
       <Radio
         key={i}
         value={value}
-        onClick={e => onChange(radioValue)}
+        onClick={() => onChange(radioValue)}
         checked={radioValue === value}
       >
         {label}
