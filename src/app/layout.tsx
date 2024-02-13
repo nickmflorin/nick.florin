@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 
 import { AppConfig } from "~/components/config/AppConfig";
+import { Toast } from "~/components/notifications/Toast";
+import { Text } from "~/components/typography/Text";
 import { ScreenLoading } from "~/components/views/ScreenLoading";
 import { env } from "~/env.mjs";
 
@@ -41,8 +43,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
              NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is \
              not a child of this node */
           data-auto-replace-svg="nest"
-          /* data-mutate-approach="sync"
-             data-observe-mutations */
         />
       </head>
       <body className={InterFont.className}>
@@ -88,6 +88,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             {children}
           </Layout>
+          <Toast type="info" autoClose={false}>
+            <div className="flex flex-col gap-[6px] min-w-[200px]">
+              <Text size="md">
+                Welcome to my personal portfolio/website! Feel free to take a look around.
+              </Text>
+              <Text size="sm" className="text-gray-600">
+                Note: This website is only 3 weeks old and is currently under construction.
+              </Text>
+            </div>
+          </Toast>
         </AppConfig>
       </body>
     </html>

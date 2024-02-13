@@ -1,16 +1,8 @@
 @use "sass:map";
 @use "sass:string";
 
-@use "../../functions" as fn;
-
-$icon-fit-names: ("square", "fit");
-$icon-size-dimensions: ("width", "height");
-$icon-size-names: ("xxs", "xs", "sm", "md", "lg", "xl", "fill");
-
-$default-icon-size: "sm";
-$default-icon-size-fit: "square";
-$default-icon-size-dimension: "height";
-$default-icon-color: theme("colors.gray.500");
+@use "partials";
+@use "./constants" as *;
 
 $icon-sizes: (
   "xxs": 10px,
@@ -23,8 +15,8 @@ $icon-sizes: (
 );
 
 @function get-icon-size($size: $default-icon-size) {
-  $size: fn.validate-value($size, $icon-size-names);
-  @return fn.mapget($icon-sizes, $size);
+  $size: partials.validate-value($size, $icon-size-names);
+  @return partials.mapget($icon-sizes, $size);
 }
 
 @mixin with-icon-and-svg {
@@ -35,7 +27,7 @@ $icon-sizes: (
 }
 
 @mixin icon-fit($fit: $default-icon-size-fit) {
-  $fit: fn.validate-value($fit, ("square", "fit"));
+  $fit: partials.validate-value($fit, ("square", "fit"));
   @if $fit == "square" {
     // Do not set the aspect ratio on the underlying SVG - just the containing <i> tag.
     aspect-ratio: 1;
@@ -49,21 +41,21 @@ $icon-sizes: (
   // The sizing will be applied in React via inline-styles based on the literal size prop value.
   @if $size {
     @if map.has-key($icon-sizes, $size) {
-      $size-value: fn.mapget($icon-sizes, $size);
+      $size-value: partials.mapget($icon-sizes, $size);
     } @else {
       // Allow regular CSS sizes to be provided.
       $size-value: $size;
     }
   }
 
-  $dimension: fn.validate-value($dimension, ("width", "height"));
+  $dimension: partials.validate-value($dimension, ("width", "height"));
 
   @if $dimension == "height" {
     width: auto;
     // See comment above regarding a literal size value vs. discrete size string.
     @if $size-value {
       @layer {
-        height: fn.mapget($icon-sizes, $size);
+        height: partials.mapget($icon-sizes, $size);
       }
     }
     > svg {
@@ -74,7 +66,7 @@ $icon-sizes: (
     // See comment above regarding a literal size value vs. discrete size string.
     @if $size-value {
       @layer {
-        width: fn.mapget($icon-sizes, $size);
+        width: partials.mapget($icon-sizes, $size);
       }
     }
     height: auto;
@@ -88,5 +80,13 @@ $icon-sizes: (
      the discrete size strings. */
   @if $fit {
     @include icon-fit($fit);
+  }
+}
+
+@mixin icon-size-classes($dimension) {
+  @each $size in map.keys($icon-sizes) {
+    &.icon--size-#{$size} {
+      @include icon-sizing($size, $dimension);
+    }
   }
 }

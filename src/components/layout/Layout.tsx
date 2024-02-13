@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 
 import { logger } from "~/application/logger";
+import { ToastContainer } from "~/components/config/ToastContainer";
 import { prisma } from "~/prisma/client";
 
 import { Header } from "./Header";
@@ -24,7 +25,10 @@ export const Layout = async ({ children, sidebar }: LayoutProps): Promise<JSX.El
       <Header profile={profiles.length === 0 ? null : profiles[0]} />
       <div className="layout__content">
         <Sidebar items={sidebar} />
-        <main className="content">{children}</main>
+        <main className="content">
+          {children}
+          <ToastContainer />
+        </main>
       </div>
     </div>
   );

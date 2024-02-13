@@ -1,0 +1,30 @@
+
+@use "./constants" as constants;
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  height: constants.$header-height;
+  min-height: constants.$header-height;
+  padding: 12px;
+  border-bottom: 1px solid theme("colors.border");
+  background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
+    theme("colors.gray.50");
+
+  &__left,
+  &__right {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  &__right {
+    flex-grow: 100;
+    justify-content: right;
+    gap: 24px;
+    display: flex;
+    align-items: center;
+  }
+}

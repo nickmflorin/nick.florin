@@ -26,7 +26,7 @@ we are overriding the styles for the timeline component's line in
 */
 import "@mantine/core/styles.layer.css";
 import "mantine-datatable/styles.layer.css";
-import "~/styles/globals/index.scss";  // Import this last.
+import "~/styles/globals/index.scss"; // Import this last.
 
 export const MantineProvider = ({ children }: { children: React.ReactNode }) => (
   <RootMantineProvider>{children}</RootMantineProvider>

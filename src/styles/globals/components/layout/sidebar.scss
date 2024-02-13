@@ -1,0 +1,11 @@
+@use "./constants" as constants;
+
+.sidebar {
+  border-right: 1px solid theme("colors.border");
+  width: constants.$sidebar-width;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
+    theme("colors.gray.50");
+}

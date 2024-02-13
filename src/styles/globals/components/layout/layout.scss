@@ -1,0 +1,24 @@
+@use "./constants" as constants;
+
+.layout {
+  background-color: theme("colors.appBackground");
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  > .layout__content {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 100;
+    max-height: calc(100% - #{constants.$header-height});
+    overflow: hidden;
+
+    > .content {
+      overflow-y: scroll;
+      padding: 15px;
+      flex-grow: 100;
+    }
+  }
+}

@@ -1,6 +1,8 @@
 @use "sass:map";
 @use "partials";
 
+@use "./icons" as icons;
+
 .loading {
   > .spinner {
     margin: auto;
@@ -10,8 +12,8 @@
 
   &--screen {
     > .spinner {
-      height: partials.get-icon-size("lg");
-      width: partials.get-icon-size("lg");
+      height: icons.get-icon-size("lg");
+      width: icons.get-icon-size("lg");
     }
   }
 }

@@ -8,12 +8,14 @@
 @use "./mixins" as mixins;
 
 button:not(.button) {
-  @include button-base;
+  &:not(.Toastify__close-button) {
+    @include button-base;
 
-  // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
-  // primary buttons.
-  &:not(.cl-userButtonTrigger, .cl-userButtonPopoverActionButton, .cl-socialButtonsBlockButton) {
-    @include button("button", $size: "medium", $variant: "primary");
+    // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
+    // primary buttons.
+    &:not(.cl-userButtonTrigger, .cl-userButtonPopoverActionButton, .cl-socialButtonsBlockButton) {
+      @include button("button", $size: "medium", $variant: "primary");
+    }
   }
 }
 
