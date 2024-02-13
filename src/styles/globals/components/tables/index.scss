@@ -1,0 +1,154 @@
+@use "sass:list";
+@use "partials";
+
+$table-sizes: ("sm", "md", "lg");
+
+$table-size-properties: (
+  "sm": (
+    th: (
+      padding: 8px 12px,
+      font: (
+        type: "body",
+        family: partials.$font-family-inter,
+        size: "sm",
+        weight: "semibold",
+        line-height: 18px,
+      ),
+    ),
+    td: (
+      padding: 6px,
+      font: (
+        type: "body",
+        size: "sm",
+        weight: "regular",
+        line-height: 16px,
+      ),
+    ),
+  ),
+  "md": (
+    th: (
+      padding: 8px 12px,
+      font: (
+        type: "body",
+        family: partials.$font-family-inter,
+        size: "md",
+        weight: "semibold",
+        line-height: 18px,
+      ),
+    ),
+    td: (
+      padding: 8px,
+      font: (
+        type: "body",
+        size: "md",
+        weight: "regular",
+        line-height: 16px,
+      ),
+    ),
+  ),
+  "lg": (
+    th: (
+      padding: 10px 16px,
+      font: (
+        type: "body",
+        family: partials.$font-family-inter,
+        size: "lg",
+        weight: "semibold",
+        line-height: 18px,
+      ),
+    ),
+    td: (
+      padding: 8px 10px,
+      font: (
+        type: "body",
+        size: "lg",
+        weight: "regular",
+        line-height: 16px,
+      ),
+    ),
+  ),
+);
+
+@mixin th-size($size) {
+  $properties: partials.mapget($table-size-properties, $size, "th");
+  @include partials.font(partials.mapget($properties, "font")...);
+  padding: partials.mapget($properties, "padding");
+  background-color: theme("colors.gray.50");
+}
+
+@mixin td-size($size) {
+  $properties: partials.mapget($table-size-properties, $size, "td");
+  @include partials.font(partials.mapget($properties, "font")...);
+  padding: partials.mapget($properties, "padding");
+}
+
+@mixin tr-size($size) {
+  $properties: partials.mapget($table-size-properties, $size, "td");
+  $line-height: partials.mapget($properties, font, line-height);
+  $vertical-padding: list.nth(partials.mapget($properties, "padding"), 1);
+  // Account for two lines of text in the row.
+  height: 2 * $line-height + 2 * $vertical-padding;
+}
+
+@mixin table-th {
+  table {
+    thead {
+      tr {
+        th {
+          @content;
+        }
+      }
+    }
+  }
+}
+
+@mixin table-tr {
+  table {
+    tbody {
+      tr {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin table-td {
+  @include table-tr {
+    td {
+      @content;
+    }
+  }
+}
+
+.data-table {
+  height: 100%;
+  max-height: 100%;
+  position: relative;
+
+  @each $size in $table-sizes {
+    &--size-#{$size} {
+      @include table-tr {
+        @include tr-size($size);
+      }
+      @include table-th {
+        @include th-size($size);
+        border-bottom: none !important;
+      }
+      @include table-td {
+        @include td-size($size);
+      }
+    }
+  }
+
+  // The mantine-datatable package puts a bunch of div elements after the HTML table element
+  // (siblings of the HTML table element), where those elements are responsible for adding weird
+  // background shadows/gradients to the top, bottom, left and right when scrolling.  We want to
+  // remove those.
+  table.mantine-Table-root ~ div {
+    display: none;
+  }
+
+  .mantine-datatable-scroll-area-shadow {
+    display: none
+  }
+}
