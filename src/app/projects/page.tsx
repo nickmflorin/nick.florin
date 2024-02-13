@@ -1,3 +1,3 @@
-export default function ExperiencePage() {
+export default function ProjectsPage() {
   return <>Projects</>;
 }

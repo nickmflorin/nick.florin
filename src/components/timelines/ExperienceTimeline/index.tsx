@@ -5,9 +5,12 @@ import { DetailEntityType } from "@prisma/client";
 import { type ComponentProps } from "~/components/types";
 import { prisma } from "~/prisma/client";
 
-import { ExperienceTile } from "./ExperienceTile";
-
 const CommitTimeline = dynamic(async () => await import("../CommitTimeline"), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+});
+
+const ExperienceTile = dynamic(() => import("./ExperienceTile"), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 });
@@ -45,3 +48,5 @@ export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promis
     </CommitTimeline>
   );
 };
+
+export default ExperienceTimeline;

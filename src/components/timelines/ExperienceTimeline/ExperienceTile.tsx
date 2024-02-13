@@ -25,3 +25,5 @@ export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): J
     {...props}
   />
 );
+
+export default ExperienceTile;

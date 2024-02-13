@@ -5,7 +5,10 @@ import { DetailEntityType } from "@prisma/client";
 import { type ComponentProps } from "~/components/types";
 import { prisma } from "~/prisma/client";
 
-import { EducationTile } from "./EducationTile";
+const EducationTile = dynamic(() => import("./EducationTile"), {
+  ssr: false,
+  loading: () => <div>Loading...</div>,
+});
 
 const CommitTimeline = dynamic(async () => await import("../CommitTimeline"), {
   ssr: false,
@@ -44,3 +47,5 @@ export const EducationTimeline = async (props: EducationTimelineProps): Promise<
     </CommitTimeline>
   );
 };
+
+export default EducationTimeline;

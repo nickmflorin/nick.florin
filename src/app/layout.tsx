@@ -34,6 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48" />
+      </head>
+      <body className={InterFont.className}>
         <Script
           async
           type="text/javascript"
@@ -44,8 +46,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
              not a child of this node */
           data-auto-replace-svg="nest"
         />
-      </head>
-      <body className={InterFont.className}>
         <AppConfig>
           <Layout
             sidebar={[

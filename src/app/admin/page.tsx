@@ -6,6 +6,7 @@ import { includeSkillMetadata } from "~/prisma/query";
 
 const SkillsTable = dynamic(() => import("~/components/tables/SkillsAdminTable/index"), {
   loading: () => <>Loading...</>,
+  ssr: false,
 });
 
 export default async function Admin() {

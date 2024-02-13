@@ -25,3 +25,5 @@ export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.
     {...props}
   />
 );
+
+export default EducationTile;
