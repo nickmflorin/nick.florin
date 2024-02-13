@@ -53,6 +53,6 @@ export const Radio = forwardRef<HTMLDivElement, RadioProps>(
         </div>
       );
     }
-    return <RootRadio {...props} rootRef={rootRef} />;
+    return <RootRadio {...props} rootRef={rootRef} className="radio" />;
   },
 );

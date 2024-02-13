@@ -42,7 +42,7 @@ export default authMiddleware({
     "/resume/experience",
     "/resume/education",
     "/api/skills",
-    "/projectsg",
+    "/projects",
   ],
 });
 
