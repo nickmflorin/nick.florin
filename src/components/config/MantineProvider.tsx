@@ -2,7 +2,6 @@
 "use client";
 
 import { MantineProvider as RootMantineProvider } from "@mantine/core";
-// import "@mantine/core/styles.css";
 
 /*
 One of the breaking changes in Mantine V7 is the migration to native CSS.  The styling is no longer
@@ -19,11 +18,15 @@ stylesheets in your application when importing CSS files.  As Mantine documentat
 can mitigate this by making use of CSS layers.
 
 Please see https://icflorescu.github.io/mantine-datatable/styling/
-*/
 
+Note: Importing the `styles.layer.css` files for both packages causes a style collision with the
+line in the timeline component (see ~/components/timelines/CommitTimeline.tsx).  To mitigate this,
+we are overriding the styles for the timeline component's line in
+~/styles/globals/components/commit-timeline.scss.
+*/
 import "@mantine/core/styles.layer.css";
 import "mantine-datatable/styles.layer.css";
-import "~/styles/globals/index.scss";
+import "~/styles/globals/index.scss";  // Import this last.
 
 export const MantineProvider = ({ children }: { children: React.ReactNode }) => (
   <RootMantineProvider>{children}</RootMantineProvider>
