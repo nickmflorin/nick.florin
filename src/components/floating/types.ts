@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 
-export const FloatingVariants = enumeratedLiterals(["primary", "secondary"] as const, {});
+export const FloatingVariants = enumeratedLiterals(["primary", "secondary", "none"] as const, {});
 export type FloatingVariant = EnumeratedLiteralsType<typeof FloatingVariants>;
 
 export const FloatingVariantClassNames: { [key in FloatingVariant]: string } = {
@@ -12,6 +12,7 @@ export const FloatingVariantClassNames: { [key in FloatingVariant]: string } = {
     "text-heading",
     "box-shadow-lg",
   ),
+  [FloatingVariants.NONE]: "",
 };
 
 export const FloatingVariantArrowClassNames: { [key in FloatingVariant]: string } = {
@@ -21,6 +22,7 @@ export const FloatingVariantArrowClassNames: { [key in FloatingVariant]: string 
     "[&>path:last-of-type]:stroke-blue-500",
   ),
   [FloatingVariants.SECONDARY]: clsx("fill-white", "box-shadow-lg"),
+  [FloatingVariants.NONE]: "",
 };
 
 export const getFloatingVariantClassName = (variant: FloatingVariant): string =>

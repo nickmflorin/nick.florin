@@ -204,7 +204,7 @@ const config: Config = {
       body: "#231f20",
       border: colors.gray[300],
       appBackground: "#fbfbfb",
-      disabled: "#f5f5f5",
+      disabled: "#DEE2E6",
       disabledBorder: "#f5f5f5",
       disabledBackground: "#efefef",
       placeholder: "rgba(96, 104, 115, 0.6)",

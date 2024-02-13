@@ -1,0 +1,60 @@
+@use "partials";
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: theme("spacing.1");
+  overflow: hidden;
+  background-color: theme("colors.white");
+  box-shadow: theme("boxShadow.md");
+  border-radius: theme("borderRadius.md");
+
+  > .menu__content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+
+    > .menu__item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      min-height: 40px;
+      padding: 6px 10px;
+      gap: 6px;
+
+      @include partials.font($type: "body", $line-height: 28px, $font-size: "xs");
+
+      @include partials.disabled {
+        color: theme("colors.disabled")
+      }
+
+      @include partials.hovered {
+        &:not(.menu__item--selected) {
+          background-color: theme("colors.gray.100")
+        }
+      }
+
+      @include partials.focused {
+        &:not(.menu__item--selected) {
+          background-color: theme("colors.gray.100")
+        }
+      }
+
+      &.menu__item--selected:not(.disabled) {
+        background-color: theme("colors.blue.50");
+        @include partials.hovered {
+          background-color: theme("colors.blue.100");
+        }
+        @include partials.focused {
+          background-color: theme("colors.blue.100");
+        }
+      }
+
+      > .menu__item__content {
+        height: 100%;
+        flex-grow: 100;
+        @include partials.truncate();
+      }
+    }
+  }
+}

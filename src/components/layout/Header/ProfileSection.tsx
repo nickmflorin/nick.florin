@@ -14,7 +14,7 @@ export const ProfileSection = async ({
   ...props
 }: ProfileSectionProps): Promise<JSX.Element> => (
   <div {...props} className={clsx("flex flex-row gap-[16px] items-center", props.className)}>
-    <ModelImage url={profile.profileImageUrl} size={60} radius="full" />
+    <ModelImage url={profile.profileImageUrl} size={60} radius="full" priority={true} />
     <div className="flex flex-col">
       <Title order={4}>{`${profile.firstName} ${profile.lastName}`}</Title>
       <Title order={5}>{profile.displayName}</Title>

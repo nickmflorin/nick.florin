@@ -50,6 +50,9 @@ const config = {
       permanent: false,
     },
   ],
+  experimental: {
+    optimizePackageImports: ["@mantine/core"],
+  },
 };
 
 const bundled = (phase, { defaultConfig }) =>

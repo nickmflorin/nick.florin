@@ -1,6 +1,5 @@
 @use "partials";
 
-/* ------------------------------------------------------- Mixins --------------------------------------------------- */
 $button-locked-class: ".button--locked";
 $button-loading-class: ".button--loading";
 
@@ -17,6 +16,12 @@ $button-loading-class: ".button--loading";
     @include partials.without-selectors(($button-loading-class, $button-locked-class)) {
       @content;
     }
+  }
+}
+
+@mixin button-locked-or-loading {
+  @include partials.with-selectors(($button-locked-class, $button-loading-class)) {
+    pointer-events: none;
   }
 }
 

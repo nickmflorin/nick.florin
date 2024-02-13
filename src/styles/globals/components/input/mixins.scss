@@ -1,0 +1,42 @@
+@use "partials";
+
+$input-locked-class: ".input--locked";
+$input-loading-class: ".input--loading";
+
+@mixin input-hovered {
+  @include partials.hovered {
+    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
+      @content;
+    }
+  }
+}
+
+@mixin input-focused {
+  @include partials.focused {
+    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
+      @content;
+    }
+  }
+}
+
+@mixin input-active {
+  @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
+    &.input--active:not(:disabled) {
+      @content;
+    }
+  }
+}
+
+@mixin input-focused-within {
+  @include partials.focused-within {
+    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
+      @content;
+    }
+  }
+}
+
+@mixin input-locked-or-loading {
+  @include partials.with-selectors(($input-locked-class, $input-loading-class)) {
+    pointer-events: none;
+  }
+}

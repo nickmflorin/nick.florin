@@ -131,7 +131,7 @@ const TS_BASE_RULES = {
 module.exports = {
   extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
   plugins: ["prettier"],
-  rules: BASE_RULES,
+  rules: TS_BASE_RULES,
   ignorePatterns: [
     "next-env.d.ts",
     "!.*",
@@ -140,27 +140,5 @@ module.exports = {
     "src/prisma/migrations/*",
     "node_modules/*",
     ".next/*",
-  ],
-  overrides: [
-    {
-      files: ["**/*.ts", "**/*.tsx"],
-      rules: TS_BASE_RULES,
-    },
-    {
-      files: ["**/*.test.ts", "**/*.test.tsx", "**/tests/utils/*"],
-      rules: {
-        ...TS_BASE_RULES,
-        // In tests, we need to use var-requires quite often when mocking.
-        "@typescript-eslint/no-var-requires": 0,
-      },
-    },
-    {
-      files: ["**/*.md"],
-      rules: {
-        ...BASE_RULES,
-        // This rule allows the formatter to automatically wrap text in markdown files at line 100.
-        "prettier/prose-wrap": "error",
-      },
-    },
   ],
 };

@@ -315,6 +315,13 @@ $typography-default-colors: (
   @include font-color("label", $args...);
 }
 
+@function fz($type, $value) {
+  @if fn.in-list($value, $typography-sizes) {
+    @return get-font-size($type, $size: $value);
+  }
+  @return $value;
+}
+
 /* --------------------------------------- Font Specs ------------------------------------------ */
 @function get-font($type, $size: null, $weight: null, $family: null, $args...) {
   $properties: (
@@ -329,7 +336,7 @@ $typography-default-colors: (
     line-height:
       fn.get-optional-kwarg(line-height, $default: get-line-height($type, $size: $size), $args...),
     font-size:
-      fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...),
+      fz($type, fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...))
   );
   $overrides: map.get(meta.keywords($args), "override");
   @if $overrides {

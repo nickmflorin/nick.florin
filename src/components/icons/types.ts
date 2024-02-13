@@ -60,7 +60,7 @@ export type IconProp = {
   readonly iconStyle?: IconStyle;
 };
 
-const IconPropSchema = z.object({
+export const IconPropSchema = z.object({
   name: z.string(),
   family: z.nativeEnum(IconFamilies).optional(),
   iconStyle: z.nativeEnum(IconStyles).optional(),

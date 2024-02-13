@@ -16,6 +16,7 @@ type BaseModelImageProps = ComponentProps & {
   readonly alt?: string;
   readonly loading?: boolean;
   readonly radius?: BorderRadius;
+  readonly priority?: boolean;
 };
 
 type ModelImageSpreadProps = BaseModelImageProps &
@@ -64,6 +65,7 @@ export const ModelImage = ({
   image,
   radius = BorderRadii.NONE,
   loading,
+  priority,
 }: ModelImageProps) => {
   const _url = getImageVar("url", { image, url });
   const _size = getImageVar("size", { image, size });
@@ -74,7 +76,7 @@ export const ModelImage = ({
     >
       <Loading loading={loading === true} />
       {_url !== undefined && _url !== null ? (
-        <Image height={_size} width={_size} src={_url} alt={alt} />
+        <Image height={_size} width={_size} src={_url} alt={alt} priority={priority} />
       ) : (
         <div className="model-image__fallback">
           <Icon icon={fallbackIcon} />

@@ -1,16 +1,19 @@
 @use "partials";
 
 @use "./browser-reset";
+@use "./checkbox";
 
 @use "./base" as base;
 @use "./constants" as constants;
 @use "./sizing" as sizing;
 @use "./variants" as variants;
+@use "./mixins" as mixins;
 
 .input {
   @include base.input-base;
   @include sizing.input-sizes();
   @include variants.input-variants();
+  @include mixins.input-locked-or-loading();
 
   display: flex;
   flex-direction: row;
@@ -30,6 +33,10 @@
     flex-grow: 100;
     align-items: center;
     height: 100%;
+  }
+
+  .icon {
+    color: theme("colors.gray.500")
   }
 }
 

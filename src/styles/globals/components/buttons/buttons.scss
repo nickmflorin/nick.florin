@@ -30,9 +30,7 @@ a:not(.button--type-link) {
   border-radius: constants.$button-border-radius;
   outline-offset: -1 * constants.$button-outline-width;
 
-  @include partials.with-selectors((mixins.$button-locked-class, mixins.$button-loading-class)) {
-    pointer-events: none;
-  }
+  @include mixins.button-locked-or-loading();
 
   &--type-button {
     @include button-properties("button");

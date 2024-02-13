@@ -1,5 +1,5 @@
 "use client";
-import { type ReactNode, useRef, cloneElement, useState, useMemo } from "react";
+import { type ReactNode, useRef, cloneElement, useState, useMemo, type CSSProperties } from "react";
 
 import {
   FloatingArrow,
@@ -9,6 +9,10 @@ import {
   type ReferenceType,
   useInteractions,
   useHover,
+  useClick,
+  useDismiss,
+  size,
+  FloatingPortal,
 } from "@floating-ui/react";
 import clsx from "clsx";
 
@@ -22,17 +26,38 @@ export type FloatingRenderProps = {
   readonly ref: (node: ReferenceType | null) => void;
 };
 
-type FloatingTrigger = "hover";
+export type FloatingContentRenderProps = {
+  readonly params: Record<string, unknown>;
+  readonly styles: CSSProperties;
+  readonly ref: (node: HTMLElement | null) => void;
+};
 
-export interface FloatingProps {
+type FloatingTrigger = "hover" | "click";
+
+const WrapInPortal = ({
+  children,
+  inPortal = false,
+}: {
+  inPortal?: boolean;
+  children: JSX.Element;
+}) => {
+  if (inPortal) {
+    return <FloatingPortal>{children}</FloatingPortal>;
+  }
+  return children;
+};
+
+export interface FloatingProps extends ComponentProps {
   /**
    * The content that appears inside of the floating element.
    */
-  readonly content: ReactNode;
-  readonly contentClassName?: ComponentProps["className"];
+  readonly content: ReactNode | ((props: FloatingContentRenderProps) => ReactNode);
   readonly isOpen?: boolean;
   readonly triggers?: FloatingTrigger[];
   readonly variant?: types.FloatingVariant;
+  readonly withArrow?: boolean;
+  readonly arrowClassName?: ComponentProps["className"];
+  readonly inPortal?: boolean;
   /**
    * The element that should trigger the floating content to apper and/or disappear, depending on
    * its interactions state - such as hovered, clicked, etc.  Can be provided either as a render
@@ -57,17 +82,27 @@ export interface FloatingProps {
    */
   readonly children: JSX.Element | ((params: FloatingRenderProps) => JSX.Element);
   readonly placement?: Placement;
-  readonly onOpenChange?: (value: boolean, evt: Event | undefined) => void;
+  readonly width?: number | "target";
+  readonly onOpen?: (e: Event) => void;
+  readonly onClose?: (e: Event) => void;
+  readonly onOpenChange?: (value: boolean, evt: Event) => void;
 }
 
 export const Floating = ({
+  className,
+  style,
   children: _children,
   triggers = ["hover"],
-  contentClassName,
   isOpen: propIsOpen,
+  inPortal = false,
   content,
   placement,
+  withArrow = true,
+  arrowClassName,
+  width,
   variant = types.FloatingVariants.PRIMARY,
+  onOpen,
+  onClose,
   onOpenChange,
 }: FloatingProps) => {
   const [_isOpen, setIsOpen] = useState(false);
@@ -79,23 +114,37 @@ export const Floating = ({
   const arrowRef = useRef(null);
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
-    onOpenChange: (value: boolean, evt: Event | undefined) => {
+    onOpenChange: (value: boolean, evt: Event) => {
       setIsOpen(value);
       onOpenChange?.(value, evt);
+      if (value === true) {
+        onOpen?.(evt);
+      } else {
+        onClose?.(evt);
+      }
     },
     placement,
     middleware: [
       arrow({
         element: arrowRef,
       }),
+      width !== undefined
+        ? size({
+            apply({ rects, elements }) {
+              Object.assign(elements.floating.style, {
+                width: typeof width === "number" ? `${width}px` : `${rects.reference.width}px`,
+              });
+            },
+          })
+        : undefined,
     ],
   });
 
-  const hover = useHover(context);
+  const dismiss = useDismiss(context, { enabled: triggers.includes("click") });
+  const hover = useHover(context, { enabled: triggers.includes("hover") });
+  const click = useClick(context, { enabled: triggers.includes("click") });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([
-    triggers.includes("hover") ? hover : undefined,
-  ]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
 
   const referenceProps = getReferenceProps();
 
@@ -115,27 +164,44 @@ export const Floating = ({
     <>
       {children}
       {isOpen && (
-        <FloatingContent
-          ref={refs.setFloating}
-          variant={variant}
-          style={floatingStyles}
-          {...floatingProps}
-          className={clsx(
-            /* Typically, the floating props do not include a class name - but just in case, we want
-               to merge it with the content class name, if it exists. */
-            typeof floatingProps.className === "string" ? floatingProps.className : undefined,
-            contentClassName,
-          )}
-        >
-          {content}
-          <FloatingArrow
-            ref={arrowRef}
-            context={context}
-            height={4}
-            width={9}
-            className={types.getFloatingArrowVariantClassName(variant)}
-          />
-        </FloatingContent>
+        <WrapInPortal inPortal={inPortal}>
+          <>
+            {typeof content === "function" ? (
+              content({
+                ref: refs.setFloating,
+                params: floatingProps,
+                styles: floatingStyles,
+              })
+            ) : (
+              <FloatingContent
+                ref={refs.setFloating}
+                variant={variant}
+                {...floatingProps}
+                style={{ ...style, ...floatingStyles }}
+                className={clsx(
+                  /* Typically, the floating props do not include a class name - but just in case,
+                     we want to merge it with the content class name, if it exists. */
+                  typeof floatingProps.className === "string" ? floatingProps.className : undefined,
+                  className,
+                )}
+              >
+                {content}
+                {withArrow && (
+                  <FloatingArrow
+                    ref={arrowRef}
+                    context={context}
+                    height={4}
+                    width={9}
+                    className={clsx(
+                      types.getFloatingArrowVariantClassName(variant),
+                      arrowClassName,
+                    )}
+                  />
+                )}
+              </FloatingContent>
+            )}
+          </>
+        </WrapInPortal>
       )}
     </>
   );

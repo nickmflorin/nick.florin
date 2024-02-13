@@ -52,10 +52,10 @@ export type ApiEducation = Education & {
 
 export type ApiSkill = Omit<Skill, "experience"> & {
   readonly experience: number;
-  /* readonly educations: Pick<Education, "major"> & {
-       readonly school: Pick<School, "name" | "logoImageUrl">;
-     };
-     readonly experiences: Pick<Experience, "title"> & {
-       readonly company: Pick<Company, "name" | "logoImageUrl">;
-     }; */
+  readonly educations: (Pick<Education, "major" | "id"> & {
+    readonly school: Pick<School, "id" | "name" | "logoImageUrl">;
+  })[];
+  readonly experiences: (Pick<Experience, "title" | "id"> & {
+    readonly company: Pick<Company, "id" | "name" | "logoImageUrl">;
+  })[];
 };

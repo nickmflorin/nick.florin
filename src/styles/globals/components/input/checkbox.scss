@@ -1,0 +1,39 @@
+
+$checkbox-bg-color: theme("colors.blue.600");
+
+@mixin checkbox-size() {
+  height: 16px;
+  width: 16px;
+}
+
+@mixin checked-state() {
+  .checkbox[data-checked="true"] {
+    > .mantine-Checkbox-body {
+      > .mantine-Checkbox-inner {
+        > .mantine-Checkbox-input {
+          @content;
+        }
+      }
+    }
+  }
+}
+
+.checkbox {
+  > .mantine-Checkbox-body {
+    > .mantine-Checkbox-inner {
+      @include checkbox-size();
+
+      > .mantine-Checkbox-input {
+        @include checkbox-size();
+        border-radius: theme("borderRadius.xs");
+        border: 1px solid theme("colors.gray.500");
+        background-color: theme("colors.white");
+      }
+    }
+  }
+}
+
+@include checked-state() {
+  border: none;
+  background-color: $checkbox-bg-color;
+}

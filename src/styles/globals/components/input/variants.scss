@@ -3,6 +3,7 @@
 
 @use "partials";
 @use "throw";
+@use "./mixins" as mixins;
 
 $input-variants: ("primary", "bare");
 $input-default-variant: "primary";
@@ -22,7 +23,10 @@ $input-variant-properties: (
       outline-color: theme("colors.disabledBorder"),
     ),
     focused: (
-      outline-color: theme("colors.blue.400"),
+      outline-color: theme("colors.blue.300"),
+    ),
+    active: (
+      outline-color: theme("colors.blue.600"),
     ),
   ),
   "bare": (
@@ -40,15 +44,18 @@ $input-variant-properties: (
     focused: (
       background-color: theme("colors.gray.200"),
     ),
+    active: (
+      outline-color: theme("colors.blue.600"),
+    ),
   ),
 );
 
 @function get-input-property($variant, $property, $state: null) {
   $variant: partials.validate-value($variant, $input-variants);
-  $state: if($state, partials.validate-value($state, ("focused", "disabled")), $state);
+  $state: if($state, partials.validate-value($state, ("focused", "disabled", "active")), $state);
   $properties: partials.mapget($input-variant-properties, $variant);
 
-  @if $property == "disabled" or $property == "focused" {
+  @if $property == "disabled" or $property == "focused" or $property == "active" {
     @return throw.error("The property cannot be a state.");
   }
 
@@ -82,12 +89,16 @@ $input-variant-properties: (
     @include input-variant-state($variant, $state: "disabled");
   }
 
-  @include partials.focused {
+  @include mixins.input-focused {
     @include input-variant-state($variant, $state: "focused");
   }
 
-  @include partials.focused-within {
+  @include mixins.input-focused-within {
     @include input-variant-state($variant, $state: "focused");
+  }
+
+  @include mixins.input-active {
+    @include input-variant-state($variant, $state: "active");
   }
 }
 

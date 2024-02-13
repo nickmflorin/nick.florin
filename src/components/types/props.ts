@@ -20,7 +20,11 @@ export const BorderRadii = enumeratedLiterals(
 export type BorderRadius = EnumeratedLiteralsType<typeof BorderRadii>;
 
 export type SizeUnit = "px" | "rem";
-export type Size = `${number}${SizeUnit}` | number;
+export type SizeString = `${number}${SizeUnit}`;
+export type Size = SizeString | number;
+
+export const sizeToString = (size: Size): SizeString =>
+  typeof size === "number" ? `${size}px` : size;
 
 /**
  * A type that represents the string, lowercase name of a native HTML element (i.e. "div" or "p").

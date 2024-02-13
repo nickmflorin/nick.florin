@@ -11,7 +11,12 @@ export interface NativeInputProps
 }
 
 export const NativeInput = forwardRef<HTMLInputElement, NativeInputProps>(
-  ({ ...props }: NativeInputProps, ref) => (
-    <input {...props} className={clsx("native-input", props.className)} ref={ref} />
+  ({ isDisabled, ...props }: NativeInputProps, ref) => (
+    <input
+      {...props}
+      disabled={isDisabled}
+      className={clsx("native-input", props.className)}
+      ref={ref}
+    />
   ),
 );
