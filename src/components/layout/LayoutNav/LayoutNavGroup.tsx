@@ -1,15 +1,14 @@
 import { motion } from "framer-motion";
 import { type Required } from "utility-types";
 
-import { type ISidebarItem } from "../types";
-
 import * as constants from "./constants";
-import { SidebarItem } from "./SidebarItem";
-import { SidebarItemChild } from "./SidebarItemChild";
+import { LayoutNavItem } from "./LayoutNavItem";
+import { LayoutNavItemChild } from "./LayoutNavItemChild";
+import { type ILayoutNavItem } from "./types";
 
-export interface SidebarGroupProps {
+export interface LayoutNavGroupProps {
   readonly isOpen: boolean;
-  readonly item: Required<ISidebarItem, "children">;
+  readonly item: Required<ILayoutNavItem, "children">;
   readonly onOpen: () => void;
 }
 
@@ -26,7 +25,7 @@ const groupVariants = {
   }),
 };
 
-export const SidebarGroup = ({ item, isOpen, onOpen }: SidebarGroupProps) => (
+export const LayoutNavGroup = ({ item, isOpen, onOpen }: LayoutNavGroupProps) => (
   <motion.div
     className="flex flex-col min-h-[48px] items-center w-full"
     initial={false}
@@ -34,10 +33,10 @@ export const SidebarGroup = ({ item, isOpen, onOpen }: SidebarGroupProps) => (
     custom={{ count: item.children.length }}
     variants={groupVariants}
   >
-    <SidebarItem item={item} onOpen={() => onOpen()} isOpen={isOpen} />
+    <LayoutNavItem item={item} onOpen={() => onOpen()} isOpen={isOpen} />
     <div className="flex flex-col items-center w-full">
       {item.children.map((child, i) => (
-        <SidebarItemChild key={i} index={i + 1} item={child} />
+        <LayoutNavItemChild key={i} index={i + 1} item={child} />
       ))}
     </div>
   </motion.div>

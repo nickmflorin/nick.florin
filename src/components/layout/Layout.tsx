@@ -5,15 +5,14 @@ import { ToastContainer } from "~/components/config/ToastContainer";
 import { prisma } from "~/prisma/client";
 
 import { Header } from "./Header";
-import { Sidebar } from "./sidebar";
-import { type ISidebarItem } from "./types";
+import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
 
 export interface LayoutProps {
   readonly children: ReactNode;
-  readonly sidebar: ISidebarItem[];
+  readonly nav: ILayoutNavItem[];
 }
 
-export const Layout = async ({ children, sidebar }: LayoutProps): Promise<JSX.Element> => {
+export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Element> => {
   const profiles = await prisma.profile.findMany({ orderBy: { createdAt: "desc" }, take: 1 });
   if (profiles.length === 0) {
     logger.error(
@@ -24,7 +23,7 @@ export const Layout = async ({ children, sidebar }: LayoutProps): Promise<JSX.El
     <div className="layout">
       <Header profile={profiles.length === 0 ? null : profiles[0]} />
       <div className="layout__content">
-        <Sidebar items={sidebar} />
+        <LayoutNav items={nav} />
         <main className="content">
           {children}
           <ToastContainer />

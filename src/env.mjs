@@ -146,17 +146,19 @@ export const env = createEnv({
       production: z.string().startsWith("user_"),
     }),
     /* ~~~~~~~~~~ Database Configuration ~~~~~~~ */
-    DATABASE_URL: testRestricted(z.string().url().optional()),
-    DATABASE_NAME: testRestricted(z.string().optional()),
-    DATABASE_PASSWORD: testRestricted(z.string().optional()),
-    DATABASE_USER: testRestricted(z.string().optional()),
-    DATABASE_HOST: testRestricted(z.string().optional()),
-    DATABASE_PORT: testRestricted(z.coerce.number().int().positive().optional()),
+    POSTGRES_URL: testRestricted(z.string().url().optional()),
+    POSTGRES_PRISMA_URL: testRestricted(z.string().url().optional()),
+    POSTGRES_URL_NON_POOLING: testRestricted(z.string().url().optional()),
+    POSTGRES_DATABASE: testRestricted(z.string().optional()),
+    POSTGRES_PASSWORD: testRestricted(z.string().optional()),
+    POSTGRES_USER: testRestricted(z.string().optional()),
+    POSTGRES_HOST: testRestricted(z.string().optional()),
     DATABASE_LOG_LEVEL: PrismaLogLevelSchema.optional(),
     FONT_AWESOME_KIT_TOKEN: z.string(),
   },
   /* ------------------------------ Client Environment Variables -------------------------------- */
   client: {
+    NEXT_PUBLIC_WELCOME_TOAST: StringBooleanFlagSchema.optional(),
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NODE_ENV === "test"
         ? z.literal("")
@@ -185,13 +187,14 @@ export const env = createEnv({
   },
   runtimeEnv: {
     /* ------------------------------ Server Environment Variables ------------------------------ */
-    DATABASE_URL: process.env.DATABASE_URL,
     ANALYZE_BUNDLE: process.env.ANALYZE_BUNDLE,
-    DATABASE_HOST: process.env.DATABASE_HOST,
-    DATABASE_USER: process.env.DATABASE_USER,
-    DATABASE_PORT: process.env.DATABASE_PORT,
-    DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
-    DATABASE_NAME: process.env.DATABASE_NAME,
+    POSTGRES_URL: process.env.POSTGRES_URL,
+    POSTGRES_PRISMA_URL: process.env.POSTGRES_PRISMA_URL,
+    POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
+    POSTGRES_DATABASE: process.env.POSTGRES_DATABASE,
+    POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
+    POSTGRES_USER: process.env.POSTGRES_USER,
+    POSTGRES_HOST: process.env.POSTGRES_HOST,
     DATABASE_LOG_LEVEL: process.env.DATABASE_LOG_LEVEL,
     NODE_ENV: process.env.NODE_ENV,
     PRETTY_LOGGING: process.env.PRETTY_LOGGING,
@@ -204,9 +207,8 @@ export const env = createEnv({
     NEXT_PUBLIC_LOG_LEVEL: process.env.NEXT_PUBLIC_LOG_LEVEL,
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
     NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
-    /* NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,
-       NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL, */
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
+    NEXT_PUBLIC_WELCOME_TOAST: process.env.NEXT_PUBLIC_WELCOME_TOAST,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   onValidationError: error => {

@@ -16,6 +16,12 @@ export type ButtonProps<O extends types.ButtonOptions> = Omit<
 
 const Base = AbstractButton as React.FC<types.AbstractProps<"button", types.ButtonOptions>>;
 
+type LocalButtonType = {
+  <O extends types.ButtonOptions>(
+    props: ButtonProps<O> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  ): JSX.Element;
+};
+
 const LocalButton = forwardRef(
   <O extends types.ButtonOptions>(
     { children, icon, ...props }: ButtonProps<O>,
@@ -34,11 +40,7 @@ const LocalButton = forwardRef(
       </Base>
     );
   },
-) as {
-  <O extends types.ButtonOptions>(
-    props: ButtonProps<O> & { readonly ref?: types.PolymorphicButtonRef<O> },
-  ): JSX.Element;
-};
+) as LocalButtonType;
 
 type VariantPartial = {
   <O extends types.ButtonOptions>(
@@ -65,4 +67,4 @@ const withVariants = types.ButtonVariants.button.values.reduce<WithVariants>(
   {} as WithVariants,
 );
 
-export const Button = Object.assign(LocalButton, withVariants);
+export const Button = Object.assign(LocalButton, withVariants) as LocalButtonType & WithVariants;

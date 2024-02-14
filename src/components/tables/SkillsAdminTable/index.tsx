@@ -8,6 +8,7 @@ import { type TableProps } from "../types";
 import { EducationsCell } from "./cells/EducationsCell";
 import { ExperiencesCell } from "./cells/ExperiencesCell";
 import { LabelCell } from "./cells/LabelCell";
+import { ShowInTopSkillsCell } from "./cells/ShowInTopSkillsCell";
 import { SlugCell } from "./cells/SlugCell";
 
 const Table = dynamic(() => import("../Table"), { ssr: false }) as {
@@ -31,22 +32,28 @@ export const SkillsAdminTable = ({
       {
         accessor: "label",
         title: "Label",
-        render: (skill: ApiSkill) => <LabelCell skill={skill} />,
+        render: ({ model }) => <LabelCell skill={model} />,
       },
       {
         accessor: "slug",
         title: "Slug",
-        render: (skill: ApiSkill) => <SlugCell skill={skill} />,
+        render: ({ model }) => <SlugCell skill={model} />,
       },
       {
         accessor: "experiences",
         title: "Experiences",
-        render: (skill: ApiSkill) => <ExperiencesCell skill={skill} experiences={experiences} />,
+        render: ({ model }) => <ExperiencesCell skill={model} experiences={experiences} />,
       },
       {
         accessor: "educations",
         title: "Educations",
-        render: (skill: ApiSkill) => <EducationsCell skill={skill} educations={educations} />,
+        render: ({ model }) => <EducationsCell skill={model} educations={educations} />,
+      },
+      {
+        accessor: "includeInTopSkills",
+        title: "Top Skill",
+        textAlign: "center",
+        render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
       },
     ]}
     data={skills}

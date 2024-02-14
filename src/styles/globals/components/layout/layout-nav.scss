@@ -1,8 +1,8 @@
 @use "./constants" as constants;
 
-.sidebar {
+.layout-nav {
   border-right: 1px solid theme("colors.border");
-  width: constants.$sidebar-width;
+  width: constants.$layout-nav-width;
   display: flex;
   flex-direction: column;
   padding: 6px;

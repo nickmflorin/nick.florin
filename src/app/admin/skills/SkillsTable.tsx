@@ -1,15 +1,15 @@
 import dynamic from "next/dynamic";
 
-import { TextInput } from "~/components/input/TextInput";
+import { Loading } from "~/components/views/Loading";
 import { prisma } from "~/prisma/client";
 import { includeSkillMetadata } from "~/prisma/query";
 
 const SkillsTable = dynamic(() => import("~/components/tables/SkillsAdminTable/index"), {
-  loading: () => <>Loading...</>,
+  loading: () => <Loading loading={true} />,
   ssr: false,
 });
 
-export default async function Admin() {
+export default async function SkillsRoutedTable() {
   const _skills = await prisma.skill.findMany({ orderBy: { createdAt: "desc" } });
   const experiences = await prisma.experience.findMany({
     include: { company: true },
@@ -20,10 +20,5 @@ export default async function Admin() {
     orderBy: { startDate: "desc" },
   });
   const skills = await includeSkillMetadata(_skills);
-  return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
-      <TextInput />
-      <SkillsTable skills={skills} experiences={experiences} educations={educations} />
-    </div>
-  );
+  return <SkillsTable skills={skills} experiences={experiences} educations={educations} />;
 }

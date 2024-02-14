@@ -14,6 +14,7 @@ const UpdateSkillSchema = z.object({
   refreshSlug: z.boolean().optional(),
   experiences: z.array(z.string()).optional(),
   educations: z.array(z.string()).optional(),
+  includeInTopSkills: z.boolean().optional(),
 });
 
 export const updateSkill = async (

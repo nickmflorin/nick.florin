@@ -16,7 +16,7 @@
     overflow: hidden;
 
     > .content {
-      overflow-y: scroll;
+      overflow-y: hidden;
       padding: 15px;
       flex-grow: 100;
     }

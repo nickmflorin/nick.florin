@@ -49,6 +49,11 @@ const config = {
       destination: "/resume/experience",
       permanent: false,
     },
+    {
+      source: "/admin",
+      destination: "/admin/skills",
+      permanent: false,
+    },
   ],
   experimental: {
     optimizePackageImports: ["@mantine/core"],

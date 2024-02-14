@@ -2,11 +2,10 @@
 
 import { motion } from "framer-motion";
 
-import { SidebarAnchor } from "~/components/buttons/SidebarAnchor";
-
-import { type ISidebarItem } from "..";
+import { LayoutNavAnchor } from "~/components/buttons/LayoutNavAnchor";
 
 import * as constants from "./constants";
+import { type ILayoutNavItem } from "./types";
 
 const itemVariants = {
   open: () => ({
@@ -20,17 +19,17 @@ const itemVariants = {
   }),
 };
 
-export interface SidebarItemChildProps {
+export interface LayoutNavItemChildProps {
   readonly index: number;
-  readonly item: Omit<ISidebarItem, "children">;
+  readonly item: Omit<ILayoutNavItem, "children">;
 }
 
-export const SidebarItemChild = ({ index, item }: SidebarItemChildProps) => (
+export const LayoutNavItemChild = ({ index, item }: LayoutNavItemChildProps) => (
   <motion.div
     variants={itemVariants}
     custom={{ index }}
     className="w-full h-[48px] aspect-square z-0 mb-[4px] last:mb-0"
   >
-    <SidebarAnchor item={item} />
+    <LayoutNavAnchor item={item} />
   </motion.div>
 );
