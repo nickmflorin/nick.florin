@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { type HexColor } from "~/lib/colors";
 import { type ComponentProps } from "~/components/types";
 
-export type ColorIconProps = ComponentProps & {
+export type CircleProps = ComponentProps & {
   readonly color: string;
   readonly size: number;
   readonly selected?: boolean;
@@ -13,14 +13,14 @@ export type ColorIconProps = ComponentProps & {
   readonly selectedColor?: HexColor;
 };
 
-export const CircleIcon = ({
+export const Circle = ({
   color,
   selectedColor = "#6eb6ff",
   selectable,
   selected,
   size,
   ...props
-}: ColorIconProps) => (
+}: CircleProps) => (
   <svg
     {...props}
     className={clsx("icon", props.className)}

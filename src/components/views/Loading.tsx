@@ -14,15 +14,11 @@ export interface LoadingProps extends ViewProps {
 }
 
 const _WrappedSpinner = ({
-  spinnerSize = "24px",
+  spinnerSize = "36px",
   dimmed = true,
   ...props
 }: Omit<LoadingProps, "loading" | "children" | "hideWhenLoading">) => (
-  <View
-    {...props}
-    dimmed={dimmed}
-    className={clsx("loading border border-gray-100", props.className)}
-  >
+  <View {...props} dimmed={dimmed} className={clsx("loading", props.className)}>
     <Spinner size={spinnerSize} isLoading={true} />
   </View>
 );

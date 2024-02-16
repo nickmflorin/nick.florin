@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { CircleIcon } from "~/components/icons/CircleIcon";
+import { Circle } from "~/components/icons/svgs";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 
@@ -15,7 +15,7 @@ export interface LegendProps extends ComponentProps {
 
 export const LegendItem = ({ color, label }: ILegendItem) => (
   <div className="flex flex-row gap-[3px]">
-    <CircleIcon color={color} size={18} />
+    <Circle color={color} size={18} />
     <Label size="sm" fontWeight="regular" className="leading-[18px]" fontFamily="inter">
       {label}
     </Label>

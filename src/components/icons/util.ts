@@ -15,7 +15,8 @@ import {
   type IconProps,
   IconDimensions,
   IconFits,
-  type BasicIconComponentProps,
+  type ChildrenIconProps,
+  type BasicIconProps,
 } from "./types";
 
 const getIconNameClassName = (name: IconName) => `fa-${name}`;
@@ -28,8 +29,11 @@ const getIconStyleClassName = (iconStyle: IconStyle = DEFAULT_ICON_STYLE) =>
 
 /**
  * Returns the appropriate Font Awesome native class names for the <i> element that is rendered by
- * the <Icon /> component, based on the provided icon information.
+ * the <Icon /> component, based on the provided icon information.  These class names will be used
+ * by the Font Awesome script to render the appropriate <svg> icon inside of the <i> element.
  *
+ * Note:
+ * ----
  * The "@fortawesome/react-fontawesome" package's <FontAwesomeIcon /> component does not work
  * properly with the FontAwesome Icon Kit.  We use the Icon Kit because it dynamically loads just
  * the icons that we need from a CDN - which is much faster and easier to maintain.  However, it
@@ -37,29 +41,18 @@ const getIconStyleClassName = (iconStyle: IconStyle = DEFAULT_ICON_STYLE) =>
  * class name for the <i> element, based on the provided icon information, so that the class names
  * defined in the stylesheets loaded from the CDN can properly render the icon.
  *
- * @param {IconComponentProps<IconProp>} params
- *   Parameters that include information about the specific icon being rendered.  These can be
- *   provided as the native FontAwesome {@link IconDefinition} or the {@link IconParams} - either
- *   provided under the 'icon' param or as separate, individual parameters (this is done for
- *   purposes of flexibility in Icon component itself).
+ * @param {IconProp} icon
+ *   The properties of the icon to be rendered.  This includes the icon's name, {@link IconName},
+ *   and optionally the icon's style, {@link IconStyle} and family, {@link IconFamily}.
  *
  * @returns {string}
- *
- * @example
- * getNativeIconClassName({ icon: { family: "sharp", name: "house", style: "regular" } })
- *
- * @example
- * getNativeIconClassName({ family: "sharp", name: "house", style: "regular" })
- *
  */
-export const getNativeIconClassName = (params: IconProp): string => {
-  const { family, iconStyle, name } = params as IconProp;
-  return clsx(
+export const getNativeIconClassName = ({ family, iconStyle, name }: IconProp): string =>
+  clsx(
     getIconFamilyClassName(family),
     getIconStyleClassName(iconStyle),
     getIconNameClassName(name),
   );
-};
 
 export const getNativeIconStyle = ({
   size,
@@ -75,9 +68,9 @@ export const getNativeIconStyle = ({
   }
 };
 
-const DynamicIconClassNamePropNames = ["fit", "size", "dimension", "disabled"] as const;
+const DynamicIconClassNamePropNames = ["fit", "size", "dimension", "isDisabled"] as const;
 
-type DynamicIconClassNamePropName = (typeof DynamicIconClassNamePropNames)[number];
+export type DynamicIconClassNamePropName = (typeof DynamicIconClassNamePropNames)[number];
 
 type DynamicIconClassNameProps = Pick<IconProps, DynamicIconClassNamePropName>;
 
@@ -88,7 +81,7 @@ type DynamicIconClassNameConfig<N extends DynamicIconClassNamePropName> = (
 const DynamicClassNameConfig: {
   [key in DynamicIconClassNamePropName]: DynamicIconClassNameConfig<key>;
 } = {
-  disabled: v => (v !== undefined ? "disabled" : null),
+  isDisabled: v => (v !== undefined ? "disabled" : null),
   fit: v => (v !== undefined ? `icon--fit-${v}` : null),
   /* The size class is only applicable if the size is provided as a discrete size string, not a
      literal size value (e.g. "sm", not "30px"). */
@@ -105,15 +98,17 @@ const getDynamicIconClassName = (props: Pick<IconProps, DynamicIconClassNameProp
     "",
   );
 
-export const getBaseIconClassName = ({
+export const getInternalIconClassName = ({
   className,
   ...props
-}: Pick<BasicIconComponentProps<IconProp>, "className" | DynamicIconClassNamePropName>): string =>
-  clsx("icon", getDynamicIconClassName(props), className);
+}: Pick<
+  BasicIconProps<IconProp> | ChildrenIconProps,
+  "className" | DynamicIconClassNamePropName
+>): string => clsx("icon", getDynamicIconClassName(props), className);
 
 export const getIconClassName = ({
   icon,
   ...rest
-}: Pick<BasicIconComponentProps<IconProp>, "className" | DynamicIconClassNamePropName> & {
+}: Pick<BasicIconProps<IconProp>, "className" | DynamicIconClassNamePropName> & {
   icon: IconProp;
-}): string => clsx(getNativeIconClassName(icon), getBaseIconClassName(rest));
+}): string => clsx(getNativeIconClassName(icon), getInternalIconClassName(rest));

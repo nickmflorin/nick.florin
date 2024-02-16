@@ -11,7 +11,7 @@ import { generateChartColors } from "~/lib/charts";
 import { parseQueryParams } from "~/lib/urls";
 import { FloatingContent } from "~/components/floating/FloatingContent";
 import { Form } from "~/components/forms/Form";
-import { CircleIcon } from "~/components/icons/CircleIcon";
+import { Circle } from "~/components/icons/svgs";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
@@ -31,7 +31,7 @@ const SkillsBarChartTooltip = (props: {
 }) => (
   <FloatingContent variant="secondary" className="flex flex-row gap-[4px] items-center">
     <div className="flex flex-row gap-[2px] items-center">
-      <CircleIcon color={props.color} size={12} />
+      <Circle color={props.color} size={12} />
       <Label size="xs" className="leading-[14px]">
         {props.data.skill}
       </Label>

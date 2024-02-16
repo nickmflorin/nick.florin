@@ -211,37 +211,43 @@ type _BaseIconProps = ComponentProps & {
    */
   readonly visible?: boolean;
   readonly hidden?: boolean;
-  readonly disabled?: boolean;
-  readonly onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  readonly isDisabled?: boolean;
 };
 
-/**
- * The props that the component responsible for rendering the Icon component.
- */
-export type BasicIconComponentProps<I extends IconProp | DynamicIconProp = IconProp> =
-  _BaseIconProps & {
-    [key in keyof IconProp]?: never;
-  } & {
-    readonly icon: I;
-  };
+export type BasicIconProps<I extends IconProp | DynamicIconProp = IconProp> = _BaseIconProps & {
+  [key in keyof IconProp]?: never;
+} & {
+  readonly icon: I;
+  readonly children?: never;
+};
 
-export type EmbeddedIconComponentProps = _BaseIconProps &
+export type EmbeddedIconProps = _BaseIconProps &
   IconProp & {
     readonly icon?: never;
+    readonly children?: never;
   };
 
-export type SpinnerProps = Omit<BasicIconComponentProps, keyof IconProp | "spin" | "icon" | "fit">;
+export type ChildrenIconProps = _BaseIconProps & {
+  [key in keyof IconProp]?: never;
+} & {
+  readonly icon?: never;
+  /* If the icon is an SVG, instead of a Font Awesome configured icon, it can be passed to the
+       component as a child. */
+  readonly children: JSX.Element;
+};
+
+export type SpinnerProps = Omit<BasicIconProps, keyof IconProp | "spin" | "icon" | "fit">;
 
 export type IconProps =
-  | EmbeddedIconComponentProps
-  | BasicIconComponentProps<IconProp>
-  | BasicIconComponentProps<DynamicIconProp>;
+  | EmbeddedIconProps
+  | ChildrenIconProps
+  | BasicIconProps<IconProp>
+  | BasicIconProps<DynamicIconProp>;
 
-export const isBasicIconComponentProps = (
+export const isBasicIconProps = (
   params: IconProps,
-): params is BasicIconComponentProps<IconProp> | BasicIconComponentProps<DynamicIconProp> =>
-  (params as BasicIconComponentProps<IconProp> | BasicIconComponentProps<DynamicIconProp>).icon !==
-  undefined;
+): params is BasicIconProps<IconProp> | BasicIconProps<DynamicIconProp> =>
+  (params as BasicIconProps<IconProp> | BasicIconProps<DynamicIconProp>).icon !== undefined;
 
 export type IconElement = React.ReactElement<IconProps>;
 

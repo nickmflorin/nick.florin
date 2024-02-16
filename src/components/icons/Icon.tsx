@@ -1,21 +1,50 @@
-"use client";
 import React from "react";
 
+import clsx from "clsx";
 import pick from "lodash.pick";
 
 import { logger } from "~/application/logger";
 
 import { Spinner } from "./Spinner";
-import { type IconProp, type DynamicIconProp, type IconProps, isIconProp } from "./types";
-import { getIconClassName, getNativeIconStyle } from "./util";
+import { type IconProp, type DynamicIconProp, type IconProps } from "./types";
+import {
+  getIconClassName,
+  getNativeIconStyle,
+  type DynamicIconClassNamePropName,
+  getInternalIconClassName,
+} from "./util";
 
 const iconIsDynamic = (icon: IconProp | DynamicIconProp): icon is DynamicIconProp =>
   Array.isArray(icon);
 
+const IconInner = (
+  props: { isVisible: boolean; children?: JSX.Element } & Pick<
+    IconProps,
+    "style" | "className" | DynamicIconClassNamePropName
+  >,
+) => (
+  <i
+    className={clsx(props.className)}
+    style={
+      props.isVisible === false
+        ? { ...props.style, display: "none", ...getNativeIconStyle(props) }
+        : { ...props.style, ...getNativeIconStyle(props) }
+    }
+  >
+    {props.children}
+  </i>
+);
+
 /**
- * Renders an icon element, <i>, with the appropriate class name, style and data-attributes that
- * allow the FontAwesome package to replace the <i> element with an <svg> element corresponding to
- * the appropriate FontAwesome icon.
+ * Renders an icon element, <i>, with the appropriate class name, style and data-attributes.
+ *
+ * The icon can either be a Font Awesome icon (provided as either the 'icon' {@link IconProp} prop
+ * or the 'name', {@link IconName}, 'family', {@link IconFamily}, and 'iconStyle', {@link IconStyle}
+ * props), or a more general SVG component - provided as a child to the component.
+ *
+ * When the icon being rendered is a Font Awesome icon, the class names attributed to the <i>
+ * element will allow the FontAwesome package to nest an <svg> element corresponding to the
+ * appropriate Font Awesome icon inside of the <i> element.
  *
  * Note:
  * -----
@@ -29,11 +58,26 @@ const iconIsDynamic = (icon: IconProp | DynamicIconProp): icon is DynamicIconPro
  * content loaded from the CDN (these class names are generated via the 'getNativeIconClassName'
  * method.
  */
-export const Icon = ({ icon, visible, hidden, ...props }: IconProps) => {
+export const Icon = ({
+  icon,
+  visible,
+  hidden,
+  children,
+  isLoading,
+  name,
+  iconStyle,
+  family,
+  ...props
+}: IconProps) => {
+  if (isLoading) {
+    /* If the Icon is in a loading state, render the <Spinner /> animated SVG component with the
+       exact same size as the <Icon /> component. */
+    return <Spinner isLoading {...pick(props, ["className", "style", "size"])} />;
+  }
   const isVisible = hidden !== true && visible !== false;
-  /* This should be prevented by type-checks on the props, but since TS is not aware that both of
-     these cannot be undefined at the same time, we simply check it here to satisfy the compiler. */
-  if (icon !== undefined || props.name !== undefined) {
+  /* In the case that the 'icon' is explicitly provided, or the 'name' is explicitly provided, the
+     icon being rendered is a Font Awesome icon (and not an internal SVG component). */
+  if (icon !== undefined || name !== undefined) {
     /* If the icon is dynamic, it will not be included in the component's props as explicit parts
        (i.e. there will be an 'icon' prop, not 'name', 'family', and 'iconStyle' props). */
     if (icon !== undefined && iconIsDynamic(icon)) {
@@ -59,6 +103,8 @@ export const Icon = ({ icon, visible, hidden, ...props }: IconProps) => {
             // Omit the hidden flag - it is encompassed in the isVisible flag.
             const ps = {
               ...props,
+              iconStyle,
+              family,
               icon: i.icon,
             } as IconProps;
             if (i.visible && !visibleIconEncountered) {
@@ -71,45 +117,24 @@ export const Icon = ({ icon, visible, hidden, ...props }: IconProps) => {
         </>
       );
     }
-    const ic = icon || pick(props, ["name", "family", "iconStyle"]);
-    /* We have to perform this typeguard check to satisfy TS, because TS is not aware that since
-       the IconComponentProps are a union type of the two methods of defining the 'icon' for the
-       component: with an 'icon' prop or the explicit 'name', 'iconStyle' and 'family' props.
-       When we spread the props to the component, TS loses this understanding - and thinks that
-       all of the props ('icon', 'name', 'iconStyle', 'family') can be undefined - when in reality,
-       as it is typed for this component's prop interface, if the 'icon' is undefined, then the
-       'name', 'iconStyle' and 'family' props must all be defined, and vice versa. */
-    if (!isIconProp(ic)) {
-      throw new Error(
-        "Improper implementation of the Icon!  The props are invalid, and this error " +
-          "should have been prevented by type checks at compile time.",
-      );
-    }
-    const { isLoading, disabled, onClick, style, ...rest } = props;
-    if (isLoading) {
-      return <Spinner isLoading {...props} />;
-    }
+    const ic = icon || { name, iconStyle, family };
     return (
-      <i
-        onClick={e => {
-          if (disabled !== true) {
-            onClick?.(e);
-          }
-        }}
-        style={
-          isVisible === false
-            ? { ...style, display: "none", ...getNativeIconStyle(rest) }
-            : { ...style, ...getNativeIconStyle(rest) }
-        }
+      <IconInner
+        {...props}
+        isVisible={isVisible}
         className={getIconClassName({
-          ...rest,
+          ...props,
           icon: ic,
         })}
       />
     );
-  } else {
-    return <></>;
   }
+  // Here, the icon is an internal SVG component that is provided via the 'children' prop.
+  return (
+    <IconInner {...props} isVisible={isVisible} className={getInternalIconClassName(props)}>
+      {children}
+    </IconInner>
+  );
 };
 
 export default Icon;

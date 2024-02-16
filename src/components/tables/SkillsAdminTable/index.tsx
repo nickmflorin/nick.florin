@@ -14,7 +14,7 @@ import { ShowInTopSkillsCell } from "./cells/ShowInTopSkillsCell";
 import { SlugCell } from "./cells/SlugCell";
 
 const Table = dynamic(() => import("../Table"), {
-  loading: () => <Loading loading={true} spinnerSize="36px" />,
+  loading: () => <Loading loading={true} />,
 }) as {
   <T extends { id: string }>(props: TableProps<T>): JSX.Element;
 };
