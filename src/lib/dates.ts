@@ -16,7 +16,7 @@ export function minDate<T extends Date | DateTime>(
     if (filteredRest.length === 0) {
       return null;
     } else if (filteredRest.length === 1) {
-      return filteredRest[1];
+      return filteredRest[0];
     }
     return filteredRest
       .slice(1)
@@ -42,7 +42,7 @@ export function maxDate<T extends Date | DateTime>(
     if (filteredRest.length === 0) {
       return null;
     } else if (filteredRest.length === 1) {
-      return filteredRest[1];
+      return filteredRest[0];
     }
     return filteredRest
       .slice(1)

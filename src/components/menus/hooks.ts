@@ -42,7 +42,7 @@ export const useMenuValue = <M extends types.MenuModel, O extends types.MenuOpti
 }: Pick<types.MenuProps<M, O>, "data" | "value" | "onChange" | "initialValue" | "options">): [
   types.MenuValue<M, O>,
   types.MenuModelValue<M, O>,
-  (v: types.ModelValue<M, O>) => void,
+  (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => void,
   (v: types.MenuValue<M, O>) => void,
 ] => {
   const [_value, setValue] = useState<types.MenuValue<M, O>>(() => {
@@ -172,11 +172,13 @@ export const useMenuValue = <M extends types.MenuModel, O extends types.MenuOpti
     }
   }, [data, value, options]);
 
-  const selectModel = useReferentialCallback((v: types.ModelValue<M, O>) => {
-    const newValue: types.MenuValue<M, O> = reduceMenuValue(value, v, options);
-    setValue(newValue);
-    _onChange?.(newValue);
-  });
+  const selectModel = useReferentialCallback(
+    (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => {
+      const newValue: types.MenuValue<M, O> = reduceMenuValue(value, v, options);
+      setValue(newValue);
+      _onChange?.(newValue, instance);
+    },
+  );
 
   return [value, modelValue, selectModel, setValue];
 };

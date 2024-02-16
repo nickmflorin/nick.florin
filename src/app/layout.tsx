@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 
-import { AppConfig } from "~/components/config/AppConfig";
+import { AppConfig } from "~/app/config/AppConfig";
+import { Spinner } from "~/components/icons/Spinner";
 import { Toast } from "~/components/notifications/Toast";
 import { Text } from "~/components/typography/Text";
 import { ShowHide } from "~/components/util";
 import { ScreenLoading } from "~/components/views/ScreenLoading";
 import { env } from "~/env.mjs";
+
+import { FontAwesomeScript } from "./scripts/font-awesome-script";
 
 /* Note: The reason we dynamically import the layout is because it accesses server side data to
    fetch the profile - which is only needed for the social buttons in the header.  We may want to
@@ -35,18 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48" />
+        <FontAwesomeScript token={env.FONT_AWESOME_KIT_TOKEN} />
       </head>
       <body className={InterFont.className}>
-        <Script
-          async
-          type="text/javascript"
-          src={`https://kit.fontawesome.com/${env.FONT_AWESOME_KIT_TOKEN}.js`}
-          crossOrigin="anonymous"
-          /* Using "nest" instead of "replace" avoids errors related to
-             NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is \
-             not a child of this node */
-          data-auto-replace-svg="nest"
-        />
         <AppConfig>
           <Layout
             nav={[
@@ -83,7 +76,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 tooltipLabel: "Admin CMS",
                 icon: { name: "gear" },
                 path: "/admin",
-                active: [{ leadingPath: "/admin" }],
+                active: [
+                  { leadingPath: "/admin" },
+                  { leadingPath: "/admin/skills" },
+                  { leadingPath: "/admin/experiences" },
+                  { leadingPath: "/admin/educations" },
+                ],
               },
             ]}
           >

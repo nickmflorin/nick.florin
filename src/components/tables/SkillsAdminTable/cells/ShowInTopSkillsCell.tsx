@@ -38,7 +38,6 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
           } catch (e) {
             logger.error(e);
             toast.error("There was an error updating the skill.");
-            return false;
           } finally {
             table.setRowLoading(skill.id, false);
           }

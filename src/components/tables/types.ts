@@ -12,7 +12,7 @@ export type TableModel = {
 
 export type TableInstance<T extends TableModel> = {
   readonly rowIsLoading: (id: T["id"]) => boolean;
-  readonly setRowLoading: (id: T["id"], loading: boolean) => void;
+  readonly setRowLoading: (id: T["id"], loading: boolean, opts?: { locked?: boolean }) => void;
 };
 
 export type ColumnRenderProps<T extends TableModel> = {
@@ -35,7 +35,7 @@ export interface TableProps<T extends TableModel> extends ComponentProps {
   readonly data: T[];
   readonly columns: Column<T>[];
   readonly size?: TableSize;
-  readonly loading?: boolean;
+  readonly isLoading?: boolean;
   readonly rowClassName?: RowClassName<T>;
   readonly isCheckable?: boolean;
 }

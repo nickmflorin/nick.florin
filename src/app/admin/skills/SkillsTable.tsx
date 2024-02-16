@@ -5,8 +5,9 @@ import { prisma } from "~/prisma/client";
 import { includeSkillMetadata } from "~/prisma/query";
 
 const SkillsTable = dynamic(() => import("~/components/tables/SkillsAdminTable/index"), {
-  loading: () => <Loading loading={true} />,
-  ssr: false,
+  /* loading: () => <Loading loading={true} />,
+     ssr: false, */
+  loading: () => <>Loading Table</>,
 });
 
 export default async function SkillsRoutedTable() {

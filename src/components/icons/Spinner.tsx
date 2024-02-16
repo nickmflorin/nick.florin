@@ -2,18 +2,18 @@ import React from "react";
 
 import clsx from "clsx";
 
-import { Icon } from "./Icon";
+import { CircleNotch } from "./CircleNotch";
 import { type SpinnerProps } from "./types";
+import { getBaseIconClassName, getNativeIconStyle } from "./util";
 
 export const Spinner = ({ isLoading, ...props }: SpinnerProps): JSX.Element =>
   isLoading === true ? (
-    <Icon
-      {...props}
-      className={clsx("spinner", props.className)}
-      spin={true}
-      icon={{ name: "circle-notch" }}
-      fit="square"
-    />
+    <i
+      style={{ ...props.style, ...getNativeIconStyle(props) }}
+      className={clsx("spinner", getBaseIconClassName({ ...props, fit: "square" }))}
+    >
+      <CircleNotch />
+    </i>
   ) : (
     <></>
   );

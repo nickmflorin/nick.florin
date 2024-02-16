@@ -8,9 +8,5 @@ const ExperienceTimeline = dynamic(() => import("~/components/timelines/Experien
 });
 
 export default function ExperiencePage() {
-  return (
-    <div className="max-h-full h-full overflow-y-scroll">
-      <ExperienceTimeline />
-    </div>
-  );
+  return <ExperienceTimeline />;
 }

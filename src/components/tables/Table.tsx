@@ -13,7 +13,6 @@ import clsx from "clsx";
 import { type DataTableProps, type DataTableColumn } from "mantine-datatable";
 
 import { Spinner } from "~/components/icons/Spinner";
-import { Loading } from "~/components/views/Loading";
 
 import * as hooks from "./hooks";
 import {
@@ -28,6 +27,15 @@ const MantineDataTable = dynamic(() => import("mantine-datatable").then(i => i.D
   <T>(props: DataTableProps<T>): JSX.Element;
 };
 
+const Loading = dynamic(() => import("~/components/views/Loading").then(mod => mod.Loading), {
+  ssr: false,
+});
+
+type RowLoadingState<T extends TableModel> = {
+  readonly id: T["id"];
+  readonly locked?: boolean;
+};
+
 export const Table = forwardRef(
   <T extends TableModel>(
     {
@@ -35,26 +43,29 @@ export const Table = forwardRef(
       columns: _columns,
       data,
       className,
-      loading,
+      isLoading,
       isCheckable,
       ...props
     }: TableProps<T>,
     ref?: ForwardedRef<TableInstance<T>>,
   ) => {
     const table = hooks.useTable(ref);
-    const [rowsLoading, setRowsLoading] = useState<T["id"][]>([]);
+    const [rowStates, setRowStates] = useState<RowLoadingState<T>[]>([]);
 
-    const setRowLoading = useCallback((id: T["id"], value: boolean) => {
-      setRowsLoading(curr => {
-        if (value) {
-          return [...curr.filter(i => i !== id), id];
-        }
-        return [...curr.filter(i => i !== id)];
-      });
-    }, []);
+    const setRowLoading = useCallback(
+      (id: T["id"], value: boolean, opts?: { locked?: boolean }) => {
+        setRowStates(curr => {
+          if (value) {
+            return [...curr.filter(st => st.id !== id), { id, locked: opts?.locked !== false }];
+          }
+          return [...curr.filter(st => st.id !== id)];
+        });
+      },
+      [],
+    );
 
     useImperativeHandle(table, () => ({
-      rowIsLoading: (id: T["id"]) => rowsLoading.includes(id),
+      rowIsLoading: (id: T["id"]) => rowStates.map(st => st.id).includes(id),
       setRowLoading,
     }));
 
@@ -67,7 +78,7 @@ export const Table = forwardRef(
           cellsClassName: "loading-cell",
           render: (model: T) => (
             <div className="flex flex-row items-center justify-center">
-              <Spinner size="18px" isLoading={rowsLoading.includes(model.id)} />
+              <Spinner size="18px" isLoading={rowStates.map(st => st.id).includes(model.id)} />
             </div>
           ),
         },
@@ -83,14 +94,16 @@ export const Table = forwardRef(
         }),
       ];
       return cs;
-    }, [_columns, table, rowsLoading]);
+    }, [_columns, table, rowStates]);
 
     /* Mantine's <DataTable /> component defines the props as a set of base props intersected with a
-     bunch of supplementary props, such as 'DataTableEmptyStateProps', each of which is a union
-     type.  This introduces typing issues when adding our own props into the fold, because the
-     intersection of our props with their props does not distribute our props over the union types.
-     The only ways around this are to define the props for this component in an extremely
-     complicated manner, or simply coerce the props as shown below. */
+       bunch of supplementary props, such as 'DataTableEmptyStateProps', each of which is a union
+       type.  This introduces typing issues when adding our own props into the fold, because the
+       intersection of our props with their props does not distribute our props over the union
+       types.
+
+       The only ways around this are to define the props for this component in an extremely
+       complicated manner, or simply coerce the props as shown below. */
     const rootProps: DataTableProps<T> = {
       highlightOnHover: false,
       height: "100%",
@@ -99,10 +112,14 @@ export const Table = forwardRef(
       // TODO: Revisit this later.
       emptyState: <></>,
       ...props,
-      rowClassName: mergeRowClassNames(props.rowClassName, ({ id }) =>
-        rowsLoading.includes(id) ? "row--loading" : "",
-      ),
-      fetching: loading,
+      rowClassName: mergeRowClassNames(props.rowClassName, ({ id }) => {
+        const loadingState = rowStates.find(st => st.id === id);
+        if (loadingState) {
+          return clsx("row--loading", { "row--locked": loadingState.locked });
+        }
+        return "";
+      }),
+      fetching: isLoading,
       records: data,
       columns,
     } as DataTableProps<T>;

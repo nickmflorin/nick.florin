@@ -9,7 +9,7 @@ export const includeSkillMetadata = async (skills: Skill[]): Promise<ApiSkill[]>
   const experiences = await prisma.experience.findMany({
     where: {
       skills: {
-        some: { skillId: { in: skills.map(s => s.id) }, skill: { includeInTopSkills: true } },
+        some: { skillId: { in: skills.map(s => s.id) } },
       },
     },
     orderBy: { startDate: "asc" },
@@ -19,7 +19,7 @@ export const includeSkillMetadata = async (skills: Skill[]): Promise<ApiSkill[]>
   const educations = await prisma.education.findMany({
     where: {
       skills: {
-        some: { skillId: { in: skills.map(s => s.id) }, skill: { includeInTopSkills: true } },
+        some: { skillId: { in: skills.map(s => s.id) } },
       },
     },
     orderBy: { startDate: "asc" },
@@ -32,27 +32,17 @@ export const includeSkillMetadata = async (skills: Skill[]): Promise<ApiSkill[]>
       educations: educations.filter(edu => edu.skills.some(s => s.skillId === skill.id)),
       experiences: experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id)),
     };
-    if (skill.experience !== null) {
-      return apiSkill as ApiSkill;
-    }
     /* Since the educations are already ordered by their start date, we can just take the first one
        from the filtered results. */
-    const oldestEducation = strictArrayLookup(
-      educations.filter(edu => edu.skills.some(s => s.skillId === skill.id)),
-      0,
-      {},
-    );
+    const oldestEducation = strictArrayLookup(apiSkill.educations, 0, {});
     /* Since the experiences are already ordered by their start date, we can just take the first one
        from the filtered results. */
-    const oldestExperience = strictArrayLookup(
-      experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id)),
-      0,
-      {},
-    );
+    const oldestExperience = strictArrayLookup(apiSkill.experiences, 0, {});
     const oldestDate = minDate(oldestEducation?.startDate, oldestExperience?.startDate);
+
     return {
       ...apiSkill,
-      experience: oldestDate
+      autoExperience: oldestDate
         ? Math.round(DateTime.now().diff(DateTime.fromJSDate(oldestDate), "years").years)
         : 0,
     };

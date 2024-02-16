@@ -22,6 +22,7 @@ import {
   useMenuValue,
   type MenuValue,
   type MenuModelValue,
+  type MenuItemInstance,
   getModelLabel,
 } from "~/components/menus";
 import { Menu } from "~/components/menus/generic/Menu";
@@ -48,7 +49,11 @@ export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectM
     readonly inputClassName?: ComponentProps["className"];
     readonly onChange?: (
       v: MenuValue<M, O>,
-      params: { models: MenuModelValue<M, O>; instance: types.SelectInstance<M, O> },
+      params: {
+        models: MenuModelValue<M, O>;
+        instance: types.SelectInstance<M, O>;
+        item: MenuItemInstance;
+      },
     ) => void;
     readonly onOpen?: (
       e: Event,
@@ -160,9 +165,9 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
             ref={ref}
             style={styles}
             value={value}
-            onChange={v => {
+            onChange={(v, item) => {
               setValue(v);
-              props.onChange?.(v, { models, instance: selectInstance });
+              props.onChange?.(v, { models, instance: selectInstance, item });
             }}
           />
         )}

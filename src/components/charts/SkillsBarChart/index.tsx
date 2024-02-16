@@ -72,7 +72,11 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
   const { data: _data, error, isInitialLoading, isLoading } = useSkills({ query: skillsQuery });
 
   const data = useMemo(
-    () => (_data ?? []).map(skill => ({ skill: skill.label, experience: skill.experience })),
+    () =>
+      (_data ?? []).map(skill => ({
+        skill: skill.label,
+        experience: skill.experience ?? skill.autoExperience,
+      })),
     [_data],
   );
 

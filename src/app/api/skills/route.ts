@@ -2,9 +2,13 @@ import { type NextRequest } from "next/server";
 
 import { ClientResponse } from "~/application/http";
 import { prisma } from "~/prisma/client";
+import { type ApiSkill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/query";
 
 import { SkillQuerySchema } from "../types";
+
+const skillExperience = (skill: ApiSkill): number =>
+  skill.experience === null ? skill.autoExperience : skill.experience;
 
 export async function GET(request: NextRequest) {
   const query = { showTopSkills: request.nextUrl.searchParams.get("showTopSkills") };
@@ -17,7 +21,10 @@ export async function GET(request: NextRequest) {
   const skills = await prisma.skill.findMany({
     where: { includeInTopSkills: true },
   });
-  const data = (await includeSkillMetadata(skills)).sort((a, b) => b.experience - a.experience);
+
+  const data = (await includeSkillMetadata(skills)).sort(
+    (a, b) => skillExperience(b) - skillExperience(a),
+  );
   return ClientResponse.OK(
     showTopSkills === "all" ? data : data.slice(0, showTopSkills),
   ).toResponse();

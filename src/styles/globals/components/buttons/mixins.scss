@@ -6,7 +6,9 @@ $button-loading-class: ".button--loading";
 @mixin button-hovered {
   @include partials.hovered {
     @include partials.without-selectors(($button-loading-class, $button-locked-class)) {
-      @content;
+      &:not(:disabled) {
+        @content;
+      }
     }
   }
 }
@@ -14,7 +16,9 @@ $button-loading-class: ".button--loading";
 @mixin button-focused {
   @include partials.focused {
     @include partials.without-selectors(($button-loading-class, $button-locked-class)) {
-      @content;
+      &:not(:disabled) {
+        @content;
+      }
     }
   }
 }
@@ -33,6 +37,8 @@ $button-loading-class: ".button--loading";
 
 @mixin button-active {
   &.button--active {
-    @content;
+    &:not(:disabled) {
+      @content;
+    }
   }
 }

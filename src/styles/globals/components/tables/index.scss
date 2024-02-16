@@ -148,6 +148,10 @@ $table-size-properties: (
         &.row--loading {
           td:not(.loading-cell) {
             opacity: 0.3;
+          }
+        }
+        &.row--locked {
+          td:not(.loading-cell) {
             pointer-events: none;
           }
         }
@@ -177,6 +181,6 @@ $table-size-properties: (
   }
 
   .mantine-datatable-scroll-area-shadow {
-    display: none
+    display: none;
   }
 }

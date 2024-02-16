@@ -8,9 +8,5 @@ const EducationTimeline = dynamic(() => import("~/components/timelines/Education
 });
 
 export default function EducationPage() {
-  return (
-    <div className="max-h-full h-full overflow-y-scroll">
-      <EducationTimeline />
-    </div>
-  );
+  return <EducationTimeline />;
 }

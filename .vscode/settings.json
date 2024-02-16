@@ -7,7 +7,6 @@
     "source.fixAll.eslint": "explicit",
     "source.fixAll.stylelint": "explicit"
   },
-  "eslint.debug": true,
   "editor.trimAutoWhitespace": true,
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
@@ -17,7 +16,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.validate.enable": true,
-  "eslint.options": {},
   "eslint.codeActionsOnSave.rules": [
     "@typescript-eslint/semi",
     "@typescript-eslint/indent",

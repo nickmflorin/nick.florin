@@ -50,8 +50,9 @@ export type ApiEducation = Education & {
   readonly skills: Skill[];
 };
 
-export type ApiSkill = Omit<Skill, "experience"> & {
-  readonly experience: number;
+export type ApiSkill = Skill & {
+  readonly autoExperience: number;
+  readonly experience: number | null;
   readonly educations: (Pick<Education, "major" | "id"> & {
     readonly school: Pick<School, "id" | "name" | "logoImageUrl">;
   })[];

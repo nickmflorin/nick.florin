@@ -180,42 +180,40 @@ export type DynamicIcon = {
  */
 export type DynamicIconProp = DynamicIcon[];
 
-type _BaseIconProps = ComponentProps &
-  /* eslint-disable-next-line @typescript-eslint/consistent-type-imports */
-  Pick<import("@fortawesome/react-fontawesome").FontAwesomeIconProps, "spin"> & {
-    /**
-     * Whether or not the Icon should be rendered as a "loading" spinner.  Useful in cases where a
-     * component contains an Icon but needs to replace it with a loading indicator when in a loading
-     * state.
-     */
-    readonly isLoading?: boolean;
-    /**
-     * A string, "fit" or "square", that defines whether or not the `svg` element should fit snuggly
-     * around the inner `path` element of the Icon or SVG ("fit") or the `svg` element should have
-     * a 1-1 aspect ratio, with its inner `path` element being centered in the containing `svg`
-     * ("square").
-     *
-     * Default: "square"
-     */
-    readonly fit?: IconFit;
-    readonly size?: IconSize;
-    /**
-     * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
-     * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.
-     *
-     * Default: "height";
-     */
-    readonly dimension?: IconDimension;
-    /**
-     * Used to control dynamically rendered icons.
-     *
-     * @see DynamicIconProp;
-     */
-    readonly visible?: boolean;
-    readonly hidden?: boolean;
-    readonly disabled?: boolean;
-    readonly onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  };
+type _BaseIconProps = ComponentProps & {
+  /**
+   * Whether or not the Icon should be rendered as a "loading" spinner.  Useful in cases where a
+   * component contains an Icon but needs to replace it with a loading indicator when in a loading
+   * state.
+   */
+  readonly isLoading?: boolean;
+  /**
+   * A string, "fit" or "square", that defines whether or not the `svg` element should fit snuggly
+   * around the inner `path` element of the Icon or SVG ("fit") or the `svg` element should have
+   * a 1-1 aspect ratio, with its inner `path` element being centered in the containing `svg`
+   * ("square").
+   *
+   * Default: "square"
+   */
+  readonly fit?: IconFit;
+  readonly size?: IconSize;
+  /**
+   * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
+   * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.
+   *
+   * Default: "height";
+   */
+  readonly dimension?: IconDimension;
+  /**
+   * Used to control dynamically rendered icons.
+   *
+   * @see DynamicIconProp;
+   */
+  readonly visible?: boolean;
+  readonly hidden?: boolean;
+  readonly disabled?: boolean;
+  readonly onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+};
 
 /**
  * The props that the component responsible for rendering the Icon component.

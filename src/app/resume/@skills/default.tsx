@@ -1,15 +1,12 @@
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
+
+import { Loading } from "~/components/views/Loading";
 
 const SkillsBarChart = dynamic(() => import("~/components/charts/SkillsBarChart/index"), {
   ssr: false,
-  loading: () => <div>Loading...</div>,
+  loading: () => <Loading loading={true} />,
 });
 
 export default function SkillsDefault() {
-  return (
-    <Suspense>
-      <SkillsBarChart className="w-full h-[400px]" />
-    </Suspense>
-  );
+  return <SkillsBarChart className="w-full h-[400px]" />;
 }

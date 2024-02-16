@@ -37,7 +37,7 @@
   }
 
   .icon {
-    color: theme("colors.gray.500")
+    color: theme("colors.gray.500");
   }
 }
 
@@ -48,6 +48,12 @@
       line-height: inherit;
       padding: 0;
       width: 100%;
+
+      &:disabled {
+        // This overrides a disabled background applied by the browser.  We want the background to
+        // be applied to the outer .input class, not the inner input element.
+        background-color: inherit;
+      }
     }
   }
 }

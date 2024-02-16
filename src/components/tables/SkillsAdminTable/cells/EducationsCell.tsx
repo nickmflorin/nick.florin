@@ -1,10 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useTransition, useRef } from "react";
+import { useState, useEffect, useTransition } from "react";
 
-import isEqual from "lodash.isequal";
+import { toast } from "react-toastify";
 
 import { updateSkill } from "~/app/actions/updateSkill";
+import { logger } from "~/application/logger";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 import { type ApiSkill, type ApiEducation } from "~/prisma/model";
 
@@ -14,7 +15,6 @@ interface EducationsCellProps {
 }
 
 export const EducationsCell = ({ skill, educations }: EducationsCellProps): JSX.Element => {
-  const lastSaved = useRef<string[]>(skill.educations.map(exp => exp.id));
   const [value, setValue] = useState(skill.educations.map(exp => exp.id));
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -29,29 +29,23 @@ export const EducationsCell = ({ skill, educations }: EducationsCellProps): JSX.
       menuClassName="max-h-[260px]"
       data={educations}
       value={value}
-      onChange={v => setValue(v)}
-      onClose={async (e, { instance }) => {
-        /* Note: We may run into race conditions here if the user closes the select, reopens it
-           and then makes a change before the original change had time to complete it's round trip
-           request to the API.  Should be investigated further... */
-        if (!isEqual(value, lastSaved.current)) {
-          // TODO: Consider reverting the change if the request fails.
-          instance.setLoading(true);
-          try {
-            await updateSkill(skill.id, { educations: value });
-          } catch (e) {
-            /* eslint-disable-next-line no-console -- Need to handle the error better! */
-            console.error(e);
-            return false;
-          } finally {
-            lastSaved.current = value;
-            instance.setLoading(false);
-          }
-          // TODO: Do we need to do this?  The updated value should be in state?
-          transition(() => {
-            router.refresh();
-          });
+      onChange={async (v, { item }) => {
+        // Optimistically update the value.
+        setValue(v);
+        item.setLoading(true);
+        try {
+          await updateSkill(skill.id, { educations: v });
+        } catch (e) {
+          logger.error(e);
+          toast.error("There was an error updating the skill.");
+        } finally {
+          item.setLoading(false);
         }
+        /* Refresh the page state from the server.  This is not entirely necessary, but will
+           revert any changes that were made if the request fails. */
+        transition(() => {
+          router.refresh();
+        });
       }}
     />
   );

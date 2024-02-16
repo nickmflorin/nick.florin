@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 
+import { ToastContainer } from "~/app/config/ToastContainer";
 import { logger } from "~/application/logger";
-import { ToastContainer } from "~/components/config/ToastContainer";
 import { prisma } from "~/prisma/client";
 
 import { Header } from "./Header";

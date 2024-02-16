@@ -2,15 +2,19 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
+import type * as types from "../../types";
+
 import { updateSkill } from "~/app/actions/updateSkill";
+import { logger } from "~/application/logger";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import { type ApiSkill } from "~/prisma/model";
 
 interface LabelCellProps {
   readonly skill: ApiSkill;
+  readonly table: types.TableInstance<ApiSkill>;
 }
 
-export const LabelCell = ({ skill }: LabelCellProps): JSX.Element => {
+export const LabelCell = ({ skill, table }: LabelCellProps): JSX.Element => {
   const input = useReadWriteTextInput();
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -19,17 +23,14 @@ export const LabelCell = ({ skill }: LabelCellProps): JSX.Element => {
     <ReadWriteTextInput
       ref={input}
       initialValue={skill.label}
-      onPersist={async (label, instance) => {
-        // TODO: Consider reverting the change if the request fails.
-        instance.setLoading(true);
+      onPersist={async label => {
+        table.setRowLoading(skill.id, true);
         try {
           await updateSkill(skill.id, { label });
         } catch (e) {
-          /* eslint-disable-next-line no-console -- Need to handle the error better! */
-          console.error(e);
-          return false;
+          logger.error(e);
         } finally {
-          instance.setLoading(false);
+          table.setRowLoading(skill.id, false);
         }
         transition(() => {
           router.refresh();

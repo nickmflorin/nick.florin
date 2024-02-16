@@ -26,28 +26,37 @@
       @include partials.font($type: "body", $line-height: 28px, $font-size: "xs");
 
       @include partials.disabled {
-        color: theme("colors.disabled")
+        color: theme("colors.disabled");
+      }
+
+      &.menu__item--locked,
+      &.menu__item--loading {
+        pointer-events: none;
       }
 
       @include partials.hovered {
-        &:not(.menu__item--selected) {
-          background-color: theme("colors.gray.100")
+        &:not(.menu__item--selected, .disabled, .menu__item--locked) {
+          background-color: theme("colors.gray.100");
         }
       }
 
       @include partials.focused {
-        &:not(.menu__item--selected) {
-          background-color: theme("colors.gray.100")
+        &:not(.menu__item--selected, .disabled, .menu__item--locked) {
+          background-color: theme("colors.gray.100");
         }
       }
 
       &.menu__item--selected:not(.disabled) {
         background-color: theme("colors.blue.50");
         @include partials.hovered {
-          background-color: theme("colors.blue.100");
+          &:not(.disabled, .menu__item--locked) {
+            background-color: theme("colors.blue.100");
+          }
         }
         @include partials.focused {
-          background-color: theme("colors.blue.100");
+          &:not(.disabled, .menu__item--locked) {
+            background-color: theme("colors.blue.100");
+          }
         }
       }
 

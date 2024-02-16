@@ -2,6 +2,8 @@
 @use "sass:meta";
 
 @use "partials";
+@use "throw";
+
 @use "./mixins" as mixins;
 @use "./constants" as *;
 
@@ -40,10 +42,19 @@ $button-color-properties: (
       hovered: (
         background-color: theme("colors.gray.300"),
         outline-color: theme("colors.gray.300"),
+        active: (
+          outline-color: theme("colors.gray.500"),
+        ),
       ),
       focused: (
         background-color: theme("colors.gray.300"),
         outline-color: theme("colors.gray.300"),
+        active: (
+          outline-color: theme("colors.gray.500"),
+        ),
+      ),
+      active: (
+        outline-color: theme("colors.gray.500"),
       ),
       disabled: (
         background-color: theme("colors.disabledBackground"),
@@ -188,12 +199,6 @@ $button-color-properties: (
   $arguments: meta.keywords($args);
   @if map.has-key($arguments, $state-name) {
     $state: partials.mapget($arguments, $state-name);
-    @if map-has-state-key($state) {
-      @return throw.error(
-        "Detected nested state key(s) in state attribute #{$state-name}.  This will cause an infinite recursion.",
-        $source: "button-colors()"
-      );
-    }
     // If the state defines an override for the outline-color, we need to also override the outline
     // because it will have been defaulted in the original base set of attributes based on the
     // outline color of the base state.
@@ -204,7 +209,6 @@ $button-color-properties: (
         $button-outline-width solid partials.mapget($state, outline-color)
       );
     }
-
     @return map.merge($attributes, $state);
   }
   @return null;
@@ -215,7 +219,6 @@ $button-color-properties: (
 
   $type: map.get($arguments, "type");
   $variant: map.get($arguments, "variant");
-
 
   @if $variant or $type {
     @if not $variant or not $type {
@@ -255,7 +258,7 @@ $button-color-properties: (
     );
 
     @each $attr in map.keys($attributes) {
-      // Do not set null keys.
+      // Do not set null values or values.
       @if partials.mapget($attributes, $attr) {
         #{$attr}: partials.mapget($attributes, $attr);
       }
@@ -276,6 +279,7 @@ $button-color-properties: (
         @include button-variant($hovered...);
       }
     }
+
     // If a 'focused' argument is provided, include this mixin recursively to define the colors of
     // the button when it is focused.
     $focused: parse-state-colors($attributes, "focused", $args...);
@@ -288,6 +292,8 @@ $button-color-properties: (
       }
     }
 
+    // If a 'active' argument is provided, include this mixin recursively to define the colors of
+    // the button when it is active.
     $active: parse-state-colors($attributes, "active", $args...);
     $active: if($active, $active, if($focused, $focused, $hovered));
     @if $active {

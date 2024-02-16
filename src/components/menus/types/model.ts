@@ -4,24 +4,23 @@ import { z } from "zod";
 
 import { ReactNodeSchema, isReactNode } from "~/lib/core";
 import { IconPropSchema } from "~/components/icons";
-import { type IconProp } from "~/components/icons";
-import { type ComponentProps } from "~/components/types";
+
+import { type MenuOptions } from "./options";
 
 export type MenuModel = Record<string, unknown>;
-
-export type MenuModelParams = {
-  readonly id?: string | number;
-  readonly label?: ReactNode;
-  readonly icon?: IconProp;
-  readonly value?: unknown;
-};
 
 const MenuModelParamsSchema = z.object({
   label: ReactNodeSchema,
   icon: IconPropSchema,
   id: z.union([z.string(), z.number()]),
-  value: z.any().optional(),
+  value: z.any(),
+  isLocked: z.boolean(),
+  isLoading: z.boolean(),
+  isDisabled: z.boolean(),
+  isVisible: z.boolean(),
 });
+
+export type MenuModelParams = z.infer<typeof MenuModelParamsSchema>;
 
 export const modelHasParam = <M extends MenuModel, N extends keyof MenuModelParams>(
   model: M,
@@ -30,17 +29,6 @@ export const modelHasParam = <M extends MenuModel, N extends keyof MenuModelPara
   const schema = MenuModelParamsSchema.pick({ [param]: true });
   return schema.safeParse(model).success;
 };
-
-export type MenuOptions<I extends MenuModel> = Partial<{
-  readonly isMulti: boolean;
-  readonly isNullable: boolean;
-  readonly getItemValue: (m: I) => unknown;
-  readonly getItemLabel: (m: I) => ReactNode;
-  readonly getItemId: (m: I) => string | number;
-}>;
-
-export const menuIsNonNullable = <M extends MenuModel, O extends MenuOptions<M>>(options: O) =>
-  options.isNullable === false && options.isMulti !== true;
 
 export const modelValueIsValid = (value: unknown) => typeof value !== "undefined" && value !== null;
 
@@ -147,41 +135,12 @@ export type MenuModelValue<M extends MenuModel, O extends MenuOptions<M>> = O ex
     ? M | null
     : M;
 
-type NonNullableProps<M extends MenuModel, O extends MenuOptions<M>> = {
-  readonly initialValue: MenuValue<M, O>;
-};
-
-type IsNullableProps<M extends MenuModel, O extends MenuOptions<M>> = {
-  readonly initialValue?: MenuValue<M, O>;
-};
-
-type NullableProps<T, M extends MenuModel, O extends MenuOptions<M>> = O extends {
-  isNullable: false;
-  isMulti?: false;
-}
-  ? T & NonNullableProps<M, O>
-  : T & IsNullableProps<M, O>;
-
-export type MenuProps<M extends MenuModel, O extends MenuOptions<M>> = NullableProps<
-  ComponentProps & {
-    readonly options: O;
-    readonly header?: JSX.Element;
-    readonly footer?: JSX.Element;
-    readonly value?: MenuValue<M, O>;
-    readonly data: M[];
-    readonly itemSelectedClassName?:
-      | ComponentProps["className"]
-      | ((datum: M) => ComponentProps["className"]);
-    readonly itemClassName?:
-      | ComponentProps["className"]
-      | ((datum: M) => ComponentProps["className"]);
-    readonly onChange?: (value: MenuValue<M, O>) => void;
-    readonly children?: (datum: M) => ReactNode;
-  },
-  M,
-  O
->;
-
 export type MenuInstance<M extends MenuModel, O extends MenuOptions<M>> = {
   readonly value: MenuValue<M, O>;
+};
+
+export type MenuItemInstance = {
+  readonly setLocked: (value: boolean) => void;
+  readonly setDisabled: (value: boolean) => void;
+  readonly setLoading: (value: boolean) => void;
 };
