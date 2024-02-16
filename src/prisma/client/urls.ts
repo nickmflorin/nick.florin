@@ -1,7 +1,3 @@
-// import "server-only";
-
-import { env } from "~/env.mjs";
-
 type DBNumericParam = "port";
 
 type DBParam = DBNumericParam | "name" | "host" | "password" | "user";
@@ -27,24 +23,4 @@ export const postgresConnectionString = (params: DatabaseParams): string => {
     `postgresql://${params.user}:${params.password}` +
     `@${params.host}:${params.port}/${params.name}`
   );
-};
-
-type GetDatabaseUrlParams = DatabaseParams & { readonly url?: string };
-
-export const getDatabaseUrl = (params?: GetDatabaseUrlParams): string => {
-  if (!params) {
-    if (env.DATABASE_URL) {
-      return env.DATABASE_URL;
-    }
-    return postgresConnectionString({
-      password: env.DATABASE_PASSWORD,
-      user: env.DATABASE_USER,
-      port: env.DATABASE_PORT,
-      host: env.DATABASE_HOST,
-      name: env.DATABASE_NAME,
-    });
-  } else if (params.url) {
-    return params.url;
-  }
-  return postgresConnectionString(params);
 };
