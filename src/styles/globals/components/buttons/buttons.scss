@@ -34,6 +34,11 @@ a:not(.button--type-link) {
 
   @include mixins.button-locked-or-loading();
 
+  .icon {
+    aspect-ratio: 1;
+    width: auto;
+  }
+
   &--type-button {
     @include button-properties("button");
     @include button-structure();
@@ -62,5 +67,8 @@ a:not(.button--type-link) {
 
     justify-content: center;
     text-align: center;
+
+    aspect-ratio: 1;
+    padding: 0;
   }
 }

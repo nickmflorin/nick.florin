@@ -2,7 +2,7 @@ import { type LinkProps as NextLinkProps } from "next/link";
 import { type ReactNode, type ForwardedRef } from "react";
 
 import { type EnumeratedLiteralsType, enumeratedLiterals } from "~/lib/literals";
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type Size, type ComponentProps, type HTMLElementProps } from "~/components/types";
 import { type BaseTypographyProps } from "~/components/typography";
 
 export const ButtonButtonVariants = enumeratedLiterals(
@@ -32,17 +32,27 @@ export const ButtonVariants = {
   link: LinkVariants,
 };
 
-export const ButtonSizes = enumeratedLiterals(
+export const ButtonDiscreteSizes = enumeratedLiterals(
   ["xsmall", "small", "medium", "large", "xlarge"] as const,
   {},
 );
-export type ButtonSize = EnumeratedLiteralsType<typeof ButtonSizes>;
+export type ButtonDiscreteSize = EnumeratedLiteralsType<typeof ButtonDiscreteSizes>;
 
-export const ButtonIconSizes = enumeratedLiterals(
+export type IconButtonSize = ButtonDiscreteSize | Size;
+
+export type ButtonSize<T extends ButtonType> = {
+  button: ButtonDiscreteSize;
+  "icon-button": IconButtonSize;
+  link: never;
+}[T];
+
+export const ButtonDiscreteIconSizes = enumeratedLiterals(
   ["xsmall", "small", "medium", "large", "xlarge", "full"] as const,
   {},
 );
-export type ButtonIconSize = EnumeratedLiteralsType<typeof ButtonIconSizes>;
+export type ButtonDiscreteIconSize = EnumeratedLiteralsType<typeof ButtonDiscreteIconSizes>;
+
+export type ButtonIconSize = ButtonDiscreteIconSize | Size;
 
 export const ButtonTypes = enumeratedLiterals(["button", "icon-button", "link"] as const, {});
 export type ButtonType = EnumeratedLiteralsType<typeof ButtonTypes>;
@@ -66,7 +76,11 @@ type P = Pick<BaseTypographyProps, "fontFamily" | "fontWeight" | "transform">;
 type ButtonTypographyProps<T extends ButtonType> = {
   [key in keyof P]?: IfButton<P[key], T, IfLink<P[key], T, never>>;
 } & {
-  readonly fontSize?: IfButton<ButtonSize, T, IfLink<BaseTypographyProps["size"], T, never>>;
+  readonly fontSize?: IfButton<
+    ButtonSize<"button">,
+    T,
+    IfLink<BaseTypographyProps["size"], T, never>
+  >;
 };
 
 export type AbstractProps<
@@ -92,7 +106,7 @@ export type AbstractProps<
     readonly isDisabled?: boolean;
     readonly isActive?: boolean;
     readonly options?: O;
-    readonly size?: ButtonSize;
+    readonly size?: ButtonSize<T>;
     readonly disabledClassName?: ComponentProps["className"];
     readonly lockedClassName?: ComponentProps["className"];
     readonly loadingClassName?: ComponentProps["className"];

@@ -36,13 +36,13 @@ export const SkillsAdminTable = ({
       {
         accessor: "label",
         title: "Label",
-        width: 220,
+        width: 320,
         render: ({ model, table }) => <LabelCell skill={model} table={table} />,
       },
       {
         accessor: "slug",
         title: "Slug",
-        width: 220,
+        width: 320,
         render: ({ model, table }) => <SlugCell skill={model} table={table} />,
       },
       {

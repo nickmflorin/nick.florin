@@ -32,12 +32,10 @@
 
   > .input__content {
     flex-grow: 100;
+    display: flex;
+    flex-direction: row;
     align-items: center;
     height: 100%;
-  }
-
-  .icon {
-    color: theme("colors.gray.500");
   }
 }
 

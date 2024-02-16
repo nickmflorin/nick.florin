@@ -9,7 +9,7 @@ import { SkillQuerySchema } from "~/app/api/types";
 import { useSkills, useQueryParams } from "~/hooks";
 import { generateChartColors } from "~/lib/charts";
 import { parseQueryParams } from "~/lib/urls";
-import { FloatingContent } from "~/components/floating/FloatingContent";
+import { TooltipContent } from "~/components/floating/TooltipContent";
 import { Form } from "~/components/forms/Form";
 import { Circle } from "~/components/icons/svgs";
 import { type ComponentProps } from "~/components/types";
@@ -29,7 +29,7 @@ const SkillsBarChartTooltip = (props: {
   color: string;
   data: { experience: number; skill: string };
 }) => (
-  <FloatingContent variant="secondary" className="flex flex-row gap-[4px] items-center">
+  <TooltipContent variant="secondary" className="flex flex-row gap-[4px] items-center">
     <div className="flex flex-row gap-[2px] items-center">
       <Circle color={props.color} size={12} />
       <Label size="xs" className="leading-[14px]">
@@ -41,7 +41,7 @@ const SkillsBarChartTooltip = (props: {
       fontWeight="bold"
       className="leading-[14px]"
     >{`${props.data.experience} years`}</Text>
-  </FloatingContent>
+  </TooltipContent>
 );
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {

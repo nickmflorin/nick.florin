@@ -64,6 +64,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>(
       )}
     >
       <Actions
+        gap={4}
         actions={mergeActions(actions, {
           right: [<Spinner key="0" isLoading={isLoading} size="14px" className="text-gray-500" />],
         })}

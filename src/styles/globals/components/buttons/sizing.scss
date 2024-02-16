@@ -71,9 +71,9 @@ $button-icon-sizes: (
   ),
 );
 
-@function get-button-icon-size($type, $size: null) {
+@function get-button-icon-size($type, $size) {
   $type: partials.validate-value($type, ("button", "icon-button"));
-  $size: partials.validate-value(if($size, $size, $button-default-size), $button-icon-size-names);
+  $size: partials.validate-value($size, $button-icon-size-names);
   @return partials.mapget($button-icon-sizes, $type, $size);
 }
 
@@ -81,39 +81,39 @@ $button-icon-sizes: (
   $type: partials.validate-value($type, ("button", "icon-button"));
   .icon {
     height: get-button-icon-size($type, $size: $size);
-    aspect-ratio: 1;
-    width: auto;
   }
 }
 
 @mixin button-size($type, $size) {
   $type: partials.validate-value($type, ("icon-button", "button"));
   $height: get-button-size($type, $size: $size);
-  $padding: get-button-padding($type, $size: $size);
 
   height: $height;
+  padding: get-button-padding($type, $size: $size);
   min-height: $height;
-  padding: $padding;
 
   @include button-icon-size($type, $size);
 
   @if $type == "icon-button" {
     width: $height;
-    aspect-ratio: 1;
   }
 }
 
 @mixin button-sizes($type) {
   $type: partials.validate-value($type, ("icon-button", "button"));
 
-  $type: partials.validate-value($type, $button-types);
-
+  // The button may or may not have a size class name, depending on whether or not the size prop
+  // was provided to the component as a discrete size (e.g. "small", "medium") or a constant size
+  // string (e.g. 32px).
   @each $size in $button-size-names {
     &.button--size-#{$size} {
       @include button-size($type, $size);
       // Allow the icon size in the button to be controlled independently of the button's primary
       // size if the class name is present.
       @each $size in $button-icon-size-names {
+        // The button may or may not have an icon size class name, depending on whether or not the
+        // icon size prop was provided to the component as a discrete size (e.g. "small", "medium"),
+        // a constant size string (e.g. 32px), or not at all.
         &.button--icon-size-#{$size} {
           @include button-icon-size($type, $size);
         }

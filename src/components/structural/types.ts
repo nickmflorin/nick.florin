@@ -1,6 +1,6 @@
 import { type IconProp } from "~/components/icons";
 
-export type Action = IconProp | JSX.Element;
+export type Action = IconProp | JSX.Element | null | undefined;
 
 export type ActionsBySide =
   | { left?: Action[]; right: Action[] }

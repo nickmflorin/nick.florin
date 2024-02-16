@@ -5,9 +5,24 @@ import clsx from "clsx";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 
-import type * as types from "../types";
-
+import { sizeToString } from "~/components/types";
 import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
+
+import * as types from "../types";
+
+const buttonSizeClassName = <T extends types.ButtonType, O extends types.ButtonOptions>({
+  size = "small",
+  buttonType,
+}: Pick<types.AbstractProps<T, O>, "size" | "buttonType">): string | null => {
+  if (buttonType === "icon-button") {
+    return types.ButtonDiscreteSizes.contains(size) ? `button--size-${size}` : null;
+  } else if (buttonType === "link") {
+    return null;
+  } else if (!types.ButtonDiscreteSizes.contains(size)) {
+    throw new Error("");
+  }
+  return `button--size-${size}`;
+};
 
 const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOptions>(
   props: Pick<
@@ -35,9 +50,13 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
     "button",
     `button--variant-${props.variant ?? "primary"}`,
     `button--type-${props.buttonType}`,
-    props.buttonType !== "link" ? `button--size-${props.size ?? "small"}` : null,
+    // The size may be provided as a size string (e.g. 32px).
+    buttonSizeClassName(props),
     props.buttonType === "button" && props.fontSize ? `font-size-${props.fontSize}` : null,
-    props.iconSize && `button--icon-size-${props.iconSize}`,
+    // The icon size may be provided as a size string (e.g. 32px).
+    props.iconSize && types.ButtonDiscreteIconSizes.contains(props.iconSize)
+      ? `button--icon-size-${props.iconSize}`
+      : "",
     {
       [clsx("button--locked", props.lockedClassName)]: props.isLocked,
       [clsx("button--loading", props.loadingClassName)]: props.isLoading,
@@ -55,6 +74,16 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
       : "",
     props.className,
   );
+
+const getButtonStyle = <T extends types.ButtonType, O extends types.ButtonOptions>(
+  props: Pick<types.AbstractProps<T, O>, "size" | "style">,
+) =>
+  /* Note: A potentially non-discrete icon size string provided as a prop must be handled by each
+     individual button component that extends the AbstractButton.  This is because the icon size
+     must be provided directly to the Icon component being rendered. */
+  !types.ButtonDiscreteIconSizes.contains(props.size) && props.size !== undefined
+    ? { ...props.style, height: sizeToString(props.size) }
+    : props.style;
 
 const INTERNAL_BUTTON_PROPS = [
   "options",
@@ -94,10 +123,16 @@ export const AbstractButton = forwardRef(
     ref: types.PolymorphicButtonRef<O>,
   ): JSX.Element => {
     const className = getButtonClassName(props);
+    const style = getButtonStyle(props);
     if (props.options?.as === "a") {
       const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "a" }>);
       return (
-        <a {...ps} className={className} ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}>
+        <a
+          {...ps}
+          className={className}
+          style={style}
+          ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}
+        >
           <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
         </a>
       );
@@ -107,6 +142,7 @@ export const AbstractButton = forwardRef(
         <NextLink
           {...ps}
           className={className}
+          style={style}
           ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}
         >
           <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
@@ -119,6 +155,7 @@ export const AbstractButton = forwardRef(
         {...ps}
         className={className}
         disabled={props.isDisabled}
+        style={style}
         ref={ref as types.PolymorphicButtonRef<{ as: "button" }>}
       >
         <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>

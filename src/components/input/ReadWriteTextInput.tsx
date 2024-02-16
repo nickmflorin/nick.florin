@@ -14,9 +14,12 @@ import clsx from "clsx";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 
+import { useReferentialCallback } from "~/hooks";
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 
+import { SaveAction, CancelAction } from "./actions";
 import { type InputProps, Input, NativeInput, type NativeInputProps } from "./generic";
 
 export const ReadWriteTextInputStates = enumeratedLiterals(["reading", "writing"] as const, {});
@@ -37,6 +40,8 @@ export interface ReadWriteTextInputProps
   readonly initialValue?: string;
   readonly initialState?: ReadWriteTextInputState;
   readonly state?: ReadWriteTextInputState;
+  readonly withCancelButton?: boolean;
+  readonly withPersistButton?: boolean;
   readonly persistOnEnter?: boolean;
   readonly cancelOnEscape?: boolean;
   readonly readingClassName?: ComponentProps["className"];
@@ -71,12 +76,15 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
       initialState = ReadWriteTextInputStates.READING,
       isDisabled = false,
       initialValue,
-      isLoading = false,
+      isLoading: _propIsLoading = false,
       state: _propState,
       persistOnEnter = true,
       cancelOnEscape = true,
       readingClassName = "outline-transparent",
       writingClassName = "",
+      withCancelButton = true,
+      withPersistButton = true,
+      actions: _actions,
       onPersist,
       onCancel,
       ...props
@@ -85,7 +93,9 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
   ): JSX.Element {
     const [_state, _setState] = useState<ReadWriteTextInputState>(initialState);
     const state = _propState === undefined ? _state : _propState;
+
     const [_loading, setLoading] = useState(false);
+    const isLoading = _propIsLoading || _loading;
 
     /* Keep track of the Cancel/Save button IDs so that the component can detect if blur events on
        the TextInput element come from the button clicks. */
@@ -94,6 +104,16 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
 
     const internalRef = useRef<HTMLInputElement | null>(null);
     const lastPersisted = useRef<string | null>(initialValue || null);
+
+    const [changeExists, _setChangeExists] = useState(false);
+
+    const setChangeExists = useCallback(() => {
+      if (internalRef.current?.value !== lastPersisted.current) {
+        _setChangeExists(true);
+      } else {
+        _setChangeExists(false);
+      }
+    }, []);
 
     useEffect(() => {
       if (initialValue !== undefined && internalRef.current) {
@@ -121,9 +141,10 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
         } else {
           internalRef.current.value = initialValue || "";
         }
+        setChangeExists();
         onCancel?.(internalRef.current.value);
       }
-    }, [initialValue, onCancel]);
+    }, [initialValue, setChangeExists, onCancel]);
 
     const setValue = useCallback(
       (v: string, options?: { state?: ReadWriteTextInputState }) => {
@@ -132,9 +153,10 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
           if (options?.state !== undefined) {
             setState(options.state);
           }
+          setChangeExists();
         }
       },
-      [setState],
+      [setState, setChangeExists],
     );
 
     const refObj = useMemo(
@@ -146,17 +168,19 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
         clear: () => {
           if (internalRef.current) {
             internalRef.current.value = "";
+            setChangeExists();
           }
         },
       }),
-      [setState, setValue, cancel],
+      [setState, setValue, cancel, setChangeExists],
     );
 
-    const persist = useCallback(async () => {
+    const persist = useReferentialCallback(async () => {
       const _persist = (instance: HTMLInputElement) => {
         // Blurring will cause the state to be set to "reading" via 'onBlur'.
         instance.blur();
         lastPersisted.current = instance.value;
+        setChangeExists();
       };
       if (internalRef.current && internalRef.current.value !== lastPersisted.current) {
         if (typeof onPersist === "function") {
@@ -170,14 +194,53 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
       } else if (internalRef.current) {
         internalRef.current.blur();
       }
-    }, [onPersist, refObj]);
+    });
 
     useImperativeHandle(ref, () => refObj);
+
+    const actions = useMemo(() => {
+      if (withCancelButton || withPersistButton) {
+        return mergeActions(_actions, {
+          right: [
+            withPersistButton ? (
+              <SaveAction
+                key="save"
+                id={saveId}
+                onClick={() => persist()}
+                isDisabled={!changeExists}
+                isVisible={state === ReadWriteTextInputStates.WRITING}
+              />
+            ) : null,
+            withCancelButton ? (
+              <CancelAction
+                id={cancelId}
+                key="cancel"
+                onClick={() => cancel()}
+                isDisabled={!changeExists}
+                isVisible={state === ReadWriteTextInputStates.WRITING}
+              />
+            ) : null,
+          ],
+        });
+      }
+      return _actions;
+    }, [
+      _actions,
+      withCancelButton,
+      withPersistButton,
+      changeExists,
+      state,
+      cancelId,
+      saveId,
+      persist,
+      cancel,
+    ]);
 
     return (
       <Input
         {...pick(props, INPUT_PROPS)}
-        isLoading={isLoading || _loading}
+        isLoading={isLoading}
+        actions={actions}
         className={clsx(
           "text-input",
           {
@@ -211,6 +274,10 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
           {...omit(props, INPUT_PROPS)}
           isDisabled={isDisabled}
           ref={internalRef}
+          onChange={e => {
+            setChangeExists();
+            props.onChange?.(e);
+          }}
           onKeyDown={e => {
             if (internalRef.current) {
               if (
