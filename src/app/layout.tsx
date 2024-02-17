@@ -14,14 +14,6 @@ import { FontAwesomeScript } from "./scripts/font-awesome-script";
 
 const Toast = dynamic(() => import("~/components/notifications/Toast"));
 
-/* Note: The reason we dynamically import the layout is because it accesses server side data to
-   fetch the profile - which is only needed for the social buttons in the header.  We may want to
-   instead fetch the profile data in the Header component itself, and only dynamically load the
-   part of the Header component that shows the social buttons. */
-/* const Layout = dynamic(() => import("~/components/layout/Layout"), {
-     loading: () => <ScreenLoading />,
-   }); */
-
 const InterFont = Inter({
   weight: ["400", "500", "600", "700"],
   style: ["normal"],
