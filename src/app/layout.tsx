@@ -12,7 +12,7 @@ import { env } from "~/env.mjs";
 
 import { FontAwesomeScript } from "./scripts/font-awesome-script";
 
-const Toast = dynamic(() => import("~/components/notifications/Toast").then(mod => mod.Toast));
+const Toast = dynamic(() => import("~/components/notifications/Toast"));
 
 /* Note: The reason we dynamically import the layout is because it accesses server side data to
    fetch the profile - which is only needed for the social buttons in the header.  We may want to
