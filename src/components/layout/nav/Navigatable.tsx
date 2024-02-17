@@ -1,5 +1,5 @@
 import { type Url } from "next/dist/shared/lib/router/router";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useMemo, type ReactNode } from "react";
 
 import { type NavItem, navItemIsActive } from "./types";
@@ -14,21 +14,12 @@ export const Navigatable = <N extends Pick<NavItem, "active" | "path">>({
   children,
 }: NavigatableProps<N>) => {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const isActive = useMemo(() => navItemIsActive(item, { pathname }), [pathname, item]);
   return (
     <>
       {children({
         isActive,
-        href:
-          typeof item.path === "string"
-            ? {
-                pathname: item.path,
-              }
-            : {
-                pathname: item.path.pathname,
-                query: searchParams.toString(),
-              },
+        href: item.path,
       })}
     </>
   );

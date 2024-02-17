@@ -5,7 +5,7 @@ import { type IconProp } from "~/components/icons";
 
 export interface NavItem {
   readonly icon?: IconProp;
-  readonly path: Path | { pathname: Path; maintainQuery: true };
+  readonly path: Path;
   readonly active: PathActive;
 }
 
