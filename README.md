@@ -15,6 +15,7 @@ same.
 - [homebrew]: A MacOSX package manager.
 - [postgresql] (a [homebrew] package)
 - [pnpm]: A [node] package manager.
+- VERCEL CLI
 
 ## 1. Getting Started
 
@@ -164,9 +165,20 @@ $ v20.x.x
 At this point, if [nvm] is not pointing at the correct version of [node] or is pointing at a system
 installation of [node], something went awry - consult a team member before proceeding.
 
-### 1.2.a.iii: Homebrew
+### 1.2.b: Homebrew
 
 If on MacOSX, you will need to install [homebrew], which is a MacOSX package manager.
+
+### 1.2.c: pnpm
+
+### 1.2.d: Vercel CLI
+
+pnpm i -g vercel
+
+Error: Cannot find module 'stream/web' This means that you need to activate the correct node
+version, 20.0.0 (via nvm use)
+
+vercel login
 
 ### 1.3: Environment
 

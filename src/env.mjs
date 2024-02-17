@@ -92,17 +92,6 @@ const DEFAULT_PRETTY_LOGGING = {
   local: true,
 };
 
-/**
- * @type {Record<EnvName, boolean>}
- */
-const DEFAULT_BUNDLE_ANALYZE = {
-  development: false,
-  production: false,
-  preview: false,
-  test: false,
-  local: false,
-};
-
 const STRICT_OMISSION = z.literal("").optional();
 
 const testRestricted = schema => {
@@ -130,7 +119,7 @@ export const env = createEnv({
     APP_NAME_FORMAL: z.string(),
     NODE_ENV: z.enum(["development", "test", "production"]),
     PRETTY_LOGGING: StringBooleanFlagSchema.default(environmentLookup(DEFAULT_PRETTY_LOGGING)),
-    ANALYZE_BUNDLE: StringBooleanFlagSchema.default(environmentLookup(DEFAULT_BUNDLE_ANALYZE)),
+    ANALYZE_BUNDLE: StringBooleanFlagSchema.default(false),
     CLERK_SECRET_KEY: environmentLookup({
       test: STRICT_OMISSION,
       development: z.string().startsWith("sk_test"),

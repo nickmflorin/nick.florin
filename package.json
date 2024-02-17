@@ -27,10 +27,12 @@
     "create-migrations": "pnpm manual-dev-env-setup -- prisma migrate dev --create-only",
     "migrate-dev": "pnpm manual-dev-env-setup -- cross-env NODE_ENV=development prisma migrate dev",
     "migrate-reset": "pnpm manual-dev-env-setup -- prisma migrate reset",
+    "migrate-reset-prod": "pnpm manual-prod-env-setup -- prisma migrate reset",
     "pushdb": "prisma db push",
     "generate-client": "prisma generate",
     "seeddb": "pnpm manual-dev-env-setup -- prisma db seed",
-    "jsonify-fixtures": "pnpm manual-dev-env-setup -- cross-env NODE_ENV=development npx tsx --tsconfig ./tsconfig.json src/prisma/jsonify.ts"
+    "jsonify-fixtures": "pnpm manual-dev-env-setup -- cross-env NODE_ENV=development npx tsx --tsconfig ./tsconfig.json src/prisma/jsonify.ts",
+    "pullenv": "vercel env pull ./.env --environment=development"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.7",
