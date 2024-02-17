@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider } from "./ClerkProvider";
 
 const ClientConfig = dynamic(() => import("./ClientConfig"), { ssr: false });
 

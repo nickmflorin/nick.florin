@@ -18,19 +18,13 @@ import { ChartContainer } from "../ChartContainer";
 import { Legend } from "../Legend";
 
 import { SkillsBarChartForm } from "./SkillsBarChartForm";
+import { SkillsBarChartTooltip } from "./SkillsBarChartTooltip";
 import { SkillBarChartFormSchema } from "./types";
 
 const BarChart = dynamic(() => import("../BarChart"), {
   ssr: false,
   loading: () => <Loading loading={true} />,
 }) as types.BarChart;
-
-const Tooltip = dynamic(
-  () => import("./SkillsBarChartTooltip").then(mod => mod.SkillsBarChartTooltip),
-  {
-    loading: () => <Loading loading={true} />,
-  },
-);
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
   const [skillsQuery, setSkillsQuery] = useState<z.infer<typeof SkillBarChartFormSchema>>({
@@ -102,7 +96,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
             legendOffset: -40,
             truncateTickAt: 0,
           }}
-          tooltip={props => <Tooltip {...props} />}
+          tooltip={props => <SkillsBarChartTooltip {...props} />}
         />
         <Legend items={legendItems} className="px-[20px]" />
       </ChartContainer>
