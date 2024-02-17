@@ -123,3 +123,5 @@ export const TimelineTile = ({
     </div>
   </div>
 );
+
+export default TimelineTile;

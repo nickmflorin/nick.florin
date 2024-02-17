@@ -1,7 +1,9 @@
+import dynamic from "next/dynamic";
+
 import { type ComponentProps } from "~/components/types";
 import { type ApiExperience } from "~/prisma/model";
 
-import { TimelineTile } from "../TimelineTile";
+const TimelineTile = dynamic(() => import("../TimelineTile"));
 
 export interface ExperienceTileProps extends ComponentProps {
   readonly experience: ApiExperience;

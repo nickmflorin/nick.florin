@@ -1,19 +1,11 @@
-import dynamic from "next/dynamic";
-
 import { DetailEntityType } from "@prisma/client";
 
 import { type ComponentProps } from "~/components/types";
 import { prisma } from "~/prisma/client";
 
-const EducationTile = dynamic(() => import("./EducationTile"), {
-  ssr: false,
-  loading: () => <div>Loading...</div>,
-});
+import { CommitTimeline } from "../CommitTimeline";
 
-const CommitTimeline = dynamic(async () => await import("../CommitTimeline"), {
-  ssr: false,
-  loading: () => <div>Loading...</div>,
-});
+import { EducationTile } from "./EducationTile";
 
 export type EducationTimelineProps = ComponentProps;
 
