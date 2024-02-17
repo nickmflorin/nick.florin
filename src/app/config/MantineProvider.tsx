@@ -1,6 +1,4 @@
 /* eslint-disable import/order */
-"use client";
-
 import { MantineProvider as RootMantineProvider } from "@mantine/core";
 
 /*
@@ -28,6 +26,8 @@ import "@mantine/core/styles.layer.css";
 import "mantine-datatable/styles.layer.css";
 import "~/styles/globals/index.scss"; // Import this last.
 
-export const MantineProvider = ({ children }: { children: React.ReactNode }) => (
-  <RootMantineProvider>{children}</RootMantineProvider>
-);
+function MantineProvider({ children }: { children: React.ReactNode }) {
+  return <RootMantineProvider>{children}</RootMantineProvider>;
+}
+
+export default MantineProvider;

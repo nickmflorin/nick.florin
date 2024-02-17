@@ -1,17 +1,21 @@
 "use client";
+import dynamic from "next/dynamic";
 import React, { type ReactNode } from "react";
 
-import { MantineProvider } from "./MantineProvider";
 import { SWRConfig } from "./SWRConfig";
+
+const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });
 
 export interface ClientConfigProps {
   readonly children: ReactNode;
 }
 
-export const ClientConfig = (props: ClientConfigProps) => (
-  <SWRConfig>
-    <MantineProvider>{props.children}</MantineProvider>
-  </SWRConfig>
-);
+function ClientConfig(props: ClientConfigProps) {
+  return (
+    <SWRConfig>
+      <MantineProvider>{props.children}</MantineProvider>
+    </SWRConfig>
+  );
+}
 
 export default ClientConfig;
