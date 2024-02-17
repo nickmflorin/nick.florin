@@ -61,7 +61,9 @@ const config = {
 };
 
 const bundled = (phase, { defaultConfig }) =>
-  withBundleAnalyzer({ enabled: env.ANALYZE_BUNDLE && phase === "phase-production-build" })({
+  withBundleAnalyzer({
+    enabled: env.ANALYZE_BUNDLE === true && phase === "phase-production-build",
+  })({
     ...defaultConfig,
     ...config,
   });
