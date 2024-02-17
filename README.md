@@ -15,7 +15,7 @@ same.
 - [homebrew]: A MacOSX package manager.
 - [postgresql] (a [homebrew] package)
 - [pnpm]: A [node] package manager.
-- VERCEL CLI
+- [Vercel CLI][vercel-cli]: [Vercel][vercel]'s command line utility.
 
 ## 1. Getting Started
 
@@ -171,47 +171,6 @@ If on MacOSX, you will need to install [homebrew], which is a MacOSX package man
 
 ### 1.2.c: pnpm
 
-### 1.2.d: Vercel CLI
-
-pnpm i -g vercel
-
-Error: Cannot find module 'stream/web' This means that you need to activate the correct node
-version, 20.0.0 (via nvm use)
-
-vercel login
-
-### 1.3: Environment
-
-#### 1.3.a ENV File
-
-When running the application locally, there will likely be additional keys that you need to add to
-your environment without committing them to source control. There are two files that are used to
-define environment variables that the application relies on locally, without committing them to
-source control:
-
-1. `.env.local`
-2. `.env.development.local`
-
-Both of these files will not be in the cloned repository by default (because they are not committed
-to source control) and will likely need to be created. The `.env.local` file takes precedence over
-the `.env.development.local` file, but both take precedence over all other `.env.*` files (when the
-`NODE_ENV` is `"development"`).
-
-**Note:** _Sensitive keys, tokens or keys related to access control should **only** ever be added to
-`.env.local` or `.env.development.local`. Other environment files (`.env`, `.env.development`, .etc)
-are committed to source control, and should **never** contain sensitive information._
-
-For this step, it is best to reach out to a team member for the additional keys that you will need
-in your `.env.development.local` or `.env.local` file.
-
-For more information regarding the environment variables, refer to section 2.5.
-
-#### 1.3.b: Dependencies
-
-When setting up the environment for the first time, you must do a fresh install of the dependencies.
-
-##### 1.3.b.i PNPM
-
 This application uses [`pnpm`][pnpm] to manage dependencies. Before installing the project's
 dependencies, [pnpm] must be downloaded and setup on your machine. To download [`pnpm`][pnpm],
 simply execute the following `curl` command:
@@ -264,7 +223,94 @@ or
 $ corepack prepare pnpm@latest --activate
 ```
 
-##### 1.3.b.ii Font Awesome
+### 1.2.d: Vercel CLI
+
+Once [`pnpm`][pnpm] is installed, [Vercel]'s [CLI][vercel-cli] needs to be installed. This
+application uses [Vercel]'s [CLI][vercel-cli] to manage environment variables in both production and
+development environments, particularly environment variables that represent sensitive information.
+
+To install [Vercel]'s [CLI][vercel-cli], simply use [`pnpm`][pnpm] to install the package globally:
+
+```bash
+$ pnpm i -g vercel
+```
+
+If you notice an error similar to the following:
+
+```
+Error: Cannot find module 'stream/web'
+```
+
+It means that you are not using the correct version of [node] (v20.x.x). Simply execute `nvm use` to
+ensure your [node] version is correct, and then try to run the installation command again.
+
+Once the [CLI][vercel-cli] is installed, you must login with your [Vercel][vercel] credentials:
+
+```bash
+$ vercel login
+```
+
+### 1.3: Environment
+
+This section discusses how to properly setup environment variables and dependencies in the
+application.
+
+#### 1.3.a ENV File
+
+When running the application locally, there will likely be additional, sensitive keys that needed to
+be added to the environment via environment variables. These keys **cannot** be committed to source
+control, and precaution must be taken to avoid doing so.
+
+The files that this application uses to define environment variables that represent sensitive
+information are as follows:
+
+1. `.env.local`
+2. `.env.development.local`
+3. `.env`
+
+Each of these files are ignored by the `.gitignore` file and will not be committed to source
+control. The `.env` file will be loaded first, followed by the `.env.development.local` file and
+then finally, the `.env.local` file (in a "development" environment). The `.env.local` and
+`.env.development.local` files can be created on an individual developer basis, for purposes of
+overridding certain configurations when developing. On the other hand, the `.env` file is used for
+storing sensitive information directly from [Vercel][vercel]'s infrastructure.
+
+**Note:** _Sensitive keys, tokens or keys related to access control should **only** ever be added to
+`.env.local`, `.env.development.local` or `.env`. Other environment files (`.env.development`,
+`.env.production`, .etc) are committed to source control, and should **never** contain sensitive
+information._
+
+_For more information regarding environment variables in [NextJS][nextjs], and the order in which
+they are loaded (and overridden) please refer to Section 2.5._
+
+To populate your local environment with the required environment variables necessary to run the
+application locally, simply execute the following command:
+
+```bash
+pnpm pullenv
+```
+
+This command will pull the sensitive environment variables for the development environment from
+[Vercel][vercel]. The environment variables will be placed inside of the `.env` file, which is the
+first set of environment variables loaded by [NextJS][nextjs]. This means that any values for those
+environment variables that are defined in any other environment file (`.env.local`,
+`.env.development`, etc.) will override those defined in the `.env` file.
+
+**Note:** Currently, we are using the free version of Vercel, which only supports one production
+database at a time, and does not allow us to define database parameters for just the development
+environment. This means that the `pullenv` command will populate the `.env` file with database
+environment variables pertaining to the production database. However, these are overridden with
+local, non-production values in the `.env.development` file - preventing incidental or dangerous
+changes from occurring with the production database when developing locally. _For more information
+related to this topic, see Section 1.4.a._
+
+For more information regarding the environment variables, refer to Section 2.5.
+
+#### 1.3.b: Dependencies
+
+When setting up the environment for the first time, you must do a fresh install of the dependencies.
+
+##### 1.3.b.i Font Awesome
 
 Before installing the dependencies, you will need to be given an environment variable,
 `FONT_AWESOME_AUTH_TOKEN`, that is required to install certain dependencies. Currently, this
@@ -320,13 +366,11 @@ $ brew services start postgresql
 #### 1.4.a Database Environment Variables
 
 The database connection parameters for the application are defined in the relevant `.env.*` files.
-In local development, they will be defaulted in the `.env.development` file, but can be overridden
-in your `.env.local` or `.env.development.local` files if desired.
 
-The database connection parameters are used directly by the application's ORM, [Prisma][prisma], to
-establish a connection to the application database and allow the application to run. The following
-parameters must be in the environment for [Prisma][prisma] to properly connect to the database, both
-in local development and in production:
+The database connection parameters defined in the environment are used directly by the application's
+ORM, [Prisma][prisma], to establish a connection to the application database and allow the
+application to run. The following parameters must be in the environment for [Prisma][prisma] to
+properly connect to the database, both in local development and in production:
 
 ```bash
 POSTGRES_URL="postgresql://..."
@@ -338,14 +382,21 @@ POSTGRES_PASSWORD="..."
 POSTGRES_DATABASE="..."
 ```
 
+While the `pullenv` command will populate the `.env` file environment variables used to connect to
+the production database, they will always be overridden by the `.env.development` file - which is
+committed to source control.
+
+If the database environment variables defined in the `.env.development` file need to be changed
+during local development, overrides should be defined in the `.env.development.local` file or the
+`.env.local` file.
+
 #### 1.4.b Setting Up Application Database
 
 The above database connection parameters defined in the `.env.development` file (or overridden in
 your `.env.local` or `.env.development.local` file) will be needed to create and setup the
-application database from the [psql] shell. Since the database defined by `DATABASE_NAME` or the
-`DATABASE_URL` may not exit yet, we will likely need to create it via the [psql] command line. To do
-this, connect to the default database name `"postgres"`, that comes with the [homebrew] installation
-of [postgres]:
+application database from the [psql] shell. Since the database itself may not exit yet, we will
+likely need to create it via the [psql] command line. To do this, connect to the default database
+name `"postgres"`, that comes with the [homebrew] installation of [postgres]:
 
 ```bash
 $ psql -d postgres
@@ -808,3 +859,4 @@ $ git push origin master
 [pnpm]: https://pnpm.io/installation
 [corepack]: https://nodejs.org/api/corepack.html
 [vercel]: https://vercel.com/
+[vercel-cli]: https://vercel.com/docs/cli

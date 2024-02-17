@@ -149,14 +149,6 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_WELCOME_TOAST: StringBooleanFlagSchema.optional(),
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NODE_ENV === "test" ? z.literal("") : z.string(),
-    /* : z.string().startsWith(
-               environmentLookup({
-                 development: "pk_test",
-                 production: "pk_live",
-                 preview: "pk_test",
-                 local: "pk_test",
-               }),
-             ), */
     NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
     NEXT_PUBLIC_LOG_LEVEL: z
