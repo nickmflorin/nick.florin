@@ -45,7 +45,7 @@ export default authMiddleware({
     }
     return NextResponse.next();
   },
-  publicRoutes: ["/", "/resume/experience", "/resume/education", "/api/skills", "/projects"],
+  publicRoutes: ["/", "/resume(.*)", "/projects(.*)", "/api/skills"],
 });
 
 export const config = {
