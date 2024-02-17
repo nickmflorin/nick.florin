@@ -7,9 +7,7 @@ import { prisma } from "~/prisma/client";
 import { Header } from "./Header";
 import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
 
-const ToastContainer = dynamic(() =>
-  import("~/app/config/ToastContainer").then(mod => mod.ToastContainer),
-);
+const ToastContainer = dynamic(() => import("~/app/config/ToastContainer"));
 
 export interface LayoutProps {
   readonly children: ReactNode;
