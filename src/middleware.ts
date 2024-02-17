@@ -25,17 +25,17 @@ const DynamicRedirects: DynamicRedirect[] = [
 ];
 
 export default authMiddleware({
-  beforeAuth: req => {
-    const pathname = req.nextUrl.pathname;
-    for (const { pathRegex, redirectUrl } of DynamicRedirects) {
-      const execResult = pathRegex.exec(pathname);
-      const redirect = redirectUrl(execResult);
-      if (redirect !== DO_NOT_REDIRECT) {
-        return NextResponse.redirect(new URL(redirect, req.nextUrl));
-      }
-    }
-    return NextResponse.next();
-  },
+  /* beforeAuth: req => {
+       const pathname = req.nextUrl.pathname;
+       for (const { pathRegex, redirectUrl } of DynamicRedirects) {
+         const execResult = pathRegex.exec(pathname);
+         const redirect = redirectUrl(execResult);
+         if (redirect !== DO_NOT_REDIRECT) {
+           return NextResponse.redirect(new URL(redirect, req.nextUrl));
+         }
+       }
+       return NextResponse.next();
+     }, */
   publicRoutes: [
     "/",
     "/resume",
