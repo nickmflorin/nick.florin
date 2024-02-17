@@ -1,9 +1,8 @@
-import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
 import { ClerkProvider } from "@clerk/nextjs";
 
-const ClientConfig = dynamic(() => import("./ClientConfig"), { ssr: false });
+import { ClientConfig } from "./ClientConfig";
 
 export interface AppConfigProps {
   readonly children: ReactNode;
