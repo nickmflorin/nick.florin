@@ -1,4 +1,3 @@
-"use client";
 import Script from "next/script";
 
 export const FontAwesomeScript = ({ token }: { token: string }) => (
@@ -10,6 +9,6 @@ export const FontAwesomeScript = ({ token }: { token: string }) => (
        NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is
        not a child of this node */
     data-auto-replace-svg="nest"
-    strategy="afterInteractive"
+    strategy="lazyOnload"
   />
 );
