@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, type ForwardedRef } from "react";
 
 import { type ComponentProps } from "~/components/types";
 
@@ -50,3 +50,9 @@ export type MenuProps<M extends MenuModel, O extends MenuOptions<M>> = NullableP
   M,
   O
 >;
+
+export type MenuComponent = {
+  <M extends MenuModel, O extends MenuOptions<M>>(
+    props: MenuProps<M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
+  ): JSX.Element;
+};

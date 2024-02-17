@@ -6,12 +6,12 @@ import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/m
 
 import { type TableProps } from "../types";
 
-import { EducationsCell } from "./cells/EducationsCell";
-import { ExperienceCell } from "./cells/ExperienceCell";
-import { ExperiencesCell } from "./cells/ExperiencesCell";
-import { LabelCell } from "./cells/LabelCell";
-import { ShowInTopSkillsCell } from "./cells/ShowInTopSkillsCell";
-import { SlugCell } from "./cells/SlugCell";
+const EducationsCell = dynamic(() => import("./cells/EducationsCell"), { ssr: false });
+const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"), { ssr: false });
+const LabelCell = dynamic(() => import("./cells/LabelCell"), { ssr: false });
+const ShowInTopSkillsCell = dynamic(() => import("./cells/ShowInTopSkillsCell"), { ssr: false });
+const SlugCell = dynamic(() => import("./cells/SlugCell"), { ssr: false });
+const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"), { ssr: false });
 
 const Table = dynamic(() => import("../Table"), {
   loading: () => <Loading loading={true} />,

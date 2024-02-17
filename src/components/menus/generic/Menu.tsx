@@ -1,12 +1,5 @@
 "use client";
-import {
-  forwardRef,
-  type ForwardedRef,
-  type MutableRefObject,
-  useRef,
-  createRef,
-  type RefObject,
-} from "react";
+import { forwardRef, type ForwardedRef, useRef, createRef, type RefObject } from "react";
 
 import clsx from "clsx";
 import isEqual from "lodash.isequal";
@@ -117,8 +110,6 @@ export const Menu = forwardRef(
       </div>
     );
   },
-) as {
-  <M extends types.MenuModel, O extends types.MenuOptions<M>>(
-    props: types.MenuProps<M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
-  ): JSX.Element;
-};
+) as types.MenuComponent;
+
+export default Menu;

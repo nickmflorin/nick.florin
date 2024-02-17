@@ -1,12 +1,12 @@
-import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
+import EducationTimeline from "~/components/timelines/EducationTimeline";
 import { Loading } from "~/components/views/Loading";
 
-const EducationTimeline = dynamic(() => import("~/components/timelines/EducationTimeline"), {
-  ssr: false,
-  loading: () => <Loading loading={true} />,
-});
-
 export default function EducationPage() {
-  return <EducationTimeline />;
+  return (
+    <Suspense fallback={<Loading loading={true} />}>
+      <EducationTimeline />
+    </Suspense>
+  );
 }

@@ -13,6 +13,7 @@ import clsx from "clsx";
 import { type DataTableProps, type DataTableColumn } from "mantine-datatable";
 
 import { Spinner } from "~/components/icons/Spinner";
+import { Loading } from "~/components/views/Loading";
 
 import * as hooks from "./hooks";
 import {
@@ -23,13 +24,11 @@ import {
   mergeRowClassNames,
 } from "./types";
 
-const MantineDataTable = dynamic(() => import("mantine-datatable").then(i => i.DataTable)) as {
+const MantineDataTable = dynamic(() => import("mantine-datatable").then(i => i.DataTable), {
+  loading: () => <Loading loading={true} />,
+}) as {
   <T>(props: DataTableProps<T>): JSX.Element;
 };
-
-const Loading = dynamic(() => import("~/components/views/Loading").then(mod => mod.Loading), {
-  ssr: false,
-});
 
 type RowLoadingState<T extends TableModel> = {
   readonly id: T["id"];

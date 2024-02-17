@@ -1,11 +1,15 @@
+import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
-import { ToastContainer } from "~/app/config/ToastContainer";
 import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 
 import { Header } from "./Header";
 import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
+
+const ToastContainer = dynamic(() =>
+  import("~/app/config/ToastContainer").then(mod => mod.ToastContainer),
+);
 
 export interface LayoutProps {
   readonly children: ReactNode;

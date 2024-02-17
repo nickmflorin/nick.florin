@@ -5,43 +5,33 @@ import { useMemo, useEffect } from "react";
 import clsx from "clsx";
 import { type z } from "zod";
 
+import type * as types from "../types";
+
 import { SkillQuerySchema } from "~/app/api/types";
 import { useSkills, useQueryParams } from "~/hooks";
 import { generateChartColors } from "~/lib/charts";
 import { parseQueryParams } from "~/lib/urls";
-import { TooltipContent } from "~/components/floating/TooltipContent";
 import { Form } from "~/components/forms/Form";
-import { Circle } from "~/components/icons/svgs";
 import { type ComponentProps } from "~/components/types";
-import { Label } from "~/components/typography/Label";
-import { Text } from "~/components/typography/Text";
+import { Loading } from "~/components/views/Loading";
 
-import { BarChart } from "../BarChart";
+import { BarChartSkeleton } from "../BarChartSkeleton";
+import { ChartContainer } from "../ChartContainer";
 import { Legend } from "../Legend";
 
+import { SkillsBarChartForm } from "./SkillsBarChartForm";
 import { SkillBarChartFormSchema } from "./types";
 
-const SkillBarChartForm = dynamic(() => import("./SkillBarChartForm"), {
+const BarChart = dynamic(() => import("../BarChart"), {
   ssr: false,
-});
+  loading: () => <Loading loading={true} />,
+}) as types.BarChart;
 
-const SkillsBarChartTooltip = (props: {
-  color: string;
-  data: { experience: number; skill: string };
-}) => (
-  <TooltipContent variant="secondary" className="flex flex-row gap-[4px] items-center">
-    <div className="flex flex-row gap-[2px] items-center">
-      <Circle color={props.color} size={12} />
-      <Label size="xs" className="leading-[14px]">
-        {props.data.skill}
-      </Label>
-    </div>
-    <Text
-      size="xs"
-      fontWeight="bold"
-      className="leading-[14px]"
-    >{`${props.data.experience} years`}</Text>
-  </TooltipContent>
+const Tooltip = dynamic(
+  () => import("./SkillsBarChartTooltip").then(mod => mod.SkillsBarChartTooltip),
+  {
+    loading: () => <Loading loading={true} />,
+  },
 );
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
@@ -93,37 +83,42 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
 
   return (
     <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
-      <SkillBarChartForm className="px-[20px]" form={{ ...form, setValues }} />
-      <BarChart
+      <SkillsBarChartForm className="px-[20px]" form={{ ...form, setValues }} />
+      <ChartContainer
         error={error ? "There was an error rendering the chart." : null}
-        data={data ?? []}
         isLoading={isLoading}
         isInitialLoading={isInitialLoading}
-        skeletonProps={{
-          numBars: skillsQuery.showTopSkills === "all" ? 12 : skillsQuery.showTopSkills,
-        }}
-        indexBy="skill"
-        keys={["experience"]}
-        enableLabel={false}
-        borderColor={{
-          from: "color",
-          modifiers: [["darker", 1.6]],
-        }}
-        colors={colors}
-        colorBy="indexValue"
-        axisBottom={null}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: "# Years Experience",
-          legendPosition: "middle",
-          legendOffset: -40,
-          truncateTickAt: 0,
-        }}
-        tooltip={props => <SkillsBarChartTooltip {...props} />}
-      />
-      <Legend items={legendItems} className="px-[20px]" />
+        skeleton={
+          <BarChartSkeleton
+            numBars={skillsQuery.showTopSkills === "all" ? 12 : skillsQuery.showTopSkills}
+          />
+        }
+      >
+        <BarChart
+          data={data ?? []}
+          indexBy="skill"
+          keys={["experience"]}
+          enableLabel={false}
+          borderColor={{
+            from: "color",
+            modifiers: [["darker", 1.6]],
+          }}
+          colors={colors}
+          colorBy="indexValue"
+          axisBottom={null}
+          axisLeft={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: "# Years Experience",
+            legendPosition: "middle",
+            legendOffset: -40,
+            truncateTickAt: 0,
+          }}
+          tooltip={props => <Tooltip {...props} />}
+        />
+        <Legend items={legendItems} className="px-[20px]" />
+      </ChartContainer>
     </div>
   );
 };

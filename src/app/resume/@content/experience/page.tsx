@@ -1,12 +1,12 @@
-import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
+import { ExperienceTimeline } from "~/components/timelines/ExperienceTimeline";
 import { Loading } from "~/components/views/Loading";
 
-const ExperienceTimeline = dynamic(() => import("~/components/timelines/ExperienceTimeline"), {
-  ssr: false,
-  loading: () => <Loading loading={true} />,
-});
-
 export default function ExperiencePage() {
-  return <ExperienceTimeline />;
+  return (
+    <Suspense fallback={<Loading loading={true} />}>
+      <ExperienceTimeline />
+    </Suspense>
+  );
 }

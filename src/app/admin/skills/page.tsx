@@ -1,22 +1,18 @@
-import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
+import { TextInput } from "~/components/input/TextInput";
 import { Loading } from "~/components/views/Loading";
 
-const TextInput = dynamic(() => import("~/components/input/TextInput").then(mod => mod.TextInput), {
-  // ssr: false,
-});
-
-const SkillsTable = dynamic(async () => await import("./SkillsTable"), {
-  loading: () => <Loading loading={true} />,
-  // ssr: false,
-});
+import SkillsTable from "./SkillsTable";
 
 export default async function SkillsPage() {
   return (
     <>
       <TextInput className="mb-[18px]" />
       <div className="grow overflow-hidden w-full relative">
-        <SkillsTable />
+        <Suspense fallback={<Loading loading={true} />}>
+          <SkillsTable />
+        </Suspense>
       </div>
     </>
   );

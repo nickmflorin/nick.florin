@@ -1,4 +1,3 @@
-"use client";
 import { ToastContainer as RootToastContainer, Bounce } from "react-toastify";
 /* Note: We should move towards the minified version if/when we decide to do more of the toast
    styling ourselves.
@@ -21,3 +20,5 @@ export const ToastContainer = () => (
     transition={Bounce}
   />
 );
+
+export default ToastContainer;

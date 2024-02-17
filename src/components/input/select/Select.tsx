@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import {
   type ReactNode,
   useState,
@@ -24,12 +25,17 @@ import {
   type MenuModelValue,
   type MenuItemInstance,
   getModelLabel,
+  type MenuComponent,
 } from "~/components/menus";
-import { Menu } from "~/components/menus/generic/Menu";
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
+import { Loading } from "~/components/views/Loading";
 
 import { Input, type InputProps } from "../generic";
+
+const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
+  loading: () => <Loading loading={true} />,
+}) as MenuComponent;
 
 type SelectMenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
   Required<MenuProps<M, O>, "value">,
@@ -157,20 +163,17 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
           setOpen(isOpen);
           onOpenChange?.(evt, { isOpen, value, models, instance: selectInstance });
         }}
-        content={({ ref, params, styles }) => (
+        content={
           <Menu
             {...(props as MenuProps<M, O>)}
-            {...params}
             className={clsx("z-50", menuClassName)}
-            ref={ref}
-            style={styles}
             value={value}
             onChange={(v, item) => {
               setValue(v);
               props.onChange?.(v, { models, instance: selectInstance, item });
             }}
           />
-        )}
+        }
       >
         {children ||
           (({ ref, params }) => (

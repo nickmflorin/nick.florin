@@ -1,5 +1,5 @@
 "use client";
-import { forwardRef } from "react";
+import { forwardRef, Suspense } from "react";
 
 import clsx from "clsx";
 
@@ -24,32 +24,36 @@ export const LayoutNavAnchor = forwardRef<
     { item, ...props }: LayoutNavAnchorProps,
     forwardedRef: types.PolymorphicButtonRef<{ as: "link" }>,
   ) => (
-    <Navigatable item={item}>
-      {({ isActive, href }) => (
-        <Tooltip content={item.tooltipLabel} placement="right" variant="secondary">
-          {({ ref, params }) => (
-            <IconButton<{ as: "link" }>
-              {...props}
-              {...params}
-              className={clsx("z-0", props.className)}
-              ref={instance => {
-                ref(instance);
-                if (typeof forwardedRef === "function") {
-                  forwardedRef(instance);
-                } else if (forwardedRef) {
-                  forwardedRef.current = instance;
-                }
-              }}
-              options={{ as: "link" }}
-              href={href}
-              size="xlarge"
-              iconSize="medium"
-              icon={item.icon}
-              isActive={isActive}
-            />
-          )}
-        </Tooltip>
-      )}
-    </Navigatable>
+    /* Wrapped in a Suspense because useSearchParams() causes client-side rendering up to the
+       closest Suspense boundary during static rendering. */
+    <Suspense>
+      <Navigatable item={item}>
+        {({ isActive, href }) => (
+          <Tooltip content={item.tooltipLabel} placement="right" variant="secondary">
+            {({ ref, params }) => (
+              <IconButton<{ as: "link" }>
+                {...props}
+                {...params}
+                className={clsx("z-0", props.className)}
+                ref={instance => {
+                  ref(instance);
+                  if (typeof forwardedRef === "function") {
+                    forwardedRef(instance);
+                  } else if (forwardedRef) {
+                    forwardedRef.current = instance;
+                  }
+                }}
+                options={{ as: "link" }}
+                href={href}
+                size="xlarge"
+                iconSize="medium"
+                icon={item.icon}
+                isActive={isActive}
+              />
+            )}
+          </Tooltip>
+        )}
+      </Navigatable>
+    </Suspense>
   ),
 );
