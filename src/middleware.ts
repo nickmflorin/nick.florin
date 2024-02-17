@@ -22,28 +22,30 @@ const DynamicRedirects: DynamicRedirect[] = [
       return DO_NOT_REDIRECT;
     },
   },
+  {
+    pathRegex: createLeadingPathRegex("/admin"),
+    redirectUrl: (result: ReturnType<RegExp["exec"]>) => {
+      if (result && result[1]) {
+        return "/admin/skills";
+      }
+      return DO_NOT_REDIRECT;
+    },
+  },
 ];
 
 export default authMiddleware({
-  /* beforeAuth: req => {
-       const pathname = req.nextUrl.pathname;
-       for (const { pathRegex, redirectUrl } of DynamicRedirects) {
-         const execResult = pathRegex.exec(pathname);
-         const redirect = redirectUrl(execResult);
-         if (redirect !== DO_NOT_REDIRECT) {
-           return NextResponse.redirect(new URL(redirect, req.nextUrl));
-         }
-       }
-       return NextResponse.next();
-     }, */
-  publicRoutes: [
-    "/",
-    "/resume",
-    "/resume/experience",
-    "/resume/education",
-    "/api/skills",
-    "/projects",
-  ],
+  beforeAuth: req => {
+    const pathname = req.nextUrl.pathname;
+    for (const { pathRegex, redirectUrl } of DynamicRedirects) {
+      const execResult = pathRegex.exec(pathname);
+      const redirect = redirectUrl(execResult);
+      if (redirect !== DO_NOT_REDIRECT) {
+        return NextResponse.redirect(new URL(redirect, req.nextUrl));
+      }
+    }
+    return NextResponse.next();
+  },
+  publicRoutes: ["/", "/resume/experience", "/resume/education", "/api/skills", "/projects"],
 });
 
 export const config = {
