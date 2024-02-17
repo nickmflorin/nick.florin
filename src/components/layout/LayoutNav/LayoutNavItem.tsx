@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import clsx from "clsx";
 import { type Required } from "utility-types";
 
@@ -24,13 +26,17 @@ export const LayoutNavItem = <I extends ILayoutNavItem | Required<ILayoutNavItem
   isOpen,
   item,
 }: LayoutNavItemParentProps<I>) => (
-  <LayoutNavAnchor
-    item={item}
-    className={clsx({
-      "z-10": item.children !== undefined && item.children.length !== 0,
-      "mb-[6px] z-10": item.children !== undefined && item.children.length !== 0 && isOpen,
-      "mb-[6px] last:mb-0": item.children === undefined || item.children.length === 0,
-    })}
-    onMouseEnter={() => onOpen?.()}
-  />
+  /* Wrapped in a Suspense because useSearchParams() causes client-side rendering up to the
+     closest Suspense boundary during static rendering. */
+  <Suspense>
+    <LayoutNavAnchor
+      item={item}
+      className={clsx({
+        "z-10": item.children !== undefined && item.children.length !== 0,
+        "mb-[6px] z-10": item.children !== undefined && item.children.length !== 0 && isOpen,
+        "mb-[6px] last:mb-0": item.children === undefined || item.children.length === 0,
+      })}
+      onMouseEnter={() => onOpen?.()}
+    />
+  </Suspense>
 );
