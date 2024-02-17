@@ -1,16 +1,14 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useMemo, useEffect } from "react";
+import { useMemo, useState } from "react";
 
 import clsx from "clsx";
 import { type z } from "zod";
 
 import type * as types from "../types";
 
-import { SkillQuerySchema } from "~/app/api/types";
-import { useSkills, useQueryParams } from "~/hooks";
+import { useSkills } from "~/hooks";
 import { generateChartColors } from "~/lib/charts";
-import { parseQueryParams } from "~/lib/urls";
 import { Form } from "~/components/forms/Form";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
@@ -35,28 +33,17 @@ const Tooltip = dynamic(
 );
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
-  const { params, updateParams } = useQueryParams();
-
-  const skillsQuery = useMemo(() => {
-    const rawQuery = parseQueryParams(params, { keys: ["showTopSkills"] as const, form: "record" });
-    const parsed = SkillQuerySchema.safeParse(rawQuery);
-    if (parsed.success) {
-      return parsed.data;
-    }
-    return { showTopSkills: 12 as const };
-  }, [params]);
+  const [skillsQuery, setSkillsQuery] = useState<z.infer<typeof SkillBarChartFormSchema>>({
+    showTopSkills: 12,
+  });
 
   const { setValues, ...form } = Form.useForm<z.infer<typeof SkillBarChartFormSchema>>({
     schema: SkillBarChartFormSchema,
     defaultValues: { showTopSkills: 12 },
     onChange: ({ values }) => {
-      updateParams(values, { push: true, useTransition: false });
+      setSkillsQuery(values);
     },
   });
-
-  useEffect(() => {
-    setValues(skillsQuery);
-  }, [skillsQuery, setValues]);
 
   // TODO: Handle loading & error states.
   const { data: _data, error, isInitialLoading, isLoading } = useSkills({ query: skillsQuery });
