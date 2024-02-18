@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 
 import clsx from "clsx";
+import pick from "lodash.pick";
 import { type z } from "zod";
 
 import type * as types from "../types";
