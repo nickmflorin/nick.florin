@@ -12,7 +12,7 @@ export const includeSkillMetadata = async (skills: Skill[]): Promise<ApiSkill[]>
         some: { skillId: { in: skills.map(s => s.id) } },
       },
     },
-    orderBy: { startDate: "asc" },
+    orderBy: { startDate: "desc" },
     include: { skills: true, company: true },
   });
 
@@ -22,7 +22,7 @@ export const includeSkillMetadata = async (skills: Skill[]): Promise<ApiSkill[]>
         some: { skillId: { in: skills.map(s => s.id) } },
       },
     },
-    orderBy: { startDate: "asc" },
+    orderBy: { startDate: "desc" },
     include: { skills: true, school: true },
   });
 

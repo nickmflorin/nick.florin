@@ -19,7 +19,7 @@ import { Legend } from "../Legend";
 
 import { SkillsBarChartForm } from "./SkillsBarChartForm";
 import { SkillsBarChartTooltip } from "./SkillsBarChartTooltip";
-import { SkillBarChartFormSchema } from "./types";
+import { SkillsBarChartFormSchema, type SkillsBarChartDatum } from "./types";
 
 const BarChart = dynamic(() => import("../BarChart"), {
   ssr: false,
@@ -27,12 +27,12 @@ const BarChart = dynamic(() => import("../BarChart"), {
 }) as types.BarChart;
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
-  const [skillsQuery, setSkillsQuery] = useState<z.infer<typeof SkillBarChartFormSchema>>({
+  const [skillsQuery, setSkillsQuery] = useState<z.infer<typeof SkillsBarChartFormSchema>>({
     showTopSkills: 12,
   });
 
-  const { setValues, ...form } = Form.useForm<z.infer<typeof SkillBarChartFormSchema>>({
-    schema: SkillBarChartFormSchema,
+  const { setValues, ...form } = Form.useForm<z.infer<typeof SkillsBarChartFormSchema>>({
+    schema: SkillsBarChartFormSchema,
     defaultValues: { showTopSkills: 12 },
     onChange: ({ values }) => {
       setSkillsQuery(values);
@@ -42,10 +42,10 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
   // TODO: Handle loading & error states.
   const { data: _data, error, isInitialLoading, isLoading } = useSkills({ query: skillsQuery });
 
-  const data = useMemo(
+  const data = useMemo<SkillsBarChartDatum[]>(
     () =>
       (_data ?? []).map(skill => ({
-        skill: skill.label,
+        ...pick(skill, ["id", "label", "slug", "experiences", "educations"]),
         experience: skill.experience ?? skill.autoExperience,
       })),
     [_data],
@@ -56,7 +56,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
   const legendItems = useMemo(
     () =>
       data.map((datum, index) => ({
-        label: datum.skill,
+        label: datum.label,
         color: colors[index],
       })),
     [colors, data],
@@ -77,7 +77,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
       >
         <BarChart
           data={data ?? []}
-          indexBy="skill"
+          indexBy="label"
           keys={["experience"]}
           enableLabel={false}
           borderColor={{

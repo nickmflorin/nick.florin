@@ -183,37 +183,37 @@ $typography-size-properties: (
   ),
   "label": (
     "xxxs": (
-      font-size: 10px,
-      line-height: 12px,
-      font-weight: "regular",
-    ),
-    "xxs": (
       font-size: 11px,
       line-height: 14px,
       font-weight: "regular",
     ),
-    "xs": (
+    "xxs": (
       font-size: 12px,
+      line-height: 14px,
+      font-weight: "regular",
+    ),
+    "xs": (
+      font-size: 13px,
       line-height: 16px,
       font-weight: "regular",
     ),
     "sm": (
-      font-size: 13px,
+      font-size: 14px,
       line-height: 18px,
-      font-weight: "medium",
+      font-weight: "regular",
     ),
     "md": (
-      font-size: 14px,
+      font-size: 16px,
       line-height: 20px,
       font-weight: "medium",
     ),
     "lg": (
-      font-size: 16px,
+      font-size: 18px,
       line-height: 24px,
       font-weight: "medium",
     ),
     "xl": (
-      font-size: 18px,
+      font-size: 20px,
       line-height: 28px,
       font-weight: "medium",
     ),
@@ -336,7 +336,10 @@ $typography-default-colors: (
     line-height:
       fn.get-optional-kwarg(line-height, $default: get-line-height($type, $size: $size), $args...),
     font-size:
-      fz($type, fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...))
+      fz(
+        $type,
+        fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...)
+      ),
   );
   $overrides: map.get(meta.keywords($args), "override");
   @if $overrides {

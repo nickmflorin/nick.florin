@@ -351,7 +351,7 @@ const config: Config = {
     },
     fontFamily: {
       title: ["avenir"],
-      label: ["avenir"],
+      label: ["inter"],
       body: ["inter"],
       sans: ["inter", "ui-sans-serif", "system-ui", "sans-serif"],
       serif: ["inter", "ui-serif", "serif"],

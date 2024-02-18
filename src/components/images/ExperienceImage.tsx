@@ -1,7 +1,22 @@
-import { ModelImage, type ModelImageProps } from "./ModelImage";
+import { ModelImage, type ModelImageSpreadProps } from "./ModelImage";
 
-export interface ExperienceImageProps extends Omit<ModelImageProps, "fallbackIcon"> {}
+type BaseExperience = { company: { logoImageUrl: string | null } };
 
-export const ExperienceImage = (props: ExperienceImageProps) => (
-  <ModelImage {...({ ...props, fallbackIcon: { name: "briefcase" } } as ModelImageProps)} />
+export interface ExperienceImageProps<E extends BaseExperience>
+  extends Omit<ModelImageSpreadProps, "fallbackIcon" | "url" | "size"> {
+  readonly experience: E;
+  readonly size: number;
+}
+
+export const ExperienceImage = <E extends BaseExperience>({
+  experience,
+  size,
+  ...props
+}: ExperienceImageProps<E>) => (
+  <ModelImage
+    {...props}
+    fallbackIcon={{ name: "briefcase" }}
+    url={experience.company.logoImageUrl}
+    size={size}
+  />
 );

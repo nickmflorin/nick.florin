@@ -19,7 +19,7 @@ type BaseModelImageProps = ComponentProps & {
   readonly priority?: boolean;
 };
 
-type ModelImageSpreadProps = BaseModelImageProps &
+export type ModelImageSpreadProps = BaseModelImageProps &
   ImageProp & {
     readonly image?: never;
   };

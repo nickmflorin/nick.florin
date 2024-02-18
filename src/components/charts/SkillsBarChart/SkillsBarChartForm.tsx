@@ -5,7 +5,7 @@ import { SHOW_TOP_SKILLS, type ShowTopSkills, type ShowTopSkillsString } from "~
 import { Form, type FormProps } from "~/components/forms/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
 
-import { type SkillBarChartFormSchema } from "./types";
+import { type SkillsBarChartFormSchema } from "./types";
 
 const ShowTopSkillsLabels: { [key in ShowTopSkillsString]: string } = {
   "5": "5",
@@ -15,7 +15,7 @@ const ShowTopSkillsLabels: { [key in ShowTopSkillsString]: string } = {
 };
 
 export interface SkillsBarChartFormProps
-  extends Omit<FormProps<z.infer<typeof SkillBarChartFormSchema>>, "children"> {}
+  extends Omit<FormProps<z.infer<typeof SkillsBarChartFormSchema>>, "children"> {}
 
 export const SkillsBarChartForm = ({ form, ...props }: SkillsBarChartFormProps) => (
   <Form {...props} className={clsx("flex flex-col gap-[4px]", props.className)} form={form}>
