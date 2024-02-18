@@ -53,12 +53,10 @@ a:not(.button--type-link) {
     color: inherit;
     text-decoration: none;
     line-height: inherit;
+    font-family: inherit;
     font-size: inherit;
     max-width: fit-content;
-
-    @layer {
-      color: inherit;
-    }
+    vertical-align: baseline;
   }
 
   &--type-icon-button {

@@ -66,7 +66,9 @@ p {
   // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
   // in cases where the component is not provided with those props.
   @extend %typography-base;
-  @include partials.with-default-font-size("label");
+  // @include partials.with-default-font-size("label");
+
+  @include partials.font($type: "label");
 
   @include with-fonts("label") using ($data) {
     $font-size: partials.mapget($data, font-size);
@@ -93,7 +95,7 @@ p {
 }
 
 @mixin title() {
-  @include with-fonts("heading");
+  @include with-fonts("title");
 }
 
 h1,
@@ -114,32 +116,32 @@ h6 {
 }
 
 h1 {
-  @include partials.font("heading", $size: "xl");
+  @include partials.font("title", $size: "xl");
   @include title();
 }
 
 h2 {
-  @include partials.font("heading", $size: "lg");
+  @include partials.font("title", $size: "lg");
   @include title();
 }
 
 h3 {
-  @include partials.font("heading", $size: "md");
+  @include partials.font("title", $size: "md");
   @include title();
 }
 
 h4 {
-  @include partials.font("heading", $size: "sm");
+  @include partials.font("title", $size: "sm");
   @include title();
 }
 
 h5 {
-  @include partials.font("heading", $size: "xs");
+  @include partials.font("title", $size: "xs");
   @include title();
 }
 
 h6 {
-  @include partials.font("heading", $size: "xxs");
+  @include partials.font("title", $size: "xxs");
   @include title();
 }
 
@@ -148,7 +150,46 @@ h6 {
   // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
   // in cases where the component is not provided with those props.
   @extend %typography-base;
-  @include partials.with-default-font-size("body");
+
+  &:not(.span) {
+    /* If the <Text> component is attributed with 'span' and is inside another <Text> element, do
+       not set the defaults based on the default size of the <Text> component.  We want the <Text>
+       components that are attributed with 'span' to inherit typography related properties from the
+       <Text> component they sit inside of, unless the <Text> component is provided with the props
+       explicitly.
+
+       Example
+       -------
+       <Text fontWeight="medium">
+         Foo
+         <Text span>Bar</Text>
+       </Text>
+
+       Here, "Bar" should be styled with the same font-weight, and other typography attributes, as
+       "Foo" is.
+
+       However, if the <Text> component that is attributed with 'span' defines an override, then it
+       should be styled based on that override:
+
+       <Text fontWeight="medium">
+          Foo
+          <Text span fontWeight="bold">Bar</Text>
+       </Text>
+
+       Here, "Bar" should be styled with the a "bold" font weight. */
+    // @include partials.with-default-font-size("body");
+    @include partials.font($type: "body");
+  }
+
+  &.span {
+    color: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-transform: inherit;
+    text-decoration: inherit;
+  }
 
   @include with-fonts("body") using ($data) {
     $font-size: partials.mapget($data, font-size);
@@ -162,10 +203,6 @@ h6 {
       width: auto;
     }
   }
-
-  align-items: center;
-  display: flex;
-  flex-direction: row;
 
   &.truncate {
     @include partials.truncate();
@@ -181,17 +218,5 @@ h6 {
     font-style: inherit;
     font-weight: inherit;
     line-height: inherit;
-  }
-
-  > .span {
-    @layer {
-      color: inherit;
-      font-size: inherit;
-      font-style: inherit;
-      font-weight: inherit;
-      line-height: inherit;
-      text-transform: inherit;
-      text-decoration: inherit;
-    }
   }
 }

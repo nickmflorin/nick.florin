@@ -200,9 +200,11 @@ const config: Config = {
         "900": "#7f1d1d",
         "950": "#450a0a",
       },
-      heading: "#111827",
-      body: "#231f20",
-      border: colors.gray[300],
+      title: "#111827",
+      body: "#515151",
+      label: "#515151",
+      "body-light": "#868E96", // Gray 600
+      border: "#DEE2E6", // Gray 300
       appBackground: "#fbfbfb",
       disabled: "#DEE2E6",
       disabledBorder: "#f5f5f5",

@@ -22,27 +22,27 @@
 @include auth-page(signIn);
 
 h1.cl-headerTitle {
-  @include partials.font("heading", $size: "md");
+  @include partials.font("title", $size: "md");
 }
 
 h2.cl-headerTitle {
-  @include partials.font("heading", $size: "md");
+  @include partials.font("title", $size: "md");
 }
 
 h3.cl-headerTitle {
-  @include partials.font("heading", $size: "md");
+  @include partials.font("title", $size: "md");
 }
 
 h4.cl-headerTitle {
-  @include partials.font("heading", $size: "sm");
+  @include partials.font("title", $size: "sm");
 }
 
 h5.cl-headerTitle {
-  @include partials.font("heading", $size: "xs");
+  @include partials.font("title", $size: "xs");
 }
 
 h6.cl-headerTitle {
-  @include partials.font("heading", $size: "xxs");
+  @include partials.font("title", $size: "xxs");
 }
 
 button.cl-formButtonPrimary {

@@ -152,7 +152,6 @@ $button-color-properties: (
     "primary": (
       background-color: theme("colors.transparent"),
       color: theme("colors.blue.600"),
-      outline-color: theme("colors.transparent"),
       hovered: (
         color: theme("colors.blue.800"),
       ),
@@ -166,7 +165,6 @@ $button-color-properties: (
     "secondary": (
       background-color: theme("colors.transparent"),
       color: theme("colors.gray.600"),
-      outline-color: theme("colors.transparent"),
       hovered: (
         color: theme("colors.gray.700"),
       ),
@@ -180,7 +178,6 @@ $button-color-properties: (
     "danger": (
       background-color: theme("colors.transparent"),
       color: theme("colors.danger.700"),
-      outline-color: theme("colors.transparent"),
       hovered: (
         color: theme("colors.danger.800"),
       ),
@@ -239,14 +236,10 @@ $button-color-properties: (
       $default: theme("colors.transparent"),
       $args...
     );
-    $outline-color: partials.get-optional-kwarg(
-      outline-color,
-      $default: $background-color,
-      $args...
-    );
+    $outline-color: partials.get-optional-kwarg(outline-color, $default: null, $args...);
     $outline: partials.get-optional-kwarg(
       outline,
-      $default: $button-outline-width solid $outline-color,
+      $default: if($outline-color, $button-outline-width solid $outline-color, null),
       $args...
     );
 

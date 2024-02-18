@@ -7,7 +7,7 @@
 @use "../../functions" as fn;
 @use "../../mixins" as mixins;
 
-$typography-types: ("body", "heading", "label");
+$typography-types: ("body", "title", "label");
 $font-family-avenir: avenir;
 $font-family-roboto: roboto;
 $font-family-inter: var(--font-inter);
@@ -15,12 +15,12 @@ $font-families: ($font-family-avenir, $font-family-roboto, $font-family-inter);
 $text-transforms: ("uppercase", "lowercase", "capitalize", "underline");
 
 /* -------------------------------------- Font Families ----------------------------------------- */
-$heading-font-family: $font-family-avenir;
+$title-font-family: $font-family-avenir;
 $body-font-family: $font-family-inter;
 $label-font-family: $font-family-inter;
 
 $typography-font-families: (
-  "heading": $heading-font-family,
+  "title": $title-font-family,
   "body": $body-font-family,
   "label": $label-font-family,
 );
@@ -38,8 +38,8 @@ $typography-font-families: (
   @include font-family("body");
 }
 
-@mixin heading-font-family() {
-  @include font-family("heading");
+@mixin title-font-family() {
+  @include font-family("title");
 }
 
 @mixin label-font-family() {
@@ -95,8 +95,8 @@ $font-family-default-weights: (
   font-weight: get-font-weight($type: "body", $args...);
 }
 
-@mixin heading-font-weight($args...) {
-  font-weight: get-font-weight($type: "heading", $args...);
+@mixin title-font-weight($args...) {
+  font-weight: get-font-weight($type: "title", $args...);
 }
 
 @mixin label-font-weight($args...) {
@@ -144,7 +144,7 @@ $typography-size-properties: (
       font-weight: "regular",
     ),
   ),
-  "heading": (
+  "title": (
     "xxxs": (
       font-size: 12px,
       line-height: 16px,
@@ -220,13 +220,13 @@ $typography-size-properties: (
   ),
 );
 
-$heading-default-size: "md";
+$title-default-size: "md";
 $body-default-size: "md";
 $label-default-size: "md";
 
 $typography-default-sizes: (
   "body": $body-default-size,
-  "heading": $heading-default-size,
+  "title": $title-default-size,
   "label": $label-default-size,
 );
 
@@ -256,8 +256,8 @@ $typography-default-sizes: (
   font-size: get-font-size($type, $size);
 }
 
-@mixin heading-font-size($size: null) {
-  @include font-size("heading", $size);
+@mixin title-font-size($size: null) {
+  @include font-size("title", $size);
 }
 
 @mixin body-font-size($size: null) {
@@ -272,8 +272,8 @@ $typography-default-sizes: (
   line-height: get-line-height($type, $size);
 }
 
-@mixin heading-line-height($size: null) {
-  @include line-height("heading", $size);
+@mixin title-line-height($size: null) {
+  @include line-height("title", $size);
 }
 
 @mixin body-line-height($size: null) {
@@ -285,12 +285,12 @@ $typography-default-sizes: (
 }
 
 /* --------------------------------------- Font Colors ------------------------------------------ */
-$default-label-color: theme("colors.body");
-$default-heading-color: theme("colors.heading");
+$default-label-color: theme("colors.label");
+$default-title-color: theme("colors.title");
 $default-body-color: theme("colors.body");
 
 $typography-default-colors: (
-  "heading": $default-heading-color,
+  "title": $default-title-color,
   "body": $default-body-color,
   "label": $default-label-color,
 );
@@ -307,8 +307,8 @@ $typography-default-colors: (
   @include font-color("body", $args...);
 }
 
-@mixin heading-font-color($args...) {
-  @include font-color("heading", $args...);
+@mixin title-font-color($args...) {
+  @include font-color("title", $args...);
 }
 
 @mixin label-font-color($args...) {
@@ -353,15 +353,15 @@ $typography-default-colors: (
   @include mixins.mapped-properties($properties);
 }
 
-@mixin with-default-font-size($type) {
-  $size: get-default-size($type);
-  $properties: get-font($type, $size: $size);
+// @mixin with-default-font-size($type) {
+//   $size: get-default-size($type);
+//   $properties: get-font($type, $size: $size);
 
-  font-size: fn.mapget($properties, font-size);
-  line-height: fn.mapget($properties, line-height);
-  font-weight: fn.mapget($properties, font-weight);
-  font-family: fn.mapget($properties, font-family);
-}
+//   font-size: fn.mapget($properties, font-size);
+//   line-height: fn.mapget($properties, line-height);
+//   font-weight: fn.mapget($properties, font-weight);
+//   font-family: fn.mapget($properties, font-family);
+// }
 
 @mixin with-font-sizes($type) {
   @each $size in $typography-sizes {
@@ -398,8 +398,8 @@ $typography-default-colors: (
   }
 }
 
-@mixin heading($args...) {
-  @include font("heading", $args...);
+@mixin title($args...) {
+  @include font("title", $args...);
 }
 
 @mixin body($args...) {
