@@ -1,4 +1,4 @@
-const FIRST_INTERNAL_MODULE_GROUP = ["application", "lib", "tests", "server", "hooks", "app"];
+const FIRST_INTERNAL_MODULE_GROUP = ["application", "lib", "server", "hooks", "app", "prisma"];
 
 // Components and styles should always be the last absolute imports.
 const SECOND_INTERNAL_MODULE_GROUP = ["components", "styles"];

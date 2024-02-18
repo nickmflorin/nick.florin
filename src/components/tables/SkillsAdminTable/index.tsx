@@ -1,9 +1,15 @@
 "use client";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
-import { Loading } from "~/components/views/Loading";
+import { toast } from "react-toastify";
+
+import { deleteSkill } from "~/app/actions/deleteSkill";
 import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/model";
+import { Loading } from "~/components/views/Loading";
 
+import { DeleteCell } from "../cells/DeleteCell";
 import { type TableProps } from "../types";
 
 const EducationsCell = dynamic(() => import("./cells/EducationsCell"), { ssr: false });
@@ -30,47 +36,67 @@ export const SkillsAdminTable = ({
   skills,
   experiences,
   educations,
-}: SkillsAdminTableProps): JSX.Element => (
-  <Table
-    columns={[
-      {
-        accessor: "label",
-        title: "Label",
-        width: 320,
-        render: ({ model, table }) => <LabelCell skill={model} table={table} />,
-      },
-      {
-        accessor: "slug",
-        title: "Slug",
-        width: 320,
-        render: ({ model, table }) => <SlugCell skill={model} table={table} />,
-      },
-      {
-        accessor: "experiences",
-        title: "Experiences",
-        width: 310,
-        render: ({ model }) => <ExperiencesCell skill={model} experiences={experiences} />,
-      },
-      {
-        accessor: "educations",
-        title: "Educations",
-        width: 310,
-        render: ({ model }) => <EducationsCell skill={model} educations={educations} />,
-      },
-      {
-        accessor: "experience",
-        title: "Experience",
-        textAlign: "center",
-        render: ({ model, table }) => <ExperienceCell skill={model} table={table} />,
-      },
-      {
-        accessor: "includeInTopSkills",
-        title: "Top Skill",
-        textAlign: "center",
-        render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
-      },
-    ]}
-    data={skills}
-  />
-);
+}: SkillsAdminTableProps): JSX.Element => {
+  const [_, transition] = useTransition();
+  const router = useRouter();
+  return (
+    <Table
+      columns={[
+        {
+          accessor: "label",
+          title: "Label",
+          width: 320,
+          render: ({ model, table }) => <LabelCell skill={model} table={table} />,
+        },
+        {
+          accessor: "slug",
+          title: "Slug",
+          width: 320,
+          render: ({ model, table }) => <SlugCell skill={model} table={table} />,
+        },
+        {
+          accessor: "experiences",
+          title: "Experiences",
+          width: 310,
+          render: ({ model }) => <ExperiencesCell skill={model} experiences={experiences} />,
+        },
+        {
+          accessor: "educations",
+          title: "Educations",
+          width: 310,
+          render: ({ model }) => <EducationsCell skill={model} educations={educations} />,
+        },
+        {
+          accessor: "experience",
+          title: "Experience",
+          textAlign: "center",
+          render: ({ model, table }) => <ExperienceCell skill={model} table={table} />,
+        },
+        {
+          accessor: "includeInTopSkills",
+          title: "Top Skill",
+          textAlign: "center",
+          render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
+        },
+        {
+          accessor: "delete",
+          title: "",
+          textAlign: "center",
+          render: ({ model }) => (
+            <DeleteCell
+              onDelete={async () => await deleteSkill(model.id)}
+              onError={() => toast.error("There was an error deleting the skill.")}
+              onSuccess={() => {
+                transition(() => {
+                  router.refresh();
+                });
+              }}
+            />
+          ),
+        },
+      ]}
+      data={skills}
+    />
+  );
+};
 export default SkillsAdminTable;

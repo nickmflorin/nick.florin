@@ -1,17 +1,23 @@
 import { Suspense } from "react";
 
-import { TextInput } from "~/components/input/TextInput";
 import { Loading } from "~/components/views/Loading";
 
-import SkillsTable from "./SkillsTable";
+import { SearchInput } from "./SearchInput";
+import SkillsAdminTable from "./SkillsAdminTable";
 
-export default async function SkillsPage() {
+export default async function SkillsPage({
+  searchParams: { search },
+}: {
+  searchParams: { search?: string };
+}) {
   return (
     <>
-      <TextInput className="mb-[18px]" />
+      <Suspense>
+        <SearchInput className="mb-[18px]" />
+      </Suspense>
       <div className="grow overflow-hidden w-full relative">
-        <Suspense fallback={<Loading loading={true} />}>
-          <SkillsTable />
+        <Suspense key={search} fallback={<Loading loading={true} />}>
+          <SkillsAdminTable search={search} />
         </Suspense>
       </div>
     </>

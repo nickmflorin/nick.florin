@@ -120,10 +120,10 @@ $button-color-properties: (
       color: theme("colors.gray.700"),
       outline-color: theme("colors.transparent"),
       hovered: (
-        background-color: theme("colors.gray.100"),
+        background-color: theme("colors.gray.50"),
       ),
       focused: (
-        background-color: theme("colors.gray.100"),
+        background-color: theme("colors.gray.50"),
       ),
       disabled: (
         color: theme("colors.disabled"),

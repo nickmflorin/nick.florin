@@ -1,7 +1,7 @@
 import { DetailEntityType } from "@prisma/client";
 
-import { type ComponentProps } from "~/components/types";
 import { prisma } from "~/prisma/client";
+import { type ComponentProps } from "~/components/types";
 
 import { CommitTimeline } from "../CommitTimeline";
 

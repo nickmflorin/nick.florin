@@ -4,9 +4,10 @@ import { z } from "zod";
 import { ClientError } from "~/application/errors";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
-import { getAuthUser } from "~/server/auth";
 import { prisma } from "~/prisma/client";
 import { type Skill } from "~/prisma/model";
+
+import { authenticateAdminUser } from "./auth";
 
 const UpdateSkillSchema = z.object({
   label: z.string().optional(),
@@ -16,6 +17,7 @@ const UpdateSkillSchema = z.object({
   educations: z.array(z.string()).optional(),
   includeInTopSkills: z.boolean().optional(),
   experience: z.number().nullable().optional(),
+  visible: z.boolean().optional(),
 });
 
 export const updateSkill = async (
@@ -28,14 +30,9 @@ export const updateSkill = async (
     ...data
   }: z.infer<typeof UpdateSkillSchema>,
 ): Promise<Skill> => {
-  const user = await getAuthUser();
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
-  if (!user) {
-    throw ClientError.NotAuthenticated();
-  } else if (!user.isAdmin) {
-    throw ClientError.Forbidden();
-  }
+  const user = await authenticateAdminUser();
 
   return await prisma.$transaction(async tx => {
     let skill = await tx.skill.findUniqueOrThrow({ where: { id } });

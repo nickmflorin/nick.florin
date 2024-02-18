@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 
 import { updateSkill } from "~/app/actions/updateSkill";
 import { logger } from "~/application/logger";
-import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
 import { type ApiSkill, type ApiExperience } from "~/prisma/model";
+import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
 
 interface ExperiencesCellProps {
   readonly skill: ApiSkill;

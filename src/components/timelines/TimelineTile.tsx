@@ -2,6 +2,7 @@
 import clsx from "clsx";
 import { DateTime } from "luxon";
 
+import { type Detail, type Skill } from "~/prisma/model";
 import { Badge } from "~/components/badges/Badge";
 import { Link } from "~/components/buttons";
 import { Tooltip } from "~/components/floating/Tooltip";
@@ -9,7 +10,6 @@ import { ModelImage, type ModelImageProps } from "~/components/images/ModelImage
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 import { Title } from "~/components/typography/Title";
-import { type Detail, type Skill } from "~/prisma/model";
 
 import { Details } from "./Details";
 import { Skills } from "./Skills";

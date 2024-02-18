@@ -8,8 +8,8 @@ import type * as types from "../../types";
 
 import { updateSkill } from "~/app/actions/updateSkill";
 import { logger } from "~/application/logger";
-import { Checkbox } from "~/components/input/Checkbox";
 import { type ApiSkill } from "~/prisma/model";
+import { Checkbox } from "~/components/input/Checkbox";
 
 interface ShowInTopSkillsCellProps {
   readonly skill: ApiSkill;

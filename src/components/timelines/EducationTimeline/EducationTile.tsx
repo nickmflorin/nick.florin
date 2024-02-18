@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 
-import { type ComponentProps } from "~/components/types";
 import { getDegreeData } from "~/prisma/enums";
 import { type School, type Education } from "~/prisma/model";
+import { type ComponentProps } from "~/components/types";
 
 const TimelineTile = dynamic(() => import("../TimelineTile"));
 

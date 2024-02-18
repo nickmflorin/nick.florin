@@ -6,8 +6,8 @@ import type * as types from "../../types";
 
 import { updateSkill } from "~/app/actions/updateSkill";
 import { logger } from "~/application/logger";
-import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import { type ApiSkill } from "~/prisma/model";
+import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 
 interface LabelCellProps {
   readonly skill: ApiSkill;

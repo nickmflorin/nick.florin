@@ -5,6 +5,13 @@ import { strictArrayLookup, minDate } from "~/lib";
 import { prisma } from "./client";
 import { type Skill, type ApiSkill } from "./model";
 
+export const constructOrSearch = (query: string | undefined, fields: string[]) => ({
+  OR:
+    query !== undefined && query.length !== 0
+      ? fields.map(field => ({ [field]: { contains: query, mode: "insensitive" as const } }))
+      : undefined,
+});
+
 export const includeSkillMetadata = async (skills: Skill[]): Promise<ApiSkill[]> => {
   const experiences = await prisma.experience.findMany({
     where: {
