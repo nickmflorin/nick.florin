@@ -1,5 +1,5 @@
-import { ModelImage } from "~/components/images/ModelImage";
 import { type Education, type School } from "~/prisma/model";
+import { ModelImage } from "~/components/images/ModelImage";
 
 import { Select, type SelectProps } from "./Select";
 

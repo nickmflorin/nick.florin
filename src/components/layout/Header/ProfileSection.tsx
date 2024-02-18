@@ -1,9 +1,9 @@
 import clsx from "clsx";
 
+import { type Profile } from "~/prisma/model";
 import { ModelImage } from "~/components/images/ModelImage";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
-import { type Profile } from "~/prisma/model";
 
 export interface ProfileSectionProps extends ComponentProps {
   readonly profile: Profile;

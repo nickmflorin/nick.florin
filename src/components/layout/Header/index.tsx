@@ -1,6 +1,6 @@
+import { type Profile } from "~/prisma/model";
 import { SocialButton } from "~/components/buttons/SocialButton";
 import { UserButton } from "~/components/buttons/UserButton";
-import { type Profile } from "~/prisma/model";
 
 import { ProfileSection } from "./ProfileSection";
 

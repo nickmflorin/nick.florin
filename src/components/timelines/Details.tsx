@@ -1,9 +1,9 @@
 import clsx from "clsx";
 
+import { type Detail, type NestedDetail } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
-import { type Detail, type NestedDetail } from "~/prisma/model";
 
 type TopLevelDetail = Detail & { nestedDetails?: NestedDetail[] };
 type DetailWithNested = Detail & { nestedDetails: NestedDetail[] };

@@ -1,8 +1,8 @@
 import clsx from "clsx";
 
+import { type Skill } from "~/prisma/model";
 import { SkillBadge } from "~/components/badges/SkillBadge";
 import { type ComponentProps } from "~/components/types";
-import { type Skill } from "~/prisma/model";
 
 export interface SkillsProps extends ComponentProps {
   readonly skills: Skill[];

@@ -4,7 +4,6 @@ import {
   type Path,
   type PathValue,
   type UseFormProps,
-  type ChangeHandler,
 } from "react-hook-form";
 import { type z } from "zod";
 
