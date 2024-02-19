@@ -10,8 +10,10 @@
     .commit-timeline__item {
       .commit-timeline__item__body {
         .commit-timeline__item__body__content {
-          position: relative;
-          top: -18px;
+          > * {
+            position: relative;
+            top: -18px;
+          }
         }
       }
     }

@@ -1,4 +1,6 @@
 "use client";
+import { useMemo } from "react";
+
 import clsx from "clsx";
 import { DateTime } from "luxon";
 
@@ -18,7 +20,7 @@ export interface TimelineTileProps extends ComponentProps {
   readonly title: string;
   readonly subTitle: string;
   readonly subTitleHref?: string | null;
-  readonly description?: string | null;
+  readonly description?: (string | null)[];
   readonly startDate: Date;
   readonly endDate: Date | "postponed" | "current";
   readonly fallbackImageIcon: ModelImageProps["fallbackIcon"];
@@ -44,16 +46,27 @@ const parseDateInterval = (startDate: Date, endDate: Date | "postponed" | "curre
 const TimelineTileBody = ({
   description,
   details,
-}: Pick<TimelineTileProps, "description" | "details">): JSX.Element => (
-  <div className="flex flex-col gap-[6px] max-w-[700px]">
-    {description && (
-      <Text size="md" className="text-gray-600">
-        {description}
-      </Text>
-    )}
-    <Details details={details} />
-  </div>
-);
+}: Pick<TimelineTileProps, "description" | "details">): JSX.Element => {
+  const validDescriptions = useMemo(
+    () => (description ?? []).filter(d => d !== null),
+    [description],
+  );
+
+  return (
+    <div className="flex flex-col gap-[6px] max-w-[700px]">
+      {validDescriptions.length !== 0 && (
+        <div className="flex flex-col gap-[4px]">
+          {validDescriptions.map((d, index) => (
+            <Text key={index} size="md" className="text-gray-600">
+              {d}
+            </Text>
+          ))}
+        </div>
+      )}
+      <Details details={details} />
+    </div>
+  );
+};
 
 const TimelineTileSubTitle = ({
   children,
@@ -119,7 +132,7 @@ export const TimelineTile = ({
     </div>
     <div className="flex flex-col pl-[82px] gap-[12px]">
       <TimelineTileBody description={description} details={details} />
-      <Skills skills={skills} className="max-w-[800px]" />
+      {skills.length !== 0 && <Skills skills={skills} className="max-w-[800px]" />}
     </div>
   </div>
 );

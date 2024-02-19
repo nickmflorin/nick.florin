@@ -14,7 +14,7 @@ export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.
   <TimelineTile
     title={`${getDegreeData(education.degree).abbreviatedLabel} in ${education.major}`}
     subTitle={education.school.name}
-    description={education.description}
+    description={[education.description, education.note]}
     startDate={education.startDate}
     endDate={
       !education.endDate ? (education.postPoned ? "postponed" : "current") : education.endDate

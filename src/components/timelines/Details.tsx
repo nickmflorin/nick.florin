@@ -57,19 +57,22 @@ export interface NestedDetailsProps extends ComponentProps {
 
 export type DetailsProps = TopDetailsProps | NestedDetailsProps;
 
-export const Details = ({ details, isNested, ...props }: DetailsProps): JSX.Element => (
-  <div
-    {...props}
-    className={clsx(
-      "flex flex-col",
-      { "gap-[8px]": isNested !== true, "gap-[4px] pl-[6px]": isNested },
-      props.className,
-    )}
-  >
-    {partitionDetails(details as (TopLevelDetail | NestedDetail)[])
-      .filter(d => d.visible !== false)
-      .map((detail, i) => (
-        <DetailComponent key={detail.id} detail={detail} index={isNested ? i + 1 : undefined} />
-      ))}
-  </div>
-);
+export const Details = ({ details, isNested, ...props }: DetailsProps): JSX.Element =>
+  details.length !== 0 ? (
+    <div
+      {...props}
+      className={clsx(
+        "flex flex-col",
+        { "gap-[8px]": isNested !== true, "gap-[4px] pl-[6px]": isNested },
+        props.className,
+      )}
+    >
+      {partitionDetails(details as (TopLevelDetail | NestedDetail)[])
+        .filter(d => d.visible !== false)
+        .map((detail, i) => (
+          <DetailComponent key={detail.id} detail={detail} index={isNested ? i + 1 : undefined} />
+        ))}
+    </div>
+  ) : (
+    <></>
+  );
