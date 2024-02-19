@@ -1,14 +1,4 @@
-import {
-  type Experience,
-  Prisma,
-  type School,
-  type Detail,
-  type Education,
-  type Company,
-  type Skill,
-} from "@prisma/client";
-
-export * from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export const getModel = (name: Prisma.ModelName): Prisma.DMMF.Model => {
   const model = Prisma.dmmf.datamodel.models.find(m => m.name === name);
@@ -36,27 +26,4 @@ export const safeEnumValue = <E extends Record<string, string>>(
     );
   }
   return v as E[keyof E];
-};
-
-export type ApiExperience = Experience & {
-  readonly company: Company;
-  readonly details: Detail[];
-  readonly skills: Skill[];
-};
-
-export type ApiEducation = Education & {
-  readonly school: School;
-  readonly details: Detail[];
-  readonly skills: Skill[];
-};
-
-export type ApiSkill = Skill & {
-  readonly autoExperience: number;
-  readonly experience: number | null;
-  readonly educations: (Pick<Education, "major" | "id"> & {
-    readonly school: Pick<School, "id" | "name" | "logoImageUrl">;
-  })[];
-  readonly experiences: (Pick<Experience, "title" | "id"> & {
-    readonly company: Pick<Company, "id" | "name" | "logoImageUrl">;
-  })[];
 };

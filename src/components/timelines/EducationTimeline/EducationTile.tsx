@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { getDegreeData } from "~/prisma/enums";
+import { getDegreeData } from "~/prisma/model";
 import { type School, type Education } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 

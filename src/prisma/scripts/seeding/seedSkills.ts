@@ -1,6 +1,6 @@
 import { slugify } from "~/lib/formatters";
 
-import { prisma, getUniqueConstraintFields } from "../client";
+import { prisma, getUniqueConstraintFields } from "../../client";
 import { json } from "../fixtures/json";
 
 import { type SeedContext } from "./types";

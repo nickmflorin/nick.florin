@@ -2,7 +2,8 @@ import dynamic from "next/dynamic";
 import { cache } from "react";
 
 import { prisma } from "~/prisma/client";
-import { constructOrSearch, includeSkillMetadata } from "~/prisma/query";
+import { includeSkillMetadata } from "~/prisma/model";
+import { constructOrSearch } from "~/prisma/util";
 import { Loading } from "~/components/views/Loading";
 
 const SkillsTable = dynamic(() => import("~/components/tables/SkillsAdminTable/index"), {

@@ -1,34 +1,17 @@
 import { type Profile } from "~/prisma/model";
-import { SocialButton } from "~/components/buttons/SocialButton";
+import { GithubButton } from "~/components/buttons/GithubButton";
+import { LinkedInButton } from "~/components/buttons/LinkedInButton";
 import { UserButton } from "~/components/buttons/UserButton";
 
 import { ProfileSection } from "./ProfileSection";
 
-export interface HeaderProps {
-  /* The profile is allowed to be null to account for edge cases where a profile does not
-     yet exist in the database. */
-  readonly profile: Profile | null;
-}
-
-export const Header = ({ profile }: HeaderProps): JSX.Element => (
-  <header className="header">
-    {profile && <ProfileSection profile={profile} />}
+export const Header = (): JSX.Element => (
+  <>
+    <ProfileSection />
     <div className="header__right">
-      {profile?.linkedinUrl && (
-        <SocialButton
-          icon={{ name: "linkedin", iconStyle: "brands" }}
-          size="medium"
-          href={profile.linkedinUrl}
-        />
-      )}
-      {profile?.githubUrl && (
-        <SocialButton
-          icon={{ name: "github", iconStyle: "brands" }}
-          size="medium"
-          href={profile.githubUrl}
-        />
-      )}
+      <LinkedInButton />
+      <GithubButton />
       <UserButton />
     </div>
-  </header>
+  </>
 );

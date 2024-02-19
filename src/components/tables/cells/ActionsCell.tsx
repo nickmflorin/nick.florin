@@ -3,30 +3,41 @@ import { useState } from "react";
 import { logger } from "~/application/logger";
 import { IconButton } from "~/components/buttons";
 
-interface DeleteCellProps {
-  readonly isDisabled?: boolean;
-  readonly onError: (e: Error) => void;
-  readonly onSuccess: () => void;
+interface ActionsCellProps {
+  readonly skillId: string;
+  readonly deleteIsDisabled?: boolean;
+  readonly onDeleteError: (e: Error) => void;
+  readonly onDeleteSuccess: () => void;
   readonly onDelete: () => Promise<void>;
 }
 
-export const DeleteCell = ({
-  isDisabled,
+export const ActionsCell = ({
+  skillId,
+  deleteIsDisabled,
   onDelete,
-  onError,
-  onSuccess,
-}: DeleteCellProps): JSX.Element => {
+  onDeleteError,
+  onDeleteSuccess,
+}: ActionsCellProps): JSX.Element => {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="flex flex-row justify-center">
+    <div className="flex flex-row justify-center gap-[4px]">
+      <IconButton.Transparent
+        icon={{ name: "pen" }}
+        options={{ as: "link" }}
+        className="text-blue-500 rounded-full hover:text-blue-600"
+        disabledClassName="text-disabled"
+        loadingClassName="text-gray-400"
+        isLoading={loading}
+        href={`/admin/skills/${skillId}`}
+      />
       <IconButton.Transparent
         icon={{ name: "trash-alt" }}
         className="text-red-500 rounded-full hover:text-red-600"
         disabledClassName="text-disabled"
         loadingClassName="text-gray-400"
         isLoading={loading}
-        isDisabled={isDisabled}
+        isDisabled={deleteIsDisabled}
         onClick={async () => {
           setLoading(true);
           let success = false;
@@ -35,12 +46,12 @@ export const DeleteCell = ({
             success = true;
           } catch (e) {
             logger.error(e);
-            onError(e as Error);
+            onDeleteError(e as Error);
           } finally {
             setLoading(false);
           }
           if (success) {
-            onSuccess();
+            onDeleteSuccess();
           }
         }}
       />
@@ -48,4 +59,4 @@ export const DeleteCell = ({
   );
 };
 
-export default DeleteCell;
+export default ActionsCell;

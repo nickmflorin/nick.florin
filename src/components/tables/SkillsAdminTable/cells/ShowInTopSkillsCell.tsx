@@ -6,9 +6,9 @@ import { toast } from "react-toastify";
 
 import type * as types from "../../types";
 
-import { updateSkill } from "~/app/actions/updateSkill";
 import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
+import { updateSkill } from "~/actions/updateSkill";
 import { Checkbox } from "~/components/input/Checkbox";
 
 interface ShowInTopSkillsCellProps {

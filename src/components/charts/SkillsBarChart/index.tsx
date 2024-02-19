@@ -8,11 +8,11 @@ import { type z } from "zod";
 
 import type * as types from "../types";
 
-import { useSkills } from "~/hooks";
 import { generateChartColors } from "~/lib/charts";
 import { Form } from "~/components/forms/Form";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
+import { useSkills } from "~/hooks";
 
 import { BarChartSkeleton } from "../BarChartSkeleton";
 import { ChartContainer } from "../ChartContainer";

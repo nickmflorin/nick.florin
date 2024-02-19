@@ -10,7 +10,7 @@ import { ShowHide } from "~/components/util";
 import { ScreenLoading } from "~/components/views/ScreenLoading";
 import { env } from "~/env.mjs";
 
-import { FontAwesomeScript } from "./scripts/font-awesome-script";
+import { FontAwesomeScript } from "../scripts/font-awesome-script";
 
 const Toast = dynamic(() => import("~/components/notifications/Toast"));
 

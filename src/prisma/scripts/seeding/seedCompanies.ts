@@ -1,6 +1,6 @@
-import { prisma } from "../client";
+import { prisma } from "../../client";
+import { DetailEntityType } from "../../model";
 import { json } from "../fixtures/json";
-import { DetailEntityType } from "../model";
 
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";

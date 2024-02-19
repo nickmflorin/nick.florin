@@ -6,10 +6,10 @@ import { toast } from "react-toastify";
 
 import type * as types from "../../types";
 
-import { updateSkill } from "~/app/actions/updateSkill";
 import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
 import { type ApiSkill, type Skill } from "~/prisma/model";
+import { updateSkill } from "~/actions/updateSkill";
 import { IconButton } from "~/components/buttons";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 

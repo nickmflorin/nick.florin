@@ -1,6 +1,6 @@
-import { prisma } from "../client";
+import { prisma } from "../../client";
+import { type Profile } from "../../model";
 import { json } from "../fixtures/json";
-import { type Profile } from "../model";
 
 import { type SeedContext } from "./types";
 

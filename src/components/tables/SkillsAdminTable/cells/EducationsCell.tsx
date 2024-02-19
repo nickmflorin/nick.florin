@@ -4,9 +4,9 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { updateSkill } from "~/app/actions/updateSkill";
 import { logger } from "~/application/logger";
 import { type ApiSkill, type ApiEducation } from "~/prisma/model";
+import { updateSkill } from "~/actions/updateSkill";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 
 interface EducationsCellProps {

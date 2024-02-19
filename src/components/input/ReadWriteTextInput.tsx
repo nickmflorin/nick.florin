@@ -14,10 +14,10 @@ import clsx from "clsx";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 
-import { useReferentialCallback } from "~/hooks";
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
+import { useReferentialCallback } from "~/hooks";
 
 import { SaveAction, CancelAction } from "./actions";
 import { type InputProps, Input, NativeInput, type NativeInputProps } from "./generic";

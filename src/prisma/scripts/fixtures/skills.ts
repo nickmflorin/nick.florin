@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "../model";
+import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "../../model";
 
 import { getJsonFixtureFilePath } from "./constants";
 import { type JsonSkill } from "./schemas";

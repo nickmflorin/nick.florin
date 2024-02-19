@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { Degree, SkillCategory, ProgrammingLanguage, ProgrammingDomain } from "../model";
+import { Degree, SkillCategory, ProgrammingLanguage, ProgrammingDomain } from "../../model";
 
 const SkillReferenceJsonSchema = z.string();
 

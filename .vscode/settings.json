@@ -1,6 +1,7 @@
 {
   "editor.tabSize": 2,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.rulers": [100],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
@@ -17,7 +18,6 @@
   "files.insertFinalNewline": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.validate.enable": true,
   "eslint.codeActionsOnSave.rules": [
     "@typescript-eslint/semi",
     "@typescript-eslint/indent",
@@ -25,6 +25,8 @@
     "!@typescript-eslint/*",
     "*"
   ],
+  "javascript.format.enable": false,
+  "typescript.format.enable": false,
   // "eslint.format.enable": true,
   // These 3 are turned off so that they do not conflict with stylelint.
   "css.validate": false,

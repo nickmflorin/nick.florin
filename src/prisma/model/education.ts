@@ -1,4 +1,10 @@
-import { Degree } from "./model";
+import { type Education, type School, type Skill, type Detail, Degree } from "@prisma/client";
+
+export type ApiEducation = Education & {
+  readonly school: School;
+  readonly details: Detail[];
+  readonly skills: Skill[];
+};
 
 export type DegreeData = {
   readonly label: string;

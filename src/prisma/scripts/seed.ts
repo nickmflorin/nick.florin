@@ -2,8 +2,9 @@ import clerk from "@clerk/clerk-sdk-node";
 
 import { env } from "~/env.mjs";
 
-import { upsertUserFromClerk } from "./clerk";
-import { prisma } from "./client";
+import { prisma } from "../client";
+import { upsertUserFromClerk } from "../model";
+
 import { seedSchools, seedCompanies, type SeedContext, seedProfile, seedSkills } from "./seeding";
 
 async function main() {

@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { ClientResponse } from "~/application/http";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
-import { includeSkillMetadata } from "~/prisma/query";
+import { includeSkillMetadata } from "~/prisma/model";
 
 import { SkillQuerySchema } from "../types";
 

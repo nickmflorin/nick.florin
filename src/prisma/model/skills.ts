@@ -1,16 +1,26 @@
 import { DateTime } from "luxon";
+import {
+  type Experience,
+  type Company,
+  type Skill,
+  type Education,
+  type School,
+} from "@prisma/client";
 
 import { strictArrayLookup, minDate } from "~/lib";
 
-import { prisma } from "./client";
-import { type Skill, type ApiSkill } from "./model";
+import { prisma } from "../client";
 
-export const constructOrSearch = (query: string | undefined, fields: string[]) => ({
-  OR:
-    query !== undefined && query.length !== 0
-      ? fields.map(field => ({ [field]: { contains: query, mode: "insensitive" as const } }))
-      : undefined,
-});
+export type ApiSkill = Skill & {
+  readonly autoExperience: number;
+  readonly experience: number | null;
+  readonly educations: (Pick<Education, "major" | "id"> & {
+    readonly school: Pick<School, "id" | "name" | "logoImageUrl">;
+  })[];
+  readonly experiences: (Pick<Experience, "title" | "id"> & {
+    readonly company: Pick<Company, "id" | "name" | "logoImageUrl">;
+  })[];
+};
 
 export const includeSkillMetadata = async (skills: Skill[]): Promise<ApiSkill[]> => {
   const experiences = await prisma.experience.findMany({
