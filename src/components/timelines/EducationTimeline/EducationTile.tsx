@@ -1,28 +1,25 @@
 import dynamic from "next/dynamic";
 
-import { getDegreeData } from "~/prisma/model";
-import { type School, type Education } from "~/prisma/model";
+import { type ApiEducation, getDegreeData } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 
 const TimelineTile = dynamic(() => import("../TimelineTile"));
 
 export interface EducationTileProps extends ComponentProps {
-  readonly education: Education & { readonly school: School };
+  readonly education: ApiEducation<{ details: true; skills: true }>;
 }
 
 export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.Element => (
   <TimelineTile
+    {...education}
     title={`${getDegreeData(education.degree).abbreviatedLabel} in ${education.major}`}
     subTitle={education.school.name}
     description={[education.description, education.note]}
-    startDate={education.startDate}
     endDate={
       !education.endDate ? (education.postPoned ? "postponed" : "current") : education.endDate
     }
     fallbackImageIcon={{ name: "briefcase" }}
     imageUrl={education.school.logoImageUrl}
-    skills={[]}
-    details={[]}
     location={`${education.school.city}, ${education.school.state}`}
     {...props}
   />
