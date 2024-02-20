@@ -1,5 +1,7 @@
 import dynamic from "next/dynamic";
 
+import pick from "lodash.pick";
+
 import { type ApiExperience } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 
@@ -11,7 +13,7 @@ export interface ExperienceTileProps extends ComponentProps {
 
 export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): JSX.Element => (
   <TimelineTile
-    {...experience}
+    {...pick(experience, ["skills", "details", "startDate", "title"])}
     subTitle={experience.company.name}
     subTitleHref={experience.company.websiteUrl}
     description={[experience.description]}

@@ -25,7 +25,10 @@ export const getExperiences = cache(
     if (includes.skills === true) {
       skills = await prisma.skill.findMany({
         include: { experiences: true },
-        where: { experiences: { some: { experience: { id: { in: exps.map(e => e.id) } } } } },
+        where: {
+          visible: true,
+          experiences: { some: { experience: { id: { in: exps.map(e => e.id) } } } },
+        },
       });
     }
     let details: ExpDetail[] = [];

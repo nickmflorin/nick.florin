@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   const { showTopSkills } = parsedQuery.data;
 
   const skills = await prisma.skill.findMany({
-    where: { includeInTopSkills: true },
+    where: { includeInTopSkills: true, visible: true },
   });
 
   const data = (await includeSkillMetadata(skills)).sort(

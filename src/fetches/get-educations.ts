@@ -25,7 +25,10 @@ export const getEducations = cache(
     if (includes.skills === true) {
       skills = await prisma.skill.findMany({
         include: { educations: true },
-        where: { educations: { some: { education: { id: { in: edus.map(e => e.id) } } } } },
+        where: {
+          visible: true,
+          educations: { some: { education: { id: { in: edus.map(e => e.id) } } } },
+        },
       });
     }
     let details: EduDetail[] = [];

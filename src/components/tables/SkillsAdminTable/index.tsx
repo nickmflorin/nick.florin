@@ -18,6 +18,7 @@ const LabelCell = dynamic(() => import("./cells/LabelCell"), { ssr: false });
 const ShowInTopSkillsCell = dynamic(() => import("./cells/ShowInTopSkillsCell"), { ssr: false });
 const SlugCell = dynamic(() => import("./cells/SlugCell"), { ssr: false });
 const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"), { ssr: false });
+const VisibleCell = dynamic(() => import("./cells/VisibleCell"), { ssr: false });
 
 const Table = dynamic(() => import("../Table"), {
   loading: () => <Loading loading={true} />,
@@ -80,6 +81,12 @@ export const SkillsAdminTable = ({
           title: "Top Skill",
           textAlign: "center",
           render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
+        },
+        {
+          accessor: "visible",
+          title: "Visible",
+          textAlign: "center",
+          render: ({ model, table }) => <VisibleCell skill={model} table={table} />,
         },
         {
           accessor: "actions",
