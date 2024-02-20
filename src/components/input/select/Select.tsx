@@ -11,6 +11,7 @@ import {
 } from "react";
 
 import clsx from "clsx";
+import { motion } from "framer-motion";
 import { type Required } from "utility-types";
 
 import type * as types from "./types";
@@ -55,6 +56,8 @@ export type SelectValueModelRenderer<M extends MenuModel, O extends MenuOptions<
   params: { model: M; instance: types.SelectInstance<M, O> },
 ) => ReactNode;
 
+export type SelectItemRenderer<M extends MenuModel> = (model: M) => ReactNode;
+
 export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectMenuProps<M, O> &
   Pick<FloatingProps, "placement" | "inPortal"> &
   Pick<InputProps, "isLoading" | "isDisabled" | "isLocked" | "size" | "actions"> & {
@@ -94,6 +97,7 @@ export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectM
         instance: types.SelectInstance<M, O>;
       },
     ) => void;
+    readonly itemRenderer?: SelectItemRenderer<M>;
     readonly valueRenderer?: SelectValueRenderer<M, O>;
     readonly valueModelRenderer?: SelectValueModelRenderer<M, O>;
   };
@@ -112,6 +116,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
       menuClassName,
       inputClassName,
       actions,
+      itemRenderer,
       valueRenderer,
       valueModelRenderer,
       onOpen,
@@ -197,7 +202,9 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
               setValue(v);
               props.onChange?.(v, { models, instance: selectInstance, item });
             }}
-          />
+          >
+            {itemRenderer ? m => itemRenderer(m) : undefined}
+          </Menu>
         }
       >
         {children ||
@@ -207,7 +214,9 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
               ref={ref}
               actions={mergeActions(actions, {
                 right: [
-                  <Icon key="0" name="angle-down" size="16px" dimension="height" fit="square" />,
+                  <motion.div key="0" initial={{ rotate: 0 }} animate={{ rotate: open ? 180 : 0 }}>
+                    <Icon name="angle-up" size="16px" dimension="height" fit="square" />
+                  </motion.div>,
                 ],
               })}
               isLoading={isLoading}

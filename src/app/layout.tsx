@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { Suspense } from "react";
 
 import { AppConfig } from "~/app/config/AppConfig";
@@ -9,8 +10,6 @@ import { Text } from "~/components/typography/Text";
 import { ShowHide } from "~/components/util";
 import { ScreenLoading } from "~/components/views/ScreenLoading";
 import { env } from "~/env.mjs";
-
-import { FontAwesomeScript } from "../scripts/font-awesome-script";
 
 const Toast = dynamic(() => import("~/components/notifications/Toast"));
 
@@ -35,7 +34,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
         />
-        <FontAwesomeScript token={env.FONT_AWESOME_KIT_TOKEN} />
+        <Script
+          type="text/javascript"
+          src={`https://kit.fontawesome.com/${env.FONT_AWESOME_KIT_TOKEN}.js`}
+          crossOrigin="anonymous"
+          /* Using "nest" instead of "replace" avoids errors related to
+             NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is
+             not a child of this node */
+          data-auto-replace-svg="nest"
+          strategy="beforeInteractive"
+        />
       </head>
       <body className={InterFont.className}>
         <AppConfig>
