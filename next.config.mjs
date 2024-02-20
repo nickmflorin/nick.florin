@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Import the environment file to perform validation before build.
-const { env } = await import("./src/env.mjs");
+await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -41,7 +41,7 @@ const config = {
   redirects: async () => [
     {
       source: "/",
-      destination: "/resume",
+      destination: "/resume/experience",
       permanent: false,
     },
     {
@@ -62,7 +62,7 @@ const config = {
 
 const bundled = (phase, { defaultConfig }) =>
   withBundleAnalyzer({
-    enabled: env.ANALYZE_BUNDLE === true && phase === "phase-production-build",
+    enabled: process.env.ANALYZE_BUNDLE === "true" && phase === "phase-production-build",
   })({
     ...defaultConfig,
     ...config,
