@@ -22,6 +22,7 @@
   gap: theme("spacing.1");
   outline-offset: -1px;
   border-radius: constants.$input-border-radius;
+  overflow: hidden;
 
   @include sizing.input-size(sizing.$input-default-size);
   @each $size in sizing.$input-sizes {
@@ -36,6 +37,9 @@
     flex-direction: row;
     align-items: center;
     height: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 }
 

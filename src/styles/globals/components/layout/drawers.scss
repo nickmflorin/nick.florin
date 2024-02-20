@@ -9,57 +9,37 @@ $drawer-width: 400px;
   overflow: hidden;
 }
 
-.drawer {
-  @include drawer-container();
-  display: flex;
-  flex-direction: column;
-  width: $drawer-width;
-}
-
 // The 'drawer-target' is the empty div placeholder with an appropriate ID that the drawer portal is
 // injected into.  It will always be in the DOM - but will only have children when the drawer is
 // open.
 .drawer-target {
   @include drawer-container();
-  display: flex;
-  flex-direction: column;
+  min-width: fit-content;
 
-  // The 'drawer-wrapper' is responsible for wrapping the actual content of the drawer and setting a
-  // constant width for the drawer.  Since the 'drawer-wrapper' will only be present in the DOM when
-  // the drawer is open, it allows the content inside of the drawer-wrapper to change dynamically
-  // while showing a loading indicator without causing the drawer to change widths or hide/show
-  // when the content changes.
-  > .drawer-wrapper {
+  > .drawer {
     @include drawer-container();
+
+    // display: flex;
+    // flex-direction: column;
     width: $drawer-width;
-
-    max-width: 100%;
+    min-width: $drawer-width;
     border-left: 1px solid theme("colors.border");
-    // padding:
 
-    // TODO: Does this need to be inside of the 'drawer' instead?  Maybe both?
-    > .drawer__close-button {
+    > .drawer__content {
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: scroll;
+      height: 100%;
+      max-width: 100%;
+      @include partials.scrollbar();
+    }
+
+    .drawer__close-button {
       position: absolute;
       z-index: 100;
       top: 16px;
       right: 12px;
-    }
-
-    // The actual drawer view, which holds the specific content of a given drawer with a given set of potential server
-    // side parameters.  This is the only dynamic element of the drawer that can change outside of the closing/opening
-    // of the drawer.
-    .drawer {
-      width: 100%;
-      max-width: 100%;
-      height: 100%;
-      max-height: 100%;
-      overflow: hidden;
-
-      // The 'drawer' is a 'view'...
-      > .view__content {
-        overflow-y: scroll;
-        @include partials.scrollbar();
-      }
     }
   }
 }

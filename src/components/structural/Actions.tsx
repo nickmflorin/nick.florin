@@ -40,7 +40,7 @@ const LocalActions = ({
     >
       {a.map((ai, index) => (
         <React.Fragment key={index}>
-          {isIconProp(ai) ? <Icon dimension="height" size="fill" icon={ai} /> : ai}
+          {isIconProp(ai) ? <Icon dimension="height" size="fill" fit="square" icon={ai} /> : ai}
         </React.Fragment>
       ))}
     </div>

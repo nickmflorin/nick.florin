@@ -11,7 +11,7 @@ import { EducationSelect } from "~/components/input/select/EducationSelect";
 
 interface EducationsCellProps {
   readonly skill: ApiSkill;
-  readonly educations: Omit<ApiEducation, "skills" | "details">[];
+  readonly educations: ApiEducation[];
 }
 
 export const EducationsCell = ({ skill, educations }: EducationsCellProps): JSX.Element => {

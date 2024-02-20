@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 
 import { prisma } from "~/prisma/client";
 import { includeSkillMetadata } from "~/prisma/model";
@@ -32,5 +32,10 @@ const getTableData = cache(async (search: string | undefined) => {
 
 export default async function SkillsRoutedTable({ search }: SkillsRoutedTableProps) {
   const { skills, experiences, educations } = await getTableData(search);
-  return <SkillsTable skills={skills} experiences={experiences} educations={educations} />;
+  return (
+    // Wrapped in Suspense because the table accesses useSearchParams.
+    <Suspense fallback={<Loading loading={true} />}>
+      <SkillsTable skills={skills} experiences={experiences} educations={educations} />
+    </Suspense>
+  );
 }

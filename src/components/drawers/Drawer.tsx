@@ -5,14 +5,12 @@ import { DrawerPortal } from "./DrawerPortal";
 export interface DrawerProps {
   readonly open: boolean;
   readonly children: ReactNode;
-  readonly onClose?: () => void;
 }
 
-export const Drawer = ({ children, open, onClose }: DrawerProps): JSX.Element => (
+export const Drawer = ({ children, open }: DrawerProps): JSX.Element => (
   <DrawerPortal open={open}>
-    <div className="drawer-wrapper">
-      {/* {onClose && <CloseButton className="drawer__close-button" onClick={onClose} />} */}
-      {children}
+    <div className="drawer">
+      <div className="drawer__content">{children}</div>
     </div>
   </DrawerPortal>
 );

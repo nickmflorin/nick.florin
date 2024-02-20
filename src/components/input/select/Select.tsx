@@ -1,11 +1,12 @@
+"use client";
 import dynamic from "next/dynamic";
+import React from "react";
 import {
   type ReactNode,
   useState,
   forwardRef,
   type ForwardedRef,
   useImperativeHandle,
-  useCallback,
   useMemo,
 } from "react";
 
@@ -14,6 +15,7 @@ import { type Required } from "utility-types";
 
 import type * as types from "./types";
 
+import { Badge } from "~/components/badges/Badge";
 import { Floating, type FloatingProps } from "~/components/floating/Floating";
 import { Icon } from "~/components/icons/Icon";
 import {
@@ -27,6 +29,7 @@ import {
   getModelLabel,
   type MenuComponent,
 } from "~/components/menus";
+import { getMenuItemKey } from "~/components/menus/util";
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
@@ -45,6 +48,11 @@ type SelectMenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
 export type SelectValueRenderer<M extends MenuModel, O extends MenuOptions<M>> = (
   v: MenuValue<M, O>,
   params: { models: MenuModelValue<M, O>; instance: types.SelectInstance<M, O> },
+) => ReactNode;
+
+export type SelectValueModelRenderer<M extends MenuModel, O extends MenuOptions<M>> = (
+  v: MenuValue<M, O>,
+  params: { model: M; instance: types.SelectInstance<M, O> },
 ) => ReactNode;
 
 export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectMenuProps<M, O> &
@@ -87,6 +95,7 @@ export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectM
       },
     ) => void;
     readonly valueRenderer?: SelectValueRenderer<M, O>;
+    readonly valueModelRenderer?: SelectValueModelRenderer<M, O>;
   };
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generics don't play well with forward refs. */
@@ -104,6 +113,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
       inputClassName,
       actions,
       valueRenderer,
+      valueModelRenderer,
       onOpen,
       onClose,
       onOpenChange,
@@ -129,24 +139,39 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
 
     useImperativeHandle(ref, () => selectInstance);
 
-    const _valueRenderer = useCallback<SelectValueRenderer<M, O>>(
-      (v, { models }) => {
-        if (models === null) {
-          return "";
-        } else if (Array.isArray(models)) {
-          return models.map(m => getModelLabel(m, props.options)).join(", ");
-        }
-        return getModelLabel(models, props.options);
-      },
-      [props.options],
-    );
-
     const renderedValue = useMemo(() => {
       if (valueRenderer) {
         return valueRenderer(value, { models, instance: selectInstance });
+      } else if (Array.isArray(models)) {
+        // Sort models by key for consistent ordering.
+        const ms = models.sort((a, b) => (getMenuItemKey(a) > getMenuItemKey(b) ? 1 : -1));
+        return (
+          <div className="flex flex-wrap gap-y-[4px] gap-x-[4px] overflow-hidden">
+            {ms.map((m, i) => {
+              if (valueModelRenderer) {
+                return (
+                  <React.Fragment key={i}>
+                    {valueModelRenderer(value, { model: m, instance: selectInstance })}
+                  </React.Fragment>
+                );
+              }
+              const label = getModelLabel(m, props.options);
+              if (typeof label === "string") {
+                return (
+                  <Badge size="xxs" key={i}>
+                    {label}
+                  </Badge>
+                );
+              }
+              return label;
+            })}
+          </div>
+        );
+      } else if (valueModelRenderer) {
+        return valueModelRenderer(value, { model: models, instance: selectInstance });
       }
-      return _valueRenderer(value, { models, instance: selectInstance });
-    }, [_valueRenderer, valueRenderer, models, value, selectInstance]);
+      return getModelLabel(models, props.options);
+    }, [valueRenderer, valueModelRenderer, models, value, selectInstance, props.options]);
 
     return (
       <Floating
@@ -182,7 +207,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
               ref={ref}
               actions={mergeActions(actions, {
                 right: [
-                  <Icon key="0" name="angle-down" size="16px" dimension="height" fit="fit" />,
+                  <Icon key="0" name="angle-down" size="16px" dimension="height" fit="square" />,
                 ],
               })}
               isLoading={isLoading}

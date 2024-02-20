@@ -1,13 +1,12 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { useTransition, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 
 import { toast } from "react-toastify";
 
 import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/model";
 import { deleteSkill } from "~/actions/deleteSkill";
-import { Drawer } from "~/components/drawers/Drawer";
 import { Loading } from "~/components/views/Loading";
 
 import { ActionsCell } from "../cells/ActionsCell";
@@ -30,7 +29,7 @@ export interface SkillsAdminTableProps {
   readonly skills: ApiSkill[];
   // TODO: Consider doing these with a client side API request in the selects themselves.
   readonly experiences: Omit<ApiExperience, "skills" | "details">[];
-  readonly educations: Omit<ApiEducation, "skills" | "details">[];
+  readonly educations: ApiEducation[];
 }
 
 export const SkillsAdminTable = ({
@@ -38,73 +37,74 @@ export const SkillsAdminTable = ({
   experiences,
   educations,
 }: SkillsAdminTableProps): JSX.Element => {
-  const [skillToEdit, setSkillToEdit] = useState<string | null>(null);
   const [_, transition] = useTransition();
-  const router = useRouter();
+  const { refresh, replace } = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   return (
-    <>
-      <Table
-        columns={[
-          {
-            accessor: "label",
-            title: "Label",
-            width: 320,
-            render: ({ model, table }) => <LabelCell skill={model} table={table} />,
-          },
-          {
-            accessor: "slug",
-            title: "Slug",
-            width: 320,
-            render: ({ model, table }) => <SlugCell skill={model} table={table} />,
-          },
-          {
-            accessor: "experiences",
-            title: "Experiences",
-            width: 310,
-            render: ({ model }) => <ExperiencesCell skill={model} experiences={experiences} />,
-          },
-          {
-            accessor: "educations",
-            title: "Educations",
-            width: 310,
-            render: ({ model }) => <EducationsCell skill={model} educations={educations} />,
-          },
-          {
-            accessor: "experience",
-            title: "Experience",
-            textAlign: "center",
-            render: ({ model, table }) => <ExperienceCell skill={model} table={table} />,
-          },
-          {
-            accessor: "includeInTopSkills",
-            title: "Top Skill",
-            textAlign: "center",
-            render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
-          },
-          {
-            accessor: "actions",
-            title: "",
-            textAlign: "center",
-            render: ({ model }) => (
-              <ActionsCell
-                skillId={model.id}
-                // onEdit={() => setSkillToEdit(model.id)}
-                onDelete={async () => await deleteSkill(model.id)}
-                onDeleteError={() => toast.error("There was an error deleting the skill.")}
-                onDeleteSuccess={() => {
-                  transition(() => {
-                    router.refresh();
-                  });
-                }}
-              />
-            ),
-          },
-        ]}
-        data={skills}
-      />
-      {skillToEdit && <Drawer open={true}>{skillToEdit}</Drawer>}
-    </>
+    <Table
+      columns={[
+        {
+          accessor: "label",
+          title: "Label",
+          width: 320,
+          render: ({ model, table }) => <LabelCell skill={model} table={table} />,
+        },
+        {
+          accessor: "slug",
+          title: "Slug",
+          width: 320,
+          render: ({ model, table }) => <SlugCell skill={model} table={table} />,
+        },
+        {
+          accessor: "experiences",
+          title: "Experiences",
+          width: 310,
+          render: ({ model }) => <ExperiencesCell skill={model} experiences={experiences} />,
+        },
+        {
+          accessor: "educations",
+          title: "Educations",
+          width: 310,
+          render: ({ model }) => <EducationsCell skill={model} educations={educations} />,
+        },
+        {
+          accessor: "experience",
+          title: "Experience",
+          textAlign: "center",
+          render: ({ model, table }) => <ExperienceCell skill={model} table={table} />,
+        },
+        {
+          accessor: "includeInTopSkills",
+          title: "Top Skill",
+          textAlign: "center",
+          render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
+        },
+        {
+          accessor: "actions",
+          title: "",
+          textAlign: "center",
+          render: ({ model }) => (
+            <ActionsCell
+              onEdit={() => {
+                const params = new URLSearchParams(searchParams);
+                params.set("updateSkillId", model.id);
+                replace(`${pathname}?${params.toString()}`);
+              }}
+              onDelete={async () => await deleteSkill(model.id)}
+              onDeleteError={() => toast.error("There was an error deleting the skill.")}
+              onDeleteSuccess={() => {
+                transition(() => {
+                  refresh();
+                });
+              }}
+            />
+          ),
+        },
+      ]}
+      data={skills}
+    />
   );
 };
 export default SkillsAdminTable;

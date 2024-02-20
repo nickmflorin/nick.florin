@@ -4,16 +4,16 @@ import { logger } from "~/application/logger";
 import { IconButton } from "~/components/buttons";
 
 interface ActionsCellProps {
-  readonly skillId: string;
   readonly deleteIsDisabled?: boolean;
+  readonly onEdit: () => void;
   readonly onDeleteError: (e: Error) => void;
   readonly onDeleteSuccess: () => void;
   readonly onDelete: () => Promise<void>;
 }
 
 export const ActionsCell = ({
-  skillId,
   deleteIsDisabled,
+  onEdit,
   onDelete,
   onDeleteError,
   onDeleteSuccess,
@@ -24,12 +24,12 @@ export const ActionsCell = ({
     <div className="flex flex-row justify-center gap-[4px]">
       <IconButton.Transparent
         icon={{ name: "pen" }}
-        options={{ as: "link" }}
+        options={{ as: "button" }}
         className="text-blue-500 rounded-full hover:text-blue-600"
         disabledClassName="text-disabled"
         loadingClassName="text-gray-400"
         isLoading={loading}
-        href={`/admin/skills/${skillId}`}
+        onClick={() => onEdit()}
       />
       <IconButton.Transparent
         icon={{ name: "trash-alt" }}

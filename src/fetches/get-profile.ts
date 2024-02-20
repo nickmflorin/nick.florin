@@ -5,7 +5,7 @@ import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 import { type Profile } from "~/prisma/model";
 
-export const preload = () => {
+export const preloadProfile = () => {
   void getProfile();
 };
 

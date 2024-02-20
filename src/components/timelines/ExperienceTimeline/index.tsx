@@ -1,6 +1,4 @@
-import { DetailEntityType } from "@prisma/client";
-
-import { prisma } from "~/prisma/client";
+import { getExperiences } from "~/fetches/get-experiences";
 import { type ComponentProps } from "~/components/types";
 
 import { CommitTimeline } from "../CommitTimeline";
@@ -10,28 +8,7 @@ import { ExperienceTile } from "./ExperienceTile";
 export type ExperienceTimelineProps = ComponentProps;
 
 export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promise<JSX.Element> => {
-  const _experiences = await prisma.experience.findMany({
-    include: { company: true },
-    orderBy: { startDate: "desc" },
-  });
-  const details = await prisma.detail.findMany({
-    where: {
-      entityType: DetailEntityType.EXPERIENCE,
-      entityId: { in: _experiences.map(e => e.id) },
-    },
-    include: { nestedDetails: true },
-    orderBy: { createdAt: "desc" },
-  });
-  const skills = await prisma.skill.findMany({
-    include: { experiences: true },
-    where: { experiences: { some: { experience: { id: { in: _experiences.map(e => e.id) } } } } },
-  });
-  const experiences = _experiences.map(exp => ({
-    ...exp,
-    details: details.filter(d => d.entityId === exp.id),
-    skills: skills.filter(s => s.experiences.some(e => e.experienceId === exp.id)),
-  }));
-
+  const experiences = await getExperiences({ skills: true, details: true });
   return (
     <CommitTimeline {...props}>
       {experiences.map(experience => (

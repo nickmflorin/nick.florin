@@ -44,12 +44,11 @@ $badge-vertical-padding: 2px;
     align-items: center;
 
     > .icon {
-      @layer {
-        color: inherit;
-      }
+      color: inherit;
     }
 
     > .badge__text {
+      display: block;
       @include partials.truncate();
       @include inherit-font-properties();
     }

@@ -8,7 +8,6 @@ import { FieldConditions } from "~/components/fields";
 import { Field, ControlledField } from "~/components/fields/Field";
 import { ButtonFooter, type ButtonFooterProps } from "~/components/structural/ButtonFooter";
 import { type ComponentProps } from "~/components/types";
-import { Loading } from "~/components/views/Loading";
 
 import { NativeForm, type NativeFormProps } from "../NativeForm";
 import { type FormInstance, type BaseFormValues } from "../types";
@@ -25,7 +24,7 @@ export type FormProps<I extends BaseFormValues> = ComponentProps &
   Omit<NativeFormProps, keyof ComponentProps | "action" | "onSubmit" | "submitButtonType"> &
   Omit<ButtonFooterProps, "onSubmit" | keyof ComponentProps | "orientation"> & {
     readonly form: FormInstance<I>;
-    readonly loading?: boolean;
+    readonly contentClassName?: ComponentProps["className"];
     readonly header?: JSX.Element;
     readonly buttonsOrientation?: ButtonFooterProps["orientation"];
     readonly onSubmit?: SubmitAction<I>;
@@ -38,10 +37,10 @@ export const Form = <I extends BaseFormValues>({
   children,
   className,
   style,
-  loading,
   buttonsOrientation,
-  action,
   header,
+  contentClassName,
+  action,
   onSubmit,
   onError,
   ...props
@@ -79,17 +78,11 @@ export const Form = <I extends BaseFormValues>({
       }
     >
       {header && <div className="form__header">{header}</div>}
-      <div className="form__content">
-        <Loading loading={loading === true}>{children}</Loading>
-      </div>
+      <div className={clsx("form__content", contentClassName)}>{children}</div>
       <div className="form__footer">
         <FormErrors handler={errorHandler} />
         {(onSubmit || props.onCancel) && (
-          <ButtonFooter
-            {...props}
-            submitIsDisabled={props.submitIsDisabled || loading}
-            orientation={buttonsOrientation}
-          />
+          <ButtonFooter {...props} orientation={buttonsOrientation} />
         )}
       </div>
     </NativeForm>

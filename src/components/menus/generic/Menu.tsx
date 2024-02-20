@@ -6,21 +6,9 @@ import isEqual from "lodash.isequal";
 
 import * as hooks from "../hooks";
 import * as types from "../types";
+import { type MenuItemKey, getMenuItemKey } from "../util";
 
 import { MenuItem } from "./MenuItem";
-
-type MenuItemKey = string | number;
-
-const getMenuItemKey = <M extends types.MenuModel, O extends types.MenuOptions<M>>({
-  value,
-  id,
-  index,
-}: {
-  value: types.ModelValue<M, O>;
-  index: number;
-  id: types.ModelId<M, O>;
-}): MenuItemKey =>
-  typeof value === "string" || typeof value === "number" ? value : id !== undefined ? id : index;
 
 type MenuItemRefs = { [key in MenuItemKey]: RefObject<types.MenuItemInstance> };
 

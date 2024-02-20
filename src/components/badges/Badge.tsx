@@ -46,7 +46,7 @@ export const Badge = ({
   >
     <div className="badge__content">
       {icon && <Icon className={clsx("badge__icon", iconClassName)} icon={icon} />}
-      <div className="badge_text">{children}</div>
+      <div className="badge__text">{children}</div>
     </div>
   </div>
 );
