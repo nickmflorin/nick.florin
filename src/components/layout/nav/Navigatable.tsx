@@ -14,7 +14,10 @@ export const Navigatable = <N extends Pick<NavItem, "active" | "path">>({
   children,
 }: NavigatableProps<N>) => {
   const pathname = usePathname();
-  const isActive = useMemo(() => navItemIsActive(item, { pathname }), [pathname, item]);
+  const isActive = useMemo(
+    () => (pathname ? navItemIsActive(item, { pathname }) : false),
+    [pathname, item],
+  );
   return (
     <>
       {children({

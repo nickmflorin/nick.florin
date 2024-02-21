@@ -26,7 +26,12 @@ export const LayoutNavAnchor = forwardRef<
   ) => (
     <Navigatable item={item}>
       {({ isActive, href }) => (
-        <Tooltip content={item.tooltipLabel} placement="right" variant="secondary">
+        /* Using a Portal here prevents glitches associated with the tooltip from shifting around to
+           incorrect locations when the position of the sidebar items change due to hovering of a
+           parent sidebar item with children.  It also prevents a bug related to the opacity of the
+           tooltip changing so that it looks semi-transparent - althought the reason a portal fixes
+           that problem is less clear. */
+        <Tooltip content={item.tooltipLabel} placement="right" variant="secondary" inPortal>
           {({ ref, params }) => (
             <IconButton<{ as: "link" }>
               {...props}
