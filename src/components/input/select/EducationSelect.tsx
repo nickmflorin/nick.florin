@@ -1,7 +1,7 @@
 import { type Education, type School } from "~/prisma/model";
 import { Text } from "~/components/typography/Text";
 
-import { Select, type SelectProps } from "./Select";
+import { Select, type SelectProps } from "./generic";
 
 type Edu = Pick<Education, "major" | "id"> & {
   readonly school: Pick<School, "id" | "name">;

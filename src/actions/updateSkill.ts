@@ -7,7 +7,7 @@ import { ClientError } from "~/application/errors";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
-import { type Skill } from "~/prisma/model";
+import { type Skill, ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/prisma/model";
 
 import { authenticateAdminUser } from "./auth";
 
@@ -20,6 +20,9 @@ const UpdateSkillSchema = z.object({
   includeInTopSkills: z.boolean().optional(),
   experience: z.number().nullable().optional(),
   visible: z.boolean().optional(),
+  programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)).optional(),
+  programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)).optional(),
+  categories: z.array(z.nativeEnum(SkillCategory)).optional(),
 });
 
 export const updateSkill = async (

@@ -14,7 +14,7 @@ import clsx from "clsx";
 import { motion } from "framer-motion";
 import { type Required } from "utility-types";
 
-import type * as types from "./types";
+import type * as types from "../types";
 
 import { Badge } from "~/components/badges/Badge";
 import { Floating, type FloatingProps } from "~/components/floating/Floating";
@@ -35,7 +35,7 @@ import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 
-import { Input, type InputProps } from "../generic";
+import { Input, type InputProps } from "../../generic";
 
 const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
   loading: () => <Loading loading={true} />,

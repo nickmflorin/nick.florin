@@ -4,11 +4,21 @@ import { useEffect, useTransition } from "react";
 
 import { z } from "zod";
 
-import { type ApiSkill, type ApiEducation, type ApiExperience } from "~/prisma/model";
+import {
+  type ApiSkill,
+  type ApiEducation,
+  type ApiExperience,
+  ProgrammingDomain,
+  ProgrammingLanguage,
+  SkillCategory,
+} from "~/prisma/model";
 import { updateSkill } from "~/actions/updateSkill";
 import { Checkbox } from "~/components/input/Checkbox";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
+import { ProgrammingDomainSelect } from "~/components/input/select/ProgrammingDomainSelect";
+import { ProgrammingLanguageSelect } from "~/components/input/select/ProgrammingLanguageSelect";
+import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { Label } from "~/components/typography/Label";
@@ -25,6 +35,9 @@ export const UpdateSkillSchema = z.object({
   includeInTopSkills: z.boolean(),
   experience: z.number().nullable(),
   visible: z.boolean(),
+  programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)),
+  programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)),
+  categories: z.array(z.nativeEnum(SkillCategory)),
 });
 
 export type UpdateSkillFormValues = z.infer<typeof UpdateSkillSchema>;
@@ -54,6 +67,9 @@ export const UpdateSkillForm = ({
       description: "",
       experiences: [],
       educations: [],
+      categories: [],
+      programmingDomains: [],
+      programmingLanguages: [],
       includeInTopSkills: false,
       experience: null,
       visible: true,
@@ -62,14 +78,9 @@ export const UpdateSkillForm = ({
 
   useEffect(() => {
     setValues({
-      label: skill.label,
-      slug: skill.slug,
+      ...skill,
       experiences: skill.experiences.map(exp => exp.id),
       educations: skill.educations.map(edu => edu.id),
-      includeInTopSkills: skill.includeInTopSkills,
-      experience: skill.experience,
-      visible: skill.visible,
-      description: skill.description,
     });
   }, [skill, setValues]);
 
@@ -144,6 +155,40 @@ export const UpdateSkillForm = ({
           )}
         </Form.ControlledField>
       </div>
+      <Form.ControlledField name="programmingDomains" label="Domains" form={{ ...form, setValues }}>
+        {({ value, onChange }) => (
+          <ProgrammingDomainSelect
+            inputClassName="w-full"
+            menuClassName="max-h-[260px]"
+            value={value}
+            onChange={onChange}
+          />
+        )}
+      </Form.ControlledField>
+      <Form.ControlledField
+        name="programmingLanguages"
+        label="Languages"
+        form={{ ...form, setValues }}
+      >
+        {({ value, onChange }) => (
+          <ProgrammingLanguageSelect
+            inputClassName="w-full"
+            menuClassName="max-h-[260px]"
+            value={value}
+            onChange={onChange}
+          />
+        )}
+      </Form.ControlledField>
+      <Form.ControlledField name="categories" label="Categories" form={{ ...form, setValues }}>
+        {({ value, onChange }) => (
+          <SkillCategorySelect
+            inputClassName="w-full"
+            menuClassName="max-h-[260px]"
+            value={value}
+            onChange={onChange}
+          />
+        )}
+      </Form.ControlledField>
     </Form>
   );
 };
