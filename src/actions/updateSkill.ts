@@ -1,4 +1,6 @@
 "use server";
+import { revalidatePath } from "next/cache";
+
 import { z } from "zod";
 
 import { ClientError } from "~/application/errors";
@@ -34,7 +36,7 @@ export const updateSkill = async (
      fine - since it is not expected. */
   const user = await authenticateAdminUser();
 
-  return await prisma.$transaction(async tx => {
+  const sk = await prisma.$transaction(async tx => {
     let skill = await tx.skill.findUniqueOrThrow({ where: { id } });
     const currentLabel = data.label !== undefined ? data.label : skill.label;
 
@@ -139,4 +141,7 @@ export const updateSkill = async (
     }
     return skill;
   });
+  revalidatePath("/api/skills");
+  revalidatePath("/admin/skills", "page");
+  return sk;
 };

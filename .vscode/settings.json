@@ -9,6 +9,8 @@
     // "source.fixAll.stylelint": "explicit"
   },
   "eslint.run": "onSave",
+  "eslint.timeBudget.onValidation": 2000,
+  "eslint.timeBudget.onFixes": 2000,
   "eslint.debug": true,
   "editor.trimAutoWhitespace": true,
   "[prisma]": {

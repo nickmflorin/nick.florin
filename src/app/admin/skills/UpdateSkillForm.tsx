@@ -31,16 +31,7 @@ export const ServerUpdateSkillForm = async ({
       {skill && (
         <>
           <Title order={4}>{skill.label}</Title>
-          <UpdateSkillForm
-            skill={skill}
-            educations={educations}
-            experiences={experiences}
-            action={async data => {
-              "use server";
-              console.log("DATA");
-              await updateSkill(skill.id, data);
-            }}
-          />
+          <UpdateSkillForm skill={skill} educations={educations} experiences={experiences} />
         </>
       )}
     </div>

@@ -18,6 +18,7 @@ interface SkillsPageProps {
 
 export default async function SkillsPage({ searchParams }: SkillsPageProps) {
   const { updateSkillId } = searchParams;
+  console.log({ updateSkillId });
   if (!updateSkillId) {
     return null;
   }

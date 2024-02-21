@@ -1,20 +1,15 @@
-import { Suspense, type ReactNode } from "react";
-
-import { SearchInput } from "./SearchInput";
+import { type ReactNode } from "react";
 
 interface SkillsLayoutProps {
   readonly children: ReactNode;
   readonly drawer: ReactNode;
 }
 
-export default async function SkillsLayout({ children, drawer }: SkillsLayoutProps) {
-  return (
-    <>
-      <Suspense>
-        <SearchInput className="mb-[18px]" />
-      </Suspense>
-      <div className="grow overflow-hidden w-full relative">{children}</div>
-      {drawer}
-    </>
-  );
-}
+const SkillsLayout = ({ children, drawer }: SkillsLayoutProps) => (
+  <>
+    {children}
+    {drawer}
+  </>
+);
+
+export default SkillsLayout;

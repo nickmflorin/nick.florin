@@ -18,7 +18,8 @@ import { FormErrors, type IFormErrors } from "./FormErrors";
 export { type NativeFormProps } from "../NativeForm";
 export * from "../types";
 
-type SubmitAction<I extends BaseFormValues> = (data: I, errorHandler: IFormErrors) => void;
+// type SubmitAction<I extends BaseFormValues> = (data: I, errorHandler: IFormErrors) => void;
+type SubmitAction<I extends BaseFormValues> = (data: I) => void;
 
 export type FormProps<I extends BaseFormValues> = ComponentProps &
   Omit<NativeFormProps, keyof ComponentProps | "action" | "onSubmit" | "submitButtonType"> &
@@ -29,6 +30,7 @@ export type FormProps<I extends BaseFormValues> = ComponentProps &
     readonly buttonsOrientation?: ButtonFooterProps["orientation"];
     readonly onSubmit?: SubmitAction<I>;
     readonly action?: SubmitAction<I>;
+    // readonly action?: (formData: FormData) => void;
     readonly onError?: SubmitErrorHandler<I>;
   };
 
@@ -54,14 +56,16 @@ export const Form = <I extends BaseFormValues>({
     <NativeForm
       style={style}
       className={clsx("form", className)}
+      // action={action}
       action={
         action !== undefined
           ? () => {
               handleSubmit((data: I) => {
-                if (errorHandler.current) {
-                  errorHandler.current.clearErrors();
-                  action(data, errorHandler.current);
-                }
+                action(data);
+                /* if (errorHandler.current) {
+                     errorHandler.current.clearErrors();
+                     action(data);
+                   } */
               }, onError)();
             }
           : undefined
@@ -71,7 +75,8 @@ export const Form = <I extends BaseFormValues>({
           ? handleSubmit(data => {
               if (errorHandler.current) {
                 errorHandler.current.clearErrors();
-                onSubmit(data, errorHandler.current);
+                // onSubmit(data, errorHandler.current);
+                onSubmit(data);
               }
             }, onError)
           : undefined

@@ -2,10 +2,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useTransition } from "react";
 
-import { type Required } from "utility-types";
 import { z } from "zod";
 
 import { type ApiSkill, type ApiEducation, type ApiExperience } from "~/prisma/model";
+import { updateSkill } from "~/actions/updateSkill";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
 import { TextArea } from "~/components/input/TextArea";
@@ -28,10 +28,7 @@ export const UpdateSkillSchema = z.object({
 export type UpdateSkillFormValues = z.infer<typeof UpdateSkillSchema>;
 
 export interface UpdateSkillFormProps
-  extends Required<
-    Omit<FormProps<UpdateSkillFormValues>, "children" | "form" | "onSubmit">,
-    "action"
-  > {
+  extends Omit<FormProps<UpdateSkillFormValues>, "children" | "form" | "onSubmit" | "action"> {
   readonly skill: ApiSkill;
   readonly educations: ApiEducation[];
   readonly experiences: ApiExperience[];
@@ -43,6 +40,7 @@ export const UpdateSkillForm = ({
   experiences,
   ...props
 }: UpdateSkillFormProps): JSX.Element => {
+  const updateSkillWithId = updateSkill.bind(null, skill.id);
   const { refresh } = useRouter();
   const [_, transition] = useTransition();
 
@@ -79,6 +77,12 @@ export const UpdateSkillForm = ({
       form={{ ...form, setValues }}
       contentClassName="gap-[12px]"
       submitButtonType="submit"
+      action={async data => {
+        await updateSkillWithId(data);
+        transition(() => {
+          refresh();
+        });
+      }}
       /* action={async (data, handler) => {
            // TODO: Handle error?
            await props.action(data, handler);

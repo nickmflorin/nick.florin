@@ -139,8 +139,12 @@ const TS_BASE_RULES = {
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
-  plugins: ["prettier"],
+  extends: [
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "next/core-web-vitals",
+    "plugin:prettier/recommended",
+  ],
   rules: TS_BASE_RULES,
   ignorePatterns: [
     "next-env.d.ts",
