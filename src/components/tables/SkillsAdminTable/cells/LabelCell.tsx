@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 
 import type * as types from "../../types";
 
@@ -18,6 +18,10 @@ export const LabelCell = ({ skill, table }: LabelCellProps): JSX.Element => {
   const input = useReadWriteTextInput();
   const router = useRouter();
   const [_, transition] = useTransition();
+
+  useEffect(() => {
+    input.current.setValue(skill.label);
+  }, [skill, input]);
 
   return (
     <ReadWriteTextInput

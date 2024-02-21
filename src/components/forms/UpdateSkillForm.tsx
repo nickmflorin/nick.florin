@@ -42,7 +42,7 @@ export const UpdateSkillForm = ({
 }: UpdateSkillFormProps): JSX.Element => {
   const updateSkillWithId = updateSkill.bind(null, skill.id);
   const { refresh } = useRouter();
-  const [_, transition] = useTransition();
+  const [pending, transition] = useTransition();
 
   const { setValues, ...form } = useForm<UpdateSkillFormValues>({
     schema: UpdateSkillSchema,
@@ -75,6 +75,7 @@ export const UpdateSkillForm = ({
     <Form
       {...props}
       form={{ ...form, setValues }}
+      isLoading={pending}
       contentClassName="gap-[12px]"
       submitButtonType="submit"
       action={async data => {
@@ -83,13 +84,6 @@ export const UpdateSkillForm = ({
           refresh();
         });
       }}
-      /* action={async (data, handler) => {
-           // TODO: Handle error?
-           await props.action(data, handler);
-           transition(() => {
-             refresh();
-           });
-         }} */
     >
       <Form.Field name="label" label="Label" form={{ ...form, setValues }}>
         <TextInput className="w-full" {...form.register("label")} />

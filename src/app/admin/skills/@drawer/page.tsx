@@ -6,8 +6,6 @@ import { Loading } from "~/components/views/Loading";
 
 import { ServerUpdateSkillForm } from "../UpdateSkillForm";
 
-export const dynamic = "force-static";
-
 const Drawer = dynamicfn(() => import("~/components/drawers/Drawer"), {
   loading: () => <Loading loading={true} />,
 });
@@ -18,7 +16,6 @@ interface SkillsPageProps {
 
 export default async function SkillsPage({ searchParams }: SkillsPageProps) {
   const { updateSkillId } = searchParams;
-  console.log({ updateSkillId });
   if (!updateSkillId) {
     return null;
   }

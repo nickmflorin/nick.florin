@@ -1,7 +1,6 @@
 import dynamicFn from "next/dynamic";
 
 import { type ApiEducation, type ApiExperience } from "~/prisma/model";
-import { updateSkill } from "~/actions/updateSkill";
 import { getEducations } from "~/fetches/get-educations";
 import { getExperiences } from "~/fetches/get-experiences";
 import { getSkill } from "~/fetches/get-skill";

@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
@@ -23,6 +23,10 @@ export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [_, transition] = useTransition();
+
+  useEffect(() => {
+    input.current.setValue(skill.slug);
+  }, [skill, input]);
 
   return (
     <div className="flex flex-row justify-between gap-[12px]">
