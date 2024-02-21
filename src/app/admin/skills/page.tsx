@@ -1,4 +1,4 @@
-import dynamic from "next/dynamic";
+import dynamicfn from "next/dynamic";
 import { Suspense } from "react";
 
 import { preloadEducations } from "~/fetches/get-educations";
@@ -10,7 +10,9 @@ import { SearchInput } from "./SearchInput";
 import SkillsAdminTable from "./SkillsAdminTable";
 import { ServerUpdateSkillForm } from "./UpdateSkillForm";
 
-const Drawer = dynamic(() => import("~/components/drawers/Drawer"), {
+export const dynamic = "force-static";
+
+const Drawer = dynamicfn(() => import("~/components/drawers/Drawer"), {
   loading: () => <Loading loading={true} />,
 });
 

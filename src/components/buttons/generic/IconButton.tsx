@@ -3,7 +3,12 @@ import { forwardRef, type ReactNode } from "react";
 import { type Optional } from "utility-types";
 
 import { capitalize } from "~/lib/formatters";
-import { type IconProp } from "~/components/icons";
+import {
+  type DynamicIconProp,
+  type IconProp,
+  type IconElement,
+  isDynamicIconProp,
+} from "~/components/icons";
 import { isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import Spinner from "~/components/icons/Spinner";
@@ -17,7 +22,7 @@ export type IconButtonProps<O extends types.ButtonOptions> = Optional<
   Omit<types.AbstractProps<"icon-button", O>, "buttonType">,
   "children"
 > & {
-  readonly icon?: IconProp;
+  readonly icon?: IconProp | IconElement | DynamicIconProp;
 };
 
 const Base = AbstractButton as React.FC<types.AbstractProps<"icon-button", types.ButtonOptions>>;
@@ -48,7 +53,7 @@ const LocalIconButton = forwardRef(
       <Base {...ps} ref={ref} isLoading={isLoading}>
         {children ? (
           <WithLoading isLoading={isLoading}>{children}</WithLoading>
-        ) : isIconProp(icon) ? (
+        ) : isIconProp(icon) || isDynamicIconProp(icon) ? (
           <Icon
             icon={icon}
             isLoading={isLoading}

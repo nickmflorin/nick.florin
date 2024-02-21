@@ -180,6 +180,16 @@ export type DynamicIcon = {
  */
 export type DynamicIconProp = DynamicIcon[];
 
+export const DynamicIconPropSchema = z.array(
+  z.object({
+    icon: IconPropSchema,
+    visible: z.boolean(),
+  }),
+);
+
+export const isDynamicIconProp = (value: unknown): value is DynamicIconProp =>
+  DynamicIconPropSchema.safeParse(value).success;
+
 type _BaseIconProps = ComponentProps & {
   /**
    * Whether or not the Icon should be rendered as a "loading" spinner.  Useful in cases where a

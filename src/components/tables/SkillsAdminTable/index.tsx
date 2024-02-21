@@ -95,7 +95,7 @@ export const SkillsAdminTable = ({
           render: ({ model }) => (
             <ActionsCell
               onEdit={() => {
-                const params = new URLSearchParams(searchParams);
+                const params = new URLSearchParams(searchParams?.toString());
                 params.set("updateSkillId", model.id);
                 replace(`${pathname}?${params.toString()}`);
               }}

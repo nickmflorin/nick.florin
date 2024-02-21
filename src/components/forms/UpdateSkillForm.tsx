@@ -1,11 +1,14 @@
 "use client";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useTransition } from "react";
 
+import { type Required } from "utility-types";
 import { z } from "zod";
 
 import { type ApiSkill, type ApiEducation, type ApiExperience } from "~/prisma/model";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
+import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "./Form";
@@ -14,6 +17,7 @@ import { useForm } from "./useForm";
 export const UpdateSkillSchema = z.object({
   label: z.string(),
   slug: z.string(),
+  description: z.string().nullable(),
   experiences: z.array(z.string()),
   educations: z.array(z.string()),
   includeInTopSkills: z.boolean(),
@@ -24,7 +28,10 @@ export const UpdateSkillSchema = z.object({
 export type UpdateSkillFormValues = z.infer<typeof UpdateSkillSchema>;
 
 export interface UpdateSkillFormProps
-  extends Omit<FormProps<UpdateSkillFormValues>, "children" | "form"> {
+  extends Required<
+    Omit<FormProps<UpdateSkillFormValues>, "children" | "form" | "onSubmit">,
+    "action"
+  > {
   readonly skill: ApiSkill;
   readonly educations: ApiEducation[];
   readonly experiences: ApiExperience[];
@@ -36,11 +43,15 @@ export const UpdateSkillForm = ({
   experiences,
   ...props
 }: UpdateSkillFormProps): JSX.Element => {
+  const { refresh } = useRouter();
+  const [_, transition] = useTransition();
+
   const { setValues, ...form } = useForm<UpdateSkillFormValues>({
     schema: UpdateSkillSchema,
     defaultValues: {
       label: "",
       slug: "",
+      description: "",
       experiences: [],
       educations: [],
       includeInTopSkills: false,
@@ -58,16 +69,32 @@ export const UpdateSkillForm = ({
       includeInTopSkills: skill.includeInTopSkills,
       experience: skill.experience,
       visible: skill.visible,
+      description: skill.description,
     });
   }, [skill, setValues]);
 
   return (
-    <Form {...props} form={{ ...form, setValues }} contentClassName="gap-[12px]">
+    <Form
+      {...props}
+      form={{ ...form, setValues }}
+      contentClassName="gap-[12px]"
+      submitButtonType="submit"
+      /* action={async (data, handler) => {
+           // TODO: Handle error?
+           await props.action(data, handler);
+           transition(() => {
+             refresh();
+           });
+         }} */
+    >
       <Form.Field name="label" label="Label" form={{ ...form, setValues }}>
         <TextInput className="w-full" {...form.register("label")} />
       </Form.Field>
       <Form.Field name="slug" label="Slug" form={{ ...form, setValues }}>
         <TextInput className="w-full" {...form.register("slug")} />
+      </Form.Field>
+      <Form.Field name="description" label="Description" form={{ ...form, setValues }}>
+        <TextArea className="w-full" {...form.register("description")} />
       </Form.Field>
       <Form.ControlledField name="experiences" label="Experiences" form={{ ...form, setValues }}>
         {({ value, onChange }) => (

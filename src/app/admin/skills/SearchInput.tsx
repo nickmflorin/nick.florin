@@ -14,7 +14,7 @@ export const SearchInput = (props: SearchInputProps) => {
   const searchParams = useSearchParams();
 
   const handleSearch = useDebouncedCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams?.toString());
     if (e.target.value) {
       params.set("search", e.target.value);
     } else {
@@ -27,7 +27,7 @@ export const SearchInput = (props: SearchInputProps) => {
     <TextInput
       {...props}
       onChange={e => handleSearch(e)}
-      defaultValue={searchParams.get("search")?.toString() ?? ""}
+      defaultValue={searchParams?.get("search")?.toString() ?? ""}
     />
   );
 };

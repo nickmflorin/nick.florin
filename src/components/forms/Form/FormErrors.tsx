@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useImperativeHandle } from "react";
 
 import { FormError } from "./FormError";
 
 export interface IFormErrors {
-  // readonly addServerError: (error: ServerErrorResponseBody) => void;
   readonly clearErrors: () => void;
+  readonly addError: (error: string | string[]) => void;
 }
 
 export interface FormErrorsProps {
@@ -15,12 +15,12 @@ export interface FormErrorsProps {
 export const FormErrors = ({ handler }: FormErrorsProps): JSX.Element => {
   const [errors, setErrors] = useState<string[]>([]);
 
-  /* useImperativeHandle(handler, () => ({
-       clearErrors: () => setErrors([]),
-       addServerError: (error: ServerErrorResponseBody) => {
-         setErrors(prev => [...prev, error.message]);
-       },
-     })); */
+  useImperativeHandle(handler, () => ({
+    clearErrors: () => setErrors([]),
+    addError: (error: string | string[]) => {
+      setErrors(prev => [...prev, ...(Array.isArray(error) ? error : [error])]);
+    },
+  }));
 
   if (errors.length === 0) {
     return <></>;

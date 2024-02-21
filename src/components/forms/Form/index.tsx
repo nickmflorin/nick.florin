@@ -81,7 +81,7 @@ export const Form = <I extends BaseFormValues>({
       <div className={clsx("form__content", contentClassName)}>{children}</div>
       <div className="form__footer">
         <FormErrors handler={errorHandler} />
-        {(onSubmit || props.onCancel) && (
+        {(onSubmit || action || props.onCancel) && (
           <ButtonFooter {...props} orientation={buttonsOrientation} />
         )}
       </div>

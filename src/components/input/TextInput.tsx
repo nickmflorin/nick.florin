@@ -10,7 +10,24 @@ export interface TextInputProps
   extends Omit<InputProps, "children">,
     Omit<NativeInputProps, keyof InputProps> {}
 
-const INPUT_PROPS = ["className", "style", "variant", "size"] as const;
+const INPUT_PROPS = [
+  "className",
+  "style",
+  "variant",
+  "size",
+  "onFocus",
+  "onBlur",
+  "onPointerDown",
+  "onMouseDown",
+  "onClick",
+  "onKeyDown",
+  "onKeyUp",
+  "onFocusCapture",
+  "actions",
+  "isActive",
+  "isLocked",
+  "isLoading",
+] as const;
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   ({ isDisabled, ...props }: TextInputProps, ref) => (
