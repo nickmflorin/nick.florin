@@ -6,8 +6,6 @@ import clsx from "clsx";
 import pick from "lodash.pick";
 import { type z } from "zod";
 
-import type * as types from "../types";
-
 import { generateChartColors } from "~/lib/charts";
 import { Form } from "~/components/forms/Form";
 import { type ComponentProps } from "~/components/types";
@@ -19,13 +17,12 @@ import { ChartContainer } from "../ChartContainer";
 import { Legend } from "../Legend";
 
 import { SkillsBarChartForm } from "./SkillsBarChartForm";
-import { SkillsBarChartTooltip } from "./SkillsBarChartTooltip";
 import { SkillsBarChartFormSchema, type SkillsBarChartDatum } from "./types";
 
-const BarChart = dynamic(() => import("../BarChart"), {
+const Chart = dynamic(() => import("./SkillsBarChart"), {
   ssr: false,
   loading: () => <Loading loading={true} />,
-}) as types.BarChart;
+});
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
   const [skillsQuery, setSkillsQuery] = useState<z.infer<typeof SkillsBarChartFormSchema>>({
@@ -76,29 +73,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
           />
         }
       >
-        <BarChart
-          data={data ?? []}
-          indexBy="label"
-          keys={["experience"]}
-          enableLabel={false}
-          borderColor={{
-            from: "color",
-            modifiers: [["darker", 1.6]],
-          }}
-          colors={colors}
-          colorBy="indexValue"
-          axisBottom={null}
-          axisLeft={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: "# Years Experience",
-            legendPosition: "middle",
-            legendOffset: -40,
-            truncateTickAt: 0,
-          }}
-          tooltip={props => <SkillsBarChartTooltip {...props} />}
-        />
+        <Chart data={data ?? []} />
         <Legend items={legendItems} className="px-[20px]" />
       </ChartContainer>
     </div>
