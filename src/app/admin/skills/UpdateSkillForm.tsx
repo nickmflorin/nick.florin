@@ -38,7 +38,6 @@ export const ServerUpdateSkillForm = async ({
             action={async data => {
               "use server";
               console.log("DATA");
-
               await updateSkill(skill.id, data);
             }}
           />

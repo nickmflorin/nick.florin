@@ -1,17 +1,21 @@
 "use client";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useCallback } from "react";
 
 import { IconButton, type IconButtonProps } from "./generic";
 
 export interface DrawerCloseButtonProps extends IconButtonProps<{ as: "button" }> {
   readonly param: string;
+  readonly searchParams: string;
 }
 
-export const DrawerCloseButton = ({ param, ...props }: DrawerCloseButtonProps): JSX.Element => {
+export const DrawerCloseButton = ({
+  param,
+  searchParams,
+  ...props
+}: DrawerCloseButtonProps): JSX.Element => {
   const { replace } = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const handleClick = useCallback(() => {
     const params = new URLSearchParams(searchParams);

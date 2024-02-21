@@ -1,56 +1,43 @@
-import dynamicfn from "next/dynamic";
-import { Suspense } from "react";
+import dynamic from "next/dynamic";
+import { Suspense, cache } from "react";
 
-import { preloadEducations } from "~/fetches/get-educations";
-import { preloadExperiences } from "~/fetches/get-experiences";
-import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
+import { prisma } from "~/prisma/client";
+import { includeSkillMetadata } from "~/prisma/model";
+import { constructOrSearch } from "~/prisma/util";
 import { Loading } from "~/components/views/Loading";
 
-import { SearchInput } from "./SearchInput";
-import SkillsAdminTable from "./SkillsAdminTable";
-import { ServerUpdateSkillForm } from "./UpdateSkillForm";
-
-export const dynamic = "force-static";
-
-const Drawer = dynamicfn(() => import("~/components/drawers/Drawer"), {
+const SkillsTable = dynamic(() => import("~/components/tables/SkillsAdminTable/index"), {
   loading: () => <Loading loading={true} />,
 });
 
+const getTableData = async (search: string | undefined) => {
+  const _skills = await prisma.skill.findMany({
+    where: { AND: constructOrSearch(search, ["slug", "label"]) },
+    orderBy: { createdAt: "desc" },
+  });
+  const experiences = await prisma.experience.findMany({
+    include: { company: true },
+    orderBy: { startDate: "desc" },
+  });
+  const educations = await prisma.education.findMany({
+    include: { school: true },
+    orderBy: { startDate: "desc" },
+  });
+  return { skills: await includeSkillMetadata(_skills), experiences, educations };
+};
+
 interface SkillsPageProps {
-  readonly searchParams: { readonly search?: string; readonly updateSkillId?: string };
+  readonly searchParams: { readonly search?: string };
 }
 
-export default async function SkillsPage({
-  searchParams: { search, updateSkillId },
-}: SkillsPageProps) {
-  preloadEducations({});
-  preloadExperiences({});
-
-  let drawer: JSX.Element | null = null;
-  if (updateSkillId) {
-    drawer = (
-      <Drawer open={true}>
-        {/* Must be wrapped in Suspense because it accesses useSearchParams. */}
-        <Suspense key={updateSkillId} fallback={<Loading loading={true} />}>
-          <ServerUpdateSkillForm skillId={updateSkillId} />
-          <Suspense>
-            <DrawerCloseButton param="updateSkillId" />
-          </Suspense>
-        </Suspense>
-      </Drawer>
-    );
-  }
+export default async function SkillsLayout({ searchParams: { search } }: SkillsPageProps) {
+  const { skills, experiences, educations } = await getTableData(search);
   return (
-    <>
-      <Suspense>
-        <SearchInput className="mb-[18px]" />
-      </Suspense>
-      <div className="grow overflow-hidden w-full relative">
-        <Suspense key={search} fallback={<Loading loading={true} />}>
-          <SkillsAdminTable search={search} />
-        </Suspense>
-      </div>
-      {drawer}
-    </>
+    /* Wrapped in Suspense because the table accesses useSearchParams.
+       Note: We should revisit this, it may no longer be necessary because the table is at the top
+       level of this "page" and the "page" is wrapped in a suspense boundary by default. */
+    <Suspense key={search} fallback={<Loading loading={true} />}>
+      <SkillsTable skills={skills} experiences={experiences} educations={educations} />
+    </Suspense>
   );
 }
