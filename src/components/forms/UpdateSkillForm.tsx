@@ -6,10 +6,12 @@ import { z } from "zod";
 
 import { type ApiSkill, type ApiEducation, type ApiExperience } from "~/prisma/model";
 import { updateSkill } from "~/actions/updateSkill";
+import { Checkbox } from "~/components/input/Checkbox";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
+import { Label } from "~/components/typography/Label";
 
 import { Form, type FormProps } from "./Form";
 import { useForm } from "./useForm";
@@ -116,6 +118,32 @@ export const UpdateSkillForm = ({
           />
         )}
       </Form.ControlledField>
+      <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
+        <Form.ControlledField name="visible" form={{ ...form, setValues }} className="max-w-fit">
+          {({ value, onChange }) => (
+            <div className="flex flex-row gap-[6px] items-center">
+              <Checkbox value={value} onChange={onChange} />
+              <Label size="sm" fontWeight="medium" className="leading-[16px]">
+                Visible
+              </Label>
+            </div>
+          )}
+        </Form.ControlledField>
+        <Form.ControlledField
+          name="includeInTopSkills"
+          form={{ ...form, setValues }}
+          className="max-w-fit"
+        >
+          {({ value, onChange }) => (
+            <div className="flex flex-row gap-[6px] items-center">
+              <Checkbox value={value} onChange={onChange} />
+              <Label size="sm" fontWeight="medium" className="leading-[16px]">
+                Top Skill
+              </Label>
+            </div>
+          )}
+        </Form.ControlledField>
+      </div>
     </Form>
   );
 };

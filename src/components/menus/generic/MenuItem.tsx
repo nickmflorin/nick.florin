@@ -79,7 +79,7 @@ export const MenuItem = forwardRef<MenuItemInstance, MenuItemProps>(
           style={itemHeight !== undefined ? { ...props.style, height: itemHeight } : props.style}
         >
           {isMulti && (
-            <Checkbox readOnly checked={isSelected} isDisabled={isDisabled} isLocked={isLocked} />
+            <Checkbox readOnly value={isSelected} isDisabled={isDisabled} isLocked={isLocked} />
           )}
           <div className="menu__item__content">{children}</div>
           <Spinner isLoading={isLoading} size="18px" dimension="height" />

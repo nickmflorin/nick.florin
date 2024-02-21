@@ -46,7 +46,7 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
     <div className="flex flex-row gap-[12px] items-center justify-center">
       <div className="flex flex-row gap-[6px] items-center w-[52px]">
         <Checkbox
-          checked={isAuto}
+          value={isAuto}
           onChange={async e => {
             // Optimistically update the state of the checkbox.
             setIsAuto(e.target.checked);

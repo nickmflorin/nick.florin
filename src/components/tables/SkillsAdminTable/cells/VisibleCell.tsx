@@ -28,7 +28,7 @@ export const VisibleCell = ({ skill, table }: VisibleCellProps): JSX.Element => 
   return (
     <div className="flex flex-row items-center justify-center">
       <Checkbox
-        checked={checked}
+        value={checked}
         onChange={async e => {
           // Set checked state optimistically.
           setChecked(e.target.checked);
