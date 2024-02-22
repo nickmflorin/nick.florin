@@ -9,8 +9,21 @@
     // "source.fixAll.stylelint": "explicit"
   },
   "eslint.run": "onSave",
-  "eslint.timeBudget.onValidation": 2000,
-  "eslint.timeBudget.onFixes": 2000,
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown",
+    "scss",
+    "css"
+  ],
+  // We want to eventually do this.
+  "eslint.experimental.useFlatConfig": false,
+  "eslint.format.enable": true,
+  "eslint.execArgv": ["--max-old-space-size=4096"],
   "eslint.debug": true,
   "editor.trimAutoWhitespace": true,
   "[prisma]": {
@@ -36,5 +49,5 @@
   "scss.validate": false,
   "stylelint.validate": ["css", "scss", "less", "postcss"],
   "stylelint.configBasedir": "/",
-  "stylelint.packageManager": "pnpm"
+  "stylelint.packageManager": "pnpm",
 }
