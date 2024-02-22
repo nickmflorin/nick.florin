@@ -104,7 +104,7 @@ $font-family-default-weights: (
 }
 
 /* --------------------------------------- Font Sizes ----------------------------------------- */
-$typography-sizes: ("xxxs", "xxs", "xs", "sm", "md", "lg", "xl");
+$typography-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
 
 $typography-size-properties: (
   "body": (
@@ -125,6 +125,11 @@ $typography-size-properties: (
     ),
     "sm": (
       font-size: 14px,
+      line-height: 18px,
+      font-weight: "regular",
+    ),
+    "smplus": (
+      font-size: 15px,
       line-height: 18px,
       font-weight: "regular",
     ),
@@ -165,6 +170,11 @@ $typography-size-properties: (
       line-height: 22px,
       font-weight: "semibold",
     ),
+    "smplus": (
+      font-size: 17px,
+      line-height: 22px,
+      font-weight: "semibold",
+    ),
     "md": (
       font-size: 18px,
       line-height: 26px,
@@ -200,7 +210,12 @@ $typography-size-properties: (
     "sm": (
       font-size: 14px,
       line-height: 18px,
-      font-weight: "regular",
+      font-weight: "medium",
+    ),
+    "smplus": (
+      font-size: 15px,
+      line-height: 18px,
+      font-weight: "medium",
     ),
     "md": (
       font-size: 16px,
@@ -352,16 +367,6 @@ $typography-default-colors: (
   $properties: get-font($type, $args...);
   @include mixins.mapped-properties($properties);
 }
-
-// @mixin with-default-font-size($type) {
-//   $size: get-default-size($type);
-//   $properties: get-font($type, $size: $size);
-
-//   font-size: fn.mapget($properties, font-size);
-//   line-height: fn.mapget($properties, line-height);
-//   font-weight: fn.mapget($properties, font-weight);
-//   font-family: fn.mapget($properties, font-family);
-// }
 
 @mixin with-font-sizes($type) {
   @each $size in $typography-sizes {

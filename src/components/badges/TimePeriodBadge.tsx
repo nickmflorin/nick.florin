@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import { type ModelTimePeriod, stringifyTimePeriod } from "~/prisma/model";
 
 import { Badge, type BadgeProps } from "./Badge";
@@ -10,12 +8,7 @@ export interface TimePeriodBadgeProps
 }
 
 export const TimePeriodBadge = ({ timePeriod, ...props }: TimePeriodBadgeProps): JSX.Element => (
-  <Badge
-    size="sm"
-    icon={{ name: "calendar" }}
-    {...props}
-    className={clsx("font-medium", props.className)}
-  >
+  <Badge icon={{ name: "calendar" }} {...props}>
     {stringifyTimePeriod(timePeriod)}
   </Badge>
 );

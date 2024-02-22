@@ -6,27 +6,28 @@ import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import {
-  type TypographySize,
   TypographySizes,
-  type FontWeight,
+  type BaseTypographyProps,
   FontWeights,
+  getTypographyClassName,
 } from "~/components/typography";
 
-export interface BadgeProps extends ComponentProps, Pick<HTMLElementProps<"div">, "onClick"> {
+export interface BadgeProps
+  extends ComponentProps,
+    BaseTypographyProps,
+    Pick<HTMLElementProps<"div">, "onClick"> {
   readonly children: string;
-  readonly size?: TypographySize;
-  readonly fontWeight?: FontWeight;
   readonly icon?: IconProp;
   readonly iconClassName?: ComponentProps["className"];
-  readonly transform?: "uppercase" | "lowercase" | "capitalize";
 }
 
 export const Badge = ({
   children,
-  fontWeight = FontWeights.SEMIBOLD,
-  size = TypographySizes.MD,
+  fontWeight = FontWeights.MEDIUM,
+  size = TypographySizes.SM,
   icon,
   transform,
+  fontFamily,
   iconClassName,
   ...props
 }: BadgeProps): JSX.Element => (
@@ -35,13 +36,11 @@ export const Badge = ({
     className={clsx(
       "badge",
       `badge--size-${size}`,
-      `font-weight-${fontWeight}`,
       {
-        uppercase: transform === "uppercase",
-        lowercase: transform === "lowercase",
-        capitalize: transform === "capitalize",
         "pointer-events-auto cursor-pointer": props.onClick !== undefined,
       },
+      // Omit the font size prop because it is handled by the badge size.
+      getTypographyClassName({ fontWeight, transform, fontFamily }),
       props.className,
     )}
   >

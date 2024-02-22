@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import { type ModelLocation, stringifyLocation } from "~/prisma/model";
 
 import { Badge, type BadgeProps } from "./Badge";
@@ -10,12 +8,7 @@ export interface LocationBadgeProps
 }
 
 export const LocationBadge = ({ location, ...props }: LocationBadgeProps): JSX.Element => (
-  <Badge
-    size="sm"
-    icon={{ name: "location-dot" }}
-    {...props}
-    className={clsx("font-medium", props.className)}
-  >
+  <Badge icon={{ name: "location-dot" }} {...props}>
     {stringifyLocation(location)}
   </Badge>
 );

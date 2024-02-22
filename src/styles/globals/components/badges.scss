@@ -54,6 +54,9 @@ $badge-vertical-padding: 2px;
     }
   }
 
+  // Allow the font family to be overridden with a prop.
+  @include partials.with-font-families();
+
   @include partials.with-font-sizes("body") using ($size, $data) {
     &.badge--size-#{$size} {
       $line-height: partials.mapget($data, line-height);
@@ -65,7 +68,6 @@ $badge-vertical-padding: 2px;
 
       // Allow the font-weight to be overridden for each size.
       @include partials.with-font-weights();
-
       > .badge__content {
         > .badge__icon {
           height: $line-height - 4px;
@@ -74,4 +76,43 @@ $badge-vertical-padding: 2px;
       }
     }
   }
+}
+
+.badge-collection {
+  font-family: partials.get-font-family("body");
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  @include partials.with-font-families();
+
+  > .badge {
+    font-weight: inherit;
+    font-family: inherit;
+  }
+
+  @include partials.with-font-sizes("body") using ($size, $data) {
+    &.badge-collection--size-#{$size} {
+      $line-height: partials.mapget($data, line-height);
+      $height: $line-height + 2 * $badge-vertical-padding;
+      font-weight:  partials.mapget($data, font-weight);
+
+      // Allow the font-weight to be overridden for each size.
+      @include partials.with-font-weights();
+
+      > .badge {
+        font-size: partials.mapget($data, font-size);
+        line-height: $line-height;
+        height: $height;
+
+        > .badge__content {
+          > .badge__icon {
+            height: $line-height - 4px;
+            width: auto;
+          }
+        }
+      }
+    }
+  }
+
 }

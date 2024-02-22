@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type ModelLocation, type Detail, type Skill, type ModelTimePeriod } from "~/prisma/model";
+import { Skills } from "~/components/badges/collections/Skills";
 import { LocationBadge } from "~/components/badges/LoocationBadge";
 import { TimePeriodBadge } from "~/components/badges/TimePeriodBadge";
 import { ModelImage, type ModelImageProps } from "~/components/images/ModelImage";
@@ -10,7 +11,6 @@ import { LinkOrText } from "~/components/typography/LinkOrText";
 import { Title } from "~/components/typography/Title";
 
 import { Details } from "./Details";
-import { Skills } from "./Skills";
 
 export interface TimelineTileProps extends ComponentProps {
   readonly title: string;
@@ -30,7 +30,7 @@ const TimelineTileBody = ({
   details,
 }: Pick<TimelineTileProps, "description" | "details">): JSX.Element => (
   <div className="flex flex-col gap-[6px] max-w-[700px]">
-    <Description description={description} />
+    <Description fontSize="smplus" description={description} />
     <Details details={details} />
   </div>
 );

@@ -5,6 +5,8 @@ import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
 
+import { type TypographySize } from "../typography";
+
 type TopLevelDetail = Detail & { nestedDetails?: NestedDetail[] };
 type DetailWithNested = Detail & { nestedDetails: NestedDetail[] };
 
@@ -19,30 +21,34 @@ const partitionDetails = <D extends TopLevelDetail | NestedDetail>(details: D[])
 const DetailComponent = <D extends TopLevelDetail | NestedDetail>({
   detail,
   index,
+  textSize = "md",
 }: {
   detail: D;
   index?: number;
+  textSize?: TypographySize;
 }): JSX.Element => (
-  <>
+  <div className="flex flex-col gap-[6px]">
     <div className="flex flex-col gap-[2px]">
       {index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
-          <Label size="lg" className="w-[8px]">
+          <Label size={textSize} className="w-[8px]">
             {`${index}.`}
           </Label>
-          <Label size="lg">{detail.label}</Label>
+          <Label size={textSize}>{detail.label}</Label>
         </div>
       ) : (
-        <Label size="lg">{index !== undefined ? `${index}. ${detail.label}` : detail.label}</Label>
+        <Label size={textSize}>
+          {index !== undefined ? `${index}. ${detail.label}` : detail.label}
+        </Label>
       )}
       {detail.description && (
-        <Text size="md" className={clsx("text-gray-600", { "pl-[16px]": index !== undefined })}>
+        <Text size="smplus" className={clsx("text-gray-600", { "pl-[16px]": index !== undefined })}>
           {detail.description}
         </Text>
       )}
     </div>
     {detailHasNesting(detail) && <Details details={detail.nestedDetails} isNested={true} />}
-  </>
+  </div>
 );
 
 export interface TopDetailsProps extends ComponentProps {
@@ -63,14 +69,19 @@ export const Details = ({ details, isNested, ...props }: DetailsProps): JSX.Elem
       {...props}
       className={clsx(
         "flex flex-col",
-        { "gap-[8px]": isNested !== true, "gap-[4px] pl-[6px]": isNested },
+        { "gap-[12px]": isNested !== true, "gap-[6px] pl-[6px]": isNested },
         props.className,
       )}
     >
       {partitionDetails(details as (TopLevelDetail | NestedDetail)[])
         .filter(d => d.visible !== false)
         .map((detail, i) => (
-          <DetailComponent key={detail.id} detail={detail} index={isNested ? i + 1 : undefined} />
+          <DetailComponent
+            key={detail.id}
+            detail={detail}
+            index={isNested ? i + 1 : undefined}
+            textSize={isNested ? "sm" : "smplus"}
+          />
         ))}
     </div>
   ) : (
