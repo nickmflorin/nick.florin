@@ -4,11 +4,12 @@ import clsx from "clsx";
 
 import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps } from "~/components/types";
+import { Loading } from "~/components/views/Loading";
 
-import { Loading } from "../views/Loading";
-
-const Timeline = dynamic(() => import("./Timeline"), { loading: () => <Loading loading={true} /> });
-const TimelineItem = dynamic(() => import("./TimelineItem"));
+const Timeline = dynamic(() => import("./generic/Timeline"), {
+  loading: () => <Loading loading={true} />,
+});
+const TimelineItem = dynamic(() => import("./generic/TimelineItem"));
 
 export interface CommitTimelineProps extends ComponentProps {
   readonly children: JSX.Element[];

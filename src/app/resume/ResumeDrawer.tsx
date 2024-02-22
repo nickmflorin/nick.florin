@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 
-import { SkillDrawer } from "./SkillDrawer";
+import { SkillDrawer } from "~/components/drawers/SkillDrawer";
 
 export const ResumeDrawer = () => {
   const searchParams = useSearchParams();

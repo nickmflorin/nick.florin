@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import {
   type TypographySize,
   TypographySizes,
@@ -12,7 +12,7 @@ import {
   FontWeights,
 } from "~/components/typography";
 
-export interface BadgeProps extends ComponentProps {
+export interface BadgeProps extends ComponentProps, Pick<HTMLElementProps<"div">, "onClick"> {
   readonly children: string;
   readonly size?: TypographySize;
   readonly fontWeight?: FontWeight;
@@ -40,6 +40,7 @@ export const Badge = ({
         uppercase: transform === "uppercase",
         lowercase: transform === "lowercase",
         capitalize: transform === "capitalize",
+        "pointer-events-auto cursor-pointer": props.onClick !== undefined,
       },
       props.className,
     )}

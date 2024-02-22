@@ -1,11 +1,9 @@
-import dynamic from "next/dynamic";
-
 import pick from "lodash.pick";
 
 import { type ApiEducation, getDegreeData } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 
-const TimelineTile = dynamic(() => import("../TimelineTile"));
+import { TimelineTile } from "../TimelineTile";
 
 export interface EducationTileProps extends ComponentProps {
   readonly education: ApiEducation<{ details: true; skills: true }>;
@@ -15,14 +13,13 @@ export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.
   <TimelineTile
     {...pick(education, ["skills", "details", "startDate"])}
     title={`${getDegreeData(education.degree).abbreviatedLabel} in ${education.major}`}
-    subTitle={education.school.name}
+    name={education.school.name}
+    websiteUrl={education.school.websiteUrl}
     description={[education.description, education.note]}
-    endDate={
-      !education.endDate ? (education.postPoned ? "postponed" : "current") : education.endDate
-    }
+    timePeriod={pick(education, ["startDate", "endDate", "postPoned"])}
     fallbackImageIcon={{ name: "briefcase" }}
     imageUrl={education.school.logoImageUrl}
-    location={`${education.school.city}, ${education.school.state}`}
+    location={pick(education.school, ["city", "state"])}
     {...props}
   />
 );
