@@ -35,7 +35,15 @@ export const swrFetcher = async <T>(path: ApiPath, query?: QueryParams) => {
   }
   if (!response.ok) {
     if (response.status >= 400 && response.status < 500) {
-      const json: FetchResponseBody = await response.json();
+      let json: FetchResponseBody;
+      try {
+        json = await response.json();
+      } catch (e) {
+        /* If the status code is 4xx but we cannot parse the JSON respnose body, it is not from
+           our API routes directly.  We will have to infer the type of error from the status code
+           of the response. */
+        throw ClientError.reconstruct(response);
+      }
       if (isSuccessResponseBody(json)) {
         throw new MalformedJsonError({
           url,
@@ -49,6 +57,7 @@ export const swrFetcher = async <T>(path: ApiPath, query?: QueryParams) => {
       if (isClientErrorResponseBody(deserialized)) {
         throw ClientError.reconstruct(deserialized);
       }
+      throw ClientError.reconstruct(response);
     } else if (response.status === 500) {
       throw new ServerError({ url });
     }

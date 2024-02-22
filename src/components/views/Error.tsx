@@ -1,11 +1,12 @@
 import React from "react";
 
+import { isHttpError, type HttpError } from "~/application/errors";
 import { Icon } from "~/components/icons/Icon";
 import { Text } from "~/components/typography/Text";
 import { View, type ViewProps } from "~/components/views/View";
 
 export interface ErrorProps extends ViewProps {
-  readonly error?: JSX.Element | string | null;
+  readonly error?: JSX.Element | string | null | HttpError;
   readonly hideWhenError?: boolean;
 }
 
@@ -13,12 +14,14 @@ const _WrappedError = ({
   error,
   ...props
 }: Omit<ErrorProps, "children" | "hideWhenError" | "error"> & {
-  readonly error: JSX.Element | string;
+  readonly error: JSX.Element | string | HttpError;
 }) => (
   <View {...props}>
-    {typeof error === "string" ? (
+    {typeof error === "string" || isHttpError(error) ? (
       <div className="flex flex-col gap-[12px]">
-        <Text className="text-gray-500">{error}</Text>
+        <Text className="text-gray-500">
+          {isHttpError(error) ? "There was a problem with the request." : error}
+        </Text>
         <Icon name="exclamation-circle" size="16px" className="text-danger-500" />
       </div>
     ) : (

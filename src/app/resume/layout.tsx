@@ -2,8 +2,11 @@ import dynamic from "next/dynamic";
 
 import { Loading } from "~/components/views/Loading";
 
+const ResumeDrawer = dynamic(() => import("./ResumeDrawer"), { ssr: false });
+
 interface ResumeLayoutProps {
   readonly children: React.ReactNode;
+  readonly drawer: React.ReactNode;
 }
 
 const SkillsBarChart = dynamic(() => import("~/components/charts/SkillsBarChart/index"), {
@@ -17,6 +20,7 @@ export default function ResumeLayout({ children }: ResumeLayoutProps) {
         <SkillsBarChart className="w-full h-[400px]" />
       </div>
       <div className="grow min-w-[680px] relative w-[50%] overflow-y-scroll">{children}</div>
+      <ResumeDrawer />
     </div>
   );
 }

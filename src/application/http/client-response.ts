@@ -27,7 +27,7 @@ export const ClientResponse = <T, C extends ClientResponseConfig<T>>(
   config: C,
 ): ClientResponseRT<T, C> => {
   if (isErrorConfig(config)) {
-    return new ClientError(config) as ClientResponseRT<T, C>;
+    return new ClientError<ClientErrorConfig>(config) as ClientResponseRT<T, C>;
   }
   return new ClientSuccess<T>(config) as ClientResponseRT<T, C>;
 };
@@ -36,3 +36,4 @@ ClientResponse.OK = ClientSuccess.OK;
 ClientResponse.BadRequest = ClientError.BadRequest;
 ClientResponse.NotAuthenticated = ClientError.NotAuthenticated;
 ClientResponse.Forbidden = ClientError.Forbidden;
+ClientResponse.NotFound = ClientError.NotFound;

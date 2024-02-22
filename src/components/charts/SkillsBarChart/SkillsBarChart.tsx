@@ -59,7 +59,7 @@ export const SkillsBarChart = ({ data }: SkillsBarChartProps): JSX.Element => {
         replace(`${pathname}?${params.toString()}`);
       }}
       tooltip={props => (
-        <TooltipContent className="flex flex-col relative min-h-[60px] gap-[10px]">
+        <TooltipContent className="flex flex-col relative min-h-[40px] gap-[10px] !py-[10px]">
           <SkillsBarChartTooltip {...props} />
         </TooltipContent>
       )}

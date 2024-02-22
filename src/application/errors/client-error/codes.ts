@@ -11,6 +11,11 @@ export const ClientErrorCodes = enumeratedLiterals(
       statusCode: 403,
       message: "You must be authenticated to perform this action.",
     },
+    {
+      value: "NOT_FOUND",
+      statusCode: 404,
+      message: "The requested resource could not be found.",
+    },
     { value: "BAD_REQUEST", statusCode: 400, message: "Bad request." },
     {
       value: "FORBIDDEN",
