@@ -1,4 +1,3 @@
-
 import { type ReactNode } from "react";
 
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
