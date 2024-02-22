@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { Suspense } from "react";
 
 import { AppConfig } from "~/app/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
 import { Text } from "~/components/typography/Text";
 import { ShowHide } from "~/components/util";
-import { ScreenLoading } from "~/components/views/ScreenLoading";
 import { env } from "~/env.mjs";
 
 const Toast = dynamic(() => import("~/components/notifications/Toast"));
@@ -47,53 +45,51 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={InterFont.className}>
         <AppConfig>
-          <Suspense fallback={<ScreenLoading />}>
-            <Layout
-              nav={[
-                {
-                  tooltipLabel: "Resume",
-                  icon: { name: "list-check" },
-                  path: "/resume",
-                  active: [
-                    { leadingPath: "/resume/experience" },
-                    { leadingPath: "/resume/education" },
-                  ],
-                  children: [
-                    {
-                      tooltipLabel: "Experience",
-                      icon: { name: "briefcase" },
-                      path: "/resume/experience",
-                      active: [{ leadingPath: "/resume/experience" }],
-                    },
-                    {
-                      tooltipLabel: "Education",
-                      icon: { name: "building-columns" },
-                      path: "/resume/education",
-                      active: [{ leadingPath: "/resume/education" }],
-                    },
-                  ],
-                },
-                {
-                  tooltipLabel: "Projects",
-                  icon: { name: "hammer" },
-                  path: "/projects",
-                  active: [{ leadingPath: "/projects" }],
-                },
-                {
-                  tooltipLabel: "Admin CMS",
-                  icon: { name: "gear" },
-                  path: "/admin/skills",
-                  active: [
-                    { leadingPath: "/admin/skills" },
-                    { leadingPath: "/admin/experiences" },
-                    { leadingPath: "/admin/educations" },
-                  ],
-                },
-              ]}
-            >
-              {children}
-            </Layout>
-          </Suspense>
+          <Layout
+            nav={[
+              {
+                tooltipLabel: "Resume",
+                icon: { name: "list-check" },
+                path: "/resume",
+                active: [
+                  { leadingPath: "/resume/experience" },
+                  { leadingPath: "/resume/education" },
+                ],
+                children: [
+                  {
+                    tooltipLabel: "Experience",
+                    icon: { name: "briefcase" },
+                    path: "/resume/experience",
+                    active: [{ leadingPath: "/resume/experience" }],
+                  },
+                  {
+                    tooltipLabel: "Education",
+                    icon: { name: "building-columns" },
+                    path: "/resume/education",
+                    active: [{ leadingPath: "/resume/education" }],
+                  },
+                ],
+              },
+              {
+                tooltipLabel: "Projects",
+                icon: { name: "hammer" },
+                path: "/projects",
+                active: [{ leadingPath: "/projects" }],
+              },
+              {
+                tooltipLabel: "Admin CMS",
+                icon: { name: "gear" },
+                path: "/admin/skills",
+                active: [
+                  { leadingPath: "/admin/skills" },
+                  { leadingPath: "/admin/experiences" },
+                  { leadingPath: "/admin/educations" },
+                ],
+              },
+            ]}
+          >
+            {children}
+          </Layout>
           <ShowHide show={env.NEXT_PUBLIC_WELCOME_TOAST !== false}>
             <Toast type="info" autoClose={false}>
               <div className="flex flex-col gap-[6px] min-w-[200px]">
