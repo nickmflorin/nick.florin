@@ -22,15 +22,15 @@ const DynamicRedirects: DynamicRedirect[] = [
       return DO_NOT_REDIRECT;
     },
   },
-  {
-    pathRegex: createLeadingPathRegex("/admin"),
-    redirectUrl: (result: ReturnType<RegExp["exec"]>) => {
-      if (result && result[1]) {
-        return "/admin/skills";
-      }
-      return DO_NOT_REDIRECT;
-    },
-  },
+  /* {
+       pathRegex: createLeadingPathRegex("/admin"),
+       redirectUrl: (result: ReturnType<RegExp["exec"]>) => {
+         if (result && result[1]) {
+           return "/admin/skills";
+         }
+         return DO_NOT_REDIRECT;
+       },
+     }, */
 ];
 
 export default authMiddleware({
