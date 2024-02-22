@@ -3,6 +3,6 @@ import { SignedIn, UserButton as RootUserButton } from "@clerk/nextjs";
 
 export const UserButton = () => (
   <SignedIn>
-    <RootUserButton afterSignOutUrl="/" />
+    <RootUserButton afterSignOutUrl="/resume/experience" />
   </SignedIn>
 );

@@ -82,9 +82,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {
                   tooltipLabel: "Admin CMS",
                   icon: { name: "gear" },
-                  path: "/admin",
+                  path: "/admin/skills",
                   active: [
-                    { leadingPath: "/admin" },
                     { leadingPath: "/admin/skills" },
                     { leadingPath: "/admin/experiences" },
                     { leadingPath: "/admin/educations" },
