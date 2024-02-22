@@ -11,7 +11,7 @@ export interface EducationTileProps extends ComponentProps {
 
 export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.Element => (
   <TimelineTile
-    {...pick(education, ["skills", "details", "startDate"])}
+    {...pick(education, ["skills", "details"])}
     title={`${getDegreeData(education.degree).abbreviatedLabel} in ${education.major}`}
     name={education.school.name}
     websiteUrl={education.school.websiteUrl}
