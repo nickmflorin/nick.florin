@@ -72,10 +72,25 @@
   }
 }
 
-@mixin button($type, $variant: null, $size: null) {
-  $variant: if($variant, partials.validate-value($variant, partials.mapget($button-variants, $type)), partials.mapget($button-default-variant, $type));
+@mixin button(
+  $type,
+  $variant: null,
+  $size: null,
+  $border: false,
+  $active-selector: ".button--active"
+) {
+  $variant: if(
+    $variant,
+    partials.validate-value($variant, partials.mapget($button-variants, $type)),
+    partials.mapget($button-default-variant, $type)
+  );
   $size: if($size, $size, $button-default-size);
-  @include variants.button-variant($type: $type, $variant: $variant);
+  @include variants.button-variant(
+    $type: $type,
+    $variant: $variant,
+    $border: $border,
+    $active-selector: $active-selector
+  );
 
   @if $type != "icon-button" {
     @include fonts.button-font($type, $size: $size);
@@ -85,9 +100,9 @@
   }
 }
 
-@mixin button-properties($type) {
+@mixin button-properties($type, $border: false, $active-selector: ".button--active") {
   @include button-base;
-  @include variants.button-variants($type);
+  @include variants.button-variants($type, $border: $border, $active-selector: $active-selector);
 
   @if $type != "icon-button" {
     @include fonts.button-fonts($type);

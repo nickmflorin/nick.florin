@@ -35,8 +35,8 @@ $button-loading-class: ".button--loading";
   }
 }
 
-@mixin button-active {
-  &.button--active {
+@mixin button-active($active-selector: ".button--active") {
+  @include partials.with-selectors(($active-selector)) {
     &:not(:disabled) {
       @content;
     }

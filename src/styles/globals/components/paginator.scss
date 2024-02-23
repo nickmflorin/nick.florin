@@ -1,3 +1,6 @@
+@use "./buttons/base" as buttons;
+@use "./buttons/variants" as variants;
+
 .paginator {
   width: 100%;
 
@@ -6,6 +9,16 @@
     flex-direction: row;
     gap: 6px;
     width: 100%;
+
+    > button {
+      @include buttons.button(
+        "button",
+        $size: "small",
+        $variant: "secondary",
+        $border: true,
+        $active-selector: '[data-active="true"]'
+      );
+    }
 
     > button:first-child {
       margin-right: auto;

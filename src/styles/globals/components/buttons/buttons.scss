@@ -6,6 +6,7 @@
 @use "./base" as *;
 @use "./constants" as constants;
 @use "./mixins" as mixins;
+@use "./variants" as variants;
 
 button:not(.button) {
   &:not(.Toastify__close-button) {
@@ -20,12 +21,6 @@ button:not(.button) {
         .mantine-Pagination-control
       ) {
       @include button("button", $size: "medium", $variant: "primary");
-    }
-    &.mantine-Pagination-control {
-      @include button("button", $size: "small", $variant: "secondary");
-      // &[data-active="true"] {
-
-      // }
     }
   }
 }
