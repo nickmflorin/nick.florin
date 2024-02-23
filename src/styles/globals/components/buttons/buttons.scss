@@ -10,20 +10,23 @@
 button:not(.button) {
   &:not(.Toastify__close-button) {
     @include button-base;
-  }
 
-  // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
-  // primary buttons.
-  &:not(
-      .cl-userButtonTrigger,
-      .cl-userButtonPopoverActionButton,
-      .cl-socialButtonsBlockButton,
-      .mantine-Pagination-control
-    ) {
-    @include button("button", $size: "medium", $variant: "primary");
-  }
-  &.mantine-Pagination-control {
-    @include button("button", $size: "small", $variant: "secondary");
+    // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
+    // primary buttons.
+    &:not(
+        .cl-userButtonTrigger,
+        .cl-userButtonPopoverActionButton,
+        .cl-socialButtonsBlockButton,
+        .mantine-Pagination-control
+      ) {
+      @include button("button", $size: "medium", $variant: "primary");
+    }
+    &.mantine-Pagination-control {
+      @include button("button", $size: "small", $variant: "secondary");
+      // &[data-active="true"] {
+
+      // }
+    }
   }
 }
 
