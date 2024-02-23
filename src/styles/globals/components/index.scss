@@ -8,14 +8,8 @@
 @use "./layout";
 @use "./loading";
 @use "./menus";
+@use "./paginator";
 @use "./structural";
 @use "./tables";
 @use "./typography";
 @use "./views";
-
-// Fixes issue where floating select menus or other floating elements in a table cell do not
-// position relative to the sibling reference, but instead absolute position based on the table.
-// This causes the floating element to stay on the view even when scrolling past the original cell.
-.mantine-Table-td {
-  position: relative;
-}

@@ -1,12 +1,20 @@
 {
   "editor.tabSize": 2,
-  // "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.rulers": [100],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-    // "source.fixAll.stylelint": "explicit"
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[scss,css,less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "explicit"
+    }
   },
   "eslint.run": "onSave",
   "eslint.probe": [
@@ -23,16 +31,8 @@
   // We want to eventually do this.
   "eslint.experimental.useFlatConfig": false,
   "eslint.format.enable": true,
-  "eslint.execArgv": ["--max-old-space-size=4096"],
+  "eslint.execArgv": ["--max-old-space-size=16384"],
   "eslint.debug": true,
-  "editor.trimAutoWhitespace": true,
-  "[prisma]": {
-    "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.updateImportsOnFileMove.enabled": "always",
   "eslint.codeActionsOnSave.rules": [
     "@typescript-eslint/semi",
     "@typescript-eslint/indent",
@@ -40,14 +40,18 @@
     "!@typescript-eslint/*",
     "*"
   ],
+  "editor.trimAutoWhitespace": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always",
   "javascript.format.enable": false,
   "typescript.format.enable": false,
-  // "eslint.format.enable": true,
   // These 3 are turned off so that they do not conflict with stylelint.
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
   "stylelint.validate": ["css", "scss", "less", "postcss"],
   "stylelint.configBasedir": "/",
-  "stylelint.packageManager": "pnpm",
+  "stylelint.packageManager": "pnpm"
 }

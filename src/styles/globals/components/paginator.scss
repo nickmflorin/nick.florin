@@ -1,0 +1,18 @@
+.paginator {
+  width: 100%;
+
+  .mantine-Group-root {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    width: 100%;
+
+    > button:first-child {
+      margin-right: auto;
+    }
+
+    > button:last-child {
+      margin-left: auto;
+    }
+  }
+}

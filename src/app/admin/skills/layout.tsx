@@ -20,7 +20,7 @@ export default async function SkillsLayout({ children, drawer }: SkillsLayoutPro
       <Suspense>
         <SearchInput className="mb-[18px]" />
       </Suspense>
-      <div className="grow overflow-hidden w-full relative">{children}</div>
+      <div className="flex flex-col grow overflow-hidden w-full relative">{children}</div>
       {drawer}
     </>
   );

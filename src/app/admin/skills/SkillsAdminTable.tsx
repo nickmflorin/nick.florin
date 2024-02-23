@@ -1,5 +1,5 @@
-import dynamicFn from "next/dynamic";
-import { cache, Suspense } from "react";
+import dynamic from "next/dynamic";
+import { cache } from "react";
 
 import { z } from "zod";
 
@@ -10,11 +10,13 @@ import { getEducations } from "~/fetches/get-educations";
 import { getExperiences } from "~/fetches/get-experiences";
 import { Loading } from "~/components/views/Loading";
 
-const SkillsTable = dynamicFn(() => import("~/components/tables/SkillsAdminTable/index"), {
+const Paginator = dynamic(() => import("~/components/pagination/Paginator"));
+
+const SkillsTable = dynamic(() => import("~/components/tables/SkillsAdminTable/index"), {
   loading: () => <Loading loading={true} />,
 });
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 16;
 
 interface SkillsAdminTableProps {
   readonly search: string | undefined;
@@ -42,6 +44,13 @@ const getTableData = cache(
   },
 );
 
+const getCount = cache(
+  async (search: string | undefined) =>
+    await prisma.skill.count({
+      where: { AND: constructOrSearch(search, ["slug", "label"]) },
+    }),
+);
+
 export default async function SkillsAdminTable({ search, page }: SkillsAdminTableProps) {
   const educations = await getEducations({ skills: true });
   const experiences = await getExperiences({ skills: true });
@@ -50,11 +59,11 @@ export default async function SkillsAdminTable({ search, page }: SkillsAdminTabl
      when the page is too large. */
   const pg = z.coerce.number().min(1).int().default(1).parse(page);
   const skills = await getTableData({ page: pg, search }, { experiences, educations });
-
+  const count = await getCount(search);
   return (
-    // Wrapped in Suspense because the table accesses useSearchParams.
-    <Suspense fallback={<Loading loading={true} />}>
+    <div className="flex flex-col gap-[16px] max-h-full min-h-full">
       <SkillsTable skills={skills} experiences={experiences} educations={educations} />
-    </Suspense>
+      <Paginator count={count} pageSize={PAGE_SIZE} />
+    </div>
   );
 }

@@ -73,7 +73,6 @@
 }
 
 @mixin button($type, $variant: null, $size: null) {
-  @include button-base();
   $variant: if($variant, partials.validate-value($variant, partials.mapget($button-variants, $type)), partials.mapget($button-default-variant, $type));
   $size: if($size, $size, $button-default-size);
   @include variants.button-variant($type: $type, $variant: $variant);
