@@ -87,12 +87,12 @@ type SkillMetadataRT<A extends SkillMetadataArg> = A extends Skill[] ? ApiSkill[
 
 type SkillMetadataExperience = Experience & {
   readonly company: Company;
-  readonly skills: ExperienceOnSkills[];
+  readonly skills: (ExperienceOnSkills | Skill)[];
 };
 
 type SkillMetadataEducation = Education & {
   readonly school: School;
-  readonly skills: EducationOnSkills[];
+  readonly skills: (EducationOnSkills | Skill)[];
 };
 
 export const includeSkillMetadata = async <A extends SkillMetadataArg>(
@@ -130,8 +130,20 @@ export const includeSkillMetadata = async <A extends SkillMetadataArg>(
   const toApiSkill = (skill: Skill): ApiSkill => {
     const apiSkill = {
       ...skill,
-      educations: educations.filter(edu => edu.skills.some(s => s.skillId === skill.id)),
-      experiences: experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id)),
+      educations: educations.filter(edu =>
+        edu.skills.some(s =>
+          (s as EducationOnSkills).skillId !== undefined
+            ? (s as EducationOnSkills).skillId === skill.id
+            : (s as Skill).id === skill.id,
+        ),
+      ),
+      experiences: experiences.filter(exp =>
+        exp.skills.some(s =>
+          (s as ExperienceOnSkills).skillId !== undefined
+            ? (s as ExperienceOnSkills).skillId === skill.id
+            : (s as Skill).id === skill.id,
+        ),
+      ),
     };
     /* Since the educations are already ordered by their start date, we can just take the first one
        from the filtered results. */

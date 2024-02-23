@@ -5,13 +5,13 @@ import { Loading } from "~/components/views/Loading";
 import SkillsAdminTable from "./SkillsAdminTable";
 
 interface SkillsPageProps {
-  readonly searchParams: { readonly search?: string };
+  readonly searchParams: { readonly search?: string; readonly page?: string };
 }
 
-export default async function SkillsPage({ searchParams: { search } }: SkillsPageProps) {
+export default async function SkillsPage({ searchParams: { search, page } }: SkillsPageProps) {
   return (
     <Suspense key={search} fallback={<Loading loading={true} />}>
-      <SkillsAdminTable search={search} />
+      <SkillsAdminTable search={search} page={page} />
     </Suspense>
   );
 }
