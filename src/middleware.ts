@@ -13,15 +13,15 @@ type DynamicRedirect = {
 };
 
 const DynamicRedirects: DynamicRedirect[] = [
-  {
-    pathRegex: createLeadingPathRegex("/resume"),
-    redirectUrl: (result: ReturnType<RegExp["exec"]>) => {
-      if (result && result[1]) {
-        return "/resume/experience";
-      }
-      return DO_NOT_REDIRECT;
-    },
-  },
+  /* {
+       pathRegex: createLeadingPathRegex("/resume"),
+       redirectUrl: (result: ReturnType<RegExp["exec"]>) => {
+         if (result && result[1]) {
+           return "/resume/experience";
+         }
+         return DO_NOT_REDIRECT;
+       },
+     }, */
   /* {
        pathRegex: createLeadingPathRegex("/admin"),
        redirectUrl: (result: ReturnType<RegExp["exec"]>) => {
