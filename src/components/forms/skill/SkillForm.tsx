@@ -22,10 +22,15 @@ export interface SkillFormProps extends Omit<FormProps<SkillFormValues>, "childr
 
 export const SkillForm = (props: SkillFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]" submitButtonType="submit">
-    <Form.Field name="label" label="Label" form={props.form}>
+    <Form.Field name="label" label="Label" form={props.form} condition="required">
       <TextInput className="w-full" {...props.form.register("label")} />
     </Form.Field>
-    <Form.Field name="slug" label="Slug" form={props.form}>
+    <Form.Field
+      name="slug"
+      label="Slug"
+      form={props.form}
+      helpText="If not provided, will be auto generated based on the label."
+    >
       <TextInput className="w-full" {...props.form.register("slug")} />
     </Form.Field>
     <Form.Field name="description" label="Description" form={props.form}>

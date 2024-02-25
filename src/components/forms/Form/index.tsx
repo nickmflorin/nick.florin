@@ -1,14 +1,13 @@
 import clsx from "clsx";
 import { type SubmitErrorHandler } from "react-hook-form";
 
-import { FieldConditions } from "~/components/fields";
-import { Field, ControlledField } from "~/components/fields/Field";
 import { ButtonFooter, type ButtonFooterProps } from "~/components/structural/ButtonFooter";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 
+import { Field, ControlledField } from "../Field";
 import { NativeForm, type NativeFormProps } from "../NativeForm";
-import { type FormInstance, type BaseFormValues } from "../types";
+import { type FormInstance, type BaseFormValues, FieldConditions } from "../types";
 
 import { FormErrors } from "./FormErrors";
 
@@ -51,7 +50,6 @@ export const Form = <I extends BaseFormValues>({
     <NativeForm
       style={style}
       className={clsx("form", className)}
-      // action={action}
       action={
         action !== undefined
           ? () => {
@@ -71,12 +69,17 @@ export const Form = <I extends BaseFormValues>({
           : undefined
       }
     >
-      {header && <div className="form__header">{header}</div>}
-      <div className={clsx("form__content", contentClassName)}>
+      {header && <div className="flex flex-col">{header}</div>}
+      <div
+        className={clsx(
+          "flex flex-col grow relative overflow-y-scroll pr-[18px]",
+          contentClassName,
+        )}
+      >
         <Loading loading={isLoading}>{children}</Loading>
       </div>
-      <div className="form__footer">
-        <FormErrors form={form} />
+      <div className="flex flex-col pr-[18px]">
+        <FormErrors form={form} className="my-[4px]" />
         {(onSubmit || action || props.onCancel) && (
           <ButtonFooter {...props} orientation={buttonsOrientation} />
         )}

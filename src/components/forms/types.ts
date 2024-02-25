@@ -8,11 +8,15 @@ import {
 import { type z } from "zod";
 
 import { type ApiClientErrorResponse, type HttpError } from "~/application/errors";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 
 export type BaseFormValues = FieldValues;
 
 // We will likely need to expand this type.
 export type FieldError = string;
+
+export const FieldConditions = enumeratedLiterals(["required", "optional"] as const, {});
+export type FieldCondition = EnumeratedLiteralsType<typeof FieldConditions>;
 
 export type FieldErrorAssertion = (v: unknown) => asserts v is FieldError;
 
