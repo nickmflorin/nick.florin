@@ -1,16 +1,16 @@
 import { type JSX, useMemo } from "react";
 
 import clsx from "clsx";
-import {
-  Controller,
-  type FieldErrors,
-  type ControllerRenderProps,
-  type FieldPath,
-} from "react-hook-form";
+import { Controller, type ControllerRenderProps, type FieldPath } from "react-hook-form";
 
 import { ensuresDefinedValue } from "~/lib/typeguards";
 import { FieldConditions, type FieldCondition } from "~/components/fields";
-import { type FormInstance, type BaseFormValues, type FieldError } from "~/components/forms";
+import {
+  type FormInstance,
+  type BaseFormValues,
+  type FieldError,
+  type FieldErrors,
+} from "~/components/forms";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
@@ -68,26 +68,24 @@ const _isControlFieldProps = <K extends FieldPath<I>, I extends BaseFormValues, 
 const _Field = <K extends FieldPath<I>, I extends BaseFormValues, _N extends K | K[]>(
   props: _FieldProps<K, I, _N>,
 ): JSX.Element => {
-  let formErrors: FieldErrors<I> | undefined = undefined;
+  let fieldErrors: FieldErrors<I> | undefined = undefined;
   const { children, name, errors: _errors, _className = "form-field" } = props;
   if (_isControlFieldProps(props)) {
     ({
-      form: {
-        formState: { errors: formErrors },
-      },
+      form: { fieldErrors },
     } = props);
   }
   const errors = useMemo(() => {
     const _name = ensuresDefinedValue(Array.isArray(name) ? name[0] : name);
-    if (formErrors) {
-      const errs = formErrors[_name as keyof FieldErrors<I>];
-      if (errs !== undefined && errs.message !== undefined) {
-        return [errs.message.toString()];
+    if (fieldErrors) {
+      const errs = fieldErrors[_name as keyof FieldErrors<I>];
+      if (errs !== undefined) {
+        return errs;
       }
       return [];
     }
     return _errors;
-  }, [_errors, formErrors, name]);
+  }, [_errors, fieldErrors, name]);
 
   return (
     <div style={props.style} className={clsx(_className, props.className)}>

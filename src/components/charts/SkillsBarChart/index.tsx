@@ -8,6 +8,7 @@ import { type z } from "zod";
 
 import { generateChartColors } from "~/lib/charts";
 import { Form } from "~/components/forms/Form";
+import { useForm } from "~/components/forms/useForm";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 import { useSkills } from "~/hooks";
@@ -29,7 +30,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     showTopSkills: 12,
   });
 
-  const { setValues, ...form } = Form.useForm<z.infer<typeof SkillsBarChartFormSchema>>({
+  const { setValues, ...form } = useForm<z.infer<typeof SkillsBarChartFormSchema>>({
     schema: SkillsBarChartFormSchema,
     defaultValues: { showTopSkills: 12 },
     onChange: ({ values }) => {

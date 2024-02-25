@@ -2,136 +2,141 @@ import { NextResponse } from "next/server";
 
 import superjson from "superjson";
 
-import { BaseHttpError } from "../http-error";
+import { BaseHttpError, type BaseHttpErrorConfig } from "../http-error";
 
-import { type ClientErrorCode, ClientErrorCodes, type ClientErrorStatusCode } from "./codes";
-import { isClientErrorResponseBody, type ClientErrorResponseBody } from "./types";
+import {
+  type ApiClientErrorCode,
+  ApiClientErrorCodes,
+  type ApiClientErrorStatusCode,
+} from "./codes";
+import { type ApiClientErrorResponse, type ApiClientFieldError } from "./types";
 
 export * from "./codes";
 export * from "./types";
 
-export type ClientErrorConfig = {
-  readonly code: ClientErrorCode;
-  readonly statusCode?: ClientErrorStatusCode;
-  readonly message?: string;
-  readonly url?: string;
-};
-
-export type ClientErrorResponseConfig = {
-  readonly statusCode: number;
-  readonly message?: string;
-  readonly url: string;
-  readonly code?: never;
-};
-
-type Code<C extends ClientErrorConfig | ClientErrorResponseConfig> = C extends {
-  code: infer Code extends ClientErrorCode;
-}
-  ? Code
-  : undefined;
-
-type StatusCode<C extends ClientErrorConfig | ClientErrorResponseConfig> = C extends {
-  code: infer Code extends ClientErrorCode;
-}
-  ? ClientErrorStatusCode<Code>
-  : C extends { statusCode: infer S extends number }
-    ? S
-    : never;
-
-type Json<C extends ClientErrorConfig | ClientErrorResponseConfig> = C extends {
-  code: infer Code extends ClientErrorCode;
-}
-  ? {
-      code: Code;
-      statusCode: ClientErrorStatusCode<Code>;
-      message: string;
-    }
-  : undefined;
-
 export class ClientError<
-  C extends ClientErrorConfig | ClientErrorResponseConfig =
-    | ClientErrorConfig
-    | ClientErrorResponseConfig,
-> extends BaseHttpError {
-  private readonly config: Pick<C, "code" | "statusCode">;
+  C extends BaseHttpErrorConfig = BaseHttpErrorConfig,
+> extends BaseHttpError<C> {
+  protected readonly defaultMessage = "There was an error with the request.";
 
-  constructor({ message, url, ...config }: C) {
-    super({ message, url });
-    this.config = config;
-  }
+  public static reconstruct = (response: Response, message?: string) =>
+    new ClientError({
+      statusCode: response.status,
+      url: response.url,
+      message: message ?? response.statusText,
+    });
+}
 
-  public get code(): Code<C> {
-    return this.config.code as Code<C>;
-  }
+type ApiClientErrorGlobalConfig = {
+  readonly code: ApiClientErrorCode;
+  readonly statusCode?: ApiClientErrorStatusCode;
+  readonly message?: string;
+  readonly errors?: never;
+};
 
-  public get statusCode(): StatusCode<C> {
-    if (this.config.statusCode !== undefined) {
-      return this.config.statusCode as StatusCode<C>;
-    } else if (this.code !== undefined) {
-      return ClientErrorCodes.getAttribute(this.code, "statusCode") as StatusCode<C>;
+type ApiClientErrorFieldsConfig = {
+  readonly errors: ApiClientFieldError[];
+  readonly code?: typeof ApiClientErrorCodes.BAD_REQUEST;
+  readonly statusCode?: 400;
+  readonly message?: never;
+};
+
+export type ApiClientErrorConfig = ApiClientErrorGlobalConfig | ApiClientErrorFieldsConfig;
+
+type Json<C extends ApiClientErrorConfig> = C extends { errors: ApiClientFieldError[] }
+  ? {
+      errors: Errors<C>;
+      statusCode: 400;
+      code: typeof ApiClientErrorCodes.BAD_REQUEST;
     }
-    throw new Error(
-      "Invalid class implementation. Both the status code and the code are not defined.",
-    );
+  : {
+      statusCode: NonNullable<C["statusCode"]>;
+      code: NonNullable<C["code"]>;
+      message: string;
+    };
+
+type BadRequestRT<M extends string | ApiClientFieldError | ApiClientFieldError[]> = M extends string
+  ? ApiClientError<ApiClientErrorGlobalConfig>
+  : ApiClientError<ApiClientErrorFieldsConfig>;
+
+type Errors<C extends ApiClientErrorConfig> = C extends ApiClientErrorFieldsConfig
+  ? ApiClientFieldError[]
+  : undefined;
+
+export class ApiClientError<C extends ApiClientErrorConfig> extends BaseHttpError<{
+  statusCode: NonNullable<C["statusCode"]>;
+  message?: string;
+  code: NonNullable<C["code"]>;
+}> {
+  public readonly code: NonNullable<C["code"]>;
+  protected readonly defaultMessage = "There was an error with the request.";
+  public readonly errors: Errors<C>;
+
+  constructor({ message, code, errors, statusCode }: ApiClientErrorConfig) {
+    super({
+      message,
+      statusCode:
+        /* The status code and code will only ever be undefined if the ApiClientError is being
+           instantiated with an 'errors' array, in which case the code has to be BAD_REQUEST and the
+           status code has to be 400. */
+        statusCode ??
+        ApiClientErrorCodes.getAttribute(code ?? ApiClientErrorCodes.BAD_REQUEST, "statusCode"),
+    });
+    /* The status code and code will only ever be undefined if the ApiClientError is being
+       instantiated with an 'errors' array, in which case the code has to be BAD_REQUEST and the
+       status code has to be 400. */
+    this.code = code ?? ApiClientErrorCodes.BAD_REQUEST;
+    this.errors = errors as Errors<C>;
   }
 
   public get message() {
     if (this._message) {
       return this._message;
-    } else if (this.code !== undefined) {
-      return ClientErrorCodes.getAttribute(this.code, "message");
     }
-    return "There was an error with the request.";
+    return ApiClientErrorCodes.getAttribute(this.code, "message");
   }
 
-  public static reconstruct = (response: Response | ClientErrorResponseBody) => {
-    if (isClientErrorResponseBody(response)) {
-      return new ClientError(response);
-    } else if (response.status >= 200 && response.status < 300) {
-      throw new Error(
-        "Invalid function implementation.  The response status code is not an error.",
-      );
-    } else if (!(response.status >= 400 && response.status < 500)) {
-      throw new Error(
-        "Invalid function implementation.  The response status code is not a client error.",
-      );
-    }
-    switch (response.status) {
-      case 400:
-        return ClientError.BadRequest(response.statusText);
-      case 401:
-        return ClientError.NotAuthenticated(response.statusText);
-      case 403:
-        return ClientError.Forbidden(response.statusText);
-      case 404:
-        return ClientError.NotFound(response.statusText);
-      default:
-        return new ClientError({
-          message: response.statusText,
-          statusCode: response.status,
-          url: response.url,
-        });
+  public static reconstruct = (response: ApiClientErrorResponse) => new ApiClientError(response);
+
+  public static BadRequest = <M extends string | ApiClientFieldError | ApiClientFieldError[]>(
+    data?: M,
+  ): BadRequestRT<M> => {
+    if (typeof data === "string" || typeof data === "undefined") {
+      return new ApiClientError({
+        code: ApiClientErrorCodes.BAD_REQUEST,
+        message: data,
+      }) as BadRequestRT<M>;
+    } else if (Array.isArray(data)) {
+      return new ApiClientError({
+        errors: data,
+        code: ApiClientErrorCodes.BAD_REQUEST,
+      }) as BadRequestRT<M>;
+    } else {
+      return new ApiClientError({ errors: [data] }) as BadRequestRT<M>;
     }
   };
 
-  public static BadRequest = (message?: string) =>
-    new ClientError({ code: ClientErrorCodes.BAD_REQUEST, message });
-
   public static NotAuthenticated = (message?: string) =>
-    new ClientError({ code: ClientErrorCodes.NOT_AUTHENTICATED, message });
+    new ApiClientError({ code: ApiClientErrorCodes.NOT_AUTHENTICATED, message });
 
   public static Forbidden = (message?: string) =>
-    new ClientError({ code: ClientErrorCodes.FORBIDDEN, message });
+    new ApiClientError({ code: ApiClientErrorCodes.FORBIDDEN, message });
 
   public static NotFound = (message?: string) =>
-    new ClientError({ code: ClientErrorCodes.NOT_FOUND, message });
+    new ApiClientError({ code: ApiClientErrorCodes.NOT_FOUND, message });
 
   public toJson = (): Json<C> =>
-    ({
-      code: this.code as ClientErrorCode,
-      statusCode: this.statusCode as ClientErrorStatusCode,
-      message: this.message,
-    }) as Json<C>;
+    this.errors !== undefined
+      ? ({
+          code: this.code as typeof ApiClientErrorCodes.BAD_REQUEST,
+          statusCode: this.statusCode as 400,
+          errors: this.errors,
+        } as Json<C>)
+      : ({
+          code: this.code,
+          statusCode: this.statusCode,
+          message: this.message,
+        } as Json<C>);
 
   public toSerializedJson = () => superjson.serialize(this.toJson());
 

@@ -1,33 +1,18 @@
-"use client";
-import { useState, useImperativeHandle } from "react";
+import { type BaseFormValues, type FormInstance } from "../types";
 
 import { FormError } from "./FormError";
 
-export interface IFormErrors {
-  readonly clearErrors: () => void;
-  readonly addError: (error: string | string[]) => void;
+export interface FormErrorsProps<I extends BaseFormValues> {
+  readonly form: FormInstance<I>;
 }
 
-export interface FormErrorsProps {
-  readonly handler: React.RefObject<IFormErrors>;
-}
-
-export const FormErrors = ({ handler }: FormErrorsProps): JSX.Element => {
-  const [errors, setErrors] = useState<string[]>([]);
-
-  useImperativeHandle(handler, () => ({
-    clearErrors: () => setErrors([]),
-    addError: (error: string | string[]) => {
-      setErrors(prev => [...prev, ...(Array.isArray(error) ? error : [error])]);
-    },
-  }));
-
-  if (errors.length === 0) {
+export const FormErrors = <I extends BaseFormValues>({ form }: FormErrorsProps<I>): JSX.Element => {
+  if (form.errors.length === 0) {
     return <></>;
   }
   return (
     <div className="form__errors">
-      {errors.map((e, i) => (
+      {form.errors.map((e, i) => (
         <FormError key={i}>{e}</FormError>
       ))}
     </div>

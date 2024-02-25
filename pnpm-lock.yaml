@@ -41,6 +41,9 @@ dependencies:
   '@t3-oss/env-nextjs':
     specifier: ^0.7.1
     version: 0.7.1(typescript@5.3.3)(zod@3.22.4)
+  '@types/lodash.union':
+    specifier: ^4.6.9
+    version: 4.6.9
   chart.js:
     specifier: ^4.4.1
     version: 4.4.1
@@ -77,6 +80,9 @@ dependencies:
   lodash.pick:
     specifier: ^4.4.0
     version: 4.4.0
+  lodash.union:
+    specifier: ^4.6.0
+    version: 4.6.0
   lodash.uniq:
     specifier: ^4.5.0
     version: 4.5.0
@@ -2223,6 +2229,12 @@ packages:
       '@types/lodash': 4.14.202
     dev: true
 
+  /@types/lodash.union@4.6.9:
+    resolution: {integrity: sha512-l/GEj9Xp2DptsfFYZ1JUczg6W/6JGbbDi0mVK8urg8XLUMguNJ2L1ya0QJzMctrtlP9+t5lfyL4QLF6P9/6ssQ==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: false
+
   /@types/lodash.uniq@4.5.9:
     resolution: {integrity: sha512-2Vd5avnDMNLbDSnUwwgwExKXvX9W3CN72rodT+ikGqGHXn7gVK6BM6Z+kHonbpGgCI2BzM+QDMHrkgKoofOi6A==}
     dependencies:
@@ -2231,7 +2243,6 @@ packages:
 
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
-    dev: true
 
   /@types/luxon@3.4.2:
     resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
@@ -6354,6 +6365,10 @@ packages:
   /lodash.truncate@4.4.2:
     resolution: {integrity: sha512-jttmRe7bRse52OsWIMDLaXxWqRAmtIUccAQ3garviCqJjafXOfNMO0yMfNpdD6zbGaTU0P5Nz7e7gAT6cKmJRw==}
     dev: true
+
+  /lodash.union@4.6.0:
+    resolution: {integrity: sha512-c4pB2CdGrGdjMKYLA+XiRDO7Y0PRQbm/Gzg8qMj+QH+pFVAoTp5sBpO0odL3FjoPCGjK96p6qsP+yQoiLoOBcw==}
+    dev: false
 
   /lodash.uniq@4.5.0:
     resolution: {integrity: sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==}

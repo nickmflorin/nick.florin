@@ -32,10 +32,10 @@
   "eslint.experimental.useFlatConfig": false,
   "eslint.format.enable": true,
   "eslint.execArgv": ["--max-old-space-size=16384"],
-  "eslint.debug": true,
+  "eslint.debug": false,
   "eslint.codeActionsOnSave.rules": [
-    "@typescript-eslint/semi",
-    "@typescript-eslint/indent",
+    // "@typescript-eslint/semi",
+    // "@typescript-eslint/indent",
     "@typescript-eslint/consistent-type-imports",
     "!@typescript-eslint/*",
     "*"

@@ -1,23 +1,37 @@
-export type HttpErrorConfig = {
+export type BaseHttpErrorConfig = {
   readonly url?: string;
   readonly message?: string;
   readonly statusCode?: number;
 };
 
-export abstract class BaseHttpError extends Error {
-  public readonly url?: string;
-  public abstract message: string;
-  protected readonly _message: string | undefined;
-  protected readonly _statusCode: number | undefined;
+type ToConfig<C extends BaseHttpErrorConfig> = { [key in keyof BaseHttpErrorConfig]?: C[key] };
 
-  constructor(config: string | HttpErrorConfig) {
+export abstract class BaseHttpError<
+  C extends BaseHttpErrorConfig = BaseHttpErrorConfig,
+> extends Error {
+  public readonly url: C["url"];
+  protected abstract readonly defaultMessage: string | ((e: BaseHttpError<C>) => string);
+  protected readonly _message: C["message"];
+  protected readonly _statusCode: C["statusCode"];
+
+  constructor(config: ToConfig<C>) {
     super();
-    this.url = typeof config === "string" ? undefined : config.url;
-    this._statusCode = typeof config === "string" ? undefined : config.statusCode;
-    this._message = typeof config === "string" ? config : config.message;
+
+    this.url = config.url;
+    this._statusCode = config.statusCode;
+    this._message = config.message;
   }
 
-  public get statusCode() {
+  public get statusCode(): C["statusCode"] {
     return this._statusCode;
+  }
+
+  public get message(): string {
+    if (this._message) {
+      return this._message;
+    }
+    return typeof this.defaultMessage === "function"
+      ? this.defaultMessage(this)
+      : this.defaultMessage;
   }
 }

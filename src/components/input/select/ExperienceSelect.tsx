@@ -13,9 +13,10 @@ const options = {
   isMulti: true,
 } as const;
 
-export const ExperienceSelect = <E extends Exp>(
-  props: Omit<SelectProps<E, typeof options>, "options" | "itemRenderer">,
-): JSX.Element => (
+export interface ExperienceSelectProps<E extends Exp>
+  extends Omit<SelectProps<E, typeof options>, "options" | "itemRenderer"> {}
+
+export const ExperienceSelect = <E extends Exp>(props: ExperienceSelectProps<E>): JSX.Element => (
   <Select<E, typeof options>
     {...props}
     options={options}

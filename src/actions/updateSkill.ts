@@ -1,40 +1,27 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-import { z } from "zod";
+import { type z } from "zod";
 
-import { ClientError } from "~/application/errors";
+import { ApiClientError } from "~/application/errors";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
-import { type Skill, ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/prisma/model";
+import { type Skill } from "~/prisma/model";
 
 import { authenticateAdminUser } from "./auth";
+import { SkillSchema } from "./schemas";
 
-const UpdateSkillSchema = z.object({
-  label: z.string().optional(),
-  slug: z.string().optional(),
-  refreshSlug: z.boolean().optional(),
-  experiences: z.array(z.string()).optional(),
-  educations: z.array(z.string()).optional(),
-  includeInTopSkills: z.boolean().optional(),
-  experience: z.number().nullable().optional(),
-  visible: z.boolean().optional(),
-  programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)).optional(),
-  programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)).optional(),
-  categories: z.array(z.nativeEnum(SkillCategory)).optional(),
-});
+const UpdateSkillSchema = SkillSchema.partial();
 
 export const updateSkill = async (
   id: string,
-  {
-    refreshSlug,
-    slug,
-    experiences: _experiences,
-    educations: _educations,
-    ...data
-  }: z.infer<typeof UpdateSkillSchema>,
+  req: z.infer<typeof UpdateSkillSchema>,
 ): Promise<Skill> => {
+  const parsed = UpdateSkillSchema.parse(req);
+
+  const { slug, experiences: _experiences, educations: _educations, ...data } = parsed;
+
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
   const user = await authenticateAdminUser();
@@ -42,10 +29,9 @@ export const updateSkill = async (
   const sk = await prisma.$transaction(async tx => {
     let skill = await tx.skill.findUniqueOrThrow({ where: { id } });
     const currentLabel = data.label !== undefined ? data.label : skill.label;
-
     const updateData = {
       ...data,
-      slug: slug !== undefined ? slug : refreshSlug ? slugify(currentLabel) : undefined,
+      slug: slug !== undefined && slug !== null ? slug : slugify(currentLabel),
     };
     if (!objIsEmpty(updateData)) {
       skill = await tx.skill.update({
@@ -59,7 +45,7 @@ export const updateSkill = async (
     if (_experiences !== undefined) {
       const experiences = await tx.experience.findMany({ where: { id: { in: _experiences } } });
       if (experiences.length !== _experiences.length) {
-        throw ClientError.BadRequest("One or more of the provided experiences do not exist.");
+        throw ApiClientError.BadRequest("One or more of the provided experiences do not exist.");
       }
       const currentRelationships = await tx.experienceOnSkills.findMany({
         where: { skillId: skill.id },
@@ -103,7 +89,7 @@ export const updateSkill = async (
     if (_educations !== undefined) {
       const educations = await tx.education.findMany({ where: { id: { in: _educations } } });
       if (educations.length !== _educations.length) {
-        throw ClientError.BadRequest("One or more of the provided educations do not exist.");
+        throw ApiClientError.BadRequest("One or more of the provided educations do not exist.");
       }
       const currentRelationships = await tx.educationOnSkills.findMany({
         where: { skillId: skill.id },

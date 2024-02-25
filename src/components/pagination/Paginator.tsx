@@ -48,7 +48,8 @@ export const Paginator = ({ count, pageSize = 10, ...props }: PaginatorProps) =>
       className={clsx("paginator", props.className)}
       value={activePage}
       onChange={setPage}
-      total={Math.ceil(count / clamp(pageSize, 1, 100))}
+      // Setting the total to 0 causes the paginator to disappear.
+      total={Math.max(1, Math.ceil(count / clamp(pageSize, 1, 100)))}
     />
   );
 };

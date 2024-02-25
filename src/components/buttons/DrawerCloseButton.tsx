@@ -1,27 +1,33 @@
 "use client";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
 import { IconButton, type IconButtonProps } from "./generic";
 
 export interface DrawerCloseButtonProps extends IconButtonProps<{ as: "button" }> {
-  readonly param: string;
-  readonly searchParams: string;
+  readonly param?: string;
 }
 
 export const DrawerCloseButton = ({
   param,
-  searchParams,
+  onClick,
   ...props
 }: DrawerCloseButtonProps): JSX.Element => {
   const { replace } = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const handleClick = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
-    params.delete(param);
-    replace(`${pathname}?${params.toString()}`);
-  }, [param, pathname, replace, searchParams]);
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (param) {
+        const params = new URLSearchParams(searchParams?.toString());
+        params.delete(param);
+        replace(`${pathname}?${params.toString()}`);
+      }
+      onClick?.(e);
+    },
+    [param, pathname, replace, searchParams, onClick],
+  );
 
   return (
     <IconButton.Transparent
@@ -31,7 +37,9 @@ export const DrawerCloseButton = ({
       iconSize="large"
       icon={{ name: "xmark", iconStyle: "solid" }}
       className="drawer__close-button text-gray-500 hover:text-gray-600 hover:bg-gray-200"
-      onClick={() => handleClick()}
+      onClick={e => handleClick(e)}
     />
   );
 };
+
+export default DrawerCloseButton;

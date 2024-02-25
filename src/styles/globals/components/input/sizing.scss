@@ -36,10 +36,18 @@ $input-size-properties: (
 
 @mixin input-size($size) {
   $properties: get-input-size-properties($size);
-  min-height: partials.mapget($properties, "height");
   font-size: partials.mapget($properties, "font-size");
   line-height: partials.mapget($properties, "line-height");
   padding: partials.mapget($properties, "padding");
+
+  &.input--dynamic-height {
+    min-height: partials.mapget($properties, "height");
+  }
+
+  &:not(.input--dynamic-height) {
+    height: partials.mapget($properties, "height");
+    max-height: partials.mapget($properties, "height");
+  }
 }
 
 @mixin input-sizes() {

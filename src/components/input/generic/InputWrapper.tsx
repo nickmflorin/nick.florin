@@ -22,6 +22,7 @@ export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
     readonly isDisabled?: boolean;
     readonly isLocked?: boolean;
     readonly isLoading?: boolean;
+    readonly dynamicHeight?: boolean;
   };
 
 export const InputWrapper = forwardRef(
@@ -31,6 +32,7 @@ export const InputWrapper = forwardRef(
       component,
       isDisabled = false,
       isActive = false,
+      dynamicHeight = false,
       size = InputSizes.MEDIUM,
       isLoading = false,
       isLocked = false,
@@ -49,6 +51,7 @@ export const InputWrapper = forwardRef(
         `input--variant-${variant}`,
         {
           disabled: isDisabled,
+          "input--dynamic-height": dynamicHeight,
           "input--locked": isLocked,
           "input--loading": isLoading,
           "input--active": isActive,

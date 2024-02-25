@@ -4,7 +4,7 @@ import {
   enumeratedLiterals,
 } from "~/lib/literals";
 
-export const ClientErrorCodes = enumeratedLiterals(
+export const ApiClientErrorCodes = enumeratedLiterals(
   [
     {
       value: "NOT_AUTHENTICATED",
@@ -26,8 +26,21 @@ export const ClientErrorCodes = enumeratedLiterals(
   {},
 );
 
-export type ClientErrorCode = EnumeratedLiteralsType<typeof ClientErrorCodes>;
-export type ClientErrorStatusCode<C extends ClientErrorCode = ClientErrorCode> = Extract<
-  EnumeratedLiteralsModel<typeof ClientErrorCodes>,
+export type ApiClientErrorCode = EnumeratedLiteralsType<typeof ApiClientErrorCodes>;
+
+export type ApiClientErrorStatusCode<C extends ApiClientErrorCode = ApiClientErrorCode> = Extract<
+  EnumeratedLiteralsModel<typeof ApiClientErrorCodes>,
   { value: C }
 >["statusCode"];
+
+export const ApiClientFieldErrorCodes = enumeratedLiterals(
+  [
+    {
+      value: "UNIQUE",
+      message: (field: string) => `The field ${field} must be unique.`,
+    },
+  ] as const,
+  {},
+);
+
+export type ApiClientFieldErrorCode = EnumeratedLiteralsType<typeof ApiClientFieldErrorCodes>;

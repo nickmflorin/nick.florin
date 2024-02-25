@@ -1,10 +1,4 @@
 import { type ReactNode } from "react";
-import { Suspense } from "react";
-
-import { preloadEducations } from "~/fetches/get-educations";
-import { preloadExperiences } from "~/fetches/get-experiences";
-
-import { SearchInput } from "./SearchInput";
 
 interface SkillsLayoutProps {
   readonly children: ReactNode;
@@ -12,15 +6,9 @@ interface SkillsLayoutProps {
 }
 
 export default async function SkillsLayout({ children, drawer }: SkillsLayoutProps) {
-  preloadEducations({});
-  preloadExperiences({});
-
   return (
     <>
-      <Suspense>
-        <SearchInput className="mb-[18px]" />
-      </Suspense>
-      <div className="flex flex-col grow overflow-hidden w-full relative">{children}</div>
+      {children}
       {drawer}
     </>
   );

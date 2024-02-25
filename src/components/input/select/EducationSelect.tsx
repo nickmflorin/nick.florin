@@ -13,6 +13,9 @@ const options = {
   isMulti: true,
 } as const;
 
+export interface EducationSelectProps<E extends Edu>
+  extends Omit<SelectProps<E, typeof options>, "options" | "itemRenderer"> {}
+
 export const EducationSelect = <E extends Edu>(
   props: Omit<SelectProps<E, typeof options>, "options" | "itemRenderer">,
 ): JSX.Element => (

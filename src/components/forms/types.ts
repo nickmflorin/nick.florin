@@ -7,6 +7,8 @@ import {
 } from "react-hook-form";
 import { type z } from "zod";
 
+import { type ApiClientErrorResponse, type HttpError } from "~/application/errors";
+
 export type BaseFormValues = FieldValues;
 
 // We will likely need to expand this type.
@@ -33,6 +35,8 @@ export type FieldName<I extends BaseFormValues> = Path<I>;
 export type FormValues<I extends BaseFormValues> = { [key in Path<I>]: PathValue<I, key> };
 export type FieldValue<N extends FieldName<I>, I extends BaseFormValues> = PathValue<I, N>;
 
+export type FieldErrors<I extends BaseFormValues> = { [key in FieldName<I>]?: string[] };
+
 export type FormConfig<I extends BaseFormValues, IN = I> = Omit<UseFormProps<I>, "resolver"> & {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   readonly schema: z.ZodSchema<I, any, IN>;
@@ -47,10 +51,21 @@ export type ControlledFieldChangeHandler<N extends FieldName<I>, I extends BaseF
   value: FieldValue<N, I>,
 ) => void;
 
-export type FormInstance<I extends BaseFormValues> = UseFormReturn<I> & {
+export type SetFormErrors<I extends BaseFormValues> = {
+  (errors: string | string[]): void;
+  (field: FieldName<I>, errors: string | string[]): void;
+  (errors: FieldErrors<I>): void;
+};
+
+export type FormInstance<I extends BaseFormValues> = Omit<UseFormReturn<I>, "setError"> & {
+  readonly errors: string[];
+  readonly fieldErrors: FieldErrors<I>;
   readonly registerChangeHandler: <N extends FieldName<I>>(
     name: N,
     handler: ControlledFieldChangeHandler<N, I>,
   ) => ControlledFieldChangeHandler<N, I>;
   readonly setValues: (values: FormValues<I>) => void;
+  readonly clearErrors: () => void;
+  readonly setErrors: SetFormErrors<I>;
+  readonly handleApiError: (e: HttpError | ApiClientErrorResponse) => void;
 };

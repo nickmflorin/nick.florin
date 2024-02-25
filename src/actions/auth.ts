@@ -1,4 +1,4 @@
-import { ClientError } from "~/application/errors";
+import { ApiClientError } from "~/application/errors";
 import { getAuthUser } from "~/server/auth";
 
 export const authenticateAdminUser = async () => {
@@ -6,9 +6,9 @@ export const authenticateAdminUser = async () => {
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
   if (!user) {
-    throw ClientError.NotAuthenticated();
+    throw ApiClientError.NotAuthenticated();
   } else if (!user.isAdmin) {
-    throw ClientError.Forbidden();
+    throw ApiClientError.Forbidden();
   }
   return user;
 };

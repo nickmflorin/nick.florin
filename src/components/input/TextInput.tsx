@@ -7,7 +7,7 @@ import pick from "lodash.pick";
 import { type InputProps, Input, NativeInput, type NativeInputProps } from "./generic";
 
 export interface TextInputProps
-  extends Omit<InputProps, "children">,
+  extends Omit<InputProps, "children" | "dynamicHeight">,
     Omit<NativeInputProps, keyof InputProps> {}
 
 const INPUT_PROPS = [
@@ -35,6 +35,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       {...pick(props, INPUT_PROPS)}
       isDisabled={isDisabled}
       className={clsx("text-input", props.className)}
+      dynamicHeight={false}
     >
       <NativeInput {...omit(props, INPUT_PROPS)} isDisabled={isDisabled} ref={ref} />
     </Input>

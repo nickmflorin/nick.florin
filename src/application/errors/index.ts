@@ -1,4 +1,4 @@
-import { ClientError } from "./client-error";
+import { ApiClientError, ClientError } from "./client-error";
 import { NetworkError } from "./network-error";
 import { ServerError } from "./server-error";
 
@@ -16,4 +16,8 @@ export const isError = (e: unknown): e is Error =>
   (e as Error).message !== undefined;
 
 export const isHttpError = (e: unknown): e is HttpError =>
-  isError(e) && (e instanceof ClientError || e instanceof NetworkError || e instanceof ServerError);
+  isError(e) &&
+  (e instanceof ClientError ||
+    e instanceof ApiClientError ||
+    e instanceof NetworkError ||
+    e instanceof ServerError);

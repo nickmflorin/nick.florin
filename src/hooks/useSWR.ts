@@ -5,9 +5,10 @@ import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arg
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
 import {
-  isClientErrorResponseBody,
+  isApiClientErrorResponse,
   ClientError,
   NetworkError,
+  ApiClientError,
   MalformedJsonError,
   ServerError,
   type HttpError,
@@ -54,8 +55,8 @@ export const swrFetcher = async <T>(path: ApiPath, query?: QueryParams) => {
         });
       }
       const deserialized = superjson.deserialize(json);
-      if (isClientErrorResponseBody(deserialized)) {
-        throw ClientError.reconstruct(deserialized);
+      if (isApiClientErrorResponse(deserialized)) {
+        throw ApiClientError.reconstruct(deserialized);
       }
       throw ClientError.reconstruct(response);
     } else if (response.status === 500) {

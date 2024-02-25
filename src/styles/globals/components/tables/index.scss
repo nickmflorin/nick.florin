@@ -141,6 +141,14 @@ $table-size-properties: (
   max-height: 100%;
   position: relative;
 
+  > .mantine-datatable-scroll-area {
+    > .mantine-ScrollArea-viewport {
+      > * {
+        @include partials.scrollbar();
+      }
+    }
+  }
+
   @each $size in $table-sizes {
     &--size-#{$size} {
       @include table-tr {

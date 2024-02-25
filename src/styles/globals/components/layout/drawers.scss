@@ -15,26 +15,18 @@ $drawer-width: 400px;
 .drawer-target {
   @include drawer-container();
   min-width: fit-content;
+  background-color: theme("colors.white");
 
   > .drawer {
+    // @include partials.scrollbar();
     @include drawer-container();
-
-    // display: flex;
-    // flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 6px 24px 24px;
+    overflow-x: hidden;
     width: $drawer-width;
     min-width: $drawer-width;
     border-left: 1px solid theme("colors.border");
-
-    > .drawer__content {
-      display: flex;
-      flex-direction: column;
-      padding: 24px;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      height: 100%;
-      max-width: 100%;
-      @include partials.scrollbar();
-    }
 
     .drawer__close-button {
       position: absolute;

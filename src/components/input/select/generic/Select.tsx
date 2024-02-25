@@ -211,6 +211,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
           (({ ref, params }) => (
             <Input
               {...params}
+              dynamicHeight={true}
               ref={ref}
               actions={mergeActions(actions, {
                 right: [

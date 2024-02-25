@@ -1,6 +1,3 @@
-"use client";
-import { useRef } from "react";
-
 import clsx from "clsx";
 import { type SubmitErrorHandler } from "react-hook-form";
 
@@ -12,15 +9,13 @@ import { Loading } from "~/components/views/Loading";
 
 import { NativeForm, type NativeFormProps } from "../NativeForm";
 import { type FormInstance, type BaseFormValues } from "../types";
-import { useForm } from "../useForm";
 
-import { FormErrors, type IFormErrors } from "./FormErrors";
+import { FormErrors } from "./FormErrors";
 
 export { type NativeFormProps } from "../NativeForm";
 export * from "../types";
 
-// type SubmitAction<I extends BaseFormValues> = (data: I, errorHandler: IFormErrors) => void;
-type SubmitAction<I extends BaseFormValues> = (data: I) => void;
+type SubmitAction<I extends BaseFormValues> = (data: I, form: FormInstance<I>) => void;
 
 export type FormProps<I extends BaseFormValues> = ComponentProps &
   Omit<NativeFormProps, keyof ComponentProps | "action" | "onSubmit" | "submitButtonType"> &
@@ -32,12 +27,11 @@ export type FormProps<I extends BaseFormValues> = ComponentProps &
     readonly buttonsOrientation?: ButtonFooterProps["orientation"];
     readonly onSubmit?: SubmitAction<I>;
     readonly action?: SubmitAction<I>;
-    // readonly action?: (formData: FormData) => void;
     readonly onError?: SubmitErrorHandler<I>;
   };
 
 export const Form = <I extends BaseFormValues>({
-  form: { handleSubmit },
+  form,
   children,
   className,
   style,
@@ -50,8 +44,6 @@ export const Form = <I extends BaseFormValues>({
   onError,
   ...props
 }: FormProps<I>): JSX.Element => {
-  const errorHandler = useRef<IFormErrors>(null);
-
   if (onSubmit && action) {
     throw new Error("Both the action and submit handler cannot be simultaneously provided.");
   }
@@ -63,24 +55,18 @@ export const Form = <I extends BaseFormValues>({
       action={
         action !== undefined
           ? () => {
-              handleSubmit((data: I) => {
-                action(data);
-                /* if (errorHandler.current) {
-                     errorHandler.current.clearErrors();
-                     action(data);
-                   } */
+              form.handleSubmit((data: I) => {
+                form.clearErrors();
+                action(data, form);
               }, onError)();
             }
           : undefined
       }
       onSubmit={
         onSubmit !== undefined
-          ? handleSubmit(data => {
-              if (errorHandler.current) {
-                errorHandler.current.clearErrors();
-                // onSubmit(data, errorHandler.current);
-                onSubmit(data);
-              }
+          ? form.handleSubmit(data => {
+              form.clearErrors();
+              onSubmit(data, form);
             }, onError)
           : undefined
       }
@@ -90,7 +76,7 @@ export const Form = <I extends BaseFormValues>({
         <Loading loading={isLoading}>{children}</Loading>
       </div>
       <div className="form__footer">
-        <FormErrors handler={errorHandler} />
+        <FormErrors form={form} />
         {(onSubmit || action || props.onCancel) && (
           <ButtonFooter {...props} orientation={buttonsOrientation} />
         )}
@@ -103,6 +89,5 @@ Form.Native = NativeForm;
 Form.Field = Field;
 Form.ControlledField = ControlledField;
 Form.FieldCondition = FieldConditions;
-Form.useForm = useForm;
 
 export default Form;

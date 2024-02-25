@@ -1,16 +1,21 @@
+import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
 import { DrawerPortal } from "./DrawerPortal";
 
+const DrawerCloseButton = dynamic(() => import("~/components/buttons/DrawerCloseButton"));
+
 export interface DrawerProps {
   readonly open: boolean;
   readonly children: ReactNode;
+  readonly onClose?: () => void;
 }
 
-export const Drawer = ({ children, open }: DrawerProps): JSX.Element => (
+export const Drawer = ({ children, open, onClose }: DrawerProps): JSX.Element => (
   <DrawerPortal open={open}>
     <div className="drawer">
-      <div className="drawer__content">{children}</div>
+      {children}
+      {onClose && <DrawerCloseButton onClick={onClose} />}
     </div>
   </DrawerPortal>
 );
