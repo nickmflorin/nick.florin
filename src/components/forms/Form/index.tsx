@@ -3,6 +3,7 @@ import { type SubmitErrorHandler } from "react-hook-form";
 
 import { ButtonFooter, type ButtonFooterProps } from "~/components/structural/ButtonFooter";
 import { type ComponentProps } from "~/components/types";
+import { Title } from "~/components/typography/Title";
 import { Loading } from "~/components/views/Loading";
 
 import { Field, ControlledField } from "../Field";
@@ -22,6 +23,7 @@ export type FormProps<I extends BaseFormValues> = ComponentProps &
     readonly form: FormInstance<I>;
     readonly contentClassName?: ComponentProps["className"];
     readonly header?: JSX.Element;
+    readonly title?: string;
     readonly isLoading?: boolean;
     readonly buttonsOrientation?: ButtonFooterProps["orientation"];
     readonly onSubmit?: SubmitAction<I>;
@@ -38,6 +40,7 @@ export const Form = <I extends BaseFormValues>({
   header,
   contentClassName,
   isLoading,
+  title,
   action,
   onSubmit,
   onError,
@@ -69,7 +72,11 @@ export const Form = <I extends BaseFormValues>({
           : undefined
       }
     >
-      {header && <div className="flex flex-col">{header}</div>}
+      {header ? (
+        <div className="flex flex-col">{header}</div>
+      ) : title ? (
+        <Title order={4}>{title}</Title>
+      ) : null}
       <div
         className={clsx(
           "flex flex-col grow relative overflow-y-scroll pr-[18px]",

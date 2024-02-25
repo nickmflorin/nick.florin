@@ -2,13 +2,10 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
-import clsx from "clsx";
-
-import { Button } from "~/components/buttons/generic";
+import { createSkill } from "~/actions/createSkill";
+import { TableSearchBar } from "~/components/tables/TableSearchBar";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
-
-import { SearchInput } from "./SearchInput";
 
 const Drawer = dynamic(() => import("~/components/drawers/Drawer"), {
   loading: () => <Loading loading={true} />,
@@ -20,18 +17,26 @@ const CreateSkillForm = dynamic(() => import("~/components/forms/skill/CreateSki
 
 export interface SkillsAdminTableControlBarProps extends ComponentProps {}
 
-export const SkillsAdminTableControlBar = (props: SkillsAdminTableControlBarProps) => {
+const createSkillAction = async (value: string) => {
+  await createSkill({ label: value });
+};
+
+export const SkillsAdminTableSearchBar = (props: SkillsAdminTableControlBarProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <>
-      <div {...props} className={clsx("flex flex-row w-full gap-[8px]", props.className)}>
-        <SearchInput />
-        <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
-      </div>
+      <TableSearchBar
+        {...props}
+        searchParamName="search"
+        onNew={() => setDrawerOpen(true)}
+        onCreate={createSkillAction}
+      />
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <CreateSkillForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
       </Drawer>
     </>
   );
 };
+
+export default SkillsAdminTableSearchBar;

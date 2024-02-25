@@ -7,17 +7,23 @@ import { toast } from "react-toastify";
 import { useDebouncedCallback } from "use-debounce";
 
 import { logger } from "~/application/logger";
-import { createSkill } from "~/actions/createSkill";
 import { Button } from "~/components/buttons/generic";
 import { TextInput } from "~/components/input/TextInput";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 
-interface SearchInputProps extends ComponentProps {}
+export interface TableSearchInputProps extends ComponentProps {
+  readonly searchParamName: string;
+  readonly onCreate?: (value: string) => Promise<void>;
+}
 
 const isEnterEvent = (e: React.KeyboardEvent<HTMLDivElement>) => e.key === "Enter" && !e.shiftKey;
 
-export const SearchInput = (props: SearchInputProps) => {
+export const TableSearchInput = ({
+  searchParamName,
+  onCreate,
+  ...props
+}: TableSearchInputProps) => {
   const { replace, refresh } = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -28,9 +34,9 @@ export const SearchInput = (props: SearchInputProps) => {
   const handleSearch = useDebouncedCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const params = new URLSearchParams(searchParams?.toString());
     if (e.target.value) {
-      params.set("search", e.target.value);
+      params.set(searchParamName, e.target.value);
     } else {
-      params.delete("search");
+      params.delete(searchParamName);
     }
     replace(`${pathname}?${params.toString()}`);
   }, 300);
@@ -41,19 +47,21 @@ export const SearchInput = (props: SearchInputProps) => {
   }, [searchParams]);
 
   const create = useCallback(async () => {
-    setIsCreating(true);
-    try {
-      await createSkill({ label: value });
-      transition(() => {
-        refresh();
-      });
-    } catch (e) {
-      logger.error(e);
-      toast.error("There was an error creating the skill.");
-    } finally {
-      setIsCreating(false);
+    if (onCreate) {
+      setIsCreating(true);
+      try {
+        await onCreate(value);
+        transition(() => {
+          refresh();
+        });
+      } catch (e) {
+        logger.error(e);
+        toast.error("There was an error creating the skill.");
+      } finally {
+        setIsCreating(false);
+      }
     }
-  }, [value, refresh]);
+  }, [value, onCreate, refresh]);
 
   return (
     <TextInput
@@ -69,7 +77,7 @@ export const SearchInput = (props: SearchInputProps) => {
         }
       }}
       actions={
-        value.trim().length >= 3
+        value.trim().length >= 3 && onCreate
           ? {
               right: [
                 <div key="0" className="flex flex-row gap-[2px] items-center">

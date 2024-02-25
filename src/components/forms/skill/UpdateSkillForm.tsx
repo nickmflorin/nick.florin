@@ -48,6 +48,7 @@ export const UpdateSkillForm = ({ skill, ...props }: UpdateSkillFormProps): JSX.
   return (
     <SkillForm
       {...props}
+      title={skill.label}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {
