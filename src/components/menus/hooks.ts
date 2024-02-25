@@ -38,8 +38,12 @@ export const useMenuValue = <M extends types.MenuModel, O extends types.MenuOpti
   options,
   onChange: _onChange,
   value: _propValue,
+  isReady = true,
   data,
-}: Pick<types.MenuProps<M, O>, "data" | "value" | "onChange" | "initialValue" | "options">): [
+}: Pick<
+  types.MenuProps<M, O>,
+  "data" | "value" | "onChange" | "initialValue" | "options" | "isReady"
+>): [
   types.MenuValue<M, O>,
   types.MenuModelValue<M, O>,
   (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => void,
@@ -85,6 +89,15 @@ export const useMenuValue = <M extends types.MenuModel, O extends types.MenuOpti
            just mean multiple models will be selected for the same value. */
         return corresponding as [M, ...M[]];
       } else if (corresponding.length === 0) {
+        /* If the asynchronously loaded data has not yet been received, do not issue a warning if
+           the Menu's value cannot be associated with a model in the data.  In this case, the
+           Menu will be in a "locked" state, and prevent selection.  */
+        if (!isReady) {
+          /* Note: This may be inconsistent with whether or not the Menu is nullable or allows
+             multiple selection - but since we are preventing the Menu from being used in this case,
+             it is fine - since it is only temporary until the data is received. */
+          return null as LookupRT<LO>;
+        }
         /*
           Non Multi Menu Case
           -------------------

@@ -20,6 +20,7 @@ export const Menu = forwardRef(
       data,
       options,
       initialValue,
+      isReady = true,
       value: _propValue,
       itemClassName,
       itemIsDisabled,
@@ -43,6 +44,7 @@ export const Menu = forwardRef(
       value: _propValue,
       options,
       data,
+      isReady,
       onChange,
     });
     return (
@@ -76,7 +78,7 @@ export const Menu = forwardRef(
                 lockedClassName={itemLockedClassName}
                 isDisabled={types.evalMenuItemFlag("isDisabled", itemIsDisabled, model)}
                 isVisible={types.evalMenuItemFlag("isVisible", itemIsVisible, model)}
-                isLocked={types.evalMenuItemFlag("isLocked", itemIsLocked, model)}
+                isLocked={types.evalMenuItemFlag("isLocked", itemIsLocked, model) || !isReady}
                 isLoading={types.evalMenuItemFlag("isLoading", itemIsLoading, model)}
                 isSelected={
                   options.isMulti

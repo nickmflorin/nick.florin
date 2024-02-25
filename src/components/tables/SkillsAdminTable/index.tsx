@@ -7,10 +7,9 @@ import { toast } from "react-toastify";
 
 import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/model";
 import { deleteSkill } from "~/actions/deleteSkill";
-import { Loading } from "~/components/views/Loading";
 
 import { ActionsCell } from "../cells/ActionsCell";
-import { type TableProps } from "../types";
+import { Table } from "../Table";
 
 const EducationsCell = dynamic(() => import("./cells/EducationsCell"), { ssr: false });
 const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"), { ssr: false });
@@ -19,12 +18,6 @@ const ShowInTopSkillsCell = dynamic(() => import("./cells/ShowInTopSkillsCell"),
 const SlugCell = dynamic(() => import("./cells/SlugCell"), { ssr: false });
 const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"), { ssr: false });
 const VisibleCell = dynamic(() => import("./cells/VisibleCell"), { ssr: false });
-
-const Table = dynamic(() => import("../Table"), {
-  loading: () => <Loading loading={true} />,
-}) as {
-  <T extends { id: string }>(props: TableProps<T>): JSX.Element;
-};
 
 export interface SkillsAdminTableProps {
   readonly skills: ApiSkill[];
@@ -45,6 +38,7 @@ export const SkillsAdminTable = ({
 
   return (
     <Table
+      isCheckable
       columns={[
         {
           accessor: "label",

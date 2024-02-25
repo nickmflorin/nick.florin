@@ -116,6 +116,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
       menuClassName,
       inputClassName,
       actions,
+      isReady = true,
       itemRenderer,
       valueRenderer,
       valueModelRenderer,
@@ -186,6 +187,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
         inPortal={inPortal}
         withArrow={false}
         isOpen={open}
+        isDisabled={!isReady}
         variant="none"
         onOpen={e => onOpen?.(e, { value, models, instance: selectInstance })}
         onClose={e => onClose?.(e, { value, models, instance: selectInstance })}
@@ -196,6 +198,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
         content={
           <Menu
             {...(props as MenuProps<M, O>)}
+            isReady={isReady}
             className={clsx("z-50", menuClassName)}
             value={value}
             onChange={(v, item) => {
@@ -221,7 +224,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
                 ],
               })}
               isLoading={isLoading}
-              isLocked={isLocked}
+              isLocked={isLocked || !isReady}
               isActive={open}
               size={size}
               isDisabled={isDisabled}

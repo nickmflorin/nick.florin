@@ -83,6 +83,7 @@ export interface FloatingProps extends ComponentProps {
   readonly children: JSX.Element | ((params: FloatingRenderProps) => JSX.Element);
   readonly placement?: Placement;
   readonly width?: number | "target";
+  readonly isDisabled?: boolean;
   readonly onOpen?: (e: Event) => void;
   readonly onClose?: (e: Event) => void;
   readonly onOpenChange?: (value: boolean, evt: Event) => void;
@@ -97,6 +98,7 @@ export const Floating = ({
   inPortal = false,
   content,
   placement,
+  isDisabled = false,
   withArrow = true,
   arrowClassName,
   width,
@@ -163,7 +165,7 @@ export const Floating = ({
   return (
     <>
       {children}
-      {isOpen && (
+      {isOpen && !isDisabled && (
         <WrapInPortal inPortal={inPortal}>
           <>
             {typeof content === "function" ? (
