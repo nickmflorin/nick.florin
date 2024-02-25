@@ -58,7 +58,7 @@ export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {
           setLoading(true);
           let updatedSkill: Skill | undefined = undefined;
           try {
-            updatedSkill = await updateSkill(skill.id, { refreshSlug: true });
+            updatedSkill = await updateSkill(skill.id, { slug: null });
           } catch (e) {
             logger.error(e);
             toast.error("There was an error updating the skill.");
