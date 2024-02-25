@@ -30,7 +30,7 @@ export const SkillsAdminTableControlBar = (props: SkillsAdminTableControlBarProp
         <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
       </div>
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <CreateSkillForm className="mt-[16px]" />
+        <CreateSkillForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
       </Drawer>
     </>
   );
