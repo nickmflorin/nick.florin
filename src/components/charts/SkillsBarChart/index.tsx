@@ -7,7 +7,6 @@ import pick from "lodash.pick";
 import { type z } from "zod";
 
 import { generateChartColors } from "~/lib/charts";
-import { Form } from "~/components/forms/Form";
 import { useForm } from "~/components/forms/useForm";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
