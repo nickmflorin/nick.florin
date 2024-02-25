@@ -1,25 +1,18 @@
 import dynamic from "next/dynamic";
 
-import { Loading } from "~/components/views/Loading";
-
 const ResumeDrawer = dynamic(() => import("./ResumeDrawer"), { ssr: false });
 
 interface ResumeLayoutProps {
+  readonly content: React.ReactNode;
+  readonly chart: React.ReactNode;
   readonly children: React.ReactNode;
-  readonly drawer: React.ReactNode;
 }
 
-const SkillsBarChart = dynamic(() => import("~/components/charts/SkillsBarChart/index"), {
-  loading: () => <Loading loading={true} />,
-});
-
-export default function ResumeLayout({ children }: ResumeLayoutProps) {
+export default function ResumeLayout({ content, chart }: ResumeLayoutProps) {
   return (
     <div className="flex flex-row gap-[20px] min-h-full max-h-full">
-      <div className="flex flex-col max-w-[900px] p-[15px] grow w-[50%] relative">
-        <SkillsBarChart className="w-full h-[400px]" />
-      </div>
-      <div className="grow min-w-[680px] relative w-[50%] overflow-y-scroll">{children}</div>
+      <div className="flex flex-col max-w-[900px] p-[15px] grow w-[50%] relative">{chart}</div>
+      <div className="grow min-w-[680px] relative w-[50%] overflow-y-scroll">{content}</div>
       <ResumeDrawer />
     </div>
   );
