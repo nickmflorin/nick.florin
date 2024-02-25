@@ -23,7 +23,7 @@ export const ChartContainer = ({
   skeleton,
   ...props
 }: ChartContainerProps): JSX.Element => (
-  <div {...props} className={clsx("w-full h-full relative", props.className)}>
+  <div {...props} className={clsx("w-full relative", props.className)}>
     {isInitialLoading ? (
       <div className="px-[20px] py-[20px] w-full h-full">{skeleton}</div>
     ) : (

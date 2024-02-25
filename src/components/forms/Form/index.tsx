@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import { type SubmitErrorHandler } from "react-hook-form";
 
-import { ButtonFooter, type ButtonFooterProps } from "~/components/structural/ButtonFooter";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 import { Loading } from "~/components/views/Loading";
@@ -18,14 +17,14 @@ export * from "../types";
 type SubmitAction<I extends BaseFormValues> = (data: I, form: FormInstance<I>) => void;
 
 export type FormProps<I extends BaseFormValues> = ComponentProps &
-  Omit<NativeFormProps, keyof ComponentProps | "action" | "onSubmit" | "submitButtonType"> &
-  Omit<ButtonFooterProps, "onSubmit" | keyof ComponentProps | "orientation"> & {
+  Omit<NativeFormProps, keyof ComponentProps | "action" | "onSubmit" | "submitButtonType"> & {
     readonly form: FormInstance<I>;
     readonly contentClassName?: ComponentProps["className"];
     readonly header?: JSX.Element;
+    readonly footer?: JSX.Element;
     readonly title?: string;
     readonly isLoading?: boolean;
-    readonly buttonsOrientation?: ButtonFooterProps["orientation"];
+    readonly isScrollable?: boolean;
     readonly onSubmit?: SubmitAction<I>;
     readonly action?: SubmitAction<I>;
     readonly onError?: SubmitErrorHandler<I>;
@@ -34,13 +33,12 @@ export type FormProps<I extends BaseFormValues> = ComponentProps &
 export const Form = <I extends BaseFormValues>({
   form,
   children,
-  className,
-  style,
-  buttonsOrientation,
+  footer,
   header,
   contentClassName,
   isLoading,
   title,
+  isScrollable = true,
   action,
   onSubmit,
   onError,
@@ -51,8 +49,8 @@ export const Form = <I extends BaseFormValues>({
   }
   return (
     <NativeForm
-      style={style}
-      className={clsx("form", className)}
+      {...props}
+      className={clsx("form", props.className)}
       action={
         action !== undefined
           ? () => {
@@ -79,18 +77,19 @@ export const Form = <I extends BaseFormValues>({
       ) : null}
       <div
         className={clsx(
-          "flex flex-col grow relative overflow-y-scroll pr-[18px]",
+          "flex flex-col grow relative",
+          { "overflow-y-scroll pr-[18px]": isScrollable },
           contentClassName,
         )}
       >
         <Loading loading={isLoading}>{children}</Loading>
       </div>
-      <div className="flex flex-col pr-[18px]">
-        <FormErrors form={form} className="my-[4px]" />
-        {(onSubmit || action || props.onCancel) && (
-          <ButtonFooter {...props} orientation={buttonsOrientation} />
-        )}
-      </div>
+      {(form.errors.length !== 0 || footer) && (
+        <div className={clsx("flex flex-col", { "pr-[18px]": isScrollable })}>
+          <FormErrors form={form} className="my-[4px]" />
+          {footer}
+        </div>
+      )}
     </NativeForm>
   );
 };

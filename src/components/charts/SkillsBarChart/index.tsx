@@ -64,6 +64,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
       <SkillsBarChartForm className="px-[20px]" form={{ ...form, setValues }} />
       <ChartContainer
+        className="grow"
         error={error ? "There was an error rendering the chart." : null}
         isLoading={isLoading}
         isInitialLoading={isInitialLoading}
@@ -74,8 +75,8 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
         }
       >
         <Chart data={data ?? []} />
-        <Legend items={legendItems} className="px-[20px]" />
       </ChartContainer>
+      <Legend items={legendItems} className="px-[20px]" />
     </div>
   );
 };

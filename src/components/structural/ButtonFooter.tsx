@@ -23,10 +23,15 @@ export type ButtonFooterProps = ComponentProps & {
   readonly onCancel?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
-const buttonVisibility = (
-  props: Pick<ButtonFooterProps, "submitButtonType" | "onSubmit" | "onCancel">,
-): { submit: boolean; cancel: boolean } => {
-  if (props.onSubmit && props.submitButtonType === "submit") {
+const buttonVisibility = ({
+  onSubmit,
+  onCancel,
+  submitButtonType,
+}: Pick<ButtonFooterProps, "submitButtonType" | "onSubmit" | "onCancel">): {
+  submit: boolean;
+  cancel: boolean;
+} => {
+  if (onSubmit && submitButtonType === "submit") {
     throw new Error(
       "The 'onSubmit' handler should not be provided when the 'submitButtonType' is 'submit'.",
     );
@@ -34,8 +39,8 @@ const buttonVisibility = (
   return {
     /* The submit button should be shown if the submit handler is provided or if the submit button
        type is "submit". */
-    submit: props.onSubmit !== undefined || props.submitButtonType === "submit",
-    cancel: props.onCancel !== undefined,
+    submit: onSubmit !== undefined || submitButtonType === "submit",
+    cancel: onCancel !== undefined,
   };
 };
 
@@ -45,8 +50,12 @@ export const ButtonFooter = ({
   submitButtonType = "submit",
   orientation = "right",
   buttonSize = "small",
-  style,
-  className,
+  isSubmitting = false,
+  isDisabled = false,
+  submitIsDisabled = false,
+  cancelIsDisabled = false,
+  onSubmit,
+  onCancel,
   ...props
 }: ButtonFooterProps) => {
   /* This hook will indicate a pending status when the component is inside of a Form and the Form's
@@ -61,21 +70,29 @@ export const ButtonFooter = ({
     return <></>;
   }
 
-  const submitting = [props.isSubmitting, pending].includes(true);
+  const submitting = [isSubmitting, pending].includes(true);
 
   return (
     <div
-      style={style}
-      className={clsx("button-footer", `button-footer--${orientation}`, className)}
+      {...props}
+      className={clsx(
+        "flex flex-row w-full items-center gap-2",
+        {
+          "justify-end": orientation === "right",
+          "justify-start": orientation === "left",
+          "[&>.button]:flex-1": orientation === "full-width",
+        },
+        props.className,
+      )}
     >
       <ShowHide show={visibility.cancel}>
         <Button.Secondary
           options={{ as: "button" }}
           className="button-footer__button"
           size={buttonSize}
-          onClick={e => props.onCancel?.(e)}
+          onClick={e => onCancel?.(e)}
           isLocked={submitting}
-          isDisabled={props.isDisabled || props.cancelIsDisabled}
+          isDisabled={isDisabled || cancelIsDisabled}
         >
           {cancelText}
         </Button.Secondary>
@@ -86,8 +103,8 @@ export const ButtonFooter = ({
           size={buttonSize}
           type={submitButtonType}
           isLoading={submitting}
-          onClick={e => props.onSubmit?.(e)}
-          isDisabled={props.isDisabled || props.submitIsDisabled}
+          onClick={e => onSubmit?.(e)}
+          isDisabled={isDisabled || submitIsDisabled}
         >
           {submitText}
         </Button.Primary>

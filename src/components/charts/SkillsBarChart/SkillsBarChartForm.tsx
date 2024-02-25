@@ -18,7 +18,7 @@ export interface SkillsBarChartFormProps
   extends Omit<FormProps<z.infer<typeof SkillsBarChartFormSchema>>, "children"> {}
 
 export const SkillsBarChartForm = ({ form, ...props }: SkillsBarChartFormProps) => (
-  <Form {...props} className={clsx("flex flex-col gap-[4px]", props.className)} form={form}>
+  <Form {...props} form={form} isScrollable={false}>
     <Form.ControlledField form={form} name="showTopSkills" label="Show # Skills">
       {({ value, onChange: _onChange }) => (
         <RadioGroup

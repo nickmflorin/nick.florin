@@ -4,14 +4,17 @@ import { useTransition } from "react";
 
 import { isApiClientErrorResponse } from "~/application/errors";
 import { createSkill } from "~/actions/createSkill";
+import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../useForm";
 
 import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues } from "./SkillForm";
 
-export interface CreateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {}
+export interface CreateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
+  readonly onCancel?: () => void;
+}
 
-export const CreateSkillForm = (props: CreateSkillFormProps): JSX.Element => {
+export const CreateSkillForm = ({ onCancel, ...props }: CreateSkillFormProps): JSX.Element => {
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
@@ -35,6 +38,7 @@ export const CreateSkillForm = (props: CreateSkillFormProps): JSX.Element => {
   return (
     <SkillForm
       {...props}
+      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {

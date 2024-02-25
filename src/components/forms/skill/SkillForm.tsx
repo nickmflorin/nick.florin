@@ -21,7 +21,7 @@ export type SkillFormValues = z.infer<typeof SkillFormSchema>;
 export interface SkillFormProps extends Omit<FormProps<SkillFormValues>, "children" | "onSubmit"> {}
 
 export const SkillForm = (props: SkillFormProps): JSX.Element => (
-  <Form {...props} contentClassName="gap-[12px]" submitButtonType="submit">
+  <Form {...props} contentClassName="gap-[12px]">
     <Form.Field name="label" label="Label" form={props.form} condition="required">
       <TextInput className="w-full" {...props.form.register("label")} />
     </Form.Field>

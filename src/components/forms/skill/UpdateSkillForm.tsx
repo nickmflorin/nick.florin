@@ -5,6 +5,7 @@ import { useEffect, useTransition } from "react";
 import { isApiClientErrorResponse } from "~/application/errors";
 import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/updateSkill";
+import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../useForm";
 
@@ -12,9 +13,14 @@ import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues }
 
 export interface UpdateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
   readonly skill: ApiSkill;
+  readonly onCancel?: () => void;
 }
 
-export const UpdateSkillForm = ({ skill, ...props }: UpdateSkillFormProps): JSX.Element => {
+export const UpdateSkillForm = ({
+  skill,
+  onCancel,
+  ...props
+}: UpdateSkillFormProps): JSX.Element => {
   const updateSkillWithId = updateSkill.bind(null, skill.id);
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
@@ -48,6 +54,7 @@ export const UpdateSkillForm = ({ skill, ...props }: UpdateSkillFormProps): JSX.
   return (
     <SkillForm
       {...props}
+      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       title={skill.label}
       isLoading={pending}
       form={{ ...form, setValues }}
