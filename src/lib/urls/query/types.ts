@@ -1,4 +1,5 @@
-export type QueryParamValue = string | number | boolean | null | undefined;
+export type EncodedQueryParamValue = string;
+export type QueryParamValue = string | number | boolean | null | undefined | string[] | number[];
 
 export type QueryParamsForm = "map" | "object" | "record" | "pairs" | "string";
 
@@ -38,17 +39,19 @@ export type PartialQueryParams<
     }[F]
   : never;
 
-export type InferQueryParamsForm<Q extends QueryParams> = Q extends Map<string, QueryParamValue>
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type InferQueryParamsForm<Q extends QueryParams> = Q extends Map<string, any>
   ? "map"
   : Q extends URLSearchParams
     ? "object"
-    : Q extends QueryParamPairs<QueryParamValue>
+    : Q extends QueryParamPairs<any>
       ? "pairs"
-      : Q extends Record<string, QueryParamValue>
+      : Q extends Record<string, any>
         ? "record"
         : Q extends string
           ? "string"
           : never;
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export type OptionsForm<O extends QueryParamOptions> = O extends {
   form: infer F extends QueryParamsForm;

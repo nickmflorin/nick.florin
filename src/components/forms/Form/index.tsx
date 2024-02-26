@@ -76,13 +76,13 @@ export const Form = <I extends BaseFormValues>({
         <Title order={4}>{title}</Title>
       ) : null}
       <div
-        className={clsx(
-          "flex flex-col grow relative",
-          { "overflow-y-scroll pr-[18px]": isScrollable },
-          contentClassName,
-        )}
+        className={clsx("flex flex-col grow relative", {
+          "overflow-y-scroll pr-[18px]": isScrollable,
+        })}
       >
-        <Loading loading={isLoading}>{children}</Loading>
+        <Loading loading={isLoading}>
+          <div className={clsx("flex flex-col gap-[8px]", contentClassName)}>{children}</div>
+        </Loading>
       </div>
       {(form.errors.length !== 0 || footer) && (
         <div className={clsx("flex flex-col", { "pr-[18px]": isScrollable })}>

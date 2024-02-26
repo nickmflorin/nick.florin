@@ -36,7 +36,7 @@ export const THEME = {
   },
   grid: {
     line: {
-      stroke: "#dddddd",
+      stroke: "#F1F3F5",
       strokeWidth: 1,
     },
   },

@@ -5,13 +5,13 @@ import { type z } from "zod";
 
 import {
   ApiClientError,
-  type ApiClientFieldError,
+  type ApiClientFieldErrors,
   ApiClientFieldErrorCodes,
 } from "~/application/errors";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
+import { getAuthAdminUser } from "~/server/auth";
 
-import { authenticateAdminUser } from "./auth";
 import { SkillSchema } from "./schemas";
 
 export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
@@ -22,42 +22,45 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
 
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
-  const user = await authenticateAdminUser();
+  const user = await getAuthAdminUser();
 
-  let fieldErrs: ApiClientFieldError[] = [];
+  let fieldErrs: ApiClientFieldErrors = {};
   if (await prisma.skill.count({ where: { label: data.label } })) {
-    fieldErrs = [
+    fieldErrs = {
       ...fieldErrs,
-      {
-        field: "label",
-        code: ApiClientFieldErrorCodes.UNIQUE,
-        message: "The label must be unique!",
-      },
-    ];
+      label: [
+        {
+          code: ApiClientFieldErrorCodes.unique,
+          message: "The label must be unique!",
+        },
+      ],
+    };
     /* If the slug is not explicitly provided and the label does not violate the unique constraint,
        but the slugified form of the label does, this should be a more specific error message. */
   } else if (!_slug && (await prisma.skill.count({ where: { slug } }))) {
-    fieldErrs = [
+    fieldErrs = {
       ...fieldErrs,
-      {
-        field: "label",
-        code: ApiClientFieldErrorCodes.UNIQUE,
-        message:
-          "The auto-generated slug for the label is not unique. Please provide a unique slug.",
-      },
-    ];
+      label: [
+        {
+          code: ApiClientFieldErrorCodes.unique,
+          message:
+            "The auto-generated slug for the label is not unique. Please provide a unique slug.",
+        },
+      ],
+    };
   }
   if (_slug && (await prisma.skill.count({ where: { slug: _slug } }))) {
-    fieldErrs = [
+    fieldErrs = {
       ...fieldErrs,
-      {
-        field: "slug",
-        code: ApiClientFieldErrorCodes.UNIQUE,
-        message: "The slug must be unique!",
-      },
-    ];
+      slug: [
+        {
+          code: ApiClientFieldErrorCodes.unique,
+          message: "The slug must be unique!",
+        },
+      ],
+    };
   }
-  if (fieldErrs.length !== 0) {
+  if (Object.keys(fieldErrs).length !== 0) {
     return ApiClientError.BadRequest(fieldErrs).toJson();
   }
 

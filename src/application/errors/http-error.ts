@@ -1,37 +1,44 @@
-export type BaseHttpErrorConfig = {
+import { BaseError, type BaseErrorConfig, type DefaultErrorMessage } from "./base-error";
+
+export type BaseHttpErrorConfig = BaseErrorConfig & {
   readonly url?: string;
-  readonly message?: string;
   readonly statusCode?: number;
+  readonly internalMessageDetail?: string;
 };
 
-type ToConfig<C extends BaseHttpErrorConfig> = { [key in keyof BaseHttpErrorConfig]?: C[key] };
+const withDetail = (message: string, detail?: string): string =>
+  detail ? `${message}: ${detail}` : `${message}.`;
 
 export abstract class BaseHttpError<
   C extends BaseHttpErrorConfig = BaseHttpErrorConfig,
-> extends Error {
+> extends BaseError<C> {
+  protected readonly defaultMessage: DefaultErrorMessage<C> = () =>
+    "There was an error with the request.";
+  protected readonly defaultInternalMessage: DefaultErrorMessage<C> = (c: C) =>
+    c.statusCode && c.url
+      ? withDetail(
+          `[${c.statusCode}] There was an error with the request to ${c.url}`,
+          c.internalMessageDetail,
+        )
+      : c.url
+        ? withDetail(`There was an error with the request to ${c.url}`, c.internalMessageDetail)
+        : c.statusCode
+          ? withDetail(
+              `[${c.statusCode}] There was an error with the request to ${c.url}`,
+              c.internalMessageDetail,
+            )
+          : withDetail("There was an error with the request", c.internalMessageDetail);
+
   public readonly url: C["url"];
-  protected abstract readonly defaultMessage: string | ((e: BaseHttpError<C>) => string);
-  protected readonly _message: C["message"];
   protected readonly _statusCode: C["statusCode"];
 
-  constructor(config: ToConfig<C>) {
-    super();
-
+  constructor(config: C) {
+    super(config);
     this.url = config.url;
     this._statusCode = config.statusCode;
-    this._message = config.message;
   }
 
   public get statusCode(): C["statusCode"] {
     return this._statusCode;
-  }
-
-  public get message(): string {
-    if (this._message) {
-      return this._message;
-    }
-    return typeof this.defaultMessage === "function"
-      ? this.defaultMessage(this)
-      : this.defaultMessage;
   }
 }

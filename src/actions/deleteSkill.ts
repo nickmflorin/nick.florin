@@ -1,12 +1,11 @@
 "use server";
 import { prisma } from "~/prisma/client";
-
-import { authenticateAdminUser } from "./auth";
+import { getAuthAdminUser } from "~/server/auth";
 
 export const deleteSkill = async (id: string): Promise<void> => {
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
-  const user = await authenticateAdminUser();
+  const user = await getAuthAdminUser();
 
   await prisma.$transaction(async tx => {
     const skill = await tx.skill.findUniqueOrThrow({

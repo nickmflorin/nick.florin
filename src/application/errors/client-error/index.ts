@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
+import uniqBy from "lodash.uniqby";
 import superjson from "superjson";
+import { type z } from "zod";
 
 import { BaseHttpError, type BaseHttpErrorConfig } from "../http-error";
 
@@ -8,17 +10,55 @@ import {
   type ApiClientErrorCode,
   ApiClientErrorCodes,
   type ApiClientErrorStatusCode,
+  ApiClientFieldErrorCodes,
 } from "./codes";
-import { type ApiClientErrorResponse, type ApiClientFieldError } from "./types";
+import {
+  processRawApiClientFieldErrors,
+  type ApiClientErrorResponse,
+  type ApiClientFieldErrors,
+  type RawApiClientFieldErrors,
+  type ApiClientFieldError,
+} from "./types";
 
 export * from "./codes";
 export * from "./types";
 
+type IssueLookup<L extends string> = { [key in L]?: (issue: z.ZodIssue) => boolean };
+
+const zodErrorToClientResponse = <O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
+  error: z.ZodError,
+  schema: O,
+  lookup?: IssueLookup<keyof O["shape"] & string>,
+): ApiClientFieldErrors<keyof O["shape"] & string> => {
+  const errs: ApiClientFieldErrors<keyof O["shape"] & string> = {};
+
+  const keys = Object.values(schema.keyof().Values);
+  for (const field of keys) {
+    const iss: ApiClientFieldError[] = uniqBy(
+      error.issues
+        .filter(issue => {
+          const fn = lookup?.[field];
+          return fn !== undefined ? fn(issue) : issue.path[0] === field;
+        })
+        .map(issue => ({
+          code: ApiClientFieldErrorCodes.invalid,
+          internalMessage: issue.message,
+        })),
+      err => err.code,
+    );
+    if (iss.length !== 0) {
+      errs[field as keyof O["shape"] & string] = iss as [
+        ApiClientFieldError,
+        ...ApiClientFieldError[],
+      ];
+    }
+  }
+  return errs;
+};
+
 export class ClientError<
   C extends BaseHttpErrorConfig = BaseHttpErrorConfig,
 > extends BaseHttpError<C> {
-  protected readonly defaultMessage = "There was an error with the request.";
-
   public static reconstruct = (response: Response, message?: string) =>
     new ClientError({
       statusCode: response.status,
@@ -34,71 +74,79 @@ type ApiClientErrorGlobalConfig = {
   readonly errors?: never;
 };
 
-type ApiClientErrorFieldsConfig = {
-  readonly errors: ApiClientFieldError[];
-  readonly code?: typeof ApiClientErrorCodes.BAD_REQUEST;
-  readonly statusCode?: 400;
+type ApiClientErrorFieldsConfig<M extends RawApiClientFieldErrors = RawApiClientFieldErrors> = {
+  readonly code: ApiClientErrorCode;
+  readonly statusCode?: ApiClientErrorStatusCode;
+  readonly errors: M;
   readonly message?: never;
 };
 
 export type ApiClientErrorConfig = ApiClientErrorGlobalConfig | ApiClientErrorFieldsConfig;
 
-type Json<C extends ApiClientErrorConfig> = C extends { errors: ApiClientFieldError[] }
+type Json<C extends ApiClientErrorConfig> = C extends { errors: ApiClientFieldErrors }
   ? {
-      errors: Errors<C>;
-      statusCode: 400;
-      code: typeof ApiClientErrorCodes.BAD_REQUEST;
+      errors: C["errors"];
+      statusCode: C["statusCode"];
+      code: C["code"];
+      message?: never;
     }
   : {
-      statusCode: NonNullable<C["statusCode"]>;
-      code: NonNullable<C["code"]>;
       message: string;
+      statusCode: C["statusCode"];
+      code: C["code"];
+      errors?: never;
     };
 
-type BadRequestRT<M extends string | ApiClientFieldError | ApiClientFieldError[]> = M extends string
-  ? ApiClientError<ApiClientErrorGlobalConfig>
-  : ApiClientError<ApiClientErrorFieldsConfig>;
+type BadRequestRT<M extends string | RawApiClientFieldErrors | ApiClientFieldErrors> =
+  M extends string
+    ? ApiClientError<ApiClientErrorGlobalConfig>
+    : M extends ApiClientFieldErrors
+      ? ApiClientError<ApiClientErrorFieldsConfig<M>>
+      : M extends RawApiClientFieldErrors
+        ? ApiClientError<ApiClientErrorFieldsConfig<M>> | null
+        : never;
 
 type Errors<C extends ApiClientErrorConfig> = C extends ApiClientErrorFieldsConfig
-  ? ApiClientFieldError[]
+  ? ApiClientFieldErrors
   : undefined;
 
-export class ApiClientError<C extends ApiClientErrorConfig> extends BaseHttpError<{
-  statusCode: NonNullable<C["statusCode"]>;
-  message?: string;
-  code: NonNullable<C["code"]>;
-}> {
-  public readonly code: NonNullable<C["code"]>;
-  protected readonly defaultMessage = "There was an error with the request.";
+export class ApiClientError<C extends ApiClientErrorConfig> extends BaseHttpError<C> {
+  public readonly code: ApiClientErrorCode;
   public readonly errors: Errors<C>;
 
-  constructor({ message, code, errors, statusCode }: ApiClientErrorConfig) {
+  constructor(config: C) {
     super({
-      message,
+      internalMessageDetail: ApiClientErrorCodes.getAttribute(config.code, "message"),
+      ...config,
       statusCode:
         /* The status code and code will only ever be undefined if the ApiClientError is being
            instantiated with an 'errors' array, in which case the code has to be BAD_REQUEST and the
            status code has to be 400. */
-        statusCode ??
-        ApiClientErrorCodes.getAttribute(code ?? ApiClientErrorCodes.BAD_REQUEST, "statusCode"),
+        config.statusCode ??
+        ApiClientErrorCodes.getAttribute(
+          config.code ?? ApiClientErrorCodes.BAD_REQUEST,
+          "statusCode",
+        ),
     });
     /* The status code and code will only ever be undefined if the ApiClientError is being
        instantiated with an 'errors' array, in which case the code has to be BAD_REQUEST and the
        status code has to be 400. */
-    this.code = code ?? ApiClientErrorCodes.BAD_REQUEST;
-    this.errors = errors as Errors<C>;
-  }
+    this.code = config.code ?? ApiClientErrorCodes.BAD_REQUEST;
 
-  public get message() {
-    if (this._message) {
-      return this._message;
+    this.errors = undefined as Errors<C>;
+    if (config.errors !== undefined) {
+      const errs = processRawApiClientFieldErrors(config.errors);
+      if (errs === null) {
+        throw new TypeError("The errors object must not be empty to create a BadRequest error.");
+      }
+      this.errors = errs as Errors<C>;
     }
-    return ApiClientErrorCodes.getAttribute(this.code, "message");
+    this.errors = config.errors as Errors<C>;
   }
 
   public static reconstruct = (response: ApiClientErrorResponse) => new ApiClientError(response);
 
-  public static BadRequest = <M extends string | ApiClientFieldError | ApiClientFieldError[]>(
+  public static BadRequest = <M extends string | RawApiClientFieldErrors | ApiClientFieldErrors>(
     data?: M,
   ): BadRequestRT<M> => {
     if (typeof data === "string" || typeof data === "undefined") {
@@ -106,15 +154,23 @@ export class ApiClientError<C extends ApiClientErrorConfig> extends BaseHttpErro
         code: ApiClientErrorCodes.BAD_REQUEST,
         message: data,
       }) as BadRequestRT<M>;
-    } else if (Array.isArray(data)) {
+    } else {
+      const errs = processRawApiClientFieldErrors(data);
+      if (errs === null) {
+        return null as BadRequestRT<M>;
+      }
       return new ApiClientError({
         errors: data,
         code: ApiClientErrorCodes.BAD_REQUEST,
       }) as BadRequestRT<M>;
-    } else {
-      return new ApiClientError({ errors: [data] }) as BadRequestRT<M>;
     }
   };
+
+  public static ValidationError = <O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
+    error: z.ZodError,
+    schema: O,
+    lookup?: IssueLookup<keyof O["shape"] & string>,
+  ) => this.BadRequest(zodErrorToClientResponse(error, schema, lookup));
 
   public static NotAuthenticated = (message?: string) =>
     new ApiClientError({ code: ApiClientErrorCodes.NOT_AUTHENTICATED, message });
@@ -126,17 +182,12 @@ export class ApiClientError<C extends ApiClientErrorConfig> extends BaseHttpErro
     new ApiClientError({ code: ApiClientErrorCodes.NOT_FOUND, message });
 
   public toJson = (): Json<C> =>
-    this.errors !== undefined
-      ? ({
-          code: this.code as typeof ApiClientErrorCodes.BAD_REQUEST,
-          statusCode: this.statusCode as 400,
-          errors: this.errors,
-        } as Json<C>)
-      : ({
-          code: this.code,
-          statusCode: this.statusCode,
-          message: this.message,
-        } as Json<C>);
+    ({
+      errors: this.errors,
+      statusCode: this.statusCode,
+      code: this.code,
+      message: this.message,
+    }) as Json<C>;
 
   public toSerializedJson = () => superjson.serialize(this.toJson());
 

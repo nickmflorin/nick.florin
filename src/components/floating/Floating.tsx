@@ -12,6 +12,8 @@ import {
   useClick,
   useDismiss,
   size,
+  offset as offsetMiddleware,
+  type OffsetOptions,
   FloatingPortal,
 } from "@floating-ui/react";
 import clsx from "clsx";
@@ -56,6 +58,7 @@ export interface FloatingProps extends ComponentProps {
   readonly triggers?: FloatingTrigger[];
   readonly variant?: types.FloatingVariant;
   readonly withArrow?: boolean;
+  readonly offset?: OffsetOptions;
   readonly arrowClassName?: ComponentProps["className"];
   readonly inPortal?: boolean;
   /**
@@ -98,6 +101,7 @@ export const Floating = ({
   inPortal = false,
   content,
   placement,
+  offset,
   isDisabled = false,
   withArrow = true,
   arrowClassName,
@@ -130,6 +134,7 @@ export const Floating = ({
       arrow({
         element: arrowRef,
       }),
+      offset ? offsetMiddleware(offset) : undefined,
       width !== undefined
         ? size({
             apply({ rects, elements }) {

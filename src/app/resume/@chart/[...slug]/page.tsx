@@ -1,7 +1,12 @@
-import Test from "./test";
+import dynamic from "next/dynamic";
 
-export const dynamic = "force-static";
+import { Loading } from "~/components/views/Loading";
+
+const SkillsBarChart = dynamic(() => import("~/components/charts/SkillsBarChart"), {
+  loading: () => <Loading loading={true} />,
+  ssr: false,
+});
 
 export default function ChartPage() {
-  return <Test />;
+  return <SkillsBarChart className="w-full h-[400px]" />;
 }

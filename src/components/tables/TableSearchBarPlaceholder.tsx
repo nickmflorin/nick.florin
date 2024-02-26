@@ -8,7 +8,7 @@ export interface TableSearchBarPlaceholderProps extends ComponentProps {}
 
 export const TableSearchBarPlaceholder = (props: TableSearchBarPlaceholderProps) => (
   <div {...props} className={clsx("flex flex-row w-full gap-[8px]", props.className)}>
-    <TextInput />
+    <TextInput className="grow" />
     <Button.Primary>New</Button.Primary>
   </div>
 );

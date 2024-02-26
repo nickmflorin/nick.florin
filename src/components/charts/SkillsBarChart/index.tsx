@@ -1,12 +1,19 @@
 "use client";
+import { encode } from "querystring";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 
 import clsx from "clsx";
 import pick from "lodash.pick";
-import { type z } from "zod";
 
 import { generateChartColors } from "~/lib/charts";
+import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
+import { Floating } from "~/components/floating/Floating";
+import {
+  SkillsChartFilterForm,
+  SkillsChartFilterFormSchema,
+  type SkillsChartFilterFormValues,
+} from "~/components/forms/SkillsChartFilterForm";
 import { useForm } from "~/components/forms/useForm";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
@@ -16,8 +23,7 @@ import { BarChartSkeleton } from "../BarChartSkeleton";
 import { ChartContainer } from "../ChartContainer";
 import { Legend } from "../Legend";
 
-import { SkillsBarChartForm } from "./SkillsBarChartForm";
-import { SkillsBarChartFormSchema, type SkillsBarChartDatum } from "./types";
+import { type SkillsBarChartDatum } from "./types";
 
 const Chart = dynamic(() => import("./SkillsBarChart"), {
   ssr: false,
@@ -25,20 +31,31 @@ const Chart = dynamic(() => import("./SkillsBarChart"), {
 });
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
-  const [skillsQuery, setSkillsQuery] = useState<z.infer<typeof SkillsBarChartFormSchema>>({
+  const [skillsQuery, setSkillsQuery] = useState<SkillsChartFilterFormValues>({
     showTopSkills: 12,
+    educations: [],
+    experiences: [],
+    programmingDomains: [],
+    programmingLanguages: [],
+    categories: [],
   });
 
-  const { setValues, ...form } = useForm<z.infer<typeof SkillsBarChartFormSchema>>({
-    schema: SkillsBarChartFormSchema,
+  const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({
+    schema: SkillsChartFilterFormSchema,
     defaultValues: { showTopSkills: 12 },
     onChange: ({ values }) => {
       setSkillsQuery(values);
     },
   });
 
-  // TODO: Handle loading & error states.
-  const { data: _data, error, isInitialLoading, isLoading } = useSkills({ query: skillsQuery });
+  const {
+    data: _data,
+    error,
+    isInitialLoading,
+    isLoading,
+  } = useSkills({
+    query: skillsQuery,
+  });
 
   const data = useMemo<SkillsBarChartDatum[]>(
     () =>
@@ -62,7 +79,6 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
 
   return (
     <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
-      <SkillsBarChartForm className="px-[20px]" form={{ ...form, setValues }} />
       <ChartContainer
         className="grow"
         error={error ? "There was an error rendering the chart." : null}
@@ -74,6 +90,26 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
           />
         }
       >
+        <Floating
+          placement="bottom-end"
+          triggers={["click"]}
+          offset={{ mainAxis: 4 }}
+          withArrow={false}
+          width={400}
+          className="p-[20px] rounded-md"
+          variant="white"
+          content={<SkillsChartFilterForm form={{ ...form, setValues }} />}
+        >
+          {({ ref, params }) => (
+            <ChartFilterButton
+              {...params}
+              className="absolute z-50 right-[24px] top-[8px]"
+              ref={ref}
+              isDisabled={error !== undefined}
+              isLocked={isLoading}
+            />
+          )}
+        </Floating>
         <Chart data={data ?? []} />
       </ChartContainer>
       <Legend items={legendItems} className="px-[20px]" />

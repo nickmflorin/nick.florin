@@ -4,8 +4,17 @@ import {
   type InferQueryParamsValue,
   type OptionsForm,
   getOptionsForm,
+  type InferQueryParamsForm,
+  type EncodedQueryParamValue,
+  QueryParamValue,
+  QueryParamsForm,
 } from "./types";
-import { getQueryParamsReducer, getInitialQueryParamsState, searchParamsIterator } from "./util";
+import {
+  getQueryParamsReducer,
+  getInitialQueryParamsState,
+  searchParamsIterator,
+  getQueryParamForm,
+} from "./util";
 
 /**
  * Transforms the query parameters from the provided path, query string, URL,
@@ -43,6 +52,49 @@ export const transformQueryParams = <P extends QueryParams, O extends QueryParam
       OptionsForm<O>,
       InferQueryParamsValue<P>
     >;
+  }
+  return state;
+};
+
+export const decodeQueryParams = (
+  params: QueryParams<QueryParamsForm, EncodedQueryParamValue>,
+): QueryParams<"record", QueryParamValue> => {
+  let decoded: QueryParams<"record", QueryParamValue> = {};
+  for (const [k, v] of searchParamsIterator(params)) {
+    decoded[k] = JSON.parse(v);
+  }
+  return decoded;
+};
+
+export const encodeQueryParams = <Q extends QueryParams>(
+  params: Q,
+): QueryParams<InferQueryParamsForm<Q>, EncodedQueryParamValue> => {
+  const form = getQueryParamForm(params);
+
+  const reducer = getQueryParamsReducer<InferQueryParamsForm<Q>>(form);
+
+  let state = getInitialQueryParamsState({ form }) as QueryParams<
+    InferQueryParamsForm<Q>,
+    EncodedQueryParamValue
+  >;
+  for (const [k, v] of searchParamsIterator(params)) {
+    if (typeof v === "string") {
+      state = reducer<typeof state, EncodedQueryParamValue>(state, k, v) as QueryParams<
+        InferQueryParamsForm<Q>,
+        EncodedQueryParamValue
+      >;
+    } else if (Array.isArray(v)) {
+      state = reducer<typeof state, EncodedQueryParamValue>(
+        state,
+        k,
+        `[${v.map(vi => `"${vi}"`).join(",")}]`,
+      ) as QueryParams<InferQueryParamsForm<Q>, EncodedQueryParamValue>;
+    } else if (v !== undefined) {
+      state = reducer<typeof state, EncodedQueryParamValue>(state, k, String(v)) as QueryParams<
+        InferQueryParamsForm<Q>,
+        EncodedQueryParamValue
+      >;
+    }
   }
   return state;
 };

@@ -47,6 +47,7 @@ export const Menu = forwardRef(
       isReady,
       onChange,
     });
+
     return (
       <div {...props} className={clsx("menu", props.className)} ref={ref}>
         {header && <div className="menu__header">{header}</div>}

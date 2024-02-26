@@ -186,6 +186,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
         width="target"
         inPortal={inPortal}
         withArrow={false}
+        offset={{ mainAxis: 2 }}
         isOpen={open}
         isDisabled={!isReady}
         variant="none"

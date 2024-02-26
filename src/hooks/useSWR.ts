@@ -14,7 +14,12 @@ import {
   type HttpError,
   isHttpError,
 } from "~/application/errors";
-import { type QueryParams, addQueryParamsToUrl } from "~/lib/urls";
+import {
+  type QueryParams,
+  addQueryParamsToUrl,
+  type QueryParamValue,
+  encodeQueryParams,
+} from "~/lib/urls";
 
 type ApiPath = `/api/${string}`;
 type Args = Exclude<Arguments, string> | ApiPath;
@@ -25,8 +30,11 @@ type FetchResponseBody = { data: SuperJSONResult } | SuperJSONResult;
 const isSuccessResponseBody = (b: FetchResponseBody): b is { data: SuperJSONResult } =>
   typeof b === "object" && b !== null && (b as { data: SuperJSONResult }).data != undefined;
 
-export const swrFetcher = async <T>(path: ApiPath, query?: QueryParams) => {
-  const url = query ? addQueryParamsToUrl(path, query) : path;
+export const swrFetcher = async <T>(
+  path: ApiPath,
+  query?: QueryParams<"record", QueryParamValue>,
+) => {
+  const url = query ? addQueryParamsToUrl(path, encodeQueryParams(query)) : path;
   let response: Response | null = null;
   try {
     response = await fetch(url);
@@ -96,7 +104,7 @@ export type SWRConfig<T> = Omit<
      and should not be overridden. */
   "shouldRetryOnError" | "onError" | "onSuccess"
 > & {
-  readonly query?: QueryParams;
+  readonly query?: QueryParams<"record", QueryParamValue | string[] | number[]>;
   readonly onError?: (e: HttpError) => void;
   readonly onSuccess?: (data: T) => void;
 };

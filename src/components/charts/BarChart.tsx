@@ -33,7 +33,7 @@ export const BarChart = <D extends BarDatum>({
     axisTop={null}
     axisRight={null}
     {...props}
-    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+    margin={{ top: 20, right: 10, bottom: 20, left: 20 }}
     theme={THEME}
   />
 );

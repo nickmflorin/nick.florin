@@ -44,6 +44,9 @@ dependencies:
   '@types/lodash.union':
     specifier: ^4.6.9
     version: 4.6.9
+  '@types/lodash.uniqby':
+    specifier: ^4.7.9
+    version: 4.7.9
   chart.js:
     specifier: ^4.4.1
     version: 4.4.1
@@ -86,6 +89,9 @@ dependencies:
   lodash.uniq:
     specifier: ^4.5.0
     version: 4.5.0
+  lodash.uniqby:
+    specifier: ^4.7.0
+    version: 4.7.0
   luxon:
     specifier: ^3.4.4
     version: 3.4.4
@@ -2240,6 +2246,12 @@ packages:
     dependencies:
       '@types/lodash': 4.14.202
     dev: true
+
+  /@types/lodash.uniqby@4.7.9:
+    resolution: {integrity: sha512-rjrXji/seS6BZJRgXrU2h6FqxRVufsbq/HE0Tx0SdgbtlWr2YmD/M64BlYEYYlaMcpZwy32IYVkMfUMYlPuv0w==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: false
 
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
@@ -6376,6 +6388,10 @@ packages:
 
   /lodash.uniq@4.5.0:
     resolution: {integrity: sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==}
+    dev: false
+
+  /lodash.uniqby@4.7.0:
+    resolution: {integrity: sha512-e/zcLx6CSbmaEgFHCA7BnoQKyCtKMxnuWrJygbwPs/AIn+IMKl66L8/s+wBUn5LRw2pZx3bUHibiV1b6aTWIww==}
     dev: false
 
   /lodash@4.17.21:

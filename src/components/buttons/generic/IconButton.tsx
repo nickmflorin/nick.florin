@@ -93,9 +93,12 @@ type WithVariants = { [key in Capitalize<types.ButtonVariant<"icon-button">>]: V
 const withVariants = types.ButtonVariants["icon-button"].values.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
-    [capitalize(variant)]: <O extends types.ButtonOptions>(
-      props: Omit<IconButtonProps<O>, "variant">,
-    ) => <LocalIconButton<O> {...({ ...props, variant } as IconButtonProps<O>)} />,
+    [capitalize(variant)]: forwardRef(
+      <O extends types.ButtonOptions>(
+        props: Omit<IconButtonProps<O>, "variant">,
+        ref: types.PolymorphicButtonRef<O>,
+      ) => <LocalIconButton<O> {...({ ...props, variant } as IconButtonProps<O>)} ref={ref} />,
+    ),
   }),
   {} as WithVariants,
 );

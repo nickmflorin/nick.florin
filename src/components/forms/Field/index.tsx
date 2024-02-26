@@ -105,7 +105,7 @@ const _Field = <N extends FieldName<I>, I extends BaseFormValues>(
       )}
       <div className="form-field-content">{children}</div>
       {props.helpText !== undefined && (
-        <Text size="xs" className="leading-[14px] text-gray-500 pl-[1px] mt-[2px]">
+        <Text size="xs" className="leading-[14px] text-gray-500 pl-[1px] mt-[4px]">
           {props.helpText}
         </Text>
       )}

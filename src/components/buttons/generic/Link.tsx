@@ -56,9 +56,12 @@ type WithVariants = { [key in Capitalize<types.ButtonVariant<"link">>]: VariantP
 const withVariants = types.ButtonVariants.link.values.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
-    [capitalize(variant)]: <O extends types.ButtonOptions>(
-      props: Omit<LinkProps<O>, "variant">,
-    ) => <Link<O> {...({ ...props, variant } as LinkProps<O>)} />,
+    [capitalize(variant)]: forwardRef(
+      <O extends types.ButtonOptions>(
+        props: Omit<LinkProps<O>, "variant">,
+        ref: types.PolymorphicButtonRef<O>,
+      ) => <Link<O> {...({ ...props, variant } as LinkProps<O>)} ref={ref} />,
+    ),
   }),
   {} as WithVariants,
 );

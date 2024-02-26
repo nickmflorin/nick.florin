@@ -8,8 +8,8 @@ import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { type Skill } from "~/prisma/model";
+import { getAuthAdminUser } from "~/server/auth";
 
-import { authenticateAdminUser } from "./auth";
 import { SkillSchema } from "./schemas";
 
 const UpdateSkillSchema = SkillSchema.partial();
@@ -24,7 +24,7 @@ export const updateSkill = async (
 
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
-  const user = await authenticateAdminUser();
+  const user = await getAuthAdminUser();
 
   const sk = await prisma.$transaction(async tx => {
     let skill = await tx.skill.findUniqueOrThrow({ where: { id } });

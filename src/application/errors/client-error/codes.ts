@@ -36,8 +36,12 @@ export type ApiClientErrorStatusCode<C extends ApiClientErrorCode = ApiClientErr
 export const ApiClientFieldErrorCodes = enumeratedLiterals(
   [
     {
-      value: "UNIQUE",
+      value: "unique",
       message: (field: string) => `The field ${field} must be unique.`,
+    },
+    {
+      value: "invalid",
+      message: (field: string) => `The field ${field} is invalid.`,
     },
   ] as const,
   {},

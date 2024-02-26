@@ -15,7 +15,7 @@ export const TableSearchBar = ({
   ...props
 }: TableSearchBarProps) => (
   <div {...props} className={clsx("flex flex-row w-full gap-[8px]", props.className)}>
-    <TableSearchInput searchParamName={searchParamName} onCreate={onCreate} />
+    <TableSearchInput className="grow" searchParamName={searchParamName} onCreate={onCreate} />
     <Button.Primary onClick={() => onNew()}>New</Button.Primary>
   </div>
 );

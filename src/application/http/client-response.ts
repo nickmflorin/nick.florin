@@ -37,3 +37,4 @@ ClientResponse.BadRequest = ApiClientError.BadRequest;
 ClientResponse.NotAuthenticated = ApiClientError.NotAuthenticated;
 ClientResponse.Forbidden = ApiClientError.Forbidden;
 ClientResponse.NotFound = ApiClientError.NotFound;
+ClientResponse.ValidationError = ApiClientError.ValidationError;
