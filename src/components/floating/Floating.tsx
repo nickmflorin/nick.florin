@@ -15,10 +15,12 @@ import {
   offset as offsetMiddleware,
   type OffsetOptions,
   FloatingPortal,
+  autoUpdate as autoUpdater,
 } from "@floating-ui/react";
 import clsx from "clsx";
+import { flushSync } from "react-dom";
 
-import { type ComponentProps } from "~/components/types";
+import { type Size, type ComponentProps } from "~/components/types";
 
 import { FloatingContent } from "./FloatingContent";
 import * as types from "./types";
@@ -55,6 +57,7 @@ export interface FloatingProps extends ComponentProps {
    */
   readonly content: ReactNode | ((props: FloatingContentRenderProps) => ReactNode);
   readonly isOpen?: boolean;
+  readonly autoUpdate?: boolean;
   readonly triggers?: FloatingTrigger[];
   readonly variant?: types.FloatingVariant;
   readonly withArrow?: boolean;
@@ -96,6 +99,8 @@ export const Floating = ({
   className,
   style,
   children: _children,
+  // Note: This should not be blindly turned on because it can cause performance degradation.
+  autoUpdate = false,
   triggers = ["hover"],
   isOpen: propIsOpen,
   inPortal = false,
@@ -112,6 +117,7 @@ export const Floating = ({
   onOpenChange,
 }: FloatingProps) => {
   const [_isOpen, setIsOpen] = useState(false);
+  const [maxHeight, setMaxHeight] = useState<Size | null>(null);
 
   /* Allow the open state of the floating element to be controlled externally to the component if
      desired. */
@@ -120,6 +126,7 @@ export const Floating = ({
   const arrowRef = useRef(null);
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
+    whileElementsMounted: autoUpdate ? autoUpdater : undefined,
     onOpenChange: (value: boolean, evt: Event) => {
       setIsOpen(value);
       onOpenChange?.(value, evt);
@@ -135,15 +142,17 @@ export const Floating = ({
         element: arrowRef,
       }),
       offset ? offsetMiddleware(offset) : undefined,
-      width !== undefined
-        ? size({
-            apply({ rects, elements }) {
-              Object.assign(elements.floating.style, {
-                width: typeof width === "number" ? `${width}px` : `${rects.reference.width}px`,
-              });
-            },
-          })
-        : undefined,
+      size({
+        padding: 10,
+        apply({ availableHeight, rects, elements }) {
+          if (width !== undefined) {
+            Object.assign(elements.floating.style, {
+              width: typeof width === "number" ? `${width}px` : `${rects.reference.width}px`,
+            });
+          }
+          flushSync(() => setMaxHeight(`${availableHeight}px`));
+        },
+      }),
     ],
   });
 
@@ -177,14 +186,18 @@ export const Floating = ({
               content({
                 ref: refs.setFloating,
                 params: floatingProps,
-                styles: floatingStyles,
+                styles: maxHeight ? { ...floatingStyles, maxHeight } : floatingStyles,
               })
             ) : (
               <FloatingContent
                 ref={refs.setFloating}
                 variant={variant}
                 {...floatingProps}
-                style={{ ...style, ...floatingStyles }}
+                style={
+                  maxHeight
+                    ? { ...style, ...floatingStyles, maxHeight }
+                    : { ...style, ...floatingStyles }
+                }
                 className={clsx(
                   /* Typically, the floating props do not include a class name - but just in case,
                      we want to merge it with the content class name, if it exists. */

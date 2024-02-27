@@ -18,7 +18,7 @@ export const FloatingContent = forwardRef<HTMLDivElement, FloatingContentProps>(
       ref={ref}
       className={clsx(
         types.getFloatingVariantClassName(variant),
-        "z-50 rounded-sm",
+        "z-50 rounded-sm overflow-y-scroll",
         props.className,
       )}
     >

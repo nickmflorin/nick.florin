@@ -1,5 +1,3 @@
-import "server-only";
-
 import { auth, getAuth } from "@clerk/nextjs/server";
 
 import { ApiClientError } from "~/application/errors";
