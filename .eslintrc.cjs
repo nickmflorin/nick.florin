@@ -152,7 +152,7 @@ module.exports = {
     "package.json",
     "package-lock.json",
     "src/prisma/migrations/*",
-    "node_modules/*",
+    "/node_modules/**",
     ".next/*",
   ],
 };

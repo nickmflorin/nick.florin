@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import {
   type QueryParamOptions,
   type QueryParams,
@@ -77,6 +75,20 @@ export const decodeQueryParams = (
   return decoded;
 };
 
+export const encodeQueryParam = (
+  v: Exclude<QueryParamValue, undefined>,
+): EncodedQueryParamValue => {
+  if (typeof v === "string") {
+    return v;
+  } else if (Array.isArray(v)) {
+    return `[${v.map(vi => `"${vi}"`).join(",")}]`;
+  } else if (v !== undefined) {
+    return String(v);
+  }
+  // Never
+  return v;
+};
+
 export const encodeQueryParams = <Q extends QueryParams>(
   params: Q,
 ): QueryParams<InferQueryParamsForm<Q>, EncodedQueryParamValue> => {
@@ -89,22 +101,12 @@ export const encodeQueryParams = <Q extends QueryParams>(
     EncodedQueryParamValue
   >;
   for (const [k, v] of searchParamsIterator(params)) {
-    if (typeof v === "string") {
-      state = reducer<typeof state, EncodedQueryParamValue>(state, k, v) as QueryParams<
-        InferQueryParamsForm<Q>,
-        EncodedQueryParamValue
-      >;
-    } else if (Array.isArray(v)) {
+    if (v !== undefined) {
       state = reducer<typeof state, EncodedQueryParamValue>(
         state,
         k,
-        `[${v.map(vi => `"${vi}"`).join(",")}]`,
+        encodeQueryParam(v),
       ) as QueryParams<InferQueryParamsForm<Q>, EncodedQueryParamValue>;
-    } else if (v !== undefined) {
-      state = reducer<typeof state, EncodedQueryParamValue>(state, k, String(v)) as QueryParams<
-        InferQueryParamsForm<Q>,
-        EncodedQueryParamValue
-      >;
     }
   }
   return state;
