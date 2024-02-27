@@ -40,7 +40,7 @@ export const swrFetcher = async <T>(
     response = await fetch(url);
   } catch (e) {
     // This will occur if a connection cannot be established between the client and the server.
-    throw new NetworkError(url);
+    throw new NetworkError({ url });
   }
   if (!response.ok) {
     if (response.status >= 400 && response.status < 500) {
