@@ -16,7 +16,8 @@ import {
   ApiClientFieldErrorCodes,
   type ApiClientErrorResponse,
   isApiClientFieldErrorsResponse,
-  type ApiClientFieldError,
+  type ApiClientFieldErrors,
+  isHttpError,
 } from "~/application/errors";
 import { logger } from "~/application/logger";
 
@@ -125,36 +126,59 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [],
   );
 
-  const handleApiError = useCallback(
-    (e: HttpError | ApiClientErrorResponse) => {
-      if (
-        (e instanceof ApiClientError && e.errors !== undefined) ||
-        isApiClientFieldErrorsResponse(e)
-      ) {
-        // If this happens, it means the API incorrectly returned an error response.
-        if ((e.errors as ApiClientFieldError[]).length === 0) {
-          logger.warn(
-            "The form received an ApiClientErrorResponse or ApiClientError with an empty " +
-              "array of errors!",
-            { error: e },
-          );
-        }
-        return setInternalFieldErrors(
-          (e.errors as ApiClientFieldError[]).reduce<FieldErrors<I>>((acc, detail) => {
-            const fn = ApiClientFieldErrorCodes.getAttribute(detail.code, "message");
-            return {
-              ...acc,
-              [detail.field as FieldName<I>]: [
-                ...(acc[detail.field as FieldName<I>] ?? []),
-                detail.message ?? fn(detail.field),
-              ],
-            };
-          }, {}),
+  const setInternalFieldErrorsFromResponse = useCallback(
+    (e: ApiClientError | ApiClientErrorResponse, errs: ApiClientFieldErrors) => {
+      // If this happens, it means the API incorrectly returned an error response.
+      if (Object.keys(errs).length === 0) {
+        logger.warn(
+          "The form received an ApiClientErrorResponse or ApiClientError with an empty " +
+            "object of errors!",
+          { error: e },
         );
       }
-      /* We might want to fine tune this if we ever have to deal with the difference between a
-         user facing and non-user facing error. */
-      return setErrors(e.message);
+      return setInternalFieldErrors(
+        Object.keys(errs).reduce((prev: FieldErrors<I>, key): FieldErrors<I> => {
+          const details = (errs as ApiClientFieldErrors)[key];
+          if (details && details.length !== 0) {
+            return {
+              ...prev,
+              [key as FieldName<I>]: details.map(detail => {
+                const fn = ApiClientFieldErrorCodes.getAttribute(detail.code, "message");
+                return detail.message ?? fn(key);
+              }),
+            };
+          }
+          // If this happens, it means the API incorrectly returned an error response.
+          logger.warn(
+            "The form received an ApiClientErrorResponse or ApiClientError with an error " +
+              `key '${key}' that does not contain any errors!`,
+            { error: e, key },
+          );
+          return prev;
+        }, {} as FieldErrors<I>),
+      );
+    },
+    [],
+  );
+
+  const handleApiError = useCallback(
+    (e: HttpError | ApiClientErrorResponse) => {
+      if (isHttpError(e)) {
+        if (e instanceof ApiClientError) {
+          if (e.errors !== undefined) {
+            return setInternalFieldErrorsFromResponse(e, e.errors);
+          }
+        }
+        /* In this case, the ApiClientError does not contain errors for individual fields, and
+           should be treated globally. */
+        return setErrors(e.message);
+      } else if (isApiClientFieldErrorsResponse(e)) {
+        return setInternalFieldErrorsFromResponse(e, e.errors);
+      } else {
+        /* In this case, the ApiClientError does not contain errors for individual fields, and
+           should be treated globally. */
+        return setErrors(e.message);
+      }
     },
     [setErrors],
   );

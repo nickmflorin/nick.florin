@@ -110,7 +110,9 @@ type Errors<C extends ApiClientErrorConfig> = C extends ApiClientErrorFieldsConf
   ? ApiClientFieldErrors
   : undefined;
 
-export class ApiClientError<C extends ApiClientErrorConfig> extends BaseHttpError<C> {
+export class ApiClientError<
+  C extends ApiClientErrorConfig = ApiClientErrorConfig,
+> extends BaseHttpError<C> {
   public readonly code: ApiClientErrorCode;
   public readonly errors: Errors<C>;
 

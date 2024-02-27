@@ -4,7 +4,7 @@ import difference from "lodash.difference";
 import uniq from "lodash.uniq";
 
 import { ClientResponse } from "~/application/http";
-import { transformQueryParams, decodeQueryParams } from "~/lib/urls";
+import { decodeQueryParams } from "~/lib/urls";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/model";
@@ -80,7 +80,6 @@ export async function GET(request: NextRequest) {
     return resp.toResponse();
   }
 
-  console.log({ programmingDomains, programmingLanguages, categories });
   const skills = await prisma.skill.findMany({
     where: {
       includeInTopSkills: true,

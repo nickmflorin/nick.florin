@@ -1,4 +1,4 @@
-import { BaseHttpError, type BaseHttpErrorConfig } from "./http-error";
+import { BaseHttpError } from "./http-error";
 
 export class NetworkError extends BaseHttpError<{
   message?: string;
@@ -6,7 +6,7 @@ export class NetworkError extends BaseHttpError<{
 }> {
   protected readonly defaultMessage = "There was an error communicating with the server.";
 
-  constructor(config: string | Omit<BaseHttpErrorConfig, "statusCode">) {
-    super(typeof config === "string" ? { message: config } : config);
+  constructor(config: { message?: string; url: string }) {
+    super(config);
   }
 }

@@ -15,7 +15,7 @@ import {
   searchParamsIterator,
   getQueryParamForm,
 } from "./util";
-
+import { z } from "zod";
 /**
  * Transforms the query parameters from the provided path, query string, URL,
  * {@link URLSearchParams} object, map of query parameters {@link Map}, or record-type,
@@ -61,7 +61,17 @@ export const decodeQueryParams = (
 ): QueryParams<"record", QueryParamValue> => {
   let decoded: QueryParams<"record", QueryParamValue> = {};
   for (const [k, v] of searchParamsIterator(params)) {
-    decoded[k] = JSON.parse(v);
+    const arrayRegex = /^\[(.)*,?\]$/;
+    const numRegex = /^([0-9]|\.)*$/;
+    if (
+      arrayRegex.test(v.trim()) ||
+      numRegex.test(v.trim()) ||
+      ["null", "true", "false"].includes(v.trim())
+    ) {
+      decoded[k] = JSON.parse(v.trim());
+    } else {
+      decoded[k] = v;
+    }
   }
   return decoded;
 };

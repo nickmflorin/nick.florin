@@ -79,7 +79,7 @@ const ApiClientFieldErrorsResponseSchema = z.object({
 
 export const isApiClientFieldErrorsResponse = (
   response: unknown,
-): response is ApiClientFieldErrors =>
+): response is ApiClientFieldErrorsResponse =>
   ApiClientFieldErrorsResponseSchema.safeParse(response).success;
 
 export type ApiClientGlobalError = {
