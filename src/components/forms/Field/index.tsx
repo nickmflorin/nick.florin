@@ -46,6 +46,7 @@ type _BaseFieldProps<T> = T &
     readonly condition?: FieldCondition;
     readonly description?: string;
     readonly helpText?: string;
+    readonly helpTextClassName?: ComponentProps["className"];
   };
 
 type _FormFieldProps<N extends FieldName<I>, I extends BaseFormValues> = _BaseFieldProps<{
@@ -105,7 +106,13 @@ const _Field = <N extends FieldName<I>, I extends BaseFormValues>(
       )}
       <div className="form-field-content">{children}</div>
       {props.helpText !== undefined && (
-        <Text size="xs" className="leading-[14px] text-gray-500 pl-[1px] mt-[4px]">
+        <Text
+          size="xs"
+          className={clsx(
+            "leading-[14px] text-gray-500 pl-[1px] mt-[4px]",
+            props.helpTextClassName,
+          )}
+        >
           {props.helpText}
         </Text>
       )}

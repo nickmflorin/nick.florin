@@ -38,6 +38,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       name="showTopSkills"
       label="Show Skills"
       helpText="The number of top skills that should be shown in the chart."
+      helpTextClassName="mt-[10px]"
     >
       {({ value, onChange: _onChange }) => (
         <RadioGroup
@@ -50,13 +51,19 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField name="experiences" label="Experiences" form={form}>
+    <Form.ControlledField
+      name="experiences"
+      label="Experiences"
+      form={form}
+      helpText="The professional experiences where the skills were acquired or used."
+    >
       {({ value, onChange }) => (
         <ClientExperienceSelect
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
           onChange={onChange}
+          placement="bottom"
           inPortal
           /* TODO: We need to figure out how to make this static so it doesn't clear with other
              errors that will auto clear on submit. */
@@ -64,13 +71,19 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField name="educations" label="Educations" form={form}>
+    <Form.ControlledField
+      name="educations"
+      label="Educations"
+      form={form}
+      helpText="The academic experiences where the skills were acquired or used."
+    >
       {({ value, onChange }) => (
         <ClientEducationSelect
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
           onChange={onChange}
+          placement="bottom"
           inPortal
           /* TODO: We need to figure out how to make this static so it doesn't clear with other
              errors that will auto clear on submit. */
@@ -78,35 +91,53 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField name="programmingDomains" label="Domains" form={form}>
+    <Form.ControlledField
+      name="programmingDomains"
+      label="Domains"
+      form={form}
+      helpText="The specific development stack that the skills pertains to, if applicable."
+    >
       {({ value, onChange }) => (
         <ProgrammingDomainSelect
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="top"
+          placement="bottom"
+          inPortal
           onChange={onChange}
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField name="programmingLanguages" label="Languages" form={form}>
+    <Form.ControlledField
+      name="programmingLanguages"
+      label="Languages"
+      form={form}
+      helpText="The specific programming languages that the skills pertains to, if applicable."
+    >
       {({ value, onChange }) => (
         <ProgrammingLanguageSelect
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="top"
+          placement="bottom"
+          inPortal
           onChange={onChange}
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField name="categories" label="Categories" form={form}>
+    <Form.ControlledField
+      name="categories"
+      label="Categories"
+      form={form}
+      helpText="Categories that the skills belongs to."
+    >
       {({ value, onChange }) => (
         <SkillCategorySelect
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="top"
+          placement="bottom"
+          inPortal
           onChange={onChange}
         />
       )}
