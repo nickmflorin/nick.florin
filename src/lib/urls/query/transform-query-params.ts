@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import {
   type QueryParamOptions,
   type QueryParams,
@@ -6,8 +8,8 @@ import {
   getOptionsForm,
   type InferQueryParamsForm,
   type EncodedQueryParamValue,
-  QueryParamValue,
-  QueryParamsForm,
+  type QueryParamValue,
+  type QueryParamsForm,
 } from "./types";
 import {
   getQueryParamsReducer,
@@ -15,7 +17,6 @@ import {
   searchParamsIterator,
   getQueryParamForm,
 } from "./util";
-import { z } from "zod";
 /**
  * Transforms the query parameters from the provided path, query string, URL,
  * {@link URLSearchParams} object, map of query parameters {@link Map}, or record-type,
@@ -59,7 +60,7 @@ export const transformQueryParams = <P extends QueryParams, O extends QueryParam
 export const decodeQueryParams = (
   params: QueryParams<QueryParamsForm, EncodedQueryParamValue>,
 ): QueryParams<"record", QueryParamValue> => {
-  let decoded: QueryParams<"record", QueryParamValue> = {};
+  const decoded: QueryParams<"record", QueryParamValue> = {};
   for (const [k, v] of searchParamsIterator(params)) {
     const arrayRegex = /^\[(.)*,?\]$/;
     const numRegex = /^([0-9]|\.)*$/;
