@@ -1,5 +1,7 @@
-import { type IconButtonProps, IconButton } from "./generic";
 import clsx from "clsx";
+
+import { type IconButtonProps, IconButton } from "./generic";
+
 export interface SocialButtonProps
   extends Omit<IconButtonProps<{ as: "a" }>, "options" | "iconSize"> {}
 
