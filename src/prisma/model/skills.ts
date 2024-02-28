@@ -103,74 +103,56 @@ export const includeSkillMetadata = async <A extends SkillMetadataArg>(
   },
 ): Promise<SkillMetadataRT<A>> => {
   const skillIds = Array.isArray(arg) ? arg.map(s => s.id) : [arg.id];
-  const experiences =
-    params?.experiences ??
-    (await prisma.experience.findMany({
-      where: {
-        skills: {
-          some: { skillId: { in: skillIds } },
+  const experiences = params?.experiences
+    ? params.experiences.sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
+    : await prisma.experience.findMany({
+        where: {
+          skills: {
+            some: { skillId: { in: skillIds } },
+          },
         },
-      },
-      orderBy: { startDate: "asc" },
-      include: { skills: true, company: true },
-    }));
+        orderBy: { startDate: "desc" },
+        include: { skills: true, company: true },
+      });
 
-  const educations =
-    params?.educations ??
-    (await prisma.education.findMany({
-      where: {
-        skills: {
-          some: { skillId: { in: skillIds } },
+  const educations = params?.educations
+    ? params.educations.sort((a, b) => b.startDate.getTime() - a.startDate.getTime())
+    : await prisma.education.findMany({
+        where: {
+          skills: {
+            some: { skillId: { in: skillIds } },
+          },
         },
-      },
-      orderBy: { startDate: "asc" },
-      include: { skills: true, school: true },
-    }));
+        orderBy: { startDate: "desc" },
+        include: { skills: true, school: true },
+      });
 
   const toApiSkill = (skill: Skill): ApiSkill => {
     const apiSkill = {
       ...skill,
-      educations: educations
-        .filter(edu =>
-          edu.skills.some(s =>
-            (s as EducationOnSkills).skillId !== undefined
-              ? (s as EducationOnSkills).skillId === skill.id
-              : (s as Skill).id === skill.id,
-          ),
-        )
-        .sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
-      experiences: experiences
-        .filter(exp =>
-          exp.skills.some(s =>
-            (s as ExperienceOnSkills).skillId !== undefined
-              ? (s as ExperienceOnSkills).skillId === skill.id
-              : (s as Skill).id === skill.id,
-          ),
-        )
-        .sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
+      educations: educations.filter(edu =>
+        edu.skills.some(s =>
+          (s as EducationOnSkills).skillId !== undefined
+            ? (s as EducationOnSkills).skillId === skill.id
+            : (s as Skill).id === skill.id,
+        ),
+      ),
+      experiences: experiences.filter(exp =>
+        exp.skills.some(s =>
+          (s as ExperienceOnSkills).skillId !== undefined
+            ? (s as ExperienceOnSkills).skillId === skill.id
+            : (s as Skill).id === skill.id,
+        ),
+      ),
     };
-    /* In the case that the educations were not provided as a parameter to the function, the
-       educations are already ordered by their start date - so we can just take the first one
-       from the filtered results.  If the they are provided as parameters to the function, we
-       cannot assume that they are ordered by their start date, so we must manually do that sort
-       here.  */
     const oldestEducation = strictArrayLookup(
-      params?.educations
-        ? apiSkill.educations.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
-        : apiSkill.educations,
-      0,
+      apiSkill.educations,
+      apiSkill.educations.length - 1,
       {},
     );
-    /* In the case that the experiences were not provided as a parameter to the function, the
-       educations are already ordered by their start date - so we can just take the first one
-       from the filtered results.  If the they are provided as parameters to the function, we
-       cannot assume that they are ordered by their start date, so we must manually do that sort
-       here.  */
     const oldestExperience = strictArrayLookup(
-      params?.experiences
-        ? apiSkill.experiences.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
-        : apiSkill.experiences,
-      0,
+      apiSkill.experiences,
+      apiSkill.experiences.length - 1,
       {},
     );
     const oldestDate = minDate(oldestEducation?.startDate, oldestExperience?.startDate);
