@@ -63,16 +63,16 @@ $button-color-properties: (
       ),
     ),
     "danger": (
-      background-color: theme("colors.danger.700"),
+      background-color: theme("colors.danger.500"),
       color: theme("colors.white"),
-      outline-color: theme("colors.danger.700"),
+      outline-color: theme("colors.danger.500"),
       hovered: (
-        background-color: theme("colors.danger.800"),
-        outline-color: theme("colors.danger.800"),
+        background-color: theme("colors.danger.600"),
+        outline-color: theme("colors.danger.600"),
       ),
       focused: (
-        background-color: theme("colors.danger.800"),
-        outline-color: theme("colors.danger.800"),
+        background-color: theme("colors.danger.600"),
+        outline-color: theme("colors.danger.600"),
       ),
       disabled: (
         background-color: theme("colors.red.200"),
@@ -131,16 +131,16 @@ $button-color-properties: (
       ),
     ),
     "danger": (
-      background-color: theme("colors.danger.700"),
+      background-color: theme("colors.danger.500"),
       color: theme("colors.white"),
-      outline-color: theme("colors.danger.700"),
+      outline-color: theme("colors.danger.500"),
       hovered: (
-        background-color: theme("colors.danger.800"),
-        outline-color: theme("colors.danger.800"),
+        background-color: theme("colors.danger.600"),
+        outline-color: theme("colors.danger.600"),
       ),
       focused: (
-        background-color: theme("colors.danger.800"),
-        outline-color: theme("colors.danger.800"),
+        background-color: theme("colors.danger.600"),
+        outline-color: theme("colors.danger.600"),
       ),
       disabled: (
         background-color: theme("colors.red.200"),

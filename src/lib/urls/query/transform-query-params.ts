@@ -4,17 +4,9 @@ import {
   type InferQueryParamsValue,
   type OptionsForm,
   getOptionsForm,
-  type InferQueryParamsForm,
-  type EncodedQueryParamValue,
-  type QueryParamValue,
-  type QueryParamsForm,
 } from "./types";
-import {
-  getQueryParamsReducer,
-  getInitialQueryParamsState,
-  searchParamsIterator,
-  getQueryParamForm,
-} from "./util";
+import { getQueryParamsReducer, getInitialQueryParamsState, searchParamsIterator } from "./util";
+
 /**
  * Transforms the query parameters from the provided path, query string, URL,
  * {@link URLSearchParams} object, map of query parameters {@link Map}, or record-type,
@@ -51,63 +43,6 @@ export const transformQueryParams = <P extends QueryParams, O extends QueryParam
       OptionsForm<O>,
       InferQueryParamsValue<P>
     >;
-  }
-  return state;
-};
-
-export const decodeQueryParams = (
-  params: QueryParams<QueryParamsForm, EncodedQueryParamValue>,
-): QueryParams<"record", QueryParamValue> => {
-  const decoded: QueryParams<"record", QueryParamValue> = {};
-  for (const [k, v] of searchParamsIterator(params)) {
-    const arrayRegex = /^\[(.)*,?\]$/;
-    const numRegex = /^([0-9]|\.)*$/;
-    if (
-      arrayRegex.test(v.trim()) ||
-      numRegex.test(v.trim()) ||
-      ["null", "true", "false"].includes(v.trim())
-    ) {
-      decoded[k] = JSON.parse(v.trim());
-    } else {
-      decoded[k] = v;
-    }
-  }
-  return decoded;
-};
-
-export const encodeQueryParam = (
-  v: Exclude<QueryParamValue, undefined>,
-): EncodedQueryParamValue => {
-  if (typeof v === "string") {
-    return v;
-  } else if (Array.isArray(v)) {
-    return `[${v.map(vi => `"${vi}"`).join(",")}]`;
-  } else if (v !== undefined) {
-    return String(v);
-  }
-  // Never
-  return v;
-};
-
-export const encodeQueryParams = <Q extends QueryParams>(
-  params: Q,
-): QueryParams<InferQueryParamsForm<Q>, EncodedQueryParamValue> => {
-  const form = getQueryParamForm(params);
-
-  const reducer = getQueryParamsReducer<InferQueryParamsForm<Q>>(form);
-
-  let state = getInitialQueryParamsState({ form }) as QueryParams<
-    InferQueryParamsForm<Q>,
-    EncodedQueryParamValue
-  >;
-  for (const [k, v] of searchParamsIterator(params)) {
-    if (v !== undefined) {
-      state = reducer<typeof state, EncodedQueryParamValue>(
-        state,
-        k,
-        encodeQueryParam(v),
-      ) as QueryParams<InferQueryParamsForm<Q>, EncodedQueryParamValue>;
-    }
   }
   return state;
 };

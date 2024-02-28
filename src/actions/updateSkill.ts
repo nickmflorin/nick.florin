@@ -131,5 +131,6 @@ export const updateSkill = async (
     return skill;
   });
   revalidatePath("/admin/skills", "page");
+  revalidatePath("/api/skills");
   return sk;
 };

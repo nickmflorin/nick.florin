@@ -5,7 +5,15 @@ import {
   useRouter,
   type ReadonlyURLSearchParams,
 } from "next/navigation";
-import { forwardRef, type ForwardedRef, useMemo, useState, useEffect, useTransition } from "react";
+import {
+  forwardRef,
+  type ForwardedRef,
+  useMemo,
+  useState,
+  useEffect,
+  useTransition,
+  useCallback,
+} from "react";
 
 import uniq from "lodash.uniq";
 import uniqBy from "lodash.uniqby";
@@ -60,7 +68,32 @@ export const Table = forwardRef(
       const parsedModels = props.data.filter(d => parsed.includes(d.id));
       setChecked(parsedModels);
       /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    }, []);
+    }, [searchParams]);
+
+    const setCheckedRowsQuery = useCallback(
+      (checkedRows: string[]) => {
+        const newParams = new URLSearchParams(searchParams?.toString());
+        if (checkedRows.length !== 0) {
+          newParams.set("checkedRows", encodeQueryParam(checkedRows));
+        } else {
+          newParams.delete("checkedRows");
+        }
+        transition(() => {
+          replace(`${pathname}?${newParams.toString()}`);
+        });
+      },
+      [searchParams, pathname, replace],
+    );
+
+    /* Note: If we remove this effect, the checked rows will not be cleared when switching from
+       page to page of the paginated table.  This may be desirable in the future, but for now we
+       will wipe the checked rows when the page changes. */
+    useEffect(() => {
+      const parsed = parseCheckedRowsFromQuery({ searchParams });
+      const parsedModels = props.data.filter(d => parsed.includes(d.id));
+      setCheckedRowsQuery(parsedModels.map(m => m.id));
+      /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    }, [props.data]);
 
     const columns = useMemo(() => {
       if (isCheckable) {
@@ -96,14 +129,7 @@ export const Table = forwardRef(
                       } else {
                         newCheckedRows = uniq(existing.filter(id => id !== model.id));
                       }
-                      const newParams = new URLSearchParams(searchParams?.toString());
-                      if (newCheckedRows.length !== 0) {
-                        newParams.set("checkedRows", encodeQueryParam(newCheckedRows));
-                      } else {
-                        newParams.delete("checkedRows");
-                      }
-
-                      replace(`${pathname}?${newParams.toString()}`);
+                      setCheckedRowsQuery(newCheckedRows);
                     });
                   }}
                 />
@@ -114,7 +140,7 @@ export const Table = forwardRef(
         ];
       }
       return _columns;
-    }, [_columns, isCheckable, checked, searchParams, pathname, replace]);
+    }, [_columns, isCheckable, checked, searchParams, setCheckedRowsQuery]);
 
     return <RootTable<T> {...props} ref={ref} columns={columns} />;
   },
