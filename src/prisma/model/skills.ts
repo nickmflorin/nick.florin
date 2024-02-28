@@ -130,20 +130,24 @@ export const includeSkillMetadata = async <A extends SkillMetadataArg>(
   const toApiSkill = (skill: Skill): ApiSkill => {
     const apiSkill = {
       ...skill,
-      educations: educations.filter(edu =>
-        edu.skills.some(s =>
-          (s as EducationOnSkills).skillId !== undefined
-            ? (s as EducationOnSkills).skillId === skill.id
-            : (s as Skill).id === skill.id,
-        ),
-      ),
-      experiences: experiences.filter(exp =>
-        exp.skills.some(s =>
-          (s as ExperienceOnSkills).skillId !== undefined
-            ? (s as ExperienceOnSkills).skillId === skill.id
-            : (s as Skill).id === skill.id,
-        ),
-      ),
+      educations: educations
+        .filter(edu =>
+          edu.skills.some(s =>
+            (s as EducationOnSkills).skillId !== undefined
+              ? (s as EducationOnSkills).skillId === skill.id
+              : (s as Skill).id === skill.id,
+          ),
+        )
+        .sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
+      experiences: experiences
+        .filter(exp =>
+          exp.skills.some(s =>
+            (s as ExperienceOnSkills).skillId !== undefined
+              ? (s as ExperienceOnSkills).skillId === skill.id
+              : (s as Skill).id === skill.id,
+          ),
+        )
+        .sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
     };
     /* In the case that the educations were not provided as a parameter to the function, the
        educations are already ordered by their start date - so we can just take the first one
