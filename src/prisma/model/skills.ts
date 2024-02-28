@@ -145,8 +145,11 @@ export const includeSkillMetadata = async <A extends SkillMetadataArg>(
         ),
       ),
     };
-    /* Since the educations are already ordered by their start date, we can just take the first one
-       from the filtered results. */
+    /* In the case that the educations were not provided as a parameter to the function, the
+       educations are already ordered by their start date - so we can just take the first one
+       from the filtered results.  If the they are provided as parameters to the function, we
+       cannot assume that they are ordered by their start date, so we must manually do that sort
+       here.  */
     const oldestEducation = strictArrayLookup(
       params?.educations
         ? apiSkill.educations.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
@@ -154,8 +157,11 @@ export const includeSkillMetadata = async <A extends SkillMetadataArg>(
       0,
       {},
     );
-    /* Since the experiences are already ordered by their start date, we can just take the first one
-       from the filtered results. */
+    /* In the case that the experiences were not provided as a parameter to the function, the
+       educations are already ordered by their start date - so we can just take the first one
+       from the filtered results.  If the they are provided as parameters to the function, we
+       cannot assume that they are ordered by their start date, so we must manually do that sort
+       here.  */
     const oldestExperience = strictArrayLookup(
       params?.experiences
         ? apiSkill.experiences.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
@@ -164,7 +170,6 @@ export const includeSkillMetadata = async <A extends SkillMetadataArg>(
       {},
     );
     const oldestDate = minDate(oldestEducation?.startDate, oldestExperience?.startDate);
-    console.log({ name: apiSkill.label, oldestDate });
     return {
       ...apiSkill,
       autoExperience: oldestDate

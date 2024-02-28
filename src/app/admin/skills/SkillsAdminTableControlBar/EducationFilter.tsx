@@ -49,8 +49,10 @@ export const EducationFilter = ({ filters, educations }: EducationFilterProps) =
     <EducationSelect
       inputClassName="w-[320px]"
       menuClassName="max-h-[260px]"
+      placeholder="Educations"
       data={educations}
       value={value}
+      maximumNumBadges={1}
       onChange={v => setValue(v)}
       placement="bottom"
     />

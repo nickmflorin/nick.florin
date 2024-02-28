@@ -16,7 +16,6 @@ import { type Required } from "utility-types";
 
 import type * as types from "../types";
 
-import { Badge } from "~/components/badges/Badge";
 import { Floating, type FloatingProps } from "~/components/floating/Floating";
 import { Icon } from "~/components/icons/Icon";
 import {
@@ -30,12 +29,15 @@ import {
   getModelLabel,
   type MenuComponent,
 } from "~/components/menus";
-import { getMenuItemKey } from "~/components/menus/util";
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 
 import { Input, type InputProps } from "../../generic";
+
+const MultiValueRenderer = dynamic(
+  () => import("./MultiValueRenderer"),
+) as types.MultiValueRendererCompoennt;
 
 const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
   loading: () => <Loading loading={true} />,
@@ -46,24 +48,14 @@ type SelectMenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
   "children" | keyof ComponentProps | "onChange"
 >;
 
-export type SelectValueRenderer<M extends MenuModel, O extends MenuOptions<M>> = (
-  v: MenuValue<M, O>,
-  params: { models: MenuModelValue<M, O>; instance: types.SelectInstance<M, O> },
-) => ReactNode;
-
-export type SelectValueModelRenderer<M extends MenuModel, O extends MenuOptions<M>> = (
-  v: MenuValue<M, O>,
-  params: { model: M; instance: types.SelectInstance<M, O> },
-) => ReactNode;
-
-export type SelectItemRenderer<M extends MenuModel> = (model: M) => ReactNode;
-
 export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectMenuProps<M, O> &
   Pick<FloatingProps, "placement" | "inPortal"> &
   Pick<InputProps, "isLoading" | "isDisabled" | "isLocked" | "size" | "actions"> & {
     readonly menuClassName?: ComponentProps["className"];
     readonly children?: FloatingProps["children"];
     readonly inputClassName?: ComponentProps["className"];
+    readonly placeholder?: ReactNode;
+    readonly maximumNumBadges?: number;
     readonly onChange?: (
       v: MenuValue<M, O>,
       params: {
@@ -97,9 +89,9 @@ export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectM
         instance: types.SelectInstance<M, O>;
       },
     ) => void;
-    readonly itemRenderer?: SelectItemRenderer<M>;
-    readonly valueRenderer?: SelectValueRenderer<M, O>;
-    readonly valueModelRenderer?: SelectValueModelRenderer<M, O>;
+    readonly itemRenderer?: types.SelectItemRenderer<M>;
+    readonly valueRenderer?: types.SelectValueRenderer<M, O>;
+    readonly valueModelRenderer?: types.SelectValueModelRenderer<M, O>;
   };
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generics don't play well with forward refs. */
@@ -116,6 +108,8 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
       menuClassName,
       inputClassName,
       actions,
+      placeholder,
+      maximumNumBadges,
       isReady = true,
       itemRenderer,
       valueRenderer,
@@ -146,38 +140,36 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
     useImperativeHandle(ref, () => selectInstance);
 
     const renderedValue = useMemo(() => {
-      if (valueRenderer) {
+      if (Array.isArray(models) && models.length === 0 && placeholder) {
+        return <div className="placeholder">{placeholder}</div>;
+      } else if (models === null && placeholder) {
+        return <div className="placeholder">{placeholder}</div>;
+      } else if (valueRenderer) {
         return valueRenderer(value, { models, instance: selectInstance });
       } else if (Array.isArray(models)) {
-        // Sort models by key for consistent ordering.
-        const ms = models.sort((a, b) => (getMenuItemKey(a) > getMenuItemKey(b) ? 1 : -1));
         return (
-          <div className="flex flex-wrap gap-y-[4px] gap-x-[4px] overflow-hidden">
-            {ms.map((m, i) => {
-              if (valueModelRenderer) {
-                return (
-                  <React.Fragment key={i}>
-                    {valueModelRenderer(value, { model: m, instance: selectInstance })}
-                  </React.Fragment>
-                );
-              }
-              const label = getModelLabel(m, props.options);
-              if (typeof label === "string") {
-                return (
-                  <Badge size="xxs" key={i}>
-                    {label}
-                  </Badge>
-                );
-              }
-              return label;
-            })}
-          </div>
+          <MultiValueRenderer
+            models={models as M[]}
+            selectInstance={selectInstance}
+            value={value}
+            options={props.options}
+            maximumNumBadges={maximumNumBadges}
+          />
         );
       } else if (valueModelRenderer) {
         return valueModelRenderer(value, { model: models, instance: selectInstance });
       }
       return getModelLabel(models, props.options);
-    }, [valueRenderer, valueModelRenderer, models, value, selectInstance, props.options]);
+    }, [
+      valueRenderer,
+      valueModelRenderer,
+      models,
+      value,
+      selectInstance,
+      props.options,
+      placeholder,
+      maximumNumBadges,
+    ]);
 
     return (
       <Floating
@@ -229,7 +221,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
               isActive={open}
               size={size}
               isDisabled={isDisabled}
-              className={clsx("select-input", inputClassName)}
+              className={clsx("select", inputClassName)}
             >
               <>{renderedValue}</>
             </Input>

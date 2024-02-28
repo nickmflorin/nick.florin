@@ -80,6 +80,10 @@ $input-variant-properties: (
   &::placeholder {
     color: get-input-property($variant, placeholder-color, $state: $state);
   }
+
+  .placeholder {
+    color: get-input-property($variant, placeholder-color, $state: $state);
+  }
 }
 
 @mixin input-variant($variant) {

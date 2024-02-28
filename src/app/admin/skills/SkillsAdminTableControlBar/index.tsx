@@ -25,9 +25,17 @@ export const SkillsAdminTableControlBar = async ({
   const educations = await getEducations({ skills: true });
 
   return (
-    <div {...props} className={clsx("flex flex-row gap-[8px] items-center", props.className)}>
+    <div
+      {...props}
+      className={clsx(
+        "flex flex-row gap-[8px] items-center justify-between w-full h-[32px]",
+        props.className,
+      )}
+    >
       <IconButton.Danger icon={{ name: "trash-alt" }} isDisabled={checkedRows.length === 0} />
-      <EducationFilter educations={educations} filters={filters} />
+      <div className="flex flex-row gap-[8px] items-center">
+        <EducationFilter educations={educations} filters={filters} />
+      </div>
     </div>
   );
 };

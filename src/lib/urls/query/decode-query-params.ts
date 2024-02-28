@@ -32,14 +32,6 @@ type DecodeQueryParamOptions = {
   readonly form?: string[];
 };
 
-type InferForm<O extends DecodeQueryParamOptions> = O extends {
-  readonly form: (infer F extends string)[];
-}
-  ? F extends DecodedQueryParamForm
-    ? F
-    : never
-  : never;
-
 type DecodeQueryParamReturn<O extends DecodeQueryParamOptions> = O extends {
   readonly form: (infer F extends string)[];
 }
