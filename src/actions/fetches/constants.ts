@@ -1,0 +1,1 @@
+export const SKILLS_ADMIN_TABLE_PAGE_SIZE = 16;

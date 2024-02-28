@@ -2,9 +2,8 @@ import dynamicfn from "next/dynamic";
 import { Suspense } from "react";
 
 import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
+import { UpdateSkillForm } from "~/components/forms/skills/UpdateSkillForm";
 import { Loading } from "~/components/views/Loading";
-
-import { UpdateSkillForm } from "../UpdateSkillForm";
 
 const Drawer = dynamicfn(() => import("~/components/drawers/Drawer"), {
   loading: () => <Loading loading={true} />,

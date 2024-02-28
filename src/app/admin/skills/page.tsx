@@ -1,22 +1,9 @@
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
-
 import { z } from "zod";
 
 import { decodeQueryParam } from "~/lib/urls";
-import { preloadEducations } from "~/fetches/get-educations";
-import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
-import { TableSearchBarPlaceholder } from "~/components/tables/TableSearchBarPlaceholder";
-import { TableView } from "~/components/tables/TableView";
-import { Loading } from "~/components/views/Loading";
-
-import { SkillsAdminTable } from "./SkillsAdminTable";
-import { SkillsAdminTableControlBar } from "./SkillsAdminTableControlBar";
-import { SkillsAdminTablePaginator } from "./SkillsAdminTablePaginator";
-
-const TableSearchBar = dynamic(() => import("./SkillsAdminTableSearchBar"), {
-  loading: () => <TableSearchBarPlaceholder />,
-});
+import { preloadEducations } from "~/actions/fetches/get-educations";
+import { preloadExperiences } from "~/actions/fetches/get-experiences";
+import { SkillsTableView } from "~/components/tables/SkillsTableView";
 
 interface SkillsPageProps {
   readonly searchParams: {
@@ -29,32 +16,34 @@ interface SkillsPageProps {
 }
 
 export default async function SkillsPage({
-  searchParams: { search, checkedRows, page: _page, educations: _educations, experiences },
+  searchParams: { search, checkedRows, page: _page, educations, experiences },
 }: SkillsPageProps) {
   /* We might want to look into setting a maximum here so that we don't wind up with empty results
      when the page is too large. */
-  const page = z.coerce.number().min(1).int().default(1).parse(_page);
+  const parsed = z.coerce.number().min(1).int().default(1).safeParse(_page);
+  let page: number = 1;
+  if (parsed.success) {
+    page = parsed.data;
+  }
+
   preloadEducations({ skills: true });
+  preloadExperiences({ skills: true });
 
-  const educations = _educations
-    ? decodeQueryParam(_educations, { form: ["array"] as const }) ?? []
-    : [];
-
-  const filters = { educations, search: search ?? "" };
+  const filters = {
+    educations: educations ? decodeQueryParam(educations, { form: ["array"] as const }) ?? [] : [],
+    search: search ?? "",
+    experiences: experiences
+      ? decodeQueryParam(experiences, { form: ["array"] as const }) ?? []
+      : [],
+  };
 
   return (
-    <TableView
-      searchBar={<TableSearchBar />}
-      controlBar={<SkillsAdminTableControlBar checkedRows={checkedRows} filters={filters} />}
-      paginator={
-        <Suspense fallback={<PaginatorPlaceholder />}>
-          <SkillsAdminTablePaginator filters={filters} />
-        </Suspense>
+    <SkillsTableView
+      filters={filters}
+      page={page}
+      checkedRows={
+        checkedRows ? decodeQueryParam(checkedRows, { form: ["array"] as const }) ?? [] : []
       }
-    >
-      <Suspense key={search} fallback={<Loading loading={true} />}>
-        <SkillsAdminTable filters={filters} page={page} />
-      </Suspense>
-    </TableView>
+    />
   );
 }

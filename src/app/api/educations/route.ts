@@ -1,5 +1,5 @@
 import { ClientResponse } from "~/application/http";
-import { getEducations } from "~/fetches/get-educations";
+import { getEducations } from "~/actions/fetches/get-educations";
 
 export async function GET() {
   const educations = await getEducations({});

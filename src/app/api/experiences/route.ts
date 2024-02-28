@@ -1,5 +1,5 @@
 import { ClientResponse } from "~/application/http";
-import { getExperiences } from "~/fetches/get-experiences";
+import { getExperiences } from "~/actions/fetches/get-experiences";
 
 export async function GET() {
   const experiences = await getExperiences({});

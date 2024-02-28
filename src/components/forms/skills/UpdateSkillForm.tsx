@@ -1,9 +1,9 @@
 import dynamicFn from "next/dynamic";
 
-import { getSkill } from "~/fetches/get-skill";
+import { getSkill } from "~/actions/fetches/get-skill";
 import { Loading } from "~/components/views/Loading";
 
-const SkillForm = dynamicFn(() => import("~/components/forms/skill/UpdateSkillForm"), {
+const SkillForm = dynamicFn(() => import("./ClientUpdateSkillForm"), {
   loading: () => <Loading loading={true} />,
 });
 

@@ -1,20 +1,20 @@
 import dynamic from "next/dynamic";
 
 import { includeSkillMetadata } from "~/prisma/model";
-import { getEducations } from "~/fetches/get-educations";
-import { getExperiences } from "~/fetches/get-experiences";
+import { getEducations } from "~/actions/fetches/get-educations";
+import { getExperiences } from "~/actions/fetches/get-experiences";
+import { getSkills } from "~/actions/fetches/get-skills";
 import { Loading } from "~/components/views/Loading";
 
-import { getSkills } from "./getSkills";
-import { type SkillsTableFilters } from "./types";
+import { type Filters } from "./types";
 
-const SkillsTable = dynamic(() => import("~/components/tables/SkillsAdminTable/index"), {
+const SkillsTable = dynamic(() => import("./ClientSkillsAdminTable"), {
   loading: () => <Loading loading={true} />,
 });
 
 interface SkillsAdminTableProps {
   readonly page: number;
-  readonly filters: SkillsTableFilters;
+  readonly filters: Filters;
 }
 
 export const SkillsAdminTable = async ({ page, filters }: SkillsAdminTableProps) => {

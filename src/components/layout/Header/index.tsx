@@ -1,4 +1,4 @@
-import { preloadProfile } from "~/fetches/get-profile";
+import { preloadProfile } from "~/actions/fetches/get-profile";
 import { GithubButton } from "~/components/buttons/GithubButton";
 import { LinkedInButton } from "~/components/buttons/LinkedInButton";
 import { UserButton } from "~/components/buttons/UserButton";

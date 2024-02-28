@@ -1,4 +1,4 @@
-import { getEducations } from "~/fetches/get-educations";
+import { getEducations } from "~/actions/fetches/get-educations";
 import { type ComponentProps } from "~/components/types";
 
 import { CommitTimeline } from "../CommitTimeline";

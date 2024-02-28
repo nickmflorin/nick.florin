@@ -11,7 +11,7 @@ const Drawer = dynamic(() => import("~/components/drawers/Drawer"), {
   loading: () => <Loading loading={true} />,
 });
 
-const CreateSkillForm = dynamic(() => import("~/components/forms/skill/CreateSkillForm"), {
+const CreateSkillForm = dynamic(() => import("~/components/forms/skills/CreateSkillForm"), {
   loading: () => <Loading loading={true} />,
 });
 

@@ -6,12 +6,15 @@ import clamp from "lodash.clamp";
 import { prisma } from "~/prisma/client";
 import { constructOrSearch } from "~/prisma/util";
 
-import { PAGE_SIZE } from "./constants";
-import { type SkillsTableFilters } from "./types";
+import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "./constants";
 
 interface GetSkillsParams {
   readonly page: number;
-  readonly filters: SkillsTableFilters;
+  readonly filters: {
+    readonly educations: string[];
+    readonly experiences: string[];
+    readonly search: string;
+  };
 }
 
 export const preloadSkills = (params: GetSkillsParams) => {
@@ -20,7 +23,7 @@ export const preloadSkills = (params: GetSkillsParams) => {
 
 export const getSkills = cache(async ({ page, filters }: GetSkillsParams) => {
   const count = await getSkillsCount({ filters });
-  const numPages = Math.max(Math.ceil(count / PAGE_SIZE), 1);
+  const numPages = Math.max(Math.ceil(count / SKILLS_ADMIN_TABLE_PAGE_SIZE), 1);
   return await prisma.skill.findMany({
     where: {
       AND: [
@@ -30,12 +33,16 @@ export const getSkills = cache(async ({ page, filters }: GetSkillsParams) => {
             filters.educations.length !== 0
               ? { some: { educationId: { in: filters.educations } } }
               : undefined,
+          experiences:
+            filters.experiences.length !== 0
+              ? { some: { experienceId: { in: filters.experiences } } }
+              : undefined,
         },
       ],
     },
     orderBy: { createdAt: "desc" },
-    skip: PAGE_SIZE * (clamp(page, 1, numPages) - 1),
-    take: PAGE_SIZE,
+    skip: SKILLS_ADMIN_TABLE_PAGE_SIZE * (clamp(page, 1, numPages) - 1),
+    take: SKILLS_ADMIN_TABLE_PAGE_SIZE,
   });
 });
 

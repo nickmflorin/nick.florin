@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { getProfile } from "~/fetches/get-profile";
+import { getProfile } from "~/actions/fetches/get-profile";
 import { ModelImage } from "~/components/images/ModelImage";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";

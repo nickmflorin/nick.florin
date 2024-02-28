@@ -6,10 +6,10 @@ import { encodeQueryParam } from "~/lib/urls";
 import { type ApiEducation } from "~/prisma/model";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 
-import { type SkillsTableFilters } from "../types";
+import { type Filters } from "../types";
 
 export interface EducationFilterProps {
-  readonly filters: SkillsTableFilters;
+  readonly filters: Filters;
   readonly educations: ApiEducation[];
 }
 

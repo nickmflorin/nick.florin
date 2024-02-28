@@ -1,4 +1,4 @@
-import { getProfile } from "~/fetches/get-profile";
+import { getProfile } from "~/actions/fetches/get-profile";
 
 import { SocialButton } from "./SocialButton";
 

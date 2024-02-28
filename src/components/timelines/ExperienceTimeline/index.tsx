@@ -1,4 +1,4 @@
-import { getExperiences } from "~/fetches/get-experiences";
+import { getExperiences } from "~/actions/fetches/get-experiences";
 import { type ComponentProps } from "~/components/types";
 
 import { CommitTimeline } from "../CommitTimeline";

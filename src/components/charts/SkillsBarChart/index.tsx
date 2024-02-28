@@ -1,5 +1,4 @@
 "use client";
-import { encode } from "querystring";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 
@@ -13,7 +12,7 @@ import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
-} from "~/components/forms/SkillsChartFilterForm";
+} from "~/components/forms/skills/SkillsChartFilterForm";
 import { useForm } from "~/components/forms/useForm";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
