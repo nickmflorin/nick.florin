@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
-import { deleteSkill } from "~/actions/deleteSkill";
+import { deleteSkill } from "~/actions/delete-skill";
 
 import { ActionsCell as RootActionsCell } from "../../cells";
 

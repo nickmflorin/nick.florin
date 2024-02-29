@@ -1,7 +1,7 @@
 import {
   type ApiClientErrorConfig,
   ApiClientError,
-  type ApiClientErrorCode,
+  type ApiClientFieldErrors,
   type ApiClientErrorResponse,
   ApiClientErrorCodes,
 } from "../errors";
@@ -17,10 +17,10 @@ const isErrorConfig = <T>(config: ClientResponseConfig<T>): config is ApiClientE
   (config as ApiClientErrorConfig).code !== undefined &&
   ApiClientErrorCodes.contains((config as ApiClientErrorConfig).code);
 
-type ClientResponseRT<T, C extends ClientResponseConfig<T>> = C extends
-  | ApiClientErrorCode
-  | ApiClientErrorConfig
-  ? ApiClientError<C & ApiClientErrorConfig>
+type ClientResponseRT<T, C extends ClientResponseConfig<T>> = C extends ApiClientErrorConfig<
+  infer M extends ApiClientFieldErrors | string
+>
+  ? ApiClientError<M>
   : ClientSuccess<T>;
 
 export const ClientResponse = <T, C extends ClientResponseConfig<T>>(
@@ -37,4 +37,3 @@ ClientResponse.BadRequest = ApiClientError.BadRequest;
 ClientResponse.NotAuthenticated = ApiClientError.NotAuthenticated;
 ClientResponse.Forbidden = ApiClientError.Forbidden;
 ClientResponse.NotFound = ApiClientError.NotFound;
-ClientResponse.ValidationError = ApiClientError.ValidationError;

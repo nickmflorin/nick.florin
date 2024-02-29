@@ -17,7 +17,7 @@ const skillExperience = (skill: ApiSkill): number =>
 export async function GET(request: NextRequest) {
   const parsedQuery = SkillQuerySchema.safeParse(decodeQueryParams(request.nextUrl.searchParams));
   if (!parsedQuery.success) {
-    return ClientResponse.ValidationError(parsedQuery.error, SkillQuerySchema).toResponse();
+    return ClientResponse.BadRequest(parsedQuery.error, SkillQuerySchema).toResponse();
   }
   const {
     showTopSkills,

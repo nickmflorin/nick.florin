@@ -75,7 +75,9 @@ type ConfigCode<M extends ApiClientFieldErrors | string> = M extends string
   ? ApiClientErrorCode
   : typeof ApiClientErrorCodes.BAD_REQUEST;
 
-type ApiClientErrorConfig<M extends ApiClientFieldErrors | string> = {
+export type ApiClientErrorConfig<
+  M extends ApiClientFieldErrors | string = ApiClientFieldErrors | string,
+> = {
   readonly message?: M;
   readonly internalMessage?: string;
   readonly code: ConfigCode<M>;
