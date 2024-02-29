@@ -58,7 +58,6 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
           ...data,
           title,
           companyId,
-          createdById: user.id,
           updatedById: user.id,
         },
       });

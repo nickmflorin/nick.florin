@@ -56,21 +56,20 @@ export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {
         isDisabled={skill.slug === slugify(skill.label)}
         onClick={async () => {
           setLoading(true);
-          let updatedSkill: Skill | undefined = undefined;
           try {
-            updatedSkill = await updateSkill(skill.id, { slug: null });
+            await updateSkill(skill.id, { slug: null });
           } catch (e) {
             logger.error(e);
             toast.error("There was an error updating the skill.");
           } finally {
             setLoading(false);
+            /* Refresh regardless of the outcome because if there is an error, the field needs to
+               be reverted.  We may consider manually applying the reversion without a round trip
+               server request in the future. */
+            transition(() => {
+              router.refresh();
+            });
           }
-          if (updatedSkill) {
-            input.current.setValue(updatedSkill.slug, { state: "reading" });
-          }
-          transition(() => {
-            router.refresh();
-          });
         }}
       />
     </div>

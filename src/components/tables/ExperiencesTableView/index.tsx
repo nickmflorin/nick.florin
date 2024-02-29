@@ -22,7 +22,7 @@ interface TableViewProps {
   readonly checkedRows: string[];
 }
 
-export const SkillsTableView = ({ filters, page, checkedRows }: TableViewProps) => (
+export const ExperiencesTableView = ({ filters, page, checkedRows }: TableViewProps) => (
   <RootTableView
     searchBar={<TableSearchBar />}
     controlBar={<ControlBar checkedRows={checkedRows} />}

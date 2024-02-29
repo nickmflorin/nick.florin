@@ -9,11 +9,11 @@ const Drawer = dynamicfn(() => import("~/components/drawers/Drawer"), {
   loading: () => <Loading loading={true} />,
 });
 
-interface SkillsPageProps {
+interface SkillsDrawerProps {
   readonly searchParams: { readonly updateSkillId?: string };
 }
 
-export default async function SkillsPage({ searchParams }: SkillsPageProps) {
+export default async function SkillsDrawer({ searchParams }: SkillsDrawerProps) {
   const { updateSkillId } = searchParams;
   if (!updateSkillId) {
     return null;

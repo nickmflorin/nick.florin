@@ -7,7 +7,7 @@ const ExperienceForm = dynamic(() => import("./ClientUpdateExperienceForm"), {
   loading: () => <Loading loading={true} />,
 });
 
-export const UpdateSkillForm = async ({
+export const UpdateExperienceForm = async ({
   experienceId,
 }: {
   readonly experienceId: string;
