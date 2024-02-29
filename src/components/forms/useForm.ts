@@ -138,7 +138,8 @@ export const useForm = <I extends BaseFormValues, IN = I>({
       }
       return setInternalFieldErrors(
         Object.keys(errs).reduce((prev: FieldErrors<I>, key): FieldErrors<I> => {
-          const details = (errs as ApiClientFieldErrors)[key];
+          const _details = (errs as ApiClientFieldErrors)[key];
+          const details = _details ? (Array.isArray(_details) ? _details : [_details]) : _details;
           if (details && details.length !== 0) {
             return {
               ...prev,
@@ -180,7 +181,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         return setErrors(e.message);
       }
     },
-    [setErrors],
+    [setErrors, setInternalFieldErrorsFromResponse],
   );
 
   const fieldErrors = useMemo(() => {

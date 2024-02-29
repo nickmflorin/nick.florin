@@ -9,7 +9,7 @@ import { TableView as RootTableView } from "../TableView";
 
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
-import { SkillsAdminTable } from "./Table";
+import { ExperiencesAdminTable } from "./Table";
 import { type Filters } from "./types";
 
 const TableSearchBar = dynamic(() => import("~/components/tables/SkillsTableView/SearchBar"), {
@@ -25,18 +25,15 @@ interface TableViewProps {
 export const SkillsTableView = ({ filters, page, checkedRows }: TableViewProps) => (
   <RootTableView
     searchBar={<TableSearchBar />}
-    controlBar={<ControlBar checkedRows={checkedRows} filters={filters} />}
+    controlBar={<ControlBar checkedRows={checkedRows} />}
     paginator={
       <Suspense fallback={<PaginatorPlaceholder />}>
         <Paginator filters={filters} />
       </Suspense>
     }
   >
-    <Suspense
-      key={`${filters.search}-${filters.experiences}-${filters.educations}`}
-      fallback={<Loading loading={true} />}
-    >
-      <SkillsAdminTable filters={filters} page={page} />
+    <Suspense key={`${filters.search}`} fallback={<Loading loading={true} />}>
+      <ExperiencesAdminTable filters={filters} page={page} />
     </Suspense>
   </RootTableView>
 );

@@ -61,6 +61,10 @@ export const getSkillsCount = cache(
               filters.educations.length !== 0
                 ? { some: { educationId: { in: filters.educations } } }
                 : undefined,
+            experiences:
+              filters.experiences.length !== 0
+                ? { some: { experienceId: { in: filters.experiences } } }
+                : undefined,
           },
         ],
       },

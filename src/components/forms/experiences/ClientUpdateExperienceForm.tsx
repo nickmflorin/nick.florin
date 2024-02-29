@@ -1,9 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 
 import { isApiClientErrorResponse } from "~/application/errors";
-import { createExperience } from "~/actions/create-experience";
+import { type ApiExperience } from "~/prisma/model";
+import { updateExperience } from "~/actions/update-experience";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../useForm";
@@ -15,14 +16,17 @@ import {
   type ExperienceFormValues,
 } from "./ExperienceForm";
 
-export interface CreateExperienceFormProps extends Omit<ExperienceFormProps, "form" | "action"> {
+export interface UpdateExperienceFormProps extends Omit<ExperienceFormProps, "form" | "action"> {
+  readonly experience: ApiExperience;
   readonly onCancel?: () => void;
 }
 
-export const CreateExperienceForm = ({
+export const UpdateExperienceForm = ({
+  experience,
   onCancel,
   ...props
-}: CreateExperienceFormProps): JSX.Element => {
+}: UpdateExperienceFormProps): JSX.Element => {
+  const updateExperienceWithId = updateExperience.bind(null, experience.id);
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
@@ -38,14 +42,23 @@ export const CreateExperienceForm = ({
     },
   });
 
+  useEffect(() => {
+    setValues({
+      ...experience,
+      company: experience.companyId,
+      description: experience.description ?? "",
+    });
+  }, [experience, setValues]);
+
   return (
     <ExperienceForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
+      title={experience.title}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {
-        const response = await createExperience(data);
+        const response = await updateExperienceWithId(data);
         if (isApiClientErrorResponse(response)) {
           form.handleApiError(response);
         } else {
@@ -58,4 +71,4 @@ export const CreateExperienceForm = ({
   );
 };
 
-export default CreateExperienceForm;
+export default UpdateExperienceForm;

@@ -4,17 +4,13 @@ import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
-import {
-  ApiClientError,
-  type ApiClientFieldErrors,
-  ApiClientFieldErrorCodes,
-} from "~/application/errors";
-import { slugify } from "~/lib/formatters";
+import { ApiClientError, ApiClientFieldErrorCodes } from "~/application/errors";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
+import { type Company } from "~/prisma/model";
 
 import { ExperienceSchema } from "./schemas";
 
-export const createSkill = async (req: z.infer<typeof ExperienceSchema>) => {
+export const createExperience = async (req: z.infer<typeof ExperienceSchema>) => {
   const parsed = ExperienceSchema.safeParse(req);
   if (!parsed.success) {
     throw ApiClientError.BadRequest(parsed.error, ExperienceSchema);
@@ -30,80 +26,37 @@ export const createSkill = async (req: z.infer<typeof ExperienceSchema>) => {
   try {
     company = await prisma.company.findUniqueOrThrow({ where: { id: companyId } });
   } catch (e) {
+    /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
+       we do not need to worry about checking isPrismaInvalidIdError here. */
     if (isPrismaDoesNotExistError(e)) {
       throw ApiClientError.BadRequest({
         company: {
-          code: ApiClientFieldErrorCodes.required,
+          code: ApiClientFieldErrorCodes.does_not_exist,
           message: "The company does not exist.",
         },
       });
     }
+    throw e;
   }
 
-  let fieldErrs: ApiClientFieldErrors = {};
-  if (await prisma.skill.count({ where: { label: data.label } })) {
-    fieldErrs = {
-      ...fieldErrs,
-      label: [
-        {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The label must be unique!",
-        },
-      ],
-    };
-    /* If the slug is not explicitly provided and the label does not violate the unique constraint,
-       but the slugified form of the label does, this should be a more specific error message. */
-  } else if (!_slug && (await prisma.skill.count({ where: { slug } }))) {
-    fieldErrs = {
-      ...fieldErrs,
-      label: [
-        {
-          code: ApiClientFieldErrorCodes.unique,
-          message:
-            "The auto-generated slug for the label is not unique. Please provide a unique slug.",
-        },
-      ],
-    };
-  }
-  if (_slug && (await prisma.skill.count({ where: { slug: _slug } }))) {
-    fieldErrs = {
-      ...fieldErrs,
-      slug: [
-        {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The slug must be unique!",
-        },
-      ],
-    };
-  }
-  if (Object.keys(fieldErrs).length !== 0) {
-    return ApiClientError.BadRequest(fieldErrs).toJson();
+  if (await prisma.experience.count({ where: { companyId: company.id, title: data.title } })) {
+    return ApiClientError.BadRequest({
+      title: {
+        code: ApiClientFieldErrorCodes.unique,
+        message: "The title must be unique for a given company.",
+      },
+    }).toResponse();
   }
 
-  const skill = await prisma.skill.create({
+  const skill = await prisma.experience.create({
     data: {
       ...data,
-      slug,
+      companyId: company.id,
       createdById: user.id,
       updatedById: user.id,
-      experiences: {
-        createMany: {
-          data: (experiences ?? []).map(id => ({
-            assignedById: user.id,
-            experienceId: id,
-          })),
-        },
-      },
-      educations: {
-        createMany: {
-          data: (educations ?? []).map(id => ({
-            assignedById: user.id,
-            educationId: id,
-          })),
-        },
-      },
     },
   });
-  revalidatePath("/admin/skills", "page");
+  revalidatePath("/admin/experiences", "page");
+  revalidatePath("/api/experiences");
   return skill;
 };

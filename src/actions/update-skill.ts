@@ -8,7 +8,7 @@ import { ApiClientError, type ApiClientFieldErrors } from "~/application/errors"
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
-import { type Skill } from "~/prisma/model";
+import { type Skill, type Experience, type Education } from "~/prisma/model";
 
 import { SkillSchema } from "./schemas";
 
@@ -27,6 +27,7 @@ export const updateSkill = async (
   const user = await getAuthAdminUser();
 
   const sk = await prisma.$transaction(async tx => {
+    // TODO: Should we use an ApiClientError here to indicate that the skill does not exist?
     let skill = await tx.skill.findUniqueOrThrow({ where: { id } });
     const currentLabel = data.label !== undefined ? data.label : skill.label;
     const updateData = {
@@ -43,12 +44,39 @@ export const updateSkill = async (
       });
     }
 
-    const fieldErrors: ApiClientFieldErrors = {};
+    let fieldErrors: ApiClientFieldErrors = {};
+    let experiences: Experience[] = [];
+    let educations: Education[] = [];
+
     if (_experiences !== undefined) {
-      const experiences = await tx.experience.findMany({ where: { id: { in: _experiences } } });
+      experiences = await tx.experience.findMany({ where: { id: { in: _experiences } } });
       if (experiences.length !== _experiences.length) {
-        throw ApiClientError.BadRequest("One or more of the provided experiences do not exist.");
+        fieldErrors = {
+          ...fieldErrors,
+          experiences: {
+            internalMessage: "One or more of the provided experiences do not exist.",
+            code: "invalid",
+          },
+        };
       }
+    }
+    if (_educations !== undefined) {
+      educations = await tx.education.findMany({ where: { id: { in: _educations } } });
+      if (educations.length !== _educations.length) {
+        fieldErrors = {
+          ...fieldErrors,
+          experiences: {
+            internalMessage: "One or more of the provided educations do not exist.",
+            code: "invalid",
+          },
+        };
+      }
+    }
+    if (Object.keys(fieldErrors).length !== 0) {
+      throw ApiClientError.BadRequest(fieldErrors);
+    }
+
+    if (experiences.length) {
       const currentRelationships = await tx.experienceOnSkills.findMany({
         where: { skillId: skill.id },
       });
@@ -88,11 +116,7 @@ export const updateSkill = async (
         });
       }
     }
-    if (_educations !== undefined) {
-      const educations = await tx.education.findMany({ where: { id: { in: _educations } } });
-      if (educations.length !== _educations.length) {
-        throw ApiClientError.BadRequest("One or more of the provided educations do not exist.");
-      }
+    if (educations.length) {
       const currentRelationships = await tx.educationOnSkills.findMany({
         where: { skillId: skill.id },
       });

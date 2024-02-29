@@ -27,7 +27,7 @@ export type RawApiClientFieldErrors<F extends string = string> = Partial<{
 }>;
 
 export type ApiClientFieldErrors<F extends string = string> = Partial<{
-  [key in F]: [ApiClientFieldError, ...ApiClientFieldError[]];
+  [key in F]: ApiClientFieldError | [ApiClientFieldError, ...ApiClientFieldError[]];
 }>;
 
 export const processRawApiClientFieldErrors = <F extends string>(
@@ -86,6 +86,7 @@ export type ApiClientGlobalError = {
   readonly code: ApiClientErrorCode;
   readonly statusCode: ApiClientErrorStatusCode;
   readonly message: string;
+  readonly internalMessage?: string;
 };
 
 const ApiClientGlobalErrorSchema = z.object({

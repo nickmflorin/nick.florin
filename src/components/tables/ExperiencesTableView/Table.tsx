@@ -1,7 +1,9 @@
 import dynamic from "next/dynamic";
 
-import { getExperiences } from "~/actions/fetches/get-experiences";
+import { getAdminExperiences } from "~/actions/fetches/get-experiences";
 import { Loading } from "~/components/views/Loading";
+
+import { type Filters } from "./types";
 
 const ClientTable = dynamic(() => import("./ClientTable"), {
   loading: () => <Loading loading={true} />,
@@ -9,9 +11,10 @@ const ClientTable = dynamic(() => import("./ClientTable"), {
 
 interface ExperiencesAdminTableProps {
   readonly page: number;
+  readonly filters: Filters;
 }
 
-export const ExperiencesAdminTable = async ({ page }: ExperiencesAdminTableProps) => {
-  const experiences = await getExperiences({});
+export const ExperiencesAdminTable = async ({ page, filters }: ExperiencesAdminTableProps) => {
+  const experiences = await getAdminExperiences({ page, filters });
   return <ClientTable experiences={experiences} />;
 };
