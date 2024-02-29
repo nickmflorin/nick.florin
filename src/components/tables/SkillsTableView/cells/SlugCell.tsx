@@ -9,7 +9,7 @@ import type * as types from "../../types";
 import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
 import { type ApiSkill, type Skill } from "~/prisma/model";
-import { updateSkill } from "~/actions/updateSkill";
+import { updateSkill } from "~/actions/update-skill";
 import { IconButton } from "~/components/buttons";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 
@@ -76,5 +76,3 @@ export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {
     </div>
   );
 };
-
-export default SlugCell;

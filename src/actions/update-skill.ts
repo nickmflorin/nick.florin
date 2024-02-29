@@ -3,12 +3,12 @@ import { revalidatePath } from "next/cache";
 
 import { type z } from "zod";
 
-import { ApiClientError } from "~/application/errors";
+import { getAuthAdminUser } from "~/application/auth";
+import { ApiClientError, type ApiClientFieldErrors } from "~/application/errors";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { type Skill } from "~/prisma/model";
-import { getAuthAdminUser } from "~/server/auth";
 
 import { SkillSchema } from "./schemas";
 
@@ -42,6 +42,8 @@ export const updateSkill = async (
         },
       });
     }
+
+    const fieldErrors: ApiClientFieldErrors = {};
     if (_experiences !== undefined) {
       const experiences = await tx.experience.findMany({ where: { id: { in: _experiences } } });
       if (experiences.length !== _experiences.length) {

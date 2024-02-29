@@ -3,13 +3,13 @@ import { Text } from "~/components/typography/Text";
 
 import { Select, type SelectProps } from "./generic";
 
-type Exp = Pick<Experience, "title" | "id"> & {
+type Exp = Pick<Experience, "title" | "id" | "shortTitle"> & {
   readonly company: Pick<Company, "id" | "name">;
 };
 
 const options = {
   getItemValue: (m: Exp) => m.id,
-  getItemLabel: (m: Exp) => m.title,
+  getItemLabel: (m: Exp) => m.shortTitle ?? m.title,
   isMulti: true,
 } as const;
 

@@ -97,18 +97,13 @@ type Json<C extends ApiClientErrorConfig> = C extends { errors: ApiClientFieldEr
       errors?: never;
     };
 
-type BadRequestRT<M extends string | RawApiClientFieldErrors | ApiClientFieldErrors> =
-  M extends string
-    ? ApiClientError<ApiClientErrorGlobalConfig>
-    : M extends ApiClientFieldErrors
-      ? ApiClientError<ApiClientErrorFieldsConfig<M>>
-      : M extends RawApiClientFieldErrors
-        ? ApiClientError<ApiClientErrorFieldsConfig<M>> | null
-        : never;
-
 type Errors<C extends ApiClientErrorConfig> = C extends ApiClientErrorFieldsConfig
   ? ApiClientFieldErrors
   : undefined;
+
+const isZodError = (
+  data: string | RawApiClientFieldErrors | ApiClientFieldErrors | z.ZodError,
+): data is z.ZodError => typeof data !== "string" && (data as z.ZodError).issues !== undefined;
 
 export class ApiClientError<
   C extends ApiClientErrorConfig = ApiClientErrorConfig,
@@ -148,31 +143,46 @@ export class ApiClientError<
 
   public static reconstruct = (response: ApiClientErrorResponse) => new ApiClientError(response);
 
-  public static BadRequest = <M extends string | RawApiClientFieldErrors | ApiClientFieldErrors>(
-    data?: M,
-  ): BadRequestRT<M> => {
+  public static BadRequest(data?: string): ApiClientError<ApiClientErrorGlobalConfig>;
+  public static BadRequest<M extends ApiClientFieldErrors>(
+    data: M,
+  ): ApiClientError<ApiClientErrorFieldsConfig<M>>;
+  public static BadRequest<M extends ApiClientFieldErrors>(
+    data: M,
+  ): ApiClientError<ApiClientErrorFieldsConfig<M>> | null;
+  public static BadRequest<M extends RawApiClientFieldErrors>(
+    data: M,
+  ): ApiClientError<ApiClientErrorFieldsConfig<M>> | null;
+  public static BadRequest<O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
+    error: z.ZodError,
+    schema: O,
+    lookup?: IssueLookup<keyof O["shape"] & string>,
+  ): ApiClientError<ApiClientErrorFieldsConfig<ApiClientFieldErrors<keyof O["shape"] & string>>>;
+  public static BadRequest<
+    M extends string | RawApiClientFieldErrors | ApiClientFieldErrors,
+    O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>,
+  >(data?: M | z.ZodError, schema?: O, lookup?: IssueLookup<keyof O["shape"] & string>) {
     if (typeof data === "string" || typeof data === "undefined") {
-      return new ApiClientError({
+      return new ApiClientError<ApiClientErrorGlobalConfig>({
         code: ApiClientErrorCodes.BAD_REQUEST,
         message: data,
-      }) as BadRequestRT<M>;
+      });
+    } else if (isZodError(data)) {
+      if (schema === undefined) {
+        throw new TypeError("Invalid function signature implementation!");
+      }
+      return this.BadRequest(zodErrorToClientResponse(data, schema, lookup));
     } else {
       const errs = processRawApiClientFieldErrors(data);
       if (errs === null) {
-        return null as BadRequestRT<M>;
+        return null;
       }
       return new ApiClientError({
         errors: data,
         code: ApiClientErrorCodes.BAD_REQUEST,
-      }) as BadRequestRT<M>;
+      });
     }
-  };
-
-  public static ValidationError = <O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
-    error: z.ZodError,
-    schema: O,
-    lookup?: IssueLookup<keyof O["shape"] & string>,
-  ) => this.BadRequest(zodErrorToClientResponse(error, schema, lookup));
+  }
 
   public static NotAuthenticated = (message?: string) =>
     new ApiClientError({ code: ApiClientErrorCodes.NOT_AUTHENTICATED, message });

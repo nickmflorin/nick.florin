@@ -9,7 +9,7 @@ import type * as types from "../../types";
 
 import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/updateSkill";
+import { updateSkill } from "~/actions/update-skill";
 import { Checkbox } from "~/components/input/Checkbox";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import { Label } from "~/components/typography/Label";
@@ -97,5 +97,3 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
     </div>
   );
 };
-
-export default ExperienceCell;

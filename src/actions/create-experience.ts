@@ -3,26 +3,42 @@ import { revalidatePath } from "next/cache";
 
 import { type z } from "zod";
 
+import { getAuthAdminUser } from "~/application/auth";
 import {
   ApiClientError,
   type ApiClientFieldErrors,
   ApiClientFieldErrorCodes,
 } from "~/application/errors";
 import { slugify } from "~/lib/formatters";
-import { prisma } from "~/prisma/client";
-import { getAuthAdminUser } from "~/server/auth";
+import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 
-import { SkillSchema } from "./schemas";
+import { ExperienceSchema } from "./schemas";
 
-export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
-  const parsed = SkillSchema.parse(req);
-  const { slug: _slug, experiences, educations, ...data } = parsed;
+export const createSkill = async (req: z.infer<typeof ExperienceSchema>) => {
+  const parsed = ExperienceSchema.safeParse(req);
+  if (!parsed.success) {
+    throw ApiClientError.BadRequest(parsed.error, ExperienceSchema);
+  }
 
-  const slug = _slug ?? slugify(data.label);
+  const { company: companyId, ...data } = parsed.data;
 
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
   const user = await getAuthAdminUser();
+
+  let company: Company;
+  try {
+    company = await prisma.company.findUniqueOrThrow({ where: { id: companyId } });
+  } catch (e) {
+    if (isPrismaDoesNotExistError(e)) {
+      throw ApiClientError.BadRequest({
+        company: {
+          code: ApiClientFieldErrorCodes.required,
+          message: "The company does not exist.",
+        },
+      });
+    }
+  }
 
   let fieldErrs: ApiClientFieldErrors = {};
   if (await prisma.skill.count({ where: { label: data.label } })) {

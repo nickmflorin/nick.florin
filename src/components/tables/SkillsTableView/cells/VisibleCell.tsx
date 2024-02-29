@@ -8,7 +8,7 @@ import type * as types from "../../types";
 
 import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/updateSkill";
+import { updateSkill } from "~/actions/update-skill";
 import { Checkbox } from "~/components/input/Checkbox";
 
 interface VisibleCellProps {
@@ -49,5 +49,3 @@ export const VisibleCell = ({ skill, table }: VisibleCellProps): JSX.Element => 
     </div>
   );
 };
-
-export default VisibleCell;

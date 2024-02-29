@@ -4,7 +4,7 @@ import { useEffect, useTransition } from "react";
 
 import { isApiClientErrorResponse } from "~/application/errors";
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/updateSkill";
+import { updateSkill } from "~/actions/update-skill";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../useForm";

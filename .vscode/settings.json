@@ -2,40 +2,28 @@
   "editor.tabSize": 2,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.rulers": [100],
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
+    "source.fixAll.eslint": "explicit"
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "[scss,css,less]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll.stylelint": "explicit"
     }
   },
   "eslint.run": "onSave",
-  "eslint.probe": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "html",
-    "vue",
-    "markdown",
-    "scss",
-    "css"
-  ],
-  // We want to eventually do this.
-  "eslint.experimental.useFlatConfig": false,
+  "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],
   "eslint.format.enable": true,
   "eslint.execArgv": ["--max-old-space-size=16384"],
   "eslint.debug": false,
   "eslint.codeActionsOnSave.rules": [
-    // "@typescript-eslint/semi",
-    // "@typescript-eslint/indent",
+    "@typescript-eslint/semi",
+    "@typescript-eslint/indent",
     "@typescript-eslint/consistent-type-imports",
     "!@typescript-eslint/*",
     "*"

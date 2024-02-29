@@ -8,7 +8,7 @@ import { Loading } from "~/components/views/Loading";
 
 import { type Filters } from "./types";
 
-const SkillsTable = dynamic(() => import("./ClientSkillsAdminTable"), {
+const ClientTable = dynamic(() => import("./ClientSkillsTable"), {
   loading: () => <Loading loading={true} />,
 });
 
@@ -29,5 +29,5 @@ export const SkillsAdminTable = async ({ page, filters }: SkillsAdminTableProps)
     },
   });
   const skills = await includeSkillMetadata(_skills, { educations: educationsData, experiences });
-  return <SkillsTable skills={skills} experiences={experiences} educations={educationsData} />;
+  return <ClientTable skills={skills} experiences={experiences} educations={educationsData} />;
 };

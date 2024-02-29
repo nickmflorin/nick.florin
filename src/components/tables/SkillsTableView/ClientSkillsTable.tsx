@@ -14,18 +14,13 @@ import {
   ActionsCell,
 } from "./cells";
 
-export interface ClientSkillsAdminTableProps {
+export interface ClientTableProps {
   readonly skills: ApiSkill[];
-  // TODO: Consider doing these with a client side API request in the selects themselves.
   readonly experiences: Omit<ApiExperience, "skills" | "details">[];
   readonly educations: ApiEducation[];
 }
 
-export const ClientSkillsAdminTable = ({
-  skills,
-  experiences,
-  educations,
-}: ClientSkillsAdminTableProps): JSX.Element => (
+export const ClientTable = ({ skills, experiences, educations }: ClientTableProps): JSX.Element => (
   <Table
     isCheckable
     columns={[
@@ -81,4 +76,5 @@ export const ClientSkillsAdminTable = ({
     data={skills}
   />
 );
-export default ClientSkillsAdminTable;
+
+export default ClientTable;

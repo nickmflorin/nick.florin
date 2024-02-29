@@ -5,31 +5,31 @@ import { useTransition } from "react";
 import type * as types from "../../types";
 
 import { logger } from "~/application/logger";
-import { type ApiSkill } from "~/prisma/model";
+import { type ApiExperience } from "~/prisma/model";
 import { updateSkill } from "~/actions/update-skill";
 
 import { EditableStringCell } from "../../cells";
 
 interface LabelCellProps {
-  readonly skill: ApiSkill;
-  readonly table: types.TableInstance<ApiSkill>;
+  readonly experience: ApiExperience;
+  readonly table: types.TableInstance<ApiExperience>;
 }
 
-export const LabelCell = ({ skill, table }: LabelCellProps): JSX.Element => {
+export const TitleCell = ({ experience, table }: LabelCellProps): JSX.Element => {
   const router = useRouter();
   const [_, transition] = useTransition();
 
   return (
     <EditableStringCell
-      value={skill.label}
+      value={experience.title}
       onPersist={async label => {
-        table.setRowLoading(skill.id, true);
+        table.setRowLoading(experience.id, true);
         try {
-          await updateSkill(skill.id, { label });
+          await updateSkill(experience.id, { label });
         } catch (e) {
           logger.error(e);
         } finally {
-          table.setRowLoading(skill.id, false);
+          table.setRowLoading(experience.id, false);
         }
         transition(() => {
           router.refresh();

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiSkill, type ApiEducation } from "~/prisma/model";
-import { updateSkill } from "~/actions/updateSkill";
+import { updateSkill } from "~/actions/update-skill";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
 
 interface EducationsCellProps {
@@ -50,5 +50,3 @@ export const EducationsCell = ({ skill, educations }: EducationsCellProps): JSX.
     />
   );
 };
-
-export default EducationsCell;

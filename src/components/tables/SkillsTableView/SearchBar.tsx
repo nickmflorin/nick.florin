@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
-import { createSkill } from "~/actions/createSkill";
+import { createSkill } from "~/actions/create-skill";
 import { TableSearchBar } from "~/components/tables/TableSearchBar";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";

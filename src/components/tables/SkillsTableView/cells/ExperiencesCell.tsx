@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiSkill, type ApiExperience } from "~/prisma/model";
-import { updateSkill } from "~/actions/updateSkill";
+import { updateSkill } from "~/actions/update-skill";
 import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
 
 interface ExperiencesCellProps {
@@ -50,5 +50,3 @@ export const ExperiencesCell = ({ skill, experiences }: ExperiencesCellProps): J
     />
   );
 };
-
-export default ExperiencesCell;

@@ -8,35 +8,38 @@ import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../useForm";
 
-import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues } from "./SkillForm";
+import {
+  ExperienceForm,
+  ExperienceFormSchema,
+  type ExperienceFormProps,
+  type ExperienceFormValues,
+} from "./ExperienceForm";
 
-export interface CreateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
+export interface CreateExperienceFormProps extends Omit<ExperienceFormProps, "form" | "action"> {
   readonly onCancel?: () => void;
 }
 
-export const CreateSkillForm = ({ onCancel, ...props }: CreateSkillFormProps): JSX.Element => {
+export const CreateExperienceForm = ({
+  onCancel,
+  ...props
+}: CreateExperienceFormProps): JSX.Element => {
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<SkillFormValues>({
-    schema: SkillFormSchema,
+  const { setValues, ...form } = useForm<ExperienceFormValues>({
+    schema: ExperienceFormSchema,
     defaultValues: {
-      label: "",
-      slug: "",
+      title: "",
+      shortTitle: "",
       description: "",
-      experiences: [],
-      educations: [],
-      categories: [],
-      programmingDomains: [],
-      programmingLanguages: [],
-      includeInTopSkills: false,
-      experience: null,
-      visible: true,
+      isRemote: false,
+      startDate: new Date(),
+      endDate: null,
     },
   });
 
   return (
-    <SkillForm
+    <ExperienceForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
@@ -55,4 +58,4 @@ export const CreateSkillForm = ({ onCancel, ...props }: CreateSkillFormProps): J
   );
 };
 
-export default CreateSkillForm;
+export default CreateExperienceForm;
