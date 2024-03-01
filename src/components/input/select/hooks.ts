@@ -9,6 +9,5 @@ export const useSelect = <M extends MenuModel, O extends MenuOptions<M>>() =>
     // This may be bug prone - we should revisit later.
     value: undefined as unknown as MenuValue<M, O>,
     setLoading: () => {},
-    setValue: () => {},
     setOpen: () => {},
   });
