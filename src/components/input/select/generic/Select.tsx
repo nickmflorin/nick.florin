@@ -60,6 +60,7 @@ export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectM
     readonly inputClassName?: ComponentProps["className"];
     readonly placeholder?: ReactNode;
     readonly maximumNumBadges?: number;
+    readonly closeMenuOnSelect?: boolean;
     readonly onChange?: (
       /* Here, the models and value are guaranteed to not be MenuInitialValue and
          MenuInitialModelValue anymore, because a selection was made. */
@@ -119,6 +120,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
       initialValue,
       value: _propValue,
       isReady = true,
+      closeMenuOnSelect,
       itemRenderer,
       valueRenderer,
       valueModelRenderer,
@@ -229,7 +231,15 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
             isReady={isReady}
             className={clsx("z-50", menuClassName)}
             value={value}
-            onSelect={selectModel}
+            onSelect={(model, item) => {
+              selectModel(model, item);
+              if (
+                closeMenuOnSelect ||
+                (closeMenuOnSelect === undefined && !props.options.isMulti)
+              ) {
+                setOpen(false);
+              }
+            }}
           >
             {itemRenderer ? m => itemRenderer(m) : undefined}
           </AbstractMenu>

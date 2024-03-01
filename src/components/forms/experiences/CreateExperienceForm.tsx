@@ -49,6 +49,7 @@ export const CreateExperienceForm = ({
         if (isApiClientErrorResponse(response)) {
           form.handleApiError(response);
         } else {
+          form.reset();
           transition(() => {
             refresh();
           });
