@@ -11,16 +11,14 @@ import { type Company } from "~/prisma/model";
 import { ExperienceSchema } from "./schemas";
 
 export const createExperience = async (req: z.infer<typeof ExperienceSchema>) => {
+  const user = await getAuthAdminUser();
+
   const parsed = ExperienceSchema.safeParse(req);
   if (!parsed.success) {
     throw ApiClientError.BadRequest(parsed.error, ExperienceSchema);
   }
 
   const { company: companyId, ...data } = parsed.data;
-
-  /* Note: We may want to return the error in the response body in the future, for now this is
-     fine - since it is not expected. */
-  const user = await getAuthAdminUser();
 
   let company: Company;
   try {
@@ -48,7 +46,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
     }).toResponse();
   }
 
-  const skill = await prisma.experience.create({
+  const experience = await prisma.experience.create({
     data: {
       ...data,
       companyId: company.id,
@@ -58,5 +56,5 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
   });
   revalidatePath("/admin/experiences", "page");
   revalidatePath("/api/experiences");
-  return skill;
+  return experience;
 };

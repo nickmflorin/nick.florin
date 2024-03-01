@@ -18,13 +18,11 @@ export const updateSkill = async (
   id: string,
   req: z.infer<typeof UpdateSkillSchema>,
 ): Promise<Skill> => {
+  const user = await getAuthAdminUser();
+
   const parsed = UpdateSkillSchema.parse(req);
 
   const { slug, experiences: _experiences, educations: _educations, ...data } = parsed;
-
-  /* Note: We may want to return the error in the response body in the future, for now this is
-     fine - since it is not expected. */
-  const user = await getAuthAdminUser();
 
   const sk = await prisma.$transaction(async tx => {
     // TODO: Should we use an ApiClientError here to indicate that the skill does not exist?

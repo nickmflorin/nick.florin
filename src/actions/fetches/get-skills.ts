@@ -3,6 +3,7 @@ import { cache } from "react";
 
 import clamp from "lodash.clamp";
 
+import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { constructOrSearch } from "~/prisma/util";
 
@@ -22,6 +23,7 @@ export const preloadSkills = (params: GetSkillsParams) => {
 };
 
 export const getSkills = cache(async ({ page, filters }: GetSkillsParams) => {
+  await getAuthAdminUser();
   const count = await getSkillsCount({ filters });
   const numPages = Math.max(Math.ceil(count / SKILLS_ADMIN_TABLE_PAGE_SIZE), 1);
   return await prisma.skill.findMany({

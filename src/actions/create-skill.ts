@@ -15,6 +15,8 @@ import { prisma } from "~/prisma/client";
 import { SkillSchema } from "./schemas";
 
 export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
+  const user = await getAuthAdminUser();
+
   const parsed = SkillSchema.safeParse(req);
   if (!parsed.success) {
     throw ApiClientError.BadRequest(parsed.error, SkillSchema);
@@ -22,10 +24,6 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
   const { slug: _slug, experiences, educations, ...data } = parsed.data;
 
   const slug = _slug ?? slugify(data.label);
-
-  /* Note: We may want to return the error in the response body in the future, for now this is
-     fine - since it is not expected. */
-  const user = await getAuthAdminUser();
 
   let fieldErrs: ApiClientFieldErrors = {};
   if (await prisma.skill.count({ where: { label: data.label } })) {

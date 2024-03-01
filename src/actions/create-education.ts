@@ -11,16 +11,14 @@ import { type School } from "~/prisma/model";
 import { EducationSchema } from "./schemas";
 
 export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
+  const user = await getAuthAdminUser();
+
   const parsed = EducationSchema.safeParse(req);
   if (!parsed.success) {
     throw ApiClientError.BadRequest(parsed.error, EducationSchema);
   }
 
   const { school: schoolId, ...data } = parsed.data;
-
-  /* Note: We may want to return the error in the response body in the future, for now this is
-     fine - since it is not expected. */
-  const user = await getAuthAdminUser();
 
   let school: School;
   try {
