@@ -27,13 +27,28 @@ export async function getAuthUser(): Promise<User | null> {
   }
 }
 
-export const getAuthAdminUserFromRequest = async (...args: Parameters<typeof getAuth>) => {
-  const user = await getAuthUserFromRequest(...args);
+type GetAuthUserOpts = {
+  readonly strict?: boolean;
+};
+
+type GetAuthUserRt<O extends GetAuthUserOpts> = O extends { strict: false } ? User | null : User;
+
+export const getAuthAdminUserFromRequest = async <O extends GetAuthUserOpts>(
+  req: Parameters<typeof getAuth>[0],
+  opts?: O,
+): Promise<GetAuthUserRt<O>> => {
+  const user = await getAuthUserFromRequest(req);
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
   if (!user) {
+    if (opts?.strict === false) {
+      return null as GetAuthUserRt<O>;
+    }
     throw ApiClientError.NotAuthenticated();
   } else if (!user.isAdmin) {
+    if (opts?.strict === false) {
+      return null as GetAuthUserRt<O>;
+    }
     throw ApiClientError.Forbidden();
   }
   return user;
