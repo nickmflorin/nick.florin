@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 
 import { includeSkillMetadata } from "~/prisma/model";
-import { getEducations } from "~/actions/fetches/get-educations";
-import { getExperiences } from "~/actions/fetches/get-experiences";
+import { getAdminEducations } from "~/actions/fetches/get-educations";
+import { getAdminExperiences } from "~/actions/fetches/get-experiences";
 import { getSkills } from "~/actions/fetches/get-skills";
 import { Loading } from "~/components/views/Loading";
 
@@ -18,8 +18,8 @@ interface SkillsAdminTableProps {
 }
 
 export const SkillsAdminTable = async ({ page, filters }: SkillsAdminTableProps) => {
-  const educationsData = await getEducations({ skills: true });
-  const experiences = await getExperiences({ skills: true });
+  const educationsData = await getAdminEducations({ page, filters });
+  const experiences = await getAdminExperiences({ page, filters });
   const educationIds = educationsData.map(e => e.id);
   const _skills = await getSkills({
     page,

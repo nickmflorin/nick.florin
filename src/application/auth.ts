@@ -27,6 +27,18 @@ export async function getAuthUser(): Promise<User | null> {
   }
 }
 
+export const getAuthAdminUserFromRequest = async (...args: Parameters<typeof getAuth>) => {
+  const user = await getAuthUserFromRequest(...args);
+  /* Note: We may want to return the error in the response body in the future, for now this is
+     fine - since it is not expected. */
+  if (!user) {
+    throw ApiClientError.NotAuthenticated();
+  } else if (!user.isAdmin) {
+    throw ApiClientError.Forbidden();
+  }
+  return user;
+};
+
 export const getAuthAdminUser = async () => {
   const user = await getAuthUser();
   /* Note: We may want to return the error in the response body in the future, for now this is

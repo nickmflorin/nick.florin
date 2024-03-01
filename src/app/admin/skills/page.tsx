@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { decodeQueryParam } from "~/lib/urls";
-import { preloadEducations } from "~/actions/fetches/get-educations";
-import { preloadExperiences } from "~/actions/fetches/get-experiences";
+import { preloadAdminEducations } from "~/actions/fetches/get-educations";
+import { preloadAdminExperiences } from "~/actions/fetches/get-experiences";
 import { SkillsTableView } from "~/components/tables/SkillsTableView";
 
 interface SkillsPageProps {
@@ -27,9 +27,6 @@ export default async function SkillsPage({
     page = parsed.data;
   }
 
-  preloadEducations({ skills: true });
-  preloadExperiences({ skills: true });
-
   const filters = {
     educations: educations ? decodeQueryParam(educations, { form: ["array"] as const }) ?? [] : [],
     search: search ?? "",
@@ -37,6 +34,9 @@ export default async function SkillsPage({
       ? decodeQueryParam(experiences, { form: ["array"] as const }) ?? []
       : [],
   };
+
+  preloadAdminEducations({ page, filters });
+  preloadAdminExperiences({ page, filters });
 
   return (
     <SkillsTableView
