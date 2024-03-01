@@ -25,7 +25,7 @@ interface TableViewProps {
 export const SkillsTableView = ({ filters, page, checkedRows }: TableViewProps) => (
   <RootTableView
     searchBar={<TableSearchBar />}
-    controlBar={<ControlBar checkedRows={checkedRows} filters={filters} />}
+    controlBar={<ControlBar checkedRows={checkedRows} filters={filters} page={page} />}
     paginator={
       <Suspense fallback={<PaginatorPlaceholder />}>
         <Paginator filters={filters} />
