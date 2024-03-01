@@ -1,4 +1,3 @@
-export { useSWR } from "./api/useSWR";
 export * from "./api";
-export * from "./useDeep";
-export * from "./useReferentialCallback";
+export * from "./use-deep";
+export * from "./use-referential-callback";

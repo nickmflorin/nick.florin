@@ -7,6 +7,7 @@ import {
   type Path,
   type PathValue,
   type UseFormRegisterReturn,
+  type FieldErrors as NativeFieldErrors,
   type RegisterOptions,
 } from "react-hook-form";
 
@@ -29,7 +30,61 @@ import {
   type ControlledFieldChangeHandler,
   type FieldErrors,
   type SetFormErrors,
+  type SetFormStaticErrors,
 } from "./types";
+
+/* TODO: We may have to revisit this.  When determining the string error message from a react hook
+   form field error, the message attribute may either be a string, undefined, or another error
+   object with a nested message attribute (which can recursively be either a string, undefined,
+   or another error object).  The recursions are mostly due to the capability of react hook form
+   to deal with nested fields - which we don't have to currently worry about, but may in the future.
+   For now, we will just assume the mesage property at the top level is a string, and if it is not,
+   we will return a default error message.
+   Note: In the future, we may also want to investigate converting the error object's 'type' field
+   into a string error message, because that will always be defined as a string, for each level of
+   the recursion. */
+const getReactHookFormErrorMessage = <I extends BaseFormValues>(
+  errs: NativeFieldErrors[FieldName<I>],
+) => (typeof errs?.message === "string" ? errs.message : "The field is invalid.");
+
+function mergeIntoFieldErrors<I extends BaseFormValues>(
+  a: FieldErrors<I>,
+  b: FieldErrors<I> | NativeFieldErrors,
+): FieldErrors<I>;
+function mergeIntoFieldErrors<I extends BaseFormValues>(
+  errors: FieldErrors<I>,
+  key: FieldName<I>,
+  err: string | string[],
+): FieldErrors<I>;
+function mergeIntoFieldErrors<I extends BaseFormValues>(
+  arg0: FieldErrors<I>,
+  arg1: FieldName<I> | FieldErrors<I> | NativeFieldErrors,
+  arg2?: string | string[],
+): FieldErrors<I> {
+  if (arg2) {
+    if (typeof arg1 !== "string") {
+      throw new TypeError("Invalid method implementation.");
+    }
+    return {
+      ...arg0,
+      [arg1]: [...(arg0[arg1] ?? []), ...(Array.isArray(arg2) ? arg2 : [arg2])],
+    };
+  } else if (typeof arg1 === "string") {
+    throw new TypeError("Invalid method implementation.");
+  }
+  return Object.keys(arg1).reduce((prev, key) => {
+    const errs = arg1[key as FieldName<I>];
+    if (errs !== undefined) {
+      return mergeIntoFieldErrors(
+        prev,
+        key as FieldName<I>,
+        // See docstring above the 'getReactHookFormErrorMessage' function.
+        Array.isArray(errs) ? errs : getReactHookFormErrorMessage(errs),
+      );
+    }
+    return prev;
+  }, arg0);
+}
 
 export const useForm = <I extends BaseFormValues, IN = I>({
   schema,
@@ -37,6 +92,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   ...options
 }: FormConfig<I, IN>): FormInstance<I> => {
   const [internalFieldErrors, setInternalFieldErrors] = useState<FieldErrors<I>>({});
+  const [internalStaticFieldErrors, setInternalStaticFieldErrors] = useState<FieldErrors<I>>({});
   const [globalErrors, setGlobalErrors] = useState<string[]>([]);
 
   const {
@@ -107,6 +163,20 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     setInternalFieldErrors({});
     clearNativeErrors();
   }, [clearNativeErrors]);
+
+  const setStaticErrors: SetFormStaticErrors<I> = useCallback(
+    (arg0: FieldName<I> | FieldErrors<I>, arg1?: string | string[]) => {
+      if (arg1 && typeof arg0 === "string") {
+        const fieldName = arg0 as FieldName<I>;
+        return setInternalStaticFieldErrors(curr => mergeIntoFieldErrors(curr, fieldName, arg1));
+      } else if (arg0 && typeof arg0 !== "string") {
+        setInternalStaticFieldErrors(curr => mergeIntoFieldErrors(curr, arg0));
+      } else {
+        throw new TypeError("Invalid method implementation!");
+      }
+    },
+    [],
+  );
 
   const setErrors: SetFormErrors<I> = useCallback(
     (arg0: FieldName<I> | FieldErrors<I> | string | string[], arg1?: string | string[]) => {
@@ -185,14 +255,16 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   const fieldErrors = useMemo(() => {
-    const keys = union(Object.keys(internalFieldErrors), Object.keys(formState.errors));
-    return keys.reduce((acc, key) => {
-      const k = key as FieldName<I>;
-      const internal = internalFieldErrors[k] ?? [];
-      const native = formState.errors[k];
-      return { ...acc, [k]: native?.message ? [...internal, native.message] : internal };
-    }, {});
-  }, [formState.errors, internalFieldErrors]);
+    const keys = union(
+      Object.keys(internalFieldErrors),
+      Object.keys(formState.errors),
+      Object.keys(internalStaticFieldErrors),
+    );
+    return mergeIntoFieldErrors(
+      mergeIntoFieldErrors(internalStaticFieldErrors, internalFieldErrors),
+      formState.errors,
+    );
+  }, [formState.errors, internalStaticFieldErrors, internalFieldErrors]);
 
   return {
     formState,
@@ -206,6 +278,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     handleApiError,
     clearErrors,
     setErrors,
+    setStaticErrors,
     ...form,
   };
 };

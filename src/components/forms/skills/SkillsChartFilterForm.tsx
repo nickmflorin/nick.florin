@@ -65,9 +65,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           onChange={onChange}
           placement="bottom"
           inPortal
-          /* TODO: We need to figure out how to make this static so it doesn't clear with other
-             errors that will auto clear on submit. */
-          onError={() => form.setErrors("educations", "There was an error loading the data.")}
+          onError={() => form.setStaticErrors("educations", "There was an error loading the data.")}
         />
       )}
     </Form.ControlledField>
@@ -85,9 +83,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           onChange={onChange}
           placement="bottom"
           inPortal
-          /* TODO: We need to figure out how to make this static so it doesn't clear with other
-             errors that will auto clear on submit. */
-          onError={() => form.setErrors("educations", "There was an error loading the data.")}
+          onError={() => form.setStaticErrors("educations", "There was an error loading the data.")}
         />
       )}
     </Form.ControlledField>

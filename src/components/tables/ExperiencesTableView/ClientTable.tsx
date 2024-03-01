@@ -30,7 +30,7 @@ export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
         accessor: "company",
         title: "Company",
         width: 320,
-        render: ({ model, table }) => (
+        render: ({ model }) => (
           <LinkOrText fontSize="sm" fontWeight="regular" url={model.company.websiteUrl}>
             {model.company.name}
           </LinkOrText>

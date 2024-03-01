@@ -5,13 +5,13 @@ import {
   type MenuModelValue,
   type MenuOptions,
   type MenuValue,
+  type MenuInitialValue,
 } from "~/components/menus";
 
 export type SelectInstance<M extends MenuModel, O extends MenuOptions<M>> = {
-  readonly value: MenuValue<M, O>;
+  readonly value: MenuValue<M, O> | MenuInitialValue<M, O>;
   readonly setOpen: (v: boolean) => void;
   readonly setLoading: (v: boolean) => void;
-  readonly setValue: (v: MenuValue<M, O>) => void;
 };
 
 export type SelectValueRenderer<M extends MenuModel, O extends MenuOptions<M>> = (

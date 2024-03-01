@@ -12,7 +12,6 @@ import {
 
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { type Required } from "utility-types";
 
 import type * as types from "../types";
 
@@ -22,13 +21,16 @@ import {
   type MenuModel,
   type MenuOptions,
   type MenuProps,
-  useMenuValue,
+  type AbstractMenuProps,
   type MenuValue,
   type MenuModelValue,
   type MenuItemInstance,
   getModelLabel,
-  type MenuComponent,
+  type AbstractMenuComponent,
+  type MenuInitialValue,
+  type MenuInitialModelValue,
 } from "~/components/menus";
+import { useMenuValue } from "~/components/menus/hooks";
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
@@ -39,24 +41,28 @@ const MultiValueRenderer = dynamic(
   () => import("./MultiValueRenderer"),
 ) as types.MultiValueRendererCompoennt;
 
-const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
+const AbstractMenu = dynamic(() => import("~/components/menus/generic/AbstractMenu"), {
   loading: () => <Loading loading={true} />,
-}) as MenuComponent;
+}) as AbstractMenuComponent;
 
 type SelectMenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
-  Required<MenuProps<M, O>, "value">,
-  "children" | keyof ComponentProps | "onChange"
+  AbstractMenuProps<M, O>,
+  "onSelect" | "value" | keyof ComponentProps
 >;
 
 export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectMenuProps<M, O> &
   Pick<FloatingProps, "placement" | "inPortal"> &
   Pick<InputProps, "isLoading" | "isDisabled" | "isLocked" | "size" | "actions"> & {
+    readonly value?: MenuValue<M, O>;
+    readonly initialValue?: MenuInitialValue<M, O>;
     readonly menuClassName?: ComponentProps["className"];
     readonly children?: FloatingProps["children"];
     readonly inputClassName?: ComponentProps["className"];
     readonly placeholder?: ReactNode;
     readonly maximumNumBadges?: number;
     readonly onChange?: (
+      /* Here, the models and value are guaranteed to not be MenuInitialValue and
+         MenuInitialModelValue anymore, because a selection was made. */
       v: MenuValue<M, O>,
       params: {
         models: MenuModelValue<M, O>;
@@ -67,16 +73,16 @@ export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectM
     readonly onOpen?: (
       e: Event,
       params: {
-        value: MenuValue<M, O>;
-        models: MenuModelValue<M, O>;
+        value: MenuValue<M, O> | MenuInitialValue<M, O>;
+        models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
         instance: types.SelectInstance<M, O>;
       },
     ) => void;
     readonly onClose?: (
       e: Event,
       params: {
-        value: MenuValue<M, O>;
-        models: MenuModelValue<M, O>;
+        value: MenuValue<M, O> | MenuInitialValue<M, O>;
+        models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
         instance: types.SelectInstance<M, O>;
       },
     ) => void;
@@ -84,8 +90,8 @@ export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectM
       e: Event,
       params: {
         isOpen: boolean;
-        value: MenuValue<M, O>;
-        models: MenuModelValue<M, O>;
+        value: MenuValue<M, O> | MenuInitialValue<M, O>;
+        models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
         instance: types.SelectInstance<M, O>;
       },
     ) => void;
@@ -110,6 +116,8 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
       actions,
       placeholder,
       maximumNumBadges,
+      initialValue,
+      value: _propValue,
       isReady = true,
       itemRenderer,
       valueRenderer,
@@ -122,7 +130,18 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
     ref: ForwardedRef<types.SelectInstance<M, O>>,
   ): JSX.Element => {
     const [_isLoading, setLoading] = useState(false);
-    const [value, models, _, setValue] = useMenuValue(props);
+
+    const [value, models, selectModel] = useMenuValue<M, O>({
+      initialValue,
+      value: _propValue,
+      options: props.options,
+      data: props.data,
+      isReady,
+      onChange: (value, params) => {
+        props.onChange?.(value, { ...params, instance: selectInstance });
+      },
+    });
+
     const [open, setOpen] = useState(false);
 
     const isLoading = _propIsLoading || _isLoading;
@@ -132,34 +151,50 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
         value,
         setOpen,
         setLoading,
-        setValue,
       }),
-      [value, setOpen, setLoading, setValue],
+      [value, setOpen, setLoading],
     );
 
     useImperativeHandle(ref, () => selectInstance);
 
     const renderedValue = useMemo(() => {
-      if (Array.isArray(models) && models.length === 0 && placeholder) {
-        return <div className="placeholder">{placeholder}</div>;
-      } else if (models === null && placeholder) {
-        return <div className="placeholder">{placeholder}</div>;
-      } else if (valueRenderer) {
-        return valueRenderer(value, { models, instance: selectInstance });
-      } else if (Array.isArray(models)) {
+      /* The models and/or value may be null regardless of whether or not the Menu is nullable.
+         If the Menu is non-nullable, the value and/or models can be null on initialization,
+         before any selection has occurred. */
+      if (value === null || models === null || (Array.isArray(models) && models.length === 0)) {
+        if (placeholder) {
+          return <div className="placeholder">{placeholder}</div>;
+        }
+        return <></>;
+      }
+      /* Coercion of the models here is safe, because we already checked if the models is null. If
+         the models is not null, it is safe to assume that the models is a MenuModelValue, not the
+         MenuInitialModelValue. */
+      const _models = models as MenuModelValue<M, O>;
+      /* Coercion of the value here is safe, because we already checked if the value is null. If the
+         value is not null, it is safe to assume that the value is a MenuValue, not the
+         MenuInitialValue. */
+      const _value = value as MenuValue<M, O>;
+
+      if (valueRenderer) {
+        return valueRenderer(_value, {
+          models: _models,
+          instance: selectInstance,
+        });
+      } else if (Array.isArray(_models)) {
         return (
           <MultiValueRenderer
-            models={models as M[]}
+            models={_models as M[]}
             selectInstance={selectInstance}
-            value={value}
+            value={_value}
             options={props.options}
             maximumNumBadges={maximumNumBadges}
           />
         );
       } else if (valueModelRenderer) {
-        return valueModelRenderer(value, { model: models, instance: selectInstance });
+        return valueModelRenderer(_value, { model: _models, instance: selectInstance });
       }
-      return getModelLabel(models, props.options);
+      return getModelLabel(_models, props.options);
     }, [
       valueRenderer,
       valueModelRenderer,
@@ -181,7 +216,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
         offset={{ mainAxis: 2 }}
         isOpen={open}
         isDisabled={!isReady}
-        variant="none"
+        variant="white"
         onOpen={e => onOpen?.(e, { value, models, instance: selectInstance })}
         onClose={e => onClose?.(e, { value, models, instance: selectInstance })}
         onOpenChange={(isOpen, evt) => {
@@ -189,18 +224,15 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
           onOpenChange?.(evt, { isOpen, value, models, instance: selectInstance });
         }}
         content={
-          <Menu
+          <AbstractMenu
             {...(props as MenuProps<M, O>)}
             isReady={isReady}
             className={clsx("z-50", menuClassName)}
             value={value}
-            onChange={(v, item) => {
-              setValue(v);
-              props.onChange?.(v, { models, instance: selectInstance, item });
-            }}
+            onSelect={selectModel}
           >
             {itemRenderer ? m => itemRenderer(m) : undefined}
-          </Menu>
+          </AbstractMenu>
         }
       >
         {children ||

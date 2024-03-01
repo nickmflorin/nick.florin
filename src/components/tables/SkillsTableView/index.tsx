@@ -12,7 +12,7 @@ import { Paginator } from "./Paginator";
 import { SkillsAdminTable } from "./Table";
 import { type Filters } from "./types";
 
-const TableSearchBar = dynamic(() => import("~/components/tables/SkillsTableView/SearchBar"), {
+const TableSearchBar = dynamic(() => import("./SearchBar"), {
   loading: () => <TableSearchBarPlaceholder />,
 });
 

@@ -44,9 +44,9 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
           value={value}
           onChange={onChange}
           inPortal
-          /* TODO: We need to figure out how to make this static so it doesn't clear with other
-             errors that will auto clear on submit. */
-          onError={() => props.form.setErrors("educations", "There was an error loading the data.")}
+          onError={() =>
+            props.form.setStaticErrors("educations", "There was an error loading the data.")
+          }
         />
       )}
     </Form.ControlledField>
@@ -58,9 +58,9 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
           value={value}
           onChange={onChange}
           inPortal
-          /* TODO: We need to figure out how to make this static so it doesn't clear with other
-             errors that will auto clear on submit. */
-          onError={() => props.form.setErrors("educations", "There was an error loading the data.")}
+          onError={() =>
+            props.form.setStaticErrors("educations", "There was an error loading the data.")
+          }
         />
       )}
     </Form.ControlledField>

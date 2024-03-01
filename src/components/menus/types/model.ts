@@ -113,19 +113,39 @@ export const getModelLabel = <M extends MenuModel, O extends MenuOptions<M>>(
   return v as ModelLabel<M, O>;
 };
 
+export type MenuInitialValue<M extends MenuModel, O extends MenuOptions<M>> = O extends {
+  isMulti: true;
+}
+  ? ModelValue<M, O>[]
+  : ModelValue<M, O> | null;
+
 export type MenuValue<M extends MenuModel, O extends MenuOptions<M>> = O extends { isMulti: true }
   ? ModelValue<M, O>[]
   : O extends { isNullable: true }
     ? ModelValue<M, O> | null
     : ModelValue<M, O>;
 
-export const valueIsMulti = <M extends MenuModel, O extends MenuOptions<M>>(
-  value: MenuValue<M, O>,
-): value is MenuValue<M, O> & ModelValue<M, O>[] => Array.isArray(value);
+export const valueIsMulti = <
+  V extends MenuInitialModelValue<M, O> | MenuModelValue<M, O>,
+  M extends MenuModel,
+  O extends MenuOptions<M>,
+>(
+  value: V,
+): value is V & ModelValue<M, O>[] => Array.isArray(value);
 
-export const valueIsNotMulti = <M extends MenuModel, O extends MenuOptions<M>>(
-  value: MenuValue<M, O>,
-): value is MenuValue<M, O> & ModelValue<M, O> => !Array.isArray(value) && value !== null;
+export const valueIsNotMulti = <
+  V extends MenuInitialModelValue<M, O> | MenuModelValue<M, O>,
+  M extends MenuModel,
+  O extends MenuOptions<M>,
+>(
+  value: V,
+): value is V & ModelValue<M, O> => !Array.isArray(value) && value !== null;
+
+export type MenuInitialModelValue<M extends MenuModel, O extends MenuOptions<M>> = O extends {
+  isMulti: true;
+}
+  ? M[]
+  : M | null;
 
 export type MenuModelValue<M extends MenuModel, O extends MenuOptions<M>> = O extends {
   isMulti: true;
