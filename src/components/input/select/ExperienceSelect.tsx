@@ -23,7 +23,7 @@ export const ExperienceSelect = <E extends Exp>(props: ExperienceSelectProps<E>)
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text size="sm" fontWeight="medium">
-          {m.title}
+          {m.shortTitle ?? m.title}
         </Text>
         <Text size="xs" className="text-body-light">
           {m.company.name}

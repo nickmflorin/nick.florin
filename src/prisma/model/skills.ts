@@ -71,14 +71,11 @@ export const getProgrammingDomain = <D extends ProgrammingDomain>(
 export type ApiSkill = Skill & {
   readonly autoExperience: number;
   readonly experience: number | null;
-  readonly educations: (Pick<Education, "major" | "id" | "startDate" | "endDate" | "postPoned"> & {
-    readonly school: Pick<School, "id" | "name" | "logoImageUrl" | "city" | "state" | "websiteUrl">;
+  readonly educations: (Education & {
+    readonly school: School;
   })[];
-  readonly experiences: (Pick<Experience, "title" | "id" | "startDate" | "endDate" | "isRemote"> & {
-    readonly company: Pick<
-      Company,
-      "id" | "name" | "logoImageUrl" | "city" | "state" | "websiteUrl"
-    >;
+  readonly experiences: (Experience & {
+    readonly company: Company;
   })[];
 };
 

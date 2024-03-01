@@ -11,28 +11,28 @@ import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/update-experience";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 
-interface TitleCellProps {
+interface ShortTitleCellProps {
   readonly experience: ApiExperience;
   readonly table: types.TableInstance<ApiExperience>;
 }
 
-export const TitleCell = ({ experience, table }: TitleCellProps): JSX.Element => {
+export const ShortTitleCell = ({ experience, table }: ShortTitleCellProps): JSX.Element => {
   const router = useRouter();
 
   const input = useReadWriteTextInput();
 
   useEffect(() => {
-    input.current.setValue(experience.title);
+    input.current.setValue(experience.shortTitle ?? "");
   }, [experience, input]);
 
   return (
     <ReadWriteTextInput
       ref={input}
-      initialValue={experience.title}
-      onPersist={async title => {
+      initialValue={experience.shortTitle ?? ""}
+      onPersist={async shortTitle => {
         table.setRowLoading(experience.id, true);
         try {
-          await updateExperience(experience.id, { title });
+          await updateExperience(experience.id, { shortTitle });
         } catch (e) {
           logger.error(e);
           toast.error("There was an error updating the experience.");

@@ -82,3 +82,23 @@ button.cl-socialButtonsBlockButton__google {
     aspect-ratio: 1;
   }
 }
+
+.cl-signIn-start {
+  .cl-footer {
+    // Hides the Sign Up link.
+    display: none;
+
+    & + * {
+      // Changes the color of the Powered By Clerk tag.  Note: We could remove that with a
+      // display: none;, but we don't want to get in trouble - since we do not have a paid
+      // subscription.
+      background-color: theme("colors.blue.600");
+    }
+  }
+}
+
+.cl-formFieldInputShowPasswordButton {
+  // These styles override our internal styles on button elements that are not applicable here.
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}

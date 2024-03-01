@@ -1,17 +1,28 @@
 "use server";
 import { getAuthAdminUser } from "~/application/auth";
-import { prisma } from "~/prisma/client";
+import { ApiClientError } from "~/application/errors";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { type Skill, type ExperienceOnSkills, type EducationOnSkills } from "~/prisma/model";
 
 export const deleteSkill = async (id: string): Promise<void> => {
-  /* Note: We may want to return the error in the response body in the future, for now this is
-     fine - since it is not expected. */
   const user = await getAuthAdminUser();
 
   await prisma.$transaction(async tx => {
-    const skill = await tx.skill.findUniqueOrThrow({
-      where: { id },
-      include: { experiences: true, educations: true },
-    });
+    let skill: Skill & {
+      readonly experiences: ExperienceOnSkills[];
+      readonly educations: EducationOnSkills[];
+    };
+    try {
+      skill = await tx.skill.findUniqueOrThrow({
+        where: { id },
+        include: { experiences: true, educations: true },
+      });
+    } catch (e) {
+      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
+        throw ApiClientError.NotFound();
+      }
+      throw e;
+    }
 
     await Promise.all(
       skill.experiences.map(exp =>

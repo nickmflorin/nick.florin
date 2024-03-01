@@ -13,7 +13,7 @@ export const ActionsCell = ({
   onEdit,
   onDelete,
 }: ActionsCellProps): JSX.Element => (
-  <div className="flex flex-row justify-center gap-[4px]">
+  <div className="flex flex-row justify-end gap-[4px]">
     <IconButton.Transparent
       icon={{ name: "pen" }}
       options={{ as: "button" }}
