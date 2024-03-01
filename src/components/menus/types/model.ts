@@ -11,6 +11,7 @@ export type MenuModel = Record<string, unknown>;
 
 const MenuModelParamsSchema = z.object({
   label: ReactNodeSchema,
+  valueLabel: ReactNodeSchema,
   icon: IconPropSchema,
   id: z.union([z.string(), z.number()]),
   value: z.any(),
@@ -108,9 +109,35 @@ export const getModelLabel = <M extends MenuModel, O extends MenuOptions<M>>(
     v = model.label;
   }
   if (v !== "__NEVER__" && !modelLabelIsValid(v)) {
-    throw new TypeError(`The value '${v}' is not a valid id for a menu item in the menu.`);
+    throw new TypeError(`The value '${v}' is not a valid label for a menu item in the menu.`);
   }
   return v as ModelLabel<M, O>;
+};
+
+export const modelValueLabelIsValid = (value: unknown) => isReactNode(value);
+
+export type ModelValueLabel<M extends MenuModel, O extends MenuOptions<M>> = M extends {
+  readonly valueLabel: infer L extends ReactNode;
+}
+  ? L
+  : O extends { readonly getItemValueLabel: (m: M) => infer L extends ReactNode }
+    ? L
+    : undefined;
+
+export const getModelValueLabel = <M extends MenuModel, O extends MenuOptions<M>>(
+  model: M,
+  options: O,
+): ModelValueLabel<M, O> => {
+  let v: unknown = "__NEVER__";
+  if (options.getItemValueLabel !== undefined) {
+    v = options.getItemValueLabel(model);
+  } else if (modelHasParam(model, "valueLabel")) {
+    v = model.label;
+  }
+  if (v !== "__NEVER__" && !modelLabelIsValid(v)) {
+    throw new TypeError(`The value '${v}' is not a valid value label for a menu item in the menu.`);
+  }
+  return v as ModelValueLabel<M, O>;
 };
 
 export type MenuInitialValue<M extends MenuModel, O extends MenuOptions<M>> = O extends {

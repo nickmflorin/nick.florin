@@ -48,7 +48,7 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => (
           <div className="flex flex-row gap-[6px] items-center">
             <Checkbox value={value} onChange={onChange} />
             <Label size="sm" fontWeight="medium" className="leading-[16px]">
-              Visible
+              Remote
             </Label>
           </div>
         )}

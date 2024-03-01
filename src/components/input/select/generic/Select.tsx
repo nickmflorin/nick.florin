@@ -29,6 +29,7 @@ import {
   type AbstractMenuComponent,
   type MenuInitialValue,
   type MenuInitialModelValue,
+  getModelValueLabel,
 } from "~/components/menus";
 import { useMenuValue } from "~/components/menus/hooks";
 import { mergeActions } from "~/components/structural";
@@ -196,7 +197,8 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
       } else if (valueModelRenderer) {
         return valueModelRenderer(_value, { model: _models, instance: selectInstance });
       }
-      return getModelLabel(_models, props.options);
+      const valueLabel = getModelValueLabel(_models, props.options);
+      return valueLabel ?? getModelLabel(_models, props.options);
     }, [
       valueRenderer,
       valueModelRenderer,

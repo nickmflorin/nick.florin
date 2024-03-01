@@ -7,24 +7,24 @@ import { getAuthAdminUser } from "~/application/auth";
 import { ApiClientError, ApiClientFieldErrorCodes } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 
-import { ExperienceSchema } from "./schemas";
+import { EducationSchema } from "./schemas";
 
-const UpdateExperienceSchema = ExperienceSchema.partial();
+const UpdateEducationSchema = EducationSchema.partial();
 
-export const updateExperience = async (id: string, req: z.infer<typeof UpdateExperienceSchema>) => {
+export const updateEducation = async (id: string, req: z.infer<typeof UpdateEducationSchema>) => {
   const user = await getAuthAdminUser();
 
-  const parsed = UpdateExperienceSchema.safeParse(req);
+  const parsed = UpdateEducationSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, ExperienceSchema);
+    throw ApiClientError.BadRequest(parsed.error, UpdateEducationSchema);
   }
 
-  const { company: companyId, title, ...data } = parsed.data;
+  const { school: schoolId, major, ...data } = parsed.data;
 
-  const experience = await prisma.$transaction(async tx => {
-    if (companyId) {
+  const education = await prisma.$transaction(async tx => {
+    if (schoolId) {
       try {
-        await tx.company.findUniqueOrThrow({ where: { id: companyId } });
+        await tx.school.findUniqueOrThrow({ where: { id: schoolId } });
       } catch (e) {
         /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
         we do not need to worry about checking isPrismaInvalidIdError here. */
@@ -32,30 +32,30 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
           throw ApiClientError.BadRequest({
             company: {
               code: ApiClientFieldErrorCodes.does_not_exist,
-              message: "The company does not exist.",
+              message: "The school does not exist.",
             },
           });
         }
         throw e;
       }
     }
-    if (title) {
-      if (await prisma.experience.count({ where: { companyId, title } })) {
+    if (major) {
+      if (await prisma.education.count({ where: { schoolId, major } })) {
         return ApiClientError.BadRequest({
-          title: {
+          major: {
             code: ApiClientFieldErrorCodes.unique,
-            message: "The title must be unique for a given company.",
+            message: "The major must be unique for a given school.",
           },
         }).toResponse();
       }
     }
     try {
-      return await tx.experience.update({
+      return await tx.education.update({
         where: { id },
         data: {
           ...data,
-          title,
-          companyId,
+          major,
+          schoolId,
           updatedById: user.id,
         },
       });
@@ -66,7 +66,7 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
       throw e;
     }
   });
-  revalidatePath("/admin/experiences", "page");
-  revalidatePath("/api/experiences");
-  return experience;
+  revalidatePath("/admin/educations", "page");
+  revalidatePath("/api/educations");
+  return education;
 };

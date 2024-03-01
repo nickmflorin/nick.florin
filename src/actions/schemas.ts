@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { NullableMinLengthStringField } from "~/lib/schemas";
-import { ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/prisma/model";
+import { Degree, ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/prisma/model";
 
 export const SkillSchema = z.object({
   label: z.string().min(3, "The label must be at least 3 characters."),
@@ -30,4 +30,17 @@ export const ExperienceSchema = z.object({
   startDate: z.date(),
   endDate: z.date().nullable().optional(),
   isRemote: z.boolean().optional(),
+});
+
+export const EducationSchema = z.object({
+  major: z.string().min(3, "The major must be at least 3 characters."),
+  note: z.string().optional(),
+  degree: z.nativeEnum(Degree),
+  concentration: z.string().optional(),
+  minor: z.string().optional(),
+  description: z.string().optional(),
+  school: z.string().uuid(),
+  startDate: z.date(),
+  endDate: z.date().nullable().optional(),
+  postPoned: z.boolean().optional(),
 });

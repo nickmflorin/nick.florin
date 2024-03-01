@@ -7,6 +7,8 @@ export type MenuOptions<I extends MenuModel> = Partial<{
   readonly isNullable: boolean;
   readonly getItemValue: (m: I) => unknown;
   readonly getItemLabel: (m: I) => ReactNode;
+  // TODO: We may want to move this to the Select since it is not applicable to the generic Menu.
+  readonly getItemValueLabel: (m: I) => ReactNode;
   readonly getItemId: (m: I) => string | number;
 }>;
 
