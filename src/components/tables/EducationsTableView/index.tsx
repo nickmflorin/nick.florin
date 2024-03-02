@@ -9,7 +9,7 @@ import { TableView as RootTableView } from "../TableView";
 
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
-import { ExperiencesAdminTable } from "./Table";
+import { EducationsAdminTable } from "./Table";
 import { type Filters } from "./types";
 
 const TableSearchBar = dynamic(() => import("./SearchBar"), {
@@ -22,7 +22,7 @@ interface TableViewProps {
   readonly checkedRows: string[];
 }
 
-export const ExperiencesTableView = ({ filters, page, checkedRows }: TableViewProps) => (
+export const EducationsTableView = ({ filters, page, checkedRows }: TableViewProps) => (
   <RootTableView
     searchBar={<TableSearchBar />}
     controlBar={<ControlBar checkedRows={checkedRows} />}
@@ -33,7 +33,7 @@ export const ExperiencesTableView = ({ filters, page, checkedRows }: TableViewPr
     }
   >
     <Suspense key={`${filters.search}`} fallback={<Loading loading={true} />}>
-      <ExperiencesAdminTable filters={filters} page={page} />
+      <EducationsAdminTable filters={filters} page={page} />
     </Suspense>
   </RootTableView>
 );

@@ -1,10 +1,12 @@
 "use client";
 import { type ApiExperience } from "~/prisma/model";
+import { updateExperience } from "~/actions/update-experience";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 
+import { EditableStringCell } from "../cells";
 import { Table } from "../Table";
 
-import { TitleCell, ActionsCell, ShortTitleCell } from "./cells";
+import { ActionsCell } from "./cells";
 
 export interface ClientTableProps {
   readonly experiences: ApiExperience[];
@@ -18,13 +20,29 @@ export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
         accessor: "title",
         title: "Title",
         width: 320,
-        render: ({ model, table }) => <TitleCell experience={model} table={table} />,
+        render: ({ model, table }) => (
+          <EditableStringCell
+            field="title"
+            model={model}
+            table={table}
+            errorMessage="There was an error updating the experience."
+            action={updateExperience.bind(null, model.id)}
+          />
+        ),
       },
       {
         accessor: "shortTitle",
         title: "Short Title",
         width: 320,
-        render: ({ model, table }) => <ShortTitleCell experience={model} table={table} />,
+        render: ({ model, table }) => (
+          <EditableStringCell
+            field="shortTitle"
+            model={model}
+            table={table}
+            errorMessage="There was an error updating the experience."
+            action={updateExperience.bind(null, model.id)}
+          />
+        ),
       },
       {
         accessor: "company",

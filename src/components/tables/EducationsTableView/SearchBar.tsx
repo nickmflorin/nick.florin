@@ -10,8 +10,8 @@ const Drawer = dynamic(() => import("~/components/drawers/Drawer"), {
   loading: () => <Loading loading={true} />,
 });
 
-const CreateExperienceForm = dynamic(
-  () => import("~/components/forms/experiences/CreateExperienceForm"),
+const CreateEducationForm = dynamic(
+  () => import("~/components/forms/educations/CreateEducationForm"),
   {
     loading: () => <Loading loading={true} />,
   },
@@ -26,7 +26,7 @@ export const SearchBar = (props: SearchBarProps) => {
     <>
       <TableSearchBar {...props} searchParamName="search" onNew={() => setDrawerOpen(true)} />
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <CreateExperienceForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
+        <CreateEducationForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
       </Drawer>
     </>
   );

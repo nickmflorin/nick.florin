@@ -1,38 +1,70 @@
 "use client";
-import { type ApiExperience } from "~/prisma/model";
+import { type ApiEducation } from "~/prisma/model";
+import { updateEducation } from "~/actions/update-education";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 
+import { EditableStringCell } from "../cells";
 import { Table } from "../Table";
 
-import { TitleCell, ActionsCell, ShortTitleCell } from "./cells";
+import { ActionsCell } from "./cells";
 
 export interface ClientTableProps {
-  readonly experiences: ApiExperience[];
+  readonly educations: ApiEducation[];
 }
 
-export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
+export const ClientTable = ({ educations }: ClientTableProps): JSX.Element => (
   <Table
     isCheckable
     columns={[
       {
-        accessor: "title",
-        title: "Title",
+        accessor: "major",
+        title: "Major",
         width: 320,
-        render: ({ model, table }) => <TitleCell experience={model} table={table} />,
+        render: ({ model, table }) => (
+          <EditableStringCell
+            field="major"
+            model={model}
+            table={table}
+            errorMessage="There was an error updating the experience."
+            action={updateEducation.bind(null, model.id)}
+          />
+        ),
       },
       {
-        accessor: "shortTitle",
-        title: "Short Title",
+        accessor: "minor",
+        title: "Minor",
         width: 320,
-        render: ({ model, table }) => <ShortTitleCell experience={model} table={table} />,
+        render: ({ model, table }) => (
+          <EditableStringCell
+            field="minor"
+            model={model}
+            table={table}
+            errorMessage="There was an error updating the experience."
+            action={updateEducation.bind(null, model.id)}
+          />
+        ),
       },
       {
-        accessor: "company",
-        title: "Company",
+        accessor: "concentration",
+        title: "Concentration",
+        width: 320,
+        render: ({ model, table }) => (
+          <EditableStringCell
+            field="concentration"
+            model={model}
+            table={table}
+            errorMessage="There was an error updating the experience."
+            action={updateEducation.bind(null, model.id)}
+          />
+        ),
+      },
+      {
+        accessor: "school",
+        title: "School",
         width: 320,
         render: ({ model }) => (
-          <LinkOrText fontSize="sm" fontWeight="regular" url={model.company.websiteUrl}>
-            {model.company.name}
+          <LinkOrText fontSize="sm" fontWeight="regular" url={model.school.websiteUrl}>
+            {model.school.name}
           </LinkOrText>
         ),
       },
@@ -43,7 +75,7 @@ export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
         render: ({ model }) => <ActionsCell model={model} />,
       },
     ]}
-    data={experiences}
+    data={educations}
   />
 );
 

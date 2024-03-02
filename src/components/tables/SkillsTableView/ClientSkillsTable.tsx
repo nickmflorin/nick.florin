@@ -1,12 +1,13 @@
 "use client";
 import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/model";
+import { updateSkill } from "~/actions/update-skill";
 
+import { EditableStringCell } from "../cells";
 import { Table } from "../Table";
 
 import {
   EducationsCell,
   ExperiencesCell,
-  LabelCell,
   ExperienceCell,
   SlugCell,
   VisibleCell,
@@ -28,7 +29,15 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
         accessor: "label",
         title: "Label",
         width: 320,
-        render: ({ model, table }) => <LabelCell skill={model} table={table} />,
+        render: ({ model, table }) => (
+          <EditableStringCell
+            field="label"
+            model={model}
+            table={table}
+            errorMessage="There was an error updating the experience."
+            action={updateSkill.bind(null, model.id)}
+          />
+        ),
       },
       {
         accessor: "slug",
