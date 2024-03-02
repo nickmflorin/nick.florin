@@ -10,33 +10,31 @@ datasource db {
 }
 
 model User {
-  id                       String             @id @default(uuid()) @db.Uuid
-  clerkId                  String             @unique
-  firstName                String
-  lastName                 String
-  isAdmin                  Boolean            @default(false)
-  profileImageUrl          String?
-  emailAddress             String
-  createdAt                DateTime           @default(now())
-  updatedAt                DateTime           @updatedAt
-  updatedSkills            Skill[]            @relation("updatedSkils")
-  createdSkills            Skill[]            @relation("createdSkills")
-  updatedCompanies         Company[]          @relation("updatedCompanies")
-  createdCompanies         Company[]          @relation("createdCompanies")
-  updatedExperiences       Experience[]       @relation("updatedExperiences")
-  createdExperiences       Experience[]       @relation("createdExperiences")
-  updatedSchools           School[]           @relation("updatedSchools")
-  createdSchools           School[]           @relation("createdSchools")
-  updatedEducations        Education[]        @relation("updatedEducations")
-  createdEducations        Education[]        @relation("createdEducations")
-  updatedProfiles          Profile[]          @relation("updatedProfiles")
-  createdProfiles          Profile[]          @relation("createdProfiles")
-  updatedDetails           Detail[]           @relation("updatedDetails")
-  createdDetails           Detail[]           @relation("createdDetails")
-  updatedNestedDetails     NestedDetail[]     @relation("updatedNestedDetails")
-  createdNestedDetails     NestedDetail[]     @relation("createdNestedDetails")
-  updatedPersonalityTraits PersonalityTrait[] @relation("updatedPersonalityTraits")
-  createdPersonalityTraits PersonalityTrait[] @relation("createdPersonalityTraits")
+  id                   String         @id @default(uuid()) @db.Uuid
+  clerkId              String         @unique
+  firstName            String
+  lastName             String
+  isAdmin              Boolean        @default(false)
+  profileImageUrl      String?
+  emailAddress         String
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  updatedSkills        Skill[]        @relation("updatedSkils")
+  createdSkills        Skill[]        @relation("createdSkills")
+  updatedCompanies     Company[]      @relation("updatedCompanies")
+  createdCompanies     Company[]      @relation("createdCompanies")
+  updatedExperiences   Experience[]   @relation("updatedExperiences")
+  createdExperiences   Experience[]   @relation("createdExperiences")
+  updatedSchools       School[]       @relation("updatedSchools")
+  createdSchools       School[]       @relation("createdSchools")
+  updatedEducations    Education[]    @relation("updatedEducations")
+  createdEducations    Education[]    @relation("createdEducations")
+  updatedProfiles      Profile[]      @relation("updatedProfiles")
+  createdProfiles      Profile[]      @relation("createdProfiles")
+  updatedDetails       Detail[]       @relation("updatedDetails")
+  createdDetails       Detail[]       @relation("createdDetails")
+  updatedNestedDetails NestedDetail[] @relation("updatedNestedDetails")
+  createdNestedDetails NestedDetail[] @relation("createdNestedDetails")
 }
 
 model NestedDetail {
@@ -138,20 +136,6 @@ model Skill {
   includeInTopSkills   Boolean               @default(false)
 }
 
-model PersonalityTrait {
-  id                 String               @id @default(uuid()) @db.Uuid
-  label              String               @unique
-  createdAt          DateTime             @default(now())
-  createdBy          User                 @relation("createdPersonalityTraits", fields: [createdById], references: [id])
-  createdById        String               @db.Uuid
-  updatedAt          DateTime             @updatedAt
-  updatedBy          User                 @relation("updatedPersonalityTraits", fields: [updatedById], references: [id])
-  updatedById        String               @db.Uuid
-  visible            Boolean              @default(true)
-  ExperienceOnSkills ExperienceOnSkills[]
-  EducationOnSkills  EducationOnSkills[]
-}
-
 model Company {
   id           String       @id @default(uuid()) @db.Uuid
   createdAt    DateTime     @default(now())
@@ -187,14 +171,12 @@ model School {
 }
 
 model ExperienceOnSkills {
-  experience         Experience        @relation("skills", fields: [experienceId], references: [id])
-  experienceId       String            @db.Uuid
-  skill              Skill             @relation("experiences", fields: [skillId], references: [id])
-  skillId            String            @db.Uuid
-  assignedAt         DateTime          @default(now())
-  assignedById       String            @db.Uuid
-  PersonalityTrait   PersonalityTrait? @relation(fields: [personalityTraitId], references: [id])
-  personalityTraitId String?           @db.Uuid
+  experience   Experience @relation("skills", fields: [experienceId], references: [id])
+  experienceId String     @db.Uuid
+  skill        Skill      @relation("experiences", fields: [skillId], references: [id])
+  skillId      String     @db.Uuid
+  assignedAt   DateTime   @default(now())
+  assignedById String     @db.Uuid
 
   @@id([skillId, experienceId])
 }
@@ -221,14 +203,12 @@ model Experience {
 }
 
 model EducationOnSkills {
-  education          Education         @relation("skills", fields: [educationId], references: [id])
-  educationId        String            @db.Uuid
-  skill              Skill             @relation("educations", fields: [skillId], references: [id])
-  skillId            String            @db.Uuid
-  assignedAt         DateTime          @default(now())
-  assignedById       String            @db.Uuid
-  PersonalityTrait   PersonalityTrait? @relation(fields: [personalityTraitId], references: [id])
-  personalityTraitId String?           @db.Uuid
+  education    Education @relation("skills", fields: [educationId], references: [id])
+  educationId  String    @db.Uuid
+  skill        Skill     @relation("educations", fields: [skillId], references: [id])
+  skillId      String    @db.Uuid
+  assignedAt   DateTime  @default(now())
+  assignedById String    @db.Uuid
 
   @@id([skillId, educationId])
 }
@@ -254,6 +234,7 @@ model Education {
   degree        Degree
   description   String?
   major         String
+  shortMajor    String?
   minor         String?
   concentration String?
   school        School              @relation("educations", fields: [schoolId], references: [id])
