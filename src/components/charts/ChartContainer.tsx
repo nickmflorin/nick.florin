@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
-import { Error } from "~/components/views/Error";
+import { ErrorOrRender } from "~/components/views/Error";
 import { Loading } from "~/components/views/Loading";
 
 export interface ChartContainerProps extends ComponentProps {
@@ -27,7 +27,7 @@ export const ChartContainer = ({
       <div className="px-[20px] py-[20px] w-full h-full">{skeleton}</div>
     ) : (
       <Loading loading={isLoading}>
-        <Error error={error}>{children}</Error>
+        <ErrorOrRender error={error}>{children}</ErrorOrRender>
       </Loading>
     )}
   </div>

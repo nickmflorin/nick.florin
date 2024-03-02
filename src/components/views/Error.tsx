@@ -56,7 +56,7 @@ export const ErrorContent = ({
 
 interface ErrorProps extends ComponentProps, Omit<ErrorContentProps, "children"> {
   readonly children?: string | JSX.Element | (string | JSX.Element)[];
-  readonly error?: ErrorType;
+  readonly error?: ErrorType | null;
   readonly gap?: Size;
   readonly title?: string;
   readonly titleClassName?: ComponentProps["className"];

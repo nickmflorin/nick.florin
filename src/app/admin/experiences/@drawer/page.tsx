@@ -18,11 +18,10 @@ export default async function ExperiencesDrawer({ searchParams }: ExperiencesDra
   }
   return (
     <Drawer open={true}>
-      {/* Must be wrapped in Suspense because it accesses useSearchParams. */}
       <Suspense key={updateExperienceId} fallback={<Loading loading={true} />}>
         <UpdateExperienceForm experienceId={updateExperienceId} />
-        <DrawerCloseButton param="updateExperienceId" />
       </Suspense>
+      <DrawerCloseButton param="updateExperienceId" />
     </Drawer>
   );
 }
