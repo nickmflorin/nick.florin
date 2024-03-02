@@ -26,6 +26,7 @@
     "tsc:watch": "pnpm validate-node-version && tsc -w",
     "create-migrations": "pnpm validate-node-version && pnpm manual-dev-env-setup -- prisma migrate dev --create-only",
     "migrate-dev": "pnpm validate-node-version && pnpm manual-dev-env-setup -- prisma migrate dev",
+    "migrate-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- prisma migrate dev",
     "migrate-reset": "pnpm validate-node-version && pnpm manual-dev-env-setup -- prisma migrate reset",
     "migrate-reset-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- prisma migrate reset",
     "pushdb": "pnpm validate-node-version && prisma db push",
