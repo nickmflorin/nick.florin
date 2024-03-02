@@ -41,7 +41,19 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
     return ApiClientError.BadRequest({
       title: {
         code: ApiClientFieldErrorCodes.unique,
-        message: "The title must be unique for a given company.",
+        message: "The 'title' must be unique for a given company.",
+      },
+    }).toResponse();
+  } else if (
+    data.shortTitle &&
+    (await prisma.experience.count({
+      where: { companyId: company.id, shortTitle: data.shortTitle },
+    }))
+  ) {
+    return ApiClientError.BadRequest({
+      shortTitle: {
+        code: ApiClientFieldErrorCodes.unique,
+        message: "The 'shortTitle' must be unique for a given company.",
       },
     }).toResponse();
   }

@@ -35,7 +35,10 @@ export const ExperienceSchema = z.object({
 export const EducationSchema = z.object({
   major: z.string().min(3, "The major must be at least 3 characters."),
   note: z.string().optional(),
-  shortMajor: z.string().optional(),
+  shortMajor: NullableMinLengthStringField({
+    min: 2,
+    minErrorMessage: "The short major should be at least 3 characters.",
+  }).optional(),
   degree: z.nativeEnum(Degree),
   concentration: z.string().optional(),
   minor: z.string().optional(),

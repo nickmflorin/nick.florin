@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import { type HttpError } from "~/application/errors";
 import { type SpinnerProps } from "~/components/icons";
 
-import { Error } from "./Error";
+import { ErrorView } from "./Error";
 import { Loading } from "./Loading";
 
 export interface ResponseRendererProps<T> {
@@ -23,7 +23,7 @@ export const ResponseRenderer = <T,>({
   children,
 }: ResponseRendererProps<T>): JSX.Element => {
   if (error) {
-    return <Error error={error} />;
+    return <ErrorView error={error} />;
   } else if (isLoading) {
     if (data) {
       return (

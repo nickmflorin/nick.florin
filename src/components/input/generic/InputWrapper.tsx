@@ -63,7 +63,15 @@ export const InputWrapper = forwardRef(
       case "div":
         return <div {...(ps as HTMLElementProps<"div">)} />;
       case "textarea":
-        return <textarea disabled={isDisabled} {...(ps as HTMLElementProps<"textarea">)} />;
+        const className = clsx("text-area", ps.className);
+        return (
+          <textarea
+            rows={4}
+            disabled={isDisabled}
+            {...(ps as HTMLElementProps<"textarea">)}
+            className={className}
+          />
+        );
     }
   },
 ) as {

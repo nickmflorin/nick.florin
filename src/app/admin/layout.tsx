@@ -14,7 +14,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
           {
             label: "Experiences",
             path: "/admin/experiences",
-            active: { leadingPath: "/admin/experience" },
+            active: { leadingPath: "/admin/experiences" },
           },
           {
             label: "Educations",

@@ -1,13 +1,11 @@
-import dynamicfn from "next/dynamic";
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
 import { UpdateEducationForm } from "~/components/forms/educations/UpdateEducationForm";
 import { Loading } from "~/components/views/Loading";
 
-const Drawer = dynamicfn(() => import("~/components/drawers/Drawer"), {
-  loading: () => <Loading loading={true} />,
-});
+const Drawer = dynamic(() => import("~/components/drawers/Drawer"));
 
 interface EducationsDrawerProps {
   readonly searchParams: { readonly updateEducationId?: string };

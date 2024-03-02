@@ -48,6 +48,16 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
           },
         }).toResponse();
       }
+    } else if (
+      data.shortTitle &&
+      (await prisma.experience.count({ where: { companyId, shortTitle: data.shortTitle } }))
+    ) {
+      return ApiClientError.BadRequest({
+        shortTitle: {
+          code: ApiClientFieldErrorCodes.unique,
+          message: "The 'shortTitle' must be unique for a given company.",
+        },
+      }).toResponse();
     }
     try {
       return await tx.experience.update({

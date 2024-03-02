@@ -39,15 +39,23 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
         throw e;
       }
     }
-    if (major) {
-      if (await prisma.education.count({ where: { schoolId, major } })) {
-        return ApiClientError.BadRequest({
-          major: {
-            code: ApiClientFieldErrorCodes.unique,
-            message: "The major must be unique for a given school.",
-          },
-        }).toResponse();
-      }
+    if (major && (await prisma.education.count({ where: { schoolId, major } }))) {
+      return ApiClientError.BadRequest({
+        major: {
+          code: ApiClientFieldErrorCodes.unique,
+          message: "The 'major' must be unique for a given school.",
+        },
+      }).toResponse();
+    } else if (
+      data.shortMajor &&
+      (await prisma.education.count({ where: { schoolId, shortMajor: data.shortMajor } }))
+    ) {
+      return ApiClientError.BadRequest({
+        shortMajor: {
+          code: ApiClientFieldErrorCodes.unique,
+          message: "The 'shortMajor' must be unique for a given school.",
+        },
+      }).toResponse();
     }
     try {
       return await tx.education.update({

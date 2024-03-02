@@ -1,60 +1,129 @@
-import React from "react";
+import React, { type ReactNode } from "react";
+
+import clsx from "clsx";
 
 import { isHttpError, type HttpError } from "~/application/errors";
-import { Icon } from "~/components/icons/Icon";
+import { type Size, type ComponentProps, sizeToString } from "~/components/types";
+import { type BaseTypographyProps } from "~/components/typography";
 import { Text } from "~/components/typography/Text";
 import { View, type ViewProps } from "~/components/views/View";
 
-export interface ErrorProps extends ViewProps {
-  readonly error?: JSX.Element | string | null | HttpError;
-  readonly hideWhenError?: boolean;
+type ErrorType = string | JSX.Element | HttpError | (string | JSX.Element)[];
+
+interface ErrorContentProps extends Omit<BaseTypographyProps, "size" | "transform"> {
+  readonly fontSize?: BaseTypographyProps["size"];
+  readonly textClassName?: ComponentProps["className"];
+  readonly children: string | JSX.Element | (string | JSX.Element)[];
 }
 
-const _WrappedError = ({
-  error,
+export const ErrorContent = ({
+  children,
+  textClassName = "text-gray-500",
+  fontSize = "sm",
+  fontFamily,
+  fontWeight = "regular",
   ...props
-}: Omit<ErrorProps, "children" | "hideWhenError" | "error"> & {
-  readonly error: JSX.Element | string | HttpError;
-}) => (
-  <View {...props}>
-    {typeof error === "string" || isHttpError(error) ? (
-      <div className="flex flex-col gap-[12px]">
-        <Text className="text-gray-500">
-          {isHttpError(error) ? "There was a problem with the request." : error}
-        </Text>
-        <Icon name="exclamation-circle" size="16px" className="text-danger-500" />
+}: ErrorContentProps): JSX.Element => {
+  if (typeof children === "string") {
+    return (
+      <Text
+        size={fontSize}
+        fontFamily={fontFamily}
+        fontWeight={fontWeight}
+        className={clsx("text-center", textClassName)}
+      >
+        {children}
+      </Text>
+    );
+  } else if (Array.isArray(children)) {
+    return (
+      <div className="flex flex-col gap-[10px]">
+        {children.map((child, index) =>
+          typeof child === "string" ? (
+            <Text {...props} key={index} className={clsx("text-center", textClassName)}>
+              {children}
+            </Text>
+          ) : (
+            <React.Fragment key={index}>{child}</React.Fragment>
+          ),
+        )}
       </div>
-    ) : (
-      error
-    )}
+    );
+  } else {
+    return <>{children}</>;
+  }
+};
+
+interface ErrorProps extends ComponentProps, Omit<ErrorContentProps, "children"> {
+  readonly children?: string | JSX.Element | (string | JSX.Element)[];
+  readonly error?: ErrorType;
+  readonly gap?: Size;
+  readonly title?: string;
+  readonly titleClassName?: ComponentProps["className"];
+  readonly titleFontSize?: BaseTypographyProps["size"];
+  readonly titleFontWeight?: BaseTypographyProps["fontWeight"];
+  readonly titleFontFamily?: BaseTypographyProps["fontFamily"];
+}
+
+export const Error = ({
+  children,
+  style,
+  className,
+  gap = 12,
+  error,
+  title = "Error",
+  titleClassName = "text-body",
+  titleFontFamily,
+  titleFontWeight = "medium",
+  titleFontSize = "lg",
+  ...props
+}: ErrorProps): JSX.Element => {
+  const content =
+    typeof children !== "undefined" ? children : isHttpError(error) ? error.message : error;
+  if (!content) {
+    return <></>;
+  }
+  return (
+    <div
+      style={{ ...style, gap: sizeToString(gap) }}
+      className={clsx("flex flex-col justify-center", className)}
+    >
+      <Text
+        size={titleFontSize}
+        fontWeight={titleFontWeight}
+        fontFamily={titleFontFamily}
+        className={clsx("text-center", titleClassName)}
+      >
+        {title}
+      </Text>
+      <ErrorContent {...props}>{content}</ErrorContent>
+    </div>
+  );
+};
+
+export interface ErrorViewProps extends ErrorProps, Omit<ViewProps, "children"> {}
+
+export const ErrorView = ({ children, ...props }: ErrorViewProps) => (
+  <View {...props}>
+    <Error {...props}>{children}</Error>
   </View>
 );
 
-const WrappedError = React.memo(_WrappedError);
+export interface ErrorOrRenderProps extends Omit<ErrorViewProps, "children" | "error"> {
+  readonly error: JSX.Element | string | null | HttpError | undefined;
+  readonly children: ReactNode;
+}
 
-export const _Error = ({
+export const ErrorOrRender = ({
   error,
   overlay = true,
-  hideWhenError = true,
   children,
   ...props
-}: ErrorProps): JSX.Element => {
+}: ErrorOrRenderProps): JSX.Element => {
   if (children) {
-    if (hideWhenError === true) {
-      return error ? <WrappedError {...props} error={error} /> : <>{children}</>;
-    }
-    return (
-      <>
-        {error !== null && error !== undefined && (
-          <WrappedError {...props} error={error} overlay={overlay} />
-        )}
-        {children}
-      </>
-    );
+    return error ? <ErrorView {...props} error={error} /> : <>{children}</>;
   } else if (error !== undefined && error !== null) {
-    return <WrappedError {...props} error={error} overlay={overlay} />;
+    return <ErrorView {...props} error={error} overlay={overlay} />;
   }
   return <></>;
 };
-
-export const Error = React.memo(_Error);

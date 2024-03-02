@@ -34,7 +34,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
       <TextInput className="w-full" {...props.form.register("slug")} />
     </Form.Field>
     <Form.Field name="description" label="Description" form={props.form}>
-      <TextArea className="w-full" {...props.form.register("description")} />
+      <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
     <Form.ControlledField name="experiences" label="Experiences" form={props.form}>
       {({ value, onChange }) => (

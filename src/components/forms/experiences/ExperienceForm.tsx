@@ -34,7 +34,7 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => (
       <TextInput className="w-full" {...props.form.register("shortTitle")} />
     </Form.Field>
     <Form.Field name="description" label="Description" form={props.form}>
-      <TextArea className="w-full" {...props.form.register("description")} />
+      <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
     <Form.ControlledField name="company" label="Company" form={props.form} condition="required">
       {({ value, onChange }) => (

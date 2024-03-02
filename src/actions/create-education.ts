@@ -41,7 +41,19 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
     return ApiClientError.BadRequest({
       title: {
         code: ApiClientFieldErrorCodes.unique,
-        message: "The major must be unique for a given company.",
+        message: "The 'major' must be unique for a given school.",
+      },
+    }).toResponse();
+  } else if (
+    data.shortMajor &&
+    (await prisma.education.count({
+      where: { schoolId: school.id, shortMajor: data.shortMajor },
+    }))
+  ) {
+    return ApiClientError.BadRequest({
+      shortMajor: {
+        code: ApiClientFieldErrorCodes.unique,
+        message: "The 'shortMajor' must be unique for a given school.",
       },
     }).toResponse();
   }

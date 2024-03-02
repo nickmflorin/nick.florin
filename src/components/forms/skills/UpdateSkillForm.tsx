@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { getSkill } from "~/actions/fetches/get-skill";
+import { ErrorView } from "~/components/views/Error";
 import { Loading } from "~/components/views/Loading";
 
 const SkillForm = dynamic(() => import("./ClientUpdateSkillForm"), {
@@ -13,6 +14,8 @@ export const UpdateSkillForm = async ({
   readonly skillId: string;
 }): Promise<JSX.Element> => {
   const skill = await getSkill(skillId);
-  // TODO: Show an error dialog here.
+  if (!skill) {
+    return <ErrorView title="404">The requested resource could not be found.</ErrorView>;
+  }
   return skill ? <SkillForm skill={skill} /> : <></>;
 };

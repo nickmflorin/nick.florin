@@ -52,7 +52,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => (
       <TextInput className="w-full" {...props.form.register("concentration")} />
     </Form.Field>
     <Form.Field name="description" label="Description" form={props.form}>
-      <TextArea className="w-full" {...props.form.register("description")} />
+      <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
     <Form.Field name="note" label="Note" form={props.form}>
       <TextArea className="w-full" {...props.form.register("note")} />

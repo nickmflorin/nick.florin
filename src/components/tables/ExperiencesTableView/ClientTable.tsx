@@ -9,7 +9,7 @@ import { Table } from "../Table";
 import { ActionsCell } from "./cells";
 
 export interface ClientTableProps {
-  readonly experiences: ApiExperience[];
+  readonly experiences: ApiExperience<{ details: true }>[];
 }
 
 export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
@@ -53,6 +53,12 @@ export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
             {model.company.name}
           </LinkOrText>
         ),
+      },
+      {
+        accessor: "details",
+        title: "Details",
+        width: 320,
+        render: ({ model }) => `${model.details.length} Details`,
       },
       {
         accessor: "actions",
