@@ -7,6 +7,7 @@ import { Select, type SelectProps } from "./generic";
 const options = {
   getItemValue: (m: Company) => m.id,
   getItemLabel: (m: Company) => m.name,
+  getItemValueLabel: (m: Company) => m.shortName ?? m.name,
 } as const;
 
 export interface CompanySelectProps

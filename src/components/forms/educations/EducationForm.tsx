@@ -23,6 +23,9 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => (
     <Form.Field name="major" label="Major" form={props.form} condition="required">
       <TextInput className="w-full" {...props.form.register("major")} />
     </Form.Field>
+    <Form.Field name="major" label="Short Major" form={props.form} condition="required">
+      <TextInput className="w-full" {...props.form.register("shortMajor")} />
+    </Form.Field>
     <Form.ControlledField name="degree" label="Degree" form={props.form}>
       {({ value, onChange }) => (
         <DegreeSelect

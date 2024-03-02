@@ -124,7 +124,7 @@ export type ModelValueLabel<M extends MenuModel, O extends MenuOptions<M>> = M e
     ? L
     : undefined;
 
-export const getModelValueLabel = <M extends MenuModel, O extends MenuOptions<M>>(
+export const getItemValueLabel = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelValueLabel<M, O> => {

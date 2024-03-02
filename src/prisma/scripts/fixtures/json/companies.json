@@ -160,6 +160,7 @@
     },
     {
       "name": "Nirveda Cognition",
+      "shortName": "Nirveda",
       "city": "Los Angeles",
       "state": "VA",
       "logoImageUrl": "/experience/nirveda.svg",
@@ -215,6 +216,7 @@
     },
     {
       "name": "Saracen Energy",
+      "shortName": "Saracen",
       "city": "Houston",
       "state": "TX",
       "websiteUrl": "http://www.saracenenergy.com/",
@@ -327,6 +329,7 @@
     },
     {
       "name": "The Rock Creek Group",
+      "shortName": "Rock Creek",
       "city": "Washington",
       "state": "DC",
       "logoImageUrl": "/experience/rock-creek.svg",

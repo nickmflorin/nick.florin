@@ -145,6 +145,7 @@ model Company {
   updatedBy    User         @relation("updatedCompanies", fields: [updatedById], references: [id])
   updatedById  String       @db.Uuid
   name         String       @unique
+  shortName    String?      @unique
   description  String?
   logoImageUrl String?
   websiteUrl   String?
@@ -162,6 +163,7 @@ model School {
   updatedBy    User        @relation("updatedSchools", fields: [updatedById], references: [id])
   updatedById  String      @db.Uuid
   name         String      @unique
+  shortName    String?     @unique
   description  String?
   logoImageUrl String?
   websiteUrl   String?
@@ -242,6 +244,7 @@ model Education {
   postPoned     Boolean             @default(false)
 
   @@unique([major, schoolId])
+  @@unique([shortMajor, schoolId])
 }
 
 model Profile {

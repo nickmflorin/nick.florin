@@ -11,7 +11,7 @@ type O = {
 const options = {
   getItemValue: (m: O) => m.value,
   getItemLabel: (m: O) => m.label,
-  getModelValueLabel: (m: O) => m.shortLabel,
+  getItemValueLabel: (m: O) => m.shortLabel,
 } as const;
 
 export const DegreeSelect = (

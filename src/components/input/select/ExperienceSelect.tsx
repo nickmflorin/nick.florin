@@ -9,7 +9,8 @@ type Exp = Pick<Experience, "title" | "id" | "shortTitle"> & {
 
 const options = {
   getItemValue: (m: Exp) => m.id,
-  getItemLabel: (m: Exp) => m.shortTitle ?? m.title,
+  getItemLabel: (m: Exp) => m.title,
+  getItemValueLabel: (m: Exp) => m.shortTitle ?? m.title,
   isMulti: true,
 } as const;
 

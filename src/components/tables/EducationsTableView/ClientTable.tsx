@@ -31,6 +31,20 @@ export const ClientTable = ({ educations }: ClientTableProps): JSX.Element => (
         ),
       },
       {
+        accessor: "shortMajor",
+        title: "Short Major",
+        width: 320,
+        render: ({ model, table }) => (
+          <EditableStringCell
+            field="shortMajor"
+            model={model}
+            table={table}
+            errorMessage="There was an error updating the experience."
+            action={updateEducation.bind(null, model.id)}
+          />
+        ),
+      },
+      {
         accessor: "minor",
         title: "Minor",
         width: 320,
