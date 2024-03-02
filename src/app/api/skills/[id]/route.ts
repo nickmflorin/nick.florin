@@ -5,6 +5,13 @@ import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/pri
 import { type Skill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/model";
 
+export async function generateStaticParams() {
+  const skills = await prisma.skill.findMany({ where: { visible: true } });
+  return skills.map(skill => ({
+    id: skill.id,
+  }));
+}
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   let skill: Skill;
   try {
