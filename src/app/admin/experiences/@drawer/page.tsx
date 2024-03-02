@@ -20,8 +20,8 @@ export default async function ExperiencesDrawer({ searchParams }: ExperiencesDra
     <Drawer open={true}>
       <Suspense key={updateExperienceId} fallback={<Loading loading={true} />}>
         <UpdateExperienceForm experienceId={updateExperienceId} />
+        <DrawerCloseButton param="updateExperienceId" />
       </Suspense>
-      <DrawerCloseButton param="updateExperienceId" />
     </Drawer>
   );
 }
