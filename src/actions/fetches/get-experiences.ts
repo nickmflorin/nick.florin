@@ -3,7 +3,6 @@ import { cache } from "react";
 
 import clamp from "lodash.clamp";
 
-import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import {
   type ApiExperience,
@@ -45,7 +44,6 @@ export const getAdminExperiences = cache(
     filters,
     page,
   }: GetAdminExperiencesParams): Promise<ApiExperience<{ skills: true; details: true }>[]> => {
-    await getAuthAdminUser();
     const count = await getAdminExperiencesCount({ filters });
     const numPages = Math.max(Math.ceil(count / EXPERIENCES_ADMIN_TABLE_PAGE_SIZE), 1);
 
