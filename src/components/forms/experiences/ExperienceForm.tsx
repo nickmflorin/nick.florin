@@ -22,13 +22,21 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => (
     <Form.Field name="title" label="Title" form={props.form} condition="required">
       <TextInput className="w-full" {...props.form.register("title")} />
     </Form.Field>
-    <Form.Field name="shortTitle" label="Short Title" form={props.form}>
+    <Form.Field
+      name="shortTitle"
+      label="Short Title"
+      form={props.form}
+      helpText={
+        "An abbreviated version of the title.  This is used for data " +
+        "entry components in the admin."
+      }
+    >
       <TextInput className="w-full" {...props.form.register("shortTitle")} />
     </Form.Field>
     <Form.Field name="description" label="Description" form={props.form}>
       <TextArea className="w-full" {...props.form.register("description")} />
     </Form.Field>
-    <Form.ControlledField name="company" label="Company" form={props.form}>
+    <Form.ControlledField name="company" label="Company" form={props.form} condition="required">
       {({ value, onChange }) => (
         <ClientCompanySelect
           inputClassName="w-full"

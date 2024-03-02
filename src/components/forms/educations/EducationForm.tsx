@@ -23,7 +23,15 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => (
     <Form.Field name="major" label="Major" form={props.form} condition="required">
       <TextInput className="w-full" {...props.form.register("major")} />
     </Form.Field>
-    <Form.Field name="major" label="Short Major" form={props.form} condition="required">
+    <Form.Field
+      name="major"
+      label="Short Major"
+      form={props.form}
+      helpText={
+        "An abbreviated version of the major.  This is used for data " +
+        "entry components in the admin."
+      }
+    >
       <TextInput className="w-full" {...props.form.register("shortMajor")} />
     </Form.Field>
     <Form.ControlledField name="degree" label="Degree" form={props.form}>
@@ -49,7 +57,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => (
     <Form.Field name="note" label="Note" form={props.form}>
       <TextArea className="w-full" {...props.form.register("note")} />
     </Form.Field>
-    <Form.ControlledField name="school" label="School" form={props.form}>
+    <Form.ControlledField name="school" label="School" form={props.form} condition="required">
       {({ value, onChange }) => (
         <ClientSchoolSelect
           inputClassName="w-full"
