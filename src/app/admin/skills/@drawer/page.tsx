@@ -17,7 +17,7 @@ export default async function SkillsDrawer({ searchParams }: SkillsDrawerProps) 
     return null;
   }
   return (
-    <Drawer open={true}>
+    <Drawer>
       {/* Must be wrapped in Suspense because it accesses useSearchParams. */}
       <Suspense key={updateSkillId} fallback={<Loading loading={true} />}>
         <UpdateSkillForm skillId={updateSkillId} />

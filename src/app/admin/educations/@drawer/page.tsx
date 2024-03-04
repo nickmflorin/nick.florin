@@ -17,7 +17,7 @@ export default async function EducationsDrawer({ searchParams }: EducationsDrawe
     return null;
   }
   return (
-    <Drawer open={true}>
+    <Drawer>
       {/* Must be wrapped in Suspense because it accesses useSearchParams. */}
       <Suspense key={updateEducationId} fallback={<Loading loading={true} />}>
         <UpdateEducationForm educationId={updateEducationId} />

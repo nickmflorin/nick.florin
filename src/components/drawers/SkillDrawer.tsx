@@ -106,7 +106,7 @@ export const SkillDrawer = ({ skillId }: SkillDrawerProps) => {
   const { data, isLoading, error } = useSkill(skillId);
 
   return (
-    <Drawer open={true} className="overflow-y-scroll">
+    <Drawer className="overflow-y-scroll">
       <ResponseRenderer error={error} data={data} isLoading={isLoading}>
         {({
           experiences,

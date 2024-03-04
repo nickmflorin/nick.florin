@@ -21,7 +21,7 @@ export default async function ExperiencesDrawer({ searchParams }: ExperiencesDra
 
   if (updateExperienceDetailsId) {
     return (
-      <Drawer open={true}>
+      <Drawer>
         <Suspense key={updateExperienceDetailsId} fallback={<Loading loading={true} />}>
           <UpdateExperienceDetailsForm experienceId={updateExperienceDetailsId} />
           <DrawerCloseButton param="updateExperienceDetailsId" />
@@ -30,7 +30,7 @@ export default async function ExperiencesDrawer({ searchParams }: ExperiencesDra
     );
   } else if (updateExperienceId) {
     return (
-      <Drawer open={true}>
+      <Drawer>
         <Suspense key={updateExperienceId} fallback={<Loading loading={true} />}>
           <UpdateExperienceForm experienceId={updateExperienceId} />
           <DrawerCloseButton param="updateExperienceId" />

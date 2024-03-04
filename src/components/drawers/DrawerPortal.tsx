@@ -20,27 +20,23 @@ const getTarget = (): Element | null => {
 
 interface DrawerPortalProps {
   readonly children: ReactNode;
-  readonly open: boolean;
 }
 
-export const DrawerPortal = ({ children, open }: DrawerPortalProps): JSX.Element => {
+export const DrawerPortal = ({ children }: DrawerPortalProps): JSX.Element => {
   const [element, setElement] = useState<JSX.Element | null>(null);
   const [_, startTransition] = useTransition();
 
   /* This must be in an effect to force the portal to render client side, because the document must
      be defined. */
   useEffect(() => {
-    if (open) {
-      const target = getTarget();
-      if (target) {
-        startTransition(() => {
-          setElement(createPortal(children, target));
-        });
-        return;
-      }
+    const target = getTarget();
+    if (target) {
+      return startTransition(() => {
+        setElement(createPortal(children, target));
+      });
     }
     return setElement(<></>);
-  }, [open, children]);
+  }, [children]);
 
   return <>{element}</>;
 };

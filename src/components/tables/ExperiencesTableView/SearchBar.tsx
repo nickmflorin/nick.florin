@@ -6,9 +6,7 @@ import { TableSearchBar } from "~/components/tables/TableSearchBar";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 
-const Drawer = dynamic(() => import("~/components/drawers/Drawer"), {
-  loading: () => <Loading loading={true} />,
-});
+const Drawer = dynamic(() => import("~/components/drawers/Drawer"));
 
 const CreateExperienceForm = dynamic(
   () => import("~/components/forms/experiences/CreateExperienceForm"),
@@ -25,9 +23,11 @@ export const SearchBar = (props: SearchBarProps) => {
   return (
     <>
       <TableSearchBar {...props} searchParamName="search" onNew={() => setDrawerOpen(true)} />
-      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <CreateExperienceForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
-      </Drawer>
+      {drawerOpen && (
+        <Drawer onClose={() => setDrawerOpen(false)}>
+          <CreateExperienceForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
+        </Drawer>
+      )}
     </>
   );
 };
