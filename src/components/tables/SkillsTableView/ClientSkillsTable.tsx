@@ -1,8 +1,9 @@
 "use client";
 import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/model";
+import { deleteSkill } from "~/actions/delete-skill";
 import { updateSkill } from "~/actions/update-skill";
 
-import { EditableStringCell } from "../cells";
+import { EditableStringCell, ActionsCell } from "../cells";
 import { Table } from "../Table";
 
 import {
@@ -12,7 +13,6 @@ import {
   SlugCell,
   VisibleCell,
   ShowInTopSkillsCell,
-  ActionsCell,
 } from "./cells";
 
 export interface ClientTableProps {
@@ -79,7 +79,14 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
         accessor: "actions",
         title: "",
         textAlign: "center",
-        render: ({ model }) => <ActionsCell model={model} />,
+        render: ({ model }) => (
+          <ActionsCell
+            editQueryParam="updateSkillId"
+            editQueryValue={model.id}
+            deleteErrorMessage="There was an error deleting the skill."
+            deleteAction={deleteSkill.bind(null, model.id)}
+          />
+        ),
       },
     ]}
     data={skills}

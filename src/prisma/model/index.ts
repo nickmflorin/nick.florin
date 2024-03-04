@@ -1,4 +1,6 @@
 export * from "@prisma/client";
+
+export * from "./details";
 export * from "./education";
 export * from "./experience";
 export * from "./skills";

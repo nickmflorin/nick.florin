@@ -20,6 +20,7 @@ export const ClientExperienceSelect = ({
     <ExperienceSelect<ApiExperience>
       {...props}
       data={data ?? []}
+      isReady={data !== undefined}
       isDisabled={error !== undefined}
       isLoading={isLoading}
     />

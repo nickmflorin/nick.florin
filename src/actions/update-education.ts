@@ -16,7 +16,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
 
   const parsed = UpdateEducationSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, UpdateEducationSchema);
+    return ApiClientError.BadRequest(parsed.error, UpdateEducationSchema);
   }
 
   const { school: schoolId, major, ...data } = parsed.data;

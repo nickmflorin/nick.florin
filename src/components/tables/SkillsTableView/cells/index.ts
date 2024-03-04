@@ -1,4 +1,3 @@
-export * from "./ActionsCell";
 export * from "./EducationsCell";
 export * from "./ExperienceCell";
 export * from "./ExperiencesCell";

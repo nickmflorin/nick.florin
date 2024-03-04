@@ -15,7 +15,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
 
   const parsed = ExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, ExperienceSchema);
+    return ApiClientError.BadRequest(parsed.error, ExperienceSchema);
   }
 
   const { company: companyId, ...data } = parsed.data;

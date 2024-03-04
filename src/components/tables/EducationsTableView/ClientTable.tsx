@@ -1,12 +1,11 @@
 "use client";
 import { type ApiEducation } from "~/prisma/model";
+import { deleteEducation } from "~/actions/delete-education";
 import { updateEducation } from "~/actions/update-education";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 
-import { EditableStringCell } from "../cells";
+import { EditableStringCell, ActionsCell } from "../cells";
 import { Table } from "../Table";
-
-import { ActionsCell } from "./cells";
 
 export interface ClientTableProps {
   readonly educations: ApiEducation[];
@@ -86,7 +85,14 @@ export const ClientTable = ({ educations }: ClientTableProps): JSX.Element => (
         accessor: "actions",
         title: "",
         textAlign: "center",
-        render: ({ model }) => <ActionsCell model={model} />,
+        render: ({ model }) => (
+          <ActionsCell
+            editQueryParam="updateEducationId"
+            editQueryValue={model.id}
+            deleteErrorMessage="There was an error deleting the education."
+            deleteAction={deleteEducation.bind(null, model.id)}
+          />
+        ),
       },
     ]}
     data={educations}

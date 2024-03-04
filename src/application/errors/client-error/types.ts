@@ -67,14 +67,9 @@ export type ApiClientFieldErrorsResponse<F extends string = string> = {
 const ApiClientFieldErrorsResponseSchema = z.object({
   code: z.literal(ApiClientErrorCodes.BAD_REQUEST),
   statusCode: z.literal(400),
-  errors: z.array(
-    z.object({
-      field: z.string(),
-      message: z.string().optional(),
-      internalMessage: z.string().optional(),
-      code: ApiClientFieldErrorCodes.schema,
-    }),
-  ),
+  internalMessage: z.string().optional(),
+  message: z.string(),
+  errors: z.any(),
 });
 
 export const isApiClientFieldErrorsResponse = (
@@ -98,6 +93,7 @@ const ApiClientGlobalErrorSchema = z.object({
     ],
   ),
   message: z.string(),
+  internalMessage: z.string().optional(),
 });
 
 export const isApiClientGlobalErrorResponse = (

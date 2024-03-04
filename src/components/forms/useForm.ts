@@ -235,10 +235,8 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   const handleApiError = useCallback(
     (e: HttpError | ApiClientErrorResponse) => {
       if (isHttpError(e)) {
-        if (e instanceof ApiClientError) {
-          if (e.errors !== undefined) {
-            return setInternalFieldErrorsFromResponse(e, e.errors);
-          }
+        if (e instanceof ApiClientError && e.errors !== undefined) {
+          return setInternalFieldErrorsFromResponse(e, e.errors);
         }
         /* In this case, the ApiClientError does not contain errors for individual fields, and
            should be treated globally. */
@@ -254,17 +252,14 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [setErrors, setInternalFieldErrorsFromResponse],
   );
 
-  const fieldErrors = useMemo(() => {
-    const keys = union(
-      Object.keys(internalFieldErrors),
-      Object.keys(formState.errors),
-      Object.keys(internalStaticFieldErrors),
-    );
-    return mergeIntoFieldErrors(
-      mergeIntoFieldErrors(internalStaticFieldErrors, internalFieldErrors),
-      formState.errors,
-    );
-  }, [formState.errors, internalStaticFieldErrors, internalFieldErrors]);
+  const fieldErrors = useMemo(
+    () =>
+      mergeIntoFieldErrors(
+        mergeIntoFieldErrors(internalStaticFieldErrors, internalFieldErrors),
+        formState.errors,
+      ),
+    [formState.errors, internalStaticFieldErrors, internalFieldErrors],
+  );
 
   return {
     formState,

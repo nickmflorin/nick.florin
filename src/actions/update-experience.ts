@@ -16,7 +16,7 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
 
   const parsed = UpdateExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, ExperienceSchema);
+    return ApiClientError.BadRequest(parsed.error, ExperienceSchema);
   }
 
   const { company: companyId, title, ...data } = parsed.data;

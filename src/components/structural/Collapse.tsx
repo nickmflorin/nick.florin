@@ -1,0 +1,62 @@
+"use client";
+import { type ReactNode, useState } from "react";
+
+import clsx from "clsx";
+import { motion } from "framer-motion";
+
+import { IconButton } from "~/components/buttons";
+import { Icon } from "~/components/icons/Icon";
+import { type ComponentProps } from "~/components/types";
+import { Text } from "~/components/typography/Text";
+
+import { Actions } from "./Actions";
+import { type Action } from "./types";
+
+interface CollapseProps extends ComponentProps {
+  readonly children: ReactNode;
+  readonly title?: string | JSX.Element;
+  readonly open?: boolean;
+  readonly actions?: Action[];
+  readonly onToggle?: () => void;
+}
+
+export const Collapse = ({
+  children,
+  open: _propOpen,
+  title,
+  actions,
+  onToggle,
+  ...props
+}: CollapseProps) => {
+  const [_open, setOpen] = useState(false);
+  const open = _propOpen ?? _open;
+
+  return (
+    <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
+      <div className="flex flex-row justify-between overflow-hidden items-center">
+        {typeof title === "string" ? (
+          <Text size="sm" fontWeight="medium">
+            {title}
+          </Text>
+        ) : (
+          title
+        )}
+        <div className="flex flex-row gap-[12px] items-center">
+          <Actions actions={actions} />
+          <IconButton.Bare
+            key={actions ? actions.length : "0"}
+            onClick={() => {
+              setOpen(curr => !curr);
+              onToggle?.();
+            }}
+          >
+            <motion.div key="0" initial={{ rotate: 0 }} animate={{ rotate: open ? 180 : 0 }}>
+              <Icon name="angle-up" size="16px" dimension="height" fit="square" />
+            </motion.div>
+          </IconButton.Bare>
+        </div>
+      </div>
+      {open && <div className="flex flex-col overflow-y-scroll">{children}</div>}
+    </div>
+  );
+};

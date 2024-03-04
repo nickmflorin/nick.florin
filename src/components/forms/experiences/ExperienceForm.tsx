@@ -15,7 +15,7 @@ export const ExperienceFormSchema = ExperienceSchema.required();
 export type ExperienceFormValues = z.infer<typeof ExperienceFormSchema>;
 
 export interface ExperienceFormProps
-  extends Omit<FormProps<ExperienceFormValues>, "children" | "onSubmit"> {}
+  extends Omit<FormProps<ExperienceFormValues>, "children" | "onSubmit" | "contentClassName"> {}
 
 export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">

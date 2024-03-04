@@ -18,7 +18,8 @@ export const SkillFormSchema = SkillSchema.required();
 
 export type SkillFormValues = z.infer<typeof SkillFormSchema>;
 
-export interface SkillFormProps extends Omit<FormProps<SkillFormValues>, "children" | "onSubmit"> {}
+export interface SkillFormProps
+  extends Omit<FormProps<SkillFormValues>, "children" | "onSubmit" | "contentClassName"> {}
 
 export const SkillForm = (props: SkillFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">

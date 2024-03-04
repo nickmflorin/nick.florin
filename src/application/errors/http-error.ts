@@ -20,11 +20,11 @@ export abstract class BaseHttpError<
           `[${c.statusCode}] There was an error with the request to ${c.url}`,
           c.internalMessageDetail,
         )
-      : c.url
+      : c.url && !c.statusCode
         ? withDetail(`There was an error with the request to ${c.url}`, c.internalMessageDetail)
         : c.statusCode
           ? withDetail(
-              `[${c.statusCode}] There was an error with the request to ${c.url}`,
+              `[${c.statusCode}] There was an error with the request`,
               c.internalMessageDetail,
             )
           : withDetail("There was an error with the request", c.internalMessageDetail);

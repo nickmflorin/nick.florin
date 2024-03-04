@@ -152,6 +152,7 @@ export const AbstractButton = forwardRef(
     const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "button" }>);
     return (
       <button
+        type="button"
         {...ps}
         className={className}
         disabled={props.isDisabled}

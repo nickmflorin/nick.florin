@@ -12,7 +12,7 @@ export type ActionsProps<
   A extends types.Action[] | types.ActionsBySide = types.Action[] | types.ActionsBySide,
 > = ComponentProps & {
   readonly children?: JSX.Element;
-  readonly actions: A;
+  readonly actions?: A;
   readonly gap?: Size;
 };
 
@@ -22,7 +22,7 @@ const LocalActions = ({
   children,
   ...props
 }: ActionsProps<types.Action[]>): JSX.Element => {
-  const a = useMemo(() => actions.filter(a => a !== null && a !== undefined), [actions]);
+  const a = useMemo(() => (actions ?? []).filter(a => a !== null && a !== undefined), [actions]);
   if (a.length === 0) {
     return <>{children}</>;
   } else if (children !== undefined) {
@@ -51,9 +51,9 @@ export const Actions = ({ actions, children, gap = 8, ...props }: ActionsProps):
   if (!Array.isArray(actions)) {
     return (
       <>
-        <Actions actions={actions.left ?? []} gap={gap} {...props} />
+        <Actions actions={actions?.left ?? []} gap={gap} {...props} />
         {children}
-        <Actions actions={actions.right ?? []} gap={gap} {...props} />
+        <Actions actions={actions?.right ?? []} gap={gap} {...props} />
       </>
     );
   }

@@ -48,3 +48,31 @@ export const EducationSchema = z.object({
   endDate: z.date().nullable().optional(),
   postPoned: z.boolean().optional(),
 });
+
+export const ExistingDetailSchema = z.object({
+  id: z.string().uuid(),
+  label: z.string(),
+  description: z.string().optional(),
+  shortDescription: z.string().optional(),
+  visible: z.boolean(),
+});
+
+export type ExistingDetail = z.infer<typeof ExistingDetailSchema>;
+
+export const NewDetailSchema = z.object({
+  label: z.string(),
+  description: z.string().optional(),
+  shortDescription: z.string().optional(),
+  visible: z.boolean(),
+});
+
+export type PendingDetail = z.infer<typeof NewDetailSchema>;
+
+export type UpdateOrCreateDetail = PendingDetail | ExistingDetail;
+
+export const isExistingDetail = (detail: UpdateOrCreateDetail): detail is ExistingDetail =>
+  (detail as ExistingDetail).id !== undefined;
+
+export const DetailsSchema = z.object({
+  details: z.array(z.union([ExistingDetailSchema, NewDetailSchema])),
+});

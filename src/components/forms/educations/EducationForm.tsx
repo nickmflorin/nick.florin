@@ -16,7 +16,7 @@ export const EducationFormSchema = EducationSchema.required();
 export type EducationFormValues = z.infer<typeof EducationFormSchema>;
 
 export interface EducationFormProps
-  extends Omit<FormProps<EducationFormValues>, "children" | "onSubmit"> {}
+  extends Omit<FormProps<EducationFormValues>, "children" | "onSubmit" | "contentClassName"> {}
 
 export const EducationForm = (props: EducationFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">

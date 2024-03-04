@@ -1,16 +1,29 @@
 "use client";
 import { type ApiExperience } from "~/prisma/model";
+import { deleteExperience } from "~/actions/delete-experience";
 import { updateExperience } from "~/actions/update-experience";
+import { Link } from "~/components/buttons/generic";
 import { LinkOrText } from "~/components/typography/LinkOrText";
+import { useReplaceableParams } from "~/hooks";
 
-import { EditableStringCell } from "../cells";
+import { EditableStringCell, ActionsCell } from "../cells";
 import { Table } from "../Table";
-
-import { ActionsCell } from "./cells";
 
 export interface ClientTableProps {
   readonly experiences: ApiExperience<{ details: true }>[];
 }
+
+interface DetailsCellProps {
+  readonly model: ApiExperience<{ details: true }>;
+}
+const DetailsCell = ({ model }: DetailsCellProps) => {
+  const [_, replace] = useReplaceableParams();
+  return (
+    <Link.Primary
+      onClick={() => replace("updateExperienceDetailsId", model.id)}
+    >{`${model.details.length} Details`}</Link.Primary>
+  );
+};
 
 export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
   <Table
@@ -58,13 +71,20 @@ export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => (
         accessor: "details",
         title: "Details",
         width: 320,
-        render: ({ model }) => `${model.details.length} Details`,
+        render: ({ model }) => <DetailsCell model={model} />,
       },
       {
         accessor: "actions",
         title: "",
         textAlign: "center",
-        render: ({ model }) => <ActionsCell model={model} />,
+        render: ({ model }) => (
+          <ActionsCell
+            editQueryParam="updateExperienceId"
+            editQueryValue={model.id}
+            deleteErrorMessage="There was an error deleting the experience."
+            deleteAction={deleteExperience.bind(null, model.id)}
+          />
+        ),
       },
     ]}
     data={experiences}

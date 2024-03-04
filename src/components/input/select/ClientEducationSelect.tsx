@@ -19,6 +19,7 @@ export const ClientEducationSelect = ({
   return (
     <EducationSelect<ApiEducation>
       {...props}
+      isReady={data !== undefined}
       data={data ?? []}
       isDisabled={error !== undefined}
       isLoading={isLoading}

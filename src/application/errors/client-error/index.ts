@@ -25,7 +25,7 @@ export * from "./types";
 
 type IssueLookup<L extends string> = { [key in L]?: (issue: z.ZodIssue) => boolean };
 
-const zodErrorToClientResponse = <O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
+export const parseZodError = <O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
   error: z.ZodError,
   schema: O,
   lookup?: IssueLookup<keyof O["shape"] & string>,
@@ -33,6 +33,9 @@ const zodErrorToClientResponse = <O extends z.ZodObject<{ [key in string]: z.Zod
   const errs: ApiClientFieldErrors<keyof O["shape"] & string> = {};
 
   const keys = Object.values(schema.keyof().Values);
+  if (keys.length === 0) {
+    throw new Error("Cannot parse zod error for an empty schema!");
+  }
   for (const field of keys) {
     const iss: ApiClientFieldError[] = uniqBy(
       error.issues
@@ -52,6 +55,9 @@ const zodErrorToClientResponse = <O extends z.ZodObject<{ [key in string]: z.Zod
         ...ApiClientFieldError[],
       ];
     }
+  }
+  if (Object.keys(errs).length === 0) {
+    throw new Error("The zod error does not contain any candidate error issues!");
   }
   return errs;
 };
@@ -160,7 +166,7 @@ export class ApiClientError<
       if (schema === undefined) {
         throw new TypeError("Invalid function signature implementation!");
       }
-      return this.BadRequest(zodErrorToClientResponse(message, schema, lookup));
+      return this.BadRequest(parseZodError(message, schema, lookup));
     } else {
       const errs = processRawApiClientFieldErrors(message);
       if (errs === null) {

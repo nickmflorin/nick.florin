@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
           },
         ]}
       />
-      <div className="grow max-h-full overflow-hidden flex flex-col">{children}</div>
+      <div className="grow max-h-full h-full overflow-hidden flex flex-col">{children}</div>
     </div>
   );
 }

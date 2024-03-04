@@ -18,6 +18,7 @@ export const ClientCompanySelect = ({
     <CompanySelect
       {...props}
       data={data ?? []}
+      isReady={data !== undefined}
       isDisabled={error !== undefined}
       isLoading={isLoading}
     />
