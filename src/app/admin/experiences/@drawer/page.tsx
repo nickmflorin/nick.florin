@@ -21,7 +21,7 @@ export default async function ExperiencesDrawer({ searchParams }: ExperiencesDra
 
   if (updateExperienceDetailsId) {
     return (
-      <Drawer>
+      <Drawer className="pl-[16px] pb-[16px] pt-[16px]">
         <Suspense key={updateExperienceDetailsId} fallback={<Loading loading={true} />}>
           <UpdateExperienceDetailsForm experienceId={updateExperienceDetailsId} />
           <DrawerCloseButton param="updateExperienceDetailsId" />

@@ -1,5 +1,6 @@
 import { type z } from "zod";
 
-import { type DetailsSchema } from "~/actions/schemas";
+import { DetailSchema } from "~/actions/schemas";
 
-export type DetailsFormValues = z.infer<typeof DetailsSchema>;
+export const DetailFormSchema = DetailSchema.omit({ visible: true });
+export type DetailFormValues = z.infer<typeof DetailFormSchema>;

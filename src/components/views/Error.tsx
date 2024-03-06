@@ -4,14 +4,13 @@ import clsx from "clsx";
 
 import { isHttpError, type HttpError } from "~/application/errors";
 import { type Size, type ComponentProps, sizeToString } from "~/components/types";
-import { type BaseTypographyProps } from "~/components/typography";
+import { type ExtendingTypographyProps } from "~/components/typography";
 import { Text } from "~/components/typography/Text";
 import { View, type ViewProps } from "~/components/views/View";
 
 type ErrorType = string | JSX.Element | HttpError | (string | JSX.Element)[];
 
-interface ErrorContentProps extends Omit<BaseTypographyProps, "size" | "transform"> {
-  readonly fontSize?: BaseTypographyProps["size"];
+interface ErrorContentProps extends Omit<ExtendingTypographyProps, "transform"> {
   readonly textClassName?: ComponentProps["className"];
   readonly children: string | JSX.Element | (string | JSX.Element)[];
 }
@@ -60,9 +59,9 @@ interface ErrorProps extends ComponentProps, Omit<ErrorContentProps, "children">
   readonly gap?: Size;
   readonly title?: string;
   readonly titleClassName?: ComponentProps["className"];
-  readonly titleFontSize?: BaseTypographyProps["size"];
-  readonly titleFontWeight?: BaseTypographyProps["fontWeight"];
-  readonly titleFontFamily?: BaseTypographyProps["fontFamily"];
+  readonly titleFontSize?: ExtendingTypographyProps["fontSize"];
+  readonly titleFontWeight?: ExtendingTypographyProps["fontWeight"];
+  readonly titleFontFamily?: ExtendingTypographyProps["fontFamily"];
 }
 
 export const Error = ({

@@ -1,18 +1,16 @@
-.commit-timeline {
+.timeline {
   display: flex;
   flex-direction: column;
 
-  .commit-timeline__inner {
-    padding-top: 18px;
+  .timeline__inner {
     display: flex;
     flex-direction: column;
 
-    .commit-timeline__item {
-      .commit-timeline__item__body {
-        .commit-timeline__item__body__content {
+    .timeline__item {
+      .timeline__item__body {
+        .timeline__item__body__content {
           > * {
             position: relative;
-            top: -18px;
           }
         }
       }
@@ -32,4 +30,37 @@
       border-left: 2px solid theme("colors.gray.400");
     }
   }
+}
+
+@mixin timeline-item-spacing($spacing) {
+  .timeline__inner {
+    .timeline__item:where(:not(:first-of-type)) {
+      margin-top: $spacing;
+    }
+  }
+}
+
+@mixin timeline-item-offset($offset) {
+  .timeline__inner {
+    padding-top: $offset;
+
+    .timeline__item {
+      .timeline__item__body {
+        .timeline__item__body__content {
+          > * {
+            top: -$offset;
+          }
+        }
+      }
+    }
+  }
+}
+
+.commit-timeline {
+  @include timeline-item-offset(18px);
+}
+
+.details-timeline {
+  @include timeline-item-offset(6px);
+  @include timeline-item-spacing(10px);
 }

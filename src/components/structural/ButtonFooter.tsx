@@ -64,7 +64,7 @@ export const ButtonFooter = ({
      this component. */
   const { pending } = useFormStatus();
 
-  const visibility = buttonVisibility({ submitButtonType, ...props });
+  const visibility = buttonVisibility({ submitButtonType, onSubmit, onCancel, ...props });
   if (!(visibility.submit || visibility.cancel)) {
     logger.error("The button footer is not configured to show a submit or cancel button.");
     return <></>;

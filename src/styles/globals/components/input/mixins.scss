@@ -27,6 +27,13 @@ $input-loading-class: ".input--loading";
   }
 }
 
+@mixin input-read-only {
+  &.input--read-only:not(:disabled) {
+    pointer-events: none;
+    @content;
+  }
+}
+
 @mixin input-focused-within {
   @include partials.focused-within {
     @include partials.without-selectors(($input-loading-class, $input-locked-class)) {

@@ -12,13 +12,13 @@ const Timeline = dynamic(() => import("./generic/Timeline"), {
   loading: () => <Loading loading={true} />,
 });
 
-export interface CommitTimelineProps extends ComponentProps, Omit<TimelineProps, "children"> {
+export interface DetailsTimelineProps extends ComponentProps, Omit<TimelineProps, "children"> {
   readonly children?: ReactNode[];
   readonly items?: ReactNode[];
 }
 
-export const CommitTimeline = (props: CommitTimelineProps) => (
-  <Timeline {...props} className={clsx("commit-timeline", props.className)} />
+export const DetailsTimeline = (props: DetailsTimelineProps) => (
+  <Timeline {...props} className={clsx("details-timeline", props.className)} />
 );
 
-export default CommitTimeline;
+export default DetailsTimeline;

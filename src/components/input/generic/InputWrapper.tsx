@@ -3,6 +3,7 @@ import { forwardRef, type ForwardedRef } from "react";
 import clsx from "clsx";
 
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type ExtendingTypographyProps, getTypographyClassName } from "~/components/typography";
 
 import { type InputSize, InputSizes, InputVariants, type InputVariant } from "./types";
 
@@ -14,7 +15,8 @@ type WrapperElement<C extends WrapperComponentName> = {
 }[C];
 
 export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
-  HTMLElementProps<C> & {
+  HTMLElementProps<C> &
+  Omit<ExtendingTypographyProps, "transform"> & {
     readonly component: C;
     readonly size?: InputSize;
     readonly variant?: InputVariant;
@@ -22,6 +24,7 @@ export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
     readonly isDisabled?: boolean;
     readonly isLocked?: boolean;
     readonly isLoading?: boolean;
+    readonly isReadOnly?: boolean;
     readonly dynamicHeight?: boolean;
   };
 
@@ -36,7 +39,11 @@ export const InputWrapper = forwardRef(
       size = InputSizes.MEDIUM,
       isLoading = false,
       isLocked = false,
+      isReadOnly = false,
       variant = InputVariants.PRIMARY,
+      fontSize,
+      fontWeight,
+      fontFamily,
       ...props
     }: InputWrapperProps<C>,
     ref: ForwardedRef<WrapperElement<C>>,
@@ -55,7 +62,9 @@ export const InputWrapper = forwardRef(
           "input--locked": isLocked,
           "input--loading": isLoading,
           "input--active": isActive,
+          "input--read-only": isReadOnly,
         },
+        getTypographyClassName({ fontSize, fontWeight, fontFamily }),
         props.className,
       ),
     };
@@ -66,7 +75,6 @@ export const InputWrapper = forwardRef(
         const className = clsx("text-area", ps.className);
         return (
           <textarea
-            rows={4}
             disabled={isDisabled}
             {...(ps as HTMLElementProps<"textarea">)}
             className={className}

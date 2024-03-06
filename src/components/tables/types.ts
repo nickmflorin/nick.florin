@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 import omit from "lodash.omit";
-import { type DataTableColumn } from "mantine-datatable";
+import { type DataTableColumn, type DataTableRowExpansionProps } from "mantine-datatable";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ClassName, type ComponentProps } from "~/components/types";
@@ -53,6 +53,8 @@ export interface RootTableProps<T extends TableModel> extends ComponentProps {
   readonly size?: TableSize;
   readonly isLoading?: boolean;
   readonly rowClassName?: RowClassName<T>;
+  readonly rowExpansion?: DataTableRowExpansionProps<T>;
+  readonly noHeader?: boolean;
 }
 
 export interface TableProps<T extends TableModel> extends RootTableProps<T> {

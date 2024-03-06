@@ -23,7 +23,7 @@ import { decodeQueryParams, encodeQueryParam } from "~/lib/urls";
 import { Checkbox } from "~/components/input/Checkbox";
 
 import { RootTable } from "./RootTable";
-import { type TableModel, type TableProps, type TableInstance } from "./types";
+import { type TableModel, type TableProps, type TableInstance, type Column } from "./types";
 
 const CheckedRowsQuerySchema = z
   .object({
@@ -96,8 +96,9 @@ export const Table = forwardRef(
     }, [props.data]);
 
     const columns = useMemo(() => {
+      let cs: Column<T>[] = [..._columns];
       if (isCheckable) {
-        return [
+        cs = [
           {
             id: "checkable",
             title: "",
@@ -136,10 +137,10 @@ export const Table = forwardRef(
               </div>
             ),
           },
-          ..._columns,
+          ...cs,
         ];
       }
-      return _columns;
+      return cs.map(col => ({ noWrap: true, ...col }));
     }, [_columns, isCheckable, checked, searchParams, setCheckedRowsQuery]);
 
     return <RootTable<T> {...props} ref={ref} columns={columns} />;

@@ -17,6 +17,7 @@ interface CollapseProps extends ComponentProps {
   readonly title?: string | JSX.Element;
   readonly open?: boolean;
   readonly actions?: Action[];
+  readonly contentClassName?: ComponentProps["className"];
   readonly onToggle?: () => void;
 }
 
@@ -25,6 +26,7 @@ export const Collapse = ({
   open: _propOpen,
   title,
   actions,
+  contentClassName = "overflow-y-scroll",
   onToggle,
   ...props
 }: CollapseProps) => {
@@ -41,10 +43,11 @@ export const Collapse = ({
         ) : (
           title
         )}
-        <div className="flex flex-row gap-[12px] items-center">
+        <div className="flex flex-row gap-[6px] items-center">
           <Actions actions={actions} />
           <IconButton.Bare
             key={actions ? actions.length : "0"}
+            size="xsmall"
             onClick={() => {
               setOpen(curr => !curr);
               onToggle?.();
@@ -56,7 +59,7 @@ export const Collapse = ({
           </IconButton.Bare>
         </div>
       </div>
-      {open && <div className="flex flex-col overflow-y-scroll">{children}</div>}
+      {open && <div className={clsx("flex flex-col", contentClassName)}>{children}</div>}
     </div>
   );
 };

@@ -1,6 +1,5 @@
 @use "./badges";
 @use "./buttons";
-@use "./commit-timeline";
 @use "./forms";
 @use "./icons";
 @use "./input";
@@ -10,5 +9,6 @@
 @use "./menus";
 @use "./paginator";
 @use "./tables";
+@use "./timelines";
 @use "./typography";
 @use "./views";

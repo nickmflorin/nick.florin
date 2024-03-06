@@ -7,14 +7,14 @@ import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import {
   TypographySizes,
-  type BaseTypographyProps,
   FontWeights,
   getTypographyClassName,
+  type ExtendingTypographyProps,
 } from "~/components/typography";
 
 export interface BadgeProps
   extends ComponentProps,
-    BaseTypographyProps,
+    ExtendingTypographyProps,
     Pick<HTMLElementProps<"div">, "onClick"> {
   readonly children: string;
   readonly icon?: IconProp;
@@ -24,7 +24,7 @@ export interface BadgeProps
 export const Badge = ({
   children,
   fontWeight = FontWeights.MEDIUM,
-  size = TypographySizes.SM,
+  fontSize = TypographySizes.SM,
   icon,
   transform,
   fontFamily,
@@ -35,7 +35,7 @@ export const Badge = ({
     {...props}
     className={clsx(
       "badge",
-      `badge--size-${size}`,
+      `badge--size-${fontSize}`,
       {
         "pointer-events-auto cursor-pointer": props.onClick !== undefined,
       },

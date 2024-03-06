@@ -12,7 +12,7 @@ import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { Label } from "~/components/typography/Label";
 
-import { Form, type FormProps } from "../Form";
+import { Form, type FormProps } from "../generic/Form";
 
 export const SkillFormSchema = SkillSchema.required();
 

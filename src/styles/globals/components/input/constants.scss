@@ -2,6 +2,8 @@
 
 @use "partials";
 
+$input-types: ("text-input", "text-area", "select");
+
 // These colors are the default values for the input component.  The specific colors may change
 // depending on the variant.
 $input-bg-color: theme("colors.white");

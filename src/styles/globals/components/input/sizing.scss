@@ -1,4 +1,5 @@
 @use "partials";
+@use "./constants" as constants;
 
 $input-sizes: ("small", "medium", "large");
 $input-default-size: "medium";
@@ -34,28 +35,21 @@ $input-size-properties: (
   @return partials.mapget($input-size-properties, $size, font-size);
 }
 
-@mixin input-size($size) {
+@mixin input-size($size, $type) {
+  $type: partials.validate-value($type, constants.$input-types);
+
   $properties: get-input-size-properties($size);
+  // Note: The font size may be overridden for a given Input component with props.  The logic that
+  // handles that overridding is in the index.scss file.
   font-size: partials.mapget($properties, "font-size");
   line-height: partials.mapget($properties, "line-height");
   padding: partials.mapget($properties, "padding");
 
-  &.input--dynamic-height {
+  @if $type != "text-area" {
     min-height: partials.mapget($properties, "height");
-  }
-
-  &:not(.input--dynamic-height) {
-    height: partials.mapget($properties, "height");
-    max-height: partials.mapget($properties, "height");
-  }
-}
-
-@mixin input-sizes() {
-  @include input-size($input-default-size);
-
-  @each $size in $input-sizes {
-    &--size-#{$size} {
-      @include input-size($size);
+    @if $type == "text-input" {
+      height: partials.mapget($properties, "height");
+      max-height: partials.mapget($properties, "height");
     }
   }
 }

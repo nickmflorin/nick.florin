@@ -10,14 +10,16 @@ import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/pri
 import { DetailEntityType, type Detail } from "~/prisma/model";
 
 import { getEntity } from "./fetches/get-entity";
-import { ExistingDetailSchema, NewDetailSchema } from "./schemas";
+import { DetailSchema } from "./schemas";
 
-const ExistingSchema = ExistingDetailSchema.partial({ label: true });
+const ExistingSchema = DetailSchema.partial({ label: true }).extend({ id: z.string().uuid() });
+const NewSchema = DetailSchema;
 
 const UpdateDetailsSchema = z.object({
-  details: z.array(z.union([ExistingSchema, NewDetailSchema])),
+  details: z.array(z.union([ExistingSchema, NewSchema])),
 });
 
+// Not being currently used, but is left here just in case we wind up needing it in the near future.
 export const updateDetails = async (
   entityId: string,
   entityType: DetailEntityType,
@@ -27,7 +29,7 @@ export const updateDetails = async (
 
   let fieldErrors: ApiClientFieldErrors = {};
   let existingDetails: z.infer<typeof ExistingSchema>[] = [];
-  let newDetails: z.infer<typeof NewDetailSchema>[] = [];
+  let newDetails: z.infer<typeof NewSchema>[] = [];
 
   const entity = getEntity(entityId, entityType);
   if (!entity) {
@@ -39,7 +41,7 @@ export const updateDetails = async (
       const detail = req.details[i];
 
       const parsedExisting = ExistingSchema.safeParse(detail);
-      const parsedNew = NewDetailSchema.safeParse(detail);
+      const parsedNew = NewSchema.safeParse(detail);
       if (parsedExisting.success) {
         const { label, id, ...rest } = parsedExisting.data;
         let existing: Detail;
@@ -87,7 +89,7 @@ export const updateDetails = async (
           fieldErrors,
         );
       } else {
-        const errs = parseZodError(parsedNew.error, NewDetailSchema);
+        const errs = parseZodError(parsedNew.error, NewSchema);
         fieldErrors = Object.keys(errs).reduce(
           (acc, k) => ({ ...acc, [`details.${i}.${k}`]: errs[k as keyof typeof errs] }),
           fieldErrors,

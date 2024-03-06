@@ -4,18 +4,18 @@ import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
 import {
-  type BaseTypographyProps,
+  type ExtendingTypographyProps,
   FontWeights,
   TypographySizes,
   getTypographyClassName,
 } from "~/components/typography";
 
-export interface BadgeCollectionChildrenProps extends ComponentProps, BaseTypographyProps {
+export interface BadgeCollectionChildrenProps extends ComponentProps, ExtendingTypographyProps {
   readonly children: JSX.Element[];
   readonly data?: never;
 }
 
-export interface BadgeCollectionCallbackProps<M> extends ComponentProps, BaseTypographyProps {
+export interface BadgeCollectionCallbackProps<M> extends ComponentProps, ExtendingTypographyProps {
   readonly data: M[];
   readonly children: (model: M) => JSX.Element;
 }
@@ -28,7 +28,7 @@ export const BadgeCollection = <M,>({
   data,
   children,
   fontWeight = FontWeights.MEDIUM,
-  size = TypographySizes.SM,
+  fontSize = TypographySizes.SM,
   transform,
   fontFamily,
   ...props
@@ -51,7 +51,7 @@ export const BadgeCollection = <M,>({
       {...props}
       className={clsx(
         "badge-collection",
-        `badge-collection--size-${size}`,
+        `badge-collection--size-${fontSize}`,
         // Omit the font size prop because it is handled by the badge size.
         getTypographyClassName({ fontWeight, transform, fontFamily }),
         props.className,

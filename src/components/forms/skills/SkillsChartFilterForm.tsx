@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { ProgrammingDomain, SkillCategory, ProgrammingLanguage } from "~/prisma/model";
 import { SHOW_TOP_SKILLS, type ShowTopSkills, type ShowTopSkillsString } from "~/app/api/types";
-import { Form, type FormProps } from "~/components/forms/Form";
+import { Form, type FormProps } from "~/components/forms/generic/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";

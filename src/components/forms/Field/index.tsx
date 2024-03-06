@@ -5,7 +5,7 @@ import { Controller, type ControllerRenderProps } from "react-hook-form";
 
 import { ensuresDefinedValue } from "~/lib/typeguards";
 import { type ComponentProps } from "~/components/types";
-import { Label } from "~/components/typography/Label";
+import { Label, type LabelProps } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
 
 import {
@@ -39,7 +39,7 @@ const FieldConditionText = ({ condition }: { condition: FieldCondition }): JSX.E
   </div>
 );
 
-type _BaseFieldProps<T> = T &
+type BaseAbstractFieldProps<T> = T &
   ComponentProps & {
     readonly children: JSX.Element | JSX.Element[];
     readonly label?: string;
@@ -47,73 +47,77 @@ type _BaseFieldProps<T> = T &
     readonly description?: string;
     readonly helpText?: string;
     readonly helpTextClassName?: ComponentProps["className"];
+    readonly labelProps?: Omit<LabelProps, "children" | keyof ComponentProps>;
+    readonly labelClassName?: ComponentProps["className"];
   };
 
-type _FormFieldProps<N extends FieldName<I>, I extends BaseFormValues> = _BaseFieldProps<{
+type ConnectedAbstractFieldProps<
+  N extends FieldName<I>,
+  I extends BaseFormValues,
+> = BaseAbstractFieldProps<{
   readonly form: FormInstance<I>;
   readonly name: N;
   readonly errors?: never;
 }>;
 
-type _GenericFieldProps = _BaseFieldProps<{
+type UnconnectedAbstractFieldProps = BaseAbstractFieldProps<{
   readonly errors?: FieldError[];
   readonly form?: never;
   readonly name?: never;
 }>;
 
-type _FieldProps<N extends FieldName<I>, I extends BaseFormValues> =
-  | _GenericFieldProps
-  | _FormFieldProps<N, I>;
+export type FieldProps<N extends FieldName<I>, I extends BaseFormValues> =
+  | UnconnectedAbstractFieldProps
+  | ConnectedAbstractFieldProps<N, I>;
 
-const _isControlFieldProps = <N extends FieldName<I>, I extends BaseFormValues>(
-  props: _FieldProps<N, I>,
-): props is _FormFieldProps<N, I> => (props as _FormFieldProps<N, I>).name !== undefined;
+export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
+  children,
+  name,
+  label,
+  form,
+  errors: _errors,
+  labelClassName = "text-gray-700 leading-[20px]",
+  labelProps,
+  condition,
+  description,
+  helpText,
+  helpTextClassName,
+  ...props
+}: FieldProps<N, I>): JSX.Element => {
+  const fieldErrors = useMemo(() => (form ? form.fieldErrors : undefined), [form]);
 
-const _Field = <N extends FieldName<I>, I extends BaseFormValues>(
-  props: _FieldProps<N, I>,
-): JSX.Element => {
-  let fieldErrors: FieldErrors<I> | undefined = undefined;
-  const { children, name, errors: _errors } = props;
-  if (_isControlFieldProps(props)) {
-    ({
-      form: { fieldErrors },
-    } = props);
-  }
   const errors = useMemo(() => {
     const _name = ensuresDefinedValue(Array.isArray(name) ? name[0] : name);
     if (fieldErrors) {
       return fieldErrors?.[_name as keyof FieldErrors<I>] ?? [];
     }
     return _errors;
-  }, [_errors, fieldErrors, name]);
+  }, [_errors, name, fieldErrors]);
 
   return (
-    <div style={props.style} className={clsx("flex flex-col w-full", props.className)}>
-      {(props.condition !== undefined || props.label !== undefined) && (
+    <div {...props} className={clsx("flex flex-col w-full", props.className)}>
+      {(condition !== undefined || label !== undefined) && (
         <div className="w-full mb-[4px] flex h-[20px]">
-          {props.label && (
-            <Label size="sm" fontWeight="medium" className="text-gray-700 leading-[20px]">
-              {props.label}
+          {label && (
+            <Label size="sm" fontWeight="medium" {...labelProps} className={labelClassName}>
+              {label}
             </Label>
           )}
-          {props.condition && <FieldConditionText condition={props.condition} />}
+          {condition && <FieldConditionText condition={condition} />}
         </div>
       )}
-      {props.description !== undefined && (
+      {description !== undefined && (
         <Text size="xs" className="text-gray-500 leading-[16px] mb-[6px]">
-          {props.description}
+          {description}
         </Text>
       )}
       <div className="form-field-content">{children}</div>
-      {props.helpText !== undefined && (
+      {helpText !== undefined && (
         <Text
           size="xs"
-          className={clsx(
-            "leading-[14px] text-gray-500 pl-[1px] mt-[4px]",
-            props.helpTextClassName,
-          )}
+          className={clsx("leading-[14px] text-gray-500 pl-[1px] mt-[4px]", helpTextClassName)}
         >
-          {props.helpText}
+          {helpText}
         </Text>
       )}
       {errors && <FormFieldErrors errors={errors} className="mt-[4px]" />}
@@ -121,19 +125,14 @@ const _Field = <N extends FieldName<I>, I extends BaseFormValues>(
   );
 };
 
-export type FormFieldProps<N extends FieldName<I>, I extends BaseFormValues> = Omit<
-  _FormFieldProps<N, I>,
-  "_className"
->;
-
 export type ControlledFieldProps<N extends FieldName<I>, I extends BaseFormValues> = Omit<
-  FormFieldProps<N, I>,
+  ConnectedAbstractFieldProps<N, I>,
   "children"
 > & {
   readonly children: (params: ControllerRenderProps<I, N>) => JSX.Element;
 };
 
-const _ControlledField = <N extends FieldName<I>, I extends BaseFormValues>({
+export const ControlledField = <N extends FieldName<I>, I extends BaseFormValues>({
   children,
   ...props
 }: ControlledFieldProps<N, I>): JSX.Element => (
@@ -151,13 +150,11 @@ const _ControlledField = <N extends FieldName<I>, I extends BaseFormValues>({
   </Field>
 );
 
-export const Field = _Field as {
-  (props: _GenericFieldProps): JSX.Element;
-  <N extends FieldName<I>, I extends BaseFormValues>(props: FormFieldProps<N, I>): JSX.Element;
-};
+export type FormFieldProps<
+  N extends FieldName<I>,
+  I extends BaseFormValues,
+> = ConnectedAbstractFieldProps<N, I>;
 
-export const ControlledField = _ControlledField as {
-  <N extends FieldName<I>, I extends BaseFormValues>(
-    props: ControlledFieldProps<N, I>,
-  ): JSX.Element;
-};
+export const FormField = <N extends FieldName<I>, I extends BaseFormValues>(
+  props: FormFieldProps<N, I>,
+): JSX.Element => <Field<N, I> {...props} />;

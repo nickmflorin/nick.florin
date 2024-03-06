@@ -31,11 +31,27 @@ export interface BaseTypographyProps extends ComponentProps {
   readonly transform?: TextTransform;
 }
 
-export const getTypographyClassName = <P extends BaseTypographyProps>(props: P): string =>
+export interface ExtendingTypographyProps
+  extends Omit<BaseTypographyProps, keyof ComponentProps | "size"> {
+  readonly fontSize?: TypographySize;
+}
+
+const isExtendingTypographyProps = (
+  props: ExtendingTypographyProps | BaseTypographyProps,
+  /* Even though this will return true for the BaseTypographyProps if the 'fontSize' is undefined
+     on the props, it is okay because we are only concerned with checking whether or not that
+     property exists for TS purposes below. */
+): props is ExtendingTypographyProps => (props as ExtendingTypographyProps).fontSize !== undefined;
+
+export const getTypographyClassName = <P extends BaseTypographyProps | ExtendingTypographyProps>(
+  props: P,
+): string =>
   clsx(
-    props.size && `font-size-${props.size}`,
+    isExtendingTypographyProps(props)
+      ? props.fontSize && `font-size-${props.fontSize}`
+      : props.size && `font-size-${props.size}`,
     props.fontFamily && `font-family-${props.fontFamily}`,
     props.transform && `text-transform-${props.transform}`,
     props.fontWeight && `font-weight-${props.fontWeight}`,
-    props.className,
+    isExtendingTypographyProps(props) ? "" : props.className,
   );

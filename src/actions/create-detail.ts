@@ -5,37 +5,33 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { ApiClientError, ApiClientFieldErrorCodes } from "~/application/errors";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { DetailEntityType, type Detail } from "~/prisma/model";
+import { prisma } from "~/prisma/client";
+import { DetailEntityType } from "~/prisma/model";
 
+import { getEntity } from "./fetches/get-entity";
 import { DetailSchema } from "./schemas";
 
-const UpdateDetailSchema = DetailSchema.partial();
-
-export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailSchema>) => {
+export const createDetail = async (
+  entityId: string,
+  entityType: DetailEntityType,
+  req: z.infer<typeof DetailSchema>,
+) => {
   const user = await getAuthAdminUser();
 
-  const parsed = UpdateDetailSchema.safeParse(req);
-  if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, UpdateDetailSchema);
-  }
-  let detail: Detail;
-  try {
-    detail = await prisma.detail.findUniqueOrThrow({
-      where: { id },
-    });
-  } catch (e) {
-    if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      throw ApiClientError.NotFound();
-    }
-    throw e;
+  const entity = await getEntity(entityId, entityType);
+  if (!entity) {
+    throw ApiClientError.NotFound("No entity exists for the provided ID and entity type.");
   }
 
+  const parsed = DetailSchema.safeParse(req);
+  if (!parsed.success) {
+    throw ApiClientError.BadRequest(parsed.error, DetailSchema);
+  }
   const { label, ...data } = parsed.data;
   if (
     label &&
     (await prisma.detail.count({
-      where: { entityId: detail.entityId, entityType: detail.entityType, label },
+      where: { entityId: entity.id, entityType, label },
     }))
   ) {
     return ApiClientError.BadRequest({
@@ -45,11 +41,13 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
       },
     }).toJson();
   }
-  const updated = await prisma.detail.update({
-    where: { id },
+  const detail = await prisma.detail.create({
     data: {
       ...data,
+      entityId: entity.id,
+      entityType,
       label,
+      createdById: user.id,
       updatedById: user.id,
     },
   });
@@ -60,5 +58,5 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
     revalidatePath("/admin/experiences", "page");
     revalidatePath("/api/experiences");
   }
-  return updated;
+  return detail;
 };

@@ -10,9 +10,27 @@
 @use "./variants" as variants;
 @use "./mixins" as mixins;
 
+@mixin input-sizes($type) {
+  $type: partials.validate-value($type, constants.$input-types);
+
+  @include sizing.input-size(sizing.$input-default-size, $type);
+
+  @each $size in sizing.$input-sizes {
+    &--size-#{$size} {
+      @include sizing.input-size($size, $type);
+
+      // Allow the font size to be overridden with a prop for each input size.
+      @include partials.with-font-sizes("body") using ($size, $data) {
+        &.font-size-#{$size} {
+          font-size: partials.mapget($data, font-size);
+        }
+      }
+    }
+  }
+}
+
 .input {
   @include base.input-base;
-  @include sizing.input-sizes();
   @include variants.input-variants();
   @include mixins.input-locked-or-loading();
 
@@ -23,11 +41,17 @@
   outline-offset: -1px;
   border-radius: constants.$input-border-radius;
   overflow: hidden;
+  @include mixins.input-read-only();
 
-  @include sizing.input-size(sizing.$input-default-size);
-  @each $size in sizing.$input-sizes {
-    &--size-#{$size} {
-      @include sizing.input-size($size);
+  // Allow the font weight to be overridden with a prop.
+  @include partials.with-font-families();
+  // Allow the font-weight to be overridden for each size.
+  @include partials.with-font-weights();
+
+  // Allow the font size to be specified independently of the input's size.
+  @include partials.with-font-sizes("body") using ($size, $data) {
+    &.font-size-#{$size} {
+      font-size: partials.mapget($data, font-size);
     }
   }
 
@@ -41,26 +65,33 @@
     max-width: 100%;
     overflow: hidden;
   }
-}
 
-.text-input {
-  > .input__content {
-    > .native-input {
-      font-size: inherit;
-      line-height: inherit;
-      padding: 0;
-      width: 100%;
+  &.select {
+    @include input-sizes("select");
+  }
 
-      &:disabled {
-        // This overrides a disabled background applied by the browser.  We want the background to
-        // be applied to the outer .input class, not the inner input element.
-        background-color: inherit;
+  &.text-input {
+    @include input-sizes("text-input");
+
+    > .input__content {
+      > .native-input {
+        pointer-events: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        padding: 0;
+        width: 100%;
+
+        &:disabled {
+          // This overrides a disabled background applied by the browser.  We want the background to
+          // be applied to the outer .input class, not the inner input element.
+          background-color: inherit;
+        }
       }
     }
   }
-}
 
-.text-area {
-  min-height: 60px;
-  overflow-y: scroll;
+  &.text-area {
+    overflow-y: scroll;
+    @include input-sizes("text-area");
+  }
 }

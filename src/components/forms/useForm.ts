@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import union from "lodash.union";
+import omit from "lodash.omit";
 import {
   useForm as useReactHookForm,
   type Path,
@@ -9,6 +9,8 @@ import {
   type UseFormRegisterReturn,
   type FieldErrors as NativeFieldErrors,
   type RegisterOptions,
+  type SubmitHandler,
+  type SubmitErrorHandler,
 } from "react-hook-form";
 
 import {
@@ -98,10 +100,9 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   const {
     setValue,
     getValues,
+    handleSubmit: _handleSubmit,
     clearErrors: clearNativeErrors,
     register: _register,
-    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-    setError: setNativeError,
     formState,
     ...form
   } = useReactHookForm<I>({
@@ -261,10 +262,20 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [formState.errors, internalStaticFieldErrors, internalFieldErrors],
   );
 
+  const handleSubmit = useCallback(
+    (fn: SubmitHandler<I>, onError?: SubmitErrorHandler<I> | undefined) =>
+      _handleSubmit((data: I) => {
+        clearErrors();
+        return fn(data);
+      }, onError),
+    [clearErrors, _handleSubmit],
+  );
+
   return {
     formState,
     errors: globalErrors,
     fieldErrors,
+    handleSubmit,
     setValue,
     setValues,
     register,
@@ -274,6 +285,6 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     clearErrors,
     setErrors,
     setStaticErrors,
-    ...form,
+    ...omit(form, ["setError"]),
   };
 };

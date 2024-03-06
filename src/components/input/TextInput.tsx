@@ -27,6 +27,10 @@ const INPUT_PROPS = [
   "isActive",
   "isLocked",
   "isLoading",
+  "fontWeight",
+  "fontFamily",
+  "fontSize",
+  "isReadOnly",
 ] as const;
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
