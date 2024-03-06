@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-import { IconButton } from "~/components/buttons";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { type Action, mergeActions } from "~/components/structural";
+import { type Action } from "~/components/structural";
 import { Collapse } from "~/components/structural/Collapse";
 
 import { Form, type FormProps } from "../generic/Form";
@@ -40,14 +39,7 @@ export const DetailForm = ({ actions, ...props }: DetailFormProps): JSX.Element 
                 />
               </Form.Field>
             }
-            actions={mergeActions(actions, [
-              <IconButton.Bare
-                className="text-red-600 hover:text-red-700"
-                key="0"
-                icon={{ name: "trash-alt" }}
-                size="xsmall"
-              />,
-            ])}
+            actions={actions}
           >
             {body}
             {footer}

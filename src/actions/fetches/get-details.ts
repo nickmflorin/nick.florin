@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 
 import { prisma } from "~/prisma/client";
-import { type DetailEntityType, type DetailEntity, type Detail } from "~/prisma/model";
+import { type DetailEntityType, type DetailEntity, type FullDetail } from "~/prisma/model";
 
 import { getEntity } from "./get-entity";
 
@@ -14,7 +14,7 @@ export const getDetails = cache(
   async <T extends DetailEntityType>(
     id: string,
     entityType: T,
-  ): Promise<{ details: Detail[]; entity: DetailEntity<T> } | null> => {
+  ): Promise<{ details: FullDetail[]; entity: DetailEntity<T> } | null> => {
     const entity = await getEntity(id, entityType);
     if (!entity) {
       return null;
@@ -22,6 +22,7 @@ export const getDetails = cache(
     return {
       details: await prisma.detail.findMany({
         where: { entityId: entity.id, entityType: entityType },
+        include: { nestedDetails: true },
         /* In order to prevent the details from shifting around in the form whenever a page refresh
            is performed after one or more details are modified, we need to rely on a consistent
            ordering of the details based on attributes that are indepenedent of modifications to the
@@ -44,6 +45,6 @@ export const getDetails = cache(
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       }),
       entity,
-    } as { details: Detail[]; entity: DetailEntity<T> };
+    } as { details: FullDetail[]; entity: DetailEntity<T> };
   },
 );

@@ -1,20 +1,5 @@
-.timeline {
-  display: flex;
-  flex-direction: column;
-
+@mixin timeline-line($width: 2px, $color: theme("colors.gray.400")) {
   .timeline__inner {
-    display: flex;
-    flex-direction: column;
-
-    .timeline__item {
-      .timeline__item__body {
-        .timeline__item__body__content {
-          > * {
-            position: relative;
-          }
-        }
-      }
-    }
     ::before {
       /* Note: This fixes an issue with Mantine's timeline component where the actual timeline line
          disappears when the `styles.layer.sccss` files are imported for both the `@mantine/core`
@@ -27,14 +12,30 @@
 
          Instead, we just specify the border here, so we can still import both `styles.layer.scss`
          files from the two packages, and not have other collision issues. */
-      border-left: 2px solid theme("colors.gray.400");
+      border-left: $width solid $color;
+    }
+  }
+}
+
+@mixin timeline-item() {
+  .timeline__inner {
+    .timeline__item {
+      @content;
+    }
+  }
+}
+
+@mixin timeline-item-bullet() {
+  @include timeline-item() {
+    .timeline__item__bullet {
+      @content;
     }
   }
 }
 
 @mixin timeline-item-spacing($spacing) {
-  .timeline__inner {
-    .timeline__item:where(:not(:first-of-type)) {
+  @include timeline-item() {
+    &:where(:not(:first-of-type)) {
       margin-top: $spacing;
     }
   }
@@ -56,11 +57,40 @@
   }
 }
 
+.timeline {
+  display: flex;
+  flex-direction: column;
+  @include timeline-line();
+
+  .timeline__inner {
+    display: flex;
+    flex-direction: column;
+
+    .timeline__item {
+      .timeline__item__body {
+        .timeline__item__body__content {
+          > * {
+            position: relative;
+          }
+        }
+      }
+    }
+  }
+}
+
 .commit-timeline {
-  @include timeline-item-offset(18px);
+  @include timeline-item-offset(22px);
+  @include timeline-line($width: 2px, $color: theme("colors.gray.200"));
+  @include timeline-item-bullet() {
+    background-color: theme("colors.gray.200");
+  }
 }
 
 .details-timeline {
   @include timeline-item-offset(6px);
   @include timeline-item-spacing(10px);
+  @include timeline-line($width: 1px, $color: theme("colors.gray.200"));
+  @include timeline-item-bullet() {
+    background-color: theme("colors.gray.200");
+  }
 }

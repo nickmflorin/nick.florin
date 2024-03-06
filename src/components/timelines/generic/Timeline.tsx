@@ -27,6 +27,7 @@ export const Timeline = ({ children, items, className, style, ...props }: Timeli
           item: "timeline__item",
           itemBody: "timeline__item__body",
           itemContent: "timeline__item__body__content",
+          itemBullet: "timeline__item__bullet",
         }}
       >
         {(children ?? items ?? []).map((child, index) =>
