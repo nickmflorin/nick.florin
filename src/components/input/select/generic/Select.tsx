@@ -11,12 +11,11 @@ import {
 } from "react";
 
 import clsx from "clsx";
-import { motion } from "framer-motion";
 
 import type * as types from "../types";
 
 import { Floating, type FloatingProps } from "~/components/floating/Floating";
-import { Icon } from "~/components/icons/Icon";
+import { CaretIcon } from "~/components/icons/CaretIcon";
 import {
   type MenuModel,
   type MenuOptions,
@@ -254,11 +253,7 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
               dynamicHeight={true}
               ref={ref}
               actions={mergeActions(actions, {
-                right: [
-                  <motion.div key="0" initial={{ rotate: 0 }} animate={{ rotate: open ? 180 : 0 }}>
-                    <Icon name="angle-up" size="16px" dimension="height" fit="square" />
-                  </motion.div>,
-                ],
+                right: [<CaretIcon key="0" open={open} />],
               })}
               isLoading={isLoading}
               isLocked={isLocked || !isReady}

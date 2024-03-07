@@ -1,14 +1,15 @@
-import { useEffect } from "react";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect, useTransition, useMemo } from "react";
 
-import clsx from "clsx";
 import { toast } from "react-toastify";
 
 import { isApiClientErrorResponse } from "~/application/errors";
 import { logger } from "~/application/logger";
-import { type Detail, type FullDetail, type NestedDetail } from "~/prisma/model";
+import { type FullDetail, type NestedDetail, isFullDetail } from "~/prisma/model";
 import { deleteDetail } from "~/actions/delete-detail";
-import { DetailSchema } from "~/actions/schemas";
 import { updateDetail } from "~/actions/update-detail";
+import { updateNestedDetail } from "~/actions/update-nested-detail";
 import { IconButton } from "~/components/buttons";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -16,23 +17,30 @@ import { useForm } from "../useForm";
 
 import { DetailForm, type DetailFormProps } from "./DetailForm";
 import { DetailVisibilityButton } from "./DetailVisibilityButton";
-import { type WithoutNestedDetails, type DetailFormValues } from "./types";
+import { type DetailFormValues, DetailFormSchema } from "./types";
 
 export interface UpdateDetailFormProps<D extends FullDetail | NestedDetail>
-  extends Omit<DetailFormProps, "form" | "onSubmit" | "footer"> {
+  extends Omit<DetailFormProps, "form" | "onSubmit" | "footer" | "isNew"> {
   readonly detail: D;
-  readonly onSuccess?: (detail: WithoutNestedDetails<D>) => void;
 }
 
 export const UpdateDetailForm = <D extends FullDetail | NestedDetail>({
   detail,
-  onSuccess,
   ...props
 }: UpdateDetailFormProps<D>): JSX.Element => {
-  const updateDetailWithId = updateDetail.bind(null, detail.id);
+  const [_, transition] = useTransition();
+  const { refresh } = useRouter();
+
+  const updateDetailWithId = useMemo(
+    () =>
+      isFullDetail(detail)
+        ? updateDetail.bind(null, detail.id)
+        : updateNestedDetail.bind(null, detail.id),
+    [detail],
+  );
 
   const { setValues, ...form } = useForm<DetailFormValues>({
-    schema: DetailSchema,
+    schema: DetailFormSchema,
     defaultValues: {
       label: "",
       description: "",
@@ -51,9 +59,8 @@ export const UpdateDetailForm = <D extends FullDetail | NestedDetail>({
   return (
     <DetailForm
       {...props}
-      className={clsx("mb-1 pr-1", props.className)}
       actions={[
-        <DetailVisibilityButton key="0" detail={detail} />,
+        <DetailVisibilityButton<D> key="0" detail={detail} />,
         <IconButton.Bare
           className="text-red-600 hover:text-red-700"
           key="1"
@@ -78,9 +85,15 @@ export const UpdateDetailForm = <D extends FullDetail | NestedDetail>({
         if (isApiClientErrorResponse(response)) {
           form.handleApiError(response);
         } else {
-          onSuccess?.(response);
+          /* Note: We may not need this transition, since this is just updating a
+             detail and we only currently show the number of details in the table. */
+          transition(() => {
+            refresh();
+          });
         }
       }}
     />
   );
 };
+
+export default UpdateDetailForm;

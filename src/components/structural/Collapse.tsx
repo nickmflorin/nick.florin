@@ -2,10 +2,9 @@
 import { type ReactNode, useState } from "react";
 
 import clsx from "clsx";
-import { motion } from "framer-motion";
 
 import { IconButton } from "~/components/buttons";
-import { Icon } from "~/components/icons/Icon";
+import { CaretIcon } from "~/components/icons/CaretIcon";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 
@@ -53,9 +52,7 @@ export const Collapse = ({
               onToggle?.();
             }}
           >
-            <motion.div key="0" initial={{ rotate: 0 }} animate={{ rotate: open ? 180 : 0 }}>
-              <Icon name="angle-up" size="16px" dimension="height" fit="square" />
-            </motion.div>
+            <CaretIcon open={open} />
           </IconButton.Bare>
         </div>
       </div>

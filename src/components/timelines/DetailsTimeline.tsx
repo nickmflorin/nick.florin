@@ -14,7 +14,6 @@ const Timeline = dynamic(() => import("./generic/Timeline"), {
 
 export interface DetailsTimelineProps extends ComponentProps, Omit<TimelineProps, "children"> {
   readonly children?: ReactNode[];
-  readonly items?: ReactNode[];
 }
 
 export const DetailsTimeline = (props: DetailsTimelineProps) => (

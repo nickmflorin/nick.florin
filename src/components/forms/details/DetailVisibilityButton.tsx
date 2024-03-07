@@ -1,18 +1,21 @@
 import { useRouter } from "next/navigation";
-import { useTransition, useState, useCallback, useEffect } from "react";
+import { useTransition, useState, useCallback, useEffect, useMemo } from "react";
 
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
-import { type Detail } from "~/prisma/model";
+import { type FullDetail, type NestedDetail, isFullDetail } from "~/prisma/model";
 import { updateDetail } from "~/actions/update-detail";
+import { updateNestedDetail } from "~/actions/update-nested-detail";
 import { IconButton } from "~/components/buttons";
 
-export interface DetailVisibilityButtonProps {
-  readonly detail: Detail;
+export interface DetailVisibilityButtonProps<D extends FullDetail | NestedDetail> {
+  readonly detail: D;
 }
 
-export const DetailVisibilityButton = ({ detail }: DetailVisibilityButtonProps) => {
+export const DetailVisibilityButton = <D extends FullDetail | NestedDetail>({
+  detail,
+}: DetailVisibilityButtonProps<D>) => {
   /* We keep track of the visibility of the detail in state, separately from the visible attribute
      on the detail, for purposes of optimistic updates after the API request to update the detail
      succeeds, but before the router is refreshed and a new batch of details are rendered in the
@@ -26,6 +29,14 @@ export const DetailVisibilityButton = ({ detail }: DetailVisibilityButtonProps) 
      update the icon immediately. */
   const [optimisticIsVisible, setOptimisticIsVisible] = useState(detail.visible);
 
+  const updateDetailWithId = useMemo(
+    () =>
+      isFullDetail(detail)
+        ? updateDetail.bind(null, detail.id)
+        : updateNestedDetail.bind(null, detail.id),
+    [detail],
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, transition] = useTransition();
   const { refresh } = useRouter();
@@ -34,7 +45,7 @@ export const DetailVisibilityButton = ({ detail }: DetailVisibilityButtonProps) 
     setIsLoading(true);
     let success = false;
     try {
-      await updateDetail(detail.id, { visible: !detail.visible });
+      await updateDetailWithId({ visible: !detail.visible });
       success = true;
     } catch (e) {
       logger.error("There was an error changing the detail's visibility.", {
@@ -49,7 +60,7 @@ export const DetailVisibilityButton = ({ detail }: DetailVisibilityButtonProps) 
       setOptimisticIsVisible(!detail.visible);
       transition(() => refresh());
     }
-  }, [refresh, detail.id, detail.visible]);
+  }, [refresh, updateDetailWithId, detail.id, detail.visible]);
 
   useEffect(() => {
     setOptimisticIsVisible(detail.visible);

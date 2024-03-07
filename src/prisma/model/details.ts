@@ -14,3 +14,6 @@ export type DetailEntity<T extends DetailEntityType> = {
 export type FullDetail = Detail & {
   readonly nestedDetails: NestedDetail[];
 };
+
+export const isFullDetail = (detail: FullDetail | NestedDetail): detail is FullDetail =>
+  (detail as FullDetail).nestedDetails !== undefined;

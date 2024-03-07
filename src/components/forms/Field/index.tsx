@@ -1,18 +1,17 @@
-import { type JSX, useMemo } from "react";
+import { type JSX } from "react";
 
 import clsx from "clsx";
 import { Controller, type ControllerRenderProps } from "react-hook-form";
 
-import { ensuresDefinedValue } from "~/lib/typeguards";
 import { type ComponentProps } from "~/components/types";
 import { Label, type LabelProps } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
+import { ShowHide } from "~/components/util";
 
 import {
   type FormInstance,
   type BaseFormValues,
   type FieldError,
-  type FieldErrors,
   FieldConditions,
   type FieldCondition,
   type FieldName,
@@ -43,6 +42,7 @@ type BaseAbstractFieldProps<T> = T &
   ComponentProps & {
     readonly children: JSX.Element | JSX.Element[];
     readonly label?: string;
+    readonly autoRenderErrors?: boolean;
     readonly condition?: FieldCondition;
     readonly description?: string;
     readonly helpText?: string;
@@ -75,7 +75,8 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
   name,
   label,
   form,
-  errors: _errors,
+  errors: _errors = [],
+  autoRenderErrors = true,
   labelClassName = "text-gray-700 leading-[20px]",
   labelProps,
   condition,
@@ -83,47 +84,37 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
   helpText,
   helpTextClassName,
   ...props
-}: FieldProps<N, I>): JSX.Element => {
-  const fieldErrors = useMemo(() => (form ? form.fieldErrors : undefined), [form]);
-
-  const errors = useMemo(() => {
-    const _name = ensuresDefinedValue(Array.isArray(name) ? name[0] : name);
-    if (fieldErrors) {
-      return fieldErrors?.[_name as keyof FieldErrors<I>] ?? [];
-    }
-    return _errors;
-  }, [_errors, name, fieldErrors]);
-
-  return (
-    <div {...props} className={clsx("flex flex-col w-full", props.className)}>
-      {(condition !== undefined || label !== undefined) && (
-        <div className="w-full mb-[4px] flex h-[20px]">
-          {label && (
-            <Label size="sm" fontWeight="medium" {...labelProps} className={labelClassName}>
-              {label}
-            </Label>
-          )}
-          {condition && <FieldConditionText condition={condition} />}
-        </div>
-      )}
-      {description !== undefined && (
-        <Text size="xs" className="text-gray-500 leading-[16px] mb-[6px]">
-          {description}
-        </Text>
-      )}
-      <div className="form-field-content">{children}</div>
-      {helpText !== undefined && (
-        <Text
-          size="xs"
-          className={clsx("leading-[14px] text-gray-500 pl-[1px] mt-[4px]", helpTextClassName)}
-        >
-          {helpText}
-        </Text>
-      )}
-      {errors && <FormFieldErrors errors={errors} className="mt-[4px]" />}
-    </div>
-  );
-};
+}: FieldProps<N, I>): JSX.Element => (
+  <div {...props} className={clsx("flex flex-col w-full", props.className)}>
+    {(condition !== undefined || label !== undefined) && (
+      <div className="w-full mb-[4px] flex h-[20px]">
+        {label && (
+          <Label size="sm" fontWeight="medium" {...labelProps} className={labelClassName}>
+            {label}
+          </Label>
+        )}
+        {condition && <FieldConditionText condition={condition} />}
+      </div>
+    )}
+    {description !== undefined && (
+      <Text size="xs" className="text-gray-500 leading-[16px] mb-[6px]">
+        {description}
+      </Text>
+    )}
+    <div className="form-field-content">{children}</div>
+    {helpText !== undefined && (
+      <Text
+        size="xs"
+        className={clsx("leading-[14px] text-gray-500 pl-[1px] mt-[4px]", helpTextClassName)}
+      >
+        {helpText}
+      </Text>
+    )}
+    <ShowHide show={autoRenderErrors}>
+      {form ? <FormFieldErrors form={form} name={name} /> : <FormFieldErrors errors={_errors} />}
+    </ShowHide>
+  </div>
+);
 
 export type ControlledFieldProps<N extends FieldName<I>, I extends BaseFormValues> = Omit<
   ConnectedAbstractFieldProps<N, I>,

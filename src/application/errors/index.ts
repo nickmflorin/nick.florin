@@ -6,6 +6,7 @@ export * from "./client-error";
 export * from "./network-error";
 export * from "./malformed-json-error";
 export * from "./server-error";
+export * from "./unreachable-case-error";
 
 export type ApiError = NetworkError | ServerError | ApiClientError;
 export type HttpError = ApiError | ClientError;

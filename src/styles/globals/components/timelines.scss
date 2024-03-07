@@ -1,18 +1,24 @@
 @mixin timeline-line($width: 2px, $color: theme("colors.gray.400")) {
   .timeline__inner {
-    ::before {
-      /* Note: This fixes an issue with Mantine's timeline component where the actual timeline line
-         disappears when the `styles.layer.sccss` files are imported for both the `@mantine/core`
-         package and the `mantine-datatable` package (see ~/components/config/MantineProvider.tsx`).
+    .mantine-Timeline-root {
+      .timeline__item:not(:last-child) {
+        &::before {
+          /* Note: This fixes an issue with Mantine's timeline component where the actual timeline
+             line disappears when the `styles.layer.sccss` files are imported for both the
+             `@mantine/core` package and the `mantine-datatable` package
+             (see ~/components/config/MantineProvider.tsx`).
 
-         There seems to be a style collision between the two stylesheets, which causes the timeline
-         line to disappear.  But, if we were to import the non-layer stylesheet from the
-         '@mantine/core' package directly, it fixes the timeline issue, but introduces style
-         colllisions with the tables from the 'mantine-datatable` package.
+             There seems to be a style collision between the two stylesheets, which causes the
+             timeline line to disappear.  But, if we were to import the non-layer stylesheet from
+             the '@mantine/core' package directly, it fixes the timeline issue, but introduces style
+             colllisions with the tables from the 'mantine-datatable` package.
 
-         Instead, we just specify the border here, so we can still import both `styles.layer.scss`
-         files from the two packages, and not have other collision issues. */
-      border-left: $width solid $color;
+             Instead, we just specify the border here, so we can still import both
+             `styles.layer.scss` files from the two packages, and not have other collision issues.
+             */
+          border-inline-start: $width solid $color;
+        }
+      }
     }
   }
 }
@@ -87,7 +93,7 @@
 }
 
 .details-timeline {
-  @include timeline-item-offset(6px);
+  @include timeline-item-offset(2px);
   @include timeline-item-spacing(10px);
   @include timeline-line($width: 1px, $color: theme("colors.gray.200"));
   @include timeline-item-bullet() {

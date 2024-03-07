@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { ApiClientError } from "~/application/errors";
+import { ApiClientError, UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
 
@@ -23,12 +23,19 @@ export const deleteDetail = async (id: string) => {
     }
     await tx.detail.delete({ where: { id: detail.id } });
 
-    if (detail.entityType === DetailEntityType.EDUCATION) {
-      revalidatePath("/admin/education", "page");
-      revalidatePath("/api/educations");
-    } else {
-      revalidatePath("/admin/experiences", "page");
-      revalidatePath("/api/experiences");
+    switch (detail.entityType) {
+      case DetailEntityType.EDUCATION: {
+        revalidatePath("/admin/educations", "page");
+        revalidatePath("/api/educations");
+        break;
+      }
+      case DetailEntityType.EXPERIENCE: {
+        revalidatePath("/admin/experiences", "page");
+        revalidatePath("/api/experiences");
+        break;
+      }
+      default:
+        throw new UnreachableCaseError();
     }
   });
 };

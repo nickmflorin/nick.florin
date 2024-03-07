@@ -16,7 +16,7 @@
   @include sizing.input-size(sizing.$input-default-size, $type);
 
   @each $size in sizing.$input-sizes {
-    &--size-#{$size} {
+    &.input--size-#{$size} {
       @include sizing.input-size($size, $type);
 
       // Allow the font size to be overridden with a prop for each input size.
