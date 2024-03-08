@@ -58,7 +58,7 @@ export const MultiValueRenderer = <M extends MenuModel, O extends MenuOptions<M>
           getItemValueLabel(model, props.options) ?? getModelLabel(model, props.options);
         if (typeof label === "string") {
           return (
-            <Badge size="xxs" key={i}>
+            <Badge fontSize="xxs" key={i}>
               {label}
             </Badge>
           );
