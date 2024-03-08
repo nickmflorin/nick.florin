@@ -3,15 +3,15 @@ import dynamic from "next/dynamic";
 import { Title } from "~/components/typography/Title";
 import { Loading } from "~/components/views/Loading";
 
-import { type ModifyDetailsViewTimelineProps } from "./ModifyDetailsViewTimeline";
+import { type ModifyDetailsTimelineProps } from "./ModifyDetailsTimeline";
 
-const ModifyDetailsViewTimeline = dynamic(() => import("./ModifyDetailsViewTimeline"), {
+const ModifyDetailsViewTimeline = dynamic(() => import("./ModifyDetailsTimeline"), {
   loading: () => <Loading loading={true} spinnerSize="sm" />,
 });
 
-export type ModifyDetailsViewProps = ModifyDetailsViewTimelineProps & {
+export interface ModifyDetailsViewProps extends ModifyDetailsTimelineProps {
   readonly title: string;
-};
+}
 
 export const ModifyDetailsView = ({ title, ...props }: ModifyDetailsViewProps) => (
   <div className="flex flex-col gap-[10px] h-full max-h-full w-full relative">

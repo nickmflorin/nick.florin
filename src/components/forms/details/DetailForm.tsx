@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { IconButton } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
@@ -17,92 +17,95 @@ export interface DetailFormProps
   extends Omit<FormProps<DetailFormValues>, "children" | "contentClassName"> {
   readonly actions?: Action[];
   readonly isNew?: boolean;
+  readonly isOpen: boolean;
 }
 
-export const DetailForm = ({ actions, isNew = false, ...props }: DetailFormProps): JSX.Element => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <Form
-      {...props}
-      form={props.form}
-      contentClassName="gap-[12px]"
-      structure={({ footer, body }) => (
-        <div className="flex flex-col">
-          <div className="flex flex-row justify-between items-center">
-            <Form.Field
-              name="label"
-              form={props.form}
-              className="mr-[12px]"
-              autoRenderErrors={false}
-            >
-              <TextInput
-                className="w-full p-0 outline-none"
-                {...props.form.register("label")}
-                placeholder="Label"
-                isReadOnly={!isOpen && !isNew}
-                fontWeight="medium"
-                size="small"
-              />
-            </Form.Field>
-            <div className="flex flex-row gap-[6px] items-center">
-              <Actions actions={actions} />
-              {!isNew && (
-                <IconButton.Bare
-                  key={actions ? actions.length : "0"}
-                  size="xsmall"
-                  onClick={() => {
-                    setIsOpen(curr => !curr);
-                  }}
-                >
-                  <CaretIcon open={isOpen} />
-                </IconButton.Bare>
-              )}
+export const DetailForm = React.memo(
+  ({ actions, isNew = false, ...props }: DetailFormProps): JSX.Element => {
+    const [isOpen, setIsOpen] = useState(false);
+    console.log("Form rerendering");
+    return (
+      <Form
+        {...props}
+        form={props.form}
+        contentClassName="gap-[12px]"
+        structure={({ footer, body }) => (
+          <div className="flex flex-col">
+            <div className="flex flex-row justify-between items-center">
+              <Form.Field
+                name="label"
+                form={props.form}
+                className="mr-[12px]"
+                autoRenderErrors={false}
+              >
+                <TextInput
+                  className="w-full p-0 outline-none"
+                  {...props.form.register("label")}
+                  placeholder="Label"
+                  isReadOnly={!isOpen && !isNew}
+                  fontWeight="medium"
+                  size="small"
+                />
+              </Form.Field>
+              <div className="flex flex-row gap-[6px] items-center">
+                <Actions actions={actions} />
+                {!isNew && (
+                  <IconButton.Bare
+                    key={actions ? actions.length : "0"}
+                    size="xsmall"
+                    onClick={() => {
+                      setIsOpen(curr => !curr);
+                    }}
+                  >
+                    <CaretIcon open={isOpen} />
+                  </IconButton.Bare>
+                )}
+              </div>
             </div>
+            <ShowHide show={isOpen || isNew}>
+              <FormFieldErrors form={props.form} name="label" />
+              <div className="flex flex-col mt-[4px]">
+                {!isNew && body}
+                {footer}
+              </div>
+            </ShowHide>
           </div>
-          <ShowHide show={isOpen || isNew}>
-            <FormFieldErrors form={props.form} name="label" />
-            <div className="flex flex-col mt-[4px]">
-              {!isNew && body}
-              {footer}
-            </div>
-          </ShowHide>
-        </div>
-      )}
-    >
-      <Form.Field
-        name="description"
-        label="Description"
-        form={props.form}
-        labelProps={{ size: "xs" }}
+        )}
       >
-        <TextArea
-          className="w-full p-0 outline-none"
-          autoSize={true}
-          {...props.form.register("description")}
-          size="small"
-          placeholder={
-            "A brief description of the detail that will appear on the " + "online portfolio."
-          }
-        />
-      </Form.Field>
-      <Form.Field
-        name="shortDescription"
-        label="Short Description"
-        form={props.form}
-        labelProps={{ size: "xs" }}
-      >
-        <TextArea
-          className="w-full p-0 outline-none"
-          autoSize={true}
-          {...props.form.register("shortDescription")}
-          /* This simply sets the text area to a single row unless it has content in it that spans
+        <Form.Field
+          name="description"
+          label="Description"
+          form={props.form}
+          labelProps={{ size: "xs" }}
+        >
+          <TextArea
+            className="w-full p-0 outline-none"
+            autoSize={true}
+            {...props.form.register("description")}
+            size="small"
+            placeholder={
+              "A brief description of the detail that will appear on the " + "online portfolio."
+            }
+          />
+        </Form.Field>
+        <Form.Field
+          name="shortDescription"
+          label="Short Description"
+          form={props.form}
+          labelProps={{ size: "xs" }}
+        >
+          <TextArea
+            className="w-full p-0 outline-none"
+            autoSize={true}
+            {...props.form.register("shortDescription")}
+            /* This simply sets the text area to a single row unless it has content in it that spans
              multiple rows. */
-          rows={1}
-          placeholder="A shortened version of the description."
-          size="small"
-        />
-      </Form.Field>
-    </Form>
-  );
-};
+            rows={1}
+            placeholder="A shortened version of the description."
+            size="small"
+          />
+        </Form.Field>
+      </Form>
+    );
+  },
+);
