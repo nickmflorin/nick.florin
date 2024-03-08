@@ -18,7 +18,7 @@ export const SkillBadge = ({ skill, ...props }: SkillBadgeProps): JSX.Element =>
 
   return (
     <Badge
-      size="xs"
+      fontSize="xs"
       {...props}
       className={clsx("bg-blue-100 text-blue-500 hover:bg-blue-200", props.className)}
       onClick={() => {

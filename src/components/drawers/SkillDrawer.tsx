@@ -41,14 +41,14 @@ const Experiences = ({ experiences }: { experiences: ApiSkill["experiences"] }) 
             </div>
             <div className="flex flex-wrap gap-y-[4px] gap-x-[6px]">
               <TimePeriodBadge
-                size="xs"
+                fontSize="xs"
                 timePeriod={{
                   startDate: experience.startDate,
                   endDate: experience.endDate,
                 }}
               />
               <LocationBadge
-                size="xs"
+                fontSize="xs"
                 location={{
                   ...pick(experience.company, ["city", "state"]),
                   isRemote: experience.isRemote,
@@ -82,14 +82,14 @@ const Educations = ({ educations }: { educations: ApiSkill["educations"] }) => (
             </div>
             <div className="flex flex-wrap gap-y-[4px] gap-x-[6px]">
               <TimePeriodBadge
-                size="xs"
+                fontSize="xs"
                 timePeriod={{
                   startDate: education.startDate,
                   endDate: education.endDate,
                   postPoned: education.postPoned,
                 }}
               />
-              <LocationBadge size="xs" location={pick(education.school, ["city", "state"])} />
+              <LocationBadge fontSize="xs" location={pick(education.school, ["city", "state"])} />
             </div>
           </div>
         </div>
