@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 
+import { Timeline } from "@mantine/core";
 import clsx from "clsx";
 
 import { type NestedDetail, type FullDetail, type DetailEntityType } from "~/prisma/model";
 import { IconButton, Link } from "~/components/buttons";
+import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { DetailsTimeline } from "~/components/timelines/DetailsTimeline";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
@@ -28,7 +30,6 @@ const ModifyNestedDetailsTimeline = ({
   ...props
 }: ModifyNestedDetailsTimelineProps): JSX.Element => {
   const [optimisticDetails, setOptimisticDetails] = useState<NestedDetail[]>(details);
-  const [open, setOpen] = useState<string[]>([]);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);
@@ -37,24 +38,22 @@ const ModifyNestedDetailsTimeline = ({
   return (
     <DetailsTimeline {...props} className={clsx("h-full max-h-full w-full", props.className)}>
       {isCreating && (
-        <CreateNestedDetailForm
-          key="new-detail"
-          detailId={detailId}
-          onCancel={() => onCancelCreate()}
-        />
+        <Timeline.Item key="0" hidden={!isCreating} bullet={<TimelineIcon />}>
+          <CreateNestedDetailForm
+            key="new-detail"
+            detailId={detailId}
+            onCancel={() => onCancelCreate()}
+          />
+        </Timeline.Item>
       )}
-      {...optimisticDetails.map(detail => (
-        <UpdateDetailForm
-          key={detail.id}
-          detail={detail}
-          isOpen={open.includes(detail.id)}
-          onToggleOpen={() =>
-            setOpen(curr =>
-              curr.includes(detail.id) ? curr.filter(d => d !== detail.id) : [...curr, detail.id],
-            )
-          }
-          onDeleted={() => setOptimisticDetails(curr => curr.filter(d => d.id !== detail.id))}
-        />
+      {...optimisticDetails.map((detail, i) => (
+        <Timeline.Item key={i + 1} bullet={<TimelineIcon />}>
+          <UpdateDetailForm
+            key={detail.id}
+            detail={detail}
+            onDeleted={() => setOptimisticDetails(curr => curr.filter(d => d.id !== detail.id))}
+          />
+        </Timeline.Item>
       ))}
     </DetailsTimeline>
   );
@@ -62,25 +61,16 @@ const ModifyNestedDetailsTimeline = ({
 
 interface ModifyFullDetailTimelineProps {
   readonly detail: FullDetail;
-  readonly isOpen: boolean;
-  readonly onToggleOpen: () => void;
   readonly onDeleted: () => void;
 }
 
-const ModifyFullDetailTimeline = ({
-  detail,
-  onDeleted,
-  isOpen,
-  onToggleOpen,
-}: ModifyFullDetailTimelineProps) => {
+const ModifyFullDetailTimeline = ({ detail, onDeleted }: ModifyFullDetailTimelineProps) => {
   const [isCreating, setIsCreating] = useState(false);
 
   return (
     <div className="relative flex flex-col gap-[10px]">
       <UpdateDetailForm
         detail={detail}
-        isOpen={isOpen}
-        onToggleOpen={onToggleOpen}
         actions={[
           <IconButton.Bare
             key="0"
@@ -117,7 +107,6 @@ export const ModifyDetailsTimeline = ({
   ...props
 }: ModifyDetailsTimelineProps): JSX.Element => {
   const [isCreating, setIsCreating] = useState(false);
-  const [open, setOpen] = useState<string[]>([]);
 
   const [optimisticDetails, setOptimisticDetails] = useState<FullDetail[]>(details);
 
@@ -141,26 +130,21 @@ export const ModifyDetailsTimeline = ({
         </Link.Primary>
       </div>
       <DetailsTimeline {...props} className={clsx("h-full max-h-full w-full", props.className)}>
-        {isCreating && (
+        <Timeline.Item key="0" hidden={!isCreating} bullet={<TimelineIcon />}>
           <CreateDetailForm
             key="new-detail"
             entityId={entityId}
             entityType={entityType}
             onCancel={() => setIsCreating(false)}
           />
-        )}
-        {...optimisticDetails.map(detail => (
-          <ModifyFullDetailTimeline
-            key={detail.id}
-            detail={detail}
-            onDeleted={() => setOptimisticDetails(curr => curr.filter(d => d.id !== detail.id))}
-            isOpen={open.includes(detail.id)}
-            onToggleOpen={() =>
-              setOpen(curr =>
-                curr.includes(detail.id) ? curr.filter(d => d !== detail.id) : [...curr, detail.id],
-              )
-            }
-          />
+        </Timeline.Item>
+        {...optimisticDetails.map((detail, i) => (
+          <Timeline.Item key={i + 1} bullet={<TimelineIcon />}>
+            <ModifyFullDetailTimeline
+              detail={detail}
+              onDeleted={() => setOptimisticDetails(curr => curr.filter(d => d.id !== detail.id))}
+            />
+          </Timeline.Item>
         ))}
       </DetailsTimeline>
     </div>

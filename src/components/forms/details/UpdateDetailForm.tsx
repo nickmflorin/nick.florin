@@ -26,9 +26,7 @@ export interface UpdateDetailFormProps<D extends FullDetail | NestedDetail>
     "form" | "onSubmit" | "footer" | "isNew" | "isOpen" | "onToggleOpen"
   > {
   readonly detail: D;
-  readonly isOpen: boolean;
   readonly actions?: Action[];
-  readonly onToggleOpen: () => void;
   readonly onDeleted: () => void;
 }
 
