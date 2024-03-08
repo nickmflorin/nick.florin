@@ -21,9 +21,14 @@ import { DetailVisibilityButton } from "./DetailVisibilityButton";
 import { type DetailFormValues, DetailFormSchema } from "./types";
 
 export interface UpdateDetailFormProps<D extends FullDetail | NestedDetail>
-  extends Omit<DetailFormProps, "form" | "onSubmit" | "footer" | "isNew"> {
+  extends Omit<
+    DetailFormProps,
+    "form" | "onSubmit" | "footer" | "isNew" | "isOpen" | "onToggleOpen"
+  > {
   readonly detail: D;
+  readonly isOpen: boolean;
   readonly actions?: Action[];
+  readonly onToggleOpen: () => void;
   readonly onDeleted: () => void;
 }
 

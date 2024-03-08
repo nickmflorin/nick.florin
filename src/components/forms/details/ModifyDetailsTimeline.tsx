@@ -28,6 +28,7 @@ const ModifyNestedDetailsTimeline = ({
   ...props
 }: ModifyNestedDetailsTimelineProps): JSX.Element => {
   const [optimisticDetails, setOptimisticDetails] = useState<NestedDetail[]>(details);
+  const [open, setOpen] = useState<string[]>([]);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);
@@ -46,6 +47,12 @@ const ModifyNestedDetailsTimeline = ({
         <UpdateDetailForm
           key={detail.id}
           detail={detail}
+          isOpen={open.includes(detail.id)}
+          onToggleOpen={() =>
+            setOpen(curr =>
+              curr.includes(detail.id) ? curr.filter(d => d !== detail.id) : [...curr, detail.id],
+            )
+          }
           onDeleted={() => setOptimisticDetails(curr => curr.filter(d => d.id !== detail.id))}
         />
       ))}
@@ -55,16 +62,25 @@ const ModifyNestedDetailsTimeline = ({
 
 interface ModifyFullDetailTimelineProps {
   readonly detail: FullDetail;
+  readonly isOpen: boolean;
+  readonly onToggleOpen: () => void;
   readonly onDeleted: () => void;
 }
 
-const ModifyFullDetailTimeline = ({ detail, onDeleted }: ModifyFullDetailTimelineProps) => {
+const ModifyFullDetailTimeline = ({
+  detail,
+  onDeleted,
+  isOpen,
+  onToggleOpen,
+}: ModifyFullDetailTimelineProps) => {
   const [isCreating, setIsCreating] = useState(false);
 
   return (
     <div className="relative flex flex-col gap-[10px]">
       <UpdateDetailForm
         detail={detail}
+        isOpen={isOpen}
+        onToggleOpen={onToggleOpen}
         actions={[
           <IconButton.Bare
             key="0"
@@ -101,6 +117,7 @@ export const ModifyDetailsTimeline = ({
   ...props
 }: ModifyDetailsTimelineProps): JSX.Element => {
   const [isCreating, setIsCreating] = useState(false);
+  const [open, setOpen] = useState<string[]>([]);
 
   const [optimisticDetails, setOptimisticDetails] = useState<FullDetail[]>(details);
 
@@ -137,6 +154,12 @@ export const ModifyDetailsTimeline = ({
             key={detail.id}
             detail={detail}
             onDeleted={() => setOptimisticDetails(curr => curr.filter(d => d.id !== detail.id))}
+            isOpen={open.includes(detail.id)}
+            onToggleOpen={() =>
+              setOpen(curr =>
+                curr.includes(detail.id) ? curr.filter(d => d !== detail.id) : [...curr, detail.id],
+              )
+            }
           />
         ))}
       </DetailsTimeline>

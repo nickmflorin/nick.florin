@@ -4,9 +4,8 @@ import React, { type ReactNode } from "react";
 import { Timeline as RootTimeline, type TimelineProps as RootTimelineProps } from "@mantine/core";
 import clsx from "clsx";
 
+import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps } from "~/components/types";
-
-import { TimelineItem } from "./TimelineItem";
 
 export interface TimelineWrapperProps
   extends Omit<RootTimelineProps, "children" | "classNames" | keyof ComponentProps>,
@@ -46,7 +45,23 @@ export const Timeline = <M,>({ children, data, ...props }: TimelineProps<M>) => 
         {(data ?? []).map((datum, i) => {
           const c = children(datum);
           if (c === null || c === undefined || c === false) {
-            return <TimelineItem key={i}>{c}</TimelineItem>;
+            return (
+              <RootTimeline.Item
+                key={i}
+                bullet={
+                  <Icon
+                    name="code-commit"
+                    dimension="width"
+                    size="14px"
+                    iconStyle="solid"
+                    fit="square"
+                    family="classic"
+                  />
+                }
+              >
+                {c}
+              </RootTimeline.Item>
+            );
           }
           return null;
         })}
@@ -58,7 +73,21 @@ export const Timeline = <M,>({ children, data, ...props }: TimelineProps<M>) => 
       {(children ?? [])
         .filter(c => c !== null && c !== undefined && c !== false)
         .map((child, i) => (
-          <TimelineItem key={i}>{child}</TimelineItem>
+          <RootTimeline.Item
+            key={i}
+            bullet={
+              <Icon
+                name="code-commit"
+                dimension="width"
+                size="14px"
+                iconStyle="solid"
+                fit="square"
+                family="classic"
+              />
+            }
+          >
+            {child}
+          </RootTimeline.Item>
         ))}
     </TimelineWrapper>
   );

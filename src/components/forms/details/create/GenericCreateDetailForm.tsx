@@ -9,7 +9,10 @@ import { DetailForm, type DetailFormProps } from "../DetailForm";
 import { type WithoutNestedDetails, type DetailFormValues, DetailFormSchema } from "../types";
 
 export interface GenericCreateDetailFormProps<D extends FullDetail | NestedDetail>
-  extends Omit<DetailFormProps, "form" | "onSubmit" | "action" | "isNew"> {
+  extends Omit<
+    DetailFormProps,
+    "form" | "onSubmit" | "action" | "isNew" | "isOpen" | "onToggleOpen"
+  > {
   readonly onCreate: () => void;
   readonly action: (
     data: DetailFormValues & { readonly visible: boolean },
