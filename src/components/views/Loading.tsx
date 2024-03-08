@@ -14,7 +14,7 @@ export interface LoadingProps extends ViewProps {
 }
 
 const _WrappedSpinner = ({
-  spinnerSize = "36px",
+  spinnerSize = "24px",
   dimmed = true,
   ...props
 }: Omit<LoadingProps, "loading" | "children" | "hideWhenLoading">) => (

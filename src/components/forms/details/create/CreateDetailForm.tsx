@@ -1,4 +1,3 @@
-"use client";
 import { useMemo, useState } from "react";
 
 import { type DetailEntityType, type FullDetail } from "~/prisma/model";
@@ -17,11 +16,13 @@ export interface CreateDetailFormProps
   > {
   readonly entityId: string;
   readonly entityType: DetailEntityType;
+  readonly onCancel: () => void;
 }
 
 export const CreateDetailForm = ({
   entityId,
   entityType,
+  onCancel,
   ...props
 }: CreateDetailFormProps): JSX.Element => {
   const [isCreating, setIsCreating] = useState(false);
@@ -39,12 +40,21 @@ export const CreateDetailForm = ({
       onSuccess={() => setIsCreating(false)}
       {...props}
       actions={[
+        <Link.Secondary
+          options={{ as: "button" }}
+          fontWeight="regular"
+          fontSize="xs"
+          key="0"
+          onClick={() => onCancel()}
+        >
+          Cancel
+        </Link.Secondary>,
         <Link.Primary
           options={{ as: "button" }}
           fontWeight="regular"
           type="submit"
           fontSize="xs"
-          key="0"
+          key="1"
           isLoading={isCreating}
         >
           Create

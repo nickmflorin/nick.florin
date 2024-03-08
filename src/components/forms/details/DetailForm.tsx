@@ -21,6 +21,7 @@ export interface DetailFormProps
 
 export const DetailForm = ({ actions, isNew = false, ...props }: DetailFormProps): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Form
       {...props}

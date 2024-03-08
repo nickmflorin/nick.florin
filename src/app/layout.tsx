@@ -93,11 +93,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ShowHide show={env.NEXT_PUBLIC_WELCOME_TOAST !== false}>
             <Toast type="info" autoClose={false}>
               <div className="flex flex-col gap-[6px] min-w-[200px]">
-                <Text size="md">
-                  Welcome to my personal portfolio/website! Feel free to take a look around.
+                <Text size="md" fontWeight="medium">
+                  Welcome to my Personal Portfolio!
                 </Text>
                 <Text size="sm" className="text-gray-600">
-                  Note: This website is only 3 weeks old and is currently under construction.
+                  Please note that this site is only a few weeks old and still under active
+                  construction. If you encounter any issues, I will be fixing them as quickly as
+                  possible.
                 </Text>
               </div>
             </Toast>
