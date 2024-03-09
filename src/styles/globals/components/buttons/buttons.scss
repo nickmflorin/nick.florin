@@ -31,8 +31,49 @@ a:not(.button--type-link) {
   text-decoration: none;
 }
 
+@mixin inherit-properties() {
+  color: inherit;
+  line-height: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: inherit;
+}
+
+@mixin button-structure() {
+  min-width: fit-content;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  > .button__content {
+    text-align: inherit;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    vertical-align: middle;
+    overflow: hidden;
+    max-width: 100%;
+    flex-grow: 100;
+    gap: 8px;
+    @include inherit-properties();
+
+    > .button__sub-content {
+      text-decoration: none;
+      max-width: 100%;
+      flex-grow: 100;
+      @include partials.truncate();
+      @include inherit-properties();
+    }
+  }
+}
+
 .button {
-  /* When providing a border, we need to use the outline property - not the border property.  This
+  /* When defining a border, we need to use the outline property - not the border property.  This
      is because a border will contribute to the size of the button, whereas an outline will not. */
   border: none;
   border-radius: constants.$button-border-radius;
@@ -43,6 +84,8 @@ a:not(.button--type-link) {
   .icon {
     aspect-ratio: 1;
     width: auto;
+    color: inherit;
+    filter: inherit;
   }
 
   &--type-button {
@@ -55,14 +98,17 @@ a:not(.button--type-link) {
 
   &--type-link {
     @include button-properties("link");
+    @include inherit-properties();
 
-    color: inherit;
+    min-width: fit-content;
     text-decoration: none;
-    line-height: inherit;
-    font-family: inherit;
-    font-size: inherit;
     max-width: fit-content;
     vertical-align: baseline;
+
+    &.link--flex {
+      vertical-align: middle;
+      @include button-structure();
+    }
   }
 
   &--type-icon-button {

@@ -29,48 +29,6 @@
   vertical-align: middle;
 }
 
-@mixin button-structure() {
-  min-width: fit-content;
-  overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0;
-
-  > .button__content {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    height: 100%;
-    justify-content: center;
-    position: relative;
-    width: 100%;
-    text-align: inherit;
-    vertical-align: middle;
-    line-height: inherit;
-    font-size: inherit;
-    overflow: hidden;
-    max-width: 100%;
-    flex-grow: 100;
-    gap: 8px;
-
-    > .button__sub-content {
-      text-align: inherit;
-      vertical-align: middle;
-      line-height: inherit;
-      font-size: inherit;
-      max-width: 100%;
-      flex-grow: 100;
-      @include partials.truncate();
-    }
-  }
-
-  .icon {
-    color: inherit;
-    filter: inherit;
-  }
-}
-
 @mixin button(
   $type,
   $variant: null,
@@ -90,23 +48,19 @@
     $border: $border,
     $active-selector: $active-selector
   );
+  @include sizing.button-size($type, $size);
 
   @if $type != "icon-button" {
     @include fonts.button-font($type, $size: $size);
-  }
-  @if $type != "link" {
-    @include sizing.button-size($type, $size);
   }
 }
 
 @mixin button-properties($type, $border: false, $active-selector: ".button--active") {
   @include button-base;
   @include variants.button-variants($type, $border: $border, $active-selector: $active-selector);
+  @include sizing.button-sizes($type);
 
   @if $type != "icon-button" {
     @include fonts.button-fonts($type);
-  }
-  @if $type != "link" {
-    @include sizing.button-sizes($type);
   }
 }

@@ -61,6 +61,14 @@ $button-icon-sizes: (
       list.nth(partials.mapget($button-padding, "button", "xlarge"), 1),
     "full": 100%,
   ),
+  "link": (
+    "xsmall": 13px,
+    "small": 14px,
+    "medium": 16px,
+    "large": 18px,
+    "xlarge": 20px,
+    "full": 100%,
+  ),
   "icon-button": (
     "xsmall": 13px,
     "small": 14px,
@@ -72,13 +80,13 @@ $button-icon-sizes: (
 );
 
 @function get-button-icon-size($type, $size) {
-  $type: partials.validate-value($type, ("button", "icon-button"));
+  $type: partials.validate-value($type, $button-types);
   $size: partials.validate-value($size, $button-icon-size-names);
   @return partials.mapget($button-icon-sizes, $type, $size);
 }
 
 @mixin button-icon-size($type, $size) {
-  $type: partials.validate-value($type, ("button", "icon-button"));
+  $type: partials.validate-value($type, $button-types);
   .icon {
     height: get-button-icon-size($type, $size: $size);
   }
@@ -100,23 +108,38 @@ $button-icon-sizes: (
 }
 
 @mixin button-sizes($type) {
-  $type: partials.validate-value($type, ("icon-button", "button"));
+  $type: partials.validate-value($type, $button-types);
 
-  // The button may or may not have a size class name, depending on whether or not the size prop
-  // was provided to the component as a discrete size (e.g. "small", "medium") or a constant size
-  // string (e.g. 32px).
-  @each $size in $button-size-names {
-    &.button--size-#{$size} {
-      @include button-size($type, $size);
-      // Allow the icon size in the button to be controlled independently of the button's primary
-      // size if the class name is present.
-      @each $size in $button-icon-size-names {
-        // The button may or may not have an icon size class name, depending on whether or not the
-        // icon size prop was provided to the component as a discrete size (e.g. "small", "medium"),
-        // a constant size string (e.g. 32px), or not at all.
-        &.button--icon-size-#{$size} {
-          @include button-icon-size($type, $size);
+  @if $type == "icon-button" or $type == "button" {
+    // The button may or may not have a size class name, depending on whether or not the size prop
+    // was provided to the component as a discrete size (e.g. "small", "medium") or a constant size
+    // string (e.g. 32px).
+    @each $size in $button-size-names {
+      &.button--size-#{$size} {
+        @include button-size($type, $size);
+        // Allow the icon size in the button to be controlled independently of the button's primary
+        // size if the class name is present.
+        @each $size in $button-icon-size-names {
+          // The button may or may not have an icon size class name, depending on whether or not the
+          // icon size prop was provided to the component as a discrete size (e.g. "small", "medium"),
+          // a constant size string (e.g. 32px), or not at all.
+          &.button--icon-size-#{$size} {
+            @include button-icon-size($type, $size);
+          }
         }
+      }
+    }
+  } @else {
+    // Consider 'small' to be the default.
+    @include button-icon-size($type, "small");
+    // The Link is sized based on the line height of its text, but it still can have icons - which
+    // need to be sized explicitly.
+    @each $size in $button-icon-size-names {
+      // The button may or may not have an icon size class name, depending on whether or not the
+      // icon size prop was provided to the component as a discrete size (e.g. "small", "medium"),
+      // a constant size string (e.g. 32px), or not at all.
+      &.button--icon-size-#{$size} {
+        @include button-icon-size($type, $size);
       }
     }
   }

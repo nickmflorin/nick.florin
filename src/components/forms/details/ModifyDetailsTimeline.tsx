@@ -19,6 +19,7 @@ type ModifyNestedDetailsTimelineProps = ComponentProps & {
   readonly details: NestedDetail[];
   readonly detailId: string;
   readonly isCreating: boolean;
+  readonly onSucessCreate: () => void;
   readonly onCancelCreate: () => void;
 };
 
@@ -26,6 +27,7 @@ const ModifyNestedDetailsTimeline = ({
   details,
   detailId,
   isCreating,
+  onSucessCreate,
   onCancelCreate,
   ...props
 }: ModifyNestedDetailsTimelineProps): JSX.Element => {
@@ -43,6 +45,7 @@ const ModifyNestedDetailsTimeline = ({
             key="new-detail"
             detailId={detailId}
             onCancel={() => onCancelCreate()}
+            onCreated={() => onSucessCreate()}
           />
         </Timeline.Item>
       )}
@@ -65,7 +68,7 @@ interface ModifyFullDetailTimelineProps {
 }
 
 const ModifyFullDetailTimeline = ({ detail, onDeleted }: ModifyFullDetailTimelineProps) => {
-  const [isCreating, setIsCreating] = useState(false);
+  const [createFormVisible, setCreateFormVisible] = useState(false);
 
   return (
     <div className="relative flex flex-col gap-[10px]">
@@ -76,18 +79,19 @@ const ModifyFullDetailTimeline = ({ detail, onDeleted }: ModifyFullDetailTimelin
             key="0"
             className="text-blue-700 hover:text-blue-800"
             icon={{ name: "plus-circle" }}
-            isDisabled={isCreating}
-            onClick={() => setIsCreating(true)}
+            isDisabled={createFormVisible}
+            onClick={() => setCreateFormVisible(true)}
           />,
         ]}
         onDeleted={onDeleted}
       />
-      {(isCreating || detail.nestedDetails.length > 0) && (
+      {(createFormVisible || detail.nestedDetails.length > 0) && (
         <ModifyNestedDetailsTimeline
           details={detail.nestedDetails}
           detailId={detail.id}
-          isCreating={isCreating}
-          onCancelCreate={() => setIsCreating(false)}
+          isCreating={createFormVisible}
+          onCancelCreate={() => setCreateFormVisible(false)}
+          onSucessCreate={() => setCreateFormVisible(false)}
         />
       )}
     </div>
@@ -106,8 +110,7 @@ export const ModifyDetailsTimeline = ({
   entityType,
   ...props
 }: ModifyDetailsTimelineProps): JSX.Element => {
-  const [isCreating, setIsCreating] = useState(false);
-
+  const [createFormVisible, setCreateFormVisible] = useState(false);
   const [optimisticDetails, setOptimisticDetails] = useState<FullDetail[]>(details);
 
   useDeepEqualEffect(() => {
@@ -123,19 +126,20 @@ export const ModifyDetailsTimeline = ({
           className="text-blue-700 hover:text-blue-800"
           fontSize="sm"
           fontWeight="regular"
-          isDisabled={isCreating}
-          onClick={() => setIsCreating(true)}
+          isDisabled={createFormVisible}
+          onClick={() => setCreateFormVisible(true)}
         >
           Add
         </Link.Primary>
       </div>
       <DetailsTimeline {...props} className={clsx("h-full max-h-full w-full", props.className)}>
-        <Timeline.Item key="0" hidden={!isCreating} bullet={<TimelineIcon />}>
+        <Timeline.Item key="0" hidden={!createFormVisible} bullet={<TimelineIcon />}>
           <CreateDetailForm
             key="new-detail"
             entityId={entityId}
             entityType={entityType}
-            onCancel={() => setIsCreating(false)}
+            onCancel={() => setCreateFormVisible(false)}
+            onCreated={() => setCreateFormVisible(false)}
           />
         </Timeline.Item>
         {...optimisticDetails.map((detail, i) => (

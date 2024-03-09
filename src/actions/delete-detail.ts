@@ -21,6 +21,8 @@ export const deleteDetail = async (id: string) => {
       }
       throw e;
     }
+
+    await tx.nestedDetail.deleteMany({ where: { detailId: detail.id } });
     await tx.detail.delete({ where: { id: detail.id } });
 
     switch (detail.entityType) {

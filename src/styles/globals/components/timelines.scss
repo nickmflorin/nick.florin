@@ -93,7 +93,7 @@
 }
 
 .details-timeline {
-  @include timeline-item-offset(2px);
+  @include timeline-item-offset(4px);
   @include timeline-item-spacing(10px);
   @include timeline-line($width: 1px, $color: theme("colors.gray.200"));
   @include timeline-item-bullet() {

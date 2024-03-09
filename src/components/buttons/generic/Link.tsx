@@ -1,41 +1,92 @@
 import { forwardRef } from "react";
 
+import clsx from "clsx";
+
 import { capitalize } from "~/lib/formatters";
+import { type MultipleIconProp } from "~/components/icons";
 import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
 
 import * as types from "../types";
 
 import { AbstractButton } from "./AbstractButton";
+import { ButtonContent } from "./ButtonContent";
 
-export type LinkProps<O extends types.ButtonOptions> = Omit<
+type LinkFlexProps<O extends types.ButtonOptions> = Omit<
   types.AbstractProps<"link", O>,
   "buttonType"
 > &
-  BaseTypographyProps;
+  BaseTypographyProps & {
+    readonly flex: true;
+    readonly icon?: MultipleIconProp;
+    readonly loadingLocation?: "left" | "over" | "right";
+  };
+
+type LinkBlockProps<O extends types.ButtonOptions> = Omit<
+  types.AbstractProps<"link", O>,
+  "buttonType"
+> &
+  BaseTypographyProps & {
+    readonly flex?: false;
+    readonly icon?: never;
+    readonly loadingLocation?: never;
+  };
+
+export type LinkProps<O extends types.ButtonOptions> = LinkFlexProps<O> | LinkBlockProps<O>;
 
 const Base = AbstractButton as React.FC<types.AbstractProps<"link", types.ButtonOptions>>;
 
 const LocalLink = forwardRef(
   <O extends types.ButtonOptions>(
-    { children, transform, fontFamily, size, fontWeight, ...props }: LinkProps<O>,
+    {
+      children,
+      transform,
+      icon,
+      fontFamily,
+      flex,
+      size,
+      fontWeight,
+      /* Note: Since the 'Link' component does not have a 'height',  and it's 'height' is set based
+         on the line-height of the text it contains, the 'iconSize' prop needs to be defaulted to
+         a value that is not 100% of its parent container.  Otherwise, the icon and spinner will
+         be very large. */
+      iconSize = "small",
+      loadingLocation = "left",
+      ...props
+    }: LinkProps<O>,
     ref: types.PolymorphicButtonRef<O>,
   ) => {
     const ps = {
       ...props,
+      iconSize,
       buttonType: "link",
     } as types.AbstractProps<"link", O>;
     return (
       <Base
         {...ps}
+        iconSize={iconSize}
         ref={ref}
-        className={getTypographyClassName({
-          size,
-          fontFamily,
-          fontWeight,
-          transform,
-        })}
+        className={clsx(
+          getTypographyClassName({
+            size,
+            fontFamily,
+            fontWeight,
+            transform,
+          }),
+          { "link--flex": flex },
+        )}
       >
-        {children}
+        {flex ? (
+          <ButtonContent
+            {...props}
+            iconSize={iconSize}
+            icon={icon}
+            loadingLocation={loadingLocation}
+          >
+            {children}
+          </ButtonContent>
+        ) : (
+          children
+        )}
       </Base>
     );
   },

@@ -108,15 +108,6 @@ const toCoreButtonProps = <T extends Record<string, unknown>>(
   props: T,
 ): Omit<T, (typeof INTERNAL_BUTTON_PROPS)[number]> => omit(props, INTERNAL_BUTTON_PROPS);
 
-const AbstractButtonContent = <T extends types.ButtonType, O extends types.ButtonOptions>(
-  props: Pick<types.AbstractProps<T, O>, "buttonType" | "children">,
-): JSX.Element => {
-  if (props.buttonType === "link") {
-    return <>{props.children}</>;
-  }
-  return <div className="button__content">{props.children}</div>;
-};
-
 export const AbstractButton = forwardRef(
   <T extends types.ButtonType, O extends types.ButtonOptions>(
     props: types.AbstractProps<T, O>,
@@ -133,7 +124,7 @@ export const AbstractButton = forwardRef(
           style={style}
           ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}
         >
-          <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
+          {ps.children}
         </a>
       );
     } else if (props.options?.as === "link") {
@@ -145,7 +136,7 @@ export const AbstractButton = forwardRef(
           style={style}
           ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}
         >
-          <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
+          {ps.children}
         </NextLink>
       );
     }
@@ -159,7 +150,7 @@ export const AbstractButton = forwardRef(
         style={style}
         ref={ref as types.PolymorphicButtonRef<{ as: "button" }>}
       >
-        <AbstractButtonContent buttonType={props.buttonType}>{ps.children}</AbstractButtonContent>
+        {ps.children}
       </button>
     );
   },
