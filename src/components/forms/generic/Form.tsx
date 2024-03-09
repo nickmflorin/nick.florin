@@ -3,14 +3,13 @@ import { type SubmitErrorHandler } from "react-hook-form";
 
 import { type ComponentProps } from "~/components/types";
 
-import { FormField, ControlledField } from "../Field";
-import { NativeForm, type NativeFormProps } from "../NativeForm";
-import { type FormInstance, type BaseFormValues, FieldConditions } from "../types";
-
+import { FormField, ControlledField } from "./Field";
 import { FormStructure, type FormStructureProps } from "./FormStructure";
+import { NativeForm, type NativeFormProps } from "./NativeForm";
+import { type FormInstance, type BaseFormValues, FieldConditions } from "./types";
 
-export { type NativeFormProps } from "../NativeForm";
-export * from "../types";
+export { type NativeFormProps } from "./NativeForm";
+export * from "./types";
 
 type SubmitAction<I extends BaseFormValues> = (data: I, form: FormInstance<I>) => void;
 

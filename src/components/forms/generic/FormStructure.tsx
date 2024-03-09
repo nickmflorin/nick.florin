@@ -6,12 +6,11 @@ import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 import { Loading } from "~/components/views/Loading";
 
-import { type FormInstance, type BaseFormValues } from "../types";
-
 import { FormErrors } from "./FormErrors";
+import { type FormInstance, type BaseFormValues } from "./types";
 
-export { type NativeFormProps } from "../NativeForm";
-export * from "../types";
+export { type NativeFormProps } from "./NativeForm";
+export * from "./types";
 
 export type FormStructureProps<I extends BaseFormValues> = {
   readonly form: FormInstance<I>;

@@ -7,7 +7,7 @@ import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/update-education";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../useForm";
+import { useForm } from "../generic/hooks/use-form";
 
 import {
   EducationForm,

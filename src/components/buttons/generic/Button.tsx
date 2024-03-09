@@ -26,7 +26,7 @@ type LocalButtonType = {
 
 const LocalButton = forwardRef(
   <O extends types.ButtonOptions>(
-    { children, icon, loadingLocation, ...props }: ButtonProps<O>,
+    { children, icon, loadingLocation = "left", ...props }: ButtonProps<O>,
     ref: types.PolymorphicButtonRef<O>,
   ) => {
     const ps = {

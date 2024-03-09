@@ -11,13 +11,13 @@ import { deleteNestedDetail } from "~/actions/delete-nested-detail";
 import { updateDetail } from "~/actions/update-detail";
 import { updateNestedDetail } from "~/actions/update-nested-detail";
 import { IconButton } from "~/components/buttons";
+import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
 import { type Action, mergeActions } from "~/components/structural";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../useForm";
+import { useForm } from "../generic/hooks/use-form";
 
 import { DetailForm, type DetailFormProps } from "./DetailForm";
-import { DetailVisibilityButton } from "./DetailVisibilityButton";
 import { type DetailFormValues, DetailFormSchema } from "./types";
 
 export interface UpdateDetailFormProps<D extends FullDetail | NestedDetail>

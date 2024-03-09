@@ -6,7 +6,7 @@ import { isApiClientErrorResponse } from "~/application/errors";
 import { createExperience } from "~/actions/create-experience";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../useForm";
+import { useForm } from "../generic/hooks/use-form";
 
 import {
   ExperienceForm,

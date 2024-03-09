@@ -6,7 +6,7 @@ import { isApiClientErrorResponse } from "~/application/errors";
 import { createSkill } from "~/actions/create-skill";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../useForm";
+import { useForm } from "../generic/hooks/use-form";
 
 import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues } from "./SkillForm";
 

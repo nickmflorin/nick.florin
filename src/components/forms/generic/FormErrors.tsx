@@ -2,9 +2,8 @@ import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
 
-import { type BaseFormValues, type FormInstance } from "../types";
-
 import { FormError } from "./FormError";
+import { type BaseFormValues, type FormInstance } from "./types";
 
 export interface FormErrorsProps<I extends BaseFormValues> extends ComponentProps {
   readonly form: FormInstance<I>;

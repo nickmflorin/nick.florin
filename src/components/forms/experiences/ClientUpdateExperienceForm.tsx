@@ -7,7 +7,7 @@ import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/update-experience";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../useForm";
+import { useForm } from "../generic/hooks/use-form";
 
 import {
   ExperienceForm,

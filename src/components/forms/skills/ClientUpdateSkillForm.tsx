@@ -7,7 +7,7 @@ import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/update-skill";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../useForm";
+import { useForm } from "../generic/hooks/use-form";
 
 import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues } from "./SkillForm";
 

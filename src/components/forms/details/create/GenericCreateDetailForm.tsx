@@ -5,7 +5,7 @@ import { type ApiClientErrorResponse, isApiClientErrorResponse } from "~/applica
 import { type FullDetail, type NestedDetail } from "~/prisma/model";
 import { Link } from "~/components/buttons";
 
-import { useForm } from "../../useForm";
+import { useForm } from "../../generic/hooks/use-form";
 import { DetailForm, type DetailFormProps } from "../DetailForm";
 import { type WithoutNestedDetails, type DetailFormValues, DetailFormSchema } from "../types";
 

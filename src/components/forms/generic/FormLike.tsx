@@ -2,12 +2,10 @@ import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
 
-import { type BaseFormValues } from "../types";
-
 import { FormStructure, type FormStructureProps } from "./FormStructure";
+import { type BaseFormValues } from "./types";
 
-export { type NativeFormProps } from "../NativeForm";
-export * from "../types";
+export * from "./types";
 
 export interface FormLikeProps<I extends BaseFormValues>
   extends ComponentProps,

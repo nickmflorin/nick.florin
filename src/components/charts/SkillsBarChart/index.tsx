@@ -8,12 +8,12 @@ import pick from "lodash.pick";
 import { generateChartColors } from "~/lib/charts";
 import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
 import { Floating } from "~/components/floating/Floating";
+import { useForm } from "~/components/forms/generic/hooks/use-form";
 import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
 } from "~/components/forms/skills/SkillsChartFilterForm";
-import { useForm } from "~/components/forms/useForm";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 import { useSkills } from "~/hooks";

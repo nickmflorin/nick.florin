@@ -8,7 +8,7 @@ import { type Action } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
 import { ShowHide } from "~/components/util";
 
-import { FormFieldErrors } from "../Field/FieldErrors";
+import { FormFieldErrors } from "../generic/Field/FieldErrors";
 import { Form, type FormProps } from "../generic/Form";
 
 import { type DetailFormValues } from "./types";

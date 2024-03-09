@@ -6,7 +6,7 @@ import { isApiClientErrorResponse } from "~/application/errors";
 import { createEducation } from "~/actions/create-education";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../useForm";
+import { useForm } from "../generic/hooks/use-form";
 
 import {
   EducationForm,

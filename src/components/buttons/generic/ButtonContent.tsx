@@ -2,20 +2,34 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
-import { type MultipleIconProp, parseMultipleIconsProp } from "~/components/icons";
-import { isIconProp, isDynamicIconProp } from "~/components/icons";
+import {
+  isIconProp,
+  isDynamicIconProp,
+  type IconProp,
+  type DynamicIconProp,
+  type MultipleIconProp,
+  parseMultipleIconsProp,
+} from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
-import { sizeToString, type ComponentProps } from "~/components/types";
+import { type Size, sizeToString, type ComponentProps } from "~/components/types";
 
 import * as types from "../types";
+
+const toIconSize = (size: types.ButtonIconSize | undefined): Size | undefined =>
+  /* If the icon size corresponds to a discrete size, it will be set with a class name by the
+     abstract form of the button.  Otherwise, the size has to be provided directly to the Icon
+     component, in the case that it is non discrete (e.g. 32px, not "small"). */
+  size !== undefined && !types.ButtonDiscreteIconSizes.contains(size)
+    ? sizeToString(size)
+    : undefined;
 
 export interface ButtonContentProps {
   readonly children?: ReactNode;
   readonly isLoading?: boolean;
   readonly icon?: MultipleIconProp;
   readonly iconSize?: types.ButtonIconSize;
-  readonly loadingLocation?: "left" | "over" | "right";
+  readonly loadingLocation?: types.ButtonLoadingLocation;
 }
 
 const Spin = ({
@@ -26,17 +40,7 @@ const Spin = ({
   readonly iconSize?: types.ButtonIconSize;
   readonly isLoading: boolean;
   readonly className?: ComponentProps["className"];
-}) => (
-  <Spinner
-    className={className}
-    isLoading={isLoading}
-    size={
-      iconSize !== undefined && !types.ButtonDiscreteIconSizes.contains(iconSize)
-        ? sizeToString(iconSize)
-        : undefined
-    }
-  />
-);
+}) => <Spinner className={className} isLoading={isLoading} size={toIconSize(iconSize)} />;
 
 const RenderOrSpinner = ({
   children,
@@ -47,8 +51,8 @@ const RenderOrSpinner = ({
 }: {
   readonly children?: ReactNode;
   readonly isLoading?: boolean;
-  readonly loadingLocation?: "left" | "over" | "right";
-  readonly location: "left" | "right";
+  readonly loadingLocation: types.ButtonLoadingLocation;
+  readonly location: Exclude<types.ButtonLoadingLocation, "over">;
   readonly iconSize?: types.ButtonIconSize;
 }): JSX.Element => {
   if (isLoading && location === loadingLocation) {
@@ -56,6 +60,28 @@ const RenderOrSpinner = ({
   }
   return <>{children}</>;
 };
+
+const ContentIcon = ({
+  isLoading,
+  iconSize,
+  icon,
+  loadingLocation,
+  location,
+}: {
+  readonly icon: IconProp | DynamicIconProp;
+  readonly iconSize?: types.ButtonIconSize;
+  readonly isLoading: boolean;
+  readonly loadingLocation: types.ButtonLoadingLocation;
+  readonly location: Exclude<types.ButtonLoadingLocation, "over">;
+}) => (
+  <Icon
+    icon={icon}
+    isLoading={isLoading && loadingLocation === location}
+    fit="square"
+    dimension="height"
+    size={toIconSize(iconSize)}
+  />
+);
 
 export const ButtonContent = ({
   children,
@@ -69,20 +95,11 @@ export const ButtonContent = ({
   return (
     <div className="button__content">
       {leftIcon && (isIconProp(leftIcon) || isDynamicIconProp(leftIcon)) ? (
-        <Icon
+        <ContentIcon
           icon={leftIcon}
-          isLoading={isLoading && loadingLocation === "left"}
-          fit="square"
-          dimension="height"
-          /* If the icon size corresponds to a discrete size, it will be set with a class name
-             by the abstract form of the button.  Otherwise, the size has to be provided directly
-             to the Icon component, in the case that it is non discrete (e.g. 32px, not
-             "small"). */
-          size={
-            iconSize !== undefined && !types.ButtonDiscreteIconSizes.contains(iconSize)
-              ? sizeToString(iconSize)
-              : undefined
-          }
+          isLoading={isLoading}
+          loadingLocation={loadingLocation}
+          location="left"
         />
       ) : (
         <RenderOrSpinner isLoading={isLoading} loadingLocation={loadingLocation} location="left">
@@ -102,20 +119,11 @@ export const ButtonContent = ({
         className="absolute mx-auto"
       />
       {rightIcon && (isIconProp(rightIcon) || isDynamicIconProp(rightIcon)) ? (
-        <Icon
+        <ContentIcon
           icon={rightIcon}
-          fit="square"
-          dimension="height"
-          isLoading={isLoading && loadingLocation === "right"}
-          /* If the icon size corresponds to a discrete size, it will be set with a class name
-             by the abstract form of the button.  Otherwise, the size has to be provided
-             directly to the Icon component, in the case that it is non discrete (e.g. 32px, not
-             "small"). */
-          size={
-            iconSize !== undefined && !types.ButtonDiscreteIconSizes.contains(iconSize)
-              ? sizeToString(iconSize)
-              : undefined
-          }
+          isLoading={isLoading}
+          loadingLocation={loadingLocation}
+          location="right"
         />
       ) : rightIcon ? (
         <RenderOrSpinner isLoading={isLoading} loadingLocation={loadingLocation} location="right">
