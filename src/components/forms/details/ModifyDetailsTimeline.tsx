@@ -45,7 +45,10 @@ const ModifyNestedDetailsTimeline = ({
             key="new-detail"
             detailId={detailId}
             onCancel={() => onCancelCreate()}
-            onCreated={() => onSucessCreate()}
+            onCreated={detail => {
+              setOptimisticDetails(curr => [{ ...detail, nestedDetails: [] }, ...curr]);
+              onSucessCreate();
+            }}
           />
         </Timeline.Item>
       )}
@@ -139,7 +142,10 @@ export const ModifyDetailsTimeline = ({
             entityId={entityId}
             entityType={entityType}
             onCancel={() => setCreateFormVisible(false)}
-            onCreated={() => setCreateFormVisible(false)}
+            onCreated={detail => {
+              setOptimisticDetails(curr => [{ ...detail, nestedDetails: [] }, ...curr]);
+              setCreateFormVisible(false);
+            }}
           />
         </Timeline.Item>
         {...optimisticDetails.map((detail, i) => (

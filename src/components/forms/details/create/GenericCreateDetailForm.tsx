@@ -14,7 +14,7 @@ export interface GenericCreateDetailFormProps<D extends FullDetail | NestedDetai
     DetailFormProps,
     "form" | "onSubmit" | "action" | "isNew" | "isOpen" | "onToggleOpen" | "actions"
   > {
-  readonly onCreated: () => void;
+  readonly onCreated: (detail: WithoutNestedDetails<D>) => void;
   readonly onCancel: () => void;
   readonly action: (
     data: DetailFormValues & { readonly visible: boolean },
@@ -83,7 +83,7 @@ export const GenericCreateDetailForm = <D extends FullDetail | NestedDetail>({
           form.handleApiError(response);
         } else {
           form.reset();
-          onCreated();
+          onCreated(response);
           transition(() => {
             refresh();
           });
