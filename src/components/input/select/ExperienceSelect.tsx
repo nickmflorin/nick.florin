@@ -15,16 +15,21 @@ const options = {
 } as const;
 
 export interface ExperienceSelectProps<E extends Exp>
-  extends Omit<SelectProps<E, typeof options>, "options" | "itemRenderer"> {}
+  extends Omit<SelectProps<E, typeof options>, "options" | "itemRenderer"> {
+  readonly useAbbreviatedOptionLabels?: boolean;
+}
 
-export const ExperienceSelect = <E extends Exp>(props: ExperienceSelectProps<E>): JSX.Element => (
+export const ExperienceSelect = <E extends Exp>({
+  useAbbreviatedOptionLabels = true,
+  ...props
+}: ExperienceSelectProps<E>): JSX.Element => (
   <Select<E, typeof options>
     {...props}
     options={options}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text size="sm" fontWeight="medium">
-          {m.shortTitle ?? m.title}
+          {useAbbreviatedOptionLabels ? m.shortTitle ?? m.title : m.title}
         </Text>
         <Text size="xs" className="text-body-light">
           {m.company.name}

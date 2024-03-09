@@ -64,6 +64,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           value={value}
           onChange={onChange}
           placement="bottom"
+          useAbbreviatedOptionLabels={false}
           inPortal
           onError={() => form.setStaticErrors("educations", "There was an error loading the data.")}
         />
@@ -79,6 +80,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
         <ClientEducationSelect
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
+          useAbbreviatedOptionLabels={false}
           value={value}
           onChange={onChange}
           placement="bottom"
