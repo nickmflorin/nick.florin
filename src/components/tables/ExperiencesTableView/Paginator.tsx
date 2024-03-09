@@ -1,6 +1,9 @@
+import dynamic from "next/dynamic";
+
 import { EXPERIENCES_ADMIN_TABLE_PAGE_SIZE } from "~/actions/fetches/constants";
 import { getAdminExperiencesCount } from "~/actions/fetches/get-experiences";
-import { Paginator as RootPaginator } from "~/components/pagination/Paginator";
+
+const RootPaginator = dynamic(() => import("~/components/pagination/Paginator"), {});
 
 import { type Filters } from "./types";
 

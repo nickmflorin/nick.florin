@@ -16,13 +16,13 @@ const TableSearchBar = dynamic(() => import("./SearchBar"), {
   loading: () => <TableSearchBarPlaceholder />,
 });
 
-interface TableViewProps {
+interface SkillsTableViewProps {
   readonly filters: Filters;
   readonly page: number;
   readonly checkedRows: string[];
 }
 
-export const SkillsTableView = ({ filters, page, checkedRows }: TableViewProps) => (
+export const SkillsTableView = ({ filters, page, checkedRows }: SkillsTableViewProps) => (
   <RootTableView
     searchBar={<TableSearchBar />}
     controlBar={<ControlBar checkedRows={checkedRows} filters={filters} page={page} />}
