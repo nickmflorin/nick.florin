@@ -60,7 +60,6 @@ export const getAdminEducations = cache(
     const skills = await prisma.skill.findMany({
       include: { educations: true },
       where: {
-        visible: true,
         educations: { some: { education: { id: { in: edus.map(e => e.id) } } } },
       },
     });

@@ -60,7 +60,6 @@ export const getAdminExperiences = cache(
     const skills = await prisma.skill.findMany({
       include: { experiences: true },
       where: {
-        visible: true,
         experiences: { some: { experience: { id: { in: exps.map(e => e.id) } } } },
       },
     });
