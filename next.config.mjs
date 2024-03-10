@@ -27,16 +27,22 @@ const config = {
     optimizePackageImports: ["@mantine/core"],
   },
   transpilePackages: ["@mantine/core"],
-  webpack: config => {
-    /* The StylelintPlugin requires the addition to the package.json: "postcss": "^8.4.18". */
-    config.plugins.push(new StylelintPlugin());
-    return config;
-  },
+  // webpack: config => {
+  //   /* The StylelintPlugin requires the addition to the package.json: "postcss": "^8.4.18". */
+  //   config.plugins.push(new StylelintPlugin());
+  //   return config;
+  // },
   sassOptions: {
     includePaths: [path.join(__dirname, "src/styles")],
   },
   images: {
-    domains: ["images.clerk.dev"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.clerk.dev',
+        port: '',
+      },
+    ],
   },
   redirects: async () => [
     {
@@ -55,9 +61,6 @@ const config = {
       permanent: false,
     },
   ],
-  experimental: {
-    optimizePackageImports: ["@mantine/core"],
-  },
 };
 
 const bundled = (phase, { defaultConfig }) =>
