@@ -1,11 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 
 import { isApiClientErrorResponse } from "~/application/errors";
 import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/update-skill";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { useDeepEqualEffect } from "~/hooks";
 
 import { useForm } from "../generic/hooks/use-form";
 
@@ -42,7 +43,8 @@ export const UpdateSkillForm = ({
     },
   });
 
-  useEffect(() => {
+  // Prevents the form from resetting when an error occurs.
+  useDeepEqualEffect(() => {
     setValues({
       ...skill,
       description: skill.description ?? "",

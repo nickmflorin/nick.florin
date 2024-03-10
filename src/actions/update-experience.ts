@@ -6,6 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { ApiClientError, ApiClientFieldErrorCodes } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { type Experience } from "~/prisma/model";
 
 import { ExperienceSchema } from "./schemas";
 
@@ -16,12 +17,23 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
 
   const parsed = UpdateExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, ExperienceSchema);
+    return ApiClientError.BadRequest(parsed.error, ExperienceSchema).toJson();
   }
 
   const { company: companyId, title, ...data } = parsed.data;
 
   const experience = await prisma.$transaction(async tx => {
+    let exp: Experience;
+    try {
+      exp = await tx.experience.findUniqueOrThrow({
+        where: { id },
+      });
+    } catch (e) {
+      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
+        throw ApiClientError.NotFound();
+      }
+      throw e;
+    }
     if (companyId) {
       try {
         await tx.company.findUniqueOrThrow({ where: { id: companyId } });
@@ -39,42 +51,38 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
         throw e;
       }
     }
-    if (title) {
-      if (await prisma.experience.count({ where: { companyId, title } })) {
-        return ApiClientError.BadRequest({
-          title: {
-            code: ApiClientFieldErrorCodes.unique,
-            message: "The title must be unique for a given company.",
-          },
-        }).toResponse();
-      }
+    if (
+      title &&
+      (await prisma.experience.count({ where: { companyId, title, id: { notIn: [exp.id] } } }))
+    ) {
+      return ApiClientError.BadRequest({
+        title: {
+          code: ApiClientFieldErrorCodes.unique,
+          message: "The title must be unique for a given company.",
+        },
+      }).toJson();
     } else if (
       data.shortTitle &&
-      (await prisma.experience.count({ where: { companyId, shortTitle: data.shortTitle } }))
+      (await prisma.experience.count({
+        where: { companyId, shortTitle: data.shortTitle, id: { notIn: [exp.id] } },
+      }))
     ) {
       return ApiClientError.BadRequest({
         shortTitle: {
           code: ApiClientFieldErrorCodes.unique,
           message: "The 'shortTitle' must be unique for a given company.",
         },
-      }).toResponse();
+      }).toJson();
     }
-    try {
-      return await tx.experience.update({
-        where: { id },
-        data: {
-          ...data,
-          title,
-          companyId,
-          updatedById: user.id,
-        },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientError.NotFound();
-      }
-      throw e;
-    }
+    return await tx.experience.update({
+      where: { id },
+      data: {
+        ...data,
+        title,
+        companyId,
+        updatedById: user.id,
+      },
+    });
   });
   revalidatePath("/admin/experiences", "page");
   revalidatePath("/api/experiences");

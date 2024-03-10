@@ -15,7 +15,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
 
   const parsed = ExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, ExperienceSchema);
+    return ApiClientError.BadRequest(parsed.error, ExperienceSchema).toJson();
   }
 
   const { company: companyId, ...data } = parsed.data;
@@ -43,7 +43,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'title' must be unique for a given company.",
       },
-    }).toResponse();
+    }).toJson();
   } else if (
     data.shortTitle &&
     (await prisma.experience.count({
@@ -55,7 +55,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'shortTitle' must be unique for a given company.",
       },
-    }).toResponse();
+    }).toJson();
   }
 
   const experience = await prisma.experience.create({

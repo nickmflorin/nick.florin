@@ -15,7 +15,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
 
   const parsed = EducationSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, EducationSchema);
+    return ApiClientError.BadRequest(parsed.error, EducationSchema).toJson();
   }
 
   const { school: schoolId, ...data } = parsed.data;
@@ -43,7 +43,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'major' must be unique for a given school.",
       },
-    }).toResponse();
+    }).toJson();
   } else if (
     data.shortMajor &&
     (await prisma.education.count({
@@ -55,7 +55,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'shortMajor' must be unique for a given school.",
       },
-    }).toResponse();
+    }).toJson();
   }
 
   const education = await prisma.education.create({

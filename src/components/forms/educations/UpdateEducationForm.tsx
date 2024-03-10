@@ -17,5 +17,5 @@ export const UpdateEducationForm = async ({
   if (!education) {
     return <ErrorView title="404">The requested resource could not be found.</ErrorView>;
   }
-  return education ? <EducationForm education={education} /> : <></>;
+  return <EducationForm education={education} />;
 };

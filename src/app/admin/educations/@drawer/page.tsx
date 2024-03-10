@@ -18,7 +18,6 @@ interface EducationsDrawerProps {
 
 export default async function EducationsDrawer({ searchParams }: EducationsDrawerProps) {
   const { updateEducationId, updateEducationDetailsId } = searchParams;
-
   if (updateEducationDetailsId) {
     return (
       <Drawer className="pl-[16px] pb-[16px] pt-[16px]">

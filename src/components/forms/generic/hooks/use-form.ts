@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import omit from "lodash.omit";
+import uniq from "lodash.uniq";
 import {
   useForm as useReactHookForm,
   type Path,
@@ -23,6 +24,7 @@ import {
   isHttpError,
 } from "~/application/errors";
 import { logger } from "~/application/logger";
+import { humanizeList } from "~/lib/formatters";
 
 import {
   type FormInstance,
@@ -93,9 +95,10 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   onChange,
   ...options
 }: FormConfig<I, IN>): FormInstance<I> => {
-  const [internalFieldErrors, setInternalFieldErrors] = useState<FieldErrors<I>>({});
-  const [internalStaticFieldErrors, setInternalStaticFieldErrors] = useState<FieldErrors<I>>({});
+  const [internalFieldErrors, _setInternalFieldErrors] = useState<FieldErrors<I>>({});
+  const [internalStaticFieldErrors, _setInternalStaticFieldErrors] = useState<FieldErrors<I>>({});
   const [globalErrors, setGlobalErrors] = useState<string[]>([]);
+  const registeredFields = useRef<FieldName<I>[]>([]);
 
   const {
     setValue,
@@ -128,6 +131,17 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         name: N,
         options?: RegisterOptions<I, N>,
       ): UseFormRegisterReturn<N> => {
+        /* if (registeredFields.current.includes(name)) {
+             const humanized = humanizeList(registeredFields.current, {
+               conjunction: "and",
+               formatter: v => `'${v}'`,
+             });
+             throw new Error(
+               `Error during field registration: The field '${name}' is already ` +
+                 `registered with the form!  Current registered fields are: ${humanized}.`,
+             );
+           } */
+        registeredFields.current = uniq([...registeredFields.current, name]);
         const registration = _register(name, options);
         return {
           ...registration,
@@ -150,6 +164,8 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         name: N,
         handler: ControlledFieldChangeHandler<N, I>,
       ): ControlledFieldChangeHandler<N, I> => {
+        registeredFields.current = uniq([...registeredFields.current, name]);
+
         const fn: ControlledFieldChangeHandler<N, I> = value => {
           onChange?.({ name, value, values: { ...getValues(), [name]: value } });
           handler(value);
@@ -159,11 +175,65 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [getValues, onChange],
   );
 
+  const setInternalFieldErrors = useCallback((fieldErrors: FieldErrors<I>) => {
+    const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
+      if (!registeredFields.current.includes(curr as FieldName<I>)) {
+        return [...prev, curr];
+      }
+      return prev;
+    }, [] as string[]);
+    if (invalidFields.length !== 0) {
+      const humanized = humanizeList(registeredFields.current, {
+        conjunction: "and",
+        formatter: v => `'${v}'`,
+      });
+      logger.warn(
+        "The form received field errors for fields that are not registered with the form! " +
+          `Current fields registered with the form are: ${humanized}.`,
+        { invalidFields, registered: registeredFields.current },
+      );
+    }
+    _setInternalFieldErrors(fieldErrors);
+  }, []);
+
+  const setInternalStaticFieldErrors = useCallback(
+    (fieldErrors: FieldErrors<I> | ((curr: FieldErrors<I>) => FieldErrors<I>)) => {
+      const validate = (fieldErrors: FieldErrors<I>) => {
+        const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
+          if (!registeredFields.current.includes(curr as FieldName<I>)) {
+            return [...prev, curr];
+          }
+          return prev;
+        }, [] as string[]);
+        if (invalidFields.length !== 0) {
+          const humanized = humanizeList(registeredFields.current, {
+            conjunction: "and",
+            formatter: v => `'${v}'`,
+          });
+          logger.warn(
+            "The form received static field errors for fields that are not registered with the " +
+              `form! Current fields registered with the form are: ${humanized}.`,
+            { invalidFields, registered: registeredFields.current },
+          );
+        }
+      };
+      if (typeof fieldErrors === "function") {
+        return _setInternalStaticFieldErrors(curr => {
+          validate(curr);
+          return fieldErrors(curr);
+        });
+      }
+      validate(fieldErrors);
+      _setInternalStaticFieldErrors(fieldErrors);
+    },
+    [],
+  );
+
   const clearErrors = useCallback(() => {
     setGlobalErrors([]);
     setInternalFieldErrors({});
     clearNativeErrors();
-  }, [clearNativeErrors]);
+  }, [clearNativeErrors, setInternalFieldErrors]);
 
   const setStaticErrors: SetFormStaticErrors<I> = useCallback(
     (arg0: FieldName<I> | FieldErrors<I>, arg1?: string | string[]) => {
@@ -176,7 +246,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         throw new TypeError("Invalid method implementation!");
       }
     },
-    [],
+    [setInternalStaticFieldErrors],
   );
 
   const setErrors: SetFormErrors<I> = useCallback(
@@ -194,7 +264,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         setInternalFieldErrors(arg0);
       }
     },
-    [],
+    [setInternalFieldErrors],
   );
 
   const setInternalFieldErrorsFromResponse = useCallback(

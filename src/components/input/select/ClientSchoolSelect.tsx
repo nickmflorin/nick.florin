@@ -17,6 +17,7 @@ export const ClientSchoolSelect = ({ onError, ...props }: ClientSchoolSelectProp
       data={data ?? []}
       isDisabled={error !== undefined}
       isLoading={isLoading}
+      isReady={data !== undefined}
     />
   );
 };

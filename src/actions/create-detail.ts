@@ -29,7 +29,7 @@ export const createDetail = async (
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, DetailSchema);
+    throw ApiClientError.BadRequest(parsed.error, DetailSchema).toJson();
   }
   const { label, ...data } = parsed.data;
   if (

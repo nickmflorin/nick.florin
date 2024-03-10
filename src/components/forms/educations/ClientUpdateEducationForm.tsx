@@ -6,6 +6,7 @@ import { isApiClientErrorResponse } from "~/application/errors";
 import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/update-education";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { useDeepEqualEffect } from "~/hooks";
 
 import { useForm } from "../generic/hooks/use-form";
 
@@ -44,7 +45,8 @@ export const UpdateEducationForm = ({
     },
   });
 
-  useEffect(() => {
+  // Prevents the form from resetting when an error occurs.
+  useDeepEqualEffect(() => {
     setValues({
       ...education,
       school: education.schoolId,

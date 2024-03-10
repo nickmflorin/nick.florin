@@ -25,7 +25,7 @@ export const createNestedDetail = async (detailId: string, req: z.infer<typeof D
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, DetailSchema);
+    return ApiClientError.BadRequest(parsed.error, DetailSchema).toJson();
   }
   const { label, ...data } = parsed.data;
   if (

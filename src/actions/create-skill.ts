@@ -19,7 +19,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
 
   const parsed = SkillSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, SkillSchema);
+    return ApiClientError.BadRequest(parsed.error, SkillSchema).toJson();
   }
   const { slug: _slug, experiences, educations, ...data } = parsed.data;
 

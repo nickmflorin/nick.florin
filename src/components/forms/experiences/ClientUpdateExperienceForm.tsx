@@ -1,11 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 
 import { isApiClientErrorResponse } from "~/application/errors";
 import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/update-experience";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { useDeepEqualEffect } from "~/hooks";
 
 import { useForm } from "../generic/hooks/use-form";
 
@@ -42,7 +43,8 @@ export const UpdateExperienceForm = ({
     },
   });
 
-  useEffect(() => {
+  // Prevents the form from resetting when an error occurs.
+  useDeepEqualEffect(() => {
     setValues({
       ...experience,
       company: experience.companyId,

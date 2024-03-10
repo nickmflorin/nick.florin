@@ -38,7 +38,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => (
       <TextInput className="w-full" {...props.form.register("major")} />
     </Form.Field>
     <Form.Field
-      name="major"
+      name="shortMajor"
       label="Short Major"
       form={props.form}
       helpText={
