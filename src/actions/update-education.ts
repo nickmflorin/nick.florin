@@ -34,13 +34,6 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
       }
       throw e;
     }
-    return ApiClientError.BadRequest({
-      major: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'major' must be unique for a given school.",
-      },
-    }).toJson();
-
     if (schoolId) {
       try {
         await tx.school.findUniqueOrThrow({ where: { id: schoolId } });
