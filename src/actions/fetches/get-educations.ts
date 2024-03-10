@@ -90,6 +90,7 @@ export const preloadEducations = <I extends EduIncludes>(includes: I) => {
 export const getEducations = cache(
   async <I extends EduIncludes>(includes: I): Promise<ApiEducation<I>[]> => {
     const edus = await prisma.education.findMany({
+      where: { visible: true },
       include: { school: true },
       orderBy: { startDate: "desc" },
     });

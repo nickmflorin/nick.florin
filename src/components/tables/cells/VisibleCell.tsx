@@ -1,29 +1,33 @@
-"use client";
 import { useRouter } from "next/navigation";
 import { useTransition, useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../../types";
+import type * as types from "../types";
 
 import { logger } from "~/application/logger";
-import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/update-skill";
 import { Checkbox } from "~/components/input/Checkbox";
 
-interface VisibleCellProps {
-  readonly skill: ApiSkill;
-  readonly table: types.TableInstance<ApiSkill>;
+interface VisibleCellProps<M extends { id: string; visible: boolean }> {
+  readonly model: M;
+  readonly table: types.TableInstance<M>;
+  readonly errorMessage: string;
+  readonly action: (id: string, data: { visible: boolean }) => Promise<void>;
 }
 
-export const VisibleCell = ({ skill, table }: VisibleCellProps): JSX.Element => {
+export const VisibleCell = <M extends { id: string; visible: boolean }>({
+  model,
+  action,
+  errorMessage,
+  table,
+}: VisibleCellProps<M>): JSX.Element => {
   const router = useRouter();
   const [_, transition] = useTransition();
-  const [checked, setChecked] = useState(skill.visible);
+  const [checked, setChecked] = useState(model.visible);
 
   useEffect(() => {
-    setChecked(skill.visible);
-  }, [skill.visible]);
+    setChecked(model.visible);
+  }, [model.visible]);
 
   return (
     <div className="flex flex-row items-center justify-center">
@@ -32,14 +36,14 @@ export const VisibleCell = ({ skill, table }: VisibleCellProps): JSX.Element => 
         onChange={async e => {
           // Set checked state optimistically.
           setChecked(e.target.checked);
-          table.setRowLoading(skill.id, true);
+          table.setRowLoading(model.id, true);
           try {
-            await updateSkill(skill.id, { visible: e.target.checked });
+            await action(model.id, { visible: e.target.checked });
           } catch (e) {
             logger.error(e);
-            toast.error("There was an error updating the skill.");
+            toast.error(errorMessage);
           } finally {
-            table.setRowLoading(skill.id, false);
+            table.setRowLoading(model.id, false);
           }
           transition(() => {
             router.refresh();

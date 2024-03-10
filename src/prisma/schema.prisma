@@ -201,6 +201,7 @@ model Experience {
   shortTitle  String?
   description String?
   isRemote    Boolean              @default(false)
+  visible     Boolean              @default(true)
 
   @@unique([title, companyId])
 }
@@ -243,6 +244,7 @@ model Education {
   school        School              @relation("educations", fields: [schoolId], references: [id])
   schoolId      String              @db.Uuid
   postPoned     Boolean             @default(false)
+  visible       Boolean             @default(true)
 
   @@unique([major, schoolId])
   @@unique([shortMajor, schoolId])

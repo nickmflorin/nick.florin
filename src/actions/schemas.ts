@@ -38,6 +38,7 @@ export const ExperienceSchema = z.object({
   startDate: z.date(),
   endDate: z.date().nullable().optional(),
   isRemote: z.boolean().optional(),
+  visible: z.boolean().optional(),
 });
 
 export const EducationSchema = z.object({
@@ -59,6 +60,7 @@ export const EducationSchema = z.object({
   startDate: z.date(),
   endDate: z.date().nullable().optional(),
   postPoned: z.boolean().optional(),
+  visible: z.boolean().optional(),
 });
 
 export const DetailSchema = z.object({

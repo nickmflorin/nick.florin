@@ -92,6 +92,7 @@ export const getExperiences = cache(
     const exps = await prisma.experience.findMany({
       include: { company: true },
       orderBy: { startDate: "desc" },
+      where: { visible: true },
     });
 
     let skills: ExpSkill[] = [];

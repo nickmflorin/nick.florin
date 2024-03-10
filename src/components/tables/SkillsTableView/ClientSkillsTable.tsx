@@ -4,7 +4,7 @@ import { deleteSkill } from "~/actions/delete-skill";
 import { updateSkill } from "~/actions/update-skill";
 import { useMutableParams } from "~/hooks";
 
-import { EditableStringCell, ActionsCell } from "../cells";
+import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
 import { Table } from "../Table";
 
 import {
@@ -12,7 +12,6 @@ import {
   ExperiencesCell,
   ExperienceCell,
   SlugCell,
-  VisibleCell,
   ShowInTopSkillsCell,
 } from "./cells";
 
@@ -76,7 +75,16 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
           accessor: "visible",
           title: "Visible",
           textAlign: "center",
-          render: ({ model, table }) => <VisibleCell skill={model} table={table} />,
+          render: ({ model, table }) => (
+            <VisibleCell
+              model={model}
+              table={table}
+              action={async (id, data) => {
+                await updateSkill(id, data);
+              }}
+              errorMessage="There was an error updating the experience."
+            />
+          ),
         },
         {
           accessor: "actions",

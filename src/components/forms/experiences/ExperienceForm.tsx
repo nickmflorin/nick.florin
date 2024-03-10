@@ -19,6 +19,20 @@ export interface ExperienceFormProps
 
 export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">
+    <Form.ControlledField name="company" label="Company" form={props.form} condition="required">
+      {({ value, onChange }) => (
+        <ClientCompanySelect
+          inputClassName="w-full"
+          menuClassName="max-h-[260px]"
+          value={value}
+          onChange={onChange}
+          inPortal
+          onError={() =>
+            props.form.setStaticErrors("company", "There was an error loading the data.")
+          }
+        />
+      )}
+    </Form.ControlledField>
     <Form.Field name="title" label="Title" form={props.form} condition="required">
       <TextInput className="w-full" {...props.form.register("title")} />
     </Form.Field>
@@ -36,20 +50,6 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => (
     <Form.Field name="description" label="Description" form={props.form}>
       <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
-    <Form.ControlledField name="company" label="Company" form={props.form} condition="required">
-      {({ value, onChange }) => (
-        <ClientCompanySelect
-          inputClassName="w-full"
-          menuClassName="max-h-[260px]"
-          value={value}
-          onChange={onChange}
-          inPortal
-          onError={() =>
-            props.form.setStaticErrors("company", "There was an error loading the data.")
-          }
-        />
-      )}
-    </Form.ControlledField>
     <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
       <Form.ControlledField name="isRemote" form={props.form} className="max-w-fit">
         {({ value, onChange }) => (

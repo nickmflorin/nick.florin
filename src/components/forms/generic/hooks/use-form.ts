@@ -131,16 +131,6 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         name: N,
         options?: RegisterOptions<I, N>,
       ): UseFormRegisterReturn<N> => {
-        /* if (registeredFields.current.includes(name)) {
-             const humanized = humanizeList(registeredFields.current, {
-               conjunction: "and",
-               formatter: v => `'${v}'`,
-             });
-             throw new Error(
-               `Error during field registration: The field '${name}' is already ` +
-                 `registered with the form!  Current registered fields are: ${humanized}.`,
-             );
-           } */
         registeredFields.current = uniq([...registeredFields.current, name]);
         const registration = _register(name, options);
         return {
@@ -300,7 +290,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         }, {} as FieldErrors<I>),
       );
     },
-    [],
+    [setInternalFieldErrors],
   );
 
   const handleApiError = useCallback(

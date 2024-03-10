@@ -6,7 +6,7 @@ import { Link } from "~/components/buttons/generic";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 import { useMutableParams } from "~/hooks";
 
-import { EditableStringCell, ActionsCell } from "../cells";
+import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
 import { Table } from "../Table";
 
 export interface ClientTableProps {
@@ -76,6 +76,21 @@ export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => {
           width: 120,
           textAlign: "center",
           render: ({ model }) => <DetailsCell model={model} />,
+        },
+        {
+          accessor: "visible",
+          title: "Visible",
+          textAlign: "center",
+          render: ({ model, table }) => (
+            <VisibleCell
+              model={model}
+              table={table}
+              action={async (id, data) => {
+                await updateExperience(id, data);
+              }}
+              errorMessage="There was an error updating the experience."
+            />
+          ),
         },
         {
           accessor: "actions",
