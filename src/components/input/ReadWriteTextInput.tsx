@@ -108,10 +108,20 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
     const [changeExists, _setChangeExists] = useState(false);
 
     const setChangeExists = useCallback(() => {
-      if (internalRef.current?.value !== lastPersisted.current) {
-        _setChangeExists(true);
-      } else {
-        _setChangeExists(false);
+      if (internalRef.current) {
+        /* This is the initial unpersisted state, when not initialized with an initial value, before
+           any persist has occurred. */
+        if (lastPersisted.current === null) {
+          if (internalRef.current.value !== "") {
+            _setChangeExists(true);
+          } else {
+            _setChangeExists(false);
+          }
+        } else if (internalRef.current.value !== lastPersisted.current) {
+          _setChangeExists(true);
+        } else {
+          _setChangeExists(false);
+        }
       }
     }, []);
 

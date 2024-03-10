@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { getAdminEducations } from "~/actions/fetches/get-educations";
+import { getSchools } from "~/actions/fetches/get-schools";
 import { Loading } from "~/components/views/Loading";
 
 import { type Filters } from "./types";
@@ -16,5 +17,6 @@ interface EducationsAdminTableProps {
 
 export const EducationsAdminTable = async ({ page, filters }: EducationsAdminTableProps) => {
   const educations = await getAdminEducations({ page, filters });
-  return <ClientTable educations={educations} />;
+  const schools = await getSchools();
+  return <ClientTable educations={educations} schools={schools} />;
 };

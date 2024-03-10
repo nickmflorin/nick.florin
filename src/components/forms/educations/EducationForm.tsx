@@ -20,6 +20,20 @@ export interface EducationFormProps
 
 export const EducationForm = (props: EducationFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">
+    <Form.ControlledField name="school" label="School" form={props.form} condition="required">
+      {({ value, onChange }) => (
+        <ClientSchoolSelect
+          inputClassName="w-full"
+          menuClassName="max-h-[260px]"
+          value={value}
+          onChange={onChange}
+          inPortal
+          onError={() =>
+            props.form.setStaticErrors("school", "There was an error loading the data.")
+          }
+        />
+      )}
+    </Form.ControlledField>
     <Form.Field name="major" label="Major" form={props.form} condition="required">
       <TextInput className="w-full" {...props.form.register("major")} />
     </Form.Field>
@@ -57,20 +71,6 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => (
     <Form.Field name="note" label="Note" form={props.form}>
       <TextArea className="w-full" {...props.form.register("note")} />
     </Form.Field>
-    <Form.ControlledField name="school" label="School" form={props.form} condition="required">
-      {({ value, onChange }) => (
-        <ClientSchoolSelect
-          inputClassName="w-full"
-          menuClassName="max-h-[260px]"
-          value={value}
-          onChange={onChange}
-          inPortal
-          onError={() =>
-            props.form.setStaticErrors("school", "There was an error loading the data.")
-          }
-        />
-      )}
-    </Form.ControlledField>
     <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
       <Form.ControlledField name="postPoned" form={props.form} className="max-w-fit">
         {({ value, onChange }) => (

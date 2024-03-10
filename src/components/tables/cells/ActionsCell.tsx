@@ -5,28 +5,23 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { IconButton } from "~/components/buttons";
-import { useReplaceableParams } from "~/hooks";
 
 interface ActionsCellProps {
   readonly deleteIsDisabled?: boolean;
-  readonly editQueryParam: string;
-  readonly editQueryValue: string;
   readonly deleteErrorMessage: string;
+  readonly onEdit: () => void;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   readonly deleteAction: () => Promise<any>;
 }
 
 export const ActionsCell = ({
   deleteIsDisabled,
-  editQueryParam,
-  editQueryValue,
   deleteErrorMessage,
+  onEdit,
   deleteAction,
 }: ActionsCellProps): JSX.Element => {
   const { refresh } = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const [_, replace] = useReplaceableParams();
   const [__, transition] = useTransition();
 
   return (
@@ -37,7 +32,7 @@ export const ActionsCell = ({
         className="text-blue-500 rounded-full hover:text-blue-600"
         disabledClassName="text-disabled"
         loadingClassName="text-gray-400"
-        onClick={() => replace(editQueryParam, editQueryValue)}
+        onClick={() => onEdit()}
       />
       <IconButton.Transparent
         icon={{ name: "trash-alt" }}
