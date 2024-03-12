@@ -1,21 +1,76 @@
-import dynamic from "next/dynamic";
+"use client";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
-import { getExperience } from "~/actions/fetches/get-experience";
-import { ErrorView } from "~/components/views/Error";
-import { Loading } from "~/components/views/Loading";
+import { isApiClientErrorResponse } from "~/application/errors";
+import { type ApiExperience } from "~/prisma/model";
+import { updateExperience } from "~/actions/update-experience";
+import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { useDeepEqualEffect } from "~/hooks";
 
-const ExperienceForm = dynamic(() => import("./ClientUpdateExperienceForm"), {
-  loading: () => <Loading loading={true} />,
-});
+import { useForm } from "../generic/hooks/use-form";
 
-export const UpdateExperienceForm = async ({
-  experienceId,
-}: {
-  readonly experienceId: string;
-}): Promise<JSX.Element> => {
-  const experience = await getExperience(experienceId);
-  if (!experience) {
-    return <ErrorView title="404">The requested resource could not be found.</ErrorView>;
-  }
-  return <ExperienceForm experience={experience} />;
+import {
+  ExperienceForm,
+  ExperienceFormSchema,
+  type ExperienceFormProps,
+  type ExperienceFormValues,
+} from "./ExperienceForm";
+
+export interface UpdateExperienceFormProps extends Omit<ExperienceFormProps, "form" | "action"> {
+  readonly experience: ApiExperience;
+  readonly onCancel?: () => void;
+}
+
+export const UpdateExperienceForm = ({
+  experience,
+  onCancel,
+  ...props
+}: UpdateExperienceFormProps): JSX.Element => {
+  const updateExperienceWithId = updateExperience.bind(null, experience.id);
+  const { refresh } = useRouter();
+  const [pending, transition] = useTransition();
+
+  const { setValues, ...form } = useForm<ExperienceFormValues>({
+    schema: ExperienceFormSchema,
+    defaultValues: {
+      title: "",
+      shortTitle: "",
+      description: "",
+      isRemote: false,
+      startDate: new Date(),
+      endDate: null,
+    },
+  });
+
+  // Prevents the form from resetting when an error occurs.
+  useDeepEqualEffect(() => {
+    setValues({
+      ...experience,
+      company: experience.companyId,
+      description: experience.description ?? "",
+    });
+  }, [experience, setValues]);
+
+  return (
+    <ExperienceForm
+      {...props}
+      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
+      title={experience.title}
+      isLoading={pending}
+      form={{ ...form, setValues }}
+      action={async (data, form) => {
+        const response = await updateExperienceWithId(data);
+        if (isApiClientErrorResponse(response)) {
+          form.handleApiError(response);
+        } else {
+          transition(() => {
+            refresh();
+          });
+        }
+      }}
+    />
+  );
 };
+
+export default UpdateExperienceForm;

@@ -23,3 +23,5 @@ export const ModifyDetailsView = ({ title, ...props }: ModifyDetailsViewProps) =
     </div>
   </div>
 );
+
+export default ModifyDetailsView;

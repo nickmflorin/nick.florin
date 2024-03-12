@@ -5,5 +5,5 @@ interface SkillsLayoutProps {
 }
 
 export default async function SkillsLayout({ children }: SkillsLayoutProps) {
-  return { children };
+  return <>{children}</>;
 }

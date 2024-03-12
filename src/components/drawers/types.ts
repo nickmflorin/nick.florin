@@ -3,6 +3,7 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 import { z } from "zod";
 
 export const DrawerParams = {
+  skill: "skillId",
   "update-skill": "updateSkillId",
   "update-experience": "updateExperienceId",
   "update-education": "updateEducationId",

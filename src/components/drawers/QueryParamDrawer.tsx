@@ -14,12 +14,12 @@ const Drawer = dynamic(() => import("~/components/drawers/Drawer"), {
 });
 
 export interface ClientDrawerProps {
-  readonly children?: JSX.Element;
+  readonly children?: JSX.Element | JSX.Element[];
   readonly param: DrawerParam;
   readonly className?: ComponentProps["className"];
 }
 
-export const ClientDrawer = ({ children, param, ...props }: ClientDrawerProps) => {
+export const QueryParamDrawer = ({ children, param, ...props }: ClientDrawerProps) => {
   const searchParams = useSearchParams();
   const drawerParams = useMemo(() => parseSearchParams(searchParams), [searchParams]);
 
@@ -48,4 +48,4 @@ export const ClientDrawer = ({ children, param, ...props }: ClientDrawerProps) =
   return null;
 };
 
-export default ClientDrawer;
+export default QueryParamDrawer;
