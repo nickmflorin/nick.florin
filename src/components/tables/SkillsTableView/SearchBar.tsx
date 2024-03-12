@@ -30,11 +30,11 @@ export const SearchBar = (props: SearchBarProps) => {
         onNew={() => setDrawerOpen(true)}
         onCreate={createSkillAction}
       />
-      {drawerOpen && (
+      {/* {drawerOpen && (
         <Drawer onClose={() => setDrawerOpen(false)}>
           <CreateSkillForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
         </Drawer>
-      )}
+      )} */}
     </>
   );
 };

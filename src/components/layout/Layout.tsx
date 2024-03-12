@@ -9,10 +9,11 @@ const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false })
 
 export interface LayoutProps {
   readonly children: ReactNode;
+  readonly drawer: ReactNode;
   readonly nav: ILayoutNavItem[];
 }
 
-export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Element> => (
+export const Layout = async ({ children, drawer, nav }: LayoutProps): Promise<JSX.Element> => (
   <div className="layout">
     <header className="header">
       <Suspense fallback={<></>}>
@@ -25,7 +26,7 @@ export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Elemen
         {children}
         <ToastContainer />
       </main>
-      <div className="drawer-target" id="drawer-target" />
+      {drawer}
     </div>
   </div>
 );

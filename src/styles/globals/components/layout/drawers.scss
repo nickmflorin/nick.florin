@@ -9,24 +9,22 @@ $drawer-width: 400px;
   overflow: hidden;
 }
 
-// The 'drawer-target' is the empty div placeholder with an appropriate ID that the drawer portal is
-// injected into.  It will always be in the DOM - but will only have children when the drawer is
-// open.
-.drawer-target {
+.drawer-container {
   @include drawer-container();
-  min-width: fit-content;
+  min-width: $drawer-width;
+  max-width: $drawer-width;
   background-color: theme("colors.white");
+  border-left: 1px solid theme("colors.border");
 
   > .drawer {
-    // @include partials.scrollbar();
     @include drawer-container();
+    padding: 24px 6px 24px 24px;
     display: flex;
     flex-direction: column;
-    padding: 24px 6px 24px 24px;
     overflow-x: hidden;
-    width: $drawer-width;
-    min-width: $drawer-width;
-    border-left: 1px solid theme("colors.border");
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
 
     .drawer__close-button {
       position: absolute;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import Script from "next/script";
+import { type ReactNode } from "react";
 
 import { AppConfig } from "~/app/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
@@ -23,7 +24,12 @@ export const metadata: Metadata = {
   description: "Personal portfolio, resume & website for Nick Florin.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayoutProps {
+  readonly children: ReactNode;
+  readonly drawer: ReactNode;
+}
+
+export default function RootLayout({ children, drawer }: RootLayoutProps) {
   return (
     <html lang="en">
       <head>
@@ -46,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={InterFont.className}>
         <AppConfig>
           <Layout
+            drawer={drawer}
             nav={[
               {
                 tooltipLabel: "Resume",

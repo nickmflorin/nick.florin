@@ -5,9 +5,8 @@ import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
 
-import { DrawerPortal } from "./DrawerPortal";
-
 const DrawerCloseButton = dynamic(() => import("~/components/buttons/DrawerCloseButton"));
+import { DrawerContainer } from "./DrawerContainer";
 
 export interface DrawerProps extends ComponentProps {
   readonly children: ReactNode;
@@ -15,12 +14,12 @@ export interface DrawerProps extends ComponentProps {
 }
 
 export const Drawer = ({ children, onClose, ...props }: DrawerProps): JSX.Element => (
-  <DrawerPortal>
+  <DrawerContainer>
     <div {...props} className={clsx("drawer", props.className)}>
       {children}
       {onClose && <DrawerCloseButton onClick={onClose} />}
     </div>
-  </DrawerPortal>
+  </DrawerContainer>
 );
 
 export default Drawer;

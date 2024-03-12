@@ -32,11 +32,12 @@ export const SkillsTableView = ({ filters, page, checkedRows }: SkillsTableViewP
       </Suspense>
     }
   >
-    <Suspense
+    <></>
+    {/* <Suspense
       key={`${filters.search}-${filters.experiences}-${filters.educations}`}
       fallback={<Loading loading={true} />}
     >
       <SkillsAdminTable filters={filters} page={page} />
-    </Suspense>
+    </Suspense> */}
   </RootTableView>
 );
