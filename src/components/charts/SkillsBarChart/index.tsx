@@ -95,7 +95,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
           offset={{ mainAxis: 4 }}
           withArrow={false}
           width={400}
-          className="p-[20px] rounded-md"
+          className="p-[20px] rounded-md overflow-y-scroll"
           variant="white"
           content={<SkillsChartFilterForm form={{ ...form, setValues }} />}
         >

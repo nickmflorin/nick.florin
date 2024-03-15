@@ -30,7 +30,7 @@ export const SkillDrawerContent = ({
 }: SkillDrawerContentProps) => (
   <div className="flex flex-col gap-[14px]">
     <div className="flex flex-col gap-[8px]">
-      <div className="flex flex-row items-center gap-[6px]">
+      <div className="flex flex-col gap-[6px]">
         <Title order={2} className="text-gray-700 max-w-fit">
           {label}
         </Title>

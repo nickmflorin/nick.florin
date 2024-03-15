@@ -1,9 +1,4 @@
-import {
-  useRouter,
-  useSearchParams,
-  usePathname,
-  type ReadonlyURLSearchParams,
-} from "next/navigation";
+import { useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import { useCallback, useTransition } from "react";
 
 import { type QueryParamValue, encodeQueryParam } from "~/lib/urls";
@@ -28,9 +23,9 @@ export const useMutableParams = (
   clear: (key: string) => void;
 } => {
   const [_, transition] = useTransition();
-  const { replace: _replace } = useRouter();
+  // const { replace: _replace } = useRouter();
   const params = useSearchParams();
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
   const clear = useCallback(
     (param: string, opts?: { useTransition?: boolean }) => {
@@ -43,13 +38,15 @@ export const useMutableParams = (
       pms.delete(param);
       if (withTransition) {
         transition(() => {
-          _replace(`${pathname}?${pms.toString()}`);
+          // _replace(`${pathname}?${pms.toString()}`);
+          window.history.pushState(null, "", `?${pms.toString()}`);
         });
       } else {
-        _replace(`${pathname}?${pms.toString()}`);
+        // _replace(`${pathname}?${pms.toString()}`);
+        window.history.pushState(null, "", `?${pms.toString()}`);
       }
     },
-    [config, pathname, params, _replace],
+    [config, params],
   );
 
   const set: Set = useCallback(
@@ -88,13 +85,15 @@ export const useMutableParams = (
 
       if (withTransition) {
         transition(() => {
-          _replace(`${pathname}?${pms.toString()}`);
+          window.history.pushState(null, "", `?${pms.toString()}`);
+          // _replace(`${pathname}?${pms.toString()}`);
         });
       } else {
-        _replace(`${pathname}?${pms.toString()}`);
+        // _replace(`${pathname}?${pms.toString()}`);
+        window.history.pushState(null, "", `?${pms.toString()}`);
       }
     },
-    [config, pathname, params, _replace],
+    [config, params],
   );
 
   return { params, set, clear };

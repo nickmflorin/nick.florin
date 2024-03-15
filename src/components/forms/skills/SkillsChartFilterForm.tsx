@@ -38,7 +38,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       name="showTopSkills"
       label="Show Skills"
       helpText="The number of top skills that should be shown in the chart."
-      helpTextClassName="mt-[10px]"
+      helpTextClassName="!mt-[10px]"
     >
       {({ value, onChange: _onChange }) => (
         <RadioGroup

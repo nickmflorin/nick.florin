@@ -8,11 +8,8 @@ export interface DrawerContainerProps extends ComponentProps {
   readonly children: ReactNode;
 }
 
-export const DrawerContainer = ({ children, ...props }: DrawerContainerProps) =>
-  children ? (
-    <div {...props} className={clsx("drawer-container", props.className)}>
-      {children}
-    </div>
-  ) : (
-    <></>
-  );
+export const DrawerContainer = ({ children, ...props }: DrawerContainerProps) => (
+  <div {...props} className={clsx("drawer-container", props.className)}>
+    {children}
+  </div>
+);

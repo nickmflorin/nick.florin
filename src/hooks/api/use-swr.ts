@@ -23,7 +23,7 @@ import {
 
 type ApiPath = `/api/${string}`;
 type Args = Exclude<Arguments, string> | ApiPath;
-type Key = Args | (() => Args);
+export type Key = Args | (() => Args);
 
 type FetchResponseBody = { data: SuperJSONResult } | SuperJSONResult;
 
@@ -76,6 +76,9 @@ export const swrFetcher = async <T>(
        for additional errors here. */
     throw new Error(`Unexpectedly received ${response.status} response status!`);
   }
+  /* Note: Parsing the JSON will fail if the route does not yet exist, in which case the response
+     is HTML from NextJS's 404 page.  In this case, just let it fail - we don't want to treat it as
+     a client error since it is a bug in the code and should not be disguised. */
   const json: FetchResponseBody = await response.json();
   if (isSuccessResponseBody(json)) {
     const deserialized = superjson.deserialize(json.data);
@@ -112,6 +115,7 @@ export type SWRConfig<T> = Omit<
 export type SWRResponse<T> = RootSWRResponse<T, HttpError> & {
   readonly initialResponseReceived: boolean;
   readonly isInitialLoading: boolean;
+  readonly isRefetching: boolean;
 };
 
 const shouldFetch = (k: Key) => ![null, undefined, false].includes(k as null | undefined | boolean);
@@ -146,15 +150,17 @@ export const useSWR = <T>(
           return _onError?.(e);
         }
         /* This will force the useSWR call to throw the error, instead of embedding the error in the
-         hook's return. */
+           hook's return. */
         throw e;
       },
     },
   );
+
   return {
     data,
     error,
     initialResponseReceived: initialResponseReceived.current,
+    isRefetching: initialResponseReceived.current && others.isLoading,
     isInitialLoading: others.isLoading && !initialResponseReceived.current,
     ...others,
   } as SWRResponse<T>;

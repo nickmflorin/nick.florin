@@ -7,7 +7,7 @@ import { TableSearchBar } from "~/components/tables/TableSearchBar";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 
-const Drawer = dynamic(() => import("~/components/drawers/Drawer"));
+const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), { ssr: false });
 
 const CreateSkillForm = dynamic(() => import("~/components/forms/skills/CreateSkillForm"), {
   loading: () => <Loading loading={true} />,
@@ -31,9 +31,9 @@ export const SearchBar = (props: SearchBarProps) => {
         onCreate={createSkillAction}
       />
       {drawerOpen && (
-        <Drawer onClose={() => setDrawerOpen(false)} inPortal>
+        <ClientDrawer onClose={() => setDrawerOpen(false)}>
           <CreateSkillForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
-        </Drawer>
+        </ClientDrawer>
       )}
     </>
   );

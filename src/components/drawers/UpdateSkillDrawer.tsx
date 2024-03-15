@@ -1,14 +1,14 @@
 import dynamic from "next/dynamic";
 
 import { getSkill } from "~/actions/fetches/get-skill";
-import { ErrorView } from "~/components/views/Error";
+import { ErrorView } from "~/components/views/ErrorView";
 import { Loading } from "~/components/views/Loading";
 
 const SkillForm = dynamic(() => import("~/components/forms/skills/UpdateSkillForm"), {
   loading: () => <Loading loading={true} />,
 });
 
-const QueryParamDrawer = dynamic(() => import("./QueryParamDrawer"), {
+const QueryParamDrawer = dynamic(() => import("./ServerDrawer"), {
   loading: () => <Loading loading={true} />,
 });
 

@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { getExperience } from "~/actions/fetches/get-experience";
-import { ErrorView } from "~/components/views/Error";
+import { ErrorView } from "~/components/views/ErrorView";
 import { Loading } from "~/components/views/Loading";
 
 const ExperienceForm = dynamic(
@@ -11,7 +11,7 @@ const ExperienceForm = dynamic(
   },
 );
 
-const QueryParamDrawer = dynamic(() => import("./QueryParamDrawer"), {
+const QueryParamDrawer = dynamic(() => import("./ServerDrawer"), {
   loading: () => <Loading loading={true} />,
 });
 

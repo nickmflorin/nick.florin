@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
-import { ErrorOrRender } from "~/components/views/Error";
+import { ErrorOrRender } from "~/components/views/ErrorOrRender";
 import { Loading } from "~/components/views/Loading";
 
 export interface ChartContainerProps extends ComponentProps {

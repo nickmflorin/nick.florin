@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 
 import { isApiClientErrorResponse } from "~/application/errors";
 import { type ApiEducation } from "~/prisma/model";

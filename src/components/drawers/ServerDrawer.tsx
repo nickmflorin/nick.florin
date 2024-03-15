@@ -1,29 +1,17 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-
 import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
-import { type ComponentProps } from "~/components/types";
-import { Loading } from "~/components/views/Loading";
 
-import { type DrawerParam, parseSearchParams } from "./types";
+import { Drawer, type DrawerProps } from "./Drawer";
+import { useDrawerParam } from "./hooks";
+import { type DrawerParam } from "./types";
 
-const Drawer = dynamic(() => import("~/components/drawers/Drawer"), {
-  loading: () => <Loading loading={true} />,
-});
-
-export interface ClientDrawerProps {
+export interface ServerDrawerProps extends Omit<DrawerProps, "children"> {
   readonly children?: JSX.Element | JSX.Element[];
   readonly param: DrawerParam;
-  readonly className?: ComponentProps["className"];
 }
 
-export const QueryParamDrawer = ({ children, param, ...props }: ClientDrawerProps) => {
-  const searchParams = useSearchParams();
-  const drawerParams = useMemo(() => parseSearchParams(searchParams), [searchParams]);
-
-  const paramValue = useMemo(() => drawerParams[param] ?? null, [drawerParams, param]);
+export const ServerDrawer = ({ children, param, ...props }: ServerDrawerProps) => {
+  const paramValue = useDrawerParam(param);
 
   /* I do not understand why, but when the page is reloaded, refreshed, etc. while there is a
      drawer-related query parameter in the URL, the drawer will be initially visible on the page -
@@ -48,4 +36,4 @@ export const QueryParamDrawer = ({ children, param, ...props }: ClientDrawerProp
   return null;
 };
 
-export default QueryParamDrawer;
+export default ServerDrawer;

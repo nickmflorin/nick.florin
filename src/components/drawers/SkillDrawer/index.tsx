@@ -1,28 +1,33 @@
-import dynamic from "next/dynamic";
+"use client";
+import { useMemo } from "react";
 
-import { getSkill } from "~/actions/fetches/get-skill";
-import { ErrorView } from "~/components/views/Error";
-import { Loading } from "~/components/views/Loading";
+import { isUuid } from "~/lib/typeguards";
+import { ApiResponseView } from "~/components/views/ApiResponseView";
+import { useSkill, useMutableParams } from "~/hooks";
+
+import { ClientDrawer } from "../ClientDrawer";
 
 import { SkillDrawerContent } from "./DrawerContent";
 
-const QueryParamDrawer = dynamic(() => import("../QueryParamDrawer"), {
-  loading: () => <Loading loading={true} />,
-});
+export const SkillDrawer = (): JSX.Element => {
+  const { params, clear } = useMutableParams();
 
-export const SkillDrawer = async ({
-  skillId,
-}: {
-  readonly skillId: string;
-}): Promise<JSX.Element> => {
-  const skill = await getSkill(skillId);
-  return (
-    <QueryParamDrawer param="skillId" className="overflow-y-scroll">
-      {!skill ? (
-        <ErrorView title="404">The requested resource could not be found.</ErrorView>
-      ) : (
-        <SkillDrawerContent skill={skill} />
-      )}
-    </QueryParamDrawer>
-  );
+  const skillId = useMemo(() => params.get("skillId"), [params]);
+
+  const { data, isLoading, error } = useSkill(skillId, {
+    keepPreviousData: true,
+  });
+
+  if (isUuid(skillId)) {
+    return (
+      <ClientDrawer onClose={() => clear("skillId")} className="overflow-y-scroll">
+        <ApiResponseView error={error} isLoading={isLoading} data={data}>
+          {skill => <SkillDrawerContent skill={skill} />}
+        </ApiResponseView>
+      </ClientDrawer>
+    );
+  }
+  return <></>;
 };
+
+export default SkillDrawer;

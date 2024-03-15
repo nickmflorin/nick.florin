@@ -7,9 +7,11 @@ import { Loading } from "~/components/views/Loading";
 
 import { CommitTimeline } from "../CommitTimeline";
 
-import { EducationTile } from "./EducationTile";
-
 const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.TimelineItem), {
+  loading: () => <Loading loading={true} />,
+});
+
+const EducationTile = dynamic(() => import("./EducationTile"), {
   loading: () => <Loading loading={true} />,
 });
 

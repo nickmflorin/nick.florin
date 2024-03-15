@@ -1,10 +1,8 @@
 import { Suspense } from "react";
 
-import { SkillDrawer } from "~/components/drawers/SkillDrawer";
+import { ServerDrawerContainer } from "~/components/drawers/ServerDrawerContainer";
 import { parseSearchParams } from "~/components/drawers/types";
-import { UpdateEducationDetailsDrawer } from "~/components/drawers/UpdateEducationDetailsDrawer";
 import { UpdateEducationDrawer } from "~/components/drawers/UpdateEducationDrawer";
-import { UpdateExperienceDetailsDrawer } from "~/components/drawers/UpdateExperienceDetailsDrawer";
 import { UpdateExperienceDrawer } from "~/components/drawers/UpdateExperienceDrawer";
 import { UpdateSkillDrawer } from "~/components/drawers/UpdateSkillDrawer";
 import { Loading } from "~/components/views/Loading";
@@ -18,39 +16,27 @@ export default async function ApplicationDrawer({ searchParams }: ApplicationDra
 
   if (drawerParams.updateEducationId) {
     return (
-      <Suspense fallback={<Loading loading={true} />}>
-        <UpdateEducationDrawer educationId={drawerParams.updateEducationId} />
-      </Suspense>
+      <ServerDrawerContainer param="updateEducationId">
+        <Suspense fallback={<Loading loading={true} />}>
+          <UpdateEducationDrawer educationId={drawerParams.updateEducationId} />
+        </Suspense>
+      </ServerDrawerContainer>
     );
   } else if (drawerParams.updateExperienceId) {
     return (
-      <Suspense fallback={<Loading loading={true} />}>
-        <UpdateExperienceDrawer experienceId={drawerParams.updateExperienceId} />
-      </Suspense>
-    );
-  } else if (drawerParams.updateEducationDetailsId) {
-    return (
-      <Suspense fallback={<Loading loading={true} />}>
-        <UpdateEducationDetailsDrawer educationId={drawerParams.updateEducationDetailsId} />
-      </Suspense>
-    );
-  } else if (drawerParams.updateExperienceDetailsId) {
-    return (
-      <Suspense fallback={<Loading loading={true} />}>
-        <UpdateExperienceDetailsDrawer experienceId={drawerParams.updateExperienceDetailsId} />
-      </Suspense>
+      <ServerDrawerContainer param="updateExperienceId">
+        <Suspense fallback={<Loading loading={true} />}>
+          <UpdateExperienceDrawer experienceId={drawerParams.updateExperienceId} />
+        </Suspense>
+      </ServerDrawerContainer>
     );
   } else if (drawerParams.updateSkillId) {
     return (
-      <Suspense fallback={<Loading loading={true} />}>
-        <UpdateSkillDrawer skillId={drawerParams.updateSkillId} />
-      </Suspense>
-    );
-  } else if (drawerParams.skillId) {
-    return (
-      <Suspense fallback={<Loading loading={true} />}>
-        <SkillDrawer skillId={drawerParams.skillId} />
-      </Suspense>
+      <ServerDrawerContainer param="updateSkillId">
+        <Suspense fallback={<Loading loading={true} />}>
+          <UpdateSkillDrawer skillId={drawerParams.updateSkillId} />
+        </Suspense>
+      </ServerDrawerContainer>
     );
   }
   return null;

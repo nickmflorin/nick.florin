@@ -1,6 +1,6 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 
-import { z } from "zod";
+import { isUuid } from "~/lib/typeguards";
 
 export const DrawerParams = {
   skill: "skillId",
@@ -16,8 +16,6 @@ export type DrawerId = keyof typeof DrawerParams;
 export type DrawerParam<I extends DrawerId = DrawerId> = (typeof DrawerParams)[I];
 
 export type DrawerSearchParams = { [key in DrawerId as DrawerParam<key>]: string | undefined };
-
-const isUuid = (v: unknown): v is string => z.string().uuid().safeParse(v).success;
 
 export const parseSearchParams = (
   searchParams: ReadonlyURLSearchParams | Record<string, string | undefined>,
