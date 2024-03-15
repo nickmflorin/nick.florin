@@ -3,11 +3,11 @@ import { type NextRequest } from "next/server";
 import difference from "lodash.difference";
 import uniq from "lodash.uniq";
 
-import { ClientResponse } from "~/application/http";
 import { decodeQueryParams } from "~/lib/urls";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/model";
+import { ClientResponse } from "~/api";
 
 import { SkillQuerySchema } from "../types";
 

@@ -2,9 +2,9 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { isApiClientErrorResponse } from "~/application/errors";
 import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/update-experience";
+import { isApiClientErrorResponse } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 

@@ -4,9 +4,9 @@ import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Experience } from "~/prisma/model";
+import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
 
 import { ExperienceSchema } from "./schemas";
 

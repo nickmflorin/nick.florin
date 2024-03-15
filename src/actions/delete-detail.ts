@@ -2,9 +2,10 @@
 import { revalidatePath } from "next/cache";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { ApiClientError, UnreachableCaseError } from "~/application/errors";
+import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
+import { ApiClientError } from "~/api";
 
 export const deleteDetail = async (id: string) => {
   await getAuthAdminUser();

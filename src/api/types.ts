@@ -1,12 +1,29 @@
 import { z } from "zod";
 
 import {
+  type EnumeratedLiteralsType,
+  type EnumeratedLiteralsModel,
+  enumeratedLiterals,
+} from "~/lib/literals";
+
+import {
   type ApiClientErrorCode,
   ApiClientErrorCodes,
   type ApiClientErrorStatusCode,
   type ApiClientFieldErrorCode,
-  ApiClientFieldErrorCodes,
 } from "./codes";
+
+export const ClientSuccessCodes = enumeratedLiterals(
+  [{ value: "HTTP_200_OK", statusCode: 200 }] as const,
+  {},
+);
+export type ClientSuccessCode = EnumeratedLiteralsType<typeof ClientSuccessCodes>;
+export type ClientSuccessStatusCode<C extends ClientSuccessCode = ClientSuccessCode> = Extract<
+  EnumeratedLiteralsModel<typeof ClientSuccessCodes>,
+  { value: C }
+>["statusCode"];
+
+export type ClientSuccessResponseBody<T> = { data: T };
 
 export type ApiClientFieldError = {
   readonly message?: string;
@@ -104,3 +121,7 @@ export type ApiClientErrorResponse = ApiClientGlobalError | ApiClientFieldErrors
 
 export const isApiClientErrorResponse = (response: unknown): response is ApiClientErrorResponse =>
   isApiClientFieldErrorsResponse(response) || isApiClientGlobalErrorResponse(response);
+
+export const isZodError = (
+  data: string | RawApiClientFieldErrors | ApiClientFieldErrors | z.ZodError,
+): data is z.ZodError => typeof data !== "string" && (data as z.ZodError).issues !== undefined;

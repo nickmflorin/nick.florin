@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import clsx from "clsx";
 
-import { isHttpError, type HttpError, ApiClientError } from "~/application/errors";
+import { isHttpError, type HttpError, ApiClientError } from "~/api";
 import { type Size, type ComponentProps, sizeToString } from "~/components/types";
 import { type ExtendingTypographyProps } from "~/components/typography";
 import { Text } from "~/components/typography/Text";

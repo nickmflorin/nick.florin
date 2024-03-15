@@ -5,6 +5,12 @@ import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arg
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
 import {
+  type QueryParams,
+  addQueryParamsToUrl,
+  type QueryParamValue,
+  encodeQueryParams,
+} from "~/lib/urls";
+import {
   isApiClientErrorResponse,
   ClientError,
   NetworkError,
@@ -13,13 +19,7 @@ import {
   ServerError,
   type HttpError,
   isHttpError,
-} from "~/application/errors";
-import {
-  type QueryParams,
-  addQueryParamsToUrl,
-  type QueryParamValue,
-  encodeQueryParams,
-} from "~/lib/urls";
+} from "~/api";
 
 type ApiPath = `/api/${string}`;
 type Args = Exclude<Arguments, string> | ApiPath;

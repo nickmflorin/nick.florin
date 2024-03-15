@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { ApiClientError, type ApiClientFieldErrors } from "~/application/errors";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { type Skill, type Experience, type Education } from "~/prisma/model";
+import { ApiClientError, type ApiClientFieldErrors } from "~/api";
 
 import { SkillSchema } from "./schemas";
 

@@ -1,8 +1,8 @@
 import { auth, getAuth } from "@clerk/nextjs/server";
 
-import { ApiClientError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type User } from "~/prisma/model";
+import { ApiClientError } from "~/api";
 
 export const getAuthUserFromRequest = async (...args: Parameters<typeof getAuth>) => {
   const { userId } = getAuth(...args);

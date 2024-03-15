@@ -1,9 +1,9 @@
 import { type NextRequest } from "next/server";
 
-import { ClientResponse } from "~/application/http";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Skill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/model";
+import { ClientResponse } from "~/api";
 
 export async function generateStaticParams() {
   const skills = await prisma.skill.findMany({ where: { visible: true } });

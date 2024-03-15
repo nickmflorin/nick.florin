@@ -1,6 +1,6 @@
 "use client";
-import { type HttpError } from "~/application/errors";
 import { type ApiExperience } from "~/prisma/model";
+import { type HttpError } from "~/api";
 import { useExperiences } from "~/hooks";
 
 import { ExperienceSelect, type ExperienceSelectProps } from "./ExperienceSelect";

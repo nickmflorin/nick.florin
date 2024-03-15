@@ -2,8 +2,6 @@ import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 import { Suspense } from "react";
 
-import { DrawerContainer } from "~/components/drawers/DrawerContainer";
-
 import { Header } from "./Header";
 import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
 

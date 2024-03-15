@@ -1,9 +1,8 @@
 import { type NextRequest } from "next/server";
 
-import { ApiClientError } from "~/application/errors";
-import { ClientResponse } from "~/application/http";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { DetailEntityType, type Education } from "~/prisma/model";
+import { ApiClientError, ClientResponse } from "~/api";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   let education: Education;
@@ -18,7 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     // This will trigger a 500 internal server error, which should get picked up by the SWR hook.
     throw e;
   }
-  const r = ClientResponse.OK({
+  return ClientResponse.OK({
     education,
     details: await prisma.detail.findMany({
       where: { entityId: education.id, entityType: DetailEntityType.EDUCATION },
@@ -45,6 +44,4 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     }),
   }).toResponse();
-  console.log(r);
-  return r;
 }

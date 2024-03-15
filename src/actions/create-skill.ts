@@ -4,13 +4,9 @@ import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
-import {
-  ApiClientError,
-  type ApiClientFieldErrors,
-  ApiClientFieldErrorCodes,
-} from "~/application/errors";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
+import { ApiClientError, type ApiClientFieldErrors, ApiClientFieldErrorCodes } from "~/api";
 
 import { SkillSchema } from "./schemas";
 

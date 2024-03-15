@@ -1,8 +1,8 @@
 "use server";
 import { getAuthAdminUser } from "~/application/auth";
-import { ApiClientError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type EducationOnSkills, type Education } from "~/prisma/model";
+import { ApiClientError } from "~/api";
 
 export const deleteEducation = async (id: string): Promise<void> => {
   const user = await getAuthAdminUser();

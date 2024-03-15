@@ -1,77 +1,23 @@
 import { NextResponse } from "next/server";
 
-import uniqBy from "lodash.uniqby";
 import superjson from "superjson";
 import { type z } from "zod";
-
-import { BaseHttpError, type BaseHttpErrorConfig } from "../http-error";
 
 import {
   type ApiClientErrorCode,
   ApiClientErrorCodes,
   type ApiClientErrorStatusCode,
-  ApiClientFieldErrorCodes,
-} from "./codes";
+} from "../codes";
 import {
   processRawApiClientFieldErrors,
   type ApiClientErrorResponse,
   type ApiClientFieldErrors,
   type RawApiClientFieldErrors,
-  type ApiClientFieldError,
-} from "./types";
+  isZodError,
+} from "../types";
+import { parseZodError, type IssueLookup } from "../util";
 
-export * from "./codes";
-export * from "./types";
-
-type IssueLookup<L extends string> = { [key in L]?: (issue: z.ZodIssue) => boolean };
-
-export const parseZodError = <O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
-  error: z.ZodError,
-  schema: O,
-  lookup?: IssueLookup<keyof O["shape"] & string>,
-): ApiClientFieldErrors<keyof O["shape"] & string> => {
-  const errs: ApiClientFieldErrors<keyof O["shape"] & string> = {};
-
-  const keys = Object.values(schema.keyof().Values);
-  if (keys.length === 0) {
-    throw new Error("Cannot parse zod error for an empty schema!");
-  }
-  for (const field of keys) {
-    const iss: ApiClientFieldError[] = uniqBy(
-      error.issues
-        .filter(issue => {
-          const fn = lookup?.[field];
-          return fn !== undefined ? fn(issue) : issue.path[0] === field;
-        })
-        .map(issue => ({
-          code: ApiClientFieldErrorCodes.invalid,
-          internalMessage: issue.message,
-        })),
-      err => err.code,
-    );
-    if (iss.length !== 0) {
-      errs[field as keyof O["shape"] & string] = iss as [
-        ApiClientFieldError,
-        ...ApiClientFieldError[],
-      ];
-    }
-  }
-  if (Object.keys(errs).length === 0) {
-    throw new Error("The zod error does not contain any candidate error issues!");
-  }
-  return errs;
-};
-
-export class ClientError<
-  C extends BaseHttpErrorConfig = BaseHttpErrorConfig,
-> extends BaseHttpError<C> {
-  public static reconstruct = (response: Response, message?: string) =>
-    new ClientError({
-      statusCode: response.status,
-      url: response.url,
-      message: message ?? response.statusText,
-    });
-}
+import { BaseHttpError } from "./http-error";
 
 type ConfigStatusCode<M extends ApiClientFieldErrors | string> = M extends string
   ? ApiClientErrorStatusCode
@@ -103,10 +49,6 @@ type Errors<M extends ApiClientFieldErrors | string> = M extends string
   : M extends ApiClientFieldErrors
     ? M
     : never;
-
-const isZodError = (
-  data: string | RawApiClientFieldErrors | ApiClientFieldErrors | z.ZodError,
-): data is z.ZodError => typeof data !== "string" && (data as z.ZodError).issues !== undefined;
 
 export class ApiClientError<
   M extends ApiClientFieldErrors | string = ApiClientFieldErrors | string,
@@ -142,16 +84,19 @@ export class ApiClientError<
   public static reconstruct = (response: ApiClientErrorResponse) => new ApiClientError(response);
 
   public static BadRequest<M extends string>(message: M): ApiClientError<M>;
+
   public static BadRequest<M extends ApiClientFieldErrors | RawApiClientFieldErrors>(
     message: M,
   ): M extends ApiClientFieldErrors
     ? ApiClientError<M>
     : ApiClientError<ApiClientFieldErrors> | null;
+
   public static BadRequest<O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
     error: z.ZodError,
     schema: O,
     lookup?: IssueLookup<keyof O["shape"] & string>,
   ): ApiClientError<ApiClientFieldErrors<keyof O["shape"] & string>>;
+
   public static BadRequest<
     M extends string | RawApiClientFieldErrors | ApiClientFieldErrors,
     O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>,

@@ -5,8 +5,8 @@ import { type z } from "zod";
 import { type Education } from "@prisma/client";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
 
 import { EducationSchema } from "./schemas";
 

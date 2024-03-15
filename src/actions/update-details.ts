@@ -4,10 +4,10 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { ApiClientError, type ApiClientFieldErrors, parseZodError } from "~/application/errors";
 import { logger } from "~/application/logger";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
+import { ApiClientError, type ApiClientFieldErrors, parseZodError } from "~/api";
 
 import { getEntity } from "./fetches/get-entity";
 import { DetailSchema } from "./schemas";

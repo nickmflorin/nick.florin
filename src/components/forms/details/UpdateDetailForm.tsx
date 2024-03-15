@@ -3,13 +3,13 @@ import { useEffect, useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { isApiClientErrorResponse } from "~/application/errors";
 import { logger } from "~/application/logger";
 import { type FullDetail, type NestedDetail, isFullDetail } from "~/prisma/model";
 import { deleteDetail } from "~/actions/delete-detail";
 import { deleteNestedDetail } from "~/actions/delete-nested-detail";
 import { updateDetail } from "~/actions/update-detail";
 import { updateNestedDetail } from "~/actions/update-nested-detail";
+import { isApiClientErrorResponse } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
 import { type Action, mergeActions } from "~/components/structural";

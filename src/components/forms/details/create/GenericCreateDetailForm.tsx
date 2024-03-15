@@ -1,8 +1,8 @@
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
 
-import { type ApiClientErrorResponse, isApiClientErrorResponse } from "~/application/errors";
 import { type FullDetail, type NestedDetail } from "~/prisma/model";
+import { type ApiClientErrorResponse, isApiClientErrorResponse } from "~/api";
 import { Link } from "~/components/buttons";
 
 import { useForm } from "../../generic/hooks/use-form";

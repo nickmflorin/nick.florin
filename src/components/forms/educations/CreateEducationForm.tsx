@@ -2,8 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { isApiClientErrorResponse } from "~/application/errors";
 import { createEducation } from "~/actions/create-education";
+import { isApiClientErrorResponse } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../generic/hooks/use-form";

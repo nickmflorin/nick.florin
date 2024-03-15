@@ -7,8 +7,8 @@ import {
 } from "react-hook-form";
 import { type z } from "zod";
 
-import { type ApiClientErrorResponse, type HttpError } from "~/application/errors";
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import { type ApiClientErrorResponse, type HttpError } from "~/api";
 
 export type BaseFormValues = FieldValues;
 

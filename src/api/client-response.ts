@@ -1,13 +1,11 @@
+import { type ClientSuccessConfig, ClientSuccess } from "./client-success";
+import { ApiClientErrorCodes } from "./codes";
+import { type ApiClientErrorConfig, ApiClientError } from "./errors";
 import {
-  type ApiClientErrorConfig,
-  ApiClientError,
+  type ClientSuccessResponseBody,
   type ApiClientFieldErrors,
   type ApiClientErrorResponse,
-  ApiClientErrorCodes,
-} from "../errors";
-
-import { type ClientSuccessConfig, ClientSuccess } from "./client-success";
-import { type ClientSuccessResponseBody } from "./types";
+} from "./types";
 
 export type ClientResponseConfig<T> = ApiClientErrorConfig | ClientSuccessConfig<T>;
 

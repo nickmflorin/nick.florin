@@ -1,5 +1,5 @@
 "use client";
-import { type HttpError } from "~/application/errors";
+import { type HttpError } from "~/api";
 import { useCompanies } from "~/hooks";
 
 import { CompanySelect, type CompanySelectProps } from "./CompanySelect";
