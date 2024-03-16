@@ -1,33 +1,27 @@
-"use client";
-import { useMemo } from "react";
-
-import { isUuid } from "~/lib/typeguards";
 import { ApiResponseView } from "~/components/views/ApiResponseView";
-import { useSkill, useMutableParams } from "~/hooks";
+import { useSkill } from "~/hooks";
 
 import { ClientDrawer } from "../ClientDrawer";
 
 import { SkillDrawerContent } from "./DrawerContent";
 
-export const SkillDrawer = (): JSX.Element => {
-  const { params, clear } = useMutableParams();
+export interface SkillDrawerProps {
+  readonly skillId: string;
+  readonly onClose: () => void;
+}
 
-  const skillId = useMemo(() => params.get("skillId"), [params]);
-
+export const SkillDrawer = ({ onClose, skillId }: SkillDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useSkill(skillId, {
     keepPreviousData: true,
   });
 
-  if (isUuid(skillId)) {
-    return (
-      <ClientDrawer onClose={() => clear("skillId")} className="overflow-y-scroll">
-        <ApiResponseView error={error} isLoading={isLoading} data={data}>
-          {skill => <SkillDrawerContent skill={skill} />}
-        </ApiResponseView>
-      </ClientDrawer>
-    );
-  }
-  return <></>;
+  return (
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+      <ApiResponseView error={error} isLoading={isLoading} data={data}>
+        {skill => <SkillDrawerContent skill={skill} />}
+      </ApiResponseView>
+    </ClientDrawer>
+  );
 };
 
 export default SkillDrawer;

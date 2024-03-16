@@ -26,10 +26,9 @@ export const metadata: Metadata = {
 
 interface RootLayoutProps {
   readonly children: ReactNode;
-  readonly drawer: ReactNode;
 }
 
-export default function RootLayout({ children, drawer }: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <head>
@@ -52,7 +51,6 @@ export default function RootLayout({ children, drawer }: RootLayoutProps) {
       <body className={InterFont.className}>
         <AppConfig>
           <Layout
-            drawer={drawer}
             nav={[
               {
                 tooltipLabel: "Resume",

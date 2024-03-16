@@ -1,30 +1,41 @@
 import dynamic from "next/dynamic";
 
-import { getSkill } from "~/actions/fetches/get-skill";
-import { ErrorView } from "~/components/views/ErrorView";
+import { isUuid } from "~/lib/typeguards";
+import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { Loading } from "~/components/views/Loading";
+import { useSkill } from "~/hooks";
+
+import { ClientDrawer } from "./ClientDrawer";
+import { DrawerContent } from "./DrawerContent";
+import { DrawerHeader } from "./DrawerHeader";
 
 const SkillForm = dynamic(() => import("~/components/forms/skills/UpdateSkillForm"), {
   loading: () => <Loading loading={true} />,
 });
 
-const QueryParamDrawer = dynamic(() => import("./ServerDrawer"), {
-  loading: () => <Loading loading={true} />,
-});
-
-export const UpdateSkillDrawer = async ({
-  skillId,
-}: {
+interface UpdateSkillDrawerProps {
   readonly skillId: string;
-}): Promise<JSX.Element> => {
-  const skill = await getSkill(skillId);
+  readonly onClose: () => void;
+}
+
+export const UpdateSkillDrawer = ({ skillId, onClose }: UpdateSkillDrawerProps): JSX.Element => {
+  const { data, isLoading, error } = useSkill(isUuid(skillId) ? skillId : null, {
+    keepPreviousData: true,
+  });
   return (
-    <QueryParamDrawer param="updateSkillId">
-      {!skill ? (
-        <ErrorView title="404">The requested resource could not be found.</ErrorView>
-      ) : (
-        <SkillForm skill={skill} />
-      )}
-    </QueryParamDrawer>
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+      <ApiResponseView error={error} isLoading={isLoading} data={data}>
+        {skill => (
+          <>
+            <DrawerHeader>{skill.label}</DrawerHeader>
+            <DrawerContent>
+              <SkillForm skill={skill} />
+            </DrawerContent>
+          </>
+        )}
+      </ApiResponseView>
+    </ClientDrawer>
   );
 };
+
+export default UpdateSkillDrawer;

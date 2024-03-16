@@ -1,8 +1,13 @@
 import dynamic from "next/dynamic";
 
-import { getExperience } from "~/actions/fetches/get-experience";
-import { ErrorView } from "~/components/views/ErrorView";
+import { isUuid } from "~/lib/typeguards";
+import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { Loading } from "~/components/views/Loading";
+import { useExperience } from "~/hooks";
+
+import { ClientDrawer } from "./ClientDrawer";
+import { DrawerContent } from "./DrawerContent";
+import { DrawerHeader } from "./DrawerHeader";
 
 const ExperienceForm = dynamic(
   () => import("~/components/forms/experiences/UpdateExperienceForm"),
@@ -11,23 +16,32 @@ const ExperienceForm = dynamic(
   },
 );
 
-const QueryParamDrawer = dynamic(() => import("./ServerDrawer"), {
-  loading: () => <Loading loading={true} />,
-});
-
-export const UpdateExperienceDrawer = async ({
-  experienceId,
-}: {
+interface UpdateEducationDrawerProps {
   readonly experienceId: string;
-}): Promise<JSX.Element> => {
-  const experience = await getExperience(experienceId);
+  readonly onClose: () => void;
+}
+
+export const UpdateEducationDrawer = ({
+  experienceId,
+  onClose,
+}: UpdateEducationDrawerProps): JSX.Element => {
+  const { data, isLoading, error } = useExperience(isUuid(experienceId) ? experienceId : null, {
+    keepPreviousData: true,
+  });
   return (
-    <QueryParamDrawer param="skillId">
-      {!experience ? (
-        <ErrorView title="404">The requested resource could not be found.</ErrorView>
-      ) : (
-        <ExperienceForm experience={experience} />
-      )}
-    </QueryParamDrawer>
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+      <ApiResponseView error={error} isLoading={isLoading} data={data}>
+        {experience => (
+          <>
+            <DrawerHeader>{experience.title}</DrawerHeader>
+            <DrawerContent>
+              <ExperienceForm experience={experience} />
+            </DrawerContent>
+          </>
+        )}
+      </ApiResponseView>
+    </ClientDrawer>
   );
 };
+
+export default UpdateEducationDrawer;

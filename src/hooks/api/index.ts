@@ -5,3 +5,5 @@ export * from "./use-experiences";
 export * from "./use-companies";
 export * from "./use-schools";
 export * from "./use-details";
+export * from "./use-experience";
+export * from "./use-education";

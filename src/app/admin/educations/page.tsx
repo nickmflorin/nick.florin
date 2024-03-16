@@ -1,10 +1,17 @@
+import { Suspense } from "react";
+
 import { z } from "zod";
 
 import { decodeQueryParam } from "~/lib/urls";
 import { EducationsTableView } from "~/components/tables/EducationsTableView";
+import { Loading } from "~/components/views/Loading";
+
+import { Drawers } from "./Drawers";
 
 interface EducationsPageProps {
   readonly searchParams: {
+    readonly updateEducationId?: string;
+    readonly updateEducationDetailsId?: string;
     readonly search?: string;
     readonly page?: string;
     readonly checkedRows?: string;
@@ -28,12 +35,17 @@ export default async function EducationsPage({
   };
 
   return (
-    <EducationsTableView
-      filters={filters}
-      page={page}
-      checkedRows={
-        checkedRows ? decodeQueryParam(checkedRows, { form: ["array"] as const }) ?? [] : []
-      }
-    />
+    <>
+      <EducationsTableView
+        filters={filters}
+        page={page}
+        checkedRows={
+          checkedRows ? decodeQueryParam(checkedRows, { form: ["array"] as const }) ?? [] : []
+        }
+      />
+      <Suspense fallback={<Loading loading={true} />}>
+        <Drawers />
+      </Suspense>
+    </>
   );
 }
