@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { createSkill } from "~/actions/create-skill";
-import { isApiClientErrorResponse } from "~/api";
+import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../generic/hooks/use-form";
@@ -43,7 +43,7 @@ export const CreateSkillForm = ({ onCancel, ...props }: CreateSkillFormProps): J
       form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createSkill(data);
-        if (isApiClientErrorResponse(response)) {
+        if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
           transition(() => {

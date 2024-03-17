@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 
-import superjson from "superjson";
+import { type Optional } from "utility-types";
 import { type z } from "zod";
 
-import {
-  type ApiClientErrorCode,
-  ApiClientErrorCodes,
-  type ApiClientErrorStatusCode,
-} from "../codes";
+import { ApiClientErrorCodes } from "../codes";
 import {
   processRawApiClientFieldErrors,
-  type ApiClientErrorResponse,
+  type ApiClientErrorConfig,
+  type ApiClientGlobalErrorConfig,
+  type ApiClientFormErrorConfig,
+  type ApiClientFormErrorJson,
+  type ApiClientErrorJson,
+  type ApiClientGlobalErrorJson,
   type ApiClientFieldErrors,
   type RawApiClientFieldErrors,
   isZodError,
@@ -19,131 +20,124 @@ import { parseZodError, type IssueLookup } from "../util";
 
 import { BaseHttpError } from "./http-error";
 
-type ConfigStatusCode<M extends ApiClientFieldErrors | string> = M extends string
-  ? ApiClientErrorStatusCode
-  : 400;
+export type ApiClientErrorResponse = NextResponse<ApiClientErrorJson>;
 
-type ConfigCode<M extends ApiClientFieldErrors | string> = M extends string
-  ? ApiClientErrorCode
-  : typeof ApiClientErrorCodes.BAD_REQUEST;
-
-export type ApiClientErrorConfig<
-  M extends ApiClientFieldErrors | string = ApiClientFieldErrors | string,
-> = {
-  readonly message?: M;
-  readonly internalMessage?: string;
-  readonly code: ConfigCode<M>;
-  readonly statusCode?: ConfigStatusCode<M>;
-};
-
-type Json<M extends ApiClientFieldErrors | string> = {
-  errors?: Errors<M>;
-  statusCode: ConfigStatusCode<M>;
-  code: ConfigCode<M>;
-  message: string;
-  internalMessage: string;
-};
-
-type Errors<M extends ApiClientFieldErrors | string> = M extends string
-  ? undefined
-  : M extends ApiClientFieldErrors
-    ? M
-    : never;
-
-export class ApiClientError<
-  M extends ApiClientFieldErrors | string = ApiClientFieldErrors | string,
-> extends BaseHttpError<
-  ApiClientErrorConfig<M> & { readonly message?: string; internalMessageDetail?: string }
-> {
-  public readonly code: ConfigCode<M>;
-  public readonly errors: Errors<M>;
-
-  constructor({ message, ...config }: ApiClientErrorConfig<M>) {
+export abstract class ApiClientError<
+  C extends ApiClientErrorConfig = ApiClientErrorConfig,
+  J extends ApiClientErrorJson = ApiClientErrorJson,
+> extends BaseHttpError<C> {
+  constructor(config: Optional<C, "statusCode">) {
     super({
-      internalMessageDetail: ApiClientErrorCodes.getAttribute(config.code, "message"),
+      internalMessage: ApiClientErrorCodes.getAttribute(config.code, "message"),
       ...config,
-      message: typeof message === "string" ? message : undefined,
       statusCode:
         /* The status code and code will only ever be undefined if the ApiClientError is being
            instantiated with an 'errors' array, in which case the code has to be BAD_REQUEST and the
            status code has to be 400. */
         config.statusCode ??
-        (ApiClientErrorCodes.getAttribute(
+        ApiClientErrorCodes.getAttribute(
           config.code ?? ApiClientErrorCodes.BAD_REQUEST,
           "statusCode",
-        ) as ConfigStatusCode<M>),
-    });
-    this.code = config.code;
-
-    this.errors = undefined as Errors<M>;
-    if (typeof message !== "string") {
-      this.errors = message as Errors<M>;
-    }
+        ),
+    } as C);
   }
 
-  public static reconstruct = (response: ApiClientErrorResponse) => new ApiClientError(response);
+  public get code(): C["code"] {
+    return this._config.code;
+  }
 
-  public static BadRequest<M extends string>(message: M): ApiClientError<M>;
+  public abstract toJson(): J;
 
-  public static BadRequest<M extends ApiClientFieldErrors | RawApiClientFieldErrors>(
-    message: M,
-  ): M extends ApiClientFieldErrors
-    ? ApiClientError<M>
-    : ApiClientError<ApiClientFieldErrors> | null;
+  public toResponse = (): NextResponse<ApiClientErrorJson> =>
+    NextResponse.json<ApiClientErrorJson>(this.toJson(), { status: this.statusCode });
+}
+
+export class ApiClientFormError<
+  C extends ApiClientFormErrorConfig = ApiClientFormErrorConfig,
+> extends ApiClientError<C, ApiClientFormErrorJson> {
+  constructor(config: Omit<C, "statusCode" | "code">) {
+    super({
+      ...config,
+      statusCode: 400 as const,
+      code: ApiClientErrorCodes.BAD_REQUEST,
+    } as C);
+  }
+
+  public get errors(): C["errors"] {
+    return this._config["errors"];
+  }
+
+  public static reconstruct = (response: ApiClientFormErrorJson) =>
+    new ApiClientFormError(response);
+
+  public static BadRequest<E extends ApiClientFieldErrors | RawApiClientFieldErrors>(
+    data: E,
+  ): E extends ApiClientFieldErrors
+    ? ApiClientFormError<ApiClientFormErrorConfig<keyof E & string>>
+    : ApiClientFormError;
 
   public static BadRequest<O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
     error: z.ZodError,
     schema: O,
     lookup?: IssueLookup<keyof O["shape"] & string>,
-  ): ApiClientError<ApiClientFieldErrors<keyof O["shape"] & string>>;
+  ): ApiClientFormError<ApiClientFormErrorConfig<keyof O["shape"] & string>>;
 
   public static BadRequest<
-    M extends string | RawApiClientFieldErrors | ApiClientFieldErrors,
+    E extends RawApiClientFieldErrors | ApiClientFieldErrors,
     O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>,
-  >(message: M | z.ZodError, schema?: O, lookup?: IssueLookup<keyof O["shape"] & string>) {
-    if (typeof message === "string") {
-      return new ApiClientError({
-        message,
-        code: ApiClientErrorCodes.BAD_REQUEST,
-        statusCode: 400,
-      });
-    } else if (isZodError(message)) {
+  >(data: E | z.ZodError, schema?: O, lookup?: IssueLookup<keyof O["shape"] & string>) {
+    if (isZodError(data)) {
       if (schema === undefined) {
         throw new TypeError("Invalid function signature implementation!");
       }
-      return this.BadRequest(parseZodError(message, schema, lookup));
+      return this.BadRequest(parseZodError(data, schema, lookup));
     } else {
-      const errs = processRawApiClientFieldErrors(message);
+      const errs = processRawApiClientFieldErrors(data);
       if (errs === null) {
         return null;
       }
-      return new ApiClientError({
-        message: errs,
-        code: ApiClientErrorCodes.BAD_REQUEST,
-        statusCode: 400,
+      return new ApiClientFormError({
+        errors: errs,
       });
     }
   }
 
+  public toJson = () => ({
+    errors: this.errors,
+    statusCode: this.statusCode,
+    code: this.code,
+    message: this.message,
+    internalMessage: this.internalMessage,
+  });
+}
+
+export class ApiClientGlobalError extends ApiClientError<
+  ApiClientGlobalErrorConfig,
+  ApiClientGlobalErrorJson
+> {
+  constructor(config: Optional<ApiClientGlobalErrorConfig, "statusCode">) {
+    super(config);
+  }
+
+  public static reconstruct = (response: ApiClientGlobalErrorJson) =>
+    new ApiClientGlobalError(response);
+
+  public static BadRequest = (message?: string) =>
+    new ApiClientGlobalError({ code: ApiClientErrorCodes.BAD_REQUEST, message });
+
   public static NotAuthenticated = (message?: string) =>
-    new ApiClientError({ code: ApiClientErrorCodes.NOT_AUTHENTICATED, message });
+    new ApiClientGlobalError({ code: ApiClientErrorCodes.NOT_AUTHENTICATED, message });
 
   public static Forbidden = (message?: string) =>
-    new ApiClientError({ code: ApiClientErrorCodes.FORBIDDEN, message });
+    new ApiClientGlobalError({ code: ApiClientErrorCodes.FORBIDDEN, message });
 
   public static NotFound = (message?: string) =>
-    new ApiClientError({ code: ApiClientErrorCodes.NOT_FOUND, message });
+    new ApiClientGlobalError({ code: ApiClientErrorCodes.NOT_FOUND, message });
 
-  public toJson = (): Json<M> =>
-    ({
-      errors: this.errors,
-      statusCode: this.statusCode,
-      code: this.code,
-      message: this.message,
-      internalMessage: this.internalMessage,
-    }) as Json<M>;
-
-  public toSerializedJson = () => superjson.serialize(this.toJson());
-
-  public toResponse = () => NextResponse.json(this.toSerializedJson(), { status: this.statusCode });
+  public toJson = () => ({
+    statusCode: this.statusCode as ApiClientGlobalErrorJson["statusCode"],
+    code: this.code,
+    message: this.message,
+    internalMessage: this.internalMessage,
+  });
 }

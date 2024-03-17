@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
@@ -32,11 +33,13 @@ export const SkillsTableView = ({ filters, page, checkedRows }: SkillsTableViewP
       </Suspense>
     }
   >
-    <Suspense
-      key={`${filters.search}-${filters.experiences}-${filters.educations}`}
-      fallback={<Loading loading={true} />}
-    >
-      <SkillsAdminTable filters={filters} page={page} />
-    </Suspense>
+    <ErrorBoundary message="There was an error rendering the table.">
+      <Suspense
+        key={`${filters.search}-${filters.experiences}-${filters.educations}`}
+        fallback={<Loading loading={true} />}
+      >
+        <SkillsAdminTable filters={filters} page={page} />
+      </Suspense>
+    </ErrorBoundary>
   </RootTableView>
 );

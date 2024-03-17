@@ -7,7 +7,7 @@ import { decodeQueryParams } from "~/lib/urls";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/model";
-import { ClientResponse } from "~/api";
+import { ClientResponse, ApiClientFormError } from "~/api";
 
 import { SkillQuerySchema } from "../types";
 
@@ -17,7 +17,7 @@ const skillExperience = (skill: ApiSkill): number =>
 export async function GET(request: NextRequest) {
   const parsedQuery = SkillQuerySchema.safeParse(decodeQueryParams(request.nextUrl.searchParams));
   if (!parsedQuery.success) {
-    return ClientResponse.BadRequest(parsedQuery.error, SkillQuerySchema).toResponse();
+    return ApiClientFormError.BadRequest(parsedQuery.error, SkillQuerySchema).toResponse();
   }
   const {
     showTopSkills,
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const resp = ClientResponse.BadRequest({
+  const resp = ApiClientFormError.BadRequest({
     educations: {
       code: "invalid",
       internalMessage: "Encountered education IDs that do not exist in the database.",

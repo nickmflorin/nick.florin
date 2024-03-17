@@ -7,7 +7,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { prisma } from "~/prisma/client";
 import { DetailEntityType } from "~/prisma/model";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
 
 import { getDetail } from "./fetches/get-detail";
 import { DetailSchema } from "./schemas";
@@ -17,12 +17,12 @@ export const createNestedDetail = async (detailId: string, req: z.infer<typeof D
 
   const detail = await getDetail(detailId);
   if (!detail) {
-    throw ApiClientError.NotFound("No detail exists for the provided ID.");
+    throw ApiClientGlobalError.NotFound("No detail exists for the provided ID.");
   }
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, DetailSchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, DetailSchema).toJson();
   }
   const { label, ...data } = parsed.data;
   if (
@@ -31,7 +31,7 @@ export const createNestedDetail = async (detailId: string, req: z.infer<typeof D
       where: { detailId, label },
     }))
   ) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       label: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'label' must be unique for a given parent detail.",

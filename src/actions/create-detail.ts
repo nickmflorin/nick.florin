@@ -7,7 +7,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { prisma } from "~/prisma/client";
 import { DetailEntityType } from "~/prisma/model";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
 
 import { getEntity } from "./fetches/get-entity";
 import { DetailSchema } from "./schemas";
@@ -21,12 +21,12 @@ export const createDetail = async (
 
   const entity = await getEntity(entityId, entityType);
   if (!entity) {
-    throw ApiClientError.NotFound("No entity exists for the provided ID and entity type.");
+    throw ApiClientGlobalError.NotFound("No entity exists for the provided ID and entity type.");
   }
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, DetailSchema).toJson();
+    throw ApiClientFormError.BadRequest(parsed.error, DetailSchema).toJson();
   }
   const { label, ...data } = parsed.data;
   if (
@@ -35,7 +35,7 @@ export const createDetail = async (
       where: { entityId: entity.id, entityType, label },
     }))
   ) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       label: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'label' must be unique for a given parent.",

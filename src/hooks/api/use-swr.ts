@@ -11,10 +11,12 @@ import {
   encodeQueryParams,
 } from "~/lib/urls";
 import {
-  isApiClientErrorResponse,
+  isApiClientGlobalErrorJson,
+  isApiClientFormErrorJson,
   ClientError,
   NetworkError,
-  ApiClientError,
+  ApiClientGlobalError,
+  ApiClientFormError,
   MalformedJsonError,
   ServerError,
   type HttpError,
@@ -63,8 +65,10 @@ export const swrFetcher = async <T>(
         });
       }
       const deserialized = superjson.deserialize(json);
-      if (isApiClientErrorResponse(deserialized)) {
-        throw ApiClientError.reconstruct(deserialized);
+      if (isApiClientGlobalErrorJson(deserialized)) {
+        throw ApiClientGlobalError.reconstruct(deserialized);
+      } else if (isApiClientFormErrorJson(deserialized)) {
+        throw ApiClientFormError.reconstruct(deserialized);
       }
       throw ClientError.reconstruct(response);
     } else if (response.status === 500) {

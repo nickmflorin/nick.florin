@@ -2,7 +2,7 @@ import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
 
 import { type FullDetail, type NestedDetail } from "~/prisma/model";
-import { type ApiClientErrorResponse, isApiClientErrorResponse } from "~/api";
+import { type ApiClientErrorJson, isApiClientErrorJson } from "~/api";
 import { Link } from "~/components/buttons";
 
 import { useForm } from "../../generic/hooks/use-form";
@@ -18,7 +18,7 @@ export interface GenericCreateDetailFormProps<D extends FullDetail | NestedDetai
   readonly onCancel: () => void;
   readonly action: (
     data: DetailFormValues & { readonly visible: boolean },
-  ) => Promise<WithoutNestedDetails<D> | ApiClientErrorResponse>;
+  ) => Promise<WithoutNestedDetails<D> | ApiClientErrorJson>;
 }
 
 export const GenericCreateDetailForm = <D extends FullDetail | NestedDetail>({
@@ -79,7 +79,7 @@ export const GenericCreateDetailForm = <D extends FullDetail | NestedDetail>({
            off, it can be done after the detail is created. */
         const response = await action({ ...data, visible: true });
         setIsCreating(false);
-        if (isApiClientErrorResponse(response)) {
+        if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
           form.reset();

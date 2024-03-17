@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { DetailEntityType, type Education } from "~/prisma/model";
-import { ApiClientError, ClientResponse } from "~/api";
+import { ApiClientGlobalError, ClientResponse } from "~/api";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   let education: Education;
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      return ApiClientError.NotFound().toResponse();
+      return ApiClientGlobalError.NotFound().toResponse();
     }
     // This will trigger a 500 internal server error, which should get picked up by the SWR hook.
     throw e;

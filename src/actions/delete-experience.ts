@@ -2,7 +2,7 @@
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type ExperienceOnSkills, type Experience } from "~/prisma/model";
-import { ApiClientError } from "~/api";
+import { ApiClientGlobalError } from "~/api";
 
 export const deleteExperience = async (id: string): Promise<void> => {
   const user = await getAuthAdminUser();
@@ -16,7 +16,7 @@ export const deleteExperience = async (id: string): Promise<void> => {
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientError.NotFound();
+        throw ApiClientGlobalError.NotFound();
       }
       throw e;
     }

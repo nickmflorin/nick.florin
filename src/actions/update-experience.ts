@@ -6,18 +6,31 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Experience } from "~/prisma/model";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
+import {
+  ApiClientFieldErrorCodes,
+  ApiClientFormError,
+  type ApiClientFormErrorJson,
+  ApiClientGlobalError,
+  type ApiClientGlobalErrorJson,
+} from "~/api";
 
 import { ExperienceSchema } from "./schemas";
 
 const UpdateExperienceSchema = ExperienceSchema.partial();
 
-export const updateExperience = async (id: string, req: z.infer<typeof UpdateExperienceSchema>) => {
+export const updateExperience = async (
+  id: string,
+  req: z.infer<typeof UpdateExperienceSchema>,
+): Promise<
+  | ApiClientFormErrorJson<keyof (typeof UpdateExperienceSchema)["shape"]>
+  | Experience
+  | ApiClientGlobalErrorJson
+> => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, ExperienceSchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, ExperienceSchema).toJson();
   }
 
   const { company: companyId, title, ...data } = parsed.data;
@@ -30,7 +43,7 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientError.NotFound();
+        return ApiClientGlobalError.NotFound().toJson();
       }
       throw e;
     }
@@ -41,12 +54,12 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
         /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
         we do not need to worry about checking isPrismaInvalidIdError here. */
         if (isPrismaDoesNotExistError(e)) {
-          throw ApiClientError.BadRequest({
+          return ApiClientFormError.BadRequest({
             company: {
               code: ApiClientFieldErrorCodes.does_not_exist,
               message: "The company does not exist.",
             },
-          });
+          }).toJson();
         }
         throw e;
       }
@@ -55,7 +68,7 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
       title &&
       (await prisma.experience.count({ where: { companyId, title, id: { notIn: [exp.id] } } }))
     ) {
-      return ApiClientError.BadRequest({
+      return ApiClientFormError.BadRequest({
         title: {
           code: ApiClientFieldErrorCodes.unique,
           message: "The title must be unique for a given company.",
@@ -67,7 +80,7 @@ export const updateExperience = async (id: string, req: z.infer<typeof UpdateExp
         where: { companyId, shortTitle: data.shortTitle, id: { notIn: [exp.id] } },
       }))
     ) {
-      return ApiClientError.BadRequest({
+      return ApiClientFormError.BadRequest({
         shortTitle: {
           code: ApiClientFieldErrorCodes.unique,
           message: "The 'shortTitle' must be unique for a given company.",

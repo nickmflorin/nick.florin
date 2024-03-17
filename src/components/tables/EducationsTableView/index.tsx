@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
@@ -32,8 +33,10 @@ export const EducationsTableView = ({ filters, page, checkedRows }: TableViewPro
       </Suspense>
     }
   >
-    <Suspense key={`${filters.search}`} fallback={<Loading loading={true} />}>
-      <EducationsAdminTable filters={filters} page={page} />
-    </Suspense>
+    <ErrorBoundary message="There was an error rendering the table.">
+      <Suspense key={`${filters.search}`} fallback={<Loading loading={true} />}>
+        <EducationsAdminTable filters={filters} page={page} />
+      </Suspense>
+    </ErrorBoundary>
   </RootTableView>
 );

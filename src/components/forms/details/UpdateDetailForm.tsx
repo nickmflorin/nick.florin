@@ -9,7 +9,7 @@ import { deleteDetail } from "~/actions/delete-detail";
 import { deleteNestedDetail } from "~/actions/delete-nested-detail";
 import { updateDetail } from "~/actions/update-detail";
 import { updateNestedDetail } from "~/actions/update-nested-detail";
-import { isApiClientErrorResponse } from "~/api";
+import { isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
 import { type Action, mergeActions } from "~/components/structural";
@@ -111,7 +111,7 @@ export const UpdateDetailForm = <D extends FullDetail | NestedDetail>({
       form={{ setValues, ...form }}
       action={async data => {
         const response = await updateDetailWithId(data);
-        if (isApiClientErrorResponse(response)) {
+        if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
           /* Note: We may not need this transition, since this is just updating a

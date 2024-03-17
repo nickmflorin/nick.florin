@@ -2,7 +2,7 @@ import { auth, getAuth } from "@clerk/nextjs/server";
 
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type User } from "~/prisma/model";
-import { ApiClientError } from "~/api";
+import { ApiClientGlobalError } from "~/api";
 
 export const getAuthUserFromRequest = async (...args: Parameters<typeof getAuth>) => {
   const { userId } = getAuth(...args);
@@ -44,12 +44,12 @@ export const getAuthAdminUserFromRequest = async <O extends GetAuthUserOpts>(
     if (opts?.strict === false) {
       return null as GetAuthUserRt<O>;
     }
-    throw ApiClientError.NotAuthenticated();
+    throw ApiClientGlobalError.NotAuthenticated();
   } else if (!user.isAdmin) {
     if (opts?.strict === false) {
       return null as GetAuthUserRt<O>;
     }
-    throw ApiClientError.Forbidden();
+    throw ApiClientGlobalError.Forbidden();
   }
   return user;
 };
@@ -59,9 +59,9 @@ export const getAuthAdminUser = async () => {
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
   if (!user) {
-    throw ApiClientError.NotAuthenticated();
+    throw ApiClientGlobalError.NotAuthenticated();
   } else if (!user.isAdmin) {
-    throw ApiClientError.Forbidden();
+    throw ApiClientGlobalError.Forbidden();
   }
   return user;
 };

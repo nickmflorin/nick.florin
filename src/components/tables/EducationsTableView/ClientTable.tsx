@@ -67,7 +67,9 @@ export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Elem
           accessor: "school",
           title: "School",
           width: 320,
-          render: ({ model }) => <SchoolCell education={model} schools={schools} />,
+          render: ({ model, table }) => (
+            <SchoolCell education={model} schools={schools} table={table} />
+          ),
         },
         {
           accessor: "details",

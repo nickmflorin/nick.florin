@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type School } from "~/prisma/model";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
 
 import { EducationSchema } from "./schemas";
 
@@ -15,7 +15,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
 
   const parsed = EducationSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, EducationSchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, EducationSchema).toJson();
   }
 
   const { school: schoolId, ...data } = parsed.data;
@@ -27,7 +27,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
     /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
     if (isPrismaDoesNotExistError(e)) {
-      throw ApiClientError.BadRequest({
+      throw ApiClientFormError.BadRequest({
         company: {
           code: ApiClientFieldErrorCodes.does_not_exist,
           message: "The school does not exist.",
@@ -38,7 +38,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
   }
 
   if (await prisma.education.count({ where: { schoolId: school.id, major: data.major } })) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       title: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'major' must be unique for a given school.",
@@ -50,7 +50,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
       where: { schoolId: school.id, shortMajor: data.shortMajor },
     }))
   ) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       shortMajor: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'shortMajor' must be unique for a given school.",

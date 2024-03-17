@@ -8,7 +8,7 @@ import {
 import { type z } from "zod";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
-import { type ApiClientErrorResponse, type HttpError } from "~/api";
+import { type ApiClientErrorJson, type HttpError } from "~/api";
 
 export type BaseFormValues = FieldValues;
 
@@ -77,5 +77,5 @@ export type FormInstance<I extends BaseFormValues> = Omit<UseFormReturn<I>, "set
   readonly clearErrors: () => void;
   readonly setErrors: SetFormErrors<I>;
   readonly setStaticErrors: SetFormStaticErrors<I>;
-  readonly handleApiError: (e: HttpError | ApiClientErrorResponse) => void;
+  readonly handleApiError: (e: HttpError | ApiClientErrorJson) => void;
 };

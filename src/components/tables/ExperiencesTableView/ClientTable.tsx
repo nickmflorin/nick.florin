@@ -1,15 +1,17 @@
 "use client";
-import { type ApiExperience } from "~/prisma/model";
+import { type ApiExperience, type Company } from "~/prisma/model";
 import { deleteExperience } from "~/actions/delete-experience";
 import { updateExperience } from "~/actions/update-experience";
 import { Link } from "~/components/buttons/generic";
-import { LinkOrText } from "~/components/typography/LinkOrText";
 import { useMutableParams } from "~/hooks";
 
 import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
 import { Table } from "../Table";
 
+import { CompanyCell } from "./cells";
+
 export interface ClientTableProps {
+  readonly companies: Company[];
   readonly experiences: ApiExperience<{ details: true }>[];
 }
 
@@ -26,7 +28,7 @@ const DetailsCell = ({ model }: DetailsCellProps) => {
   );
 };
 
-export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => {
+export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.Element => {
   const { set } = useMutableParams();
   return (
     <Table
@@ -64,10 +66,8 @@ export const ClientTable = ({ experiences }: ClientTableProps): JSX.Element => {
           accessor: "company",
           title: "Company",
           width: 320,
-          render: ({ model }) => (
-            <LinkOrText fontSize="sm" fontWeight="regular" url={model.company.websiteUrl}>
-              {model.company.name}
-            </LinkOrText>
+          render: ({ model, table }) => (
+            <CompanyCell companies={companies} experience={model} table={table} />
           ),
         },
         {

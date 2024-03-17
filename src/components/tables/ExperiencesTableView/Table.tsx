@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 
+import { getCompanies } from "~/actions/fetches/get-companies";
 import { getAdminExperiences } from "~/actions/fetches/get-experiences";
 import { Loading } from "~/components/views/Loading";
 
@@ -16,5 +17,6 @@ interface ExperiencesAdminTableProps {
 
 export const ExperiencesAdminTable = async ({ page, filters }: ExperiencesAdminTableProps) => {
   const experiences = await getAdminExperiences({ page, filters });
-  return <ClientTable experiences={experiences} />;
+  const companies = await getCompanies();
+  return <ClientTable experiences={experiences} companies={companies} />;
 };

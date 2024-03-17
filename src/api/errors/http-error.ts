@@ -4,9 +4,9 @@ import {
   type DefaultErrorMessage,
 } from "../../application/errors/base-error";
 
-export type BaseHttpErrorConfig = BaseErrorConfig & {
+export type BaseHttpErrorConfig<S extends number = number> = BaseErrorConfig & {
   readonly url?: string;
-  readonly statusCode?: number;
+  readonly statusCode?: S;
 };
 
 const withDetail = (message: string, detail?: string): string =>
@@ -38,20 +38,15 @@ export abstract class BaseHttpError<
   protected readonly defaultMessage: DefaultErrorMessage<C> = () =>
     "There was an error with the request.";
 
-  public readonly _url: C["url"];
-  protected readonly _statusCode: C["statusCode"];
-
-  constructor(config: C) {
+  constructor(config: BaseHttpErrorConfig & C) {
     super({ ...config, internalMessage: internalMessage(config) });
-    this._url = config.url;
-    this._statusCode = config.statusCode;
   }
 
   public get statusCode(): C["statusCode"] {
-    return this._statusCode;
+    return this._config.statusCode;
   }
 
   public get url(): C["url"] {
-    return this._url;
+    return this._config.url;
   }
 }

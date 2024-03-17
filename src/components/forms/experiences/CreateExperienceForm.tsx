@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { createExperience } from "~/actions/create-experience";
-import { isApiClientErrorResponse } from "~/api";
+import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { useForm } from "../generic/hooks/use-form";
@@ -46,7 +46,7 @@ export const CreateExperienceForm = ({
       form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createExperience(data);
-        if (isApiClientErrorResponse(response)) {
+        if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
           form.reset();

@@ -17,13 +17,14 @@ import {
 import { logger } from "~/application/logger";
 import { humanizeList } from "~/lib/formatters";
 import {
-  ApiClientError,
+  type ApiClientError,
   type HttpError,
   ApiClientFieldErrorCodes,
-  type ApiClientErrorResponse,
-  isApiClientFieldErrorsResponse,
+  type ApiClientErrorJson,
+  isApiClientFormErrorJson,
   type ApiClientFieldErrors,
   isHttpError,
+  ApiClientFormError,
 } from "~/api";
 
 import {
@@ -258,12 +259,11 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   const setInternalFieldErrorsFromResponse = useCallback(
-    (e: ApiClientError | ApiClientErrorResponse, errs: ApiClientFieldErrors) => {
+    (e: ApiClientError | ApiClientErrorJson, errs: ApiClientFieldErrors) => {
       // If this happens, it means the API incorrectly returned an error response.
       if (Object.keys(errs).length === 0) {
         logger.warn(
-          "The form received an ApiClientErrorResponse or ApiClientError with an empty " +
-            "object of errors!",
+          "The form received an ApiClientFieldErrors object with an empty set of errors!",
           { error: e },
         );
       }
@@ -282,7 +282,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
           }
           // If this happens, it means the API incorrectly returned an error response.
           logger.warn(
-            "The form received an ApiClientErrorResponse or ApiClientError with an error " +
+            "The form received an ApiClientFieldErrors object with an error " +
               `key '${key}' that does not contain any errors!`,
             { error: e, key },
           );
@@ -294,15 +294,15 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   const handleApiError = useCallback(
-    (e: HttpError | ApiClientErrorResponse) => {
+    (e: HttpError | ApiClientErrorJson) => {
       if (isHttpError(e)) {
-        if (e instanceof ApiClientError && e.errors !== undefined) {
+        if (e instanceof ApiClientFormError) {
           return setInternalFieldErrorsFromResponse(e, e.errors);
         }
         /* In this case, the ApiClientError does not contain errors for individual fields, and
            should be treated globally. */
         return setErrors(e.message);
-      } else if (isApiClientFieldErrorsResponse(e)) {
+      } else if (isApiClientFormErrorJson(e)) {
         return setInternalFieldErrorsFromResponse(e, e.errors);
       } else {
         /* In this case, the ApiClientError does not contain errors for individual fields, and

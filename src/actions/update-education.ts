@@ -6,7 +6,7 @@ import { type Education } from "@prisma/client";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
 
 import { EducationSchema } from "./schemas";
 
@@ -17,7 +17,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
 
   const parsed = UpdateEducationSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, UpdateEducationSchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, UpdateEducationSchema).toJson();
   }
 
   const { school: schoolId, major, ...data } = parsed.data;
@@ -30,7 +30,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientError.NotFound();
+        throw ApiClientGlobalError.NotFound();
       }
       throw e;
     }
@@ -41,7 +41,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
         /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
         we do not need to worry about checking isPrismaInvalidIdError here. */
         if (isPrismaDoesNotExistError(e)) {
-          throw ApiClientError.BadRequest({
+          throw ApiClientFormError.BadRequest({
             company: {
               code: ApiClientFieldErrorCodes.does_not_exist,
               message: "The school does not exist.",
@@ -55,7 +55,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
       major &&
       (await prisma.education.count({ where: { schoolId, major, id: { notIn: [edu.id] } } }))
     ) {
-      return ApiClientError.BadRequest({
+      return ApiClientFormError.BadRequest({
         major: {
           code: ApiClientFieldErrorCodes.unique,
           message: "The 'major' must be unique for a given school.",
@@ -67,7 +67,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
         where: { schoolId, shortMajor: data.shortMajor, id: { notIn: [edu.id] } },
       }))
     ) {
-      return ApiClientError.BadRequest({
+      return ApiClientFormError.BadRequest({
         shortMajor: {
           code: ApiClientFieldErrorCodes.unique,
           message: "The 'shortMajor' must be unique for a given school.",

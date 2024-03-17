@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
-import { ApiClientError, type ApiClientFieldErrors, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, type ApiClientFieldErrors, ApiClientFieldErrorCodes } from "~/api";
 
 import { SkillSchema } from "./schemas";
 
@@ -15,7 +15,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
 
   const parsed = SkillSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, SkillSchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, SkillSchema).toJson();
   }
   const { slug: _slug, experiences, educations, ...data } = parsed.data;
 
@@ -58,7 +58,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
     };
   }
   if (Object.keys(fieldErrs).length !== 0) {
-    return ApiClientError.BadRequest(fieldErrs).toJson();
+    return ApiClientFormError.BadRequest(fieldErrs).toJson();
   }
 
   const skill = await prisma.skill.create({

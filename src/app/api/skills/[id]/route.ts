@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Skill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/model";
-import { ClientResponse } from "~/api";
+import { ClientResponse, ApiClientGlobalError } from "~/api";
 
 export async function generateStaticParams() {
   const skills = await prisma.skill.findMany({ where: { visible: true } });
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     skill = await prisma.skill.findUniqueOrThrow({ where: { id: params.id } });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      return ClientResponse.NotFound().toResponse();
+      return ApiClientGlobalError.NotFound().toResponse();
     }
     throw e;
   }

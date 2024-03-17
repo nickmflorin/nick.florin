@@ -7,7 +7,12 @@ import { getAuthAdminUser } from "~/application/auth";
 import { logger } from "~/application/logger";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
-import { ApiClientError, type ApiClientFieldErrors, parseZodError } from "~/api";
+import {
+  ApiClientFormError,
+  ApiClientGlobalError,
+  type ApiClientFieldErrors,
+  parseZodError,
+} from "~/api";
 
 import { getEntity } from "./fetches/get-entity";
 import { DetailSchema } from "./schemas";
@@ -33,7 +38,7 @@ export const updateDetails = async (
 
   const entity = getEntity(entityId, entityType);
   if (!entity) {
-    throw ApiClientError.NotFound("No entity exists for the provided ID and entity type.");
+    throw ApiClientGlobalError.NotFound("No entity exists for the provided ID and entity type.");
   }
 
   const result = await prisma.$transaction(async tx => {
@@ -54,7 +59,7 @@ export const updateDetails = async (
                 `entity type '${entityType}', and thus cannot be updated.`,
               { entityType, entityId, id },
             );
-            throw ApiClientError.BadRequest(
+            throw ApiClientGlobalError.BadRequest(
               "The detail does not exist for the given entity type and entity id.",
             );
           }
@@ -97,7 +102,7 @@ export const updateDetails = async (
       }
     }
     if (Object.keys(fieldErrors).length) {
-      return ApiClientError.BadRequest(fieldErrors).toJson();
+      return ApiClientFormError.BadRequest(fieldErrors).toJson();
     }
     return {
       created: await Promise.all(

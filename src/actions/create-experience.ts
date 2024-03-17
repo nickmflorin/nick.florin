@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
-import { ApiClientError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
 
 import { ExperienceSchema } from "./schemas";
 
@@ -15,7 +15,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
 
   const parsed = ExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientError.BadRequest(parsed.error, ExperienceSchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, ExperienceSchema).toJson();
   }
 
   const { company: companyId, ...data } = parsed.data;
@@ -27,7 +27,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
     /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
     if (isPrismaDoesNotExistError(e)) {
-      throw ApiClientError.BadRequest({
+      throw ApiClientFormError.BadRequest({
         company: {
           code: ApiClientFieldErrorCodes.does_not_exist,
           message: "The company does not exist.",
@@ -38,7 +38,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
   }
 
   if (await prisma.experience.count({ where: { companyId: company.id, title: data.title } })) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       title: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'title' must be unique for a given company.",
@@ -50,7 +50,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
       where: { companyId: company.id, shortTitle: data.shortTitle },
     }))
   ) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       shortTitle: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'shortTitle' must be unique for a given company.",

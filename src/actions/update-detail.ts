@@ -7,21 +7,18 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
-import { ApiClientError, type ApiClientErrorResponse, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientGlobalError, ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
 
 import { DetailSchema } from "./schemas";
 
 const UpdateDetailSchema = DetailSchema.partial();
 
-export const updateDetail = async (
-  id: string,
-  req: z.infer<typeof UpdateDetailSchema>,
-): Promise<Detail | ApiClientErrorResponse> => {
+export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailSchema>) => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateDetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, UpdateDetailSchema);
+    throw ApiClientFormError.BadRequest(parsed.error, UpdateDetailSchema);
   }
   let detail: Detail;
   try {
@@ -30,7 +27,7 @@ export const updateDetail = async (
     });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      throw ApiClientError.NotFound();
+      throw ApiClientGlobalError.NotFound();
     }
     throw e;
   }
@@ -47,7 +44,7 @@ export const updateDetail = async (
       },
     }))
   ) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       label: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'label' must be unique for a given parent.",

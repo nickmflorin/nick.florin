@@ -4,7 +4,7 @@ import { useTransition } from "react";
 
 import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/update-education";
-import { isApiClientErrorResponse } from "~/api";
+import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 
@@ -66,7 +66,7 @@ export const UpdateEducationForm = ({
       form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await updateEducationWithId(data);
-        if (isApiClientErrorResponse(response)) {
+        if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
           transition(() => {

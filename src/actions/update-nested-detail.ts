@@ -7,7 +7,12 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type NestedDetail, type Detail } from "~/prisma/model";
-import { ApiClientError, ApiClientFieldErrorCodes, type ApiClientErrorResponse } from "~/api";
+import {
+  ApiClientFormError,
+  ApiClientFieldErrorCodes,
+  ApiClientGlobalError,
+  type ApiClientFormErrorJson,
+} from "~/api";
 
 import { DetailSchema } from "./schemas";
 
@@ -16,12 +21,12 @@ const UpdateDetailSchema = DetailSchema.partial();
 export const updateNestedDetail = async (
   id: string,
   req: z.infer<typeof UpdateDetailSchema>,
-): Promise<NestedDetail | ApiClientErrorResponse> => {
+): Promise<NestedDetail | ApiClientFormErrorJson> => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateDetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientError.BadRequest(parsed.error, UpdateDetailSchema);
+    throw ApiClientFormError.BadRequest(parsed.error, UpdateDetailSchema);
   }
   let nestedDetail: NestedDetail & { readonly detail: Detail };
   try {
@@ -31,7 +36,7 @@ export const updateNestedDetail = async (
     });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      throw ApiClientError.NotFound();
+      throw ApiClientGlobalError.NotFound();
     }
     throw e;
   }
@@ -47,7 +52,7 @@ export const updateNestedDetail = async (
       },
     }))
   ) {
-    return ApiClientError.BadRequest({
+    return ApiClientFormError.BadRequest({
       label: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'label' must be unique for a given parent.",

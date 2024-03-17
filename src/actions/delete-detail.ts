@@ -5,7 +5,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
-import { ApiClientError } from "~/api";
+import { ApiClientGlobalError } from "~/api";
 
 export const deleteDetail = async (id: string) => {
   await getAuthAdminUser();
@@ -18,7 +18,7 @@ export const deleteDetail = async (id: string) => {
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientError.NotFound();
+        throw ApiClientGlobalError.NotFound();
       }
       throw e;
     }
