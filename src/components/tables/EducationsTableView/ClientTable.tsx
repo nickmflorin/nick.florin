@@ -33,7 +33,6 @@ export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Elem
 
   return (
     <Table
-      isCheckable
       columns={[
         {
           accessor: "major",

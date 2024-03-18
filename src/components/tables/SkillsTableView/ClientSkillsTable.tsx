@@ -25,7 +25,6 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
   const { set } = useMutableParams();
   return (
     <Table
-      isCheckable
       columns={[
         {
           accessor: "label",

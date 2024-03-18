@@ -1,5 +1,10 @@
-import { TableControlBar, type TableControlBarProps } from "../TableControlBar";
+import dynamic from "next/dynamic";
 
-export interface ControlBarProps extends TableControlBarProps {}
+import { DeleteManyButtonPlaceholder } from "../DeleteManyButtonPlaceholder";
+import { TableControlBar } from "../TableControlBar";
 
-export const ControlBar = async (props: ControlBarProps) => <TableControlBar {...props} />;
+const DeleteManyButton = dynamic(() => import("./DeleteManyButton"), {
+  loading: () => <DeleteManyButtonPlaceholder />,
+});
+
+export const ControlBar = () => <TableControlBar deleteButton={<DeleteManyButton />} />;

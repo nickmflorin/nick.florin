@@ -57,7 +57,6 @@ export const UpdateSkillForm = ({
     <SkillForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      title={skill.label}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {

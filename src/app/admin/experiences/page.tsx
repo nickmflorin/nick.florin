@@ -12,12 +12,11 @@ interface ExperiencesPageProps {
   readonly searchParams: {
     readonly search?: string;
     readonly page?: string;
-    readonly checkedRows?: string;
   };
 }
 
 export default async function ExperiencesPage({
-  searchParams: { search, checkedRows, page: _page },
+  searchParams: { search, page: _page },
 }: ExperiencesPageProps) {
   /* Even if the 'page' query parameter is very large, the action to fetch the data will eventually
      truncate it based on the maximum possible page size - so we do not need to worry about
@@ -34,13 +33,7 @@ export default async function ExperiencesPage({
 
   return (
     <>
-      <ExperiencesTableView
-        filters={filters}
-        page={page}
-        checkedRows={
-          checkedRows ? decodeQueryParam(checkedRows, { form: ["array"] as const }) ?? [] : []
-        }
-      />
+      <ExperiencesTableView filters={filters} page={page} />
       <Suspense fallback={<Loading loading={true} />}>
         <Drawers />
       </Suspense>

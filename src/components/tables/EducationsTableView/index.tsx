@@ -5,6 +5,7 @@ import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
+import { TableViewProvider } from "../Provider";
 import { TableSearchBarPlaceholder } from "../TableSearchBarPlaceholder";
 import { TableView as RootTableView } from "../TableView";
 
@@ -20,23 +21,24 @@ const TableSearchBar = dynamic(() => import("./SearchBar"), {
 interface TableViewProps {
   readonly filters: Filters;
   readonly page: number;
-  readonly checkedRows: string[];
 }
 
-export const EducationsTableView = ({ filters, page, checkedRows }: TableViewProps) => (
-  <RootTableView
-    searchBar={<TableSearchBar />}
-    controlBar={<ControlBar checkedRows={checkedRows} />}
-    paginator={
-      <Suspense fallback={<PaginatorPlaceholder />}>
-        <Paginator filters={filters} />
-      </Suspense>
-    }
-  >
-    <ErrorBoundary message="There was an error rendering the table.">
-      <Suspense key={`${filters.search}`} fallback={<Loading loading={true} />}>
-        <EducationsAdminTable filters={filters} page={page} />
-      </Suspense>
-    </ErrorBoundary>
-  </RootTableView>
+export const EducationsTableView = ({ filters, page }: TableViewProps) => (
+  <TableViewProvider id="educations-table" isCheckable={true}>
+    <RootTableView
+      searchBar={<TableSearchBar />}
+      controlBar={<ControlBar />}
+      paginator={
+        <Suspense fallback={<PaginatorPlaceholder />}>
+          <Paginator filters={filters} />
+        </Suspense>
+      }
+    >
+      <ErrorBoundary message="There was an error rendering the table.">
+        <Suspense key={`${filters.search}`} fallback={<Loading loading={true} />}>
+          <EducationsAdminTable filters={filters} page={page} />
+        </Suspense>
+      </ErrorBoundary>
+    </RootTableView>
+  </TableViewProvider>
 );

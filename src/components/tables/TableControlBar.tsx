@@ -1,16 +1,15 @@
 import clsx from "clsx";
 
-import { IconButton } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
 
 export interface TableControlBarProps extends ComponentProps {
-  readonly checkedRows: string[];
   readonly children?: JSX.Element | JSX.Element[];
+  readonly deleteButton?: JSX.Element;
 }
 
 export const TableControlBar = async ({
-  checkedRows,
   children,
+  deleteButton,
   ...props
 }: TableControlBarProps) => (
   <div
@@ -20,7 +19,7 @@ export const TableControlBar = async ({
       props.className,
     )}
   >
-    <IconButton.Danger icon={{ name: "trash-alt" }} isDisabled={checkedRows.length === 0} />
+    {deleteButton}
     {children}
   </div>
 );

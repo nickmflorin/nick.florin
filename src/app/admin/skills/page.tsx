@@ -14,14 +14,13 @@ interface SkillsPageProps {
   readonly searchParams: {
     readonly search?: string;
     readonly page?: string;
-    readonly checkedRows?: string;
     readonly educations?: string;
     readonly experiences?: string;
   };
 }
 
 export default async function SkillsPage({
-  searchParams: { search, checkedRows, page: _page, educations, experiences },
+  searchParams: { search, page: _page, educations, experiences },
 }: SkillsPageProps) {
   /* Even if the 'page' query parameter is very large, the action to fetch the data will eventually
      truncate it based on the maximum possible page size - so we do not need to worry about
@@ -45,13 +44,7 @@ export default async function SkillsPage({
 
   return (
     <>
-      <SkillsTableView
-        filters={filters}
-        page={page}
-        checkedRows={
-          checkedRows ? decodeQueryParam(checkedRows, { form: ["array"] as const }) ?? [] : []
-        }
-      />
+      <SkillsTableView filters={filters} page={page} />
       <Suspense fallback={<Loading loading={true} />}>
         <Drawers />
       </Suspense>

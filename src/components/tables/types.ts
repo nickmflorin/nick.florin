@@ -57,9 +57,7 @@ export interface RootTableProps<T extends TableModel> extends ComponentProps {
   readonly noHeader?: boolean;
 }
 
-export interface TableProps<T extends TableModel> extends RootTableProps<T> {
-  readonly isCheckable?: boolean;
-}
+export interface TableProps<T extends TableModel> extends RootTableProps<T> {}
 
 export const mergeRowClassNames =
   <T extends TableModel>(...classNames: (RowClassName<T> | undefined)[]): RowClassNameFn<T> =>
@@ -71,3 +69,12 @@ export const mergeRowClassNames =
         return clsx(prev, curr);
       }
     }, "");
+
+export type TableView<T extends TableModel> = {
+  readonly id: string;
+  readonly isCheckable: boolean;
+  readonly ready: boolean;
+  readonly checked: T["id"][];
+  readonly check: (m: T | T["id"]) => void;
+  readonly uncheck: (m: T["id"]) => void;
+};

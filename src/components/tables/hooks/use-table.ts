@@ -1,6 +1,6 @@
 import { useRef, type MutableRefObject, type ForwardedRef, useImperativeHandle } from "react";
 
-import type * as types from "./types";
+import type * as types from "../types";
 
 export function useTable<T extends types.TableModel>(
   propRef?: ForwardedRef<types.TableInstance<T>> | undefined,

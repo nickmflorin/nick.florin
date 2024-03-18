@@ -32,7 +32,6 @@ export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.E
   const { set } = useMutableParams();
   return (
     <Table
-      isCheckable
       columns={[
         {
           accessor: "title",

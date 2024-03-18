@@ -61,7 +61,6 @@ export const UpdateEducationForm = ({
     <EducationForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      title={education.major}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {

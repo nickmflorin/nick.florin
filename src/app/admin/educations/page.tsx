@@ -14,12 +14,11 @@ interface EducationsPageProps {
     readonly updateEducationDetailsId?: string;
     readonly search?: string;
     readonly page?: string;
-    readonly checkedRows?: string;
   };
 }
 
 export default async function EducationsPage({
-  searchParams: { search, checkedRows, page: _page },
+  searchParams: { search, page: _page },
 }: EducationsPageProps) {
   /* Even if the 'page' query parameter is very large, the action to fetch the data will eventually
      truncate it based on the maximum possible page size - so we do not need to worry about
@@ -36,13 +35,7 @@ export default async function EducationsPage({
 
   return (
     <>
-      <EducationsTableView
-        filters={filters}
-        page={page}
-        checkedRows={
-          checkedRows ? decodeQueryParam(checkedRows, { form: ["array"] as const }) ?? [] : []
-        }
-      />
+      <EducationsTableView filters={filters} page={page} />
       <Suspense fallback={<Loading loading={true} />}>
         <Drawers />
       </Suspense>

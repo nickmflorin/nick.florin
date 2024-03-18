@@ -56,7 +56,6 @@ export const UpdateExperienceForm = ({
     <ExperienceForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      title={experience.title}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {
