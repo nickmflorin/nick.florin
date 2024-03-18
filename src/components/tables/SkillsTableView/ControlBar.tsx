@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 
 import { DeleteManyButtonPlaceholder } from "../DeleteManyButtonPlaceholder";
 import { TableControlBar } from "../TableControlBar";
@@ -18,9 +17,6 @@ interface ControlBarProps {
 
 export const ControlBar = ({ filters, page }: ControlBarProps) => (
   <TableControlBar deleteButton={<DeleteManyButton />}>
-    {/* TODO: Use a placeholder here! */}
-    <Suspense key={`${filters.experiences}-${filters.educations}`}>
-      <TableFilters filters={filters} page={page} />
-    </Suspense>
+    <TableFilters filters={filters} page={page} />
   </TableControlBar>
 );
