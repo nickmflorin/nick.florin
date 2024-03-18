@@ -16,15 +16,15 @@ const ExperienceForm = dynamic(
   },
 );
 
-interface UpdateEducationDrawerProps {
+interface UpdateExperienceDrawerProps {
   readonly experienceId: string;
   readonly onClose: () => void;
 }
 
-export const UpdateEducationDrawer = ({
+export const UpdateExperienceDrawer = ({
   experienceId,
   onClose,
-}: UpdateEducationDrawerProps): JSX.Element => {
+}: UpdateExperienceDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useExperience(isUuid(experienceId) ? experienceId : null, {
     keepPreviousData: true,
   });
@@ -44,4 +44,4 @@ export const UpdateEducationDrawer = ({
   );
 };
 
-export default UpdateEducationDrawer;
+export default UpdateExperienceDrawer;

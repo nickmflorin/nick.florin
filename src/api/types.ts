@@ -86,6 +86,7 @@ export type ApiClientErrorConfig<
   readonly internalMessage?: string;
   readonly code: C;
   readonly statusCode: S;
+  readonly extra?: Record<string, unknown>;
 };
 
 type ApiClientErrorJsonStatusCode<C extends ApiClientErrorConfig> = C extends {
@@ -98,6 +99,7 @@ export type ApiClientErrorBaseJson<C extends ApiClientErrorConfig = ApiClientErr
   readonly code: C["code"];
   readonly statusCode: ApiClientErrorJsonStatusCode<C>;
   readonly internalMessage: string;
+  readonly extra?: Record<string, unknown>;
 };
 
 export type ApiClientGlobalErrorConfig = ApiClientErrorConfig & {
@@ -116,6 +118,7 @@ const ApiClientGlobalErrorJsonSchema = z.object({
   statusCode: z.number().int(),
   internalMessage: z.string(),
   message: z.string(),
+  extra: z.any().optional(),
 });
 
 export const isApiClientGlobalErrorJson = (
@@ -138,6 +141,7 @@ const ApiClientFormErrorJsonSchema = z.object({
   statusCode: z.literal(400),
   internalMessage: z.string(),
   errors: z.any(),
+  extra: z.any().optional(),
 });
 
 export type ApiClientErrorJson<

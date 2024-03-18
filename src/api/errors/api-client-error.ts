@@ -22,6 +22,20 @@ import { BaseHttpError } from "./http-error";
 
 export type ApiClientErrorResponse = NextResponse<ApiClientErrorJson>;
 
+type MessageParams = {
+  readonly internal?: string;
+  readonly public?: string;
+};
+
+const removeUndefined = <T extends Record<string, unknown>>(obj: T): T =>
+  Object.keys(obj).reduce((prev: T, key: string) => {
+    const v = obj[key as keyof T];
+    if (v !== undefined) {
+      return { ...prev, [key as keyof T]: v } as T;
+    }
+    return prev;
+  }, {} as T);
+
 export abstract class ApiClientError<
   C extends ApiClientErrorConfig = ApiClientErrorConfig,
   J extends ApiClientErrorJson = ApiClientErrorJson,
@@ -44,6 +58,10 @@ export abstract class ApiClientError<
 
   public get code(): C["code"] {
     return this._config.code;
+  }
+
+  public get extra(): C["extra"] {
+    return this._config.extra;
   }
 
   public abstract toJson(): J;
@@ -102,13 +120,15 @@ export class ApiClientFormError<
     }
   }
 
-  public toJson = () => ({
-    errors: this.errors,
-    statusCode: this.statusCode,
-    code: this.code,
-    message: this.message,
-    internalMessage: this.internalMessage,
-  });
+  public toJson = () =>
+    removeUndefined({
+      errors: this.errors,
+      statusCode: this.statusCode,
+      code: this.code,
+      message: this.message,
+      internalMessage: this.internalMessage,
+      extra: this.extra,
+    });
 }
 
 export class ApiClientGlobalError extends ApiClientError<
@@ -122,22 +142,47 @@ export class ApiClientGlobalError extends ApiClientError<
   public static reconstruct = (response: ApiClientGlobalErrorJson) =>
     new ApiClientGlobalError(response);
 
-  public static BadRequest = (message?: string) =>
-    new ApiClientGlobalError({ code: ApiClientErrorCodes.BAD_REQUEST, message });
+  public static BadRequest = (message?: string | MessageParams, extra?: Record<string, unknown>) =>
+    new ApiClientGlobalError({
+      extra,
+      code: ApiClientErrorCodes.BAD_REQUEST,
+      message: typeof message === "string" ? undefined : message?.public,
+      internalMessage: typeof message === "string" ? message : message?.internal,
+    });
 
-  public static NotAuthenticated = (message?: string) =>
-    new ApiClientGlobalError({ code: ApiClientErrorCodes.NOT_AUTHENTICATED, message });
+  public static NotAuthenticated = (
+    message?: string | MessageParams,
+    extra?: Record<string, unknown>,
+  ) =>
+    new ApiClientGlobalError({
+      code: ApiClientErrorCodes.NOT_AUTHENTICATED,
+      extra,
+      message: typeof message === "string" ? undefined : message?.public,
+      internalMessage: typeof message === "string" ? message : message?.internal,
+    });
 
-  public static Forbidden = (message?: string) =>
-    new ApiClientGlobalError({ code: ApiClientErrorCodes.FORBIDDEN, message });
+  public static Forbidden = (message?: string | MessageParams, extra?: Record<string, unknown>) =>
+    new ApiClientGlobalError({
+      code: ApiClientErrorCodes.FORBIDDEN,
+      extra,
+      message: typeof message === "string" ? undefined : message?.public,
+      internalMessage: typeof message === "string" ? message : message?.internal,
+    });
 
-  public static NotFound = (message?: string) =>
-    new ApiClientGlobalError({ code: ApiClientErrorCodes.NOT_FOUND, message });
+  public static NotFound = (message?: string | MessageParams, extra?: Record<string, unknown>) =>
+    new ApiClientGlobalError({
+      code: ApiClientErrorCodes.NOT_FOUND,
+      extra,
+      message: typeof message === "string" ? undefined : message?.public,
+      internalMessage: typeof message === "string" ? message : message?.internal,
+    });
 
-  public toJson = () => ({
-    statusCode: this.statusCode as ApiClientGlobalErrorJson["statusCode"],
-    code: this.code,
-    message: this.message,
-    internalMessage: this.internalMessage,
-  });
+  public toJson = () =>
+    removeUndefined({
+      statusCode: this.statusCode as ApiClientGlobalErrorJson["statusCode"],
+      code: this.code,
+      message: this.message,
+      internalMessage: this.internalMessage,
+      extra: this.extra,
+    });
 }
