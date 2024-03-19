@@ -9,6 +9,9 @@ import { type MenuOptions } from "./options";
 
 export type MenuModel = Record<string, unknown>;
 
+export const VALUE_NOT_APPLICABLE = "__VALUE_NOT_APPLICABLE__";
+export type ValueNotApplicable = typeof VALUE_NOT_APPLICABLE;
+
 const MenuModelParamsSchema = z.object({
   label: ReactNodeSchema,
   valueLabel: ReactNodeSchema,
@@ -28,7 +31,11 @@ export const modelHasParam = <M extends MenuModel, N extends keyof MenuModelPara
   param: keyof MenuModelParams,
 ): model is M & { [key in N]: MenuModelParams[key] } => {
   const schema = MenuModelParamsSchema.pick({ [param]: true });
-  return schema.safeParse(model).success;
+  const parseSuccess = schema.safeParse(model).success;
+  if (param === "value") {
+    return parseSuccess && model.value !== null && model.value !== undefined;
+  }
+  return parseSuccess;
 };
 
 export const modelValueIsValid = (value: unknown) => typeof value !== "undefined" && value !== null;
@@ -43,19 +50,19 @@ export type ModelValue<M extends MenuModel, O extends MenuOptions<M>> = M extend
     ? V extends null | undefined
       ? never
       : V
-    : never;
+    : ValueNotApplicable;
 
 export const getModelValue = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelValue<M, O> => {
-  let v: unknown = "__NEVER__";
+  let v: unknown = VALUE_NOT_APPLICABLE;
   if (options.getItemValue !== undefined) {
     v = options.getItemValue(model);
   } else if (modelHasParam(model, "value")) {
     v = model.value;
   }
-  if (v !== "__NEVER__" && !modelValueIsValid(v)) {
+  if (v !== VALUE_NOT_APPLICABLE && !modelValueIsValid(v)) {
     throw new TypeError(`The value '${v}' is not a valid value for a menu item in the menu.`);
   }
   return v as ModelValue<M, O>;
@@ -181,6 +188,34 @@ export type MenuModelValue<M extends MenuModel, O extends MenuOptions<M>> = O ex
   : O extends { isNullable: true }
     ? M | null
     : M;
+
+export type MenuIsValued<M extends MenuModel, O extends MenuOptions<M>> = M extends {
+  readonly value: infer V;
+}
+  ? V extends null | undefined
+    ? never
+    : true
+  : O extends { readonly getItemValue: (m: M) => infer V }
+    ? V extends null | undefined
+      ? never
+      : true
+    : false;
+
+export type IfMenuValued<
+  T,
+  M extends MenuModel,
+  O extends MenuOptions<M>,
+  F = never,
+> = MenuIsValued<M, O> extends true ? T : F;
+
+export const menuIsValued = <M extends MenuModel, O extends MenuOptions<M>>(
+  data: M[],
+  options: O,
+): MenuIsValued<M, O> =>
+  (data.some(m => modelHasParam(m, "value")) || options.getItemValue !== undefined) as MenuIsValued<
+    M,
+    O
+  >;
 
 export type MenuInstance<M extends MenuModel, O extends MenuOptions<M>> = {
   readonly value: MenuValue<M, O>;

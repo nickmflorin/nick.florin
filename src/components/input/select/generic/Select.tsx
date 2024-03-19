@@ -133,8 +133,9 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
   ): JSX.Element => {
     const [_isLoading, setLoading] = useState(false);
 
-    const [value, models, selectModel] = useMenuValue<M, O>({
-      initialValue,
+    const [value, models, selectModel] = useMenuValue<true, M, O>({
+      initialValue: initialValue,
+      isValued: true,
       value: _propValue,
       options: props.options,
       data: props.data,

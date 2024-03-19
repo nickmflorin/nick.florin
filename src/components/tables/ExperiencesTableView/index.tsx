@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 import { ErrorBoundary } from "~/components/ErrorBoundary";
+import { CompaniesMenu } from "~/components/menus/CompaniesMenu";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
@@ -9,6 +10,7 @@ import { TableViewProvider } from "../Provider";
 import { TableSearchBarPlaceholder } from "../TableSearchBarPlaceholder";
 import { TableView as RootTableView } from "../TableView";
 
+import { CompaniesDropdownMenu } from "./CompaniesDropdownMenu";
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
 import { ExperiencesAdminTable } from "./Table";
@@ -26,7 +28,19 @@ interface TableViewProps {
 export const ExperiencesTableView = ({ filters, page }: TableViewProps) => (
   <TableViewProvider id="experiences-table" isCheckable={true}>
     <RootTableView
-      searchBar={<TableSearchBar />}
+      searchBar={
+        <TableSearchBar
+          companiesMenu={
+            <CompaniesDropdownMenu
+              menu={
+                <Suspense fallback={<Loading loading={true} />}>
+                  <CompaniesMenu />
+                </Suspense>
+              }
+            />
+          }
+        />
+      }
       controlBar={<ControlBar />}
       paginator={
         <Suspense fallback={<PaginatorPlaceholder />}>

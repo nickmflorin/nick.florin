@@ -41,10 +41,34 @@ export const AbstractMenu = forwardRef(
         {header && <div className="menu__header">{header}</div>}
         <div className="menu__content">
           {data.map((model, i) => {
-            const v = types.getModelValue(model, options);
             const id = types.getModelId(model, options);
             const label = types.getModelLabel(model, options);
-            const key = getMenuItemKey({ value: v, id, index: i });
+
+            let key: MenuItemKey;
+
+            let isSelected = false;
+            let v: types.ModelValue<M, O> | types.ValueNotApplicable = types.VALUE_NOT_APPLICABLE;
+            const menuV = value as
+              | types.ModelValue<M, O>[]
+              | types.ModelValue<M, O>
+              | null
+              | types.ValueNotApplicable;
+            if (menuV !== types.VALUE_NOT_APPLICABLE) {
+              v = types.getModelValue(model, options);
+              key = getMenuItemKey({ value: v, id, index: i });
+              if (options.isMulti) {
+                if (!Array.isArray(menuV)) {
+                  throw new Error(
+                    "Unexpectedly encountered non-iterable value for a multi-valued Menu.",
+                  );
+                }
+                isSelected = menuV.filter(vi => isEqual(vi, v)).length > 0;
+              } else {
+                isSelected = isEqual(menuV, v);
+              }
+            } else {
+              key = getMenuItemKey({ id, index: i, value: types.VALUE_NOT_APPLICABLE });
+            }
 
             let ref: RefObject<types.MenuItemInstance>;
             if (menuItemRefs.current[key] === undefined) {
@@ -53,6 +77,7 @@ export const AbstractMenu = forwardRef(
             } else {
               ref = menuItemRefs.current[key];
             }
+
             return (
               <MenuItem
                 ref={ref}
@@ -69,15 +94,17 @@ export const AbstractMenu = forwardRef(
                 isVisible={types.evalMenuItemFlag("isVisible", itemIsVisible, model)}
                 isLocked={types.evalMenuItemFlag("isLocked", itemIsLocked, model) || !isReady}
                 isLoading={types.evalMenuItemFlag("isLoading", itemIsLoading, model)}
-                isSelected={
-                  options.isMulti
-                    ? Array.isArray(value)
-                      ? value.filter(vi => isEqual(vi, v)).length > 0
-                      : false
-                    : isEqual(value, v)
-                }
+                isSelected={isSelected}
                 onClick={() => {
-                  onSelect(v, ref.current as types.MenuItemInstance);
+                  if (v !== types.VALUE_NOT_APPLICABLE) {
+                    if (onSelect === undefined) {
+                      throw new Error(
+                        "Unexpectedly encountered undefined 'onSelect' callback for a Menu with " +
+                          "an applicable value.",
+                      );
+                    }
+                    onSelect?.(v, ref.current as types.MenuItemInstance);
+                  }
                 }}
               >
                 {children ? children(model) : label}

@@ -9,6 +9,8 @@ import {
   type MenuValue,
   type MenuInitialValue,
   type ModelValue,
+  type IfMenuValued,
+  type ValueNotApplicable,
 } from "./model";
 import { type MenuOptions } from "./options";
 
@@ -17,7 +19,7 @@ export type AbstractMenuProps<M extends MenuModel, O extends MenuOptions<M>> = C
     readonly options: O;
     readonly header?: JSX.Element;
     readonly footer?: JSX.Element;
-    readonly value: MenuValue<M, O> | MenuInitialValue<M, O>;
+    readonly value: MenuValue<M, O> | MenuInitialValue<M, O> | ValueNotApplicable;
     /**
      * Indicates whether or not the Menu's data has been successfully loaded in the case that it
      * is being loaded asynchronously.  If the Menu's data is loaded asynchronously, it is
@@ -44,13 +46,15 @@ export type AbstractMenuProps<M extends MenuModel, O extends MenuOptions<M>> = C
     readonly itemLockedClassName?:
       | ComponentProps["className"]
       | ((datum: M) => ComponentProps["className"]);
-    readonly itemSelectedClassName?:
-      | ComponentProps["className"]
-      | ((datum: M) => ComponentProps["className"]);
+    readonly itemSelectedClassName?: IfMenuValued<
+      ComponentProps["className"] | ((datum: M) => ComponentProps["className"]),
+      M,
+      O
+    >;
     readonly itemClassName?:
       | ComponentProps["className"]
       | ((datum: M) => ComponentProps["className"]);
-    readonly onSelect: (v: ModelValue<M, O>, instance: MenuItemInstance) => void;
+    readonly onSelect: ((v: ModelValue<M, O>, instance: MenuItemInstance) => void) | undefined;
     readonly children?: (datum: M) => ReactNode;
   };
 
@@ -64,9 +68,9 @@ export type MenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
   AbstractMenuProps<M, O>,
   "onSelect" | "value"
 > & {
-  readonly value?: MenuValue<M, O>;
-  readonly initialValue?: MenuInitialValue<M, O>;
-  readonly onChange?: (value: MenuValue<M, O>, item: MenuItemInstance) => void;
+  readonly value?: IfMenuValued<MenuValue<M, O>, M, O>;
+  readonly initialValue?: IfMenuValued<MenuInitialValue<M, O>, M, O>;
+  readonly onChange?: IfMenuValued<(value: MenuValue<M, O>, item: MenuItemInstance) => void, M, O>;
 };
 
 export type MenuComponent = {

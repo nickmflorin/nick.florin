@@ -12,11 +12,11 @@ export const Table = forwardRef(
     { columns: _columns, ...props }: TableProps<T>,
     ref?: ForwardedRef<TableInstance<T>>,
   ) => {
-    const { checked, check, uncheck } = useTableView();
+    const { isCheckable, checked, check, uncheck } = useTableView();
 
     const columns = useMemo(() => {
       let cs: Column<T>[] = [..._columns];
-      if (checked !== undefined) {
+      if (isCheckable) {
         cs = [
           {
             id: "checkable",

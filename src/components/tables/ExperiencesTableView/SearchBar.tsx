@@ -15,14 +15,18 @@ const CreateExperienceForm = dynamic(
   },
 );
 
-export interface SearchBarProps extends ComponentProps {}
+export interface SearchBarProps extends ComponentProps {
+  readonly companiesMenu: JSX.Element;
+}
 
-export const SearchBar = (props: SearchBarProps) => {
+export const SearchBar = ({ companiesMenu, ...props }: SearchBarProps) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <>
-      <TableSearchBar {...props} searchParamName="search" onNew={() => setDrawerOpen(true)} />
+      <TableSearchBar {...props} searchParamName="search" onNew={() => setDrawerOpen(true)}>
+        {companiesMenu}
+      </TableSearchBar>
       {drawerOpen && (
         <ClientDrawer onClose={() => setDrawerOpen(false)}>
           <CreateExperienceForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />

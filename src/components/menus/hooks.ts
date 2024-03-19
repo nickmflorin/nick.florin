@@ -147,37 +147,58 @@ const getMenuModelValue = <M extends types.MenuModel, O extends types.MenuOption
   }
 };
 
-export const useMenuValue = <M extends types.MenuModel, O extends types.MenuOptions<M>>({
+type MenuValueReturnType<
+  V extends boolean,
+  M extends types.MenuModel,
+  O extends types.MenuOptions<M>,
+> = V extends true
+  ? [
+      types.MenuInitialValue<M, O> | types.MenuValue<M, O>,
+      types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>,
+      (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => void,
+      (v: types.MenuValue<M, O>) => void,
+    ]
+  : [types.ValueNotApplicable, types.ValueNotApplicable, undefined, undefined];
+
+export const useMenuValue = <
+  V extends boolean,
+  M extends types.MenuModel,
+  O extends types.MenuOptions<M>,
+>({
   initialValue,
   options,
   onChange: _onChange,
   value: _propValue,
   isReady = true,
+  isValued,
   data,
-}: Pick<types.MenuProps<M, O>, "data" | "value" | "initialValue" | "options" | "isReady"> & {
+}: Pick<types.MenuProps<M, O>, "data" | "options" | "isReady"> & {
+  readonly value?: V extends true ? types.MenuValue<M, O> : types.ValueNotApplicable;
+  readonly initialValue?: V extends true ? types.MenuInitialValue<M, O> : types.ValueNotApplicable;
+  readonly isValued: V;
   readonly onChange?: (
     value: types.MenuValue<M, O>,
     params: { item: types.MenuItemInstance; models: types.MenuModelValue<M, O> },
   ) => void;
-}): [
-  types.MenuInitialValue<M, O> | types.MenuValue<M, O>,
-  types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>,
-  (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => void,
-  (v: types.MenuValue<M, O>) => void,
-] => {
-  const [_value, setValue] = useState<types.MenuInitialValue<M, O> | types.MenuValue<M, O>>(() => {
-    if (initialValue === undefined) {
-      if (types.menuIsNonNullable<M, O>(options)) {
-        /* If the menu is non nullable and not multi-select, the initial value can still be null
-           even if the menu is non nullable.  This is because non-nullability refers to the case
-           that the value cannot be cleared, or changed to null, after it is set. */
+}): MenuValueReturnType<V, M, O> => {
+  const [_value, setValue] = useState<
+    types.MenuInitialValue<M, O> | types.MenuValue<M, O> | types.ValueNotApplicable
+  >(() => {
+    if (isValued) {
+      if (initialValue === undefined) {
+        if (types.menuIsNonNullable<M, O>(options)) {
+          /* If the menu is non nullable and not multi-select, the initial value can still be null
+             even if the menu is non nullable.  This is because non-nullability refers to the case
+             that the value cannot be cleared, or changed to null, after it is set. */
+          return null as types.MenuInitialValue<M, O>;
+        } else if (options.isMulti) {
+          return [] as types.MenuInitialValue<M, O>;
+        }
         return null as types.MenuInitialValue<M, O>;
-      } else if (options.isMulti) {
-        return [] as types.MenuInitialValue<M, O>;
       }
-      return null as types.MenuInitialValue<M, O>;
+      return initialValue as types.MenuInitialValue<M, O>;
     }
-    return initialValue as types.MenuInitialValue<M, O>;
+    return types.VALUE_NOT_APPLICABLE;
   });
 
   const value = useMemo(
@@ -185,14 +206,21 @@ export const useMenuValue = <M extends types.MenuModel, O extends types.MenuOpti
     [_propValue, _value],
   );
 
-  const modelValue = useMemo(
-    (): types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O> =>
-      getMenuModelValue(value, { data, isReady, options }),
-    [data, value, options, isReady],
-  );
+  const modelValue = useMemo(():
+    | types.MenuInitialModelValue<M, O>
+    | types.MenuModelValue<M, O>
+    | types.ValueNotApplicable => {
+    if (value !== types.VALUE_NOT_APPLICABLE) {
+      return getMenuModelValue(value, { data, isReady, options });
+    }
+    return types.VALUE_NOT_APPLICABLE;
+  }, [data, value, options, isReady]);
 
   const selectModel = useReferentialCallback(
     (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => {
+      if (value === types.VALUE_NOT_APPLICABLE) {
+        throw new Error("A model cannot be selected if the Menu is not valued.");
+      }
       const newValue: types.MenuValue<M, O> = reduceMenuValue(value, v, options);
       /* At this point, since the model has already been selected, any potential initially null
          values for the Menu's value should not be present if the Menu is non nullable - because if
@@ -218,7 +246,12 @@ export const useMenuValue = <M extends types.MenuModel, O extends types.MenuOpti
     },
   );
 
-  return [value, modelValue, selectModel, setValue];
+  return [
+    value,
+    modelValue,
+    isValued ? selectModel : undefined,
+    isValued ? setValue : undefined,
+  ] as MenuValueReturnType<V, M, O>;
 };
 
 export const useMenu = <M extends types.MenuModel, O extends types.MenuOptions<M>>() => {

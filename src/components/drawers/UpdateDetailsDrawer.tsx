@@ -1,11 +1,7 @@
-"use client";
-import { useMemo } from "react";
-
-import { isUuid } from "~/lib/typeguards";
 import { type Education, type DetailEntityType, type Experience } from "~/prisma/model";
 import { ModifyDetailsView } from "~/components/forms/details/ModifyDetailsView";
 import { ApiResponseView } from "~/components/views/ApiResponseView";
-import { useDetails, useMutableParams } from "~/hooks";
+import { useDetails } from "~/hooks";
 
 import { ClientDrawer } from "./ClientDrawer";
 import { DrawerContent } from "./DrawerContent";

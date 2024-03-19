@@ -26,6 +26,7 @@ import { FloatingContent } from "./FloatingContent";
 import * as types from "./types";
 
 export type FloatingRenderProps = {
+  readonly isOpen: boolean;
   readonly params: ReturnType<ReturnType<typeof useInteractions>["getReferenceProps"]>;
   readonly ref: (node: ReferenceType | null) => void;
 };
@@ -166,13 +167,13 @@ export const Floating = ({
 
   const children = useMemo(() => {
     if (typeof _children === "function") {
-      return _children({ ref: refs.setReference, params: referenceProps });
+      return _children({ ref: refs.setReference, params: referenceProps, isOpen });
     }
     return cloneElement(_children, {
       ref: refs.setReference,
       ...referenceProps,
     });
-  }, [_children, refs, referenceProps]);
+  }, [_children, refs, referenceProps, isOpen]);
 
   const floatingProps = getFloatingProps();
 
