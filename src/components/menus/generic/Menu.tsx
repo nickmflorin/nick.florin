@@ -18,7 +18,7 @@ export const Menu = forwardRef(
       options: props.options,
       data: props.data,
       isReady: props.isReady,
-      onChange: (value, params) => onChange?.(value, params.item),
+      onChange: (v, params) => onChange?.(v, params.item),
     });
     return (
       <AbstractMenu

@@ -15,11 +15,16 @@ const UpdateDetailsDrawer = dynamic(() => import("~/components/drawers/UpdateDet
   loading: () => <Loading loading={true} />,
 });
 
+const UpdateSchoolDrawer = dynamic(() => import("~/components/drawers/UpdateSchoolDrawer"), {
+  loading: () => <Loading loading={true} />,
+});
+
 export const Drawers = () => {
   const { params, clear } = useMutableParams();
 
   const updateEducationId = useMemo(() => params.get("updateEducationId"), [params]);
   const updateEducationDetailsId = useMemo(() => params.get("updateEducationDetailsId"), [params]);
+  const updateSchoolId = useMemo(() => params.get("updateSchoolId"), [params]);
 
   if (isUuid(updateEducationId)) {
     return (
@@ -36,6 +41,8 @@ export const Drawers = () => {
         onClose={() => clear("updateEducationDetailsId")}
       />
     );
+  } else if (isUuid(updateSchoolId)) {
+    return <UpdateSchoolDrawer schoolId={updateSchoolId} onClose={() => clear("updateSchoolId")} />;
   }
   return null;
 };

@@ -5,26 +5,42 @@ import { useState } from "react";
 import { Button } from "~/components/buttons";
 import { Floating } from "~/components/floating/Floating";
 import { CaretIcon } from "~/components/icons/CaretIcon";
+import { ShowHide } from "~/components/util";
 import { Loading } from "~/components/views/Loading";
 
 import { MenuContainer } from "../generic/MenuContainer";
 
-import { CompaniesMenuFooter } from "./CompaniesMenuFooter";
+import { CompaniesSchoolsMenuFooter } from "./CompaniesSchoolsMenuFooter";
+import { type ModelType } from "./types";
 
 const CreateCompanyForm = dynamic(() => import("~/components/forms/companies/CreateCompanyForm"), {
   ssr: false,
   loading: () => <Loading loading={true} />,
 });
 
+const CreateSchoolForm = dynamic(() => import("~/components/forms/schools/CreateSchoolForm"), {
+  ssr: false,
+  loading: () => <Loading loading={true} />,
+});
+
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), { ssr: false });
 
-export interface CompaniesFloatingProps {
+const ButtonContent: { [key in ModelType]: string } = {
+  company: "Companies",
+  school: "Schools",
+};
+
+export interface CompaniesSchoolsFloatingProps<M extends ModelType> {
   readonly children: JSX.Element;
+  readonly modelType: M;
 }
 
-export const CompaniesFloating = (props: CompaniesFloatingProps) => {
+export const CompaniesSchoolsFloating = <M extends ModelType>({
+  children,
+  modelType,
+}: CompaniesSchoolsFloatingProps<M>) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showCreateCompanyDrawer, setShowCreateCompanyDrawer] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   return (
     <>
       <Floating
@@ -32,11 +48,11 @@ export const CompaniesFloating = (props: CompaniesFloatingProps) => {
         onOpenChange={v => setIsOpen(v)}
         content={
           <MenuContainer className="box-shadow-none">
-            {props.children}
-            <CompaniesMenuFooter
+            {children}
+            <CompaniesSchoolsMenuFooter
               onCreate={() => {
                 setIsOpen(false);
-                setShowCreateCompanyDrawer(true);
+                setDrawerVisible(true);
               }}
             />
           </MenuContainer>
@@ -57,21 +73,30 @@ export const CompaniesFloating = (props: CompaniesFloatingProps) => {
               right: <CaretIcon open={isOpen} />,
             }}
           >
-            Companies
+            {ButtonContent[modelType]}
           </Button.Secondary>
         )}
       </Floating>
-      {showCreateCompanyDrawer && (
-        <ClientDrawer onClose={() => setShowCreateCompanyDrawer(false)}>
+      <ShowHide show={drawerVisible && modelType === "company"}>
+        <ClientDrawer onClose={() => setDrawerVisible(false)}>
           <CreateCompanyForm
             className="mt-[16px]"
-            onCancel={() => setShowCreateCompanyDrawer(false)}
-            onSuccess={() => setShowCreateCompanyDrawer(false)}
+            onCancel={() => setDrawerVisible(false)}
+            onSuccess={() => setDrawerVisible(false)}
           />
         </ClientDrawer>
-      )}
+      </ShowHide>
+      <ShowHide show={drawerVisible && modelType === "school"}>
+        <ClientDrawer onClose={() => setDrawerVisible(false)}>
+          <CreateSchoolForm
+            className="mt-[16px]"
+            onCancel={() => setDrawerVisible(false)}
+            onSuccess={() => setDrawerVisible(false)}
+          />
+        </ClientDrawer>
+      </ShowHide>
     </>
   );
 };
 
-export default CompaniesFloating;
+export default CompaniesSchoolsFloating;

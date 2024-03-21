@@ -5,6 +5,7 @@ import { Text } from "~/components/typography/Text";
 import { Select, type SelectProps } from "./generic";
 
 const options = {
+  isNullable: false,
   getItemValue: (m: School) => m.id,
   getItemLabel: (m: School) => m.name,
   getItemValueLabel: (m: School) => m.shortName ?? m.name,

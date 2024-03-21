@@ -18,7 +18,11 @@ const DetailsCell = ({ model }: DetailsCellProps) => {
   const { set } = useMutableParams();
   return (
     <Link.Primary
-      onClick={() => set("updateEducationDetailsId", model.id, { clear: "updateEducationId" })}
+      onClick={() =>
+        set("updateEducationDetailsId", model.id, {
+          clear: ["updateEducationId", "updateSchoolId"],
+        })
+      }
     >{`${model.details.length} Details`}</Link.Primary>
   );
 };
@@ -101,7 +105,9 @@ export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Elem
               deleteErrorMessage="There was an error deleting the education."
               deleteAction={deleteEducation.bind(null, model.id)}
               onEdit={() =>
-                set("updateEducationId", model.id, { clear: "updateEducationDetailsId" })
+                set("updateEducationId", model.id, {
+                  clear: ["updateEducationDetailsId", "updateSchoolId"],
+                })
               }
             />
           ),

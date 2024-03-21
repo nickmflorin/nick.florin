@@ -5,11 +5,14 @@ import { type ComponentProps } from "~/components/types";
 
 import { MenuFooter } from "../generic/MenuFooter";
 
-export interface CompaniesMenuFooterProps extends ComponentProps {
+export interface CompaniesSchoolsMenuFooterProps extends ComponentProps {
   readonly onCreate: () => void;
 }
 
-export const CompaniesMenuFooter = ({ onCreate, ...props }: CompaniesMenuFooterProps) => (
+export const CompaniesSchoolsMenuFooter = ({
+  onCreate,
+  ...props
+}: CompaniesSchoolsMenuFooterProps) => (
   <MenuFooter
     {...props}
     className={clsx(

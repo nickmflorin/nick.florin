@@ -221,10 +221,11 @@ export const useMenuValue = <
 
   const selectModel = useReferentialCallback(
     (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => {
-      if (value === types.VALUE_NOT_APPLICABLE) {
+      const existingValue = value;
+      if (existingValue === types.VALUE_NOT_APPLICABLE) {
         throw new Error("A model cannot be selected if the Menu is not valued.");
       }
-      const newValue: types.MenuValue<M, O> = reduceMenuValue(value, v, options);
+      const newValue: types.MenuValue<M, O> = reduceMenuValue(existingValue, v, options);
       /* At this point, since the model has already been selected, any potential initially null
          values for the Menu's value should not be present if the Menu is non nullable - because if
          the Menu is non-nullable, the value should not be able to be cleared after it was
@@ -241,11 +242,17 @@ export const useMenuValue = <
          initialized as null. */
       if (modelV === null && types.menuIsNonNullable<M, O>(options)) {
         throw new Error("Unexpectedly encountered null model value for a non nullable menu.");
+        /* If the Menu allows multiple selection, there will never be a case where selecting a model
+           does not result in an overall change of the Menu's value - because selecting the same
+           model that is already selected will cause it to deselect.  If the Menu does not allow
+           multiple selection, then clicking the same previously selected model should not trigger
+           the 'onChange' handler to fire. */
+      } else if (Array.isArray(existingValue) || !isEqual(existingValue, newValue)) {
+        _onChange?.(newValue, {
+          item: instance,
+          models: modelV as types.MenuModelValue<M, O>,
+        });
       }
-      _onChange?.(newValue, {
-        item: instance,
-        models: modelV as types.MenuModelValue<M, O>,
-      });
     },
   );
 

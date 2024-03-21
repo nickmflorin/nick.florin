@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Button } from "~/components/buttons";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { TextInput } from "~/components/input/TextInput";
+import { CompaniesSchoolsDropdownMenu } from "~/components/menus/CompaniesSchoolsDropdownMenu";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
@@ -36,6 +37,7 @@ export const EducationsTableView = ({ filters, page }: TableViewProps) => (
         <TableSearchBar>
           <SearchInput searchParamName="search" />
           <NewExperienceButton />
+          <CompaniesSchoolsDropdownMenu modelType="school" />
         </TableSearchBar>
       }
       controlBar={<ControlBar />}

@@ -41,7 +41,7 @@ export const MenuItemModelRenderer = forwardRef(
     const label = types.getModelLabel(model, options);
 
     const isSelected = useMemo(() => {
-      if (typeof menuValue !== "string") {
+      if (menuValue !== types.VALUE_NOT_APPLICABLE) {
         if (options.isMulti) {
           if (!Array.isArray(menuValue)) {
             throw new Error("Unexpectedly encountered non-iterable value for a multi-valued Menu.");
