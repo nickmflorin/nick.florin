@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 import { z } from "zod";
 
-import { ReactNodeSchema, isReactNode } from "~/lib/core";
+import { ReactNodeSchema } from "~/lib/core";
 import { IconPropSchema } from "~/components/icons";
 
 import { type ItemQueryOption, type MenuOptions } from "./options";
@@ -12,9 +12,12 @@ export type MenuModel = Record<string, unknown>;
 export const VALUE_NOT_APPLICABLE = "__VALUE_NOT_APPLICABLE__";
 export type ValueNotApplicable = typeof VALUE_NOT_APPLICABLE;
 
+const NEVER = "__NEVER__" as const;
+type Never = typeof NEVER;
+
 const QuerySchema = z.object({
   params: z.record(z.string()),
-  clear: z.array(z.string()).optional(),
+  clear: z.union([z.string(), z.literal(true), z.array(z.string())]).optional(),
 });
 
 const MenuModelParamsSchema = z.object({
@@ -33,19 +36,42 @@ const MenuModelParamsSchema = z.object({
 
 export type MenuModelParams = z.infer<typeof MenuModelParamsSchema>;
 
-export const modelHasParam = <M extends MenuModel, N extends keyof MenuModelParams>(
-  model: M,
-  param: keyof MenuModelParams,
-): model is M & { [key in N]: MenuModelParams[key] } => {
+const isValidModelParam = <P extends keyof MenuModelParams>(
+  value: unknown,
+  param: P,
+): value is MenuModelParams[P] => {
   const schema = MenuModelParamsSchema.pick({ [param]: true });
-  const parseSuccess = schema.safeParse(model).success;
+  let isValid = schema.safeParse({ [param]: value }).success;
   if (param === "value") {
-    return parseSuccess && model.value !== null && model.value !== undefined;
+    isValid = isValid && value !== null;
   }
-  return parseSuccess;
+  return isValid;
 };
 
-export const modelValueIsValid = (value: unknown) => typeof value !== "undefined" && value !== null;
+export const validateModelParam = <N extends keyof MenuModelParams>(
+  value: unknown,
+  param: N,
+): MenuModelParams[N] => {
+  const isValid = isValidModelParam(value, param);
+  if (!isValid) {
+    throw new TypeError(
+      `The value '${String(value)}' is not a valid value for parameter '${param}' ` +
+        "on a given menu item.",
+    );
+  }
+  return value;
+};
+
+export const modelHasParam = <M extends MenuModel, N extends keyof MenuModelParams>(
+  model: M,
+  param: N,
+): model is M & { [key in N]: MenuModelParams[key] } => {
+  if (param in model && model[param] !== undefined) {
+    validateModelParam(model[param], param);
+    return true;
+  }
+  return false;
+};
 
 export type ModelValue<M extends MenuModel, O extends MenuOptions<M>> = M extends {
   readonly value: infer V;
@@ -65,14 +91,8 @@ export const getModelValue = <M extends MenuModel, O extends MenuOptions<M>>(
   } else if (modelHasParam(model, "value")) {
     v = model.value;
   }
-  if (v !== VALUE_NOT_APPLICABLE && !modelValueIsValid(v)) {
-    throw new TypeError(`The value '${v}' is not a valid value for a menu item in the menu.`);
-  }
   return v as ModelValue<M, O>;
 };
-
-export const modelIdIsValid = (value: unknown) =>
-  typeof value === "string" || typeof value === "number";
 
 export type ModelId<M extends MenuModel, O extends MenuOptions<M>> = M extends {
   readonly id: infer V extends string | number;
@@ -86,19 +106,14 @@ export const getModelId = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelId<M, O> | undefined => {
-  let v: unknown = "__NEVER__";
+  let v: string | number | Never = NEVER;
   if (options.getItemId !== undefined) {
-    v = options.getItemId(model);
+    v = validateModelParam(options.getItemId(model), "id");
   } else if (modelHasParam(model, "id")) {
     v = model.id;
   }
-  if (v !== "__NEVER__" && !modelIdIsValid(v)) {
-    throw new TypeError(`The value '${v}' is not a valid id for a menu item in the menu.`);
-  }
-  return v === "__NEVER__" ? undefined : (v as ModelId<M, O>);
+  return v === NEVER ? undefined : (v as ModelId<M, O>);
 };
-
-export const modelLabelIsValid = (value: unknown) => isReactNode(value);
 
 export type ModelLabel<M extends MenuModel, O extends MenuOptions<M>> = M extends {
   readonly label: infer L extends ReactNode;
@@ -112,16 +127,13 @@ export const getModelLabel = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelLabel<M, O> | undefined => {
-  let v: unknown = "__NEVER__";
+  let v: ReactNode | Never = NEVER;
   if (options.getItemLabel !== undefined) {
     v = options.getItemLabel(model);
   } else if (modelHasParam(model, "label")) {
     v = model.label;
   }
-  if (v !== "__NEVER__" && !modelLabelIsValid(v)) {
-    throw new TypeError(`The value '${v}' is not a valid label for a menu item in the menu.`);
-  }
-  return v === "__NEVER__" ? undefined : (v as ModelLabel<M, O>);
+  return v === NEVER ? undefined : (v as ModelLabel<M, O>);
 };
 
 export type ModelHref<M extends MenuModel, O extends MenuOptions<M>> = M extends {
@@ -136,16 +148,13 @@ export const getModelHref = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelHref<M, O> | undefined => {
-  let v: unknown = "__NEVER__";
+  let v: string | Never = NEVER;
   if (options.getItemHref !== undefined) {
     v = options.getItemHref(model);
   } else if (modelHasParam(model, "href")) {
     v = model.href;
   }
-  if (v !== "__NEVER__" && typeof v !== "string") {
-    throw new TypeError(`The value '${v}' is not a valid href for a menu item in the menu.`);
-  }
-  return v === "__NEVER__" ? undefined : (v as ModelHref<M, O>);
+  return v === NEVER ? undefined : (v as ModelHref<M, O>);
 };
 
 export type ModelQuery<M extends MenuModel, O extends MenuOptions<M>> = M extends {
@@ -160,19 +169,14 @@ export const getModelQuery = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelQuery<M, O> | undefined => {
-  let v: unknown = "__NEVER__";
+  let v: ItemQueryOption | Never = NEVER;
   if (options.getItemQuery !== undefined) {
     v = options.getItemQuery(model);
   } else if (modelHasParam(model, "query")) {
     v = model.query;
   }
-  if (v !== "__NEVER__" && !QuerySchema.safeParse(v).success) {
-    throw new TypeError(`The value '${v}' is not a valid query for a menu item in the menu.`);
-  }
-  return v === "__NEVER__" ? undefined : (v as ModelQuery<M, O>);
+  return v === NEVER ? undefined : (v as ModelQuery<M, O>);
 };
-
-export const modelValueLabelIsValid = (value: unknown) => isReactNode(value);
 
 export type ModelValueLabel<M extends MenuModel, O extends MenuOptions<M>> = M extends {
   readonly valueLabel: infer L extends ReactNode;
@@ -186,14 +190,11 @@ export const getItemValueLabel = <M extends MenuModel, O extends MenuOptions<M>>
   model: M,
   options: O,
 ): ModelValueLabel<M, O> | undefined => {
-  let v: unknown = "__NEVER__";
+  let v: ReactNode | Never = NEVER;
   if (options.getItemValueLabel !== undefined) {
     v = options.getItemValueLabel(model);
   } else if (modelHasParam(model, "valueLabel")) {
-    v = model.label;
+    v = model.valueLabel;
   }
-  if (v !== "__NEVER__" && !modelLabelIsValid(v)) {
-    throw new TypeError(`The value '${v}' is not a valid value label for a menu item in the menu.`);
-  }
-  return v === "__NEVER__" ? undefined : (v as ModelValueLabel<M, O>);
+  return v === NEVER ? undefined : (v as ModelValueLabel<M, O>);
 };
