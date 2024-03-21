@@ -2,6 +2,11 @@ import { type ReactNode } from "react";
 
 import { type MenuModel } from "./model";
 
+export type ItemQueryOption = {
+  params: Record<string, string>;
+  clear?: string[];
+};
+
 export type MenuOptions<I extends MenuModel> = Partial<{
   readonly isMulti: boolean;
   readonly isNullable: boolean;
@@ -10,6 +15,8 @@ export type MenuOptions<I extends MenuModel> = Partial<{
   // TODO: We may want to move this to the Select since it is not applicable to the generic Menu.
   readonly getItemValueLabel: (m: I) => ReactNode;
   readonly getItemId: (m: I) => string | number;
+  readonly getItemHref: (m: I) => string;
+  readonly getItemQuery: (m: I) => ItemQueryOption;
 }>;
 
 export const menuIsNonNullable = <M extends MenuModel, O extends MenuOptions<M>>(options: O) =>

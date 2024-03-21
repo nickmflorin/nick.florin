@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { forwardRef, type ForwardedRef, useState, useImperativeHandle, useMemo } from "react";
 
 import isEqual from "lodash.isequal";
+
+import { useMutableParams } from "~/hooks";
 
 import * as types from "../types";
 
@@ -29,6 +32,8 @@ export const MenuItemModelRenderer = forwardRef(
     }: types.MenuItemModelRendererProps<M, O>,
     ref: ForwardedRef<types.MenuItemInstance>,
   ) => {
+    const { set } = useMutableParams();
+
     const [_isLoading, setLoading] = useState(false);
     const [_isDisabled, setDisabled] = useState(false);
     const [_isLocked, setLocked] = useState(false);
@@ -54,7 +59,11 @@ export const MenuItemModelRenderer = forwardRef(
       setLocked,
     }));
 
-    return (
+    const href = useMemo(() => types.getModelHref(model, options), [model, options]);
+
+    const query = useMemo(() => types.getModelQuery(model, options), [model, options]);
+
+    const Item = (
       <MenuItem
         id={id}
         isMulti={options.isMulti}
@@ -84,11 +93,21 @@ export const MenuItemModelRenderer = forwardRef(
         isLocked={types.evalMenuItemFlag("isLocked", itemIsLocked, model) || !isReady || _isLocked}
         isLoading={types.evalMenuItemFlag("isLoading", itemIsLoading, model) || _isLoading}
         isSelected={isSelected}
-        onClick={onClick}
+        onClick={() => {
+          onClick();
+          if (query) {
+            set(query.params, { clear: query.clear ?? [] });
+          }
+        }}
       >
         {children ? children(model) : label}
       </MenuItem>
     );
+
+    if (href) {
+      return <Link href={href}>{Item}</Link>;
+    }
+    return Item;
   },
 ) as {
   <M extends types.MenuModel, O extends types.MenuOptions<M>>(
