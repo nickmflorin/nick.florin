@@ -82,7 +82,7 @@ export type ModelId<M extends MenuModel, O extends MenuOptions<M>> = M extends {
 export const getModelId = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
-): ModelId<M, O> => {
+): ModelId<M, O> | undefined => {
   let v: unknown = "__NEVER__";
   if (options.getItemId !== undefined) {
     v = options.getItemId(model);
@@ -92,7 +92,7 @@ export const getModelId = <M extends MenuModel, O extends MenuOptions<M>>(
   if (v !== "__NEVER__" && !modelIdIsValid(v)) {
     throw new TypeError(`The value '${v}' is not a valid id for a menu item in the menu.`);
   }
-  return v as ModelId<M, O>;
+  return v === "__NEVER__" ? undefined : (v as ModelId<M, O>);
 };
 
 export const modelLabelIsValid = (value: unknown) => isReactNode(value);
@@ -219,10 +219,4 @@ export const menuIsValued = <M extends MenuModel, O extends MenuOptions<M>>(
 
 export type MenuInstance<M extends MenuModel, O extends MenuOptions<M>> = {
   readonly value: MenuValue<M, O>;
-};
-
-export type MenuItemInstance = {
-  readonly setLocked: (value: boolean) => void;
-  readonly setDisabled: (value: boolean) => void;
-  readonly setLoading: (value: boolean) => void;
 };

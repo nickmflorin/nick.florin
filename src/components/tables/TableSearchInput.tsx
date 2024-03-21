@@ -66,6 +66,7 @@ export const TableSearchInput = ({
   return (
     <TextInput
       {...props}
+      className={clsx("grow", props.className)}
       value={value}
       onChange={e => {
         setValue(e.target.value);
@@ -107,3 +108,5 @@ export const TableSearchInput = ({
     />
   );
 };
+
+export default TableSearchInput;

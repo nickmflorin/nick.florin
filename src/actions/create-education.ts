@@ -39,7 +39,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
 
   if (await prisma.education.count({ where: { schoolId: school.id, major: data.major } })) {
     return ApiClientFormError.BadRequest({
-      title: {
+      major: {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'major' must be unique for a given school.",
       },

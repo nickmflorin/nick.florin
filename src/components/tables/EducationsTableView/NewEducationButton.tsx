@@ -2,8 +2,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
-import { TableSearchBar } from "~/components/tables/TableSearchBar";
-import { type ComponentProps } from "~/components/types";
+import { Button } from "~/components/buttons";
 import { Loading } from "~/components/views/Loading";
 
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"));
@@ -15,14 +14,12 @@ const CreateEducationForm = dynamic(
   },
 );
 
-export interface SearchBarProps extends ComponentProps {}
-
-export const SearchBar = (props: SearchBarProps) => {
+export const NewEducationButton = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <>
-      <TableSearchBar {...props} searchParamName="search" onNew={() => setDrawerOpen(true)} />
+      <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
       {drawerOpen && (
         <ClientDrawer onClose={() => setDrawerOpen(false)}>
           <CreateEducationForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
@@ -32,4 +29,4 @@ export const SearchBar = (props: SearchBarProps) => {
   );
 };
 
-export default SearchBar;
+export default NewEducationButton;

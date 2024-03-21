@@ -2,7 +2,6 @@ import { Suspense } from "react";
 
 import { z } from "zod";
 
-import { decodeQueryParam } from "~/lib/urls";
 import { EducationsTableView } from "~/components/tables/EducationsTableView";
 import { Loading } from "~/components/views/Loading";
 

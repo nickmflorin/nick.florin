@@ -1,23 +1,28 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+import { Button } from "~/components/buttons";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
-import { CompaniesMenu } from "~/components/menus/CompaniesMenu";
+import { TextInput } from "~/components/input/TextInput";
+import { CompaniesDropdownMenu } from "~/components/menus/CompaniesDropdownMenu";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
 import { TableViewProvider } from "../Provider";
-import { TableSearchBarPlaceholder } from "../TableSearchBarPlaceholder";
+import { TableSearchBar } from "../TableSearchBar";
 import { TableView as RootTableView } from "../TableView";
 
-import { CompaniesDropdownMenu } from "./CompaniesDropdownMenu";
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
 import { ExperiencesAdminTable } from "./Table";
 import { type Filters } from "./types";
 
-const TableSearchBar = dynamic(() => import("./SearchBar"), {
-  loading: () => <TableSearchBarPlaceholder />,
+const SearchInput = dynamic(() => import("../TableSearchInput"), {
+  loading: () => <TextInput isLoading={true} />,
+});
+
+const NewExperienceButton = dynamic(() => import("./NewExperienceButton"), {
+  loading: () => <Button.Primary isDisabled={true}>New</Button.Primary>,
 });
 
 interface TableViewProps {
@@ -29,17 +34,11 @@ export const ExperiencesTableView = ({ filters, page }: TableViewProps) => (
   <TableViewProvider id="experiences-table" isCheckable={true}>
     <RootTableView
       searchBar={
-        <TableSearchBar
-          companiesMenu={
-            <CompaniesDropdownMenu
-              menu={
-                <Suspense fallback={<Loading loading={true} />}>
-                  <CompaniesMenu />
-                </Suspense>
-              }
-            />
-          }
-        />
+        <TableSearchBar>
+          <SearchInput searchParamName="search" />
+          <NewExperienceButton />
+          <CompaniesDropdownMenu />
+        </TableSearchBar>
       }
       controlBar={<ControlBar />}
       paginator={

@@ -9,60 +9,69 @@
   box-shadow: theme("boxShadow.md");
   border-radius: theme("borderRadius.md");
 
-  > .menu__content {
+  > .menu__content-wrapper {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
-    // @include partials.scrollbar();
+    overflow: hidden;
+    flex-grow: 100;
+    position: relative;
 
-    > .menu__item {
+    > .menu__content {
       display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 6px 10px;
-      gap: 10px;
+      flex-direction: column;
+      overflow-y: scroll;
+      max-height: 100%;
+      height: 100%;
 
-      @include partials.font($type: "body", $line-height: 28px, $font-size: "xs");
+      > .menu__item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 6px 10px;
+        gap: 10px;
 
-      @include partials.disabled {
-        color: theme("colors.disabled");
-      }
+        @include partials.font($type: "body", $line-height: 28px, $font-size: "xs");
 
-      &.menu__item--locked,
-      &.menu__item--loading {
-        pointer-events: none;
-      }
-
-      @include partials.hovered {
-        &:not(.menu__item--selected, .disabled, .menu__item--locked) {
-          background-color: theme("colors.gray.100");
+        @include partials.disabled {
+          color: theme("colors.disabled");
         }
-      }
 
-      @include partials.focused {
-        &:not(.menu__item--selected, .disabled, .menu__item--locked) {
-          background-color: theme("colors.gray.100");
+        &.menu__item--locked,
+        &.menu__item--loading {
+          pointer-events: none;
         }
-      }
 
-      &.menu__item--selected:not(.disabled) {
-        background-color: theme("colors.blue.50");
         @include partials.hovered {
-          &:not(.disabled, .menu__item--locked) {
-            background-color: theme("colors.blue.100");
+          &:not(.menu__item--selected, .disabled, .menu__item--locked) {
+            background-color: theme("colors.gray.100");
           }
         }
-        @include partials.focused {
-          &:not(.disabled, .menu__item--locked) {
-            background-color: theme("colors.blue.100");
-          }
-        }
-      }
 
-      > .menu__item__content {
-        height: 100%;
-        flex-grow: 100;
-        @include partials.truncate();
+        @include partials.focused {
+          &:not(.menu__item--selected, .disabled, .menu__item--locked) {
+            background-color: theme("colors.gray.100");
+          }
+        }
+
+        &.menu__item--selected:not(.disabled) {
+          background-color: theme("colors.blue.50");
+          @include partials.hovered {
+            &:not(.disabled, .menu__item--locked) {
+              background-color: theme("colors.blue.100");
+            }
+          }
+          @include partials.focused {
+            &:not(.disabled, .menu__item--locked) {
+              background-color: theme("colors.blue.100");
+            }
+          }
+        }
+
+        > .menu__item__content {
+          height: 100%;
+          flex-grow: 100;
+          @include partials.truncate();
+        }
       }
     }
   }

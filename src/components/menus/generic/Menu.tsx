@@ -25,7 +25,7 @@ export const Menu = forwardRef(
         {...props}
         ref={ref}
         value={value}
-        onSelect={types.menuIsValued(props.data, props.options) ? selectModel : undefined}
+        onSelect={(v, model, instance) => selectModel?.(v, instance)}
       />
     );
   },

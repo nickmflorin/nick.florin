@@ -65,7 +65,9 @@ const Footer = <I extends BaseFormValues>({
 }: Pick<FormStructureProps<I>, "form" | "footer" | "footerClassName" | "isScrollable">) => (
   <>
     {(form.errors.length !== 0 || footer) && (
-      <div className={clsx("flex flex-col mt-2", { "pr-[18px]": isScrollable }, footerClassName)}>
+      <div
+        className={clsx("flex flex-col mt-[16px]", { "pr-[18px]": isScrollable }, footerClassName)}
+      >
         <FormErrors form={form} className="my-[4px]" />
         {footer}
       </div>

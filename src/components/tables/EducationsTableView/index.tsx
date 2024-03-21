@@ -1,12 +1,14 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+import { Button } from "~/components/buttons";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
+import { TextInput } from "~/components/input/TextInput";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
 import { TableViewProvider } from "../Provider";
-import { TableSearchBarPlaceholder } from "../TableSearchBarPlaceholder";
+import { TableSearchBar } from "../TableSearchBar";
 import { TableView as RootTableView } from "../TableView";
 
 import { ControlBar } from "./ControlBar";
@@ -14,8 +16,12 @@ import { Paginator } from "./Paginator";
 import { EducationsAdminTable } from "./Table";
 import { type Filters } from "./types";
 
-const TableSearchBar = dynamic(() => import("./SearchBar"), {
-  loading: () => <TableSearchBarPlaceholder />,
+const SearchInput = dynamic(() => import("../TableSearchInput"), {
+  loading: () => <TextInput isLoading={true} />,
+});
+
+const NewExperienceButton = dynamic(() => import("./NewEducationButton"), {
+  loading: () => <Button.Primary isDisabled={true}>New</Button.Primary>,
 });
 
 interface TableViewProps {
@@ -26,7 +32,12 @@ interface TableViewProps {
 export const EducationsTableView = ({ filters, page }: TableViewProps) => (
   <TableViewProvider id="educations-table" isCheckable={true}>
     <RootTableView
-      searchBar={<TableSearchBar />}
+      searchBar={
+        <TableSearchBar>
+          <SearchInput searchParamName="search" />
+          <NewExperienceButton />
+        </TableSearchBar>
+      }
       controlBar={<ControlBar />}
       paginator={
         <Suspense fallback={<PaginatorPlaceholder />}>

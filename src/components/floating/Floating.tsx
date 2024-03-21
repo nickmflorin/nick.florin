@@ -20,7 +20,7 @@ import {
 import clsx from "clsx";
 import { flushSync } from "react-dom";
 
-import { type Size, type ComponentProps } from "~/components/types";
+import { type Size, type ComponentProps, sizeToString } from "~/components/types";
 
 import { FloatingContent } from "./FloatingContent";
 import * as types from "./types";
@@ -90,6 +90,7 @@ export interface FloatingProps extends ComponentProps {
   readonly children: JSX.Element | ((params: FloatingRenderProps) => JSX.Element);
   readonly placement?: Placement;
   readonly width?: number | "target";
+  readonly maxHeight?: Size;
   readonly isDisabled?: boolean;
   readonly onOpen?: (e: Event) => void;
   readonly onClose?: (e: Event) => void;
@@ -105,6 +106,7 @@ export const Floating = ({
   triggers = ["hover"],
   isOpen: propIsOpen,
   inPortal = false,
+  maxHeight: _propMaxHeight,
   content,
   placement,
   offset,
@@ -118,7 +120,7 @@ export const Floating = ({
   onOpenChange,
 }: FloatingProps) => {
   const [_isOpen, setIsOpen] = useState(false);
-  const [maxHeight, setMaxHeight] = useState<Size | null>(null);
+  const [maxHeight, setMaxHeight] = useState<Size | null>(_propMaxHeight ?? null);
 
   /* Allow the open state of the floating element to be controlled externally to the component if
      desired. */
@@ -151,7 +153,9 @@ export const Floating = ({
               width: typeof width === "number" ? `${width}px` : `${rects.reference.width}px`,
             });
           }
-          flushSync(() => setMaxHeight(`${availableHeight}px`));
+          if (_propMaxHeight === undefined) {
+            flushSync(() => setMaxHeight(`${availableHeight}px`));
+          }
         },
       }),
     ],
@@ -187,7 +191,9 @@ export const Floating = ({
               content({
                 ref: refs.setFloating,
                 params: floatingProps,
-                styles: maxHeight ? { ...floatingStyles, maxHeight } : floatingStyles,
+                styles: maxHeight
+                  ? { ...floatingStyles, maxHeight: sizeToString(maxHeight) }
+                  : floatingStyles,
               })
             ) : (
               <FloatingContent
@@ -196,7 +202,7 @@ export const Floating = ({
                 {...floatingProps}
                 style={
                   maxHeight
-                    ? { ...style, ...floatingStyles, maxHeight }
+                    ? { ...style, ...floatingStyles, maxHeight: sizeToString(maxHeight) }
                     : { ...style, ...floatingStyles }
                 }
                 className={clsx(

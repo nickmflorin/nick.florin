@@ -2,15 +2,13 @@ import { stringifyLocation } from "~/prisma/model";
 import { getCompanies } from "~/actions/fetches/get-companies";
 import { Text } from "~/components/typography/Text";
 
-import { Menu } from "./generic";
+import { MenuContent } from "../generic/MenuContent";
 
-export interface CompaniesMenuProps {}
-
-export const CompaniesMenu = async () => {
+export const CompaniesMenuContent = async () => {
   const companies = await getCompanies();
   return (
-    <Menu
-      className="box-shadow-none"
+    <MenuContent
+      itemClassName="px-[18px] first:pt-[12px]"
       options={{}}
       data={companies.map(({ id, city, state, name }) => ({
         id,

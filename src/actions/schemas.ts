@@ -81,3 +81,29 @@ export const DetailSchema = z.object({
 export const DetailsSchema = z.object({
   details: z.array(DetailSchema),
 });
+
+export const CompanySchema = z.object({
+  name: NonNullableMinLengthStringField({
+    min: 3,
+    minErrorMessage: "The name must be at least 3 characters.",
+    requiredErrorMessage: "The name is required.",
+  }),
+  shortName: NullableMinLengthStringField({
+    minErrorMessage: "The short name must be at least 3 characters.",
+  }).optional(),
+  description: NullableMinLengthStringField({
+    minErrorMessage: "The description must be at least 3 characters.",
+  }).optional(),
+  logoImageUrl: z.string().optional(),
+  websiteUrl: z.union([z.literal(""), z.string().url()]).optional(),
+  city: NonNullableMinLengthStringField({
+    min: 2,
+    minErrorMessage: "The city must be at least 2 characters.",
+    requiredErrorMessage: "The city is required.",
+  }),
+  state: NonNullableMinLengthStringField({
+    min: 2,
+    minErrorMessage: "The state must be at least 2 characters.",
+    requiredErrorMessage: "The state is required.",
+  }),
+});
