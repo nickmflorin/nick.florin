@@ -4,7 +4,7 @@ import { type MenuModel } from "./model";
 
 export type ItemQueryOption = {
   params: Record<string, string>;
-  clear?: string[];
+  clear?: string[] | string | true;
 };
 
 export type MenuOptions<I extends MenuModel> = Partial<{

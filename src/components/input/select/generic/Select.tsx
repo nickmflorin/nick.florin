@@ -233,8 +233,8 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
             isReady={isReady}
             className={clsx("z-50", menuClassName)}
             value={value}
-            onSelect={(model, item) => {
-              selectModel(model, item);
+            onSelect={(value, model, item) => {
+              selectModel(value, item);
               if (
                 closeMenuOnSelect ||
                 (closeMenuOnSelect === undefined && !props.options.isMulti)

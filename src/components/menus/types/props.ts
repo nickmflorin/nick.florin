@@ -4,15 +4,8 @@ import { type ComponentProps } from "~/components/types";
 
 import { type MenuItemFlagProps } from "./flags";
 import { type MenuItemInstance } from "./item";
-import {
-  type MenuModel,
-  type MenuValue,
-  type MenuInitialValue,
-  type ModelValue,
-  type IfMenuValued,
-  type ValueNotApplicable,
-  type ModelId,
-} from "./model";
+import { type MenuValue, type MenuInitialValue, type IfMenuValued } from "./menu";
+import { type MenuModel, type ModelValue, type ValueNotApplicable, type ModelId } from "./model";
 import { type MenuOptions } from "./options";
 
 export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuOptions<M>>

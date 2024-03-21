@@ -9,7 +9,7 @@ export const getMenuItemKey = <M extends types.MenuModel, O extends types.MenuOp
 }: {
   value: types.ModelValue<M, O> | types.ValueNotApplicable;
   index: number;
-  id: types.ModelId<M, O>;
+  id?: types.ModelId<M, O>;
 }): MenuItemKey =>
   (typeof value === "string" || typeof value === "number") && value !== types.VALUE_NOT_APPLICABLE
     ? value

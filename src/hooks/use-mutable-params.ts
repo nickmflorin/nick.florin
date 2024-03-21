@@ -1,4 +1,5 @@
 import { useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useTransition } from "react";
 
 import { type QueryParamValue, encodeQueryParam } from "~/lib/urls";
@@ -8,7 +9,7 @@ interface UseMutableParamsConfig {
   readonly useTransition?: boolean;
 }
 
-type SetOpts = { useTransition?: boolean; clear?: string | string[] };
+type SetOpts = { useTransition?: boolean; clear?: string | string[] | true };
 
 type Set = {
   (key: string, v: Exclude<QueryParamValue, undefined>, opts?: SetOpts): void;
@@ -23,9 +24,9 @@ export const useMutableParams = (
   clear: (key: string) => void;
 } => {
   const [_, transition] = useTransition();
-  // const { replace: _replace } = useRouter();
+  const { replace: _replace } = useRouter();
   const params = useSearchParams();
-  // const pathname = usePathname();
+  const pathname = usePathname();
 
   const clear = useCallback(
     (param: string, opts?: { useTransition?: boolean }) => {
@@ -38,15 +39,14 @@ export const useMutableParams = (
       pms.delete(param);
       if (withTransition) {
         transition(() => {
-          // _replace(`${pathname}?${pms.toString()}`);
+          _replace(`${pathname}?${pms.toString()}`);
           window.history.pushState(null, "", `?${pms.toString()}`);
         });
       } else {
-        // _replace(`${pathname}?${pms.toString()}`);
-        window.history.pushState(null, "", `?${pms.toString()}`);
+        _replace(`${pathname}?${pms.toString()}`);
       }
     },
-    [config, params],
+    [config, params, pathname, _replace],
   );
 
   const set: Set = useCallback(
@@ -65,7 +65,7 @@ export const useMutableParams = (
         toSet = arg0;
       }
 
-      const overwriteParams = config?.overwriteParams ?? false;
+      const overwriteParams = config?.overwriteParams ?? options.clear === true;
       const withTransition =
         options.useTransition === undefined
           ? config?.useTransition === undefined ?? false
@@ -76,7 +76,7 @@ export const useMutableParams = (
         pms.set(key, encodeQueryParam(v));
       }
 
-      if (options.clear) {
+      if (options.clear && options.clear !== true) {
         const clr = Array.isArray(options.clear) ? options.clear : [options.clear];
         for (const c of clr) {
           pms.delete(c);
@@ -85,15 +85,13 @@ export const useMutableParams = (
 
       if (withTransition) {
         transition(() => {
-          window.history.pushState(null, "", `?${pms.toString()}`);
-          // _replace(`${pathname}?${pms.toString()}`);
+          _replace(`${pathname}?${pms.toString()}`);
         });
       } else {
-        // _replace(`${pathname}?${pms.toString()}`);
-        window.history.pushState(null, "", `?${pms.toString()}`);
+        _replace(`${pathname}?${pms.toString()}`);
       }
     },
-    [config, params],
+    [config, params, pathname, _replace],
   );
 
   return { params, set, clear };

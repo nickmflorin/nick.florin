@@ -173,8 +173,8 @@ export const useMenuValue = <
   isValued,
   data,
 }: Pick<types.MenuProps<M, O>, "data" | "options" | "isReady"> & {
-  readonly value?: V extends true ? types.MenuValue<M, O> : types.ValueNotApplicable;
-  readonly initialValue?: V extends true ? types.MenuInitialValue<M, O> : types.ValueNotApplicable;
+  readonly value?: types.MenuValue<M, O>;
+  readonly initialValue?: types.MenuInitialValue<M, O>;
   readonly isValued: V;
   readonly onChange?: (
     value: types.MenuValue<M, O>,
@@ -210,11 +210,14 @@ export const useMenuValue = <
     | types.MenuInitialModelValue<M, O>
     | types.MenuModelValue<M, O>
     | types.ValueNotApplicable => {
-    if (value !== types.VALUE_NOT_APPLICABLE) {
+    if (isValued) {
+      if (value === types.VALUE_NOT_APPLICABLE) {
+        throw new Error("Unexpectedly encountered non applicable menu value for a valued menu.");
+      }
       return getMenuModelValue(value, { data, isReady, options });
     }
     return types.VALUE_NOT_APPLICABLE;
-  }, [data, value, options, isReady]);
+  }, [data, value, options, isValued, isReady]);
 
   const selectModel = useReferentialCallback(
     (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => {
