@@ -12,7 +12,10 @@ export const CompaniesMenuContent = async () => {
       options={{}}
       data={companies.map(({ id, city, state, name }) => ({
         id,
-        query: { params: { updateCompanyId: id }, clear: true },
+        query: {
+          params: { updateCompanyId: id },
+          clear: ["updateExperienceId", "updateExperienceDetailsId"],
+        },
         label: (
           <div className="flex flex-col gap-[4px]">
             <Text size="sm" fontWeight="medium">

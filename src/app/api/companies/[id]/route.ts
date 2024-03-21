@@ -1,12 +1,12 @@
 import { type NextRequest } from "next/server";
 
-import { getExperience } from "~/actions/fetches/get-experience";
+import { getCompany } from "~/actions/fetches/get-company";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const experience = await getExperience(params.id);
-  if (!experience) {
+  const company = await getCompany(params.id);
+  if (!company) {
     return ApiClientGlobalError.NotFound().toResponse();
   }
-  return ClientResponse.OK(experience).toResponse();
+  return ClientResponse.OK(company).toResponse();
 }

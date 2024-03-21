@@ -26,7 +26,7 @@ export const ApiResponseView = <T,>({
     overlay={data !== undefined}
     spinnerSize={spinnerSize}
     loading={isLoading}
-    spinner={data === undefined}
+    spinner
   >
     {error ? <ErrorView error={error} /> : data ? children(data) : <></>}
   </Loading>

@@ -18,6 +18,10 @@ const UpdateDetailsDrawer = dynamic(() => import("~/components/drawers/UpdateDet
   loading: () => <Loading loading={true} />,
 });
 
+const UpdateCompanyDrawer = dynamic(() => import("~/components/drawers/UpdateCompanyDrawer"), {
+  loading: () => <Loading loading={true} />,
+});
+
 export const Drawers = () => {
   const { params, clear } = useMutableParams();
 
@@ -26,6 +30,7 @@ export const Drawers = () => {
     () => params.get("updateExperienceDetailsId"),
     [params],
   );
+  const updateCompanyId = useMemo(() => params.get("updateCompanyId"), [params]);
 
   if (isUuid(updateExperienceId)) {
     return (
@@ -41,6 +46,10 @@ export const Drawers = () => {
         entityType={DetailEntityType.EXPERIENCE}
         onClose={() => clear("updateExperienceDetailsId")}
       />
+    );
+  } else if (isUuid(updateCompanyId)) {
+    return (
+      <UpdateCompanyDrawer companyId={updateCompanyId} onClose={() => clear("updateCompanyId")} />
     );
   }
   return null;

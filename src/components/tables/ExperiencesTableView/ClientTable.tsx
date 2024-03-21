@@ -23,7 +23,11 @@ const DetailsCell = ({ model }: DetailsCellProps) => {
   const { set } = useMutableParams();
   return (
     <Link.Primary
-      onClick={() => set("updateExperienceDetailsId", model.id, { clear: "updateExperienceId" })}
+      onClick={() =>
+        set("updateExperienceDetailsId", model.id, {
+          clear: ["updateExperienceId", "updateCompanyId"],
+        })
+      }
     >{`${model.details.length} Details`}</Link.Primary>
   );
 };
@@ -100,7 +104,9 @@ export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.E
               deleteErrorMessage="There was an error deleting the experience."
               deleteAction={deleteExperience.bind(null, model.id)}
               onEdit={() =>
-                set("updateExperienceId", model.id, { clear: "updateExperienceDetailsId" })
+                set("updateExperienceId", model.id, {
+                  clear: ["updateExperienceDetailsId", "updateCompanyId"],
+                })
               }
             />
           ),
