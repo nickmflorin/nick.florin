@@ -21,7 +21,7 @@ export const NewEducationButton = () => {
     <>
       <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
       {drawerOpen && (
-        <ClientDrawer onClose={() => setDrawerOpen(false)}>
+        <ClientDrawer onClose={() => setDrawerOpen(false)} id="create-education">
           <CreateEducationForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
         </ClientDrawer>
       )}

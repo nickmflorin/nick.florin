@@ -23,7 +23,7 @@ export const UpdateSchoolDrawer = ({ schoolId, onClose }: UpdateSchoolDrawerProp
     keepPreviousData: true,
   });
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-school">
       <ApiResponseView error={error} isLoading={isLoading || isValidating} data={data}>
         {school => (
           <>

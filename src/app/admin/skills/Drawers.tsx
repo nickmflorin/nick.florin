@@ -1,22 +1,21 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
 
 import { isUuid } from "~/lib/typeguards";
+import { useDrawerParams } from "~/components/drawers/hooks";
 import { Loading } from "~/components/views/Loading";
-import { useMutableParams } from "~/hooks";
 
 const UpdateSkillDrawer = dynamic(() => import("~/components/drawers/UpdateSkillDrawer"), {
   loading: () => <Loading loading={true} />,
 });
 
 export const Drawers = () => {
-  const { params, clear } = useMutableParams();
+  const { params, close, ids } = useDrawerParams();
 
-  const updateSkillId = useMemo(() => params.get("updateSkillId"), [params]);
-
-  if (isUuid(updateSkillId)) {
-    return <UpdateSkillDrawer skillId={updateSkillId} onClose={() => clear("updateSkillId")} />;
+  if (isUuid(params.updateSkill)) {
+    return (
+      <UpdateSkillDrawer skillId={params.updateSkill} onClose={() => close(ids.UPDATE_SKILL)} />
+    );
   }
   return null;
 };

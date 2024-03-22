@@ -29,7 +29,7 @@ export const UpdateCompanyDrawer = ({
     },
   );
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-company">
       <ApiResponseView error={error} isLoading={isLoading || isValidating} data={data}>
         {company => (
           <>

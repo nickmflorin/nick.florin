@@ -21,7 +21,7 @@ export const NewExperienceButton = () => {
     <>
       <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
       {drawerOpen && (
-        <ClientDrawer onClose={() => setDrawerOpen(false)}>
+        <ClientDrawer onClose={() => setDrawerOpen(false)} id="create-experience">
           <CreateExperienceForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
         </ClientDrawer>
       )}

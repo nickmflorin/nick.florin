@@ -1,11 +1,10 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
 
 import { isUuid } from "~/lib/typeguards";
 import { DetailEntityType } from "~/prisma/model";
+import { useDrawerParams } from "~/components/drawers/hooks";
 import { Loading } from "~/components/views/Loading";
-import { useMutableParams } from "~/hooks";
 
 const UpdateExperienceDrawer = dynamic(
   () => import("~/components/drawers/UpdateExperienceDrawer"),
@@ -23,33 +22,29 @@ const UpdateCompanyDrawer = dynamic(() => import("~/components/drawers/UpdateCom
 });
 
 export const Drawers = () => {
-  const { params, clear } = useMutableParams();
+  const { params, close, ids } = useDrawerParams();
 
-  const updateExperienceId = useMemo(() => params.get("updateExperienceId"), [params]);
-  const updateExperienceDetailsId = useMemo(
-    () => params.get("updateExperienceDetailsId"),
-    [params],
-  );
-  const updateCompanyId = useMemo(() => params.get("updateCompanyId"), [params]);
-
-  if (isUuid(updateExperienceId)) {
+  if (isUuid(params.updateExperience)) {
     return (
       <UpdateExperienceDrawer
-        experienceId={updateExperienceId}
-        onClose={() => clear("updateExperienceId")}
+        experienceId={params.updateExperience}
+        onClose={() => close(ids.UPDATE_EXPERIENCE)}
       />
     );
-  } else if (isUuid(updateExperienceDetailsId)) {
+  } else if (isUuid(params.updateExperienceDetails)) {
     return (
       <UpdateDetailsDrawer
-        entityId={updateExperienceDetailsId}
+        entityId={params.updateExperienceDetails}
         entityType={DetailEntityType.EXPERIENCE}
-        onClose={() => clear("updateExperienceDetailsId")}
+        onClose={() => close(ids.UPDATE_EXPERIENCE_DETAILS)}
       />
     );
-  } else if (isUuid(updateCompanyId)) {
+  } else if (isUuid(params.updateCompany)) {
     return (
-      <UpdateCompanyDrawer companyId={updateCompanyId} onClose={() => clear("updateCompanyId")} />
+      <UpdateCompanyDrawer
+        companyId={params.updateCompany}
+        onClose={() => close(ids.UPDATE_COMPANY)}
+      />
     );
   }
   return null;

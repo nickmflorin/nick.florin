@@ -78,7 +78,7 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
         )}
       </Floating>
       <ShowHide show={drawerVisible && modelType === "company"}>
-        <ClientDrawer onClose={() => setDrawerVisible(false)}>
+        <ClientDrawer onClose={() => setDrawerVisible(false)} id="create-company">
           <CreateCompanyForm
             className="mt-[16px]"
             onCancel={() => setDrawerVisible(false)}
@@ -87,7 +87,7 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
         </ClientDrawer>
       </ShowHide>
       <ShowHide show={drawerVisible && modelType === "school"}>
-        <ClientDrawer onClose={() => setDrawerVisible(false)}>
+        <ClientDrawer onClose={() => setDrawerVisible(false)} id="create-school">
           <CreateSchoolForm
             className="mt-[16px]"
             onCancel={() => setDrawerVisible(false)}

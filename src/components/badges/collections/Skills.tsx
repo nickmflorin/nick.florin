@@ -1,7 +1,7 @@
 "use client";
 import { type Skill } from "~/prisma/model";
+import { useDrawerParams } from "~/components/drawers/hooks";
 import { type ComponentProps } from "~/components/types";
-import { useMutableParams } from "~/hooks";
 
 import { SkillBadge } from "../SkillBadge";
 
@@ -12,7 +12,7 @@ export interface SkillsProps extends ComponentProps {
 }
 
 export const Skills = ({ skills, ...props }: SkillsProps): JSX.Element => {
-  const { set } = useMutableParams();
+  const { open, ids } = useDrawerParams();
 
   return (
     <BadgeCollection {...props}>
@@ -23,7 +23,7 @@ export const Skills = ({ skills, ...props }: SkillsProps): JSX.Element => {
             key={skill.id}
             skill={skill}
             className="bg-blue-100 text-blue-500"
-            onClick={() => set("skillId", skill.id)}
+            onClick={() => open(ids.VIEW_SKILL, skill.id)}
           />
         ))}
     </BadgeCollection>

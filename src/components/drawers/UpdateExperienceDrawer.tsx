@@ -29,7 +29,7 @@ export const UpdateExperienceDrawer = ({
     keepPreviousData: true,
   });
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-experience">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {experience => (
           <>

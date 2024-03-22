@@ -1,11 +1,8 @@
 import { type ReactNode } from "react";
 
-import { type MenuModel } from "./model";
+import { type z } from "zod";
 
-export type ItemQueryOption = {
-  params: Record<string, string>;
-  clear?: string[] | string | true;
-};
+import { type MenuModel, type MenuModelParamsSchema } from "./model";
 
 export type MenuOptions<I extends MenuModel> = Partial<{
   readonly isMulti: boolean;
@@ -16,7 +13,7 @@ export type MenuOptions<I extends MenuModel> = Partial<{
   readonly getItemValueLabel: (m: I) => ReactNode;
   readonly getItemId: (m: I) => string | number;
   readonly getItemHref: (m: I) => string;
-  readonly getItemQuery: (m: I) => ItemQueryOption;
+  readonly getItemQuery: (m: I) => z.infer<typeof MenuModelParamsSchema>["query"];
 }>;
 
 export const menuIsNonNullable = <M extends MenuModel, O extends MenuOptions<M>>(options: O) =>

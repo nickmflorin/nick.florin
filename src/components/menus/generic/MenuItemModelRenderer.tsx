@@ -3,6 +3,8 @@ import { forwardRef, type ForwardedRef, useState, useImperativeHandle, useMemo }
 
 import isEqual from "lodash.isequal";
 
+import { UnreachableCaseError } from "~/application/errors";
+import { useDrawerParams } from "~/components/drawers/hooks";
 import { useMutableParams } from "~/hooks";
 
 import * as types from "../types";
@@ -33,6 +35,7 @@ export const MenuItemModelRenderer = forwardRef(
     ref: ForwardedRef<types.MenuItemInstance>,
   ) => {
     const { set } = useMutableParams();
+    const { open } = useDrawerParams();
 
     const [_isLoading, setLoading] = useState(false);
     const [_isDisabled, setDisabled] = useState(false);
@@ -96,7 +99,15 @@ export const MenuItemModelRenderer = forwardRef(
         onClick={() => {
           onClick();
           if (query) {
-            set(query.params, { clear: query.clear ?? [] });
+            const drawerParsed = types.DrawerQuerySchema.safeParse(query);
+            if (drawerParsed.success) {
+              return open(drawerParsed.data.param, drawerParsed.data.value);
+            }
+            const queryParsed = types.QuerySchema.safeParse(query);
+            if (queryParsed.success) {
+              return set(queryParsed.data.params, { clear: queryParsed.data.clear ?? [] });
+            }
+            throw new UnreachableCaseError();
           }
         }}
       >

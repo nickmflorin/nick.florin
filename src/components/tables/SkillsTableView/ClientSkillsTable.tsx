@@ -2,7 +2,7 @@
 import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/model";
 import { deleteSkill } from "~/actions/delete-skill";
 import { updateSkill } from "~/actions/update-skill";
-import { useMutableParams } from "~/hooks";
+import { useDrawerParams } from "~/components/drawers/hooks";
 
 import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
 import { Table } from "../Table";
@@ -22,7 +22,7 @@ export interface ClientTableProps {
 }
 
 export const ClientTable = ({ skills, experiences, educations }: ClientTableProps): JSX.Element => {
-  const { set } = useMutableParams();
+  const { open, ids } = useDrawerParams();
   return (
     <Table
       columns={[
@@ -93,7 +93,7 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
             <ActionsCell
               deleteErrorMessage="There was an error deleting the skill."
               deleteAction={deleteSkill.bind(null, model.id)}
-              onEdit={() => set("updateSkillId", model.id)}
+              onEdit={() => open(ids.UPDATE_SKILL, model.id)}
             />
           ),
         },

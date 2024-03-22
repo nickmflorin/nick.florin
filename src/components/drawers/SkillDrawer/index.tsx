@@ -16,7 +16,7 @@ export const SkillDrawer = ({ onClose, skillId }: SkillDrawerProps): JSX.Element
   });
 
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="view-skill">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {skill => <SkillDrawerContent skill={skill} />}
       </ApiResponseView>

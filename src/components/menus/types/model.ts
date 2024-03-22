@@ -3,9 +3,10 @@ import { type ReactNode } from "react";
 import { z } from "zod";
 
 import { ReactNodeSchema } from "~/lib/core";
+import { QueryDrawerIds } from "~/components/drawers";
 import { IconPropSchema } from "~/components/icons";
 
-import { type ItemQueryOption, type MenuOptions } from "./options";
+import { type MenuOptions } from "./options";
 
 export type MenuModel = Record<string, unknown>;
 
@@ -15,12 +16,17 @@ export type ValueNotApplicable = typeof VALUE_NOT_APPLICABLE;
 const NEVER = "__NEVER__" as const;
 type Never = typeof NEVER;
 
-const QuerySchema = z.object({
+export const QuerySchema = z.object({
   params: z.record(z.string()),
   clear: z.union([z.string(), z.literal(true), z.array(z.string())]).optional(),
 });
 
-const MenuModelParamsSchema = z.object({
+export const DrawerQuerySchema = z.object({
+  param: QueryDrawerIds.schema,
+  value: z.string(),
+});
+
+export const MenuModelParamsSchema = z.object({
   label: ReactNodeSchema,
   valueLabel: ReactNodeSchema,
   icon: IconPropSchema,
@@ -31,7 +37,7 @@ const MenuModelParamsSchema = z.object({
   isLoading: z.boolean(),
   isDisabled: z.boolean(),
   isVisible: z.boolean(),
-  query: QuerySchema,
+  query: z.union([QuerySchema, DrawerQuerySchema]),
 });
 
 export type MenuModelParams = z.infer<typeof MenuModelParamsSchema>;
@@ -158,10 +164,14 @@ export const getModelHref = <M extends MenuModel, O extends MenuOptions<M>>(
 };
 
 export type ModelQuery<M extends MenuModel, O extends MenuOptions<M>> = M extends {
-  readonly query: infer Q extends ItemQueryOption;
+  readonly query: infer Q extends z.infer<typeof MenuModelParamsSchema>["query"];
 }
   ? Q
-  : O extends { readonly getItemQuery: (m: M) => infer Q extends ItemQueryOption }
+  : O extends {
+        readonly getItemQuery: (
+          m: M,
+        ) => infer Q extends z.infer<typeof MenuModelParamsSchema>["query"];
+      }
     ? Q
     : never;
 
@@ -169,7 +179,7 @@ export const getModelQuery = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelQuery<M, O> | undefined => {
-  let v: ItemQueryOption | Never = NEVER;
+  let v: z.infer<typeof MenuModelParamsSchema>["query"] | Never = NEVER;
   if (options.getItemQuery !== undefined) {
     v = options.getItemQuery(model);
   } else if (modelHasParam(model, "query")) {

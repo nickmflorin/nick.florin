@@ -21,7 +21,7 @@ export const useMutableParams = (
 ): {
   params: ReadonlyURLSearchParams;
   set: Set;
-  clear: (key: string) => void;
+  clear: (key: string | string[], opts?: { useTransition?: boolean }) => void;
 } => {
   const [_, transition] = useTransition();
   const { replace: _replace } = useRouter();
@@ -29,14 +29,17 @@ export const useMutableParams = (
   const pathname = usePathname();
 
   const clear = useCallback(
-    (param: string, opts?: { useTransition?: boolean }) => {
+    (param: string | string[], opts?: { useTransition?: boolean }) => {
       const withTransition =
         opts?.useTransition === undefined
           ? config?.useTransition === undefined ?? false
           : opts.useTransition;
 
       const pms = new URLSearchParams(params?.toString());
-      pms.delete(param);
+      const toDelete = Array.isArray(param) ? param : [param];
+      for (const p of toDelete) {
+        pms.delete(p);
+      }
       if (withTransition) {
         transition(() => {
           _replace(`${pathname}?${pms.toString()}`);

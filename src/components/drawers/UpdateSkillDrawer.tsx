@@ -23,7 +23,7 @@ export const UpdateSkillDrawer = ({ skillId, onClose }: UpdateSkillDrawerProps):
     keepPreviousData: true,
   });
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll">
+    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-skill">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {skill => (
           <>

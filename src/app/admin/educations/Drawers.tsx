@@ -1,11 +1,10 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
 
 import { isUuid } from "~/lib/typeguards";
 import { DetailEntityType } from "~/prisma/model";
+import { useDrawerParams } from "~/components/drawers/hooks";
 import { Loading } from "~/components/views/Loading";
-import { useMutableParams } from "~/hooks";
 
 const UpdateEducationDrawer = dynamic(() => import("~/components/drawers/UpdateEducationDrawer"), {
   loading: () => <Loading loading={true} />,
@@ -20,29 +19,26 @@ const UpdateSchoolDrawer = dynamic(() => import("~/components/drawers/UpdateScho
 });
 
 export const Drawers = () => {
-  const { params, clear } = useMutableParams();
-
-  const updateEducationId = useMemo(() => params.get("updateEducationId"), [params]);
-  const updateEducationDetailsId = useMemo(() => params.get("updateEducationDetailsId"), [params]);
-  const updateSchoolId = useMemo(() => params.get("updateSchoolId"), [params]);
-
-  if (isUuid(updateEducationId)) {
+  const { params, close, ids } = useDrawerParams();
+  if (isUuid(params.updateEducation)) {
     return (
       <UpdateEducationDrawer
-        educationId={updateEducationId}
-        onClose={() => clear("updateEducationId")}
+        educationId={params.updateEducation}
+        onClose={() => close(ids.UPDATE_EDUCATION)}
       />
     );
-  } else if (isUuid(updateEducationDetailsId)) {
+  } else if (isUuid(params.updateEducationDetails)) {
     return (
       <UpdateDetailsDrawer
-        entityId={updateEducationDetailsId}
+        entityId={params.updateEducationDetails}
         entityType={DetailEntityType.EDUCATION}
-        onClose={() => clear("updateEducationDetailsId")}
+        onClose={() => close(ids.UPDATE_EDUCATION_DETAILS)}
       />
     );
-  } else if (isUuid(updateSchoolId)) {
-    return <UpdateSchoolDrawer schoolId={updateSchoolId} onClose={() => clear("updateSchoolId")} />;
+  } else if (isUuid(params.updateSchool)) {
+    return (
+      <UpdateSchoolDrawer schoolId={params.updateSchool} onClose={() => close(ids.UPDATE_SCHOOL)} />
+    );
   }
   return null;
 };
