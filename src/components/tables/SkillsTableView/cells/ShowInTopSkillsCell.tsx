@@ -49,3 +49,5 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
     </div>
   );
 };
+
+export default ShowInTopSkillsCell;

@@ -3,17 +3,10 @@ import { useTransition, useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../types";
-
 import { logger } from "~/application/logger";
 import { Checkbox } from "~/components/input/Checkbox";
 
-interface VisibleCellProps<M extends { id: string; visible: boolean }> {
-  readonly model: M;
-  readonly table: types.TableInstance<M>;
-  readonly errorMessage: string;
-  readonly action: (id: string, data: { visible: boolean }) => Promise<void>;
-}
+import { type VisibleCellProps } from "./types";
 
 export const VisibleCell = <M extends { id: string; visible: boolean }>({
   model,
@@ -53,3 +46,5 @@ export const VisibleCell = <M extends { id: string; visible: boolean }>({
     </div>
   );
 };
+
+export default VisibleCell;

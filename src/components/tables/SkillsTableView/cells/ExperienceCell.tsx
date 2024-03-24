@@ -97,3 +97,5 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
     </div>
   );
 };
+
+export default ExperienceCell;

@@ -5,16 +5,15 @@ import { useState, useEffect, useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
-import { type ApiSkill, type ApiEducation } from "~/prisma/model";
+import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/update-skill";
-import { EducationSelect } from "~/components/input/select/EducationSelect";
+import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 
 interface EducationsCellProps {
   readonly skill: ApiSkill;
-  readonly educations: ApiEducation[];
 }
 
-export const EducationsCell = ({ skill, educations }: EducationsCellProps): JSX.Element => {
+export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {
   const [value, setValue] = useState(skill.educations.map(exp => exp.id));
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -24,10 +23,10 @@ export const EducationsCell = ({ skill, educations }: EducationsCellProps): JSX.
   }, [skill.educations]);
 
   return (
-    <EducationSelect
+    <ClientEducationSelect
+      visibility="admin"
       inputClassName="w-[300px]"
       menuClassName="max-h-[260px]"
-      data={educations}
       value={value}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
@@ -50,3 +49,5 @@ export const EducationsCell = ({ skill, educations }: EducationsCellProps): JSX.
     />
   );
 };
+
+export default EducationsCell;

@@ -47,13 +47,16 @@ const AbstractMenu = dynamic(() => import("~/components/menus/generic/AbstractMe
 
 type SelectMenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
   AbstractMenuProps<M, O>,
-  "onSelect" | "value" | keyof ComponentProps
+  "onSelect" | "value" | "children" | keyof ComponentProps
 >;
 
 export type SelectProps<M extends MenuModel, O extends MenuOptions<M>> = SelectMenuProps<M, O> &
-  Pick<FloatingProps, "placement" | "inPortal"> &
+  Pick<FloatingProps, "inPortal"> &
   Pick<InputProps, "isLoading" | "isDisabled" | "isLocked" | "size" | "actions"> & {
     readonly value?: MenuValue<M, O>;
+    readonly menuPlacement?: FloatingProps["placement"];
+    readonly menuOffset?: FloatingProps["offset"];
+    readonly menuWidth?: FloatingProps["width"];
     readonly initialValue?: MenuInitialValue<M, O>;
     readonly menuClassName?: ComponentProps["className"];
     readonly children?: FloatingProps["children"];
@@ -106,7 +109,9 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
   <M extends MenuModel, O extends MenuOptions<M>>(
     {
       children,
-      placement,
+      menuOffset = { mainAxis: 2 },
+      menuPlacement,
+      menuWidth = "target",
       isLocked,
       isLoading: _propIsLoading,
       size,
@@ -212,12 +217,12 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
 
     return (
       <Floating
-        placement={placement}
+        placement={menuPlacement}
         triggers={["click"]}
-        width="target"
+        width={menuWidth}
         inPortal={inPortal}
         withArrow={false}
-        offset={{ mainAxis: 2 }}
+        offset={menuOffset}
         isOpen={open}
         isDisabled={!isReady}
         variant="white"

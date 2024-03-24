@@ -3,6 +3,7 @@ import { cache } from "react";
 
 import clamp from "lodash.clamp";
 
+import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import {
   type ApiEducation,
@@ -12,6 +13,7 @@ import {
   type EduDetail,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
+import { type Visibility } from "~/app/api/types";
 
 import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "./constants";
 
@@ -88,9 +90,15 @@ export const preloadEducations = <I extends EduIncludes>(includes: I) => {
 };
 
 export const getEducations = cache(
-  async <I extends EduIncludes>(includes: I): Promise<ApiEducation<I>[]> => {
+  async <I extends EduIncludes>(
+    includes: I,
+    options?: { visibility?: Visibility },
+  ): Promise<ApiEducation<I>[]> => {
+    const visibility = options?.visibility ?? "public";
+    await getAuthAdminUser({ strict: visibility === "admin" });
+
     const edus = await prisma.education.findMany({
-      where: { visible: true },
+      where: visibility === "public" ? { visible: true } : undefined,
       include: { school: true },
       orderBy: { startDate: "desc" },
     });
@@ -100,7 +108,7 @@ export const getEducations = cache(
       skills = await prisma.skill.findMany({
         include: { educations: true },
         where: {
-          visible: true,
+          visible: visibility === "public" ? true : undefined,
           educations: { some: { education: { id: { in: edus.map(e => e.id) } } } },
         },
       });
@@ -109,6 +117,7 @@ export const getEducations = cache(
     if (includes.details === true) {
       details = await prisma.detail.findMany({
         where: {
+          visible: visibility === "public" ? true : undefined,
           entityType: DetailEntityType.EDUCATION,
           entityId: { in: edus.map(e => e.id) },
         },
@@ -134,5 +143,8 @@ export const getEducations = cache(
     return educations as ApiEducation<I>[];
   },
 ) as {
-  <I extends EduIncludes>(includes: I): Promise<ApiEducation<I>[]>;
+  <I extends EduIncludes>(
+    includes: I,
+    opts?: { visibility: Visibility },
+  ): Promise<ApiEducation<I>[]>;
 };

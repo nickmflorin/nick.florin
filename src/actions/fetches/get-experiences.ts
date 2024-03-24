@@ -3,6 +3,7 @@ import { cache } from "react";
 
 import clamp from "lodash.clamp";
 
+import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import {
   type ApiExperience,
@@ -12,6 +13,7 @@ import {
   type ExpDetail,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
+import { type Visibility } from "~/app/api/types";
 
 import { EXPERIENCES_ADMIN_TABLE_PAGE_SIZE } from "./constants";
 
@@ -88,11 +90,17 @@ export const preloadExperiences = <I extends ExpIncludes>(includes: I) => {
 };
 
 export const getExperiences = cache(
-  async <I extends ExpIncludes>(includes: I): Promise<ApiExperience<I>[]> => {
+  async <I extends ExpIncludes>(
+    includes: I,
+    options?: { visibility?: Visibility },
+  ): Promise<ApiExperience<I>[]> => {
+    const visibility = options?.visibility ?? "public";
+    await getAuthAdminUser({ strict: visibility === "admin" });
+
     const exps = await prisma.experience.findMany({
       include: { company: true },
       orderBy: { startDate: "desc" },
-      where: { visible: true },
+      where: visibility === "public" ? { visible: true } : undefined,
     });
 
     let skills: ExpSkill[] = [];
@@ -100,7 +108,7 @@ export const getExperiences = cache(
       skills = await prisma.skill.findMany({
         include: { experiences: true },
         where: {
-          visible: true,
+          visible: visibility === "public" ? true : undefined,
           experiences: { some: { experience: { id: { in: exps.map(e => e.id) } } } },
         },
       });
@@ -109,6 +117,7 @@ export const getExperiences = cache(
     if (includes.details === true) {
       details = await prisma.detail.findMany({
         where: {
+          visible: visibility === "public" ? true : undefined,
           entityType: DetailEntityType.EXPERIENCE,
           entityId: { in: exps.map(e => e.id) },
         },
@@ -134,5 +143,8 @@ export const getExperiences = cache(
     return experiences as ApiExperience<I>[];
   },
 ) as {
-  <I extends ExpIncludes>(includes: I): Promise<ApiExperience<I>[]>;
+  <I extends ExpIncludes>(
+    includes: I,
+    opts?: { visibility?: Visibility },
+  ): Promise<ApiExperience<I>[]>;
 };

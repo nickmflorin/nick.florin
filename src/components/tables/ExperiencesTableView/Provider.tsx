@@ -1,19 +1,28 @@
 "use client";
-import { type ApiExperience, type Company } from "~/prisma/model";
+import dynamic from "next/dynamic";
+
+import type * as cells from "../cells";
+
+import { type ApiExperience } from "~/prisma/model";
 import { deleteExperience } from "~/actions/delete-experience";
 import { updateExperience } from "~/actions/update-experience";
-import { Link } from "~/components/buttons/generic";
+import { Link } from "~/components/buttons";
 import { useDrawers } from "~/components/drawers/hooks";
 
-import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
-import { Table } from "../Table";
+import {
+  TableViewProvider as RootTableViewProvider,
+  type TableViewConfig as RootTableViewConfig,
+} from "../Provider";
 
-import { CompanyCell } from "./cells";
+const VisibleCell = dynamic(() => import("../cells/VisibleCell")) as cells.VisibleCellComponent;
 
-export interface ClientTableProps {
-  readonly companies: Company[];
-  readonly experiences: ApiExperience<{ details: true }>[];
-}
+const ActionsCell = dynamic(() => import("../cells/ActionsCell"));
+
+const EditableStringCell = dynamic(
+  () => import("../cells/EditableStringCell"),
+) as cells.EditableStringCellComponent;
+
+const CompanyCell = dynamic(() => import("./cells/CompanyCell"));
 
 interface DetailsCellProps {
   readonly model: ApiExperience<{ details: true }>;
@@ -28,10 +37,17 @@ const DetailsCell = ({ model }: DetailsCellProps) => {
   );
 };
 
-export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.Element => {
+export interface TableViewConfig
+  extends Pick<RootTableViewConfig<ApiExperience<{ details: true }>>, "children"> {}
+
+export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <Table
+    <RootTableViewProvider<ApiExperience<{ details: true }>>
+      id="experiences-table"
+      isCheckable={true}
+      useCheckedRowsQuery={false}
+      canToggleColumnVisibility={true}
       columns={[
         {
           accessor: "title",
@@ -65,9 +81,7 @@ export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.E
           accessor: "company",
           title: "Company",
           width: 320,
-          render: ({ model, table }) => (
-            <CompanyCell companies={companies} experience={model} table={table} />
-          ),
+          render: ({ model, table }) => <CompanyCell experience={model} table={table} />,
         },
         {
           accessor: "details",
@@ -104,9 +118,10 @@ export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.E
           ),
         },
       ]}
-      data={experiences}
-    />
+    >
+      {children}
+    </RootTableViewProvider>
   );
 };
 
-export default ClientTable;
+export default TableViewProvider;

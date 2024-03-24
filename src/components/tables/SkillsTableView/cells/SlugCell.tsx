@@ -75,3 +75,5 @@ export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {
     </div>
   );
 };
+
+export default SlugCell;

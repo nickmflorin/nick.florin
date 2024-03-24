@@ -8,12 +8,12 @@ import { CompaniesSchoolsDropdownMenu } from "~/components/menus/CompaniesSchool
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
-import { TableViewProvider } from "../Provider";
 import { TableSearchBar } from "../TableSearchBar";
 import { TableView as RootTableView } from "../TableView";
 
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
+import { TableViewProvider } from "./Provider";
 import { ExperiencesAdminTable } from "./Table";
 import { type Filters } from "./types";
 
@@ -31,7 +31,7 @@ interface TableViewProps {
 }
 
 export const ExperiencesTableView = ({ filters, page }: TableViewProps) => (
-  <TableViewProvider id="experiences-table" isCheckable={true}>
+  <TableViewProvider>
     <RootTableView
       searchBar={
         <TableSearchBar>

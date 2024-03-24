@@ -10,15 +10,14 @@ import { logger } from "~/application/logger";
 import { type ApiEducation, type School } from "~/prisma/model";
 import { updateEducation } from "~/actions/update-education";
 import { isApiClientErrorJson } from "~/api";
-import { SchoolSelect } from "~/components/input/select/SchoolSelect";
+import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
 
 interface SchoolCellProps {
   readonly education: ApiEducation<{ details: true }>;
-  readonly schools: School[];
   readonly table: types.TableInstance<ApiEducation<{ details: true }>>;
 }
 
-export const SchoolCell = ({ education, schools, table }: SchoolCellProps): JSX.Element => {
+export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element => {
   const [value, setValue] = useState(education.schoolId);
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -28,10 +27,9 @@ export const SchoolCell = ({ education, schools, table }: SchoolCellProps): JSX.
   }, [education.schoolId]);
 
   return (
-    <SchoolSelect
+    <ClientSchoolSelect
       inputClassName="w-[300px]"
       menuClassName="max-h-[260px]"
-      data={schools}
       value={value}
       onChange={async v => {
         // Optimistically update the value.
@@ -68,3 +66,5 @@ export const SchoolCell = ({ education, schools, table }: SchoolCellProps): JSX.
     />
   );
 };
+
+export default SchoolCell;

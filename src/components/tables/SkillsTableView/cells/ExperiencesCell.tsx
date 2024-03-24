@@ -5,16 +5,15 @@ import { useState, useEffect, useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
-import { type ApiSkill, type ApiExperience } from "~/prisma/model";
+import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/update-skill";
-import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
+import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
 
 interface ExperiencesCellProps {
   readonly skill: ApiSkill;
-  readonly experiences: Omit<ApiExperience, "skills" | "details">[];
 }
 
-export const ExperiencesCell = ({ skill, experiences }: ExperiencesCellProps): JSX.Element => {
+export const ExperiencesCell = ({ skill }: ExperiencesCellProps): JSX.Element => {
   const [value, setValue] = useState(skill.experiences.map(exp => exp.id));
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -24,10 +23,10 @@ export const ExperiencesCell = ({ skill, experiences }: ExperiencesCellProps): J
   }, [skill.experiences]);
 
   return (
-    <ExperienceSelect
+    <ClientExperienceSelect
+      visibility="admin"
       inputClassName="w-[300px]"
       menuClassName="max-h-[260px]"
-      data={experiences}
       value={value}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
@@ -50,3 +49,5 @@ export const ExperiencesCell = ({ skill, experiences }: ExperiencesCellProps): J
     />
   );
 };
+
+export default ExperiencesCell;

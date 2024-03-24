@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
+import { ContextTableControlBar } from "../ContextTableControlBar";
 import { DeleteManyButtonPlaceholder } from "../DeleteManyButtonPlaceholder";
-import { TableControlBar } from "../TableControlBar";
 
 import { TableFilters } from "./TableFilters";
 import { type Filters } from "./types";
@@ -16,7 +16,7 @@ interface ControlBarProps {
 }
 
 export const ControlBar = ({ filters, page }: ControlBarProps) => (
-  <TableControlBar deleteButton={<DeleteManyButton />}>
+  <ContextTableControlBar deleteButton={<DeleteManyButton />}>
     <TableFilters filters={filters} page={page} />
-  </TableControlBar>
+  </ContextTableControlBar>
 );

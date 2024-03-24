@@ -54,7 +54,7 @@ export const EducationFilter = ({ filters, educations }: EducationFilterProps) =
       value={value}
       maximumNumBadges={1}
       onChange={v => setValue(v)}
-      placement="bottom"
+      menuPlacement="bottom"
     />
   );
 };

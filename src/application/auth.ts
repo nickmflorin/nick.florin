@@ -2,7 +2,7 @@ import { auth, getAuth } from "@clerk/nextjs/server";
 
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type User } from "~/prisma/model";
-import { ApiClientGlobalError } from "~/api";
+import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 
 export const getAuthUserFromRequest = async (...args: Parameters<typeof getAuth>) => {
   const { userId } = getAuth(...args);
@@ -31,7 +31,9 @@ type GetAuthUserOpts = {
   readonly strict?: boolean;
 };
 
-type GetAuthUserRt<O extends GetAuthUserOpts> = O extends { strict: false } ? User | null : User;
+type GetAuthUserRt<O extends GetAuthUserOpts> = O extends { strict: false }
+  ? User | ApiClientGlobalErrorJson
+  : User;
 
 export const getAuthAdminUserFromRequest = async <O extends GetAuthUserOpts>(
   req: Parameters<typeof getAuth>[0],
@@ -42,26 +44,42 @@ export const getAuthAdminUserFromRequest = async <O extends GetAuthUserOpts>(
      fine - since it is not expected. */
   if (!user) {
     if (opts?.strict === false) {
-      return null as GetAuthUserRt<O>;
+      return ApiClientGlobalError.NotAuthenticated().toJson() as GetAuthUserRt<O>;
     }
     throw ApiClientGlobalError.NotAuthenticated();
   } else if (!user.isAdmin) {
     if (opts?.strict === false) {
-      return null as GetAuthUserRt<O>;
+      return ApiClientGlobalError.Forbidden().toJson() as GetAuthUserRt<O>;
     }
     throw ApiClientGlobalError.Forbidden();
   }
   return user;
 };
 
-export const getAuthAdminUser = async () => {
+type GetAuthAdminUserOpts = {
+  readonly strict?: boolean;
+};
+
+type GetAuthAdminUserRT<O extends GetAuthAdminUserOpts> = O extends { strict: false }
+  ? User | null
+  : User;
+
+export const getAuthAdminUser = async <O extends GetAuthAdminUserOpts>(
+  opts?: O,
+): Promise<GetAuthAdminUserRT<O>> => {
   const user = await getAuthUser();
   /* Note: We may want to return the error in the response body in the future, for now this is
      fine - since it is not expected. */
   if (!user) {
+    if (opts?.strict === false) {
+      return null as GetAuthAdminUserRT<O>;
+    }
     throw ApiClientGlobalError.NotAuthenticated();
   } else if (!user.isAdmin) {
+    if (opts?.strict === false) {
+      return null as GetAuthAdminUserRT<O>;
+    }
     throw ApiClientGlobalError.Forbidden();
   }
-  return user;
+  return user as GetAuthAdminUserRT<O>;
 };

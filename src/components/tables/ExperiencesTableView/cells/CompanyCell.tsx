@@ -7,18 +7,17 @@ import { toast } from "react-toastify";
 import type * as types from "../../types";
 
 import { logger } from "~/application/logger";
-import { type ApiExperience, type Company } from "~/prisma/model";
+import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/update-experience";
 import { isApiClientErrorJson } from "~/api";
-import { CompanySelect } from "~/components/input/select/CompanySelect";
+import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
 
 interface CompanyCellProps {
   readonly experience: ApiExperience<{ details: true }>;
-  readonly companies: Company[];
   readonly table: types.TableInstance<ApiExperience<{ details: true }>>;
 }
 
-export const CompanyCell = ({ experience, companies, table }: CompanyCellProps): JSX.Element => {
+export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Element => {
   const [value, setValue] = useState(experience.companyId);
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -28,10 +27,9 @@ export const CompanyCell = ({ experience, companies, table }: CompanyCellProps):
   }, [experience.companyId]);
 
   return (
-    <CompanySelect
+    <ClientCompanySelect
       inputClassName="w-[300px]"
       menuClassName="max-h-[260px]"
-      data={companies}
       value={value}
       onChange={async v => {
         // Optimistically update the value.
@@ -68,3 +66,5 @@ export const CompanyCell = ({ experience, companies, table }: CompanyCellProps):
     />
   );
 };
+
+export default CompanyCell;

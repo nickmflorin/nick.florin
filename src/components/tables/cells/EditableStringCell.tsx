@@ -3,23 +3,10 @@ import { useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../types";
-
 import { logger } from "~/application/logger";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 
-interface EditableStringCellProps<
-  M extends { id: string } & { [key in K]: string | null },
-  K extends keyof M,
-  P extends { [key in K]: string },
-> {
-  readonly model: M;
-  readonly field: K;
-  readonly table: types.TableInstance<M>;
-  readonly errorMessage: string;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  readonly action: (data: P) => Promise<any>;
-}
+import { type EditableStringCellProps } from "./types";
 
 export const EditableStringCell = <
   M extends { id: string } & { [key in K]: string | null },
@@ -62,3 +49,5 @@ export const EditableStringCell = <
     />
   );
 };
+
+export default EditableStringCell;

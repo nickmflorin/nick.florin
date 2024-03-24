@@ -8,7 +8,7 @@ import { Loading } from "~/components/views/Loading";
 
 import { type Filters } from "./types";
 
-const ClientTable = dynamic(() => import("./ClientSkillsTable"), {
+const ContextTable = dynamic(() => import("../ContextTable"), {
   loading: () => <Loading loading={true} />,
 });
 
@@ -19,15 +19,19 @@ interface SkillsAdminTableProps {
 
 export const SkillsAdminTable = async ({ page, filters }: SkillsAdminTableProps) => {
   const educationsData = await getAdminEducations({ page, filters });
-  const experiences = await getAdminExperiences({ page, filters });
-  const educationIds = educationsData.map(e => e.id);
+  const experiencesData = await getAdminExperiences({ page, filters });
+
   const _skills = await getSkills({
     page,
     filters: {
       ...filters,
-      educations: filters.educations.filter(e => educationIds.includes(e)),
+      educations: filters.educations.filter(e => educationsData.map(e => e.id).includes(e)),
+      experiences: filters.experiences.filter(e => experiencesData.map(e => e.id).includes(e)),
     },
   });
-  const skills = await includeSkillMetadata(_skills, { educations: educationsData, experiences });
-  return <ClientTable skills={skills} experiences={experiences} educations={educationsData} />;
+  const skills = await includeSkillMetadata(_skills, {
+    educations: educationsData,
+    experiences: experiencesData,
+  });
+  return <ContextTable data={skills} />;
 };

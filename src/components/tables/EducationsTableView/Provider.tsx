@@ -1,14 +1,28 @@
 "use client";
-import { type ApiEducation, type School } from "~/prisma/model";
+import dynamic from "next/dynamic";
+
+import type * as cells from "../cells";
+
+import { type ApiEducation } from "~/prisma/model";
 import { deleteEducation } from "~/actions/delete-education";
 import { updateEducation } from "~/actions/update-education";
 import { Link } from "~/components/buttons";
 import { useDrawers } from "~/components/drawers/hooks";
 
-import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
-import { Table } from "../Table";
+import {
+  TableViewProvider as RootTableViewProvider,
+  type TableViewConfig as RootTableViewConfig,
+} from "../Provider";
 
-import { SchoolCell } from "./cells";
+const VisibleCell = dynamic(() => import("../cells/VisibleCell")) as cells.VisibleCellComponent;
+
+const ActionsCell = dynamic(() => import("../cells/ActionsCell"));
+
+const EditableStringCell = dynamic(
+  () => import("../cells/EditableStringCell"),
+) as cells.EditableStringCellComponent;
+
+const SchoolCell = dynamic(() => import("./cells/SchoolCell"));
 
 interface DetailsCellProps {
   readonly model: ApiEducation<{ details: true }>;
@@ -23,15 +37,17 @@ const DetailsCell = ({ model }: DetailsCellProps) => {
   );
 };
 
-export interface ClientTableProps {
-  readonly schools: School[];
-  readonly educations: ApiEducation<{ details: true }>[];
-}
+export interface TableViewConfig
+  extends Pick<RootTableViewConfig<ApiEducation<{ details: true }>>, "children"> {}
 
-export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Element => {
+export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <Table
+    <RootTableViewProvider<ApiEducation<{ details: true }>>
+      id="educations-table"
+      isCheckable={true}
+      useCheckedRowsQuery={false}
+      canToggleColumnVisibility={true}
       columns={[
         {
           accessor: "major",
@@ -65,9 +81,7 @@ export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Elem
           accessor: "school",
           title: "School",
           width: 320,
-          render: ({ model, table }) => (
-            <SchoolCell education={model} schools={schools} table={table} />
-          ),
+          render: ({ model, table }) => <SchoolCell education={model} table={table} />,
         },
         {
           accessor: "details",
@@ -104,9 +118,10 @@ export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Elem
           ),
         },
       ]}
-      data={educations}
-    />
+    >
+      {children}
+    </RootTableViewProvider>
   );
 };
 
-export default ClientTable;
+export default TableViewProvider;

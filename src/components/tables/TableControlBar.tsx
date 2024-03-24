@@ -1,3 +1,4 @@
+"use client";
 import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
@@ -7,11 +8,7 @@ export interface TableControlBarProps extends ComponentProps {
   readonly deleteButton?: JSX.Element;
 }
 
-export const TableControlBar = async ({
-  children,
-  deleteButton,
-  ...props
-}: TableControlBarProps) => (
+export const TableControlBar = ({ children, deleteButton, ...props }: TableControlBarProps) => (
   <div
     {...props}
     className={clsx(
@@ -20,6 +17,6 @@ export const TableControlBar = async ({
     )}
   >
     {deleteButton}
-    {children}
+    <div className="flex flex-row gap-[8px] items-center grow h-full justify-end">{children}</div>
   </div>
 );

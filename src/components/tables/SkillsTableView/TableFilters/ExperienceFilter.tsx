@@ -54,7 +54,7 @@ export const ExperienceFilter = ({ filters, experiences }: ExperienceFilterProps
       value={value}
       maximumNumBadges={1}
       onChange={v => setValue(v)}
-      placement="bottom"
+      menuPlacement="bottom"
     />
   );
 };

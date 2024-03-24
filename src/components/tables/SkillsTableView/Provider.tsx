@@ -1,30 +1,42 @@
 "use client";
-import { type ApiSkill, type ApiExperience, type ApiEducation } from "~/prisma/model";
+import dynamic from "next/dynamic";
+
+import type * as cells from "../cells";
+
+import { type ApiSkill } from "~/prisma/model";
 import { deleteSkill } from "~/actions/delete-skill";
 import { updateSkill } from "~/actions/update-skill";
 import { useDrawers } from "~/components/drawers/hooks";
 
-import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
-import { Table } from "../Table";
-
 import {
-  EducationsCell,
-  ExperiencesCell,
-  ExperienceCell,
-  SlugCell,
-  ShowInTopSkillsCell,
-} from "./cells";
+  TableViewProvider as RootTableViewProvider,
+  type TableViewConfig as RootTableViewConfig,
+} from "../Provider";
 
-export interface ClientTableProps {
-  readonly skills: ApiSkill[];
-  readonly experiences: Omit<ApiExperience, "skills" | "details">[];
-  readonly educations: ApiEducation[];
-}
+const VisibleCell = dynamic(() => import("../cells/VisibleCell")) as cells.VisibleCellComponent;
 
-export const ClientTable = ({ skills, experiences, educations }: ClientTableProps): JSX.Element => {
+const ActionsCell = dynamic(() => import("../cells/ActionsCell"));
+
+const EditableStringCell = dynamic(
+  () => import("../cells/EditableStringCell"),
+) as cells.EditableStringCellComponent;
+
+const SlugCell = dynamic(() => import("./cells/SlugCell"));
+const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"));
+const EducationsCell = dynamic(() => import("./cells/EducationsCell"));
+const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"));
+const ShowInTopSkillsCell = dynamic(() => import("./cells/ShowInTopSkillsCell"));
+
+export interface TableViewConfig extends Pick<RootTableViewConfig<ApiSkill>, "children"> {}
+
+export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <Table
+    <RootTableViewProvider<ApiSkill>
+      id="skills-table"
+      isCheckable={true}
+      useCheckedRowsQuery={false}
+      canToggleColumnVisibility={true}
       columns={[
         {
           accessor: "label",
@@ -50,13 +62,13 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
           accessor: "experiences",
           title: "Experiences",
           width: 310,
-          render: ({ model }) => <ExperiencesCell skill={model} experiences={experiences} />,
+          render: ({ model }) => <ExperiencesCell skill={model} />,
         },
         {
           accessor: "educations",
           title: "Educations",
           width: 310,
-          render: ({ model }) => <EducationsCell skill={model} educations={educations} />,
+          render: ({ model }) => <EducationsCell skill={model} />,
         },
         {
           accessor: "experience",
@@ -89,6 +101,7 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
           accessor: "actions",
           title: "",
           textAlign: "center",
+          isHideable: false,
           render: ({ model }) => (
             <ActionsCell
               deleteErrorMessage="There was an error deleting the skill."
@@ -98,9 +111,10 @@ export const ClientTable = ({ skills, experiences, educations }: ClientTableProp
           ),
         },
       ]}
-      data={skills}
-    />
+    >
+      {children}
+    </RootTableViewProvider>
   );
 };
 
-export default ClientTable;
+export default TableViewProvider;

@@ -7,7 +7,6 @@ import { TextInput } from "~/components/input/TextInput";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { Loading } from "~/components/views/Loading";
 
-import { TableViewProvider } from "../Provider";
 import { TableSearchBar } from "../TableSearchBar";
 import { TableView as RootTableView } from "../TableView";
 
@@ -15,6 +14,10 @@ import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
 import { SkillsAdminTable } from "./Table";
 import { type Filters } from "./types";
+
+const TableViewProvider = dynamic(() => import("./Provider"), {
+  loading: () => <Loading loading={true} />,
+});
 
 const SearchInput = dynamic(() => import("../TableSearchInput"), {
   loading: () => <TextInput isLoading={true} />,
@@ -30,7 +33,7 @@ interface SkillsTableViewProps {
 }
 
 export const SkillsTableView = ({ filters, page }: SkillsTableViewProps) => (
-  <TableViewProvider id="skills-table" isCheckable={true}>
+  <TableViewProvider>
     <RootTableView
       searchBar={
         <TableSearchBar>

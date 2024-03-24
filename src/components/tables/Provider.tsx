@@ -1,41 +1,119 @@
 "use client";
-import { type ReactNode } from "react";
+import { type ReactNode, useState, useCallback } from "react";
 
-import type * as types from "./types";
+import uniq from "lodash.uniq";
+
+import { Checkbox } from "~/components/input/Checkbox";
+import { useDeepEqualMemo } from "~/hooks";
 
 import { TableViewContext } from "./Context";
 import { useCheckedRows } from "./hooks";
+import * as types from "./types";
 
-export interface TableViewConfig {
+export interface TableViewConfig<T extends types.TableModel> {
   readonly isCheckable?: boolean;
   readonly useCheckedRowsQuery?: boolean;
+  readonly columns: types.Column<T>[];
+  readonly canToggleColumnVisibility?: boolean;
+  readonly children: ReactNode;
+  readonly id: string;
 }
 
 export const useTableView = <T extends types.TableModel>({
   isCheckable = true,
   useCheckedRowsQuery = false,
-}: TableViewConfig) => {
+  columns: _columns,
+}: Omit<TableViewConfig<T>, "id" | "children" | "canToggleColumnVisibility">): Omit<
+  types.TableView<T>,
+  "isReady" | "id" | "canToggleColumnVisibility"
+> => {
   const [checked, { uncheck, check }] = useCheckedRows<T>({
     enabled: isCheckable,
     useQueryParams: useCheckedRowsQuery,
   });
+
+  const [visibleColumnIds, setVisibleColumnIds] = useState<string[]>(
+    _columns
+      .filter(c => c.defaultVisible !== false && c.isHideable !== false)
+      .map(c => types.getColId(c)),
+  );
+
+  const columns = useDeepEqualMemo(() => {
+    let cs: types.Column<T>[] = [..._columns];
+    if (isCheckable) {
+      cs = [
+        {
+          id: "checkable",
+          title: "",
+          accessor: "checkable",
+          width: "40px",
+          cellsClassName: "loading-cell",
+          isHideable: false,
+          render: ({ model }) => (
+            <div className="flex flex-row items-center justify-center">
+              <Checkbox
+                value={checked.includes(model.id)}
+                onChange={e => {
+                  if (e.target.checked) {
+                    check?.(model);
+                  } else {
+                    uncheck?.(model.id);
+                  }
+                }}
+              />
+            </div>
+          ),
+        },
+        ...cs,
+      ];
+    }
+    return cs.map(col => ({ noWrap: true, ...col }));
+  }, [_columns, checked, isCheckable, uncheck, check]);
+
+  const visibleColumns = useDeepEqualMemo(
+    () =>
+      columns.filter(c =>
+        c.isHideable !== false ? visibleColumnIds.includes(types.getColId(c)) : true,
+      ),
+    [columns, visibleColumnIds],
+  );
+
+  const hideColumn = useCallback((id: string) => {
+    setVisibleColumnIds(prev => prev.filter(v => v !== id));
+  }, []);
+
+  const showColumn = useCallback((id: string) => {
+    setVisibleColumnIds(prev => uniq([...prev, id]));
+  }, []);
+
   return {
+    columns,
+    visibleColumns,
     isCheckable,
     checked,
+    visibleColumnIds,
+    hideColumn,
+    showColumn,
     check,
     uncheck,
+    setVisibleColumns: setVisibleColumnIds,
   };
 };
 
-export const TableViewProvider = ({
+export const TableViewProvider = <T extends types.TableModel>({
   children,
   id,
+  canToggleColumnVisibility = false,
   ...config
-}: TableViewConfig & { readonly children: ReactNode; readonly id: string }) => {
-  const tableView = useTableView(config);
+}: TableViewConfig<T>) => {
+  const tableView = useTableView<T>(config);
   return (
-    <TableViewContext.Provider value={{ ...tableView, ready: true, id }}>
+    <TableViewContext.Provider<T>
+      value={{ ...tableView, isReady: true, id, canToggleColumnVisibility }}
+    >
       {children}
     </TableViewContext.Provider>
   );
 };
+
+export default TableViewProvider;
