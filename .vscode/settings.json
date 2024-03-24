@@ -2,20 +2,18 @@
   "editor.tabSize": 2,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.rulers": [100],
-  "editor.formatOnSave": false,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
+  "editor.formatOnSave": true,
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.eslint": "explicit"
+  // },
   "[prisma]": {
-    "editor.formatOnSave": true,
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "[scss,css,less]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.stylelint": "explicit"
-    }
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    // "editor.codeActionsOnSave": {
+    //   "source.fixAll.stylelint": "explicit"
+    // }
   },
   "eslint.run": "onSave",
   "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],
@@ -23,11 +21,13 @@
   "eslint.execArgv": ["--max-old-space-size=16384"],
   "eslint.debug": false,
   "eslint.codeActionsOnSave.rules": [
-    "@typescript-eslint/semi",
-    "@typescript-eslint/indent",
-    "@typescript-eslint/consistent-type-imports",
-    "!@typescript-eslint/*",
-    "*"
+    "import/*"
+    // "@typescript-eslint/semi",
+    // "@typescript-eslint/indent",
+    // "@typescript-eslint/consistent-type-imports",
+    // "!@typescript-eslint/*",
+    // "!prettier/prettier",
+    // "*"
   ],
   "editor.trimAutoWhitespace": true,
   "files.trimTrailingWhitespace": true,

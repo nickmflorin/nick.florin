@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import type * as types from "../types";
 
 import { generateChartColors } from "~/lib/charts";
-import { useDrawerParams } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks";
 import { TooltipContent } from "~/components/floating/TooltipContent";
 import { Loading } from "~/components/views/Loading";
 
@@ -26,7 +26,7 @@ interface SkillsBarChartProps {
 
 export const SkillsBarChart = ({ data }: SkillsBarChartProps): JSX.Element => {
   const colors = useMemo(() => generateChartColors(data.length), [data.length]);
-  const { open, ids } = useDrawerParams();
+  const { open, ids } = useDrawers();
 
   return (
     <BarChart
@@ -50,7 +50,7 @@ export const SkillsBarChart = ({ data }: SkillsBarChartProps): JSX.Element => {
         legendOffset: -40,
         truncateTickAt: 0,
       }}
-      onClick={datum => open(ids.VIEW_SKILL, datum.data.id)}
+      onClick={datum => open(ids.VIEW_SKILL, { skillId: datum.data.id })}
       tooltip={props => (
         <TooltipContent className="flex flex-col relative min-h-[40px] gap-[10px] !py-[10px]">
           <SkillsBarChartTooltip {...props} />

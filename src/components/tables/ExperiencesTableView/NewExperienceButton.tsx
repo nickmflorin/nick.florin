@@ -3,16 +3,12 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 import { Button } from "~/components/buttons";
+import { DrawerIds } from "~/components/drawers";
 import { Loading } from "~/components/views/Loading";
 
-const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"));
-
-const CreateExperienceForm = dynamic(
-  () => import("~/components/forms/experiences/CreateExperienceForm"),
-  {
-    loading: () => <Loading loading={true} />,
-  },
-);
+const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
+  loading: () => <Loading loading={true} />,
+});
 
 export const NewExperienceButton = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -20,11 +16,7 @@ export const NewExperienceButton = () => {
   return (
     <>
       <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
-      {drawerOpen && (
-        <ClientDrawer onClose={() => setDrawerOpen(false)} id="create-experience">
-          <CreateExperienceForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
-        </ClientDrawer>
-      )}
+      {drawerOpen && <ClientDrawer id={DrawerIds.CREATE_EXPERIENCE} props={{}} />}
     </>
   );
 };

@@ -16,6 +16,13 @@ $drawer-width: 400px;
   background-color: theme("colors.white");
   border-left: 1px solid theme("colors.border");
 
+  .drawer__close-button {
+    position: absolute;
+    z-index: 100;
+    top: 16px;
+    right: 12px;
+  }
+
   > .drawer {
     @include drawer-container();
     padding: 24px 6px 24px 24px;
@@ -26,13 +33,6 @@ $drawer-width: 400px;
     min-width: 100%;
     max-width: 100%;
     gap: 10px;
-
-    .drawer__close-button {
-      position: absolute;
-      z-index: 100;
-      top: 16px;
-      right: 12px;
-    }
 
     .drawer__content {
       overflow-y: scroll;

@@ -100,6 +100,10 @@ $animations: (
   }
 
   &.loading {
+    & + * {
+      z-index: 50;
+    }
+
     &.is-loading {
       &.view--dimmed.view--overlay.view--blurred {
         @include animate-frames(("dim", "overlay", "blur"), "dim_overlay_blur");

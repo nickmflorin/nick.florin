@@ -2,10 +2,10 @@
 import { revalidatePath } from "next/cache";
 
 import { type z } from "zod";
-import { type Education } from "@prisma/client";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { type Education } from "~/prisma/model";
 import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
 
 import { EducationSchema } from "./schemas";

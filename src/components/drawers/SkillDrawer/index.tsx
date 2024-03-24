@@ -1,26 +1,27 @@
 import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { useSkill } from "~/hooks";
 
-import { ClientDrawer } from "../ClientDrawer";
+import { type ExtendingDrawerProps } from "..";
+import { Drawer } from "../Drawer";
 
 import { SkillDrawerContent } from "./DrawerContent";
 
-export interface SkillDrawerProps {
-  readonly skillId: string;
-  readonly onClose: () => void;
-}
+export interface SkillDrawerProps
+  extends ExtendingDrawerProps<{
+    readonly skillId: string;
+  }> {}
 
-export const SkillDrawer = ({ onClose, skillId }: SkillDrawerProps): JSX.Element => {
+export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useSkill(skillId, {
     keepPreviousData: true,
   });
 
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="view-skill">
+    <Drawer className="overflow-y-scroll">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {skill => <SkillDrawerContent skill={skill} />}
       </ApiResponseView>
-    </ClientDrawer>
+    </Drawer>
   );
 };
 

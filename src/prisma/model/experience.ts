@@ -1,6 +1,6 @@
-import { type Experience, type Company } from "@prisma/client";
-
 import { type prisma } from "../client";
+
+import { type Experience, type Company } from "./core";
 
 export type ExpIncludes = {
   readonly skills?: boolean;

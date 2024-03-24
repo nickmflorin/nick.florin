@@ -1,6 +1,6 @@
-import { type Education, type School, Degree } from "@prisma/client";
-
 import { type prisma } from "../client";
+
+import { type Education, type School, Degree } from "./core";
 
 export const Degrees = {
   [Degree.BACHELORS_OF_SCIENCE]: { label: "Bachelors of Science", shortLabel: "B.S." },

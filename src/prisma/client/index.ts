@@ -20,9 +20,8 @@ See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-m
 */
 // import "server-only";
 
-import { PrismaClient as RootPrismaClient } from "@prisma/client";
-
 import { logger } from "~/application/logger";
+import { PrismaClient as RootPrismaClient } from "~/prisma/model";
 import { env } from "~/env.mjs";
 
 import { ModelMetaDataMiddleware } from "./middleware";

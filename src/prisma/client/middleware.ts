@@ -1,4 +1,4 @@
-import { type Prisma } from "@prisma/client";
+import { type Prisma } from "~/prisma/model";
 
 import { modelHasField } from "../model/util";
 

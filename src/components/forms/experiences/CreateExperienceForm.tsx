@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
+import { type Experience } from "~/prisma/model";
 import { createExperience } from "~/actions/create-experience";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
@@ -17,10 +18,12 @@ import {
 
 export interface CreateExperienceFormProps extends Omit<ExperienceFormProps, "form" | "action"> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: Experience) => void;
 }
 
 export const CreateExperienceForm = ({
   onCancel,
+  onSuccess,
   ...props
 }: CreateExperienceFormProps): JSX.Element => {
   const { refresh } = useRouter();
@@ -50,6 +53,7 @@ export const CreateExperienceForm = ({
           form.handleApiError(response);
         } else {
           form.reset();
+          onSuccess?.(response);
           transition(() => {
             refresh();
           });

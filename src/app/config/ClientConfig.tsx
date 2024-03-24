@@ -2,6 +2,8 @@
 import dynamic from "next/dynamic";
 import React, { type ReactNode } from "react";
 
+import { DrawersProvider } from "~/components/drawers/provider/DrawersProvider";
+
 import { SWRConfig } from "./SWRConfig";
 
 const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });
@@ -13,7 +15,9 @@ export interface ClientConfigProps {
 function ClientConfig(props: ClientConfigProps) {
   return (
     <SWRConfig>
-      <MantineProvider>{props.children}</MantineProvider>
+      <MantineProvider>
+        <DrawersProvider>{props.children}</DrawersProvider>
+      </MantineProvider>
     </SWRConfig>
   );
 }

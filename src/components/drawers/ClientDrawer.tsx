@@ -1,31 +1,39 @@
-import dynamic from "next/dynamic";
+"use client";
+import { useEffect } from "react";
 
-import { Drawer, type DrawerProps } from "./Drawer";
-import { DrawerContainer } from "./DrawerContainer";
-import { type DrawerId } from "./types";
+import { useDrawers } from "./hooks";
+import { type DrawerId } from "./provider/types";
+import { type DrawerDynamicProps } from "./provider/use-drawers-manager";
 
-const DrawerPortal = dynamic(() => import("./DrawerPortal"));
-const DrawerCloseButton = dynamic(() => import("~/components/buttons/DrawerCloseButton"));
-
-export interface ClientDrawerProps extends DrawerProps {
-  readonly id: DrawerId;
-  readonly onClose: () => void;
+export interface ClientDrawerProps<D extends DrawerId> {
+  readonly id: D;
+  readonly isOpen?: boolean;
+  readonly onClose?: () => void;
+  readonly props: DrawerDynamicProps<D>;
 }
 
-export const ClientDrawer = ({
+export const ClientDrawer = <D extends DrawerId>({
   id,
-  children,
+  props,
   onClose,
-  ...props
-}: ClientDrawerProps): JSX.Element => (
-  <DrawerPortal id={id}>
-    <DrawerContainer id={id}>
-      <Drawer {...props}>
-        {children}
-        <DrawerCloseButton onClick={onClose} />
-      </Drawer>
-    </DrawerContainer>
-  </DrawerPortal>
-);
+  isOpen = true,
+}: ClientDrawerProps<D>): JSX.Element => {
+  const { open, openId } = useDrawers();
+
+  useEffect(() => {
+    if (isOpen) {
+      open(id, props, onClose);
+    }
+  }, [id, props, open, isOpen]);
+
+  /* useEffect(
+       () => () => {
+         console.log("unmounting");
+       },
+       [],
+     ); */
+
+  return <></>;
+};
 
 export default ClientDrawer;

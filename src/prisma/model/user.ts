@@ -1,9 +1,10 @@
 import { type EmailAddress, type User as ClerkUser } from "@clerk/clerk-sdk-node";
-import { type User } from "@prisma/client";
 
 import { humanizeList } from "~/lib/formatters";
 
 import { prisma } from "../client";
+
+import { type User } from "./core";
 
 type RequiredClerkField = "emailAddress" | "firstName" | "lastName";
 type ClerkField = RequiredClerkField | "imageUrl";

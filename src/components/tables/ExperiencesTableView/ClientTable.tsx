@@ -3,7 +3,7 @@ import { type ApiExperience, type Company } from "~/prisma/model";
 import { deleteExperience } from "~/actions/delete-experience";
 import { updateExperience } from "~/actions/update-experience";
 import { Link } from "~/components/buttons/generic";
-import { useDrawerParams } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks";
 
 import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
 import { Table } from "../Table";
@@ -20,16 +20,16 @@ interface DetailsCellProps {
 }
 
 const DetailsCell = ({ model }: DetailsCellProps) => {
-  const { open, ids } = useDrawerParams();
+  const { open, ids } = useDrawers();
   return (
     <Link.Primary
-      onClick={() => open(ids.UPDATE_EXPERIENCE_DETAILS, model.id)}
+      onClick={() => open(ids.UPDATE_EXPERIENCE_DETAILS, { entityId: model.id })}
     >{`${model.details.length} Details`}</Link.Primary>
   );
 };
 
 export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.Element => {
-  const { open, ids } = useDrawerParams();
+  const { open, ids } = useDrawers();
   return (
     <Table
       columns={[
@@ -99,7 +99,7 @@ export const ClientTable = ({ experiences, companies }: ClientTableProps): JSX.E
             <ActionsCell
               deleteErrorMessage="There was an error deleting the experience."
               deleteAction={deleteExperience.bind(null, model.id)}
-              onEdit={() => open(ids.UPDATE_EXPERIENCE, model.id)}
+              onEdit={() => open(ids.UPDATE_EXPERIENCE, { experienceId: model.id })}
             />
           ),
         },

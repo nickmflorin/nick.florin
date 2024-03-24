@@ -107,6 +107,17 @@ const BASE_RULES = {
   "prefer-const": "error",
   quotes: [1, "double"],
   semi: [1, "always"],
+  "no-restricted-imports": [
+    "error",
+    {
+      patterns: [
+        {
+          group: ["@prisma/client/*", "@prisma/client"],
+          message: "Please import from '~/prisma/model` instead.",
+        },
+      ],
+    },
+  ],
 };
 
 /* Rules that apply to '.ts' or '.tsx' files. */

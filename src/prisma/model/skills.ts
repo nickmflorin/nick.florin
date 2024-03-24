@@ -1,4 +1,9 @@
 import { DateTime } from "luxon";
+
+import { strictArrayLookup, minDate } from "~/lib";
+
+import { prisma } from "../client";
+
 import {
   type Experience,
   type Company,
@@ -10,11 +15,7 @@ import {
   ProgrammingLanguage,
   SkillCategory,
   ProgrammingDomain,
-} from "@prisma/client";
-
-import { strictArrayLookup, minDate } from "~/lib";
-
-import { prisma } from "../client";
+} from "./core";
 
 export const ProgrammingLanguages = {
   [ProgrammingLanguage.BASH]: { label: "Bash" },

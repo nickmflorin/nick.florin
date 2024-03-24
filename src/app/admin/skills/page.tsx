@@ -1,14 +1,9 @@
-import { Suspense } from "react";
-
 import { z } from "zod";
 
 import { decodeQueryParam } from "~/lib/urls";
 import { preloadAdminEducations } from "~/actions/fetches/get-educations";
 import { preloadAdminExperiences } from "~/actions/fetches/get-experiences";
 import { SkillsTableView } from "~/components/tables/SkillsTableView";
-import { Loading } from "~/components/views/Loading";
-
-import { Drawers } from "./Drawers";
 
 interface SkillsPageProps {
   readonly searchParams: {
@@ -42,12 +37,5 @@ export default async function SkillsPage({
   preloadAdminEducations({ page, filters });
   preloadAdminExperiences({ page, filters });
 
-  return (
-    <>
-      <SkillsTableView filters={filters} page={page} />
-      <Suspense fallback={<Loading loading={true} />}>
-        <Drawers />
-      </Suspense>
-    </>
-  );
+  return <SkillsTableView filters={filters} page={page} />;
 }

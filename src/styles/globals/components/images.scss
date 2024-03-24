@@ -23,12 +23,19 @@
     height: 100%;
     width: auto;
     aspect-ratio: 1;
-    background-color: theme("colors.neutral.200");
+    background-color: theme("colors.neutral.100");
     padding: 6px;
+
+    > .icon {
+      max-height: 26px;
+      aspect-ratio: 1;
+      width: auto;
+      color: theme("colors.gray.600");
+    }
 
     > .body {
       font-weight: partials.get-font-weight($weight: "medium");
-      color: theme("colors.neutral.500");
+      color: theme("colors.gray.300");
 
       @layer {
         font-size: inherit;

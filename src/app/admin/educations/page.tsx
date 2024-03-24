@@ -1,11 +1,6 @@
-import { Suspense } from "react";
-
 import { z } from "zod";
 
 import { EducationsTableView } from "~/components/tables/EducationsTableView";
-import { Loading } from "~/components/views/Loading";
-
-import { Drawers } from "./Drawers";
 
 interface EducationsPageProps {
   readonly searchParams: {
@@ -32,12 +27,5 @@ export default async function EducationsPage({
     search: search ?? "",
   };
 
-  return (
-    <>
-      <EducationsTableView filters={filters} page={page} />
-      <Suspense fallback={<Loading loading={true} />}>
-        <Drawers />
-      </Suspense>
-    </>
-  );
+  return <EducationsTableView filters={filters} page={page} />;
 }

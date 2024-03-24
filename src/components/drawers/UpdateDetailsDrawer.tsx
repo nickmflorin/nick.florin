@@ -1,28 +1,22 @@
-import { type Education, DetailEntityType, type Experience } from "~/prisma/model";
+import { type Education, type DetailEntityType, type Experience } from "~/prisma/model";
 import { ModifyDetailsView } from "~/components/forms/details/ModifyDetailsView";
 import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { useDetails } from "~/hooks";
 
-import { ClientDrawer } from "./ClientDrawer";
+import { Drawer } from "./Drawer";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerHeader } from "./DrawerHeader";
 
-import { type DrawerId } from ".";
+import { type ExtendingDrawerProps } from ".";
 
-interface UpdateDetailsDrawerProps<T extends DetailEntityType> {
-  readonly entityType: T;
-  readonly entityId: string;
-  readonly onClose: () => void;
-}
+export interface UpdateDetailsDrawerProps<T extends DetailEntityType>
+  extends ExtendingDrawerProps<{
+    readonly entityType: T;
+    readonly entityId: string;
+  }> {}
 
-const DrawerIds: { [key in DetailEntityType]: DrawerId } = {
-  [DetailEntityType.EDUCATION]: "update-education-details",
-  [DetailEntityType.EXPERIENCE]: "update-experience-details",
-};
-
-export const UpdatDetailsDrawer = <T extends DetailEntityType>({
+export const UpdateDetailsDrawer = <T extends DetailEntityType>({
   entityType,
-  onClose,
   entityId,
 }: UpdateDetailsDrawerProps<T>): JSX.Element => {
   const { data, isLoading, error } = useDetails(entityId, entityType, {
@@ -30,7 +24,7 @@ export const UpdatDetailsDrawer = <T extends DetailEntityType>({
   });
 
   return (
-    <ClientDrawer onClose={onClose} id={DrawerIds[entityType]}>
+    <Drawer>
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {obj => {
           const title = (obj as { education: Education }).education
@@ -50,8 +44,8 @@ export const UpdatDetailsDrawer = <T extends DetailEntityType>({
           );
         }}
       </ApiResponseView>
-    </ClientDrawer>
+    </Drawer>
   );
 };
 
-export default UpdatDetailsDrawer;
+export default UpdateDetailsDrawer;

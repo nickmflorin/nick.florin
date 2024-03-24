@@ -4,7 +4,7 @@ import {
   type Education,
   type Detail,
   type NestedDetail,
-} from "@prisma/client";
+} from "./core";
 
 export type DetailEntity<T extends DetailEntityType> = {
   readonly [DetailEntityType.EXPERIENCE]: Experience;

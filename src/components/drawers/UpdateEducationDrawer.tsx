@@ -5,28 +5,27 @@ import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { Loading } from "~/components/views/Loading";
 import { useEducation } from "~/hooks";
 
-import { ClientDrawer } from "./ClientDrawer";
+import { Drawer } from "./Drawer";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerHeader } from "./DrawerHeader";
+
+import { type ExtendingDrawerProps } from ".";
 
 const EducationForm = dynamic(() => import("~/components/forms/educations/UpdateEducationForm"), {
   loading: () => <Loading loading={true} />,
 });
 
-interface UpdateEducationDrawerProps {
-  readonly educationId: string;
-  readonly onClose: () => void;
-}
+interface UpdateEducationDrawerProps
+  extends ExtendingDrawerProps<{
+    readonly educationId: string;
+  }> {}
 
-export const UpdateEducationDrawer = ({
-  educationId,
-  onClose,
-}: UpdateEducationDrawerProps): JSX.Element => {
+export const UpdateEducationDrawer = ({ educationId }: UpdateEducationDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useEducation(isUuid(educationId) ? educationId : null, {
     keepPreviousData: true,
   });
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-education">
+    <Drawer className="overflow-y-scroll">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {education => (
           <>
@@ -37,7 +36,7 @@ export const UpdateEducationDrawer = ({
           </>
         )}
       </ApiResponseView>
-    </ClientDrawer>
+    </Drawer>
   );
 };
 

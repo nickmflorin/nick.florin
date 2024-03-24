@@ -82,6 +82,17 @@ export const DetailsSchema = z.object({
   details: z.array(DetailSchema),
 });
 
+const WebsiteUrlField = z
+  .union([z.literal(null), z.literal(""), z.string().url()])
+  .optional()
+  .transform(v => (typeof v === "string" && v.trim() === "" ? null : v));
+
+const LogoImageUrlField = z
+  .string()
+  .nullable()
+  .optional()
+  .transform(v => (typeof v === "string" && v.trim() === "" ? null : v));
+
 export const CompanySchema = z.object({
   name: NonNullableMinLengthStringField({
     min: 3,
@@ -94,8 +105,8 @@ export const CompanySchema = z.object({
   description: NullableMinLengthStringField({
     minErrorMessage: "The description must be at least 3 characters.",
   }).optional(),
-  logoImageUrl: z.string().optional(),
-  websiteUrl: z.union([z.literal(""), z.string().url()]).optional(),
+  logoImageUrl: LogoImageUrlField,
+  websiteUrl: WebsiteUrlField,
   city: NonNullableMinLengthStringField({
     min: 2,
     minErrorMessage: "The city must be at least 2 characters.",
@@ -120,8 +131,8 @@ export const SchoolSchema = z.object({
   description: NullableMinLengthStringField({
     minErrorMessage: "The description must be at least 3 characters.",
   }).optional(),
-  logoImageUrl: z.string().optional(),
-  websiteUrl: z.union([z.literal(""), z.string().url()]).optional(),
+  logoImageUrl: LogoImageUrlField,
+  websiteUrl: WebsiteUrlField,
   city: NonNullableMinLengthStringField({
     min: 2,
     minErrorMessage: "The city must be at least 2 characters.",

@@ -3,7 +3,7 @@ import { type ApiEducation, type School } from "~/prisma/model";
 import { deleteEducation } from "~/actions/delete-education";
 import { updateEducation } from "~/actions/update-education";
 import { Link } from "~/components/buttons";
-import { useDrawerParams } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks";
 
 import { EditableStringCell, ActionsCell, VisibleCell } from "../cells";
 import { Table } from "../Table";
@@ -15,10 +15,10 @@ interface DetailsCellProps {
 }
 
 const DetailsCell = ({ model }: DetailsCellProps) => {
-  const { open, ids } = useDrawerParams();
+  const { open, ids } = useDrawers();
   return (
     <Link.Primary
-      onClick={() => open(ids.UPDATE_EDUCATION_DETAILS, model.id)}
+      onClick={() => open(ids.UPDATE_EDUCATION_DETAILS, { entityId: model.id })}
     >{`${model.details.length} Details`}</Link.Primary>
   );
 };
@@ -29,8 +29,7 @@ export interface ClientTableProps {
 }
 
 export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Element => {
-  const { open, ids } = useDrawerParams();
-
+  const { open, ids } = useDrawers();
   return (
     <Table
       columns={[
@@ -100,7 +99,7 @@ export const ClientTable = ({ educations, schools }: ClientTableProps): JSX.Elem
             <ActionsCell
               deleteErrorMessage="There was an error deleting the education."
               deleteAction={deleteEducation.bind(null, model.id)}
-              onEdit={() => open(ids.UPDATE_EDUCATION, model.id)}
+              onEdit={() => open(ids.UPDATE_EDUCATION, { educationId: model.id })}
             />
           ),
         },

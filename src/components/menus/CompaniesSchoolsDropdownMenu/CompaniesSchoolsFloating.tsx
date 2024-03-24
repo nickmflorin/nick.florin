@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 import { Button } from "~/components/buttons";
+import { DrawerIds } from "~/components/drawers";
 import { Floating } from "~/components/floating/Floating";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { ShowHide } from "~/components/util";
@@ -13,17 +14,10 @@ import { MenuContainer } from "../generic/MenuContainer";
 import { CompaniesSchoolsMenuFooter } from "./CompaniesSchoolsMenuFooter";
 import { type ModelType } from "./types";
 
-const CreateCompanyForm = dynamic(() => import("~/components/forms/companies/CreateCompanyForm"), {
-  ssr: false,
+const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
   loading: () => <Loading loading={true} />,
-});
-
-const CreateSchoolForm = dynamic(() => import("~/components/forms/schools/CreateSchoolForm"), {
   ssr: false,
-  loading: () => <Loading loading={true} />,
 });
-
-const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), { ssr: false });
 
 const ButtonContent: { [key in ModelType]: string } = {
   company: "Companies",
@@ -78,22 +72,10 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
         )}
       </Floating>
       <ShowHide show={drawerVisible && modelType === "company"}>
-        <ClientDrawer onClose={() => setDrawerVisible(false)} id="create-company">
-          <CreateCompanyForm
-            className="mt-[16px]"
-            onCancel={() => setDrawerVisible(false)}
-            onSuccess={() => setDrawerVisible(false)}
-          />
-        </ClientDrawer>
+        <ClientDrawer id={DrawerIds.CREATE_COMPANY} props={{}} />
       </ShowHide>
       <ShowHide show={drawerVisible && modelType === "school"}>
-        <ClientDrawer onClose={() => setDrawerVisible(false)} id="create-school">
-          <CreateSchoolForm
-            className="mt-[16px]"
-            onCancel={() => setDrawerVisible(false)}
-            onSuccess={() => setDrawerVisible(false)}
-          />
-        </ClientDrawer>
+        <ClientDrawer id={DrawerIds.CREATE_SCHOOL} props={{}} />
       </ShowHide>
     </>
   );

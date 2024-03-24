@@ -1,12 +1,6 @@
-import { Suspense } from "react";
-
 import { z } from "zod";
 
-import { decodeQueryParam } from "~/lib/urls";
 import { ExperiencesTableView } from "~/components/tables/ExperiencesTableView";
-import { Loading } from "~/components/views/Loading";
-
-import { Drawers } from "./Drawers";
 
 interface ExperiencesPageProps {
   readonly searchParams: {
@@ -31,12 +25,5 @@ export default async function ExperiencesPage({
     search: search ?? "",
   };
 
-  return (
-    <>
-      <ExperiencesTableView filters={filters} page={page} />
-      <Suspense fallback={<Loading loading={true} />}>
-        <Drawers />
-      </Suspense>
-    </>
-  );
+  return <ExperiencesTableView filters={filters} page={page} />;
 }

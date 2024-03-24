@@ -1,7 +1,7 @@
 import { stringifyLocation } from "~/prisma/model";
 import { getCompanies } from "~/actions/fetches/get-companies";
 import { getSchools } from "~/actions/fetches/get-schools";
-import { type QueryDrawerId, QueryDrawerIds } from "~/components/drawers";
+import { type DrawerId, DrawerIds } from "~/components/drawers";
 import { Text } from "~/components/typography/Text";
 
 import { MenuContent } from "../generic/MenuContent";
@@ -17,11 +17,18 @@ const fetchers: { [key in ModelType]: () => Promise<Model<key>[]> } = {
   school: getSchools,
 };
 
-const DrawerParams: {
-  [key in ModelType]: QueryDrawerId;
+const ModelDrawerIds: {
+  [key in ModelType]: DrawerId;
 } = {
-  company: QueryDrawerIds.UPDATE_COMPANY,
-  school: QueryDrawerIds.UPDATE_SCHOOL,
+  company: DrawerIds.UPDATE_COMPANY,
+  school: DrawerIds.UPDATE_SCHOOL,
+};
+
+const ModelDrawerPropNames: {
+  [key in ModelType]: string;
+} = {
+  company: "companyId",
+  school: "schoolId",
 };
 
 export const CompaniesSchoolsMenuContent = async <M extends ModelType>({
@@ -35,8 +42,8 @@ export const CompaniesSchoolsMenuContent = async <M extends ModelType>({
       data={data.map(({ id, city, state, name }) => ({
         id,
         query: {
-          param: DrawerParams[modelType],
-          value: id,
+          drawerId: ModelDrawerIds[modelType],
+          props: { [ModelDrawerPropNames[modelType]]: id },
         },
         label: (
           <div className="flex flex-col gap-[4px]">

@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import { z } from "zod";
 
 import { ReactNodeSchema } from "~/lib/core";
-import { QueryDrawerIds } from "~/components/drawers";
+import { DrawerIds } from "~/components/drawers";
 import { IconPropSchema } from "~/components/icons";
 
 import { type MenuOptions } from "./options";
@@ -22,8 +22,8 @@ export const QuerySchema = z.object({
 });
 
 export const DrawerQuerySchema = z.object({
-  param: QueryDrawerIds.schema,
-  value: z.string(),
+  drawerId: DrawerIds.schema,
+  props: z.record(z.string()),
 });
 
 export const MenuModelParamsSchema = z.object({

@@ -1,6 +1,6 @@
 import type React from "react";
 
-import { type ClassArray, type ClassValue } from "clsx";
+import clsx, { type ClassArray, type ClassValue } from "clsx";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 
@@ -18,6 +18,29 @@ export const BorderRadii = enumeratedLiterals(
   {},
 );
 export type BorderRadius = EnumeratedLiteralsType<typeof BorderRadii>;
+
+type RadiusClassNameRT<R extends BorderRadius | null | undefined> = R extends BorderRadius
+  ? string
+  : null;
+
+export const radiusClassName = <R extends BorderRadius | null | undefined>(
+  radius: R | null,
+): RadiusClassNameRT<R> => {
+  if (!radius) {
+    return null as RadiusClassNameRT<R>;
+  }
+  return clsx({
+    ["rounded-none"]: radius === BorderRadii.NONE,
+    ["rounded-xs"]: radius === BorderRadii.XS,
+    ["rounded-sm"]: radius === BorderRadii.SM,
+    ["rounded-md"]: radius === BorderRadii.MD,
+    ["rounded-lg"]: radius === BorderRadii.LG,
+    ["rounded-xl"]: radius === BorderRadii.XL,
+    ["rounded-2xl"]: radius === BorderRadii["2XL"],
+    ["rounded-3xl"]: radius === BorderRadii["3XL"],
+    ["rounded-full"]: radius === BorderRadii.FULL,
+  }) as RadiusClassNameRT<R>;
+};
 
 export type SizeUnit = "px" | "rem";
 export type SizeString = `${number}${SizeUnit}`;

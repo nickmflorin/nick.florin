@@ -3,11 +3,10 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 import { Button } from "~/components/buttons";
+import { DrawerIds } from "~/components/drawers";
 import { Loading } from "~/components/views/Loading";
 
-const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"));
-
-const CreateSkillForm = dynamic(() => import("~/components/forms/skills/CreateSkillForm"), {
+const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
   loading: () => <Loading loading={true} />,
 });
 
@@ -17,11 +16,7 @@ export const NewSkillButton = () => {
   return (
     <>
       <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
-      {drawerOpen && (
-        <ClientDrawer onClose={() => setDrawerOpen(false)} id="create-skill">
-          <CreateSkillForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
-        </ClientDrawer>
-      )}
+      {drawerOpen && <ClientDrawer id={DrawerIds.CREATE_SKILL} props={{}} />}
     </>
   );
 };

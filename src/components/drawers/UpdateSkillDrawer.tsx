@@ -5,25 +5,27 @@ import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { Loading } from "~/components/views/Loading";
 import { useSkill } from "~/hooks";
 
-import { ClientDrawer } from "./ClientDrawer";
+import { Drawer } from "./Drawer";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerHeader } from "./DrawerHeader";
+
+import { type ExtendingDrawerProps } from ".";
 
 const SkillForm = dynamic(() => import("~/components/forms/skills/UpdateSkillForm"), {
   loading: () => <Loading loading={true} />,
 });
 
-interface UpdateSkillDrawerProps {
-  readonly skillId: string;
-  readonly onClose: () => void;
-}
+interface UpdateSkillDrawerProps
+  extends ExtendingDrawerProps<{
+    readonly skillId: string;
+  }> {}
 
-export const UpdateSkillDrawer = ({ skillId, onClose }: UpdateSkillDrawerProps): JSX.Element => {
+export const UpdateSkillDrawer = ({ skillId }: UpdateSkillDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useSkill(isUuid(skillId) ? skillId : null, {
     keepPreviousData: true,
   });
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-skill">
+    <Drawer className="overflow-y-scroll">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {skill => (
           <>
@@ -34,7 +36,7 @@ export const UpdateSkillDrawer = ({ skillId, onClose }: UpdateSkillDrawerProps):
           </>
         )}
       </ApiResponseView>
-    </ClientDrawer>
+    </Drawer>
   );
 };
 

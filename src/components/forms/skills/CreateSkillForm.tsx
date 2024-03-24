@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
+import { type Skill } from "~/prisma/model";
 import { createSkill } from "~/actions/create-skill";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
@@ -12,9 +13,14 @@ import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues }
 
 export interface CreateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: Skill) => void;
 }
 
-export const CreateSkillForm = ({ onCancel, ...props }: CreateSkillFormProps): JSX.Element => {
+export const CreateSkillForm = ({
+  onCancel,
+  onSuccess,
+  ...props
+}: CreateSkillFormProps): JSX.Element => {
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
@@ -46,6 +52,8 @@ export const CreateSkillForm = ({ onCancel, ...props }: CreateSkillFormProps): J
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
+          form.reset();
+          onSuccess?.(response);
           transition(() => {
             refresh();
           });

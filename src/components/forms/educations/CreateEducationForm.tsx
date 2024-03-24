@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
+import { type Education } from "~/prisma/model";
 import { createEducation } from "~/actions/create-education";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
@@ -17,10 +18,12 @@ import {
 
 export interface CreateEducationFormProps extends Omit<EducationFormProps, "form" | "action"> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: Education) => void;
 }
 
 export const CreateEducationForm = ({
   onCancel,
+  onSuccess,
   ...props
 }: CreateEducationFormProps): JSX.Element => {
   const { refresh } = useRouter();
@@ -52,6 +55,7 @@ export const CreateEducationForm = ({
           form.handleApiError(response);
         } else {
           form.reset();
+          onSuccess?.(response);
           transition(() => {
             refresh();
           });

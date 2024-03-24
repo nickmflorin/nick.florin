@@ -3,16 +3,12 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 import { Button } from "~/components/buttons";
+import { DrawerIds } from "~/components/drawers";
 import { Loading } from "~/components/views/Loading";
 
-const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"));
-
-const CreateEducationForm = dynamic(
-  () => import("~/components/forms/educations/CreateEducationForm"),
-  {
-    loading: () => <Loading loading={true} />,
-  },
-);
+const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
+  loading: () => <Loading loading={true} />,
+});
 
 export const NewEducationButton = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -21,9 +17,11 @@ export const NewEducationButton = () => {
     <>
       <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
       {drawerOpen && (
-        <ClientDrawer onClose={() => setDrawerOpen(false)} id="create-education">
-          <CreateEducationForm className="mt-[16px]" onCancel={() => setDrawerOpen(false)} />
-        </ClientDrawer>
+        <ClientDrawer
+          id={DrawerIds.CREATE_EDUCATION}
+          props={{}}
+          onClose={() => setDrawerOpen(false)}
+        />
       )}
     </>
   );

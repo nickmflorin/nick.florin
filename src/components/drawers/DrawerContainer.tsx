@@ -5,7 +5,6 @@ import clsx from "clsx";
 import { type ComponentProps } from "~/components/types";
 
 export interface DrawerContainerProps extends ComponentProps {
-  readonly id: string;
   readonly children: ReactNode;
 }
 

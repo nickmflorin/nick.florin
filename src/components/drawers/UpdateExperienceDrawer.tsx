@@ -5,9 +5,11 @@ import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { Loading } from "~/components/views/Loading";
 import { useExperience } from "~/hooks";
 
-import { ClientDrawer } from "./ClientDrawer";
+import { Drawer } from "./Drawer";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerHeader } from "./DrawerHeader";
+
+import { type ExtendingDrawerProps } from ".";
 
 const ExperienceForm = dynamic(
   () => import("~/components/forms/experiences/UpdateExperienceForm"),
@@ -16,20 +18,19 @@ const ExperienceForm = dynamic(
   },
 );
 
-interface UpdateExperienceDrawerProps {
-  readonly experienceId: string;
-  readonly onClose: () => void;
-}
+interface UpdateExperienceDrawerProps
+  extends ExtendingDrawerProps<{
+    readonly experienceId: string;
+  }> {}
 
 export const UpdateExperienceDrawer = ({
   experienceId,
-  onClose,
 }: UpdateExperienceDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useExperience(isUuid(experienceId) ? experienceId : null, {
     keepPreviousData: true,
   });
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-experience">
+    <Drawer className="overflow-y-scroll">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {experience => (
           <>
@@ -40,7 +41,7 @@ export const UpdateExperienceDrawer = ({
           </>
         )}
       </ApiResponseView>
-    </ClientDrawer>
+    </Drawer>
   );
 };
 

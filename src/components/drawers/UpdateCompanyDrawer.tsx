@@ -5,23 +5,22 @@ import { ApiResponseView } from "~/components/views/ApiResponseView";
 import { Loading } from "~/components/views/Loading";
 import { useCompany } from "~/hooks";
 
-import { ClientDrawer } from "./ClientDrawer";
+import { Drawer } from "./Drawer";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerHeader } from "./DrawerHeader";
+
+import { type ExtendingDrawerProps } from ".";
 
 const CompanyForm = dynamic(() => import("~/components/forms/companies/UpdateCompanyForm"), {
   loading: () => <Loading loading={true} />,
 });
 
-interface UpdateCompanyDrawerProps {
-  readonly companyId: string;
-  readonly onClose: () => void;
-}
+interface UpdateCompanyDrawerProps
+  extends ExtendingDrawerProps<{
+    readonly companyId: string;
+  }> {}
 
-export const UpdateCompanyDrawer = ({
-  companyId,
-  onClose,
-}: UpdateCompanyDrawerProps): JSX.Element => {
+export const UpdateCompanyDrawer = ({ companyId }: UpdateCompanyDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useCompany(
     isUuid(companyId) ? companyId : null,
     {
@@ -29,7 +28,7 @@ export const UpdateCompanyDrawer = ({
     },
   );
   return (
-    <ClientDrawer onClose={onClose} className="overflow-y-scroll" id="update-company">
+    <Drawer className="overflow-y-scroll">
       <ApiResponseView error={error} isLoading={isLoading || isValidating} data={data}>
         {company => (
           <>
@@ -40,7 +39,7 @@ export const UpdateCompanyDrawer = ({
           </>
         )}
       </ApiResponseView>
-    </ClientDrawer>
+    </Drawer>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "~/prisma/model";
 
 export enum PrismaErrorCode {
   DOES_NOT_EXIST = "P2025",
