@@ -29,6 +29,21 @@ type GetExperiencesParams<I extends ExpIncludes> = {
   page?: number;
 };
 
+const whereClause = ({
+  filters,
+  visibility = "public",
+}: Pick<GetExperiencesParams<ExpIncludes>, "visibility" | "filters">) =>
+  ({
+    AND:
+      filters?.search && visibility === "public"
+        ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
+        : filters?.search
+          ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
+          : visibility === "public"
+            ? { visible: true }
+            : undefined,
+  }) as const;
+
 export const preloadExperiencesCount = (
   params: Pick<GetExperiencesParams<ExpIncludes>, "visibility" | "filters">,
 ) => {
@@ -38,20 +53,15 @@ export const preloadExperiencesCount = (
 export const getExperiencesCount = cache(
   async ({
     filters,
-    visibility,
-  }: Pick<GetExperiencesParams<ExpIncludes>, "visibility" | "filters">) =>
-    await prisma.experience.count({
-      where: {
-        AND:
-          filters?.search && visibility === "public"
-            ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
-            : filters?.search
-              ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
-              : visibility === "public"
-                ? { visible: true }
-                : undefined,
-      },
-    }),
+    visibility = "public",
+  }: Pick<GetExperiencesParams<ExpIncludes>, "visibility" | "filters">) => {
+    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
+       a hard error, in the case that this is being called from the context of a route handler. */
+    await getAuthAdminUser({ strict: visibility === "admin" });
+    return await prisma.experience.count({
+      where: whereClause({ filters, visibility }),
+    });
+  },
 );
 
 export const preloadExperiences = <I extends ExpIncludes>(params: GetExperiencesParams<I>) => {
@@ -65,6 +75,8 @@ export const getExperiences = cache(
     filters,
     page,
   }: GetExperiencesParams<I>): Promise<ApiExperience<I>[]> => {
+    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
+       a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
@@ -78,16 +90,7 @@ export const getExperiences = cache(
 
     const exps = await prisma.experience.findMany({
       include: { company: true },
-      where: {
-        AND:
-          filters?.search && visibility === "public"
-            ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
-            : filters?.search
-              ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
-              : visibility === "public"
-                ? { visible: true }
-                : undefined,
-      },
+      where: whereClause({ filters, visibility }),
       orderBy: { startDate: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,

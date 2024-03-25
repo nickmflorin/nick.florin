@@ -1,26 +1,26 @@
 import { type NextRequest } from "next/server";
 
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type Skill } from "~/prisma/model";
-import { includeSkillMetadata } from "~/prisma/model";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
+import { prisma } from "~/prisma/client";
+import { type ApiSkill } from "~/prisma/model";
+import { getSkill } from "~/actions/fetches/get-skill";
+import { ClientResponse, ApiClientError } from "~/api";
 
 export async function generateStaticParams() {
-  const skills = await prisma.skill.findMany({ where: { visible: true } });
+  const skills = await prisma.skill.findMany();
   return skills.map(skill => ({
     id: skill.id,
   }));
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  let skill: Skill;
+  let skill: ApiSkill;
   try {
-    skill = await prisma.skill.findUniqueOrThrow({ where: { id: params.id } });
+    skill = await getSkill(params.id, { visibility: "public" });
   } catch (e) {
-    if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      return ApiClientGlobalError.NotFound().toResponse();
+    if (e instanceof ApiClientError) {
+      return e.toResponse();
     }
     throw e;
   }
-  return ClientResponse.OK(await includeSkillMetadata(skill)).toResponse();
+  return ClientResponse.OK(skill).toResponse();
 }

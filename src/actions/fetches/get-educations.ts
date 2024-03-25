@@ -29,6 +29,21 @@ type GetEducationsParams<I extends EduIncludes> = {
   page?: number;
 };
 
+const whereClause = ({
+  filters,
+  visibility = "public",
+}: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">) =>
+  ({
+    AND:
+      filters?.search && visibility === "public"
+        ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
+        : filters?.search
+          ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
+          : visibility === "public"
+            ? { visible: true }
+            : undefined,
+  }) as const;
+
 export const preloadEducationsCount = (
   params: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">,
 ) => {
@@ -38,20 +53,15 @@ export const preloadEducationsCount = (
 export const getEducationsCount = cache(
   async ({
     filters,
-    visibility,
-  }: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">) =>
-    await prisma.education.count({
-      where: {
-        AND:
-          filters?.search && visibility === "public"
-            ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
-            : filters?.search
-              ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
-              : visibility === "public"
-                ? { visible: true }
-                : undefined,
-      },
-    }),
+    visibility = "public",
+  }: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">) => {
+    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
+       a hard error, in the case that this is being called from the context of a route handler. */
+    await getAuthAdminUser({ strict: visibility === "admin" });
+    return await prisma.education.count({
+      where: whereClause({ filters, visibility }),
+    });
+  },
 );
 
 export const preloadEducations = <I extends EduIncludes>(params: GetEducationsParams<I>) => {
@@ -65,6 +75,8 @@ export const getEducations = cache(
     filters,
     page,
   }: GetEducationsParams<I>): Promise<ApiEducation<I>[]> => {
+    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
+       a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
@@ -78,16 +90,7 @@ export const getEducations = cache(
 
     const edus = await prisma.education.findMany({
       include: { school: true },
-      where: {
-        AND:
-          filters?.search && visibility === "public"
-            ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
-            : filters?.search
-              ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
-              : visibility === "public"
-                ? { visible: true }
-                : undefined,
-      },
+      where: whereClause({ filters, visibility }),
       orderBy: { startDate: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,

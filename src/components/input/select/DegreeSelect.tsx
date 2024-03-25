@@ -9,6 +9,7 @@ type O = {
 };
 
 const options = {
+  isNullable: false,
   getItemValue: (m: O) => m.value,
   getItemLabel: (m: O) => m.label,
   getItemValueLabel: (m: O) => m.shortLabel,

@@ -4,6 +4,13 @@ import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/pri
 import { DetailEntityType, type Education } from "~/prisma/model";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 
+export async function generateStaticParams() {
+  const educations = await prisma.education.findMany();
+  return educations.map(e => ({
+    id: e.id,
+  }));
+}
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   let education: Education;
   try {

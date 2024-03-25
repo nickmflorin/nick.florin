@@ -12,6 +12,6 @@ interface PaginatorProps {
 }
 
 export const Paginator = async ({ filters }: PaginatorProps) => {
-  const count = await getSkillsCount({ filters });
+  const count = await getSkillsCount({ filters, visibility: "admin" });
   return <RootPaginator count={count} pageSize={SKILLS_ADMIN_TABLE_PAGE_SIZE} />;
 };
