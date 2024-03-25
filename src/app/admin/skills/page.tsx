@@ -1,3 +1,4 @@
+import { SignedIn } from "@clerk/nextjs";
 import { z } from "zod";
 
 import { decodeQueryParam } from "~/lib/urls";
@@ -32,5 +33,9 @@ export default async function SkillsPage({
       : [],
   };
 
-  return <SkillsTableView filters={filters} page={page} />;
+  return (
+    <SignedIn>
+      <SkillsTableView filters={filters} page={page} />
+    </SignedIn>
+  );
 }
