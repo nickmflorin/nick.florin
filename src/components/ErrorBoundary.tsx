@@ -1,8 +1,6 @@
 "use client";
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 
-import { logger } from "~/application/logger";
-
 import { ErrorView } from "./views/ErrorView";
 
 interface Props {
@@ -25,7 +23,8 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public async componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    const logger = (await import("~/application/logger")).logger;
     logger.error("Uncaught Error:", error, errorInfo);
   }
 

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, type ForwardedRef } from "react";
 
 import clsx from "clsx";
 import omit from "lodash.omit";
@@ -88,4 +88,10 @@ export type TableView<T extends TableModel> = {
   readonly check: (m: T | T["id"]) => void;
   readonly uncheck: (m: T["id"]) => void;
   readonly setVisibleColumns: (m: string[]) => void;
+};
+
+export type ContextTableComponent = {
+  <T extends TableModel>(
+    props: Omit<TableProps<T>, "columns"> & { readonly ref?: ForwardedRef<TableInstance<T>> },
+  ): JSX.Element;
 };

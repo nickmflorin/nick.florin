@@ -6,33 +6,24 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { DetailEntityType, type NestedDetail, type Detail } from "~/prisma/model";
-import {
-  ApiClientFormError,
-  ApiClientFieldErrorCodes,
-  ApiClientGlobalError,
-  type ApiClientFormErrorJson,
-} from "~/api";
+import { DetailEntityType, type Detail } from "~/prisma/model";
+import { ApiClientGlobalError, ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
 
-import { DetailSchema } from "./schemas";
+import { DetailSchema } from "../schemas";
 
 const UpdateDetailSchema = DetailSchema.partial();
 
-export const updateNestedDetail = async (
-  id: string,
-  req: z.infer<typeof UpdateDetailSchema>,
-): Promise<NestedDetail | ApiClientFormErrorJson> => {
+export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailSchema>) => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateDetailSchema.safeParse(req);
   if (!parsed.success) {
     throw ApiClientFormError.BadRequest(parsed.error, UpdateDetailSchema);
   }
-  let nestedDetail: NestedDetail & { readonly detail: Detail };
+  let detail: Detail;
   try {
-    nestedDetail = await prisma.nestedDetail.findUniqueOrThrow({
+    detail = await prisma.detail.findUniqueOrThrow({
       where: { id },
-      include: { detail: true },
     });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
@@ -44,11 +35,12 @@ export const updateNestedDetail = async (
   const { label, ...data } = parsed.data;
   if (
     label &&
-    (await prisma.nestedDetail.count({
+    (await prisma.detail.count({
       where: {
-        detailId: nestedDetail.detail.id,
+        entityId: detail.entityId,
+        entityType: detail.entityType,
         label,
-        id: { notIn: [nestedDetail.id] },
+        id: { notIn: [detail.id] },
       },
     }))
   ) {
@@ -59,7 +51,7 @@ export const updateNestedDetail = async (
       },
     }).toJson();
   }
-  const updated = await prisma.nestedDetail.update({
+  const updated = await prisma.detail.update({
     where: { id },
     data: {
       ...data,
@@ -67,7 +59,7 @@ export const updateNestedDetail = async (
       updatedById: user.id,
     },
   });
-  switch (nestedDetail.detail.entityType) {
+  switch (detail.entityType) {
     case DetailEntityType.EDUCATION: {
       revalidatePath("/admin/educations", "page");
       revalidatePath("/api/educations");

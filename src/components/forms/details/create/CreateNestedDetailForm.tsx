@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { type NestedDetail } from "~/prisma/model";
-import { createNestedDetail } from "~/actions/create-nested-detail";
+import { createNestedDetail } from "~/actions/mutations/create-nested-detail";
 
 import {
   GenericCreateDetailForm,

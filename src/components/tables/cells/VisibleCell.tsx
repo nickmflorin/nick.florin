@@ -33,7 +33,11 @@ export const VisibleCell = <M extends { id: string; visible: boolean }>({
           try {
             await action(model.id, { visible: e.target.checked });
           } catch (e) {
-            logger.error(e);
+            const logger = (await import("~/application/logger")).logger;
+            logger.error(`There was an error changing the visibility for the model:\n${e}`, {
+              error: e,
+              model,
+            });
             toast.error(errorMessage);
           } finally {
             table.setRowLoading(model.id, false);

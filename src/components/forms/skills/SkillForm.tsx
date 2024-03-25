@@ -40,6 +40,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
     <Form.ControlledField name="experiences" label="Experiences" form={props.form}>
       {({ value, onChange }) => (
         <ClientExperienceSelect
+          visibility="admin"
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
@@ -54,6 +55,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
     <Form.ControlledField name="educations" label="Educations" form={props.form}>
       {({ value, onChange }) => (
         <ClientEducationSelect
+          visibility="admin"
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
@@ -93,7 +95,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="top"
+          menuPlacement="top"
           onChange={onChange}
         />
       )}
@@ -104,7 +106,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="top"
+          menuPlacement="top"
           onChange={onChange}
         />
       )}
@@ -115,7 +117,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="top"
+          menuPlacement="top"
           onChange={onChange}
         />
       )}

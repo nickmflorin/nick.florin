@@ -8,7 +8,7 @@ import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
 import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
 
-import { ExperienceSchema } from "./schemas";
+import { ExperienceSchema } from "../schemas";
 
 export const createExperience = async (req: z.infer<typeof ExperienceSchema>) => {
   const user = await getAuthAdminUser();

@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import { useFormStatus } from "react-dom";
 
-import { logger } from "~/application/logger";
 import { type ButtonSize } from "~/components/buttons";
 import { Button } from "~/components/buttons/generic/Button";
 import { type ComponentProps } from "~/components/types";
@@ -66,7 +65,9 @@ export const ButtonFooter = ({
 
   const visibility = buttonVisibility({ submitButtonType, onSubmit, onCancel, ...props });
   if (!(visibility.submit || visibility.cancel)) {
-    logger.error("The button footer is not configured to show a submit or cancel button.");
+    import("~/application/logger").then(({ logger }) => {
+      logger.error("The button footer is not configured to show a submit or cancel button.");
+    });
     return <></>;
   }
 

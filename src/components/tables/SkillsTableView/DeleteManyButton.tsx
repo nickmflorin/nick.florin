@@ -1,5 +1,5 @@
 "use client";
-import { deleteSkills } from "~/actions/delete-skills";
+import { deleteSkills } from "~/actions/mutations/delete-skills";
 
 import { DeleteManyButton as RootDeleteManyButton } from "../DeleteManyButton";
 

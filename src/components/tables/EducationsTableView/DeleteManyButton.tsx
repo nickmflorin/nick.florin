@@ -1,5 +1,5 @@
 "use client";
-import { deleteEducations } from "~/actions/delete-educations";
+import { deleteEducations } from "~/actions/mutations/delete-educations";
 
 import { DeleteManyButton as RootDeleteManyButton } from "../DeleteManyButton";
 

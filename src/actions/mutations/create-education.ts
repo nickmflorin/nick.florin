@@ -8,7 +8,7 @@ import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type School } from "~/prisma/model";
 import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
 
-import { EducationSchema } from "./schemas";
+import { EducationSchema } from "../schemas";
 
 export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
   const user = await getAuthAdminUser();

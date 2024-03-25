@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { type Skill } from "~/prisma/model";
-import { createSkill } from "~/actions/create-skill";
+import { createSkill } from "~/actions/mutations/create-skill";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 

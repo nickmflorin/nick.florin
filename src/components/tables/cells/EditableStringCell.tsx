@@ -3,7 +3,6 @@ import { useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 
 import { type EditableStringCellProps } from "./types";
@@ -36,7 +35,15 @@ export const EditableStringCell = <
         try {
           await action({ [field]: value } as P);
         } catch (e) {
-          logger.error(e);
+          const logger = (await import("~/application/logger")).logger;
+          logger.error(
+            `There was an error updating the field '${String(field)}' for the model:\n${e}`,
+            {
+              error: e,
+              field,
+              model,
+            },
+          );
           toast.error(errorMessage);
         } finally {
           table.setRowLoading(model.id as M["id"], false);

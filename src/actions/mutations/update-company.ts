@@ -5,24 +5,24 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
-import { type School } from "~/prisma/model";
+import { type Company } from "~/prisma/model";
 import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
 
-import { SchoolSchema } from "./schemas";
+import { CompanySchema } from "../schemas";
 
-const UpdateSchoolSchema = SchoolSchema.partial();
+const UpdateCompanySchema = CompanySchema.partial();
 
-export const updateSchool = async (id: string, req: z.infer<typeof SchoolSchema>) => {
+export const updateCompany = async (id: string, req: z.infer<typeof CompanySchema>) => {
   const user = await getAuthAdminUser();
 
   return await prisma.$transaction(async tx => {
-    const parsed = UpdateSchoolSchema.safeParse(req);
+    const parsed = UpdateCompanySchema.safeParse(req);
     if (!parsed.success) {
-      return ApiClientFormError.BadRequest(parsed.error, UpdateSchoolSchema).toJson();
+      return ApiClientFormError.BadRequest(parsed.error, UpdateCompanySchema).toJson();
     }
-    let co: School;
+    let co: Company;
     try {
-      co = await tx.school.findUniqueOrThrow({
+      co = await tx.company.findUniqueOrThrow({
         where: { id },
       });
     } catch (e) {
@@ -33,25 +33,25 @@ export const updateSchool = async (id: string, req: z.infer<typeof SchoolSchema>
     }
     const { name, shortName, ...data } = parsed.data;
 
-    if (name && (await prisma.school.count({ where: { name, id: { notIn: [co.id] } } }))) {
+    if (name && (await prisma.company.count({ where: { name, id: { notIn: [co.id] } } }))) {
       return ApiClientFormError.BadRequest({
         name: {
           code: ApiClientFieldErrorCodes.unique,
-          message: "The 'name' must be unique for a given school.",
+          message: "The 'name' must be unique for a given company.",
         },
       }).toJson();
     } else if (
       shortName &&
-      (await prisma.school.count({ where: { shortName, id: { notIn: [co.id] } } }))
+      (await prisma.company.count({ where: { shortName, id: { notIn: [co.id] } } }))
     ) {
       return ApiClientFormError.BadRequest({
         shortName: {
           code: ApiClientFieldErrorCodes.unique,
-          message: "The 'shortName' must be unique for a given school.",
+          message: "The 'shortName' must be unique for a given company.",
         },
       }).toJson();
     }
-    const updated = await prisma.school.update({
+    const updated = await prisma.company.update({
       where: { id },
       data: {
         ...data,
@@ -61,8 +61,8 @@ export const updateSchool = async (id: string, req: z.infer<typeof SchoolSchema>
         updatedById: user.id,
       },
     });
-    revalidatePath("/api/schools");
-    revalidatePath(`/api/schools/${updated.id}`);
+    revalidatePath("/api/companies");
+    revalidatePath(`/api/companies/${updated.id}`);
     return updated;
   });
 };

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { type DetailEntityType, type FullDetail } from "~/prisma/model";
-import { createDetail } from "~/actions/create-detail";
+import { createDetail } from "~/actions/mutations/create-detail";
 
 import {
   GenericCreateDetailForm,

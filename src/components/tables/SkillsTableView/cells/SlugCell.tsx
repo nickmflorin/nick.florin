@@ -6,10 +6,9 @@ import { toast } from "react-toastify";
 
 import type * as types from "../../types";
 
-import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/update-skill";
+import { updateSkill } from "~/actions/mutations/update-skill";
 import { IconButton } from "~/components/buttons";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 
@@ -38,7 +37,15 @@ export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {
           try {
             await updateSkill(skill.id, { slug });
           } catch (e) {
-            logger.error(e);
+            const logger = (await import("~/application/logger")).logger;
+            logger.error(
+              `There was an error updating the slug for the skill with ID '${skill.id}':\n${e}`,
+              {
+                error: e,
+                skill: skill.id,
+                slug,
+              },
+            );
             toast.error("There was an error updating the skill.");
           } finally {
             table.setRowLoading(skill.id, false);
@@ -59,7 +66,15 @@ export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {
           try {
             await updateSkill(skill.id, { slug: null });
           } catch (e) {
-            logger.error(e);
+            const logger = (await import("~/application/logger")).logger;
+            logger.error(
+              `There was an error updating the slug for the skill with ID '${skill.id}':\n${e}`,
+              {
+                error: e,
+                skill: skill.id,
+                slug: null,
+              },
+            );
             toast.error("There was an error updating the skill.");
           } finally {
             setLoading(false);

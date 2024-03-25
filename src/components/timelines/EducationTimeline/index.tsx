@@ -18,7 +18,10 @@ const EducationTile = dynamic(() => import("./EducationTile"), {
 export type EducationTimelineProps = ComponentProps;
 
 export const EducationTimeline = async (props: EducationTimelineProps): Promise<JSX.Element> => {
-  const educations = await getEducations({ skills: true, details: true });
+  const educations = await getEducations({
+    includes: { skills: true, details: true },
+    visibility: "public",
+  });
   return (
     <CommitTimeline {...props}>
       {educations.map(education => (

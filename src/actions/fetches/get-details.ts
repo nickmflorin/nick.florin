@@ -19,6 +19,7 @@ export const getDetails = cache(
     if (!entity) {
       return null;
     }
+    // Note: This is currently only used for the admin, so visibility is not applicable.
     return {
       details: await prisma.detail.findMany({
         where: { entityId: entity.id, entityType: entityType },

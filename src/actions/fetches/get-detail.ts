@@ -10,6 +10,7 @@ export const preloadDetail = (id: string) => {
 
 export const getDetail = cache(async (id: string): Promise<Detail | null> => {
   try {
+    // Note: This is currently only used for the admin, so visibility is not applicable.
     return await prisma.detail.findUniqueOrThrow({
       where: { id },
     });

@@ -4,9 +4,8 @@ import dynamic from "next/dynamic";
 import type * as cells from "../cells";
 
 import { type ApiExperience } from "~/prisma/model";
-import { deleteExperience } from "~/actions/delete-experience";
-import { updateExperience } from "~/actions/update-experience";
-import { Link } from "~/components/buttons";
+import { deleteExperience } from "~/actions/mutations/delete-experience";
+import { updateExperience } from "~/actions/mutations/update-experience";
 import { useDrawers } from "~/components/drawers/hooks";
 
 import {
@@ -16,26 +15,13 @@ import {
 
 const VisibleCell = dynamic(() => import("../cells/VisibleCell")) as cells.VisibleCellComponent;
 
-const ActionsCell = dynamic(() => import("../cells/ActionsCell"));
+const DetailsCell = dynamic(() => import("./cells/DetailsCell"));
 
 const EditableStringCell = dynamic(
   () => import("../cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
 const CompanyCell = dynamic(() => import("./cells/CompanyCell"));
-
-interface DetailsCellProps {
-  readonly model: ApiExperience<{ details: true }>;
-}
-
-const DetailsCell = ({ model }: DetailsCellProps) => {
-  const { open, ids } = useDrawers();
-  return (
-    <Link.Primary
-      onClick={() => open(ids.UPDATE_EXPERIENCE_DETAILS, { entityId: model.id })}
-    >{`${model.details.length} Details`}</Link.Primary>
-  );
-};
 
 export interface TableViewConfig
   extends Pick<RootTableViewConfig<ApiExperience<{ details: true }>>, "children"> {}
@@ -48,6 +34,11 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
       isCheckable={true}
       useCheckedRowsQuery={false}
       canToggleColumnVisibility={true}
+      deleteErrorMessage="There was an error deleting the experience."
+      deleteAction={async id => {
+        await deleteExperience(id);
+      }}
+      onEdit={id => open(ids.UPDATE_EXPERIENCE, { experienceId: id })}
       columns={[
         {
           accessor: "title",
@@ -102,18 +93,6 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
                 await updateExperience(id, data);
               }}
               errorMessage="There was an error updating the experience."
-            />
-          ),
-        },
-        {
-          accessor: "actions",
-          title: "",
-          textAlign: "center",
-          render: ({ model }) => (
-            <ActionsCell
-              deleteErrorMessage="There was an error deleting the experience."
-              deleteAction={deleteExperience.bind(null, model.id)}
-              onEdit={() => open(ids.UPDATE_EXPERIENCE, { experienceId: model.id })}
             />
           ),
         },

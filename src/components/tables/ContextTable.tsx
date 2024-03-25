@@ -3,7 +3,12 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import { useTableView } from "./hooks";
 import { Table } from "./Table";
-import { type TableModel, type TableProps, type TableInstance } from "./types";
+import {
+  type TableModel,
+  type TableProps,
+  type TableInstance,
+  type ContextTableComponent,
+} from "./types";
 
 export const ContextTable = forwardRef(
   <T extends TableModel>(
@@ -13,10 +18,6 @@ export const ContextTable = forwardRef(
     const { visibleColumns } = useTableView<T>();
     return <Table<T> {...props} ref={ref} columns={visibleColumns} />;
   },
-) as {
-  <T extends TableModel>(
-    props: Omit<TableProps<T>, "columns"> & { readonly ref?: ForwardedRef<TableInstance<T>> },
-  ): JSX.Element;
-};
+) as ContextTableComponent;
 
 export default ContextTable;

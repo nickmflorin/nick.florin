@@ -8,7 +8,7 @@ import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/pri
 import { type Education } from "~/prisma/model";
 import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
 
-import { EducationSchema } from "./schemas";
+import { EducationSchema } from "../schemas";
 
 const UpdateEducationSchema = EducationSchema.partial();
 

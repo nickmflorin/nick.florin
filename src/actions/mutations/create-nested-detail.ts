@@ -9,44 +9,39 @@ import { prisma } from "~/prisma/client";
 import { DetailEntityType } from "~/prisma/model";
 import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
 
-import { getEntity } from "./fetches/get-entity";
-import { DetailSchema } from "./schemas";
+import { getDetail } from "../fetches/get-detail";
+import { DetailSchema } from "../schemas";
 
-export const createDetail = async (
-  entityId: string,
-  entityType: DetailEntityType,
-  req: z.infer<typeof DetailSchema>,
-) => {
+export const createNestedDetail = async (detailId: string, req: z.infer<typeof DetailSchema>) => {
   const user = await getAuthAdminUser();
 
-  const entity = await getEntity(entityId, entityType);
-  if (!entity) {
-    throw ApiClientGlobalError.NotFound("No entity exists for the provided ID and entity type.");
+  const detail = await getDetail(detailId);
+  if (!detail) {
+    throw ApiClientGlobalError.NotFound("No detail exists for the provided ID.");
   }
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientFormError.BadRequest(parsed.error, DetailSchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, DetailSchema).toJson();
   }
   const { label, ...data } = parsed.data;
   if (
     label &&
-    (await prisma.detail.count({
-      where: { entityId: entity.id, entityType, label },
+    (await prisma.nestedDetail.count({
+      where: { detailId, label },
     }))
   ) {
     return ApiClientFormError.BadRequest({
       label: {
         code: ApiClientFieldErrorCodes.unique,
-        message: "The 'label' must be unique for a given parent.",
+        message: "The 'label' must be unique for a given parent detail.",
       },
     }).toJson();
   }
-  const detail = await prisma.detail.create({
+  const nestedDetail = await prisma.nestedDetail.create({
     data: {
       ...data,
-      entityId: entity.id,
-      entityType,
+      detailId,
       label,
       createdById: user.id,
       updatedById: user.id,
@@ -56,12 +51,12 @@ export const createDetail = async (
     case DetailEntityType.EDUCATION: {
       revalidatePath("/admin/educations", "page");
       revalidatePath("/api/educations");
-      return detail;
+      return nestedDetail;
     }
     case DetailEntityType.EXPERIENCE: {
       revalidatePath("/admin/experiences", "page");
       revalidatePath("/api/experiences");
-      return detail;
+      return nestedDetail;
     }
     default:
       throw new UnreachableCaseError();

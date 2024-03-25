@@ -1,39 +1,15 @@
 import React from "react";
 
-import clsx from "clsx";
 import pick from "lodash.pick";
 
-import { logger } from "~/application/logger";
-
+import { DynamicIconRenderer } from "./DynamicIconRenderer";
+import { NativeIcon } from "./NativeIcon";
 import { Spinner } from "./Spinner";
 import { type IconProp, type DynamicIconProp, type IconProps } from "./types";
-import {
-  getIconClassName,
-  getNativeIconStyle,
-  type DynamicIconClassNamePropName,
-  getInternalIconClassName,
-} from "./util";
+import { getIconClassName, getInternalIconClassName } from "./util";
 
 const iconIsDynamic = (icon: IconProp | DynamicIconProp): icon is DynamicIconProp =>
   Array.isArray(icon);
-
-const IconInner = (
-  props: { isVisible: boolean; children?: JSX.Element } & Pick<
-    IconProps,
-    "style" | "className" | DynamicIconClassNamePropName
-  >,
-) => (
-  <i
-    className={clsx(props.className)}
-    style={
-      props.isVisible === false
-        ? { ...props.style, display: "none", ...getNativeIconStyle(props) }
-        : { ...props.style, ...getNativeIconStyle(props) }
-    }
-  >
-    {props.children}
-  </i>
-);
 
 /**
  * Renders an icon element, <i>, with the appropriate class name, style and data-attributes.
@@ -81,45 +57,11 @@ export const Icon = ({
     /* If the icon is dynamic, it will not be included in the component's props as explicit parts
        (i.e. there will be an 'icon' prop, not 'name', 'family', and 'iconStyle' props). */
     if (icon !== undefined && iconIsDynamic(icon)) {
-      const visibleIcons = icon.filter(i => i.visible === true);
-      if (visibleIcons.length === 0) {
-        logger.error(
-          { icon: icon },
-          "The dynamically provided set of icons does not include a visible icon. " +
-            "No icon will be rendered.",
-        );
-        return <></>;
-      } else if (visibleIcons.length > 1) {
-        logger.error(
-          { icon: icon },
-          "The dynamically provided set of icons includes multiple visible icons. " +
-            "Only the first will be rendered.",
-        );
-      }
-      let visibleIconEncountered = false;
-      return (
-        <>
-          {icon.map((i, index) => {
-            // Omit the hidden flag - it is encompassed in the isVisible flag.
-            const ps = {
-              ...props,
-              iconStyle,
-              family,
-              icon: i.icon,
-            } as IconProps;
-            if (i.visible && !visibleIconEncountered) {
-              visibleIconEncountered = true;
-              // The hidden prop will cause all dynamic icons to be hidden.
-              return <Icon {...ps} visible={isVisible} key={index} />;
-            }
-            return <Icon {...ps} visible={false} key={index} />;
-          })}
-        </>
-      );
+      return <DynamicIconRenderer icon={icon} iconStyle={iconStyle} family={family} {...props} />;
     }
     const ic = icon || { name, iconStyle, family };
     return (
-      <IconInner
+      <NativeIcon
         {...props}
         isVisible={isVisible}
         className={getIconClassName({
@@ -131,9 +73,9 @@ export const Icon = ({
   }
   // Here, the icon is an internal SVG component that is provided via the 'children' prop.
   return (
-    <IconInner {...props} isVisible={isVisible} className={getInternalIconClassName(props)}>
+    <NativeIcon {...props} isVisible={isVisible} className={getInternalIconClassName(props)}>
       {children}
-    </IconInner>
+    </NativeIcon>
   );
 };
 

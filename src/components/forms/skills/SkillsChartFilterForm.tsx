@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { ProgrammingDomain, SkillCategory, ProgrammingLanguage } from "~/prisma/model";
-import { SHOW_TOP_SKILLS, type ShowTopSkills, type ShowTopSkillsString } from "~/app/api/types";
+import { SHOW_TOP_SKILLS, type ShowTopSkills, type ShowTopSkillsString } from "~/actions/schemas";
 import { Form, type FormProps } from "~/components/forms/generic/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
@@ -59,11 +59,12 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
     >
       {({ value, onChange }) => (
         <ClientExperienceSelect
+          visibility="public"
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
           onChange={onChange}
-          placement="bottom"
+          menuPlacement="bottom"
           useAbbreviatedOptionLabels={false}
           inPortal
           onError={() => form.setStaticErrors("educations", "There was an error loading the data.")}
@@ -78,12 +79,13 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
     >
       {({ value, onChange }) => (
         <ClientEducationSelect
+          visibility="public"
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           useAbbreviatedOptionLabels={false}
           value={value}
           onChange={onChange}
-          placement="bottom"
+          menuPlacement="bottom"
           inPortal
           onError={() => form.setStaticErrors("educations", "There was an error loading the data.")}
         />
@@ -100,7 +102,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="bottom"
+          menuPlacement="bottom"
           inPortal
           onChange={onChange}
         />
@@ -117,7 +119,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="bottom"
+          menuPlacement="bottom"
           inPortal
           onChange={onChange}
         />
@@ -134,7 +136,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          placement="bottom"
+          menuPlacement="bottom"
           inPortal
           onChange={onChange}
         />

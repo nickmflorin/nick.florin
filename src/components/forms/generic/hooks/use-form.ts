@@ -14,7 +14,6 @@ import {
   type SubmitErrorHandler,
 } from "react-hook-form";
 
-import { logger } from "~/application/logger";
 import { humanizeList } from "~/lib/formatters";
 import {
   type ApiClientError,
@@ -166,7 +165,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [getValues, onChange],
   );
 
-  const setInternalFieldErrors = useCallback((fieldErrors: FieldErrors<I>) => {
+  const setInternalFieldErrors = useCallback(async (fieldErrors: FieldErrors<I>) => {
     const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
       if (!registeredFields.current.includes(curr as FieldName<I>)) {
         return [...prev, curr];
@@ -178,6 +177,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         conjunction: "and",
         formatter: v => `'${v}'`,
       });
+      const logger = (await import("~/application/logger")).logger;
       logger.warn(
         "The form received field errors for fields that are not registered with the form! " +
           `Current fields registered with the form are: ${humanized}.`,
@@ -188,7 +188,9 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   }, []);
 
   const setInternalStaticFieldErrors = useCallback(
-    (fieldErrors: FieldErrors<I> | ((curr: FieldErrors<I>) => FieldErrors<I>)) => {
+    async (fieldErrors: FieldErrors<I> | ((curr: FieldErrors<I>) => FieldErrors<I>)) => {
+      const logger = (await import("~/application/logger")).logger;
+
       const validate = (fieldErrors: FieldErrors<I>) => {
         const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
           if (!registeredFields.current.includes(curr as FieldName<I>)) {
@@ -259,7 +261,9 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   const setInternalFieldErrorsFromResponse = useCallback(
-    (e: ApiClientError | ApiClientErrorJson, errs: ApiClientFieldErrors) => {
+    async (e: ApiClientError | ApiClientErrorJson, errs: ApiClientFieldErrors) => {
+      const logger = (await import("~/application/logger")).logger;
+
       // If this happens, it means the API incorrectly returned an error response.
       if (Object.keys(errs).length === 0) {
         logger.warn(

@@ -6,7 +6,6 @@ import clsx from "clsx";
 import { toast } from "react-toastify";
 import { useDebouncedCallback } from "use-debounce";
 
-import { logger } from "~/application/logger";
 import { Button } from "~/components/buttons/generic";
 import { TextInput } from "~/components/input/TextInput";
 import { type ComponentProps } from "~/components/types";
@@ -55,7 +54,11 @@ export const TableSearchInput = ({
           refresh();
         });
       } catch (e) {
-        logger.error(e);
+        const logger = (await import("~/application/logger")).logger;
+        logger.error(`There was an error creating the skill:\n${e}`, {
+          error: e,
+          data: { label: value },
+        });
         toast.error("There was an error creating the skill.");
       } finally {
         setIsCreating(false);

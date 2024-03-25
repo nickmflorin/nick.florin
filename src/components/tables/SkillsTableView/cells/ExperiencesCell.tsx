@@ -4,9 +4,8 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/update-skill";
+import { updateSkill } from "~/actions/mutations/update-skill";
 import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
 
 interface ExperiencesCellProps {
@@ -35,7 +34,15 @@ export const ExperiencesCell = ({ skill }: ExperiencesCellProps): JSX.Element =>
         try {
           await updateSkill(skill.id, { experiences: v });
         } catch (e) {
-          logger.error(e);
+          const logger = (await import("~/application/logger")).logger;
+          logger.error(
+            `There was an error updating the experiences for the skill with ID '${skill.id}':\n${e}`,
+            {
+              error: e,
+              skill: skill.id,
+              experiences: v,
+            },
+          );
           toast.error("There was an error updating the skill.");
         } finally {
           item.setLoading(false);

@@ -3,10 +3,9 @@ import { useTransition, useState, useCallback, useEffect, useMemo } from "react"
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
 import { type FullDetail, type NestedDetail, isFullDetail } from "~/prisma/model";
-import { updateDetail } from "~/actions/update-detail";
-import { updateNestedDetail } from "~/actions/update-nested-detail";
+import { updateDetail } from "~/actions/mutations/update-detail";
+import { updateNestedDetail } from "~/actions/mutations/update-nested-detail";
 import { IconButton } from "~/components/buttons";
 
 export interface DetailVisibilityButtonProps<D extends FullDetail | NestedDetail> {
@@ -48,6 +47,7 @@ export const DetailVisibilityButton = <D extends FullDetail | NestedDetail>({
       await updateDetailWithId({ visible: !detail.visible });
       success = true;
     } catch (e) {
+      const logger = (await import("~/application/logger")).logger;
       logger.error("There was an error changing the detail's visibility.", {
         error: e,
         id: detail.id,

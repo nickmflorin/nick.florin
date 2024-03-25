@@ -7,9 +7,8 @@ import { z } from "zod";
 
 import type * as types from "../../types";
 
-import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/update-skill";
+import { updateSkill } from "~/actions/mutations/update-skill";
 import { Checkbox } from "~/components/input/Checkbox";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import { Label } from "~/components/typography/Label";
@@ -55,7 +54,15 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
               try {
                 await updateSkill(skill.id, { experience: null });
               } catch (e) {
-                logger.error(e);
+                const logger = (await import("~/application/logger")).logger;
+                logger.error(
+                  `There was an error updating the experience for the skill with ID '${skill.id}':\n${e}`,
+                  {
+                    error: e,
+                    skill: skill.id,
+                    experience: null,
+                  },
+                );
                 toast.error("There was an error updating the skill.");
               } finally {
                 table.setRowLoading(skill.id, false);
@@ -83,7 +90,15 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
             try {
               await updateSkill(skill.id, { experience: parseInt(ex) });
             } catch (e) {
-              logger.error(e);
+              const logger = (await import("~/application/logger")).logger;
+              logger.error(
+                `There was an error updating the experience for the skill with ID '${skill.id}':\n${e}`,
+                {
+                  error: e,
+                  skill: skill.id,
+                  experience: parseInt(ex),
+                },
+              );
               toast.error("There was an error updating the skill.");
             } finally {
               table.setRowLoading(skill.id, false);

@@ -6,9 +6,8 @@ import { toast } from "react-toastify";
 
 import type * as types from "../../types";
 
-import { logger } from "~/application/logger";
-import { type ApiEducation, type School } from "~/prisma/model";
-import { updateEducation } from "~/actions/update-education";
+import { type ApiEducation } from "~/prisma/model";
+import { updateEducation } from "~/actions/mutations/update-education";
 import { isApiClientErrorJson } from "~/api";
 import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
 
@@ -39,6 +38,7 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
         try {
           response = await updateEducation(education.id, { school: v });
         } catch (e) {
+          const logger = (await import("~/application/logger")).logger;
           logger.error(`There was a server error updating the education's company:\n${e}`, {
             error: e,
             education: education.id,
@@ -49,6 +49,7 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
           table.setRowLoading(education.id, false);
         }
         if (response && isApiClientErrorJson(response)) {
+          const logger = (await import("~/application/logger")).logger;
           logger.error("There was a client error updating the education's company.", {
             error: response,
             education: education.id,

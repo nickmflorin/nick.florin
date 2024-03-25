@@ -1,8 +1,6 @@
 import { z } from "zod";
 
 import { decodeQueryParam } from "~/lib/urls";
-import { preloadAdminEducations } from "~/actions/fetches/get-educations";
-import { preloadAdminExperiences } from "~/actions/fetches/get-experiences";
 import { SkillsTableView } from "~/components/tables/SkillsTableView";
 
 interface SkillsPageProps {
@@ -33,9 +31,6 @@ export default async function SkillsPage({
       ? decodeQueryParam(experiences, { form: ["array"] as const }) ?? []
       : [],
   };
-
-  preloadAdminEducations({ page, filters });
-  preloadAdminExperiences({ page, filters });
 
   return <SkillsTableView filters={filters} page={page} />;
 }

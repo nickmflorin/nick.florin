@@ -4,9 +4,8 @@ import dynamic from "next/dynamic";
 import type * as cells from "../cells";
 
 import { type ApiEducation } from "~/prisma/model";
-import { deleteEducation } from "~/actions/delete-education";
-import { updateEducation } from "~/actions/update-education";
-import { Link } from "~/components/buttons";
+import { deleteEducation } from "~/actions/mutations/delete-education";
+import { updateEducation } from "~/actions/mutations/update-education";
 import { useDrawers } from "~/components/drawers/hooks";
 
 import {
@@ -16,26 +15,12 @@ import {
 
 const VisibleCell = dynamic(() => import("../cells/VisibleCell")) as cells.VisibleCellComponent;
 
-const ActionsCell = dynamic(() => import("../cells/ActionsCell"));
-
 const EditableStringCell = dynamic(
   () => import("../cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
 const SchoolCell = dynamic(() => import("./cells/SchoolCell"));
-
-interface DetailsCellProps {
-  readonly model: ApiEducation<{ details: true }>;
-}
-
-const DetailsCell = ({ model }: DetailsCellProps) => {
-  const { open, ids } = useDrawers();
-  return (
-    <Link.Primary
-      onClick={() => open(ids.UPDATE_EDUCATION_DETAILS, { entityId: model.id })}
-    >{`${model.details.length} Details`}</Link.Primary>
-  );
-};
+const DetailsCell = dynamic(() => import("./cells/DetailsCell"));
 
 export interface TableViewConfig
   extends Pick<RootTableViewConfig<ApiEducation<{ details: true }>>, "children"> {}
@@ -48,6 +33,11 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
       isCheckable={true}
       useCheckedRowsQuery={false}
       canToggleColumnVisibility={true}
+      deleteErrorMessage="There was an error deleting the education."
+      deleteAction={async id => {
+        await deleteEducation(id);
+      }}
+      onEdit={id => open(ids.UPDATE_EDUCATION, { educationId: id })}
       columns={[
         {
           accessor: "major",
@@ -102,18 +92,6 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
                 await updateEducation(id, data);
               }}
               errorMessage="There was an error updating the experience."
-            />
-          ),
-        },
-        {
-          accessor: "actions",
-          title: "",
-          textAlign: "center",
-          render: ({ model }) => (
-            <ActionsCell
-              deleteErrorMessage="There was an error deleting the education."
-              deleteAction={deleteEducation.bind(null, model.id)}
-              onEdit={() => open(ids.UPDATE_EDUCATION, { educationId: model.id })}
             />
           ),
         },

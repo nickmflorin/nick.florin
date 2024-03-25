@@ -14,8 +14,8 @@ import {
   parseZodError,
 } from "~/api";
 
-import { getEntity } from "./fetches/get-entity";
-import { DetailSchema } from "./schemas";
+import { getEntity } from "../fetches/get-entity";
+import { DetailSchema } from "../schemas";
 
 const ExistingSchema = DetailSchema.partial({ label: true }).extend({ id: z.string().uuid() });
 const NewSchema = DetailSchema;

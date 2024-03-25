@@ -1,5 +1,5 @@
 "use client";
-import { deleteExperiences } from "~/actions/delete-experiences";
+import { deleteExperiences } from "~/actions/mutations/delete-experiences";
 
 import { DeleteManyButton as RootDeleteManyButton } from "../DeleteManyButton";
 

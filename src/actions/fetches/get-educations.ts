@@ -1,8 +1,6 @@
 import "server-only";
 import { cache } from "react";
 
-import clamp from "lodash.clamp";
-
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import {
@@ -13,98 +11,90 @@ import {
   type EduDetail,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
-import { type Visibility } from "~/app/api/types";
+import { parsePagination } from "~/actions/pagination";
+import { type Visibility } from "~/actions/visibility";
 
 import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "./constants";
 
-interface GetAdminEducationsParams {
-  readonly page: number;
-  readonly filters: {
-    readonly search: string;
-  };
+const SEARCH_FIELDS = ["major", "concentration", "minor"] as const;
+
+interface GetEducationsFilters {
+  readonly search: string;
 }
 
-export const preloadAdminEducationsCount = (params: Omit<GetAdminEducationsParams, "page">) => {
-  void getAdminEducationsCount(params);
+type GetEducationsParams<I extends EduIncludes> = {
+  visibility?: Visibility;
+  includes?: I;
+  filters?: GetEducationsFilters;
+  page?: number;
 };
 
-export const getAdminEducationsCount = cache(
-  async ({ filters }: Omit<GetAdminEducationsParams, "page">) =>
+export const preloadEducationsCount = (
+  params: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">,
+) => {
+  void getEducationsCount(params);
+};
+
+export const getEducationsCount = cache(
+  async ({
+    filters,
+    visibility,
+  }: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">) =>
     await prisma.education.count({
       where: {
-        AND: [constructOrSearch(filters.search, ["major", "concentration", "minor"])],
+        AND:
+          filters?.search && visibility === "public"
+            ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
+            : filters?.search
+              ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
+              : visibility === "public"
+                ? { visible: true }
+                : undefined,
       },
     }),
 );
 
-export const preloadAdminEducations = (params: GetAdminEducationsParams) => {
-  void getAdminEducations(params);
-};
-
-export const getAdminEducations = cache(
-  async ({
-    filters,
-    page,
-  }: GetAdminEducationsParams): Promise<ApiEducation<{ skills: true; details: true }>[]> => {
-    const count = await getAdminEducationsCount({ filters });
-    const numPages = Math.max(Math.ceil(count / EDUCATIONS_ADMIN_TABLE_PAGE_SIZE), 1);
-
-    const edus = await prisma.education.findMany({
-      include: { school: true },
-      where: {
-        AND: [constructOrSearch(filters.search, ["major", "concentration", "minor"])],
-      },
-      orderBy: { startDate: "desc" },
-      skip: EDUCATIONS_ADMIN_TABLE_PAGE_SIZE * (clamp(page, 1, numPages) - 1),
-      take: EDUCATIONS_ADMIN_TABLE_PAGE_SIZE,
-    });
-
-    const skills = await prisma.skill.findMany({
-      include: { educations: true },
-      where: {
-        educations: { some: { education: { id: { in: edus.map(e => e.id) } } } },
-      },
-    });
-
-    const details = await prisma.detail.findMany({
-      where: {
-        entityType: DetailEntityType.EDUCATION,
-        entityId: { in: edus.map(e => e.id) },
-      },
-      include: { nestedDetails: true },
-      orderBy: { createdAt: "desc" },
-    });
-
-    return edus.map(
-      (edu): ApiEducation<{ skills: true; details: true }> => ({
-        ...edu,
-        skills: skills.filter(s => s.educations.some(e => e.educationId === edu.id)),
-        details: details.filter(d => d.entityId === edu.id),
-      }),
-    );
-  },
-);
-
-export const preloadEducations = <I extends EduIncludes>(includes: I) => {
-  void getEducations(includes);
+export const preloadEducations = <I extends EduIncludes>(params: GetEducationsParams<I>) => {
+  void getEducations(params);
 };
 
 export const getEducations = cache(
-  async <I extends EduIncludes>(
-    includes: I,
-    options?: { visibility?: Visibility },
-  ): Promise<ApiEducation<I>[]> => {
-    const visibility = options?.visibility ?? "public";
+  async <I extends EduIncludes>({
+    visibility = "public",
+    includes,
+    filters,
+    page,
+  }: GetEducationsParams<I>): Promise<ApiEducation<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
 
+    const pagination = await parsePagination({
+      page,
+      filters,
+      visibility,
+      // TODO: This will eventually have to be dynamic, specified as a query parameter.
+      pageSize: EDUCATIONS_ADMIN_TABLE_PAGE_SIZE,
+      getCount: getEducationsCount,
+    });
+
     const edus = await prisma.education.findMany({
-      where: visibility === "public" ? { visible: true } : undefined,
       include: { school: true },
+      where: {
+        AND:
+          filters?.search && visibility === "public"
+            ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
+            : filters?.search
+              ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
+              : visibility === "public"
+                ? { visible: true }
+                : undefined,
+      },
       orderBy: { startDate: "desc" },
+      skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
+      take: pagination ? pagination.pageSize : undefined,
     });
 
     let skills: EduSkill[] = [];
-    if (includes.skills === true) {
+    if (includes?.skills === true) {
       skills = await prisma.skill.findMany({
         include: { educations: true },
         where: {
@@ -114,27 +104,29 @@ export const getEducations = cache(
       });
     }
     let details: EduDetail[] = [];
-    if (includes.details === true) {
+    if (includes?.details === true) {
       details = await prisma.detail.findMany({
         where: {
           visible: visibility === "public" ? true : undefined,
           entityType: DetailEntityType.EDUCATION,
           entityId: { in: edus.map(e => e.id) },
         },
-        include: { nestedDetails: true },
-        orderBy: { createdAt: "desc" },
+        // Accounts for cases where multiple details were created at the same time due to seeding.
+        include: { nestedDetails: { orderBy: [{ createdAt: "desc" }, { id: "desc" }] } },
+        // Accounts for cases where multiple details were created at the same time due to seeding.
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       });
     }
 
     const educations = edus.map((edu): ApiEducation<I> => {
       let modified: ApiEducation<I> = { ...edu } as ApiEducation<I>;
-      if (includes.skills === true) {
+      if (includes?.skills === true) {
         modified = {
           ...modified,
           skills: skills.filter(s => s.educations.some(e => e.educationId === edu.id)),
         };
       }
-      if (includes.details === true) {
+      if (includes?.details === true) {
         modified = { ...modified, details: details.filter(d => d.entityId === edu.id) };
       }
       return modified as ApiEducation<I>;
@@ -143,8 +135,5 @@ export const getEducations = cache(
     return educations as ApiEducation<I>[];
   },
 ) as {
-  <I extends EduIncludes>(
-    includes: I,
-    opts?: { visibility: Visibility },
-  ): Promise<ApiEducation<I>[]>;
+  <I extends EduIncludes>(params: GetEducationsParams<I>): Promise<ApiEducation<I>[]>;
 };

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
-import { getAdminEducations } from "~/actions/fetches/get-educations";
-import { getAdminExperiences } from "~/actions/fetches/get-experiences";
+import { getEducations } from "~/actions/fetches/get-educations";
+import { getExperiences } from "~/actions/fetches/get-experiences";
 import { type ComponentProps } from "~/components/types";
 
 import { type Filters } from "../types";
@@ -19,8 +19,8 @@ export const TableFilters = async ({
   page,
   ...props
 }: SkillsAdminTableControlBarProps) => {
-  const educations = await getAdminEducations({ filters, page });
-  const experiences = await getAdminExperiences({ filters, page });
+  const educations = await getEducations({ filters, page, visibility: "admin" });
+  const experiences = await getExperiences({ filters, page, visibility: "admin" });
   return (
     <div {...props} className={clsx("flex flex-row gap-[8px] items-center", props.className)}>
       <EducationFilter educations={educations} filters={filters} />

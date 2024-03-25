@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "~/actions/fetches/constants";
-import { getAdminEducationsCount } from "~/actions/fetches/get-educations";
+import { getEducationsCount } from "~/actions/fetches/get-educations";
 
 import { type Filters } from "./types";
 
@@ -12,6 +12,6 @@ interface PaginatorProps {
 }
 
 export const Paginator = async ({ filters }: PaginatorProps) => {
-  const count = await getAdminEducationsCount({ filters });
+  const count = await getEducationsCount({ filters, visibility: "admin" });
   return <RootPaginator count={count} pageSize={EDUCATIONS_ADMIN_TABLE_PAGE_SIZE} />;
 };

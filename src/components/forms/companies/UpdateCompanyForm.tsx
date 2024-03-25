@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { type Company } from "~/prisma/model";
-import { updateCompany } from "~/actions/update-company";
+import { updateCompany } from "~/actions/mutations/update-company";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

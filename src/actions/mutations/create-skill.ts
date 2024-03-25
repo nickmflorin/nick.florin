@@ -8,7 +8,7 @@ import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { ApiClientFormError, type ApiClientFieldErrors, ApiClientFieldErrorCodes } from "~/api";
 
-import { SkillSchema } from "./schemas";
+import { SkillSchema } from "../schemas";
 
 export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
   const user = await getAuthAdminUser();

@@ -7,9 +7,8 @@ import { decodeQueryParams } from "~/lib/urls";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
 import { includeSkillMetadata } from "~/prisma/model";
+import { SkillQuerySchema } from "~/actions/schemas";
 import { ClientResponse, ApiClientFormError } from "~/api";
-
-import { SkillQuerySchema } from "../types";
 
 const skillExperience = (skill: ApiSkill): number =>
   skill.experience === null ? skill.autoExperience : skill.experience;

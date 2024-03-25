@@ -10,6 +10,7 @@ export const preloadEducation = (id: string) => {
 
 export const getEducation = cache(async (id: string): Promise<ApiEducation | null> => {
   try {
+    // Note: This is currently only used for the admin, so visibility is not applicable.
     return await prisma.education.findUniqueOrThrow({
       where: { id },
       include: { school: true },

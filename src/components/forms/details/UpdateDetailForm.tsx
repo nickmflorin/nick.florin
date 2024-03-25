@@ -3,12 +3,11 @@ import { useEffect, useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
 import { type FullDetail, type NestedDetail, isFullDetail } from "~/prisma/model";
-import { deleteDetail } from "~/actions/delete-detail";
-import { deleteNestedDetail } from "~/actions/delete-nested-detail";
-import { updateDetail } from "~/actions/update-detail";
-import { updateNestedDetail } from "~/actions/update-nested-detail";
+import { deleteDetail } from "~/actions/mutations/delete-detail";
+import { deleteNestedDetail } from "~/actions/mutations/delete-nested-detail";
+import { updateDetail } from "~/actions/mutations/update-detail";
+import { updateNestedDetail } from "~/actions/mutations/update-nested-detail";
 import { isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
@@ -91,6 +90,7 @@ export const UpdateDetailForm = <D extends FullDetail | NestedDetail>({
               await deleteDetailWithId();
               success = true;
             } catch (e) {
+              const logger = (await import("~/application/logger")).logger;
               logger.error("There was an error deleting the detail.", { error: e, id: detail.id });
               toast.error("There was an error deleting the detail.");
             } finally {

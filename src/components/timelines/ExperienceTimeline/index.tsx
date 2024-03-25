@@ -18,7 +18,10 @@ const ExperienceTile = dynamic(() => import("./ExperienceTile"), {
 export type ExperienceTimelineProps = ComponentProps;
 
 export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promise<JSX.Element> => {
-  const experiences = await getExperiences({ skills: true, details: true });
+  const experiences = await getExperiences({
+    includes: { skills: true, details: true },
+    visibility: "public",
+  });
   return (
     <CommitTimeline {...props}>
       {experiences.map(experience => (

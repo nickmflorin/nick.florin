@@ -6,9 +6,8 @@ import { toast } from "react-toastify";
 
 import type * as types from "../../types";
 
-import { logger } from "~/application/logger";
 import { type ApiExperience } from "~/prisma/model";
-import { updateExperience } from "~/actions/update-experience";
+import { updateExperience } from "~/actions/mutations/update-experience";
 import { isApiClientErrorJson } from "~/api";
 import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
 
@@ -39,6 +38,7 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
         try {
           response = await updateExperience(experience.id, { company: v });
         } catch (e) {
+          const logger = (await import("~/application/logger")).logger;
           logger.error(`There was a server error updating the experience's company:\n${e}`, {
             error: e,
             experience: experience.id,
@@ -49,6 +49,7 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
           table.setRowLoading(experience.id, false);
         }
         if (response && isApiClientErrorJson(response)) {
+          const logger = (await import("~/application/logger")).logger;
           logger.error("There was a client error updating the experience's company.", {
             error: response,
             experience: experience.id,

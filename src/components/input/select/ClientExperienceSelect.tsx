@@ -1,7 +1,7 @@
 "use client";
 import { type ApiExperience } from "~/prisma/model";
+import { type Visibility } from "~/actions/visibility";
 import { type HttpError } from "~/api";
-import { type Visibility } from "~/app/api/types";
 import { useExperiences } from "~/hooks";
 
 import { ExperienceSelect, type ExperienceSelectProps } from "./ExperienceSelect";

@@ -5,7 +5,7 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type School } from "~/prisma/model";
-import { createSchool } from "~/actions/create-school";
+import { createSchool } from "~/actions/mutations/create-school";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 

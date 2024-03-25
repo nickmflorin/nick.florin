@@ -7,34 +7,34 @@ import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
 
-import { CompanySchema } from "./schemas";
+import { SchoolSchema } from "../schemas";
 
-export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
+export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
   const user = await getAuthAdminUser();
 
-  const parsed = CompanySchema.safeParse(req);
+  const parsed = SchoolSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, CompanySchema).toJson();
+    return ApiClientFormError.BadRequest(parsed.error, SchoolSchema).toJson();
   }
 
   const { name, shortName, ...data } = parsed.data;
 
-  if (await prisma.company.count({ where: { name } })) {
+  if (await prisma.school.count({ where: { name } })) {
     return ApiClientFormError.BadRequest({
       name: {
         code: ApiClientFieldErrorCodes.unique,
-        message: "The 'name' must be unique for a given company.",
+        message: "The 'name' must be unique for a given school.",
       },
     }).toJson();
-  } else if (await prisma.company.count({ where: { shortName } })) {
+  } else if (await prisma.school.count({ where: { shortName } })) {
     return ApiClientFormError.BadRequest({
       shortName: {
         code: ApiClientFieldErrorCodes.unique,
-        message: "The 'shortName' must be unique for a given company.",
+        message: "The 'shortName' must be unique for a given school.",
       },
     }).toJson();
   }
-  const company = await prisma.company.create({
+  const school = await prisma.school.create({
     data: {
       ...data,
       name,
@@ -43,6 +43,6 @@ export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
       updatedById: user.id,
     },
   });
-  revalidatePath("/api/companies");
-  return company;
+  revalidatePath("/api/schools");
+  return school;
 };

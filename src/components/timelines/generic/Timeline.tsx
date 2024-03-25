@@ -1,20 +1,10 @@
 "use client";
-import React, { type ReactNode } from "react";
+import React from "react";
 
-import { Timeline as RootTimeline, type TimelineProps as RootTimelineProps } from "@mantine/core";
+import { Timeline as RootTimeline } from "@mantine/core";
 import clsx from "clsx";
 
-import { type ComponentProps } from "~/components/types";
-
-export interface TimelineWrapperProps
-  extends Omit<RootTimelineProps, "children" | "classNames" | keyof ComponentProps>,
-    ComponentProps {
-  readonly children?: ReactNode[];
-}
-
-export interface TimelineProps extends Omit<TimelineWrapperProps, "children"> {
-  readonly children: ReactNode[];
-}
+import { type TimelineProps } from "./types";
 
 export const Timeline = ({ children, style, className, ...props }: TimelineProps) => (
   <div style={style} className={clsx("timeline", className)}>

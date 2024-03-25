@@ -1,8 +1,16 @@
+import dynamic from "next/dynamic";
+
 import clsx from "clsx";
 
-import { type TimelineProps, Timeline } from "./generic";
+import { type ComponentProps } from "~/components/types";
+import { Loading } from "~/components/views/Loading";
 
-export interface DetailsTimelineProps extends TimelineProps {}
+import { type TimelineProps } from "./generic";
+
+const Timeline = dynamic(() => import("./generic/Timeline"), {
+  loading: () => <Loading loading={true} />,
+});
+export interface DetailsTimelineProps extends ComponentProps, TimelineProps {}
 
 export const DetailsTimeline = (props: DetailsTimelineProps) => (
   <Timeline {...props} className={clsx("details-timeline", props.className)} />
