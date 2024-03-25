@@ -15,12 +15,16 @@ export const getAuthUserFromRequest = async (...args: Parameters<typeof getAuth>
 export async function getAuthUser(): Promise<User | null> {
   const { userId } = auth();
   if (!userId) {
+    /* eslint-disable-next-line no-console */
+    console.error("AUTH USER RETURNED NO ID");
     return null;
   }
   try {
     return await prisma.user.findUniqueOrThrow({ where: { clerkId: userId } });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
+      /* eslint-disable-next-line no-console */
+      console.error(`USER DOES NOT EXIST: ${userId}`);
       return null;
     }
     throw e;
