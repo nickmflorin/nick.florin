@@ -32,6 +32,7 @@
     "pushdb": "pnpm validate-node-version && prisma db push",
     "generate-client": "pnpm validate-node-version && prisma generate",
     "seeddb": "pnpm validate-node-version && pnpm manual-dev-env-setup -- prisma db seed",
+    "seeddb-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- prisma db seed",
     "jsonify-fixtures": "pnpm validate-node-version && pnpm manual-dev-env-setup -- cross-env NODE_ENV=development npx tsx --tsconfig ./tsconfig.json src/prisma/jsonify.ts",
     "pullenv": "vercel env pull ./.env --environment=development"
   },
@@ -139,6 +140,6 @@
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma",
-    "seed": "dotenv -e .env -e .env.development -e .env.local -e .env.development.local cross-env NODE_ENV=development npx tsx --tsconfig ./tsconfig.json src/prisma/seed.ts"
+    "seed": "npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/seed.ts"
   }
 }

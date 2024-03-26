@@ -81,6 +81,16 @@ const DEFAULT_LOG_LEVELS = {
   preview: "info",
 };
 
+export const LogLevelSchema = z.union([
+  z.literal("fatal"),
+  z.literal("error"),
+  z.literal("info"),
+  z.literal("warn"),
+  z.literal("debug"),
+  z.literal("trace"),
+  z.literal("silent"),
+]);
+
 /**
  * @type {Record<EnvName, boolean>}
  */
@@ -118,7 +128,6 @@ export const env = createEnv({
   server: {
     APP_NAME_FORMAL: z.string(),
     NODE_ENV: z.enum(["development", "test", "production"]),
-    PRETTY_LOGGING: StringBooleanFlagSchema.default(environmentLookup(DEFAULT_PRETTY_LOGGING)),
     ANALYZE_BUNDLE: StringBooleanFlagSchema.optional(),
     CLERK_SECRET_KEY: environmentLookup({
       test: STRICT_OMISSION,
@@ -147,21 +156,14 @@ export const env = createEnv({
   },
   /* ------------------------------ Client Environment Variables -------------------------------- */
   client: {
+    NEXT_PUBLIC_PRETTY_LOGGING: StringBooleanFlagSchema.default(
+      environmentLookup(DEFAULT_PRETTY_LOGGING),
+    ),
     NEXT_PUBLIC_WELCOME_TOAST: StringBooleanFlagSchema.optional(),
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NODE_ENV === "test" ? z.literal("") : z.string(),
     NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
-    NEXT_PUBLIC_LOG_LEVEL: z
-      .union([
-        z.literal("fatal"),
-        z.literal("error"),
-        z.literal("info"),
-        z.literal("warn"),
-        z.literal("debug"),
-        z.literal("trace"),
-        z.literal("silent"),
-      ])
-      .default(environmentLookup(DEFAULT_LOG_LEVELS)),
+    NEXT_PUBLIC_LOG_LEVEL: LogLevelSchema.default(environmentLookup(DEFAULT_LOG_LEVELS)),
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
   },
   runtimeEnv: {
@@ -176,12 +178,12 @@ export const env = createEnv({
     POSTGRES_HOST: process.env.POSTGRES_HOST,
     DATABASE_LOG_LEVEL: process.env.DATABASE_LOG_LEVEL,
     NODE_ENV: process.env.NODE_ENV,
-    PRETTY_LOGGING: process.env.PRETTY_LOGGING,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     PERSONAL_CLERK_USER_ID: process.env.PERSONAL_CLERK_USER_ID,
     APP_NAME_FORMAL: process.env.APP_NAME_FORMAL,
     FONT_AWESOME_KIT_TOKEN: process.env.FONT_AWESOME_KIT_TOKEN,
     /* ------------------------------ Client Environment Variables ------------------------------ */
+    NEXT_PUBLIC_PRETTY_LOGGING: process.env.NEXT_PUBLIC_PRETTY_LOGGING,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_LOG_LEVEL: process.env.NEXT_PUBLIC_LOG_LEVEL,
     NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,

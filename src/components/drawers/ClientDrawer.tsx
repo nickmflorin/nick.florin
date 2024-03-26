@@ -18,20 +18,13 @@ export const ClientDrawer = <D extends DrawerId>({
   onClose,
   isOpen = true,
 }: ClientDrawerProps<D>): JSX.Element => {
-  const { open, openId } = useDrawers();
+  const { open } = useDrawers();
 
   useEffect(() => {
     if (isOpen) {
       open(id, props, onClose);
     }
   }, [id, props, open, isOpen]);
-
-  /* useEffect(
-       () => () => {
-         console.log("unmounting");
-       },
-       [],
-     ); */
 
   return <></>;
 };
