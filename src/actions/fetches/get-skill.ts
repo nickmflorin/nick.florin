@@ -17,7 +17,10 @@ export const preloadSkill = (id: string, { visibility = "public" }: { visibility
 
 // This method is currently not used but is being left here for future use.
 export const getSkill = cache(
-  async (id: string, { visibility = "public" }: { visibility: Visibility }): Promise<ApiSkill> => {
+  async (
+    id: string,
+    { visibility = "public" }: { visibility: Visibility },
+  ): Promise<ApiSkill | null> => {
     let skill: Skill;
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
@@ -28,12 +31,14 @@ export const getSkill = cache(
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
+        // throw ApiClientGlobalError.NotFound();
+        return null;
       }
       throw e;
     }
     if (skill.visible === false && visibility === "public") {
-      throw ApiClientGlobalError.Forbidden();
+      return null;
+      // throw ApiClientGlobalError.Forbidden();
     }
 
     const experiences = await prisma.experience.findMany({

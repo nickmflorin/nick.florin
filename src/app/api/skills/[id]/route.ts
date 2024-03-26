@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
 import { getSkill } from "~/actions/fetches/get-skill";
-import { ClientResponse, ApiClientError } from "~/api";
+import { ClientResponse, ApiClientGlobalError } from "~/api";
 
 export async function generateStaticParams() {
   const skills = await prisma.skill.findMany();
@@ -13,14 +13,9 @@ export async function generateStaticParams() {
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  let skill: ApiSkill;
-  try {
-    skill = await getSkill(params.id, { visibility: "public" });
-  } catch (e) {
-    if (e instanceof ApiClientError) {
-      return e.toResponse();
-    }
-    throw e;
+  const skill = await getSkill(params.id, { visibility: "public" });
+  if (!skill) {
+    return ApiClientGlobalError.NotFound().toResponse();
   }
   return ClientResponse.OK(skill).toResponse();
 }
