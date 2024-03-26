@@ -4,6 +4,8 @@ import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/pri
 import { type User } from "~/prisma/model";
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 
+import { logger } from "./logger";
+
 export const getAuthUserFromRequest = async (...args: Parameters<typeof getAuth>) => {
   const { userId } = getAuth(...args);
   if (!userId) {
@@ -15,16 +17,16 @@ export const getAuthUserFromRequest = async (...args: Parameters<typeof getAuth>
 export async function getAuthUser(): Promise<User | null> {
   const { userId } = auth();
   if (!userId) {
-    /* eslint-disable-next-line no-console */
-    console.error("AUTH USER RETURNED NO ID");
     return null;
   }
   try {
     return await prisma.user.findUniqueOrThrow({ where: { clerkId: userId } });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      /* eslint-disable-next-line no-console */
-      console.error(`USER DOES NOT EXIST: ${userId}`);
+      logger.error(
+        "The user exists in Clerk but does not have an associated user in the database.",
+        { clerkUserId: userId },
+      );
       return null;
     }
     throw e;

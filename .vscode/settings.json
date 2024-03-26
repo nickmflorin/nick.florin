@@ -19,9 +19,10 @@
   "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],
   "eslint.format.enable": true,
   "eslint.execArgv": ["--max-old-space-size=16384"],
-  "eslint.debug": false,
+  "eslint.debug": true,
   "eslint.codeActionsOnSave.rules": [
     "import/*",
+    "quotes",
     "@typescript-eslint/consistent-type-imports"
     // "@typescript-eslint/semi",
     // "@typescript-eslint/indent",
