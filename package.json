@@ -71,7 +71,6 @@
     "mantine-datatable": "^7.5.1",
     "next": "14.1.1-canary.78",
     "pino": "^8.17.2",
-    "pino-logflare": "^0.4.2",
     "pino-pretty": "^10.3.1",
     "react": "^18",
     "react-dom": "^18",

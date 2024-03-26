@@ -1,8 +1,6 @@
 "use client";
 import { forwardRef, type ForwardedRef } from "react";
 
-import { logger } from "~/application/logger";
-
 import { useTableView } from "./hooks";
 import { Table } from "./Table";
 import {
