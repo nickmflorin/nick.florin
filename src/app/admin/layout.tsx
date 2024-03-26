@@ -1,4 +1,4 @@
-import { SideNav } from "~/components/layout/SideNav";
+import { Tabs } from "~/components/layout/Tabs";
 
 interface AdminLayoutProps {
   readonly children: React.ReactNode;
@@ -6,9 +6,8 @@ interface AdminLayoutProps {
 
 export default async function AdminLayout({ children }: AdminLayoutProps): Promise<JSX.Element> {
   return (
-    <div className="flex flex-row gap-[15px] w-full h-full overflow-hidden">
-      <SideNav
-        button="secondary"
+    <div className="flex flex-col gap-[15px] w-full h-full overflow-hidden">
+      <Tabs
         items={[
           { label: "Skills", path: "/admin/skills", active: { leadingPath: "/admin/skills" } },
           {

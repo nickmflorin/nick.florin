@@ -5,9 +5,7 @@ import clsx from "clsx";
 import { type ButtonVariant } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
 
-import { type NavButtonItem } from "../nav";
-
-import { SideNavItem } from "./SideNavItem";
+import { SideNavItem, type NavButtonItem } from "./SideNavItem";
 
 export interface SideNavProps extends ComponentProps {
   readonly items: NavButtonItem[];

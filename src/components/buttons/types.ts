@@ -125,9 +125,10 @@ type CommonEventProps =
   | "onBlur"
   | "onPointerDown"
   | "onPointerEnter"
-  | "onMouseMove";
+  | "onMouseMove"
+  | "onClick";
 
-export type AbstractButtonProps = Pick<HTMLElementProps<"button">, "onClick" | CommonEventProps> & {
+export type AbstractButtonProps = Pick<HTMLElementProps<"button">, CommonEventProps> & {
   readonly type?: "submit" | "button";
 };
 

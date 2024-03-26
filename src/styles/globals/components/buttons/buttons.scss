@@ -75,7 +75,7 @@ a:not(.button--type-link) {
 .button {
   /* When defining a border, we need to use the outline property - not the border property.  This
      is because a border will contribute to the size of the button, whereas an outline will not. */
-  border: none;
+  // border: none;
   border-radius: constants.$button-border-radius;
   outline-offset: -1 * constants.$button-outline-width;
 
