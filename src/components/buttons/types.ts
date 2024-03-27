@@ -91,7 +91,6 @@ export type AbstractProps<
   O extends ButtonOptions,
 > = ButtonTypographyProps<T> &
   ComponentProps & {
-    readonly fontSize?: BaseTypographyProps["size"];
     readonly buttonType: T;
     readonly variant?: ButtonVariant<T>;
     /**

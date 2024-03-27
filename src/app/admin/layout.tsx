@@ -9,15 +9,22 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
     <div className="flex flex-col gap-[15px] w-full h-full overflow-hidden">
       <Tabs
         items={[
-          { label: "Skills", path: "/admin/skills", active: { leadingPath: "/admin/skills" } },
+          {
+            label: "Skills",
+            path: "/admin/skills",
+            active: { leadingPath: "/admin/skills" },
+            icon: { name: "palette" },
+          },
           {
             label: "Experiences",
             path: "/admin/experiences",
+            icon: { name: "briefcase" },
             active: { leadingPath: "/admin/experiences" },
           },
           {
             label: "Educations",
             path: "/admin/educations",
+            icon: { name: "building-columns" },
             active: { leadingPath: "/admin/educations" },
           },
         ]}

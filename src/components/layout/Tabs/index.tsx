@@ -13,7 +13,10 @@ export interface TabsProps extends ComponentProps {
 }
 
 export const Tabs = ({ items, ...props }: TabsProps) => (
-  <div {...props} className={clsx("flex flex-row items-center", props.className)}>
+  <div
+    {...props}
+    className={clsx("flex flex-row items-center border-b-[2px] border-gray-200", props.className)}
+  >
     {items.map((item, index) => (
       <Tab key={index} item={item} />
     ))}
