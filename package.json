@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "validate-node-version": "ts-node --project=.g/tsconfig.json src/application/support/enforce-node-version.ts",
+    "validate-node-version": "ts-node --project=./tsconfig.json src/application/support/enforce-node-version.ts",
     "manual-dev-env-setup": "dotenv -e .env -e .env.development -e .env.local -e .env.development.local -o",
     "manual-prod-env-setup": "dotenv -e .env -e .env.production -e .env.local -e .env.production.local",
     "postinstall": "prisma generate",
