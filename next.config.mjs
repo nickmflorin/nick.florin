@@ -2,7 +2,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import withBundleAnalyzer from "@next/bundle-analyzer";
-import StylelintPlugin from "stylelint-webpack-plugin";
+// import StylelintPlugin from "stylelint-webpack-plugin";
 
 /* Avoids the error: "ReferenceError: __dirname is not defined in ES module scope", which occurs if
    you refer to the __dirname global variable in an ES (ECMAScript) module.
@@ -38,9 +38,9 @@ const config = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.clerk.dev',
-        port: '',
+        protocol: "https",
+        hostname: "images.clerk.dev",
+        port: "",
       },
     ],
   },
@@ -58,6 +58,11 @@ const config = {
     {
       source: "/admin",
       destination: "/admin/skills",
+      permanent: false,
+    },
+    {
+      source: "/projects",
+      destination: "/projects/asset-visualizations",
       permanent: false,
     },
   ],

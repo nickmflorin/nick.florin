@@ -13,12 +13,15 @@ export const PATH_END_REGEX_STRING = "(?:\\/)?(\\?([^\\/]+)?(\\/)?)?$";
  * // 4. "/customers/407e42c3-4b3d-4f53-9263-4d5d3a4cd35a?name=X/"
  * const regex = createLeadingPathRegex("/customers/:id/");
  */
-export const createLeadingPathRegex = (path: string): RegExp => {
+export const createLeadingPathRegex = (path: string, options?: { endPath?: boolean }): RegExp => {
   path = path.startsWith("/") ? path.substring(1) : path;
   path = path.endsWith("/") ? path.substring(0, path.length - 1) : path;
-  return new RegExp(
-    `^/${path.replaceAll(":id", UUID_PATH_PARAM_REGEX_STRING)}${PATH_END_REGEX_STRING}`,
-  );
+  if (options?.endPath !== false) {
+    return new RegExp(
+      `^/${path.replaceAll(":id", UUID_PATH_PARAM_REGEX_STRING)}${PATH_END_REGEX_STRING}`,
+    );
+  }
+  return new RegExp(`^/${path.replaceAll(":id", UUID_PATH_PARAM_REGEX_STRING)}`);
 };
 
 type LeadingPath = `/${string}`;
@@ -30,7 +33,7 @@ type _PathActive =
   | RegExp
   | boolean
   | ((pathname: string) => boolean)
-  | { leadingPath: LeadingPath };
+  | { leadingPath: LeadingPath; endPath?: boolean };
 
 export type PathActive = _PathActive | _PathActive[];
 
@@ -43,7 +46,7 @@ export const pathIsActive = (path: PathActive, pathname: string): boolean => {
     } else if (typeof path === "function") {
       return path(pathname);
     }
-    const regex = createLeadingPathRegex(path.leadingPath);
+    const regex = createLeadingPathRegex(path.leadingPath, { endPath: path.endPath });
     return pathIsActive(regex, pathname);
   }
   return path.map(p => pathIsActive(p, pathname)).includes(true);

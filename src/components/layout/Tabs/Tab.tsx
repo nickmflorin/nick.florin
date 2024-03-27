@@ -29,6 +29,7 @@ export const Tab = ({ item }: TabProps) => {
       size="medium"
       icon={item.icon}
       isLoading={isPending}
+      isLocked={isActive}
       onClick={() => setActiveOptimistically(true)}
     >
       {item.label}
