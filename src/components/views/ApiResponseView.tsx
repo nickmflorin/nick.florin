@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 
-import { type HttpError } from "~/api";
 import { type SpinnerProps } from "~/components/icons";
+import { type HttpError } from "~/http";
 
 import { ErrorView } from "./ErrorView";
 import { Loading } from "./Loading";

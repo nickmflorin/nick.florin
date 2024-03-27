@@ -1,6 +1,6 @@
 import React, { type ReactNode } from "react";
 
-import { type HttpError } from "~/api";
+import { type HttpError } from "~/http";
 
 import { ErrorView, type ErrorViewProps } from "./ErrorView";
 

@@ -12,7 +12,7 @@ import {
   ApiClientFieldErrorCodes,
   ApiClientGlobalError,
   type ApiClientFormErrorJson,
-} from "~/api";
+} from "~/http";
 
 import { DetailSchema } from "../schemas";
 

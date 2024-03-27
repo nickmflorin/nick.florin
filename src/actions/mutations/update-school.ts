@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type School } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/http";
 
 import { SchoolSchema } from "../schemas";
 

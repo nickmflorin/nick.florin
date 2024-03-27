@@ -5,7 +5,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type ApiSkill, type Skill } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
-import { ApiClientGlobalError } from "~/api";
+import { ApiClientGlobalError } from "~/http";
 
 import { type Visibility } from "../visibility";
 

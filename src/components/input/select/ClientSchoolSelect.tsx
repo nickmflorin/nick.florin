@@ -1,6 +1,6 @@
 "use client";
-import { type HttpError } from "~/api";
 import { useSchools } from "~/hooks";
+import { type HttpError } from "~/http";
 
 import { SchoolSelect, type SchoolSelectProps } from "./SchoolSelect";
 

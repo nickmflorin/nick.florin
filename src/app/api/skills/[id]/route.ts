@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
 import { getSkill } from "~/actions/fetches/get-skill";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
+import { ClientResponse, ApiClientGlobalError } from "~/http";
 
 export async function generateStaticParams() {
   const skills = await prisma.skill.findMany();

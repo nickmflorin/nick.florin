@@ -4,8 +4,8 @@ import { useTransition } from "react";
 
 import { type Skill } from "~/prisma/model";
 import { createSkill } from "~/actions/mutations/create-skill";
-import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 

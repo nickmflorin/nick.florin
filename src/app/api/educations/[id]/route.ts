@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
 import { getEducation } from "~/actions/fetches/get-education";
-import { ApiClientGlobalError, ClientResponse } from "~/api";
+import { ApiClientGlobalError, ClientResponse } from "~/http";
 
 export async function generateStaticParams() {
   const educations = await prisma.education.findMany();

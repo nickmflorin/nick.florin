@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, type ApiClientFieldErrors, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, type ApiClientFieldErrors, ApiClientFieldErrorCodes } from "~/http";
 
 import { SkillSchema } from "../schemas";
 

@@ -21,7 +21,7 @@ import {
   ServerError,
   type HttpError,
   isHttpError,
-} from "~/api";
+} from "~/http";
 
 type ApiPath = `/api/${string}`;
 type Args = Exclude<Arguments, string> | ApiPath;

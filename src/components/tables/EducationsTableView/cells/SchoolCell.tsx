@@ -8,8 +8,8 @@ import type * as types from "../../types";
 
 import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/mutations/update-education";
-import { isApiClientErrorJson } from "~/api";
 import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
+import { isApiClientErrorJson } from "~/http";
 
 interface SchoolCellProps {
   readonly education: ApiEducation<{ details: true }>;

@@ -4,7 +4,7 @@ import { decodeQueryParams } from "~/lib/urls";
 import { type ApiSkill } from "~/prisma/model";
 import { getSkills } from "~/actions/fetches/get-skills";
 import { SkillQuerySchema } from "~/actions/schemas";
-import { ClientResponse, ApiClientFormError } from "~/api";
+import { ClientResponse, ApiClientFormError } from "~/http";
 
 const skillExperience = (skill: ApiSkill): number =>
   skill.experience === null ? skill.autoExperience : skill.experience;

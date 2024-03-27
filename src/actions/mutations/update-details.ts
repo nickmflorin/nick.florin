@@ -12,7 +12,7 @@ import {
   ApiClientGlobalError,
   type ApiClientFieldErrors,
   parseZodError,
-} from "~/api";
+} from "~/http";
 
 import { getEntity } from "../fetches/get-entity";
 import { DetailSchema } from "../schemas";

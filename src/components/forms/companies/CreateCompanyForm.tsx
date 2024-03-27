@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 
 import { type Company } from "~/prisma/model";
 import { createCompany } from "~/actions/mutations/create-company";
-import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 

@@ -7,7 +7,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { prisma } from "~/prisma/client";
 import { DetailEntityType } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/http";
 
 import { getDetail } from "../fetches/get-detail";
 import { DetailSchema } from "../schemas";

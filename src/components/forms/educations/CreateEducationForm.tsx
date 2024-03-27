@@ -4,8 +4,8 @@ import { useTransition } from "react";
 
 import { type Education } from "~/prisma/model";
 import { createEducation } from "~/actions/mutations/create-education";
-import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 

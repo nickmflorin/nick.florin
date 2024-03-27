@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
 import { getCompany } from "~/actions/fetches/get-company";
-import { ApiClientGlobalError, ClientResponse } from "~/api";
+import { ApiClientGlobalError, ClientResponse } from "~/http";
 
 export async function generateStaticParams() {
   const companies = await prisma.company.findMany();

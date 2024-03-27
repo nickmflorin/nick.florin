@@ -12,7 +12,7 @@ import {
   type ApiClientFormErrorJson,
   ApiClientGlobalError,
   type ApiClientGlobalErrorJson,
-} from "~/api";
+} from "~/http";
 
 import { ExperienceSchema } from "../schemas";
 

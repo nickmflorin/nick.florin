@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 
 import type * as types from "./types";
 
-import { type ApiClientErrorJson, isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
+import { type ApiClientErrorJson, isApiClientErrorJson } from "~/http";
 
 import { useTableView } from "./hooks";
 

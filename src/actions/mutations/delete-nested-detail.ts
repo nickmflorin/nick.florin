@@ -5,7 +5,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type NestedDetail, type Detail } from "~/prisma/model";
-import { ApiClientGlobalError } from "~/api";
+import { ApiClientGlobalError } from "~/http";
 
 export const deleteNestedDetail = async (id: string) => {
   await getAuthAdminUser();

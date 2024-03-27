@@ -8,7 +8,7 @@ import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { type Skill, type Experience, type Education } from "~/prisma/model";
-import { ApiClientFormError, type ApiClientFieldErrors } from "~/api";
+import { ApiClientFormError, type ApiClientFieldErrors } from "~/http";
 
 import { SkillSchema } from "../schemas";
 

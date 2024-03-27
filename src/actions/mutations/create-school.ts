@@ -5,7 +5,7 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/http";
 
 import { SchoolSchema } from "../schemas";
 

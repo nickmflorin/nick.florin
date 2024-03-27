@@ -4,9 +4,9 @@ import { useTransition } from "react";
 
 import { type School } from "~/prisma/model";
 import { updateSchool } from "~/actions/mutations/update-school";
-import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
+import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 

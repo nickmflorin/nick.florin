@@ -8,8 +8,8 @@ import type * as types from "../../types";
 
 import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/mutations/update-experience";
-import { isApiClientErrorJson } from "~/api";
 import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
+import { isApiClientErrorJson } from "~/http";
 
 interface CompanyCellProps {
   readonly experience: ApiExperience<{ details: true }>;

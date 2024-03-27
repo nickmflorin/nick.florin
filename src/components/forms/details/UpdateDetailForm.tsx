@@ -8,11 +8,11 @@ import { deleteDetail } from "~/actions/mutations/delete-detail";
 import { deleteNestedDetail } from "~/actions/mutations/delete-nested-detail";
 import { updateDetail } from "~/actions/mutations/update-detail";
 import { updateNestedDetail } from "~/actions/mutations/update-nested-detail";
-import { isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
 import { type Action, mergeActions } from "~/components/structural";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 

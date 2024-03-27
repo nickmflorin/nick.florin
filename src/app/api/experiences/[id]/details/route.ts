@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { DetailEntityType, type Experience } from "~/prisma/model";
-import { ApiClientGlobalError, ClientResponse } from "~/api";
+import { ApiClientGlobalError, ClientResponse } from "~/http";
 
 export async function generateStaticParams() {
   const experiences = await prisma.experience.findMany();

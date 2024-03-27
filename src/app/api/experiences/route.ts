@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { getAuthUserFromRequest } from "~/application/auth";
 import { getExperiences } from "~/actions/fetches/get-experiences";
 import { parseVisibility } from "~/actions/visibility";
-import { ApiClientGlobalError, ClientResponse } from "~/api";
+import { ApiClientGlobalError, ClientResponse } from "~/http";
 
 export async function GET(request: NextRequest) {
   const visibility = parseVisibility(request);

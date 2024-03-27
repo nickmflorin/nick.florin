@@ -1,6 +1,6 @@
 import { getAuthAdminUser } from "~/application/auth";
 import { getCompanies } from "~/actions/fetches/get-companies";
-import { ClientResponse } from "~/api";
+import { ClientResponse } from "~/http";
 
 export async function GET() {
   await getAuthAdminUser();
