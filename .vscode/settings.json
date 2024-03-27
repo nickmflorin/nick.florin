@@ -23,6 +23,9 @@
   "eslint.codeActionsOnSave.rules": [
     "import/*",
     "quotes",
+    "arrow-body-style",
+    "multiline-comment-style",
+    "react/jsx-curly-brace-presence",
     "@typescript-eslint/consistent-type-imports"
     // "@typescript-eslint/semi",
     // "@typescript-eslint/indent",

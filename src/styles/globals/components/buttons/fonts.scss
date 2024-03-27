@@ -88,8 +88,10 @@ $button-font-weights: (
       &.button--size-#{$size} {
         @include button-font($type, $size);
         // Allow the font size to be overridden for a Button independently of the Button's size.
-        &.font-size-#{$size} {
-          @include button-font($type, $size);
+        @each $font-size in $button-size-names {
+          &.font-size-#{$font-size} {
+            @include button-font($type, $font-size);
+          }
         }
       }
     }

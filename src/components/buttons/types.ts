@@ -91,7 +91,6 @@ export type AbstractProps<
   O extends ButtonOptions,
 > = ButtonTypographyProps<T> &
   ComponentProps & {
-    readonly fontSize?: BaseTypographyProps["size"];
     readonly buttonType: T;
     readonly variant?: ButtonVariant<T>;
     /**
@@ -125,9 +124,10 @@ type CommonEventProps =
   | "onBlur"
   | "onPointerDown"
   | "onPointerEnter"
-  | "onMouseMove";
+  | "onMouseMove"
+  | "onClick";
 
-export type AbstractButtonProps = Pick<HTMLElementProps<"button">, "onClick" | CommonEventProps> & {
+export type AbstractButtonProps = Pick<HTMLElementProps<"button">, CommonEventProps> & {
   readonly type?: "submit" | "button";
 };
 

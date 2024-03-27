@@ -88,10 +88,10 @@ export const ButtonContent = ({
   icon,
   isLoading = false,
   iconSize,
-  loadingLocation = "left",
+  loadingLocation: _loadingLocation,
 }: ButtonContentProps) => {
   const [leftIcon, rightIcon] = icon ? parseMultipleIconsProp(icon) : ([null, null] as const);
-
+  const loadingLocation = _loadingLocation ?? leftIcon ? "left" : rightIcon ? "right" : "over";
   return (
     <div className="button__content">
       {leftIcon && (isIconProp(leftIcon) || isDynamicIconProp(leftIcon)) ? (

@@ -1,6 +1,6 @@
 import { type Required } from "utility-types";
 
-import { type NavItem } from "../nav";
+import { type NavItem } from "~/hooks";
 
 export interface ILayoutNavItem extends Required<NavItem, "icon"> {
   readonly tooltipLabel: string;

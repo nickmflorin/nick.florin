@@ -95,7 +95,7 @@ const LocalLink = forwardRef(
          a value that is not 100% of its parent container.  Otherwise, the icon and spinner will
          be very large. */
       iconSize = "small",
-      loadingLocation = "left",
+      loadingLocation,
       ...props
     }: LinkProps<O>,
     ref: types.PolymorphicButtonRef<O>,
