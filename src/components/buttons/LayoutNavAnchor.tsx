@@ -37,8 +37,7 @@ export const LayoutNavAnchor = forwardRef<
             {...props}
             {...params}
             isLoading={isPending}
-            // isLocked={isActive}
-            onClick={() => setActiveOptimistically(true)}
+            onClick={() => setActiveOptimistically()}
             className={clsx("z-0", props.className)}
             ref={instance => {
               ref(instance);

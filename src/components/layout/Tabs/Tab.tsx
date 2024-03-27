@@ -30,7 +30,7 @@ export const Tab = ({ item }: TabProps) => {
       icon={item.icon}
       isLoading={isPending}
       isLocked={isActive}
-      onClick={() => setActiveOptimistically(true)}
+      onClick={() => setActiveOptimistically()}
     >
       {item.label}
     </Button.Bare>
