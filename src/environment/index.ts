@@ -72,13 +72,24 @@ export const environment = Environment.create(
         production: z.string().startsWith("user_"),
       }),
       FONT_AWESOME_KIT_TOKEN: z.string(),
-      /* LOGFLARE_SOURCE_TOKEN: environmentLookup({
-         test: STRICT_OMISSION,
-         development: z.string(),
-         local: z.string().optional(),
-         preview: z.string().startsWith("sk_test"),
-         production: z.string().startsWith("sk_live"),
-       }), */
+      LOGFLARE_SOURCE_TOKEN: environmentLookup<
+        z.ZodString | z.ZodOptional<z.ZodLiteral<"">> | z.ZodOptional<z.ZodString>
+      >({
+        test: STRICT_OMISSION,
+        development: z.string(),
+        local: z.string().optional(),
+        preview: z.string(),
+        production: z.string(),
+      }),
+      LOGFLARE_API_KEY: environmentLookup<
+        z.ZodString | z.ZodOptional<z.ZodLiteral<"">> | z.ZodOptional<z.ZodString>
+      >({
+        test: STRICT_OMISSION,
+        development: z.string(),
+        local: z.string().optional(),
+        preview: z.string(),
+        production: z.string(),
+      }),
       /* ~~~~~~~~~~~~~~~~~~~~~~~~~ Database Configuration ~~~~~~~~~~~~~~~~~~~~~~~~~ */
       POSTGRES_URL: testRestricted(z.string().url().optional()),
       POSTGRES_PRISMA_URL: testRestricted(z.string().url().optional()),

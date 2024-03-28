@@ -144,11 +144,27 @@ const initializeLogger = () => {
     /* eslint-disable-next-line @typescript-eslint/no-var-requires */
     const pretty = require("pino-pretty");
     return pino(loggerOptions, pretty({ colorize: true }));
-  } else if (process.env.VERCEL_ENV && ["preview", "production"].includes(process.env.VERCEL_ENV)) {
+  } else if (
+    process.env.VERCEL_ENV &&
+    ["preview", "production"].includes(process.env.VERCEL_ENV) &&
+    process.env.NODE_ENV !== "test"
+  ) {
+    /* eslint-disable-next-line no-console */
     console.info("THIS IS A TEMPORARY LOG TO LET US KNOW WE ARE USING LOGFARE");
+    const [apiKey, sourceToken] = [
+      environment.get("LOGFLARE_API_KEY"),
+      environment.get("LOGFLARE_SOURCE_TOKEN"),
+    ];
+    if (!apiKey || !sourceToken) {
+      // TODO: Consolidate this with a call to environment.throwConfigurationError!
+      throw new Error(
+        `Missing Logflare API Key or Source Token for VERCEL_ENV=${process.env.VERCEL_ENV}, ` +
+          `NODE_ENV=${process.env.NODE_ENV}!`,
+      );
+    }
     const { stream, send } = logflarePinoVercel({
-      apiKey: "YOUR_KEY",
-      sourceToken: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX",
+      apiKey,
+      sourceToken,
     });
     return pino(
       {
