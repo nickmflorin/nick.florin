@@ -97,7 +97,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
           width={400}
           className="p-[20px] rounded-md overflow-y-scroll"
           variant="white"
-          content={<SkillsChartFilterForm form={{ ...form, setValues }} />}
+          content={<SkillsChartFilterForm form={{ ...form, setValues }} isScrollable />}
         >
           {({ ref, params }) => (
             <ChartFilterButton

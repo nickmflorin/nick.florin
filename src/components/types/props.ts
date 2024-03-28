@@ -13,6 +13,20 @@ export type ComponentProps = {
   readonly style?: Style;
 };
 
+export const classNameContains = (
+  className: ClassName | undefined,
+  conditional: string | ((v: string) => boolean),
+): boolean => {
+  const cs = clsx(className);
+  const classnames = cs
+    .split(" ")
+    .map(c => c.trim())
+    .map(v => (v.startsWith("!") ? v.slice(1) : v));
+  return classnames.some(c =>
+    typeof conditional === "string" ? c === conditional : conditional(c),
+  );
+};
+
 export const BorderRadii = enumeratedLiterals(
   ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full"] as const,
   {},

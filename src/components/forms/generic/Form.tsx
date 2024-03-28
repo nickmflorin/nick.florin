@@ -38,7 +38,7 @@ export const Form = <I extends BaseFormValues>({
   return (
     <NativeForm
       style={style}
-      className={clsx("form", { "pr-[18px]": props.isScrollable }, className)}
+      className={clsx("form", className)}
       action={
         action !== undefined
           ? () => {

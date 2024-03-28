@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Controller, type ControllerRenderProps } from "react-hook-form";
 
 import { type ComponentProps } from "~/components/types";
+import { classNameContains } from "~/components/types";
 import { Label, type LabelProps } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
 import { ShowHide } from "~/components/util";
@@ -105,7 +106,11 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
     {helpText !== undefined && (
       <Text
         size="xs"
-        className={clsx("leading-[14px] text-gray-500 pl-[1px] mt-[4px]", helpTextClassName)}
+        className={clsx(
+          "leading-[14px] text-gray-500 pl-[1px]",
+          { "mt-[4px]": !classNameContains(helpTextClassName, v => v.startsWith("mt-")) },
+          helpTextClassName,
+        )}
       >
         {helpText}
       </Text>

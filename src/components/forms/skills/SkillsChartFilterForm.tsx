@@ -32,7 +32,7 @@ export interface SkillsChartFilterFormProps
   extends Omit<FormProps<SkillsChartFilterFormValues>, "children"> {}
 
 export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormProps) => (
-  <Form {...props} form={form} isScrollable={false}>
+  <Form {...props} form={form}>
     <Form.ControlledField
       form={form}
       name="showTopSkills"
@@ -55,7 +55,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       name="experiences"
       label="Experiences"
       form={form}
-      helpText="The professional experiences where the skills were acquired or used."
+      helpText="The professional experience(s) where the skills were acquired or used."
     >
       {({ value, onChange }) => (
         <ClientExperienceSelect
@@ -75,7 +75,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       name="educations"
       label="Educations"
       form={form}
-      helpText="The academic experiences where the skills were acquired or used."
+      helpText="The academic experience(s) where the skills were acquired or used."
     >
       {({ value, onChange }) => (
         <ClientEducationSelect
@@ -95,7 +95,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       name="programmingDomains"
       label="Domains"
       form={form}
-      helpText="The specific development stack that the skills pertains to, if applicable."
+      helpText="The specific development stack(s) that the skill pertains to, if applicable."
     >
       {({ value, onChange }) => (
         <ProgrammingDomainSelect
@@ -112,7 +112,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       name="programmingLanguages"
       label="Languages"
       form={form}
-      helpText="The specific programming languages that the skills pertains to, if applicable."
+      helpText="The programming language(s) that the skills pertain to, if applicable."
     >
       {({ value, onChange }) => (
         <ProgrammingLanguageSelect
@@ -129,7 +129,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       name="categories"
       label="Categories"
       form={form}
-      helpText="Categories that the skills belongs to."
+      helpText="The category or categories that the skills belong to."
     >
       {({ value, onChange }) => (
         <SkillCategorySelect
