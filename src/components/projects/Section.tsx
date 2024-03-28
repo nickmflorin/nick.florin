@@ -15,7 +15,13 @@ export const SectionTitle = ({
   children,
   ...props
 }: ComponentProps & { readonly children: ReactNode }) => (
-  <Text {...props} fontWeight="medium" flex className={clsx("text-body", props.className)}>
+  <Text
+    {...props}
+    fontWeight="medium"
+    flex
+    size="smplus"
+    className={clsx("text-body", props.className)}
+  >
     {children}
   </Text>
 );
@@ -24,7 +30,7 @@ export const SectionDescription = ({
   children,
   ...props
 }: ComponentProps & { readonly children: ReactNode }) => (
-  <Text {...props} className={clsx("text-body-light", props.className)}>
+  <Text {...props} className={clsx("text-body-light", props.className)} size="smplus">
     {children}
   </Text>
 );

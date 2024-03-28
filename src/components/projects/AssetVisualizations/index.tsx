@@ -14,7 +14,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
   <Project
     title="n-Dimensional Charting Library for Asset Management"
     description={[
-      <Text key="0" className="text-body-light">
+      <Text key="0" className="text-body-light" size="smplus">
         <Text span>A JavaScript charting library written in </Text>
         <Link options={{ as: "a" }} href="https://d3js.org">
           d3.js
