@@ -1,16 +1,15 @@
 import { DateTime } from "luxon";
 import pino, { type LoggerOptions, levels } from "pino";
+import { logflarePinoVercel } from "pino-logflare";
 import { v4 as uuid } from "uuid";
 import { z } from "zod";
 
-import { env, LogLevelSchema } from "~/env.mjs";
+import { type LogLevel, LogLevels, environment } from "~/environment";
 
 import * as terminal from "./support/terminal";
 import { isolateVariableFromHotReload } from "./util";
 
-type LogLevel = z.infer<typeof LogLevelSchema> | "log";
-
-const LogLevelColors: { [key in LogLevel]: string } = {
+const LogLevelColors: { [key in LogLevel | "log"]: string } = {
   fatal: terminal.RED,
   error: terminal.RED,
   warn: terminal.YELLOW,
@@ -21,28 +20,28 @@ const LogLevelColors: { [key in LogLevel]: string } = {
   silent: terminal.GRAY,
 };
 
-const _parseLevel = (o: object): LogLevel | null => {
+const _parseLevel = (o: object): LogLevel | "log" | null => {
   if ("level" in o && typeof o.level === "number") {
-    const parsed = LogLevelSchema.safeParse(levels.labels[o.level]);
-    if (parsed.success) {
-      return parsed.data;
+    const l = levels.labels[o.level];
+    if (LogLevels.contains(l) || l === "log") {
+      return l;
     }
   }
   return null;
 };
 
-type LogContext = { level: LogLevel; message: string; time: DateTime };
+type LogContext = { level: LogLevel | "log"; message: string; time: DateTime };
 
 const formatters: { [key in keyof LogContext]: (v: LogContext[key]) => string } = {
   level: level => {
-    if (env.NEXT_PUBLIC_PRETTY_LOGGING) {
+    if (environment.get("NEXT_PUBLIC_PRETTY_LOGGING")) {
       return `[${LogLevelColors[level] + level.toUpperCase() + terminal.RESET}]`;
     }
     return `[${level.toUpperCase()}]`;
   },
   message: message => message,
   time: dt => {
-    if (env.NEXT_PUBLIC_PRETTY_LOGGING) {
+    if (environment.get("NEXT_PUBLIC_PRETTY_LOGGING")) {
       return `[${terminal.BLUE + dt.toFormat("LLL dd yyyy HH:mm:ss") + terminal.RESET}]`;
     }
     return `[${dt.toFormat("LLL dd yyyy HH:mm:ss")}]`;
@@ -81,7 +80,7 @@ const parsers: { [key in keyof LogContext]: (ctx: Partial<LogContext>, o: object
 };
 
 /* eslint-disable no-console */
-const ConsoleWriters: { [key in LogLevel]: typeof console.log } = {
+const ConsoleWriters: { [key in LogLevel | "log"]: typeof console.log } = {
   fatal: console.error,
   error: console.error,
   warn: console.warn,
@@ -130,17 +129,40 @@ const initializeLogger = () => {
         }
       },
     },
-    level: env.NEXT_PUBLIC_LOG_LEVEL,
+    level: environment.get("NEXT_PUBLIC_LOG_LEVEL"),
     base: {
       env: process.env.NODE_ENV,
-      revision: env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA,
+      revision: environment.get("NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA"),
       instance: uuid(),
     },
   };
-  if (typeof window === "undefined" && env.NEXT_PUBLIC_PRETTY_LOGGING === true) {
+  if (
+    typeof window === "undefined" &&
+    environment.get("NEXT_PUBLIC_PRETTY_LOGGING") === true &&
+    process.env.VERCEL_ENV !== "production"
+  ) {
     /* eslint-disable-next-line @typescript-eslint/no-var-requires */
     const pretty = require("pino-pretty");
     return pino(loggerOptions, pretty({ colorize: true }));
+  } else if (process.env.VERCEL_ENV && ["preview", "production"].includes(process.env.VERCEL_ENV)) {
+    console.info("THIS IS A TEMPORARY LOG TO LET US KNOW WE ARE USING LOGFARE");
+    const { stream, send } = logflarePinoVercel({
+      apiKey: "YOUR_KEY",
+      sourceToken: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX",
+    });
+    return pino(
+      {
+        ...loggerOptions,
+        browser: {
+          ...loggerOptions.browser,
+          transmit: {
+            level: environment.get("NEXT_PUBLIC_LOG_LEVEL"),
+            send,
+          },
+        },
+      },
+      stream,
+    );
   }
   return pino(loggerOptions);
 };

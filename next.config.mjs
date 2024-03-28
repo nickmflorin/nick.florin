@@ -11,9 +11,6 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Import the environment file to perform validation before build.
-await import("./src/env.mjs");
-
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,

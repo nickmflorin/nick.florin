@@ -60,7 +60,7 @@ export const useNavigatable = <N extends Pick<NavItem, "active" | "path">>({
 
   const setActiveOptimistically = useCallback(() => {
     if (!isActive) {
-      _setActiveOptimistically(v);
+      _setActiveOptimistically(true);
     }
   }, [isActive]);
 

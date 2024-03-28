@@ -1,6 +1,6 @@
 import clerk from "@clerk/clerk-sdk-node";
 
-import { env } from "~/env.mjs";
+import { environment } from "~/environment";
 
 import { prisma } from "../client";
 import { upsertUserFromClerk } from "../model";
@@ -8,7 +8,8 @@ import { upsertUserFromClerk } from "../model";
 import { seedSchools, seedCompanies, type SeedContext, seedProfile, seedSkills } from "./seeding";
 
 async function main() {
-  if (env.PERSONAL_CLERK_USER_ID === undefined) {
+  const personalClerkId = environment.get("PERSONAL_CLERK_USER_ID");
+  if (personalClerkId === undefined) {
     /* The only reason this value can be undefined is because is for the test environment - so as
        long as we are not running the seed process in a test environment, this check is just to
        satisfy TS. */
@@ -16,7 +17,7 @@ async function main() {
       "Cannot seed database without the 'PERSONAL_CLERK_USER_ID' as an environment variable.",
     );
   }
-  const clerkUser = await clerk.users.getUser(env.PERSONAL_CLERK_USER_ID);
+  const clerkUser = await clerk.users.getUser(personalClerkId);
   const ctx: SeedContext = {
     clerkUser,
     user: await upsertUserFromClerk(clerkUser, { isAdmin: true }),

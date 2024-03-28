@@ -22,7 +22,7 @@ See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-m
 
 import { logger } from "~/application/logger";
 import { PrismaClient as RootPrismaClient } from "~/prisma/model";
-import { env } from "~/env.mjs";
+import { environment } from "~/environment";
 
 import { ModelMetaDataMiddleware } from "./middleware";
 
@@ -37,7 +37,7 @@ export * from "./errors";
 export const initializePrismaClient = () => {
   logger.info("Initializing Prisma Client");
   const prisma = new RootPrismaClient({
-    log: env.DATABASE_LOG_LEVEL,
+    log: environment.get("DATABASE_LOG_LEVEL"),
   });
   prisma.$use(ModelMetaDataMiddleware);
   return prisma;

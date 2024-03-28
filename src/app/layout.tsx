@@ -4,12 +4,11 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { type ReactNode } from "react";
 
-import { createLeadingPathRegex } from "~/lib/paths";
 import { AppConfig } from "~/app/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
 import { Text } from "~/components/typography/Text";
 import { ShowHide } from "~/components/util";
-import { env } from "~/env.mjs";
+import { environment } from "~/environment";
 
 const Toast = dynamic(() => import("~/components/notifications/Toast"));
 
@@ -21,7 +20,7 @@ const InterFont = Inter({
 });
 
 export const metadata: Metadata = {
-  title: env.APP_NAME_FORMAL,
+  title: environment.get("APP_NAME_FORMAL"),
   description: "Personal portfolio, resume & website for Nick Florin.",
 };
 
@@ -40,7 +39,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
         <Script
           type="text/javascript"
-          src={`https://kit.fontawesome.com/${env.FONT_AWESOME_KIT_TOKEN}.js`}
+          src={`https://kit.fontawesome.com/${environment.get("FONT_AWESOME_KIT_TOKEN")}.js`}
           crossOrigin="anonymous"
           /* Using "nest" instead of "replace" avoids errors related to
              NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is
@@ -96,7 +95,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           >
             {children}
           </Layout>
-          <ShowHide show={env.NEXT_PUBLIC_WELCOME_TOAST !== false}>
+          <ShowHide show={environment.get("NEXT_PUBLIC_WELCOME_TOAST") !== false}>
             <Toast type="info" autoClose={false}>
               <div className="flex flex-col gap-[6px] min-w-[200px]">
                 <Text size="md" fontWeight="medium">
