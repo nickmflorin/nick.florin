@@ -68,7 +68,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
             });
             return (
               <motion.div
-                key={i}
+                key={item.path}
                 variants={ItemVariants}
                 initial={false}
                 animate={offset !== 0 ? "offset" : "normal"}
@@ -88,7 +88,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
           const offset = getAnimatedOffset({ previousItems: items.slice(0, i), groupOpenIndex });
           return (
             <motion.div
-              key={i}
+              key={item.path}
               variants={ItemVariants}
               initial={false}
               animate={offset !== 0 ? "offset" : "normal"}

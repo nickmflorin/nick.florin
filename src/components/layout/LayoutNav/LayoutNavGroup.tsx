@@ -36,7 +36,7 @@ export const LayoutNavGroup = ({ item, isOpen, onOpen }: LayoutNavGroupProps) =>
     <LayoutNavItem item={item} onOpen={() => onOpen()} isOpen={isOpen} />
     <div className="flex flex-col items-center w-full">
       {item.children.map((child, i) => (
-        <LayoutNavItemChild key={i} index={i + 1} item={child} />
+        <LayoutNavItemChild key={child.path} index={i + 1} item={child} />
       ))}
     </div>
   </motion.div>
