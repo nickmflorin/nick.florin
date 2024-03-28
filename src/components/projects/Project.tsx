@@ -8,7 +8,7 @@ import { Title } from "~/components/typography/Title";
 export interface ProjectProps extends ComponentProps {
   readonly title: string;
   readonly description: ReactNode | ReactNode[];
-  readonly children: ReactNode;
+  readonly children: JSX.Element | JSX.Element[];
 }
 
 export const Project = ({ title, description, children, ...props }: ProjectProps) => (
@@ -20,6 +20,8 @@ export const Project = ({ title, description, children, ...props }: ProjectProps
       <Title order={3}>{title}</Title>
       <div className="w-full flex flex-col gap-[12px]">{description}</div>
     </div>
-    {children}
+    <div key="1" className="flex flex-col gap-[20px]">
+      {children}
+    </div>
   </div>
 );

@@ -15,6 +15,12 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
             active: { leadingPath: "/projects/asset-visualizations" },
             icon: { name: "chart-scatter-bubble" },
           },
+          {
+            label: "nick.florin",
+            path: "/projects/website",
+            active: { leadingPath: "/projects/website" },
+            icon: { name: "passport" },
+          },
         ]}
       />
       <div className="grow max-h-full h-full overflow-y-scroll flex flex-col">{children}</div>
