@@ -30,6 +30,8 @@ export const environment = Environment.create(
       POSTGRES_HOST: process.env.POSTGRES_HOST,
       DATABASE_LOG_LEVEL: process.env.DATABASE_LOG_LEVEL,
       NODE_ENV: process.env.NODE_ENV,
+      LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY,
+      LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
       CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
       PERSONAL_CLERK_USER_ID: process.env.PERSONAL_CLERK_USER_ID,
       APP_NAME_FORMAL: process.env.APP_NAME_FORMAL,
