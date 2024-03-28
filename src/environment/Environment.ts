@@ -2,29 +2,33 @@ import { z } from "zod";
 
 import type * as types from "./types";
 
-import { formatErrorMessage, type ErrorMessageFormatter } from "./formatting";
+import {
+  ConfigurationError,
+  type ConfigurationErrorFormattingOptions,
+  type ConfiguredError,
+} from "./configuration-error";
 
 type EnvironmentConfiguration<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> = {
   readonly runtime: R;
   readonly validators: V;
 };
 
-type EnvironmentOptions = {
-  readonly errorMessage?: ErrorMessageFormatter;
-  readonly onError?: (params: { error: z.ZodError; message: string }) => void;
+type EnvironmentOptions<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> = {
+  readonly errorMessage?: ConfigurationErrorFormattingOptions<R, V>;
+  readonly onError?: (err: ConfigurationError<R, V>) => void;
 };
 
 export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> {
   private readonly validators: V;
   private readonly runtime: R;
-  private readonly _options?: EnvironmentOptions;
+  private readonly _options?: EnvironmentOptions<R, V>;
 
   private _clientEnv: types.ClientEnv<R, V> | undefined = undefined;
   private _serverOnlyEnv: types.ServerOnlyEnv<R, V> | undefined = undefined;
 
   constructor(
     { validators, runtime }: EnvironmentConfiguration<R, V>,
-    options?: EnvironmentOptions,
+    options?: EnvironmentOptions<R, V>,
   ) {
     this.validators = validators;
     this.runtime = runtime;
@@ -33,7 +37,7 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
 
   public static create<R extends types.RuntimeEnv<V>, V extends types.Validators<R>>(
     { validators, runtime }: EnvironmentConfiguration<R, V>,
-    options: EnvironmentOptions,
+    options: EnvironmentOptions<R, V>,
   ): Environment<R, V> {
     return new Environment({ validators, runtime }, options);
   }
@@ -44,6 +48,10 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
 
   private isServerOnlyKey(key: string): key is types.ServerOnlyKey<R, V> {
     return !key.startsWith("NEXT_PUBLIC_");
+  }
+
+  private get errorMessageConfig(): ConfigurationErrorFormattingOptions<R, V> | undefined {
+    return this._options?.errorMessage;
   }
 
   private get clientValidators(): types.ClientValidators<R, V> {
@@ -66,10 +74,6 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     return vs;
   }
 
-  private get serverValidators(): V {
-    return this.validators;
-  }
-
   private get clientRuntime(): types.ClientRuntime<R, V> {
     const runtime = {} as types.ClientRuntime<R, V>;
     for (const key in this.runtime) {
@@ -90,16 +94,13 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     return runtime;
   }
 
-  private get serverRuntime(): R {
-    return this.runtime;
-  }
-
   private parseClientEnv(): types.ClientEnv<R, V> {
     const parsed = z.object(this.clientValidators).safeParse(this.clientRuntime);
     if (parsed.success) {
       return parsed.data;
     }
-    throw new Error("");
+    this.onError(parsed.error);
+    throw new Error("The 'onError' option did not throw an error as expected.");
   }
 
   private parseServerOnlyEnv(): types.ServerOnlyEnv<R, V> {
@@ -107,19 +108,26 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     if (parsed.success) {
       return parsed.data;
     }
-    this.onValidationError(parsed.error);
-    throw new Error("The 'onValidationError' option did not throw an error as expected.");
+    this.onError(parsed.error);
+    throw new Error("The 'onError' option did not throw an error as expected.");
   }
 
-  private onValidationError(error: z.ZodError) {
-    const message = formatErrorMessage(error, this._options?.errorMessage);
+  private onError(error: z.ZodError) {
+    const e = new ConfigurationError(error, this.errorMessageConfig);
     /* eslint-disable-next-line no-console */
     const handler =
       this._options?.onError ??
-      (({ message }) => {
-        throw new Error(message);
+      (err => {
+        throw err;
       });
-    handler({ message, error });
+    handler(e);
+  }
+
+  public throwConfigurationError(
+    error: ConfiguredError<R, V>,
+    options?: ConfigurationErrorFormattingOptions<R, V>,
+  ): never {
+    throw new ConfigurationError(error, { ...this.errorMessageConfig, ...options });
   }
 
   public get<K extends types.EnvKey<R, V>>(key: K): types.EnvValue<K, R, V> {

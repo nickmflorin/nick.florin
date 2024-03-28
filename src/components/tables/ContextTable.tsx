@@ -1,8 +1,6 @@
 "use client";
 import { forwardRef, type ForwardedRef } from "react";
 
-import { logger } from "~/application/logger";
-
 import { useTableView } from "./hooks";
 import { Table } from "./Table";
 import {
@@ -18,7 +16,6 @@ export const ContextTable = forwardRef(
     ref?: ForwardedRef<TableInstance<T>>,
   ) => {
     const { visibleColumns } = useTableView<T>();
-    logger.error("This is a test log from the client.");
     return <Table<T> {...props} ref={ref} columns={visibleColumns} />;
   },
 ) as ContextTableComponent;

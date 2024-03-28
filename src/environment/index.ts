@@ -105,7 +105,7 @@ export const environment = Environment.create(
   },
   {
     errorMessage: {
-      titleFormatter: `Environment Configuration Error: VERCEL_ENV='${process.env.VERCEL_ENV}' NODE_ENV='${process.env.NODE_ENV}'`,
+      title: `Environment Configuration Error: VERCEL_ENV='${process.env.VERCEL_ENV}' NODE_ENV='${process.env.NODE_ENV}'`,
     },
   },
 );

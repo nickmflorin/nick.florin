@@ -16,7 +16,6 @@ export const getAuthUserFromRequest = async (...args: Parameters<typeof getAuth>
 
 export async function getAuthUser(): Promise<User | null> {
   const { userId } = auth();
-  logger.error("This is a test log from the server.");
   if (!userId) {
     return null;
   }
