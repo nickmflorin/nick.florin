@@ -16,6 +16,14 @@ export const SkillJsonSchema = z.object({
   includeInTopSkills: z.boolean().optional(),
 });
 
+export const CourseJsonSchema = z.object({
+  name: z.string(),
+  shortName: z.string().optional(),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  visible: z.boolean().optional(),
+});
+
 export type JsonSkill = z.infer<typeof SkillJsonSchema>;
 
 export const NestedDetailJsonSchema = z.object({
@@ -52,6 +60,7 @@ export const EducationJsonSchema = z.object({
   degree: z.nativeEnum(Degree),
   skills: z.array(SkillReferenceJsonSchema).optional(),
   details: z.array(DetailJsonSchema).optional(),
+  courses: z.array(CourseJsonSchema).optional(),
 });
 
 export const CompanyJsonSchema = z.object({

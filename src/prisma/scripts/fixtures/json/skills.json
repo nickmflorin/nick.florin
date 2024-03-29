@@ -427,9 +427,6 @@
     { "label": "mongoDB", "includeInTopSkills": true },
     { "label": "AWS Lambdas", "includeInTopSkills": true },
     { "label": "Handlebars" },
-    { "label": "Credit Default Risk Modeling" },
-    { "label": "Numerical Computation" },
-    { "label": "Monte Carlo Methods" },
-    { "label": "Neural Networks" }
+    { "label": "Numerical Computation" }
   ]
 }

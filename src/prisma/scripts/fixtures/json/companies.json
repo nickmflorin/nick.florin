@@ -393,15 +393,7 @@
           "endDate": "2016-07-01T00:00:00Z",
           "title": "Quantitative Research Analyst",
           "description": "Responsibilities involved the research and implementation of complex models for credit default risk in a variety of exotic derivatives and structured products.",
-          "skills": [
-            "Python",
-            "Javascript",
-            "Flask",
-            "Django",
-            "Credit Default Risk Modeling",
-            "Numerical Computation",
-            "Monte Carlo Methods"
-          ],
+          "skills": ["Python", "Javascript", "Flask", "Django", "Numerical Computation"],
           "details": []
         }
       ]

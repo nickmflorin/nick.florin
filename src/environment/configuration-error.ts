@@ -71,7 +71,7 @@ const isZodError = <R extends types.RuntimeEnv<V>, V extends types.Validators<R>
   err: ConfiguredError<R, V>,
 ): err is z.ZodError => Array.isArray((err as z.ZodError).issues);
 
-export class ConfigurationError<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> {
+export class _ConfigurationError<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> {
   private readonly error: ConfiguredError<R, V>;
   private readonly options?: ConfigurationErrorFormattingOptions<R, V>;
 
@@ -151,5 +151,16 @@ export class ConfigurationError<R extends types.RuntimeEnv<V>, V extends types.V
     const message = this.errors.map((err, i) => this.formatLineItem(err, i)).join("\n");
     const divider = "-".repeat(32);
     return "\n" + [divider, `${this.title}:`, message, divider].join("\n");
+  }
+}
+
+export class ConfigurationError<
+  R extends types.RuntimeEnv<V>,
+  V extends types.Validators<R>,
+> extends Error {
+  constructor(error: ConfiguredError<R, V>, options?: ConfigurationErrorFormattingOptions<R, V>) {
+    const err = new _ConfigurationError(error, options);
+    super(err.message);
+    this.name = "ConfigurationError";
   }
 }

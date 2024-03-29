@@ -12,22 +12,42 @@
           "degree": "MASTERS_OF_SCIENCE_IN_ENGINEERING",
           "startDate": "2014-08-01T00:00:00Z",
           "endDate": "2016-01-01T00:00:00Z",
-          "skills": ["python", "matlab", "django", "pandas", "numpy", "scipy", "scikit-learn"]
+          "skills": ["python", "matlab", "django", "pandas", "numpy", "scipy", "scikit-learn"],
+          "courses": [
+            {
+              "name": "Advanced Equity Derivatives"
+            },
+            {
+              "name": "Monte Carlo Methods"
+            },
+
+            {
+              "name": "Credit Default Risk Modeling",
+              "shortName": "Credit Default Risk"
+            }
+          ]
         },
         {
           "major": "Computational Mathematics",
           "degree": "MASTERS_OF_SCIENCE",
           "startDate": "2016-01-02T00:00:00Z",
           "postPoned": true,
-          "skills": [
-            "python",
-            "matlab",
-            "django",
-            "pandas",
-            "numpy",
-            "scipy",
-            "scikit-learn",
-            "neural-networks"
+          "skills": ["python", "matlab", "django", "pandas", "numpy", "scipy", "scikit-learn"],
+          "courses": [
+            {
+              "name": "Neural Networks"
+            },
+            {
+              "name": "Data Mining"
+            },
+            {
+              "name": "Queueing Theory"
+            },
+            {
+              "name": "Probabalistic Models in Computer Science",
+              "slug": "probabilistic-models-in-computer-science",
+              "shortName": "Probabalistic Models"
+            }
           ],
           "note": "Ongoing coursework towards additional degree, temporarily post-poned. Completed approximately 50% of coursework, focusing on Neural Networks, Queueing Theory, Probabilistic Models in Computer Science & Machine Learning."
         }

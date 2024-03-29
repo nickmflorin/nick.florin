@@ -1,14 +1,12 @@
 import clerk from "@clerk/clerk-sdk-node";
 
-import { environment } from "~/environment";
-
 import { prisma } from "../client";
 import { upsertUserFromClerk } from "../model";
 
 import { seedSchools, seedCompanies, type SeedContext, seedProfile, seedSkills } from "./seeding";
 
 async function main() {
-  const personalClerkId = environment.get("PERSONAL_CLERK_USER_ID");
+  const personalClerkId = process.env.PERSONAL_CLERK_USER_ID;
   if (personalClerkId === undefined) {
     /* The only reason this value can be undefined is because is for the test environment - so as
        long as we are not running the seed process in a test environment, this check is just to

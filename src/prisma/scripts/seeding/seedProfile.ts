@@ -2,6 +2,7 @@ import { prisma } from "../../client";
 import { type Profile } from "../../model";
 import { json } from "../fixtures/json";
 
+import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
 
 export async function seedProfile(ctx: SeedContext) {
@@ -18,8 +19,7 @@ export async function seedProfile(ctx: SeedContext) {
         createdById: ctx.user.id,
       },
     });
-    /* eslint-disable-next-line no-console */
-    console.info("Created New Profile");
+    stdout.complete("Created New Profile");
   } else {
     await prisma.profile.update({
       where: { id: profile.id },
@@ -28,7 +28,6 @@ export async function seedProfile(ctx: SeedContext) {
         updatedById: ctx.user.id,
       },
     });
-    /* eslint-disable-next-line no-console */
-    console.info("Updated Profile");
+    stdout.ok("Updated Profile");
   }
 }
