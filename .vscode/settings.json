@@ -19,7 +19,7 @@
   "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],
   "eslint.format.enable": true,
   "eslint.execArgv": ["--max-old-space-size=16384"],
-  "eslint.debug": true,
+  "eslint.debug": false,
   "eslint.codeActionsOnSave.rules": [
     "import/*",
     "quotes",
