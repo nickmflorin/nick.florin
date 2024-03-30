@@ -1,5 +1,3 @@
-import * as terminal from "~/application/support/terminal";
-
 import { prisma } from "../../client";
 import { DetailEntityType } from "../../model";
 import { json } from "../fixtures/json";
@@ -98,11 +96,8 @@ export async function seedSchools(ctx: SeedContext) {
           }
         }
       }
-      /* eslint-disable-next-line no-console */
-      console.info(
-        terminal.GREEN +
-          `Successfully Generated ${school.educations.length} Educations for School ${school.name}` +
-          terminal.RESET,
+      stdout.complete(
+        `Successfully Generated ${school.educations.length} Educations for School ${school.name}`,
       );
     }
   }
