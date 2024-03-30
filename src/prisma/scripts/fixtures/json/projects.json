@@ -1,0 +1,24 @@
+{
+  "projects": [
+    {
+      "name": "n-Dimensional Charting Library for Asset Management",
+      "shortName": "Asset Visualizations",
+      "slug": "asset-visualizations",
+      "skills": ["d3js", "javascript", "html"]
+    },
+    {
+      "name": "nick.florin",
+      "slug": "website",
+      "skills": [
+        "typescript",
+        "react",
+        "nextjs",
+        "prismajs",
+        "postgresql",
+        "vercel",
+        "tailwindcss",
+        "sass"
+      ]
+    }
+  ]
+}

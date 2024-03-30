@@ -3,7 +3,14 @@ import clerk from "@clerk/clerk-sdk-node";
 import { prisma } from "../client";
 import { upsertUserFromClerk } from "../model";
 
-import { seedSchools, seedCompanies, type SeedContext, seedProfile, seedSkills } from "./seeding";
+import {
+  seedSchools,
+  seedCompanies,
+  type SeedContext,
+  seedProfile,
+  seedSkills,
+  seedProjects,
+} from "./seeding";
 
 async function main() {
   const personalClerkId = process.env.PERSONAL_CLERK_USER_ID;
@@ -22,6 +29,7 @@ async function main() {
   };
   await seedProfile(ctx);
   await seedSkills(ctx); // Must be done first
+  await seedProjects(ctx); // Must be done after skills, but before schools and companies.
   await seedSchools(ctx);
   await seedCompanies(ctx);
 }

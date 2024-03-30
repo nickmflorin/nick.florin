@@ -20,7 +20,7 @@
             "floating-ui",
             "tailwindcss",
             "react-native",
-            "scss-sass",
+            "sass",
             "pnpm"
           ],
           "description": "As a member of the Product Development Team, I contributed to the ongoing development of the company's flagship web-based and mobile products.",
@@ -69,7 +69,7 @@
             "nextjs",
             "typescript",
             "React",
-            "SCSS/SASS",
+            "sass",
             "PrismaJS",
             "SSR",
             "docker",
@@ -247,7 +247,7 @@
             "linux",
             "ElasticSearch",
             "Session Authentication",
-            "SCSS/SASS",
+            "sass",
             "RabbitMQ",
             "PostgreSQL",
             "Message Buses"
@@ -350,7 +350,7 @@
             "Django REST Framework",
             "Django",
             "CSS",
-            "SCSS/SASS",
+            "sass",
             "HTML Templating",
             "mySQL",
             "jQuery",
@@ -372,7 +372,8 @@
             },
             {
               "label": "Asset Visualizations",
-              "description": "Created a custom, flexible and proprietry charting package using D3.js that the firm now uses in a variety of applications to visualize data in more than 2 dimensions and animate the visualization over time."
+              "description": "Created a custom, flexible and proprietry charting package using D3.js that the firm now uses in a variety of applications to visualize data in more than 2 dimensions and animate the visualization over time.",
+              "project": "asset-visualizations"
             },
             {
               "label": "Rock Creek Insights",

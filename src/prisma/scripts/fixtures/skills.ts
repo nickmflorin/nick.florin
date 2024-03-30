@@ -38,7 +38,8 @@ const PROGRAMMING_LANGUAGES: JsonSkill[] = [
     experience: 11,
   },
   {
-    label: "SCSS/SASS",
+    label: "SCSS & SASS",
+    slug: "sass",
     programmingLanguages: [ProgrammingLanguage.SCSS],
     programmingDomains: [ProgrammingDomain.FRONTEND],
     experience: 5,
@@ -58,6 +59,10 @@ const PROGRAMMING_LANGUAGES: JsonSkill[] = [
   {
     label: "jQuery",
     programmingLanguages: [ProgrammingLanguage.JQUERY, ProgrammingLanguage.JAVASCRIPT],
+  },
+  {
+    label: "HTML",
+    programmingLanguages: [ProgrammingLanguage.HTML],
   },
 ];
 
@@ -312,6 +317,7 @@ const PACKAGES: JsonSkill[] = [
   },
   {
     label: "d3.js",
+    slug: "d3js",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FRONTEND],
   },
@@ -327,7 +333,7 @@ const WORKFLOWS: JsonSkill[] = [
   { label: "ClickUp" },
 ];
 
-export const json = [
+export const json: JsonSkill[] = [
   ...PROGRAMMING_LANGUAGES.map(skill => ({
     includeInTopSkills: true,
     ...skill,
@@ -374,14 +380,14 @@ export const json = [
     ...skill,
     categories: [...(skill.categories || []), SkillCategory.WORKFLOW],
   })),
-  { label: "Vercel", categories: ["DEVOPS"] },
+  { label: "Vercel", categories: [SkillCategory.DEVOPS] },
   { label: "SSR" },
   { label: "docker", includeInTopSkills: true },
   { label: "Jenkins" },
   { label: "SonarQube" },
   { label: "PostgreSQL", includeInTopSkills: true },
   { label: "Security Practices" },
-  { label: "CI/CD", categories: ["DEVOPS"], includeInTopSkills: true },
+  { label: "CI/CD", categories: [SkillCategory.DEVOPS], includeInTopSkills: true },
   { label: "AWS S3 Storage", includeInTopSkills: true },
   { label: "CircleCI" },
   { label: "Redis" },
@@ -416,10 +422,7 @@ export const json = [
   { label: "mongoDB", includeInTopSkills: true },
   { label: "AWS Lambdas", includeInTopSkills: true },
   { label: "Handlebars" },
-  { label: "Credit Default Risk Modeling" },
   { label: "Numerical Computation" },
-  { label: "Monte Carlo Methods" },
-  { label: "Neural Networks" },
 ];
 
 export const jsonfiy = () => {

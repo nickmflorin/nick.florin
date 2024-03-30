@@ -16,26 +16,42 @@ export const SkillJsonSchema = z.object({
   includeInTopSkills: z.boolean().optional(),
 });
 
+export type JsonSkill = z.infer<typeof SkillJsonSchema>;
+
 export const CourseJsonSchema = z.object({
   name: z.string(),
   shortName: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional(),
   visible: z.boolean().optional(),
+  skills: z.array(z.string()).optional(),
 });
 
-export type JsonSkill = z.infer<typeof SkillJsonSchema>;
+export const ProjectSchema = z.object({
+  name: z.string(),
+  shortName: z.string().optional(),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  visible: z.boolean().optional(),
+  skills: z.array(z.string()).optional(),
+});
 
 export const NestedDetailJsonSchema = z.object({
   label: z.string(),
   description: z.string(),
+  skills: z.array(z.string()).optional(),
 });
+
+export type JsonNestedDetail = z.infer<typeof NestedDetailJsonSchema>;
 
 export const DetailJsonSchema = z.object({
   label: z.string(),
   description: z.string().optional(),
   nestedDetails: z.array(NestedDetailJsonSchema).optional(),
+  skills: z.array(z.string()).optional(),
 });
+
+export type JsonDetail = z.infer<typeof DetailJsonSchema>;
 
 export const ExperienceJsonSchema = z.object({
   title: z.string(),

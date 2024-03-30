@@ -37,22 +37,36 @@ model User {
   createdNestedDetails NestedDetail[] @relation("createdNestedDetails")
   updatedCourses       Course[]       @relation("updatedCourses")
   createdCourses       Course[]       @relation("createdCourses")
+  updatedProjects      Project[]      @relation("updatedProjects")
+  createdProjects      Project[]      @relation("createdProjects")
+}
+
+model NestedDetailOnSkills {
+  nestedDetail   NestedDetail @relation("skills", fields: [nestedDetailId], references: [id])
+  nestedDetailId String       @db.Uuid
+  skill          Skill        @relation("nestedDetails", fields: [skillId], references: [id])
+  skillId        String       @db.Uuid
+  assignedAt     DateTime     @default(now())
+  assignedById   String       @db.Uuid
+
+  @@id([skillId, nestedDetailId])
 }
 
 model NestedDetail {
-  id               String   @id @default(uuid()) @db.Uuid
-  createdAt        DateTime @default(now())
-  createdBy        User     @relation("createdNestedDetails", fields: [createdById], references: [id])
-  createdById      String   @db.Uuid
-  updatedAt        DateTime @updatedAt
-  updatedBy        User     @relation("updatedNestedDetails", fields: [updatedById], references: [id])
-  updatedById      String   @db.Uuid
+  id               String                 @id @default(uuid()) @db.Uuid
+  createdAt        DateTime               @default(now())
+  createdBy        User                   @relation("createdNestedDetails", fields: [createdById], references: [id])
+  createdById      String                 @db.Uuid
+  updatedAt        DateTime               @updatedAt
+  updatedBy        User                   @relation("updatedNestedDetails", fields: [updatedById], references: [id])
+  updatedById      String                 @db.Uuid
   label            String
   description      String?
   shortDescription String?
-  visible          Boolean  @default(true)
-  detail           Detail   @relation("nestedDetails", fields: [detailId], references: [id])
-  detailId         String   @db.Uuid
+  visible          Boolean                @default(true)
+  detail           Detail                 @relation("nestedDetails", fields: [detailId], references: [id])
+  detailId         String                 @db.Uuid
+  skills           NestedDetailOnSkills[] @relation("skills")
 
   @@unique([label, detailId])
 }
@@ -60,6 +74,17 @@ model NestedDetail {
 enum DetailEntityType {
   EXPERIENCE
   EDUCATION
+}
+
+model DetailOnSkills {
+  detail       Detail   @relation("skills", fields: [detailId], references: [id])
+  detailId     String   @db.Uuid
+  skill        Skill    @relation("details", fields: [skillId], references: [id])
+  skillId      String   @db.Uuid
+  assignedAt   DateTime @default(now())
+  assignedById String   @db.Uuid
+
+  @@id([skillId, detailId])
 }
 
 model Detail {
@@ -77,6 +102,9 @@ model Detail {
   shortDescription String?
   visible          Boolean          @default(true)
   nestedDetails    NestedDetail[]   @relation("nestedDetails")
+  project          Project?         @relation("details", fields: [projectId], references: [id])
+  projectId        String?          @db.Uuid
+  skills           DetailOnSkills[] @relation("skills")
 
   @@unique([label, entityId, entityType])
 }
@@ -112,48 +140,94 @@ enum ProgrammingLanguage {
   CPLUSPLUS
   BASH
   JQUERY
+  HTML
   MATLAB
 }
 
 model Skill {
-  id                   String                @id @default(uuid()) @db.Uuid
-  label                String                @unique
-  slug                 String                @unique
-  createdAt            DateTime              @default(now())
-  createdBy            User                  @relation("createdSkills", fields: [createdById], references: [id])
-  createdById          String                @db.Uuid
-  updatedAt            DateTime              @updatedAt
-  updatedBy            User                  @relation("updatedSkils", fields: [updatedById], references: [id])
-  updatedById          String                @db.Uuid
-  experiences          ExperienceOnSkills[]  @relation("experiences")
-  educations           EducationOnSkills[]   @relation("educations")
-  visible              Boolean               @default(true)
+  id                   String                 @id @default(uuid()) @db.Uuid
+  label                String                 @unique
+  slug                 String                 @unique
+  createdAt            DateTime               @default(now())
+  createdBy            User                   @relation("createdSkills", fields: [createdById], references: [id])
+  createdById          String                 @db.Uuid
+  updatedAt            DateTime               @updatedAt
+  updatedBy            User                   @relation("updatedSkils", fields: [updatedById], references: [id])
+  updatedById          String                 @db.Uuid
+  experiences          ExperienceOnSkills[]   @relation("experiences")
+  educations           EducationOnSkills[]    @relation("educations")
+  visible              Boolean                @default(true)
   description          String?
-  categories           SkillCategory[]       @default([])
-  programmingLanguages ProgrammingLanguage[] @default([])
-  programmingDomains   ProgrammingDomain[]   @default([])
+  categories           SkillCategory[]        @default([])
+  programmingLanguages ProgrammingLanguage[]  @default([])
+  programmingDomains   ProgrammingDomain[]    @default([])
   // Number of years that the skill has been used in academic/professional settings.  If not
   // defined, it may be determined based on the oldest experience and/or education it is associated
   // with.
   experience           Int?
-  includeInTopSkills   Boolean               @default(false)
+  includeInTopSkills   Boolean                @default(false)
+  courses              CourseOnSkills[]       @relation("courses")
+  projects             ProjectOnSkills[]      @relation("projects")
+  details              DetailOnSkills[]       @relation("details")
+  nestedDetails        NestedDetailOnSkills[] @relation("nestedDetails")
+}
+
+model CourseOnSkills {
+  course       Course   @relation("skills", fields: [courseId], references: [id])
+  courseId     String   @db.Uuid
+  skill        Skill    @relation("courses", fields: [skillId], references: [id])
+  skillId      String   @db.Uuid
+  assignedAt   DateTime @default(now())
+  assignedById String   @db.Uuid
+
+  @@id([skillId, courseId])
 }
 
 model Course {
-  id          String    @id @default(uuid()) @db.Uuid
-  name        String    @unique
-  shortName   String?   @unique
-  slug        String    @unique
-  createdAt   DateTime  @default(now())
-  createdBy   User      @relation("createdCourses", fields: [createdById], references: [id])
-  createdById String    @db.Uuid
-  updatedAt   DateTime  @updatedAt
-  updatedBy   User      @relation("updatedCourses", fields: [updatedById], references: [id])
-  updatedById String    @db.Uuid
-  education   Education @relation("courses", fields: [educationId], references: [id])
-  educationId String    @db.Uuid
-  visible     Boolean   @default(true)
+  id          String           @id @default(uuid()) @db.Uuid
+  name        String           @unique
+  shortName   String?          @unique
+  slug        String           @unique
+  createdAt   DateTime         @default(now())
+  createdBy   User             @relation("createdCourses", fields: [createdById], references: [id])
+  createdById String           @db.Uuid
+  updatedAt   DateTime         @updatedAt
+  updatedBy   User             @relation("updatedCourses", fields: [updatedById], references: [id])
+  updatedById String           @db.Uuid
+  education   Education        @relation("courses", fields: [educationId], references: [id])
+  educationId String           @db.Uuid
+  visible     Boolean          @default(true)
   description String?
+  skills      CourseOnSkills[] @relation("skills")
+}
+
+model ProjectOnSkills {
+  project      Project  @relation("skills", fields: [projectId], references: [id])
+  projectId    String   @db.Uuid
+  skill        Skill    @relation("projects", fields: [skillId], references: [id])
+  skillId      String   @db.Uuid
+  assignedAt   DateTime @default(now())
+  assignedById String   @db.Uuid
+
+  @@id([skillId, projectId])
+}
+
+model Project {
+  id          String            @id @default(uuid()) @db.Uuid
+  name        String            @unique
+  shortName   String?           @unique
+  slug        String            @unique
+  createdAt   DateTime          @default(now())
+  createdBy   User              @relation("createdProjects", fields: [createdById], references: [id])
+  createdById String            @db.Uuid
+  updatedAt   DateTime          @updatedAt
+  updatedBy   User              @relation("updatedProjects", fields: [updatedById], references: [id])
+  updatedById String            @db.Uuid
+  visible     Boolean           @default(true)
+  // TODO: Figure out how to allow this field to contain HTML from a Rich Text editor (long term).
+  description String?
+  skills      ProjectOnSkills[] @relation("skills")
+  details     Detail[]          @relation("details")
 }
 
 model Company {
@@ -264,7 +338,7 @@ model Education {
   schoolId      String              @db.Uuid
   postPoned     Boolean             @default(false)
   visible       Boolean             @default(true)
-  educations    Course[]            @relation("courses")
+  courses       Course[]            @relation("courses")
 
   @@unique([major, schoolId])
   @@unique([shortMajor, schoolId])

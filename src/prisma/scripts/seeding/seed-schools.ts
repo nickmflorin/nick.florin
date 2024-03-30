@@ -4,7 +4,9 @@ import { prisma } from "../../client";
 import { DetailEntityType } from "../../model";
 import { json } from "../fixtures/json";
 
-import { seedCourses } from "./seedCourses";
+import { seedCourses } from "./seed-courses";
+import { createDetail } from "./seed-details";
+import { findCorrespondingSkills } from "./seed-skills";
 import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
@@ -47,9 +49,6 @@ export async function seedSchools(ctx: SeedContext) {
         strict: true,
       });
       if (school.educations.length !== 0) {
-        stdout.begin(
-          `Generating Details, Courses & Skills for Educations of School ${jsonSchool.name}...`,
-        );
         for (const education of school.educations) {
           const jsonEducation = findCorresponding(jsonSchool.educations, education, {
             field: "major",
@@ -61,80 +60,40 @@ export async function seedSchools(ctx: SeedContext) {
           const jsonDetails = jsonEducation.details ?? [];
           if (jsonDetails.length !== 0) {
             stdout.info(
-              `Generating ${jsonDetails.length} Detail(s) for Education ${jsonEducation.major}...`,
+              `Generating ${jsonDetails.length} Detail(s) for Experience: ${education.major}...`,
             );
+            const allSkills = await prisma.skill.findMany({});
             const details = await Promise.all(
-              jsonDetails.map(({ nestedDetails, ...jsonDetail }) =>
-                prisma.detail.create({
-                  data: {
-                    ...jsonDetail,
-                    entityId: education.id,
-                    entityType: DetailEntityType.EDUCATION,
-                    createdById: ctx.user.id,
-                    updatedById: ctx.user.id,
-                    nestedDetails: {
-                      create: (nestedDetails ?? []).map(jsonNestedDetail => ({
-                        ...jsonNestedDetail,
-                        createdById: ctx.user.id,
-                        updatedById: ctx.user.id,
-                      })),
-                    },
-                  },
+              jsonDetails.map(jsonDetail =>
+                createDetail(ctx, {
+                  entityId: education.id,
+                  entityType: DetailEntityType.EDUCATION,
+                  skills: allSkills,
+                  detail: jsonDetail,
                 }),
               ),
             );
             stdout.complete(
-              `Successfully Generated ${details.length} Detail(s) for Education ${jsonEducation.major}...`,
+              `Generated ${details.length} Detail(s) for Education: ${education.major}...`,
             );
           }
 
-          const allSkills = await prisma.skill.findMany({});
           const jsonSkills = jsonEducation.skills ?? [];
           if (jsonSkills.length !== 0) {
             stdout.info(
-              `Generating ${jsonSkills.length} Skills(s) for Education: ${education.major}...`,
+              `Associating ${jsonSkills.length} Skills(s) with Education: ${education.major}...`,
             );
-            let relationships: Array<Awaited<ReturnType<typeof prisma.educationOnSkills.create>>> =
-              [];
-            for (const jsonSkill of jsonSkills) {
-              let correspondingSkill: (typeof allSkills)[number];
-              /* Determine whether or not the skill label in the JSON fixture is already associated
-                 with a skill in the database.  If it is not, an error will be thrown. */
-              const corresponding = findCorresponding(
-                allSkills,
-                { label: jsonSkill },
-                {
-                  field: "label",
-                  reference: "skill",
-                  strict: false,
-                },
-              );
-              if (!corresponding) {
-                correspondingSkill = findCorresponding(
-                  allSkills,
-                  { slug: jsonSkill },
-                  {
-                    field: "slug",
-                    reference: "skill",
-                    strict: true,
-                  },
-                );
-              } else {
-                correspondingSkill = corresponding;
-              }
-              relationships = [
-                ...relationships,
-                await prisma.educationOnSkills.create({
-                  data: {
-                    assignedById: ctx.user.id,
-                    skillId: correspondingSkill.id,
-                    educationId: education.id,
-                  },
-                }),
-              ];
-            }
+            const skills = await findCorrespondingSkills(jsonSkills);
+            const relationships = await prisma.educationOnSkills.createMany({
+              data: skills.map(skill => ({
+                assignedById: ctx.user.id,
+                skillId: skill.id,
+                educationId: education.id,
+              })),
+            });
             stdout.complete(
-              `Generated ${relationships.length} Detail(s) for Education: ${education.major}`,
+              `Associated ${relationships.count} Skills(s) with Education: ${education.major}`,
+              { lineItems: skills.map(sk => sk.label), indexLineItems: true },
             );
           }
         }

@@ -1,6 +1,6 @@
 import { type z } from "zod";
 
-import { slugify } from "~/lib/formatters";
+import { slugify, humanizeList } from "~/lib/formatters";
 
 import { prisma, getUniqueConstraintFields } from "../../client";
 import { type Education } from "../../model";
@@ -19,7 +19,7 @@ export async function seedCourses(
       `Generating ${jsonEducation.courses.length} Courses for Education w Major: '${education.major}'...`,
     );
     for (let i = 0; i < jsonEducation.courses.length; i++) {
-      const jsonCourse = jsonEducation.courses[i];
+      const { skills, ...jsonCourse } = jsonEducation.courses[i];
       try {
         const course = await prisma.course.create({
           data: {
@@ -39,16 +39,11 @@ export async function seedCourses(
         });
       } catch (e) {
         const fields = getUniqueConstraintFields(e);
-        if (fields !== null) {
-          if (fields.includes("slug") && fields.includes("name")) {
-            throw new Error(
-              `The slug '${jsonCourse.slug}' and name '${jsonCourse.name}' are not unique!`,
-            );
-          } else if (fields.includes("slug")) {
-            throw new Error(`The slug '${jsonCourse.slug}' is not unique!`);
-          } else if (fields.includes("name")) {
-            throw new Error(`The name '${jsonCourse.name}' is not unique!`);
-          }
+        if (fields !== null && fields.length !== 0) {
+          throw new Error(
+            "The following field(s) are not unique: " +
+              humanizeList(fields, { conjunction: "and", formatter: field => `'${field}'` }),
+          );
         }
         throw e;
       }

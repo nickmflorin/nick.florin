@@ -43,7 +43,8 @@
     },
     {
       "includeInTopSkills": true,
-      "label": "SCSS/SASS",
+      "label": "SCSS & SASS",
+      "slug": "sass",
       "programmingLanguages": ["SCSS"],
       "programmingDomains": ["FRONTEND"],
       "experience": 5,
@@ -366,6 +367,7 @@
     {
       "includeInTopSkills": false,
       "label": "d3.js",
+      "slug": "d3js",
       "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
       "programmingDomains": ["FRONTEND"],
       "categories": ["PACKAGE"]
