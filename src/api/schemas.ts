@@ -163,6 +163,7 @@ export const SHOW_TOP_SKILLS_STRINGS = ["5", "8", "12", "all"] as const;
 export type ShowTopSkillsString = (typeof SHOW_TOP_SKILLS_STRINGS)[number];
 
 export const SkillQuerySchema = z.object({
+  includeInTopSkills: z.boolean().optional(),
   showTopSkills: showTopSkillsSchema.default(12),
   experiences: z.array(z.string().uuid()).optional(),
   educations: z.array(z.string().uuid()).optional(),

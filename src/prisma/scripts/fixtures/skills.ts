@@ -11,12 +11,14 @@ const PROGRAMMING_LANGUAGES: JsonSkill[] = [
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT],
     programmingDomains: [ProgrammingDomain.FULL_STACK],
     experience: 5,
+    includeInTopSkills: true,
   },
   {
     label: "Swift",
     programmingDomains: [ProgrammingDomain.MOBILE],
     programmingLanguages: [ProgrammingLanguage.SWIFT],
     experience: 2,
+    includeInTopSkills: false,
   },
   {
     label: "C++",
@@ -24,18 +26,21 @@ const PROGRAMMING_LANGUAGES: JsonSkill[] = [
     programmingDomains: [ProgrammingDomain.BACKEND],
     programmingLanguages: [ProgrammingLanguage.CPLUSPLUS],
     experience: 2,
+    includeInTopSkills: false,
   },
   {
     label: "Javascript",
     programmingLanguages: [ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FULL_STACK],
     experience: 9,
+    includeInTopSkills: true,
   },
   {
     label: "Python",
     programmingDomains: [ProgrammingDomain.BACKEND],
     programmingLanguages: [ProgrammingLanguage.PYTHON],
     experience: 11,
+    includeInTopSkills: true,
   },
   {
     label: "SCSS & SASS",
@@ -47,6 +52,7 @@ const PROGRAMMING_LANGUAGES: JsonSkill[] = [
   {
     label: "Matlab",
     programmingLanguages: [ProgrammingLanguage.MATLAB],
+    includeInTopSkills: false,
     experience: 5,
   },
   {
@@ -55,15 +61,27 @@ const PROGRAMMING_LANGUAGES: JsonSkill[] = [
     experience: 2,
     programmingLanguages: [ProgrammingLanguage.BASH],
   },
-  { label: "CSS", experience: 11, programmingLanguages: [ProgrammingLanguage.CSS] },
-  { label: "R", experience: 2, programmingLanguages: [ProgrammingLanguage.R] },
+  {
+    label: "CSS",
+    experience: 11,
+    programmingLanguages: [ProgrammingLanguage.CSS],
+    includeInTopSkills: false,
+  },
+  {
+    label: "R",
+    experience: 2,
+    programmingLanguages: [ProgrammingLanguage.R],
+    includeInTopSkills: false,
+  },
   {
     label: "jQuery",
     programmingLanguages: [ProgrammingLanguage.JQUERY, ProgrammingLanguage.JAVASCRIPT],
+    includeInTopSkills: false,
   },
   {
     label: "HTML",
     programmingLanguages: [ProgrammingLanguage.HTML],
+    includeInTopSkills: false,
   },
 ];
 
@@ -78,6 +96,7 @@ const FRAMEWORKS: JsonSkill[] = [
       ProgrammingLanguage.SCSS,
     ],
     includeInTopSkills: true,
+    experience: 4,
   },
   {
     label: "GraphQL",
@@ -85,26 +104,28 @@ const FRAMEWORKS: JsonSkill[] = [
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FULL_STACK],
     includeInTopSkills: true,
+    experience: 2,
   },
   {
     label: "React",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FRONTEND],
     includeInTopSkills: true,
+    experience: 8,
   },
   {
     label: "TRPC",
     categories: [SkillCategory.API_DEVELOPMENT],
     programmingDomains: [ProgrammingDomain.FULL_STACK],
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
-    includeInTopSkills: true,
+    includeInTopSkills: false,
   },
   {
     label: "nodeJS",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.BACKEND],
     includeInTopSkills: true,
-    experience: 6,
+    experience: 7,
   },
   {
     label: "Django REST Framework",
@@ -112,6 +133,7 @@ const FRAMEWORKS: JsonSkill[] = [
     programmingDomains: [ProgrammingDomain.BACKEND],
     programmingLanguages: [ProgrammingLanguage.PYTHON],
     includeInTopSkills: true,
+    experience: 8,
   },
   {
     label: "Flask",
@@ -136,20 +158,20 @@ const FRAMEWORKS: JsonSkill[] = [
     label: "SCSS/CSS Modules",
     programmingDomains: [ProgrammingDomain.FRONTEND],
     programmingLanguages: [ProgrammingLanguage.SCSS, ProgrammingLanguage.CSS],
-    includeInTopSkills: true,
+    includeInTopSkills: false,
   },
   {
     label: "React Native",
-    includeInTopSkills: true,
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.MOBILE],
     experience: 2,
+    includeInTopSkills: false,
   },
   {
     label: "MeteorJS",
-    includeInTopSkills: true,
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FULL_STACK],
+    includeInTopSkills: false,
   },
 ];
 
@@ -222,14 +244,17 @@ const ORMS: JsonSkill[] = [
   {
     label: "PrismaJS",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
+    includeInTopSkills: true,
   },
   {
     label: "SQLAlchemy",
     programmingLanguages: [ProgrammingLanguage.PYTHON],
+    includeInTopSkills: false,
   },
   {
     label: "mongooseJS",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
+    includeInTopSkills: false,
   },
 ];
 
@@ -244,7 +269,6 @@ const PACKAGES: JsonSkill[] = [
     slug: "storybookjs",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FRONTEND],
-    includeInTopSkills: true,
   },
   {
     label: "React Redux",
@@ -321,13 +345,14 @@ const PACKAGES: JsonSkill[] = [
     slug: "d3js",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FRONTEND],
+    includeInTopSkills: true,
   },
 ];
 
 const WORKFLOWS: JsonSkill[] = [
   { label: "Agile Software Development" },
   { label: "Project Planning & Roadmapping" },
-  { label: "git", slug: "git", includeInTopSkills: true },
+  { label: "git", slug: "git" },
   { label: "Jira" },
   { label: "Notion" },
   { label: "Clubhouse" },
@@ -388,12 +413,12 @@ export const json: JsonSkill[] = [
   { label: "SonarQube" },
   { label: "PostgreSQL", includeInTopSkills: true },
   { label: "Security Practices" },
-  { label: "CI/CD", categories: [SkillCategory.DEVOPS], includeInTopSkills: true },
-  { label: "AWS S3 Storage", includeInTopSkills: true },
+  { label: "CI/CD", categories: [SkillCategory.DEVOPS] },
+  { label: "AWS S3 Storage" },
   { label: "CircleCI" },
   { label: "Redis" },
   { label: "JWT Authentication" },
-  { label: "AWS EC2", includeInTopSkills: true },
+  { label: "AWS EC2" },
   { label: "AWS", includeInTopSkills: true },
   { label: "AWS Cloudwatch" },
   { label: "Auth0" },
@@ -411,7 +436,7 @@ export const json: JsonSkill[] = [
   { label: "Message Buses" },
   { label: "Python 2/3 Compatibility", slug: "python-23-compatibility" },
   { label: "Package & Dependency Management" },
-  { label: "Relational Databases", includeInTopSkills: true },
+  { label: "Relational Databases" },
   { label: "REST API Design", categories: [SkillCategory.API_DEVELOPMENT] },
   { label: "mySQL" },
   { label: "Jinja" },
@@ -422,8 +447,8 @@ export const json: JsonSkill[] = [
   { label: "Authentication Protocols" },
   { label: "AWS Elastic Beanstalk" },
   { label: "noSQL Databases" },
-  { label: "mongoDB", includeInTopSkills: true },
-  { label: "AWS Lambdas", includeInTopSkills: true },
+  { label: "mongoDB" },
+  { label: "AWS Lambdas" },
   { label: "Handlebars" },
   { label: "Numerical Computation" },
 ];
