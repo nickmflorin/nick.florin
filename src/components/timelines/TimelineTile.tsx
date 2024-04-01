@@ -1,6 +1,11 @@
 import clsx from "clsx";
 
-import { type ModelLocation, type Detail, type Skill, type ModelTimePeriod } from "~/prisma/model";
+import {
+  type ModelLocation,
+  type Skill,
+  type ModelTimePeriod,
+  type ApiDetail,
+} from "~/prisma/model";
 import { Skills } from "~/components/badges/collections/Skills";
 import { LocationBadge } from "~/components/badges/LoocationBadge";
 import { TimePeriodBadge } from "~/components/badges/TimePeriodBadge";
@@ -21,7 +26,7 @@ export interface TimelineTileProps extends ComponentProps {
   readonly timePeriod: ModelTimePeriod;
   readonly fallbackImageIcon: ModelImageProps["fallbackIcon"];
   readonly imageUrl?: string | null;
-  readonly details: Detail[];
+  readonly details: ApiDetail[];
   readonly skills: Skill[];
 }
 
@@ -54,11 +59,13 @@ export const TimelineTile = ({
       <div className="flex flex-col gap-[12px]">
         <div className="flex flex-col gap-[4px] pt-[4px]">
           <Title order={2}>{title}</Title>
-          <LinkOrText url={websiteUrl} tooltip="View website">
-            {name}
-          </LinkOrText>
+          {/* <div className="flex flex-row gap-[4px] items-center">
+            <LinkOrText url={websiteUrl}>{name}</LinkOrText>
+            {websiteUrl && <InfoCircleButton size={18}>{websiteUrl}</InfoCircleButton>}
+          </div> */}
+          <LinkOrText url={websiteUrl}>{name}</LinkOrText>
         </div>
-        <div className="flex flex-row gap-[8px]">
+        <div className="flex flex-row gap-[8px] items-center">
           <TimePeriodBadge timePeriod={timePeriod} />
           <LocationBadge location={location} />
         </div>

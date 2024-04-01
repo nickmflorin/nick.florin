@@ -4,11 +4,13 @@
       "name": "n-Dimensional Charting Library for Asset Management",
       "shortName": "Asset Visualizations",
       "slug": "asset-visualizations",
-      "skills": ["d3js", "javascript", "html"]
+      "skills": ["d3js", "javascript", "html"],
+      "startDate": "2017-11-01T00:00:00Z"
     },
     {
       "name": "nick.florin",
       "slug": "website",
+      "startDate": "2024-01-15T00:00:00Z",
       "skills": [
         "typescript",
         "react",

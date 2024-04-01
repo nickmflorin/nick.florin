@@ -21,10 +21,10 @@ import {
   ApiClientFieldErrorCodes,
   type ApiClientErrorJson,
   isApiClientFormErrorJson,
-  type ApiClientFieldErrors,
+  type ApiClientFieldErrorsObj,
   isHttpError,
   ApiClientFormError,
-} from "~/http";
+} from "~/api";
 
 import {
   type FormInstance,
@@ -261,19 +261,19 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   const setInternalFieldErrorsFromResponse = useCallback(
-    async (e: ApiClientError | ApiClientErrorJson, errs: ApiClientFieldErrors) => {
+    async (e: ApiClientError | ApiClientErrorJson, errs: ApiClientFieldErrorsObj) => {
       const logger = (await import("~/application/logger")).logger;
 
       // If this happens, it means the API incorrectly returned an error response.
       if (Object.keys(errs).length === 0) {
         logger.warn(
-          "The form received an ApiClientFieldErrors object with an empty set of errors!",
+          "The form received an ApiClientFieldErrorsObj object with an empty set of errors!",
           { error: e },
         );
       }
       return setInternalFieldErrors(
         Object.keys(errs).reduce((prev: FieldErrors<I>, key): FieldErrors<I> => {
-          const _details = (errs as ApiClientFieldErrors)[key];
+          const _details = (errs as ApiClientFieldErrorsObj)[key];
           const details = _details ? (Array.isArray(_details) ? _details : [_details]) : _details;
           if (details && details.length !== 0) {
             return {
@@ -286,7 +286,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
           }
           // If this happens, it means the API incorrectly returned an error response.
           logger.warn(
-            "The form received an ApiClientFieldErrors object with an error " +
+            "The form received an ApiClientFieldErrorsObj object with an error " +
               `key '${key}' that does not contain any errors!`,
             { error: e, key },
           );

@@ -11,31 +11,15 @@ import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
 export const findCorrespondingSkillsSync = (jsonSkills: string[], skills: Skill[]): Skill[] =>
-  jsonSkills.map((jsonSkill): Skill => {
-    /* Determine whether or not the skill label in the JSON fixture is already associated with
-     a skill in the database.  If it is not, an error will be thrown. */
-    const corresponding = findCorresponding(
-      skills,
-      { label: jsonSkill },
-      {
-        field: "label",
-        reference: "skill",
-        strict: false,
-      },
-    );
-    if (!corresponding) {
-      return findCorresponding(
-        skills,
-        { slug: jsonSkill },
-        {
-          field: "slug",
-          reference: "skill",
-          strict: true,
-        },
-      );
-    }
-    return corresponding;
-  });
+  findCorresponding(
+    skills,
+    jsonSkills.map(j => ({ slug: j, label: j })),
+    {
+      field: ["label", "slug"],
+      strict: true,
+      reference: "skill",
+    },
+  );
 
 export const findCorrespondingSkills = async (jsonSkills: string[]): Promise<Skill[]> => {
   const allSkills = await prisma.skill.findMany({});
@@ -44,37 +28,41 @@ export const findCorrespondingSkills = async (jsonSkills: string[]): Promise<Ski
 
 const _seedSkills = async (ctx: SeedContext, skills: JsonSkill[]) => {
   if (skills.length !== 0) {
-    stdout.begin(`Generating Skills from ${skills.length} Fixtures...`);
+    const output = stdout.begin(`Generating Skills from ${skills.length} Fixtures...`);
     for (let i = 0; i < skills.length; i++) {
       const jsonSkill = skills[i];
+      output.begin(`Generating Skill: ${jsonSkill.label}...`);
+      let skill: Skill;
+      const data = {
+        ...jsonSkill,
+        slug: jsonSkill.slug === undefined ? slugify(jsonSkill.label) : jsonSkill.slug,
+        createdById: ctx.user.id,
+        updatedById: ctx.user.id,
+      };
       try {
-        const skill = await prisma.skill.create({
-          data: {
-            ...jsonSkill,
-            slug: jsonSkill.slug === undefined ? slugify(jsonSkill.label) : jsonSkill.slug,
-            createdById: ctx.user.id,
-            updatedById: ctx.user.id,
-          },
-        });
-        stdout.info("Successfully Generated Skill", {
-          lineItems: [
-            { label: "Label", value: skill.label },
-            { label: "Slug", value: skill.slug },
-          ],
-          count: [i, json.skills.length],
-        });
+        skill = await prisma.skill.create({ data });
       } catch (e) {
         const fields = getUniqueConstraintFields(e);
         if (fields !== null && fields.length !== 0) {
           throw new Error(
             "The following field(s) are not unique: " +
-              humanizeList(fields, { conjunction: "and", formatter: field => `'${field}'` }),
+              humanizeList(
+                fields.map(f => `${f} = '${data[f as keyof typeof data]}'`),
+                { conjunction: "and" },
+              ),
           );
         }
         throw e;
       }
+      output.complete("Successfully Generated Skill", {
+        lineItems: [
+          { label: "Label", value: skill.label },
+          { label: "Slug", value: skill.slug },
+        ],
+        count: [i, json.skills.length],
+      });
     }
-    stdout.complete(`Successfully Created ${json.skills.length} Skills`);
+    output.complete(`Successfully Created ${json.skills.length} Skills`);
   }
 };
 

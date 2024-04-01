@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { DetailEntityType, type Education } from "~/prisma/model";
-import { ApiClientGlobalError, ClientResponse } from "~/http";
+import { ApiClientGlobalError, ClientResponse } from "~/api";
 
 export async function generateStaticParams() {
   const educations = await prisma.education.findMany();
@@ -28,7 +28,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     education,
     details: await prisma.detail.findMany({
       where: { entityId: education.id, entityType: DetailEntityType.EDUCATION },
-      include: { nestedDetails: { orderBy: [{ createdAt: "desc" }, { id: "desc" }] } },
+      include: {
+        project: true,
+        nestedDetails: { orderBy: [{ createdAt: "desc" }, { id: "desc" }] },
+      },
       /* In order to prevent the details from shifting around in the form whenever a page
          refresh is performed after one or more details are modified, we need to rely on a
          consistent ordering of the details based on attributes that are indepenedent of

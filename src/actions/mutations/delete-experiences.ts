@@ -3,7 +3,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
-import { ApiClientGlobalError } from "~/http";
+import { ApiClientGlobalError } from "~/api";
 
 export const deleteExperiences = async (ids: string[]): Promise<void> => {
   const user = await getAuthAdminUser();

@@ -2,123 +2,109 @@ import uniq from "lodash.uniq";
 
 import { humanizeList } from "~/lib/formatters";
 
+class ModelLookupError extends Error {
+  constructor(msg: string, reference: string, data?: Record<string, unknown>) {
+    const d: Record<string, unknown> = { ...data, reference };
+    const dataStrings = Object.keys(d).reduce(
+      (prev: string[], k: string) => (d[k] !== undefined ? [...prev, `${k} = '${d[k]}'`] : prev),
+      [],
+    );
+    super(`[${dataStrings.join(", ")}] ${msg}`);
+  }
+}
+
 const modelStringValueStandardizer = (name: string) => name.toLowerCase().replaceAll(" ", "");
 const modelStringValueComparator = (name1: string, name2: string) =>
   modelStringValueStandardizer(name1) === modelStringValueStandardizer(name2);
 
-type StringRequiredKeys<M extends Record<string, unknown>> = keyof {
+type Model = Record<string, unknown>;
+type Json = Record<string, unknown>;
+
+type StringRequiredKeys<M extends Model> = keyof {
   [key in keyof M as [M[key]] extends [string] ? key : never]: M[key];
 };
 
-type FindCorrespondingFieldOptions<
-  M extends Record<string, unknown>,
-  J extends Record<string, unknown>,
-> = {
+type FindCorrespondingFieldOptions<M extends Model, J extends Json> = {
   readonly strict?: boolean;
-  readonly field: StringRequiredKeys<M | J>;
+  readonly field: StringRequiredKeys<M | J> | StringRequiredKeys<M | J>[];
   readonly reference: string;
   readonly comparator?: never;
-  readonly getModelComparisonValue?: never;
-  readonly getJsonComparisonValue?: never;
 };
 
-type FindCorrespondingGetterOptions<
-  M extends Record<string, unknown>,
-  J extends Record<string, unknown>,
-> = {
-  readonly strict?: boolean;
-  readonly field?: never;
-  readonly reference: string;
-  readonly comparator?: never;
-  readonly getJsonComparisonValue: (m: J) => string;
-  readonly getModelComparisonValue: (m: M) => string;
-};
-
-type FindCorrespondingComparatorOptions<
-  M extends Record<string, unknown>,
-  J extends Record<string, unknown>,
-> = {
+type FindCorrespondingComparatorOptions<M extends Model, J extends Json> = {
   readonly strict?: boolean;
   readonly reference: string;
   readonly field?: never;
-  readonly getModelComparisonValue?: never;
-  readonly getJsonComparisonValue?: never;
   readonly comparator: (model: M, json: J) => boolean;
 };
 
-type FindCorrespondingOptions<
-  M extends Record<string, unknown>,
-  J extends Record<string, unknown>,
-> =
+type FindCorrespondingOptions<M extends Model, J extends Json> =
   | FindCorrespondingComparatorOptions<M, J>
-  | FindCorrespondingFieldOptions<M, J>
-  | FindCorrespondingGetterOptions<M, J>;
+  | FindCorrespondingFieldOptions<M, J>;
 
 export function getModelValue<P extends Record<string, unknown>>(
   m: P,
-  getter: StringRequiredKeys<P> | ((m: P) => string),
+  getter: StringRequiredKeys<P>,
+  reference: string,
 ): string {
-  if (typeof getter === "string") {
-    const v = m[getter as keyof P];
-    if (typeof v !== "string") {
-      throw new Error(
-        `Invalid comparator field, '${String(
-          getter,
-        )}'!  The field does not correspond to string values on the model or json fixture, ` +
-          `but rather a value of type '${typeof v}'. `,
-      );
-    }
-    return v;
-  }
-  const v = (getter as (m: P) => string)(m);
+  const v = m[getter as keyof P];
   if (typeof v !== "string") {
-    throw new Error(
-      "Invalid getter!  The getter did not return a string value on the model or json " +
-        "fixture object.",
+    throw new ModelLookupError(
+      `Invalid comparator field, '${String(
+        getter,
+      )}'!  The field does not correspond to string values on the model or json fixture, ` +
+        `but rather a value of type '${typeof v}'. `,
+      reference,
     );
   }
   return v;
 }
 
-type FindCorrespondingRT<
-  M extends Record<string, unknown>,
-  J extends Record<string, unknown>,
+type FindCorrespondingSingleRT<
+  M extends Model,
+  J extends Json,
   O extends FindCorrespondingOptions<M, J>,
 > = O extends { strict: true } ? M : M | null;
 
-export const findCorresponding = <
-  M extends Record<string, unknown>,
-  J extends Record<string, unknown>,
+const findSingleCorresponding = <
+  M extends Model,
+  J extends Json,
   O extends FindCorrespondingOptions<M, J>,
 >(
   models: M[],
   json: J,
-  { comparator, reference, field, strict, getModelComparisonValue, getJsonComparisonValue }: O,
-): FindCorrespondingRT<M, J, O> => {
-  const throwErr = (msg: string, data?: { [key in string]: string }): never => {
-    const d: Record<string, string> = field
-      ? { ...data, reference, field: String(field) }
-      : { ...data, reference };
-    const dataStrings = Object.keys(d).reduce(
-      (prev: string[], k: string) => [...prev, `${k} = '${d[k]}'`],
-      [],
-    );
-    throw new Error(`[${dataStrings.join(", ")}] ${msg}`);
-  };
-
-  function _getValue(m: M | J, isJson?: boolean): string {
-    if (field) {
-      return getModelValue(m, field);
-    } else if (getModelComparisonValue !== undefined && getJsonComparisonValue !== undefined) {
-      return getModelValue(
-        m,
-        (isJson ? getJsonComparisonValue : getModelComparisonValue) as (m: M | J) => string,
-      );
+  options: O,
+): FindCorrespondingSingleRT<M, J, O> => {
+  if (Array.isArray(options.field)) {
+    for (let i = 0; i < options.field.length - 1; i++) {
+      const field = options.field[i];
+      const corresponding = findSingleCorresponding(models, json, {
+        ...options,
+        field,
+        strict: false,
+      });
+      if (corresponding) {
+        return corresponding;
+      }
     }
-    return throwErr(
-      "Invalid function implementation!  If the 'comparator' is not provided, either the 'field' " +
-        "option must be provided or both the 'getModelComparisonValue' and " +
-        "'getJsonComparisonValue' options must be provided.",
+    return findSingleCorresponding(models, json, {
+      ...options,
+      field: options.field[options.field.length - 1],
+    });
+  }
+
+  const { comparator, reference, field: _field, strict = false } = options;
+
+  const field = _field as StringRequiredKeys<M | J> | undefined;
+
+  function _getValue(m: M | J): string {
+    if (field) {
+      return getModelValue(m, field, reference);
+    }
+    throw new ModelLookupError(
+      "Invalid function implementation:  If the 'field' is not provided, the 'comparator' " +
+        "option must be specified.",
+      reference,
     );
   }
 
@@ -126,41 +112,75 @@ export const findCorresponding = <
   if (comparator) {
     compareFn = comparator;
   } else {
-    compareFn = (model, json) =>
-      modelStringValueComparator(_getValue(model), _getValue(json, true));
+    compareFn = (model, json) => modelStringValueComparator(_getValue(model), _getValue(json));
   }
 
   const filtered = models.filter(m => compareFn(m, json));
   if (filtered.length === 0) {
     if (strict) {
-      return throwErr(
+      throw new ModelLookupError(
         `The provided ${reference} could not be found in the set of provided models`,
-        { jsonValue: _getValue(json, true) },
+        reference,
+        { jsonValue: _getValue(json), field },
       );
     }
-    return null as FindCorrespondingRT<M, J, O>;
+    return null as FindCorrespondingSingleRT<M, J, O>;
   } else if (filtered.length > 1) {
     if (comparator) {
-      return throwErr(
+      throw new ModelLookupError(
         `The provided comparator returned true for ${filtered.length} existing models in the ` +
           "database.  The comparator must uniquely identify a model.",
-        { jsonValue: _getValue(json, true) },
+        reference,
+        { jsonValue: _getValue(json), field },
       );
     }
     const uniqValues = uniq(filtered.map(m => _getValue(m)));
     if (uniqValues.length === 1) {
-      throw new Error(
+      throw new ModelLookupError(
         `The JSON fixture model value, '${_getValue(json)}', maps to ${filtered.length} existing ` +
           "models in the database.  Each model in the database has the same existing " +
           `value, '${uniqValues[0]}'.`,
+        reference,
+        { field },
       );
     }
     const humanized = humanizeList(uniqValues, { conjunction: "and", formatter: v => `'${v}'` });
-    throw new Error(
+    throw new ModelLookupError(
       `The JSON fixture model value, '${_getValue(json)}', maps to ${filtered.length} existing ` +
         "models in the database.  The models in the database have the following values: " +
         `${humanized}.`,
+      reference,
+      { field },
     );
   }
   return filtered[0];
 };
+
+type FindCorrespondingMultiRT<
+  M extends Model,
+  J extends Json,
+  O extends FindCorrespondingOptions<M, J>,
+> = O extends { strict: true } ? M[] : (M | null)[];
+
+export function findCorresponding<
+  M extends Model,
+  J extends Json,
+  O extends FindCorrespondingOptions<M, J>,
+>(models: M[], json: J, options: O): FindCorrespondingSingleRT<M, J, O>;
+
+export function findCorresponding<
+  M extends Model,
+  J extends Json,
+  O extends FindCorrespondingOptions<M, J>,
+>(models: M[], json: J[], options: O): FindCorrespondingMultiRT<M, J, O>;
+
+export function findCorresponding<
+  M extends Model,
+  J extends Json,
+  O extends FindCorrespondingOptions<M, J>,
+>(models: M[], json: J | J[], options: O) {
+  if (Array.isArray(json)) {
+    return json.map(j => findSingleCorresponding<M, J, O>(models, j, options));
+  }
+  return findSingleCorresponding(models, json, options);
+}

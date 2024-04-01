@@ -1,13 +1,13 @@
 import {
-  type Experience,
-  type Company,
   type Skill,
-  type Education,
-  type School,
   ProgrammingLanguage,
   SkillCategory,
   ProgrammingDomain,
+  type Project,
 } from "./core";
+import { type ConditionallyIncluded } from "./inclusion";
+
+import { type ApiEducation, type ApiExperience } from ".";
 
 export const ProgrammingLanguages = {
   [ProgrammingLanguage.BASH]: { label: "Bash" },
@@ -20,6 +20,8 @@ export const ProgrammingLanguages = {
   [ProgrammingLanguage.JQUERY]: { label: "jQuery" },
   [ProgrammingLanguage.SWIFT]: { label: "Swift" },
   [ProgrammingLanguage.MATLAB]: { label: "Matlab" },
+  [ProgrammingLanguage.HTML]: { label: "HTML" },
+  [ProgrammingLanguage.R]: { label: "R" },
 } satisfies { [key in ProgrammingLanguage]: { label: string } };
 
 export const getProgrammingLanguage = <L extends ProgrammingLanguage>(
@@ -61,13 +63,26 @@ export const getProgrammingDomain = <D extends ProgrammingDomain>(
   value: domain,
 });
 
-export type ApiSkill = Skill & {
+export type SkillIncludes = Partial<{
+  readonly educations: boolean;
+  readonly experiences: boolean;
+  /* We will be doing this shortly.
+     readonly details?: boolean; */
+  readonly projects: boolean;
+}>;
+
+type _BaseApiSkill = Skill & {
   readonly autoExperience: number;
   readonly experience: number | null;
-  readonly educations: (Education & {
-    readonly school: School;
-  })[];
-  readonly experiences: (Experience & {
-    readonly company: Company;
-  })[];
 };
+
+export type ApiSkill<I extends SkillIncludes = { educations: true; experiences: true }> =
+  ConditionallyIncluded<
+    _BaseApiSkill,
+    {
+      readonly educations: ApiEducation[];
+      readonly experiences: ApiExperience[];
+      readonly projects: Project[];
+    },
+    I
+  >;

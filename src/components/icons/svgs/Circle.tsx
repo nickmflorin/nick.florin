@@ -6,7 +6,7 @@ import { type HexColor } from "~/lib/colors";
 import { type ComponentProps } from "~/components/types";
 
 export type CircleProps = ComponentProps & {
-  readonly color: string;
+  readonly color?: string;
   readonly size: number;
   readonly selected?: boolean;
   readonly selectable?: boolean;

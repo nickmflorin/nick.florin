@@ -8,6 +8,7 @@ import pick from "lodash.pick";
 import { generateChartColors } from "~/lib/charts";
 import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
 import { Floating } from "~/components/floating/Floating";
+import { FloatingContent } from "~/components/floating/FloatingContent";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 import {
   SkillsChartFilterForm,
@@ -93,11 +94,13 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
           placement="bottom-end"
           triggers={["click"]}
           offset={{ mainAxis: 4 }}
-          withArrow={false}
           width={400}
-          className="p-[20px] rounded-md overflow-y-scroll"
-          variant="white"
-          content={<SkillsChartFilterForm form={{ ...form, setValues }} isScrollable />}
+          withArrow={false}
+          content={
+            <FloatingContent className="p-[20px] rounded-md overflow-y-scroll" variant="white">
+              <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable />
+            </FloatingContent>
+          }
         >
           {({ ref, params }) => (
             <ChartFilterButton

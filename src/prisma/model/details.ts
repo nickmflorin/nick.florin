@@ -4,6 +4,7 @@ import {
   type Education,
   type Detail,
   type NestedDetail,
+  type Project,
 } from "./core";
 
 export type DetailEntity<T extends DetailEntityType> = {
@@ -11,9 +12,17 @@ export type DetailEntity<T extends DetailEntityType> = {
   readonly [DetailEntityType.EDUCATION]: Education;
 }[T];
 
-export type FullDetail = Detail & {
-  readonly nestedDetails: NestedDetail[];
+export type NestedApiDetail = NestedDetail & {
+  readonly project: Project | null;
 };
 
-export const isFullDetail = (detail: FullDetail | NestedDetail): detail is FullDetail =>
-  (detail as FullDetail).nestedDetails !== undefined;
+export type ApiDetail = Detail & {
+  readonly project: Project | null;
+};
+
+export type FullApiDetail = ApiDetail & {
+  readonly nestedDetails: NestedApiDetail[];
+};
+
+export const isFullDetail = (detail: FullApiDetail | NestedApiDetail): detail is FullApiDetail =>
+  (detail as FullApiDetail).nestedDetails !== undefined;

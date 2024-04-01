@@ -151,7 +151,7 @@ h6 {
   // in cases where the component is not provided with those props.
   @extend %typography-base;
 
-  &:not(.span) {
+  &:not(.span, .body--inherit) {
     /* If the <Text> component is attributed with 'span' and is inside another <Text> element, do
        not set the defaults based on the default size of the <Text> component.  We want the <Text>
        components that are attributed with 'span' to inherit typography related properties from the
@@ -181,7 +181,8 @@ h6 {
     @include partials.font($type: "body");
   }
 
-  &.span {
+  &.span,
+  &.body--inherit {
     color: inherit;
     font-size: inherit;
     font-style: inherit;

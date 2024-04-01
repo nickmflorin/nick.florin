@@ -7,10 +7,10 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { prisma } from "~/prisma/client";
 import { DetailEntityType } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/http";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { DetailSchema } from "~/api/schemas";
 
 import { getEntity } from "../fetches/get-entity";
-import { DetailSchema } from "../schemas";
 
 export const createDetail = async (
   entityId: string,
@@ -51,6 +51,7 @@ export const createDetail = async (
       createdById: user.id,
       updatedById: user.id,
     },
+    include: { project: true },
   });
   switch (detail.entityType) {
     case DetailEntityType.EDUCATION: {

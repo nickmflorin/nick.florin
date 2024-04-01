@@ -2,7 +2,7 @@ import { SignedIn } from "@clerk/nextjs";
 import { z } from "zod";
 
 import { decodeQueryParam } from "~/lib/urls";
-import { SkillsTableView } from "~/components/tables/SkillsTableView";
+import { SkillsTableView } from "~/components/tables/views/SkillsTableView";
 
 interface SkillsPageProps {
   readonly searchParams: {

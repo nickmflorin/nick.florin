@@ -9,20 +9,23 @@ import { prisma } from "~/prisma/client";
 import {
   type Skill,
   type ApiSkill,
-  type EducationOnSkills,
   type Experience,
   type Education,
   type Company,
   type School,
+  type EducationOnSkills,
   type ExperienceOnSkills,
   type SkillCategory,
   type ProgrammingLanguage,
   type ProgrammingDomain,
+  type SkillIncludes,
+  type Project,
+  type ProjectOnSkills,
+  conditionallyInclude,
 } from "~/prisma/model";
 import { constructOrSearch, conditionalFilters } from "~/prisma/util";
-
-import { parsePagination } from "../pagination";
-import { type Visibility } from "../visibility";
+import { parsePagination } from "~/api/pagination";
+import { type Visibility } from "~/api/visibility";
 
 import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "./constants";
 
@@ -38,10 +41,11 @@ export type GetSkillsFilters = {
   readonly programmingDomains?: ProgrammingDomain[];
 };
 
-type GetSkillsParams = {
+type GetSkillsParams<I extends SkillIncludes> = {
   readonly visibility?: Visibility;
   readonly filters?: GetSkillsFilters;
   readonly page?: number;
+  readonly includes: I;
 };
 
 const filtersClause = (filters: GetSkillsFilters) =>
@@ -71,7 +75,10 @@ const filtersClause = (filters: GetSkillsFilters) =>
       : undefined,
   ] as const);
 
-const whereClause = ({ filters, visibility }: Pick<GetSkillsParams, "visibility" | "filters">) =>
+const whereClause = <I extends SkillIncludes>({
+  filters,
+  visibility,
+}: Pick<GetSkillsParams<I>, "visibility" | "filters">) =>
   ({
     AND:
       filters && visibility === "public"
@@ -83,12 +90,17 @@ const whereClause = ({ filters, visibility }: Pick<GetSkillsParams, "visibility"
             : undefined,
   }) as const;
 
-export const preloadSkillsCount = (params: Omit<GetSkillsParams, "page">) => {
+export const preloadSkillsCount = <I extends SkillIncludes>(
+  params: Omit<GetSkillsParams<I>, "page">,
+) => {
   void getSkillsCount(params);
 };
 
 export const getSkillsCount = cache(
-  async ({ filters, visibility = "public" }: Omit<GetSkillsParams, "page">) => {
+  async <I extends SkillIncludes>({
+    filters,
+    visibility = "public",
+  }: Omit<GetSkillsParams<I>, "page" | "includes">) => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
@@ -96,50 +108,64 @@ export const getSkillsCount = cache(
       where: whereClause({ filters, visibility }),
     });
   },
-);
+) as <I extends SkillIncludes>(
+  params: Omit<GetSkillsParams<I>, "page" | "includes">,
+) => Promise<number>;
 
-export const preloadSkills = (params: GetSkillsParams) => {
+export const preloadSkills = <I extends SkillIncludes>(params: GetSkillsParams<I>) => {
   void getSkills(params);
 };
 
 export const toApiSkill = ({
   skill,
-  educations,
-  experiences,
+  educations: _educations,
+  experiences: _experiences,
+  projects: _projects,
 }: {
-  skill: Skill;
-  educations: (Education & { readonly skills: EducationOnSkills[]; readonly school: School })[];
-  experiences: (Experience & {
+  readonly skill: Skill;
+  readonly projects: (Project & {
+    readonly skills: ProjectOnSkills[];
+  })[];
+  readonly educations: (Education & {
+    readonly skills: EducationOnSkills[];
+    readonly school: School;
+  })[];
+  readonly experiences: (Experience & {
     readonly skills: ExperienceOnSkills[];
     readonly company: Company;
   })[];
-}): ApiSkill => {
-  const apiSkill = {
-    ...skill,
-    educations: educations.filter(edu => edu.skills.some(s => s.skillId === skill.id)),
-    experiences: experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id)),
-  };
-  const oldestEducation = strictArrayLookup(
-    apiSkill.educations,
-    apiSkill.educations.length - 1,
-    {},
+}): ApiSkill<{ experiences: true; educations: true; projects: true }> => {
+  const educations = _educations.filter(edu => edu.skills.some(s => s.skillId === skill.id));
+  const experiences = _experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id));
+  const projects = _projects.filter(p => p.skills.some(s => s.skillId === skill.id));
+
+  const oldestEducation = strictArrayLookup(educations, educations.length - 1, {});
+  const oldestExperience = strictArrayLookup(experiences, experiences.length - 1, {});
+  const oldestProject = strictArrayLookup(projects, projects.length - 1, {});
+  const oldestDate = minDate(
+    oldestEducation?.startDate,
+    oldestExperience?.startDate,
+    oldestProject?.startDate,
   );
-  const oldestExperience = strictArrayLookup(
-    apiSkill.experiences,
-    apiSkill.experiences.length - 1,
-    {},
-  );
-  const oldestDate = minDate(oldestEducation?.startDate, oldestExperience?.startDate);
+
   return {
-    ...apiSkill,
+    ...skill,
     autoExperience: oldestDate
       ? Math.round(DateTime.now().diff(DateTime.fromJSDate(oldestDate), "years").years)
       : 0,
+    experiences,
+    educations,
+    projects,
   };
 };
 
 export const getSkills = cache(
-  async ({ page, filters, visibility = "public" }: GetSkillsParams) => {
+  async <I extends SkillIncludes>({
+    page,
+    filters,
+    visibility = "public",
+    includes,
+  }: GetSkillsParams<I>): Promise<ApiSkill<I>[]> => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
@@ -159,9 +185,15 @@ export const getSkills = cache(
       take: pagination ? pagination.pageSize : undefined,
     });
 
+    const projects = await prisma.project.findMany({
+      where: { skills: { some: { skillId: { in: skills.map(sk => sk.id) } } } },
+      orderBy: [{ startDate: "desc" }],
+      include: { skills: true },
+    });
+
     const experiences = await prisma.experience.findMany({
       include: { company: true, skills: true },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      orderBy: [{ startDate: "desc" }],
       where: {
         AND: conditionalFilters([
           visibility === "public" ? { visible: true } : undefined,
@@ -175,7 +207,7 @@ export const getSkills = cache(
     });
 
     const educations = await prisma.education.findMany({
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      orderBy: [{ startDate: "desc" }],
       include: { skills: true, school: true },
       where: {
         AND: conditionalFilters([
@@ -189,6 +221,23 @@ export const getSkills = cache(
       },
     });
 
-    return skills.map(skill => toApiSkill({ skill, educations, experiences }));
+    return skills.map((skill): ApiSkill<I> => {
+      const {
+        experiences: exp,
+        educations: edu,
+        projects: ps,
+        ...rest
+      } = toApiSkill({
+        skill,
+        educations,
+        experiences,
+        projects,
+      });
+      return conditionallyInclude(
+        rest,
+        { experiences: exp, educations: edu, projects: ps },
+        includes,
+      );
+    });
   },
-);
+) as <I extends SkillIncludes>(params: GetSkillsParams<I>) => Promise<ApiSkill<I>[]>;

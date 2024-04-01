@@ -12,9 +12,8 @@ import {
   type ApiClientFormErrorJson,
   ApiClientGlobalError,
   type ApiClientGlobalErrorJson,
-} from "~/http";
-
-import { ExperienceSchema } from "../schemas";
+} from "~/api";
+import { ExperienceSchema } from "~/api/schemas";
 
 const UpdateExperienceSchema = ExperienceSchema.partial();
 

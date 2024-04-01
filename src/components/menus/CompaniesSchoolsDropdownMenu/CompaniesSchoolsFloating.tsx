@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "~/components/buttons";
 import { DrawerIds } from "~/components/drawers";
 import { Floating } from "~/components/floating/Floating";
+import { FloatingContent } from "~/components/floating/FloatingContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { ShowHide } from "~/components/util";
 import { Loading } from "~/components/views/Loading";
@@ -39,25 +40,25 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
     <>
       <Floating
         isOpen={isOpen}
+        withArrow={false}
         onOpenChange={v => setIsOpen(v)}
         content={
-          <MenuContainer className="box-shadow-none">
-            {children}
-            <CompaniesSchoolsMenuFooter
-              onCreate={() => {
-                setIsOpen(false);
-                setDrawerVisible(true);
-              }}
-            />
-          </MenuContainer>
+          <FloatingContent className="p-[0px] rounded-md overflow-hidden" variant="white">
+            <MenuContainer className="box-shadow-none">
+              {children}
+              <CompaniesSchoolsMenuFooter
+                onCreate={() => {
+                  setIsOpen(false);
+                  setDrawerVisible(true);
+                }}
+              />
+            </MenuContainer>
+          </FloatingContent>
         }
         placement="bottom-end"
         triggers={["click"]}
         offset={{ mainAxis: 4 }}
-        withArrow={false}
         width={400}
-        className="p-[0px] rounded-md overflow-hidden"
-        variant="white"
       >
         {({ ref, params, isOpen }) => (
           <Button.Secondary

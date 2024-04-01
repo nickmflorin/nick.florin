@@ -3,16 +3,16 @@ import { useTransition, useState, useCallback, useEffect, useMemo } from "react"
 
 import { toast } from "react-toastify";
 
-import { type FullDetail, type NestedDetail, isFullDetail } from "~/prisma/model";
+import { type FullApiDetail, type NestedApiDetail, isFullDetail } from "~/prisma/model";
 import { updateDetail } from "~/actions/mutations/update-detail";
 import { updateNestedDetail } from "~/actions/mutations/update-nested-detail";
 import { IconButton } from "~/components/buttons";
 
-export interface DetailVisibilityButtonProps<D extends FullDetail | NestedDetail> {
+export interface DetailVisibilityButtonProps<D extends FullApiDetail | NestedApiDetail> {
   readonly detail: D;
 }
 
-export const DetailVisibilityButton = <D extends FullDetail | NestedDetail>({
+export const DetailVisibilityButton = <D extends FullApiDetail | NestedApiDetail>({
   detail,
 }: DetailVisibilityButtonProps<D>) => {
   /* We keep track of the visibility of the detail in state, separately from the visible attribute

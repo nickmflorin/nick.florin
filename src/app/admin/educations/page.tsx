@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { EducationsTableView } from "~/components/tables/EducationsTableView";
+import { EducationsTableView } from "~/components/tables/views/EducationsTableView";
 
 interface EducationsPageProps {
   readonly searchParams: {

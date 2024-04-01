@@ -6,9 +6,8 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Education } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/http";
-
-import { EducationSchema } from "../schemas";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { EducationSchema } from "~/api/schemas";
 
 const UpdateEducationSchema = EducationSchema.partial();
 

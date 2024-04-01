@@ -5,9 +5,8 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/http";
-
-import { SchoolSchema } from "../schemas";
+import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { SchoolSchema } from "~/api/schemas";
 
 export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
   const user = await getAuthAdminUser();

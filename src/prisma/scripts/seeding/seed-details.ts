@@ -5,27 +5,31 @@ import { type JsonDetail } from "../fixtures/schemas";
 import { findCorrespondingSkillsSync } from "./seed-skills";
 import { type SeedContext } from "./types";
 
-export const createDetail = (
+import { findCorrespondingProject } from ".";
+
+export const createDetail = async (
   ctx: SeedContext,
   {
     skills,
     entityId,
     entityType,
-    detail: { nestedDetails = [], skills: jsonSkills = [], ...jsonDetail },
+    detail: { nestedDetails = [], project, skills: jsonSkills = [], ...jsonDetail },
   }: {
     detail: JsonDetail;
     skills: Skill[];
     entityId: string;
     entityType: DetailEntityType;
   },
-) =>
-  prisma.detail.create({
+) => {
+  const projectId = project ? (await findCorrespondingProject(project)).id : undefined;
+  return await prisma.detail.create({
     data: {
       ...jsonDetail,
       entityId,
       entityType,
       createdById: ctx.user.id,
       updatedById: ctx.user.id,
+      projectId,
       skills: {
         create: findCorrespondingSkillsSync(jsonSkills, skills).map(sk => ({
           assignedById: ctx.user.id,
@@ -47,3 +51,4 @@ export const createDetail = (
       },
     },
   });
+};

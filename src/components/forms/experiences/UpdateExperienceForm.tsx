@@ -4,9 +4,9 @@ import { useTransition } from "react";
 
 import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/mutations/update-experience";
+import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
-import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 

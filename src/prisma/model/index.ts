@@ -2,8 +2,12 @@ export * from "./core";
 export * from "./details";
 export * from "./education";
 export * from "./experience";
+export * from "./project";
+export * from "./inclusion";
+export * from "./transaction";
 export * from "./skills";
 export * from "./user";
+
 import { DateTime } from "luxon";
 
 export type ModelTimePeriod = {

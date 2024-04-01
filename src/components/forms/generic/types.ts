@@ -8,7 +8,7 @@ import {
 import { type z } from "zod";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
-import { type ApiClientErrorJson, type HttpError } from "~/http";
+import { type ApiClientErrorJson, type HttpError } from "~/api";
 
 export type BaseFormValues = FieldValues;
 

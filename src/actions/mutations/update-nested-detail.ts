@@ -12,9 +12,8 @@ import {
   ApiClientFieldErrorCodes,
   ApiClientGlobalError,
   type ApiClientFormErrorJson,
-} from "~/http";
-
-import { DetailSchema } from "../schemas";
+} from "~/api";
+import { DetailSchema } from "~/api/schemas";
 
 const UpdateDetailSchema = DetailSchema.partial();
 

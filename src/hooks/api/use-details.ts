@@ -1,14 +1,19 @@
-import { type FullDetail, type Education, type Experience, DetailEntityType } from "~/prisma/model";
+import {
+  type FullApiDetail,
+  type Education,
+  type Experience,
+  DetailEntityType,
+} from "~/prisma/model";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
 type Response<T extends DetailEntityType> = {
   [DetailEntityType.EDUCATION]: {
-    readonly details: FullDetail[];
+    readonly details: FullApiDetail[];
     readonly education: Education;
   };
   [DetailEntityType.EXPERIENCE]: {
-    readonly details: FullDetail[];
+    readonly details: FullApiDetail[];
     readonly experience: Experience;
   };
 }[T];

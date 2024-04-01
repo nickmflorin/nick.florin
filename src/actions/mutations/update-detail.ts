@@ -7,9 +7,8 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
-import { ApiClientGlobalError, ApiClientFormError, ApiClientFieldErrorCodes } from "~/http";
-
-import { DetailSchema } from "../schemas";
+import { ApiClientGlobalError, ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { DetailSchema } from "~/api/schemas";
 
 const UpdateDetailSchema = DetailSchema.partial();
 

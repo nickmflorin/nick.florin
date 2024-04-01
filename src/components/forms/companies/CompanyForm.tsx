@@ -1,7 +1,7 @@
 "use client";
 import { type z } from "zod";
 
-import { CompanySchema } from "~/actions/schemas";
+import { CompanySchema } from "~/api/schemas";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 

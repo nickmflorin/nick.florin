@@ -11,7 +11,7 @@ import { findCorresponding } from "./util";
 
 export async function seedSchools(ctx: SeedContext) {
   if (json.schools.length !== 0) {
-    stdout.begin(`Generating ${json.schools.length} Schools...`);
+    const output = stdout.begin(`Generating ${json.schools.length} Schools...`);
     const schools = await Promise.all(
       json.schools.map(({ educations: jsonEducations, ...jsonSchool }) => {
         const school = prisma.school.create({
@@ -37,27 +37,32 @@ export async function seedSchools(ctx: SeedContext) {
         return school;
       }),
     );
-    stdout.complete(`Successfully Generated ${schools.length} Schools`);
 
-    stdout.begin(`Generating Details & Skills of Educations for ${schools.length} Schools...`);
     for (const school of schools) {
       const jsonSchool = findCorresponding(json.schools, school, {
         field: "name",
         reference: "school",
         strict: true,
       });
+      output.begin(`Generating School: ${school.name}`);
       if (school.educations.length !== 0) {
-        for (const education of school.educations) {
+        output.begin(
+          `Generating ${school.educations.length} Educations(s) for School ${school.name}`,
+        );
+        for (let i = 0; i < school.educations.length; i++) {
+          const education = school.educations[i];
           const jsonEducation = findCorresponding(jsonSchool.educations, education, {
             field: "major",
             reference: "education",
             strict: true,
           });
-          await seedCourses(ctx, education, jsonEducation);
+          output.begin(`Generating Education: ${education.major}`);
+
+          await seedCourses(ctx, education, jsonEducation, output);
 
           const jsonDetails = jsonEducation.details ?? [];
           if (jsonDetails.length !== 0) {
-            stdout.info(
+            output.begin(
               `Generating ${jsonDetails.length} Detail(s) for Experience: ${education.major}...`,
             );
             const allSkills = await prisma.skill.findMany({});
@@ -71,14 +76,15 @@ export async function seedSchools(ctx: SeedContext) {
                 }),
               ),
             );
-            stdout.complete(
+            output.complete(
               `Generated ${details.length} Detail(s) for Education: ${education.major}...`,
+              details.map(d => d.label),
             );
           }
 
           const jsonSkills = jsonEducation.skills ?? [];
           if (jsonSkills.length !== 0) {
-            stdout.info(
+            output.begin(
               `Associating ${jsonSkills.length} Skills(s) with Education: ${education.major}...`,
             );
             const skills = await findCorrespondingSkills(jsonSkills);
@@ -89,16 +95,24 @@ export async function seedSchools(ctx: SeedContext) {
                 educationId: education.id,
               })),
             });
-            stdout.complete(
+            output.complete(
               `Associated ${relationships.count} Skills(s) with Education: ${education.major}`,
-              { lineItems: skills.map(sk => sk.label), indexLineItems: true },
+              { lineItems: skills.map(sk => sk.label) },
             );
           }
+          output.complete("Successfully Generated Education", {
+            lineItems: [{ label: "Major", value: education.major }],
+            count: [i, school.educations.length],
+          });
         }
+        output.complete(
+          `Generated ${school.educations.length} Educations for School ${school.name}`,
+          school.educations.map(edu => edu.major),
+        );
       }
-      stdout.complete(
-        `Successfully Generated ${school.educations.length} Educations for School ${school.name}`,
-      );
     }
+    output.complete(`Generated ${schools.length} Schools`, {
+      lineItems: schools.map(s => s.name),
+    });
   }
 }

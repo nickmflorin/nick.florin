@@ -12,6 +12,7 @@ export interface TextProps extends BaseTypographyProps {
   readonly truncate?: boolean;
   readonly lineClamp?: number;
   readonly flex?: boolean;
+  readonly inherit?: boolean;
 }
 
 const Span = (
@@ -29,6 +30,7 @@ export const Text = ({
   lineClamp,
   flex = false,
   truncate = false,
+  inherit = false,
   ...props
 }: TextProps): JSX.Element => {
   const Component = span ? Span : Div;
@@ -37,6 +39,7 @@ export const Text = ({
       style={lineClamp ? { ...style, lineClamp } : style}
       className={clsx(
         "body",
+        { "body--inherit": inherit },
         { span },
         { ["flex flex-row items-center"]: flex },
         {

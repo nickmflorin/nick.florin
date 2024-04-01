@@ -1,7 +1,7 @@
 "use client";
 import { type z } from "zod";
 
-import { ExperienceSchema } from "~/actions/schemas";
+import { ExperienceSchema } from "~/api/schemas";
 import { Checkbox } from "~/components/input/Checkbox";
 import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
 import { TextArea } from "~/components/input/TextArea";

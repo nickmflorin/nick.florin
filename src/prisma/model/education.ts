@@ -1,6 +1,7 @@
 import { type prisma } from "../client";
 
 import { type Education, type School, Degree } from "./core";
+import { type ConditionallyIncluded } from "./inclusion";
 
 export const Degrees = {
   [Degree.BACHELORS_OF_SCIENCE]: { label: "Bachelors of Science", shortLabel: "B.S." },
@@ -16,10 +17,10 @@ export const getDegree = <D extends Degree>(degree: D): (typeof Degrees)[D] & { 
   value: degree,
 });
 
-export type EduIncludes = {
-  readonly skills?: boolean;
-  readonly details?: boolean;
-};
+export type EduIncludes = Partial<{
+  readonly skills: boolean;
+  readonly details: boolean;
+}>;
 
 type EduSkills = Awaited<
   ReturnType<typeof prisma.skill.findMany<{ include: { educations: true } }>>
@@ -28,28 +29,19 @@ type EduSkills = Awaited<
 export type EduSkill = EduSkills[number];
 
 type EduDetails = Awaited<
-  ReturnType<typeof prisma.detail.findMany<{ include: { nestedDetails: true } }>>
+  ReturnType<typeof prisma.detail.findMany<{ include: { nestedDetails: true; project: true } }>>
 >;
 
 export type EduDetail = EduDetails[number];
 
-export type ApiEducation<I extends EduIncludes | undefined = undefined> = I extends {
-  skills: true;
-  details: true;
-}
-  ? Education & {
-      readonly school: School;
+type _BaseApiEducation = Education & { readonly school: School };
+
+export type ApiEducation<I extends EduIncludes = { skills: false; details: false }> =
+  ConditionallyIncluded<
+    _BaseApiEducation,
+    {
       readonly details: EduDetail[];
       readonly skills: EduSkill[];
-    }
-  : I extends { skills: true }
-    ? Education & {
-        readonly school: School;
-        readonly skills: EduSkill[];
-      }
-    : I extends { details: true }
-      ? Education & {
-          readonly school: School;
-          readonly details: EduDetail[];
-        }
-      : Education & { readonly school: School };
+    },
+    I
+  >;

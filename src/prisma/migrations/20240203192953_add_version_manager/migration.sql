@@ -1,2 +1,0 @@
--- AlterEnum
-ALTER TYPE "SkillCategory" ADD VALUE 'VERSION_MANAGER';

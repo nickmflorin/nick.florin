@@ -2,7 +2,7 @@
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type ExperienceOnSkills, type Experience } from "~/prisma/model";
-import { ApiClientGlobalError } from "~/http";
+import { ApiClientGlobalError } from "~/api";
 
 export const deleteExperience = async (id: string): Promise<void> => {
   const user = await getAuthAdminUser();

@@ -6,9 +6,10 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, type ApiClientFieldErrors, ApiClientFieldErrorCodes } from "~/http";
+import { ApiClientFormError, ApiClientFieldErrorCodes, ApiClientFieldErrors } from "~/api";
+import { SkillSchema } from "~/api/schemas";
 
-import { SkillSchema } from "../schemas";
+import { queryM2MsDynamically } from "./m2ms";
 
 export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
   const user = await getAuthAdminUser();
@@ -17,74 +18,95 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
   if (!parsed.success) {
     return ApiClientFormError.BadRequest(parsed.error, SkillSchema).toJson();
   }
-  const { slug: _slug, experiences, educations, ...data } = parsed.data;
+  const {
+    slug: _slug,
+    experiences: _experiences,
+    educations: _educations,
+    projects: _projects,
+    ...data
+  } = parsed.data;
 
   const slug = _slug ?? slugify(data.label);
 
-  let fieldErrs: ApiClientFieldErrors = {};
-  if (await prisma.skill.count({ where: { label: data.label } })) {
-    fieldErrs = {
-      ...fieldErrs,
-      label: [
-        {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The label must be unique!",
-        },
-      ],
-    };
-    /* If the slug is not explicitly provided and the label does not violate the unique constraint,
-       but the slugified form of the label does, this should be a more specific error message. */
-  } else if (!_slug && (await prisma.skill.count({ where: { slug } }))) {
-    fieldErrs = {
-      ...fieldErrs,
-      label: [
-        {
-          code: ApiClientFieldErrorCodes.unique,
-          message:
-            "The auto-generated slug for the label is not unique. Please provide a unique slug.",
-        },
-      ],
-    };
-  }
-  if (_slug && (await prisma.skill.count({ where: { slug: _slug } }))) {
-    fieldErrs = {
-      ...fieldErrs,
-      slug: [
-        {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The slug must be unique!",
-        },
-      ],
-    };
-  }
-  if (Object.keys(fieldErrs).length !== 0) {
-    return ApiClientFormError.BadRequest(fieldErrs).toJson();
-  }
+  const fieldErrors = new ApiClientFieldErrors();
 
-  const skill = await prisma.skill.create({
-    data: {
-      ...data,
-      slug,
-      createdById: user.id,
-      updatedById: user.id,
-      experiences: {
-        createMany: {
-          data: (experiences ?? []).map(id => ({
-            assignedById: user.id,
-            experienceId: id,
-          })),
+  const sk = await prisma.$transaction(async tx => {
+    if (await prisma.skill.count({ where: { label: data.label } })) {
+      fieldErrors.add("label", {
+        code: ApiClientFieldErrorCodes.unique,
+        message: "The label must be unique!",
+      });
+      /* If the slug is not explicitly provided and the label does not violate the unique
+         constraint, but the slugified form of the label does, this should be a more specific error
+         message. */
+    } else if (!_slug && (await prisma.skill.count({ where: { slug } }))) {
+      fieldErrors.add("label", {
+        code: ApiClientFieldErrorCodes.unique,
+        message:
+          "The auto-generated slug for the label is not unique. Please provide a unique slug.",
+      });
+    }
+    if (_slug && (await prisma.skill.count({ where: { slug: _slug } }))) {
+      fieldErrors.add("slug", {
+        code: ApiClientFieldErrorCodes.unique,
+        message: "The slug must be unique!",
+      });
+    }
+    const [experiences] = await queryM2MsDynamically(tx, {
+      model: "experience",
+      ids: _experiences,
+      fieldErrors,
+    });
+    const [educations] = await queryM2MsDynamically(tx, {
+      model: "education",
+      ids: _educations,
+      fieldErrors,
+    });
+    const [projects] = await queryM2MsDynamically(tx, {
+      model: "project",
+      ids: _projects,
+      fieldErrors,
+    });
+    if (!fieldErrors.isEmpty) {
+      return fieldErrors.toError().toJson();
+    }
+
+    return await prisma.skill.create({
+      data: {
+        ...data,
+        slug,
+        createdById: user.id,
+        updatedById: user.id,
+        experiences: {
+          createMany: {
+            data: (experiences ?? []).map(exp => ({
+              assignedById: user.id,
+              experienceId: exp.id,
+            })),
+          },
+        },
+        projects: {
+          createMany: {
+            data: (projects ?? []).map(p => ({
+              assignedById: user.id,
+              projectId: p.id,
+            })),
+          },
+        },
+        educations: {
+          createMany: {
+            data: (educations ?? []).map(edu => ({
+              assignedById: user.id,
+              educationId: edu.id,
+            })),
+          },
         },
       },
-      educations: {
-        createMany: {
-          data: (educations ?? []).map(id => ({
-            assignedById: user.id,
-            educationId: id,
-          })),
-        },
-      },
-    },
+    });
   });
+  // TODO: We may have to revalidate other API paths as well.
   revalidatePath("/admin/skills", "page");
-  return skill;
+  revalidatePath("/admin/experiences", "page");
+  revalidatePath("/admin/educations", "page");
+  return sk;
 };

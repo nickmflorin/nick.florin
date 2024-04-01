@@ -28,6 +28,6 @@ export async function seedProfile(ctx: SeedContext) {
         updatedById: ctx.user.id,
       },
     });
-    stdout.ok("Updated Profile");
+    stdout.info("Updated Profile");
   }
 }

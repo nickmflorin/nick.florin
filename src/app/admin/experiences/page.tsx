@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ExperiencesTableView } from "~/components/tables/ExperiencesTableView";
+import { ExperiencesTableView } from "~/components/tables/views/ExperiencesTableView";
 
 interface ExperiencesPageProps {
   readonly searchParams: {

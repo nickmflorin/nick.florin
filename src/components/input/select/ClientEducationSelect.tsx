@@ -1,8 +1,8 @@
 "use client";
 import { type ApiEducation } from "~/prisma/model";
-import { type Visibility } from "~/actions/visibility";
+import { type HttpError } from "~/api";
+import { type Visibility } from "~/api/visibility";
 import { useEducations } from "~/hooks";
-import { type HttpError } from "~/http";
 
 import { EducationSelect, type EducationSelectProps } from "./EducationSelect";
 

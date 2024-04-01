@@ -12,9 +12,11 @@ export interface SkillDrawerProps
   }> {}
 
 export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useSkill(skillId, {
-    keepPreviousData: true,
-  });
+  const { data, isLoading, error } = useSkill(
+    skillId,
+    { experiences: true, educations: true, projects: true },
+    { keepPreviousData: true },
+  );
 
   return (
     <Drawer className="overflow-y-scroll">

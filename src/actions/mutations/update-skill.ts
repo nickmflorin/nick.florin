@@ -11,19 +11,16 @@ import {
   type Skill,
   type Experience,
   type Education,
-  type PrismaClient,
+  type Project,
+  type Transaction,
   type User,
 } from "~/prisma/model";
-import { ApiClientFormError, type ApiClientFieldErrors } from "~/http";
+import { ApiClientFieldErrors } from "~/api";
+import { SkillSchema } from "~/api/schemas";
 
-import { SkillSchema } from "../schemas";
+import { queryM2MsDynamically } from "./m2ms";
 
 const UpdateSkillSchema = SkillSchema.partial();
-
-type Transaction = Omit<
-  PrismaClient,
-  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
->;
 
 const syncExperiences = async (
   tx: Transaction,
@@ -111,15 +108,60 @@ const syncEducations = async (
   }
 };
 
-export const updateSkill = async (
-  id: string,
-  req: z.infer<typeof UpdateSkillSchema>,
-): Promise<Skill> => {
+const syncProjects = async (
+  tx: Transaction,
+  { skill, projects, user }: { skill: Skill; user: User; projects?: Project[] },
+) => {
+  if (projects) {
+    const relationships = await tx.projectOnSkills.findMany({
+      where: { skillId: skill.id },
+    });
+    /* We need to remove the relationship between the skill and the project if there is an
+       existing relationship associated with the project but the project's ID is not included
+       in the API request. */
+    const toRemove = relationships.filter(r => !projects.map(e => e.id).includes(r.projectId));
+    if (toRemove.length !== 0) {
+      await Promise.all(
+        toRemove.map(relationship =>
+          tx.projectOnSkills.delete({
+            where: {
+              skillId_projectId: {
+                skillId: relationship.skillId,
+                projectId: relationship.projectId,
+              },
+            },
+          }),
+        ),
+      );
+    }
+    /* We need to add relationships between an experience and the skill if the experience's ID is
+       included in the API request and there is not an existing relationship between that
+       experience and the skill. */
+    const toAdd = projects.filter(e => !relationships.some(r => r.projectId === e.id));
+    if (toAdd.length !== 0) {
+      await tx.projectOnSkills.createMany({
+        data: toAdd.map(e => ({
+          skillId: skill.id,
+          projectId: e.id,
+          assignedById: user.id,
+        })),
+      });
+    }
+  }
+};
+
+export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSchema>) => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateSkillSchema.parse(req);
 
-  const { slug, experiences: _experiences, educations: _educations, ...data } = parsed;
+  const {
+    slug,
+    projects: _projects,
+    experiences: _experiences,
+    educations: _educations,
+    ...data
+  } = parsed;
 
   const sk = await prisma.$transaction(async tx => {
     // TODO: Should we use an ApiClientError here to indicate that the skill does not exist?
@@ -139,44 +181,41 @@ export const updateSkill = async (
       });
     }
 
-    let fieldErrors: ApiClientFieldErrors = {};
-    let experiences: Experience[] | undefined = undefined;
-    let educations: Education[] | undefined = undefined;
+    const fieldErrors = new ApiClientFieldErrors();
 
-    if (_experiences !== undefined) {
-      experiences = await tx.experience.findMany({ where: { id: { in: _experiences } } });
-      if (experiences.length !== _experiences.length) {
-        fieldErrors = {
-          ...fieldErrors,
-          experiences: {
-            internalMessage: "One or more of the provided experiences do not exist.",
-            code: "invalid",
-          },
-        };
-      }
-    }
-    if (_educations !== undefined) {
-      educations = await tx.education.findMany({ where: { id: { in: _educations } } });
-      if (educations.length !== _educations.length) {
-        fieldErrors = {
-          ...fieldErrors,
-          experiences: {
-            internalMessage: "One or more of the provided educations do not exist.",
-            code: "invalid",
-          },
-        };
-      }
-    }
-    if (Object.keys(fieldErrors).length !== 0) {
-      throw ApiClientFormError.BadRequest(fieldErrors);
+    const [experiences] = await queryM2MsDynamically(tx, {
+      model: "experience",
+      ids: _experiences,
+      fieldErrors,
+    });
+    const [educations] = await queryM2MsDynamically(tx, {
+      model: "education",
+      ids: _educations,
+      fieldErrors,
+    });
+    const [projects] = await queryM2MsDynamically(tx, {
+      model: "project",
+      ids: _projects,
+      fieldErrors,
+    });
+
+    if (!fieldErrors.isEmpty) {
+      return fieldErrors.toError().toJson();
     }
 
     await syncExperiences(tx, { experiences, skill, user });
     await syncEducations(tx, { educations, skill, user });
+    await syncProjects(tx, { projects, skill, user });
 
     return skill;
   });
+  // TODO: Add /admin/projects once that page is setup.
   revalidatePath("/admin/skills", "page");
+  revalidatePath("/admin/experiences", "page");
+  revalidatePath("/admin/educations", "page");
   revalidatePath("/api/skills");
+  revalidatePath("/api/experiences");
+  revalidatePath("/api/educations");
+  revalidatePath("/api/projects");
   return sk;
 };

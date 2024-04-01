@@ -5,9 +5,8 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/http";
-
-import { CompanySchema } from "../schemas";
+import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { CompanySchema } from "~/api/schemas";
 
 export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
   const user = await getAuthAdminUser();

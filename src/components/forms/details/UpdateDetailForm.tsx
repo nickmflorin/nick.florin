@@ -3,23 +3,23 @@ import { useEffect, useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { type FullDetail, type NestedDetail, isFullDetail } from "~/prisma/model";
+import { type FullApiDetail, type NestedApiDetail, isFullDetail } from "~/prisma/model";
 import { deleteDetail } from "~/actions/mutations/delete-detail";
 import { deleteNestedDetail } from "~/actions/mutations/delete-nested-detail";
 import { updateDetail } from "~/actions/mutations/update-detail";
 import { updateNestedDetail } from "~/actions/mutations/update-nested-detail";
+import { isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
 import { type Action, mergeActions } from "~/components/structural";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 
 import { DetailForm, type DetailFormProps } from "./DetailForm";
 import { type DetailFormValues, DetailFormSchema } from "./types";
 
-export interface UpdateDetailFormProps<D extends FullDetail | NestedDetail>
+export interface UpdateDetailFormProps<D extends FullApiDetail | NestedApiDetail>
   extends Omit<
     DetailFormProps,
     "form" | "onSubmit" | "footer" | "isNew" | "isOpen" | "onToggleOpen"
@@ -29,7 +29,7 @@ export interface UpdateDetailFormProps<D extends FullDetail | NestedDetail>
   readonly onDeleted: () => void;
 }
 
-export const UpdateDetailForm = <D extends FullDetail | NestedDetail>({
+export const UpdateDetailForm = <D extends FullApiDetail | NestedApiDetail>({
   detail,
   actions,
   onDeleted,

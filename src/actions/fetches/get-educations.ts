@@ -11,8 +11,8 @@ import {
   type EduDetail,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
-import { parsePagination } from "~/actions/pagination";
-import { type Visibility } from "~/actions/visibility";
+import { parsePagination } from "~/api/pagination";
+import { type Visibility } from "~/api/visibility";
 
 import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "./constants";
 
@@ -115,7 +115,10 @@ export const getEducations = cache(
           entityId: { in: edus.map(e => e.id) },
         },
         // Accounts for cases where multiple details were created at the same time due to seeding.
-        include: { nestedDetails: { orderBy: [{ createdAt: "desc" }, { id: "desc" }] } },
+        include: {
+          project: true,
+          nestedDetails: { orderBy: [{ createdAt: "desc" }, { id: "desc" }] },
+        },
         // Accounts for cases where multiple details were created at the same time due to seeding.
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       });

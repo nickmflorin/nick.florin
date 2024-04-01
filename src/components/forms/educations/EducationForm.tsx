@@ -1,7 +1,7 @@
 "use client";
 import { type z } from "zod";
 
-import { EducationSchema } from "~/actions/schemas";
+import { EducationSchema } from "~/api/schemas";
 import { Checkbox } from "~/components/input/Checkbox";
 import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
 import { DegreeSelect } from "~/components/input/select/DegreeSelect";

@@ -1,25 +1,35 @@
-"use client";
+import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
+import { type FloatingProps } from "./Floating";
+import { TooltipContent, type TooltipContentProps } from "./TooltipContent";
+import * as types from "./types";
 
-import { Floating, type FloatingProps } from "./Floating";
-import { TooltipContent } from "./TooltipContent";
+const Floating = dynamic(() => import("./Floating"));
 
 export interface TooltipProps extends Omit<FloatingProps, "content"> {
   readonly content: ReactNode;
+  readonly variant?: types.FloatingVariant;
+  readonly className?: TooltipContentProps["className"];
 }
 
-export const Tooltip = ({ children, content, ...props }: TooltipProps) => (
+export const Tooltip = ({
+  children,
+  content,
+  className,
+  variant = types.FloatingVariants.SECONDARY,
+  ...props
+}: TooltipProps) => (
   <Floating
     {...props}
-    className={clsx("rounded-sm py-[6px] px-[10px] text-md leading-[14px]", props.className)}
-    content={({ params, styles, ref }) => (
-      <TooltipContent ref={ref} {...params} style={styles}>
+    content={
+      <TooltipContent className={className} variant={variant}>
         {content}
       </TooltipContent>
-    )}
+    }
   >
     {children}
   </Floating>
 );
+
+export default Tooltip;

@@ -10,12 +10,13 @@ import { DetailEntityType, type Detail } from "~/prisma/model";
 import {
   ApiClientFormError,
   ApiClientGlobalError,
-  type ApiClientFieldErrors,
   parseZodError,
-} from "~/http";
+  ApiClientFieldErrors,
+  ApiClientFieldErrorCodes,
+} from "~/api";
+import { DetailSchema } from "~/api/schemas";
 
 import { getEntity } from "../fetches/get-entity";
-import { DetailSchema } from "../schemas";
 
 const ExistingSchema = DetailSchema.partial({ label: true }).extend({ id: z.string().uuid() });
 const NewSchema = DetailSchema;
@@ -32,7 +33,7 @@ export const updateDetails = async (
 ) => {
   const user = await getAuthAdminUser();
 
-  let fieldErrors: ApiClientFieldErrors = {};
+  const fieldErrors = new ApiClientFieldErrors();
   let existingDetails: z.infer<typeof ExistingSchema>[] = [];
   let newDetails: z.infer<typeof NewSchema>[] = [];
 
@@ -70,12 +71,10 @@ export const updateDetails = async (
           existing.label !== label &&
           (await tx.detail.count({ where: { entityId, entityType, label } }))
         ) {
-          fieldErrors = {
-            ...fieldErrors,
-            [`details.${i}.label`]: [
-              { code: "unique", message: "The label must be unique for a given parent." },
-            ],
-          };
+          fieldErrors.add(`details.${i}.label`, {
+            code: ApiClientFieldErrorCodes.unique,
+            message: "The label must be unique for a given parent.",
+          });
         } else {
           existingDetails = [...existingDetails, { ...rest, label, id }];
         }
@@ -89,15 +88,19 @@ export const updateDetails = async (
            What we need to do is first check if there is an 'id' property, and use that to determine
            which schema the errors should be returned from. */
         const errs = parseZodError(parsedExisting.error, ExistingSchema);
-        fieldErrors = Object.keys(errs).reduce(
-          (acc, k) => ({ ...acc, [`details.${i}.${k}`]: errs[k as keyof typeof errs] }),
-          fieldErrors,
+        fieldErrors.add(
+          Object.keys(errs).reduce(
+            (acc, k) => ({ ...acc, [`details.${i}.${k}`]: errs[k as keyof typeof errs] }),
+            {},
+          ),
         );
       } else {
         const errs = parseZodError(parsedNew.error, NewSchema);
-        fieldErrors = Object.keys(errs).reduce(
-          (acc, k) => ({ ...acc, [`details.${i}.${k}`]: errs[k as keyof typeof errs] }),
-          fieldErrors,
+        fieldErrors.add(
+          Object.keys(errs).reduce(
+            (acc, k) => ({ ...acc, [`details.${i}.${k}`]: errs[k as keyof typeof errs] }),
+            {},
+          ),
         );
       }
     }

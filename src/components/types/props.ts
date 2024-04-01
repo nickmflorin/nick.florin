@@ -27,6 +27,29 @@ export const classNameContains = (
   );
 };
 
+const prefixIsInvalid = (prefix: string): boolean => prefix.trim().length === 0;
+
+export const withoutOverridingClassName = (
+  overriding: string,
+  cs: ClassName,
+  opts?: { prefix?: string },
+): string => {
+  let prefix: string;
+  if (opts?.prefix !== undefined) {
+    if (prefixIsInvalid(opts.prefix)) {
+      throw new Error(`The prefix '${opts.prefix}' is invalid, it must have at least 1 character.`);
+    }
+    prefix = opts.prefix;
+  } else if (!overriding.includes("-") || prefixIsInvalid(overriding.split("-")[0])) {
+    throw new Error(
+      `The overriding class name '${overriding}' is invalid, it must have a valid prefix.`,
+    );
+  } else {
+    prefix = overriding.split("-")[0];
+  }
+  return clsx({ [overriding]: !classNameContains(cs, c => c.startsWith(prefix)) }, cs);
+};
+
 export const BorderRadii = enumeratedLiterals(
   ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full"] as const,
   {},

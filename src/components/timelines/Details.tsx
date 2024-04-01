@@ -1,24 +1,25 @@
 import clsx from "clsx";
 
-import { type Detail, type NestedDetail } from "~/prisma/model";
+import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
+import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
 
 import { type TypographySize } from "../typography";
 
-type TopLevelDetail = Detail & { nestedDetails?: NestedDetail[] };
-type DetailWithNested = Detail & { nestedDetails: NestedDetail[] };
+type TopLevelDetail = ApiDetail & { nestedDetails?: NestedApiDetail[] };
+type DetailWithNested = ApiDetail & { nestedDetails: NestedApiDetail[] };
 
-const detailHasNesting = (detail: TopLevelDetail | NestedDetail): detail is DetailWithNested =>
+const detailHasNesting = (detail: TopLevelDetail | NestedApiDetail): detail is DetailWithNested =>
   ((detail as DetailWithNested).nestedDetails ?? []).filter(d => d.visible !== false).length > 0;
 
-const partitionDetails = <D extends TopLevelDetail | NestedDetail>(details: D[]): D[] => [
+const partitionDetails = <D extends TopLevelDetail | NestedApiDetail>(details: D[]): D[] => [
   ...details.filter(d => !detailHasNesting(d)),
   ...details.filter(detailHasNesting),
 ];
 
-const DetailComponent = <D extends TopLevelDetail | NestedDetail>({
+const DetailComponent = <D extends TopLevelDetail | NestedApiDetail>({
   detail,
   index,
   textSize = "md",
@@ -34,7 +35,13 @@ const DetailComponent = <D extends TopLevelDetail | NestedDetail>({
           <Label size={textSize} className="w-[8px]">
             {`${index}.`}
           </Label>
-          <Label size={textSize}>{detail.label}</Label>
+          {detail.project ? (
+            <Link options={{ as: "link" }} href={`/projects/${detail.project.slug}`}>
+              {detail.label}
+            </Link>
+          ) : (
+            <Label size={textSize}>{detail.label}</Label>
+          )}
         </div>
       ) : (
         <Label size={textSize}>
@@ -57,7 +64,7 @@ export interface TopDetailsProps extends ComponentProps {
 }
 
 export interface NestedDetailsProps extends ComponentProps {
-  readonly details: NestedDetail[];
+  readonly details: NestedApiDetail[];
   readonly isNested: true;
 }
 
@@ -73,7 +80,7 @@ export const Details = ({ details, isNested, ...props }: DetailsProps): JSX.Elem
         props.className,
       )}
     >
-      {partitionDetails(details as (TopLevelDetail | NestedDetail)[])
+      {partitionDetails(details as (TopLevelDetail | NestedApiDetail)[])
         .filter(d => d.visible !== false)
         .map((detail, i) => (
           <DetailComponent

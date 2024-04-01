@@ -4,16 +4,16 @@ import { useTransition } from "react";
 
 import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/mutations/update-skill";
+import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
-import { isApiClientErrorJson } from "~/http";
 
 import { useForm } from "../generic/hooks/use-form";
 
 import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues } from "./SkillForm";
 
 export interface UpdateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
-  readonly skill: ApiSkill;
+  readonly skill: ApiSkill<{ educations: true; experiences: true; projects: true }>;
   readonly onCancel?: () => void;
 }
 
@@ -35,6 +35,7 @@ export const UpdateSkillForm = ({
       experiences: [],
       educations: [],
       categories: [],
+      projects: [],
       programmingDomains: [],
       programmingLanguages: [],
       includeInTopSkills: false,
@@ -50,6 +51,7 @@ export const UpdateSkillForm = ({
       description: skill.description ?? "",
       experiences: skill.experiences.map(exp => exp.id),
       educations: skill.educations.map(edu => edu.id),
+      projects: skill.projects.map(proj => proj.id),
     });
   }, [skill, setValues]);
 

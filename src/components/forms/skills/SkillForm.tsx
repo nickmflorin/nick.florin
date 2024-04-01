@@ -1,10 +1,11 @@
 "use client";
 import { type z } from "zod";
 
-import { SkillSchema } from "~/actions/schemas";
+import { SkillSchema } from "~/api/schemas";
 import { Checkbox } from "~/components/input/Checkbox";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
+import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
 import { ProgrammingDomainSelect } from "~/components/input/select/ProgrammingDomainSelect";
 import { ProgrammingLanguageSelect } from "~/components/input/select/ProgrammingLanguageSelect";
 import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
@@ -63,6 +64,21 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
           inPortal
           onError={() =>
             props.form.setStaticErrors("educations", "There was an error loading the data.")
+          }
+        />
+      )}
+    </Form.ControlledField>
+    <Form.ControlledField name="projects" label="Projects" form={props.form}>
+      {({ value, onChange }) => (
+        <ClientProjectSelect
+          inputClassName="w-full"
+          menuClassName="max-h-[260px]"
+          options={{ isMulti: true }}
+          value={value}
+          onChange={onChange}
+          inPortal
+          onError={() =>
+            props.form.setStaticErrors("projects", "There was an error loading the data.")
           }
         />
       )}

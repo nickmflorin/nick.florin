@@ -10,15 +10,17 @@ import { ShowHide } from "~/components/util";
 
 import { Educations } from "./Educations";
 import { Experiences } from "./Experiences";
+import { Projects } from "./Projects";
 
 export interface SkillDrawerContentProps {
-  readonly skill: ApiSkill;
+  readonly skill: ApiSkill<{ educations: true; experiences: true; projects: true }>;
 }
 
 export const SkillDrawerContent = ({
   skill: {
     experiences,
     educations,
+    projects,
     label,
     description,
     categories,
@@ -73,6 +75,12 @@ export const SkillDrawerContent = ({
         <>
           <hr className="w-full border-t border-gray-200" />
           <Educations educations={educations} />
+        </>
+      )}
+      {projects.length !== 0 && (
+        <>
+          <hr className="w-full border-t border-gray-200" />
+          <Projects projects={projects} />
         </>
       )}
     </div>

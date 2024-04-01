@@ -15,6 +15,7 @@ import clsx from "clsx";
 import type * as types from "../types";
 
 import { Floating, type FloatingProps } from "~/components/floating/Floating";
+import { FloatingContent } from "~/components/floating/FloatingContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import {
   type MenuModel,
@@ -225,7 +226,6 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
         offset={menuOffset}
         isOpen={open}
         isDisabled={!isReady}
-        variant="white"
         onOpen={e => onOpen?.(e, { value, models, instance: selectInstance })}
         onClose={e => onClose?.(e, { value, models, instance: selectInstance })}
         onOpenChange={(isOpen, evt) => {
@@ -233,23 +233,25 @@ const LocalSelect = forwardRef<types.SelectInstance<any, any>, SelectProps<any, 
           onOpenChange?.(evt, { isOpen, value, models, instance: selectInstance });
         }}
         content={
-          <AbstractMenu
-            {...(props as MenuProps<M, O>)}
-            isReady={isReady}
-            className={clsx("z-50", menuClassName)}
-            value={value}
-            onSelect={(value, model, item) => {
-              selectModel(value, item);
-              if (
-                closeMenuOnSelect ||
-                (closeMenuOnSelect === undefined && !props.options.isMulti)
-              ) {
-                setOpen(false);
-              }
-            }}
-          >
-            {itemRenderer ? m => itemRenderer(m) : undefined}
-          </AbstractMenu>
+          <FloatingContent variant="white">
+            <AbstractMenu
+              {...(props as MenuProps<M, O>)}
+              isReady={isReady}
+              className={clsx("z-50", menuClassName)}
+              value={value}
+              onSelect={(value, model, item) => {
+                selectModel(value, item);
+                if (
+                  closeMenuOnSelect ||
+                  (closeMenuOnSelect === undefined && !props.options.isMulti)
+                ) {
+                  setOpen(false);
+                }
+              }}
+            >
+              {itemRenderer ? m => itemRenderer(m) : undefined}
+            </AbstractMenu>
+          </FloatingContent>
         }
       >
         {children ||

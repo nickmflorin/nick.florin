@@ -2,7 +2,7 @@ import { auth, getAuth } from "@clerk/nextjs/server";
 
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type User } from "~/prisma/model";
-import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/http";
+import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 
 import { logger } from "./logger";
 

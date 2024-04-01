@@ -1,50 +1,20 @@
 "use client";
-import { type ReactNode, useRef, cloneElement, useState, useMemo, type CSSProperties } from "react";
+import { type ReactNode, cloneElement, useMemo } from "react";
 
-import {
-  FloatingArrow,
-  type Placement,
-  arrow,
-  useFloating,
-  type ReferenceType,
-  useInteractions,
-  useHover,
-  useClick,
-  useDismiss,
-  size,
-  offset as offsetMiddleware,
-  type OffsetOptions,
-  FloatingPortal,
-  autoUpdate as autoUpdater,
-} from "@floating-ui/react";
-import clsx from "clsx";
-import { flushSync } from "react-dom";
+import { FloatingPortal } from "@floating-ui/react";
 
-import { type Size, type ComponentProps, sizeToString } from "~/components/types";
+import { type ComponentProps, sizeToString } from "~/components/types";
 
-import { FloatingContent } from "./FloatingContent";
+import { Arrow } from "./Arrow";
 import * as types from "./types";
+import { useFloating, type UseFloatingConfig } from "./use-floating";
 
-export type FloatingRenderProps = {
-  readonly isOpen: boolean;
-  readonly params: ReturnType<ReturnType<typeof useInteractions>["getReferenceProps"]>;
-  readonly ref: (node: ReferenceType | null) => void;
-};
-
-export type FloatingContentRenderProps = {
-  readonly params: Record<string, unknown>;
-  readonly styles: CSSProperties;
-  readonly ref: (node: HTMLElement | null) => void;
-};
-
-type FloatingTrigger = "hover" | "click";
-
-const WrapInPortal = ({
+const ConditionalPortal = ({
   children,
   inPortal = false,
 }: {
   inPortal?: boolean;
-  children: JSX.Element;
+  children: ReactNode;
 }) => {
   if (inPortal) {
     return <FloatingPortal>{children}</FloatingPortal>;
@@ -52,18 +22,11 @@ const WrapInPortal = ({
   return children;
 };
 
-export interface FloatingProps extends ComponentProps {
+export interface FloatingProps extends UseFloatingConfig {
   /**
    * The content that appears inside of the floating element.
    */
-  readonly content: ReactNode | ((props: FloatingContentRenderProps) => ReactNode);
-  readonly isOpen?: boolean;
-  readonly autoUpdate?: boolean;
-  readonly triggers?: FloatingTrigger[];
-  readonly variant?: types.FloatingVariant;
-  readonly withArrow?: boolean;
-  readonly offset?: OffsetOptions;
-  readonly arrowClassName?: ComponentProps["className"];
+  readonly content: JSX.Element | ((props: types.FloatingContentRenderProps) => JSX.Element);
   readonly inPortal?: boolean;
   /**
    * The element that should trigger the floating content to apper and/or disappear, depending on
@@ -87,87 +50,33 @@ export interface FloatingProps extends ComponentProps {
    * component does not accept those props - which can lead to bugs with the floating element's
    * usage.
    */
-  readonly children: JSX.Element | ((params: FloatingRenderProps) => JSX.Element);
-  readonly placement?: Placement;
-  readonly width?: number | "target";
-  readonly maxHeight?: Size;
+  readonly children: JSX.Element | ((params: types.FloatingRenderProps) => JSX.Element);
   readonly isDisabled?: boolean;
-  readonly onOpen?: (e: Event) => void;
-  readonly onClose?: (e: Event) => void;
-  readonly onOpenChange?: (value: boolean, evt: Event) => void;
+  readonly withArrow?: boolean;
+  readonly arrowClassName?: ComponentProps["className"];
+  readonly variant?: types.FloatingVariant;
 }
 
 export const Floating = ({
-  className,
-  style,
   children: _children,
-  // Note: This should not be blindly turned on because it can cause performance degradation.
-  autoUpdate = false,
-  triggers = ["hover"],
-  isOpen: propIsOpen,
-  inPortal = false,
-  maxHeight: _propMaxHeight,
-  content,
-  placement,
-  offset,
-  isDisabled = false,
+  content: _content,
+  inPortal,
+  isDisabled,
   withArrow = true,
   arrowClassName,
-  width,
-  variant = types.FloatingVariants.PRIMARY,
-  onOpen,
-  onClose,
-  onOpenChange,
+  variant = types.FloatingVariants.SECONDARY,
+  ...config
 }: FloatingProps) => {
-  const [_isOpen, setIsOpen] = useState(false);
-  const [maxHeight, setMaxHeight] = useState<Size | null>(_propMaxHeight ?? null);
-
-  /* Allow the open state of the floating element to be controlled externally to the component if
-     desired. */
-  const isOpen = propIsOpen === undefined ? _isOpen : propIsOpen;
-
-  const arrowRef = useRef(null);
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    whileElementsMounted: autoUpdate ? autoUpdater : undefined,
-    onOpenChange: (value: boolean, evt: Event) => {
-      setIsOpen(value);
-      onOpenChange?.(value, evt);
-      if (value === true) {
-        onOpen?.(evt);
-      } else {
-        onClose?.(evt);
-      }
-    },
-    placement,
-    middleware: [
-      arrow({
-        element: arrowRef,
-      }),
-      offset ? offsetMiddleware(offset) : undefined,
-      size({
-        padding: 10,
-        apply({ availableHeight, rects, elements }) {
-          if (width !== undefined) {
-            Object.assign(elements.floating.style, {
-              width: typeof width === "number" ? `${width}px` : `${rects.reference.width}px`,
-            });
-          }
-          if (_propMaxHeight === undefined) {
-            flushSync(() => setMaxHeight(`${availableHeight}px`));
-          }
-        },
-      }),
-    ],
-  });
-
-  const dismiss = useDismiss(context, { enabled: triggers.includes("click") });
-  const hover = useHover(context, { enabled: triggers.includes("hover") });
-  const click = useClick(context, { enabled: triggers.includes("click") });
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
-
-  const referenceProps = getReferenceProps();
+  const {
+    refs,
+    referenceProps,
+    isOpen,
+    floatingProps,
+    maxHeight,
+    floatingStyles,
+    arrowRef,
+    context,
+  } = useFloating(config);
 
   const children = useMemo(() => {
     if (typeof _children === "function") {
@@ -179,57 +88,52 @@ export const Floating = ({
     });
   }, [_children, refs, referenceProps, isOpen]);
 
-  const floatingProps = getFloatingProps();
+  const content = useMemo(() => {
+    const styles = maxHeight
+      ? { ...floatingStyles, maxHeight: sizeToString(maxHeight) }
+      : floatingStyles;
+    if (typeof _content === "function") {
+      return _content({
+        ref: refs.setFloating,
+        params: floatingProps,
+        styles: styles,
+      });
+    }
+    return cloneElement(
+      _content,
+      {
+        ...floatingProps,
+        ref: refs.setFloating,
+        style: { ..._content.props.style, ...styles },
+      },
+      <>
+        {_content.props.children}
+        {context && withArrow && (
+          <Arrow ref={arrowRef} variant={variant} context={context} className={arrowClassName} />
+        )}
+      </>,
+    );
+  }, [
+    _content,
+    floatingProps,
+    refs,
+    maxHeight,
+    floatingStyles,
+    context,
+    arrowRef,
+    arrowClassName,
+    variant,
+    withArrow,
+  ]);
 
   return (
     <>
       {children}
       {isOpen && !isDisabled && (
-        <WrapInPortal inPortal={inPortal}>
-          <>
-            {typeof content === "function" ? (
-              content({
-                ref: refs.setFloating,
-                params: floatingProps,
-                styles: maxHeight
-                  ? { ...floatingStyles, maxHeight: sizeToString(maxHeight) }
-                  : floatingStyles,
-              })
-            ) : (
-              <FloatingContent
-                ref={refs.setFloating}
-                variant={variant}
-                {...floatingProps}
-                style={
-                  maxHeight
-                    ? { ...style, ...floatingStyles, maxHeight: sizeToString(maxHeight) }
-                    : { ...style, ...floatingStyles }
-                }
-                className={clsx(
-                  /* Typically, the floating props do not include a class name - but just in case,
-                     we want to merge it with the content class name, if it exists. */
-                  typeof floatingProps.className === "string" ? floatingProps.className : undefined,
-                  className,
-                )}
-              >
-                {content}
-                {withArrow && (
-                  <FloatingArrow
-                    ref={arrowRef}
-                    context={context}
-                    height={4}
-                    width={9}
-                    className={clsx(
-                      types.getFloatingArrowVariantClassName(variant),
-                      arrowClassName,
-                    )}
-                  />
-                )}
-              </FloatingContent>
-            )}
-          </>
-        </WrapInPortal>
+        <ConditionalPortal inPortal={inPortal}>{content}</ConditionalPortal>
       )}
     </>
   );
 };
+
+export default Floating;

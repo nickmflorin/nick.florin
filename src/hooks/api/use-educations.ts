@@ -1,5 +1,5 @@
 import { type ApiEducation } from "~/prisma/model";
-import { type Visibility } from "~/actions/visibility";
+import { type Visibility } from "~/api/visibility";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 

@@ -6,9 +6,8 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/http";
-
-import { CompanySchema } from "../schemas";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { CompanySchema } from "~/api/schemas";
 
 const UpdateCompanySchema = CompanySchema.partial();
 

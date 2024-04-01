@@ -6,9 +6,8 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type School } from "~/prisma/model";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/http";
-
-import { EducationSchema } from "../schemas";
+import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { EducationSchema } from "~/api/schemas";
 
 export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
   const user = await getAuthAdminUser();
@@ -28,7 +27,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
        we do not need to worry about checking isPrismaInvalidIdError here. */
     if (isPrismaDoesNotExistError(e)) {
       throw ApiClientFormError.BadRequest({
-        company: {
+        school: {
           code: ApiClientFieldErrorCodes.does_not_exist,
           message: "The school does not exist.",
         },

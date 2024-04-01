@@ -1,11 +1,12 @@
 import { type prisma } from "../client";
 
 import { type Experience, type Company } from "./core";
+import { type ConditionallyIncluded } from "./inclusion";
 
-export type ExpIncludes = {
-  readonly skills?: boolean;
-  readonly details?: boolean;
-};
+export type ExpIncludes = Partial<{
+  readonly skills: boolean;
+  readonly details: boolean;
+}>;
 
 type ExpSkills = Awaited<
   ReturnType<typeof prisma.skill.findMany<{ include: { experiences: true } }>>
@@ -14,28 +15,19 @@ type ExpSkills = Awaited<
 export type ExpSkill = ExpSkills[number];
 
 type ExpDetails = Awaited<
-  ReturnType<typeof prisma.detail.findMany<{ include: { nestedDetails: true } }>>
+  ReturnType<typeof prisma.detail.findMany<{ include: { nestedDetails: true; project: true } }>>
 >;
 
 export type ExpDetail = ExpDetails[number];
 
-export type ApiExperience<I extends ExpIncludes | undefined = undefined> = I extends {
-  skills: true;
-  details: true;
-}
-  ? Experience & {
-      readonly company: Company;
+type _BaseApiExperience = Experience & { readonly company: Company };
+
+export type ApiExperience<I extends ExpIncludes = { skills: false; details: false }> =
+  ConditionallyIncluded<
+    _BaseApiExperience,
+    {
       readonly details: ExpDetail[];
       readonly skills: ExpSkill[];
-    }
-  : I extends { skills: true }
-    ? Experience & {
-        readonly company: Company;
-        readonly skills: ExpSkill[];
-      }
-    : I extends { details: true }
-      ? Experience & {
-          readonly company: Company;
-          readonly details: ExpDetail[];
-        }
-      : Experience & { readonly company: Company };
+    },
+    I
+  >;

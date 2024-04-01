@@ -12,16 +12,21 @@ const options = {
 } as const;
 
 export interface SchoolSelectProps
-  extends Omit<SelectProps<School, typeof options>, "options" | "itemRenderer"> {}
+  extends Omit<SelectProps<School, typeof options>, "options" | "itemRenderer"> {
+  readonly useAbbreviatedOptionLabels?: boolean;
+}
 
-export const SchoolSelect = (props: SchoolSelectProps): JSX.Element => (
+export const SchoolSelect = ({
+  useAbbreviatedOptionLabels,
+  ...props
+}: SchoolSelectProps): JSX.Element => (
   <Select<School, typeof options>
     {...props}
     options={options}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text size="sm" fontWeight="medium">
-          {m.name}
+          {useAbbreviatedOptionLabels ? m.shortName ?? m.name : m.name}
         </Text>
         <Text size="xs" className="text-body-light">
           {stringifyLocation({ city: m.city, state: m.state })}

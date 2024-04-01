@@ -9,6 +9,7 @@
       "educations": [
         {
           "major": "Financial Mathematics",
+          "shortMajor": "Fin. Math",
           "degree": "MASTERS_OF_SCIENCE_IN_ENGINEERING",
           "startDate": "2014-08-01T00:00:00Z",
           "endDate": "2016-01-01T00:00:00Z",
@@ -29,6 +30,7 @@
         },
         {
           "major": "Computational Mathematics",
+          "shortMajor": "Comp. Math",
           "degree": "MASTERS_OF_SCIENCE",
           "startDate": "2016-01-02T00:00:00Z",
           "postPoned": true,
@@ -62,6 +64,7 @@
       "educations": [
         {
           "major": "Electrical Engineering",
+          "shortMajor": "EE",
           "minor": "Economics",
           "degree": "BACHELORS_OF_SCIENCE",
           "concentration": "Robotics & Control Systems",

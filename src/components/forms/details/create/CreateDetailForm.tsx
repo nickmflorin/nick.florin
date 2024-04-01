@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { type DetailEntityType, type FullDetail } from "~/prisma/model";
+import { type DetailEntityType, type FullApiDetail } from "~/prisma/model";
 import { createDetail } from "~/actions/mutations/create-detail";
 
 import {
@@ -9,7 +9,7 @@ import {
 } from "./GenericCreateDetailForm";
 
 export interface CreateDetailFormProps
-  extends Omit<GenericCreateDetailFormProps<FullDetail>, "action" | "actions"> {
+  extends Omit<GenericCreateDetailFormProps<FullApiDetail>, "action" | "actions"> {
   readonly entityId: string;
   readonly entityType: DetailEntityType;
 }
@@ -24,7 +24,7 @@ export const CreateDetailForm = ({
     [entityId, entityType],
   );
 
-  return <GenericCreateDetailForm<FullDetail> action={createDetailForEntity} {...props} />;
+  return <GenericCreateDetailForm<FullApiDetail> action={createDetailForEntity} {...props} />;
 };
 
 export default CreateDetailForm;

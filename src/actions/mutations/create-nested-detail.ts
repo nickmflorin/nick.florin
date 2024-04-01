@@ -7,10 +7,10 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { prisma } from "~/prisma/client";
 import { DetailEntityType } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/http";
+import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { DetailSchema } from "~/api/schemas";
 
 import { getDetail } from "../fetches/get-detail";
-import { DetailSchema } from "../schemas";
 
 export const createNestedDetail = async (detailId: string, req: z.infer<typeof DetailSchema>) => {
   const user = await getAuthAdminUser();
@@ -46,6 +46,7 @@ export const createNestedDetail = async (detailId: string, req: z.infer<typeof D
       createdById: user.id,
       updatedById: user.id,
     },
+    include: { project: true },
   });
   switch (detail.entityType) {
     case DetailEntityType.EDUCATION: {
