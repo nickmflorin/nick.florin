@@ -6,8 +6,13 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { DetailEntityType, type Detail } from "~/prisma/model";
-import { ApiClientGlobalError, ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { DetailEntityType, type Detail, type Project } from "~/prisma/model";
+import {
+  ApiClientGlobalError,
+  ApiClientFormError,
+  ApiClientFieldErrorCodes,
+  ApiClientFieldErrors,
+} from "~/api";
 import { DetailSchema } from "~/api/schemas";
 
 const UpdateDetailSchema = DetailSchema.partial();
@@ -31,7 +36,26 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
     throw e;
   }
 
-  const { label, ...data } = parsed.data;
+  const { label, project: _project, ...data } = parsed.data;
+
+  const fieldErrors = new ApiClientFieldErrors();
+
+  let project: Project | null = null;
+  if (_project) {
+    try {
+      project = await prisma.project.findUniqueOrThrow({ where: { id: _project } });
+    } catch (e) {
+      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
+        fieldErrors.add("project", {
+          code: "does_not_exist",
+          message: "The project does not exist.",
+          internalMessage: `The project with ID '${_project}' does not exist.`,
+        });
+      }
+      throw e;
+    }
+  }
+
   if (
     label &&
     (await prisma.detail.count({
@@ -43,17 +67,21 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
       },
     }))
   ) {
-    return ApiClientFormError.BadRequest({
-      label: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'label' must be unique for a given parent.",
-      },
-    }).toJson();
+    fieldErrors.add("label", {
+      code: ApiClientFieldErrorCodes.unique,
+      message: "The 'label' must be unique for a given parent.",
+    });
   }
+
+  if (!fieldErrors.isEmpty) {
+    return fieldErrors.toError().toResponse();
+  }
+
   const updated = await prisma.detail.update({
     where: { id },
     data: {
       ...data,
+      projectId: project?.id,
       label,
       updatedById: user.id,
     },

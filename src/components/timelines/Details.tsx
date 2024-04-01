@@ -2,7 +2,6 @@ import clsx from "clsx";
 
 import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 import { Link } from "~/components/buttons";
-import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";

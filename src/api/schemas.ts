@@ -77,6 +77,7 @@ export const DetailSchema = z.object({
     minErrorMessage: "The short description must be at least 3 characters.",
   }).optional(),
   visible: z.boolean(),
+  project: z.string().uuid().nullable().optional(),
 });
 
 export const DetailsSchema = z.object({

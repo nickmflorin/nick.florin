@@ -61,6 +61,7 @@ export const UpdateDetailForm = <D extends FullApiDetail | NestedApiDetail>({
       label: "",
       description: "",
       shortDescription: "",
+      project: null,
     },
   });
 
@@ -69,6 +70,7 @@ export const UpdateDetailForm = <D extends FullApiDetail | NestedApiDetail>({
       label: detail.label,
       description: detail.description ?? "",
       shortDescription: detail.shortDescription ?? "",
+      project: detail.project?.id ?? null,
     });
   }, [detail, setValues]);
 

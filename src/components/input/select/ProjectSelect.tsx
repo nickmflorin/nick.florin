@@ -4,7 +4,7 @@ import { Text } from "~/components/typography/Text";
 import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
-  isNullable: false,
+  isNullable: true,
   getItemValue: (m: Project) => m.id,
   getItemLabel: (m: Project) => m.name,
   getItemValueLabel: (m: Project) => m.shortName ?? m.name,

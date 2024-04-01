@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { IconButton } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
+import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { type Action } from "~/components/structural";
@@ -101,6 +102,26 @@ export const DetailForm = React.memo(
             size="small"
           />
         </Form.Field>
+        <Form.ControlledField
+          name="project"
+          label="Project"
+          form={props.form}
+          helpText="The project that the detail is associated with, if applicable."
+        >
+          {({ value, onChange }) => (
+            <ClientProjectSelect
+              inputClassName="w-full"
+              menuClassName="max-h-[260px]"
+              value={value}
+              options={{ isMulti: false }}
+              onChange={onChange}
+              inPortal
+              onError={() =>
+                props.form.setStaticErrors("project", "There was an error loading the data.")
+              }
+            />
+          )}
+        </Form.ControlledField>
       </Form>
     );
   },
