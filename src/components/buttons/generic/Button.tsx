@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp } from "~/components/icons";
+import { type Size } from "~/components/types";
 
 import * as types from "../types";
 
@@ -13,6 +14,7 @@ export type ButtonProps<O extends types.ButtonOptions> = Omit<
   "buttonType"
 > & {
   readonly icon?: MultipleIconProp;
+  readonly gap?: Size;
   readonly loadingLocation?: "left" | "over" | "right";
 };
 
@@ -26,17 +28,25 @@ type LocalButtonType = {
 
 const LocalButton = forwardRef(
   <O extends types.ButtonOptions>(
-    { children, icon, loadingLocation, ...props }: ButtonProps<O>,
+    { children, icon, loadingLocation, gap, isLoading, iconSize, ...props }: ButtonProps<O>,
     ref: types.PolymorphicButtonRef<O>,
   ) => {
     const ps = {
       ...props,
+      iconSize,
+      isLoading,
       buttonType: "button",
     } as types.AbstractProps<"button", O>;
 
     return (
       <Base {...ps} ref={ref}>
-        <ButtonContent {...props} icon={icon} loadingLocation={loadingLocation}>
+        <ButtonContent
+          isLoading={isLoading}
+          iconSize={iconSize}
+          gap={gap}
+          icon={icon}
+          loadingLocation={loadingLocation}
+        >
           {children}
         </ButtonContent>
       </Base>

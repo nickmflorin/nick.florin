@@ -1,6 +1,8 @@
 import "server-only";
 import { cache } from "react";
 
+import omit from "lodash.omit";
+
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import {
@@ -129,7 +131,9 @@ export const getEducations = cache(
       if (includes?.skills === true) {
         modified = {
           ...modified,
-          skills: skills.filter(s => s.educations.some(e => e.educationId === edu.id)),
+          skills: skills
+            .filter(s => s.educations.some(e => e.educationId === edu.id))
+            .map(s => omit(s, "educations")),
         };
       }
       if (includes?.details === true) {

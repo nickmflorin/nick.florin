@@ -2,6 +2,7 @@ import clsx from "clsx";
 
 import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 import { Link } from "~/components/buttons";
+import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
@@ -36,17 +37,32 @@ const DetailComponent = <D extends TopLevelDetail | NestedApiDetail>({
             {`${index}.`}
           </Label>
           {detail.project ? (
-            <Link options={{ as: "link" }} href={`/projects/${detail.project.slug}`}>
+            <Link
+              fontSize={textSize}
+              options={{ as: "link" }}
+              href={`/projects/${detail.project.slug}`}
+            >
               {detail.label}
             </Link>
           ) : (
             <Label size={textSize}>{detail.label}</Label>
           )}
         </div>
+      ) : detail.project ? (
+        <div className="flex flex-row items-center gap-[4px]">
+          <Link
+            fontSize={textSize}
+            options={{ as: "link" }}
+            href={`/projects/${detail.project.slug}`}
+            gap="4px"
+            flex
+            icon={{ right: { name: "link" } }}
+          >
+            {detail.label}
+          </Link>
+        </div>
       ) : (
-        <Label size={textSize}>
-          {index !== undefined ? `${index}. ${detail.label}` : detail.label}
-        </Label>
+        <Label size={textSize}>{detail.label}</Label>
       )}
       {detail.description && (
         <Text size="smplus" className={clsx("text-gray-600", { "pl-[16px]": index !== undefined })}>

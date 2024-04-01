@@ -24,14 +24,6 @@ const toIconSize = (size: types.ButtonIconSize | undefined): Size | undefined =>
     ? sizeToString(size)
     : undefined;
 
-export interface ButtonContentProps {
-  readonly children?: ReactNode;
-  readonly isLoading?: boolean;
-  readonly icon?: MultipleIconProp;
-  readonly iconSize?: types.ButtonIconSize;
-  readonly loadingLocation?: types.ButtonLoadingLocation;
-}
-
 const Spin = ({
   iconSize,
   isLoading,
@@ -83,17 +75,32 @@ const ContentIcon = ({
   />
 );
 
+export interface ButtonContentProps extends ComponentProps {
+  readonly children?: ReactNode;
+  readonly isLoading?: boolean;
+  readonly icon?: MultipleIconProp;
+  readonly gap?: Size;
+  readonly iconSize?: types.ButtonIconSize;
+  readonly loadingLocation?: types.ButtonLoadingLocation;
+}
+
 export const ButtonContent = ({
   children,
   icon,
   isLoading = false,
+  gap,
   iconSize,
   loadingLocation: _loadingLocation,
+  ...props
 }: ButtonContentProps) => {
   const [leftIcon, rightIcon] = icon ? parseMultipleIconsProp(icon) : ([null, null] as const);
   const loadingLocation = _loadingLocation ?? leftIcon ? "left" : rightIcon ? "right" : "over";
   return (
-    <div className="button__content">
+    <div
+      {...props}
+      className={clsx("button__content", props.className)}
+      style={{ ...props.style, gap: gap !== undefined ? sizeToString(gap) : undefined }}
+    >
       {leftIcon && (isIconProp(leftIcon) || isDynamicIconProp(leftIcon)) ? (
         <ContentIcon
           icon={leftIcon}

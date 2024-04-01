@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp } from "~/components/icons";
+import { type Size } from "~/components/types";
 import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
 
 import * as types from "../types";
@@ -46,6 +47,7 @@ type LinkFlexProps<O extends types.ButtonOptions> = Omit<
      */
     readonly inline?: false;
     readonly icon?: MultipleIconProp;
+    readonly gap?: Size;
     readonly loadingLocation?: "left" | "over" | "right";
   };
 
@@ -73,6 +75,7 @@ type LinkInlineProps<O extends types.ButtonOptions> = Omit<
      */
     readonly inline?: true;
     readonly icon?: never;
+    readonly gap?: never;
     readonly loadingLocation?: never;
   };
 
@@ -90,12 +93,14 @@ const LocalLink = forwardRef(
       flex,
       size,
       fontWeight,
+      gap,
       /* Note: Since the 'Link' component does not have a 'height',  and it's 'height' is set based
          on the line-height of the text it contains, the 'iconSize' prop needs to be defaulted to
          a value that is not 100% of its parent container.  Otherwise, the icon and spinner will
          be very large. */
       iconSize = "small",
       loadingLocation,
+      isLoading,
       ...props
     }: LinkProps<O>,
     ref: types.PolymorphicButtonRef<O>,
@@ -103,12 +108,12 @@ const LocalLink = forwardRef(
     const ps = {
       ...props,
       iconSize,
+      isLoading,
       buttonType: "link",
     } as types.AbstractProps<"link", O>;
     return (
       <Base
         {...ps}
-        iconSize={iconSize}
         ref={ref}
         className={clsx(
           getTypographyClassName({
@@ -122,8 +127,9 @@ const LocalLink = forwardRef(
       >
         {flex ? (
           <ButtonContent
-            {...props}
+            gap={gap}
             iconSize={iconSize}
+            isLoading={isLoading}
             icon={icon}
             loadingLocation={loadingLocation}
           >
