@@ -63,10 +63,11 @@ export abstract class ApiClientError<
     return this._config.extra;
   }
 
-  public abstract toJson(): J;
+  public abstract get json(): J;
 
-  public toResponse = (): NextResponse<ApiClientErrorJson> =>
-    NextResponse.json<ApiClientErrorJson>(this.toJson(), { status: this.statusCode });
+  public get response(): NextResponse<ApiClientErrorJson> {
+    return NextResponse.json<ApiClientErrorJson>(this.json, { status: this.statusCode });
+  }
 }
 
 export class ApiClientFormError<E extends string = string> extends ApiClientError<
@@ -119,8 +120,8 @@ export class ApiClientFormError<E extends string = string> extends ApiClientErro
     }
   }
 
-  public toJson = () =>
-    removeUndefined({
+  public get json() {
+    return removeUndefined({
       errors: this.errors,
       statusCode: this.statusCode,
       code: this.code,
@@ -128,6 +129,7 @@ export class ApiClientFormError<E extends string = string> extends ApiClientErro
       internalMessage: this.internalMessage,
       extra: this.extra,
     });
+  }
 }
 
 export class ApiClientGlobalError extends ApiClientError<
@@ -176,12 +178,13 @@ export class ApiClientGlobalError extends ApiClientError<
       internalMessage: typeof message === "string" ? message : message?.internal,
     });
 
-  public toJson = () =>
-    removeUndefined({
+  public get json() {
+    return removeUndefined({
       statusCode: this.statusCode as ApiClientGlobalErrorJson["statusCode"],
       code: this.code,
       message: this.message,
       internalMessage: this.internalMessage,
       extra: this.extra,
     });
+  }
 }

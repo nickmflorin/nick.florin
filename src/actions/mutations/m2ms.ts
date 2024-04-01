@@ -55,10 +55,10 @@ export const queryM2MsDynamically = async <I extends string[] | undefined, T ext
   if (ids) {
     const models = await queryIdsDynamically(tx, model, ids);
     if (models.length !== uniq(ids).length) {
-      flds.add(FieldErrorKeys[model], {
-        internalMessage: `One or more of the provided ${model}(s) do not exist.`,
-        code: "invalid",
-      });
+      flds.addInvalid(
+        FieldErrorKeys[model],
+        `One or more of the provided ${model}(s) do not exist.`,
+      );
     }
     return [models, flds] as QueryM2MDynamicallyRT<I, T>;
   }

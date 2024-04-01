@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type School } from "~/prisma/model";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFieldErrors } from "~/api";
 import { EducationSchema } from "~/api/schemas";
 
 export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
@@ -14,10 +14,11 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
 
   const parsed = EducationSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, EducationSchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, EducationSchema).json;
   }
 
   const { school: schoolId, ...data } = parsed.data;
+  const fieldErrors = new ApiClientFieldErrors();
 
   let school: School;
   try {
@@ -26,35 +27,24 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
     /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
     if (isPrismaDoesNotExistError(e)) {
-      throw ApiClientFormError.BadRequest({
-        school: {
-          code: ApiClientFieldErrorCodes.does_not_exist,
-          message: "The school does not exist.",
-        },
-      });
+      return fieldErrors.addDoesNotExist("school", "The school does not exist.").json;
     }
     throw e;
   }
 
   if (await prisma.education.count({ where: { schoolId: school.id, major: data.major } })) {
-    return ApiClientFormError.BadRequest({
-      major: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'major' must be unique for a given school.",
-      },
-    }).toJson();
-  } else if (
+    fieldErrors.addUnique("major", "The 'major' must be unique for a given school.");
+  }
+  if (
     data.shortMajor &&
     (await prisma.education.count({
       where: { schoolId: school.id, shortMajor: data.shortMajor },
     }))
   ) {
-    return ApiClientFormError.BadRequest({
-      shortMajor: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'shortMajor' must be unique for a given school.",
-      },
-    }).toJson();
+    fieldErrors.addUnique("shortMajor", "The 'shortMajor' must be unique for a given school.");
+  }
+  if (fieldErrors.hasErrors) {
+    return fieldErrors.json;
   }
 
   const education = await prisma.education.create({

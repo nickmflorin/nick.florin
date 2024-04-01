@@ -5,8 +5,8 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type Education } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { type ApiEducation, type School } from "~/prisma/model";
+import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { EducationSchema } from "~/api/schemas";
 
 const UpdateEducationSchema = EducationSchema.partial();
@@ -16,16 +16,18 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
 
   const parsed = UpdateEducationSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, UpdateEducationSchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, UpdateEducationSchema).json;
   }
 
   const { school: schoolId, major, ...data } = parsed.data;
+  const fieldErrors = new ApiClientFieldErrors();
 
   const education = await prisma.$transaction(async tx => {
-    let edu: Education;
+    let edu: ApiEducation;
     try {
       edu = await tx.education.findUniqueOrThrow({
         where: { id },
+        include: { school: true },
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
@@ -33,52 +35,45 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
       }
       throw e;
     }
+    let school: School = edu.school;
     if (schoolId) {
       try {
-        await tx.school.findUniqueOrThrow({ where: { id: schoolId } });
+        school = await tx.school.findUniqueOrThrow({ where: { id: schoolId } });
       } catch (e) {
         /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
         we do not need to worry about checking isPrismaInvalidIdError here. */
         if (isPrismaDoesNotExistError(e)) {
-          throw ApiClientFormError.BadRequest({
-            company: {
-              code: ApiClientFieldErrorCodes.does_not_exist,
-              message: "The school does not exist.",
-            },
-          });
+          return ApiClientFieldErrors.doesNotExist("school", "The school does not exist.").json;
+        } else {
+          throw e;
         }
-        throw e;
       }
     }
     if (
       major &&
-      (await prisma.education.count({ where: { schoolId, major, id: { notIn: [edu.id] } } }))
-    ) {
-      return ApiClientFormError.BadRequest({
-        major: {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The 'major' must be unique for a given school.",
-        },
-      }).toJson();
-    } else if (
-      data.shortMajor &&
       (await prisma.education.count({
-        where: { schoolId, shortMajor: data.shortMajor, id: { notIn: [edu.id] } },
+        where: { schoolId: school.id, major, id: { notIn: [edu.id] } },
       }))
     ) {
-      return ApiClientFormError.BadRequest({
-        shortMajor: {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The 'shortMajor' must be unique for a given school.",
-        },
-      }).toJson();
+      fieldErrors.addUnique("major", "The 'major' must be unique for a given school.");
+    }
+    if (
+      data.shortMajor &&
+      (await prisma.education.count({
+        where: { schoolId: school.id, shortMajor: data.shortMajor, id: { notIn: [edu.id] } },
+      }))
+    ) {
+      fieldErrors.addUnique("shortMajor", "The 'shortMajor' must be unique for a given school.");
+    }
+    if (fieldErrors.hasErrors) {
+      return fieldErrors.json;
     }
     return await tx.education.update({
       where: { id },
       data: {
         ...data,
         major,
-        schoolId,
+        schoolId: school.id,
         updatedById: user.id,
       },
     });

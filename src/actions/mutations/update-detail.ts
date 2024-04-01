@@ -7,12 +7,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail, type Project } from "~/prisma/model";
-import {
-  ApiClientGlobalError,
-  ApiClientFormError,
-  ApiClientFieldErrorCodes,
-  ApiClientFieldErrors,
-} from "~/api";
+import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { DetailSchema } from "~/api/schemas";
 
 const UpdateDetailSchema = DetailSchema.partial();
@@ -22,7 +17,7 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
 
   const parsed = UpdateDetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientFormError.BadRequest(parsed.error, UpdateDetailSchema);
+    throw ApiClientFieldErrors.fromZodError(parsed.error, UpdateDetailSchema).error;
   }
   let detail: Detail;
   try {
@@ -46,8 +41,7 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
       project = await prisma.project.findUniqueOrThrow({ where: { id: _project } });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        fieldErrors.add("project", {
-          code: "does_not_exist",
+        fieldErrors.addDoesNotExist("project", {
           message: "The project does not exist.",
           internalMessage: `The project with ID '${_project}' does not exist.`,
         });
@@ -68,14 +62,11 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
       },
     }))
   ) {
-    fieldErrors.add("label", {
-      code: ApiClientFieldErrorCodes.unique,
-      message: "The 'label' must be unique for a given parent.",
-    });
+    fieldErrors.addUnique("label", "The 'label' must be unique for a given parent.");
   }
 
   if (!fieldErrors.isEmpty) {
-    return fieldErrors.toError().toResponse();
+    return fieldErrors.json;
   }
 
   const updated = await prisma.detail.update({

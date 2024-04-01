@@ -33,21 +33,21 @@ export type ApiClientFieldError = {
   readonly code: ApiClientFieldErrorCode;
 };
 
-export type RawApiClientFieldError = Optional<
+export type RawApiClientFieldErrorObj = Optional<
   ApiClientFieldError,
   "message" | "internalMessage"
 > & {
   readonly conditional?: boolean;
 };
 
-export type RawApiClientFieldErrorSpec =
-  | RawApiClientFieldError
+export type RawApiClientFieldError<O = RawApiClientFieldErrorObj> =
+  | O
   | ApiClientFieldErrorCode
   | null
   | undefined;
 
 export type RawApiClientFieldErrorsObj<F extends string = string> = Partial<{
-  [key in F]: RawApiClientFieldErrorSpec | RawApiClientFieldErrorSpec[];
+  [key in F]: RawApiClientFieldError | RawApiClientFieldError[];
 }>;
 
 export type ApiClientFieldErrorsObj<E extends string = string> = Partial<{

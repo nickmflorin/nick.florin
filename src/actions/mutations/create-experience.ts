@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFieldErrors } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
 
 export const createExperience = async (req: z.infer<typeof ExperienceSchema>) => {
@@ -14,7 +14,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
 
   const parsed = ExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, ExperienceSchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, ExperienceSchema).json;
   }
 
   const { company: companyId, ...data } = parsed.data;
@@ -26,35 +26,26 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
     /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
     if (isPrismaDoesNotExistError(e)) {
-      throw ApiClientFormError.BadRequest({
-        company: {
-          code: ApiClientFieldErrorCodes.does_not_exist,
-          message: "The company does not exist.",
-        },
-      });
+      return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
     }
     throw e;
   }
 
+  const fieldErrors = new ApiClientFieldErrors();
+
   if (await prisma.experience.count({ where: { companyId: company.id, title: data.title } })) {
-    return ApiClientFormError.BadRequest({
-      title: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'title' must be unique for a given company.",
-      },
-    }).toJson();
-  } else if (
+    fieldErrors.addUnique("title", "The 'title' must be unique for a given company.");
+  }
+  if (
     data.shortTitle &&
     (await prisma.experience.count({
       where: { companyId: company.id, shortTitle: data.shortTitle },
     }))
   ) {
-    return ApiClientFormError.BadRequest({
-      shortTitle: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'shortTitle' must be unique for a given company.",
-      },
-    }).toJson();
+    fieldErrors.addUnique("shortTitle", "The 'shortTitle' must be unique for a given company.");
+  }
+  if (fieldErrors.hasErrors) {
+    return fieldErrors.json;
   }
 
   const experience = await prisma.experience.create({

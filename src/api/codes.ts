@@ -38,16 +38,19 @@ export const ApiClientFieldErrorCodes = enumeratedLiterals(
     {
       value: "unique",
       message: (field: string) => `The field ${field} must be unique.`,
+      internalMessage: (field: string) => `The field ${field} must be unique.`,
     },
     {
       value: "invalid",
       message: (field: string) => `The field ${field} is invalid.`,
+      internalMessage: (field: string) => `The field ${field} is invalid.`,
     },
     {
       value: "does_not_exist",
       /* This message is user facing, so we do not want to give specific information about why the
          field is invalid - just that it is invalid. */
       message: (field: string) => `The field ${field} is invalid.`,
+      internalMessage: (field: string) => `The field ${field} is invalid.`,
     },
   ] as const,
   {},

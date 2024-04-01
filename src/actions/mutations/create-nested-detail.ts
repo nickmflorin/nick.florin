@@ -9,7 +9,6 @@ import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/pri
 import { DetailEntityType, type NestedApiDetail, type Project } from "~/prisma/model";
 import {
   ApiClientFieldErrors,
-  ApiClientFormError,
   ApiClientGlobalError,
   ApiClientFieldErrorCodes,
   type ApiClientErrorJson,
@@ -26,12 +25,12 @@ export const createNestedDetail = async (
 
   const detail = await getDetail(detailId);
   if (!detail) {
-    throw ApiClientGlobalError.NotFound("No detail exists for the provided ID.");
+    return ApiClientGlobalError.NotFound("No detail exists for the provided ID.").json;
   }
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, DetailSchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, DetailSchema).json;
   }
 
   const fieldErrors = new ApiClientFieldErrors();
@@ -66,7 +65,7 @@ export const createNestedDetail = async (
     });
   }
   if (!fieldErrors.isEmpty) {
-    return fieldErrors.toError().toJson();
+    return fieldErrors.json;
   }
   const nestedDetail = await prisma.nestedDetail.create({
     data: {

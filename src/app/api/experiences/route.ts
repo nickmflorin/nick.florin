@@ -10,11 +10,11 @@ export async function GET(request: NextRequest) {
 
   const user = await getAuthUserFromRequest(request);
   if (!user && visibility === "admin") {
-    return ApiClientGlobalError.NotAuthenticated().toResponse();
+    return ApiClientGlobalError.NotAuthenticated().response;
   } else if (user && !user.isAdmin && visibility === "admin") {
-    return ApiClientGlobalError.Forbidden().toResponse();
+    return ApiClientGlobalError.Forbidden().response;
   }
   const educations = await getExperiences({ visibility });
 
-  return ClientResponse.OK(educations).toResponse();
+  return ClientResponse.OK(educations).response;
 }

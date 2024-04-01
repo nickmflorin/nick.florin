@@ -10,6 +10,7 @@ export const preloadDetails = <T extends DetailEntityType>(id: string, entityTyp
   void getDetails(id, entityType);
 };
 
+// Not currently used, but may be in the future.
 export const getDetails = cache(
   async <T extends DetailEntityType>(
     id: string,

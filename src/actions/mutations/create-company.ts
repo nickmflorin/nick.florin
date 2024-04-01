@@ -5,7 +5,7 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFieldErrors } from "~/api";
 import { CompanySchema } from "~/api/schemas";
 
 export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
@@ -13,25 +13,21 @@ export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
 
   const parsed = CompanySchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, CompanySchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, CompanySchema).json;
   }
+
+  const fieldErrors = new ApiClientFieldErrors();
 
   const { name, shortName, ...data } = parsed.data;
 
   if (await prisma.company.count({ where: { name } })) {
-    return ApiClientFormError.BadRequest({
-      name: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'name' must be unique for a given company.",
-      },
-    }).toJson();
-  } else if (await prisma.company.count({ where: { shortName } })) {
-    return ApiClientFormError.BadRequest({
-      shortName: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'shortName' must be unique for a given company.",
-      },
-    }).toJson();
+    fieldErrors.addUnique("name", "The 'name' must be unique for a given company.");
+  }
+  if (await prisma.company.count({ where: { shortName } })) {
+    fieldErrors.addUnique("shortName", "The 'shortName' must be unique for a given company.");
+  }
+  if (fieldErrors.hasErrors) {
+    return fieldErrors.json;
   }
   const company = await prisma.company.create({
     data: {

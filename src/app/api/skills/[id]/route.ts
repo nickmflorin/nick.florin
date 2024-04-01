@@ -21,9 +21,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     skill = await getSkill(params.id, { visibility: "public", includes });
   } catch (e) {
     if (e instanceof ApiClientError) {
-      return e.toResponse();
+      return e.response;
     }
     throw e;
   }
-  return ClientResponse.OK(skill).toResponse();
+  return ClientResponse.OK(skill).response;
 }

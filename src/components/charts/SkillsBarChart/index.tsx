@@ -53,14 +53,12 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     error,
     isInitialLoading,
     isLoading,
-  } = useSkills({
-    query: { ...skillsQuery, includeInTopSkills: true },
-  });
+  } = useSkills({}, { query: { ...skillsQuery, includeInTopSkills: true } });
 
   const data = useMemo<SkillsBarChartDatum[]>(
     () =>
       (_data ?? []).map(skill => ({
-        ...pick(skill, ["id", "label", "slug", "experiences", "educations"]),
+        ...pick(skill, ["id", "label", "slug"]),
         experience: skill.experience ?? skill.autoExperience,
       })),
     [_data],

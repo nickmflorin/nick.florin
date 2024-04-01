@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const company = await getCompany(params.id);
   if (!company) {
-    return ApiClientGlobalError.NotFound().toResponse();
+    return ApiClientGlobalError.NotFound().response;
   }
-  return ClientResponse.OK(company).toResponse();
+  return ClientResponse.OK(company).response;
 }

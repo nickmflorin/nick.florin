@@ -76,13 +76,14 @@ type _BaseApiSkill = Skill & {
   readonly experience: number | null;
 };
 
-export type ApiSkill<I extends SkillIncludes = { educations: true; experiences: true }> =
-  ConditionallyIncluded<
-    _BaseApiSkill,
-    {
-      readonly educations: ApiEducation[];
-      readonly experiences: ApiExperience[];
-      readonly projects: Project[];
-    },
-    I
-  >;
+export type ApiSkill<
+  I extends SkillIncludes = { educations: false; experiences: false; projects: false },
+> = ConditionallyIncluded<
+  _BaseApiSkill,
+  {
+    readonly educations: ApiEducation[];
+    readonly experiences: ApiExperience[];
+    readonly projects: Project[];
+  },
+  I
+>;

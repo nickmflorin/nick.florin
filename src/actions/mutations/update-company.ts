@@ -6,19 +6,18 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
-import { ApiClientFormError, ApiClientGlobalError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { CompanySchema } from "~/api/schemas";
 
 const UpdateCompanySchema = CompanySchema.partial();
 
 export const updateCompany = async (id: string, req: z.infer<typeof CompanySchema>) => {
   const user = await getAuthAdminUser();
-
+  const parsed = UpdateCompanySchema.safeParse(req);
+  if (!parsed.success) {
+    return ApiClientFieldErrors.fromZodError(parsed.error, UpdateCompanySchema).json;
+  }
   return await prisma.$transaction(async tx => {
-    const parsed = UpdateCompanySchema.safeParse(req);
-    if (!parsed.success) {
-      return ApiClientFormError.BadRequest(parsed.error, UpdateCompanySchema).toJson();
-    }
     let co: Company;
     try {
       co = await tx.company.findUniqueOrThrow({
@@ -26,29 +25,24 @@ export const updateCompany = async (id: string, req: z.infer<typeof CompanySchem
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        return ApiClientGlobalError.NotFound().toJson();
+        throw ApiClientGlobalError.NotFound();
       }
       throw e;
     }
     const { name, shortName, ...data } = parsed.data;
 
+    const fieldErrors = new ApiClientFieldErrors();
+
     if (name && (await prisma.company.count({ where: { name, id: { notIn: [co.id] } } }))) {
-      return ApiClientFormError.BadRequest({
-        name: {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The 'name' must be unique for a given company.",
-        },
-      }).toJson();
+      fieldErrors.addUnique(name, "The 'name' must be unique for a given company.");
     } else if (
       shortName &&
       (await prisma.company.count({ where: { shortName, id: { notIn: [co.id] } } }))
     ) {
-      return ApiClientFormError.BadRequest({
-        shortName: {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The 'shortName' must be unique for a given company.",
-        },
-      }).toJson();
+      fieldErrors.addUnique(shortName, "The 'shortName' must be unique for a given company.");
+    }
+    if (fieldErrors.hasErrors) {
+      return fieldErrors.json;
     }
     const updated = await prisma.company.update({
       where: { id },

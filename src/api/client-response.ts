@@ -30,11 +30,17 @@ export class ClientResponse<T> {
     }
   }
 
-  public toJson = (): ClientSuccessResponseBody<T> => ({ data: this.data });
+  public get json(): ClientSuccessResponseBody<T> {
+    return { data: this.data };
+  }
 
-  public toSerializedJson = () => ({ data: superjson.serialize(this.data) });
+  public get serializedJson() {
+    return { data: superjson.serialize(this.data) };
+  }
 
-  public toResponse = () => NextResponse.json(this.toSerializedJson(), { status: this.statusCode });
+  public get response() {
+    return NextResponse.json(this.serializedJson, { status: this.statusCode });
+  }
 
   public static OK = <T>(data: T) =>
     new ClientResponse<T>({ data, code: ClientSuccessCodes.HTTP_200_OK });

@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { decodeQueryParams } from "~/lib/urls";
 import { type SkillIncludes, type ApiSkill } from "~/prisma/model";
 import { getSkills } from "~/actions/fetches/get-skills";
-import { ClientResponse, ApiClientFormError } from "~/api";
+import { ClientResponse, ApiClientFieldErrors } from "~/api";
 import { parseInclusion } from "~/api/inclusion";
 import { SkillQuerySchema } from "~/api/schemas";
 
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
   const parsedQuery = SkillQuerySchema.safeParse(decodeQueryParams(request.nextUrl.searchParams));
   if (!parsedQuery.success) {
-    return ApiClientFormError.BadRequest(parsedQuery.error, SkillQuerySchema).toResponse();
+    return ApiClientFieldErrors.fromZodError(parsedQuery.error, SkillQuerySchema).response;
   }
   const { showTopSkills, ...filters } = parsedQuery.data;
   /* This API request is currently only used in the public realm, so admin visibility is not
@@ -26,7 +26,5 @@ export async function GET(request: NextRequest) {
     includes,
   });
   const data = skills.sort((a, b) => skillExperience(b) - skillExperience(a));
-  return ClientResponse.OK(
-    showTopSkills === "all" ? data : data.slice(0, showTopSkills),
-  ).toResponse();
+  return ClientResponse.OK(showTopSkills === "all" ? data : data.slice(0, showTopSkills)).response;
 }

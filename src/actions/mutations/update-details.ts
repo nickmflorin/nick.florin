@@ -8,7 +8,6 @@ import { logger } from "~/application/logger";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
 import {
-  ApiClientFormError,
   ApiClientGlobalError,
   parseZodError,
   ApiClientFieldErrors,
@@ -105,7 +104,7 @@ export const updateDetails = async (
       }
     }
     if (Object.keys(fieldErrors).length) {
-      return ApiClientFormError.BadRequest(fieldErrors).toJson();
+      return fieldErrors.json;
     }
     return {
       created: await Promise.all(

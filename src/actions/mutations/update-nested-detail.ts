@@ -75,7 +75,7 @@ export const updateNestedDetail = async (id: string, req: z.infer<typeof UpdateD
   }
 
   if (!fieldErrors.isEmpty) {
-    return fieldErrors.toError().toResponse();
+    return fieldErrors.json;
   }
 
   const updated = await prisma.nestedDetail.update({

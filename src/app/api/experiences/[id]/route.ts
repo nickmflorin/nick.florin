@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const experience = await getExperience(params.id);
   if (!experience) {
-    return ApiClientGlobalError.NotFound().toResponse();
+    return ApiClientGlobalError.NotFound().response;
   }
-  return ClientResponse.OK(experience).toResponse();
+  return ClientResponse.OK(experience).response;
 }

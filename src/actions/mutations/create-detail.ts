@@ -8,12 +8,7 @@ import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Project, type ApiDetail } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
-import {
-  ApiClientFormError,
-  ApiClientGlobalError,
-  ApiClientFieldErrorCodes,
-  type ApiClientErrorJson,
-} from "~/api";
+import { ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { DetailSchema } from "~/api/schemas";
 
 import { getEntity } from "../fetches/get-entity";
@@ -32,7 +27,7 @@ export const createDetail = async (
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientFormError.BadRequest(parsed.error, DetailSchema).toJson();
+    throw ApiClientFieldErrors.fromZodError(parsed.error, DetailSchema).json;
   }
 
   const fieldErrors = new ApiClientFieldErrors();
@@ -45,8 +40,7 @@ export const createDetail = async (
       project = await prisma.project.findUniqueOrThrow({ where: { id: _project } });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        fieldErrors.add("project", {
-          code: "does_not_exist",
+        fieldErrors.addDoesNotExist("project", {
           message: "The project does not exist.",
           internalMessage: `The project with ID '${_project}' does not exist.`,
         });
@@ -61,13 +55,10 @@ export const createDetail = async (
       where: { entityId: entity.id, entityType, label },
     }))
   ) {
-    fieldErrors.add("label", {
-      code: ApiClientFieldErrorCodes.unique,
-      message: "The 'label' must be unique for a given parent.",
-    });
+    fieldErrors.addUnique("label", "The 'label' must be unique for a given parent.");
   }
   if (!fieldErrors.isEmpty) {
-    return fieldErrors.toError().toJson();
+    return fieldErrors.json;
   }
 
   const detail = await prisma.detail.create({

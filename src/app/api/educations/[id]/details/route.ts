@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     });
   } catch (e) {
     if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-      return ApiClientGlobalError.NotFound().toResponse();
+      return ApiClientGlobalError.NotFound().response;
     }
     // This will trigger a 500 internal server error, which should get picked up by the SWR hook.
     throw e;
@@ -53,5 +53,5 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
          they are, the 'id' field is used as a fallback. */
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     }),
-  }).toResponse();
+  }).response;
 }

@@ -3,13 +3,14 @@ import { type z } from "zod";
 
 import { logger } from "~/application/logger";
 
-import { ApiClientFieldErrorCodes } from "../codes";
+import { type ApiClientFieldErrorCode, ApiClientFieldErrorCodes } from "../codes";
 import {
   type ApiClientFieldErrorsObj,
   type RawApiClientFieldErrorsObj,
   type ApiClientFieldError,
-  type RawApiClientFieldErrorSpec,
+  type RawApiClientFieldError,
   isZodError,
+  type RawApiClientFieldErrorObj,
 } from "../types";
 
 import { ApiClientFormError } from ".";
@@ -44,6 +45,36 @@ export const parseZodError = <O extends z.ZodObject<{ [key in string]: z.ZodType
   return errs;
 };
 
+/* When a single error is added to the set, it cannot be null or undefined.  However, null and/or
+   undefined can still be present as an element in teh array, if provided as an array. */
+type AddError = Exclude<RawApiClientFieldError, undefined | null> | RawApiClientFieldError[];
+
+/* This type is used when the code is already assumed inside of the method, e.g. inside of the
+   method named 'addUnique'. In this case, the code is already known - and does not need to be
+   included in the function argument.
+
+   So the argument can either be the RawApiClientFieldErrorObj without a code (which is just the
+   message and internal message optionally), or it can be just a string message.
+
+   In other words, the method can be called as either of the following:
+
+   1. The field name and a single message:
+
+      addUnique("<fieldName>", "User facing message and internal message...")
+
+   2. The field name and an object with either or both the internal and user facing messages:
+
+      addUnique("<fieldName>", {
+        message: "User facing message...",
+        internalMessage: "Internal message..."
+      })
+
+   3. The field name only:
+
+      addUnique("<fieldName>")
+   */
+type AddErrorOfCode = string | Omit<RawApiClientFieldErrorObj, "code">;
+
 export class ApiClientFieldErrors<F extends string = string> {
   private _errors: RawApiClientFieldErrorsObj<F> = {};
 
@@ -62,10 +93,10 @@ export class ApiClientFieldErrors<F extends string = string> {
   public get errors(): ApiClientFieldErrorsObj<F> {
     return Object.keys(this._errors).reduce((prev: ApiClientFieldErrorsObj<F>, key: string) => {
       const k = key as F;
-      const d: RawApiClientFieldErrorSpec | RawApiClientFieldErrorSpec[] = this._errors[k];
+      const d: RawApiClientFieldError | RawApiClientFieldError[] = this._errors[k];
       const errs = Array.isArray(d) ? d : [d];
 
-      const processed = errs.reduce((acc: ApiClientFieldError[], e: RawApiClientFieldErrorSpec) => {
+      const processed = errs.reduce((acc: ApiClientFieldError[], e: RawApiClientFieldError) => {
         if (ApiClientFieldErrorCodes.contains(e)) {
           /* We only care about removing duplicate codes in the case that the error is provided as
              just the code.  This is because if only the code is provided, the message and internal
@@ -87,9 +118,12 @@ export class ApiClientFieldErrors<F extends string = string> {
           return [
             ...acc,
             {
-              message: ApiClientFieldErrorCodes.getAttribute(e.code, "message")(k),
-              internalMessage: ApiClientFieldErrorCodes.getAttribute(e.code, "message")(k),
               ...e,
+              message: e.message ?? ApiClientFieldErrorCodes.getAttribute(e.code, "message")(k),
+              internalMessage:
+                e.internalMessage ??
+                e.message ??
+                ApiClientFieldErrorCodes.getAttribute(e.code, "internalMessage")(k),
             },
           ];
         }
@@ -102,31 +136,23 @@ export class ApiClientFieldErrors<F extends string = string> {
     }, {});
   }
 
-  public add(errors: RawApiClientFieldErrorsObj<F>): void;
+  public add(errors: RawApiClientFieldErrorsObj<F>): ApiClientFieldErrors<F>;
 
-  public add<N extends F>(
-    field: N,
-    error: Exclude<RawApiClientFieldErrorSpec, undefined | null> | RawApiClientFieldErrorSpec[],
-  ): void;
+  public add<N extends F>(field: N, error: AddError): ApiClientFieldErrors<F>;
 
   public add<O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
     error: z.ZodError,
     schema: O,
     lookup?: IssueLookup<keyof O["shape"] & string>,
-  ): void;
+  ): ApiClientFieldErrors<F>;
 
   public add<N extends F, O extends z.ZodObject<{ [key in string]: z.ZodTypeAny }>>(
     field: N | RawApiClientFieldErrorsObj<F> | z.ZodError,
-    error?:
-      | Exclude<RawApiClientFieldErrorSpec, undefined | null>
-      | RawApiClientFieldErrorSpec[]
-      | O,
+    error?: AddError | O,
     lookup?: IssueLookup<keyof O["shape"] & string>,
   ) {
     if (typeof field === "string") {
-      const e = error as
-        | Exclude<RawApiClientFieldErrorSpec, undefined | null>
-        | RawApiClientFieldErrorSpec[];
+      const e = error as AddError;
 
       const data = Array.isArray(e) ? e : [e];
 
@@ -148,13 +174,77 @@ export class ApiClientFieldErrors<F extends string = string> {
         this.add(k, field[k] ?? []);
       }
     }
+    // Return a new version of the instance to allow for chaining.
+    return new ApiClientFieldErrors({ ...this.errors });
+  }
+
+  private addOfCode<N extends F>(
+    field: N,
+    code: ApiClientFieldErrorCode,
+    error?: AddErrorOfCode,
+  ): ApiClientFieldErrors<F> {
+    if (typeof error === "string") {
+      return this.add(field, { message: error, code });
+    }
+    return this.add(field, { ...error, code });
+  }
+
+  public addUnique<N extends F>(field: N, error?: AddErrorOfCode): ApiClientFieldErrors<F> {
+    return this.addOfCode(field, ApiClientFieldErrorCodes.unique, error);
+  }
+
+  public addInvalid<N extends F>(field: N, error?: AddErrorOfCode): ApiClientFieldErrors<F> {
+    return this.addOfCode(field, ApiClientFieldErrorCodes.invalid, error);
+  }
+
+  public addDoesNotExist<N extends F>(field: N, error?: AddErrorOfCode): ApiClientFieldErrors<F> {
+    return this.addOfCode(field, ApiClientFieldErrorCodes.does_not_exist, error);
+  }
+
+  public static doesNotExist<N extends string>(
+    field: N,
+    error?: AddErrorOfCode,
+  ): ApiClientFieldErrors<N> {
+    const errs = new ApiClientFieldErrors<N>();
+    return errs.addDoesNotExist(field, error);
+  }
+
+  public static invalid<N extends string>(
+    field: N,
+    error?: AddErrorOfCode,
+  ): ApiClientFieldErrors<N> {
+    const errs = new ApiClientFieldErrors<N>();
+    return errs.addInvalid(field, error);
+  }
+
+  public static unique<N extends string>(
+    field: N,
+    error?: AddErrorOfCode,
+  ): ApiClientFieldErrors<N> {
+    const errs = new ApiClientFieldErrors<N>();
+    return errs.addUnique(field, error);
   }
 
   public get isEmpty(): boolean {
     return Object.keys(this.errors).length === 0;
   }
 
-  public toError(): ApiClientFormError<F> {
+  public get hasErrors(): boolean {
+    return Object.keys(this.errors).length !== 0;
+  }
+
+  public get error(): ApiClientFormError<F> {
+    if (this.isEmpty) {
+      throw new Error("Cannot convert an empty set of field errors to an error.");
+    }
     return ApiClientFormError.BadRequest(this.errors);
+  }
+
+  public get json() {
+    return this.error.json;
+  }
+
+  public get response() {
+    return this.error.response;
   }
 }

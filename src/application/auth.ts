@@ -50,12 +50,12 @@ export const getAuthAdminUserFromRequest = async <O extends GetAuthUserOpts>(
      fine - since it is not expected. */
   if (!user) {
     if (opts?.strict === false) {
-      return ApiClientGlobalError.NotAuthenticated().toJson() as GetAuthUserRt<O>;
+      return ApiClientGlobalError.NotAuthenticated().json as GetAuthUserRt<O>;
     }
     throw ApiClientGlobalError.NotAuthenticated();
   } else if (!user.isAdmin) {
     if (opts?.strict === false) {
-      return ApiClientGlobalError.Forbidden().toJson() as GetAuthUserRt<O>;
+      return ApiClientGlobalError.Forbidden().json as GetAuthUserRt<O>;
     }
     throw ApiClientGlobalError.Forbidden();
   }

@@ -5,14 +5,8 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type Experience } from "~/prisma/model";
-import {
-  ApiClientFieldErrorCodes,
-  ApiClientFormError,
-  type ApiClientFormErrorJson,
-  ApiClientGlobalError,
-  type ApiClientGlobalErrorJson,
-} from "~/api";
+import { type Experience, type Company, type ApiExperience } from "~/prisma/model";
+import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
 
 const UpdateExperienceSchema = ExperienceSchema.partial();
@@ -20,78 +14,68 @@ const UpdateExperienceSchema = ExperienceSchema.partial();
 export const updateExperience = async (
   id: string,
   req: z.infer<typeof UpdateExperienceSchema>,
-): Promise<
-  | ApiClientFormErrorJson<keyof (typeof UpdateExperienceSchema)["shape"]>
-  | Experience
-  | ApiClientGlobalErrorJson
-> => {
+): Promise<ApiClientErrorJson<keyof (typeof UpdateExperienceSchema)["shape"]> | Experience> => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateExperienceSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, ExperienceSchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, ExperienceSchema).json;
   }
 
   const { company: companyId, title, ...data } = parsed.data;
+  const fieldErrors = new ApiClientFieldErrors();
 
   const experience = await prisma.$transaction(async tx => {
-    let exp: Experience;
+    let exp: ApiExperience;
     try {
       exp = await tx.experience.findUniqueOrThrow({
         where: { id },
+        include: { company: true },
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        return ApiClientGlobalError.NotFound().toJson();
+        throw ApiClientGlobalError.NotFound();
       }
       throw e;
     }
+    let company: Company = exp.company;
     if (companyId) {
       try {
-        await tx.company.findUniqueOrThrow({ where: { id: companyId } });
+        company = await tx.company.findUniqueOrThrow({ where: { id: companyId } });
       } catch (e) {
         /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
         we do not need to worry about checking isPrismaInvalidIdError here. */
         if (isPrismaDoesNotExistError(e)) {
-          return ApiClientFormError.BadRequest({
-            company: {
-              code: ApiClientFieldErrorCodes.does_not_exist,
-              message: "The company does not exist.",
-            },
-          }).toJson();
+          return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
         }
         throw e;
       }
     }
     if (
       title &&
-      (await prisma.experience.count({ where: { companyId, title, id: { notIn: [exp.id] } } }))
-    ) {
-      return ApiClientFormError.BadRequest({
-        title: {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The title must be unique for a given company.",
-        },
-      }).toJson();
-    } else if (
-      data.shortTitle &&
       (await prisma.experience.count({
-        where: { companyId, shortTitle: data.shortTitle, id: { notIn: [exp.id] } },
+        where: { companyId: company.id, title, id: { notIn: [exp.id] } },
       }))
     ) {
-      return ApiClientFormError.BadRequest({
-        shortTitle: {
-          code: ApiClientFieldErrorCodes.unique,
-          message: "The 'shortTitle' must be unique for a given company.",
-        },
-      }).toJson();
+      fieldErrors.addUnique("title", "The title must be unique for a given company.");
+    }
+    if (
+      data.shortTitle &&
+      (await prisma.experience.count({
+        where: { companyId: company.id, shortTitle: data.shortTitle, id: { notIn: [exp.id] } },
+      }))
+    ) {
+      fieldErrors.addUnique("shortTitle", "The 'shortTitle' must be unique for a given company.");
+    }
+    if (fieldErrors.hasErrors) {
+      return fieldErrors.json;
     }
     return await tx.experience.update({
       where: { id },
       data: {
         ...data,
         title,
-        companyId,
+        companyId: company.id,
         updatedById: user.id,
       },
     });

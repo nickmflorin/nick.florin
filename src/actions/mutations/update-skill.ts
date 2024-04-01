@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
-import { prisma } from "~/prisma/client";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import {
   type Skill,
   type Experience,
@@ -15,7 +15,7 @@ import {
   type Transaction,
   type User,
 } from "~/prisma/model";
-import { ApiClientFieldErrors } from "~/api";
+import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { SkillSchema } from "~/api/schemas";
 
 import { queryM2MsDynamically } from "./m2ms";
@@ -153,35 +153,37 @@ const syncProjects = async (
 export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSchema>) => {
   const user = await getAuthAdminUser();
 
-  const parsed = UpdateSkillSchema.parse(req);
-
-  const {
-    slug,
-    projects: _projects,
-    experiences: _experiences,
-    educations: _educations,
-    ...data
-  } = parsed;
-
   const sk = await prisma.$transaction(async tx => {
-    // TODO: Should we use an ApiClientError here to indicate that the skill does not exist?
-    let skill = await tx.skill.findUniqueOrThrow({ where: { id } });
+    let skill: Skill;
+    try {
+      skill = await tx.skill.findUniqueOrThrow({
+        where: { id },
+      });
+    } catch (e) {
+      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
+        throw ApiClientGlobalError.NotFound();
+      }
+      throw e;
+    }
+    const parsed = UpdateSkillSchema.safeParse(req);
+    if (!parsed.success) {
+      return ApiClientFieldErrors.fromZodError(parsed.error, UpdateSkillSchema).json;
+    }
+    const {
+      slug,
+      projects: _projects,
+      experiences: _experiences,
+      educations: _educations,
+      ...data
+    } = parsed.data;
+
+    const fieldErrors = new ApiClientFieldErrors();
+
     const currentLabel = data.label !== undefined ? data.label : skill.label;
     const updateData = {
       ...data,
       slug: slug !== undefined && slug !== null ? slug : slugify(currentLabel),
     };
-    if (!objIsEmpty(updateData)) {
-      skill = await tx.skill.update({
-        where: { id },
-        data: {
-          ...updateData,
-          updatedById: user.id,
-        },
-      });
-    }
-
-    const fieldErrors = new ApiClientFieldErrors();
 
     const [experiences] = await queryM2MsDynamically(tx, {
       model: "experience",
@@ -200,7 +202,17 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
     });
 
     if (!fieldErrors.isEmpty) {
-      return fieldErrors.toError().toJson();
+      return fieldErrors.json;
+    }
+
+    if (!objIsEmpty(updateData)) {
+      skill = await tx.skill.update({
+        where: { id },
+        data: {
+          ...updateData,
+          updatedById: user.id,
+        },
+      });
     }
 
     await syncExperiences(tx, { experiences, skill, user });
@@ -209,6 +221,7 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
 
     return skill;
   });
+
   // TODO: Add /admin/projects once that page is setup.
   revalidatePath("/admin/skills", "page");
   revalidatePath("/admin/experiences", "page");

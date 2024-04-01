@@ -8,7 +8,11 @@ import { Label } from "~/components/typography/Label";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 import { Text } from "~/components/typography/Text";
 
-export const Experiences = ({ experiences }: { experiences: ApiSkill["experiences"] }) => (
+export const Experiences = ({
+  experiences,
+}: {
+  experiences: ApiSkill<{ experiences: true }>["experiences"];
+}) => (
   <div className="flex flex-col gap-[10px]">
     <Label size="sm" fontWeight="medium">
       Experience

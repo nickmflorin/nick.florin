@@ -6,7 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, ApiClientFieldErrorCodes, ApiClientFieldErrors } from "~/api";
+import { ApiClientFieldErrors } from "~/api";
 import { SkillSchema } from "~/api/schemas";
 
 import { queryM2MsDynamically } from "./m2ms";
@@ -16,7 +16,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
 
   const parsed = SkillSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, SkillSchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, SkillSchema).json;
   }
   const {
     slug: _slug,
@@ -32,25 +32,18 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
 
   const sk = await prisma.$transaction(async tx => {
     if (await prisma.skill.count({ where: { label: data.label } })) {
-      fieldErrors.add("label", {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The label must be unique!",
-      });
+      fieldErrors.addUnique("label", "The label must be unique.");
       /* If the slug is not explicitly provided and the label does not violate the unique
          constraint, but the slugified form of the label does, this should be a more specific error
          message. */
     } else if (!_slug && (await prisma.skill.count({ where: { slug } }))) {
-      fieldErrors.add("label", {
-        code: ApiClientFieldErrorCodes.unique,
-        message:
-          "The auto-generated slug for the label is not unique. Please provide a unique slug.",
-      });
+      fieldErrors.addUnique(
+        "label",
+        "The auto-generated slug for the label is not unique. Please provide a unique slug.",
+      );
     }
     if (_slug && (await prisma.skill.count({ where: { slug: _slug } }))) {
-      fieldErrors.add("slug", {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The slug must be unique!",
-      });
+      fieldErrors.addUnique("slug", "The slug must be unique.");
     }
     const [experiences] = await queryM2MsDynamically(tx, {
       model: "experience",
@@ -68,7 +61,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
       fieldErrors,
     });
     if (!fieldErrors.isEmpty) {
-      return fieldErrors.toError().toJson();
+      return fieldErrors.json;
     }
 
     return await prisma.skill.create({

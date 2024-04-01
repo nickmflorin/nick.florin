@@ -5,7 +5,7 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
-import { ApiClientFormError, ApiClientFieldErrorCodes } from "~/api";
+import { ApiClientFieldErrors } from "~/api";
 import { SchoolSchema } from "~/api/schemas";
 
 export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
@@ -13,25 +13,20 @@ export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
 
   const parsed = SchoolSchema.safeParse(req);
   if (!parsed.success) {
-    return ApiClientFormError.BadRequest(parsed.error, SchoolSchema).toJson();
+    return ApiClientFieldErrors.fromZodError(parsed.error, SchoolSchema).json;
   }
 
   const { name, shortName, ...data } = parsed.data;
 
+  const fieldErrors = new ApiClientFieldErrors();
   if (await prisma.school.count({ where: { name } })) {
-    return ApiClientFormError.BadRequest({
-      name: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'name' must be unique for a given school.",
-      },
-    }).toJson();
-  } else if (await prisma.school.count({ where: { shortName } })) {
-    return ApiClientFormError.BadRequest({
-      shortName: {
-        code: ApiClientFieldErrorCodes.unique,
-        message: "The 'shortName' must be unique for a given school.",
-      },
-    }).toJson();
+    fieldErrors.addUnique("name", "The 'name' must be unique for a given school.");
+  }
+  if (await prisma.school.count({ where: { shortName } })) {
+    fieldErrors.addUnique("shortName", "The 'shortName' must be unique for a given school.");
+  }
+  if (fieldErrors.hasErrors) {
+    return fieldErrors.json;
   }
   const school = await prisma.school.create({
     data: {

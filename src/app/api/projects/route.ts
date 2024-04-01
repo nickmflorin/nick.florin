@@ -7,10 +7,10 @@ import { ApiClientGlobalError, ClientResponse } from "~/api";
 export async function GET(request: NextRequest) {
   const user = await getAuthUserFromRequest(request);
   if (!user) {
-    return ApiClientGlobalError.NotAuthenticated().toResponse();
+    return ApiClientGlobalError.NotAuthenticated().response;
   } else if (user && !user.isAdmin) {
-    return ApiClientGlobalError.Forbidden().toResponse();
+    return ApiClientGlobalError.Forbidden().response;
   }
   const projects = await getProjects();
-  return ClientResponse.OK(projects).toResponse();
+  return ClientResponse.OK(projects).response;
 }
