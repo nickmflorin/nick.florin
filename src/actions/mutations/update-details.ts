@@ -109,17 +109,24 @@ export const updateDetails = async (
     }
     return {
       created: await Promise.all(
-        newDetails.map(detail =>
+        newDetails.map(({ project, ...detail }) =>
           tx.detail.create({
-            data: { ...detail, createdById: user.id, updatedById: user.id, entityId, entityType },
+            data: {
+              ...detail,
+              createdById: user.id,
+              updatedById: user.id,
+              entityId,
+              entityType,
+              projectId: project,
+            },
           }),
         ),
       ),
       updated: await Promise.all(
-        existingDetails.map(detail =>
+        existingDetails.map(({ project, ...detail }) =>
           tx.detail.update({
             where: { id: detail.id, entityId, entityType },
-            data: { ...detail, updatedById: user.id },
+            data: { ...detail, updatedById: user.id, projectId: project },
           }),
         ),
       ),

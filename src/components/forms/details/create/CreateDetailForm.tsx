@@ -23,7 +23,6 @@ export const CreateDetailForm = ({
     () => createDetail.bind(null, entityId, entityType),
     [entityId, entityType],
   );
-
   return <GenericCreateDetailForm<FullApiDetail> action={createDetailForEntity} {...props} />;
 };
 

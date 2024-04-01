@@ -51,8 +51,9 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
           message: "The project does not exist.",
           internalMessage: `The project with ID '${_project}' does not exist.`,
         });
+      } else {
+        throw e;
       }
-      throw e;
     }
   }
 
