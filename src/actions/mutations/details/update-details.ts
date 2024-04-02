@@ -7,6 +7,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { logger } from "~/application/logger";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { DetailEntityType, type Detail } from "~/prisma/model";
+import { getEntity } from "~/actions/fetches/get-entity";
 import {
   ApiClientGlobalError,
   parseZodError,
@@ -14,8 +15,6 @@ import {
   ApiClientFieldErrorCodes,
 } from "~/api";
 import { DetailSchema } from "~/api/schemas";
-
-import { getEntity } from "../fetches/get-entity";
 
 const ExistingSchema = DetailSchema.partial({ label: true }).extend({ id: z.string().uuid() });
 const NewSchema = DetailSchema;

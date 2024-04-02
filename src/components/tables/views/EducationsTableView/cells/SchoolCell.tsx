@@ -4,12 +4,11 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../../../types";
-
 import { type ApiEducation } from "~/prisma/model";
-import { updateEducation } from "~/actions/mutations/update-education";
+import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
 import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
+import type * as types from "~/components/tables/types";
 
 interface SchoolCellProps {
   readonly education: ApiEducation<{ details: true }>;

@@ -3,11 +3,13 @@ import { useEffect, useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { type FullApiDetail, type NestedApiDetail, isFullDetail } from "~/prisma/model";
-import { deleteDetail } from "~/actions/mutations/delete-detail";
-import { deleteNestedDetail } from "~/actions/mutations/delete-nested-detail";
-import { updateDetail } from "~/actions/mutations/update-detail";
-import { updateNestedDetail } from "~/actions/mutations/update-nested-detail";
+import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
+import {
+  deleteDetail,
+  deleteNestedDetail,
+  updateDetail,
+  updateNestedDetail,
+} from "~/actions/mutations/details";
 import { isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
@@ -19,7 +21,7 @@ import { useForm } from "../generic/hooks/use-form";
 import { DetailForm, type DetailFormProps } from "./DetailForm";
 import { type DetailFormValues, DetailFormSchema } from "./types";
 
-export interface UpdateDetailFormProps<D extends FullApiDetail | NestedApiDetail>
+export interface UpdateDetailFormProps<D extends ApiDetail | NestedApiDetail>
   extends Omit<
     DetailFormProps,
     "form" | "onSubmit" | "footer" | "isNew" | "isOpen" | "onToggleOpen"
@@ -29,7 +31,7 @@ export interface UpdateDetailFormProps<D extends FullApiDetail | NestedApiDetail
   readonly onDeleted: () => void;
 }
 
-export const UpdateDetailForm = <D extends FullApiDetail | NestedApiDetail>({
+export const UpdateDetailForm = <D extends ApiDetail | NestedApiDetail>({
   detail,
   actions,
   onDeleted,
@@ -41,17 +43,17 @@ export const UpdateDetailForm = <D extends FullApiDetail | NestedApiDetail>({
 
   const updateDetailWithId = useMemo(
     () =>
-      isFullDetail(detail)
-        ? updateDetail.bind(null, detail.id)
-        : updateNestedDetail.bind(null, detail.id),
+      isNestedDetail(detail)
+        ? updateNestedDetail.bind(null, detail.id)
+        : updateDetail.bind(null, detail.id),
     [detail],
   );
 
   const deleteDetailWithId = useMemo(
     () =>
-      isFullDetail(detail)
-        ? deleteDetail.bind(null, detail.id)
-        : deleteNestedDetail.bind(null, detail.id),
+      isNestedDetail(detail)
+        ? deleteNestedDetail.bind(null, detail.id)
+        : deleteDetail.bind(null, detail.id),
     [detail],
   );
 

@@ -18,7 +18,7 @@ import {
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { SkillSchema } from "~/api/schemas";
 
-import { queryM2MsDynamically } from "./m2ms";
+import { queryM2MsDynamically } from "../m2ms";
 
 const UpdateSkillSchema = SkillSchema.partial();
 

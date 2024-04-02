@@ -1,5 +1,5 @@
 import { getAuthAdminUser } from "~/application/auth";
-import { getSchools } from "~/actions/fetches/get-schools";
+import { getSchools } from "~/actions/fetches/schools";
 import { ClientResponse } from "~/api";
 
 export async function GET() {

@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 
 import { getAuthUserFromRequest } from "~/application/auth";
-import { getExperiences } from "~/actions/fetches/get-experiences";
+import { getExperiences } from "~/actions/fetches/experiences";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 import { parseVisibility } from "~/api/visibility";
 

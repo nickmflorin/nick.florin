@@ -2,7 +2,7 @@ import {
   BaseError,
   type BaseErrorConfig,
   type DefaultErrorMessage,
-} from "../../application/errors/base-error";
+} from "~/application/errors/base-error";
 
 export type BaseHttpErrorConfig<S extends number = number> = BaseErrorConfig & {
   readonly url?: string;

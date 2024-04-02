@@ -1,4 +1,4 @@
-import type * as types from "../../types";
+import type * as types from "~/components/tables/types";
 
 export interface EditableStringCellProps<
   M extends { id: string } & { [key in K]: string | null },

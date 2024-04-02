@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
-import { getSkill } from "~/actions/fetches/get-skill";
+import { getSkill } from "~/actions/fetches/skills";
 import { ClientResponse, ApiClientError } from "~/api";
 import { parseInclusion } from "~/api/inclusion";
 

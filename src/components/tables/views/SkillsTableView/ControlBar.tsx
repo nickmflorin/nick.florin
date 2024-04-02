@@ -1,7 +1,8 @@
 import dynamic from "next/dynamic";
 
-import { ContextTableControlBar } from "../../generic/ContextTableControlBar";
-import { DeleteManyButtonPlaceholder } from "../../generic/DeleteManyButtonPlaceholder";
+import { ContextTableControlBar } from "~/components/tables/generic/ContextTableControlBar";
+/* eslint-disable-next-line max-len */
+import { DeleteManyButtonPlaceholder } from "~/components/tables/generic/DeleteManyButtonPlaceholder";
 
 import { TableFilters } from "./TableFilters";
 import { type Filters } from "./types";

@@ -16,6 +16,7 @@ export interface DescriptionProps extends ComponentProps {
   readonly fontWeight?: FontWeight;
   readonly textClassName?: ComponentProps["className"];
   readonly fontFamily?: FontFamily;
+  readonly children?: string;
 }
 
 export const Description = ({
@@ -25,15 +26,25 @@ export const Description = ({
   textClassName = "text-body-light",
   fontFamily,
   fontWeight = "regular",
+  children,
   ...props
 }: DescriptionProps): JSX.Element => {
-  const validDescriptions = useMemo(
-    () =>
-      (Array.isArray(description) ? description : [description]).filter(
-        d => d !== null && d !== undefined && d.trim().length !== 0,
-      ),
-    [description],
-  );
+  const validDescriptions = useMemo(() => {
+    const text = description
+      ? Array.isArray(description)
+        ? description
+        : [description]
+      : [children];
+    return text
+      .reduce((prev: string[], d) => {
+        if (d !== null && d !== undefined && d.trim().length !== 0) {
+          const parts = d.split("\n");
+          return [...prev, ...parts];
+        }
+        return prev;
+      }, [])
+      .map(p => p.trim());
+  }, [description, children]);
 
   return validDescriptions.length !== 0 ? (
     <div className={clsx("flex flex-col", props.className)} style={{ ...props.style, gap }}>

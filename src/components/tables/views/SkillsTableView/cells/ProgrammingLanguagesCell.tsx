@@ -1,5 +1,5 @@
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/mutations/update-skill";
+import { updateSkill } from "~/actions/mutations/skills";
 import { ProgrammingLanguageSelect } from "~/components/input/select/ProgrammingLanguageSelect";
 import { SelectCell } from "~/components/tables/generic/cells/SelectCell";
 

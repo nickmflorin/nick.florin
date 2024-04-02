@@ -1,6 +1,6 @@
 import { stringifyLocation } from "~/prisma/model";
-import { getCompanies } from "~/actions/fetches/get-companies";
-import { getSchools } from "~/actions/fetches/get-schools";
+import { getCompanies } from "~/actions/fetches/companies";
+import { getSchools } from "~/actions/fetches/schools";
 import { type DrawerId, DrawerIds } from "~/components/drawers";
 import { Text } from "~/components/typography/Text";
 

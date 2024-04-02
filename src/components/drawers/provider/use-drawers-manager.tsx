@@ -2,7 +2,8 @@
 import dynamic from "next/dynamic";
 import React, { useState, useRef, useCallback, useMemo } from "react";
 
-import { Loading } from "../../views/Loading";
+import { Loading } from "~/components/views/Loading";
+
 import { DrawerContainer } from "../DrawerContainer";
 
 import * as types from "./types";

@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
-import { getSchool } from "~/actions/fetches/get-school";
+import { getSchool } from "~/actions/fetches/schools";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 
 export async function generateStaticParams() {

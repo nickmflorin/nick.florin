@@ -1,7 +1,7 @@
-import { type prisma } from "../client";
-
 import { type Education, type School, Degree } from "./core";
+import { type ApiDetail } from "./details";
 import { type ConditionallyIncluded } from "./inclusion";
+import { type ApiSkill } from "./skills";
 
 export const Degrees = {
   [Degree.BACHELORS_OF_SCIENCE]: { label: "Bachelors of Science", shortLabel: "B.S." },
@@ -22,26 +22,14 @@ export type EduIncludes = Partial<{
   readonly details: boolean;
 }>;
 
-type EduSkills = Awaited<
-  ReturnType<typeof prisma.skill.findMany<{ include: { educations: true } }>>
->;
-
-export type EduSkill = EduSkills[number];
-
-type EduDetails = Awaited<
-  ReturnType<typeof prisma.detail.findMany<{ include: { nestedDetails: true; project: true } }>>
->;
-
-export type EduDetail = EduDetails[number];
-
 type _BaseApiEducation = Education & { readonly school: School };
 
 export type ApiEducation<I extends EduIncludes = { skills: false; details: false }> =
   ConditionallyIncluded<
     _BaseApiEducation,
     {
-      readonly details: EduDetail[];
-      readonly skills: EduSkill[];
+      readonly details: ApiDetail<{ skills: true; nestedDetails: true }>[];
+      readonly skills: Omit<ApiSkill, "autoExperience">[];
     },
     I
   >;

@@ -4,12 +4,11 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../../../types";
-
 import { type ApiExperience } from "~/prisma/model";
-import { updateExperience } from "~/actions/mutations/update-experience";
+import { updateExperience } from "~/actions/mutations/experiences";
 import { isApiClientErrorJson } from "~/api";
 import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
+import type * as types from "~/components/tables/types";
 
 interface CompanyCellProps {
   readonly experience: ApiExperience<{ details: true }>;

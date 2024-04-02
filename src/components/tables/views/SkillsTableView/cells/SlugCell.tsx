@@ -4,13 +4,12 @@ import { useState, useTransition, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../../../types";
-
 import { slugify } from "~/lib/formatters";
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/mutations/update-skill";
+import { updateSkill } from "~/actions/mutations/skills";
 import { IconButton } from "~/components/buttons";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
+import type * as types from "~/components/tables/types";
 
 interface SlugCellProps {
   readonly skill: ApiSkill<{ experiences: true; educations: true; projects: true }>;

@@ -9,14 +9,16 @@ import {
   type ApiEducation,
   DetailEntityType,
   type EduIncludes,
-  type EduSkill,
-  type EduDetail,
+  type ApiDetail,
+  type Skill,
+  type EducationOnSkills,
+  type NestedApiDetail,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
 import { parsePagination } from "~/api/pagination";
 import { type Visibility } from "~/api/visibility";
 
-import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "./constants";
+import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
 
 const SEARCH_FIELDS = ["major", "concentration", "minor"] as const;
 
@@ -98,9 +100,10 @@ export const getEducations = cache(
       take: pagination ? pagination.pageSize : undefined,
     });
 
-    let skills: EduSkill[] = [];
+    let educationSkills: (Skill & { readonly educations: EducationOnSkills[] })[] | undefined =
+      undefined;
     if (includes?.skills === true) {
-      skills = await prisma.skill.findMany({
+      educationSkills = await prisma.skill.findMany({
         include: { educations: true },
         where: {
           visible: visibility === "public" ? true : undefined,
@@ -108,35 +111,61 @@ export const getEducations = cache(
         },
       });
     }
-    let details: EduDetail[] = [];
+
+    let details: ApiDetail<{ skills: true; nestedDetails: true }>[] | undefined = undefined;
     if (includes?.details === true) {
-      details = await prisma.detail.findMany({
+      const baseDetails = await prisma.detail.findMany({
         where: {
           visible: visibility === "public" ? true : undefined,
           entityType: DetailEntityType.EDUCATION,
           entityId: { in: edus.map(e => e.id) },
         },
-        // Accounts for cases where multiple details were created at the same time due to seeding.
         include: {
           project: true,
-          nestedDetails: { orderBy: [{ createdAt: "desc" }, { id: "desc" }] },
+          nestedDetails: {
+            /* Accounts for cases where multiple details were created at the same time due to
+               seeding. */
+            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            include: { skills: true, project: true },
+          },
+          skills: true,
         },
         // Accounts for cases where multiple details were created at the same time due to seeding.
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       });
+      // TODO: Figure out how to optimize based on both the details and their nested details...
+      const skills = await prisma.skill.findMany({
+        where: { visible: visibility === "public" ? true : undefined },
+      });
+      details = baseDetails.map(
+        ({
+          skills: _skills,
+          nestedDetails,
+          ...d
+        }): ApiDetail<{ skills: true; nestedDetails: true }> => ({
+          ...d,
+          skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
+          nestedDetails: nestedDetails.map(
+            ({ skills: _ndSkills, ...nd }): NestedApiDetail<{ skills: true }> => ({
+              ...nd,
+              skills: skills.filter(sk => _ndSkills.some(d => d.skillId === sk.id)),
+            }),
+          ),
+        }),
+      );
     }
 
     const educations = edus.map((edu): ApiEducation<I> => {
       let modified: ApiEducation<I> = { ...edu } as ApiEducation<I>;
-      if (includes?.skills === true) {
+      if (educationSkills) {
         modified = {
           ...modified,
-          skills: skills
+          skills: educationSkills
             .filter(s => s.educations.some(e => e.educationId === edu.id))
             .map(s => omit(s, "educations")),
         };
       }
-      if (includes?.details === true) {
+      if (details) {
         modified = { ...modified, details: details.filter(d => d.entityId === edu.id) };
       }
       return modified as ApiEducation<I>;

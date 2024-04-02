@@ -6,23 +6,42 @@ import {
   type NestedDetail,
   type Project,
 } from "./core";
+import { type ConditionallyIncluded } from "./inclusion";
+
+import { type ApiSkill } from ".";
 
 export type DetailEntity<T extends DetailEntityType> = {
   readonly [DetailEntityType.EXPERIENCE]: Experience;
   readonly [DetailEntityType.EDUCATION]: Education;
 }[T];
 
-export type NestedApiDetail = NestedDetail & {
-  readonly project: Project | null;
-};
+export type NestedDetailIncludes = Partial<{
+  readonly skills: boolean;
+}>;
 
-export type ApiDetail = Detail & {
-  readonly project: Project | null;
-};
+export type NestedApiDetail<I extends NestedDetailIncludes = { skills: false }> =
+  ConditionallyIncluded<
+    NestedDetail & {
+      readonly project: Project | null;
+    },
+    { skills: Omit<ApiSkill, "autoExperience">[] },
+    I
+  >;
 
-export type FullApiDetail = ApiDetail & {
-  readonly nestedDetails: NestedApiDetail[];
-};
+export type DetailIncludes = Partial<{
+  readonly skills: boolean;
+  readonly nestedDetails: boolean;
+}>;
 
-export const isFullDetail = (detail: FullApiDetail | NestedApiDetail): detail is FullApiDetail =>
-  (detail as FullApiDetail).nestedDetails !== undefined;
+export type ApiDetail<I extends DetailIncludes = { skills: false; nestedDetails: false }> =
+  ConditionallyIncluded<
+    Detail & {
+      readonly project: Project | null;
+    },
+    { skills: Omit<ApiSkill, "autoExperience">[]; nestedDetails: NestedApiDetail<I>[] },
+    I
+  >;
+
+export const isNestedDetail = <I extends DetailIncludes>(
+  detail: ApiDetail<I> | NestedApiDetail<I>,
+): detail is NestedApiDetail<I> => (detail as NestedApiDetail).detailId !== undefined;

@@ -1,24 +1,21 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import type * as cells from "../../generic/cells";
-
 import { type ApiSkill } from "~/prisma/model";
-import { deleteSkill } from "~/actions/mutations/delete-skill";
-import { updateSkill } from "~/actions/mutations/update-skill";
+import { deleteSkill, updateSkill } from "~/actions/mutations/skills";
 import { useDrawers } from "~/components/drawers/hooks";
-
+import type * as cells from "~/components/tables/generic/cells";
 import {
   TableViewProvider as RootTableViewProvider,
   type TableViewConfig as RootTableViewConfig,
-} from "../../generic/Provider";
+} from "~/components/tables/generic/Provider";
 
 const VisibleCell = dynamic(
-  () => import("../../generic/cells/VisibleCell"),
+  () => import("~/components/tables/generic/cells/VisibleCell"),
 ) as cells.VisibleCellComponent;
 
 const EditableStringCell = dynamic(
-  () => import("../../generic/cells/EditableStringCell"),
+  () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
 const SlugCell = dynamic(() => import("./cells/SlugCell"));

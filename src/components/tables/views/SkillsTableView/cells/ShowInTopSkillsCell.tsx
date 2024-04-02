@@ -4,11 +4,10 @@ import { useTransition, useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../../../types";
-
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/mutations/update-skill";
+import { updateSkill } from "~/actions/mutations/skills";
 import { Checkbox } from "~/components/input/Checkbox";
+import type * as types from "~/components/tables/types";
 
 interface ShowInTopSkillsCellProps {
   readonly skill: ApiSkill<{ experiences: true; educations: true; projects: true }>;

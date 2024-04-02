@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { getExperiences } from "~/actions/fetches/get-experiences";
+import { getExperiences } from "~/actions/fetches/experiences";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";

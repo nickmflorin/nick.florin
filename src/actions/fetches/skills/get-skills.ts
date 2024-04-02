@@ -27,7 +27,7 @@ import { constructOrSearch, conditionalFilters } from "~/prisma/util";
 import { parsePagination } from "~/api/pagination";
 import { type Visibility } from "~/api/visibility";
 
-import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "./constants";
+import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
 
 const SEARCH_FIELDS = ["slug", "label"] as const;
 
@@ -134,7 +134,7 @@ export const toApiSkill = ({
     readonly skills: ExperienceOnSkills[];
     readonly company: Company;
   })[];
-}): ApiSkill<{ experiences: true; educations: true; projects: true }> => {
+}): ApiSkill<{ experiences: true; educations: true; projects: true; autoExperience: true }> => {
   const educations = _educations.filter(edu => edu.skills.some(s => s.skillId === skill.id));
   const experiences = _experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id));
   const projects = _projects.filter(p => p.skills.some(s => s.skillId === skill.id));

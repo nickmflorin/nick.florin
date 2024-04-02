@@ -71,15 +71,16 @@ export type SkillIncludes = Partial<{
   readonly projects: boolean;
 }>;
 
-type _BaseApiSkill = Skill & {
-  readonly autoExperience: number;
-  readonly experience: number | null;
-};
-
 export type ApiSkill<
-  I extends SkillIncludes = { educations: false; experiences: false; projects: false },
+  I extends SkillIncludes = {
+    educations: false;
+    experiences: false;
+    projects: false;
+  },
 > = ConditionallyIncluded<
-  _BaseApiSkill,
+  Skill & {
+    readonly autoExperience: number;
+  },
   {
     readonly educations: ApiEducation[];
     readonly experiences: ApiExperience[];

@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { getEducations } from "~/actions/fetches/get-educations";
+import { getEducations } from "~/actions/fetches/educations";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";

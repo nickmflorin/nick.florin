@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { decodeQueryParams } from "~/lib/urls";
 import { type SkillIncludes, type ApiSkill } from "~/prisma/model";
-import { getSkills } from "~/actions/fetches/get-skills";
+import { getSkills } from "~/actions/fetches/skills";
 import { ClientResponse, ApiClientFieldErrors } from "~/api";
 import { parseInclusion } from "~/api/inclusion";
 import { SkillQuerySchema } from "~/api/schemas";

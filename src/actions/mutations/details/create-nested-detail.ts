@@ -6,28 +6,30 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { DetailEntityType, type Project, type ApiDetail } from "~/prisma/model";
-import { ApiClientFieldErrors } from "~/api";
-import { ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
+import { DetailEntityType, type NestedApiDetail, type Project } from "~/prisma/model";
+import { getDetail } from "~/actions/fetches/details";
+import {
+  ApiClientFieldErrors,
+  ApiClientGlobalError,
+  ApiClientFieldErrorCodes,
+  type ApiClientErrorJson,
+} from "~/api";
 import { DetailSchema } from "~/api/schemas";
 
-import { getEntity } from "../fetches/get-entity";
-
-export const createDetail = async (
-  entityId: string,
-  entityType: DetailEntityType,
+export const createNestedDetail = async (
+  detailId: string,
   req: z.infer<typeof DetailSchema>,
-): Promise<ApiDetail | ApiClientErrorJson> => {
+): Promise<NestedApiDetail | ApiClientErrorJson> => {
   const user = await getAuthAdminUser();
 
-  const entity = await getEntity(entityId, entityType);
-  if (!entity) {
-    throw ApiClientGlobalError.NotFound("No entity exists for the provided ID and entity type.");
+  const detail = await getDetail(detailId);
+  if (!detail) {
+    return ApiClientGlobalError.NotFound("No detail exists for the provided ID.").json;
   }
 
   const parsed = DetailSchema.safeParse(req);
   if (!parsed.success) {
-    throw ApiClientFieldErrors.fromZodError(parsed.error, DetailSchema).json;
+    return ApiClientFieldErrors.fromZodError(parsed.error, DetailSchema).json;
   }
 
   const fieldErrors = new ApiClientFieldErrors();
@@ -40,7 +42,8 @@ export const createDetail = async (
       project = await prisma.project.findUniqueOrThrow({ where: { id: _project } });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        fieldErrors.addDoesNotExist("project", {
+        fieldErrors.add("project", {
+          code: "does_not_exist",
           message: "The project does not exist.",
           internalMessage: `The project with ID '${_project}' does not exist.`,
         });
@@ -51,22 +54,23 @@ export const createDetail = async (
   }
   if (
     label &&
-    (await prisma.detail.count({
-      where: { entityId: entity.id, entityType, label },
+    (await prisma.nestedDetail.count({
+      where: { detailId, label },
     }))
   ) {
-    fieldErrors.addUnique("label", "The 'label' must be unique for a given parent.");
+    fieldErrors.add("label", {
+      code: ApiClientFieldErrorCodes.unique,
+      message: "The 'label' must be unique for a given parent detail.",
+    });
   }
   if (!fieldErrors.isEmpty) {
     return fieldErrors.json;
   }
-
-  const detail = await prisma.detail.create({
+  const nestedDetail = await prisma.nestedDetail.create({
     data: {
       ...data,
+      detailId,
       projectId: project?.id,
-      entityId: entity.id,
-      entityType,
       label,
       createdById: user.id,
       updatedById: user.id,
@@ -87,5 +91,5 @@ export const createDetail = async (
     default:
       throw new UnreachableCaseError();
   }
-  return detail;
+  return nestedDetail;
 };

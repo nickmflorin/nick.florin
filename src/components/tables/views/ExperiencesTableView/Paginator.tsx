@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { EXPERIENCES_ADMIN_TABLE_PAGE_SIZE } from "~/actions/fetches/constants";
-import { getExperiencesCount } from "~/actions/fetches/get-experiences";
+import { getExperiencesCount } from "~/actions/fetches/experiences";
 
 const RootPaginator = dynamic(() => import("~/components/pagination/Paginator"), {});
 

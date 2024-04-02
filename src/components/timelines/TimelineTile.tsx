@@ -26,7 +26,7 @@ export interface TimelineTileProps extends ComponentProps {
   readonly timePeriod: ModelTimePeriod;
   readonly fallbackImageIcon: ModelImageProps["fallbackIcon"];
   readonly imageUrl?: string | null;
-  readonly details: ApiDetail[];
+  readonly details: ApiDetail<{ skills: true; nestedDetails: true }>[];
   readonly skills: Skill[];
 }
 

@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
-import { getExperience } from "~/actions/fetches/get-experience";
+import { getExperience } from "~/actions/fetches/experiences";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 
 export async function generateStaticParams() {

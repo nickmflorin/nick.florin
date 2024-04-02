@@ -2,6 +2,10 @@ import { type Prettify } from "~/lib/types";
 
 export type Includes<F extends string = string> = Partial<{ [key in F]: boolean }>;
 
+export type ShouldInclude<I extends Includes, N extends keyof I> = I extends { [key in N]: true }
+  ? true
+  : false;
+
 export type IncludeAll<I extends Includes> = { [key in keyof I]-?: true };
 
 export type ConditionallyExcluded<

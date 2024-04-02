@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "~/actions/fetches/constants";
-import { getSkillsCount } from "~/actions/fetches/get-skills";
+import { getSkillsCount } from "~/actions/fetches/skills";
 
 const RootPaginator = dynamic(() => import("~/components/pagination/Paginator"), {});
 

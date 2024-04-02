@@ -3,16 +3,15 @@ import { useTransition, useState, useCallback, useEffect, useMemo } from "react"
 
 import { toast } from "react-toastify";
 
-import { type FullApiDetail, type NestedApiDetail, isFullDetail } from "~/prisma/model";
-import { updateDetail } from "~/actions/mutations/update-detail";
-import { updateNestedDetail } from "~/actions/mutations/update-nested-detail";
+import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
+import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
 import { IconButton } from "~/components/buttons";
 
-export interface DetailVisibilityButtonProps<D extends FullApiDetail | NestedApiDetail> {
+export interface DetailVisibilityButtonProps<D extends ApiDetail | NestedApiDetail> {
   readonly detail: D;
 }
 
-export const DetailVisibilityButton = <D extends FullApiDetail | NestedApiDetail>({
+export const DetailVisibilityButton = <D extends ApiDetail | NestedApiDetail>({
   detail,
 }: DetailVisibilityButtonProps<D>) => {
   /* We keep track of the visibility of the detail in state, separately from the visible attribute
@@ -30,9 +29,9 @@ export const DetailVisibilityButton = <D extends FullApiDetail | NestedApiDetail
 
   const updateDetailWithId = useMemo(
     () =>
-      isFullDetail(detail)
-        ? updateDetail.bind(null, detail.id)
-        : updateNestedDetail.bind(null, detail.id),
+      isNestedDetail(detail)
+        ? updateNestedDetail.bind(null, detail.id)
+        : updateDetail.bind(null, detail.id),
     [detail],
   );
 

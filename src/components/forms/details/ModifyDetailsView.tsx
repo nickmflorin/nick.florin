@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Timeline } from "@mantine/core";
 import clsx from "clsx";
 
-import { type NestedApiDetail, type FullApiDetail, type DetailEntityType } from "~/prisma/model";
+import { type NestedApiDetail, type ApiDetail, type DetailEntityType } from "~/prisma/model";
 import { IconButton, Link } from "~/components/buttons";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { DetailsTimeline } from "~/components/timelines/DetailsTimeline";
@@ -66,7 +66,7 @@ const ModifyNestedDetailsTimeline = ({
 };
 
 interface ModifyFullDetailTimelineProps {
-  readonly detail: FullApiDetail;
+  readonly detail: ApiDetail<{ nestedDetails: true }>;
   readonly onDeleted: () => void;
 }
 
@@ -102,7 +102,7 @@ const ModifyFullDetailTimeline = ({ detail, onDeleted }: ModifyFullDetailTimelin
 };
 
 export interface ModifyDetailsTimelineProps extends ComponentProps {
-  readonly details: FullApiDetail[];
+  readonly details: ApiDetail<{ nestedDetails: true }>[];
   readonly entityId: string;
   readonly entityType: DetailEntityType;
 }
@@ -114,7 +114,8 @@ export const ModifyDetailsView = ({
   ...props
 }: ModifyDetailsTimelineProps): JSX.Element => {
   const [createFormVisible, setCreateFormVisible] = useState(false);
-  const [optimisticDetails, setOptimisticDetails] = useState<FullApiDetail[]>(details);
+  const [optimisticDetails, setOptimisticDetails] =
+    useState<ApiDetail<{ nestedDetails: true }>[]>(details);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);

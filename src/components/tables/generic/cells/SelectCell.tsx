@@ -4,8 +4,7 @@ import { useState, useEffect, useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type MenuItemInstance } from "~/components/menus";
-
-import { type TableModel } from "../../types";
+import { type TableModel } from "~/components/tables/types";
 
 type AttributeValue<M extends TableModel, N extends keyof M> = M[N];
 

@@ -9,7 +9,7 @@ import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { SkillSchema } from "~/api/schemas";
 
-import { queryM2MsDynamically } from "./m2ms";
+import { queryM2MsDynamically } from "../m2ms";
 
 export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
   const user = await getAuthAdminUser();

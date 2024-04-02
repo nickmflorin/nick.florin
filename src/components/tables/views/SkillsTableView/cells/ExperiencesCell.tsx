@@ -5,7 +5,7 @@ import { useState, useEffect, useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type ApiSkill } from "~/prisma/model";
-import { updateSkill } from "~/actions/mutations/update-skill";
+import { updateSkill } from "~/actions/mutations/skills";
 import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
 
 interface ExperiencesCellProps {

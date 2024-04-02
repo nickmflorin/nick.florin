@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "~/actions/fetches/constants";
-import { getEducationsCount } from "~/actions/fetches/get-educations";
+import { getEducationsCount } from "~/actions/fetches/educations";
 
 import { type Filters } from "./types";
 

@@ -1,13 +1,12 @@
 import dynamic from "next/dynamic";
 
-import { getEducations } from "~/actions/fetches/get-educations";
+import { getEducations } from "~/actions/fetches/educations";
+import { type ContextTableComponent } from "~/components/tables/types";
 import { Loading } from "~/components/views/Loading";
-
-import { type ContextTableComponent } from "../../types";
 
 import { type Filters } from "./types";
 
-const ContextTable = dynamic(() => import("../../generic/ContextTable"), {
+const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTable"), {
   loading: () => <Loading loading={true} />,
 }) as ContextTableComponent;
 
