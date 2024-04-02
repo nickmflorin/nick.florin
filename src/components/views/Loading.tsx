@@ -25,6 +25,10 @@ const _WrappedSpinner = ({
     className={clsx(
       "loading",
       {
+        /* If the spinner is being displayed, the view needs to have a higher z-index than it other
+           wise would.  This is such that the spinner appears over the content.  This will prevent
+           scroll behavior on the content, but only when the spinner is present. */
+        "z-50": loading && spinner,
         "z-20": loading,
         "z-0": !loading && [props.blurred, props.dimmed, props.overlay].includes(true),
       },

@@ -12,13 +12,13 @@ import {
   type ApiDetail,
   type Skill,
   type EducationOnSkills,
-  type NestedApiDetail,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
 import { parsePagination } from "~/api/pagination";
 import { type Visibility } from "~/api/visibility";
 
 import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
+import { getDetails } from "../details";
 
 const SEARCH_FIELDS = ["major", "concentration", "minor"] as const;
 
@@ -114,44 +114,10 @@ export const getEducations = cache(
 
     let details: ApiDetail<{ skills: true; nestedDetails: true }>[] | undefined = undefined;
     if (includes?.details === true) {
-      const baseDetails = await prisma.detail.findMany({
-        where: {
-          visible: visibility === "public" ? true : undefined,
-          entityType: DetailEntityType.EDUCATION,
-          entityId: { in: edus.map(e => e.id) },
-        },
-        include: {
-          project: true,
-          nestedDetails: {
-            /* Accounts for cases where multiple details were created at the same time due to
-               seeding. */
-            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: { skills: true, project: true },
-          },
-          skills: true,
-        },
-        // Accounts for cases where multiple details were created at the same time due to seeding.
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
-      // TODO: Figure out how to optimize based on both the details and their nested details...
-      const skills = await prisma.skill.findMany({
-        where: { visible: visibility === "public" ? true : undefined },
-      });
-      details = baseDetails.map(
-        ({
-          skills: _skills,
-          nestedDetails,
-          ...d
-        }): ApiDetail<{ skills: true; nestedDetails: true }> => ({
-          ...d,
-          skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-          nestedDetails: nestedDetails.map(
-            ({ skills: _ndSkills, ...nd }): NestedApiDetail<{ skills: true }> => ({
-              ...nd,
-              skills: skills.filter(sk => _ndSkills.some(d => d.skillId === sk.id)),
-            }),
-          ),
-        }),
+      details = await getDetails(
+        edus.map(e => e.id),
+        DetailEntityType.EDUCATION,
+        { visibility, includes: { skills: true, nestedDetails: true } },
       );
     }
 

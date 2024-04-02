@@ -156,6 +156,7 @@
   color: theme("colors.blue.400");
   -webkit-animation: spin 1s infinite linear;
   animation: spin 1s infinite linear;
+  z-index: 100;
 
   @keyframes spin {
     0% {

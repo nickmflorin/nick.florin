@@ -27,7 +27,7 @@ export const UpdateSkillDrawer = ({ skillId }: UpdateSkillDrawerProps): JSX.Elem
     { keepPreviousData: true },
   );
   return (
-    <Drawer className="overflow-y-scroll">
+    <Drawer className="overflow-y-auto">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {skill => (
           <>

@@ -8,6 +8,8 @@ import { Label } from "~/components/typography/Label";
 import { Title } from "~/components/typography/Title";
 import { ShowHide } from "~/components/util";
 
+import { DrawerContent } from "../DrawerContent";
+
 import { Educations } from "./Educations";
 import { Experiences } from "./Experiences";
 import { Projects } from "./Projects";
@@ -30,7 +32,7 @@ export const SkillDrawerContent = ({
     autoExperience,
   },
 }: SkillDrawerContentProps) => (
-  <div className="flex flex-col gap-[14px]">
+  <DrawerContent className="gap-[14px]">
     <div className="flex flex-col gap-[8px]">
       <div className="flex flex-col gap-[6px]">
         <Title order={2} className="text-gray-700 max-w-fit">
@@ -84,7 +86,7 @@ export const SkillDrawerContent = ({
         </>
       )}
     </div>
-  </div>
+  </DrawerContent>
 );
 
 export default SkillDrawerContent;

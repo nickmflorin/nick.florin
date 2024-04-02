@@ -19,7 +19,7 @@ export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
   );
 
   return (
-    <Drawer className="overflow-y-scroll">
+    <Drawer>
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
         {skill => <SkillDrawerContent skill={skill} />}
       </ApiResponseView>

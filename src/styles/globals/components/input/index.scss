@@ -91,7 +91,7 @@
   }
 
   &.text-area {
-    overflow-y: scroll;
+    overflow-y: auto;
     @include input-sizes("text-area");
   }
 }

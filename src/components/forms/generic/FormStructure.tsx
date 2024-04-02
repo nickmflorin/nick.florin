@@ -48,7 +48,7 @@ const Body = <I extends BaseFormValues>({
 }: Pick<FormStructureProps<I>, "isLoading" | "isScrollable" | "children" | "contentClassName">) => (
   <div
     className={clsx("flex flex-col grow relative", {
-      "overflow-y-scroll pr-[18px]": isScrollable,
+      "overflow-y-auto pr-[18px]": isScrollable,
     })}
   >
     <Loading loading={isLoading}>

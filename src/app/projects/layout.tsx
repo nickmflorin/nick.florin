@@ -23,7 +23,7 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
           },
         ]}
       />
-      <div className="grow max-h-full h-full overflow-y-scroll flex flex-col">{children}</div>
+      <div className="grow max-h-full h-full overflow-y-auto flex flex-col">{children}</div>
     </div>
   );
 }

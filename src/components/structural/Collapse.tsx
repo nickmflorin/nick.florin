@@ -25,7 +25,7 @@ export const Collapse = ({
   open: _propOpen,
   title,
   actions,
-  contentClassName = "overflow-y-scroll",
+  contentClassName = "overflow-y-auto",
   onToggle,
   ...props
 }: CollapseProps) => {

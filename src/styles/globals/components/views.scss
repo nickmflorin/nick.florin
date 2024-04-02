@@ -70,7 +70,6 @@ $animations: (
   left: 0;
   position: absolute;
   top: 0;
-  z-index: 1000;
   overflow: hidden;
 }
 
@@ -101,7 +100,7 @@ $animations: (
 
   &.loading {
     & + * {
-      z-index: 50;
+      z-index: 30;
     }
 
     &.is-loading {

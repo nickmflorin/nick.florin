@@ -25,7 +25,7 @@ export const UpdateSchoolDrawer = ({ schoolId }: UpdateSchoolDrawerProps): JSX.E
     keepPreviousData: true,
   });
   return (
-    <Drawer className="overflow-y-scroll">
+    <Drawer className="overflow-y-auto">
       <ApiResponseView error={error} isLoading={isLoading || isValidating} data={data}>
         {school => (
           <>

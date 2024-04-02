@@ -8,17 +8,47 @@ import {
   type ApiDetail,
   type DetailIncludes,
   type NestedApiDetail,
+  type NestedDetail,
+  type Detail,
 } from "~/prisma/model";
+import { type Visibility } from "~/api/visibility";
 
 import { getEntity } from "../get-entity";
 
-export const preloadDetails = <T extends DetailEntityType, I extends DetailIncludes>(
-  id: string,
-  entityType: T,
-  params: { includes: I },
-) => {
-  void getDetails(id, entityType, params);
-};
+const hasNested = (
+  details: Detail[] | (Detail & { readonly nestedDetails: NestedDetail[] })[],
+): details is (Detail & { readonly nestedDetails: NestedDetail[] })[] =>
+  details.length !== 0 &&
+  (details as (Detail & { readonly nestedDetails: NestedDetail[] })[])[0].nestedDetails !==
+    undefined;
+
+const getDetailsSkills = async (
+  details: Detail[] | (Detail & { readonly nestedDetails: NestedDetail[] })[],
+  { visibility = "public" }: { visibility: Visibility },
+) =>
+  await prisma.skill.findMany({
+    where: {
+      AND: [
+        { visible: visibility === "public" ? true : undefined },
+        {
+          OR: [
+            { details: { some: { detailId: { in: details.map(d => d.id) } } } },
+            {
+              nestedDetails: hasNested(details)
+                ? {
+                    some: {
+                      nestedDetailId: {
+                        in: details.flatMap(det => det.nestedDetails.map(d => d.id)),
+                      },
+                    },
+                  }
+                : undefined,
+            },
+          ],
+        },
+      ],
+    },
+  });
 
 /*
 Note: (r.e. Ordering):
@@ -41,119 +71,132 @@ To account for this, the 'id' field is used as a secondary ordering attribute, w
 to be unique and not change, for each detail.  Then, the sorting is performed first based on whether
 or not the 'createdAt' values are the same, and if they are, the 'id' field is used as a fallback.
 */
-// Note: This is currently only used for the admin, so visibility is not applicable.
 export const getDetails = cache(
+  async <T extends DetailEntityType, I extends DetailIncludes>(
+    ids: string[],
+    entityType: T,
+    { includes, visibility = "public" }: { includes: I; visibility?: Visibility },
+  ): Promise<ApiDetail<I>[]> => {
+    if (includes.skills && includes.nestedDetails) {
+      const details = await prisma.detail.findMany({
+        where: {
+          entityId: { in: ids },
+          entityType: entityType,
+          visible: visibility === "public" ? true : undefined,
+        },
+        include: {
+          project: true,
+          skills: true,
+          nestedDetails: {
+            /* Accounts for cases where multiple details were created at the same time due to
+               seeding. */
+            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            include: { skills: true, project: true },
+          },
+        },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      });
+
+      const skills = await getDetailsSkills(details, { visibility });
+      return details.map(
+        ({
+          skills: _skills,
+          nestedDetails,
+          ...d
+        }): ApiDetail<{ skills: true; nestedDetails: true }> => ({
+          ...d,
+          /* Include skills for each Detail by identifying the skills in the overall set that have
+             IDs in the Detail's skills array. */
+          skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
+          nestedDetails: nestedDetails.map(
+            ({ skills: _ndSkills, ...nd }): NestedApiDetail<{ skills: true }> => ({
+              ...nd,
+              /* Include skills for each NestedDetail by identifying the skills in the overall set
+                 that have IDs in the NestedDetail's skills array. */
+              skills: skills.filter(sk => _ndSkills.some(d => d.nestedDetailId === sk.id)),
+            }),
+          ),
+        }),
+      ) as ApiDetail<I>[];
+    } else if (includes.skills) {
+      const details = await prisma.detail.findMany({
+        where: {
+          entityId: { in: ids },
+          entityType: entityType,
+          visible: visibility === "public" ? true : undefined,
+        },
+        include: {
+          project: true,
+          skills: true,
+        },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      });
+
+      const skills = await getDetailsSkills(details, { visibility });
+
+      return details.map(
+        ({ skills: _skills, ...d }): ApiDetail<{ skills: true; nestedDetails: false }> => ({
+          ...d,
+          /* Include skills for each Detail by identifying the skills in the overall set that have
+             IDs in the Detail's skills array. */
+          skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
+        }),
+      ) as ApiDetail<I>[];
+    } else if (includes.nestedDetails) {
+      return (await prisma.detail.findMany({
+        where: {
+          entityId: { in: ids },
+          entityType: entityType,
+          visible: visibility === "public" ? true : undefined,
+        },
+        include: {
+          project: true,
+          nestedDetails: {
+            /* Accounts for cases where multiple details were created at the same time due to
+               seeding. */
+            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+            include: { project: true },
+          },
+        },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      })) as ApiDetail<I>[];
+    } else {
+      return (await prisma.detail.findMany({
+        where: {
+          entityId: { in: ids },
+          entityType: entityType,
+          visible: visibility === "public" ? true : undefined,
+        },
+        include: { project: true },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      })) as ApiDetail<I>[];
+    }
+  },
+) as {
+  <T extends DetailEntityType, I extends DetailIncludes>(
+    ids: string[],
+    entityType: T,
+    params: { includes: I; visibility?: Visibility },
+  ): Promise<ApiDetail<I>[]>;
+};
+
+export const getEntityDetails = cache(
   async <T extends DetailEntityType, I extends DetailIncludes>(
     id: string,
     entityType: T,
-    { includes }: { includes: I },
+    params: { includes: I; visibility?: Visibility },
   ): Promise<{ details: ApiDetail<I>[]; entity: DetailEntity<T> } | null> => {
     const entity: DetailEntity<T> | null = await getEntity(id, entityType);
     if (!entity) {
       return null;
     }
-
-    if (includes.skills && includes.nestedDetails) {
-      const baseDetails = await prisma.detail.findMany({
-        where: { entityId: entity.id, entityType: entityType },
-        include: {
-          project: true,
-          skills: true,
-          nestedDetails: {
-            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: { skills: true, project: true },
-          },
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
-
-      // TODO: Figure out how to optimize based on both the details and their nested details...
-      const skills = await prisma.skill.findMany({});
-
-      const toApiDetail = ({
-        skills: _skills,
-        nestedDetails,
-        ...detail
-      }: (typeof baseDetails)[number]): ApiDetail<{ skills: true; nestedDetails: true }> => ({
-        ...detail,
-        skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-        nestedDetails: nestedDetails.map(
-          ({ skills: _ndSkills, ...nd }): NestedApiDetail<{ skills: true }> => ({
-            ...nd,
-            skills: skills.filter(sk => _ndSkills.some(d => d.skillId === sk.id)),
-          }),
-        ),
-      });
-
-      return {
-        details: baseDetails.map(detail => toApiDetail(detail) as ApiDetail<I>),
-        entity,
-      };
-    } else if (includes.skills) {
-      const baseDetails = await prisma.detail.findMany({
-        where: { entityId: entity.id, entityType: entityType },
-        include: {
-          project: true,
-          skills: true,
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
-
-      // TODO: Figure out how to optimize based on both the details and their nested details...
-      const skills = await prisma.skill.findMany({});
-
-      const toApiDetail = ({
-        skills: _skills,
-        ...detail
-      }: (typeof baseDetails)[number]): ApiDetail<{ skills: true; nestedDetails: false }> => ({
-        ...detail,
-        skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-      });
-      return {
-        details: baseDetails.map(detail => toApiDetail(detail) as ApiDetail<I>),
-        entity,
-      };
-    } else if (includes.nestedDetails) {
-      const details = await prisma.detail.findMany({
-        where: { entityId: entity.id, entityType: entityType },
-        include: {
-          project: true,
-          nestedDetails: {
-            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: { skills: true, project: true },
-          },
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
-      const toApiDetail = (
-        detail: (typeof details)[number],
-      ): ApiDetail<{ skills: false; nestedDetails: true }> => detail;
-
-      return {
-        details: details.map(d => toApiDetail(d)) as ApiDetail<I>[],
-        entity,
-      };
-    } else {
-      const details = await prisma.detail.findMany({
-        where: { entityId: entity.id, entityType: entityType },
-        include: {
-          project: true,
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
-      const toApiDetail = (
-        detail: (typeof details)[number],
-      ): ApiDetail<{ skills: false; nestedDetails: false }> => detail;
-      return {
-        details: details.map(d => toApiDetail(d)) as ApiDetail<I>[],
-        entity,
-      };
-    }
+    const details = await getDetails([id], entityType, params);
+    return { details, entity };
   },
 ) as {
   <T extends DetailEntityType, I extends DetailIncludes>(
     id: string,
     entityType: T,
-    { includes }: { includes: I },
+    params: { includes: I; visibility?: Visibility },
   ): Promise<{ details: ApiDetail<I>[]; entity: DetailEntity<T> } | null>;
 };
