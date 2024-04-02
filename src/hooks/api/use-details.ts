@@ -5,7 +5,7 @@ import {
   DetailEntityType,
   type DetailIncludes,
 } from "~/prisma/model";
-import { encodeInclusionQuery } from "~/api/inclusion";
+import { encodeInclusionQuery } from "~/api/query";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
@@ -28,10 +28,17 @@ const PATHS: { [key in DetailEntityType]: (id: string) => `/api/${string}/${stri
 export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>(
   id: string | null,
   entityType: T,
-  includes: I,
-  config?: SWRConfig<Response<I, T>>,
+  {
+    includes,
+    ...config
+  }: SWRConfig<Response<I, T>> & {
+    readonly includes: I;
+  },
 ) =>
   useSWR<Response<I, T>>(id ? PATHS[entityType](id) : null, {
     ...config,
-    query: { ...config?.query, includes: encodeInclusionQuery(includes) },
+    query: {
+      ...config?.query,
+      includes: encodeInclusionQuery(includes),
+    },
   });

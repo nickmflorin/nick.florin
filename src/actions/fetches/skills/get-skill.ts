@@ -7,7 +7,7 @@ import { type ApiSkill, type Skill, type SkillIncludes } from "~/prisma/model";
 import { conditionallyInclude } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
 import { ApiClientGlobalError } from "~/api";
-import { type Visibility } from "~/api/visibility";
+import { type Visibility } from "~/api/query";
 
 import { toApiSkill } from "./get-skills";
 

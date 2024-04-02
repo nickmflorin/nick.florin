@@ -3,14 +3,14 @@ import pick from "lodash.pick";
 import { type ApiExperience } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 
-import { TimelineTile } from "../TimelineTile";
+import { ResumeTile } from "./ResumeTile";
 
 export interface ExperienceTileProps extends ComponentProps {
   readonly experience: ApiExperience<{ details: true; skills: true }>;
 }
 
 export const ExperienceTile = ({ experience, ...props }: ExperienceTileProps): JSX.Element => (
-  <TimelineTile
+  <ResumeTile
     {...pick(experience, ["skills", "details", "title"])}
     name={experience.company.name}
     websiteUrl={experience.company.websiteUrl}

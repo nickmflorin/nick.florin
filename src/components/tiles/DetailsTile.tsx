@@ -3,21 +3,21 @@ import clsx from "clsx";
 import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 
-import { Detail } from "./Detail";
+import { DetailTile } from "./DetailTile";
 
-export interface TopDetailsProps extends ComponentProps {
+export interface TopDetailsTileProps extends ComponentProps {
   readonly details: ApiDetail<{ nestedDetails: true; skills: true }>[];
   readonly isNested?: false;
 }
 
-export interface NestedDetailsProps extends ComponentProps {
+export interface NestedDetailsTileProps extends ComponentProps {
   readonly details: NestedApiDetail<{ skills: true }>[];
   readonly isNested: true;
 }
 
-export type DetailsProps = TopDetailsProps | NestedDetailsProps;
+export type DetailsTileProps = TopDetailsTileProps | NestedDetailsTileProps;
 
-export const Details = ({ details, isNested, ...props }: DetailsProps): JSX.Element => {
+export const DetailsTile = ({ details, isNested, ...props }: DetailsTileProps): JSX.Element => {
   const filtered = details.filter(d => d.visible !== false);
   if (filtered.length === 0) {
     return <></>;
@@ -34,7 +34,7 @@ export const Details = ({ details, isNested, ...props }: DetailsProps): JSX.Elem
       {details
         .filter(d => d.visible !== false)
         .map((detail, i) => (
-          <Detail
+          <DetailTile
             key={detail.id}
             detail={detail}
             index={isNested ? i + 1 : undefined}

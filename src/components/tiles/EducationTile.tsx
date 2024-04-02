@@ -3,14 +3,14 @@ import pick from "lodash.pick";
 import { type ApiEducation, getDegree } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 
-import { TimelineTile } from "../TimelineTile";
+import { ResumeTile } from "./ResumeTile";
 
 export interface EducationTileProps extends ComponentProps {
   readonly education: ApiEducation<{ details: true; skills: true }>;
 }
 
 export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.Element => (
-  <TimelineTile
+  <ResumeTile
     {...pick(education, ["skills", "details"])}
     title={`${getDegree(education.degree).shortLabel} in ${education.major}`}
     name={education.school.name}

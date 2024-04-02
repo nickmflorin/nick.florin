@@ -8,31 +8,43 @@ import {
   type ApiDetail,
   type DetailIncludes,
   type NestedApiDetail,
-  type NestedDetail,
-  type Detail,
+  type Project,
 } from "~/prisma/model";
-import { type Visibility } from "~/api/visibility";
+import { type Visibility } from "~/api/query";
 
 import { getEntity } from "../get-entity";
 
 const hasNested = (
-  details: Detail[] | (Detail & { readonly nestedDetails: NestedDetail[] })[],
-): details is (Detail & { readonly nestedDetails: NestedDetail[] })[] =>
+  details: ApiDetail<null, Project>[] | ApiDetail<{ nestedDetails: true }, Project>[],
+): details is ApiDetail<{ nestedDetails: true }, Project>[] =>
   details.length !== 0 &&
-  (details as (Detail & { readonly nestedDetails: NestedDetail[] })[])[0].nestedDetails !==
-    undefined;
+  (details as ApiDetail<{ nestedDetails: true }, Project>[])[0].nestedDetails !== undefined;
 
 const getDetailsSkills = async (
-  details: Detail[] | (Detail & { readonly nestedDetails: NestedDetail[] })[],
+  details: ApiDetail<null, Project>[] | ApiDetail<{ nestedDetails: true }, Project>[],
   { visibility = "public" }: { visibility: Visibility },
-) =>
-  await prisma.skill.findMany({
+) => {
+  const projects = [...details]
+    .reduce(
+      (
+        prev: (Project | null)[],
+        curr: ApiDetail<null, Project> | ApiDetail<{ nestedDetails: true }, Project>,
+      ) => [
+        ...prev,
+        curr.project,
+        ...((curr as ApiDetail<{ nestedDetails: true }>).nestedDetails ?? []).map(nd => nd.project),
+      ],
+      [],
+    )
+    .filter((p): p is Project => p !== null);
+  return await prisma.skill.findMany({
     where: {
       AND: [
         { visible: visibility === "public" ? true : undefined },
         {
           OR: [
             { details: { some: { detailId: { in: details.map(d => d.id) } } } },
+            { projects: { some: { projectId: { in: projects.map(p => p.id) } } } },
             {
               nestedDetails: hasNested(details)
                 ? {
@@ -49,6 +61,7 @@ const getDetailsSkills = async (
       ],
     },
   });
+};
 
 /*
 Note: (r.e. Ordering):
@@ -85,32 +98,51 @@ export const getDetails = cache(
           visible: visibility === "public" ? true : undefined,
         },
         include: {
-          project: true,
+          project: { include: { skills: true } },
           skills: true,
           nestedDetails: {
             /* Accounts for cases where multiple details were created at the same time due to
                seeding. */
             orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: { skills: true, project: true },
+            include: { skills: true, project: { include: { skills: true } } },
           },
         },
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       });
-
+      // The skills for all projects, details and nested details associated with the entity(s).
       const skills = await getDetailsSkills(details, { visibility });
       return details.map(
         ({
           skills: _skills,
           nestedDetails,
+          project,
           ...d
         }): ApiDetail<{ skills: true; nestedDetails: true }> => ({
           ...d,
+          project: project
+            ? {
+                ...project,
+                skills: skills.filter(sk => project.skills.some(d => d.skillId === sk.id)),
+              }
+            : null,
           /* Include skills for each Detail by identifying the skills in the overall set that have
              IDs in the Detail's skills array. */
           skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
           nestedDetails: nestedDetails.map(
-            ({ skills: _ndSkills, ...nd }): NestedApiDetail<{ skills: true }> => ({
+            ({
+              skills: _ndSkills,
+              project: nestedProject,
+              ...nd
+            }): NestedApiDetail<{ skills: true }> => ({
               ...nd,
+              project: nestedProject
+                ? {
+                    ...nestedProject,
+                    skills: skills.filter(sk =>
+                      nestedProject.skills.some(d => d.skillId === sk.id),
+                    ),
+                  }
+                : null,
               /* Include skills for each NestedDetail by identifying the skills in the overall set
                  that have IDs in the NestedDetail's skills array. */
               skills: skills.filter(sk => _ndSkills.some(d => d.nestedDetailId === sk.id)),
@@ -126,7 +158,7 @@ export const getDetails = cache(
           visible: visibility === "public" ? true : undefined,
         },
         include: {
-          project: true,
+          project: { include: { skills: true } },
           skills: true,
         },
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -135,8 +167,18 @@ export const getDetails = cache(
       const skills = await getDetailsSkills(details, { visibility });
 
       return details.map(
-        ({ skills: _skills, ...d }): ApiDetail<{ skills: true; nestedDetails: false }> => ({
+        ({
+          skills: _skills,
+          project,
+          ...d
+        }): ApiDetail<{ skills: true; nestedDetails: false }> => ({
           ...d,
+          project: project
+            ? {
+                ...project,
+                skills: skills.filter(sk => project.skills.some(d => d.skillId === sk.id)),
+              }
+            : null,
           /* Include skills for each Detail by identifying the skills in the overall set that have
              IDs in the Detail's skills array. */
           skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),

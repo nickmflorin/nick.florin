@@ -38,12 +38,16 @@ export const conditionallyExclude = <
 export type ConditionallyIncluded<
   O extends Record<string, unknown>,
   D extends Record<string, unknown>,
-  I extends Partial<{ [key in keyof D]: boolean }>,
+  I extends Partial<{ [key in keyof D]: boolean }> | null,
 > = Prettify<
   {
     [key in Exclude<keyof O, keyof D>]: O[key];
   } & {
-    [key in keyof D as I[key] extends true ? key : never]: D[key];
+    [key in keyof D as I extends Partial<{ [key in keyof D]: boolean }>
+      ? I[key] extends true
+        ? key
+        : never
+      : never]: D[key];
   }
 >;
 

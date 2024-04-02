@@ -4,7 +4,7 @@ import { decodeQueryParams } from "~/lib/urls";
 import { type SkillIncludes, type ApiSkill } from "~/prisma/model";
 import { getSkills } from "~/actions/fetches/skills";
 import { ClientResponse, ApiClientFieldErrors } from "~/api";
-import { parseInclusion } from "~/api/inclusion";
+import { parseInclusion } from "~/api/query";
 import { SkillQuerySchema } from "~/api/schemas";
 
 const skillExperience = <I extends SkillIncludes>(skill: ApiSkill<I>): number =>

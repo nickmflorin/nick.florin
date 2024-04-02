@@ -4,7 +4,7 @@ import { prisma } from "~/prisma/client";
 import { type ApiSkill } from "~/prisma/model";
 import { getSkill } from "~/actions/fetches/skills";
 import { ClientResponse, ApiClientError } from "~/api";
-import { parseInclusion } from "~/api/inclusion";
+import { parseInclusion } from "~/api/query";
 
 export async function generateStaticParams() {
   const skills = await prisma.skill.findMany();

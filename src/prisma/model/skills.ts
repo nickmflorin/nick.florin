@@ -1,3 +1,8 @@
+import uniqBy from "lodash.uniqby";
+
+import { type getEducations } from "~/actions/fetches/educations";
+import { type getExperiences } from "~/actions/fetches/experiences";
+
 import {
   type Skill,
   ProgrammingLanguage,
@@ -66,8 +71,6 @@ export const getProgrammingDomain = <D extends ProgrammingDomain>(
 export type SkillIncludes = Partial<{
   readonly educations: boolean;
   readonly experiences: boolean;
-  /* We will be doing this shortly.
-     readonly details?: boolean; */
   readonly projects: boolean;
 }>;
 
@@ -88,3 +91,89 @@ export type ApiSkill<
   },
   I
 >;
+
+type ModelWithRedundantSkills = Awaited<
+  ReturnType<
+    | typeof getExperiences<{ skills: true; details: true }>
+    | typeof getEducations<{ skills: true; details: true }>
+  >
+>[number];
+
+/**
+ * Performs manipulation of the {@link Skill} objects associated with an {@link Experience} or
+ * {@link Education} model, their details, their {@link Detail}s' projects and nested details,
+ * {@link NestedDetail[]}, such that the top level model (the {@link Experience} or
+ * {@link Education}) does not contain references to {@link Skill} objects that are already included
+ * in the {@link Detail}(s) or any of the {@link Detail}'s nested details, {@link NestedDetail[]}.
+ *
+ * Additionally, any {@link Skill} objects associated with a {@link Project} that is associated with
+ * the {@link Detail} or {@link NestedDetail} will be included in the {@link Skill}(s) tied to that
+ * specific {@link Detail} or {@link NestedDetail}.
+ *
+ * Before:
+ * ------
+ * - Skills:
+ *   - Skill A (Redundant)
+ *   - Skill B (Redundant)
+ *   - Skill C
+ * - Details:
+ *   - Detail A
+ *       - Skills:
+ *         - Skill A
+ *         - Skill D
+ *     - Project
+ *       - Skills:
+ *         - Skill E (Moved to Detail Level)
+ *         - Skill B (Moved to Detail Level)
+ *
+ * After:
+ * -----
+ * - Skills:
+ *   - Skill C
+ * - Details:
+ *   - Detail A
+ *       - Skills:
+ *         - Skill A
+ *         - Skill D
+ *         - Skill E
+ *         - Skill B
+ */
+export const removeRedundantTopLevelSkills = <T extends ModelWithRedundantSkills>(model: T): T => {
+  type Det = (typeof model)["details"][number];
+  type NestedDet = Det["nestedDetails"][number];
+  type Sk = (typeof model)["skills"][number];
+
+  const [details, skills]: [Det[], Sk[]] = [...model.details].reduce(
+    (prev: [Det[], Sk[]], detail: Det): [Det[], Sk[]] => {
+      const [nestedDetails, nestedSkills] = detail.nestedDetails.reduce(
+        (prev: [NestedDet[], Sk[]], nestedDetail: NestedDet): [NestedDet[], Sk[]] => {
+          /* If the nested detail is associated with a project, include the skills for that project
+           alongside the skills for the nested detail. */
+          const nestedSkills = [
+            ...nestedDetail.skills,
+            ...(nestedDetail.project ? nestedDetail.project.skills : []),
+          ];
+          return [
+            [...prev[0], { ...nestedDetail, skills: uniqBy(nestedSkills, sk => sk.id) }],
+            [...prev[1], ...nestedSkills],
+          ];
+        },
+        [[], []] as [NestedDet[], Sk[]],
+      );
+      /* If the detail is associated with a project, include the skills for that project alongside
+         the skills for the detail. */
+      const skills = [...detail.skills, ...(detail.project ? detail.project.skills : [])];
+      return [
+        [...prev[0], { ...detail, nestedDetails, skills: uniqBy(skills, sk => sk.id) }],
+        [...prev[1], ...skills, ...nestedSkills],
+      ];
+    },
+    [[], []] as [Det[], Sk[]],
+  );
+
+  return {
+    ...model,
+    details,
+    skills: model.skills.filter(sk => !skills.some(nsk => nsk.id === sk.id)),
+  };
+};

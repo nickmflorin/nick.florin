@@ -1,7 +1,9 @@
 import dynamic from "next/dynamic";
 
+import { removeRedundantTopLevelSkills } from "~/prisma/model";
 import { getEducations } from "~/actions/fetches/educations";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
+import { EducationTile } from "~/components/tiles/EducationTile";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 
@@ -11,17 +13,14 @@ const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.Timel
   loading: () => <Loading loading={true} />,
 });
 
-const EducationTile = dynamic(() => import("./EducationTile"), {
-  loading: () => <Loading loading={true} />,
-});
-
 export type EducationTimelineProps = ComponentProps;
 
 export const EducationTimeline = async (props: EducationTimelineProps): Promise<JSX.Element> => {
-  const educations = await getEducations({
+  const _educations = await getEducations({
     includes: { skills: true, details: true },
     visibility: "public",
   });
+  const educations = _educations.map(removeRedundantTopLevelSkills);
   return (
     <CommitTimeline {...props}>
       {educations.map(education => (

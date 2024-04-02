@@ -24,8 +24,8 @@ import {
   conditionallyInclude,
 } from "~/prisma/model";
 import { constructOrSearch, conditionalFilters } from "~/prisma/util";
-import { parsePagination } from "~/api/pagination";
-import { type Visibility } from "~/api/visibility";
+import { parsePagination } from "~/api/query";
+import { type Visibility } from "~/api/query";
 
 import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
 

@@ -2,9 +2,9 @@ import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
 import { DetailEntityType } from "~/prisma/model";
-import { getDetails } from "~/actions/fetches/details";
+import { getEntityDetails } from "~/actions/fetches/details";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
-import { parseInclusion } from "~/api/inclusion";
+import { parseInclusion } from "~/api/query";
 
 export async function generateStaticParams() {
   const educations = await prisma.education.findMany();
@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const details = await getDetails(params.id, DetailEntityType.EDUCATION, {
+  const details = await getEntityDetails(params.id, DetailEntityType.EDUCATION, {
     includes: parseInclusion(request, ["nestedDetails", "skills"]),
   });
   if (!details) {

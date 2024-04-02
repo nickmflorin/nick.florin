@@ -14,8 +14,7 @@ import {
   type ExperienceOnSkills,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
-import { parsePagination } from "~/api/pagination";
-import { type Visibility } from "~/api/visibility";
+import { parsePagination, type Visibility } from "~/api/query";
 
 import { EXPERIENCES_ADMIN_TABLE_PAGE_SIZE } from "../constants";
 import { getDetails } from "../details";
@@ -27,10 +26,10 @@ type GetExperiencesFilters = {
 };
 
 type GetExperiencesParams<I extends ExpIncludes> = {
-  visibility?: Visibility;
-  includes?: I;
-  filters?: GetExperiencesFilters;
-  page?: number;
+  readonly visibility?: Visibility;
+  readonly includes?: I;
+  readonly filters?: GetExperiencesFilters;
+  readonly page?: number;
 };
 
 const whereClause = ({

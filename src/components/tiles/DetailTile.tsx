@@ -8,9 +8,9 @@ import { type TypographySize } from "~/components/typography";
 import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 
-import { Details } from "./Details";
+import { DetailsTile } from "./DetailsTile";
 
-export interface DetailProps<
+export interface DetailTileProps<
   D extends ApiDetail<{ nestedDetails: true; skills: true }> | NestedApiDetail<{ skills: true }>,
 > extends ComponentProps {
   readonly detail: D;
@@ -18,14 +18,14 @@ export interface DetailProps<
   readonly textSize?: TypographySize;
 }
 
-export const Detail = <
+export const DetailTile = <
   D extends ApiDetail<{ nestedDetails: true; skills: true }> | NestedApiDetail<{ skills: true }>,
 >({
   detail,
   index,
   textSize = "md",
   ...props
-}: DetailProps<D>): JSX.Element => (
+}: DetailTileProps<D>): JSX.Element => (
   <div {...props} className={clsx("flex flex-col gap-[10px]", props.className)}>
     <div className="flex flex-col gap-[2px]">
       {index !== undefined ? (
@@ -71,6 +71,6 @@ export const Detail = <
       )}
     </div>
     {detail.skills.length !== 0 && <Skills skills={detail.skills} className="max-w-[800px]" />}
-    {!isNestedDetail(detail) && <Details details={detail.nestedDetails} isNested={true} />}
+    {!isNestedDetail(detail) && <DetailsTile details={detail.nestedDetails} isNested={true} />}
   </div>
 );
