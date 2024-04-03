@@ -8,7 +8,7 @@ import { ShowHide } from "~/components/util";
 import { View, type ViewProps } from "~/components/views/View";
 
 export interface LoadingProps extends ViewProps {
-  readonly loading?: boolean;
+  readonly isLoading?: boolean;
   readonly hideWhenLoading?: boolean;
   readonly spinner?: boolean;
   readonly spinnerSize?: Exclude<SpinnerProps["size"], "full">;
@@ -17,7 +17,7 @@ export interface LoadingProps extends ViewProps {
 const _WrappedSpinner = ({
   spinnerSize = "24px",
   spinner = true,
-  loading,
+  isLoading,
   ...props
 }: Omit<LoadingProps, "children" | "hideWhenLoading">) => (
   <View
@@ -28,43 +28,47 @@ const _WrappedSpinner = ({
         /* If the spinner is being displayed, the view needs to have a higher z-index than it other
            wise would.  This is such that the spinner appears over the content.  This will prevent
            scroll behavior on the content, but only when the spinner is present. */
-        "z-50": loading && spinner,
-        "z-20": loading,
-        "z-0": !loading && [props.blurred, props.dimmed, props.overlay].includes(true),
+        "z-50": isLoading && spinner,
+        "z-20": isLoading,
+        "z-0": !isLoading && [props.blurred, props.dimmed, props.overlay].includes(true),
       },
-      { "is-loading": loading },
+      { "is-loading": isLoading },
       props.className,
     )}
   >
-    {spinner && loading ? <Spinner size={spinnerSize} isLoading={true} /> : <></>}
+    {spinner && isLoading ? <Spinner size={spinnerSize} isLoading={true} /> : <></>}
   </View>
 );
 
 const WrappedSpinner = React.memo(_WrappedSpinner);
 
 export const _Loading = ({
-  loading = false,
+  isLoading = false,
   hideWhenLoading = false,
   children,
   ...props
 }: LoadingProps): JSX.Element => {
   if (children) {
     if (hideWhenLoading === true) {
-      return loading === true ? <WrappedSpinner {...props} loading={loading} /> : <>{children}</>;
+      return isLoading === true ? (
+        <WrappedSpinner {...props} isLoading={isLoading} />
+      ) : (
+        <>{children}</>
+      );
     }
     return (
       <>
         <ShowHide
-          show={loading === true || [props.blurred, props.dimmed, props.overlay].includes(true)}
+          show={isLoading === true || [props.blurred, props.dimmed, props.overlay].includes(true)}
         >
-          <WrappedSpinner {...props} loading={loading} />
+          <WrappedSpinner {...props} isLoading={isLoading} />
         </ShowHide>
         {children}
       </>
     );
   }
-  return loading === true || [props.blurred, props.dimmed, props.overlay].includes(true) ? (
-    <WrappedSpinner {...props} loading={loading} />
+  return isLoading === true || [props.blurred, props.dimmed, props.overlay].includes(true) ? (
+    <WrappedSpinner {...props} isLoading={isLoading} />
   ) : (
     <></>
   );

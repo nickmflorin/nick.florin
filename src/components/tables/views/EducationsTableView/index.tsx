@@ -47,7 +47,7 @@ export const EducationsTableView = ({ filters, page }: TableViewProps) => (
       }
     >
       <ErrorBoundary message="There was an error rendering the table.">
-        <Suspense key={`${filters.search}`} fallback={<Loading loading={true} />}>
+        <Suspense key={`${filters.search}`} fallback={<Loading isLoading={true} />}>
           <EducationsAdminTable filters={filters} page={page} />
         </Suspense>
       </ErrorBoundary>

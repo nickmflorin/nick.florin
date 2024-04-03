@@ -9,4 +9,4 @@ import { Loading, type LoadingProps } from "./Loading";
  */
 export const ScreenLoading = (
   props: Omit<LoadingProps, "loading" | "screen" | "spinnerSize">,
-): JSX.Element => <Loading loading={true} screen {...props} />;
+): JSX.Element => <Loading isLoading={true} screen {...props} />;

@@ -8,7 +8,7 @@ import { Loading } from "~/components/views/Loading";
 import { type TimelineProps } from "./generic";
 
 const Timeline = dynamic(() => import("./generic/Timeline"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 export interface CommitTimelineProps extends ComponentProps, TimelineProps {}
 

@@ -14,12 +14,12 @@ import { type SkillsBarChartDatum } from "./types";
 
 const SkillsBarChartTooltip = dynamic(() => import("./SkillsBarChartTooltip"), {
   ssr: false,
-  loading: () => <Loading loading={true} spinnerSize="sm" />,
+  loading: () => <Loading isLoading={true} spinnerSize="sm" />,
 });
 
 const BarChart = dynamic(() => import("../BarChart"), {
   ssr: false,
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 }) as types.BarChart;
 
 interface SkillsBarChartProps {

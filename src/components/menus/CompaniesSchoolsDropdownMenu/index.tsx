@@ -28,7 +28,7 @@ export interface CompaniesSchoolsDropdownMenuProps {
 
 export const CompaniesSchoolsDropdownMenu = ({ modelType }: CompaniesSchoolsDropdownMenuProps) => (
   <CompaniesSchoolsFloating modelType={modelType}>
-    <Suspense fallback={<Loading loading={true} />}>
+    <Suspense fallback={<Loading isLoading={true} />}>
       <CompaniesSchoolsMenuContent modelType={modelType} />
     </Suspense>
   </CompaniesSchoolsFloating>

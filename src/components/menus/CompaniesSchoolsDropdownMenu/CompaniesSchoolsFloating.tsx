@@ -16,7 +16,7 @@ import { CompaniesSchoolsMenuFooter } from "./CompaniesSchoolsMenuFooter";
 import { type ModelType } from "./types";
 
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
   ssr: false,
 });
 

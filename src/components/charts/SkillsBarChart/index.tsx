@@ -27,7 +27,7 @@ import { type SkillsBarChartDatum } from "./types";
 
 const Chart = dynamic(() => import("./SkillsBarChart"), {
   ssr: false,
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 export const SkillsBarChart = (props: ComponentProps): JSX.Element => {

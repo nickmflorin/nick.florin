@@ -7,7 +7,7 @@ import { DrawerIds } from "~/components/drawers";
 import { Loading } from "~/components/views/Loading";
 
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 export const NewExperienceButton = () => {

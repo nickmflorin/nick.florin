@@ -7,7 +7,7 @@ import { Loading } from "~/components/views/Loading";
 import { type Filters } from "./types";
 
 const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTable"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 }) as ContextTableComponent;
 
 interface ExperiencesAdminTableProps {

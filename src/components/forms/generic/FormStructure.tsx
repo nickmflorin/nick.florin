@@ -51,7 +51,7 @@ const Body = <I extends BaseFormValues>({
       "overflow-y-auto pr-[18px]": isScrollable,
     })}
   >
-    <Loading loading={isLoading}>
+    <Loading isLoading={isLoading}>
       <div className={clsx("flex flex-col gap-[8px]", contentClassName)}>{children}</div>
     </Loading>
   </div>

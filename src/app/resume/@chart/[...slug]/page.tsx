@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Loading } from "~/components/views/Loading";
 
 const SkillsBarChart = dynamic(() => import("~/components/charts/SkillsBarChart"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
   ssr: false,
 });
 

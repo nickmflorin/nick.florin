@@ -74,7 +74,7 @@ export const ModelImage = ({
       style={{ ...style, height: size, width: size }}
       className={clsx("model-image", `model-image--radius-${radius}`, className)}
     >
-      <Loading loading={loading === true} />
+      <Loading isLoading={loading === true} />
       {_url !== undefined && _url !== null && _url.trim() !== "" ? (
         <Image height={_size} width={_size} src={_url} alt={alt} priority={priority} />
       ) : (

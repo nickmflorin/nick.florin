@@ -12,55 +12,55 @@ import { Drawer } from "./util";
 const DrawerCloseButton = dynamic(() => import("~/components/buttons/DrawerCloseButton"));
 
 const UpdateEducationDrawer = dynamic(() => import("../UpdateEducationDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const UpdateCompanyDrawer = dynamic(() => import("../UpdateCompanyDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const UpdateExperienceDrawer = dynamic(() => import("../UpdateExperienceDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const UpdateSchoolDrawer = dynamic(() => import("../UpdateSchoolDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const UpdateSkillDrawer = dynamic(() => import("../UpdateSkillDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const SkillDrawer = dynamic(() => import("../SkillDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const CreateCompanyDrawer = dynamic(() => import("../CreateCompanyDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const CreateSchoolDrawer = dynamic(() => import("../CreateSchoolDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const CreateExperienceDrawer = dynamic(() => import("../CreateExperienceDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const CreateEducationDrawer = dynamic(() => import("../CreateEducationDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const CreateSkillDrawer = dynamic(() => import("../CreateSkillDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const UpdateExperienceDetailsDrawer = dynamic(() => import("../UpdateExperienceDetailsDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const UpdateEducationDetailsDrawer = dynamic(() => import("../UpdateEducationDetailsDrawer"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 export const Drawers = {

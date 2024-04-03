@@ -10,7 +10,7 @@ import { Loading } from "~/components/views/Loading";
 import { CommitTimeline } from "./CommitTimeline";
 
 const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.TimelineItem), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 export type EducationTimelineProps = ComponentProps;

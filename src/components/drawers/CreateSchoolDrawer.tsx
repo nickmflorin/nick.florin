@@ -7,7 +7,7 @@ import { Drawer } from "./Drawer";
 import { type ExtendingDrawerProps } from ".";
 
 const CreateSchoolForm = dynamic(() => import("~/components/forms/schools/CreateSchoolForm"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 interface CreateSchoolDrawerProps extends ExtendingDrawerProps {}

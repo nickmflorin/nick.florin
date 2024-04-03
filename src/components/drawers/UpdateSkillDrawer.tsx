@@ -12,7 +12,7 @@ import { DrawerHeader } from "./DrawerHeader";
 import { type ExtendingDrawerProps } from ".";
 
 const SkillForm = dynamic(() => import("~/components/forms/skills/UpdateSkillForm"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 interface UpdateSkillDrawerProps

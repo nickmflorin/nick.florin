@@ -14,7 +14,7 @@ import { type ExtendingDrawerProps } from ".";
 const ExperienceForm = dynamic(
   () => import("~/components/forms/experiences/UpdateExperienceForm"),
   {
-    loading: () => <Loading loading={true} />,
+    loading: () => <Loading isLoading={true} />,
   },
 );
 

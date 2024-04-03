@@ -7,7 +7,7 @@ import { Drawer } from "./Drawer";
 import { type ExtendingDrawerProps } from ".";
 
 const CreateCompanyForm = dynamic(() => import("~/components/forms/companies/CreateCompanyForm"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 interface CreateCompanyDrawerProps extends ExtendingDrawerProps {}

@@ -12,7 +12,7 @@ import { DrawerHeader } from "./DrawerHeader";
 import { type ExtendingDrawerProps } from ".";
 
 const SchoolForm = dynamic(() => import("~/components/forms/schools/UpdateSchoolForm"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 interface UpdateSchoolDrawerProps

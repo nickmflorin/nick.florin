@@ -15,7 +15,7 @@ import { SkillsAdminTable } from "./Table";
 import { type Filters } from "./types";
 
 const TableViewProvider = dynamic(() => import("./Provider"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearchInput"), {
@@ -50,7 +50,7 @@ export const SkillsTableView = ({ filters, page }: SkillsTableViewProps) => (
       <ErrorBoundary message="There was an error rendering the table.">
         <Suspense
           key={`${filters.search}-${filters.experiences}-${filters.educations}`}
-          fallback={<Loading loading={true} />}
+          fallback={<Loading isLoading={true} />}
         >
           <SkillsAdminTable filters={filters} page={page} />
         </Suspense>

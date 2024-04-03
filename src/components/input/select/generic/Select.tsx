@@ -43,7 +43,7 @@ const MultiValueRenderer = dynamic(
 ) as types.MultiValueRendererCompoennt;
 
 const AbstractMenu = dynamic(() => import("~/components/menus/generic/AbstractMenu"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 }) as AbstractMenuComponent;
 
 type SelectMenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<

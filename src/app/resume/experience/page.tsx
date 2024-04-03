@@ -5,7 +5,7 @@ import { Loading } from "~/components/views/Loading";
 
 export default function ExperiencePage() {
   return (
-    <Suspense fallback={<Loading loading={true} />}>
+    <Suspense fallback={<Loading isLoading={true} />}>
       <ExperienceTimeline />
     </Suspense>
   );

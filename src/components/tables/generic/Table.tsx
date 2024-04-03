@@ -27,7 +27,7 @@ import {
 } from "../types";
 
 const MantineDataTable = dynamic(() => import("mantine-datatable").then(i => i.DataTable), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 }) as {
   <T>(props: DataTableProps<T>): JSX.Element;
 };
@@ -107,7 +107,7 @@ export const Table = forwardRef(
       highlightOnHover: false,
       height: "100%",
       className: clsx("data-table", `data-table--size-${size}`, className),
-      customLoader: <Loading overlay={true} loading={true} />,
+      customLoader: <Loading overlay={true} isLoading={true} />,
       // TODO: Revisit this later.
       emptyState: <></>,
       ...props,

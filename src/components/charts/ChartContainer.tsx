@@ -26,7 +26,7 @@ export const ChartContainer = ({
     {isInitialLoading ? (
       <div className="px-[20px] py-[20px] w-full h-full">{skeleton}</div>
     ) : (
-      <Loading loading={isLoading}>
+      <Loading isLoading={isLoading}>
         <ErrorView error={error ?? null} />
         {children}
       </Loading>

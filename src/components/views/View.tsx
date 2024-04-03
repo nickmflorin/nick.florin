@@ -8,6 +8,7 @@ export interface ViewProps extends ComponentProps {
   readonly overlay?: boolean;
   readonly dimmed?: boolean;
   readonly blurred?: boolean;
+  readonly isLoading?: boolean;
 }
 
 export const View = ({

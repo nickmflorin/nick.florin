@@ -9,7 +9,7 @@ import { type ExtendingDrawerProps } from ".";
 const CreateEducationForm = dynamic(
   () => import("~/components/forms/educations/CreateEducationForm"),
   {
-    loading: () => <Loading loading={true} />,
+    loading: () => <Loading isLoading={true} />,
   },
 );
 

@@ -12,7 +12,7 @@ import { DrawerHeader } from "./DrawerHeader";
 import { type ExtendingDrawerProps } from ".";
 
 const CompanyForm = dynamic(() => import("~/components/forms/companies/UpdateCompanyForm"), {
-  loading: () => <Loading loading={true} />,
+  loading: () => <Loading isLoading={true} />,
 });
 
 interface UpdateCompanyDrawerProps
