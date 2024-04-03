@@ -8,7 +8,7 @@ import { Title } from "~/components/typography/Title";
 export interface ProjectProps extends ComponentProps {
   readonly title: string;
   readonly description: JSX.Element;
-  readonly project: ApiProject<{ skills: true }>;
+  readonly project: ApiProject<["skills"]>;
   readonly children: JSX.Element | JSX.Element[];
 }
 

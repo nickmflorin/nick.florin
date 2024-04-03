@@ -17,7 +17,7 @@ export type EducationTimelineProps = ComponentProps;
 
 export const EducationTimeline = async (props: EducationTimelineProps): Promise<JSX.Element> => {
   const _educations = await getEducations({
-    includes: { skills: true, details: true },
+    includes: ["skills", "details"],
     visibility: "public",
   });
   const educations = _educations.map(removeRedundantTopLevelSkills);

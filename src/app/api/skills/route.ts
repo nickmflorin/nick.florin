@@ -11,7 +11,11 @@ const skillExperience = <I extends SkillIncludes>(skill: ApiSkill<I>): number =>
   skill.experience === null ? skill.autoExperience : skill.experience;
 
 export async function GET(request: NextRequest) {
-  const includes = parseInclusion(request, ["experiences", "educations", "projects"]);
+  const includes = parseInclusion(request, [
+    "experiences",
+    "educations",
+    "projects",
+  ]) as SkillIncludes;
 
   const parsedQuery = SkillQuerySchema.safeParse(decodeQueryParams(request.nextUrl.searchParams));
   if (!parsedQuery.success) {

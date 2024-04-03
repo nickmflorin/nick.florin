@@ -134,7 +134,7 @@ export const toApiSkill = ({
     readonly skills: ExperienceOnSkills[];
     readonly company: Company;
   })[];
-}): ApiSkill<{ experiences: true; educations: true; projects: true; autoExperience: true }> => {
+}): ApiSkill<["experiences", "educations", "projects"]> => {
   const educations = _educations.filter(edu => edu.skills.some(s => s.skillId === skill.id));
   const experiences = _experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id));
   const projects = _projects.filter(p => p.skills.some(s => s.skillId === skill.id));
@@ -222,22 +222,13 @@ export const getSkills = cache(
     });
 
     return skills.map((skill): ApiSkill<I> => {
-      const {
-        experiences: exp,
-        educations: edu,
-        projects: ps,
-        ...rest
-      } = toApiSkill({
+      const apiSKill = toApiSkill({
         skill,
         educations,
         experiences,
         projects,
       });
-      return conditionallyInclude(
-        rest,
-        { experiences: exp, educations: edu, projects: ps },
-        includes,
-      );
+      return conditionallyInclude(apiSKill, ["educations", "experiences", "projects"], includes);
     });
   },
 ) as <I extends SkillIncludes>(params: GetSkillsParams<I>) => Promise<ApiSkill<I>[]>;

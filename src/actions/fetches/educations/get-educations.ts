@@ -12,6 +12,7 @@ import {
   type ApiDetail,
   type Skill,
   type EducationOnSkills,
+  fieldIsIncluded,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
 import { parsePagination } from "~/api/query";
@@ -102,7 +103,7 @@ export const getEducations = cache(
 
     let educationSkills: (Skill & { readonly educations: EducationOnSkills[] })[] | undefined =
       undefined;
-    if (includes?.skills === true) {
+    if (fieldIsIncluded("skills", includes)) {
       educationSkills = await prisma.skill.findMany({
         include: { educations: true },
         where: {
@@ -112,12 +113,12 @@ export const getEducations = cache(
       });
     }
 
-    let details: ApiDetail<{ skills: true; nestedDetails: true }>[] | undefined = undefined;
-    if (includes?.details === true) {
+    let details: ApiDetail<["nestedDetails", "skills"]>[] | undefined = undefined;
+    if (fieldIsIncluded("details", includes)) {
       details = await getDetails(
         edus.map(e => e.id),
         DetailEntityType.EDUCATION,
-        { visibility, includes: { skills: true, nestedDetails: true } },
+        { visibility, includes: ["nestedDetails", "skills"] },
       );
     }
 

@@ -2,7 +2,7 @@ import { type ApiSkill } from "~/prisma/model";
 import { Link } from "~/components/buttons";
 import { Label } from "~/components/typography/Label";
 
-export const Projects = ({ projects }: { projects: ApiSkill<{ projects: true }>["projects"] }) => (
+export const Projects = ({ projects }: { projects: ApiSkill<["projects"]>["projects"] }) => (
   <div className="flex flex-col gap-[10px]">
     <Label size="sm" fontWeight="medium">
       Projects

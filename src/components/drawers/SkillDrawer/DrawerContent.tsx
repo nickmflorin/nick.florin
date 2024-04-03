@@ -15,7 +15,7 @@ import { Experiences } from "./Experiences";
 import { Projects } from "./Projects";
 
 export interface SkillDrawerContentProps {
-  readonly skill: ApiSkill<{ educations: true; experiences: true; projects: true }>;
+  readonly skill: ApiSkill<["educations", "experiences", "projects"]>;
 }
 
 export const SkillDrawerContent = ({

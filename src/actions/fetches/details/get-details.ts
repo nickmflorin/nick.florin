@@ -9,30 +9,31 @@ import {
   type DetailIncludes,
   type NestedApiDetail,
   type Project,
+  fieldIsIncluded,
 } from "~/prisma/model";
 import { type Visibility } from "~/api/query";
 
 import { getEntity } from "../get-entity";
 
 const hasNested = (
-  details: ApiDetail<null, Project>[] | ApiDetail<{ nestedDetails: true }, Project>[],
-): details is ApiDetail<{ nestedDetails: true }, Project>[] =>
+  details: ApiDetail<[], Project>[] | ApiDetail<["nestedDetails"], Project>[],
+): details is ApiDetail<["nestedDetails"], Project>[] =>
   details.length !== 0 &&
-  (details as ApiDetail<{ nestedDetails: true }, Project>[])[0].nestedDetails !== undefined;
+  (details as ApiDetail<["nestedDetails"], Project>[])[0].nestedDetails !== undefined;
 
 const getDetailsSkills = async (
-  details: ApiDetail<null, Project>[] | ApiDetail<{ nestedDetails: true }, Project>[],
+  details: ApiDetail<[], Project>[] | ApiDetail<["nestedDetails"], Project>[],
   { visibility = "public" }: { visibility: Visibility },
 ) => {
   const projects = [...details]
     .reduce(
       (
         prev: (Project | null)[],
-        curr: ApiDetail<null, Project> | ApiDetail<{ nestedDetails: true }, Project>,
+        curr: ApiDetail<[], Project> | ApiDetail<["nestedDetails"], Project>,
       ) => [
         ...prev,
         curr.project,
-        ...((curr as ApiDetail<{ nestedDetails: true }>).nestedDetails ?? []).map(nd => nd.project),
+        ...((curr as ApiDetail<["nestedDetails"]>).nestedDetails ?? []).map(nd => nd.project),
       ],
       [],
     )
@@ -90,7 +91,7 @@ export const getDetails = cache(
     entityType: T,
     { includes, visibility = "public" }: { includes: I; visibility?: Visibility },
   ): Promise<ApiDetail<I>[]> => {
-    if (includes.skills && includes.nestedDetails) {
+    if (fieldIsIncluded(["skills", "nestedDetails"], includes)) {
       const details = await prisma.detail.findMany({
         where: {
           entityId: { in: ids },
@@ -117,7 +118,7 @@ export const getDetails = cache(
           nestedDetails,
           project,
           ...d
-        }): ApiDetail<{ skills: true; nestedDetails: true }> => ({
+        }): ApiDetail<["nestedDetails", "skills"]> => ({
           ...d,
           project: project
             ? {
@@ -133,7 +134,7 @@ export const getDetails = cache(
               skills: _ndSkills,
               project: nestedProject,
               ...nd
-            }): NestedApiDetail<{ skills: true }> => ({
+            }): NestedApiDetail<["skills"]> => ({
               ...nd,
               project: nestedProject
                 ? {
@@ -150,7 +151,7 @@ export const getDetails = cache(
           ),
         }),
       ) as ApiDetail<I>[];
-    } else if (includes.skills) {
+    } else if (fieldIsIncluded("skills", includes)) {
       const details = await prisma.detail.findMany({
         where: {
           entityId: { in: ids },
@@ -167,11 +168,7 @@ export const getDetails = cache(
       const skills = await getDetailsSkills(details, { visibility });
 
       return details.map(
-        ({
-          skills: _skills,
-          project,
-          ...d
-        }): ApiDetail<{ skills: true; nestedDetails: false }> => ({
+        ({ skills: _skills, project, ...d }): ApiDetail<["skills"]> => ({
           ...d,
           project: project
             ? {
@@ -184,7 +181,7 @@ export const getDetails = cache(
           skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
         }),
       ) as ApiDetail<I>[];
-    } else if (includes.nestedDetails) {
+    } else if (fieldIsIncluded("nestedDetails", includes)) {
       return (await prisma.detail.findMany({
         where: {
           entityId: { in: ids },

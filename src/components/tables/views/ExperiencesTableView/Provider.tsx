@@ -23,12 +23,12 @@ const EditableStringCell = dynamic(
 const CompanyCell = dynamic(() => import("./cells/CompanyCell"));
 
 export interface TableViewConfig
-  extends Pick<RootTableViewConfig<ApiExperience<{ details: true }>>, "children"> {}
+  extends Pick<RootTableViewConfig<ApiExperience<["details"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiExperience<{ details: true }>>
+    <RootTableViewProvider<ApiExperience<["details"]>>
       id="experiences-table"
       isCheckable={true}
       useCheckedRowsQuery={false}

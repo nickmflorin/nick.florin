@@ -22,12 +22,12 @@ const SchoolCell = dynamic(() => import("./cells/SchoolCell"));
 const DetailsCell = dynamic(() => import("./cells/DetailsCell"));
 
 export interface TableViewConfig
-  extends Pick<RootTableViewConfig<ApiEducation<{ details: true }>>, "children"> {}
+  extends Pick<RootTableViewConfig<ApiEducation<["details"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiEducation<{ details: true }>>
+    <RootTableViewProvider<ApiEducation<["details"]>>
       id="educations-table"
       isCheckable={true}
       useCheckedRowsQuery={false}

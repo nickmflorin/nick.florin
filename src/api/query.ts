@@ -1,9 +1,9 @@
 import { type NextRequest } from "next/server";
 
 import clamp from "lodash.clamp";
+import uniq from "lodash.uniq";
 
 import { decodeQueryParam, encodeQueryParam } from "~/lib/urls";
-import { type Includes } from "~/prisma/model";
 
 export type Visibility = "public" | "admin";
 
@@ -45,7 +45,7 @@ export const parsePagination = async <F>({
   return null;
 };
 
-export const encodeInclusionQuery = <I extends Includes>(includes: I): string => {
+export const encodeInclusionQuery = <I extends string[]>(includes: I): string => {
   const positives = Object.keys(includes).reduce(
     (prev: string[], curr: string) => (includes[curr as keyof I] === true ? [...prev, curr] : prev),
     [],
@@ -53,24 +53,23 @@ export const encodeInclusionQuery = <I extends Includes>(includes: I): string =>
   return encodeQueryParam(positives);
 };
 
-export const decodeInclusionQuery = <F extends string>(
-  fields: F[],
+export const decodeInclusionQuery = <F extends readonly string[]>(
+  fields: F,
   param: string | undefined | null,
-): Includes<F> => {
+): F[number][] => {
   if (param) {
     const parsed = decodeQueryParam(param, {});
     if (Array.isArray(parsed)) {
-      const includedFields = parsed.filter((p): p is F => fields.includes(String(p) as F));
-      return includedFields.reduce((prev, curr) => ({ ...prev, [curr]: true }), {} as Includes<F>);
+      return uniq(parsed.filter((p): p is F[number] => fields.includes(String(p) as F[number])));
     }
   }
-  return {};
+  return [];
 };
 
-export const parseInclusion = <F extends string>(
+export const parseInclusion = <F extends readonly string[]>(
   request: NextRequest,
-  fields: F[],
-): Includes<F> => {
+  fields: F,
+): F[number][] => {
   const params = request.nextUrl.searchParams;
   const v = params.get("includes");
   return decodeInclusionQuery(fields, v);

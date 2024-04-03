@@ -16,7 +16,7 @@ export const createDetail = async (
   entityId: string,
   entityType: DetailEntityType,
   req: z.infer<typeof DetailSchema>,
-): Promise<ApiDetail | ApiClientErrorJson> => {
+): Promise<ApiDetail<[], Project> | ApiClientErrorJson> => {
   const user = await getAuthAdminUser();
 
   const entity = await getEntity(entityId, entityType);

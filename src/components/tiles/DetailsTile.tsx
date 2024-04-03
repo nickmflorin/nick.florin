@@ -6,12 +6,12 @@ import { type ComponentProps } from "~/components/types";
 import { DetailTile } from "./DetailTile";
 
 export interface TopDetailsTileProps extends ComponentProps {
-  readonly details: ApiDetail<{ nestedDetails: true; skills: true }>[];
+  readonly details: ApiDetail<["skills", "nestedDetails"]>[];
   readonly isNested?: false;
 }
 
 export interface NestedDetailsTileProps extends ComponentProps {
-  readonly details: NestedApiDetail<{ skills: true }>[];
+  readonly details: NestedApiDetail<["skills"]>[];
   readonly isNested: true;
 }
 

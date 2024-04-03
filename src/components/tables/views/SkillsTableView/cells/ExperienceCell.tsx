@@ -13,10 +13,8 @@ import type * as types from "~/components/tables/types";
 import { Label } from "~/components/typography/Label";
 
 interface ExperienceCellProps {
-  readonly skill: ApiSkill<{ experiences: true; educations: true; projects: true }>;
-  readonly table: types.TableInstance<
-    ApiSkill<{ experiences: true; educations: true; projects: true }>
-  >;
+  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
+  readonly table: types.TableInstance<ApiSkill<["experiences", "educations", "projects"]>>;
 }
 
 export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Element => {

@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
-import { type ApiSkill } from "~/prisma/model";
+import { type SkillIncludes, type ApiSkill } from "~/prisma/model";
 import { getSkill } from "~/actions/fetches/skills";
 import { ClientResponse, ApiClientError } from "~/api";
 import { parseInclusion } from "~/api/query";
@@ -14,9 +14,13 @@ export async function generateStaticParams() {
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const includes = parseInclusion(request, ["experiences", "educations", "projects"]);
+  const includes = parseInclusion(request, [
+    "experiences",
+    "educations",
+    "projects",
+  ]) as SkillIncludes;
 
-  let skill: ApiSkill<typeof includes>;
+  let skill: ApiSkill<SkillIncludes>;
   try {
     skill = await getSkill(params.id, { visibility: "public", includes });
   } catch (e) {

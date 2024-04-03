@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 
-import { type HttpError } from "~/api";
+import { isHttpError, type HttpError } from "~/api";
 import { type SpinnerProps } from "~/components/icons";
 
 import { ErrorView } from "./ErrorView";
@@ -28,6 +28,16 @@ export const ApiResponseView = <T,>({
     loading={isLoading}
     spinner
   >
-    {error ? <ErrorView error={error} /> : data ? children(data) : <></>}
+    {error ? (
+      typeof error === "string" || error === null || isHttpError(error) ? (
+        <ErrorView error={error} />
+      ) : (
+        <ErrorView>{error}</ErrorView>
+      )
+    ) : data ? (
+      children(data)
+    ) : (
+      <></>
+    )}
   </Loading>
 );

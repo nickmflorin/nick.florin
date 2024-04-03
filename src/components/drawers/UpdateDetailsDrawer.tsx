@@ -21,7 +21,7 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
 }: UpdateDetailsDrawerProps<T>): JSX.Element => {
   const { data, isLoading, error } = useDetails(entityId, entityType, {
     keepPreviousData: true,
-    includes: { nestedDetails: true },
+    includes: ["nestedDetails"],
   });
 
   return (

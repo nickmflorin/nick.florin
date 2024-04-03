@@ -11,7 +11,7 @@ import { Text } from "~/components/typography/Text";
 export const Educations = ({
   educations,
 }: {
-  educations: ApiSkill<{ educations: true }>["educations"];
+  educations: ApiSkill<["educations"]>["educations"];
 }) => (
   <div className="flex flex-col gap-[10px]">
     <Label size="sm" fontWeight="medium">

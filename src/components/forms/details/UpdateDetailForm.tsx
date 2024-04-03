@@ -3,7 +3,7 @@ import { useEffect, useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
+import { type ApiDetail, type NestedApiDetail, isNestedDetail, type Project } from "~/prisma/model";
 import {
   deleteDetail,
   deleteNestedDetail,
@@ -21,8 +21,9 @@ import { useForm } from "../generic/hooks/use-form";
 import { DetailForm, type DetailFormProps } from "./DetailForm";
 import { type DetailFormValues, DetailFormSchema } from "./types";
 
-export interface UpdateDetailFormProps<D extends ApiDetail | NestedApiDetail>
-  extends Omit<
+export interface UpdateDetailFormProps<
+  D extends ApiDetail<[], Project> | NestedApiDetail<[], Project>,
+> extends Omit<
     DetailFormProps,
     "form" | "onSubmit" | "footer" | "isNew" | "isOpen" | "onToggleOpen"
   > {
@@ -31,7 +32,7 @@ export interface UpdateDetailFormProps<D extends ApiDetail | NestedApiDetail>
   readonly onDeleted: () => void;
 }
 
-export const UpdateDetailForm = <D extends ApiDetail | NestedApiDetail>({
+export const UpdateDetailForm = <D extends ApiDetail<[], Project> | NestedApiDetail<[], Project>>({
   detail,
   actions,
   onDeleted,

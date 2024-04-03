@@ -12,6 +12,7 @@ import {
   type Skill,
   type ApiDetail,
   type ExperienceOnSkills,
+  fieldIsIncluded,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
 import { parsePagination, type Visibility } from "~/api/query";
@@ -101,7 +102,7 @@ export const getExperiences = cache(
 
     let experienceSkills: (Skill & { readonly experiences: ExperienceOnSkills[] })[] | undefined =
       undefined;
-    if (includes?.skills === true) {
+    if (fieldIsIncluded("skills", includes)) {
       experienceSkills = await prisma.skill.findMany({
         include: { experiences: true },
         where: {
@@ -111,12 +112,12 @@ export const getExperiences = cache(
       });
     }
 
-    let details: ApiDetail<{ skills: true; nestedDetails: true }>[] | undefined = undefined;
-    if (includes?.details === true) {
+    let details: ApiDetail<["nestedDetails", "skills"]>[] | undefined = undefined;
+    if (fieldIsIncluded("details", includes)) {
       details = await getDetails(
         exps.map(e => e.id),
         DetailEntityType.EXPERIENCE,
-        { visibility, includes: { skills: true, nestedDetails: true } },
+        { visibility, includes: ["nestedDetails", "skills"] },
       );
     }
 

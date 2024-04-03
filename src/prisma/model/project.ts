@@ -1,19 +1,13 @@
-import { type prisma } from "../client";
-
 import { type Project } from "./core";
+import { type ConditionallyInclude } from "./inclusion";
+import { type ApiSkill } from "./skills";
 
-export type ProjectIncludes = {
-  readonly skills?: boolean;
-};
+export type ProjectIncludes = ["skills"] | [];
 
-type ProjectSkills = Awaited<ReturnType<typeof prisma.skill.findMany>>;
-
-export type ProjectSkill = ProjectSkills[number];
-
-export type ApiProject<I extends ProjectIncludes | undefined = undefined> = I extends {
-  skills: true;
-}
-  ? Project & {
-      readonly skills: ProjectSkill[];
-    }
-  : Project;
+export type ApiProject<I extends ProjectIncludes = []> = ConditionallyInclude<
+  Project & {
+    readonly skills: Omit<ApiSkill, "autoExperience">[];
+  },
+  ["skills"],
+  I
+>;

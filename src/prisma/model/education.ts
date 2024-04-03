@@ -1,6 +1,6 @@
 import { type Education, type School, Degree } from "./core";
 import { type ApiDetail } from "./details";
-import { type ConditionallyIncluded } from "./inclusion";
+import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
 
 export const Degrees = {
@@ -17,19 +17,19 @@ export const getDegree = <D extends Degree>(degree: D): (typeof Degrees)[D] & { 
   value: degree,
 });
 
-export type EduIncludes = Partial<{
-  readonly skills: boolean;
-  readonly details: boolean;
-}>;
+export type EduIncludes =
+  | ["skills", "details"]
+  | ["details", "skills"]
+  | ["skills"]
+  | ["details"]
+  | [];
 
-type _BaseApiEducation = Education & { readonly school: School };
-
-export type ApiEducation<I extends EduIncludes = { skills: false; details: false }> =
-  ConditionallyIncluded<
-    _BaseApiEducation,
-    {
-      readonly details: ApiDetail<{ skills: true; nestedDetails: true }>[];
-      readonly skills: Omit<ApiSkill, "autoExperience">[];
-    },
-    I
-  >;
+export type ApiEducation<I extends EduIncludes = []> = ConditionallyInclude<
+  Education & {
+    readonly school: School;
+    readonly details: ApiDetail<["nestedDetails", "skills"]>[];
+    readonly skills: Omit<ApiSkill, "autoExperience">[];
+  },
+  ["skills", "details"],
+  I
+>;

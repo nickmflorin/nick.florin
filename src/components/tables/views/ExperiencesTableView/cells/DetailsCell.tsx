@@ -3,7 +3,7 @@ import { Link } from "~/components/buttons";
 import { useDrawers } from "~/components/drawers/hooks";
 
 interface DetailsCellProps {
-  readonly model: ApiExperience<{ details: true }>;
+  readonly model: ApiExperience<["details"]>;
 }
 
 export const DetailsCell = ({ model }: DetailsCellProps) => {

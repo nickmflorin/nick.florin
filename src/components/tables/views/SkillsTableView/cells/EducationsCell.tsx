@@ -9,7 +9,7 @@ import { updateSkill } from "~/actions/mutations/skills";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 
 interface EducationsCellProps {
-  readonly skill: ApiSkill<{ experiences: true; educations: true; projects: true }>;
+  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
 }
 
 export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {

@@ -11,8 +11,8 @@ import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect
 import type * as types from "~/components/tables/types";
 
 interface SchoolCellProps {
-  readonly education: ApiEducation<{ details: true }>;
-  readonly table: types.TableInstance<ApiEducation<{ details: true }>>;
+  readonly education: ApiEducation<["details"]>;
+  readonly table: types.TableInstance<ApiEducation<["details"]>>;
 }
 
 export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element => {

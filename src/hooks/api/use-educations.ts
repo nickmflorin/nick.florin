@@ -6,8 +6,8 @@ import { useSWR, type SWRConfig } from "./use-swr";
 export const useEducations = ({
   visibility,
   ...config
-}: SWRConfig<ApiEducation<{ details: true }>[]> & { readonly visibility?: Visibility }) =>
-  useSWR<ApiEducation<{ details: true }>[]>("/api/educations", {
+}: SWRConfig<ApiEducation<["details"]>[]> & { readonly visibility?: Visibility }) =>
+  useSWR<ApiEducation<["details"]>[]>("/api/educations", {
     ...config,
     query: { ...config.query, visibility },
   });

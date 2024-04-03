@@ -6,7 +6,7 @@ import { type ComponentProps } from "~/components/types";
 import { ResumeTile } from "./ResumeTile";
 
 export interface EducationTileProps extends ComponentProps {
-  readonly education: ApiEducation<{ details: true; skills: true }>;
+  readonly education: ApiEducation<["details", "skills"]>;
 }
 
 export const EducationTile = ({ education, ...props }: EducationTileProps): JSX.Element => (

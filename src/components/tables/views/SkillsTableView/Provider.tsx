@@ -29,14 +29,14 @@ const ProjectsCell = dynamic(() => import("./cells/ProjectsCell"));
 
 export interface TableViewConfig
   extends Pick<
-    RootTableViewConfig<ApiSkill<{ experiences: true; educations: true; projects: true }>>,
+    RootTableViewConfig<ApiSkill<["experiences", "educations", "projects"]>>,
     "children"
   > {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiSkill<{ experiences: true; educations: true; projects: true }>>
+    <RootTableViewProvider<ApiSkill<["experiences", "educations", "projects"]>>
       id="skills-table"
       isCheckable={true}
       useCheckedRowsQuery={false}

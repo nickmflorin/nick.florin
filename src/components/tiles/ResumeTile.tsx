@@ -27,7 +27,7 @@ export interface ResumeTileProps extends ComponentProps {
   readonly timePeriod: ModelTimePeriod;
   readonly fallbackImageIcon: ModelImageProps["fallbackIcon"];
   readonly imageUrl?: string | null;
-  readonly details: ApiDetail<{ skills: true; nestedDetails: true }>[];
+  readonly details: ApiDetail<["skills", "nestedDetails"]>[];
   readonly skills: Skill[];
 }
 

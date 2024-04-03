@@ -12,10 +12,8 @@ import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/Re
 import type * as types from "~/components/tables/types";
 
 interface SlugCellProps {
-  readonly skill: ApiSkill<{ experiences: true; educations: true; projects: true }>;
-  readonly table: types.TableInstance<
-    ApiSkill<{ experiences: true; educations: true; projects: true }>
-  >;
+  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
+  readonly table: types.TableInstance<ApiSkill<["experiences", "educations", "projects"]>>;
 }
 
 export const SlugCell = ({ skill, table }: SlugCellProps): JSX.Element => {

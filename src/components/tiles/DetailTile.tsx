@@ -11,7 +11,7 @@ import { Label } from "~/components/typography/Label";
 import { DetailsTile } from "./DetailsTile";
 
 export interface DetailTileProps<
-  D extends ApiDetail<{ nestedDetails: true; skills: true }> | NestedApiDetail<{ skills: true }>,
+  D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
 > extends ComponentProps {
   readonly detail: D;
   readonly index?: number;
@@ -19,7 +19,7 @@ export interface DetailTileProps<
 }
 
 export const DetailTile = <
-  D extends ApiDetail<{ nestedDetails: true; skills: true }> | NestedApiDetail<{ skills: true }>,
+  D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
 >({
   detail,
   index,

@@ -6,7 +6,7 @@ import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 
 export interface WebsiteProps extends Omit<ProjectProps, "title" | "description" | "children"> {
-  readonly project: ApiProject<{ skills: true }>;
+  readonly project: ApiProject<["skills"]>;
 }
 
 export const Website = (props: WebsiteProps): JSX.Element => (

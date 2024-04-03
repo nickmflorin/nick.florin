@@ -4,7 +4,12 @@ import { useState } from "react";
 import { Timeline } from "@mantine/core";
 import clsx from "clsx";
 
-import { type NestedApiDetail, type ApiDetail, type DetailEntityType } from "~/prisma/model";
+import {
+  type NestedApiDetail,
+  type ApiDetail,
+  type DetailEntityType,
+  type Project,
+} from "~/prisma/model";
 import { IconButton, Link } from "~/components/buttons";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { DetailsTimeline } from "~/components/timelines/DetailsTimeline";
@@ -16,7 +21,7 @@ import { CreateNestedDetailForm, CreateDetailForm } from "./create";
 import { UpdateDetailForm } from "./UpdateDetailForm";
 
 type ModifyNestedDetailsTimelineProps = ComponentProps & {
-  readonly details: NestedApiDetail[];
+  readonly details: NestedApiDetail<[], Project>[];
   readonly detailId: string;
   readonly isCreating: boolean;
   readonly onSucessCreate: () => void;
@@ -31,7 +36,8 @@ const ModifyNestedDetailsTimeline = ({
   onCancelCreate,
   ...props
 }: ModifyNestedDetailsTimelineProps): JSX.Element => {
-  const [optimisticDetails, setOptimisticDetails] = useState<NestedApiDetail[]>(details);
+  const [optimisticDetails, setOptimisticDetails] =
+    useState<NestedApiDetail<[], Project>[]>(details);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);
@@ -66,7 +72,7 @@ const ModifyNestedDetailsTimeline = ({
 };
 
 interface ModifyFullDetailTimelineProps {
-  readonly detail: ApiDetail<{ nestedDetails: true }>;
+  readonly detail: ApiDetail<["nestedDetails"], Project>;
   readonly onDeleted: () => void;
 }
 
@@ -102,7 +108,7 @@ const ModifyFullDetailTimeline = ({ detail, onDeleted }: ModifyFullDetailTimelin
 };
 
 export interface ModifyDetailsTimelineProps extends ComponentProps {
-  readonly details: ApiDetail<{ nestedDetails: true }>[];
+  readonly details: ApiDetail<["nestedDetails"]>[];
   readonly entityId: string;
   readonly entityType: DetailEntityType;
 }
@@ -115,7 +121,7 @@ export const ModifyDetailsView = ({
 }: ModifyDetailsTimelineProps): JSX.Element => {
   const [createFormVisible, setCreateFormVisible] = useState(false);
   const [optimisticDetails, setOptimisticDetails] =
-    useState<ApiDetail<{ nestedDetails: true }>[]>(details);
+    useState<ApiDetail<["nestedDetails"], Project>[]>(details);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);

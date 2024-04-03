@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 
 import { prisma } from "~/prisma/client";
-import { DetailEntityType } from "~/prisma/model";
+import { DetailEntityType, type DetailIncludes } from "~/prisma/model";
 import { getEntityDetails } from "~/actions/fetches/details";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 import { parseInclusion } from "~/api/query";
@@ -15,7 +15,7 @@ export async function generateStaticParams() {
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const details = await getEntityDetails(params.id, DetailEntityType.EDUCATION, {
-    includes: parseInclusion(request, ["nestedDetails", "skills"]),
+    includes: parseInclusion(request, ["nestedDetails", "skills"] as const) as DetailIncludes,
   });
   if (!details) {
     return ApiClientGlobalError.NotFound().response;

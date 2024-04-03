@@ -1,21 +1,21 @@
 import { type Experience, type Company } from "./core";
 import { type ApiDetail } from "./details";
-import { type ConditionallyIncluded } from "./inclusion";
+import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
 
-export type ExpIncludes = Partial<{
-  readonly skills: boolean;
-  readonly details: boolean;
-}>;
+export type ExpIncludes =
+  | ["skills", "details"]
+  | ["details", "skills"]
+  | ["skills"]
+  | ["details"]
+  | [];
 
-type _BaseApiExperience = Experience & { readonly company: Company };
-
-export type ApiExperience<I extends ExpIncludes = { skills: false; details: false }> =
-  ConditionallyIncluded<
-    _BaseApiExperience,
-    {
-      readonly details: ApiDetail<{ skills: true; nestedDetails: true }>[];
-      readonly skills: Omit<ApiSkill, "autoExperience">[];
-    },
-    I
-  >;
+export type ApiExperience<I extends ExpIncludes = []> = ConditionallyInclude<
+  Experience & {
+    readonly company: Company;
+    readonly details: ApiDetail<["nestedDetails", "skills"]>[];
+    readonly skills: Omit<ApiSkill, "autoExperience">[];
+  },
+  ["skills", "details"],
+  I
+>;

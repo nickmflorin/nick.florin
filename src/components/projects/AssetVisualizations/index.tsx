@@ -11,7 +11,7 @@ import { BubbleChart } from "./BubbleChart";
 
 export interface AssetVisualizationsProps
   extends Omit<ProjectProps, "title" | "description" | "children"> {
-  readonly project: ApiProject<{ skills: true }>;
+  readonly project: ApiProject<["skills"]>;
 }
 
 export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Element => (

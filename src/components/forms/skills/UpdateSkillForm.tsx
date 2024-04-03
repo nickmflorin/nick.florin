@@ -13,7 +13,7 @@ import { useForm } from "../generic/hooks/use-form";
 import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues } from "./SkillForm";
 
 export interface UpdateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
-  readonly skill: ApiSkill<{ educations: true; experiences: true; projects: true }>;
+  readonly skill: ApiSkill<["educations", "experiences", "projects"]>;
   readonly onCancel?: () => void;
 }
 

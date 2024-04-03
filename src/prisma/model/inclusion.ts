@@ -1,73 +1,39 @@
-import { type Prettify } from "~/lib/types";
+type LeftoverKeys<A extends string[], B extends string[]> = readonly Exclude<
+  A[number],
+  B[number]
+>[];
 
-export type Includes<F extends string = string> = Partial<{ [key in F]: boolean }>;
+export type ConditionallyInclude<
+  T,
+  F extends (keyof T & string)[],
+  I extends F[number][],
+> = I extends F[number][] ? Omit<T, LeftoverKeys<F, I>[number]> : never;
 
-export type ShouldInclude<I extends Includes, N extends keyof I> = I extends { [key in N]: true }
-  ? true
-  : false;
-
-export type IncludeAll<I extends Includes> = { [key in keyof I]-?: true };
-
-export type ConditionallyExcluded<
-  F extends readonly string[],
-  O extends Record<F[number], unknown>,
-  I extends Partial<{ [key in F[number]]: boolean }>,
-> = {
-  [key in keyof O as key extends F[number] ? (I[key] extends true ? key : never) : key]: O[key];
-};
-
-export const conditionallyExclude = <
-  F extends readonly string[],
-  O extends Record<F[number], unknown>,
-  I extends Partial<{ [key in F[number]]: boolean }>,
->(
-  obj: O,
+export const conditionallyInclude = <T, F extends (keyof T & string)[], I extends F[number][]>(
+  obj: T,
   fields: F,
   includes: I,
-): ConditionallyExcluded<F, O, I> => {
+): ConditionallyInclude<T, F, I> => {
   const modified = { ...obj };
   for (const field of fields) {
     const f = field as F[number];
-    if (includes[f] === false || includes[f] === undefined) {
+    if (includes.includes(f)) {
       delete modified[f];
     }
   }
-  return modified;
+  return modified as ConditionallyInclude<T, F, I>;
 };
 
-export type ConditionallyIncluded<
-  O extends Record<string, unknown>,
-  D extends Record<string, unknown>,
-  I extends Partial<{ [key in keyof D]: boolean }> | null,
-> = Prettify<
-  {
-    [key in Exclude<keyof O, keyof D>]: O[key];
-  } & {
-    [key in keyof D as I extends Partial<{ [key in keyof D]: boolean }>
-      ? I[key] extends true
-        ? key
-        : never
-      : never]: D[key];
+export const fieldIsIncluded = <I extends string[] | []>(
+  field: string | string[],
+  includes: I | undefined,
+): boolean => {
+  if (includes === undefined) {
+    return false;
+  } else if (includes.length === 0) {
+    return false;
+  } else if (Array.isArray(field)) {
+    return field.map(f => fieldIsIncluded(f, includes)).every(Boolean);
   }
->;
-
-export const conditionallyInclude = <
-  O extends Record<string, unknown>,
-  D extends Record<string, unknown>,
-  I extends Partial<{ [key in keyof D]: boolean }>,
->(
-  obj: O,
-  data: D,
-  includes: I,
-): ConditionallyIncluded<O, D, I> => {
-  let modified = { ...obj };
-  for (const k of Object.keys(data) as (keyof D)[]) {
-    if (obj[k as keyof O] !== undefined) {
-      throw new Error(`Key ${String(k)} already exists in the object.`);
-    }
-    if (includes[k] === true) {
-      modified = { ...modified, [k]: data[k] };
-    }
-  }
-  return modified as ConditionallyIncluded<O, D, I>;
+  return (includes as string[]).includes(field);
 };

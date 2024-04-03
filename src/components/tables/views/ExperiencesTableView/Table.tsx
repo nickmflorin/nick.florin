@@ -20,7 +20,7 @@ export const ExperiencesAdminTable = async ({ page, filters }: ExperiencesAdminT
     page,
     filters,
     visibility: "admin",
-    includes: { details: true },
+    includes: ["details"],
   });
   return <ContextTable data={experiences} />;
 };

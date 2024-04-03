@@ -10,7 +10,7 @@ import {
   ProgrammingDomain,
   type Project,
 } from "./core";
-import { type ConditionallyIncluded } from "./inclusion";
+import { type ConditionallyInclude } from "./inclusion";
 
 import { type ApiEducation, type ApiExperience } from ".";
 
@@ -68,34 +68,36 @@ export const getProgrammingDomain = <D extends ProgrammingDomain>(
   value: domain,
 });
 
-export type SkillIncludes = Partial<{
-  readonly educations: boolean;
-  readonly experiences: boolean;
-  readonly projects: boolean;
-}>;
+export type SkillIncludes =
+  | ["educations", "experiences", "projects"]
+  | ["educations", "projects", "experiences"]
+  | ["experiences", "educations", "projects"]
+  | ["experiences", "projects", "educations"]
+  | ["projects", "educations", "experiences"]
+  | ["projects", "experiences", "educations"]
+  | ["educations", "experiences"]
+  | ["experiences", "educations"]
+  | ["educations", "projects"]
+  | ["projects", "educations"]
+  | ["educations"]
+  | ["experiences"]
+  | ["projects"]
+  | [];
 
-export type ApiSkill<
-  I extends SkillIncludes = {
-    educations: false;
-    experiences: false;
-    projects: false;
-  },
-> = ConditionallyIncluded<
+export type ApiSkill<I extends SkillIncludes = []> = ConditionallyInclude<
   Skill & {
     readonly autoExperience: number;
-  },
-  {
     readonly educations: ApiEducation[];
     readonly experiences: ApiExperience[];
     readonly projects: Project[];
   },
+  ["educations", "experiences", "projects"],
   I
 >;
 
 type ModelWithRedundantSkills = Awaited<
   ReturnType<
-    | typeof getExperiences<{ skills: true; details: true }>
-    | typeof getEducations<{ skills: true; details: true }>
+    typeof getExperiences<["skills", "details"]> | typeof getEducations<["skills", "details"]>
   >
 >[number];
 

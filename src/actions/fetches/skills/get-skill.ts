@@ -70,22 +70,13 @@ export const getSkill = cache(
       include: { skills: true },
     });
 
-    const {
-      experiences: exp,
-      educations: edu,
-      projects: ps,
-      ...rest
-    } = toApiSkill({
+    const apiSkill = toApiSkill({
       skill,
       educations,
       experiences,
       projects,
     });
-    return conditionallyInclude(
-      rest,
-      { experiences: exp, educations: edu, projects: ps },
-      includes,
-    );
+    return conditionallyInclude(apiSkill, ["educations", "experiences", "projects"], includes);
   },
 ) as {
   <I extends SkillIncludes>(

@@ -11,8 +11,8 @@ import { ClientCompanySelect } from "~/components/input/select/ClientCompanySele
 import type * as types from "~/components/tables/types";
 
 interface CompanyCellProps {
-  readonly experience: ApiExperience<{ details: true }>;
-  readonly table: types.TableInstance<ApiExperience<{ details: true }>>;
+  readonly experience: ApiExperience<["details"]>;
+  readonly table: types.TableInstance<ApiExperience<["details"]>>;
 }
 
 export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Element => {

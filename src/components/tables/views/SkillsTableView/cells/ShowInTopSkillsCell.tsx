@@ -10,10 +10,8 @@ import { Checkbox } from "~/components/input/Checkbox";
 import type * as types from "~/components/tables/types";
 
 interface ShowInTopSkillsCellProps {
-  readonly skill: ApiSkill<{ experiences: true; educations: true; projects: true }>;
-  readonly table: types.TableInstance<
-    ApiSkill<{ experiences: true; educations: true; projects: true }>
-  >;
+  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
+  readonly table: types.TableInstance<ApiSkill<["experiences", "educations", "projects"]>>;
 }
 
 export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps): JSX.Element => {

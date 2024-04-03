@@ -17,7 +17,7 @@ export type ExperienceTimelineProps = ComponentProps;
 
 export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promise<JSX.Element> => {
   const _experiences = await getExperiences({
-    includes: { skills: true, details: true },
+    includes: ["skills", "details"],
     visibility: "public",
   });
   const experiences = _experiences.map(removeRedundantTopLevelSkills);

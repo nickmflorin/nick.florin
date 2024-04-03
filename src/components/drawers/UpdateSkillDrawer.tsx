@@ -21,11 +21,10 @@ interface UpdateSkillDrawerProps
   }> {}
 
 export const UpdateSkillDrawer = ({ skillId }: UpdateSkillDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useSkill(
-    isUuid(skillId) ? skillId : null,
-    { projects: true, educations: true, experiences: true },
-    { keepPreviousData: true },
-  );
+  const { data, isLoading, error } = useSkill(isUuid(skillId) ? skillId : null, {
+    includes: ["projects", "educations", "experiences"],
+    keepPreviousData: true,
+  });
   return (
     <Drawer className="overflow-y-auto">
       <ApiResponseView error={error} isLoading={isLoading} data={data}>
