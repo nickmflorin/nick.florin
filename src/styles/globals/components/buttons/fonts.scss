@@ -3,6 +3,7 @@
 @use "sass:meta";
 
 @use "partials";
+@use "../typography" as typography;
 
 @use "./constants" as *;
 @use "./sizing" as sizing;
@@ -30,15 +31,15 @@ $button-font-sizes: (
 
 $button-font-weights: (
   "button":
-    partials.get-font-weight(
+    typography.get-font-weight(
       $weight: "semibold",
     ),
   "link":
-    partials.get-font-weight(
+    typography.get-font-weight(
       $weight: "medium",
     ),
   "a":
-    partials.get-font-weight(
+    typography.get-font-weight(
       $weight: "regular",
     ),
 );
@@ -52,7 +53,7 @@ $button-font-weights: (
 @mixin button-font-weights($type) {
   font-weight: map.get($button-font-weights, $type);
   // Allow the font-weight to be overridden.
-  @include partials.with-font-weights();
+  @include typography.with-font-weights();
 }
 
 @mixin button-font($type, $size: null) {
@@ -79,8 +80,8 @@ $button-font-weights: (
 @mixin button-fonts($type) {
   $type: partials.validate-value($type, ("button", "link"));
 
-  @include partials.with-font-families();
-  @include partials.with-text-transforms();
+  @include typography.with-font-families();
+  @include typography.with-text-transforms();
   @include button-font-weights($type);
 
   @if $type == "button" {
@@ -97,7 +98,7 @@ $button-font-weights: (
     }
   } @else {
     @include button-font("link");
-    @include partials.with-font-sizes("body") using ($size, $data) {
+    @include typography.with-font-sizes("body") using ($size, $data) {
       &.font-size-#{$size} {
         font-size: partials.mapget($data, font-size);
         line-height: partials.mapget($data, line-height);

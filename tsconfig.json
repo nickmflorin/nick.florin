@@ -29,6 +29,12 @@
     },
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["next-env.d.ts", "src", ".next/types/**/*.ts", "tailwind.config.ts"],
+  "include": [
+    "next-env.d.ts",
+    "src",
+    ".next/types/**/*.ts",
+    "tailwind.config.ts",
+    "src/components/projects/AssetVisualizations/BubbleChart.tsx"
+  ],
   "exclude": ["node_modules", "**/.*/"]
 }

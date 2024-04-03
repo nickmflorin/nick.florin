@@ -1,32 +1,37 @@
+import { type ApiProject } from "~/prisma/model";
 import { Link } from "~/components/buttons";
+import { Description } from "~/components/typography/Description";
 import { Text } from "~/components/typography/Text";
 
-import { Project, type ProjectProps } from "../Project";
+import { Project as ProjectComponent, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 
 import { BarChart } from "./BarChart";
 import { BubbleChart } from "./BubbleChart";
 
 export interface AssetVisualizationsProps
-  extends Omit<ProjectProps, "title" | "description" | "children"> {}
+  extends Omit<ProjectProps, "title" | "description" | "children"> {
+  readonly project: ApiProject<{ skills: true }>;
+}
 
 export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Element => (
-  <Project
+  <ProjectComponent
     title="n-Dimensional Charting Library for Asset Management"
-    description={[
-      <Text key="0" className="text-body-light" size="smplus">
-        <Text span>A JavaScript charting library written in </Text>
+    description={
+      <Description fontSize="smplus">
+        A JavaScript charting library written in{" "}
         <Link options={{ as: "a" }} href="https://d3js.org">
           d3.js
         </Link>{" "}
-        <Text span>
-          that can be used to visualize data in either 4 or 5 dimensions (depending on the chart
-          type) - including time. The package supported the following chart types:
-        </Text>
-      </Text>,
-    ]}
+        that can be used to visualize data in either 4 or 5 dimensions (depending on the chart
+        type), including time.
+      </Description>
+    }
     {...props}
   >
+    <Text key="0" className="text-body-light" size="smplus">
+      The package supported the following chart types:
+    </Text>
     <BubbleChart />
     <BarChart />
     <ProjectImage
@@ -46,7 +51,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
           "on certain data points of interest over time.",
       ]}
     />
-  </Project>
+  </ProjectComponent>
 );
 
 export default AssetVisualizations;

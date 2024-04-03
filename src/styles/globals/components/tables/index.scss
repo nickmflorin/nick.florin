@@ -1,5 +1,7 @@
 @use "sass:list";
+
 @use "partials";
+@use "../typography" as typography;
 
 $table-sizes: ("sm", "md", "lg");
 
@@ -9,7 +11,7 @@ $table-size-properties: (
       padding: 8px 12px,
       font: (
         type: "body",
-        family: partials.$font-family-inter,
+        family: typography.$font-family-inter,
         size: "sm",
         weight: "semibold",
         line-height: 18px,
@@ -30,7 +32,7 @@ $table-size-properties: (
       padding: 8px 12px,
       font: (
         type: "body",
-        family: partials.$font-family-inter,
+        family: typography.$font-family-inter,
         size: "md",
         weight: "semibold",
         line-height: 18px,
@@ -51,7 +53,7 @@ $table-size-properties: (
       padding: 10px 16px,
       font: (
         type: "body",
-        family: partials.$font-family-inter,
+        family: typography.$font-family-inter,
         size: "lg",
         weight: "semibold",
         line-height: 18px,
@@ -71,14 +73,14 @@ $table-size-properties: (
 
 @mixin th-size($size) {
   $properties: partials.mapget($table-size-properties, $size, "th");
-  @include partials.font(partials.mapget($properties, "font")...);
+  @include typography.font(partials.mapget($properties, "font")...);
   padding: partials.mapget($properties, "padding");
   background-color: theme("colors.gray.50");
 }
 
 @mixin td-size($size) {
   $properties: partials.mapget($table-size-properties, $size, "td");
-  @include partials.font(partials.mapget($properties, "font")...);
+  @include typography.font(partials.mapget($properties, "font")...);
   padding: partials.mapget($properties, "padding");
 }
 

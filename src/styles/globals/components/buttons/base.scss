@@ -2,6 +2,8 @@
 
 @use "partials";
 
+@use "../typography" as typography;
+
 @use "./variants" as variants;
 @use "./sizing" as sizing;
 @use "./constants" as *;
@@ -20,7 +22,7 @@
   // The default font family.
   font-family: $button-font-family;
   // The default font weight.
-  font-weight: partials.get-font-weight($type: "body", $weight: "medium");
+  font-weight: typography.get-font-weight($type: "body", $weight: "medium");
   margin: 0;
   min-height: 0px;
   -webkit-tap-highlight-color: transparent;

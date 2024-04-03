@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 
 import clsx from "clsx";
 
@@ -6,24 +6,21 @@ import { type Size, type ComponentProps } from "~/components/types";
 
 import { Text } from "./Text";
 import { type TypographySize, type FontWeight, type FontFamily } from "./types";
-
-type DescriptionText = string | null | undefined;
+import { getTypographyClassName } from "./types";
 
 export interface DescriptionProps extends ComponentProps {
   readonly gap?: Size;
-  readonly description?: DescriptionText[] | DescriptionText;
+  readonly description?: ReactNode[] | ReactNode;
   readonly fontSize?: TypographySize;
   readonly fontWeight?: FontWeight;
-  readonly textClassName?: ComponentProps["className"];
   readonly fontFamily?: FontFamily;
-  readonly children?: string;
+  readonly children?: ReactNode[] | ReactNode;
 }
 
 export const Description = ({
   description,
   gap = "4px",
   fontSize = "md",
-  textClassName = "text-body-light",
   fontFamily,
   fontWeight = "regular",
   children,
@@ -35,30 +32,44 @@ export const Description = ({
         ? description
         : [description]
       : [children];
-    return text
-      .reduce((prev: string[], d) => {
-        if (d !== null && d !== undefined && d.trim().length !== 0) {
+
+    return text.reduce((prev: Exclude<ReactNode, null | undefined>[], d) => {
+      if (d !== null && d !== undefined) {
+        if (typeof d === "string" && d.trim().length !== 0) {
           const parts = d.split("\n");
-          return [...prev, ...parts];
+          return [...prev, ...parts.map(p => p.trim())];
         }
-        return prev;
-      }, [])
-      .map(p => p.trim());
+        return [...prev, d];
+      }
+      return prev;
+    }, []);
   }, [description, children]);
 
   return validDescriptions.length !== 0 ? (
-    <div className={clsx("flex flex-col", props.className)} style={{ ...props.style, gap }}>
-      {validDescriptions.map((d, index) => (
-        <Text
-          key={index}
-          fontWeight={fontWeight}
-          size={fontSize}
-          className={textClassName}
-          fontFamily={fontFamily}
-        >
-          {d}
-        </Text>
-      ))}
+    <div
+      className={clsx(
+        "description",
+        // TODO: Improve multi-line logic.
+        {
+          "flex flex-col":
+            validDescriptions.length > 1 &&
+            validDescriptions.filter(d => typeof d === "string").length ===
+              validDescriptions.length,
+        },
+        getTypographyClassName({ fontFamily, fontSize, fontWeight }),
+        props.className,
+      )}
+      style={{ ...props.style, gap }}
+    >
+      {validDescriptions.map((d, index) =>
+        typeof d === "string" ? (
+          <Text key={index} inherit>
+            {d}
+          </Text>
+        ) : (
+          d
+        ),
+      )}
     </div>
   ) : (
     <></>

@@ -1,5 +1,3 @@
-@use "partials";
-
 /*
 Buttons  need to leverage an outline instead of a border, because an outline is inset and a border
 is outset. In other words, the border will contribute size to the overall Button, while the outline
@@ -16,15 +14,30 @@ $button-types: ("button", "link", "icon-button");
 $button-default-type: "button";
 
 $button-variants: (
-  "button": ("primary", "secondary", "bare", "danger"),
-  "icon-button": ("primary", "secondary", "transparent", "bare", "danger"),
-  "link": ("primary", "secondary", "danger"),
+  "button": (
+    "primary",
+    "secondary",
+    "bare",
+    "danger",
+  ),
+  "icon-button": (
+    "primary",
+    "secondary",
+    "transparent",
+    "bare",
+    "danger",
+  ),
+  "link": (
+    "primary",
+    "secondary",
+    "danger",
+  ),
 );
 
 $button-default-variant: (
   "button": "primary",
   "icon-button": "primary",
-  "link": "primary"
+  "link": "primary",
 );
 
 $button-size-names: ("xsmall", "small", "medium", "large", "xlarge");

@@ -53,7 +53,10 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     error,
     isInitialLoading,
     isLoading,
-  } = useSkills({}, { query: { ...skillsQuery, includeInTopSkills: true } });
+  } = useSkills(
+    {},
+    { keepPreviousData: true, query: { ...skillsQuery, includeInTopSkills: true } },
+  );
 
   const data = useMemo<SkillsBarChartDatum[]>(
     () =>

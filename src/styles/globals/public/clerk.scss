@@ -1,4 +1,4 @@
-@use "partials";
+@use "../components/typography" as typography;
 @use "../components/buttons" as buttons;
 
 @mixin auth-page($auth-name) {
@@ -22,27 +22,27 @@
 @include auth-page(signIn);
 
 h1.cl-headerTitle {
-  @include partials.font("title", $size: "md");
+  @include typography.font("title", $size: "md");
 }
 
 h2.cl-headerTitle {
-  @include partials.font("title", $size: "md");
+  @include typography.font("title", $size: "md");
 }
 
 h3.cl-headerTitle {
-  @include partials.font("title", $size: "md");
+  @include typography.font("title", $size: "md");
 }
 
 h4.cl-headerTitle {
-  @include partials.font("title", $size: "sm");
+  @include typography.font("title", $size: "sm");
 }
 
 h5.cl-headerTitle {
-  @include partials.font("title", $size: "xs");
+  @include typography.font("title", $size: "xs");
 }
 
 h6.cl-headerTitle {
-  @include partials.font("title", $size: "xxs");
+  @include typography.font("title", $size: "xxs");
 }
 
 button.cl-formButtonPrimary {

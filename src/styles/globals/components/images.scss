@@ -1,4 +1,6 @@
 @use "partials";
+@use "./radii" as radii;
+@use "./typography" as typography;
 
 .model-image {
   display: flex;
@@ -12,7 +14,7 @@
     aspect-ratio: 1;
   }
 
-  @include partials.with-radius using ($size, $value) {
+  @include radii.with-radius using ($size, $value) {
     &--radius-#{$size} {
       clip-path: inset(0px round $value);
     }
@@ -34,7 +36,7 @@
     }
 
     > .body {
-      font-weight: partials.get-font-weight($weight: "medium");
+      font-weight: typography.get-font-weight($weight: "medium");
       color: theme("colors.gray.300");
 
       @layer {

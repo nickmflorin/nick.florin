@@ -13,7 +13,9 @@ export interface SkillsProps extends ComponentProps {
 
 export const Skills = ({ skills, ...props }: SkillsProps): JSX.Element => {
   const { open, ids } = useDrawers();
-
+  if (skills.length === 0) {
+    return <></>;
+  }
   return (
     <BadgeCollection {...props}>
       {skills

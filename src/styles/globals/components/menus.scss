@@ -1,4 +1,5 @@
 @use "partials";
+@use "./typography" as typography;
 
 .menu {
   display: flex;
@@ -30,7 +31,7 @@
         padding: 6px 10px;
         gap: 10px;
 
-        @include partials.font($type: "body", $line-height: 28px, $font-size: "xs");
+        @include typography.font($type: "body", $line-height: 28px, $font-size: "xs");
 
         @include partials.disabled {
           color: theme("colors.disabled");
@@ -70,7 +71,7 @@
         > .menu__item__content {
           height: 100%;
           flex-grow: 100;
-          @include partials.truncate();
+          @include typography.truncate();
         }
       }
     }

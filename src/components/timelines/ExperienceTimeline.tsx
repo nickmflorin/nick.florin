@@ -7,7 +7,7 @@ import { ExperienceTile } from "~/components/tiles/ExperienceTile";
 import { type ComponentProps } from "~/components/types";
 import { Loading } from "~/components/views/Loading";
 
-import { CommitTimeline } from "../CommitTimeline";
+import { CommitTimeline } from "./CommitTimeline";
 
 const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.TimelineItem), {
   loading: () => <Loading loading={true} />,

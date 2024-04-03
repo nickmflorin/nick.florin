@@ -1,5 +1,4 @@
-@use "./buttons/base" as buttons;
-@use "./buttons/variants" as variants;
+@use "./buttons" as buttons;
 
 .paginator {
   width: 100%;

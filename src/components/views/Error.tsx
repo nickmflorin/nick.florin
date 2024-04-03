@@ -7,32 +7,40 @@ import { type Size, type ComponentProps, sizeToString } from "~/components/types
 import { type ExtendingTypographyProps } from "~/components/typography";
 import { Text } from "~/components/typography/Text";
 
-type ErrorType = string | JSX.Element | HttpError | (string | JSX.Element)[];
+import * as types from "./types";
 
-interface ErrorContentProps extends Omit<ExtendingTypographyProps, "transform"> {
+export interface ErrorContentBaseProps extends Omit<ExtendingTypographyProps, "transform"> {
   readonly textClassName?: ComponentProps["className"];
-  readonly children?: string | JSX.Element | (string | JSX.Element)[];
-  readonly error?: ErrorType | null;
+}
+
+interface ErrorContentProps extends ErrorContentBaseProps {
+  readonly children: types.ErrorContentType;
 }
 
 const ErrorContent = ({
-  children,
-  error,
   textClassName = "text-gray-500",
   fontSize = "sm",
   fontFamily,
   fontWeight = "regular",
+  children,
 }: ErrorContentProps) => {
-  const message = useMemo(() => {
-    if (children) {
-      return children;
-    } else if (isHttpError(error) && error instanceof ApiClientError) {
-      return error.message;
-    }
-    return null;
-  }, [children, error]);
-
-  if (typeof message === "string") {
+  if (Array.isArray(children)) {
+    return (
+      <div className="flex flex-col gap-[10px]">
+        {children.map((child, index) => (
+          <ErrorContent
+            key={index}
+            fontSize={fontSize}
+            fontFamily={fontFamily}
+            fontWeight={fontWeight}
+            textClassName={textClassName}
+          >
+            {child}
+          </ErrorContent>
+        ))}
+      </div>
+    );
+  } else if (typeof children === "string") {
     return (
       <Text
         size={fontSize}
@@ -40,38 +48,16 @@ const ErrorContent = ({
         fontWeight={fontWeight}
         className={clsx("text-center", textClassName)}
       >
-        {message}
+        {children}
       </Text>
     );
-  } else if (Array.isArray(message)) {
-    return (
-      <div className="flex flex-col gap-[10px]">
-        {message.map((child, index) =>
-          typeof child === "string" ? (
-            <Text
-              key={index}
-              size={fontSize}
-              fontFamily={fontFamily}
-              fontWeight={fontWeight}
-              className={clsx("text-center", textClassName)}
-            >
-              {child}
-            </Text>
-          ) : (
-            <React.Fragment key={index}>{child}</React.Fragment>
-          ),
-        )}
-      </div>
-    );
-  } else if (message) {
-    return <>{message}</>;
   }
-  return null;
+  return children;
 };
 
 interface ErrorTitleProps extends ExtendingTypographyProps, ComponentProps {
   readonly children?: string;
-  readonly error?: ErrorType | null;
+  readonly error?: string | boolean | HttpError | string[] | null;
 }
 
 export const ErrorTitle = ({
@@ -103,22 +89,20 @@ export const ErrorTitle = ({
   );
 };
 
-export interface ErrorProps extends ComponentProps, ErrorContentProps {
-  readonly children?: string | JSX.Element | (string | JSX.Element)[];
-  readonly gap?: Size;
-  readonly title?: string;
-  readonly titleClassName?: ComponentProps["className"];
-  readonly titleFontSize?: ExtendingTypographyProps["fontSize"];
-  readonly titleFontWeight?: ExtendingTypographyProps["fontWeight"];
-  readonly titleFontFamily?: ExtendingTypographyProps["fontFamily"];
-}
+export type ErrorProps = types.ErrorContentUnionProps &
+  ComponentProps & {
+    readonly gap?: Size;
+    readonly title?: string;
+    readonly titleClassName?: ComponentProps["className"];
+    readonly titleFontSize?: ExtendingTypographyProps["fontSize"];
+    readonly titleFontWeight?: ExtendingTypographyProps["fontWeight"];
+    readonly titleFontFamily?: ExtendingTypographyProps["fontFamily"];
+  };
 
 export const Error = ({
-  children,
   style,
   className,
   gap = 12,
-  error,
   title = "Error",
   titleClassName = "text-body",
   titleFontFamily,
@@ -126,11 +110,8 @@ export const Error = ({
   titleFontSize = "lg",
   ...props
 }: ErrorProps): JSX.Element => {
-  const content = (
-    <ErrorContent {...props} error={error}>
-      {children}
-    </ErrorContent>
-  );
+  const content = types.parseErrorContent(props);
+
   if (!content) {
     return <></>;
   }
@@ -140,7 +121,7 @@ export const Error = ({
       className={clsx("flex flex-col justify-center", className)}
     >
       <ErrorTitle
-        error={error}
+        error={props.error}
         fontSize={titleFontSize}
         fontWeight={titleFontWeight}
         fontFamily={titleFontFamily}
@@ -148,7 +129,7 @@ export const Error = ({
       >
         {title}
       </ErrorTitle>
-      {content}
+      <ErrorContent {...props}>{content}</ErrorContent>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 @use "partials";
 
+@use "../typography" as typography;
+
 @use "./browser-reset";
 @use "./checkbox";
 @use "./radio";
@@ -20,7 +22,7 @@
       @include sizing.input-size($size, $type);
 
       // Allow the font size to be overridden with a prop for each input size.
-      @include partials.with-font-sizes("body") using ($size, $data) {
+      @include typography.with-font-sizes("body") using ($size, $data) {
         &.font-size-#{$size} {
           font-size: partials.mapget($data, font-size);
         }
@@ -44,12 +46,12 @@
   @include mixins.input-read-only();
 
   // Allow the font weight to be overridden with a prop.
-  @include partials.with-font-families();
+  @include typography.with-font-families();
   // Allow the font-weight to be overridden for each size.
-  @include partials.with-font-weights();
+  @include typography.with-font-weights();
 
   // Allow the font size to be specified independently of the input's size.
-  @include partials.with-font-sizes("body") using ($size, $data) {
+  @include typography.with-font-sizes("body") using ($size, $data) {
     &.font-size-#{$size} {
       font-size: partials.mapget($data, font-size);
     }

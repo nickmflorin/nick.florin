@@ -1,6 +1,7 @@
 @use "sass:map";
 @use "throw";
-@use "../functions" as fn;
+
+@use "partials";
 
 $radius-sizes: ("none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full");
 
@@ -24,11 +25,11 @@ $radius: (
       $source: "get-radius()"
     );
   }
-  @return fn.mapget($radius, $size);
+  @return partials.mapget($radius, $size);
 }
 
 @mixin with-radius() {
   @each $size in $radius-sizes {
-    @content ($size, fn.mapget($radius, $size));
+    @content ($size, partials.mapget($radius, $size));
   }
 }

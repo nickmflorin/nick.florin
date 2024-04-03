@@ -19,19 +19,34 @@ $focused-within-selectors: (":focus-within");
 $visited-selectors: (":visited");
 
 $state-selectors: (
-  "disabled": (positive: $disabled-selectors, properties: (
-    cursor: not-allowed !important,
-    // Turning off pointer-events with `pointer-events: none` prevents the disabled cursor from appearing.
-    pointer-events: auto !important,
-  )),
-  "hovered": (positive: $hovered-selectors, negative: $disabled-selectors),
-  "focused": (positive: $focused-selectors, negative: $disabled-selectors),
-  "focused-within": (positive: $focused-within-selectors, negative: $disabled-selectors),
-  "visited": (positive: $visited-selectors, negative: $disabled-selectors)
+  "disabled": (
+    positive: $disabled-selectors,
+    properties: (
+      cursor: not-allowed !important,
+      // Turning off pointer-events with `pointer-events: none` prevents the disabled cursor from appearing.
+      pointer-events: auto !important,
+    ),
+  ),
+  "hovered": (
+    positive: $hovered-selectors,
+    negative: $disabled-selectors,
+  ),
+  "focused": (
+    positive: $focused-selectors,
+    negative: $disabled-selectors,
+  ),
+  "focused-within": (
+    positive: $focused-within-selectors,
+    negative: $disabled-selectors,
+  ),
+  "visited": (
+    positive: $visited-selectors,
+    negative: $disabled-selectors,
+  ),
 );
 
 @mixin with-state($st, $args...) {
-  $st: fn.validate-values(if(meta.type-of($st) == list, $st, ($st, )), $states);
+  $st: fn.validate-values(if(meta.type-of($st) == list, $st, ($st)), $states);
 
   $positives: ();
   $initial-negatives: ();

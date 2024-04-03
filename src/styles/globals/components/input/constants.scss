@@ -1,6 +1,6 @@
 @use "sass:color";
 
-@use "partials";
+@use "../typography" as typography;
 
 $input-types: ("text-input", "text-area", "select");
 
@@ -14,10 +14,10 @@ $input-caret-color: theme("colors.body");
 $input-placeholder-color: color.change(#606873, $alpha: 0.6);
 $input-border-radius: 2px;
 
-$input-font-weight: partials.get-font-weight(
+$input-font-weight: typography.get-font-weight(
   $type: "body",
   $weight: "regular",
 );
-$input-font-family: partials.get-font-family(
+$input-font-family: typography.get-font-family(
   $type: "body",
 );

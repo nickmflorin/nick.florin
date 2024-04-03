@@ -2,10 +2,8 @@
 @use "sass:meta";
 @use "sass:list";
 
+@use "partials";
 @use "throw";
-
-@use "../../functions" as fn;
-@use "../../mixins" as mixins;
 
 $typography-types: ("body", "title", "label");
 $font-family-avenir: avenir;
@@ -26,8 +24,8 @@ $typography-font-families: (
 );
 
 @function get-font-family($type) {
-  $type: fn.validate-value($type, $typography-types);
-  @return fn.mapget($typography-font-families, $type);
+  $type: partials.validate-value($type, $typography-types);
+  @return partials.mapget($typography-font-families, $type);
 }
 
 @mixin font-family($type) {
@@ -65,8 +63,8 @@ $font-family-default-weights: (
 
 @function get-font-weight($type: null, $size: null, $weight: null) {
   @if $weight {
-    $weight: fn.validate-value($weight, $font-weight-names);
-    @return fn.mapget($font-weights, $weight);
+    $weight: partials.validate-value($weight, $font-weight-names);
+    @return partials.mapget($font-weights, $weight);
   } @else if $type or $size {
     @if not $type {
       @return throw.error(
@@ -75,9 +73,9 @@ $font-family-default-weights: (
       );
     }
     $size: parse-size($type, $size);
-    @return fn.mapget(
+    @return partials.mapget(
       $font-weights,
-      fn.mapget($typography-size-properties, $type, $size, font-weight)
+      partials.mapget($typography-size-properties, $type, $size, font-weight)
     );
   } @else {
     @return throw.error(
@@ -246,20 +244,25 @@ $typography-default-sizes: (
 );
 
 @function get-default-size($type) {
-  $type: fn.validate-value($type, $typography-types);
-  @return fn.mapget($typography-default-sizes, $type);
+  $type: partials.validate-value($type, $typography-types);
+  @return partials.mapget($typography-default-sizes, $type);
 }
 
 @function parse-size($type, $size: null) {
-  @return if($size, fn.validate-value($size, $typography-sizes), get-default-size($type));
+  @return if($size, partials.validate-value($size, $typography-sizes), get-default-size($type));
 }
 
 @function get-font-size($type, $size: null) {
-  @return fn.mapget($typography-size-properties, $type, parse-size($type, $size: $size), font-size);
+  @return partials.mapget(
+    $typography-size-properties,
+    $type,
+    parse-size($type, $size: $size),
+    font-size
+  );
 }
 
 @function get-line-height($type, $size: null) {
-  @return fn.mapget(
+  @return partials.mapget(
     $typography-size-properties,
     $type,
     parse-size($type, $size: $size),
@@ -311,7 +314,7 @@ $typography-default-colors: (
 );
 
 @function get-font-color($type, $color: null) {
-  @return if($color, $color, fn.mapget($typography-default-colors, $type));
+  @return if($color, $color, partials.mapget($typography-default-colors, $type));
 }
 
 @mixin font-color($type, $color: null) {
@@ -331,7 +334,7 @@ $typography-default-colors: (
 }
 
 @function fz($type, $value) {
-  @if fn.in-list($value, $typography-sizes) {
+  @if partials.in-list($value, $typography-sizes) {
     @return get-font-size($type, $size: $value);
   }
   @return $value;
@@ -347,25 +350,33 @@ $typography-default-colors: (
         $size: $size,
         $weight: $weight,
       ),
-    color: fn.get-optional-kwarg(color, $default: get-font-color($type), $args...),
+    color: partials.get-optional-kwarg(color, $default: get-font-color($type), $args...),
     line-height:
-      fn.get-optional-kwarg(line-height, $default: get-line-height($type, $size: $size), $args...),
+      partials.get-optional-kwarg(
+        line-height,
+        $default: get-line-height($type, $size: $size),
+        $args...
+      ),
     font-size:
       fz(
         $type,
-        fn.get-optional-kwarg(font-size, $default: get-font-size($type, $size: $size), $args...)
+        partials.get-optional-kwarg(
+          font-size,
+          $default: get-font-size($type, $size: $size),
+          $args...
+        )
       ),
   );
   $overrides: map.get(meta.keywords($args), "override");
   @if $overrides {
     $properties: map.merge($properties, $overrides);
   }
-  @return fn.pick-or-ignore($properties, $args...);
+  @return partials.pick-or-ignore($properties, $args...);
 }
 
 @mixin font($type, $args...) {
   $properties: get-font($type, $args...);
-  @include mixins.mapped-properties($properties);
+  @include partials.mapped-properties($properties);
 }
 
 @mixin with-font-sizes($type) {

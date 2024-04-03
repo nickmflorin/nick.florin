@@ -1,7 +1,11 @@
 @use "sass:map";
 @use "partials";
 
-@include partials.font-faces;
+@use "./font-faces" as font-faces;
+@use "./properties" as properties;
+@use "./mixins" as mixins;
+
+@include font-faces.font-faces();
 
 %typography-base {
   font-feature-settings:
@@ -32,7 +36,7 @@ body {
 
 p {
   @extend %typography-base;
-  @include partials.font("body");
+  @include properties.font("body");
 
   em,
   b {
@@ -43,18 +47,18 @@ p {
 }
 
 @mixin with-fonts($type) {
-  @include partials.with-font-weights();
-  @include partials.with-font-families();
-  @include partials.with-text-transforms();
+  @include properties.with-font-weights();
+  @include properties.with-font-families();
+  @include properties.with-text-transforms();
 
-  @include partials.with-font-sizes($type) using ($size, $data) {
+  @include properties.with-font-sizes($type) using ($size, $data) {
     &.font-size-#{$size} {
       font-size: partials.mapget($data, font-size);
       line-height: partials.mapget($data, line-height);
       font-weight: partials.mapget($data, font-weight);
 
       // Allow the font-weight to be overridden for each size.
-      @include partials.with-font-weights();
+      @include properties.with-font-weights();
 
       @content ($data);
     }
@@ -66,9 +70,8 @@ p {
   // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
   // in cases where the component is not provided with those props.
   @extend %typography-base;
-  // @include partials.with-default-font-size("label");
 
-  @include partials.font($type: "label");
+  @include properties.font($type: "label");
 
   @include with-fonts("label") using ($data) {
     $font-size: partials.mapget($data, font-size);
@@ -116,39 +119,50 @@ h6 {
 }
 
 h1 {
-  @include partials.font("title", $size: "xl");
+  @include properties.font("title", $size: "xl");
   @include title();
 }
 
 h2 {
-  @include partials.font("title", $size: "lg");
+  @include properties.font("title", $size: "lg");
   @include title();
 }
 
 h3 {
-  @include partials.font("title", $size: "md");
+  @include properties.font("title", $size: "md");
   @include title();
 }
 
 h4 {
-  @include partials.font("title", $size: "sm");
+  @include properties.font("title", $size: "sm");
   @include title();
 }
 
 h5 {
-  @include partials.font("title", $size: "xs");
+  @include properties.font("title", $size: "xs");
   @include title();
 }
 
 h6 {
-  @include partials.font("title", $size: "xxs");
+  @include properties.font("title", $size: "xxs");
   @include title();
 }
 
+@mixin inherit-font-properties() {
+  color: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-transform: inherit;
+  text-decoration: inherit;
+}
+
 .body {
-  // Do not define defaults for the typography properties.  This allows the typography properties to only be applied if
-  // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
-  // in cases where the component is not provided with those props.
+  // Do not define defaults for the typography properties.  This allows the typography properties
+  // to only be applied if the component is provided with the appropriate props, and allows us to
+  // override the properties in SASS elsewhere in cases where the component is not provided with
+  // those props.
   @extend %typography-base;
 
   &:not(.span, .body--inherit) {
@@ -178,18 +192,12 @@ h6 {
 
        Here, "Bar" should be styled with the a "bold" font weight. */
     // @include partials.with-default-font-size("body");
-    @include partials.font($type: "body");
+    @include properties.font($type: "body");
   }
 
   &.span,
   &.body--inherit {
-    color: inherit;
-    font-size: inherit;
-    font-style: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    text-transform: inherit;
-    text-decoration: inherit;
+    @include inherit-font-properties();
   }
 
   @include with-fonts("body") using ($data) {
@@ -206,11 +214,11 @@ h6 {
   }
 
   &.truncate {
-    @include partials.truncate();
+    @include mixins.truncate();
   }
 
   &.clamp {
-    @include partials.clamp(2);
+    @include mixins.clamp(2);
   }
 
   > .icon {
@@ -219,5 +227,20 @@ h6 {
     font-style: inherit;
     font-weight: inherit;
     line-height: inherit;
+  }
+}
+
+.description {
+  // Do not define defaults for the typography properties.  This allows the typography properties
+  // to only be applied if the component is provided with the appropriate props, and allows us to
+  // override the properties in SASS elsewhere in cases where the component is not provided with
+  // those props.
+  @extend %typography-base;
+  @include with-fonts("body");
+
+  color: theme("colors.body-light");
+
+  > .body {
+    @include inherit-font-properties();
   }
 }
