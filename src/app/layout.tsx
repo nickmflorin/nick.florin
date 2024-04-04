@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { type ReactNode } from "react";
 
+import { Analytics } from "@vercel/analytics/react";
+
 import { AppConfig } from "~/app/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
 import { Text } from "~/components/typography/Text";
@@ -110,6 +112,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </Toast>
           </ShowHide>
         </AppConfig>
+        <Analytics />
       </body>
     </html>
   );
