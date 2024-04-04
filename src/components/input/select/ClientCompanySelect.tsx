@@ -12,7 +12,7 @@ export const ClientCompanySelect = ({
   onError,
   ...props
 }: ClientCompanySelectProps): JSX.Element => {
-  const { data, isLoading, error } = useCompanies({ onError });
+  const { data, isLoading, error } = useCompanies({ onError, includes: [] });
 
   return (
     <CompanySelect

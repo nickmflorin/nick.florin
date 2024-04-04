@@ -6,6 +6,7 @@ import { Text } from "~/components/typography/Text";
 
 import { MenuContent } from "../generic/MenuContent";
 
+import { DeleteCompanySchoolButton } from "./DeleteCompanySchoolButton";
 import { type ModelType, type Model } from "./types";
 
 export interface CompaniesSchoolsMenuContentProps<M extends ModelType> {
@@ -13,8 +14,8 @@ export interface CompaniesSchoolsMenuContentProps<M extends ModelType> {
 }
 
 const fetchers: { [key in ModelType]: () => Promise<Model<key>[]> } = {
-  company: getCompanies,
-  school: getSchools,
+  company: async () => await getCompanies({ includes: ["experiences"] }),
+  school: async () => await getSchools({ includes: ["educations"] }),
 };
 
 const ModelDrawerIds: {
@@ -39,19 +40,20 @@ export const CompaniesSchoolsMenuContent = async <M extends ModelType>({
     <MenuContent
       itemClassName="px-[18px] first:pt-[12px]"
       options={{}}
-      data={data.map(({ id, city, state, name }) => ({
-        id,
+      data={data.map(model => ({
+        id: model.id,
         query: {
           drawerId: ModelDrawerIds[modelType],
-          props: { [ModelDrawerPropNames[modelType]]: id },
+          props: { [ModelDrawerPropNames[modelType]]: model.id },
         },
+        actions: [<DeleteCompanySchoolButton key="0" modelType={modelType} model={model} />],
         label: (
           <div className="flex flex-col gap-[4px]">
             <Text size="sm" fontWeight="medium">
-              {name}
+              {model.name}
             </Text>
             <Text size="xs" className="text-body-light">
-              {stringifyLocation({ city, state })}
+              {stringifyLocation({ city: model.city, state: model.state })}
             </Text>
           </div>
         ),

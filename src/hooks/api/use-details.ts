@@ -1,3 +1,4 @@
+import { encodeQueryParam } from "~/lib/urls";
 import {
   type ApiDetail,
   type Education,
@@ -5,7 +6,6 @@ import {
   DetailEntityType,
   type DetailIncludes,
 } from "~/prisma/model";
-import { encodeInclusionQuery } from "~/api/query";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
@@ -39,6 +39,6 @@ export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>
     ...config,
     query: {
       ...config?.query,
-      includes: encodeInclusionQuery(includes),
+      includes: encodeQueryParam(includes),
     },
   });

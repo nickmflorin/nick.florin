@@ -2,8 +2,8 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
+import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { type ComponentProps } from "~/components/types";
-import { ApiResponseState } from "~/components/views/ApiResponseState";
 
 export interface ChartContainerProps extends ComponentProps {
   readonly isInitialLoading?: boolean;

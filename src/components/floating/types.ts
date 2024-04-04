@@ -58,9 +58,21 @@ export const FloatingVariantArrowClassNames: { [key in FloatingVariant]: string 
     "[&>path:first-of-type]:stroke-blue-500",
     "[&>path:last-of-type]:stroke-blue-500",
   ),
-  [FloatingVariants.LIGHT]: clsx("fill-white", "shadow-md"),
-  [FloatingVariants.SECONDARY]: clsx("fill-white", "shadow-md"),
-  [FloatingVariants.WHITE]: clsx("fill-white", "shadow-md"),
+  [FloatingVariants.LIGHT]: clsx(
+    "fill-gray-50",
+    "[&>path:first-of-type]:stroke-gray-50",
+    "[&>path:last-of-type]:stroke-gray-50",
+  ),
+  [FloatingVariants.SECONDARY]: clsx(
+    "fill-gray-200",
+    "[&>path:first-of-type]:stroke-gray-200",
+    "[&>path:last-of-type]:stroke-gray-200",
+  ),
+  [FloatingVariants.WHITE]: clsx(
+    "fill-white",
+    "[&>path:first-of-type]:stroke-white",
+    "[&>path:last-of-type]:stroke-white",
+  ),
   [FloatingVariants.NONE]: "",
 };
 

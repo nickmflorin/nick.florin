@@ -1,10 +1,11 @@
 import dynamic from "next/dynamic";
 
-import { Loading } from "~/components/views/Loading";
+import { Loading } from "~/components/feedback/Loading";
 
 import { Drawer } from "./Drawer";
-
-import { type ExtendingDrawerProps } from ".";
+import { DrawerContent } from "./DrawerContent";
+import { DrawerHeader } from "./DrawerHeader";
+import { type ExtendingDrawerProps } from "./provider";
 
 const CreateExperienceForm = dynamic(
   () => import("~/components/forms/experiences/CreateExperienceForm"),
@@ -17,11 +18,14 @@ interface CreateExperienceDrawerProps extends ExtendingDrawerProps {}
 
 export const CreateExperienceDrawer = ({ onClose }: CreateExperienceDrawerProps): JSX.Element => (
   <Drawer>
-    <CreateExperienceForm
-      className="mt-[16px]"
-      onCancel={() => onClose()}
-      onSuccess={() => onClose()}
-    />
+    <DrawerHeader>Create an Experience</DrawerHeader>
+    <DrawerContent>
+      <CreateExperienceForm
+        className="mt-[16px]"
+        onCancel={() => onClose()}
+        onSuccess={() => onClose()}
+      />
+    </DrawerContent>
   </Drawer>
 );
 

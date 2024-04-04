@@ -5,6 +5,7 @@ import { z } from "zod";
 import { ReactNodeSchema } from "~/lib/core";
 import { DrawerIds } from "~/components/drawers";
 import { IconPropSchema } from "~/components/icons";
+import { isAction, type Action } from "~/components/structural";
 
 import { type MenuOptions } from "./options";
 
@@ -38,6 +39,7 @@ export const MenuModelParamsSchema = z.object({
   isDisabled: z.boolean(),
   isVisible: z.boolean(),
   query: z.union([QuerySchema, DrawerQuerySchema]),
+  actions: z.array(z.any()),
 });
 
 export type MenuModelParams = z.infer<typeof MenuModelParamsSchema>;
@@ -161,6 +163,35 @@ export const getModelHref = <M extends MenuModel, O extends MenuOptions<M>>(
     v = model.href;
   }
   return v === NEVER ? undefined : (v as ModelHref<M, O>);
+};
+
+export type ModelActions<M extends MenuModel, O extends MenuOptions<M>> = M extends {
+  readonly actions: infer L extends Action[];
+}
+  ? L
+  : O extends { readonly getItemActions: (m: M) => infer L extends Action[] }
+    ? L
+    : never;
+
+export const getModelActions = <M extends MenuModel, O extends MenuOptions<M>>(
+  model: M,
+  options: O,
+): ModelActions<M, O> => {
+  let v: Action[] | Never = NEVER;
+  if (options.getItemActions !== undefined) {
+    v = options.getItemActions(model);
+  } else if (modelHasParam(model, "actions")) {
+    v = model.actions;
+  }
+  if (v === NEVER) {
+    return [] as Action[] as ModelActions<M, O>;
+  }
+  for (const action of v) {
+    if (!isAction(action)) {
+      throw new Error(`Encountered an invalid action: ${String(action)}!`);
+    }
+  }
+  return v as ModelActions<M, O>;
 };
 
 export type ModelQuery<M extends MenuModel, O extends MenuOptions<M>> = M extends {

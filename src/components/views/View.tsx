@@ -1,7 +1,8 @@
 import clsx from "clsx";
 
+import { State, type StateProps } from "../feedback/State";
+
 import { AbstractView, type AbstractViewProps } from "./AbstractView";
-import { State, type StateProps } from "./State";
 
 export interface ViewProps extends AbstractViewProps, Omit<StateProps, "children"> {}
 

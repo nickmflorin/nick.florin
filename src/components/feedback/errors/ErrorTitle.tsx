@@ -7,7 +7,7 @@ import { type ComponentProps } from "~/components/types";
 import { type ExtendingTypographyProps } from "~/components/typography";
 import { Text } from "~/components/typography/Text";
 
-import { type ErrorType } from "./types";
+import { type ErrorType } from "../types";
 
 export interface ErrorTitleProps extends ExtendingTypographyProps, ComponentProps {
   readonly children?: string;

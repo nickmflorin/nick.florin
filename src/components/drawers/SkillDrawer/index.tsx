@@ -1,4 +1,4 @@
-import { ApiResponseState } from "~/components/views/ApiResponseState";
+import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { useSkill } from "~/hooks";
 
 import { type ExtendingDrawerProps } from "..";

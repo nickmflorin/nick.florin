@@ -2,7 +2,7 @@ import React from "react";
 
 import clsx from "clsx";
 
-import type * as types from "./types";
+import type * as types from "../types";
 
 import { type Size, type ComponentProps, sizeToString } from "~/components/types";
 import { type ExtendingTypographyProps } from "~/components/typography";
@@ -35,7 +35,7 @@ export const ErrorDetail = ({
 }: ErrorDetailProps): JSX.Element => (
   <div
     style={{ ...style, gap: sizeToString(gap) }}
-    className={clsx("flex flex-col justify-center", className)}
+    className={clsx("flex flex-col justify-center max-w-[90%]", className)}
   >
     <ErrorTitle
       error={error}

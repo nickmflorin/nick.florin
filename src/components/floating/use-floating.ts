@@ -12,6 +12,7 @@ import {
   offset as offsetMiddleware,
   type OffsetOptions,
   autoUpdate as autoUpdater,
+  type Middleware,
 } from "@floating-ui/react";
 import { flushSync } from "react-dom";
 
@@ -27,6 +28,7 @@ export interface UseFloatingConfig {
   readonly placement?: Placement;
   readonly width?: number | "target";
   readonly maxHeight?: Size;
+  readonly middleware?: Array<Middleware | null | undefined | false>;
   readonly onOpen?: (e: Event) => void;
   readonly onClose?: (e: Event) => void;
   readonly onOpenChange?: (value: boolean, evt: Event) => void;
@@ -41,6 +43,7 @@ export const useFloating = ({
   placement,
   offset,
   width,
+  middleware,
   onOpen,
   onClose,
   onOpenChange,
@@ -85,6 +88,7 @@ export const useFloating = ({
           }
         },
       }),
+      ...(middleware ?? []),
     ],
   });
 

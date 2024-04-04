@@ -2,9 +2,9 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
+import { Loading } from "~/components/feedback/Loading";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
-import { Loading } from "~/components/views/Loading";
 
 import { FormErrors } from "./FormErrors";
 import { type FormInstance, type BaseFormValues } from "./types";

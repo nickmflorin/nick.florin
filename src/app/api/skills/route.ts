@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
     "educations",
     "projects",
   ]) as SkillIncludes;
-
   const parsedQuery = SkillQuerySchema.safeParse(decodeQueryParams(request.nextUrl.searchParams));
   if (!parsedQuery.success) {
     return ApiClientFieldErrors.fromZodError(parsedQuery.error, SkillQuerySchema).response;

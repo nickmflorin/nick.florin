@@ -7,7 +7,7 @@ import { type ComponentProps } from "~/components/types";
 import { type ExtendingTypographyProps } from "~/components/typography";
 import { Text } from "~/components/typography/Text";
 
-import * as types from "./types";
+import * as types from "../types";
 
 export interface ErrorContentProps extends Omit<ExtendingTypographyProps, "transform"> {
   readonly textClassName?: ComponentProps["className"];
@@ -23,7 +23,12 @@ export const ErrorContent = ({
   children,
   error,
 }: ErrorContentProps): JSX.Element => {
-  const message = children ?? isHttpError(error) ? error : error ?? types.DEFAULT_ERROR_MESSAGE;
+  const message =
+    children !== undefined
+      ? children
+      : isHttpError(error)
+        ? error
+        : error ?? types.DEFAULT_ERROR_MESSAGE;
   if (Array.isArray(message)) {
     return (
       <div className="flex flex-col gap-[10px]">

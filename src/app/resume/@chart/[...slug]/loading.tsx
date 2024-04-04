@@ -1,4 +1,4 @@
-import { Loading as LoadingComponent } from "~/components/views/Loading";
+import { Loading as LoadingComponent } from "~/components/feedback/Loading";
 
 const Loading = () => <LoadingComponent isLoading={true} />;
 

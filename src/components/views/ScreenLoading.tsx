@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Loading, type LoadingProps } from "./Loading";
+import { Loading, type LoadingProps } from "../feedback/Loading";
 
 /**
  * A component that takes up the entire screen/viewport and centers a loading indicator in its

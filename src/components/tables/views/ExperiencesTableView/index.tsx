@@ -3,12 +3,12 @@ import { Suspense } from "react";
 
 import { Button } from "~/components/buttons";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
+import { Loading } from "~/components/feedback/Loading";
 import { TextInput } from "~/components/input/TextInput";
 import { CompaniesSchoolsDropdownMenu } from "~/components/menus/CompaniesSchoolsDropdownMenu";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { TableSearchBar } from "~/components/tables/generic/TableSearchBar";
 import { TableView as RootTableView } from "~/components/tables/generic/TableView";
-import { Loading } from "~/components/views/Loading";
 
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";

@@ -15,7 +15,7 @@ export interface ArrowProps extends Pick<ComponentProps, "className"> {
 
 export const Arrow = forwardRef(
   (
-    { className, context, variant = types.FloatingVariants.PRIMARY }: ArrowProps,
+    { className, context, variant = types.FloatingVariants.SECONDARY }: ArrowProps,
     ref: ForwardedRef<SVGSVGElement>,
   ) => (
     <FloatingArrow

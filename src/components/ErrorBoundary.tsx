@@ -1,7 +1,7 @@
 "use client";
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 
-import { ErrorView } from "./views/error/ErrorView";
+import { ErrorView } from "./views/ErrorView";
 
 interface Props {
   readonly children?: ReactNode;

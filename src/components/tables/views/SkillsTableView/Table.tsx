@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 
 import { getSkills } from "~/actions/fetches/skills";
+import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
-import { Loading } from "~/components/views/Loading";
 
 import { type Filters } from "./types";
 
