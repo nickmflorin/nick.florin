@@ -100,7 +100,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
           withArrow={false}
           content={
             <FloatingContent className="p-[20px] rounded-md overflow-y-auto" variant="white">
-              <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable />
+              <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable={false} />
             </FloatingContent>
           }
         >
