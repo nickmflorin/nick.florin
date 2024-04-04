@@ -1,6 +1,6 @@
 import { type Education, type DetailEntityType, type Experience } from "~/prisma/model";
 import { ModifyDetailsView } from "~/components/forms/details/ModifyDetailsView";
-import { ApiResponseView } from "~/components/views/ApiResponseView";
+import { ApiResponseState } from "~/components/views/ApiResponseState";
 import { useDetails } from "~/hooks";
 
 import { Drawer } from "./Drawer";
@@ -26,7 +26,7 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
 
   return (
     <Drawer>
-      <ApiResponseView error={error} isLoading={isLoading} data={data}>
+      <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {obj => {
           const title = (obj as { education: Education }).education
             ? (obj as { education: Education }).education.major
@@ -44,7 +44,7 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
             </>
           );
         }}
-      </ApiResponseView>
+      </ApiResponseState>
     </Drawer>
   );
 };

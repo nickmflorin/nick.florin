@@ -1,8 +1,11 @@
-import { Skeleton } from "@nextui-org/skeleton";
+import dynamic from "next/dynamic";
+
 import clsx from "clsx";
 import clamp from "lodash.clamp";
 
 import { type ComponentProps } from "~/components/types";
+
+const Skeleton = dynamic(() => import("@nextui-org/skeleton").then(mod => mod.Skeleton));
 
 export interface BarChartSkeletonProps extends ComponentProps {
   readonly gap?: number;

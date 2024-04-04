@@ -1,4 +1,4 @@
-import { ApiResponseView } from "~/components/views/ApiResponseView";
+import { ApiResponseState } from "~/components/views/ApiResponseState";
 import { useSkill } from "~/hooks";
 
 import { type ExtendingDrawerProps } from "..";
@@ -19,9 +19,9 @@ export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
 
   return (
     <Drawer>
-      <ApiResponseView error={error} isLoading={isLoading} data={data}>
+      <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {skill => <SkillDrawerContent skill={skill} />}
-      </ApiResponseView>
+      </ApiResponseState>
     </Drawer>
   );
 };

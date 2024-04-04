@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { isUuid } from "~/lib/typeguards";
-import { ApiResponseView } from "~/components/views/ApiResponseView";
+import { ApiResponseState } from "~/components/views/ApiResponseState";
 import { Loading } from "~/components/views/Loading";
 import { useExperience } from "~/hooks";
 
@@ -31,7 +31,7 @@ export const UpdateExperienceDrawer = ({
   });
   return (
     <Drawer className="overflow-y-auto">
-      <ApiResponseView error={error} isLoading={isLoading} data={data}>
+      <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {experience => (
           <>
             <DrawerHeader>{experience.title}</DrawerHeader>
@@ -40,7 +40,7 @@ export const UpdateExperienceDrawer = ({
             </DrawerContent>
           </>
         )}
-      </ApiResponseView>
+      </ApiResponseState>
     </Drawer>
   );
 };

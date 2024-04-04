@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { isUuid } from "~/lib/typeguards";
-import { ApiResponseView } from "~/components/views/ApiResponseView";
+import { ApiResponseState } from "~/components/views/ApiResponseState";
 import { Loading } from "~/components/views/Loading";
 import { useSkill } from "~/hooks";
 
@@ -27,7 +27,7 @@ export const UpdateSkillDrawer = ({ skillId }: UpdateSkillDrawerProps): JSX.Elem
   });
   return (
     <Drawer className="overflow-y-auto">
-      <ApiResponseView error={error} isLoading={isLoading} data={data}>
+      <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {skill => (
           <>
             <DrawerHeader>{skill.label}</DrawerHeader>
@@ -36,7 +36,7 @@ export const UpdateSkillDrawer = ({ skillId }: UpdateSkillDrawerProps): JSX.Elem
             </DrawerContent>
           </>
         )}
-      </ApiResponseView>
+      </ApiResponseState>
     </Drawer>
   );
 };

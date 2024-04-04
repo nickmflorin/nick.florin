@@ -3,8 +3,7 @@ import { type ReactNode } from "react";
 import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
-import { ErrorView } from "~/components/views/ErrorView";
-import { Loading } from "~/components/views/Loading";
+import { ApiResponseState } from "~/components/views/ApiResponseState";
 
 export interface ChartContainerProps extends ComponentProps {
   readonly isInitialLoading?: boolean;
@@ -23,13 +22,13 @@ export const ChartContainer = ({
   ...props
 }: ChartContainerProps): JSX.Element => (
   <div {...props} className={clsx("w-full relative", props.className)}>
-    {isInitialLoading ? (
-      <div className="px-[20px] py-[20px] w-full h-full">{skeleton}</div>
-    ) : (
-      <Loading isLoading={isLoading}>
-        <ErrorView error={error ?? null} />
-        {children}
-      </Loading>
-    )}
+    <ApiResponseState
+      isInitialLoading={isInitialLoading}
+      isLoading={isLoading}
+      error={error}
+      skeleton={skeleton}
+    >
+      {children}
+    </ApiResponseState>
   </div>
 );

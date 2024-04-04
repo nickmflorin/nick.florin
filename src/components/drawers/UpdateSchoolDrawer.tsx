@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { isUuid } from "~/lib/typeguards";
-import { ApiResponseView } from "~/components/views/ApiResponseView";
+import { ApiResponseState } from "~/components/views/ApiResponseState";
 import { Loading } from "~/components/views/Loading";
 import { useSchool } from "~/hooks";
 
@@ -26,7 +26,7 @@ export const UpdateSchoolDrawer = ({ schoolId }: UpdateSchoolDrawerProps): JSX.E
   });
   return (
     <Drawer className="overflow-y-auto">
-      <ApiResponseView error={error} isLoading={isLoading || isValidating} data={data}>
+      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {school => (
           <>
             <DrawerHeader>{school.name}</DrawerHeader>
@@ -35,7 +35,7 @@ export const UpdateSchoolDrawer = ({ schoolId }: UpdateSchoolDrawerProps): JSX.E
             </DrawerContent>
           </>
         )}
-      </ApiResponseView>
+      </ApiResponseState>
     </Drawer>
   );
 };

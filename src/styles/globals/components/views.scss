@@ -1,4 +1,3 @@
-@use "sass:map";
 @use "partials";
 
 $animations: (
@@ -58,73 +57,50 @@ $animations: (
   }
 }
 
-@mixin screen-view() {
-  height: 100vh;
-  width: 100vw;
-}
-
-@mixin view() {
-  @include partials.flex-c;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  overflow: hidden;
-}
-
 .view {
-  @include view();
-
-  &--screen {
-    @include screen-view();
+  &.view--overlay {
+    background: rgba(255, 255, 255, 0.75);
   }
 
-  &:not(.loading) {
-    &.view--overlay {
-      background: rgba(255, 255, 255, 0.75);
-    }
-
-    &.view--dimmed {
-      & + div {
-        opacity: 0.6;
-      }
-    }
-
-    &.view--blurred {
-      & + div {
-        filter: blur(1px);
-      }
+  &.view--dimmed {
+    & + div {
+      opacity: 0.6;
     }
   }
 
-  &.loading {
-    & + * {
-      z-index: 30;
+  &.view--blurred {
+    & + div {
+      filter: blur(1px);
     }
+  }
+}
 
-    &.is-loading {
-      &.view--dimmed.view--overlay.view--blurred {
-        @include animate-frames(("dim", "overlay", "blur"), "dim_overlay_blur");
-      }
-      &.view--dimmed:not(.view--blurred, .view--overlay) {
-        @include animate-frames(("dim"), "dim_only");
-      }
-      &.view--overlay:not(.view--blurred, .view--dimmed) {
-        @include animate-frames(("overlay"), "overlay_only");
-      }
-      &.view--blurred:not(.view--dimmed, .view--overlay) {
-        @include animate-frames(("blur"), "blur_only");
-      }
-      &.view--dimmed.view--overlay:not(.view--blurred) {
-        @include animate-frames(("dim", "overlay"), "dim_overlay");
-      }
-      &.view--dimmed.view--blurred:not(.view--overlay) {
-        @include animate-frames(("dim", "blur"), "dim_blur");
-      }
-      &.view--overlay.view--blurred:not(.view--dimmed) {
-        @include animate-frames(("blur", "overlay"), "blur_overlay");
-      }
+.loading {
+  & + * {
+    z-index: 30;
+  }
+
+  &.is-loading {
+    &.view--dimmed.view--overlay.view--blurred {
+      @include animate-frames(("dim", "overlay", "blur"), "dim_overlay_blur");
+    }
+    &.view--dimmed:not(.view--blurred, .view--overlay) {
+      @include animate-frames(("dim"), "dim_only");
+    }
+    &.view--overlay:not(.view--blurred, .view--dimmed) {
+      @include animate-frames(("overlay"), "overlay_only");
+    }
+    &.view--blurred:not(.view--dimmed, .view--overlay) {
+      @include animate-frames(("blur"), "blur_only");
+    }
+    &.view--dimmed.view--overlay:not(.view--blurred) {
+      @include animate-frames(("dim", "overlay"), "dim_overlay");
+    }
+    &.view--dimmed.view--blurred:not(.view--overlay) {
+      @include animate-frames(("dim", "blur"), "dim_blur");
+    }
+    &.view--overlay.view--blurred:not(.view--dimmed) {
+      @include animate-frames(("blur", "overlay"), "blur_overlay");
     }
   }
 }

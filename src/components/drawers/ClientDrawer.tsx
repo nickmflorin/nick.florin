@@ -24,6 +24,7 @@ export const ClientDrawer = <D extends DrawerId>({
     if (isOpen) {
       open(id, props, onClose);
     }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [id, props, open, isOpen]);
 
   return <></>;

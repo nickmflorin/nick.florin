@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { isUuid } from "~/lib/typeguards";
-import { ApiResponseView } from "~/components/views/ApiResponseView";
+import { ApiResponseState } from "~/components/views/ApiResponseState";
 import { Loading } from "~/components/views/Loading";
 import { useCompany } from "~/hooks";
 
@@ -29,7 +29,7 @@ export const UpdateCompanyDrawer = ({ companyId }: UpdateCompanyDrawerProps): JS
   );
   return (
     <Drawer className="overflow-y-auto">
-      <ApiResponseView error={error} isLoading={isLoading || isValidating} data={data}>
+      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {company => (
           <>
             <DrawerHeader>{company.name}</DrawerHeader>
@@ -38,7 +38,7 @@ export const UpdateCompanyDrawer = ({ companyId }: UpdateCompanyDrawerProps): JS
             </DrawerContent>
           </>
         )}
-      </ApiResponseView>
+      </ApiResponseState>
     </Drawer>
   );
 };
