@@ -3,8 +3,9 @@ import dynamic from "next/dynamic";
 import { Loading } from "~/components/feedback/Loading";
 
 import { Drawer } from "./Drawer";
-
-import { type ExtendingDrawerProps } from ".";
+import { DrawerContent } from "./DrawerContent";
+import { DrawerHeader } from "./DrawerHeader";
+import { type ExtendingDrawerProps } from "./provider";
 
 const CreateSkillForm = dynamic(() => import("~/components/forms/skills/CreateSkillForm"), {
   loading: () => <Loading isLoading={true} />,
@@ -14,7 +15,14 @@ interface CreateSkillDrawerProps extends ExtendingDrawerProps {}
 
 export const CreateSkillDrawer = ({ onClose }: CreateSkillDrawerProps): JSX.Element => (
   <Drawer>
-    <CreateSkillForm className="mt-[16px]" onCancel={() => onClose()} onSuccess={() => onClose()} />
+    <DrawerHeader>Create a School</DrawerHeader>
+    <DrawerContent>
+      <CreateSkillForm
+        className="mt-[16px]"
+        onCancel={() => onClose()}
+        onSuccess={() => onClose()}
+      />
+    </DrawerContent>
   </Drawer>
 );
 
