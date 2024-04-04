@@ -1,4 +1,6 @@
-import { type IconProp } from "~/components/icons";
+import { isValidElement } from "react";
+
+import { isIconProp, type IconProp } from "~/components/icons";
 
 export type Action = IconProp | JSX.Element | null | undefined;
 
@@ -7,6 +9,9 @@ export type ActionsBySide =
   | { left: Action[]; right?: Action[] };
 
 export type ActionsType = Action[] | ActionsBySide;
+
+export const isAction = (action: unknown): action is Action =>
+  isIconProp(action) || action === null || action === undefined || isValidElement(action);
 
 export const isActionsBySide = <A extends ActionsType>(actions: A): actions is A & ActionsBySide =>
   !Array.isArray(actions);

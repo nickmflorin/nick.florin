@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import clamp from "lodash.clamp";
 import uniq from "lodash.uniq";
 
-import { decodeQueryParam, encodeQueryParam } from "~/lib/urls";
+import { decodeQueryParam } from "~/lib/urls";
 
 export type Visibility = "public" | "admin";
 
@@ -43,14 +43,6 @@ export const parsePagination = async <F>({
     return { page: clamp(pg, 1, numPages), numPages, count, filters, pageSize };
   }
   return null;
-};
-
-export const encodeInclusionQuery = <I extends string[]>(includes: I): string => {
-  const positives = Object.keys(includes).reduce(
-    (prev: string[], curr: string) => (includes[curr as keyof I] === true ? [...prev, curr] : prev),
-    [],
-  );
-  return encodeQueryParam(positives);
 };
 
 export const decodeInclusionQuery = <F extends readonly string[]>(

@@ -7,6 +7,7 @@ import pick from "lodash.pick";
 
 import { generateChartColors } from "~/lib/charts";
 import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
+import { Loading } from "~/components/feedback/Loading";
 import { Floating } from "~/components/floating/Floating";
 import { FloatingContent } from "~/components/floating/FloatingContent";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
@@ -16,7 +17,6 @@ import {
   type SkillsChartFilterFormValues,
 } from "~/components/forms/skills/SkillsChartFilterForm";
 import { type ComponentProps } from "~/components/types";
-import { Loading } from "~/components/views/Loading";
 import { useSkills } from "~/hooks";
 
 import { BarChartSkeleton } from "../BarChartSkeleton";

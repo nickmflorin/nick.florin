@@ -4,6 +4,8 @@ import clsx from "clsx";
 
 import { Spinner } from "~/components/icons/Spinner";
 import { Checkbox } from "~/components/input/Checkbox";
+import { type Action } from "~/components/structural";
+import { Actions } from "~/components/structural/Actions";
 import { type ComponentProps, type Size, type HTMLElementProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -20,10 +22,12 @@ export interface MenuItemProps extends ComponentProps, HTMLElementProps<"div"> {
   readonly isLoading?: boolean;
   readonly isLocked?: boolean;
   readonly isVisible?: boolean;
+  readonly actions?: Action[];
 }
 
 export const MenuItem = ({
   itemHeight,
+  actions,
   isSelected = false,
   isMulti = false,
   selectedClassName,
@@ -62,6 +66,7 @@ export const MenuItem = ({
       )}
       <div className="menu__item__content">{children}</div>
       <Spinner isLoading={isLoading} size="18px" dimension="height" />
+      <Actions actions={actions} />
     </div>
   </ShowHide>
 );

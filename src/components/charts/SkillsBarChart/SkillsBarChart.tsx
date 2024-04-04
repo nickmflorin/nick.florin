@@ -7,8 +7,8 @@ import type * as types from "../types";
 
 import { generateChartColors } from "~/lib/charts";
 import { useDrawers } from "~/components/drawers/hooks";
+import { Loading } from "~/components/feedback/Loading";
 import { TooltipContent } from "~/components/floating/TooltipContent";
-import { Loading } from "~/components/views/Loading";
 
 import { type SkillsBarChartDatum } from "./types";
 

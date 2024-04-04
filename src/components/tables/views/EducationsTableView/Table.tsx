@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 
 import { getEducations } from "~/actions/fetches/educations";
+import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
-import { Loading } from "~/components/views/Loading";
 
 import { type Filters } from "./types";
 

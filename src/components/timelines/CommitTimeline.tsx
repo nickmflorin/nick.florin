@@ -2,8 +2,8 @@ import dynamic from "next/dynamic";
 
 import clsx from "clsx";
 
+import { Loading } from "~/components/feedback/Loading";
 import { type ComponentProps } from "~/components/types";
-import { Loading } from "~/components/views/Loading";
 
 import { type TimelineProps } from "./generic";
 

@@ -1,8 +1,7 @@
 import React, { type ReactNode } from "react";
 
 import { ShowHide } from "~/components/util";
-
-import { LoadingView, type LoadingViewProps } from "./LoadingView";
+import { LoadingView, type LoadingViewProps } from "~/components/views/LoadingView";
 
 export interface LoadingProps extends LoadingViewProps {
   readonly children?: ReactNode;

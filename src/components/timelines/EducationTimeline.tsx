@@ -2,10 +2,10 @@ import dynamic from "next/dynamic";
 
 import { removeRedundantTopLevelSkills } from "~/prisma/model";
 import { getEducations } from "~/actions/fetches/educations";
+import { Loading } from "~/components/feedback/Loading";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { EducationTile } from "~/components/tiles/EducationTile";
 import { type ComponentProps } from "~/components/types";
-import { Loading } from "~/components/views/Loading";
 
 import { CommitTimeline } from "./CommitTimeline";
 

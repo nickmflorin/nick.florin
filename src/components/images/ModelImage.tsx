@@ -4,10 +4,10 @@ import React from "react";
 import clsx from "clsx";
 import { type Optional } from "utility-types";
 
+import { Loading } from "~/components/feedback/Loading";
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps, type BorderRadius, BorderRadii } from "~/components/types";
-import { Loading } from "~/components/views/Loading";
 
 import { type ImageProp } from "./types";
 

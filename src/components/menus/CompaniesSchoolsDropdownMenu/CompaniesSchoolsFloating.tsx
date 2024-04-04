@@ -4,11 +4,11 @@ import { useState } from "react";
 
 import { Button } from "~/components/buttons";
 import { DrawerIds } from "~/components/drawers";
+import { Loading } from "~/components/feedback/Loading";
 import { Floating } from "~/components/floating/Floating";
 import { FloatingContent } from "~/components/floating/FloatingContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { ShowHide } from "~/components/util";
-import { Loading } from "~/components/views/Loading";
 
 import { MenuContainer } from "../generic/MenuContainer";
 

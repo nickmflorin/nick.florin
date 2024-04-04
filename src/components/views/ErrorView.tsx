@@ -1,8 +1,8 @@
 import { type ComponentProps } from "~/components/types";
 
-import { AbstractView, type AbstractViewProps } from "../AbstractView";
+import { ErrorDetail, type ErrorDetailProps } from "../feedback/errors/ErrorDetail";
 
-import { ErrorDetail, type ErrorDetailProps } from "./ErrorDetail";
+import { AbstractView, type AbstractViewProps } from "./AbstractView";
 
 export type ErrorViewProps = Pick<
   AbstractViewProps,

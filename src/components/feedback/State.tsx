@@ -1,7 +1,8 @@
 import { type ReactNode } from "react";
 
-import { Error, type ErrorType } from "./error";
+import { Error } from "./errors";
 import { Loading, type LoadingProps } from "./Loading";
+import { type ErrorType } from "./types";
 
 export interface StateProps {
   readonly isLoading?: boolean;

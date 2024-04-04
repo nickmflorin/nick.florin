@@ -2,15 +2,16 @@ import "server-only";
 import { cache } from "react";
 
 import { prisma } from "~/prisma/client";
-import { type School } from "~/prisma/model";
+import { type SchoolIncludes, type ApiSchool, fieldIsIncluded } from "~/prisma/model";
 
-export const preloadSchools = () => {
-  void getSchools();
+export const preloadSchools = <I extends SchoolIncludes>({ includes }: { includes: I }) => {
+  void getSchools({ includes });
 };
 
 export const getSchools = cache(
-  async (): Promise<School[]> =>
-    await prisma.school.findMany({
-      orderBy: { updatedAt: "desc" },
-    }),
+  async <I extends SchoolIncludes>({ includes }: { includes: I }): Promise<ApiSchool<I>[]> =>
+    (await prisma.school.findMany({
+      include: { educations: fieldIsIncluded("educations", includes) },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    })) as ApiSchool<I>[],
 );

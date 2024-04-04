@@ -1,6 +1,6 @@
 import { type Education, type DetailEntityType, type Experience } from "~/prisma/model";
+import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { ModifyDetailsView } from "~/components/forms/details/ModifyDetailsView";
-import { ApiResponseState } from "~/components/views/ApiResponseState";
 import { useDetails } from "~/hooks";
 
 import { Drawer } from "./Drawer";

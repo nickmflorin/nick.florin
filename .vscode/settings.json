@@ -26,8 +26,8 @@
     "arrow-body-style",
     "multiline-comment-style",
     "prefer-const",
-    "react/jsx-curly-brace-presence",
-    "@typescript-eslint/consistent-type-imports"
+    "react/jsx-curly-brace-presence"
+    // "@typescript-eslint/consistent-type-imports"
     // "@typescript-eslint/semi",
     // "@typescript-eslint/indent",
     // "@typescript-eslint/consistent-type-imports",

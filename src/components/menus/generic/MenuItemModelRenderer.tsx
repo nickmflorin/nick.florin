@@ -66,9 +66,12 @@ export const MenuItemModelRenderer = forwardRef(
 
     const query = useMemo(() => types.getModelQuery(model, options), [model, options]);
 
+    const actions = useMemo(() => types.getModelActions(model, options), [model, options]);
+
     const Item = (
       <MenuItem
         id={id}
+        actions={actions}
         isMulti={options.isMulti}
         className={typeof itemClassName === "function" ? itemClassName(model) : itemClassName}
         disabledClassName={

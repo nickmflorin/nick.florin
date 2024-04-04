@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { Loading } from "~/components/views/Loading";
+import { Loading } from "~/components/feedback/Loading";
 
 const SkillsBarChart = dynamic(() => import("~/components/charts/SkillsBarChart"), {
   loading: () => <Loading isLoading={true} />,

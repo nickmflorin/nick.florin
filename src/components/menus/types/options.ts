@@ -2,6 +2,8 @@ import { type ReactNode } from "react";
 
 import { type z } from "zod";
 
+import { type Action } from "~/components/structural";
+
 import { type MenuModel, type MenuModelParamsSchema } from "./model";
 
 export type MenuOptions<I extends MenuModel> = Partial<{
@@ -13,6 +15,7 @@ export type MenuOptions<I extends MenuModel> = Partial<{
   readonly getItemValueLabel: (m: I) => ReactNode;
   readonly getItemId: (m: I) => string | number;
   readonly getItemHref: (m: I) => string;
+  readonly getItemActions: (m: I) => Action[];
   readonly getItemQuery: (m: I) => z.infer<typeof MenuModelParamsSchema>["query"];
 }>;
 

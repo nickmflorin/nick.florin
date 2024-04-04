@@ -1,6 +1,6 @@
 import { ShowHide } from "~/components/util";
 
-import { ErrorView, type ErrorViewProps } from "./ErrorView";
+import { ErrorView, type ErrorViewProps } from "../../views/ErrorView";
 
 export interface ErrorProps extends ErrorViewProps {
   readonly isError?: boolean;

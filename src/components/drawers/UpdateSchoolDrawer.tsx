@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 
 import { isUuid } from "~/lib/typeguards";
-import { ApiResponseState } from "~/components/views/ApiResponseState";
-import { Loading } from "~/components/views/Loading";
+import { ApiResponseState } from "~/components/feedback/ApiResponseState";
+import { Loading } from "~/components/feedback/Loading";
 import { useSchool } from "~/hooks";
 
 import { Drawer } from "./Drawer";

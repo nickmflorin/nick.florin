@@ -14,6 +14,7 @@ import clsx from "clsx";
 
 import type * as types from "../types";
 
+import { Loading } from "~/components/feedback/Loading";
 import { Floating, type FloatingProps } from "~/components/floating/Floating";
 import { FloatingContent } from "~/components/floating/FloatingContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
@@ -34,7 +35,6 @@ import {
 import { useMenuValue } from "~/components/menus/hooks";
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
-import { Loading } from "~/components/views/Loading";
 
 import { Input, type InputProps } from "../../generic";
 

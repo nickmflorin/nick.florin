@@ -29,20 +29,23 @@ $drawer-width: 400px;
     width: 100%;
     min-width: 100%;
     max-width: 100%;
-    gap: 10px;
 
-    .drawer__content {
-      padding: 24px 6px 24px 24px;
+    .form {
+      height: 100%;
+    }
+
+    > .drawer__header {
+      padding: 24px 6px 0px 24px;
+    }
+
+    > .drawer__content {
+      padding: 16px 6px 24px 24px;
       overflow-y: auto;
       flex-grow: 100;
       max-height: 100%;
       position: relative;
       display: flex;
       flex-direction: column;
-
-      > .form {
-        height: 100%;
-      }
     }
   }
 }
