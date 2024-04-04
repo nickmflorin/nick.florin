@@ -17,7 +17,7 @@ export const conditionallyInclude = <T, F extends (keyof T & string)[], I extend
   const modified = { ...obj };
   for (const field of fields) {
     const f = field as F[number];
-    if (includes.includes(f)) {
+    if (!includes.includes(f)) {
       delete modified[f];
     }
   }

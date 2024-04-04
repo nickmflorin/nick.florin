@@ -27,7 +27,7 @@ export const TableView = ({
     >
       <ControlContainer control="searchBar">{searchBar}</ControlContainer>
       <ControlContainer control="controlBar">{controlBar}</ControlContainer>
-      <div className="flex flex-grow flex-col" style={{ height: h, maxHeight: h }}>
+      <div className="flex flex-grow flex-col relative" style={{ height: h, maxHeight: h }}>
         {children}
       </div>
       <ControlContainer control="paginator">{paginator}</ControlContainer>
