@@ -2,21 +2,35 @@
 import uniq from "lodash.uniq";
 
 import { UnreachableCaseError } from "~/application/errors";
-import { type Experience, type Education, type Project, type Transaction } from "~/prisma/model";
+import {
+  type Experience,
+  type Education,
+  type Project,
+  type Transaction,
+  type Detail,
+  type Skill,
+  type NestedDetail,
+} from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 
-type DynamicModel = "experience" | "education" | "project";
+type DynamicModel = "experience" | "education" | "project" | "detail" | "skill" | "nestedDetail";
 
 const FieldErrorKeys = {
   experience: "experiences",
   education: "educations",
   project: "projects",
+  detail: "details",
+  skill: "skills",
+  nestedDetail: "nestedDetails",
 } as const satisfies { [key in DynamicModel]: `${key}s` };
 
 export type QueryDynamicallyRT<T extends DynamicModel> = {
   experience: Experience[];
   education: Education[];
   project: Project[];
+  skill: Skill[];
+  detail: Detail[];
+  nestedDetail: NestedDetail[];
 }[T];
 
 export const queryIdsDynamically = async <T extends DynamicModel>(
@@ -33,6 +47,14 @@ export const queryIdsDynamically = async <T extends DynamicModel>(
       return (await tx.education.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
     case "project":
       return (await tx.project.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
+    case "detail":
+      return (await tx.detail.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
+    case "nestedDetail":
+      return (await tx.nestedDetail.findMany({
+        where: { id: { in: ids } },
+      })) as QueryDynamicallyRT<T>;
+    case "skill":
+      return (await tx.skill.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
     default:
       throw new UnreachableCaseError();
   }

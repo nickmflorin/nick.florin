@@ -64,6 +64,30 @@ export const EducationSchema = z.object({
   visible: z.boolean().optional(),
 });
 
+const DetailInputSchema = z.object({
+  id: z.string().uuid(),
+  type: z.union([z.literal("detail"), z.literal("nestedDetail")]),
+});
+
+export const ProjectSchema = z.object({
+  name: NonNullableMinLengthStringField({
+    min: 3,
+    minErrorMessage: "The name must be at least 3 characters.",
+    requiredErrorMessage: "The name is required.",
+  }),
+  shortName: NullableMinLengthStringField({
+    min: 2,
+    minErrorMessage: "The short name should be at least 3 characters.",
+  }).optional(),
+  slug: NullableMinLengthStringField({
+    minErrorMessage: "The slug must be at least 3 characters.",
+  }).optional(),
+  startDate: z.date(),
+  // These two still need to be incorporated.
+  skills: z.array(z.string().uuid()).optional(),
+  details: z.array(DetailInputSchema).optional(),
+});
+
 export const DetailSchema = z.object({
   label: NonNullableMinLengthStringField({
     min: 3,

@@ -173,9 +173,7 @@ export const getSkills = cache(
     const pagination = await parsePagination({
       pageSize: SKILLS_ADMIN_TABLE_PAGE_SIZE,
       page,
-      filters,
-      visibility,
-      getCount: getSkillsCount,
+      getCount: async () => await getSkillsCount({ filters, visibility }),
     });
 
     const skills = await prisma.skill.findMany({

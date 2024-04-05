@@ -86,11 +86,9 @@ export const getEducations = cache(
 
     const pagination = await parsePagination({
       page,
-      filters,
-      visibility,
       // TODO: This will eventually have to be dynamic, specified as a query parameter.
       pageSize: EDUCATIONS_ADMIN_TABLE_PAGE_SIZE,
-      getCount: getEducationsCount,
+      getCount: async () => await getEducationsCount({ filters, visibility }),
     });
 
     const edus = await prisma.education.findMany({
