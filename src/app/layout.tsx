@@ -5,6 +5,7 @@ import Script from "next/script";
 import { type ReactNode } from "react";
 
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { AppConfig } from "~/app/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
@@ -117,6 +118,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </ShowHide>
         </AppConfig>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
