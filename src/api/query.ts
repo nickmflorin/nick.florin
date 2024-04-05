@@ -13,34 +13,29 @@ export const parseVisibility = (request: NextRequest): Visibility => {
   return v?.toLowerCase() === "admin" ? "admin" : "public";
 };
 
-export type PaginationParams<F> = {
+type PaginationParams = {
   readonly page?: number;
-  readonly filters?: F;
   readonly pageSize?: number;
-  readonly visibility: Visibility;
-  readonly getCount: (params: { filters?: F; visibility?: Visibility }) => Promise<number>;
+  readonly getCount: () => Promise<number>;
 };
 
-export type Pagination<F> = {
+export type Pagination = {
   readonly page: number;
-  readonly filters?: F;
   readonly count: number;
   readonly numPages: number;
   readonly pageSize: number;
 };
 
-export const parsePagination = async <F>({
-  filters,
+export const parsePagination = async ({
   page,
   pageSize = 10,
-  visibility,
   getCount,
-}: PaginationParams<F>): Promise<Pagination<F> | null> => {
+}: PaginationParams): Promise<Pagination | null> => {
   const pg = page ? Math.max(page, 1) : undefined;
   if (pg) {
-    const count = await getCount({ filters, visibility });
+    const count = await getCount();
     const numPages = Math.max(Math.ceil(count / pageSize), 1);
-    return { page: clamp(pg, 1, numPages), numPages, count, filters, pageSize };
+    return { page: clamp(pg, 1, numPages), numPages, count, pageSize };
   }
   return null;
 };

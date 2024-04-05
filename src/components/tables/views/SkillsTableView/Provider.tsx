@@ -5,6 +5,7 @@ import { type ApiSkill } from "~/prisma/model";
 import { deleteSkill, updateSkill } from "~/actions/mutations/skills";
 import { useDrawers } from "~/components/drawers/hooks";
 import type * as cells from "~/components/tables/generic/cells";
+import { type SlugCellComponent } from "~/components/tables/generic/cells/SlugCell";
 import {
   TableViewProvider as RootTableViewProvider,
   type TableViewConfig as RootTableViewConfig,
@@ -18,7 +19,10 @@ const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
-const SlugCell = dynamic(() => import("./cells/SlugCell"));
+const SlugCell = dynamic(
+  () => import("~/components/tables/generic/cells/SlugCell"),
+) as SlugCellComponent;
+
 const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"));
 const EducationsCell = dynamic(() => import("./cells/EducationsCell"));
 const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"));
@@ -54,7 +58,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               field="label"
               model={model}
               table={table}
-              errorMessage="There was an error updating the experience."
+              errorMessage="There was an error updating the skill."
               action={updateSkill.bind(null, model.id)}
             />
           ),
@@ -63,7 +67,15 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           accessor: "slug",
           title: "Slug",
           width: 320,
-          render: ({ model, table }) => <SlugCell skill={model} table={table} />,
+          render: ({ model, table }) => (
+            <SlugCell<ApiSkill<["experiences", "educations", "projects"]>>
+              model={model}
+              modelType="skill"
+              table={table}
+              getSluggifiedFieldValue={m => m.label}
+              action={async (id, value) => await updateSkill(id, { slug: value })}
+            />
+          ),
         },
         {
           accessor: "experiences",

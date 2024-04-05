@@ -85,11 +85,9 @@ export const getExperiences = cache(
 
     const pagination = await parsePagination({
       page,
-      filters,
-      visibility,
       // TODO: This will eventually have to be dynamic, specified as a query parameter.
       pageSize: EXPERIENCES_ADMIN_TABLE_PAGE_SIZE,
-      getCount: getExperiencesCount,
+      getCount: async () => await getExperiencesCount({ filters, visibility }),
     });
 
     const exps = await prisma.experience.findMany({

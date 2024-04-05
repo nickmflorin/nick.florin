@@ -215,6 +215,7 @@ model ProjectOnSkills {
   @@id([skillId, projectId])
 }
 
+// TODO: Add a description field via rich text editor input and show description on project page.
 model Project {
   id            String            @id @default(uuid()) @db.Uuid
   name          String            @unique
@@ -226,11 +227,8 @@ model Project {
   updatedAt     DateTime          @updatedAt
   updatedBy     User              @relation("updatedProjects", fields: [updatedById], references: [id])
   updatedById   String            @db.Uuid
-  visible       Boolean           @default(true)
   // The start date is used to determine the experience of a given skill in the project.
   startDate     DateTime
-  // TODO: Figure out how to allow this field to contain HTML from a Rich Text editor (long term).
-  description   String?
   skills        ProjectOnSkills[] @relation("skills")
   details       Detail[]          @relation("details")
   nestedDetails NestedDetail[]    @relation("nestedDetails")

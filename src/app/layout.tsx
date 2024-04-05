@@ -108,6 +108,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   construction. If you encounter any issues, I will be fixing them as quickly as
                   possible.
                 </Text>
+                <Text size="sm" className="text-gray-400">
+                  This website is not mobile-friendly - at least not yet. Viewing on a mobile device
+                  will be difficult.
+                </Text>
               </div>
             </Toast>
           </ShowHide>

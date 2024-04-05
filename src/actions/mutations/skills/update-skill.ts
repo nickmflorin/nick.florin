@@ -179,6 +179,24 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
 
     const fieldErrors = new ApiClientFieldErrors();
 
+    if (
+      data.label &&
+      (await prisma.skill.count({ where: { label: data.label, id: { notIn: [skill.id] } } }))
+    ) {
+      fieldErrors.addUnique("label", "The label must be unique.");
+      /* If the slug is not explicitly provided and the label does not violate the unique
+         constraint, but the slugified form of the label does, this should be a more specific error
+         message. */
+    } else if (!_slug && (await prisma.skill.count({ where: { slug } }))) {
+      fieldErrors.addUnique(
+        "label",
+        "The auto-generated slug for the label is not unique. Please provide a unique slug.",
+      );
+    }
+    if (_slug && (await prisma.skill.count({ where: { slug: _slug } }))) {
+      fieldErrors.addUnique("slug", "The slug must be unique.");
+    }
+
     const currentLabel = data.label !== undefined ? data.label : skill.label;
     const updateData = {
       ...data,
