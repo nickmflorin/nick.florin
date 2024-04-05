@@ -170,20 +170,51 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
       return ApiClientFieldErrors.fromZodError(parsed.error, UpdateSkillSchema).json;
     }
     const {
-      slug,
+      slug: _slug,
       projects: _projects,
       experiences: _experiences,
       educations: _educations,
+      label: _label,
       ...data
     } = parsed.data;
 
     const fieldErrors = new ApiClientFieldErrors();
 
-    const currentLabel = data.label !== undefined ? data.label : skill.label;
-    const updateData = {
-      ...data,
-      slug: slug !== undefined && slug !== null ? slug : slugify(currentLabel),
-    };
+    const label = _label !== undefined ? _label : skill.label;
+
+    if (_label !== undefined && _label.trim() !== skill.label.trim()) {
+      if (await prisma.skill.count({ where: { label: _label, id: { notIn: [skill.id] } } })) {
+        fieldErrors.addUnique("label", "The label must be unique.");
+        /* If the slug is being cleared, we have to make sure that the slugified version of the new
+           label is still unique. */
+      } else if (
+        _slug === null &&
+        (await prisma.skill.count({
+          where: { slug: slugify(_label), id: { notIn: [skill.id] } },
+        }))
+      ) {
+        // Here, the slug should be provided explicitly, rather than cleared.
+        fieldErrors.addUnique("label", "The label does not generate a unique slug.");
+      }
+    } else if (
+      _slug === null &&
+      (await prisma.skill.count({
+        where: { slug: slugify(label), id: { notIn: [skill.id] } },
+      }))
+    ) {
+      /* Here, the slug should be provided explicitly, rather than cleared.  The error is shown in
+         regard to the slug, not the label, because the slug is what is being cleared whereas the
+         label remains unchanged. */
+      fieldErrors.addUnique(
+        "slug",
+        "The label generates a non-unique slug, so the slug must be provided.",
+      );
+    } else if (
+      _slug !== null &&
+      (await prisma.skill.count({ where: { slug: _slug, id: { notIn: [skill.id] } } }))
+    ) {
+      fieldErrors.addUnique("slug", "The slug must be unique.");
+    }
 
     const [experiences] = await queryM2MsDynamically(tx, {
       model: "experience",
@@ -205,11 +236,18 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
       return fieldErrors.json;
     }
 
-    if (!objIsEmpty(updateData)) {
+    const update = {
+      ...data,
+      slug: _slug === undefined ? undefined : _slug === null ? slugify(label) : _slug.trim(),
+      label:
+        _label === undefined || _label.trim() === skill.label.trim() ? undefined : _label.trim(),
+    };
+
+    if (!objIsEmpty(update)) {
       skill = await tx.skill.update({
         where: { id },
         data: {
-          ...updateData,
+          ...update,
           updatedById: user.id,
         },
       });
