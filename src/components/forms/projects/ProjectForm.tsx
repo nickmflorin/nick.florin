@@ -32,7 +32,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
       name="slug"
       label="Slug"
       form={props.form}
-      helpText="If not provided, will be auto generated based on the label."
+      helpText="If not provided, will be auto generated based on the name."
     >
       <TextInput className="w-full" {...props.form.register("slug")} />
     </Form.Field>

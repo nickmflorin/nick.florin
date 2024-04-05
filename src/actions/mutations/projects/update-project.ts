@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
+import { logger } from "~/application/logger";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
@@ -29,10 +30,39 @@ const syncDetails = async (
   { project, details, user }: { project: Project; user: User; details?: Detail[] },
 ) => {
   if (details) {
-    await tx.detail.updateMany({
-      where: { id: { in: details.map(d => d.id) } },
-      data: { projectId: project.id, updatedById: user.id },
-    });
+    const existingDetails = await tx.detail.findMany({ where: { projectId: project.id } });
+
+    const toRemove = existingDetails.filter(r => !details.some(d => d.id === r.id));
+    const toAdd = details.filter(d => !existingDetails.some(ed => ed.id === d.id));
+
+    if (toRemove.length !== 0) {
+      logger.info(
+        `Disassociating ${toRemove.length} details from project ${project.id} (name = ${project.name}).`,
+        {
+          removing: toRemove.map(d => `${d.id} (name = '${d.label}')`),
+          project: project.id,
+          projectName: project.name,
+        },
+      );
+      await tx.detail.updateMany({
+        where: { id: { in: toRemove.map(d => d.id) } },
+        data: { projectId: null, updatedById: user.id },
+      });
+    }
+    if (toAdd.length !== 0) {
+      logger.info(
+        `Associating ${toAdd.length} details with project ${project.id} (name = ${project.name}).`,
+        {
+          adding: toAdd.map(a => `${a.id} (label = '${a.label}')`),
+          project: project.id,
+          projectName: project.name,
+        },
+      );
+      await tx.detail.updateMany({
+        where: { id: { in: toAdd.map(d => d.id) } },
+        data: { projectId: project.id, updatedById: user.id },
+      });
+    }
   }
 };
 
@@ -47,10 +77,41 @@ const syncNestedDetails = async (
   }: { project: Project; user: User; nestedDetails?: NestedDetail[] },
 ) => {
   if (nestedDetails) {
-    await tx.nestedDetail.updateMany({
-      where: { id: { in: nestedDetails.map(d => d.id) } },
-      data: { projectId: project.id, updatedById: user.id },
-    });
+    const existingDetails = await tx.nestedDetail.findMany({ where: { projectId: project.id } });
+
+    const toRemove = existingDetails.filter(r => !nestedDetails.some(d => d.id === r.id));
+    const toAdd = nestedDetails.filter(d => !existingDetails.some(ed => ed.id === d.id));
+
+    if (toRemove.length !== 0) {
+      logger.info(
+        `Disassociating ${toRemove.length} nested details from project ${project.id} ` +
+          `(name = ${project.name}).`,
+        {
+          removing: toRemove.map(d => `${d.id} (name = '${d.label}')`),
+          project: project.id,
+          projectName: project.name,
+        },
+      );
+      await tx.nestedDetail.updateMany({
+        where: { id: { in: toRemove.map(d => d.id) } },
+        data: { projectId: null, updatedById: user.id },
+      });
+    }
+    if (toAdd.length !== 0) {
+      logger.info(
+        `Associating ${toAdd.length} nested details with project ${project.id} ` +
+          `(name = ${project.name}).`,
+        {
+          adding: toAdd.map(a => `${a.id} (label = '${a.label}')`),
+          project: project.id,
+          projectName: project.name,
+        },
+      );
+      await tx.detail.updateMany({
+        where: { id: { in: toAdd.map(d => d.id) } },
+        data: { projectId: project.id, updatedById: user.id },
+      });
+    }
   }
 };
 
@@ -201,9 +262,11 @@ export const updateProject = async (
       });
     }
 
-    await syncDetails(tx, { project, details, user });
-    await syncNestedDetails(tx, { project, nestedDetails, user });
-    await syncSkills(tx, { project, skills, user });
+    /* TODO: Uncomment these when we build in details, nested details and skills into the Project's
+       form.
+       await syncDetails(tx, { project, details, user });
+       await syncNestedDetails(tx, { project, nestedDetails, user });
+       await syncSkills(tx, { project, skills, user }); */
 
     revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");
