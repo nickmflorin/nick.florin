@@ -36,11 +36,7 @@ export const CreateProjectForm = ({
     defaultValues: {
       name: "",
       shortName: "",
-      description: "",
-      websiteUrl: "",
-      logoImageUrl: "",
-      city: "",
-      state: "",
+      slug: "",
     },
   });
 
@@ -56,7 +52,7 @@ export const CreateProjectForm = ({
           form.handleApiError(response);
         } else {
           form.reset();
-          toast.success("Project successfully created.");
+          toast.success("The project was successfully created.");
           onSuccess?.(response);
           transition(() => {
             refresh();

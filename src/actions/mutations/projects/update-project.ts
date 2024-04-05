@@ -124,15 +124,44 @@ export const updateProject = async (
       return ApiClientFieldErrors.fromZodError(parsed.error, UpdateProjectSchema).json;
     }
 
-    const { slug, skills: _skills, details: _details, ...data } = parsed.data;
-
     const fieldErrors = new ApiClientFieldErrors();
+    const { slug: _slug, skills: _skills, details: _details, name: _name, ...data } = parsed.data;
 
-    const currentName = data.name !== undefined ? data.name : project.name;
-    const updateData = {
-      ...data,
-      slug: slug !== undefined && slug !== null ? slug : slugify(currentName),
-    };
+    const name = _name !== undefined ? _name : project.name;
+
+    if (_name !== undefined && _name.trim() !== project.name.trim()) {
+      if (await prisma.project.count({ where: { name: _name, id: { notIn: [project.id] } } })) {
+        fieldErrors.addUnique("name", "The name must be unique.");
+        /* If the slug is being cleared, we have to make sure that the slugified version of the new
+           name is still unique. */
+      } else if (
+        _slug === null &&
+        (await prisma.project.count({
+          where: { slug: slugify(_name), id: { notIn: [project.id] } },
+        }))
+      ) {
+        // Here, the slug should be provided explicitly, rather than cleared.
+        fieldErrors.addUnique("name", "The name does not generate a unique slug.");
+      }
+    } else if (
+      _slug === null &&
+      (await prisma.project.count({
+        where: { slug: slugify(name), id: { notIn: [project.id] } },
+      }))
+    ) {
+      /* Here, the slug should be provided explicitly, rather than cleared.  The error is shown in
+         regard to the slug, not the name, because the slug is what is being cleared whereas the
+         name remains unchanged. */
+      fieldErrors.addUnique(
+        "slug",
+        "The name generates a non-unique slug, so the slug must be provided.",
+      );
+    } else if (
+      _slug !== null &&
+      (await prisma.project.count({ where: { slug: _slug, id: { notIn: [project.id] } } }))
+    ) {
+      fieldErrors.addUnique("slug", "The slug must be unique.");
+    }
 
     const [details] = await queryM2MsDynamically(tx, {
       model: "detail",
@@ -156,11 +185,17 @@ export const updateProject = async (
       return fieldErrors.json;
     }
 
-    if (!objIsEmpty(updateData)) {
+    const update = {
+      ...data,
+      slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
+      name: _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
+    };
+
+    if (!objIsEmpty(update)) {
       project = await tx.project.update({
         where: { id },
         data: {
-          ...updateData,
+          ...update,
           updatedById: user.id,
         },
       });
@@ -170,9 +205,9 @@ export const updateProject = async (
     await syncNestedDetails(tx, { project, nestedDetails, user });
     await syncSkills(tx, { project, skills, user });
 
-    revalidatePath(`/admin/projects/${project.id}`, "page");
+    revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");
-
+    revalidatePath(`/projects/${project.slug}`, "page");
     return project;
   });
 };

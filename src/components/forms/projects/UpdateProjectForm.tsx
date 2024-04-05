@@ -2,8 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type School } from "~/prisma/model";
-import { updateSchool } from "~/actions/mutations/schools";
+import { type Project } from "~/prisma/model";
+import { updateProject } from "~/actions/mutations/projects";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -11,58 +11,57 @@ import { useDeepEqualEffect } from "~/hooks";
 import { useForm } from "../generic/hooks/use-form";
 
 import {
-  SchoolForm,
-  type SchoolFormProps,
-  type SchoolFormValues,
-  SchoolFormSchema,
+  ProjectForm,
+  type ProjectFormProps,
+  type ProjectFormValues,
+  ProjectFormSchema,
 } from "./ProjectForm";
 
-export interface UpdateSchoolFormProps extends Omit<SchoolFormProps, "form" | "action"> {
-  readonly school: School;
+export interface UpdateProjectFormProps extends Omit<ProjectFormProps, "form" | "action"> {
+  readonly project: Project;
   readonly onCancel?: () => void;
 }
 
-export const UpdateSchoolForm = ({
-  school,
+export const UpdateProjectForm = ({
+  project,
   onCancel,
   ...props
-}: UpdateSchoolFormProps): JSX.Element => {
-  const updateSchoolWithId = updateSchool.bind(null, school.id);
+}: UpdateProjectFormProps): JSX.Element => {
+  const updateProjectWithId = updateProject.bind(null, project.id);
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<SchoolFormValues>({
-    schema: SchoolFormSchema,
+  const { setValues, ...form } = useForm<ProjectFormValues>({
+    schema: ProjectFormSchema,
     defaultValues: {
       name: "",
       shortName: "",
-      description: "",
-      websiteUrl: "",
-      logoImageUrl: "",
-      city: "",
-      state: "",
+      slug: "",
     },
   });
 
   // Prevents the form from resetting when an error occurs.
   useDeepEqualEffect(() => {
     setValues({
-      ...school,
-      shortName: school.shortName ?? "",
-      description: school.description ?? "",
-      websiteUrl: school.websiteUrl ?? "",
-      logoImageUrl: school.logoImageUrl ?? "",
+      ...project,
+      shortName: project.shortName ?? "",
+      name: project.name ?? "",
+      slug: project.slug ?? "",
+      startDate: project.startDate ?? new Date(),
+      // TODO: Use actual data once established.
+      skills: [],
+      details: [],
     });
-  }, [school, setValues]);
+  }, [project, setValues]);
 
   return (
-    <SchoolForm
+    <ProjectForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {
-        const response = await updateSchoolWithId(data);
+        const response = await updateProjectWithId(data);
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
@@ -75,4 +74,4 @@ export const UpdateSchoolForm = ({
   );
 };
 
-export default UpdateSchoolForm;
+export default UpdateProjectForm;

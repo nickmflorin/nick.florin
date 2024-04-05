@@ -22,7 +22,7 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
   loading: () => <TextInput isLoading={true} />,
 });
 
-const NewSkillButton = dynamic(() => import("./NewProjectButton"), {
+const NewProjectButton = dynamic(() => import("./NewProjectButton"), {
   loading: () => <Button.Primary isDisabled={true}>New</Button.Primary>,
 });
 
@@ -37,7 +37,7 @@ export const ProjectsTableView = ({ filters, page }: ProjectsTableViewProps) => 
       searchBar={
         <TableSearchBar>
           <SearchInput searchParamName="search" />
-          <NewSkillButton />
+          <NewProjectButton />
         </TableSearchBar>
       }
       controlBar={<ControlBar />}

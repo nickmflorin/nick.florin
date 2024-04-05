@@ -27,6 +27,12 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
             icon: { name: "building-columns" },
             active: { leadingPath: "/admin/educations" },
           },
+          {
+            label: "Projects",
+            path: "/admin/projects",
+            icon: { name: "hammer" },
+            active: { leadingPath: "/admin/projects" },
+          },
         ]}
       />
       <div className="grow max-h-full h-full overflow-hidden flex flex-col">{children}</div>

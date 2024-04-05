@@ -31,7 +31,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
       canToggleColumnVisibility={true}
       deleteErrorMessage="There was an error deleting the skill."
       deleteAction={async id => await deleteProject(id)}
-      onEdit={id => open(ids.UPDATE_SKILL, { skillId: id })}
+      onEdit={id => open(ids.UPDATE_PROJECT, { projectId: id })}
       columns={[
         {
           accessor: "Name",

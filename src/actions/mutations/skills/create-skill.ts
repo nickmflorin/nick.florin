@@ -30,19 +30,19 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
 
   const fieldErrors = new ApiClientFieldErrors();
 
-  const sk = await prisma.$transaction(async tx => {
-    if (await prisma.skill.count({ where: { label: data.label } })) {
+  return await prisma.$transaction(async tx => {
+    if (await tx.skill.count({ where: { label: data.label } })) {
       fieldErrors.addUnique("label", "The label must be unique.");
       /* If the slug is not explicitly provided and the label does not violate the unique
          constraint, but the slugified form of the label does, this should be a more specific error
          message. */
-    } else if (!_slug && (await prisma.skill.count({ where: { slug } }))) {
+    } else if (!_slug && (await tx.skill.count({ where: { slug } }))) {
       fieldErrors.addUnique(
         "label",
         "The auto-generated slug for the label is not unique. Please provide a unique slug.",
       );
     }
-    if (_slug && (await prisma.skill.count({ where: { slug: _slug } }))) {
+    if (_slug && (await tx.skill.count({ where: { slug: _slug } }))) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
     const [experiences] = await queryM2MsDynamically(tx, {
@@ -64,7 +64,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
       return fieldErrors.json;
     }
 
-    return await prisma.skill.create({
+    return await tx.skill.create({
       data: {
         ...data,
         slug,
@@ -96,10 +96,9 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
         },
       },
     });
+    // TODO: We may have to revalidate other API paths as well.
+    revalidatePath("/admin/skills", "page");
+    revalidatePath("/admin/experiences", "page");
+    revalidatePath("/admin/educations", "page");
   });
-  // TODO: We may have to revalidate other API paths as well.
-  revalidatePath("/admin/skills", "page");
-  revalidatePath("/admin/experiences", "page");
-  revalidatePath("/admin/educations", "page");
-  return sk;
 };

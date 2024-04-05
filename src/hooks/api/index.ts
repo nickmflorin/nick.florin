@@ -10,3 +10,4 @@ export * from "./use-education";
 export * from "./use-company";
 export * from "./use-school";
 export * from "./use-projects";
+export * from "./use-project";

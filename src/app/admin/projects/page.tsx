@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { ProjectsTableView } from "~/components/tables/views/ProjectsTableView";
+
 interface ProjectsPageProps {
   readonly searchParams: {
     readonly search?: string;
@@ -23,5 +25,5 @@ export default async function ProjectsPage({
     search: search ?? "",
   };
 
-  return <></>;
+  return <ProjectsTableView filters={filters} page={page} />;
 }

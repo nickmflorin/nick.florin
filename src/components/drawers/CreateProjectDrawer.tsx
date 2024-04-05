@@ -1,6 +1,4 @@
-import dynamic from "next/dynamic";
-
-import { Loading } from "~/components/feedback/Loading";
+import { CreateProjectForm } from "~/components/forms/projects/CreateProjectForm";
 
 import { Drawer } from "./Drawer";
 import { DrawerContent } from "./DrawerContent";
@@ -12,7 +10,13 @@ interface CreateProjectDrawerProps extends ExtendingDrawerProps {}
 export const CreateProjectDrawer = ({ onClose }: CreateProjectDrawerProps): JSX.Element => (
   <Drawer>
     <DrawerHeader>Create a Project</DrawerHeader>
-    <DrawerContent>In Progress</DrawerContent>
+    <DrawerContent>
+      <CreateProjectForm
+        className="mt-[16px]"
+        onCancel={() => onClose()}
+        onSuccess={() => onClose()}
+      />
+    </DrawerContent>
   </Drawer>
 );
 

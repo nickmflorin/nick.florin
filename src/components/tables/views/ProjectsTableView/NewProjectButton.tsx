@@ -10,15 +10,15 @@ const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), 
   loading: () => <Loading isLoading={true} />,
 });
 
-export const NewSkillButton = () => {
+export const NewProjectButton = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <>
       <Button.Primary onClick={() => setDrawerOpen(true)}>New</Button.Primary>
-      {drawerOpen && <ClientDrawer id={DrawerIds.CREATE_SKILL} props={{}} />}
+      {drawerOpen && <ClientDrawer id={DrawerIds.CREATE_PROJECT} props={{}} />}
     </>
   );
 };
 
-export default NewSkillButton;
+export default NewProjectButton;
