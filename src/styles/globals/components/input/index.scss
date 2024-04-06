@@ -44,7 +44,11 @@
   outline-offset: -1px;
   border-radius: constants.$input-border-radius;
   overflow: hidden;
+
   @include mixins.input-read-only();
+  @include partials.disabled() {
+    pointer-events: none !important;
+  }
 
   // Allow the font weight to be overridden with a prop.
   @include typography.with-font-families();

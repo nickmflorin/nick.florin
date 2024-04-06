@@ -1,4 +1,6 @@
 "use client";
+import { useState, useCallback, useEffect } from "react";
+
 import { useWatch } from "react-hook-form";
 import { type z } from "zod";
 
@@ -22,9 +24,36 @@ export interface EducationFormProps
 
 export const EducationForm = (props: EducationFormProps): JSX.Element => {
   const postPoned = useWatch({ control: props.form.control, name: "postPoned" });
+  const endDate = useWatch({ control: props.form.control, name: "endDate" });
+
+  const [isCurrent, _setIsCurrent] = useState(endDate === null && !postPoned);
+  const [endDateIsDisabled, setEndDateIsDisabled] = useState(isCurrent || postPoned);
+
+  const setIsCurrent = useCallback((value: boolean) => {
+    if (value === true) {
+      setEndDateIsDisabled(true);
+    } else {
+      setEndDateIsDisabled(false);
+    }
+    _setIsCurrent(value);
+  }, []);
+
+  useEffect(() => {
+    setIsCurrent(endDate === null && !postPoned);
+  }, [endDate, postPoned, setIsCurrent]);
 
   return (
-    <Form {...props} contentClassName="gap-[12px]">
+    <Form
+      {...props}
+      contentClassName="gap-[12px]"
+      action={(data, form) => {
+        if (isCurrent || postPoned) {
+          props.action?.({ ...data, endDate: null }, form);
+        } else {
+          props.action?.(data, form);
+        }
+      }}
+    >
       <Form.ControlledField name="school" label="School" form={props.form} condition="required">
         {({ value, onChange }) => (
           <ClientSchoolSelect
@@ -81,13 +110,38 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
         <Form.ControlledField name="postPoned" form={props.form} className="max-w-fit">
           {({ value, onChange }) => (
             <div className="flex flex-row gap-[6px] items-center">
-              <Checkbox value={value} onChange={onChange} />
+              <Checkbox
+                value={value}
+                onChange={e => {
+                  _setIsCurrent(false);
+                  if (!e.target.checked) {
+                    setEndDateIsDisabled(false);
+                  }
+                  onChange(e);
+                }}
+              />
               <Label size="sm" fontWeight="medium" className="leading-[16px]">
                 Post Poned
               </Label>
             </div>
           )}
         </Form.ControlledField>
+        <div className="flex flex-row gap-[6px] items-center">
+          <Checkbox
+            value={isCurrent}
+            onChange={e => {
+              if (e.target.checked) {
+                props.form.setValue("postPoned", false);
+                setIsCurrent(true);
+              } else {
+                setIsCurrent(false);
+              }
+            }}
+          />
+          <Label size="sm" fontWeight="medium" className="leading-[16px]">
+            Current
+          </Label>
+        </div>
       </div>
       <Form.ControlledField name="endDate" label="End Date" form={props.form}>
         {({ value, onChange }) => (
@@ -95,7 +149,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
             inputClassName="w-full"
             value={value}
             onChange={onChange}
-            isDisabled={postPoned}
+            isDisabled={endDateIsDisabled || postPoned}
           />
         )}
       </Form.ControlledField>
