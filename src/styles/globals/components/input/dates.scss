@@ -1,0 +1,34 @@
+.select__dates-content {
+  padding: 8px;
+
+  > div[data-calendar="true"] {
+    > .mantine-DatePicker-levelsGroup {
+      width: 100%;
+
+      > div[data-month-level="true"],
+      > div[data-year-level="true"] {
+        width: 100%;
+
+        > .mantine-DatePicker-calendarHeader {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        > table.mantine-DatePicker-month,
+        > table.mantine-DatePicker-monthsList {
+          width: 100%;
+        }
+
+        > table.mantine-DatePicker-monthsList {
+          tr.mantine-DatePicker-monthsListRow {
+            > .mantine-DatePicker-monthsListCell {
+              > .mantine-DatePicker-monthsListControl {
+                width: 100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

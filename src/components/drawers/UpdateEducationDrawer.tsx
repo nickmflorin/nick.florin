@@ -25,7 +25,7 @@ export const UpdateEducationDrawer = ({ educationId }: UpdateEducationDrawerProp
     keepPreviousData: true,
   });
   return (
-    <Drawer className="overflow-y-auto">
+    <Drawer>
       <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {education => (
           <>

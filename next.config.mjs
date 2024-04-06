@@ -20,9 +20,9 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
-  experimental: {
-    optimizePackageImports: ["@mantine/core"],
-  },
+  // experimental: {
+  //   optimizePackageImports: ["@mantine/core"],
+  // },
   transpilePackages: ["@mantine/core"],
   // webpack: config => {
   //   /* The StylelintPlugin requires the addition to the package.json: "postcss": "^8.4.18". */

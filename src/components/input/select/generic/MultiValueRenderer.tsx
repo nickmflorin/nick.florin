@@ -50,7 +50,7 @@ export const MultiValueRenderer = <M extends MenuModel, O extends MenuOptions<M>
         if (props.valueModelRenderer) {
           return (
             <React.Fragment key={i}>
-              {props.valueModelRenderer(props.value, { model, instance: props.selectInstance })}
+              {props.valueModelRenderer(props.value, { model })}
             </React.Fragment>
           );
         }

@@ -23,10 +23,10 @@ $input-variant-properties: (
       outline-color: theme("colors.disabledBorder"),
     ),
     focused: (
-      outline-color: theme("colors.blue.300"),
+      outline-color: theme("colors.blue.400"),
     ),
     active: (
-      outline-color: theme("colors.blue.600"),
+      outline-color: theme("colors.blue.400"),
     ),
   ),
   "bare": (
@@ -45,7 +45,7 @@ $input-variant-properties: (
       background-color: theme("colors.gray.200"),
     ),
     active: (
-      outline-color: theme("colors.blue.600"),
+      outline-color: theme("colors.blue.400"),
     ),
   ),
 );

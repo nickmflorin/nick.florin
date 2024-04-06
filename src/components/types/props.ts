@@ -80,8 +80,8 @@ export const radiusClassName = <R extends BorderRadius | null | undefined>(
 };
 
 export type SizeUnit = "px" | "rem";
-export type SizeString = `${number}${SizeUnit}`;
-export type Size = SizeString | number;
+export type SizeString = `${number}${SizeUnit}` | "fit-content";
+export type Size = SizeString | number | "fit-content";
 
 export const sizeToString = (size: Size): SizeString =>
   typeof size === "number" ? `${size}px` : size;

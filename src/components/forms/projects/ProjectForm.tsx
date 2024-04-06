@@ -2,6 +2,7 @@
 import { type z } from "zod";
 
 import { ProjectSchema } from "~/api/schemas";
+import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "../generic/Form";
@@ -15,10 +16,8 @@ export interface ProjectFormProps
 
 /*
 TODO
-
-(1) Using date inputs for start date field.
-(2) Improving slug input.
-(3) Adding ability to modify skills and details from this form.
+(1) Improving slug input.
+(2) Adding ability to modify skills and details from this form.
 */
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">
@@ -36,7 +35,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
     >
       <TextInput className="w-full" {...props.form.register("slug")} />
     </Form.Field>
-    <Form.Field
+    <Form.ControlledField
       name="startDate"
       label="Start Date"
       form={props.form}
@@ -45,8 +44,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
         "experience for skills associated with the project."
       }
     >
-      <TextInput className="w-full" {...props.form.register("startDate")} />
-    </Form.Field>
+      {({ value, onChange }) => (
+        <DateSelect inputClassName="w-full" value={value} onChange={onChange} inPortal />
+      )}
+    </Form.ControlledField>
   </Form>
 );
 

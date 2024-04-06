@@ -61,7 +61,7 @@ export const DeleteCompanySchoolButton = <M extends ModelType>({
         loadingClassName="text-gray-400"
         isLoading={isLoading}
         isDisabled={relatedCount !== 0}
-        onClick={async e => {
+        onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation();
           setIsLoading(true);
           try {

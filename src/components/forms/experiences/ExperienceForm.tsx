@@ -50,6 +50,28 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => (
     <Form.Field name="description" label="Description" form={props.form}>
       <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
+    {/* <Form.ControlledField name="startDate" label="Start Date" form={props.form}>
+      {({ value, onChange }) => (
+        <DateSelect inputClassName="w-full" value={value} onChange={onChange} inPortal />
+      )}
+    </Form.ControlledField>
+    <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
+      <Form.ControlledField name="isPostponed" form={props.form} className="max-w-fit">
+        {({ value, onChange }) => (
+          <div className="flex flex-row gap-[6px] items-center">
+            <Checkbox value={value} onChange={onChange} />
+            <Label size="sm" fontWeight="medium" className="leading-[16px]">
+              Remote
+            </Label>
+          </div>
+        )}
+      </Form.ControlledField>
+    </div>
+    <Form.ControlledField name="endDate" label="End Date" form={props.form}>
+      {({ value, onChange }) => (
+        <DateSelect inputClassName="w-full" value={value} onChange={onChange} inPortal />
+      )}
+    </Form.ControlledField> */}
     <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
       <Form.ControlledField name="isRemote" form={props.form} className="max-w-fit">
         {({ value, onChange }) => (

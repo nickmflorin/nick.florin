@@ -8,22 +8,22 @@
 @use "./mixins" as mixins;
 @use "./variants" as variants;
 
-button:not(.button) {
-  &:not(.Toastify__close-button) {
-    @include button-base;
+// button:not(.button) {
+//   &:not(.Toastify__close-button) {
+//     @include button-base;
 
-    // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
-    // primary buttons.
-    &:not(
-        .cl-userButtonTrigger,
-        .cl-userButtonPopoverActionButton,
-        .cl-socialButtonsBlockButton,
-        .mantine-Pagination-control
-      ) {
-      @include button("button", $size: "medium", $variant: "primary");
-    }
-  }
-}
+//     // For third-party buttons that are injected into the HTML (i.e. Clerk) we will assume they are
+//     // primary buttons.
+//     &:not(
+//         .cl-userButtonTrigger,
+//         .cl-userButtonPopoverActionButton,
+//         .cl-socialButtonsBlockButton,
+//         .mantine-Pagination-control
+//       ) {
+//       @include button("button", $size: "medium", $variant: "primary");
+//     }
+//   }
+// }
 
 a:not(.button--type-link) {
   @include button-base();
@@ -73,9 +73,6 @@ a:not(.button--type-link) {
 }
 
 .button {
-  /* When defining a border, we need to use the outline property - not the border property.  This
-     is because a border will contribute to the size of the button, whereas an outline will not. */
-  // border: none;
   border-radius: constants.$button-border-radius;
   outline-offset: -1 * constants.$button-outline-width;
 
