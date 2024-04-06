@@ -2,27 +2,30 @@ import { type ReactNode } from "react";
 
 import {
   type MenuModel,
-  type MenuModelValue,
   type MenuOptions,
   type MenuValue,
-  type MenuInitialValue,
+  type MenuModelValue,
 } from "~/components/menus";
 
-export type SelectInstance<M extends MenuModel, O extends MenuOptions<M>> = {
-  readonly value: MenuValue<M, O> | MenuInitialValue<M, O>;
+export type SelectInstance = {
   readonly setOpen: (v: boolean) => void;
   readonly setLoading: (v: boolean) => void;
 };
 
-export type SelectValueRenderer<M extends MenuModel, O extends MenuOptions<M>> = (
-  v: MenuValue<M, O>,
-  params: { models: MenuModelValue<M, O>; instance: SelectInstance<M, O> },
-) => ReactNode;
+export type SelectValueRenderer<
+  M extends MenuModel,
+  O extends MenuOptions<M>,
+  P extends { models: MenuModelValue<M, O> } = {
+    models: MenuModelValue<M, O>;
+    select: SelectInstance;
+  },
+> = (v: MenuValue<M, O>, params: P) => ReactNode;
 
-export type SelectValueModelRenderer<M extends MenuModel, O extends MenuOptions<M>> = (
-  v: MenuValue<M, O>,
-  params: { model: M; instance: SelectInstance<M, O> },
-) => ReactNode;
+export type SelectValueModelRenderer<
+  M extends MenuModel,
+  O extends MenuOptions<M>,
+  P extends { model: M } = { model: M; select: SelectInstance },
+> = (v: MenuValue<M, O>, params: P) => ReactNode;
 
 export type SelectItemRenderer<M extends MenuModel> = (model: M) => ReactNode;
 
@@ -31,8 +34,7 @@ export interface MultiValueRendererProps<M extends MenuModel, O extends MenuOpti
   readonly maximumNumBadges?: number;
   readonly options: O;
   readonly value: MenuValue<M, O>;
-  readonly selectInstance: SelectInstance<M, O>;
-  readonly valueModelRenderer?: SelectValueModelRenderer<M, O>;
+  readonly valueModelRenderer?: SelectValueModelRenderer<M, O, { model: M }>;
 }
 
 export type MultiValueRendererCompoennt = {

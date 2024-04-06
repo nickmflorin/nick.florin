@@ -77,24 +77,24 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
             />
           ),
         },
-        {
-          accessor: "experiences",
-          title: "Experiences",
-          width: 310,
-          render: ({ model }) => <ExperiencesCell skill={model} />,
-        },
-        {
-          accessor: "educations",
-          title: "Educations",
-          width: 310,
-          render: ({ model }) => <EducationsCell skill={model} />,
-        },
-        {
-          accessor: "projects",
-          title: "Projects",
-          width: 310,
-          render: ({ model }) => <ProjectsCell skill={model} />,
-        },
+        /* {
+             accessor: "experiences",
+             title: "Experiences",
+             width: 310,
+             render: ({ model }) => <ExperiencesCell skill={model} />,
+           },
+           {
+             accessor: "educations",
+             title: "Educations",
+             width: 310,
+             render: ({ model }) => <EducationsCell skill={model} />,
+           },
+           {
+             accessor: "projects",
+             title: "Projects",
+             width: 310,
+             render: ({ model }) => <ProjectsCell skill={model} />,
+           }, */
         {
           accessor: "experience",
           title: "Experience",
@@ -102,20 +102,20 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           defaultVisible: false,
           render: ({ model, table }) => <ExperienceCell skill={model} table={table} />,
         },
-        {
-          accessor: "categories",
-          title: "Categories",
-          width: 310,
-          defaultVisible: false,
-          render: ({ model }) => <CategoriesCell skill={model} />,
-        },
-        {
-          accessor: "programmingLanguages",
-          title: "Prog. Languages",
-          width: 310,
-          defaultVisible: false,
-          render: ({ model }) => <ProgrammingLanguagesCell skill={model} />,
-        },
+        /* {
+             accessor: "categories",
+             title: "Categories",
+             width: 310,
+             defaultVisible: false,
+             render: ({ model }) => <CategoriesCell skill={model} />,
+           },
+           {
+             accessor: "programmingLanguages",
+             title: "Prog. Languages",
+             width: 310,
+             defaultVisible: false,
+             render: ({ model }) => <ProgrammingLanguagesCell skill={model} />,
+           }, */
         {
           accessor: "includeInTopSkills",
           title: "Top Skill",
