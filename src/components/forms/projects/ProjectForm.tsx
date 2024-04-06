@@ -45,7 +45,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
       }
     >
       {({ value, onChange }) => (
-        <DateSelect inputClassName="w-full" value={value} onChange={onChange} inPortal />
+        <DateSelect inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField> */}
   </Form>

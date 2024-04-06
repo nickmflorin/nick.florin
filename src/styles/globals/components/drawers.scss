@@ -11,6 +11,7 @@ $drawer-width: 400px;
   @include drawer-container();
   min-width: $drawer-width;
   max-width: $drawer-width;
+  width: $drawer-width;
   background-color: theme("colors.white");
   border-left: 1px solid theme("colors.border");
 

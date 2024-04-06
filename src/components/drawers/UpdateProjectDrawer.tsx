@@ -26,7 +26,7 @@ export const UpdateProjectDrawer = ({ projectId }: UpdateProjectDrawerProps): JS
     { keepPreviousData: true },
   );
   return (
-    <Drawer className="overflow-y-auto">
+    <Drawer>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {project => (
           <>

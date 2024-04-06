@@ -148,17 +148,18 @@ export const AbstractView = ({
   className,
 }: AbstractViewProps) => {
   const _fill = parseFill({ fill, fillParent, fillScreen });
+  const _position = parsePosition({ position, absolute, relative });
   return (
     <div
       style={style}
       className={clsx(
-        parsePosition({ position, absolute, relative }),
+        _position,
         parseOverflow({ overflow, overflowX, overflowY }),
         {
           "h-[100vh] w-[100vw]": _fill === "screen",
           "h-full w-full": _fill === "parent",
           "flex flex-col items-center justify-center": centerChildren,
-          "l-0 t-0": _fill !== null && position === "absolute",
+          "left-0 top-0": _fill !== null && _position === "absolute",
           "view--overlay": overlay,
           "view--blurred": blurred,
           "view--dimmed": dimmed,

@@ -115,16 +115,16 @@ const LocalSelect = forwardRef<
 
     return (
       <SelectWrapper
-        ref={instance => {
-          if (instance) {
-            internalInstance.current = instance;
-            if (typeof ref === "function") {
-              ref(instance);
-            } else if (ref) {
-              ref.current = instance;
-            }
-          }
-        }}
+        /* ref={instance => {
+             if (instance) {
+               internalInstance.current = instance;
+               if (typeof ref === "function") {
+                 ref(instance);
+               } else if (ref) {
+                 ref.current = instance;
+               }
+             }
+           }} */
         isReady={isReady}
         isLoading={isLoading}
         menuPlacement={menuPlacement}

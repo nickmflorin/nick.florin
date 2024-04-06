@@ -28,7 +28,7 @@ export const UpdateCompanyDrawer = ({ companyId }: UpdateCompanyDrawerProps): JS
     },
   );
   return (
-    <Drawer className="overflow-y-auto">
+    <Drawer>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {company => (
           <>

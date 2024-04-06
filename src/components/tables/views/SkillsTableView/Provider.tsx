@@ -23,13 +23,13 @@ const SlugCell = dynamic(
   () => import("~/components/tables/generic/cells/SlugCell"),
 ) as SlugCellComponent;
 
-const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"));
-const EducationsCell = dynamic(() => import("./cells/EducationsCell"));
-const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"));
+/* const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"));
+   const EducationsCell = dynamic(() => import("./cells/EducationsCell"));
+   const ExperienceCell = dynamic(() => import("./cells/ExperienceCell")); */
 const ShowInTopSkillsCell = dynamic(() => import("./cells/ShowInTopSkillsCell"));
-const CategoriesCell = dynamic(() => import("./cells/CategoriesCell"));
-const ProgrammingLanguagesCell = dynamic(() => import("./cells/ProgrammingLanguagesCell"));
-const ProjectsCell = dynamic(() => import("./cells/ProjectsCell"));
+/* const CategoriesCell = dynamic(() => import("./cells/CategoriesCell"));
+   const ProgrammingLanguagesCell = dynamic(() => import("./cells/ProgrammingLanguagesCell"));
+   const ProjectsCell = dynamic(() => import("./cells/ProjectsCell")); */
 
 export interface TableViewConfig
   extends Pick<
@@ -94,15 +94,15 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
              title: "Projects",
              width: 310,
              render: ({ model }) => <ProjectsCell skill={model} />,
-           }, */
-        {
-          accessor: "experience",
-          title: "Experience",
-          textAlign: "center",
-          defaultVisible: false,
-          render: ({ model, table }) => <ExperienceCell skill={model} table={table} />,
-        },
-        /* {
+           },
+           {
+             accessor: "experience",
+             title: "Experience",
+             textAlign: "center",
+             defaultVisible: false,
+             render: ({ model, table }) => <ExperienceCell skill={model} table={table} />,
+           },
+           {
              accessor: "categories",
              title: "Categories",
              width: 310,

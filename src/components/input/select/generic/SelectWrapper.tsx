@@ -57,7 +57,7 @@ export const SelectWrapper = forwardRef<types.SelectInstance, SelectWrapperProps
       [setOpen, setLoading],
     );
 
-    useImperativeHandle(ref, () => select);
+    // useImperativeHandle(ref, () => select);
 
     return (
       <Floating

@@ -15,11 +15,11 @@ import { type ComponentProps } from "~/components/types";
 import { SelectInput, type SelectInputProps } from "../select/generic/SelectInput";
 import { SelectWrapper, type SelectWrapperProps } from "../select/generic/SelectWrapper";
 
+import { DatePicker } from "./DatePicker";
 import { toDateTime } from "./util";
-
-const DatePicker = dynamic(() => import("./DatePicker"), {
-  loading: () => <Loading isLoading={true} />,
-});
+/* const DatePicker = dynamic(() => import("./DatePicker"), {
+     loading: () => <Loading isLoading={true} />,
+   }); */
 
 export interface DateSelectProps
   extends Omit<SelectWrapperProps, "content" | "children" | "isReady">,
@@ -54,24 +54,24 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
 
     const [v, setV] = useState<DateTime | null>(toDateTime(value));
 
-    useEffect(() => {
-      setV(toDateTime(value));
-    }, [value]);
+    /* useEffect(() => {
+         setV(toDateTime(value));
+       }, [value]); */
 
     return (
       <SelectWrapper
         menuWidth="target"
         {...props}
-        ref={instance => {
-          if (instance) {
-            internalInstance.current = instance;
-            if (typeof ref === "function") {
-              ref(instance);
-            } else if (ref) {
-              ref.current = instance;
-            }
-          }
-        }}
+        /* ref={instance => {
+             if (instance) {
+               internalInstance.current = instance;
+               if (typeof ref === "function") {
+                 ref(instance);
+               } else if (ref) {
+                 ref.current = instance;
+               }
+             }
+           }} */
         content={
           <FloatingContent variant="white">
             <DatePicker
