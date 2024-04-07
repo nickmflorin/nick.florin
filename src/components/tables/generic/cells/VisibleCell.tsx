@@ -3,7 +3,6 @@ import { useTransition, useState, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
 import { Checkbox } from "~/components/input/Checkbox";
 
 import { type VisibleCellProps } from "./types";

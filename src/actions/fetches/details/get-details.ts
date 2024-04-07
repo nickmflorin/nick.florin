@@ -7,7 +7,6 @@ import {
   type DetailEntity,
   type ApiDetail,
   type DetailIncludes,
-  type Project,
   fieldIsIncluded,
 } from "~/prisma/model";
 import { type Visibility } from "~/api/query";

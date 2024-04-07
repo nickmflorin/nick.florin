@@ -3,7 +3,7 @@ import { useTransition, useState, useCallback, useEffect, useMemo } from "react"
 
 import { toast } from "react-toastify";
 
-import { type ApiDetail, type NestedApiDetail, isNestedDetail, type Project } from "~/prisma/model";
+import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
 import { IconButton } from "~/components/buttons";
 

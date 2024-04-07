@@ -20,6 +20,7 @@
     "dev": "pnpm validate-node-version && next dev",
     "start": "pnpm validate-node-version && next start",
     "lint": "pnpm validate-node-version && next lint && stylelint \"./src/**/*.{scss,css}\"",
+    "eslint": "pnpm validate-node-version && npx eslint .",
     "eslint-fix": "pnpm validate-node-version && npx eslint . --fix",
     "test": "pnpm validate-node-version && jest --watchAll  --silent=false",
     "test:ci": "pnpm validate-node-version && jest --ci",
