@@ -9,7 +9,7 @@ export const SocialButton = (props: SocialButtonProps): JSX.Element => (
   <IconButton.Bare
     {...props}
     options={{ as: "a" }}
-    className={clsx("text-gray-500 hover:text-blue-600", props.className)}
+    className={clsx("h-[22px] w-[22px] min-h-[22px] text-gray-500", props.className)}
     iconSize="full"
   />
 );

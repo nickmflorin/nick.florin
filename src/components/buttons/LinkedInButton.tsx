@@ -7,8 +7,8 @@ export const LinkedInButton = async (): Promise<JSX.Element> => {
   return (
     <SocialButton
       icon={{ name: "linkedin", iconStyle: "brands" }}
-      size="medium"
       href={profile?.linkedinUrl ?? "#"}
+      className="hover:text-[#0a66c2]"
     />
   );
 };
