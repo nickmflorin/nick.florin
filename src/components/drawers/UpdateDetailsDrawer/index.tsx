@@ -12,6 +12,7 @@ import { Loading } from "~/components/feedback/Loading";
 import { Title } from "~/components/typography/Title";
 
 import { Drawer } from "../Drawer";
+import { DrawerContent } from "../DrawerContent";
 import { DrawerHeader } from "../DrawerHeader";
 import { type ExtendingDrawerProps } from "../provider";
 
@@ -48,10 +49,12 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
               <Title order={4}>{expandedDetail.label}</Title>
             </div>
           </DrawerHeader>
-          <UpdateDetailsExpandedDrawer
-            detailId={expandedDetail.id}
-            isNested={isNestedDetail(expandedDetail)}
-          />
+          <DrawerContent>
+            <UpdateDetailsExpandedDrawer
+              detailId={expandedDetail.id}
+              isNested={isNestedDetail(expandedDetail)}
+            />
+          </DrawerContent>
         </>
       ) : (
         <UpdateDetailsCollapsedDrawer
