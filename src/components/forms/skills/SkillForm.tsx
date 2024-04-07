@@ -2,7 +2,6 @@
 import { type z } from "zod";
 
 import { SkillSchema } from "~/api/schemas";
-import { Checkbox } from "~/components/input/Checkbox";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
 import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
@@ -11,8 +10,8 @@ import { ProgrammingLanguageSelect } from "~/components/input/select/Programming
 import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { Label } from "~/components/typography/Label";
 
+import { CheckboxField } from "../fields/CheckboxField";
 import { Form, type FormProps } from "../generic/Form";
 
 export const SkillFormSchema = SkillSchema.required();
@@ -84,26 +83,8 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => (
       )}
     </Form.ControlledField>
     <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
-      <Form.ControlledField name="visible" form={props.form} className="max-w-fit">
-        {({ value, onChange }) => (
-          <div className="flex flex-row gap-[6px] items-center">
-            <Checkbox value={value} onChange={onChange} />
-            <Label size="sm" fontWeight="medium" className="leading-[16px]">
-              Visible
-            </Label>
-          </div>
-        )}
-      </Form.ControlledField>
-      <Form.ControlledField name="includeInTopSkills" form={props.form} className="max-w-fit">
-        {({ value, onChange }) => (
-          <div className="flex flex-row gap-[6px] items-center">
-            <Checkbox value={value} onChange={onChange} />
-            <Label size="sm" fontWeight="medium" className="leading-[16px]">
-              Top Skill
-            </Label>
-          </div>
-        )}
-      </Form.ControlledField>
+      <CheckboxField name="visible" form={props.form} label="Visible" />
+      <CheckboxField name="includeInTopSkills" form={props.form} label="Top Skill" />
     </div>
     <Form.ControlledField name="programmingDomains" label="Domains" form={props.form}>
       {({ value, onChange }) => (

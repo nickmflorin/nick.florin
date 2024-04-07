@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { type NestedApiDetail, type Project } from "~/prisma/model";
+import { type NestedApiDetail } from "~/prisma/model";
 import { createNestedDetail } from "~/actions/mutations/details";
 
 import {
@@ -9,7 +9,7 @@ import {
 } from "./GenericCreateDetailForm";
 
 export interface CreateNestedDetailFormProps
-  extends Omit<GenericCreateDetailFormProps<NestedApiDetail<[], Project>>, "action" | "actions"> {
+  extends Omit<GenericCreateDetailFormProps<NestedApiDetail<[]>>, "action" | "actions"> {
   readonly detailId: string;
 }
 
@@ -18,12 +18,7 @@ export const CreateNestedDetailForm = ({
   ...props
 }: CreateNestedDetailFormProps): JSX.Element => {
   const createDetailForParent = useMemo(() => createNestedDetail.bind(null, detailId), [detailId]);
-  return (
-    <GenericCreateDetailForm<NestedApiDetail<[], Project>>
-      action={createDetailForParent}
-      {...props}
-    />
-  );
+  return <GenericCreateDetailForm<NestedApiDetail<[]>> action={createDetailForParent} {...props} />;
 };
 
 export default CreateNestedDetailForm;

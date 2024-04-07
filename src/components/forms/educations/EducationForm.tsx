@@ -11,8 +11,8 @@ import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect
 import { DegreeSelect } from "~/components/input/select/DegreeSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { Label } from "~/components/typography/Label";
 
+import { CheckboxField } from "../fields/CheckboxField";
 import { Form, type FormProps } from "../generic/Form";
 
 export const EducationFormSchema = EducationSchema.required();
@@ -107,41 +107,29 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
         )}
       </Form.ControlledField>
       <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
-        <Form.ControlledField name="postPoned" form={props.form} className="max-w-fit">
-          {({ value, onChange }) => (
-            <div className="flex flex-row gap-[6px] items-center">
-              <Checkbox
-                value={value}
-                onChange={e => {
-                  _setIsCurrent(false);
-                  if (!e.target.checked) {
-                    setEndDateIsDisabled(false);
-                  }
-                  onChange(e);
-                }}
-              />
-              <Label size="sm" fontWeight="medium" className="leading-[16px]">
-                Post Poned
-              </Label>
-            </div>
-          )}
-        </Form.ControlledField>
-        <div className="flex flex-row gap-[6px] items-center">
-          <Checkbox
-            value={isCurrent}
-            onChange={e => {
-              if (e.target.checked) {
-                props.form.setValue("postPoned", false);
-                setIsCurrent(true);
-              } else {
-                setIsCurrent(false);
-              }
-            }}
-          />
-          <Label size="sm" fontWeight="medium" className="leading-[16px]">
-            Current
-          </Label>
-        </div>
+        <CheckboxField
+          name="postPoned"
+          label="Post Poned"
+          form={props.form}
+          onChange={e => {
+            _setIsCurrent(false);
+            if (!e.target.checked) {
+              setEndDateIsDisabled(false);
+            }
+          }}
+        />
+        <Checkbox
+          value={isCurrent}
+          label="Current"
+          onChange={e => {
+            if (e.target.checked) {
+              props.form.setValue("postPoned", false);
+              setIsCurrent(true);
+            } else {
+              setIsCurrent(false);
+            }
+          }}
+        />
       </div>
       <Form.ControlledField name="endDate" label="End Date" form={props.form}>
         {({ value, onChange }) => (
@@ -156,6 +144,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
       <Form.Field name="note" label="Note" form={props.form}>
         <TextArea className="w-full" {...props.form.register("note")} />
       </Form.Field>
+      <CheckboxField name="visible" form={props.form} label="Visible" />
     </Form>
   );
 };

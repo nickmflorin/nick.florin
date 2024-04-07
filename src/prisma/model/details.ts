@@ -4,7 +4,6 @@ import {
   type Education,
   type Detail,
   type NestedDetail,
-  type Project,
 } from "./core";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiProject } from "./project";
@@ -17,12 +16,9 @@ export type DetailEntity<T extends DetailEntityType> = {
 
 export type NestedDetailIncludes = ["skills"] | [];
 
-export type NestedApiDetail<
-  I extends NestedDetailIncludes = [],
-  P extends Project = ApiProject<["skills"]>,
-> = ConditionallyInclude<
+export type NestedApiDetail<I extends NestedDetailIncludes = []> = ConditionallyInclude<
   NestedDetail & {
-    readonly project: P | null;
+    readonly project: ApiProject<I> | null;
     readonly skills: Omit<ApiSkill, "autoExperience">[];
   },
   ["skills"],
@@ -36,30 +32,23 @@ export type DetailIncludes =
   | ["nestedDetails"]
   | [];
 
-type ToNestedDetailIncludes<I extends DetailIncludes> = I extends
+export type ToSkillIncludes<I extends DetailIncludes> = I extends
   | ["nestedDetails", "skills"]
   | ["skills", "nestedDetails"]
   | ["skills"]
   ? ["skills"]
   : [];
 
-export type ApiDetail<
-  I extends DetailIncludes = [],
-  P extends Project = ApiProject<["skills"]>,
-> = ConditionallyInclude<
+export type ApiDetail<I extends DetailIncludes = []> = ConditionallyInclude<
   Detail & {
-    readonly project: P | null;
+    readonly project: ApiProject<ToSkillIncludes<I>> | null;
     readonly skills: Omit<ApiSkill, "autoExperience">[];
-    readonly nestedDetails: NestedApiDetail<ToNestedDetailIncludes<I>, P>[];
+    readonly nestedDetails: NestedApiDetail<ToSkillIncludes<I>>[];
   },
   ["skills", "nestedDetails"],
   I
 >;
 
-export const isNestedDetail = <
-  I extends DetailIncludes,
-  N extends NestedDetailIncludes,
-  P extends Project,
->(
-  detail: ApiDetail<I, P> | NestedApiDetail<N, P>,
-): detail is NestedApiDetail<N, P> => (detail as NestedApiDetail).detailId !== undefined;
+export const isNestedDetail = <I extends DetailIncludes, N extends NestedDetailIncludes>(
+  detail: ApiDetail<I> | NestedApiDetail<N>,
+): detail is NestedApiDetail<N> => (detail as NestedApiDetail).detailId !== undefined;

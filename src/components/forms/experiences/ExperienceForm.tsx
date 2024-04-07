@@ -12,6 +12,7 @@ import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { Label } from "~/components/typography/Label";
 
+import { CheckboxField } from "../fields/CheckboxField";
 import { Form, type FormProps } from "../generic/Form";
 
 export const ExperienceFormSchema = ExperienceSchema.required();
@@ -94,18 +95,8 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
           />
         )}
       </Form.ControlledField>
-      <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
-        <Form.ControlledField name="isRemote" form={props.form} className="max-w-fit">
-          {({ value, onChange }) => (
-            <div className="flex flex-row gap-[6px] items-center">
-              <Checkbox value={value} onChange={onChange} />
-              <Label size="sm" fontWeight="medium" className="leading-[16px]">
-                Remote
-              </Label>
-            </div>
-          )}
-        </Form.ControlledField>
-      </div>
+      <CheckboxField name="isRemote" form={props.form} label="Remote" />
+      <CheckboxField name="visible" form={props.form} label="Visible" />
     </Form>
   );
 };

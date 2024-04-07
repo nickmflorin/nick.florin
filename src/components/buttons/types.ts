@@ -15,7 +15,7 @@ export const ButtonButtonVariants = enumeratedLiterals(
 export type ButtonButtonVariant = EnumeratedLiteralsType<typeof ButtonButtonVariants>;
 
 export const IconButtonVariants = enumeratedLiterals(
-  ["primary", "secondary", "bare", "transparent", "danger"] as const,
+  ["primary", "secondary", "bare", "transparent", "danger", "light"] as const,
   {},
 );
 export type IconButtonVariant = EnumeratedLiteralsType<typeof IconButtonVariants>;

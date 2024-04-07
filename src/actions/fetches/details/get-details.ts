@@ -7,7 +7,6 @@ import {
   type DetailEntity,
   type ApiDetail,
   type DetailIncludes,
-  type NestedApiDetail,
   type Project,
   fieldIsIncluded,
 } from "~/prisma/model";
@@ -15,54 +14,7 @@ import { type Visibility } from "~/api/query";
 
 import { getEntity } from "../get-entity";
 
-const hasNested = (
-  details: ApiDetail<[], Project>[] | ApiDetail<["nestedDetails"], Project>[],
-): details is ApiDetail<["nestedDetails"], Project>[] =>
-  details.length !== 0 &&
-  (details as ApiDetail<["nestedDetails"], Project>[])[0].nestedDetails !== undefined;
-
-const getDetailsSkills = async (
-  details: ApiDetail<[], Project>[] | ApiDetail<["nestedDetails"], Project>[],
-  { visibility = "public" }: { visibility: Visibility },
-) => {
-  const projects = [...details]
-    .reduce(
-      (
-        prev: (Project | null)[],
-        curr: ApiDetail<[], Project> | ApiDetail<["nestedDetails"], Project>,
-      ) => [
-        ...prev,
-        curr.project,
-        ...((curr as ApiDetail<["nestedDetails"]>).nestedDetails ?? []).map(nd => nd.project),
-      ],
-      [],
-    )
-    .filter((p): p is Project => p !== null);
-  return await prisma.skill.findMany({
-    where: {
-      AND: [
-        { visible: visibility === "public" ? true : undefined },
-        {
-          OR: [
-            { details: { some: { detailId: { in: details.map(d => d.id) } } } },
-            { projects: { some: { projectId: { in: projects.map(p => p.id) } } } },
-            {
-              nestedDetails: hasNested(details)
-                ? {
-                    some: {
-                      nestedDetailId: {
-                        in: details.flatMap(det => det.nestedDetails.map(d => d.id)),
-                      },
-                    },
-                  }
-                : undefined,
-            },
-          ],
-        },
-      ],
-    },
-  });
-};
+import { includeSkills, getDetailSkills } from "./util";
 
 /*
 Note: (r.e. Ordering):
@@ -111,45 +63,9 @@ export const getDetails = cache(
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       });
       // The skills for all projects, details and nested details associated with the entity(s).
-      const skills = await getDetailsSkills(details, { visibility });
+      const skills = await getDetailSkills(details, { visibility });
       return details.map(
-        ({
-          skills: _skills,
-          nestedDetails,
-          project,
-          ...d
-        }): ApiDetail<["nestedDetails", "skills"]> => ({
-          ...d,
-          project: project
-            ? {
-                ...project,
-                skills: skills.filter(sk => project.skills.some(d => d.skillId === sk.id)),
-              }
-            : null,
-          /* Include skills for each Detail by identifying the skills in the overall set that have
-             IDs in the Detail's skills array. */
-          skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-          nestedDetails: nestedDetails.map(
-            ({
-              skills: _ndSkills,
-              project: nestedProject,
-              ...nd
-            }): NestedApiDetail<["skills"]> => ({
-              ...nd,
-              project: nestedProject
-                ? {
-                    ...nestedProject,
-                    skills: skills.filter(sk =>
-                      nestedProject.skills.some(d => d.skillId === sk.id),
-                    ),
-                  }
-                : null,
-              /* Include skills for each NestedDetail by identifying the skills in the overall set
-                 that have IDs in the NestedDetail's skills array. */
-              skills: skills.filter(sk => _ndSkills.some(d => d.nestedDetailId === sk.id)),
-            }),
-          ),
-        }),
+        (detail): ApiDetail<["nestedDetails", "skills"]> => includeSkills({ detail, skills }),
       ) as ApiDetail<I>[];
     } else if (fieldIsIncluded("skills", includes)) {
       const details = await prisma.detail.findMany({
@@ -165,7 +81,7 @@ export const getDetails = cache(
         orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       });
 
-      const skills = await getDetailsSkills(details, { visibility });
+      const skills = await getDetailSkills(details, { visibility });
 
       return details.map(
         ({ skills: _skills, project, ...d }): ApiDetail<["skills"]> => ({

@@ -7,15 +7,11 @@ import { type ApiDetail, type NestedApiDetail, isNestedDetail, type Project } fr
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
 import { IconButton } from "~/components/buttons";
 
-export interface DetailVisibilityButtonProps<
-  D extends ApiDetail<[], Project> | NestedApiDetail<[], Project>,
-> {
+export interface DetailVisibilityButtonProps<D extends ApiDetail<[]> | NestedApiDetail<[]>> {
   readonly detail: D;
 }
 
-export const DetailVisibilityButton = <
-  D extends ApiDetail<[], Project> | NestedApiDetail<[], Project>,
->({
+export const DetailVisibilityButton = <D extends ApiDetail<[]> | NestedApiDetail<[]>>({
   detail,
 }: DetailVisibilityButtonProps<D>) => {
   /* We keep track of the visibility of the detail in state, separately from the visible attribute
@@ -73,8 +69,8 @@ export const DetailVisibilityButton = <
     <IconButton.Bare
       className="text-gray-600 hover:text-gray-700"
       icon={[
-        { icon: { name: "eye-slash", iconStyle: "solid" }, visible: optimisticIsVisible },
-        { icon: { name: "eye", iconStyle: "solid" }, visible: !optimisticIsVisible },
+        { icon: { name: "eye-slash", iconStyle: "solid" }, visible: !optimisticIsVisible },
+        { icon: { name: "eye", iconStyle: "solid" }, visible: optimisticIsVisible },
       ]}
       size="xsmall"
       isLoading={isLoading || isPending}

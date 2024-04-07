@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
 
-import { type ApiDetail, type NestedApiDetail, type Project } from "~/prisma/model";
+import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 import { type ApiClientErrorJson, isApiClientErrorJson } from "~/api";
 import { Link } from "~/components/buttons";
 
@@ -9,11 +9,10 @@ import { useForm } from "../../generic/hooks/use-form";
 import { DetailForm, type DetailFormProps } from "../DetailForm";
 import { type DetailFormValues, DetailFormSchema } from "../types";
 
-export interface GenericCreateDetailFormProps<
-  D extends ApiDetail<[], Project> | NestedApiDetail<[], Project>,
-> extends Omit<
+export interface GenericCreateDetailFormProps<D extends ApiDetail<[]> | NestedApiDetail<[]>>
+  extends Omit<
     DetailFormProps,
-    "form" | "onSubmit" | "action" | "isNew" | "isOpen" | "onToggleOpen" | "actions"
+    "form" | "onSubmit" | "action" | "isNew" | "isOpen" | "onToggleOpen" | "actions" | "isExpanded"
   > {
   readonly onCreated: (detail: D) => void;
   readonly onCancel: () => void;
@@ -22,9 +21,7 @@ export interface GenericCreateDetailFormProps<
   ) => Promise<D | ApiClientErrorJson>;
 }
 
-export const GenericCreateDetailForm = <
-  D extends ApiDetail<[], Project> | NestedApiDetail<[], Project>,
->({
+export const GenericCreateDetailForm = <D extends ApiDetail<[]> | NestedApiDetail<[]>>({
   action,
   onCreated,
   onCancel,
@@ -48,6 +45,7 @@ export const GenericCreateDetailForm = <
       {...props}
       isNew={true}
       isScrollable={false}
+      isExpanded={false}
       form={{ setValues, ...form }}
       actions={[
         <Link.Secondary

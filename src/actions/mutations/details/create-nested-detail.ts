@@ -19,7 +19,7 @@ import { DetailSchema } from "~/api/schemas";
 export const createNestedDetail = async (
   detailId: string,
   req: z.infer<typeof DetailSchema>,
-): Promise<NestedApiDetail<[], Project> | ApiClientErrorJson> => {
+): Promise<NestedApiDetail<[]> | ApiClientErrorJson> => {
   const user = await getAuthAdminUser();
 
   const detail = await getDetail(detailId);
