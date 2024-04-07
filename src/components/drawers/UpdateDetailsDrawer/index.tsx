@@ -7,9 +7,12 @@ import {
   type ApiDetail,
   isNestedDetail,
 } from "~/prisma/model";
+import { IconButton } from "~/components/buttons";
 import { Loading } from "~/components/feedback/Loading";
+import { Title } from "~/components/typography/Title";
 
 import { Drawer } from "../Drawer";
+import { DrawerHeader } from "../DrawerHeader";
 import { type ExtendingDrawerProps } from "../provider";
 
 const UpdateDetailsCollapsedDrawer = dynamic(() => import("./UpdateDetailsCollapsedDrawer"), {
@@ -35,11 +38,21 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
   return (
     <Drawer>
       {expandedDetail ? (
-        <UpdateDetailsExpandedDrawer
-          detailId={expandedDetail.id}
-          isNested={isNestedDetail(expandedDetail)}
-          onBack={() => setExpandedDetail(null)}
-        />
+        <>
+          <DrawerHeader>
+            <div className="flex flex-row items-center gap-[8px]">
+              <IconButton.Light
+                icon={{ name: "arrow-left" }}
+                onClick={() => setExpandedDetail(null)}
+              />
+              <Title order={4}>{expandedDetail.label}</Title>
+            </div>
+          </DrawerHeader>
+          <UpdateDetailsExpandedDrawer
+            detailId={expandedDetail.id}
+            isNested={isNestedDetail(expandedDetail)}
+          />
+        </>
       ) : (
         <UpdateDetailsCollapsedDrawer
           entityType={entityType}
