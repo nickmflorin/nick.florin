@@ -51,13 +51,13 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
       <div className={clsx("flex flex-col gap-[4px]", { "pt-[4px]": size === "large" })}>
         {size === "large" ? (
           <Title order={2}>
-            {model.__kind__ === "experience"
+            {model.kind === "experience"
               ? model.title
               : `${getDegree(model.degree).shortLabel} in ${model.major}`}
           </Title>
         ) : (
           <Text size="md" fontWeight="medium">
-            {model.__kind__ === "experience"
+            {model.kind === "experience"
               ? model.title
               : `${getDegree(model.degree).shortLabel} in ${model.major}`}
           </Text>
@@ -65,16 +65,16 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
         <LinkOrText
           fontWeight={LinkFontWeights[size]}
           fontSize={LinkFontSizes[size]}
-          url={model.__kind__ === "experience" ? model.company.websiteUrl : model.school.websiteUrl}
+          url={model.kind === "experience" ? model.company.websiteUrl : model.school.websiteUrl}
         >
-          {model.__kind__ === "experience" ? model.company.name : model.school.name}
+          {model.kind === "experience" ? model.company.name : model.school.name}
         </LinkOrText>
       </div>
       <div className="flex flex-wrap gap-y-[4px] gap-x-[8px]">
         <TimePeriodTag
           size={size === "large" ? "sm" : "xs"}
           timePeriod={
-            model.__kind__ === "experience"
+            model.kind === "experience"
               ? { startDate: model.startDate, endDate: model.endDate }
               : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
           }
@@ -82,7 +82,7 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
         <LocationTag
           size={size === "large" ? "sm" : "xs"}
           location={
-            model.__kind__ === "education"
+            model.kind === "education"
               ? {
                   city: model.school.city,
                   state: model.school.state,

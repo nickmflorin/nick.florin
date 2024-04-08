@@ -15,8 +15,8 @@ export const ResumeModelImage = <M extends BrandModel<T>, T extends ResumeBrand>
 }: ResumeModelImageProps<M, T>) => (
   <ModelImage
     {...props}
-    fallbackIcon={model.__kind__ === "experience" ? { name: "briefcase" } : { name: "briefcase" }}
-    url={model.__kind__ === "experience" ? model.company.logoImageUrl : model.school.logoImageUrl}
+    fallbackIcon={model.kind === "experience" ? { name: "briefcase" } : { name: "briefcase" }}
+    url={model.kind === "experience" ? model.company.logoImageUrl : model.school.logoImageUrl}
     size={size}
   />
 );

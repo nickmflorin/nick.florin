@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type ApiEducation, type ApiExperience } from "~/prisma/model";
+import { Courses } from "~/components/badges/collections/Courses";
 import { Skills } from "~/components/badges/collections/Skills";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography/Description";
@@ -10,7 +11,9 @@ import { DetailsTile } from "./DetailsTile";
 import { ResumeTileHeader } from "./ResumeTileHeader";
 
 export interface ResumeTileProps extends ComponentProps {
-  readonly model: ApiEducation<["details", "skills"]> | ApiExperience<["details", "skills"]>;
+  readonly model:
+    | ApiEducation<["details", "skills", "courses"]>
+    | ApiExperience<["details", "skills"]>;
 }
 
 export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element => (
@@ -21,11 +24,14 @@ export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element =>
         <Description
           fontSize="smplus"
           description={
-            model.__kind__ === "education" ? [model.description, model.note] : model.description
+            model.kind === "education" ? [model.description, model.note] : model.description
           }
         />
         <DetailsTile details={model.details} />
       </div>
+      {model.kind === "education" && model.courses.length !== 0 && (
+        <Courses courses={model.courses} className="max-w-[800px]" />
+      )}
       {model.skills.length !== 0 && (
         <div className="flex flex-col gap-[12px]">
           <div className="flex flex-col gap-[6px]">

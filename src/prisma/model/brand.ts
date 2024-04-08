@@ -7,10 +7,12 @@ import {
   type Detail,
   type Project,
   type Skill,
+  type Course,
+  type Repository,
 } from "./core";
 
 export type ToBrandedModel<M, T extends string> = M & {
-  readonly __kind__: T;
+  readonly kind: T;
 };
 
 export type Brands = {
@@ -22,6 +24,8 @@ export type Brands = {
   school: School;
   project: Project;
   skill: Skill;
+  repository: Repository;
+  course: Course;
 };
 
 export type BrandedModels = { [key in keyof Brands]: ToBrandedModel<Brands[key], key> };
@@ -39,3 +43,5 @@ export type BrandCompany = BrandModel<"company">;
 export type BrandSchool = BrandModel<"school">;
 export type BrandProject = BrandModel<"project">;
 export type BrandSkill = BrandModel<"skill">;
+export type BrandRepository = BrandModel<"repository">;
+export type BrandCourse = BrandModel<"course">;

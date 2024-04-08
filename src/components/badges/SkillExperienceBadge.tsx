@@ -13,6 +13,8 @@ export const SkillExperienceBadge = ({
   ...props
 }: SkillExperienceBadgeProps): JSX.Element => (
   <Badge {...props}>
-    {skill.experience ? `${skill.experience} years` : `${skill.autoExperience} years`}
+    {skill.experience
+      ? `${skill.experience} year${skill.experience === 1 ? "" : "s"}`
+      : `${skill.autoExperience} year${skill.autoExperience === 1 ? "" : "s"}`}
   </Badge>
 );

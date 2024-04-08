@@ -1,4 +1,4 @@
-import { type BrandModel } from "./brand";
+import { type BrandCourse, type BrandModel } from "./brand";
 import { Degree } from "./core";
 import { type ApiDetail } from "./details";
 import { type ConditionallyInclude } from "./inclusion";
@@ -19,17 +19,31 @@ export const getDegree = <D extends Degree>(degree: D): (typeof Degrees)[D] & { 
 });
 
 export type EduIncludes =
+  | ["courses", "skills", "details"]
+  | ["courses", "details", "skills"]
+  | ["skills", "courses", "details"]
+  | ["details", "courses", "skills"]
+  | ["skills", "details", "courses"]
+  | ["details", "skills", "courses"]
+  | ["skills", "courses"]
+  | ["courses", "skills"]
   | ["skills", "details"]
   | ["details", "skills"]
+  | ["details", "courses"]
+  | ["courses", "details"]
   | ["skills"]
   | ["details"]
+  | ["courses"]
   | [];
 
 export type ApiEducation<I extends EduIncludes = []> = ConditionallyInclude<
   BrandModel<"education"> & {
     readonly details: ApiDetail<["nestedDetails", "skills"]>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];
+    /* TODO: We will have to create an ApiCourse to handle cases where the skills should be nested
+       for each course. */
+    readonly courses: BrandCourse[];
   },
-  ["skills", "details"],
+  ["skills", "details", "courses"],
   I
 >;

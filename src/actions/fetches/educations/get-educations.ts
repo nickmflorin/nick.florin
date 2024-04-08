@@ -12,6 +12,7 @@ import {
   type ApiDetail,
   type BrandSkill,
   type EducationOnSkills,
+  type BrandCourse,
   fieldIsIncluded,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
@@ -99,14 +100,24 @@ export const getEducations = cache(
       take: pagination ? pagination.pageSize : undefined,
     });
 
-    let educationSkills: (BrandSkill & { readonly educations: EducationOnSkills[] })[] | undefined =
+    let skills: (BrandSkill & { readonly educations: EducationOnSkills[] })[] | undefined =
       undefined;
     if (fieldIsIncluded("skills", includes)) {
-      educationSkills = await prisma.skill.findMany({
+      skills = await prisma.skill.findMany({
         include: { educations: true },
         where: {
           visible: visibility === "public" ? true : undefined,
           educations: { some: { education: { id: { in: edus.map(e => e.id) } } } },
+        },
+      });
+    }
+
+    let courses: BrandCourse[] | undefined = undefined;
+    if (fieldIsIncluded("courses", includes)) {
+      courses = await prisma.course.findMany({
+        where: {
+          visible: visibility === "public" ? true : undefined,
+          educationId: { in: edus.map(e => e.id) },
         },
       });
     }
@@ -122,10 +133,10 @@ export const getEducations = cache(
 
     const educations = edus.map((edu): ApiEducation<I> => {
       let modified: ApiEducation<I> = { ...edu } as ApiEducation<I>;
-      if (educationSkills) {
+      if (skills) {
         modified = {
           ...modified,
-          skills: educationSkills
+          skills: skills
             .filter(s => s.educations.some(e => e.educationId === edu.id))
             .map(s => omit(s, "educations")),
         };
@@ -133,9 +144,11 @@ export const getEducations = cache(
       if (details) {
         modified = { ...modified, details: details.filter(d => d.entityId === edu.id) };
       }
+      if (courses) {
+        modified = { ...modified, courses: courses.filter(c => c.educationId === edu.id) };
+      }
       return modified as ApiEducation<I>;
     });
-
     return educations as ApiEducation<I>[];
   },
 ) as {
