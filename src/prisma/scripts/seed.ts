@@ -1,7 +1,7 @@
 import clerk from "@clerk/clerk-sdk-node";
 
 import { prisma } from "../client";
-import { upsertUserFromClerk } from "../model";
+import { upsertUserFromClerk } from "../model/user";
 
 import {
   seedSchools,
