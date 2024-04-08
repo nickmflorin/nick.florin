@@ -6,13 +6,17 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import {
+  isPrismaDoesNotExistError,
+  isPrismaInvalidIdError,
+  prisma,
+  type Transaction,
+} from "~/prisma/client";
 import {
   type Skill,
   type Experience,
   type Education,
   type Project,
-  type Transaction,
   type User,
 } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";

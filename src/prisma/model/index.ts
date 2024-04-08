@@ -5,10 +5,9 @@ export * from "./education";
 export * from "./experience";
 export * from "./project";
 export * from "./inclusion";
-export * from "./transaction";
 export * from "./school";
 export * from "./skills";
-export * from "./user";
+export * from "./brand";
 
 import { DateTime } from "luxon";
 

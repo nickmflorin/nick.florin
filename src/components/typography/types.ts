@@ -3,11 +3,11 @@ import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ComponentProps } from "~/components/types";
 
-export const TypographySizes = enumeratedLiterals(
+export const FontSizes = enumeratedLiterals(
   ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
   {},
 );
-export type TypographySize = EnumeratedLiteralsType<typeof TypographySizes>;
+export type FontSize = EnumeratedLiteralsType<typeof FontSizes>;
 
 export const FontWeights = enumeratedLiterals(
   ["light", "regular", "medium", "semibold", "bold"] as const,
@@ -25,7 +25,7 @@ export const FontFamilies = enumeratedLiterals(["inter", "avenir", "roboto"] as 
 export type FontFamily = EnumeratedLiteralsType<typeof FontFamilies>;
 
 export interface BaseTypographyProps extends ComponentProps {
-  readonly size?: TypographySize;
+  readonly size?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
   readonly transform?: TextTransform;
@@ -33,7 +33,7 @@ export interface BaseTypographyProps extends ComponentProps {
 
 export interface ExtendingTypographyProps
   extends Omit<BaseTypographyProps, keyof ComponentProps | "size"> {
-  readonly fontSize?: TypographySize;
+  readonly fontSize?: FontSize;
 }
 
 const isExtendingTypographyProps = (

@@ -1,15 +1,11 @@
 import uniqBy from "lodash.uniqby";
 
+import type { BrandSkill, BrandProject } from "./brand";
+
 import { type getEducations } from "~/actions/fetches/educations";
 import { type getExperiences } from "~/actions/fetches/experiences";
 
-import {
-  type Skill,
-  ProgrammingLanguage,
-  SkillCategory,
-  ProgrammingDomain,
-  type Project,
-} from "./core";
+import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "./core";
 import { type ConditionallyInclude } from "./inclusion";
 
 import { type ApiEducation, type ApiExperience } from ".";
@@ -85,11 +81,11 @@ export type SkillIncludes =
   | [];
 
 export type ApiSkill<I extends SkillIncludes = []> = ConditionallyInclude<
-  Skill & {
+  BrandSkill & {
     readonly autoExperience: number;
     readonly educations: ApiEducation[];
     readonly experiences: ApiExperience[];
-    readonly projects: Project[];
+    readonly projects: BrandProject[];
   },
   ["educations", "experiences", "projects"],
   I

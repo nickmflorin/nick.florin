@@ -2,14 +2,14 @@
 import uniq from "lodash.uniq";
 
 import { UnreachableCaseError } from "~/application/errors";
+import { type Transaction } from "~/prisma/client";
 import {
-  type Experience,
-  type Education,
-  type Project,
-  type Transaction,
-  type Detail,
-  type Skill,
-  type NestedDetail,
+  type BrandExperience,
+  type BrandEducation,
+  type BrandProject,
+  type BrandDetail,
+  type BrandSkill,
+  type BrandNestedDetail,
 } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 
@@ -25,12 +25,12 @@ const FieldErrorKeys = {
 } as const satisfies { [key in DynamicModel]: `${key}s` };
 
 export type QueryDynamicallyRT<T extends DynamicModel> = {
-  experience: Experience[];
-  education: Education[];
-  project: Project[];
-  skill: Skill[];
-  detail: Detail[];
-  nestedDetail: NestedDetail[];
+  experience: BrandExperience[];
+  education: BrandEducation[];
+  project: BrandProject[];
+  skill: BrandSkill[];
+  detail: BrandDetail[];
+  nestedDetail: BrandNestedDetail[];
 }[T];
 
 export const queryIdsDynamically = async <T extends DynamicModel>(

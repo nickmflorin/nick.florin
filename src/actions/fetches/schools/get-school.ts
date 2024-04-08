@@ -2,13 +2,13 @@ import "server-only";
 import { cache } from "react";
 
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
-import { type School } from "~/prisma/model";
+import { type BrandSchool } from "~/prisma/model";
 
 export const preloadSchool = (id: string) => {
   void getSchool(id);
 };
 
-export const getSchool = cache(async (id: string): Promise<School | null> => {
+export const getSchool = cache(async (id: string): Promise<BrandSchool | null> => {
   try {
     return await prisma.school.findUniqueOrThrow({
       where: { id },

@@ -7,10 +7,14 @@ import { getAuthAdminUser } from "~/application/auth";
 import { logger } from "~/application/logger";
 import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import {
+  isPrismaDoesNotExistError,
+  isPrismaInvalidIdError,
+  prisma,
+  type Transaction,
+} from "~/prisma/client";
 import {
   type Project,
-  type Transaction,
   type Detail,
   type User,
   type NestedDetail,

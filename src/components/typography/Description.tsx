@@ -5,13 +5,13 @@ import clsx from "clsx";
 import { type Size, type ComponentProps } from "~/components/types";
 
 import { Text } from "./Text";
-import { type TypographySize, type FontWeight, type FontFamily } from "./types";
+import { type FontSize, type FontWeight, type FontFamily } from "./types";
 import { getTypographyClassName } from "./types";
 
 export interface DescriptionProps extends ComponentProps {
   readonly gap?: Size;
   readonly description?: ReactNode[] | ReactNode;
-  readonly fontSize?: TypographySize;
+  readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
   readonly children?: ReactNode[] | ReactNode;

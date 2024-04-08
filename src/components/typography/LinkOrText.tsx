@@ -4,14 +4,14 @@ import { Tooltip, type TooltipProps } from "~/components/floating/Tooltip";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 
-import { type TypographySize, type FontWeight, type FontFamily } from "./types";
+import { type FontSize, type FontWeight, type FontFamily } from "./types";
 
 export interface LinkOrTextProps extends ComponentProps {
   readonly url?: string | null;
   readonly children: string;
   readonly tooltip?: string;
   readonly tooltipPlacement?: TooltipProps["placement"];
-  readonly fontSize?: TypographySize;
+  readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly textClassName?: ComponentProps["className"];
   readonly fontFamily?: FontFamily;

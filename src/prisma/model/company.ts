@@ -1,10 +1,10 @@
-import { type Company, type Experience } from "./core";
+import { type BrandCompany, type BrandExperience } from "./brand";
 import { type ConditionallyInclude } from "./inclusion";
 
 export type CompanyIncludes = ["experiences"] | [];
 
 export type ApiCompany<I extends CompanyIncludes> = ConditionallyInclude<
-  Company & { readonly experiences: Experience[] },
+  BrandCompany & { readonly experiences: BrandExperience[] },
   ["experiences"],
   I
 >;

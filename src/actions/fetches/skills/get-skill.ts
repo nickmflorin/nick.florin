@@ -3,7 +3,7 @@ import { cache } from "react";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
-import { type ApiSkill, type Skill, type SkillIncludes } from "~/prisma/model";
+import { type ApiSkill, type BrandSkill, type SkillIncludes } from "~/prisma/model";
 import { conditionallyInclude } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
 import { ApiClientGlobalError } from "~/api";
@@ -24,7 +24,7 @@ export const getSkill = cache(
     id: string,
     { visibility = "public", includes }: { visibility: Visibility; includes: I },
   ): Promise<ApiSkill<I>> => {
-    let skill: Skill;
+    let skill: BrandSkill;
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });

@@ -9,7 +9,7 @@ import {
   type ApiExperience,
   DetailEntityType,
   type ExpIncludes,
-  type Skill,
+  type BrandSkill,
   type ApiDetail,
   type ExperienceOnSkills,
   fieldIsIncluded,
@@ -98,8 +98,9 @@ export const getExperiences = cache(
       take: pagination ? pagination.pageSize : undefined,
     });
 
-    let experienceSkills: (Skill & { readonly experiences: ExperienceOnSkills[] })[] | undefined =
-      undefined;
+    let experienceSkills:
+      | (BrandSkill & { readonly experiences: ExperienceOnSkills[] })[]
+      | undefined = undefined;
     if (fieldIsIncluded("skills", includes)) {
       experienceSkills = await prisma.skill.findMany({
         include: { experiences: true },

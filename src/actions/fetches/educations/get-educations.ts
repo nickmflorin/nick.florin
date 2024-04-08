@@ -10,7 +10,7 @@ import {
   DetailEntityType,
   type EduIncludes,
   type ApiDetail,
-  type Skill,
+  type BrandSkill,
   type EducationOnSkills,
   fieldIsIncluded,
 } from "~/prisma/model";
@@ -99,7 +99,7 @@ export const getEducations = cache(
       take: pagination ? pagination.pageSize : undefined,
     });
 
-    let educationSkills: (Skill & { readonly educations: EducationOnSkills[] })[] | undefined =
+    let educationSkills: (BrandSkill & { readonly educations: EducationOnSkills[] })[] | undefined =
       undefined;
     if (fieldIsIncluded("skills", includes)) {
       educationSkills = await prisma.skill.findMany({

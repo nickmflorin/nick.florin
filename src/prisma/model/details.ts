@@ -1,23 +1,19 @@
-import {
-  type DetailEntityType,
-  type Experience,
-  type Education,
-  type Detail,
-  type NestedDetail,
-} from "./core";
+import type { BrandNestedDetail, BrandDetail, BrandEducation, BrandExperience } from "./brand";
+
+import { type DetailEntityType } from "./core";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiProject } from "./project";
 import { type ApiSkill } from "./skills";
 
 export type DetailEntity<T extends DetailEntityType> = {
-  readonly [DetailEntityType.EXPERIENCE]: Experience;
-  readonly [DetailEntityType.EDUCATION]: Education;
+  readonly [DetailEntityType.EXPERIENCE]: BrandExperience;
+  readonly [DetailEntityType.EDUCATION]: BrandEducation;
 }[T];
 
 export type NestedDetailIncludes = ["skills"] | [];
 
 export type NestedApiDetail<I extends NestedDetailIncludes = []> = ConditionallyInclude<
-  NestedDetail & {
+  BrandNestedDetail & {
     readonly project: ApiProject<I> | null;
     readonly skills: Omit<ApiSkill, "autoExperience">[];
   },
@@ -40,7 +36,7 @@ export type ToSkillIncludes<I extends DetailIncludes> = I extends
   : [];
 
 export type ApiDetail<I extends DetailIncludes = []> = ConditionallyInclude<
-  Detail & {
+  BrandDetail & {
     readonly project: ApiProject<ToSkillIncludes<I>> | null;
     readonly skills: Omit<ApiSkill, "autoExperience">[];
     readonly nestedDetails: NestedApiDetail<ToSkillIncludes<I>>[];

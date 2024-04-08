@@ -1,4 +1,4 @@
-import { type Experience, type Company } from "./core";
+import { type BrandModel } from "./brand";
 import { type ApiDetail } from "./details";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
@@ -11,8 +11,7 @@ export type ExpIncludes =
   | [];
 
 export type ApiExperience<I extends ExpIncludes = []> = ConditionallyInclude<
-  Experience & {
-    readonly company: Company;
+  BrandModel<"experience"> & {
     readonly details: ApiDetail<["nestedDetails", "skills"]>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];
   },

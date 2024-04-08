@@ -1,0 +1,22 @@
+import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+
+import { ModelImage, type ModelImageSpreadProps } from "./ModelImage";
+
+export interface ResumeModelImageProps<M extends BrandModel<T>, T extends ResumeBrand>
+  extends Omit<ModelImageSpreadProps, "fallbackIcon" | "url" | "size"> {
+  readonly model: M;
+  readonly size: number;
+}
+
+export const ResumeModelImage = <M extends BrandModel<T>, T extends ResumeBrand>({
+  model,
+  size,
+  ...props
+}: ResumeModelImageProps<M, T>) => (
+  <ModelImage
+    {...props}
+    fallbackIcon={model.__kind__ === "experience" ? { name: "briefcase" } : { name: "briefcase" }}
+    url={model.__kind__ === "experience" ? model.company.logoImageUrl : model.school.logoImageUrl}
+    size={size}
+  />
+);

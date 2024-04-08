@@ -4,7 +4,7 @@ import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/prisma/m
 import { Skills } from "~/components/badges/collections/Skills";
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
-import { type TypographySize } from "~/components/typography";
+import { type FontSize } from "~/components/typography";
 import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 
@@ -15,7 +15,7 @@ export interface DetailTileProps<
 > extends ComponentProps {
   readonly detail: D;
   readonly index?: number;
-  readonly textSize?: TypographySize;
+  readonly textSize?: FontSize;
 }
 
 export const DetailTile = <

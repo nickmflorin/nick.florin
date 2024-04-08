@@ -6,7 +6,7 @@ import { type ComponentProps } from "~/components/types";
 import {
   type ExtendingTypographyProps,
   FontWeights,
-  TypographySizes,
+  FontSizes,
   getTypographyClassName,
 } from "~/components/typography";
 
@@ -28,7 +28,7 @@ export const BadgeCollection = <M,>({
   data,
   children,
   fontWeight = FontWeights.MEDIUM,
-  fontSize = TypographySizes.SM,
+  fontSize = FontSizes.SM,
   transform,
   fontFamily,
   ...props

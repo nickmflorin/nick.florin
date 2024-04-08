@@ -18,29 +18,24 @@ as global variables are not reloaded:
 See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-management
      #prevent-hot-reloading-from-creating-new-instances-of-prismaclient
 */
-// import "server-only";
+import "server-only";
 
 import { logger } from "~/application/logger";
 import { PrismaClient as RootPrismaClient } from "~/prisma/model";
 import { environment } from "~/environment";
 
+import { brandExtension } from "./brand-extension";
 import { ModelMetaDataMiddleware } from "./middleware";
 
 export * from "./errors";
 
-/**
- * Initializes and returns the {@link PrismaClient} based on configuration values stored as ENV
- * variables.
- *
- * @returns {{ xprisma: PrismaClientWithExtensions, prisma: PrismaClient }}
- */
 export const initializePrismaClient = () => {
   logger.info("Initializing Prisma Client");
   const prisma = new RootPrismaClient({
     log: environment.get("DATABASE_LOG_LEVEL"),
   });
   prisma.$use(ModelMetaDataMiddleware);
-  return prisma;
+  return prisma.$extends(brandExtension);
 };
 
 export type PrismaClient = ReturnType<typeof initializePrismaClient>;
@@ -62,3 +57,8 @@ if (typeof window === "undefined") {
     }
   }
 }
+
+export type Transaction = Omit<
+  PrismaClient,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;

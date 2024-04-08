@@ -7,19 +7,19 @@ import { getAuthAdminUser } from "~/application/auth";
 import { strictArrayLookup, minDate } from "~/lib";
 import { prisma } from "~/prisma/client";
 import {
-  type Skill,
+  type BrandSkill,
   type ApiSkill,
-  type Experience,
-  type Education,
-  type Company,
-  type School,
+  type BrandExperience,
+  type BrandEducation,
+  type BrandCompany,
+  type BrandSchool,
   type EducationOnSkills,
   type ExperienceOnSkills,
   type SkillCategory,
   type ProgrammingLanguage,
   type ProgrammingDomain,
   type SkillIncludes,
-  type Project,
+  type BrandProject,
   type ProjectOnSkills,
   conditionallyInclude,
 } from "~/prisma/model";
@@ -122,17 +122,17 @@ export const toApiSkill = ({
   experiences: _experiences,
   projects: _projects,
 }: {
-  readonly skill: Skill;
-  readonly projects: (Project & {
+  readonly skill: BrandSkill;
+  readonly projects: (BrandProject & {
     readonly skills: ProjectOnSkills[];
   })[];
-  readonly educations: (Education & {
+  readonly educations: (BrandEducation & {
     readonly skills: EducationOnSkills[];
-    readonly school: School;
+    readonly school: BrandSchool;
   })[];
-  readonly experiences: (Experience & {
+  readonly experiences: (BrandExperience & {
     readonly skills: ExperienceOnSkills[];
-    readonly company: Company;
+    readonly company: BrandCompany;
   })[];
 }): ApiSkill<["experiences", "educations", "projects"]> => {
   const educations = _educations.filter(edu => edu.skills.some(s => s.skillId === skill.id));

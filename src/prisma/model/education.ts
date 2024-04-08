@@ -1,4 +1,5 @@
-import { type Education, type School, Degree } from "./core";
+import { type BrandModel } from "./brand";
+import { Degree } from "./core";
 import { type ApiDetail } from "./details";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
@@ -25,8 +26,7 @@ export type EduIncludes =
   | [];
 
 export type ApiEducation<I extends EduIncludes = []> = ConditionallyInclude<
-  Education & {
-    readonly school: School;
+  BrandModel<"education"> & {
     readonly details: ApiDetail<["nestedDetails", "skills"]>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];
   },

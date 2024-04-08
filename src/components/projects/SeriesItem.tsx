@@ -1,5 +1,5 @@
 import { type Size } from "~/components/types";
-import { type TypographySize } from "~/components/typography";
+import { type FontSize } from "~/components/typography";
 import { Text } from "~/components/typography/Text";
 
 interface SeriesItemProps {
@@ -8,7 +8,7 @@ interface SeriesItemProps {
   readonly children: string;
   readonly withColon?: boolean;
   readonly titleWidth: Size;
-  readonly textSize?: TypographySize;
+  readonly textSize?: FontSize;
 }
 
 export const SeriesItem = ({

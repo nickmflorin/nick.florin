@@ -6,7 +6,7 @@ import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import {
-  TypographySizes,
+  FontSizes,
   FontWeights,
   getTypographyClassName,
   type ExtendingTypographyProps,
@@ -24,7 +24,7 @@ export interface BadgeProps
 export const Badge = ({
   children,
   fontWeight = FontWeights.MEDIUM,
-  fontSize = TypographySizes.SM,
+  fontSize = FontSizes.SM,
   icon,
   transform,
   fontFamily,

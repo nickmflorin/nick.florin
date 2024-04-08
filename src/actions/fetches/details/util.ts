@@ -1,23 +1,23 @@
 import { prisma } from "~/prisma/client";
 import {
   type NestedApiDetail,
-  type Skill,
-  type Detail,
-  type Project,
+  type BrandSkill,
+  type BrandDetail,
+  type BrandProject,
   type DetailOnSkills,
   type ProjectOnSkills,
-  type NestedDetail,
+  type BrandNestedDetail,
   type NestedDetailOnSkills,
   type ApiDetail,
 } from "~/prisma/model";
 import { type Visibility } from "~/api/query";
 
-type Det = Detail & {
+type Det = BrandDetail & {
   readonly skills: DetailOnSkills[];
-  readonly project: (Project & { readonly skills: ProjectOnSkills[] }) | null;
-  readonly nestedDetails?: (NestedDetail & {
+  readonly project: (BrandProject & { readonly skills: ProjectOnSkills[] }) | null;
+  readonly nestedDetails?: (BrandNestedDetail & {
     readonly skills: NestedDetailOnSkills[];
-    readonly project: (Project & { readonly skills: ProjectOnSkills[] }) | null;
+    readonly project: (BrandProject & { readonly skills: ProjectOnSkills[] }) | null;
   })[];
 };
 
@@ -31,7 +31,7 @@ export const includeSkills = <P extends Det>({
   skills,
 }: {
   detail: P;
-  skills: Skill[];
+  skills: BrandSkill[];
 }): RT<P> => {
   const det: ApiDetail<["skills"]> = {
     ...d,
@@ -93,14 +93,14 @@ export const getDetailSkills = async (
 ) => {
   const projects = [...(Array.isArray(details) ? details : [details])]
     .reduce(
-      (prev: (Project | null)[], curr: ApiDetail<[]> | ApiDetail<["nestedDetails"]>) => [
+      (prev: (BrandProject | null)[], curr: ApiDetail<[]> | ApiDetail<["nestedDetails"]>) => [
         ...prev,
         curr.project,
         ...((curr as ApiDetail<["nestedDetails"]>).nestedDetails ?? []).map(nd => nd.project),
       ],
       [],
     )
-    .filter((p): p is Project => p !== null);
+    .filter((p): p is BrandProject => p !== null);
   return await prisma.skill.findMany({
     where: {
       AND: [
@@ -140,8 +140,11 @@ export const getNestedDetailSkills = async (
   { visibility }: { visibility?: Visibility },
 ) => {
   const projects = [...(Array.isArray(details) ? details : [details])]
-    .reduce((prev: (Project | null)[], curr: NestedApiDetail<[]>) => [...prev, curr.project], [])
-    .filter((p): p is Project => p !== null);
+    .reduce(
+      (prev: (BrandProject | null)[], curr: NestedApiDetail<[]>) => [...prev, curr.project],
+      [],
+    )
+    .filter((p): p is BrandProject => p !== null);
   return await prisma.skill.findMany({
     where: {
       AND: [
