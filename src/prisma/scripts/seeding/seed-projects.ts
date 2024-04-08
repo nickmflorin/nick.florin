@@ -28,15 +28,22 @@ export const findCorrespondingProject = async (name: string): Promise<Project> =
 export async function seedProjects(ctx: SeedContext) {
   if (json.projects.length !== 0) {
     const output = stdout.begin(`Generating ${json.projects.length} Projects...`);
+
     let projects: Project[] = [];
     for (let i = 0; i < json.projects.length; i++) {
-      const { skills: jsonSkills = [], ...jsonProject } = json.projects[i];
+      const {
+        skills: jsonSkills = [],
+        repositories: jsonRepositories,
+        ...jsonProject
+      } = json.projects[i];
+
       output.begin(`Generating Project: ${jsonProject.name}...`);
       let project: Project;
       try {
         project = await prisma.project.create({
           data: {
             ...jsonProject,
+            repositories: { connect: (jsonRepositories ?? []).map((slug: string) => ({ slug })) },
             slug: jsonProject.slug === undefined ? slugify(jsonProject.name) : jsonProject.slug,
             createdById: ctx.user.id,
             updatedById: ctx.user.id,

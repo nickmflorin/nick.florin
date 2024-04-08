@@ -10,6 +10,7 @@ import {
   seedProfile,
   seedSkills,
   seedProjects,
+  seedRepositories,
 } from "./seeding";
 
 async function main() {
@@ -28,7 +29,8 @@ async function main() {
     user: await upsertUserFromClerk(clerkUser, { isAdmin: true }),
   };
   await seedProfile(ctx);
-  await seedSkills(ctx); // Must be done first
+  await seedRepositories(ctx); // Must be done before skills and projects.
+  await seedSkills(ctx); // Must be done before projects, schools & companies.
   await seedProjects(ctx); // Must be done after skills, but before schools and companies.
   await seedSchools(ctx);
   await seedCompanies(ctx);

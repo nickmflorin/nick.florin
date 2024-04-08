@@ -20,7 +20,8 @@
         "vercel",
         "tailwindcss",
         "sass"
-      ]
+      ],
+      "repositories": ["nick.florin"]
     }
   ]
 }

@@ -19,7 +19,7 @@ model User {
   emailAddress         String
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
-  updatedSkills        Skill[]        @relation("updatedSkils")
+  updatedSkills        Skill[]        @relation("updatedSkills")
   createdSkills        Skill[]        @relation("createdSkills")
   updatedCompanies     Company[]      @relation("updatedCompanies")
   createdCompanies     Company[]      @relation("createdCompanies")
@@ -39,6 +39,8 @@ model User {
   createdCourses       Course[]       @relation("createdCourses")
   updatedProjects      Project[]      @relation("updatedProjects")
   createdProjects      Project[]      @relation("createdProjects")
+  updatedRepositories  Repository[]   @relation("updatedRepositories")
+  createdRepositories  Repository[]   @relation("createdRepositories")
 }
 
 model NestedDetailOnSkills {
@@ -147,6 +149,19 @@ enum ProgrammingLanguage {
   R
 }
 
+model Repository {
+  id          String    @id @default(uuid()) @db.Uuid
+  slug        String    @unique
+  createdAt   DateTime  @default(now())
+  createdBy   User      @relation("createdRepositories", fields: [createdById], references: [id])
+  createdById String    @db.Uuid
+  updatedAt   DateTime  @updatedAt
+  updatedBy   User      @relation("updatedRepositories", fields: [updatedById], references: [id])
+  updatedById String    @db.Uuid
+  skills      Skill[]   @relation("skillRepositories")
+  projects    Project[] @relation("projectRepositories")
+}
+
 model Skill {
   id                   String                 @id @default(uuid()) @db.Uuid
   label                String                 @unique
@@ -155,7 +170,7 @@ model Skill {
   createdBy            User                   @relation("createdSkills", fields: [createdById], references: [id])
   createdById          String                 @db.Uuid
   updatedAt            DateTime               @updatedAt
-  updatedBy            User                   @relation("updatedSkils", fields: [updatedById], references: [id])
+  updatedBy            User                   @relation("updatedSkills", fields: [updatedById], references: [id])
   updatedById          String                 @db.Uuid
   experiences          ExperienceOnSkills[]   @relation("experiences")
   educations           EducationOnSkills[]    @relation("educations")
@@ -173,6 +188,7 @@ model Skill {
   projects             ProjectOnSkills[]      @relation("projects")
   details              DetailOnSkills[]       @relation("details")
   nestedDetails        NestedDetailOnSkills[] @relation("nestedDetails")
+  repositories         Repository[]           @relation("skillRepositories")
 }
 
 model CourseOnSkills {
@@ -232,6 +248,7 @@ model Project {
   skills        ProjectOnSkills[] @relation("skills")
   details       Detail[]          @relation("details")
   nestedDetails NestedDetail[]    @relation("nestedDetails")
+  repositories  Repository[]      @relation("projectRepositories")
 }
 
 model Company {

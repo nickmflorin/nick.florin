@@ -29,15 +29,19 @@ export const findCorrespondingSkills = async (jsonSkills: string[]): Promise<Ski
 const _seedSkills = async (ctx: SeedContext, skills: JsonSkill[]) => {
   if (skills.length !== 0) {
     const output = stdout.begin(`Generating Skills from ${skills.length} Fixtures...`);
+
     for (let i = 0; i < skills.length; i++) {
-      const jsonSkill = skills[i];
+      const { repositories: jsonRepositories, ...jsonSkill } = skills[i];
       output.begin(`Generating Skill: ${jsonSkill.label}...`);
       let skill: Skill;
       const data = {
         ...jsonSkill,
+        repositories: {
+          connect: (jsonRepositories ?? []).map(slug => ({ slug })),
+        },
         slug: jsonSkill.slug === undefined ? slugify(jsonSkill.label) : jsonSkill.slug,
-        createdById: ctx.user.id,
-        updatedById: ctx.user.id,
+        createdBy: { connect: { id: ctx.user.id } },
+        updatedBy: { connect: { id: ctx.user.id } },
       };
       try {
         skill = await prisma.skill.create({ data });

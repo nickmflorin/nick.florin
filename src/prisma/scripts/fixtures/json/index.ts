@@ -5,6 +5,7 @@ import * as schemas from "../schemas";
 import companies from "./companies.json";
 import profile from "./profile.json";
 import projects from "./projects.json";
+import repositories from "./repositories.json";
 import schools from "./schools.json";
 import skills from "./skills.json";
 
@@ -21,5 +22,8 @@ export const json = {
   profile,
   projects: projects.projects.map(
     (p): z.infer<typeof schemas.ProjectSchema> => schemas.ProjectSchema.parse(p),
+  ),
+  repositories: repositories.repositories.map(
+    (p): z.infer<typeof schemas.RepositorySchema> => schemas.RepositorySchema.parse(p),
   ),
 };

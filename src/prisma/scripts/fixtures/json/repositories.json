@@ -1,0 +1,11 @@
+{
+  "repositories": [
+    { "slug": "nick.florin" },
+    { "slug": "sportbook" },
+    { "slug": "happybudget-api" },
+    { "slug": "django-polymorphic-bulk-create" },
+    { "slug": "portfolio-drf" },
+    { "slug": "portfolio-frontend" },
+    { "slug": "pebl" }
+  ]
+}

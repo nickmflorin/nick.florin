@@ -15,17 +15,18 @@
           "endDate": "2016-01-01T00:00:00Z",
           "skills": ["python", "matlab", "django", "pandas", "numpy", "scipy", "scikit-learn"],
           "courses": [
-            {
-              "name": "Advanced Equity Derivatives"
-            },
-            {
-              "name": "Monte Carlo Methods"
-            },
-
+            { "name": "Advanced Equity Derivatives" },
+            { "name": "Monte Carlo Methods" },
+            { "name": "Stochastic Processes" },
+            { "name": "Stochastic Calculus" },
+            { "name": "Financial Derivatives" },
+            { "name": "Structured Products" },
+            { "name": "Time Series Analysis" },
             {
               "name": "Credit Default Risk Modeling",
               "shortName": "Credit Default Risk"
-            }
+            },
+            { "name": "Machine Learning" }
           ]
         },
         {
@@ -43,7 +44,8 @@
               "name": "Data Mining"
             },
             {
-              "name": "Queueing Theory"
+              "name": "Queueing Theory and its Applications in Computer Science",
+              "shortName": "Queueing Theory"
             },
             {
               "name": "Probabalistic Models in Computer Science",
@@ -51,7 +53,7 @@
               "shortName": "Probabalistic Models"
             }
           ],
-          "note": "Ongoing coursework towards additional degree, temporarily post-poned. Completed approximately 50% of coursework, focusing on Neural Networks, Queueing Theory, Probabilistic Models in Computer Science & Machine Learning."
+          "note": "Ongoing coursework temporarily post-poned after completing approximately 50% of coursework."
         }
       ]
     },
@@ -70,7 +72,20 @@
           "concentration": "Robotics & Control Systems",
           "startDate": "2010-08-01T00:00:00Z",
           "endDate": "2014-05-01T00:00:00Z",
-          "skills": ["python", "matlab", "c-plus-plus"]
+          "skills": ["python", "matlab", "c-plus-plus"],
+          "courses": [
+            { "name": "Computer Science" },
+            { "name": "Embedded Control" },
+            { "name": "Robotics" },
+            { "name": "Signals & Systems" },
+            { "name": "Fields & Waves" },
+            { "name": "Electrical Power Systems" },
+            { "name": "Electrical Engineering Design" },
+            { "name": "Digital Components & Operations" },
+            { "name": "Economics" },
+            { "name": "Managerial Economics" },
+            { "name": "Probability Theory" }
+          ]
         }
       ]
     }

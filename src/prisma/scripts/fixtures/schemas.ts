@@ -14,6 +14,7 @@ export const SkillJsonSchema = z.object({
   programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)).optional(),
   programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)).optional(),
   includeInTopSkills: z.boolean().optional(),
+  repositories: z.array(z.string()).optional(),
 });
 
 export type JsonSkill = z.infer<typeof SkillJsonSchema>;
@@ -27,6 +28,8 @@ export const CourseJsonSchema = z.object({
   skills: z.array(z.string()).optional(),
 });
 
+export const RepositorySchema = z.object({ slug: z.string() });
+
 export const ProjectSchema = z.object({
   name: z.string(),
   shortName: z.string().optional(),
@@ -35,6 +38,7 @@ export const ProjectSchema = z.object({
   startDate: z.coerce.date(),
   visible: z.boolean().optional(),
   skills: z.array(z.string()).optional(),
+  repositories: z.array(z.string()).optional(),
 });
 
 export const NestedDetailJsonSchema = z.object({
