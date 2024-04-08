@@ -40,8 +40,8 @@ export type ApiEducation<I extends EduIncludes = []> = ConditionallyInclude<
   BrandModel<"education"> & {
     readonly details: ApiDetail<["nestedDetails", "skills"]>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];
-    /* TODO: We will have to create an ApiCourse to handle cases where the skills should be nested
-       for each course. */
+    /* Note: We do not need to worry about skills that are nested under the courses because we
+       never show the skills associated with a course unless it is a detail view of the course. */
     readonly courses: BrandCourse[];
   },
   ["skills", "details", "courses"],

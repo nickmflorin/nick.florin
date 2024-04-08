@@ -28,7 +28,7 @@ export const CourseJsonSchema = z.object({
   skills: z.array(z.string()).optional(),
 });
 
-export const RepositorySchema = z.object({ slug: z.string() });
+export const RepositorySchema = z.object({ slug: z.string(), description: z.string() });
 
 export const ProjectSchema = z.object({
   name: z.string(),

@@ -1,5 +1,6 @@
 export * from "./core";
 export * from "./company";
+export * from "./course";
 export * from "./details";
 export * from "./education";
 export * from "./experience";

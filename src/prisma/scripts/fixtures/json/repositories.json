@@ -1,11 +1,23 @@
 {
   "repositories": [
-    { "slug": "nick.florin" },
-    { "slug": "sportbook" },
-    { "slug": "happybudget-api" },
-    { "slug": "django-polymorphic-bulk-create" },
-    { "slug": "portfolio-drf" },
-    { "slug": "portfolio-frontend" },
-    { "slug": "pebl" }
+    { "slug": "nick.florin", "description": "Personal Website, Resume & Portfolio" },
+    { "slug": "sportbook", "description": "Pick Up & Social Sports League Management" },
+    {
+      "slug": "happybudget-api",
+      "description": "Backend API for Happy Budget Application & Framework"
+    },
+    {
+      "slug": "django-polymorphic-bulk-create",
+      "description": "Experimental Code for Bulk Create Behavior with Polymorphic Models"
+    },
+    {
+      "slug": "portfolio-drf",
+      "description": "Personal Portfolio API w Django REST Framework (Old)"
+    },
+    {
+      "slug": "portfolio-frontend",
+      "description": "React Application for Personal Portfolio (Old)"
+    },
+    { "slug": "pebl", "description": "iOS Dating Application Based on Event/Date Based Matching" }
   ]
 }
