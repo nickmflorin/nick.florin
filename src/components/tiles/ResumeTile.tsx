@@ -7,9 +7,9 @@ import {
   type ApiDetail,
 } from "~/prisma/model";
 import { Skills } from "~/components/badges/collections/Skills";
-import { LocationBadge } from "~/components/badges/LoocationBadge";
-import { TimePeriodBadge } from "~/components/badges/TimePeriodBadge";
 import { ModelImage, type ModelImageProps } from "~/components/images/ModelImage";
+import { LocationTag } from "~/components/tags/LocationTag";
+import { TimePeriodTag } from "~/components/tags/TimePeriodTag";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
@@ -71,14 +71,14 @@ export const ResumeTile = ({
   <div {...props} className={clsx("flex flex-col w-full gap-[10px] max-w-100%", props.className)}>
     <div className="flex flex-row gap-[10px]">
       <ModelImage size={72} fallbackIcon={fallbackImageIcon} image={{ url: imageUrl }} />
-      <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[8px]">
         <div className="flex flex-col gap-[4px] pt-[4px]">
           <Title order={2}>{title}</Title>
           <LinkOrText url={websiteUrl}>{name}</LinkOrText>
         </div>
         <div className="flex flex-row gap-[8px] items-center">
-          <TimePeriodBadge timePeriod={timePeriod} />
-          <LocationBadge location={location} />
+          <TimePeriodTag timePeriod={timePeriod} />
+          <LocationTag location={location} />
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 {
   "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.rulers": [100],
   "editor.formatOnSave": true,
@@ -15,6 +16,7 @@
     //   "source.fixAll.stylelint": "explicit"
     // }
   },
+
   "eslint.run": "onSave",
   "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],
   "eslint.format.enable": true,
@@ -27,25 +29,27 @@
     "multiline-comment-style",
     "prefer-const",
     "react/jsx-curly-brace-presence"
-    // "@typescript-eslint/consistent-type-imports"
-    // "@typescript-eslint/semi",
-    // "@typescript-eslint/indent",
-    // "@typescript-eslint/consistent-type-imports",
-    // "!@typescript-eslint/*",
-    // "!prettier/prettier",
-    // "*"
   ],
-  "editor.trimAutoWhitespace": true,
+
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
+
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "javascript.format.enable": false,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.format.enable": false,
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.preferences.renameMatchingJsxTags": true,
+  "typescript.preferences.autoImportFileExcludePatterns": ["@mantine/*"],
+
+  "javascript.format.enable": false,
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+
   // These 3 are turned off so that they do not conflict with stylelint.
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
+
   "stylelint.validate": ["css", "scss", "less", "postcss"],
   "stylelint.configBasedir": "/",
   "stylelint.packageManager": "pnpm"
