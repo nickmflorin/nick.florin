@@ -89,9 +89,18 @@ const lookupMenuModel = <
     In the case of a multi menu, if a value in the value array is not associated with any model in
     the dataset, this is still an error - but we can more gracefully handle it by logging and simply
     excluding that potential model from the set of models represented by the array of values. */
-    const msg =
-      `No models correspond to the value, '${v}'!  This should not happen, the value ` +
-      "should uniquely identify the model!";
+
+    let msg: string;
+    if (typeof v === "string" && v.trim() === "") {
+      msg =
+        "The value is an empty string, which is not associated with any model in the data!\n" +
+        "Did you forget to set the 'isReady' flag?";
+    } else {
+      msg =
+        `No models correspond to the value, '${v}'!  This should not happen, the value ` +
+        "should uniquely identify the model!\n" +
+        "Did you forget to set the 'isReady' flag?";
+    }
     // Throw the error if the menu is non-multi and non-nullable.
     if (opts?.throwIfNotAssociated === true) {
       throw new TypeError(msg);

@@ -17,11 +17,7 @@ export const CreateSkillDrawer = ({ onClose }: CreateSkillDrawerProps): JSX.Elem
   <Drawer>
     <DrawerHeader>Create a School</DrawerHeader>
     <DrawerContent>
-      <CreateSkillForm
-        className="mt-[16px]"
-        onCancel={() => onClose()}
-        onSuccess={() => onClose()}
-      />
+      <CreateSkillForm onCancel={() => onClose()} onSuccess={() => onClose()} />
     </DrawerContent>
   </Drawer>
 );

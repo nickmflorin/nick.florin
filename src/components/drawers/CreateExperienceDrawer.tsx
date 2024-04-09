@@ -20,11 +20,7 @@ export const CreateExperienceDrawer = ({ onClose }: CreateExperienceDrawerProps)
   <Drawer>
     <DrawerHeader>Create an Experience</DrawerHeader>
     <DrawerContent>
-      <CreateExperienceForm
-        className="mt-[16px]"
-        onCancel={() => onClose()}
-        onSuccess={() => onClose()}
-      />
+      <CreateExperienceForm onCancel={() => onClose()} onSuccess={() => onClose()} />
     </DrawerContent>
   </Drawer>
 );

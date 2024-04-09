@@ -16,7 +16,7 @@ export type RepositoryLinkProps = Omit<
 export const RepositoryLink = ({ repository, ...props }: RepositoryLinkProps): JSX.Element => (
   <Link
     fontWeight="medium"
-    fontSize="md"
+    fontSize="sm"
     {...props}
     flex
     options={{ as: "a" }}

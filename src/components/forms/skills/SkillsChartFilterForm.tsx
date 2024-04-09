@@ -84,6 +84,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           visibility="public"
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
+          options={{ isMulti: true }}
           useAbbreviatedOptionLabels={false}
           value={value}
           onChange={onChange}

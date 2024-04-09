@@ -1,44 +1,36 @@
-import dynamic from "next/dynamic";
-
 import { isUuid } from "~/lib/typeguards";
+import type { BrandCourse } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { Loading } from "~/components/feedback/Loading";
+import { useCourseForm } from "~/components/forms/courses/hooks";
+import { UpdateCourseForm } from "~/components/forms/courses/UpdateCourseF";
 import { useCourse } from "~/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
-
-import { type ExtendingDrawerProps } from ".";
-
-const CourseForm = dynamic(() => import("~/components/forms/courses/UpdateCourseF"), {
-  loading: () => <Loading isLoading={true} />,
-});
+import { DrawerForm } from "./DrawerForm";
+import { type ExtendingDrawerProps } from "./provider";
 
 interface UpdateCourseDrawerProps
   extends ExtendingDrawerProps<{
     readonly courseId: string;
+    readonly eagerCourse?: Pick<BrandCourse, "name" | "shortName">;
   }> {}
 
-export const UpdateCourseDrawer = ({ courseId }: UpdateCourseDrawerProps): JSX.Element => {
+export const UpdateCourseDrawer = ({
+  courseId,
+  eagerCourse,
+}: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useCourse(isUuid(courseId) ? courseId : null, {
     includes: ["education"],
     visibility: "admin",
     keepPreviousData: true,
   });
+  const form = useCourseForm();
+
   return (
-    <Drawer>
+    <DrawerForm form={form} titleField="name" titlePlaceholder={eagerCourse?.name ?? "Course Name"}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {course => (
-          <>
-            <DrawerHeader>{course.shortName ?? course.name}</DrawerHeader>
-            <DrawerContent>
-              <CourseForm course={course} />
-            </DrawerContent>
-          </>
-        )}
+        {course => <UpdateCourseForm form={form} course={course} />}
       </ApiResponseState>
-    </Drawer>
+    </DrawerForm>
   );
 };
 

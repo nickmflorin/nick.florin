@@ -16,6 +16,7 @@ export interface ClientEducationSelectProps<O extends { isMulti?: boolean }>
 export const ClientEducationSelect = <O extends { isMulti?: boolean }>({
   onError,
   visibility = "public",
+  isReady = true,
   ...props
 }: ClientEducationSelectProps<O>): JSX.Element => {
   const { data, isLoading, error } = useEducations({ onError, visibility });
@@ -23,10 +24,10 @@ export const ClientEducationSelect = <O extends { isMulti?: boolean }>({
   return (
     <EducationSelect<O, ApiEducation>
       {...props}
-      isReady={data !== undefined}
+      isReady={data !== undefined && isReady}
       data={data ?? []}
-      isDisabled={error !== undefined}
-      isLoading={isLoading}
+      isDisabled={error !== undefined || props.isDisabled}
+      isLoading={isLoading || props.isLoading}
     />
   );
 };

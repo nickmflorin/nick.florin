@@ -5,11 +5,16 @@ import { useTransition } from "react";
 import { type Skill } from "~/prisma/model";
 import { createSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
+import { useForm } from "~/components/forms/generic/hooks/use-form";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../generic/hooks/use-form";
-
-import { SkillForm, SkillFormSchema, type SkillFormProps, type SkillFormValues } from "./SkillForm";
+import {
+  SkillForm,
+  SkillFormSchema,
+  type SkillFormProps,
+  type SkillFormValues,
+  SkillFormDefaultValues,
+} from "./SkillForm";
 
 export interface CreateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
   readonly onCancel?: () => void;
@@ -26,20 +31,7 @@ export const CreateSkillForm = ({
 
   const { setValues, ...form } = useForm<SkillFormValues>({
     schema: SkillFormSchema,
-    defaultValues: {
-      label: "",
-      slug: "",
-      description: "",
-      experiences: [],
-      educations: [],
-      categories: [],
-      projects: [],
-      programmingDomains: [],
-      programmingLanguages: [],
-      includeInTopSkills: false,
-      experience: null,
-      visible: true,
-    },
+    defaultValues: SkillFormDefaultValues,
   });
 
   return (

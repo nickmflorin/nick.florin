@@ -9,16 +9,9 @@ import { createCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../generic/hooks/use-form";
+import { CourseForm, type CourseFormProps } from "./CourseForm";
 
-import {
-  CourseForm,
-  type CourseFormProps,
-  type CourseFormValues,
-  CourseFormSchema,
-} from "./CourseForm";
-
-export interface CreateCourseFormProps extends Omit<CourseFormProps, "form" | "action"> {
+export interface CreateCourseFormProps extends Omit<CourseFormProps, "action"> {
   readonly onSuccess?: (m: Course) => void;
   readonly onCancel?: () => void;
 }
@@ -26,26 +19,18 @@ export interface CreateCourseFormProps extends Omit<CourseFormProps, "form" | "a
 export const CreateCourseForm = ({
   onCancel,
   onSuccess,
+  form,
   ...props
 }: CreateCourseFormProps): JSX.Element => {
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
-
-  const { setValues, ...form } = useForm<CourseFormValues>({
-    schema: CourseFormSchema,
-    defaultValues: {
-      name: "",
-      shortName: "",
-      slug: "",
-    },
-  });
 
   return (
     <CourseForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
+      form={form}
       action={async (data, form) => {
         const response = await createCourse(data);
         if (isApiClientErrorJson(response)) {

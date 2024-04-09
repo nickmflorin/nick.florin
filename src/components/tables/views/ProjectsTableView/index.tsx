@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-import { Button } from "~/components/buttons";
+import { DrawerIds } from "~/components/drawers";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { Loading } from "~/components/feedback/Loading";
 import { TextInput } from "~/components/input/TextInput";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
+import { NewButton } from "~/components/tables/generic/NewButton";
 import { TableSearchBar } from "~/components/tables/generic/TableSearchBar";
 import { TableView as RootTableView } from "~/components/tables/generic/TableView";
 
@@ -22,10 +23,6 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
   loading: () => <TextInput isLoading={true} />,
 });
 
-const NewProjectButton = dynamic(() => import("./NewProjectButton"), {
-  loading: () => <Button.Primary isDisabled={true}>New</Button.Primary>,
-});
-
 interface ProjectsTableViewProps {
   readonly filters: Filters;
   readonly page: number;
@@ -37,7 +34,7 @@ export const ProjectsTableView = ({ filters, page }: ProjectsTableViewProps) => 
       searchBar={
         <TableSearchBar>
           <SearchInput searchParamName="search" />
-          <NewProjectButton />
+          <NewButton drawerId={DrawerIds.CREATE_PROJECT} />
         </TableSearchBar>
       }
       controlBar={<ControlBar />}

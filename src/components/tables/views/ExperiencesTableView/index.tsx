@@ -1,12 +1,13 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-import { Button } from "~/components/buttons";
+import { DrawerIds } from "~/components/drawers";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { Loading } from "~/components/feedback/Loading";
 import { TextInput } from "~/components/input/TextInput";
 import { CompaniesSchoolsDropdownMenu } from "~/components/menus/CompaniesSchoolsDropdownMenu";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
+import { NewButton } from "~/components/tables/generic/NewButton";
 import { TableSearchBar } from "~/components/tables/generic/TableSearchBar";
 import { TableView as RootTableView } from "~/components/tables/generic/TableView";
 
@@ -20,10 +21,6 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
   loading: () => <TextInput isLoading={true} />,
 });
 
-const NewExperienceButton = dynamic(() => import("./NewExperienceButton"), {
-  loading: () => <Button.Primary isDisabled={true}>New</Button.Primary>,
-});
-
 interface TableViewProps {
   readonly filters: Filters;
   readonly page: number;
@@ -35,7 +32,7 @@ export const ExperiencesTableView = ({ filters, page }: TableViewProps) => (
       searchBar={
         <TableSearchBar>
           <SearchInput searchParamName="search" />
-          <NewExperienceButton />
+          <NewButton drawerId={DrawerIds.CREATE_EXPERIENCE} />
           <CompaniesSchoolsDropdownMenu modelType="company" />
         </TableSearchBar>
       }

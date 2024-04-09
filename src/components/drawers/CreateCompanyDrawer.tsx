@@ -17,11 +17,7 @@ export const CreateCompanyDrawer = ({ onClose }: CreateCompanyDrawerProps): JSX.
   <Drawer>
     <DrawerHeader>Create a Company</DrawerHeader>
     <DrawerContent className="overflow-y-hidden">
-      <CreateCompanyForm
-        className="mt-[16px]"
-        onCancel={() => onClose()}
-        onSuccess={() => onClose()}
-      />
+      <CreateCompanyForm onCancel={() => onClose()} onSuccess={() => onClose()} />
     </DrawerContent>
   </Drawer>
 );

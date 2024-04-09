@@ -11,11 +11,7 @@ export const CreateProjectDrawer = ({ onClose }: CreateProjectDrawerProps): JSX.
   <Drawer>
     <DrawerHeader>Create a Project</DrawerHeader>
     <DrawerContent>
-      <CreateProjectForm
-        className="mt-[16px]"
-        onCancel={() => onClose()}
-        onSuccess={() => onClose()}
-      />
+      <CreateProjectForm onCancel={() => onClose()} onSuccess={() => onClose()} />
     </DrawerContent>
   </Drawer>
 );

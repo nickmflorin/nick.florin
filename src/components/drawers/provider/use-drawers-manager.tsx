@@ -1,15 +1,14 @@
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 
+import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
 import { Loading } from "~/components/feedback/Loading";
 
 import { DrawerContainer } from "../DrawerContainer";
 
 import * as types from "./types";
 import { Drawer } from "./util";
-
-const DrawerCloseButton = dynamic(() => import("~/components/buttons/DrawerCloseButton"));
 
 const UpdateEducationDrawer = dynamic(() => import("../UpdateEducationDrawer"), {
   loading: () => <Loading isLoading={true} />,
@@ -142,17 +141,9 @@ export type DrawerDynamicProps<D extends types.DrawerId> = Omit<
   keyof types.InjectedDrawerProps
 >;
 
-type OpenState<I extends types.DrawerId = types.DrawerId> = I extends types.DrawerId
-  ? {
-      id: I;
-      props: DrawerDynamicProps<I>;
-    }
-  : never;
-
 export type DrawersManager = {
   readonly isReady: boolean;
   readonly drawer: JSX.Element | null;
-  readonly openId: types.DrawerId | null;
   readonly close: () => void;
   readonly open: <D extends types.DrawerId>(
     id: D,
@@ -162,45 +153,35 @@ export type DrawersManager = {
 };
 
 export const useDrawersManager = (): Omit<DrawersManager, "isReady"> => {
-  const [openState, setOpenState] = useState<OpenState | null>(null);
-  const closeHandler = useRef<(() => void) | null>(null);
+  const [drawer, setDrawer] = useState<JSX.Element | null>(null);
 
   const close = useCallback(() => {
-    if (openState) {
-      setOpenState(null);
-      if (closeHandler.current) {
-        closeHandler.current();
-      }
-    }
-  }, [openState]);
+    setDrawer(null);
+  }, []);
 
   const open = useCallback(
     <D extends types.DrawerId>(id: D, props: DrawerDynamicProps<D>, handler?: () => void) => {
-      closeHandler?.current?.();
-      closeHandler.current = handler ?? null;
-      setOpenState({ id, props } as OpenState);
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const Drawer = getDrawerComponent(id) as React.ComponentType<any>;
+      const ps = {
+        ...props,
+        onClose: () => setDrawer(null),
+      } as React.ComponentProps<typeof Drawer>;
+
+      setDrawer(
+        <DrawerContainer>
+          <Drawer {...ps} />
+          <DrawerCloseButton
+            onClick={() => {
+              handler?.();
+              setDrawer(null);
+            }}
+          />
+        </DrawerContainer>,
+      );
     },
     [],
   );
 
-  const drawer = useMemo(() => {
-    if (openState) {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const Drawer = getDrawerComponent(openState.id) as React.ComponentType<any>;
-      const ps = {
-        ...openState.props,
-        onClose: () => close(),
-      } as React.ComponentProps<typeof Drawer>;
-
-      return (
-        <DrawerContainer>
-          <Drawer {...ps} />
-          <DrawerCloseButton onClick={() => close()} />
-        </DrawerContainer>
-      );
-    }
-    return null;
-  }, [openState, close]);
-
-  return { drawer, open, close, openId: openState?.id ?? null };
+  return { drawer, open, close };
 };

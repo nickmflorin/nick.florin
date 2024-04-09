@@ -101,7 +101,9 @@ export const CourseSchema = z.object({
   slug: NullableMinLengthStringField({
     minErrorMessage: "The slug must be at least 3 characters.",
   }).optional(),
-  education: z.string().uuid(),
+  education: z
+    .string({ required_error: "The course must be associated with an educational experience." })
+    .uuid("The selected education has an invalid UUID."),
   // This still needs to be incorporated.
   skills: z.array(z.string().uuid()).optional(),
 });
