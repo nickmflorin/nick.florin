@@ -12,7 +12,7 @@ import {
 } from "./core";
 
 export type ToBrandedModel<M, T extends string> = M & {
-  readonly kind: T;
+  readonly $kind: T;
 };
 
 export type Brands = {

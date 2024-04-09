@@ -24,12 +24,12 @@ export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element =>
         <Description
           fontSize="smplus"
           description={
-            model.kind === "education" ? [model.description, model.note] : model.description
+            model.$kind === "education" ? [model.description, model.note] : model.description
           }
         />
         <DetailsTile details={model.details} />
       </div>
-      {model.kind === "education" && model.courses.length !== 0 && (
+      {model.$kind === "education" && model.courses.length !== 0 && (
         <Courses courses={model.courses} className="max-w-[800px]" />
       )}
       {model.skills.length !== 0 && (

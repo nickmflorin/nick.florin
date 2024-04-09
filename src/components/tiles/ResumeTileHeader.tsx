@@ -45,13 +45,13 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
       <div className={clsx("flex flex-col gap-[4px]", { "pt-[4px]": size === "large" })}>
         {size === "large" ? (
           <Title order={2}>
-            {model.kind === "experience"
+            {model.$kind === "experience"
               ? model.title
               : `${getDegree(model.degree).shortLabel} in ${model.major}`}
           </Title>
         ) : (
           <Text size="md" fontWeight="medium">
-            {model.kind === "experience"
+            {model.$kind === "experience"
               ? model.title
               : `${getDegree(model.degree).shortLabel} in ${model.major}`}
           </Text>
@@ -59,9 +59,9 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
         <LinkOrText
           fontWeight={LinkFontWeights[size]}
           fontSize={LinkFontSizes[size]}
-          url={model.kind === "experience" ? model.company.websiteUrl : model.school.websiteUrl}
+          url={model.$kind === "experience" ? model.company.websiteUrl : model.school.websiteUrl}
         >
-          {model.kind === "experience" ? model.company.name : model.school.name}
+          {model.$kind === "experience" ? model.company.name : model.school.name}
         </LinkOrText>
       </div>
       <ShowHide show={size === "large"}>
@@ -69,7 +69,7 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
           <TimePeriodTag
             size="sm"
             timePeriod={
-              model.kind === "experience"
+              model.$kind === "experience"
                 ? { startDate: model.startDate, endDate: model.endDate }
                 : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
             }
@@ -77,7 +77,7 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
           <LocationTag
             size="sm"
             location={
-              model.kind === "education"
+              model.$kind === "education"
                 ? {
                     city: model.school.city,
                     state: model.school.state,
