@@ -4,6 +4,7 @@ import { cache } from "react";
 import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 import { type Profile } from "~/prisma/model";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 
 export const preloadProfile = () => {
   void getProfile();
@@ -17,5 +18,5 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
     );
     return null;
   }
-  return profiles[0];
+  return convertToPlainObject(profiles[0]);
 });

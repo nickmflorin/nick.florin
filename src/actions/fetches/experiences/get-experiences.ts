@@ -14,14 +14,11 @@ import {
   type ExperienceOnSkills,
   fieldIsIncluded,
 } from "~/prisma/model";
-import { constructOrSearch } from "~/prisma/util";
 import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { parsePagination, type Visibility } from "~/api/query";
 
-import { EXPERIENCES_ADMIN_TABLE_PAGE_SIZE } from "../constants";
+import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { getDetails } from "../details";
-
-const SEARCH_FIELDS = ["title", "shortTitle"] as const;
 
 type GetExperiencesFilters = {
   readonly search: string;
@@ -41,9 +38,9 @@ const whereClause = ({
   ({
     AND:
       filters?.search && visibility === "public"
-        ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
+        ? [constructTableSearchClause("experience", filters.search), { visible: true }]
         : filters?.search
-          ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
+          ? [constructTableSearchClause("experience", filters.search)]
           : visibility === "public"
             ? { visible: true }
             : undefined,
@@ -86,8 +83,7 @@ export const getExperiences = cache(
 
     const pagination = await parsePagination({
       page,
-      // TODO: This will eventually have to be dynamic, specified as a query parameter.
-      pageSize: EXPERIENCES_ADMIN_TABLE_PAGE_SIZE,
+      pageSize: PAGE_SIZES.experience,
       getCount: async () => await getExperiencesCount({ filters, visibility }),
     });
 

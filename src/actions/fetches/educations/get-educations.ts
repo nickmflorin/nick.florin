@@ -15,14 +15,11 @@ import {
   type BrandCourse,
   fieldIsIncluded,
 } from "~/prisma/model";
-import { constructOrSearch } from "~/prisma/util";
 import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { parsePagination, type Visibility } from "~/api/query";
 
-import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
+import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { getDetails } from "../details";
-
-const SEARCH_FIELDS = ["major", "concentration", "minor"] as const;
 
 interface GetEducationsFilters {
   readonly search: string;
@@ -42,9 +39,9 @@ const whereClause = ({
   ({
     AND:
       filters?.search && visibility === "public"
-        ? [constructOrSearch(filters.search, [...SEARCH_FIELDS]), { visible: true }]
+        ? [constructTableSearchClause("education", filters.search), { visible: true }]
         : filters?.search
-          ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])]
+          ? [constructTableSearchClause("education", filters.search)]
           : visibility === "public"
             ? { visible: true }
             : undefined,
@@ -87,8 +84,7 @@ export const getEducations = cache(
 
     const pagination = await parsePagination({
       page,
-      // TODO: This will eventually have to be dynamic, specified as a query parameter.
-      pageSize: EDUCATIONS_ADMIN_TABLE_PAGE_SIZE,
+      pageSize: PAGE_SIZES.education,
       getCount: async () => await getEducationsCount({ filters, visibility }),
     });
 
@@ -147,7 +143,7 @@ export const getEducations = cache(
       if (courses) {
         modified = { ...modified, courses: courses.filter(c => c.educationId === edu.id) };
       }
-      return convertToPlainObject(modified) as ApiEducation<I>;
+      return modified as ApiEducation<I>;
     });
     return educations.map(convertToPlainObject) as ApiEducation<I>[];
   },

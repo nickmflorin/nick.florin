@@ -9,6 +9,7 @@ import {
   type DetailIncludes,
   fieldIsIncluded,
 } from "~/prisma/model";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { type Visibility } from "~/api/query";
 
 import { getEntity } from "../get-entity";
@@ -63,9 +64,9 @@ export const getDetails = cache(
       });
       // The skills for all projects, details and nested details associated with the entity(s).
       const skills = await getDetailSkills(details, { visibility });
-      return details.map(
-        (detail): ApiDetail<["nestedDetails", "skills"]> => includeSkills({ detail, skills }),
-      ) as ApiDetail<I>[];
+      return details
+        .map((detail): ApiDetail<["nestedDetails", "skills"]> => includeSkills({ detail, skills }))
+        .map(convertToPlainObject) as ApiDetail<I>[];
     } else if (fieldIsIncluded("skills", includes)) {
       const details = await prisma.detail.findMany({
         where: {
@@ -82,48 +83,54 @@ export const getDetails = cache(
 
       const skills = await getDetailSkills(details, { visibility });
 
-      return details.map(
-        ({ skills: _skills, project, ...d }): ApiDetail<["skills"]> => ({
-          ...d,
-          project: project
-            ? {
-                ...project,
-                skills: skills.filter(sk => project.skills.some(d => d.skillId === sk.id)),
-              }
-            : null,
-          /* Include skills for each Detail by identifying the skills in the overall set that have
-             IDs in the Detail's skills array. */
-          skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-        }),
-      ) as ApiDetail<I>[];
+      return details
+        .map(
+          ({ skills: _skills, project, ...d }): ApiDetail<["skills"]> => ({
+            ...d,
+            project: project
+              ? {
+                  ...project,
+                  skills: skills.filter(sk => project.skills.some(d => d.skillId === sk.id)),
+                }
+              : null,
+            /* Include skills for each Detail by identifying the skills in the overall set that have
+               IDs in the Detail's skills array. */
+            skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
+          }),
+        )
+        .map(convertToPlainObject) as ApiDetail<I>[];
     } else if (fieldIsIncluded("nestedDetails", includes)) {
-      return (await prisma.detail.findMany({
-        where: {
-          entityId: { in: ids },
-          entityType: entityType,
-          visible: visibility === "public" ? true : undefined,
-        },
-        include: {
-          project: true,
-          nestedDetails: {
-            /* Accounts for cases where multiple details were created at the same time due to
-               seeding. */
-            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: { project: true },
+      return (
+        await prisma.detail.findMany({
+          where: {
+            entityId: { in: ids },
+            entityType: entityType,
+            visible: visibility === "public" ? true : undefined,
           },
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      })) as ApiDetail<I>[];
+          include: {
+            project: true,
+            nestedDetails: {
+              /* Accounts for cases where multiple details were created at the same time due to
+               seeding. */
+              orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+              include: { project: true },
+            },
+          },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        })
+      ).map(convertToPlainObject) as ApiDetail<I>[];
     } else {
-      return (await prisma.detail.findMany({
-        where: {
-          entityId: { in: ids },
-          entityType: entityType,
-          visible: visibility === "public" ? true : undefined,
-        },
-        include: { project: true },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      })) as ApiDetail<I>[];
+      return (
+        await prisma.detail.findMany({
+          where: {
+            entityId: { in: ids },
+            entityType: entityType,
+            visible: visibility === "public" ? true : undefined,
+          },
+          include: { project: true },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        })
+      ).map(convertToPlainObject) as ApiDetail<I>[];
     }
   },
 ) as {

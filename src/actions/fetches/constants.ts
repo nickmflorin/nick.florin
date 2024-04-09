@@ -1,6 +1,26 @@
-export const SKILLS_ADMIN_TABLE_PAGE_SIZE = 16;
-export const COURSES_ADMIN_TABLE_PAGE_SIZE = 16;
-export const EXPERIENCES_ADMIN_TABLE_PAGE_SIZE = 8;
-export const EDUCATIONS_ADMIN_TABLE_PAGE_SIZE = 8;
-export const PROJECTS_ADMIN_TABLE_PAGE_SIZE = 8;
-export const DETAILS_ADMIN_TABLE_PAGE_SIZE = 8;
+import type { Brand, BrandModel } from "~/prisma/model";
+import { constructOrSearch } from "~/prisma/util";
+
+type TabledBrand = Extract<Brand, "skill" | "course" | "experience" | "education" | "project">;
+
+// Note: These may eventually have to be replaced with a dynamic page size query param.
+export const PAGE_SIZES = {
+  skill: 16,
+  course: 16,
+  experience: 8,
+  education: 8,
+  project: 8,
+} as const satisfies { [key in TabledBrand]: number };
+
+export const SEARCH_FIELDS = {
+  skill: ["slug", "label"],
+  course: ["name", "shortName", "slug"],
+  experience: ["title", "shortTitle"],
+  education: ["major", "concentration", "minor"],
+  project: ["name", "shortName", "slug"],
+} as const satisfies {
+  [key in TabledBrand]: (keyof BrandModel<key>)[];
+};
+
+export const constructTableSearchClause = (brand: TabledBrand, search: string) =>
+  constructOrSearch(search, [...SEARCH_FIELDS[brand]]);

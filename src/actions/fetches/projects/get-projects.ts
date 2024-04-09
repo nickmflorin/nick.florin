@@ -4,12 +4,10 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/prisma/model";
-import { constructOrSearch } from "~/prisma/util";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { parsePagination } from "~/api/query";
 
-import { PROJECTS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
-
-const SEARCH_FIELDS = ["name", "shortName", "slug"];
+import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
 interface GetProjectsFilters {
   readonly search: string;
@@ -23,7 +21,7 @@ type GetProjectsParams<I extends ProjectIncludes> = {
 
 const whereClause = ({ filters }: Pick<GetProjectsParams<ProjectIncludes>, "filters">) =>
   ({
-    AND: filters?.search ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])] : undefined,
+    AND: filters?.search ? [constructTableSearchClause("project", filters.search)] : undefined,
   }) as const;
 
 export const preloadProjectsCount = (
@@ -63,8 +61,7 @@ export const getProjects = cache(
 
     const pagination = await parsePagination({
       page,
-      // TODO: This will eventually have to be dynamic, specified as a query parameter.
-      pageSize: PROJECTS_ADMIN_TABLE_PAGE_SIZE,
+      pageSize: PAGE_SIZES.project,
       getCount: async () => await getProjectsCount({ filters }),
     });
 
@@ -80,13 +77,14 @@ export const getProjects = cache(
         where: { projects: { some: { projectId: { in: projects.map(p => p.id) } } } },
       });
       return projects.map(
-        (project): ApiProject<["skills"]> => ({
-          ...project,
-          skills: skills.filter(skill => project.skills.some(sk => sk.skillId === skill.id)),
-        }),
+        (project): ApiProject<["skills"]> =>
+          convertToPlainObject({
+            ...project,
+            skills: skills.filter(skill => project.skills.some(sk => sk.skillId === skill.id)),
+          }),
       ) as ApiProject<I>[];
     }
-    return projects as ApiProject<[]>[] as ApiProject<I>[];
+    return projects.map(convertToPlainObject) as ApiProject<[]>[] as ApiProject<I>[];
   },
 ) as {
   <I extends ProjectIncludes>(params: GetProjectsParams<I>): Promise<ApiProject<I>[]>;

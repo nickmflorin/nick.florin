@@ -4,12 +4,10 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type ApiCourse, type CourseIncludes, fieldIsIncluded } from "~/prisma/model";
-import { constructOrSearch } from "~/prisma/util";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { parsePagination } from "~/api/query";
 
-import { COURSES_ADMIN_TABLE_PAGE_SIZE } from "../constants";
-
-const SEARCH_FIELDS = ["name", "shortName", "slug"];
+import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
 interface GetCoursesFilters {
   readonly search: string;
@@ -23,7 +21,7 @@ type GetCoursesParams<I extends CourseIncludes> = {
 
 const whereClause = ({ filters }: Pick<GetCoursesParams<CourseIncludes>, "filters">) =>
   ({
-    AND: filters?.search ? [constructOrSearch(filters.search, [...SEARCH_FIELDS])] : undefined,
+    AND: filters?.search ? [constructTableSearchClause("course", filters.search)] : undefined,
   }) as const;
 
 export const preloadCoursesCount = (params: Pick<GetCoursesParams<CourseIncludes>, "filters">) => {
@@ -61,8 +59,7 @@ export const getCourses = cache(
 
     const pagination = await parsePagination({
       page,
-      // TODO: This will eventually have to be dynamic, specified as a query parameter.
-      pageSize: COURSES_ADMIN_TABLE_PAGE_SIZE,
+      pageSize: PAGE_SIZES.course,
       getCount: async () => await getCoursesCount({ filters }),
     });
 
@@ -84,7 +81,7 @@ export const getCourses = cache(
         }),
       ) as ApiCourse<I>[];
     }
-    return courses as ApiCourse<[]>[] as ApiCourse<I>[];
+    return courses.map(convertToPlainObject) as ApiCourse<[]>[] as ApiCourse<I>[];
   },
 ) as {
   <I extends CourseIncludes>(params: GetCoursesParams<I>): Promise<ApiCourse<I>[]>;

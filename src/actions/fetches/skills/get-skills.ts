@@ -25,14 +25,12 @@ import {
   conditionallyInclude,
   fieldIsIncluded,
 } from "~/prisma/model";
-import { constructOrSearch, conditionalFilters } from "~/prisma/util";
+import { conditionalFilters } from "~/prisma/util";
 import { parsePagination } from "~/api/query";
 import { type Visibility } from "~/api/query";
 
-import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
+import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { convertToPlainObject } from "../serialization";
-
-const SEARCH_FIELDS = ["slug", "label"] as const;
 
 export type GetSkillsFilters = {
   readonly educations?: string[];
@@ -53,7 +51,7 @@ type GetSkillsParams<I extends SkillIncludes> = {
 
 const filtersClause = (filters: GetSkillsFilters) =>
   conditionalFilters([
-    filters.search ? constructOrSearch(filters.search, [...SEARCH_FIELDS]) : undefined,
+    filters.search ? constructTableSearchClause("skill", filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
       ? {
           educations: { some: { educationId: { in: filters.educations } } },
@@ -174,7 +172,7 @@ export const getSkills = cache(
     await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
-      pageSize: SKILLS_ADMIN_TABLE_PAGE_SIZE,
+      pageSize: PAGE_SIZES.skill,
       page,
       getCount: async () => await getSkillsCount({ filters, visibility }),
     });

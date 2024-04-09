@@ -15,6 +15,7 @@ import {
 } from "~/prisma/model";
 import { conditionallyInclude } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { ApiClientGlobalError } from "~/api";
 import { type Visibility } from "~/api/query";
 
@@ -98,10 +99,12 @@ export const getSkill = cache(
       ? Math.round(DateTime.now().diff(DateTime.fromJSDate(oldestDate), "years").years)
       : 0;
 
-    return conditionallyInclude(
-      { ...skill, autoExperience, experiences, educations, projects, repositories },
-      ["educations", "experiences", "projects", "repositories"],
-      includes,
+    return convertToPlainObject(
+      conditionallyInclude(
+        { ...skill, autoExperience, experiences, educations, projects, repositories },
+        ["educations", "experiences", "projects", "repositories"],
+        includes,
+      ),
     );
   },
 ) as {

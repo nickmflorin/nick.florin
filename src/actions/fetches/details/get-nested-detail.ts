@@ -4,9 +4,9 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { fieldIsIncluded, type NestedDetailIncludes, type NestedApiDetail } from "~/prisma/model";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 
 import { getNestedDetailSkills } from "./util";
-
 /* Note: The following is only used in the admin, so visibility is not applicable. */
 export const getNestedDetail = cache(
   async <I extends NestedDetailIncludes>(
@@ -28,7 +28,7 @@ export const getNestedDetail = cache(
       }
       const skills = await getNestedDetailSkills(detail, { visibility: "admin" });
       const { skills: _skills, project: _project, ...rest } = detail;
-      return {
+      return convertToPlainObject({
         ...rest,
         project: _project
           ? {
@@ -37,12 +37,14 @@ export const getNestedDetail = cache(
             }
           : null,
         skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-      } as NestedApiDetail<I>;
+      }) as NestedApiDetail<I>;
     }
-    return (await prisma.nestedDetail.findUnique({
-      where: { id },
-      include: { project: true },
-    })) as NestedApiDetail<I> | null;
+    return convertToPlainObject(
+      await prisma.nestedDetail.findUnique({
+        where: { id },
+        include: { project: true },
+      }),
+    ) as NestedApiDetail<I> | null;
   },
 ) as {
   <I extends NestedDetailIncludes>(

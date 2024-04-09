@@ -3,6 +3,7 @@ import { cache } from "react";
 
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type DetailEntity, DetailEntityType } from "~/prisma/model";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 
 export const getEntity = cache(
   async <T extends DetailEntityType>(
@@ -12,9 +13,11 @@ export const getEntity = cache(
     switch (entityType) {
       case DetailEntityType.EDUCATION:
         try {
-          return (await prisma.education.findUniqueOrThrow({
-            where: { id },
-          })) as DetailEntity<T>;
+          return convertToPlainObject(
+            await prisma.education.findUniqueOrThrow({
+              where: { id },
+            }),
+          ) as DetailEntity<T>;
         } catch (e) {
           if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
             return null;
@@ -23,9 +26,11 @@ export const getEntity = cache(
         }
       case DetailEntityType.EXPERIENCE:
         try {
-          return (await prisma.experience.findUniqueOrThrow({
-            where: { id },
-          })) as DetailEntity<T>;
+          return convertToPlainObject(
+            await prisma.experience.findUniqueOrThrow({
+              where: { id },
+            }),
+          ) as DetailEntity<T>;
         } catch (e) {
           if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
             return null;
