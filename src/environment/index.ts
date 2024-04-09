@@ -36,6 +36,7 @@ export const environment = Environment.create(
       PERSONAL_CLERK_USER_ID: process.env.PERSONAL_CLERK_USER_ID,
       APP_NAME_FORMAL: process.env.APP_NAME_FORMAL,
       FONT_AWESOME_KIT_TOKEN: process.env.FONT_AWESOME_KIT_TOKEN,
+      SITE_URL: process.env.SITE_URL,
       /* ---------------------------- Client Environment Variables ---------------------------- */
       NEXT_PUBLIC_PRETTY_LOGGING: process.env.NEXT_PUBLIC_PRETTY_LOGGING,
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
@@ -60,6 +61,7 @@ export const environment = Environment.create(
       NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: z.string().url(),
       APP_NAME_FORMAL: z.string(),
       NODE_ENV: z.enum(["development", "test", "production"]),
+      SITE_URL: z.string().url(),
       ANALYZE_BUNDLE: StringBooleanFlagSchema.optional(),
       CLERK_SECRET_KEY: environmentLookup<z.ZodString | z.ZodOptional<z.ZodLiteral<"">>>({
         test: STRICT_OMISSION,
