@@ -1,10 +1,10 @@
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { useSkill } from "~/hooks";
 
-import { type ExtendingDrawerProps } from "..";
-import { Drawer } from "../Drawer";
+import { Drawer } from "../../Drawer";
+import { type ExtendingDrawerProps } from "../../provider";
 
-import { SkillDrawerContent } from "./DrawerContent";
+import { SkillDrawerContent } from "./SkillDrawerContent";
 
 export interface SkillDrawerProps
   extends ExtendingDrawerProps<{

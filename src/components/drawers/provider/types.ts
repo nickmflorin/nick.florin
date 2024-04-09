@@ -15,6 +15,7 @@ export const DrawerIds = enumeratedLiterals(
     "update-company",
     "update-school",
     "view-skill",
+    "view-course",
     "create-project",
     "update-project",
   ] as const,
@@ -31,6 +32,7 @@ export type DrawerProps<D extends DrawerId> = {
   "update-company": { companyId: string };
   "update-school": { schoolId: string };
   "view-skill": { skillId: string };
+  "view-course": { courseId: string };
   "update-education-details": {
     entityId: string;
   };

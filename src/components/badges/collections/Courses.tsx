@@ -22,7 +22,7 @@ export const Courses = ({ courses, ...props }: CoursesProps): JSX.Element => {
         <CourseBadge
           key={course.id}
           course={course}
-          // onClick={() => open(ids.VIEW_SKILL, { skillId: skill.id })}
+          onClick={() => open(ids.VIEW_COURSE, { courseId: course.id })}
         />
       ))}
     </BadgeCollection>

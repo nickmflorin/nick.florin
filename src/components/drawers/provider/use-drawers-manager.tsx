@@ -31,7 +31,11 @@ const UpdateSkillDrawer = dynamic(() => import("../UpdateSkillDrawer"), {
   loading: () => <Loading isLoading={true} />,
 });
 
-const SkillDrawer = dynamic(() => import("../SkillDrawer"), {
+const SkillDrawer = dynamic(() => import("../details/SkillDrawer"), {
+  loading: () => <Loading isLoading={true} />,
+});
+
+const CourseDrawer = dynamic(() => import("../details/CourseDrawer"), {
   loading: () => <Loading isLoading={true} />,
 });
 
@@ -105,6 +109,7 @@ export const Drawers = {
   ),
   [types.DrawerIds.CREATE_PROJECT]: Drawer(types.DrawerIds.CREATE_PROJECT, CreateProjectDrawer),
   [types.DrawerIds.UPDATE_PROJECT]: Drawer(types.DrawerIds.UPDATE_PROJECT, UpdateProjectDrawer),
+  [types.DrawerIds.VIEW_COURSE]: Drawer(types.DrawerIds.VIEW_COURSE, CourseDrawer),
 } as const satisfies {
   [key in types.DrawerId]: {
     id: key;
