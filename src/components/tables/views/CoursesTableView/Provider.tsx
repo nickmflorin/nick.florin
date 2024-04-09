@@ -1,8 +1,8 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiProject } from "~/prisma/model";
-import { deleteProject, updateProject } from "~/actions/mutations/projects";
+import { type ApiCourse } from "~/prisma/model";
+import { deleteCourse, updateCourse } from "~/actions/mutations/courses";
 import { useDrawers } from "~/components/drawers/hooks";
 import type * as cells from "~/components/tables/generic/cells";
 import { type SlugCellComponent } from "~/components/tables/generic/cells/SlugCell";
@@ -19,19 +19,22 @@ const SlugCell = dynamic(
   () => import("~/components/tables/generic/cells/SlugCell"),
 ) as SlugCellComponent;
 
-export interface TableViewConfig extends Pick<RootTableViewConfig<ApiProject<[]>>, "children"> {}
+const EducationCell = dynamic(() => import("./cells/EducationCell"));
+
+export interface TableViewConfig
+  extends Pick<RootTableViewConfig<ApiCourse<["education"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiProject<[]>>
-      id="projects-table"
+    <RootTableViewProvider<ApiCourse<["education"]>>
+      id="courses-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
       canToggleColumnVisibility={true}
-      deleteErrorMessage="There was an error deleting the project."
-      deleteAction={async id => await deleteProject(id)}
-      onEdit={id => open(ids.UPDATE_PROJECT, { projectId: id })}
+      deleteErrorMessage="There was an error deleting the course."
+      deleteAction={async id => await deleteCourse(id)}
+      onEdit={id => open(ids.UPDATE_COURSE, { courseId: id })}
       columns={[
         {
           accessor: "Name",
@@ -42,8 +45,8 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               field="name"
               model={model}
               table={table}
-              errorMessage="There was an error updating the project."
-              action={updateProject.bind(null, model.id)}
+              errorMessage="There was an error updating the course."
+              action={updateCourse.bind(null, model.id)}
             />
           ),
         },
@@ -56,8 +59,8 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               field="shortName"
               model={model}
               table={table}
-              errorMessage="There was an error updating the project."
-              action={updateProject.bind(null, model.id)}
+              errorMessage="There was an error updating the course."
+              action={updateCourse.bind(null, model.id)}
             />
           ),
         },
@@ -66,14 +69,20 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Slug",
           width: 320,
           render: ({ model, table }) => (
-            <SlugCell<ApiProject<[]>>
+            <SlugCell<ApiCourse<["education"]>>
               model={model}
-              modelType="project"
+              modelType="course"
               table={table}
               getSluggifiedFieldValue={m => m.name}
-              action={async (id, value) => await updateProject(id, { slug: value })}
+              action={async (id, value) => await updateCourse(id, { slug: value })}
             />
           ),
+        },
+        {
+          accessor: "education",
+          title: "Education",
+          width: 310,
+          render: ({ model, table }) => <EducationCell course={model} table={table} />,
         },
       ]}
     >

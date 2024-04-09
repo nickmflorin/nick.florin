@@ -2,8 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type Project } from "~/prisma/model";
-import { updateProject } from "~/actions/mutations/projects";
+import { type Course } from "~/prisma/model";
+import { updateCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -11,28 +11,28 @@ import { useDeepEqualEffect } from "~/hooks";
 import { useForm } from "../generic/hooks/use-form";
 
 import {
-  ProjectForm,
-  type ProjectFormProps,
-  type ProjectFormValues,
-  ProjectFormSchema,
-} from "./ProjectForm";
+  CourseForm,
+  type CourseFormProps,
+  type CourseFormValues,
+  CourseFormSchema,
+} from "./CourseForm";
 
-export interface UpdateProjectFormProps extends Omit<ProjectFormProps, "form" | "action"> {
-  readonly project: Project;
+export interface UpdateCourseFormProps extends Omit<CourseFormProps, "form" | "action"> {
+  readonly course: Course;
   readonly onCancel?: () => void;
 }
 
-export const UpdateProjectForm = ({
-  project,
+export const UpdateCourseForm = ({
+  course,
   onCancel,
   ...props
-}: UpdateProjectFormProps): JSX.Element => {
-  const updateProjectWithId = updateProject.bind(null, project.id);
+}: UpdateCourseFormProps): JSX.Element => {
+  const updateCourseWithId = updateCourse.bind(null, course.id);
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<ProjectFormValues>({
-    schema: ProjectFormSchema,
+  const { setValues, ...form } = useForm<CourseFormValues>({
+    schema: CourseFormSchema,
     defaultValues: {
       name: "",
       shortName: "",
@@ -43,25 +43,24 @@ export const UpdateProjectForm = ({
   // Prevents the form from resetting when an error occurs.
   useDeepEqualEffect(() => {
     setValues({
-      ...project,
-      shortName: project.shortName ?? "",
-      name: project.name,
-      slug: project.slug,
-      startDate: project.startDate,
+      ...course,
+      shortName: course.shortName,
+      name: course.name,
+      slug: course.slug,
+      education: "",
       // TODO: Use actual data once established.
       skills: [],
-      details: [],
     });
-  }, [project, setValues]);
+  }, [course, setValues]);
 
   return (
-    <ProjectForm
+    <CourseForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       form={{ ...form, setValues }}
       action={async (data, form) => {
-        const response = await updateProjectWithId(data);
+        const response = await updateCourseWithId(data);
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
@@ -74,4 +73,4 @@ export const UpdateProjectForm = ({
   );
 };
 
-export default UpdateProjectForm;
+export default UpdateCourseForm;

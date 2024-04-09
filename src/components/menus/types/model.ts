@@ -127,7 +127,8 @@ export type ModelLabel<M extends MenuModel, O extends MenuOptions<M>> = M extend
   readonly label: infer L extends ReactNode;
 }
   ? L
-  : O extends { readonly getItemLabel: (m: M) => infer L extends ReactNode }
+  : /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    O extends { readonly getItemLabel: (m: M, o: any) => infer L extends ReactNode }
     ? L
     : never;
 
@@ -137,7 +138,7 @@ export const getModelLabel = <M extends MenuModel, O extends MenuOptions<M>>(
 ): ModelLabel<M, O> | undefined => {
   let v: ReactNode | Never = NEVER;
   if (options.getItemLabel !== undefined) {
-    v = options.getItemLabel(model);
+    v = options.getItemLabel(model, options);
   } else if (modelHasParam(model, "label")) {
     v = model.label;
   }
@@ -223,7 +224,8 @@ export type ModelValueLabel<M extends MenuModel, O extends MenuOptions<M>> = M e
   readonly valueLabel: infer L extends ReactNode;
 }
   ? L
-  : O extends { readonly getItemValueLabel: (m: M) => infer L extends ReactNode }
+  : /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    O extends { readonly getItemValueLabel: (m: M, o: any) => infer L extends ReactNode }
     ? L
     : undefined;
 
@@ -233,7 +235,7 @@ export const getItemValueLabel = <M extends MenuModel, O extends MenuOptions<M>>
 ): ModelValueLabel<M, O> | undefined => {
   let v: ReactNode | Never = NEVER;
   if (options.getItemValueLabel !== undefined) {
-    v = options.getItemValueLabel(model);
+    v = options.getItemValueLabel(model, options);
   } else if (modelHasParam(model, "valueLabel")) {
     v = model.valueLabel;
   }

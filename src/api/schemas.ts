@@ -77,7 +77,7 @@ export const ProjectSchema = z.object({
   }),
   shortName: NullableMinLengthStringField({
     min: 2,
-    minErrorMessage: "The short name should be at least 3 characters.",
+    minErrorMessage: "The short name should be at least 2 characters.",
   }).optional(),
   slug: NullableMinLengthStringField({
     minErrorMessage: "The slug must be at least 3 characters.",
@@ -86,6 +86,24 @@ export const ProjectSchema = z.object({
   // These two still need to be incorporated.
   skills: z.array(z.string().uuid()).optional(),
   details: z.array(DetailInputSchema).optional(),
+});
+
+export const CourseSchema = z.object({
+  name: NonNullableMinLengthStringField({
+    min: 3,
+    minErrorMessage: "The name must be at least 3 characters.",
+    requiredErrorMessage: "The name is required.",
+  }),
+  shortName: NullableMinLengthStringField({
+    min: 2,
+    minErrorMessage: "The short name should be at least 3 characters.",
+  }).optional(),
+  slug: NullableMinLengthStringField({
+    minErrorMessage: "The slug must be at least 3 characters.",
+  }).optional(),
+  education: z.string().uuid(),
+  // This still needs to be incorporated.
+  skills: z.array(z.string().uuid()).optional(),
 });
 
 export const DetailSchema = z.object({

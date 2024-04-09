@@ -6,21 +6,22 @@ import { useEducations } from "~/hooks";
 
 import { EducationSelect, type EducationSelectProps } from "./EducationSelect";
 
-export interface ClientEducationSelectProps
-  extends Omit<EducationSelectProps<ApiEducation>, "data"> {
+export interface ClientEducationSelectProps<O extends { isMulti?: boolean }>
+  extends Omit<EducationSelectProps<O, ApiEducation>, "data"> {
   readonly visibility?: Visibility;
+  readonly useAbbreviatedOptionLabels?: boolean;
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientEducationSelect = ({
+export const ClientEducationSelect = <O extends { isMulti?: boolean }>({
   onError,
   visibility = "public",
   ...props
-}: ClientEducationSelectProps): JSX.Element => {
+}: ClientEducationSelectProps<O>): JSX.Element => {
   const { data, isLoading, error } = useEducations({ onError, visibility });
 
   return (
-    <EducationSelect<ApiEducation>
+    <EducationSelect<O, ApiEducation>
       {...props}
       isReady={data !== undefined}
       data={data ?? []}

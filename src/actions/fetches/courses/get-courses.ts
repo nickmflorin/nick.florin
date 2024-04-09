@@ -65,7 +65,10 @@ export const getCourses = cache(
 
     const courses = await prisma.course.findMany({
       where: whereClause({ filters }),
-      include: { skills: fieldIsIncluded("skills", includes) ? true : undefined },
+      include: {
+        skills: fieldIsIncluded("skills", includes),
+        education: fieldIsIncluded("education", includes),
+      },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,

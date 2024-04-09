@@ -195,13 +195,13 @@ export const updateProject = async (
     const name = _name !== undefined ? _name : project.name;
 
     if (_name !== undefined && _name.trim() !== project.name.trim()) {
-      if (await prisma.project.count({ where: { name: _name, id: { notIn: [project.id] } } })) {
+      if (await tx.project.count({ where: { name: _name, id: { notIn: [project.id] } } })) {
         fieldErrors.addUnique("name", "The name must be unique.");
         /* If the slug is being cleared, we have to make sure that the slugified version of the new
            name is still unique. */
       } else if (
         _slug === null &&
-        (await prisma.project.count({
+        (await tx.project.count({
           where: { slug: slugify(_name), id: { notIn: [project.id] } },
         }))
       ) {
@@ -210,7 +210,7 @@ export const updateProject = async (
       }
     } else if (
       _slug === null &&
-      (await prisma.project.count({
+      (await tx.project.count({
         where: { slug: slugify(name), id: { notIn: [project.id] } },
       }))
     ) {
@@ -223,7 +223,8 @@ export const updateProject = async (
       );
     } else if (
       _slug !== null &&
-      (await prisma.project.count({ where: { slug: _slug, id: { notIn: [project.id] } } }))
+      _slug !== undefined &&
+      (await tx.project.count({ where: { slug: _slug, id: { notIn: [project.id] } } }))
     ) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
@@ -274,6 +275,7 @@ export const updateProject = async (
 
     revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");
+    revalidatePath(`/api/projects/${project.id}`);
     revalidatePath(`/projects/${project.slug}`, "page");
     return project;
   });

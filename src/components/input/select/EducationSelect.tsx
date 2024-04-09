@@ -1,31 +1,31 @@
-import { type Education, type School } from "~/prisma/model";
+import { type ApiEducation } from "~/prisma/model";
+import type { MenuOptions } from "~/components/menus";
 import { Text } from "~/components/typography/Text";
 
 import { Select, type SelectProps } from "./generic";
 
-type Edu = Pick<Education, "shortMajor" | "major" | "id"> & {
-  readonly school: Pick<School, "id" | "name">;
-};
-
-const options = {
-  getItemValue: (m: Edu) => m.id,
-  getItemLabel: (m: Edu) => m.major,
-  getItemValueLabel: (m: Edu) => m.shortMajor ?? m.major,
-  isMulti: true,
+const globalOptions = {
+  isNullable: false,
+  getItemValue: (m: ApiEducation) => m.id,
+  getItemLabel: (m: ApiEducation) => m.major,
+  getItemValueLabel: <E extends ApiEducation>(m: E, options: MenuOptions<E>) =>
+    options.isMulti ? m.shortMajor ?? m.major : m.major,
 } as const;
 
-export interface EducationSelectProps<E extends Edu>
-  extends Omit<SelectProps<E, typeof options>, "options" | "itemRenderer"> {
+export interface EducationSelectProps<O extends { isMulti?: boolean }, E extends ApiEducation>
+  extends Omit<SelectProps<E, typeof globalOptions & O>, "options" | "itemRenderer"> {
   readonly useAbbreviatedOptionLabels?: boolean;
+  readonly options: O;
 }
 
-export const EducationSelect = <E extends Edu>({
+export const EducationSelect = <O extends { isMulti?: boolean }, E extends ApiEducation>({
   useAbbreviatedOptionLabels = true,
+  options,
   ...props
-}: EducationSelectProps<E>): JSX.Element => (
-  <Select<E, typeof options>
+}: EducationSelectProps<O, E>): JSX.Element => (
+  <Select<E, typeof options & O>
     {...props}
-    options={options}
+    options={{ ...globalOptions, ...options }}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text size="sm" fontWeight="medium">

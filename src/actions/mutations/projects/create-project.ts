@@ -26,18 +26,18 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
   const fieldErrors = new ApiClientFieldErrors();
 
   return await prisma.$transaction(async tx => {
-    if (await prisma.project.count({ where: { name: data.name } })) {
-      fieldErrors.addUnique("name", "The label must be unique.");
-      /* If the slug is not explicitly provided and the label does not violate the unique
-         constraint, but the slugified form of the label does, this should be a more specific error
+    if (await tx.project.count({ where: { name: data.name } })) {
+      fieldErrors.addUnique("name", "The name must be unique.");
+      /* If the slug is not explicitly provided and the name does not violate the unique
+         constraint, but the slugified form of the name does, this should be a more specific error
          message. */
-    } else if (!_slug && (await prisma.project.count({ where: { slug } }))) {
+    } else if (!_slug && (await tx.project.count({ where: { slug } }))) {
       fieldErrors.addUnique(
-        "label",
-        "The auto-generated slug for the label is not unique. Please provide a unique slug.",
+        "name",
+        "The auto-generated slug for the name is not unique. Please provide a unique slug.",
       );
     }
-    if (_slug && (await prisma.project.count({ where: { slug: _slug } }))) {
+    if (_slug && (await tx.project.count({ where: { slug: _slug } }))) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
     const [details] = await queryM2MsDynamically(tx, {
@@ -53,7 +53,7 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
       fieldErrors,
     });
     const [skills] = await queryM2MsDynamically(tx, {
-      model: "project",
+      model: "skill",
       ids: _skills,
       fieldErrors,
     });

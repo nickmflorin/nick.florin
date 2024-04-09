@@ -75,6 +75,14 @@ const CreateProjectDrawer = dynamic(() => import("../CreateProjectDrawer"), {
   loading: () => <Loading isLoading={true} />,
 });
 
+const UpdateCourseDrawer = dynamic(() => import("../UpdateCourseDrawer"), {
+  loading: () => <Loading isLoading={true} />,
+});
+
+const CreateCourseDrawer = dynamic(() => import("../CreateCourseDrawer"), {
+  loading: () => <Loading isLoading={true} />,
+});
+
 export const Drawers = {
   [types.DrawerIds.UPDATE_EDUCATION]: Drawer(
     types.DrawerIds.UPDATE_EDUCATION,
@@ -110,6 +118,8 @@ export const Drawers = {
   [types.DrawerIds.CREATE_PROJECT]: Drawer(types.DrawerIds.CREATE_PROJECT, CreateProjectDrawer),
   [types.DrawerIds.UPDATE_PROJECT]: Drawer(types.DrawerIds.UPDATE_PROJECT, UpdateProjectDrawer),
   [types.DrawerIds.VIEW_COURSE]: Drawer(types.DrawerIds.VIEW_COURSE, CourseDrawer),
+  [types.DrawerIds.CREATE_COURSE]: Drawer(types.DrawerIds.CREATE_COURSE, CreateCourseDrawer),
+  [types.DrawerIds.UPDATE_COURSE]: Drawer(types.DrawerIds.UPDATE_COURSE, UpdateCourseDrawer),
 } as const satisfies {
   [key in types.DrawerId]: {
     id: key;

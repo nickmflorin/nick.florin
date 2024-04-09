@@ -14,6 +14,7 @@ import {
   type SubmitErrorHandler,
 } from "react-hook-form";
 
+import { logger } from "~/application/logger";
 import { humanizeList } from "~/lib/formatters";
 import {
   type ApiClientError,
@@ -55,11 +56,13 @@ function mergeIntoFieldErrors<I extends BaseFormValues>(
   a: FieldErrors<I>,
   b: FieldErrors<I> | NativeFieldErrors,
 ): FieldErrors<I>;
+
 function mergeIntoFieldErrors<I extends BaseFormValues>(
   errors: FieldErrors<I>,
   key: FieldName<I>,
   err: string | string[],
 ): FieldErrors<I>;
+
 function mergeIntoFieldErrors<I extends BaseFormValues>(
   arg0: FieldErrors<I>,
   arg1: FieldName<I> | FieldErrors<I> | NativeFieldErrors,
@@ -71,7 +74,15 @@ function mergeIntoFieldErrors<I extends BaseFormValues>(
     }
     return {
       ...arg0,
-      [arg1]: [...(arg0[arg1] ?? []), ...(Array.isArray(arg2) ? arg2 : [arg2])],
+      [arg1]: (Array.isArray(arg2) ? arg2 : [arg2]).reduce((prev: string[], curr: string) => {
+        if (prev.includes(curr)) {
+          /* This should never happen, but has happened in cases where static field errors were set
+             on the form after a failed API request made with a hook. */
+          logger.warn(`The form received a duplicate error message for field '${arg1}': ${curr}.`);
+          return prev;
+        }
+        return [...prev, curr];
+      }, arg0[arg1] ?? []),
     };
   } else if (typeof arg1 === "string") {
     throw new TypeError("Invalid method implementation.");
@@ -165,7 +176,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [getValues, onChange],
   );
 
-  const setInternalFieldErrors = useCallback(async (fieldErrors: FieldErrors<I>) => {
+  const setInternalFieldErrors = useCallback((fieldErrors: FieldErrors<I>) => {
     const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
       if (!registeredFields.current.includes(curr as FieldName<I>)) {
         return [...prev, curr];
@@ -177,20 +188,17 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         conjunction: "and",
         formatter: v => `'${v}'`,
       });
-      const logger = (await import("~/application/logger")).logger;
       logger.warn(
         "The form received field errors for fields that are not registered with the form! " +
           `Current fields registered with the form are: ${humanized}.`,
         { invalidFields, registered: registeredFields.current },
       );
     }
-    _setInternalFieldErrors(fieldErrors);
+    return _setInternalFieldErrors(fieldErrors);
   }, []);
 
   const setInternalStaticFieldErrors = useCallback(
-    async (fieldErrors: FieldErrors<I> | ((curr: FieldErrors<I>) => FieldErrors<I>)) => {
-      const logger = (await import("~/application/logger")).logger;
-
+    (fieldErrors: FieldErrors<I> | ((curr: FieldErrors<I>) => FieldErrors<I>)) => {
       const validate = (fieldErrors: FieldErrors<I>) => {
         const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
           if (!registeredFields.current.includes(curr as FieldName<I>)) {
@@ -217,7 +225,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         });
       }
       validate(fieldErrors);
-      _setInternalStaticFieldErrors(fieldErrors);
+      return _setInternalStaticFieldErrors(fieldErrors);
     },
     [],
   );
@@ -234,7 +242,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         const fieldName = arg0 as FieldName<I>;
         return setInternalStaticFieldErrors(curr => mergeIntoFieldErrors(curr, fieldName, arg1));
       } else if (arg0 && typeof arg0 !== "string") {
-        setInternalStaticFieldErrors(curr => mergeIntoFieldErrors(curr, arg0));
+        return setInternalStaticFieldErrors(curr => mergeIntoFieldErrors(curr, arg0));
       } else {
         throw new TypeError("Invalid method implementation!");
       }
@@ -249,10 +257,10 @@ export const useForm = <I extends BaseFormValues, IN = I>({
           throw new TypeError("Invalid method implementation!");
         }
         return setInternalFieldErrors({
-          [arg0 as FieldName<I>]: [...(Array.isArray(arg1) ? arg1 : [arg1])],
+          [arg0 as FieldName<I>]: Array.isArray(arg1) ? arg1 : [arg1],
         } as FieldErrors<I>);
       } else if (typeof arg0 === "string" || Array.isArray(arg0)) {
-        return setGlobalErrors([...(Array.isArray(arg0) ? arg0 : [arg0])]);
+        return setGlobalErrors(Array.isArray(arg0) ? arg0 : [arg0]);
       } else {
         setInternalFieldErrors(arg0);
       }
@@ -261,9 +269,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   const setInternalFieldErrorsFromResponse = useCallback(
-    async (e: ApiClientError | ApiClientErrorJson, errs: ApiClientFieldErrorsObj) => {
-      const logger = (await import("~/application/logger")).logger;
-
+    (e: ApiClientError | ApiClientErrorJson, errs: ApiClientFieldErrorsObj) => {
       // If this happens, it means the API incorrectly returned an error response.
       if (Object.keys(errs).length === 0) {
         logger.warn(

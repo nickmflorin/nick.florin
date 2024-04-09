@@ -3,17 +3,13 @@ import uniq from "lodash.uniq";
 
 import { UnreachableCaseError } from "~/application/errors";
 import { type Transaction } from "~/prisma/client";
-import {
-  type BrandExperience,
-  type BrandEducation,
-  type BrandProject,
-  type BrandDetail,
-  type BrandSkill,
-  type BrandNestedDetail,
-} from "~/prisma/model";
+import { type Brand, type BrandModel } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 
-type DynamicModel = "experience" | "education" | "project" | "detail" | "skill" | "nestedDetail";
+type DynamicModel = Extract<
+  Brand,
+  "experience" | "education" | "project" | "detail" | "skill" | "nestedDetail"
+>;
 
 const FieldErrorKeys = {
   experience: "experiences",
@@ -24,37 +20,28 @@ const FieldErrorKeys = {
   nestedDetail: "nestedDetails",
 } as const satisfies { [key in DynamicModel]: `${key}s` };
 
-export type QueryDynamicallyRT<T extends DynamicModel> = {
-  experience: BrandExperience[];
-  education: BrandEducation[];
-  project: BrandProject[];
-  skill: BrandSkill[];
-  detail: BrandDetail[];
-  nestedDetail: BrandNestedDetail[];
-}[T];
-
 export const queryIdsDynamically = async <T extends DynamicModel>(
   tx: Transaction,
   model: T,
   ids: string[],
-): Promise<QueryDynamicallyRT<T>> => {
+): Promise<BrandModel<T>[]> => {
   switch (model) {
     case "experience":
       return (await tx.experience.findMany({
         where: { id: { in: ids } },
-      })) as QueryDynamicallyRT<T>;
+      })) as BrandModel<T>[];
     case "education":
-      return (await tx.education.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
+      return (await tx.education.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
     case "project":
-      return (await tx.project.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
+      return (await tx.project.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
     case "detail":
-      return (await tx.detail.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
+      return (await tx.detail.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
     case "nestedDetail":
       return (await tx.nestedDetail.findMany({
         where: { id: { in: ids } },
-      })) as QueryDynamicallyRT<T>;
+      })) as BrandModel<T>[];
     case "skill":
-      return (await tx.skill.findMany({ where: { id: { in: ids } } })) as QueryDynamicallyRT<T>;
+      return (await tx.skill.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
     default:
       throw new UnreachableCaseError();
   }
@@ -65,7 +52,7 @@ export type QueryM2MDynamicallyRT<
   T extends DynamicModel,
 > = I extends undefined
   ? [undefined, ApiClientFieldErrors]
-  : [QueryDynamicallyRT<T>, ApiClientFieldErrors];
+  : [BrandModel<T>[], ApiClientFieldErrors];
 
 export const queryM2MsDynamically = async <I extends string[] | undefined, T extends DynamicModel>(
   tx: Transaction,

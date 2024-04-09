@@ -26,6 +26,7 @@ export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {
       visibility="admin"
       inputClassName="w-[300px]"
       menuClassName="max-h-[260px]"
+      options={{ isMulti: true }}
       value={value}
       onChange={async (v, { item }) => {
         // Optimistically update the value.

@@ -18,6 +18,8 @@ export const DrawerIds = enumeratedLiterals(
     "view-course",
     "create-project",
     "update-project",
+    "update-course",
+    "create-course",
   ] as const,
   {},
 );
@@ -28,6 +30,7 @@ export type DrawerProps<D extends DrawerId> = {
   "update-education": { educationId: string };
   "update-experience": { experienceId: string };
   "update-project": { projectId: string };
+  "update-course": { courseId: string };
   "update-skill": { skillId: string };
   "update-company": { companyId: string };
   "update-school": { schoolId: string };
@@ -46,6 +49,7 @@ export type DrawerProps<D extends DrawerId> = {
   "create-school": {};
   "create-company": {};
   "create-project": {};
+  "create-course": {};
   /* eslint-enable @typescript-eslint/ban-types */
 }[D];
 
