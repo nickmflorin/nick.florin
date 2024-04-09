@@ -20,10 +20,10 @@ export type FormStructureProps<I extends BaseFormValues> = {
   readonly title?: string | JSX.Element | JSX.Element[];
   readonly isLoading?: boolean;
   readonly isScrollable?: boolean;
-  readonly children: ReactNode;
+  readonly children?: ReactNode;
   readonly structure?: (params: {
     header: JSX.Element;
-    body: JSX.Element;
+    body?: JSX.Element;
     footer: JSX.Element;
   }) => JSX.Element;
 };
@@ -88,11 +88,11 @@ export const FormStructure = <I extends BaseFormValues>({
 }: FormStructureProps<I>) =>
   structure ? (
     structure({
-      body: (
+      body: children ? (
         <Body isLoading={isLoading} isScrollable={isScrollable} contentClassName={contentClassName}>
           {children}
         </Body>
-      ),
+      ) : undefined,
       footer: (
         <Footer
           footer={footer}

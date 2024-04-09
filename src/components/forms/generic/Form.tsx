@@ -15,7 +15,10 @@ type SubmitAction<I extends BaseFormValues> = (data: I, form: FormInstance<I>) =
 
 export interface FormProps<I extends BaseFormValues>
   extends ComponentProps,
-    Omit<NativeFormProps, keyof ComponentProps | "action" | "onSubmit" | "submitButtonType">,
+    Omit<
+      NativeFormProps,
+      keyof ComponentProps | "action" | "onSubmit" | "submitButtonType" | "children"
+    >,
     FormStructureProps<I> {
   readonly onSubmit?: SubmitAction<I>;
   readonly action?: SubmitAction<I>;

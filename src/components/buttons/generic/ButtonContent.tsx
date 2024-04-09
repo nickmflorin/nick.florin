@@ -94,7 +94,14 @@ export const ButtonContent = ({
   ...props
 }: ButtonContentProps) => {
   const [leftIcon, rightIcon] = icon ? parseMultipleIconsProp(icon) : ([null, null] as const);
-  const loadingLocation = _loadingLocation ?? leftIcon ? "left" : rightIcon ? "right" : "over";
+  const loadingLocation =
+    _loadingLocation === undefined
+      ? leftIcon
+        ? "left"
+        : rightIcon
+          ? "right"
+          : "left"
+      : _loadingLocation;
   return (
     <div
       {...props}

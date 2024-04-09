@@ -16,12 +16,11 @@ import { type DetailFormValues } from "./types";
 export interface DetailFormProps
   extends Omit<FormProps<DetailFormValues>, "children" | "contentClassName"> {
   readonly actions?: Action[];
-  readonly isNew?: boolean;
   readonly isExpanded: boolean;
 }
 
 export const DetailForm = React.memo(
-  ({ actions, isNew, ...props }: DetailFormProps): JSX.Element => {
+  ({ actions, isExpanded, ...props }: DetailFormProps): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     return (
       <Form
@@ -29,7 +28,7 @@ export const DetailForm = React.memo(
         form={props.form}
         contentClassName="gap-[12px]"
         structure={
-          !props.isExpanded
+          !isExpanded
             ? ({ footer, body }) => (
                 <div className="flex flex-col">
                   <div className="flex flex-row justify-between items-center">
@@ -43,28 +42,26 @@ export const DetailForm = React.memo(
                         className="w-full p-0 outline-none"
                         {...props.form.register("label")}
                         placeholder="Label"
-                        isReadOnly={!isNew && !isOpen}
+                        isReadOnly={!isOpen}
                         fontWeight="medium"
                         size="small"
                       />
                     </Form.Field>
                     <div className="flex flex-row gap-[6px] items-center">
                       <Actions actions={actions} />
-                      {!isNew && (
-                        <IconButton.Bare
-                          key={actions ? actions.length : "0"}
-                          size="xsmall"
-                          onClick={() => setIsOpen(curr => !curr)}
-                        >
-                          <CaretIcon open={isOpen} />
-                        </IconButton.Bare>
-                      )}
+                      <IconButton.Bare
+                        key={actions ? actions.length : "0"}
+                        size="xsmall"
+                        onClick={() => setIsOpen(curr => !curr)}
+                      >
+                        <CaretIcon open={isOpen} />
+                      </IconButton.Bare>
                     </div>
                   </div>
-                  <ShowHide show={isOpen === true || isNew === true}>
+                  <ShowHide show={isOpen === true}>
                     <FormFieldErrors form={props.form} name="label" />
                     <div className="flex flex-col mt-[4px]">
-                      {!isNew && body}
+                      {body}
                       {footer}
                     </div>
                   </ShowHide>
@@ -78,7 +75,7 @@ export const DetailForm = React.memo(
               )
         }
       >
-        <DetailFormFields form={props.form} isExpanded={props.isExpanded} />
+        <DetailFormFields form={props.form} isExpanded={isExpanded} />
       </Form>
     );
   },
