@@ -1,4 +1,3 @@
-import { type ApiProject } from "~/prisma/model";
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 import { Text } from "~/components/typography/Text";
@@ -10,9 +9,7 @@ import { BarChart } from "./BarChart";
 import { BubbleChart } from "./BubbleChart";
 
 export interface AssetVisualizationsProps
-  extends Omit<ProjectProps, "title" | "description" | "children"> {
-  readonly project: ApiProject<["skills"]>;
-}
+  extends Omit<ProjectProps, "title" | "description" | "children"> {}
 
 export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Element => (
   <ProjectComponent

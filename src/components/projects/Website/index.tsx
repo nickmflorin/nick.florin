@@ -1,13 +1,10 @@
-import { type ApiProject } from "~/prisma/model";
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 
-export interface WebsiteProps extends Omit<ProjectProps, "title" | "description" | "children"> {
-  readonly project: ApiProject<["skills"]>;
-}
+export interface WebsiteProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
 
 export const Website = (props: WebsiteProps): JSX.Element => (
   <Project
