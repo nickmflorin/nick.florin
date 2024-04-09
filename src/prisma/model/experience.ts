@@ -3,14 +3,14 @@ import { type ApiDetail } from "./details";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
 
-export type ExpIncludes =
+export type ExperienceIncludes =
   | ["skills", "details"]
   | ["details", "skills"]
   | ["skills"]
   | ["details"]
   | [];
 
-export type ApiExperience<I extends ExpIncludes = []> = ConditionallyInclude<
+export type ApiExperience<I extends ExperienceIncludes = []> = ConditionallyInclude<
   BrandModel<"experience"> & {
     readonly details: ApiDetail<["nestedDetails", "skills"]>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];

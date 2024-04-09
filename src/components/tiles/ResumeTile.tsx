@@ -10,6 +10,23 @@ import { Label } from "~/components/typography/Label";
 import { DetailsTile } from "./DetailsTile";
 import { ResumeTileHeader } from "./ResumeTileHeader";
 
+interface ResumeTileSectionProps extends ComponentProps {
+  readonly children: JSX.Element;
+  readonly label: string;
+}
+
+const ResumeTileSection = ({ children, label, ...props }: ResumeTileSectionProps): JSX.Element => (
+  <div {...props} className={clsx("flex flex-col gap-[12px]", props.className)}>
+    <div className="flex flex-col gap-[6px]">
+      <hr className="border-t border-gray-300 max-w-[700px]" />
+      <Label size="sm" className="text-body-light">
+        {label}
+      </Label>
+    </div>
+    {children}
+  </div>
+);
+
 export interface ResumeTileProps extends ComponentProps {
   readonly model:
     | ApiEducation<["details", "skills", "courses"]>
@@ -30,18 +47,14 @@ export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element =>
         <DetailsTile details={model.details} />
       </div>
       {model.$kind === "education" && model.courses.length !== 0 && (
-        <Courses courses={model.courses} className="max-w-[800px]" />
+        <ResumeTileSection label="Courses">
+          <Courses courses={model.courses} className="max-w-[800px]" />
+        </ResumeTileSection>
       )}
       {model.skills.length !== 0 && (
-        <div className="flex flex-col gap-[12px]">
-          <div className="flex flex-col gap-[6px]">
-            <hr className="border-t border-gray-300 max-w-[700px]" />
-            <Label size="sm" className="text-body-light">
-              Other Skills
-            </Label>
-          </div>
+        <ResumeTileSection label={model.$kind === "education" ? "Skills" : "Other Skills"}>
           <Skills skills={model.skills} className="max-w-[800px]" />
-        </div>
+        </ResumeTileSection>
       )}
     </div>
   </div>

@@ -8,7 +8,7 @@ import { prisma } from "~/prisma/client";
 import {
   type ApiExperience,
   DetailEntityType,
-  type ExpIncludes,
+  type ExperienceIncludes,
   type BrandSkill,
   type ApiDetail,
   type ExperienceOnSkills,
@@ -24,7 +24,7 @@ type GetExperiencesFilters = {
   readonly search: string;
 };
 
-type GetExperiencesParams<I extends ExpIncludes> = {
+type GetExperiencesParams<I extends ExperienceIncludes> = {
   readonly visibility?: Visibility;
   readonly includes?: I;
   readonly filters?: GetExperiencesFilters;
@@ -34,7 +34,7 @@ type GetExperiencesParams<I extends ExpIncludes> = {
 const whereClause = ({
   filters,
   visibility = "public",
-}: Pick<GetExperiencesParams<ExpIncludes>, "visibility" | "filters">) =>
+}: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">) =>
   ({
     AND:
       filters?.search && visibility === "public"
@@ -47,7 +47,7 @@ const whereClause = ({
   }) as const;
 
 export const preloadExperiencesCount = (
-  params: Pick<GetExperiencesParams<ExpIncludes>, "visibility" | "filters">,
+  params: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">,
 ) => {
   void getExperiencesCount(params);
 };
@@ -56,7 +56,7 @@ export const getExperiencesCount = cache(
   async ({
     filters,
     visibility = "public",
-  }: Pick<GetExperiencesParams<ExpIncludes>, "visibility" | "filters">) => {
+  }: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">) => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
@@ -66,12 +66,14 @@ export const getExperiencesCount = cache(
   },
 );
 
-export const preloadExperiences = <I extends ExpIncludes>(params: GetExperiencesParams<I>) => {
+export const preloadExperiences = <I extends ExperienceIncludes>(
+  params: GetExperiencesParams<I>,
+) => {
   void getExperiences(params);
 };
 
 export const getExperiences = cache(
-  async <I extends ExpIncludes>({
+  async <I extends ExperienceIncludes>({
     visibility = "public",
     includes,
     filters,
@@ -136,5 +138,5 @@ export const getExperiences = cache(
     return experiences.map(convertToPlainObject) as ApiExperience<I>[];
   },
 ) as {
-  <I extends ExpIncludes>(params: GetExperiencesParams<I>): Promise<ApiExperience<I>[]>;
+  <I extends ExperienceIncludes>(params: GetExperiencesParams<I>): Promise<ApiExperience<I>[]>;
 };

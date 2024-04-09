@@ -8,7 +8,7 @@ import { prisma } from "~/prisma/client";
 import {
   type ApiEducation,
   DetailEntityType,
-  type EduIncludes,
+  type EducationIncludes,
   type ApiDetail,
   type BrandSkill,
   type EducationOnSkills,
@@ -25,7 +25,7 @@ interface GetEducationsFilters {
   readonly search: string;
 }
 
-type GetEducationsParams<I extends EduIncludes> = {
+type GetEducationsParams<I extends EducationIncludes> = {
   visibility?: Visibility;
   includes?: I;
   filters?: GetEducationsFilters;
@@ -35,7 +35,7 @@ type GetEducationsParams<I extends EduIncludes> = {
 const whereClause = ({
   filters,
   visibility = "public",
-}: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">) =>
+}: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">) =>
   ({
     AND:
       filters?.search && visibility === "public"
@@ -48,7 +48,7 @@ const whereClause = ({
   }) as const;
 
 export const preloadEducationsCount = (
-  params: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">,
+  params: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">,
 ) => {
   void getEducationsCount(params);
 };
@@ -57,7 +57,7 @@ export const getEducationsCount = cache(
   async ({
     filters,
     visibility = "public",
-  }: Pick<GetEducationsParams<EduIncludes>, "visibility" | "filters">) => {
+  }: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">) => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
@@ -67,12 +67,12 @@ export const getEducationsCount = cache(
   },
 );
 
-export const preloadEducations = <I extends EduIncludes>(params: GetEducationsParams<I>) => {
+export const preloadEducations = <I extends EducationIncludes>(params: GetEducationsParams<I>) => {
   void getEducations(params);
 };
 
 export const getEducations = cache(
-  async <I extends EduIncludes>({
+  async <I extends EducationIncludes>({
     visibility = "public",
     includes,
     filters,
@@ -96,24 +96,26 @@ export const getEducations = cache(
       take: pagination ? pagination.pageSize : undefined,
     });
 
+    let courses: BrandCourse[] | undefined = undefined;
     let skills: (BrandSkill & { readonly educations: EducationOnSkills[] })[] | undefined =
       undefined;
+
+    if (fieldIsIncluded("courses", includes)) {
+      courses = await prisma.course.findMany({
+        where: {
+          visible: visibility === "public" ? true : undefined,
+          educationId: { in: edus.map(e => e.id) },
+        },
+        include: { skills: fieldIsIncluded("skills", includes) },
+      });
+    }
+
     if (fieldIsIncluded("skills", includes)) {
       skills = await prisma.skill.findMany({
         include: { educations: true },
         where: {
           visible: visibility === "public" ? true : undefined,
           educations: { some: { education: { id: { in: edus.map(e => e.id) } } } },
-        },
-      });
-    }
-
-    let courses: BrandCourse[] | undefined = undefined;
-    if (fieldIsIncluded("courses", includes)) {
-      courses = await prisma.course.findMany({
-        where: {
-          visible: visibility === "public" ? true : undefined,
-          educationId: { in: edus.map(e => e.id) },
         },
       });
     }
@@ -148,5 +150,5 @@ export const getEducations = cache(
     return educations.map(convertToPlainObject) as ApiEducation<I>[];
   },
 ) as {
-  <I extends EduIncludes>(params: GetEducationsParams<I>): Promise<ApiEducation<I>[]>;
+  <I extends EducationIncludes>(params: GetEducationsParams<I>): Promise<ApiEducation<I>[]>;
 };

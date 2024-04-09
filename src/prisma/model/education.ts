@@ -1,5 +1,6 @@
-import { type BrandCourse, type BrandModel } from "./brand";
+import { type BrandModel } from "./brand";
 import { Degree } from "./core";
+import { type ApiCourse } from "./course";
 import { type ApiDetail } from "./details";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
@@ -18,7 +19,7 @@ export const getDegree = <D extends Degree>(degree: D): (typeof Degrees)[D] & { 
   value: degree,
 });
 
-export type EduIncludes =
+export type EducationIncludes =
   | ["courses", "skills", "details"]
   | ["courses", "details", "skills"]
   | ["skills", "courses", "details"]
@@ -36,13 +37,23 @@ export type EduIncludes =
   | ["courses"]
   | [];
 
-export type ApiEducation<I extends EduIncludes = []> = ConditionallyInclude<
+export type EducationToCourseIncludes<I extends EducationIncludes> = I extends [
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  ...infer L extends string[],
+  "skills",
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  ...infer R extends string[],
+]
+  ? ["skills"]
+  : [];
+
+export type ApiEducation<I extends EducationIncludes = []> = ConditionallyInclude<
   BrandModel<"education"> & {
     readonly details: ApiDetail<["nestedDetails", "skills"]>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];
     /* Note: We do not need to worry about skills that are nested under the courses because we
        never show the skills associated with a course unless it is a detail view of the course. */
-    readonly courses: BrandCourse[];
+    readonly courses: ApiCourse<EducationToCourseIncludes<I>>[];
   },
   ["skills", "details", "courses"],
   I
