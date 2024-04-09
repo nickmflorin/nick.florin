@@ -138,7 +138,10 @@ export const getModelLabel = <M extends MenuModel, O extends MenuOptions<M>>(
 ): ModelLabel<M, O> | undefined => {
   let v: ReactNode | Never = NEVER;
   if (options.getItemLabel !== undefined) {
-    v = options.getItemLabel(model, options);
+    v = options.getItemLabel(model, {
+      isMulti: options?.isMulti ?? false,
+      isNullable: options?.isNullable ?? false,
+    });
   } else if (modelHasParam(model, "label")) {
     v = model.label;
   }
@@ -235,7 +238,10 @@ export const getItemValueLabel = <M extends MenuModel, O extends MenuOptions<M>>
 ): ModelValueLabel<M, O> | undefined => {
   let v: ReactNode | Never = NEVER;
   if (options.getItemValueLabel !== undefined) {
-    v = options.getItemValueLabel(model, options);
+    v = options.getItemValueLabel(model, {
+      isMulti: options?.isMulti ?? false,
+      isNullable: options?.isNullable ?? false,
+    });
   } else if (modelHasParam(model, "valueLabel")) {
     v = model.valueLabel;
   }
