@@ -1,6 +1,6 @@
 import uniqBy from "lodash.uniqby";
 
-import type { BrandSkill, BrandProject } from "./brand";
+import type { BrandSkill, BrandProject, BrandRepository } from "./brand";
 
 import { type getEducations } from "~/actions/fetches/educations";
 import { type getExperiences } from "~/actions/fetches/experiences";
@@ -64,20 +64,72 @@ export const getProgrammingDomain = <D extends ProgrammingDomain>(
   value: domain,
 });
 
+// Note: Use Github gist to generate.
 export type SkillIncludes =
+  | ["educations", "experiences", "projects", "repositories"]
+  | ["educations", "experiences", "repositories", "projects"]
+  | ["educations", "projects", "experiences", "repositories"]
+  | ["educations", "projects", "repositories", "experiences"]
+  | ["educations", "repositories", "experiences", "projects"]
+  | ["educations", "repositories", "projects", "experiences"]
+  | ["experiences", "educations", "projects", "repositories"]
+  | ["experiences", "educations", "repositories", "projects"]
+  | ["experiences", "projects", "educations", "repositories"]
+  | ["experiences", "projects", "repositories", "educations"]
+  | ["experiences", "repositories", "educations", "projects"]
+  | ["experiences", "repositories", "projects", "educations"]
+  | ["projects", "educations", "experiences", "repositories"]
+  | ["projects", "educations", "repositories", "experiences"]
+  | ["projects", "experiences", "educations", "repositories"]
+  | ["projects", "experiences", "repositories", "educations"]
+  | ["projects", "repositories", "educations", "experiences"]
+  | ["projects", "repositories", "experiences", "educations"]
+  | ["repositories", "educations", "experiences", "projects"]
+  | ["repositories", "educations", "projects", "experiences"]
+  | ["repositories", "experiences", "educations", "projects"]
+  | ["repositories", "experiences", "projects", "educations"]
+  | ["repositories", "projects", "educations", "experiences"]
+  | ["repositories", "projects", "experiences", "educations"]
   | ["educations", "experiences", "projects"]
+  | ["educations", "experiences", "repositories"]
   | ["educations", "projects", "experiences"]
+  | ["educations", "projects", "repositories"]
+  | ["educations", "repositories", "experiences"]
+  | ["educations", "repositories", "projects"]
   | ["experiences", "educations", "projects"]
+  | ["experiences", "educations", "repositories"]
   | ["experiences", "projects", "educations"]
+  | ["experiences", "projects", "repositories"]
+  | ["experiences", "repositories", "educations"]
+  | ["experiences", "repositories", "projects"]
   | ["projects", "educations", "experiences"]
+  | ["projects", "educations", "repositories"]
   | ["projects", "experiences", "educations"]
+  | ["projects", "experiences", "repositories"]
+  | ["projects", "repositories", "educations"]
+  | ["projects", "repositories", "experiences"]
+  | ["repositories", "educations", "experiences"]
+  | ["repositories", "educations", "projects"]
+  | ["repositories", "experiences", "educations"]
+  | ["repositories", "experiences", "projects"]
+  | ["repositories", "projects", "educations"]
+  | ["repositories", "projects", "experiences"]
   | ["educations", "experiences"]
-  | ["experiences", "educations"]
   | ["educations", "projects"]
+  | ["educations", "repositories"]
+  | ["experiences", "educations"]
+  | ["experiences", "projects"]
+  | ["experiences", "repositories"]
   | ["projects", "educations"]
+  | ["projects", "experiences"]
+  | ["projects", "repositories"]
+  | ["repositories", "educations"]
+  | ["repositories", "experiences"]
+  | ["repositories", "projects"]
   | ["educations"]
   | ["experiences"]
   | ["projects"]
+  | ["repositories"]
   | [];
 
 export type ApiSkill<I extends SkillIncludes = []> = ConditionallyInclude<
@@ -86,8 +138,9 @@ export type ApiSkill<I extends SkillIncludes = []> = ConditionallyInclude<
     readonly educations: ApiEducation[];
     readonly experiences: ApiExperience[];
     readonly projects: BrandProject[];
+    readonly repositories: BrandRepository[];
   },
-  ["educations", "experiences", "projects"],
+  ["educations", "experiences", "projects", "repositories"],
   I
 >;
 

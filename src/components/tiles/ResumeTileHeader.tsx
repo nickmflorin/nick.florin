@@ -9,6 +9,7 @@ import type { FontSize, FontWeight } from "~/components/typography";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 import { Text } from "~/components/typography/Text";
 import { Title } from "~/components/typography/Title";
+import { ShowHide } from "~/components/util";
 
 type HeaderSize = "small" | "large";
 
@@ -38,14 +39,7 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
   model,
   ...props
 }: ResumeTileHeaderProps<M, T>) => (
-  <div
-    {...props}
-    className={clsx(
-      "flex flex-row gap-[8px] max-w-full w-full",
-      { small: "gap-8px", large: "gap-10px" }[size],
-      props.className,
-    )}
-  >
+  <div {...props} className={clsx("flex flex-row gap-[12px] max-w-full w-full", props.className)}>
     <ResumeModelImage model={model} size={ImageSizes[size]} />
     <div className="flex flex-col gap-[8px]">
       <div className={clsx("flex flex-col gap-[4px]", { "pt-[4px]": size === "large" })}>
@@ -70,31 +64,33 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
           {model.kind === "experience" ? model.company.name : model.school.name}
         </LinkOrText>
       </div>
-      <div className="flex flex-wrap gap-y-[4px] gap-x-[8px]">
-        <TimePeriodTag
-          size={size === "large" ? "sm" : "xs"}
-          timePeriod={
-            model.kind === "experience"
-              ? { startDate: model.startDate, endDate: model.endDate }
-              : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
-          }
-        />
-        <LocationTag
-          size={size === "large" ? "sm" : "xs"}
-          location={
-            model.kind === "education"
-              ? {
-                  city: model.school.city,
-                  state: model.school.state,
-                }
-              : {
-                  city: model.company.city,
-                  state: model.company.state,
-                  isRemote: model.isRemote,
-                }
-          }
-        />
-      </div>
+      <ShowHide show={size === "large"}>
+        <div className="flex flex-wrap gap-y-[4px] gap-x-[8px]">
+          <TimePeriodTag
+            size="sm"
+            timePeriod={
+              model.kind === "experience"
+                ? { startDate: model.startDate, endDate: model.endDate }
+                : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
+            }
+          />
+          <LocationTag
+            size="sm"
+            location={
+              model.kind === "education"
+                ? {
+                    city: model.school.city,
+                    state: model.school.state,
+                  }
+                : {
+                    city: model.company.city,
+                    state: model.company.state,
+                    isRemote: model.isRemote,
+                  }
+            }
+          />
+        </div>
+      </ShowHide>
     </div>
   </div>
 );

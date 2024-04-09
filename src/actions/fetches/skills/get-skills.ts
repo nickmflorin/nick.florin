@@ -10,6 +10,7 @@ import {
   type BrandSkill,
   type ApiSkill,
   type BrandExperience,
+  type BrandRepository,
   type BrandEducation,
   type BrandCompany,
   type BrandSchool,
@@ -22,12 +23,14 @@ import {
   type BrandProject,
   type ProjectOnSkills,
   conditionallyInclude,
+  fieldIsIncluded,
 } from "~/prisma/model";
 import { constructOrSearch, conditionalFilters } from "~/prisma/util";
 import { parsePagination } from "~/api/query";
 import { type Visibility } from "~/api/query";
 
 import { SKILLS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
+import { convertToPlainObject } from "../serialization";
 
 const SEARCH_FIELDS = ["slug", "label"] as const;
 
@@ -116,7 +119,7 @@ export const preloadSkills = <I extends SkillIncludes>(params: GetSkillsParams<I
   void getSkills(params);
 };
 
-export const toApiSkill = ({
+export const includeAutoExperience = ({
   skill,
   educations: _educations,
   experiences: _experiences,
@@ -219,14 +222,28 @@ export const getSkills = cache(
       },
     });
 
+    let repositories: BrandRepository[] = [];
+    if (fieldIsIncluded("repositories", includes)) {
+      repositories = await prisma.repository.findMany({
+        where: { skills: { some: { id: { in: skills.map(s => s.id) } } } },
+        orderBy: { createdAt: "desc" },
+      });
+    }
+
     return skills.map((skill): ApiSkill<I> => {
-      const apiSKill = toApiSkill({
+      const apiSkill = includeAutoExperience({
         skill,
         educations,
         experiences,
         projects,
       });
-      return conditionallyInclude(apiSKill, ["educations", "experiences", "projects"], includes);
+      return convertToPlainObject(
+        conditionallyInclude(
+          { ...apiSkill, repositories },
+          ["educations", "experiences", "projects", "repositories"],
+          includes,
+        ),
+      );
     });
   },
 ) as <I extends SkillIncludes>(params: GetSkillsParams<I>) => Promise<ApiSkill<I>[]>;

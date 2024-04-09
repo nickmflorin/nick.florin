@@ -1,15 +1,22 @@
 import "server-only";
 import { cache } from "react";
 
+import { DateTime } from "luxon";
+
 import { getAuthAdminUser } from "~/application/auth";
+import { strictArrayLookup, minDate } from "~/lib";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
-import { type ApiSkill, type BrandSkill, type SkillIncludes } from "~/prisma/model";
+import {
+  fieldIsIncluded,
+  type ApiSkill,
+  type BrandSkill,
+  type SkillIncludes,
+  type BrandRepository,
+} from "~/prisma/model";
 import { conditionallyInclude } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
 import { ApiClientGlobalError } from "~/api";
 import { type Visibility } from "~/api/query";
-
-import { toApiSkill } from "./get-skills";
 
 export const preloadSkill = <I extends SkillIncludes>(
   id: string,
@@ -70,13 +77,32 @@ export const getSkill = cache(
       include: { skills: true },
     });
 
-    const apiSkill = toApiSkill({
-      skill,
-      educations,
-      experiences,
-      projects,
-    });
-    return conditionallyInclude(apiSkill, ["educations", "experiences", "projects"], includes);
+    let repositories: BrandRepository[] = [];
+    if (fieldIsIncluded("repositories", includes)) {
+      repositories = await prisma.repository.findMany({
+        where: { skills: { some: { id: { in: [skill.id] } } } },
+        orderBy: { createdAt: "desc" },
+      });
+    }
+
+    const oldestEducation = strictArrayLookup(educations, educations.length - 1, {});
+    const oldestExperience = strictArrayLookup(experiences, experiences.length - 1, {});
+    const oldestProject = strictArrayLookup(projects, projects.length - 1, {});
+    const oldestDate = minDate(
+      oldestEducation?.startDate,
+      oldestExperience?.startDate,
+      oldestProject?.startDate,
+    );
+
+    const autoExperience = oldestDate
+      ? Math.round(DateTime.now().diff(DateTime.fromJSDate(oldestDate), "years").years)
+      : 0;
+
+    return conditionallyInclude(
+      { ...skill, autoExperience, experiences, educations, projects, repositories },
+      ["educations", "experiences", "projects", "repositories"],
+      includes,
+    );
   },
 ) as {
   <I extends SkillIncludes>(

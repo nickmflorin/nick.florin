@@ -18,6 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     "experiences",
     "educations",
     "projects",
+    "repositories",
   ]) as SkillIncludes;
 
   let skill: ApiSkill<SkillIncludes>;

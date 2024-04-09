@@ -16,8 +16,8 @@ import {
   fieldIsIncluded,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
-import { parsePagination } from "~/api/query";
-import { type Visibility } from "~/api/query";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
+import { parsePagination, type Visibility } from "~/api/query";
 
 import { EDUCATIONS_ADMIN_TABLE_PAGE_SIZE } from "../constants";
 import { getDetails } from "../details";
@@ -147,9 +147,9 @@ export const getEducations = cache(
       if (courses) {
         modified = { ...modified, courses: courses.filter(c => c.educationId === edu.id) };
       }
-      return modified as ApiEducation<I>;
+      return convertToPlainObject(modified) as ApiEducation<I>;
     });
-    return educations as ApiEducation<I>[];
+    return educations.map(convertToPlainObject) as ApiEducation<I>[];
   },
 ) as {
   <I extends EduIncludes>(params: GetEducationsParams<I>): Promise<ApiEducation<I>[]>;

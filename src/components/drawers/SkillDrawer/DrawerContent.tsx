@@ -3,6 +3,9 @@ import { ProgrammingDomains } from "~/components/badges/collections/ProgrammingD
 import { ProgrammingLanguages } from "~/components/badges/collections/ProgrammingLanguages";
 import { SkillCategories } from "~/components/badges/collections/SkillCategories";
 import { SkillExperienceBadge } from "~/components/badges/SkillExperienceBadge";
+import { Link } from "~/components/buttons";
+import { RepositoryTile } from "~/components/tiles/RepositoryTile";
+import { ResumeTileHeader } from "~/components/tiles/ResumeTileHeader";
 import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 import { Title } from "~/components/typography/Title";
@@ -10,12 +13,28 @@ import { ShowHide } from "~/components/util";
 
 import { DrawerContent } from "../DrawerContent";
 
-import { Educations } from "./Educations";
-import { Experiences } from "./Experiences";
-import { Projects } from "./Projects";
+interface SkillDrawerSectionProps {
+  readonly label: string;
+  readonly children: JSX.Element[];
+}
+
+const SkillDrawerSection = ({ label, children }: SkillDrawerSectionProps) =>
+  children.length === 0 ? (
+    <></>
+  ) : (
+    <div className="flex flex-col gap-[8px]">
+      <hr className="w-full border-t border-gray-200" />
+      <div className="flex flex-col gap-[12px]">
+        <Label size="sm" fontWeight="medium">
+          {label}
+        </Label>
+        <div className="flex flex-col gap-[12px]">{children}</div>
+      </div>
+    </div>
+  );
 
 export interface SkillDrawerContentProps {
-  readonly skill: ApiSkill<["educations", "experiences", "projects"]>;
+  readonly skill: ApiSkill<["educations", "experiences", "projects", "repositories"]>;
 }
 
 export const SkillDrawerContent = ({
@@ -29,6 +48,7 @@ export const SkillDrawerContent = ({
     programmingDomains,
     programmingLanguages,
     experience,
+    repositories,
     autoExperience,
   },
 }: SkillDrawerContentProps) => (
@@ -67,24 +87,35 @@ export const SkillDrawerContent = ({
       </div>
     </ShowHide>
     <div className="flex flex-col gap-[14px]">
-      {experiences.length !== 0 && (
-        <>
-          <hr className="w-full border-t border-gray-200" />
-          <Experiences experiences={experiences} />
-        </>
-      )}
-      {educations.length !== 0 && (
-        <>
-          <hr className="w-full border-t border-gray-200" />
-          <Educations educations={educations} />
-        </>
-      )}
-      {projects.length !== 0 && (
-        <>
-          <hr className="w-full border-t border-gray-200" />
-          <Projects projects={projects} />
-        </>
-      )}
+      <SkillDrawerSection label="Repositories">
+        {repositories.map((repo, index) => (
+          <RepositoryTile key={index} repository={repo} />
+        ))}
+      </SkillDrawerSection>
+      <SkillDrawerSection label="Experiences">
+        {experiences.map((experience, index) => (
+          <ResumeTileHeader key={index} model={experience} size="small" />
+        ))}
+      </SkillDrawerSection>
+      <SkillDrawerSection label="Educations">
+        {educations.map((education, index) => (
+          <ResumeTileHeader key={index} model={education} size="small" />
+        ))}
+      </SkillDrawerSection>
+      <SkillDrawerSection label="Projects">
+        {projects.map((project, index) => (
+          <div className="flex flex-col gap-[8px]" key={index}>
+            <Link
+              options={{ as: "link" }}
+              fontWeight="regular"
+              fontSize="sm"
+              href={`/projects/${project.slug}`}
+            >
+              {project.name}
+            </Link>
+          </div>
+        ))}
+      </SkillDrawerSection>
     </div>
   </DrawerContent>
 );

@@ -15,6 +15,7 @@ import {
   fieldIsIncluded,
 } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
+import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { parsePagination, type Visibility } from "~/api/query";
 
 import { EXPERIENCES_ADMIN_TABLE_PAGE_SIZE } from "../constants";
@@ -136,7 +137,7 @@ export const getExperiences = cache(
       return modified as ApiExperience<I>;
     });
 
-    return experiences as ApiExperience<I>[];
+    return experiences.map(convertToPlainObject) as ApiExperience<I>[];
   },
 ) as {
   <I extends ExpIncludes>(params: GetExperiencesParams<I>): Promise<ApiExperience<I>[]>;

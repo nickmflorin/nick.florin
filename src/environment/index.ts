@@ -44,6 +44,7 @@ export const environment = Environment.create(
       NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
       NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
       NEXT_PUBLIC_WELCOME_TOAST: process.env.NEXT_PUBLIC_WELCOME_TOAST,
+      NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: process.env.NEXT_PUBLIC_GITHUB_PROFILE_PREFIX,
     },
     validators: {
       NEXT_PUBLIC_PRETTY_LOGGING: StringBooleanFlagSchema.default(
@@ -56,6 +57,7 @@ export const environment = Environment.create(
       NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
       NEXT_PUBLIC_LOG_LEVEL: LogLevels.schema.default(environmentLookup(DEFAULT_LOG_LEVELS)),
       NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
+      NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: z.string().url(),
       APP_NAME_FORMAL: z.string(),
       NODE_ENV: z.enum(["development", "test", "production"]),
       ANALYZE_BUNDLE: StringBooleanFlagSchema.optional(),

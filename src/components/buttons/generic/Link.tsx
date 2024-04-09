@@ -24,7 +24,7 @@ import { ButtonContent } from "./ButtonContent";
  * mode, because they cannot be sized properly and will not be aligned with the text which will
  * be vertically aligned at the baseline (not the middle, which is the case for the 'flex' mode).
  */
-type LinkFlexProps<O extends types.ButtonOptions> = Omit<
+export type LinkFlexProps<O extends types.ButtonOptions> = Omit<
   types.AbstractProps<"link", O>,
   "buttonType"
 > &
@@ -51,7 +51,7 @@ type LinkFlexProps<O extends types.ButtonOptions> = Omit<
     readonly loadingLocation?: "left" | "over" | "right";
   };
 
-type LinkInlineProps<O extends types.ButtonOptions> = Omit<
+export type LinkInlineProps<O extends types.ButtonOptions> = Omit<
   types.AbstractProps<"link", O>,
   "buttonType"
 > &
@@ -123,6 +123,7 @@ const LocalLink = forwardRef(
             transform,
           }),
           { "link--flex": flex },
+          ps.className,
         )}
       >
         {flex ? (

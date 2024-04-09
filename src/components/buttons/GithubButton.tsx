@@ -8,7 +8,7 @@ export const GithubButton = async (): Promise<JSX.Element> => {
     <SocialButton
       icon={{ name: "github", iconStyle: "brands" }}
       href={profile?.githubUrl ?? "#"}
-      className="hover:text-[#1f2328]"
+      className="hover:text-github-black"
     />
   );
 };

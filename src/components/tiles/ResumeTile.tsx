@@ -19,7 +19,7 @@ export interface ResumeTileProps extends ComponentProps {
 export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element => (
   <div {...props} className={clsx("flex flex-col w-full gap-[10px] max-w-100%", props.className)}>
     <ResumeTileHeader size="large" model={model} />
-    <div className="flex flex-col pl-[82px] gap-[12px]">
+    <div className="flex flex-col pl-[84px] gap-[12px]">
       <div className="flex flex-col gap-[6px] max-w-[700px]">
         <Description
           fontSize="smplus"
