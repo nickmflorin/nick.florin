@@ -18,21 +18,6 @@ export const SkillFormSchema = SkillSchema.required();
 
 export type SkillFormValues = z.infer<typeof SkillFormSchema>;
 
-export const SkillFormDefaultValues: SkillFormValues = {
-  label: "",
-  slug: "",
-  description: "",
-  experiences: [],
-  educations: [],
-  categories: [],
-  projects: [],
-  programmingDomains: [],
-  programmingLanguages: [],
-  includeInTopSkills: false,
-  experience: null,
-  visible: true,
-};
-
 export interface SkillFormProps
   extends Omit<FormProps<SkillFormValues>, "children" | "onSubmit" | "contentClassName"> {}
 

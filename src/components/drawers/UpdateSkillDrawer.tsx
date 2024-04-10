@@ -1,44 +1,33 @@
-import dynamic from "next/dynamic";
-
 import { isUuid } from "~/lib/typeguards";
+import type { BrandSkill } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { Loading } from "~/components/feedback/Loading";
+import { useSkillForm } from "~/components/forms/skills/hooks";
+import UpdateSkillForm from "~/components/forms/skills/UpdateSkillForm";
 import { useSkill } from "~/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
+import { DrawerForm } from "./DrawerForm";
+import { type ExtendingDrawerProps } from "./provider";
 
-import { type ExtendingDrawerProps } from ".";
-
-const SkillForm = dynamic(() => import("~/components/forms/skills/UpdateSkillForm"), {
-  loading: () => <Loading isLoading={true} />,
-});
-
-interface UpdateSkillDrawerProps
+interface UpdateCourseDrawerProps
   extends ExtendingDrawerProps<{
     readonly skillId: string;
+    readonly eager: Pick<BrandSkill, "label">;
   }> {}
 
-export const UpdateSkillDrawer = ({ skillId }: UpdateSkillDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useSkill(isUuid(skillId) ? skillId : null, {
+export const UpdateCourseDrawer = ({ skillId, eager }: UpdateCourseDrawerProps): JSX.Element => {
+  const { data, isLoading, error, isValidating } = useSkill(isUuid(skillId) ? skillId : null, {
     includes: ["projects", "educations", "experiences"],
     keepPreviousData: true,
   });
+  const form = useSkillForm();
+
   return (
-    <Drawer>
-      <ApiResponseState error={error} isLoading={isLoading} data={data}>
-        {skill => (
-          <>
-            <DrawerHeader>{skill.label}</DrawerHeader>
-            <DrawerContent>
-              <SkillForm skill={skill} />
-            </DrawerContent>
-          </>
-        )}
+    <DrawerForm form={form} titleField="label" titlePlaceholder={eager.label}>
+      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+        {skill => <UpdateSkillForm form={form} skill={skill} />}
       </ApiResponseState>
-    </Drawer>
+    </DrawerForm>
   );
 };
 
-export default UpdateSkillDrawer;
+export default UpdateCourseDrawer;

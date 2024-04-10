@@ -1,4 +1,3 @@
-"use client";
 import { type z } from "zod";
 
 import { CourseSchema } from "~/api/schemas";
@@ -14,11 +13,6 @@ export type CourseFormValues = z.infer<typeof CourseFormSchema>;
 export interface CourseFormProps
   extends Omit<FormProps<CourseFormValues>, "children" | "onSubmit" | "contentClassName"> {}
 
-/*
-TODO
-(1) Improving slug input.
-(2) Adding ability to modify skills from this form.
-*/
 export const CourseForm = (props: CourseFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">
     <Form.Field name="name" label="Name" form={props.form}>

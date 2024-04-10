@@ -9,16 +9,9 @@ import { createSchool } from "~/actions/mutations/schools";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../generic/hooks/use-form";
+import { SchoolForm, type SchoolFormProps } from "./SchoolForm";
 
-import {
-  SchoolForm,
-  type SchoolFormProps,
-  type SchoolFormValues,
-  SchoolFormSchema,
-} from "./SchoolForm";
-
-export interface CreateSchoolFormProps extends Omit<SchoolFormProps, "form" | "action"> {
+export interface CreateSchoolFormProps extends Omit<SchoolFormProps, "action"> {
   readonly onSuccess?: (m: School) => void;
   readonly onCancel?: () => void;
 }
@@ -31,25 +24,11 @@ export const CreateSchoolForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<SchoolFormValues>({
-    schema: SchoolFormSchema,
-    defaultValues: {
-      name: "",
-      shortName: "",
-      description: "",
-      websiteUrl: "",
-      logoImageUrl: "",
-      city: "",
-      state: "",
-    },
-  });
-
   return (
     <SchoolForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createSchool(data);
         if (isApiClientErrorJson(response)) {

@@ -8,16 +8,9 @@ import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 
-import { useForm } from "../generic/hooks/use-form";
+import { ExperienceForm, type ExperienceFormProps } from "./ExperienceForm";
 
-import {
-  ExperienceForm,
-  ExperienceFormSchema,
-  type ExperienceFormProps,
-  type ExperienceFormValues,
-} from "./ExperienceForm";
-
-export interface UpdateExperienceFormProps extends Omit<ExperienceFormProps, "form" | "action"> {
+export interface UpdateExperienceFormProps extends Omit<ExperienceFormProps, "action"> {
   readonly experience: ApiExperience;
   readonly onCancel?: () => void;
 }
@@ -31,33 +24,20 @@ export const UpdateExperienceForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<ExperienceFormValues>({
-    schema: ExperienceFormSchema,
-    defaultValues: {
-      title: "",
-      shortTitle: "",
-      description: "",
-      isRemote: false,
-      startDate: new Date(),
-      endDate: null,
-    },
-  });
-
   // Prevents the form from resetting when an error occurs.
   useDeepEqualEffect(() => {
-    setValues({
+    props.form.setValues({
       ...experience,
       company: experience.companyId,
       description: experience.description ?? "",
     });
-  }, [experience, setValues]);
+  }, [experience, props.form.setValues]);
 
   return (
     <ExperienceForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await updateExperienceWithId(data);
         if (isApiClientErrorJson(response)) {

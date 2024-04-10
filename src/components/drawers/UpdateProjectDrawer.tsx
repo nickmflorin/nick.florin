@@ -1,44 +1,35 @@
-import dynamic from "next/dynamic";
-
 import { isUuid } from "~/lib/typeguards";
+import type { BrandProject } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { Loading } from "~/components/feedback/Loading";
+import { useProjectForm } from "~/components/forms/projects/hooks";
+import UpdateProjectForm from "~/components/forms/projects/UpdateProjectForm";
 import { useProject } from "~/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
+import { DrawerForm } from "./DrawerForm";
+import { type ExtendingDrawerProps } from "./provider";
 
-import { type ExtendingDrawerProps } from ".";
-
-const ProjectForm = dynamic(() => import("~/components/forms/projects/UpdateProjectForm"), {
-  loading: () => <Loading isLoading={true} />,
-});
-
-interface UpdateProjectDrawerProps
+interface UpdateCourseDrawerProps
   extends ExtendingDrawerProps<{
     readonly projectId: string;
+    readonly eager: Pick<BrandProject, "name">;
   }> {}
 
-export const UpdateProjectDrawer = ({ projectId }: UpdateProjectDrawerProps): JSX.Element => {
+export const UpdateCourseDrawer = ({ projectId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useProject(
     isUuid(projectId) ? projectId : null,
-    { keepPreviousData: true },
+    {
+      keepPreviousData: true,
+    },
   );
+  const form = useProjectForm();
+
   return (
-    <Drawer>
+    <DrawerForm form={form} titleField="name" titlePlaceholder={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {project => (
-          <>
-            <DrawerHeader>{project.shortName ?? project.name}</DrawerHeader>
-            <DrawerContent>
-              <ProjectForm project={project} />
-            </DrawerContent>
-          </>
-        )}
+        {project => <UpdateProjectForm form={form} project={project} />}
       </ApiResponseState>
-    </Drawer>
+    </DrawerForm>
   );
 };
 
-export default UpdateProjectDrawer;
+export default UpdateCourseDrawer;

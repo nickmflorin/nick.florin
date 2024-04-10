@@ -5,18 +5,11 @@ import { useTransition } from "react";
 import { type Skill } from "~/prisma/model";
 import { createSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
-import { useForm } from "~/components/forms/generic/hooks/use-form";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import {
-  SkillForm,
-  SkillFormSchema,
-  type SkillFormProps,
-  type SkillFormValues,
-  SkillFormDefaultValues,
-} from "./SkillForm";
+import { SkillForm, type SkillFormProps } from "./SkillForm";
 
-export interface CreateSkillFormProps extends Omit<SkillFormProps, "form" | "action"> {
+export interface CreateSkillFormProps extends Omit<SkillFormProps, "action"> {
   readonly onCancel?: () => void;
   readonly onSuccess?: (m: Skill) => void;
 }
@@ -29,17 +22,11 @@ export const CreateSkillForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<SkillFormValues>({
-    schema: SkillFormSchema,
-    defaultValues: SkillFormDefaultValues,
-  });
-
   return (
     <SkillForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createSkill(data);
         if (isApiClientErrorJson(response)) {

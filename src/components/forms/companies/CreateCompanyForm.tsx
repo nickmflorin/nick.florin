@@ -9,16 +9,9 @@ import { createCompany } from "~/actions/mutations/companies";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../generic/hooks/use-form";
+import { CompanyForm, type CompanyFormProps } from "./CompanyForm";
 
-import {
-  CompanyForm,
-  type CompanyFormProps,
-  type CompanyFormValues,
-  CompanyFormSchema,
-} from "./CompanyForm";
-
-export interface CreateCompanyFormProps extends Omit<CompanyFormProps, "form" | "action"> {
+export interface CreateCompanyFormProps extends Omit<CompanyFormProps, "action"> {
   readonly onSuccess?: (m: Company) => void;
   readonly onCancel?: () => void;
 }
@@ -31,25 +24,11 @@ export const CreateCompanyForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<CompanyFormValues>({
-    schema: CompanyFormSchema,
-    defaultValues: {
-      name: "",
-      shortName: "",
-      description: "",
-      websiteUrl: "",
-      logoImageUrl: "",
-      city: "",
-      state: "",
-    },
-  });
-
   return (
     <CompanyForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createCompany(data);
         if (isApiClientErrorJson(response)) {

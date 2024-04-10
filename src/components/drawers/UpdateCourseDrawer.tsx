@@ -11,13 +11,10 @@ import { type ExtendingDrawerProps } from "./provider";
 interface UpdateCourseDrawerProps
   extends ExtendingDrawerProps<{
     readonly courseId: string;
-    readonly eagerCourse?: Pick<BrandCourse, "name" | "shortName">;
+    readonly eager: Pick<BrandCourse, "name">;
   }> {}
 
-export const UpdateCourseDrawer = ({
-  courseId,
-  eagerCourse,
-}: UpdateCourseDrawerProps): JSX.Element => {
+export const UpdateCourseDrawer = ({ courseId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useCourse(isUuid(courseId) ? courseId : null, {
     includes: ["education"],
     visibility: "admin",
@@ -26,7 +23,7 @@ export const UpdateCourseDrawer = ({
   const form = useCourseForm();
 
   return (
-    <DrawerForm form={form} titleField="name" titlePlaceholder={eagerCourse?.name ?? "Course Name"}>
+    <DrawerForm form={form} titleField="name" titlePlaceholder={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {course => <UpdateCourseForm form={form} course={course} />}
       </ApiResponseState>

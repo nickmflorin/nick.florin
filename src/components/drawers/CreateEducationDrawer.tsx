@@ -1,32 +1,18 @@
-import dynamic from "next/dynamic";
+import { CreateEducationForm } from "~/components/forms/educations/CreateEducationForm";
+import { useEducationForm } from "~/components/forms/educations/hooks";
 
-import { Loading } from "~/components/feedback/Loading";
-
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
+import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
-
-const CreateEducationForm = dynamic(
-  () => import("~/components/forms/educations/CreateEducationForm"),
-  {
-    loading: () => <Loading isLoading={true} />,
-  },
-);
 
 interface CreateEducationDrawerProps extends ExtendingDrawerProps {}
 
-export const CreateEducationDrawer = ({ onClose }: CreateEducationDrawerProps): JSX.Element => (
-  <Drawer>
-    <DrawerHeader>Create an Education</DrawerHeader>
-    <DrawerContent>
-      <CreateEducationForm
-        className="mt-[16px]"
-        onCancel={() => onClose()}
-        onSuccess={() => onClose()}
-      />
-    </DrawerContent>
-  </Drawer>
-);
+export const CreateEducationDrawer = ({ onClose }: CreateEducationDrawerProps): JSX.Element => {
+  const form = useEducationForm();
+  return (
+    <DrawerForm form={form} titleField="major" titlePlaceholder="New Education">
+      <CreateEducationForm form={form} onCancel={() => onClose()} onSuccess={() => onClose()} />
+    </DrawerForm>
+  );
+};
 
 export default CreateEducationDrawer;

@@ -1,19 +1,19 @@
 import { CreateProjectForm } from "~/components/forms/projects/CreateProjectForm";
+import { useProjectForm } from "~/components/forms/projects/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
+import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-interface CreateProjectDrawerProps extends ExtendingDrawerProps {}
+interface CreateCourseDrawerProps extends ExtendingDrawerProps {}
 
-export const CreateProjectDrawer = ({ onClose }: CreateProjectDrawerProps): JSX.Element => (
-  <Drawer>
-    <DrawerHeader>Create a Project</DrawerHeader>
-    <DrawerContent>
-      <CreateProjectForm onCancel={() => onClose()} onSuccess={() => onClose()} />
-    </DrawerContent>
-  </Drawer>
-);
+export const CreateCourseDrawer = ({ onClose }: CreateCourseDrawerProps): JSX.Element => {
+  const form = useProjectForm();
 
-export default CreateProjectDrawer;
+  return (
+    <DrawerForm form={form} titleField="name" titlePlaceholder="New Project">
+      <CreateProjectForm form={form} onCancel={() => onClose()} onSuccess={() => onClose()} />
+    </DrawerForm>
+  );
+};
+
+export default CreateCourseDrawer;

@@ -7,16 +7,9 @@ import { createEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../generic/hooks/use-form";
+import { EducationForm, type EducationFormProps } from "./EducationForm";
 
-import {
-  EducationForm,
-  EducationFormSchema,
-  type EducationFormProps,
-  type EducationFormValues,
-} from "./EducationForm";
-
-export interface CreateEducationFormProps extends Omit<EducationFormProps, "form" | "action"> {
+export interface CreateEducationFormProps extends Omit<EducationFormProps, "action"> {
   readonly onCancel?: () => void;
   readonly onSuccess?: (m: Education) => void;
 }
@@ -29,26 +22,11 @@ export const CreateEducationForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<EducationFormValues>({
-    schema: EducationFormSchema,
-    defaultValues: {
-      major: "",
-      concentration: "",
-      note: "",
-      minor: "",
-      description: "",
-      postPoned: false,
-      startDate: new Date(),
-      endDate: null,
-    },
-  });
-
   return (
     <EducationForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createEducation(data);
         if (isApiClientErrorJson(response)) {

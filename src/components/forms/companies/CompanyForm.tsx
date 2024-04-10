@@ -1,4 +1,3 @@
-"use client";
 import { type z } from "zod";
 
 import { CompanySchema } from "~/api/schemas";

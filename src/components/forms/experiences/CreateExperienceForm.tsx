@@ -7,16 +7,9 @@ import { createExperience } from "~/actions/mutations/experiences";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../generic/hooks/use-form";
+import { ExperienceForm, type ExperienceFormProps } from "./ExperienceForm";
 
-import {
-  ExperienceForm,
-  ExperienceFormSchema,
-  type ExperienceFormProps,
-  type ExperienceFormValues,
-} from "./ExperienceForm";
-
-export interface CreateExperienceFormProps extends Omit<ExperienceFormProps, "form" | "action"> {
+export interface CreateExperienceFormProps extends Omit<ExperienceFormProps, "action"> {
   readonly onCancel?: () => void;
   readonly onSuccess?: (m: Experience) => void;
 }
@@ -29,24 +22,11 @@ export const CreateExperienceForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<ExperienceFormValues>({
-    schema: ExperienceFormSchema,
-    defaultValues: {
-      title: "",
-      shortTitle: "",
-      description: "",
-      isRemote: false,
-      startDate: new Date(),
-      endDate: null,
-    },
-  });
-
   return (
     <ExperienceForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createExperience(data);
         if (isApiClientErrorJson(response)) {

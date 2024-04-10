@@ -1,26 +1,26 @@
-import dynamic from "next/dynamic";
-
 import { isUuid } from "~/lib/typeguards";
+import type { BrandCompany } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { Loading } from "~/components/feedback/Loading";
+import { useCompanyForm } from "~/components/forms/companies/hooks";
+import { UpdateCompanyForm } from "~/components/forms/companies/UpdateCompanyForm";
 import { useCompany } from "~/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
-
-import { type ExtendingDrawerProps } from ".";
-
-const CompanyForm = dynamic(() => import("~/components/forms/companies/UpdateCompanyForm"), {
-  loading: () => <Loading isLoading={true} />,
-});
+import { DrawerForm } from "./DrawerForm";
+import { type ExtendingDrawerProps } from "./provider";
 
 interface UpdateCompanyDrawerProps
   extends ExtendingDrawerProps<{
     readonly companyId: string;
+    readonly eager: Pick<BrandCompany, "name">;
   }> {}
 
-export const UpdateCompanyDrawer = ({ companyId }: UpdateCompanyDrawerProps): JSX.Element => {
+export const UpdateCompanyDrawer = ({
+  companyId,
+  eager,
+  onClose,
+}: UpdateCompanyDrawerProps): JSX.Element => {
+  const form = useCompanyForm();
+
   const { data, isLoading, error, isValidating } = useCompany(
     isUuid(companyId) ? companyId : null,
     {
@@ -28,18 +28,11 @@ export const UpdateCompanyDrawer = ({ companyId }: UpdateCompanyDrawerProps): JS
     },
   );
   return (
-    <Drawer>
+    <DrawerForm form={form} titleField="name" titlePlaceholder={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {company => (
-          <>
-            <DrawerHeader>{company.name}</DrawerHeader>
-            <DrawerContent>
-              <CompanyForm company={company} />
-            </DrawerContent>
-          </>
-        )}
+        {company => <UpdateCompanyForm form={form} company={company} onCancel={() => onClose()} />}
       </ApiResponseState>
-    </Drawer>
+    </DrawerForm>
   );
 };
 

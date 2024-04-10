@@ -8,16 +8,9 @@ import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 
-import { useForm } from "../generic/hooks/use-form";
+import { EducationForm, type EducationFormProps } from "./EducationForm";
 
-import {
-  EducationForm,
-  EducationFormSchema,
-  type EducationFormProps,
-  type EducationFormValues,
-} from "./EducationForm";
-
-export interface UpdateEducationFormProps extends Omit<EducationFormProps, "form" | "action"> {
+export interface UpdateEducationFormProps extends Omit<EducationFormProps, "action"> {
   readonly education: ApiEducation;
   readonly onCancel?: () => void;
 }
@@ -31,23 +24,9 @@ export const UpdateEducationForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<EducationFormValues>({
-    schema: EducationFormSchema,
-    defaultValues: {
-      major: "",
-      concentration: "",
-      note: "",
-      minor: "",
-      description: "",
-      postPoned: false,
-      startDate: new Date(),
-      endDate: null,
-    },
-  });
-
   // Prevents the form from resetting when an error occurs.
   useDeepEqualEffect(() => {
-    setValues({
+    props.form.setValues({
       ...education,
       school: education.schoolId,
       description: education.description ?? "",
@@ -55,14 +34,13 @@ export const UpdateEducationForm = ({
       minor: education.minor ?? "",
       note: education.note ?? "",
     });
-  }, [education, setValues]);
+  }, [education, props.form.setValues]);
 
   return (
     <EducationForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await updateEducationWithId(data);
         if (isApiClientErrorJson(response)) {

@@ -1,25 +1,19 @@
-import dynamic from "next/dynamic";
+import { CreateSkillForm } from "~/components/forms/skills/CreateSkillForm";
+import { useSkillForm } from "~/components/forms/skills/hooks";
 
-import { Loading } from "~/components/feedback/Loading";
-
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
+import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-const CreateSkillForm = dynamic(() => import("~/components/forms/skills/CreateSkillForm"), {
-  loading: () => <Loading isLoading={true} />,
-});
+interface CreateCourseDrawerProps extends ExtendingDrawerProps {}
 
-interface CreateSkillDrawerProps extends ExtendingDrawerProps {}
+export const CreateCourseDrawer = ({ onClose }: CreateCourseDrawerProps): JSX.Element => {
+  const form = useSkillForm();
 
-export const CreateSkillDrawer = ({ onClose }: CreateSkillDrawerProps): JSX.Element => (
-  <Drawer>
-    <DrawerHeader>Create a School</DrawerHeader>
-    <DrawerContent>
-      <CreateSkillForm onCancel={() => onClose()} onSuccess={() => onClose()} />
-    </DrawerContent>
-  </Drawer>
-);
+  return (
+    <DrawerForm form={form} titleField="label" titlePlaceholder="New Skill">
+      <CreateSkillForm form={form} onCancel={() => onClose()} onSuccess={() => onClose()} />
+    </DrawerForm>
+  );
+};
 
-export default CreateSkillDrawer;
+export default CreateCourseDrawer;

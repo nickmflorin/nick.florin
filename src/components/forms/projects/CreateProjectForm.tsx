@@ -9,16 +9,9 @@ import { createProject } from "~/actions/mutations/projects";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
-import { useForm } from "../generic/hooks/use-form";
+import { ProjectForm, type ProjectFormProps } from "./ProjectForm";
 
-import {
-  ProjectForm,
-  type ProjectFormProps,
-  type ProjectFormValues,
-  ProjectFormSchema,
-} from "./ProjectForm";
-
-export interface CreateProjectFormProps extends Omit<ProjectFormProps, "form" | "action"> {
+export interface CreateProjectFormProps extends Omit<ProjectFormProps, "action"> {
   readonly onSuccess?: (m: Project) => void;
   readonly onCancel?: () => void;
 }
@@ -31,21 +24,11 @@ export const CreateProjectForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<ProjectFormValues>({
-    schema: ProjectFormSchema,
-    defaultValues: {
-      name: "",
-      shortName: "",
-      slug: "",
-    },
-  });
-
   return (
     <ProjectForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await createProject(data);
         if (isApiClientErrorJson(response)) {

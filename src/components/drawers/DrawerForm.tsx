@@ -36,7 +36,7 @@ export const DrawerForm = <I extends BaseFormValues>({
           <Title order={4}>{titleValue}</Title>
         )}
       </DrawerHeader>
-      <DrawerContent>{children}</DrawerContent>
+      <DrawerContent className="overflow-y-hidden">{children}</DrawerContent>
     </Drawer>
   );
 };

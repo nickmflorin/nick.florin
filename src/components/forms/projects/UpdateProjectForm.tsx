@@ -8,16 +8,9 @@ import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 
-import { useForm } from "../generic/hooks/use-form";
+import { ProjectForm, type ProjectFormProps } from "./ProjectForm";
 
-import {
-  ProjectForm,
-  type ProjectFormProps,
-  type ProjectFormValues,
-  ProjectFormSchema,
-} from "./ProjectForm";
-
-export interface UpdateProjectFormProps extends Omit<ProjectFormProps, "form" | "action"> {
+export interface UpdateProjectFormProps extends Omit<ProjectFormProps, "action"> {
   readonly project: Project;
   readonly onCancel?: () => void;
 }
@@ -31,18 +24,9 @@ export const UpdateProjectForm = ({
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
-  const { setValues, ...form } = useForm<ProjectFormValues>({
-    schema: ProjectFormSchema,
-    defaultValues: {
-      name: "",
-      shortName: "",
-      slug: "",
-    },
-  });
-
   // Prevents the form from resetting when an error occurs.
   useDeepEqualEffect(() => {
-    setValues({
+    props.form.setValues({
       ...project,
       shortName: project.shortName ?? "",
       name: project.name,
@@ -52,14 +36,13 @@ export const UpdateProjectForm = ({
       skills: [],
       details: [],
     });
-  }, [project, setValues]);
+  }, [project, props.form.setValues]);
 
   return (
     <ProjectForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
-      form={{ ...form, setValues }}
       action={async (data, form) => {
         const response = await updateProjectWithId(data);
         if (isApiClientErrorJson(response)) {

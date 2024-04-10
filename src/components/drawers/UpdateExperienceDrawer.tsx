@@ -1,47 +1,37 @@
-import dynamic from "next/dynamic";
-
 import { isUuid } from "~/lib/typeguards";
+import type { BrandExperience } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { Loading } from "~/components/feedback/Loading";
+import { useExperienceForm } from "~/components/forms/experiences/hooks";
+import { UpdateExperienceForm } from "~/components/forms/experiences/UpdateExperienceForm";
 import { useExperience } from "~/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
-
-import { type ExtendingDrawerProps } from ".";
-
-const ExperienceForm = dynamic(
-  () => import("~/components/forms/experiences/UpdateExperienceForm"),
-  {
-    loading: () => <Loading isLoading={true} />,
-  },
-);
+import { DrawerForm } from "./DrawerForm";
+import { type ExtendingDrawerProps } from "./provider";
 
 interface UpdateExperienceDrawerProps
   extends ExtendingDrawerProps<{
     readonly experienceId: string;
+    readonly eager: Pick<BrandExperience, "title">;
   }> {}
 
 export const UpdateExperienceDrawer = ({
   experienceId,
+  eager,
 }: UpdateExperienceDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useExperience(isUuid(experienceId) ? experienceId : null, {
-    keepPreviousData: true,
-  });
+  const { data, isLoading, error, isValidating } = useExperience(
+    isUuid(experienceId) ? experienceId : null,
+    {
+      keepPreviousData: true,
+    },
+  );
+  const form = useExperienceForm();
+
   return (
-    <Drawer>
-      <ApiResponseState error={error} isLoading={isLoading} data={data}>
-        {experience => (
-          <>
-            <DrawerHeader>{experience.title}</DrawerHeader>
-            <DrawerContent>
-              <ExperienceForm experience={experience} />
-            </DrawerContent>
-          </>
-        )}
+    <DrawerForm form={form} titleField="title" titlePlaceholder={eager.title}>
+      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+        {experience => <UpdateExperienceForm form={form} experience={experience} />}
       </ApiResponseState>
-    </Drawer>
+    </DrawerForm>
   );
 };
 

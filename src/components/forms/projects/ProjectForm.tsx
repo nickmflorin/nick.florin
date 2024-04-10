@@ -14,11 +14,6 @@ export type ProjectFormValues = z.infer<typeof ProjectFormSchema>;
 export interface ProjectFormProps
   extends Omit<FormProps<ProjectFormValues>, "children" | "onSubmit" | "contentClassName"> {}
 
-/*
-TODO
-(1) Improving slug input.
-(2) Adding ability to modify skills and details from this form.
-*/
 export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">
     <Form.Field name="name" label="Name" form={props.form}>

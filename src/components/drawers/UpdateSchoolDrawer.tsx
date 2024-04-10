@@ -1,43 +1,32 @@
-import dynamic from "next/dynamic";
-
 import { isUuid } from "~/lib/typeguards";
+import type { BrandSchool } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { Loading } from "~/components/feedback/Loading";
+import { useSchoolForm } from "~/components/forms/schools/hooks";
+import UpdateSchoolForm from "~/components/forms/schools/UpdateSchoolForm";
 import { useSchool } from "~/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
+import { DrawerForm } from "./DrawerForm";
+import { type ExtendingDrawerProps } from "./provider";
 
-import { type ExtendingDrawerProps } from ".";
-
-const SchoolForm = dynamic(() => import("~/components/forms/schools/UpdateSchoolForm"), {
-  loading: () => <Loading isLoading={true} />,
-});
-
-interface UpdateSchoolDrawerProps
+interface UpdateCourseDrawerProps
   extends ExtendingDrawerProps<{
     readonly schoolId: string;
+    readonly eager: Pick<BrandSchool, "name">;
   }> {}
 
-export const UpdateSchoolDrawer = ({ schoolId }: UpdateSchoolDrawerProps): JSX.Element => {
+export const UpdateCourseDrawer = ({ schoolId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useSchool(isUuid(schoolId) ? schoolId : null, {
     keepPreviousData: true,
   });
+  const form = useSchoolForm();
+
   return (
-    <Drawer>
+    <DrawerForm form={form} titleField="name" titlePlaceholder={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {school => (
-          <>
-            <DrawerHeader>{school.name}</DrawerHeader>
-            <DrawerContent>
-              <SchoolForm school={school} />
-            </DrawerContent>
-          </>
-        )}
+        {school => <UpdateSchoolForm form={form} school={school} />}
       </ApiResponseState>
-    </Drawer>
+    </DrawerForm>
   );
 };
 
-export default UpdateSchoolDrawer;
+export default UpdateCourseDrawer;

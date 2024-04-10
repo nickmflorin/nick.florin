@@ -1,9 +1,9 @@
-import { CourseSchema } from "~/api/schemas";
+import { ProjectSchema } from "~/api/schemas";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 
-export const useCourseForm = () =>
+export const useProjectForm = () =>
   useForm({
-    schema: CourseSchema.required(),
+    schema: ProjectSchema.required(),
     defaultValues: {
       name: "",
       shortName: "",

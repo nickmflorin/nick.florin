@@ -1,42 +1,37 @@
-import dynamic from "next/dynamic";
-
 import { isUuid } from "~/lib/typeguards";
+import type { BrandEducation } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { Loading } from "~/components/feedback/Loading";
+import { useEducationForm } from "~/components/forms/educations/hooks";
+import { UpdateEducationForm } from "~/components/forms/educations/UpdateEducationForm";
 import { useEducation } from "~/hooks";
 
-import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
-
-import { type ExtendingDrawerProps } from ".";
-
-const EducationForm = dynamic(() => import("~/components/forms/educations/UpdateEducationForm"), {
-  loading: () => <Loading isLoading={true} />,
-});
+import { DrawerForm } from "./DrawerForm";
+import { type ExtendingDrawerProps } from "./provider";
 
 interface UpdateEducationDrawerProps
   extends ExtendingDrawerProps<{
     readonly educationId: string;
+    readonly eager: Pick<BrandEducation, "major">;
   }> {}
 
-export const UpdateEducationDrawer = ({ educationId }: UpdateEducationDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useEducation(isUuid(educationId) ? educationId : null, {
-    keepPreviousData: true,
-  });
+export const UpdateEducationDrawer = ({
+  educationId,
+  eager,
+}: UpdateEducationDrawerProps): JSX.Element => {
+  const { data, isLoading, error, isValidating } = useEducation(
+    isUuid(educationId) ? educationId : null,
+    {
+      keepPreviousData: true,
+    },
+  );
+  const form = useEducationForm();
+
   return (
-    <Drawer>
-      <ApiResponseState error={error} isLoading={isLoading} data={data}>
-        {education => (
-          <>
-            <DrawerHeader>{education.major}</DrawerHeader>
-            <DrawerContent>
-              <EducationForm education={education} />
-            </DrawerContent>
-          </>
-        )}
+    <DrawerForm form={form} titleField="major" titlePlaceholder={eager.major}>
+      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+        {education => <UpdateEducationForm form={form} education={education} />}
       </ApiResponseState>
-    </Drawer>
+    </DrawerForm>
   );
 };
 
