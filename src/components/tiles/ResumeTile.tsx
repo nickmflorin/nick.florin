@@ -47,9 +47,7 @@ export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element =>
         <DetailsTile details={model.details} />
       </div>
       {model.$kind === "education" && model.courses.length !== 0 && (
-        <ResumeTileSection label="Courses">
-          <Courses courses={model.courses} className="max-w-[800px]" />
-        </ResumeTileSection>
+        <Courses courses={model.courses} className="max-w-[800px]" />
       )}
       {model.skills.length !== 0 && (
         <ResumeTileSection label={model.$kind === "education" ? "Skills" : "Other Skills"}>
