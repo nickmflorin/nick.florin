@@ -4,6 +4,7 @@ import type { BrandSkill, BrandProject, BrandRepository } from "./brand";
 
 import { type getEducations } from "~/actions/fetches/educations";
 import { type getExperiences } from "~/actions/fetches/experiences";
+import { type IconProp } from "~/components/icons";
 
 import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "./core";
 import { type ApiCourse } from "./course";
@@ -12,19 +13,27 @@ import { type ConditionallyInclude } from "./inclusion";
 import { type ApiEducation, type ApiExperience } from ".";
 
 export const ProgrammingLanguages = {
-  [ProgrammingLanguage.BASH]: { label: "Bash" },
-  [ProgrammingLanguage.CPLUSPLUS]: { label: "C++" },
-  [ProgrammingLanguage.CSS]: { label: "CSS" },
-  [ProgrammingLanguage.PYTHON]: { label: "Python" },
-  [ProgrammingLanguage.SCSS]: { label: "SASS/SCSS" },
-  [ProgrammingLanguage.JAVASCRIPT]: { label: "JavaScript" },
-  [ProgrammingLanguage.TYPESCRIPT]: { label: "TypeScript" },
-  [ProgrammingLanguage.JQUERY]: { label: "jQuery" },
-  [ProgrammingLanguage.SWIFT]: { label: "Swift" },
-  [ProgrammingLanguage.MATLAB]: { label: "Matlab" },
-  [ProgrammingLanguage.HTML]: { label: "HTML" },
-  [ProgrammingLanguage.R]: { label: "R" },
-} satisfies { [key in ProgrammingLanguage]: { label: string } };
+  [ProgrammingLanguage.BASH]: { label: "Bash", icon: null },
+  [ProgrammingLanguage.CPLUSPLUS]: { label: "C++", icon: null },
+  [ProgrammingLanguage.CSS]: { label: "CSS", icon: null },
+  [ProgrammingLanguage.PYTHON]: {
+    label: "Python",
+    icon: "/programming-languages/python.svg",
+  },
+  [ProgrammingLanguage.SCSS]: { label: "SASS/SCSS", icon: { name: "sass" } },
+  [ProgrammingLanguage.JAVASCRIPT]: { label: "JavaScript", icon: { name: "js" } },
+  [ProgrammingLanguage.TYPESCRIPT]: { label: "TypeScript", icon: null },
+  [ProgrammingLanguage.JQUERY]: { label: "jQuery", icon: null },
+  [ProgrammingLanguage.SWIFT]: { label: "Swift", icon: null },
+  [ProgrammingLanguage.MATLAB]: { label: "Matlab", icon: null },
+  [ProgrammingLanguage.HTML]: { label: "HTML", icon: null },
+  [ProgrammingLanguage.R]: { label: "R", icon: null },
+} satisfies {
+  [key in ProgrammingLanguage]: {
+    label: string;
+    icon: IconProp | `/programming-languages/${string}.svg` | null;
+  };
+};
 
 export const getProgrammingLanguage = <L extends ProgrammingLanguage>(
   language: L,

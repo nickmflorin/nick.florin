@@ -40,6 +40,7 @@ export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element =>
       <div className="flex flex-col gap-[6px] max-w-[700px]">
         <Description
           fontSize="smplus"
+          fontWeight="regular"
           description={
             model.$kind === "education" ? [model.description, model.note] : model.description
           }

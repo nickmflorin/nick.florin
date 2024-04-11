@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 import clsx from "clsx";
@@ -17,9 +18,29 @@ export interface BadgeProps
     ExtendingTypographyProps,
     Pick<HTMLElementProps<"div">, "onClick"> {
   readonly children: string;
-  readonly icon?: IconProp;
+  readonly icon?: IconProp | `/${string}.svg` | null;
   readonly iconClassName?: ComponentProps["className"];
 }
+
+const IconOrLocalImage = ({
+  icon,
+  iconClassName,
+}: Pick<BadgeProps, "icon" | "iconClassName">): JSX.Element => {
+  if (typeof icon === "string") {
+    return (
+      <Image
+        className={clsx("badge__icon", iconClassName)}
+        src={icon}
+        height={16}
+        width={16}
+        alt="Test"
+      />
+    );
+  } else if (icon) {
+    return <Icon className={clsx("badge__icon", iconClassName)} icon={icon} />;
+  }
+  return <></>;
+};
 
 export const Badge = ({
   children,
@@ -45,7 +66,7 @@ export const Badge = ({
     )}
   >
     <div className="badge__content">
-      {icon && <Icon className={clsx("badge__icon", iconClassName)} icon={icon} />}
+      <IconOrLocalImage icon={icon} iconClassName={iconClassName} />
       <div className="badge__text">{children}</div>
     </div>
   </div>

@@ -15,11 +15,7 @@ export const RepositoryTile = ({ repository, ...props }: RepositoryTileProps) =>
     <Icon className="text-github-black" name="github" iconStyle="brands" size={28} />
     <div className={clsx("flex flex-col gap-[4px]")}>
       <RepositoryLink repository={repository} />
-      <Description
-        description={repository.description}
-        className="text-github-gray"
-        fontSize="xs"
-      />
+      <Description description={repository.description} className="text-body-light" fontSize="xs" />
     </div>
   </div>
 );

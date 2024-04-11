@@ -11,8 +11,15 @@ export interface ProgrammingLanguageBadgeProps extends Omit<BadgeProps, "childre
 export const ProgrammingLanguageBadge = ({
   language,
   ...props
-}: ProgrammingLanguageBadgeProps): JSX.Element => (
-  <Badge {...props} className={clsx("bg-green-100 text-green-800", props.className)}>
-    {getProgrammingLanguage(language).label}
-  </Badge>
-);
+}: ProgrammingLanguageBadgeProps): JSX.Element => {
+  const config = getProgrammingLanguage(language);
+  return (
+    <Badge
+      {...props}
+      className={clsx("bg-white text-body border", props.className)}
+      icon={config.icon}
+    >
+      {config.label}
+    </Badge>
+  );
+};

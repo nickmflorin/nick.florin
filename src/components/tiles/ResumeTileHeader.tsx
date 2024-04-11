@@ -59,6 +59,7 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
         <LinkOrText
           fontWeight={LinkFontWeights[size]}
           fontSize={LinkFontSizes[size]}
+          textClassName={size === "small" ? "text-body-light" : undefined}
           url={model.$kind === "experience" ? model.company.websiteUrl : model.school.websiteUrl}
         >
           {model.$kind === "experience" ? model.company.name : model.school.name}
@@ -67,7 +68,7 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
       <ShowHide show={size === "large"}>
         <div className="flex flex-wrap gap-y-[4px] gap-x-[8px]">
           <TimePeriodTag
-            size="sm"
+            size="xs"
             timePeriod={
               model.$kind === "experience"
                 ? { startDate: model.startDate, endDate: model.endDate }
@@ -75,7 +76,7 @@ export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>
             }
           />
           <LocationTag
-            size="sm"
+            size="xs"
             location={
               model.$kind === "education"
                 ? {

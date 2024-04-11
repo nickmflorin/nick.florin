@@ -21,16 +21,16 @@ export const Tag = ({
   ...props
 }: TagProps): JSX.Element => (
   <div style={style} className={clsx("flex flex-row items-center gap-[4px]", className)}>
-    <Icon icon={icon} size="15px" className="text-body-light" />
+    <Icon icon={icon} size="15px" className="text-body" />
     <Text
       {...props}
       size={size}
       className={clsx(
-        withoutOverridingClassName("text-body-light", textClassName),
+        withoutOverridingClassName("text-body", textClassName),
         withoutOverridingClassName("leading-[16px]", textClassName),
         textClassName,
       )}
-      fontWeight="medium"
+      fontWeight="regular"
     >
       {children}
     </Text>
