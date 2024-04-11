@@ -78,7 +78,7 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
   form,
   errors: _errors = [],
   autoRenderErrors = true,
-  labelClassName = "text-gray-700 leading-[20px]",
+  labelClassName,
   labelProps,
   condition,
   description,

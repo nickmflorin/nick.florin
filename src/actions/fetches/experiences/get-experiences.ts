@@ -107,6 +107,7 @@ export const getExperiences = cache(
             : ["nestedDetails"]) as ExperienceToDetailIncludes<I>,
         },
       );
+      console.log({ details });
       return experiences.map(
         (edu): ApiExperience<I> =>
           convertToPlainObject({

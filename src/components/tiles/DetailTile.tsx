@@ -23,11 +23,11 @@ export const DetailTile = <
 >({
   detail,
   index,
-  textSize = "md",
+  textSize = "sm",
   ...props
 }: DetailTileProps<D>): JSX.Element => (
   <div {...props} className={clsx("flex flex-col gap-[10px]", props.className)}>
-    <div className="flex flex-col gap-[2px]">
+    <div className="flex flex-col gap-[4px]">
       {index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
           <Label size={textSize} className="w-[8px]">

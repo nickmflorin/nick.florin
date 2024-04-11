@@ -17,12 +17,7 @@ interface ResumeTileSectionProps extends ComponentProps {
 
 const ResumeTileSection = ({ children, label, ...props }: ResumeTileSectionProps): JSX.Element => (
   <div {...props} className={clsx("flex flex-col gap-[12px]", props.className)}>
-    <div className="flex flex-col gap-[6px]">
-      <hr className="border-t border-gray-300 max-w-[700px]" />
-      <Label size="sm" className="text-body-light">
-        {label}
-      </Label>
-    </div>
+    <Label size="sm">{label}</Label>
     {children}
   </div>
 );
@@ -37,7 +32,7 @@ export const ResumeTile = ({ model, ...props }: ResumeTileProps): JSX.Element =>
   <div {...props} className={clsx("flex flex-col w-full gap-[10px] max-w-100%", props.className)}>
     <ResumeTileHeader size="large" model={model} />
     <div className="flex flex-col pl-[84px] gap-[12px]">
-      <div className="flex flex-col gap-[6px] max-w-[700px]">
+      <div className="flex flex-col gap-[10px] max-w-[700px]">
         <Description
           fontSize="smplus"
           fontWeight="regular"

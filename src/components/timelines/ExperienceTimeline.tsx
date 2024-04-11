@@ -20,6 +20,7 @@ export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promis
     includes: ["skills", "details"],
     visibility: "public",
   });
+
   const experiences = _experiences.map(removeRedundantTopLevelSkills);
 
   return (

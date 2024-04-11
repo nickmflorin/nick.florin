@@ -57,6 +57,7 @@ export const getDetails = cache(
       );
     }
 
+    console.log({ ids: ids.filter(isUuid) });
     const details = await prisma.detail.findMany({
       where: {
         entityId: { in: ids.filter(isUuid) },
@@ -96,6 +97,7 @@ export const getDetails = cache(
       },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
+    console.log({ dbdetails: details.map(d => d.id) });
     return details.map(convertToPlainObject) as ApiDetail<I>[];
   },
 ) as {

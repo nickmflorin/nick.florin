@@ -69,7 +69,7 @@ export async function seedCompanies(ctx: SeedContext) {
             jsonDetails.map(jsonDetail =>
               createDetail(ctx, {
                 entityId: experience.id,
-                entityType: DetailEntityType.EDUCATION,
+                entityType: DetailEntityType.EXPERIENCE,
                 skills: allSkills,
                 detail: jsonDetail,
               }),

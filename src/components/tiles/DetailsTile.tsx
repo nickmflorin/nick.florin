@@ -27,7 +27,7 @@ export const DetailsTile = ({ details, isNested, ...props }: DetailsTileProps): 
       {...props}
       className={clsx(
         "flex flex-col",
-        { "gap-[12px]": isNested !== true, "gap-[6px] pl-[12px]": isNested },
+        { "gap-[10px]": isNested !== true, "gap-[6px] pl-[12px]": isNested },
         props.className,
       )}
     >

@@ -20,9 +20,15 @@ export const ProgrammingLanguages = {
     label: "Python",
     icon: "/programming-languages/python.svg",
   },
-  [ProgrammingLanguage.SCSS]: { label: "SASS/SCSS", icon: { name: "sass" } },
-  [ProgrammingLanguage.JAVASCRIPT]: { label: "JavaScript", icon: { name: "js" } },
-  [ProgrammingLanguage.TYPESCRIPT]: { label: "TypeScript", icon: null },
+  [ProgrammingLanguage.SCSS]: { label: "SASS/SCSS", icon: "/programming-languages/sass.svg" },
+  [ProgrammingLanguage.JAVASCRIPT]: {
+    label: "JavaScript",
+    icon: "/programming-languages/javascript.svg",
+  },
+  [ProgrammingLanguage.TYPESCRIPT]: {
+    label: "TypeScript",
+    icon: "/programming-languages/typescript.svg",
+  },
   [ProgrammingLanguage.JQUERY]: { label: "jQuery", icon: null },
   [ProgrammingLanguage.SWIFT]: { label: "Swift", icon: null },
   [ProgrammingLanguage.MATLAB]: { label: "Matlab", icon: null },
