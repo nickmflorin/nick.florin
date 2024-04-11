@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
       "educations",
       "projects",
       "repositories",
+      "courses",
     ]) as SkillIncludes,
   });
   const data = skills.sort((a, b) => skillExperience(b) - skillExperience(a));

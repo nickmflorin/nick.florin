@@ -26,10 +26,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
   const skill = await getSkill(params.id, {
     includes: parseInclusion(request, [
-      "education",
+      "educations",
       "experiences",
       "repositories",
       "projects",
+      "courses",
     ]) as SkillIncludes,
     visibility,
   });

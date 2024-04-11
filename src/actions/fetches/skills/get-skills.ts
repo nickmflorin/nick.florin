@@ -15,6 +15,7 @@ import {
   type ProgrammingLanguage,
   type ProgrammingDomain,
   type SkillIncludes,
+  type ApiCourse,
   type ApiExperience,
   fieldIsIncluded,
 } from "~/prisma/model";
@@ -109,8 +110,10 @@ export const includeAutoExperience = <T extends BrandSkill>({
   educations: _educations,
   experiences: _experiences,
   projects: _projects,
+  courses: _courses,
 }: {
   readonly skill: T;
+  readonly courses: ApiCourse<["skills", "education"]>[];
   readonly projects: ApiProject<["skills"]>[];
   readonly educations: ApiEducation<["skills"]>[];
   readonly experiences: ApiExperience<["skills"]>[];
@@ -119,13 +122,21 @@ export const includeAutoExperience = <T extends BrandSkill>({
   const experiences = _experiences.filter(exp => exp.skills.some(s => s.id === skill.id));
   const projects = _projects.filter(p => p.skills.some(s => s.id === skill.id));
 
-  const oldestEducation = strictArrayLookup(educations, educations.length - 1, {});
-  const oldestExperience = strictArrayLookup(experiences, experiences.length - 1, {});
-  const oldestProject = strictArrayLookup(projects, projects.length - 1, {});
+  /* A course in and of itself does not have a start date that can be used for inferring experience
+     of a skill.  However, it is tied to an education that does - so we can use the start date on
+     an education that is tied to a course that is associated with the skill. */
+  const courses = _courses.filter(p => p.skills.some(s => s.id === skill.id));
+
+  const oldestEducation = strictArrayLookup(educations, 0, {});
+  const oldestExperience = strictArrayLookup(experiences, 0, {});
+  const oldestProject = strictArrayLookup(projects, 0, {});
+  const oldestCourse = strictArrayLookup(courses, 0, {});
+
   const oldestDate = minDate(
     oldestEducation?.startDate,
     oldestExperience?.startDate,
     oldestProject?.startDate,
+    oldestCourse?.education.startDate,
   );
 
   return {
@@ -160,15 +171,24 @@ export const getSkills = cache(
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,
       include: {
+        courses: fieldIsIncluded("courses", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
         repositories: fieldIsIncluded("repositories", includes)
           ? { where: { visible: visibility === "public" ? true : undefined } }
           : undefined,
         projects: fieldIsIncluded("projects", includes),
         educations: fieldIsIncluded("educations", includes)
-          ? { where: { visible: visibility === "public" ? true : undefined } }
+          ? {
+              where: { visible: visibility === "public" ? true : undefined },
+              include: { school: true },
+            }
           : undefined,
         experiences: fieldIsIncluded("experiences", includes)
-          ? { where: { visible: visibility === "public" ? true : undefined } }
+          ? {
+              where: { visible: visibility === "public" ? true : undefined },
+              include: { company: true },
+            }
           : undefined,
       },
     })) as ApiSkill<I>[];
@@ -176,20 +196,33 @@ export const getSkills = cache(
     const projects = await prisma.project.findMany({
       where: { skills: { some: { id: { in: skills.map(sk => sk.id) } } } },
       include: { skills: true },
+      orderBy: { startDate: "asc" },
     });
 
     const experiences = await prisma.experience.findMany({
       where: { skills: { some: { id: { in: skills.map(sk => sk.id) } } } },
       include: { skills: true, company: true },
+      orderBy: { startDate: "asc" },
     });
 
     const educations = await prisma.education.findMany({
       where: { skills: { some: { id: { in: skills.map(sk => sk.id) } } } },
       include: { skills: true, school: true },
+      orderBy: { startDate: "asc" },
+    });
+
+    const courses = await prisma.course.findMany({
+      where: { skills: { some: { id: { in: skills.map(sk => sk.id) } } } },
+      include: { skills: true, education: { include: { school: true } } },
+      /* It does not matter if two models have the same start date because we are only interested
+         in the oldest. */
+      orderBy: { education: { startDate: "asc" } },
     });
 
     return skills.map(skill =>
-      convertToPlainObject(includeAutoExperience({ skill, experiences, educations, projects })),
+      convertToPlainObject(
+        includeAutoExperience({ skill, experiences, educations, projects, courses }),
+      ),
     );
   },
 ) as <I extends SkillIncludes>(params: GetSkillsParams<I>) => Promise<ApiSkill<I>[]>;

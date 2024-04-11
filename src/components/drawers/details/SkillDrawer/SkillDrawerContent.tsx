@@ -1,4 +1,5 @@
 import { type ApiSkill } from "~/prisma/model";
+import { Courses } from "~/components/badges/collections/Courses";
 import { ProgrammingDomains } from "~/components/badges/collections/ProgrammingDomains";
 import { ProgrammingLanguages } from "~/components/badges/collections/ProgrammingLanguages";
 import { SkillCategories } from "~/components/badges/collections/SkillCategories";
@@ -13,7 +14,7 @@ import { DetailDrawerContent } from "../DetailDrawerContent";
 import { DetailDrawerSection } from "../DetailDrawerSection";
 
 export interface SkillDrawerContentProps {
-  readonly skill: ApiSkill<["educations", "experiences", "projects", "repositories"]>;
+  readonly skill: ApiSkill<["educations", "experiences", "projects", "repositories" | "courses"]>;
 }
 
 export const SkillDrawerContent = ({
@@ -24,6 +25,7 @@ export const SkillDrawerContent = ({
     label,
     description,
     categories,
+    courses,
     programmingDomains,
     programmingLanguages,
     experience,
@@ -77,6 +79,13 @@ export const SkillDrawerContent = ({
         <ResumeTileHeader key={index} model={education} size="small" />
       ))}
     </DetailDrawerSection>
+    {courses.length !== 0 ? (
+      <DetailDrawerSection label="Courses">
+        <Courses courses={courses} />
+      </DetailDrawerSection>
+    ) : (
+      <></>
+    )}
     <DetailDrawerSection label="Projects">
       {projects.map((project, index) => (
         <div className="flex flex-col gap-[8px]" key={index}>

@@ -13,11 +13,11 @@ export interface SkillDrawerProps
 
 export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useSkill(skillId, {
-    includes: ["experiences", "educations", "projects", "repositories"],
+    includes: ["experiences", "educations", "projects", "repositories", "courses"],
     keepPreviousData: true,
     visibility: "public",
   });
-
+  console.log({ data });
   return (
     <Drawer>
       <ApiResponseState error={error} isLoading={isLoading} data={data}>

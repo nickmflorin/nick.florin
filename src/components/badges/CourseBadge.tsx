@@ -12,7 +12,7 @@ export const CourseBadge = ({ course, ...props }: CourseBadgeProps): JSX.Element
   <Badge
     fontSize="xs"
     {...props}
-    className={clsx("bg-blue-100 text-blue-500 hover:bg-blue-200", props.className)}
+    className={clsx("bg-orange-100 text-orange-500 hover:bg-orange-200", props.className)}
   >
     {course.name}
   </Badge>
