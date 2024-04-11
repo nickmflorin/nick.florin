@@ -30,6 +30,7 @@ export const environment = Environment.create(
       POSTGRES_HOST: process.env.POSTGRES_HOST,
       DATABASE_LOG_LEVEL: process.env.DATABASE_LOG_LEVEL,
       NODE_ENV: process.env.NODE_ENV,
+      VERCEL_ENV: process.env.VERCEL_ENV,
       LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY,
       LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
       CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
@@ -61,6 +62,7 @@ export const environment = Environment.create(
       NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: z.string().url(),
       APP_NAME_FORMAL: z.string(),
       NODE_ENV: z.enum(["development", "test", "production"]),
+      VERCEL_ENV: z.enum(["development", "production", "preview"]),
       SITE_URL: z.string().url(),
       ANALYZE_BUNDLE: StringBooleanFlagSchema.optional(),
       CLERK_SECRET_KEY: environmentLookup<z.ZodString | z.ZodOptional<z.ZodLiteral<"">>>({

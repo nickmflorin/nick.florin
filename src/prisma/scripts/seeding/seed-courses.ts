@@ -3,10 +3,9 @@ import { type z } from "zod";
 import { slugify, humanizeList } from "~/lib/formatters";
 
 import { prisma, getUniqueConstraintFields } from "../../client";
-import { type Course, type Education } from "../../model";
+import { type Course, type Education, type Skill } from "../../model";
 import { type EducationJsonSchema } from "../fixtures/schemas";
 
-import { findCorrespondingSkills } from "./seed-skills";
 import { type SeedStdout } from "./stdout";
 import { type SeedContext } from "./types";
 
@@ -25,15 +24,21 @@ export async function seedCourses(
       const { skills: jsonSkills = [], ...jsonCourse } = jsonEducation.courses[i];
       output.begin(`Generating Course: ${jsonCourse.name}...`);
 
-      let course: Course;
+      let course: Course & { readonly skills: Skill[] };
       try {
         course = await prisma.course.create({
+          include: { skills: true },
           data: {
             ...jsonCourse,
             educationId: education.id,
             slug: jsonCourse.slug === undefined ? slugify(jsonCourse.name) : jsonCourse.slug,
             createdById: ctx.user.id,
             updatedById: ctx.user.id,
+            skills: {
+              connect: jsonSkills.map(skill => ({
+                slug: skill,
+              })),
+            },
           },
         });
       } catch (e) {
@@ -48,26 +53,16 @@ export async function seedCourses(
       }
       courses = [...courses];
 
-      if (jsonSkills.length !== 0) {
-        output.begin(`Associating ${jsonSkills.length} Skills(s) with Course: ${course.name}...`);
-        const skills = await findCorrespondingSkills(jsonSkills);
-        const relationships = await prisma.courseOnSkills.createMany({
-          data: skills.map(skill => ({
-            assignedById: ctx.user.id,
-            skillId: skill.id,
-            courseId: course.id,
-          })),
-        });
-        output.complete(`Associated ${relationships.count} Skills(s) with Course: ${course.name}`, {
-          lineItems: skills.map(sk => sk.label),
-          indexLineItems: true,
-        });
-      }
-
       output.complete("Successfully Generated Course", {
         lineItems: [
           { label: "Name", value: course.name },
           { label: "Slug", value: course.slug },
+          course.skills.length !== 0
+            ? {
+                label: "Skills",
+                items: course.skills.map(sk => ({ label: "Slug", value: sk.slug })),
+              }
+            : null,
         ],
         count: [i, jsonEducation.courses.length],
       });

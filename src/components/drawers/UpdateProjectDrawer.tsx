@@ -17,9 +17,7 @@ interface UpdateCourseDrawerProps
 export const UpdateCourseDrawer = ({ projectId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useProject(
     isUuid(projectId) ? projectId : null,
-    {
-      keepPreviousData: true,
-    },
+    { keepPreviousData: true, visibility: "admin", includes: [] },
   );
   const form = useProjectForm();
 

@@ -6,7 +6,7 @@ import { prisma } from "~/prisma/client";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteSkills = async (ids: string[]): Promise<void> => {
-  const user = await getAuthAdminUser();
+  await getAuthAdminUser({ strict: true });
 
   const invalid = ids.filter(id => !isUuid(id));
   if (invalid.length > 0) {
@@ -33,28 +33,6 @@ export const deleteSkills = async (ids: string[]): Promise<void> => {
         { nonexistent },
       );
     }
-    await Promise.all(
-      skills.flatMap(skill =>
-        skill.experiences.map(exp =>
-          tx.experience.update({
-            where: { id: exp.experienceId },
-            data: { skills: { deleteMany: { skillId: skill.id } }, updatedById: user.id },
-          }),
-        ),
-      ),
-    );
-
-    await Promise.all(
-      skills.flatMap(skill =>
-        skill.educations.map(edu =>
-          tx.education.update({
-            where: { id: edu.educationId },
-            data: { skills: { deleteMany: { skillId: skill.id } }, updatedById: user.id },
-          }),
-        ),
-      ),
-    );
-
     await tx.skill.deleteMany({ where: { id: { in: ids } } });
   });
 };

@@ -10,9 +10,19 @@ export type ExperienceIncludes =
   | ["details"]
   | [];
 
+export type ExperienceToDetailIncludes<I extends ExperienceIncludes> = I extends [
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  ...infer L extends string[],
+  "skills",
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  ...infer R extends string[],
+]
+  ? ["nestedDetails", "skills"]
+  : ["nestedDetails"];
+
 export type ApiExperience<I extends ExperienceIncludes = []> = ConditionallyInclude<
   BrandModel<"experience"> & {
-    readonly details: ApiDetail<["nestedDetails", "skills"]>[];
+    readonly details: ApiDetail<ExperienceToDetailIncludes<I>>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];
   },
   ["skills", "details"],

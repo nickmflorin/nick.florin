@@ -1,15 +1,24 @@
 import { type NextRequest } from "next/server";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthUserFromRequest } from "~/application/auth";
 import { type CompanyIncludes } from "~/prisma/model";
 import { getCompanies } from "~/actions/fetches/companies";
-import { ClientResponse } from "~/api";
-import { parseInclusion } from "~/api/query";
+import { ApiClientGlobalError, ClientResponse } from "~/api";
+import { parseInclusion, parseVisibility } from "~/api/query";
 
 export async function GET(request: NextRequest) {
-  await getAuthAdminUser();
-  const companies = await getCompanies({
+  const visibility = parseVisibility(request);
+  if (visibility === "admin") {
+    const user = await getAuthUserFromRequest(request);
+    if (!user) {
+      return ApiClientGlobalError.NotAuthenticated().response;
+    } else if (!user.isAdmin) {
+      return ApiClientGlobalError.Forbidden().response;
+    }
+  }
+  const courses = await getCompanies({
     includes: parseInclusion(request, ["experiences"] as const) as CompanyIncludes,
+    visibility,
   });
-  return ClientResponse.OK(companies).response;
+  return ClientResponse.OK(courses).response;
 }

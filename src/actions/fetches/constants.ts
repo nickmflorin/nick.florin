@@ -1,7 +1,10 @@
 import type { Brand, BrandModel } from "~/prisma/model";
 import { constructOrSearch } from "~/prisma/util";
 
-type TabledBrand = Extract<Brand, "skill" | "course" | "experience" | "education" | "project">;
+type TabledBrand = Extract<
+  Brand,
+  "skill" | "course" | "experience" | "education" | "project" | "repository"
+>;
 
 // Note: These may eventually have to be replaced with a dynamic page size query param.
 export const PAGE_SIZES = {
@@ -10,6 +13,7 @@ export const PAGE_SIZES = {
   experience: 8,
   education: 8,
   project: 8,
+  repository: 8,
 } as const satisfies { [key in TabledBrand]: number };
 
 export const SEARCH_FIELDS = {
@@ -18,6 +22,7 @@ export const SEARCH_FIELDS = {
   experience: ["title", "shortTitle"],
   education: ["major", "concentration", "minor"],
   project: ["name", "shortName", "slug"],
+  repository: ["slug"],
 } as const satisfies {
   [key in TabledBrand]: (keyof BrandModel<key>)[];
 };

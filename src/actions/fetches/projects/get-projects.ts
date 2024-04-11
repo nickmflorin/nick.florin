@@ -4,8 +4,8 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/prisma/model";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
-import { parsePagination } from "~/api/query";
+import { parsePagination, type Visibility } from "~/api/query";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
@@ -14,9 +14,10 @@ interface GetProjectsFilters {
 }
 
 type GetProjectsParams<I extends ProjectIncludes> = {
-  includes?: I;
+  includes: I;
   filters?: GetProjectsFilters;
   page?: number;
+  visibility: Visibility;
 };
 
 const whereClause = ({ filters }: Pick<GetProjectsParams<ProjectIncludes>, "filters">) =>
@@ -25,26 +26,27 @@ const whereClause = ({ filters }: Pick<GetProjectsParams<ProjectIncludes>, "filt
   }) as const;
 
 export const preloadProjectsCount = (
-  params: Pick<GetProjectsParams<ProjectIncludes>, "filters">,
+  params: Pick<GetProjectsParams<ProjectIncludes>, "filters" | "visibility">,
 ) => {
   void getProjectsCount(params);
 };
 
 export const getProjectsCount = cache(
-  async ({ filters }: Pick<GetProjectsParams<ProjectIncludes>, "filters">) => {
-    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
-       a hard error, in the case that this is being called from the context of a route handler.
-
-       Note: Right now, this is only used for the admin, so visibility is not applicable. */
-    await getAuthAdminUser({ strict: true });
+  /* Visibility is not applicable at the top project level, only for skills nested underneath the
+     Project. */
+  async ({
+    filters,
+    visibility,
+  }: Pick<GetProjectsParams<ProjectIncludes>, "filters" | "visibility">) => {
+    await getAuthAdminUser({ strict: visibility === "admin" });
     return await prisma.project.count({
       where: whereClause({ filters }),
     });
   },
 );
 
-export const preloadProjects = <I extends ProjectIncludes>({ includes }: { includes: I }) => {
-  void getProjects({ includes });
+export const preloadProjects = <I extends ProjectIncludes>(params: GetProjectsParams<I>) => {
+  void getProjects(params);
 };
 
 export const getProjects = cache(
@@ -52,38 +54,30 @@ export const getProjects = cache(
     includes,
     page,
     filters,
+    visibility,
   }: GetProjectsParams<I>): Promise<ApiProject<I>[]> => {
-    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
-       a hard error, in the case that this is being called from the context of a route handler.
-
-       Note: Right now, this is only used for the admin, so visibility is not applicable. */
-    await getAuthAdminUser({ strict: true });
+    await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
       page,
       pageSize: PAGE_SIZES.project,
-      getCount: async () => await getProjectsCount({ filters }),
+      getCount: async () => await getProjectsCount({ filters, visibility }),
     });
 
     const projects = await prisma.project.findMany({
       where: whereClause({ filters }),
-      include: { skills: fieldIsIncluded("skills", includes) ? true : undefined },
+      include: {
+        repositories: fieldIsIncluded("repositories", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+        skills: fieldIsIncluded("skills", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+      },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,
     });
-    if (fieldIsIncluded("skills", includes)) {
-      const skills = await prisma.skill.findMany({
-        where: { projects: { some: { projectId: { in: projects.map(p => p.id) } } } },
-      });
-      return projects.map(
-        (project): ApiProject<["skills"]> =>
-          convertToPlainObject({
-            ...project,
-            skills: skills.filter(skill => project.skills.some(sk => sk.skillId === skill.id)),
-          }),
-      ) as ApiProject<I>[];
-    }
     return projects.map(convertToPlainObject) as ApiProject<[]>[] as ApiProject<I>[];
   },
 ) as {

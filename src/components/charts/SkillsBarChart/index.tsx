@@ -57,6 +57,7 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
     keepPreviousData: true,
     query: { ...skillsQuery, includeInTopSkills: true },
     includes: [],
+    visibility: "public",
   });
 
   const data = useMemo<SkillsBarChartDatum[]>(

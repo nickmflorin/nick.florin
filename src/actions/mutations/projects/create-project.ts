@@ -68,12 +68,7 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
         createdById: user.id,
         updatedById: user.id,
         skills: {
-          createMany: {
-            data: (skills ?? []).map(skill => ({
-              assignedById: user.id,
-              skillId: skill.id,
-            })),
-          },
+          connect: skills.map(skill => ({ slug: skill.slug })),
         },
       },
     });

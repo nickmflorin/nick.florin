@@ -3,6 +3,8 @@ import { type ReactNode } from "react";
 
 import { SWRConfig as RootSWRConfig } from "swr";
 
+import { isHttpError } from "~/api";
+
 type SWRConfigProps = { readonly children: ReactNode };
 
 /**
@@ -17,7 +19,17 @@ export const SWRConfig = ({ children }: SWRConfigProps) => (
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
       revalidateOnMount: true,
+      keepPreviousData: true,
       errorRetryCount: 0,
+      onError: (e: unknown) => {
+        /* It is necessary that any non-HttpError(s) are caught and thrown such that the behavior
+           of the useSWR hook related to strongly typed errors is preserved. */
+        if (!(e instanceof Error)) {
+          throw new Error(`Client unexpectedly returned non-Error object ${e}`);
+        } else if (!isHttpError(e)) {
+          throw e;
+        }
+      },
     }}
   >
     {children}

@@ -34,7 +34,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
       canToggleColumnVisibility={true}
       deleteErrorMessage="There was an error deleting the course."
       deleteAction={async id => await deleteCourse(id)}
-      onEdit={id => open(ids.UPDATE_COURSE, { courseId: id })}
+      onEdit={(id, m) => open(ids.UPDATE_COURSE, { courseId: id, eager: { name: m.name } })}
       columns={[
         {
           accessor: "Name",

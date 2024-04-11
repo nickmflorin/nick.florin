@@ -9,28 +9,21 @@ import { prisma } from "~/prisma/client";
 import {
   type BrandSkill,
   type ApiSkill,
-  type BrandExperience,
-  type BrandRepository,
-  type BrandEducation,
-  type BrandCompany,
-  type BrandSchool,
-  type EducationOnSkills,
-  type ExperienceOnSkills,
+  type ApiProject,
+  type ApiEducation,
   type SkillCategory,
   type ProgrammingLanguage,
   type ProgrammingDomain,
   type SkillIncludes,
-  type BrandProject,
-  type ProjectOnSkills,
-  conditionallyInclude,
+  type ApiExperience,
   fieldIsIncluded,
 } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
 import { parsePagination } from "~/api/query";
 import { type Visibility } from "~/api/query";
 
+import { convertToPlainObject } from "../../../api/serialization";
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
-import { convertToPlainObject } from "../serialization";
 
 export type GetSkillsFilters = {
   readonly educations?: string[];
@@ -43,7 +36,7 @@ export type GetSkillsFilters = {
 };
 
 type GetSkillsParams<I extends SkillIncludes> = {
-  readonly visibility?: Visibility;
+  readonly visibility: Visibility;
   readonly filters?: GetSkillsFilters;
   readonly page?: number;
   readonly includes: I;
@@ -53,14 +46,10 @@ const filtersClause = (filters: GetSkillsFilters) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("skill", filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
-      ? {
-          educations: { some: { educationId: { in: filters.educations } } },
-        }
+      ? { educations: { some: { id: { in: filters.educations } } } }
       : undefined,
     filters.experiences && filters.experiences.length !== 0
-      ? {
-          experiences: { some: { experienceId: { in: filters.experiences } } },
-        }
+      ? { experiences: { some: { id: { in: filters.experiences } } } }
       : undefined,
     filters.includeInTopSkills !== undefined
       ? { includeInTopSkills: filters.includeInTopSkills }
@@ -100,10 +89,8 @@ export const preloadSkillsCount = <I extends SkillIncludes>(
 export const getSkillsCount = cache(
   async <I extends SkillIncludes>({
     filters,
-    visibility = "public",
+    visibility,
   }: Omit<GetSkillsParams<I>, "page" | "includes">) => {
-    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
-       a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
     return await prisma.skill.count({
       where: whereClause({ filters, visibility }),
@@ -117,28 +104,20 @@ export const preloadSkills = <I extends SkillIncludes>(params: GetSkillsParams<I
   void getSkills(params);
 };
 
-export const includeAutoExperience = ({
+export const includeAutoExperience = <T extends BrandSkill>({
   skill,
   educations: _educations,
   experiences: _experiences,
   projects: _projects,
 }: {
-  readonly skill: BrandSkill;
-  readonly projects: (BrandProject & {
-    readonly skills: ProjectOnSkills[];
-  })[];
-  readonly educations: (BrandEducation & {
-    readonly skills: EducationOnSkills[];
-    readonly school: BrandSchool;
-  })[];
-  readonly experiences: (BrandExperience & {
-    readonly skills: ExperienceOnSkills[];
-    readonly company: BrandCompany;
-  })[];
-}): ApiSkill<["experiences", "educations", "projects"]> => {
-  const educations = _educations.filter(edu => edu.skills.some(s => s.skillId === skill.id));
-  const experiences = _experiences.filter(exp => exp.skills.some(s => s.skillId === skill.id));
-  const projects = _projects.filter(p => p.skills.some(s => s.skillId === skill.id));
+  readonly skill: T;
+  readonly projects: ApiProject<["skills"]>[];
+  readonly educations: ApiEducation<["skills"]>[];
+  readonly experiences: ApiExperience<["skills"]>[];
+}): T & { readonly autoExperience: number } => {
+  const educations = _educations.filter(edu => edu.skills.some(s => s.id === skill.id));
+  const experiences = _experiences.filter(exp => exp.skills.some(s => s.id === skill.id));
+  const projects = _projects.filter(p => p.skills.some(s => s.id === skill.id));
 
   const oldestEducation = strictArrayLookup(educations, educations.length - 1, {});
   const oldestExperience = strictArrayLookup(experiences, experiences.length - 1, {});
@@ -164,11 +143,9 @@ export const getSkills = cache(
   async <I extends SkillIncludes>({
     page,
     filters,
-    visibility = "public",
+    visibility,
     includes,
   }: GetSkillsParams<I>): Promise<ApiSkill<I>[]> => {
-    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
-       a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
@@ -177,71 +154,42 @@ export const getSkills = cache(
       getCount: async () => await getSkillsCount({ filters, visibility }),
     });
 
-    const skills = await prisma.skill.findMany({
+    const skills = (await prisma.skill.findMany({
       where: whereClause({ filters, visibility }),
       orderBy: { createdAt: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,
-    });
+      include: {
+        repositories: fieldIsIncluded("repositories", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+        projects: fieldIsIncluded("projects", includes),
+        educations: fieldIsIncluded("educations", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+        experiences: fieldIsIncluded("experiences", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+      },
+    })) as ApiSkill<I>[];
 
     const projects = await prisma.project.findMany({
-      where: { skills: { some: { skillId: { in: skills.map(sk => sk.id) } } } },
-      orderBy: [{ startDate: "desc" }],
+      where: { skills: { some: { id: { in: skills.map(sk => sk.id) } } } },
       include: { skills: true },
     });
 
     const experiences = await prisma.experience.findMany({
-      include: { company: true, skills: true },
-      orderBy: [{ startDate: "desc" }],
-      where: {
-        AND: conditionalFilters([
-          visibility === "public" ? { visible: true } : undefined,
-          {
-            skills: {
-              some: { skillId: { in: skills.map(sk => sk.id) } },
-            },
-          },
-        ]),
-      },
+      where: { skills: { some: { id: { in: skills.map(sk => sk.id) } } } },
+      include: { skills: true, company: true },
     });
 
     const educations = await prisma.education.findMany({
-      orderBy: [{ startDate: "desc" }],
+      where: { skills: { some: { id: { in: skills.map(sk => sk.id) } } } },
       include: { skills: true, school: true },
-      where: {
-        AND: conditionalFilters([
-          visibility === "public" ? { visible: true } : undefined,
-          {
-            skills: {
-              some: { skillId: { in: skills.map(sk => sk.id) } },
-            },
-          },
-        ]),
-      },
     });
 
-    let repositories: BrandRepository[] = [];
-    if (fieldIsIncluded("repositories", includes)) {
-      repositories = await prisma.repository.findMany({
-        where: { skills: { some: { id: { in: skills.map(s => s.id) } } } },
-        orderBy: { createdAt: "desc" },
-      });
-    }
-
-    return skills.map((skill): ApiSkill<I> => {
-      const apiSkill = includeAutoExperience({
-        skill,
-        educations,
-        experiences,
-        projects,
-      });
-      return convertToPlainObject(
-        conditionallyInclude(
-          { ...apiSkill, repositories },
-          ["educations", "experiences", "projects", "repositories"],
-          includes,
-        ),
-      );
-    });
+    return skills.map(skill =>
+      convertToPlainObject(includeAutoExperience({ skill, experiences, educations, projects })),
+    );
   },
 ) as <I extends SkillIncludes>(params: GetSkillsParams<I>) => Promise<ApiSkill<I>[]>;

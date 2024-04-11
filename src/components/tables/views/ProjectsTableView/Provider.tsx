@@ -31,7 +31,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
       canToggleColumnVisibility={true}
       deleteErrorMessage="There was an error deleting the project."
       deleteAction={async id => await deleteProject(id)}
-      onEdit={id => open(ids.UPDATE_PROJECT, { projectId: id })}
+      onEdit={(id, m) => open(ids.UPDATE_PROJECT, { projectId: id, eager: { name: m.name } })}
       columns={[
         {
           accessor: "Name",

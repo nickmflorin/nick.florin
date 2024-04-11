@@ -19,8 +19,8 @@ export const TableFilters = async ({
   page,
   ...props
 }: SkillsAdminTableControlBarProps) => {
-  const educations = await getEducations({ filters, page, visibility: "admin" });
-  const experiences = await getExperiences({ filters, page, visibility: "admin" });
+  const educations = await getEducations({ filters, page, visibility: "admin", includes: [] });
+  const experiences = await getExperiences({ filters, page, visibility: "admin", includes: [] });
   return (
     <div {...props} className={clsx("flex flex-row gap-[8px] items-center", props.className)}>
       <EducationFilter educations={educations} filters={filters} />

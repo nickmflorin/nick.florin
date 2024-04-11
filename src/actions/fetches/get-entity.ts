@@ -3,7 +3,7 @@ import { cache } from "react";
 
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type DetailEntity, DetailEntityType } from "~/prisma/model";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
+import { convertToPlainObject } from "~/api/serialization";
 
 export const getEntity = cache(
   async <T extends DetailEntityType>(

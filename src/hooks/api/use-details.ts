@@ -6,6 +6,7 @@ import {
   DetailEntityType,
   type DetailIncludes,
 } from "~/prisma/model";
+import type { Visibility } from "~/api/query";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
@@ -30,9 +31,11 @@ export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>
   entityType: T,
   {
     includes,
+    visibility,
     ...config
   }: SWRConfig<Response<I, T>> & {
     readonly includes: I;
+    readonly visibility: Visibility;
   },
 ) =>
   useSWR<Response<I, T>>(id ? PATHS[entityType](id) : null, {
@@ -40,5 +43,6 @@ export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>
     query: {
       ...config?.query,
       includes: encodeQueryParam(includes),
+      visibility: encodeQueryParam(visibility),
     },
   });

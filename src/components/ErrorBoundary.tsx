@@ -5,7 +5,6 @@ import { ErrorView } from "./views/ErrorView";
 
 interface Props {
   readonly children?: ReactNode;
-  readonly fallback?: JSX.Element;
   readonly message?: string;
   readonly title?: string;
 }
@@ -30,16 +29,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
-      return (
-        <ErrorView title={this.props.title ?? "Error"}>
-          {this.props.message ??
-            "An unknown error occurred. We will get to the bottom of it, your patience is " +
-              "appreciated!"}
-        </ErrorView>
-      );
+      const message =
+        this.props.message ??
+        "An unknown error occurred. We will get to the bottom of it, your patience is appreciated!";
+      return <ErrorView title={this.props.title ?? "Error"}>{message}</ErrorView>;
     }
     return this.props.children;
   }

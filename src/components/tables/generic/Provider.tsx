@@ -22,7 +22,7 @@ export interface TableViewConfig<T extends types.TableModel> {
   readonly id: string;
   readonly deleteIsDisabled?: boolean;
   readonly deleteErrorMessage?: string;
-  readonly onEdit?: (id: string) => void;
+  readonly onEdit?: (id: string, m: T) => void;
   readonly deleteAction?: (id: string) => Promise<void>;
 }
 
@@ -91,7 +91,7 @@ export const useTableView = <T extends types.TableModel>({
             <ActionsCell
               deleteErrorMessage="There was an error deleting the skill."
               deleteAction={deleteAction ? deleteAction.bind(null, model.id) : undefined}
-              onEdit={onEdit ? () => onEdit(model.id) : undefined}
+              onEdit={onEdit ? () => onEdit(model.id, model) : undefined}
               deleteIsDisabled={deleteIsDisabled}
             />
           ),

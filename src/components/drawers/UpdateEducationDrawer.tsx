@@ -20,9 +20,7 @@ export const UpdateEducationDrawer = ({
 }: UpdateEducationDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useEducation(
     isUuid(educationId) ? educationId : null,
-    {
-      keepPreviousData: true,
-    },
+    { keepPreviousData: true, visibility: "admin", includes: [] },
   );
   const form = useEducationForm();
 

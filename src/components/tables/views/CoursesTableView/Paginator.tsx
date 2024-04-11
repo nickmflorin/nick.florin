@@ -12,6 +12,6 @@ interface PaginatorProps {
 }
 
 export const Paginator = async ({ filters }: PaginatorProps) => {
-  const count = await getCoursesCount({ filters });
+  const count = await getCoursesCount({ filters, visibility: "admin" });
   return <RootPaginator count={count} pageSize={PAGE_SIZES.course} />;
 };

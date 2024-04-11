@@ -74,8 +74,8 @@
           "endDate": "2014-05-01T00:00:00Z",
           "skills": ["python", "matlab", "c-plus-plus"],
           "courses": [
-            { "name": "Computer Science" },
-            { "name": "Embedded Control" },
+            { "name": "Computer Science", "skills": ["c-plus-plus"] },
+            { "name": "Embedded Control", "skills": ["c-plus-plus"] },
             { "name": "Robotics" },
             { "name": "Signals & Systems" },
             { "name": "Fields & Waves" },

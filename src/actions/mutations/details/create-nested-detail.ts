@@ -22,7 +22,7 @@ export const createNestedDetail = async (
 ): Promise<NestedApiDetail<[]> | ApiClientErrorJson> => {
   const user = await getAuthAdminUser();
 
-  const detail = await getDetail(detailId, { includes: [] });
+  const detail = await getDetail(detailId, { includes: [], visibility: "admin" });
   if (!detail) {
     return ApiClientGlobalError.NotFound("No detail exists for the provided ID.").json;
   }

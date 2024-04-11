@@ -1,10 +1,11 @@
 import { type NextRequest } from "next/server";
 
+import { getAuthUserFromRequest } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { DetailEntityType, type DetailIncludes } from "~/prisma/model";
 import { getEntityDetails } from "~/actions/fetches/details";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
-import { parseInclusion } from "~/api/query";
+import { parseInclusion, parseVisibility } from "~/api/query";
 
 export async function generateStaticParams() {
   const experiences = await prisma.experience.findMany();
@@ -14,11 +15,21 @@ export async function generateStaticParams() {
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const details = await getEntityDetails(params.id, DetailEntityType.EXPERIENCE, {
+  const visibility = parseVisibility(request);
+  if (visibility === "admin") {
+    const user = await getAuthUserFromRequest(request);
+    if (!user) {
+      return ApiClientGlobalError.NotAuthenticated().response;
+    } else if (!user.isAdmin) {
+      return ApiClientGlobalError.Forbidden().response;
+    }
+  }
+  const detail = await getEntityDetails(params.id, DetailEntityType.EXPERIENCE, {
     includes: parseInclusion(request, ["nestedDetails", "skills"]) as DetailIncludes,
+    visibility,
   });
-  if (!details) {
+  if (!detail) {
     return ApiClientGlobalError.NotFound().response;
   }
-  return ClientResponse.OK({ details: details.details, experience: details.entity }).response;
+  return ClientResponse.OK(detail).response;
 }

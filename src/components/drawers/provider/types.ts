@@ -1,4 +1,13 @@
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import type {
+  BrandSchool,
+  BrandCompany,
+  BrandSkill,
+  BrandCourse,
+  BrandProject,
+  BrandEducation,
+  BrandExperience,
+} from "~/prisma/model";
 
 export const DrawerIds = enumeratedLiterals(
   [
@@ -27,13 +36,13 @@ export const DrawerIds = enumeratedLiterals(
 export type DrawerId = EnumeratedLiteralsType<typeof DrawerIds>;
 
 export type DrawerProps<D extends DrawerId> = {
-  "update-education": { educationId: string };
-  "update-experience": { experienceId: string };
-  "update-project": { projectId: string };
-  "update-course": { courseId: string };
-  "update-skill": { skillId: string };
-  "update-company": { companyId: string };
-  "update-school": { schoolId: string };
+  "update-education": { educationId: string; eager: Pick<BrandEducation, "major"> };
+  "update-experience": { experienceId: string; eager: Pick<BrandExperience, "title"> };
+  "update-project": { projectId: string; eager: Pick<BrandProject, "name"> };
+  "update-course": { courseId: string; eager: Pick<BrandCourse, "name"> };
+  "update-skill": { skillId: string; eager: Pick<BrandSkill, "label"> };
+  "update-company": { companyId: string; eager: Pick<BrandCompany, "name"> };
+  "update-school": { schoolId: string; eager: Pick<BrandSchool, "name"> };
   "view-skill": { skillId: string };
   "view-course": { courseId: string };
   "update-education-details": {

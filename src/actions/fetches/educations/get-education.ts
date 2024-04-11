@@ -1,27 +1,79 @@
 import "server-only";
 import { cache } from "react";
 
-import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
-import { type ApiEducation } from "~/prisma/model";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
+import { getAuthAdminUser } from "~/application/auth";
+import { logger } from "~/application/logger";
+import { isUuid } from "~/lib/typeguards";
+import { prisma } from "~/prisma/client";
+import {
+  type ApiEducation,
+  DetailEntityType,
+  type EducationIncludes,
+  fieldIsIncluded,
+  type EducationToDetailIncludes,
+} from "~/prisma/model";
+import { type Visibility } from "~/api/query";
+import { convertToPlainObject } from "~/api/serialization";
 
-export const preloadEducation = (id: string) => {
-  void getEducation(id);
+import { getDetails } from "../details";
+
+type GetEducationParams<I extends EducationIncludes> = {
+  visibility: Visibility;
+  includes: I;
 };
 
-export const getEducation = cache(async (id: string): Promise<ApiEducation | null> => {
-  try {
-    // Note: This is currently only used for the admin, so visibility is not applicable.
-    return convertToPlainObject(
-      await prisma.education.findUniqueOrThrow({
-        where: { id },
-        include: { school: true },
-      }),
-    );
-  } catch (e) {
-    if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
+export const preloadEducation = <I extends EducationIncludes>(
+  id: string,
+  params: GetEducationParams<I>,
+) => {
+  void getEducation(id, params);
+};
+
+export const getEducation = cache(
+  async <I extends EducationIncludes>(
+    id: string,
+    { visibility, includes }: GetEducationParams<I>,
+  ): Promise<ApiEducation<I> | null> => {
+    await getAuthAdminUser({ strict: visibility === "admin" });
+    if (!isUuid(id)) {
+      logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a course.`, {
+        id,
+        includes,
+      });
       return null;
     }
-    throw e;
-  }
-});
+    const education = await prisma.education.findUnique({
+      where: { id, visible: visibility === "public" ? true : undefined },
+      include: {
+        school: true,
+        skills: fieldIsIncluded("skills", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+        courses: fieldIsIncluded("courses", includes)
+          ? {
+              include: { skills: fieldIsIncluded("skills", includes) },
+              where: { visible: visibility === "public" ? true : undefined },
+            }
+          : undefined,
+      },
+    });
+    if (!education) {
+      return null;
+    }
+    if (fieldIsIncluded("details", includes)) {
+      const details = await getDetails([education.id], DetailEntityType.EDUCATION, {
+        visibility,
+        includes: (fieldIsIncluded("skills", includes)
+          ? ["nestedDetails", "skills"]
+          : ["nestedDetails"]) as EducationToDetailIncludes<I>,
+      });
+      return convertToPlainObject({ ...education, details }) as ApiEducation<I>;
+    }
+    return convertToPlainObject(education) as ApiEducation<I>;
+  },
+) as {
+  <I extends EducationIncludes>(
+    id: string,
+    params: GetEducationParams<I>,
+  ): Promise<ApiEducation<I> | null>;
+};

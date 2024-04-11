@@ -22,6 +22,7 @@ import {
   type HttpError,
   isHttpError,
 } from "~/api";
+import { isSuperJsonResult } from "~/api/serialization";
 
 type ApiPath = `/api/${string}`;
 type Args = Exclude<Arguments, string> | ApiPath;
@@ -64,12 +65,21 @@ export const swrFetcher = async <T>(
             "code does not.",
         });
       }
-      const deserialized = superjson.deserialize(json);
-      if (isApiClientGlobalErrorJson(deserialized)) {
-        throw ApiClientGlobalError.reconstruct(deserialized);
-      } else if (isApiClientFormErrorJson(deserialized)) {
-        throw ApiClientFormError.reconstruct(deserialized);
+      /* There are cases where the JSON result is not a superjson result, and is not coming directly
+         and explicitly from an API route.  For instance, this can happen if Clerk prevents the
+         client from communicating with an API route because it is not in the public routes
+         configuration of the middleware (in which case the JSON value of the response is 'null').
+         If the JSON value is not a SuperJSONResult, we have to fallback on more general
+         reconstruction of the error based on the response's status code. */
+      if (isSuperJsonResult(json)) {
+        const deserialized = superjson.deserialize(json);
+        if (isApiClientGlobalErrorJson(deserialized)) {
+          throw ApiClientGlobalError.reconstruct(deserialized);
+        } else if (isApiClientFormErrorJson(deserialized)) {
+          throw ApiClientFormError.reconstruct(deserialized);
+        }
       }
+      // Fallback on more general reconstruction of the error based the response status code.
       throw ClientError.reconstruct(response);
     } else if (response.status === 500) {
       throw new ServerError({ url });
@@ -134,31 +144,36 @@ export const useSWR = <T>(
        configured `onError` configuration callback is *still* called beforehand. */
   const { onError } = useSWRConfig();
 
-  const { data, error, ...others } = useRootSWR(
-    shouldFetch(path) ? [path, query] : null,
-    ([p, q]) => swrFetcher<T>(p as ApiPath, q),
-    {
-      ...config,
-      onSuccess: d => {
-        initialResponseReceived.current = true;
-        config.onSuccess?.(d);
-      },
-      onError: (e: unknown, key, c) => {
-        initialResponseReceived.current = true;
-        // It is important that the globally configured onError callback is called first.
-        onError(e, key, c as PublicConfiguration);
-        if (isHttpError(e)) {
-          return _onError?.(e);
-        }
-        if (e instanceof NetworkError || e instanceof ClientError) {
-          return _onError?.(e);
-        }
-        /* This will force the useSWR call to throw the error, instead of embedding the error in the
-           hook's return. */
-        throw e;
-      },
+  const { data, error, ...others } = useRootSWR<
+    T,
+    HttpError,
+    [Key, Record<string, QueryParamValue> | undefined] | null
+  >(shouldFetch(path) ? [path, query] : null, ([p, q]) => swrFetcher<T>(p as ApiPath, q), {
+    ...config,
+    onSuccess: d => {
+      initialResponseReceived.current = true;
+      config.onSuccess?.(d);
     },
-  );
+    onError: (e: unknown, key, c) => {
+      initialResponseReceived.current = true;
+
+      // It is important that the globally configured onError callback is called first.
+      onError(e, key, c as PublicConfiguration);
+
+      /* If the error is not an HttpError, it should have already been thrown by the global error
+         handler above.  However, we still need to repeat that check for type safety here. */
+      if (isHttpError(e)) {
+        return _onError?.(e);
+      }
+      /* This will force the useSWR call to throw the error, instead of embedding the error in the
+         hook's return. */
+      throw e;
+    },
+  });
+
+  if (error && !isHttpError(error)) {
+    throw error;
+  }
 
   return {
     data,

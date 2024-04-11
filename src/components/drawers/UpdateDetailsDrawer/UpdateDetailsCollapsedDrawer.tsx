@@ -24,6 +24,7 @@ export const UpdateDetailsCollapsedDrawer = <T extends DetailEntityType>(
   const { data, isLoading, error } = useDetails(props.entityId, props.entityType, {
     keepPreviousData: true,
     includes: ["nestedDetails"],
+    visibility: "admin",
   });
 
   return (

@@ -2,53 +2,53 @@ import "server-only";
 import { cache } from "react";
 
 import { getAuthAdminUser } from "~/application/auth";
+import { logger } from "~/application/logger";
+import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
-import { fieldIsIncluded, type NestedDetailIncludes, type NestedApiDetail } from "~/prisma/model";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
+import { type NestedApiDetail, type NestedDetailIncludes, fieldIsIncluded } from "~/prisma/model";
+import { type Visibility } from "~/api/query";
+import { convertToPlainObject } from "~/api/serialization";
 
-import { getNestedDetailSkills } from "./util";
-/* Note: The following is only used in the admin, so visibility is not applicable. */
 export const getNestedDetail = cache(
   async <I extends NestedDetailIncludes>(
     id: string,
-    { includes }: { includes: I },
+    { includes, visibility }: { includes: I; visibility: Visibility },
   ): Promise<NestedApiDetail<I> | null> => {
-    getAuthAdminUser({ strict: true });
-
-    if (fieldIsIncluded(["skills"], includes)) {
-      const detail = await prisma.nestedDetail.findUnique({
-        where: { id },
-        include: {
-          project: { include: { skills: true } },
-          skills: true,
-        },
+    await getAuthAdminUser({ strict: visibility === "admin" });
+    if (!isUuid(id)) {
+      logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a course.`, {
+        id,
+        includes,
       });
-      if (!detail) {
-        return null;
-      }
-      const skills = await getNestedDetailSkills(detail, { visibility: "admin" });
-      const { skills: _skills, project: _project, ...rest } = detail;
-      return convertToPlainObject({
-        ...rest,
-        project: _project
-          ? {
-              ..._project,
-              skills: skills.filter(sk => _project.skills.some(d => d.skillId === sk.id)),
-            }
-          : null,
-        skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-      }) as NestedApiDetail<I>;
+      return null;
     }
-    return convertToPlainObject(
-      await prisma.nestedDetail.findUnique({
-        where: { id },
-        include: { project: true },
-      }),
-    ) as NestedApiDetail<I> | null;
+
+    const detail = await prisma.nestedDetail.findUnique({
+      where: {
+        id,
+        visible: visibility === "public" ? true : undefined,
+      },
+      include: {
+        project: {
+          include: {
+            skills: fieldIsIncluded("skills", includes)
+              ? { where: { visible: visibility === "public" ? true : undefined } }
+              : undefined,
+          },
+        },
+        skills: fieldIsIncluded("skills", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+      },
+    });
+    if (detail) {
+      return convertToPlainObject(detail) as NestedApiDetail<I>;
+    }
+    return null;
   },
 ) as {
   <I extends NestedDetailIncludes>(
     id: string,
-    params: { includes: I },
+    params: { includes: I; visibility: Visibility },
   ): Promise<NestedApiDetail<I> | null>;
 };

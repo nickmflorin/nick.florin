@@ -6,6 +6,7 @@ export * from "./education";
 export * from "./experience";
 export * from "./project";
 export * from "./inclusion";
+export * from "./repository";
 export * from "./school";
 export * from "./skills";
 export * from "./brand";

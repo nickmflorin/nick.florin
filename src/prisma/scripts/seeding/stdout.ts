@@ -5,7 +5,34 @@ type KeyValueLineItem = {
   value: string;
 };
 
-type LineItem = KeyValueLineItem | string;
+type IndexedNextedLineItem = {
+  items: LineItem[];
+  index: true;
+  label?: never;
+  value?: never;
+};
+
+type NestedKeyValueLineItem = {
+  label: string;
+  value?: string;
+  items: LineItem[];
+  index?: true;
+};
+
+type LineItem =
+  | KeyValueLineItem
+  | string
+  | NestedKeyValueLineItem
+  | null
+  | LineItem[]
+  | IndexedNextedLineItem;
+
+const lineItemIsNested = (
+  lineItem: LineItem,
+): lineItem is NestedKeyValueLineItem | IndexedNextedLineItem =>
+  typeof lineItem !== "string" &&
+  lineItem !== null &&
+  Array.isArray((lineItem as NestedKeyValueLineItem).items);
 
 type MessageOptions = {
   readonly lineItems?: LineItem[];
@@ -43,7 +70,7 @@ export class SeedStdout {
   }
 
   private indent(msg: string, { additional = 0 }: { additional?: number }): string {
-    return `${this.indentation}${" ".repeat(additional)}${msg}`;
+    return `${this.indentation}${"  ".repeat(additional)}${msg}`;
   }
 
   private colorize(msg: string, level: Level): string {
@@ -56,19 +83,55 @@ export class SeedStdout {
   private formatLineItem(
     item: LineItem,
     index: number,
-    { indexLineItems = true }: Pick<MessageOptions, "indexLineItems">,
-  ): string {
-    const msg = typeof item === "string" ? item : `${item.label}: ${item.value}`;
+    {
+      indexLineItems = true,
+      additionalIndent = 0,
+    }: Pick<MessageOptions, "indexLineItems"> & { readonly additionalIndent?: number },
+  ): string | null {
+    let msg: string;
+    if (item === null) {
+      return null;
+    } else if (lineItemIsNested(item)) {
+      const formatted = this.formatLineItems(item.items, {
+        indexLineItems: indexLineItems || item.index === true,
+        additionalIndent: additionalIndent + 1,
+      });
+      if (!formatted) {
+        return null;
+      } else if (item.value) {
+        msg = `${item.label}: ${item.value}\n${formatted}`;
+      } else if (item.label) {
+        msg = `${item.label}:\n${formatted}`;
+      } else {
+        msg = `\n${formatted}`;
+      }
+    } else if (Array.isArray(item)) {
+      return this.formatLineItems(item, {
+        indexLineItems,
+        additionalIndent: additionalIndent + 1,
+      });
+    } else {
+      msg = typeof item === "string" ? item : `${item.label}: ${item.value}`;
+    }
     return indexLineItems
-      ? this.colorize(this.indent(`- ${index + 1}. ${msg}`, { additional: 1 }), "info")
-      : this.colorize(this.indent(`- ${msg}`, { additional: 1 }), "info");
+      ? this.colorize(
+          this.indent(`${index + 1}. ${msg}`, { additional: additionalIndent + 1 }),
+          "info",
+        )
+      : this.colorize(this.indent(`- ${msg}`, { additional: additionalIndent + 1 }), "info");
   }
 
   private formatLineItems(
     items: LineItem[],
-    options: Pick<MessageOptions, "indexLineItems">,
-  ): string {
-    return items.map((item, i) => this.formatLineItem(item, i, options)).join("\n");
+    options: Pick<MessageOptions, "indexLineItems"> & { readonly additionalIndent?: number },
+  ): string | null {
+    const mapped = items
+      .map((item, i) => this.formatLineItem(item, i, options))
+      .filter(v => v !== null);
+    if (mapped.length === 0) {
+      return null;
+    }
+    return mapped.join("\n");
   }
 
   private formatMessage(message: string, level: Level, opts?: LineItem[] | MessageOptions): string {
@@ -77,9 +140,9 @@ export class SeedStdout {
     let indexLineItems = false;
     if (opts) {
       if (Array.isArray(opts)) {
-        lineItems = opts;
+        lineItems = opts.filter(ln => ln !== null);
       } else {
-        lineItems = opts.lineItems ?? [];
+        lineItems = (opts.lineItems ?? []).filter(ln => ln !== null);
         count = opts.count ?? null;
         indexLineItems = opts.indexLineItems ?? false;
       }
@@ -88,11 +151,13 @@ export class SeedStdout {
     if (count) {
       msg = `${msg} (${count[0] + 1}/${count[1]})`;
     }
-    return lineItems && lineItems.length !== 0
-      ? `${this.colorize(this.indent(msg, {}), level)}\n${this.formatLineItems(lineItems, {
-          indexLineItems,
-        })}`
-      : this.colorize(this.indent(msg, {}), level);
+    if (lineItems && lineItems.length !== 0) {
+      const formatted = this.formatLineItems(lineItems, { indexLineItems });
+      if (formatted) {
+        return `${this.colorize(this.indent(msg, {}), level)}\n${formatted}`;
+      }
+    }
+    return this.colorize(this.indent(msg, {}), level);
   }
 
   public complete(message: string, opts?: LineItem[] | MessageOptions): void {

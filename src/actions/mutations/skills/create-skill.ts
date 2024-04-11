@@ -64,35 +64,20 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
       return fieldErrors.json;
     }
 
-    return await tx.skill.create({
+    const skill = await tx.skill.create({
       data: {
         ...data,
         slug,
         createdById: user.id,
         updatedById: user.id,
         experiences: {
-          createMany: {
-            data: (experiences ?? []).map(exp => ({
-              assignedById: user.id,
-              experienceId: exp.id,
-            })),
-          },
+          connect: experiences.map(e => ({ id: e.id })),
         },
         projects: {
-          createMany: {
-            data: (projects ?? []).map(p => ({
-              assignedById: user.id,
-              projectId: p.id,
-            })),
-          },
+          connect: projects.map(e => ({ id: e.id })),
         },
         educations: {
-          createMany: {
-            data: (educations ?? []).map(edu => ({
-              assignedById: user.id,
-              educationId: edu.id,
-            })),
-          },
+          connect: educations.map(e => ({ id: e.id })),
         },
       },
     });
@@ -100,5 +85,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
     revalidatePath("/admin/skills", "page");
     revalidatePath("/admin/experiences", "page");
     revalidatePath("/admin/educations", "page");
+
+    return skill;
   });
 };

@@ -37,7 +37,9 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
       deleteAction={async id => {
         await deleteExperience(id);
       }}
-      onEdit={id => open(ids.UPDATE_EXPERIENCE, { experienceId: id })}
+      onEdit={(id, m) =>
+        open(ids.UPDATE_EXPERIENCE, { experienceId: id, eager: { title: m.title } })
+      }
       columns={[
         {
           accessor: "title",

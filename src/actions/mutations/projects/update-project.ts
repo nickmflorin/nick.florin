@@ -5,7 +5,6 @@ import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { logger } from "~/application/logger";
-import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
 import {
   isPrismaDoesNotExistError,
@@ -13,13 +12,7 @@ import {
   prisma,
   type Transaction,
 } from "~/prisma/client";
-import {
-  type Project,
-  type Detail,
-  type User,
-  type NestedDetail,
-  type Skill,
-} from "~/prisma/model";
+import { type Project, type Detail, type User, type NestedDetail } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ProjectSchema } from "~/api/schemas";
 
@@ -119,48 +112,6 @@ const syncNestedDetails = async (
   }
 };
 
-const syncSkills = async (
-  tx: Transaction,
-  { project, skills, user }: { project: Project; user: User; skills?: Skill[] },
-) => {
-  if (skills) {
-    const relationships = await tx.projectOnSkills.findMany({
-      where: { projectId: project.id },
-    });
-    /* We need to remove the relationship between the skill and the project if there is an
-       existing relationship associated with the project but the project's ID is not included
-       in the API request. */
-    const toRemove = relationships.filter(r => !skills.map(e => e.id).includes(r.skillId));
-    if (toRemove.length !== 0) {
-      await Promise.all(
-        toRemove.map(relationship =>
-          tx.projectOnSkills.delete({
-            where: {
-              skillId_projectId: {
-                skillId: relationship.skillId,
-                projectId: relationship.projectId,
-              },
-            },
-          }),
-        ),
-      );
-    }
-    /* We need to add relationships between an project and the skill if the project's ID is
-       included in the API request and there is not an existing relationship between that
-       project and the skill. */
-    const toAdd = skills.filter(e => !relationships.some(r => r.skillId === e.id));
-    if (toAdd.length !== 0) {
-      await tx.projectOnSkills.createMany({
-        data: toAdd.map(e => ({
-          projectId: project.id,
-          skillId: e.id,
-          assignedById: user.id,
-        })),
-      });
-    }
-  }
-};
-
 export const updateProject = async (
   id: string,
   req: z.infer<typeof UpdateProjectSchema>,
@@ -251,27 +202,22 @@ export const updateProject = async (
       return fieldErrors.json;
     }
 
-    const update = {
-      ...data,
-      slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
-      name: _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
-    };
+    project = await tx.project.update({
+      where: { id },
+      data: {
+        ...data,
+        slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
+        name:
+          _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
+        updatedById: user.id,
+        skills: { connect: skills.map(skill => ({ id: skill.id })) },
+      },
+    });
 
-    if (!objIsEmpty(update)) {
-      project = await tx.project.update({
-        where: { id },
-        data: {
-          ...update,
-          updatedById: user.id,
-        },
-      });
-    }
-
-    /* TODO: Uncomment these when we build in details, nested details and skills into the Project's
+    /* TODO: Uncomment these when we build in details and nested details into the Project's
        form.
        await syncDetails(tx, { project, details, user });
-       await syncNestedDetails(tx, { project, nestedDetails, user });
-       await syncSkills(tx, { project, skills, user }); */
+       await syncNestedDetails(tx, { project, nestedDetails, user }); */
 
     revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");

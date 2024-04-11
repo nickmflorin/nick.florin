@@ -1,22 +1,17 @@
 import "server-only";
 import { cache } from "react";
 
-import omit from "lodash.omit";
-
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import {
   type ApiEducation,
   DetailEntityType,
   type EducationIncludes,
-  type ApiDetail,
-  type BrandSkill,
-  type EducationOnSkills,
-  type BrandCourse,
   fieldIsIncluded,
+  type EducationToDetailIncludes,
 } from "~/prisma/model";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { parsePagination, type Visibility } from "~/api/query";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { getDetails } from "../details";
@@ -26,15 +21,15 @@ interface GetEducationsFilters {
 }
 
 type GetEducationsParams<I extends EducationIncludes> = {
-  visibility?: Visibility;
-  includes?: I;
+  visibility: Visibility;
+  includes: I;
   filters?: GetEducationsFilters;
   page?: number;
 };
 
 const whereClause = ({
   filters,
-  visibility = "public",
+  visibility,
 }: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">) =>
   ({
     AND:
@@ -56,7 +51,7 @@ export const preloadEducationsCount = (
 export const getEducationsCount = cache(
   async ({
     filters,
-    visibility = "public",
+    visibility,
   }: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">) => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
@@ -73,13 +68,11 @@ export const preloadEducations = <I extends EducationIncludes>(params: GetEducat
 
 export const getEducations = cache(
   async <I extends EducationIncludes>({
-    visibility = "public",
+    visibility,
     includes,
     filters,
     page,
   }: GetEducationsParams<I>): Promise<ApiEducation<I>[]> => {
-    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
-       a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
@@ -88,65 +81,48 @@ export const getEducations = cache(
       getCount: async () => await getEducationsCount({ filters, visibility }),
     });
 
-    const edus = await prisma.education.findMany({
-      include: { school: true },
+    const educations = await prisma.education.findMany({
       where: whereClause({ filters, visibility }),
+      include: {
+        school: true,
+        skills: fieldIsIncluded("skills", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+        courses: fieldIsIncluded("courses", includes)
+          ? {
+              include: {
+                skills: fieldIsIncluded("skills", includes)
+                  ? { where: { visible: visibility === "public" ? true : undefined } }
+                  : undefined,
+              },
+              where: { visible: visibility === "public" ? true : undefined },
+            }
+          : undefined,
+      },
       orderBy: { startDate: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,
     });
 
-    let courses: BrandCourse[] | undefined = undefined;
-    let skills: (BrandSkill & { readonly educations: EducationOnSkills[] })[] | undefined =
-      undefined;
-
-    if (fieldIsIncluded("courses", includes)) {
-      courses = await prisma.course.findMany({
-        where: {
-          visible: visibility === "public" ? true : undefined,
-          educationId: { in: edus.map(e => e.id) },
-        },
-        include: { skills: fieldIsIncluded("skills", includes) },
-      });
-    }
-
-    if (fieldIsIncluded("skills", includes)) {
-      skills = await prisma.skill.findMany({
-        include: { educations: true },
-        where: {
-          visible: visibility === "public" ? true : undefined,
-          educations: { some: { education: { id: { in: edus.map(e => e.id) } } } },
-        },
-      });
-    }
-
-    let details: ApiDetail<["nestedDetails", "skills"]>[] | undefined = undefined;
     if (fieldIsIncluded("details", includes)) {
-      details = await getDetails(
-        edus.map(e => e.id),
+      const details = await getDetails(
+        educations.map(e => e.id),
         DetailEntityType.EDUCATION,
-        { visibility, includes: ["nestedDetails", "skills"] },
+        {
+          visibility,
+          includes: (fieldIsIncluded("skills", includes)
+            ? ["nestedDetails", "skills"]
+            : ["nestedDetails"]) as EducationToDetailIncludes<I>,
+        },
+      );
+      return educations.map(
+        (edu): ApiEducation<I> =>
+          convertToPlainObject({
+            ...edu,
+            details: details.filter(d => d.entityId === edu.id),
+          }) as ApiEducation<I>,
       );
     }
-
-    const educations = edus.map((edu): ApiEducation<I> => {
-      let modified: ApiEducation<I> = { ...edu } as ApiEducation<I>;
-      if (skills) {
-        modified = {
-          ...modified,
-          skills: skills
-            .filter(s => s.educations.some(e => e.educationId === edu.id))
-            .map(s => omit(s, "educations")),
-        };
-      }
-      if (details) {
-        modified = { ...modified, details: details.filter(d => d.entityId === edu.id) };
-      }
-      if (courses) {
-        modified = { ...modified, courses: courses.filter(c => c.educationId === edu.id) };
-      }
-      return modified as ApiEducation<I>;
-    });
     return educations.map(convertToPlainObject) as ApiEducation<I>[];
   },
 ) as {

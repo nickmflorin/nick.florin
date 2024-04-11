@@ -18,6 +18,7 @@ export const UpdateDetailExpandedDrawer = ({
     {
       keepPreviousData: true,
       includes: ["skills", "nestedDetails"],
+      visibility: "admin",
     },
   );
   return (

@@ -41,6 +41,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
+          visibility="admin"
           options={{ isMulti: false }}
           useAbbreviatedOptionLabels={false}
           onChange={onChange}

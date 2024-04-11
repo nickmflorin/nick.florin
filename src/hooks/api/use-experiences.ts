@@ -1,13 +1,19 @@
-import { type ApiExperience } from "~/prisma/model";
+import { encodeQueryParam } from "~/lib/urls";
+import { type ApiExperience, type ExperienceIncludes } from "~/prisma/model";
 import { type Visibility } from "~/api/query";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
-export const useExperiences = ({
+export const useExperiences = <I extends ExperienceIncludes>({
   visibility,
+  includes,
   ...config
-}: SWRConfig<ApiExperience<["details"]>[]> & { readonly visibility?: Visibility }) =>
-  useSWR<ApiExperience<["details"]>[]>("/api/experiences", {
+}: SWRConfig<ApiExperience<I>[]> & { readonly visibility: Visibility; readonly includes: I }) =>
+  useSWR<ApiExperience<I>[]>("/api/experiences", {
     ...config,
-    query: { ...config.query, visibility },
+    query: {
+      ...config.query,
+      visibility: encodeQueryParam(visibility),
+      inclues: encodeQueryParam(includes),
+    },
   });

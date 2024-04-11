@@ -47,9 +47,19 @@ export type EducationToCourseIncludes<I extends EducationIncludes> = I extends [
   ? ["skills"]
   : [];
 
+export type EducationToDetailIncludes<I extends EducationIncludes> = I extends [
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  ...infer L extends string[],
+  "skills",
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  ...infer R extends string[],
+]
+  ? ["nestedDetails", "skills"]
+  : ["nestedDetails"];
+
 export type ApiEducation<I extends EducationIncludes = []> = ConditionallyInclude<
   BrandModel<"education"> & {
-    readonly details: ApiDetail<["nestedDetails", "skills"]>[];
+    readonly details: ApiDetail<EducationToDetailIncludes<I>>[];
     readonly skills: Omit<ApiSkill, "autoExperience">[];
     /* Note: We do not need to worry about skills that are nested under the courses because we
        never show the skills associated with a course unless it is a detail view of the course. */

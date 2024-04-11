@@ -2,18 +2,17 @@
 import { getAuthAdminUser } from "~/application/auth";
 import { logger } from "~/application/logger";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type EducationOnSkills, type Education, DetailEntityType } from "~/prisma/model";
+import { type Education, DetailEntityType } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteEducation = async (id: string): Promise<void> => {
-  const user = await getAuthAdminUser();
+  await getAuthAdminUser({ strict: true });
 
   await prisma.$transaction(async tx => {
-    let education: Education & { readonly skills: EducationOnSkills[] };
+    let education: Education;
     try {
       education = await tx.education.findUniqueOrThrow({
         where: { id },
-        include: { skills: true },
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
@@ -21,15 +20,6 @@ export const deleteEducation = async (id: string): Promise<void> => {
       }
       throw e;
     }
-
-    await Promise.all(
-      education.skills.map(sk =>
-        tx.skill.update({
-          where: { id: sk.skillId },
-          data: { educations: { deleteMany: { educationId: id } }, updatedById: user.id },
-        }),
-      ),
-    );
 
     const details = await tx.detail.findMany({
       where: { entityType: DetailEntityType.EDUCATION, entityId: education.id },
@@ -61,6 +51,6 @@ export const deleteEducation = async (id: string): Promise<void> => {
       }
     }
 
-    await tx.experience.delete({ where: { id } });
+    await tx.education.delete({ where: { id } });
   });
 };

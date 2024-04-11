@@ -9,7 +9,7 @@ export interface ClientSchoolSelectProps extends Omit<SchoolSelectProps, "data">
 }
 
 export const ClientSchoolSelect = ({ onError, ...props }: ClientSchoolSelectProps): JSX.Element => {
-  const { data, isLoading, error } = useSchools({ onError, includes: [] });
+  const { data, isLoading, error } = useSchools({ onError, includes: [], visibility: "admin" });
 
   return (
     <SchoolSelect

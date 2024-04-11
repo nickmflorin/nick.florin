@@ -35,7 +35,8 @@
     "seeddb": "pnpm validate-node-version && pnpm manual-dev-env-setup -- cross-env NODE_ENV=development prisma db seed",
     "seeddb-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- prisma db seed",
     "jsonify-fixtures": "pnpm validate-node-version && pnpm manual-dev-env-setup -- npx tsx --tsconfig ./tsconfig.json src/prisma/jsonify.ts",
-    "pullenv": "vercel env pull ./.env --environment=development"
+    "pullenv": "vercel env pull ./.env --environment=development",
+    "pullenv-prod": "vercel env pull ./.env --environment=production"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.7",

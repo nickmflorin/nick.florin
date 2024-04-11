@@ -42,7 +42,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
       actions,
       placeholder,
       value,
-      closeMenuOnSelect,
+      closeMenuOnSelect = true,
       formatString = "yyyy-MM-dd",
       onChange,
       ...props

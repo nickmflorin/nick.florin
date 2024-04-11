@@ -5,6 +5,7 @@ import {
   type NestedApiDetail,
   type ToSkillIncludes,
 } from "~/prisma/model";
+import type { Visibility } from "~/api/query";
 
 import { useSWR, type SWRConfig, type SWRResponse } from "./use-swr";
 
@@ -26,7 +27,7 @@ type M<P extends PrimaryParams | NestedParams, I extends DetailIncludes> = P ext
 
 export function useDetail<P extends NestedParams | PrimaryParams, I extends DetailIncludes>(
   params: P | null,
-  config: SWRConfig<M<P, I>> & { readonly includes: I },
+  config: SWRConfig<M<P, I>> & { readonly includes: I; readonly visibility: Visibility },
 ): SWRResponse<M<P, I>> {
   const path =
     params !== null
@@ -35,11 +36,15 @@ export function useDetail<P extends NestedParams | PrimaryParams, I extends Deta
         : NestedPath(params.id)
       : null;
 
-  const { includes, ...rest } = config;
+  const { includes, visibility, ...rest } = config;
 
   const result = useSWR<M<P, I>>(path, {
     ...(rest as SWRConfig<M<P, I>>),
-    query: { ...rest.query, includes: encodeQueryParam(includes) },
+    query: {
+      ...rest.query,
+      includes: encodeQueryParam(includes),
+      visibility: encodeQueryParam(visibility),
+    },
   });
   return result as SWRResponse<M<P, I>>;
 }

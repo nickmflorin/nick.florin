@@ -2,18 +2,17 @@
 import { getAuthAdminUser } from "~/application/auth";
 import { logger } from "~/application/logger";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type ExperienceOnSkills, type Experience, DetailEntityType } from "~/prisma/model";
+import { type Experience, DetailEntityType } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteExperience = async (id: string): Promise<void> => {
-  const user = await getAuthAdminUser();
+  await getAuthAdminUser({ strict: true });
 
   await prisma.$transaction(async tx => {
-    let experience: Experience & { readonly skills: ExperienceOnSkills[] };
+    let experience: Experience;
     try {
       experience = await tx.experience.findUniqueOrThrow({
         where: { id },
-        include: { skills: true },
       });
     } catch (e) {
       if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
@@ -21,15 +20,6 @@ export const deleteExperience = async (id: string): Promise<void> => {
       }
       throw e;
     }
-
-    await Promise.all(
-      experience.skills.map(sk =>
-        tx.skill.update({
-          where: { id: sk.skillId },
-          data: { experiences: { deleteMany: { experienceId: id } }, updatedById: user.id },
-        }),
-      ),
-    );
 
     const details = await tx.detail.findMany({
       where: { entityType: DetailEntityType.EXPERIENCE, entityId: experience.id },

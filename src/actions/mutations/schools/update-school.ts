@@ -12,7 +12,7 @@ import { SchoolSchema } from "~/api/schemas";
 const UpdateSchoolSchema = SchoolSchema.partial();
 
 export const updateSchool = async (id: string, req: z.infer<typeof SchoolSchema>) => {
-  const user = await getAuthAdminUser();
+  const user = await getAuthAdminUser({ strict: true });
 
   return await prisma.$transaction(async tx => {
     let co: School;

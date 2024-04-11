@@ -1,34 +1,40 @@
 import { type NextRequest } from "next/server";
 
+import { getAuthUserFromRequest } from "~/application/auth";
 import { prisma } from "~/prisma/client";
-import { type SkillIncludes, type ApiSkill } from "~/prisma/model";
+import { type SkillIncludes } from "~/prisma/model";
 import { getSkill } from "~/actions/fetches/skills";
-import { ClientResponse, ApiClientError } from "~/api";
-import { parseInclusion } from "~/api/query";
+import { ClientResponse, ApiClientGlobalError } from "~/api";
+import { parseInclusion, parseVisibility } from "~/api/query";
 
 export async function generateStaticParams() {
   const skills = await prisma.skill.findMany();
-  return skills.map(skill => ({
-    id: skill.id,
+  return skills.map(c => ({
+    id: c.id,
   }));
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const includes = parseInclusion(request, [
-    "experiences",
-    "educations",
-    "projects",
-    "repositories",
-  ]) as SkillIncludes;
-
-  let skill: ApiSkill<SkillIncludes>;
-  try {
-    skill = await getSkill(params.id, { visibility: "public", includes });
-  } catch (e) {
-    if (e instanceof ApiClientError) {
-      return e.response;
+  const visibility = parseVisibility(request);
+  if (visibility === "admin") {
+    const user = await getAuthUserFromRequest(request);
+    if (!user) {
+      return ApiClientGlobalError.NotAuthenticated().response;
+    } else if (!user.isAdmin) {
+      return ApiClientGlobalError.Forbidden().response;
     }
-    throw e;
+  }
+  const skill = await getSkill(params.id, {
+    includes: parseInclusion(request, [
+      "education",
+      "experiences",
+      "repositories",
+      "projects",
+    ]) as SkillIncludes,
+    visibility,
+  });
+  if (!skill) {
+    return ApiClientGlobalError.NotFound().response;
   }
   return ClientResponse.OK(skill).response;
 }

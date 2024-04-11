@@ -8,23 +8,6 @@ import { json as tsSkills } from "../fixtures/skills";
 
 import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
-import { findCorresponding } from "./util";
-
-export const findCorrespondingSkillsSync = (jsonSkills: string[], skills: Skill[]): Skill[] =>
-  findCorresponding(
-    skills,
-    jsonSkills.map(j => ({ slug: j, label: j })),
-    {
-      field: ["label", "slug"],
-      strict: true,
-      reference: "skill",
-    },
-  );
-
-export const findCorrespondingSkills = async (jsonSkills: string[]): Promise<Skill[]> => {
-  const allSkills = await prisma.skill.findMany({});
-  return findCorrespondingSkillsSync(jsonSkills, allSkills);
-};
 
 const _seedSkills = async (ctx: SeedContext, skills: JsonSkill[]) => {
   if (skills.length !== 0) {

@@ -18,6 +18,7 @@ export const UpdateCourseDrawer = ({ skillId, eager }: UpdateCourseDrawerProps):
   const { data, isLoading, error, isValidating } = useSkill(isUuid(skillId) ? skillId : null, {
     includes: ["projects", "educations", "experiences"],
     keepPreviousData: true,
+    visibility: "admin",
   });
   const form = useSkillForm();
 

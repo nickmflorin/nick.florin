@@ -2,7 +2,6 @@ import { prisma } from "../../client";
 import { type DetailEntityType, type Skill } from "../../model";
 import { type JsonDetail } from "../fixtures/schemas";
 
-import { findCorrespondingSkillsSync } from "./seed-skills";
 import { type SeedContext } from "./types";
 
 import { findCorrespondingProject } from ".";
@@ -10,9 +9,9 @@ import { findCorrespondingProject } from ".";
 export const createDetail = async (
   ctx: SeedContext,
   {
-    skills,
     entityId,
     entityType,
+    skills,
     detail: { nestedDetails = [], project, skills: jsonSkills = [], ...jsonDetail },
   }: {
     detail: JsonDetail;
@@ -21,6 +20,16 @@ export const createDetail = async (
     entityType: DetailEntityType;
   },
 ) => {
+  /* This is simply for debugging, since in the case that the slug does not correspond to an
+     actual skill, the Prisma error is not super descriptive. */
+  const checkSkill = (skill: string) => {
+    const sk = skills.find(sk => sk.slug === skill);
+    if (sk === undefined) {
+      throw new Error(`Invalid slug: ${skill}`);
+    }
+    return skill;
+  };
+
   const projectId = project ? (await findCorrespondingProject(project)).id : undefined;
   return await prisma.detail.create({
     data: {
@@ -31,10 +40,7 @@ export const createDetail = async (
       updatedById: ctx.user.id,
       projectId,
       skills: {
-        create: findCorrespondingSkillsSync(jsonSkills, skills).map(sk => ({
-          assignedById: ctx.user.id,
-          skillId: sk.id,
-        })),
+        connect: jsonSkills.map(sk => ({ slug: checkSkill(sk) })),
       },
       nestedDetails: {
         create: nestedDetails.map(({ skills: jsonNestedSkills = [], ...jsonNestedDetail }) => ({
@@ -42,10 +48,7 @@ export const createDetail = async (
           createdById: ctx.user.id,
           updatedById: ctx.user.id,
           skills: {
-            create: findCorrespondingSkillsSync(jsonNestedSkills, skills).map(sk => ({
-              assignedById: ctx.user.id,
-              skillId: sk.id,
-            })),
+            connect: jsonNestedSkills.map(sk => ({ slug: checkSkill(sk) })),
           },
         })),
       },

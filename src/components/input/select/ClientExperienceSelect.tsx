@@ -8,16 +8,16 @@ import { ExperienceSelect, type ExperienceSelectProps } from "./ExperienceSelect
 
 export interface ClientExperienceSelectProps
   extends Omit<ExperienceSelectProps<ApiExperience>, "data"> {
-  readonly visibility?: Visibility;
+  readonly visibility: Visibility;
   readonly onError?: (e: HttpError) => void;
 }
 
 export const ClientExperienceSelect = ({
   onError,
-  visibility = "public",
+  visibility,
   ...props
 }: ClientExperienceSelectProps): JSX.Element => {
-  const { data, isLoading, error } = useExperiences({ onError, visibility });
+  const { data, isLoading, error } = useExperiences({ onError, visibility, includes: [] });
 
   return (
     <ExperienceSelect<ApiExperience>

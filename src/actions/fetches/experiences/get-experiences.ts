@@ -1,39 +1,35 @@
 import "server-only";
 import { cache } from "react";
 
-import omit from "lodash.omit";
-
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import {
   type ApiExperience,
   DetailEntityType,
   type ExperienceIncludes,
-  type BrandSkill,
-  type ApiDetail,
-  type ExperienceOnSkills,
   fieldIsIncluded,
+  type ExperienceToDetailIncludes,
 } from "~/prisma/model";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { parsePagination, type Visibility } from "~/api/query";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { getDetails } from "../details";
 
-type GetExperiencesFilters = {
+interface GetExperiencesFilters {
   readonly search: string;
-};
+}
 
 type GetExperiencesParams<I extends ExperienceIncludes> = {
-  readonly visibility?: Visibility;
-  readonly includes?: I;
-  readonly filters?: GetExperiencesFilters;
-  readonly page?: number;
+  visibility: Visibility;
+  includes: I;
+  filters?: GetExperiencesFilters;
+  page?: number;
 };
 
 const whereClause = ({
   filters,
-  visibility = "public",
+  visibility,
 }: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">) =>
   ({
     AND:
@@ -55,7 +51,7 @@ export const preloadExperiencesCount = (
 export const getExperiencesCount = cache(
   async ({
     filters,
-    visibility = "public",
+    visibility,
   }: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">) => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
@@ -74,13 +70,11 @@ export const preloadExperiences = <I extends ExperienceIncludes>(
 
 export const getExperiences = cache(
   async <I extends ExperienceIncludes>({
-    visibility = "public",
+    visibility,
     includes,
     filters,
     page,
   }: GetExperiencesParams<I>): Promise<ApiExperience<I>[]> => {
-    /* TODO: We have to figure out how to get this to render an API response, instead of throwing
-       a hard error, in the case that this is being called from the context of a route handler. */
     await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
@@ -89,52 +83,38 @@ export const getExperiences = cache(
       getCount: async () => await getExperiencesCount({ filters, visibility }),
     });
 
-    const exps = await prisma.experience.findMany({
-      include: { company: true },
+    const experiences = await prisma.experience.findMany({
       where: whereClause({ filters, visibility }),
+      include: {
+        company: true,
+        skills: fieldIsIncluded("skills", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+      },
       orderBy: { startDate: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,
     });
 
-    let experienceSkills:
-      | (BrandSkill & { readonly experiences: ExperienceOnSkills[] })[]
-      | undefined = undefined;
-    if (fieldIsIncluded("skills", includes)) {
-      experienceSkills = await prisma.skill.findMany({
-        include: { experiences: true },
-        where: {
-          visible: visibility === "public" ? true : undefined,
-          experiences: { some: { experience: { id: { in: exps.map(e => e.id) } } } },
-        },
-      });
-    }
-
-    let details: ApiDetail<["nestedDetails", "skills"]>[] | undefined = undefined;
     if (fieldIsIncluded("details", includes)) {
-      details = await getDetails(
-        exps.map(e => e.id),
+      const details = await getDetails(
+        experiences.map(e => e.id),
         DetailEntityType.EXPERIENCE,
-        { visibility, includes: ["nestedDetails", "skills"] },
+        {
+          visibility,
+          includes: (fieldIsIncluded("skills", includes)
+            ? ["nestedDetails", "skills"]
+            : ["nestedDetails"]) as ExperienceToDetailIncludes<I>,
+        },
+      );
+      return experiences.map(
+        (edu): ApiExperience<I> =>
+          convertToPlainObject({
+            ...edu,
+            details: details.filter(d => d.entityId === edu.id),
+          }) as ApiExperience<I>,
       );
     }
-
-    const experiences = exps.map((exp): ApiExperience<I> => {
-      let modified: ApiExperience<I> = { ...exp } as ApiExperience<I>;
-      if (experienceSkills) {
-        modified = {
-          ...modified,
-          skills: experienceSkills
-            .filter(s => s.experiences.some(e => e.experienceId === exp.id))
-            .map(s => omit(s, "experiences")),
-        };
-      }
-      if (details) {
-        modified = { ...modified, details: details.filter(d => d.entityId === exp.id) };
-      }
-      return modified as ApiExperience<I>;
-    });
-
     return experiences.map(convertToPlainObject) as ApiExperience<I>[];
   },
 ) as {

@@ -15,6 +15,11 @@ import {
 } from "./codes";
 import { type ApiClientFieldErrors } from "./errors/api-client-field-errors";
 
+export type MessageParams = {
+  readonly internal?: string;
+  readonly public?: string;
+};
+
 export const ClientSuccessCodes = enumeratedLiterals(
   [{ value: "HTTP_200_OK", statusCode: 200 }] as const,
   {},

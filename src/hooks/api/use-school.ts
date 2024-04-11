@@ -1,7 +1,23 @@
 import { isUuid } from "~/lib/typeguards";
-import { type School } from "~/prisma/model";
+import { encodeQueryParam } from "~/lib/urls";
+import { type SchoolIncludes, type ApiSchool } from "~/prisma/model";
+import type { Visibility } from "~/api/query";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
-export const useSchool = (id: string | null, config?: SWRConfig<School>) =>
-  useSWR<School>(isUuid(id) ? `/api/schools/${id}` : null, config ?? {});
+export const useSchool = <I extends SchoolIncludes>(
+  id: string | null,
+  {
+    includes,
+    visibility,
+    ...config
+  }: SWRConfig<ApiSchool<I>> & { readonly visibility: Visibility; readonly includes: I },
+) =>
+  useSWR<ApiSchool<I>>(isUuid(id) ? `/api/schools/${id}` : null, {
+    ...config,
+    query: {
+      ...config.query,
+      includes: encodeQueryParam(includes),
+      visibility: encodeQueryParam(visibility),
+    },
+  });

@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import type * as types from "./types";
 
+import * as terminal from "~/application/support/terminal";
+
 import {
   ConfigurationError,
   type ConfigurationErrorFormattingOptions,
@@ -94,6 +96,13 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     return runtime;
   }
 
+  private get clientEnv(): types.ClientEnv<R, V> {
+    if (this._clientEnv === undefined) {
+      this._clientEnv = this.parseClientEnv();
+    }
+    return this._clientEnv;
+  }
+
   private parseClientEnv(): types.ClientEnv<R, V> {
     const parsed = z.object(this.clientValidators).safeParse(this.clientRuntime);
     if (parsed.success) {
@@ -101,6 +110,13 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     }
     this.onError(parsed.error);
     throw new Error("The 'onError' option did not throw an error as expected.");
+  }
+
+  private get serverOnlyEnv(): types.ServerOnlyEnv<R, V> {
+    if (this._serverOnlyEnv === undefined) {
+      this._serverOnlyEnv = this.parseServerOnlyEnv();
+    }
+    return this._serverOnlyEnv;
   }
 
   private parseServerOnlyEnv(): types.ServerOnlyEnv<R, V> {
@@ -126,8 +142,60 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   public throwConfigurationError(
     error: ConfiguredError<R, V>,
     options?: ConfigurationErrorFormattingOptions<R, V>,
+  ): never;
+
+  public throwConfigurationError(
+    field: types.EnvKey<R, V>,
+    message: string,
+    options?: ConfigurationErrorFormattingOptions<R, V>,
+  ): never;
+
+  public throwConfigurationError(
+    error: ConfiguredError<R, V> | types.EnvKey<R, V>,
+    message?: string | ConfigurationErrorFormattingOptions<R, V>,
+    options?: ConfigurationErrorFormattingOptions<R, V>,
   ): never {
+    if (typeof error === "string") {
+      if (typeof message !== "string") {
+        throw new TypeError(
+          "Invalid method implementation:  The second argument must be a message string.",
+        );
+      }
+      throw new ConfigurationError(
+        { message, field: error },
+        { ...this.errorMessageConfig, ...options },
+      );
+    }
     throw new ConfigurationError(error, { ...this.errorMessageConfig, ...options });
+  }
+
+  public get configuration(): string {
+    const lines: string[] = [];
+    for (const key in this.clientEnv) {
+      lines.push(
+        `- ${key} = ${
+          terminal.YELLOW + this.clientEnv[key as keyof typeof this.clientEnv] + terminal.RESET
+        }`,
+      );
+    }
+    for (const key in this.serverOnlyEnv) {
+      lines.push(
+        `- ${key} = ${
+          terminal.GREEN +
+          this.serverOnlyEnv[key as keyof typeof this.serverOnlyEnv] +
+          terminal.RESET
+        }`,
+      );
+    }
+    return lines.join("\n");
+  }
+
+  public pick<K extends types.EnvKey<R, V>>(keys: K[]): { [key in K]: types.EnvValue<key, R, V> } {
+    const env = {} as { [key in K]: types.EnvValue<key, R, V> };
+    for (const key of keys) {
+      env[key] = this.get(key);
+    }
+    return env;
   }
 
   public get<K extends types.EnvKey<R, V>>(key: K): types.EnvValue<K, R, V> {
@@ -135,15 +203,9 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
       if (!this.isClientKey(key)) {
         throw new Error(`Attempted to access server-only key '${key}' on the client!`);
       }
-      if (this._clientEnv === undefined) {
-        this._clientEnv = this.parseClientEnv();
-      }
-      return this._clientEnv[key];
+      return this.clientEnv[key];
     } else if (this.isServerOnlyKey(key)) {
-      if (this._serverOnlyEnv === undefined) {
-        this._serverOnlyEnv = this.parseServerOnlyEnv();
-      }
-      return this._serverOnlyEnv[key];
+      return this.serverOnlyEnv[key];
     }
     throw new Error(
       `Unexpectedly reached unreachable logic for key '${key}' that does not conform to ` +

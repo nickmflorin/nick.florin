@@ -7,7 +7,7 @@ import { type School, type Education } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteSchool = async (id: string) => {
-  await getAuthAdminUser();
+  await getAuthAdminUser({ strict: true });
 
   return await prisma.$transaction(async tx => {
     let school: School & { readonly educations: Education[] };

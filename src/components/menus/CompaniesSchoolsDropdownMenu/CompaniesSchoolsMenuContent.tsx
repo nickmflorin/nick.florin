@@ -14,8 +14,8 @@ export interface CompaniesSchoolsMenuContentProps<M extends ModelType> {
 }
 
 const fetchers: { [key in ModelType]: () => Promise<Model<key>[]> } = {
-  company: async () => await getCompanies({ includes: ["experiences"] }),
-  school: async () => await getSchools({ includes: ["educations"] }),
+  company: async () => await getCompanies({ includes: ["experiences"], visibility: "admin" }),
+  school: async () => await getSchools({ includes: ["educations"], visibility: "admin" }),
 };
 
 const ModelDrawerIds: {

@@ -1,6 +1,10 @@
 import "server-only";
 import { cache } from "react";
 
+import { getAuthAdminUser } from "~/application/auth";
+import { logger } from "~/application/logger";
+import { humanizeList } from "~/lib/formatters";
+import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import {
   type DetailEntityType,
@@ -9,13 +13,10 @@ import {
   type DetailIncludes,
   fieldIsIncluded,
 } from "~/prisma/model";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
 import { type Visibility } from "~/api/query";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { getEntity } from "../get-entity";
-
-import { includeSkills, getDetailSkills } from "./util";
-
 /*
 Note: (r.e. Ordering):
 ---------------------
@@ -41,103 +42,67 @@ export const getDetails = cache(
   async <T extends DetailEntityType, I extends DetailIncludes>(
     ids: string[],
     entityType: T,
-    { includes, visibility = "public" }: { includes: I; visibility?: Visibility },
+    { includes, visibility }: { includes: I; visibility: Visibility },
   ): Promise<ApiDetail<I>[]> => {
-    if (fieldIsIncluded(["skills", "nestedDetails"], includes)) {
-      const details = await prisma.detail.findMany({
-        where: {
-          entityId: { in: ids },
-          entityType: entityType,
-          visible: visibility === "public" ? true : undefined,
-        },
-        include: {
-          project: { include: { skills: true } },
-          skills: true,
-          nestedDetails: {
-            /* Accounts for cases where multiple details were created at the same time due to
-               seeding. */
-            orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            include: { skills: true, project: { include: { skills: true } } },
-          },
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
-      // The skills for all projects, details and nested details associated with the entity(s).
-      const skills = await getDetailSkills(details, { visibility });
-      return details
-        .map((detail): ApiDetail<["nestedDetails", "skills"]> => includeSkills({ detail, skills }))
-        .map(convertToPlainObject) as ApiDetail<I>[];
-    } else if (fieldIsIncluded("skills", includes)) {
-      const details = await prisma.detail.findMany({
-        where: {
-          entityId: { in: ids },
-          entityType: entityType,
-          visible: visibility === "public" ? true : undefined,
-        },
-        include: {
-          project: { include: { skills: true } },
-          skills: true,
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      });
+    await getAuthAdminUser({ strict: visibility === "admin" });
 
-      const skills = await getDetailSkills(details, { visibility });
-
-      return details
-        .map(
-          ({ skills: _skills, project, ...d }): ApiDetail<["skills"]> => ({
-            ...d,
-            project: project
-              ? {
-                  ...project,
-                  skills: skills.filter(sk => project.skills.some(d => d.skillId === sk.id)),
-                }
-              : null,
-            /* Include skills for each Detail by identifying the skills in the overall set that have
-               IDs in the Detail's skills array. */
-            skills: skills.filter(sk => _skills.some(d => d.skillId === sk.id)),
-          }),
-        )
-        .map(convertToPlainObject) as ApiDetail<I>[];
-    } else if (fieldIsIncluded("nestedDetails", includes)) {
-      return (
-        await prisma.detail.findMany({
-          where: {
-            entityId: { in: ids },
-            entityType: entityType,
-            visible: visibility === "public" ? true : undefined,
-          },
-          include: {
-            project: true,
-            nestedDetails: {
-              /* Accounts for cases where multiple details were created at the same time due to
-               seeding. */
-              orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-              include: { project: true },
-            },
-          },
-          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-        })
-      ).map(convertToPlainObject) as ApiDetail<I>[];
-    } else {
-      return (
-        await prisma.detail.findMany({
-          where: {
-            entityId: { in: ids },
-            entityType: entityType,
-            visible: visibility === "public" ? true : undefined,
-          },
-          include: { project: true },
-          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-        })
-      ).map(convertToPlainObject) as ApiDetail<I>[];
+    const invalid = ids.filter(id => !isUuid(id));
+    if (invalid.length > 0) {
+      logger.error(
+        `The id(s) ${humanizeList(invalid, {
+          conjunction: "and",
+          formatter: v => `'${v}'`,
+        })} are not valid UUID(s).`,
+        { invalid },
+      );
     }
+
+    const details = await prisma.detail.findMany({
+      where: {
+        entityId: { in: ids.filter(isUuid) },
+        entityType: entityType,
+        visible: visibility === "public" ? true : undefined,
+      },
+      include: {
+        project: {
+          include: {
+            skills: fieldIsIncluded("skills", includes)
+              ? { where: { visible: visibility === "public" ? true : undefined } }
+              : undefined,
+          },
+        },
+        skills: fieldIsIncluded("skills", includes)
+          ? { where: { visible: visibility === "public" ? true : undefined } }
+          : undefined,
+        nestedDetails: fieldIsIncluded("nestedDetails", includes)
+          ? {
+              /* Accounts for cases where multiple details were created at the same time due to
+             seeding. */
+              orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+              include: {
+                skills: fieldIsIncluded("skills", includes)
+                  ? { where: { visible: visibility === "public" ? true : undefined } }
+                  : undefined,
+                project: {
+                  include: {
+                    skills: fieldIsIncluded("skills", includes)
+                      ? { where: { visible: visibility === "public" ? true : undefined } }
+                      : undefined,
+                  },
+                },
+              },
+            }
+          : undefined,
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    });
+    return details.map(convertToPlainObject) as ApiDetail<I>[];
   },
 ) as {
   <T extends DetailEntityType, I extends DetailIncludes>(
     ids: string[],
     entityType: T,
-    params: { includes: I; visibility?: Visibility },
+    params: { includes: I; visibility: Visibility },
   ): Promise<ApiDetail<I>[]>;
 };
 
@@ -145,7 +110,7 @@ export const getEntityDetails = cache(
   async <T extends DetailEntityType, I extends DetailIncludes>(
     id: string,
     entityType: T,
-    params: { includes: I; visibility?: Visibility },
+    params: { includes: I; visibility: Visibility },
   ): Promise<{ details: ApiDetail<I>[]; entity: DetailEntity<T> } | null> => {
     const entity: DetailEntity<T> | null = await getEntity(id, entityType);
     if (!entity) {
@@ -158,6 +123,6 @@ export const getEntityDetails = cache(
   <T extends DetailEntityType, I extends DetailIncludes>(
     id: string,
     entityType: T,
-    params: { includes: I; visibility?: Visibility },
+    params: { includes: I; visibility: Visibility },
   ): Promise<{ details: ApiDetail<I>[]; entity: DetailEntity<T> } | null>;
 };

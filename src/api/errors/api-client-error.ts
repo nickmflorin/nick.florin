@@ -14,17 +14,13 @@ import {
   type ApiClientFieldErrorsObj,
   type RawApiClientFieldErrorsObj,
   isZodError,
+  type MessageParams,
 } from "../types";
 
 import { ApiClientFieldErrors, type IssueLookup } from "./api-client-field-errors";
 import { BaseHttpError } from "./http-error";
 
 export type ApiClientErrorResponse = NextResponse<ApiClientErrorJson>;
-
-type MessageParams = {
-  readonly internal?: string;
-  readonly public?: string;
-};
 
 const removeUndefined = <T extends Record<string, unknown>>(obj: T): T =>
   Object.keys(obj).reduce((prev: T, key: string) => {

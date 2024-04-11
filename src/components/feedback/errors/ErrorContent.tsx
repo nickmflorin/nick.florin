@@ -27,9 +27,15 @@ export const ErrorContent = ({
     children !== undefined
       ? children
       : isHttpError(error)
-        ? error
+        ? error.message
         : error ?? types.DEFAULT_ERROR_MESSAGE;
+
   if (Array.isArray(message)) {
+    for (const m of message) {
+      if (m instanceof Error) {
+        throw new Error(JSON.stringify(message));
+      }
+    }
     return (
       <div className="flex flex-col gap-[10px]">
         {message.map((child, index) => (

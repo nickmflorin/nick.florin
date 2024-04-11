@@ -4,63 +4,15 @@ import { revalidatePath } from "next/cache";
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { objIsEmpty } from "~/lib";
 import { slugify } from "~/lib/formatters";
-import {
-  isPrismaDoesNotExistError,
-  isPrismaInvalidIdError,
-  prisma,
-  type Transaction,
-} from "~/prisma/client";
-import { type Course, type User, type Skill, type Education } from "~/prisma/model";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { type Course, type Education } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { CourseSchema } from "~/api/schemas";
 
 import { queryM2MsDynamically } from "../m2ms";
 
 const UpdateCourseSchema = CourseSchema.partial();
-
-const syncSkills = async (
-  tx: Transaction,
-  { course, skills, user }: { course: Course; user: User; skills?: Skill[] },
-) => {
-  if (skills) {
-    const relationships = await tx.courseOnSkills.findMany({
-      where: { courseId: course.id },
-    });
-    /* We need to remove the relationship between the skill and the course if there is an
-       existing relationship associated with the course but the course's ID is not included
-       in the API request. */
-    const toRemove = relationships.filter(r => !skills.map(e => e.id).includes(r.skillId));
-    if (toRemove.length !== 0) {
-      await Promise.all(
-        toRemove.map(relationship =>
-          tx.courseOnSkills.delete({
-            where: {
-              skillId_courseId: {
-                skillId: relationship.skillId,
-                courseId: relationship.courseId,
-              },
-            },
-          }),
-        ),
-      );
-    }
-    /* We need to add relationships between an course and the skill if the course's ID is
-       included in the API request and there is not an existing relationship between that
-       course and the skill. */
-    const toAdd = skills.filter(e => !relationships.some(r => r.skillId === e.id));
-    if (toAdd.length !== 0) {
-      await tx.courseOnSkills.createMany({
-        data: toAdd.map(e => ({
-          courseId: course.id,
-          skillId: e.id,
-          assignedById: user.id,
-        })),
-      });
-    }
-  }
-};
 
 export const updateCourse = async (
   id: string,
@@ -154,26 +106,19 @@ export const updateCourse = async (
       return fieldErrors.json;
     }
 
-    const update = {
-      ...data,
-      educationId: education ? education.id : undefined,
-      slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
-      name: _name === undefined || _name.trim() === course.name.trim() ? undefined : _name.trim(),
-    };
-
-    if (!objIsEmpty(update)) {
-      course = await tx.course.update({
-        where: { id },
-        data: {
-          ...update,
-          updatedById: user.id,
-        },
-      });
-    }
-
-    /* TODO: Uncomment when we build skills into the Course's form.
-       await syncSkills(tx, { course, skills, user }); */
-
+    course = await tx.course.update({
+      where: { id },
+      data: {
+        ...data,
+        educationId: education ? education.id : undefined,
+        slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
+        name: _name === undefined || _name.trim() === course.name.trim() ? undefined : _name.trim(),
+        updatedById: user.id,
+        /* Uncomment once we build skills into the Course's form - otherwise, it will wipe the
+             skills each time.
+             skills: { connect: skills.map(skill => ({ id: skill.id })) }, */
+      },
+    });
     revalidatePath("/admin/courses", "page");
     revalidatePath(`/api/courses/${course.id}`);
     return course;

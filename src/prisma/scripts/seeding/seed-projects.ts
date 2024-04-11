@@ -1,10 +1,9 @@
 import { humanizeList, slugify } from "~/lib/formatters";
 
 import { prisma, getUniqueConstraintFields } from "../../client";
-import { type Project } from "../../model";
+import { type Project, type Skill } from "../../model";
 import { json } from "../fixtures/json";
 
-import { findCorrespondingSkills } from "./seed-skills";
 import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
@@ -38,15 +37,19 @@ export async function seedProjects(ctx: SeedContext) {
       } = json.projects[i];
 
       output.begin(`Generating Project: ${jsonProject.name}...`);
-      let project: Project;
+      let project: Project & { readonly skills: Skill[] };
       try {
         project = await prisma.project.create({
+          include: { skills: true },
           data: {
             ...jsonProject,
             repositories: { connect: (jsonRepositories ?? []).map((slug: string) => ({ slug })) },
             slug: jsonProject.slug === undefined ? slugify(jsonProject.name) : jsonProject.slug,
             createdById: ctx.user.id,
             updatedById: ctx.user.id,
+            skills: {
+              connect: jsonSkills.map((skill: string) => ({ slug: skill })),
+            },
           },
         });
       } catch (e) {
@@ -61,25 +64,15 @@ export async function seedProjects(ctx: SeedContext) {
       }
       projects = [...projects, project];
 
-      if (jsonSkills.length !== 0) {
-        output.begin(`Associating ${jsonSkills.length} Skills(s) with Project: ${project.name}...`);
-        const skills = await findCorrespondingSkills(jsonSkills);
-        const relationships = await prisma.projectOnSkills.createMany({
-          data: skills.map(skill => ({
-            assignedById: ctx.user.id,
-            skillId: skill.id,
-            projectId: project.id,
-          })),
-        });
-        output.complete(
-          `Associated ${relationships.count} Skills(s) with Project: ${project.name}`,
-          skills.map(sk => sk.label),
-        );
-      }
       output.complete("Successfully Generated Project", {
         lineItems: [
           { label: "Name", value: project.name },
           { label: "Slug", value: project.slug },
+          {
+            label: "Skills",
+            items: project.skills.map(skill => ({ label: "Slug", value: skill.slug })),
+            index: true,
+          },
         ],
         count: [i, json.projects.length],
       });

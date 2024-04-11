@@ -1,18 +1,13 @@
 import { prisma } from "~/prisma/client";
-import { convertToPlainObject } from "~/actions/fetches/serialization";
+import { convertToPlainObject } from "~/api/serialization";
 import { AssetVisualizations } from "~/components/projects/AssetVisualizations";
 
 export default async function AssetVisualizationsPage() {
   const project = convertToPlainObject(
     await prisma.project.findUniqueOrThrow({
       where: { slug: "asset-visualizations" },
-      include: { repositories: true },
+      include: { repositories: true, skills: true },
     }),
   );
-  const skills = (
-    await prisma.skill.findMany({
-      where: { projects: { some: { projectId: project.id } } },
-    })
-  ).map(convertToPlainObject);
-  return <AssetVisualizations project={{ ...project, skills }} />;
+  return <AssetVisualizations project={project} />;
 }
