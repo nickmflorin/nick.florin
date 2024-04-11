@@ -17,7 +17,6 @@ export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
     keepPreviousData: true,
     visibility: "public",
   });
-  console.log({ data });
   return (
     <Drawer>
       <ApiResponseState error={error} isLoading={isLoading} data={data}>
