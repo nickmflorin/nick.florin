@@ -7,6 +7,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { CompanySchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
   const user = await getAuthAdminUser();
@@ -39,5 +40,5 @@ export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
     },
   });
   revalidatePath("/api/companies");
-  return company;
+  return convertToPlainObject(company);
 };

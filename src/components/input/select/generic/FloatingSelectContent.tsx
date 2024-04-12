@@ -39,7 +39,7 @@ export const FloatingSelectContent = forwardRef<
   ) => (
     /* The style is needed for the FloatingContent to be positioned correctly with the Floating
        component's prop injection. */
-    <FloatingContent variant="white" ref={ref} style={style}>
+    <FloatingContent variant="white" ref={ref} style={style} className="border">
       <AbstractMenu
         {...(props as MenuProps<M, O>)}
         isReady={isReady}

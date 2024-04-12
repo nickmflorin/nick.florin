@@ -8,6 +8,7 @@ import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/pri
 import { type Experience, type Company, type ApiExperience } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 const UpdateExperienceSchema = ExperienceSchema.partial();
 
@@ -82,5 +83,5 @@ export const updateExperience = async (
   });
   revalidatePath("/admin/experiences", "page");
   revalidatePath("/api/experiences");
-  return experience;
+  return convertToPlainObject(experience);
 };

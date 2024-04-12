@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiCourse } from "~/prisma/model";
+import { type ApiCourse, type BrandCourse } from "~/prisma/model";
 import { deleteCourse, updateCourse } from "~/actions/mutations/courses";
 import { useDrawers } from "~/components/drawers/hooks";
 import type * as cells from "~/components/tables/generic/cells";
@@ -69,7 +69,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Slug",
           width: 320,
           render: ({ model, table }) => (
-            <SlugCell<ApiCourse<["education"]>>
+            <SlugCell<ApiCourse<["education"]>, BrandCourse>
               model={model}
               modelType="course"
               table={table}

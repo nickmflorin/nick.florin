@@ -9,6 +9,7 @@ import { prisma } from "~/prisma/client";
 import { type BrandEducation } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 import { CourseSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";
 
@@ -64,12 +65,10 @@ export const createCourse = async (req: z.infer<typeof CourseSchema>) => {
         educationId: (education as BrandEducation).id,
         createdById: user.id,
         updatedById: user.id,
-        skills: {
-          connect: skills.map(skill => ({ id: skill.id })),
-        },
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
     revalidatePath("/admin/courses", "page");
-    return course;
+    return convertToPlainObject(course);
   });
 };

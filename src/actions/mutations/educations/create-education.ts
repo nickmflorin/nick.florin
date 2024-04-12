@@ -8,6 +8,7 @@ import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type School } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 import { EducationSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
   const user = await getAuthAdminUser();
@@ -57,5 +58,5 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
   });
   revalidatePath("/admin/educations", "page");
   revalidatePath("/api/educations");
-  return education;
+  return convertToPlainObject(education);
 };

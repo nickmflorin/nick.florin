@@ -3,31 +3,33 @@ import { useState, useTransition, useEffect } from "react";
 
 import { toast } from "react-toastify";
 
+import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
+import { type ApiClientErrorJson, isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import type * as types from "~/components/tables/types";
 
-export interface SlugCellProps<M extends { id: string; slug: string }> {
+export interface SlugCellProps<M extends { id: string; slug: string }, T> {
   readonly model: M;
   readonly table: types.TableInstance<M>;
   readonly modelType: string;
   readonly getSluggifiedFieldValue: (m: M) => string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  readonly action: (id: string, value: string | null) => Promise<any>;
+  readonly action: (id: string, value: string | null) => Promise<T | ApiClientErrorJson>;
 }
 
 export type SlugCellComponent = {
-  <M extends { id: string; slug: string }>(props: SlugCellProps<M>): JSX.Element;
+  <M extends { id: string; slug: string }, T>(props: SlugCellProps<M, T>): JSX.Element;
 };
 
-export const SlugCell = <M extends { id: string; slug: string }>({
+export const SlugCell = <M extends { id: string; slug: string }, T>({
   model,
   table,
   modelType,
   action,
   getSluggifiedFieldValue,
-}: SlugCellProps<M>): JSX.Element => {
+}: SlugCellProps<M, T>): JSX.Element => {
   const input = useReadWriteTextInput();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -44,12 +46,13 @@ export const SlugCell = <M extends { id: string; slug: string }>({
         initialValue={model.slug}
         onPersist={async slug => {
           table.setRowLoading(model.id, true);
+
+          let response: Awaited<ReturnType<typeof action>> | null = null;
           try {
-            await action(model.id, slug);
+            response = await action(model.id, slug);
           } catch (e) {
-            const logger = (await import("~/application/logger")).logger;
             logger.error(
-              `There was an error updating the slug for the ${modelType} with ID '${model.id}':\n${e}`,
+              `There was a server error updating the slug for the ${modelType} with ID '${model.id}':\n${e}`,
               {
                 error: e,
                 model: model.id,
@@ -61,6 +64,19 @@ export const SlugCell = <M extends { id: string; slug: string }>({
           } finally {
             table.setRowLoading(model.id, false);
           }
+          if (isApiClientErrorJson(response)) {
+            logger.error(
+              `There was a client error updating the slug for the ${modelType} with ID '${model.id}'.`,
+              {
+                response,
+                model,
+              },
+            );
+            toast.error(`There was an error updating the ${modelType}.`);
+          }
+          /* Refresh the state from the server regardless of whether or not the request succeeded.
+             In the case the request failed, this is required to revert the changes back to their
+             original state. */
           transition(() => {
             router.refresh();
           });

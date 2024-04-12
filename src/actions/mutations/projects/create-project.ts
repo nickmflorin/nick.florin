@@ -9,6 +9,7 @@ import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { ProjectSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";
 
@@ -67,12 +68,10 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
         slug,
         createdById: user.id,
         updatedById: user.id,
-        skills: {
-          connect: skills.map(skill => ({ slug: skill.slug })),
-        },
+        skills: skills ? { connect: skills.map(skill => ({ slug: skill.slug })) } : undefined,
       },
     });
-    if (details.length !== 0) {
+    if (details && details.length !== 0) {
       logger.info(`Associating ${details.length} details with new project, '${project.name}'.`, {
         projectId: project.id,
       });
@@ -86,7 +85,7 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
       );
     }
 
-    if (nestedDetails.length !== 0) {
+    if (nestedDetails && nestedDetails.length !== 0) {
       logger.info(
         `Associating ${nestedDetails.length} nested details with new project, '${project.name}'.`,
         {
@@ -106,6 +105,6 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
     revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");
     revalidatePath(`/projects/${project.slug}`, "page");
-    return project;
+    return convertToPlainObject(project);
   });
 };

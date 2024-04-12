@@ -25,9 +25,9 @@ export const DynamicIconRenderer = ({ icon, ...props }: DynamicIconRendererProps
           if (visibleEncountered) {
             const logger = (await import("~/application/logger")).logger;
             logger.error(
-              { icons: ics, icon: i },
               "The dynamically provided set of icons includes multiple visible icons. " +
                 "Only the first will be rendered.",
+              { icons: ics, icon: i },
             );
             modified = [...modified, { icon: i.icon, visible: false }];
           } else {
@@ -41,9 +41,9 @@ export const DynamicIconRenderer = ({ icon, ...props }: DynamicIconRendererProps
       if (!visibleEncountered) {
         const logger = (await import("~/application/logger")).logger;
         logger.error(
-          { icons: ics },
           "The dynamically provided set of icons does not include a visible icon. " +
             "No icon will be rendered.",
+          { icons: ics },
         );
         return setIcons(null);
       }

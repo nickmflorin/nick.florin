@@ -4,6 +4,7 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
+import { logger } from "~/application/logger";
 import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
@@ -37,7 +38,6 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
         try {
           response = await updateEducation(education.id, { school: v });
         } catch (e) {
-          const logger = (await import("~/application/logger")).logger;
           logger.error(`There was a server error updating the education's company:\n${e}`, {
             error: e,
             education: education.id,
@@ -48,20 +48,16 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
           table.setRowLoading(education.id, false);
         }
         if (response && isApiClientErrorJson(response)) {
-          const logger = (await import("~/application/logger")).logger;
           logger.error("There was a client error updating the education's company.", {
             error: response,
             education: education.id,
             company: v,
           });
           toast.error("There was an error updating the education.");
-        } else {
-          /* Refresh the page state from the server.  This is not entirely necessary, but will
-             revert any changes that were made if the request fails. */
-          transition(() => {
-            router.refresh();
-          });
         }
+        transition(() => {
+          router.refresh();
+        });
       }}
     />
   );

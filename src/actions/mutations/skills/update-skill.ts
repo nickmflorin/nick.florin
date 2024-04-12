@@ -6,9 +6,10 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { slugify } from "~/lib/formatters";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type Skill } from "~/prisma/model";
-import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
+import { type BrandSkill } from "~/prisma/model";
+import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { SkillSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";
 
@@ -17,8 +18,8 @@ const UpdateSkillSchema = SkillSchema.partial();
 export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSchema>) => {
   const user = await getAuthAdminUser({ strict: true });
 
-  return await prisma.$transaction(async tx => {
-    let skill: Skill;
+  return await prisma.$transaction(async (tx): Promise<BrandSkill | ApiClientErrorJson> => {
+    let skill: BrandSkill;
     try {
       skill = await tx.skill.findUniqueOrThrow({
         where: { id },
@@ -75,6 +76,7 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
       );
     } else if (
       _slug !== null &&
+      _slug !== undefined &&
       (await prisma.skill.count({ where: { slug: _slug, id: { notIn: [skill.id] } } }))
     ) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
@@ -99,7 +101,6 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
     }
-
     skill = await tx.skill.update({
       where: { id },
       data: {
@@ -108,9 +109,9 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
         label:
           _label === undefined || _label.trim() === skill.label.trim() ? undefined : _label.trim(),
         updatedById: user.id,
-        projects: { connect: projects.map(p => ({ id: p.id })) },
-        experiences: { connect: experiences.map(p => ({ id: p.id })) },
-        educations: { connect: educations.map(p => ({ id: p.id })) },
+        projects: projects ? { connect: projects.map(p => ({ id: p.id })) } : undefined,
+        experiences: experiences ? { connect: experiences.map(p => ({ id: p.id })) } : undefined,
+        educations: educations ? { connect: educations.map(p => ({ id: p.id })) } : undefined,
       },
     });
 
@@ -122,6 +123,6 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
     revalidatePath("/api/educations");
     revalidatePath("/api/projects");
 
-    return skill;
+    return convertToPlainObject(skill);
   });
 };

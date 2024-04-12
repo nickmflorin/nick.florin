@@ -6,9 +6,10 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { slugify } from "~/lib/formatters";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type Course, type Education } from "~/prisma/model";
+import { type BrandCourse, type Education } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { CourseSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";
 
@@ -17,7 +18,7 @@ const UpdateCourseSchema = CourseSchema.partial();
 export const updateCourse = async (
   id: string,
   req: z.infer<typeof UpdateCourseSchema>,
-): Promise<ApiClientErrorJson<keyof (typeof UpdateCourseSchema)["shape"]> | Course> => {
+): Promise<ApiClientErrorJson<keyof (typeof UpdateCourseSchema)["shape"]> | BrandCourse> => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateCourseSchema.safeParse(req);
@@ -26,7 +27,7 @@ export const updateCourse = async (
   }
 
   return await prisma.$transaction(async tx => {
-    let course: Course;
+    let course: BrandCourse;
     try {
       course = await tx.course.findUniqueOrThrow({
         where: { id },
@@ -114,13 +115,11 @@ export const updateCourse = async (
         slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
         name: _name === undefined || _name.trim() === course.name.trim() ? undefined : _name.trim(),
         updatedById: user.id,
-        /* Uncomment once we build skills into the Course's form - otherwise, it will wipe the
-             skills each time.
-             skills: { connect: skills.map(skill => ({ id: skill.id })) }, */
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
     revalidatePath("/admin/courses", "page");
     revalidatePath(`/api/courses/${course.id}`);
-    return course;
+    return convertToPlainObject(course);
   });
 };

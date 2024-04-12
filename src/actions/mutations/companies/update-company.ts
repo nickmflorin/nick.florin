@@ -8,6 +8,7 @@ import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/pri
 import { type Company } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { CompanySchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 const UpdateCompanySchema = CompanySchema.partial();
 
@@ -56,6 +57,6 @@ export const updateCompany = async (id: string, req: z.infer<typeof CompanySchem
     });
     revalidatePath("/api/companies");
     revalidatePath(`/api/companies/${updated.id}`);
-    return updated;
+    return convertToPlainObject(updated);
   });
 };

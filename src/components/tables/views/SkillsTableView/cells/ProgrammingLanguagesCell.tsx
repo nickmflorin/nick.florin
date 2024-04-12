@@ -1,4 +1,4 @@
-import { type ApiSkill } from "~/prisma/model";
+import { type ApiSkill, type BrandSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/mutations/skills";
 import { ProgrammingLanguageSelect } from "~/components/input/select/ProgrammingLanguageSelect";
 import { SelectCell } from "~/components/tables/generic/cells/SelectCell";
@@ -8,13 +8,15 @@ interface ProgrammingLanguagesCellProps {
 }
 
 export const ProgrammingLanguagesCell = ({ skill }: ProgrammingLanguagesCellProps): JSX.Element => (
-  <SelectCell<ApiSkill<["experiences", "educations", "projects"]>, "programmingLanguages">
+  <SelectCell<
+    ApiSkill<["experiences", "educations", "projects"]>,
+    "programmingLanguages",
+    BrandSkill
+  >
     component={ProgrammingLanguageSelect}
     attribute="programmingLanguages"
     model={skill}
-    action={async v => {
-      await updateSkill(skill.id, { programmingLanguages: v });
-    }}
+    action={async v => await updateSkill(skill.id, { programmingLanguages: v })}
     errorMessage="There was an error updating the skill."
   />
 );

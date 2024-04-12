@@ -11,6 +11,7 @@ import { getEntity } from "~/actions/fetches/get-entity";
 import { ApiClientFieldErrors } from "~/api";
 import { ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { DetailSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 export const createDetail = async (
   entityId: string,
@@ -86,5 +87,5 @@ export const createDetail = async (
     default:
       throw new UnreachableCaseError();
   }
-  return detail;
+  return convertToPlainObject(detail);
 };

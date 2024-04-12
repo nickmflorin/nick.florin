@@ -8,6 +8,7 @@ import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/pri
 import { type School } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { SchoolSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 const UpdateSchoolSchema = SchoolSchema.partial();
 
@@ -54,6 +55,6 @@ export const updateSchool = async (id: string, req: z.infer<typeof SchoolSchema>
     });
     revalidatePath("/api/schools");
     revalidatePath(`/api/schools/${updated.id}`);
-    return updated;
+    return convertToPlainObject(updated);
   });
 };

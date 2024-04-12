@@ -14,6 +14,7 @@ import {
   ApiClientGlobalError,
 } from "~/api";
 import { DetailSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 const UpdateDetailSchema = DetailSchema.partial();
 
@@ -91,12 +92,12 @@ export const updateNestedDetail = async (id: string, req: z.infer<typeof UpdateD
     case DetailEntityType.EDUCATION: {
       revalidatePath("/admin/educations", "page");
       revalidatePath("/api/educations");
-      return updated;
+      return convertToPlainObject(updated);
     }
     case DetailEntityType.EXPERIENCE: {
       revalidatePath("/admin/experiences", "page");
       revalidatePath("/api/experiences");
-      return updated;
+      return convertToPlainObject(updated);
     }
     default:
       throw new UnreachableCaseError();

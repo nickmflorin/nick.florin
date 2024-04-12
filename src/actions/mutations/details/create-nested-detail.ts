@@ -15,6 +15,7 @@ import {
   type ApiClientErrorJson,
 } from "~/api";
 import { DetailSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 export const createNestedDetail = async (
   detailId: string,
@@ -91,5 +92,5 @@ export const createNestedDetail = async (
     default:
       throw new UnreachableCaseError();
   }
-  return nestedDetail;
+  return convertToPlainObject(nestedDetail);
 };

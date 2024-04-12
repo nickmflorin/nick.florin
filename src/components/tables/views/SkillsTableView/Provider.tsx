@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiSkill } from "~/prisma/model";
+import { type ApiSkill, type BrandSkill } from "~/prisma/model";
 import { deleteSkill, updateSkill } from "~/actions/mutations/skills";
 import { useDrawers } from "~/components/drawers/hooks";
 import type * as cells from "~/components/tables/generic/cells";
@@ -68,7 +68,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Slug",
           width: 320,
           render: ({ model, table }) => (
-            <SlugCell<ApiSkill<["experiences", "educations", "projects"]>>
+            <SlugCell<ApiSkill<["experiences", "educations", "projects"]>, BrandSkill>
               model={model}
               modelType="skill"
               table={table}

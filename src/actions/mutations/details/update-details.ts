@@ -15,6 +15,7 @@ import {
   ApiClientFieldErrorCodes,
 } from "~/api";
 import { DetailSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 const ExistingSchema = DetailSchema.partial({ label: true }).extend({ id: z.string().uuid() });
 const NewSchema = DetailSchema;
@@ -138,5 +139,5 @@ export const updateDetails = async (
     revalidatePath("/admin/experiences", "page");
     revalidatePath("/api/experiences");
   }
-  return result;
+  return convertToPlainObject(result);
 };

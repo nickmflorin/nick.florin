@@ -1,16 +1,17 @@
+import type { ApiClientErrorJson } from "~/api";
 import type * as types from "~/components/tables/types";
 
 export interface EditableStringCellProps<
   M extends { id: string } & { [key in K]: string | null },
   K extends keyof M,
   P extends { [key in K]: string },
+  T,
 > {
   readonly model: M;
   readonly field: K;
   readonly table: types.TableInstance<M>;
   readonly errorMessage: string;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  readonly action: (data: P) => Promise<any>;
+  readonly action: (data: P) => Promise<T | ApiClientErrorJson>;
 }
 
 export type EditableStringCellComponent = {
@@ -18,18 +19,19 @@ export type EditableStringCellComponent = {
     M extends { id: string } & { [key in K]: string | null },
     K extends keyof M,
     P extends { [key in K]: string },
+    T,
   >(
-    props: EditableStringCellProps<M, K, P>,
+    props: EditableStringCellProps<M, K, P, T>,
   ): JSX.Element;
 };
 
-export interface VisibleCellProps<M extends { id: string; visible: boolean }> {
+export interface VisibleCellProps<M extends { id: string; visible: boolean }, T> {
   readonly model: M;
   readonly table: types.TableInstance<M>;
   readonly errorMessage: string;
-  readonly action: (id: string, data: { visible: boolean }) => Promise<void>;
+  readonly action: (id: string, data: { visible: boolean }) => Promise<T | ApiClientErrorJson>;
 }
 
 export type VisibleCellComponent = {
-  <M extends { id: string; visible: boolean }>(props: VisibleCellProps<M>): JSX.Element;
+  <M extends { id: string; visible: boolean }, T>(props: VisibleCellProps<M, T>): JSX.Element;
 };

@@ -56,7 +56,7 @@ export type QueryM2MDynamicallyRT<
 
 export const queryM2MsDynamically = async <I extends string[] | undefined, T extends DynamicModel>(
   tx: Transaction,
-  { model, ids, fieldErrors }: { model: T; ids?: I; fieldErrors?: ApiClientFieldErrors },
+  { model, ids, fieldErrors }: { model: T; ids: I; fieldErrors?: ApiClientFieldErrors },
 ): Promise<QueryM2MDynamicallyRT<I, T>> => {
   /* If the field errors are passed in, we want to just mutate them in place to allow handling of
      the return type of this method to be less cumbersome. */

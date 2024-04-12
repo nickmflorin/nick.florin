@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiProject } from "~/prisma/model";
+import { type ApiProject, type BrandProject } from "~/prisma/model";
 import { deleteProject, updateProject } from "~/actions/mutations/projects";
 import { useDrawers } from "~/components/drawers/hooks";
 import type * as cells from "~/components/tables/generic/cells";
@@ -66,7 +66,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Slug",
           width: 320,
           render: ({ model, table }) => (
-            <SlugCell<ApiProject<[]>>
+            <SlugCell<ApiProject<[]>, BrandProject>
               model={model}
               modelType="project"
               table={table}

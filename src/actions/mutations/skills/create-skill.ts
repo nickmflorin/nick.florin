@@ -8,6 +8,7 @@ import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { SkillSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";
 
@@ -70,15 +71,9 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
         slug,
         createdById: user.id,
         updatedById: user.id,
-        experiences: {
-          connect: experiences.map(e => ({ id: e.id })),
-        },
-        projects: {
-          connect: projects.map(e => ({ id: e.id })),
-        },
-        educations: {
-          connect: educations.map(e => ({ id: e.id })),
-        },
+        experiences: experiences ? { connect: experiences.map(e => ({ id: e.id })) } : undefined,
+        projects: projects ? { connect: projects.map(e => ({ id: e.id })) } : undefined,
+        educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
       },
     });
     // TODO: We may have to revalidate other API paths as well.
@@ -86,6 +81,6 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
     revalidatePath("/admin/experiences", "page");
     revalidatePath("/admin/educations", "page");
 
-    return skill;
+    return convertToPlainObject(skill);
   });
 };

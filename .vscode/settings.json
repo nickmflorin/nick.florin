@@ -18,6 +18,8 @@
     // }
   },
 
+  "github.copilot.editor.enableCodeActions": false,
+
   "eslint.run": "onSave",
   "eslint.nodePath": "/Users/nickflorin/.nvm/versions/node/v20.0.0/bin/node",
   "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],

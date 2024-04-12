@@ -8,6 +8,7 @@ import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 export const createExperience = async (req: z.infer<typeof ExperienceSchema>) => {
   const user = await getAuthAdminUser();
@@ -58,5 +59,5 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
   });
   revalidatePath("/admin/experiences", "page");
   revalidatePath("/api/experiences");
-  return experience;
+  return convertToPlainObject(experience);
 };

@@ -7,6 +7,7 @@ import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { SchoolSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
   const user = await getAuthAdminUser();
@@ -38,5 +39,5 @@ export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
     },
   });
   revalidatePath("/api/schools");
-  return school;
+  return convertToPlainObject(school);
 };

@@ -12,7 +12,7 @@ import {
   prisma,
   type Transaction,
 } from "~/prisma/client";
-import { type Project, type Detail, type User, type NestedDetail } from "~/prisma/model";
+import { type Detail, type User, type NestedDetail, type BrandProject } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ProjectSchema } from "~/api/schemas";
 
@@ -24,7 +24,7 @@ const UpdateProjectSchema = ProjectSchema.partial();
    Detail may have been associated with. */
 const syncDetails = async (
   tx: Transaction,
-  { project, details, user }: { project: Project; user: User; details?: Detail[] },
+  { project, details, user }: { project: BrandProject; user: User; details?: Detail[] },
 ) => {
   if (details) {
     const existingDetails = await tx.detail.findMany({ where: { projectId: project.id } });
@@ -71,7 +71,7 @@ const syncNestedDetails = async (
     project,
     nestedDetails,
     user,
-  }: { project: Project; user: User; nestedDetails?: NestedDetail[] },
+  }: { project: BrandProject; user: User; nestedDetails?: NestedDetail[] },
 ) => {
   if (nestedDetails) {
     const existingDetails = await tx.nestedDetail.findMany({ where: { projectId: project.id } });
@@ -115,7 +115,7 @@ const syncNestedDetails = async (
 export const updateProject = async (
   id: string,
   req: z.infer<typeof UpdateProjectSchema>,
-): Promise<ApiClientErrorJson<keyof (typeof UpdateProjectSchema)["shape"]> | Project> => {
+): Promise<ApiClientErrorJson<keyof (typeof UpdateProjectSchema)["shape"]> | BrandProject> => {
   const user = await getAuthAdminUser();
 
   const parsed = UpdateProjectSchema.safeParse(req);
@@ -124,7 +124,7 @@ export const updateProject = async (
   }
 
   return await prisma.$transaction(async tx => {
-    let project: Project;
+    let project: BrandProject;
     try {
       project = await tx.project.findUniqueOrThrow({
         where: { id },
@@ -210,14 +210,16 @@ export const updateProject = async (
         name:
           _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
         updatedById: user.id,
-        skills: { connect: skills.map(skill => ({ id: skill.id })) },
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
 
-    /* TODO: Uncomment these when we build in details and nested details into the Project's
-       form.
-       await syncDetails(tx, { project, details, user });
-       await syncNestedDetails(tx, { project, nestedDetails, user }); */
+    if (nestedDetails) {
+      await syncNestedDetails(tx, { project, nestedDetails, user });
+    }
+    if (details) {
+      await syncDetails(tx, { project, details, user });
+    }
 
     revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");
