@@ -3,12 +3,7 @@ import { forwardRef, type ReactNode } from "react";
 import { type Optional } from "utility-types";
 
 import { capitalize } from "~/lib/formatters";
-import {
-  type DynamicIconProp,
-  type IconProp,
-  type IconElement,
-  isDynamicIconProp,
-} from "~/components/icons";
+import { type DynamicIconProp, type IconProp, type IconElement } from "~/components/icons";
 import { isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import Spinner from "~/components/icons/Spinner";
@@ -54,7 +49,7 @@ const LocalIconButton = forwardRef(
         <div className="button__content">
           {children ? (
             <WithLoading isLoading={isLoading}>{children}</WithLoading>
-          ) : isIconProp(icon) || isDynamicIconProp(icon) ? (
+          ) : isIconProp(icon) ? (
             <Icon
               icon={icon}
               isLoading={isLoading}

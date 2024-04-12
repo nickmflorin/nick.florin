@@ -4,9 +4,7 @@ import clsx from "clsx";
 
 import {
   isIconProp,
-  isDynamicIconProp,
   type IconProp,
-  type DynamicIconProp,
   type MultipleIconProp,
   parseMultipleIconsProp,
 } from "~/components/icons";
@@ -60,7 +58,7 @@ const ContentIcon = ({
   loadingLocation,
   location,
 }: {
-  readonly icon: IconProp | DynamicIconProp;
+  readonly icon: IconProp;
   readonly iconSize?: types.ButtonIconSize;
   readonly isLoading: boolean;
   readonly loadingLocation: types.ButtonLoadingLocation;
@@ -108,7 +106,7 @@ export const ButtonContent = ({
       className={clsx("button__content", props.className)}
       style={{ ...props.style, gap: gap !== undefined ? sizeToString(gap) : undefined }}
     >
-      {leftIcon && (isIconProp(leftIcon) || isDynamicIconProp(leftIcon)) ? (
+      {leftIcon && isIconProp(leftIcon) ? (
         <ContentIcon
           icon={leftIcon}
           isLoading={isLoading}
@@ -132,7 +130,7 @@ export const ButtonContent = ({
         isLoading={isLoading && loadingLocation === "over"}
         className="absolute mx-auto"
       />
-      {rightIcon && (isIconProp(rightIcon) || isDynamicIconProp(rightIcon)) ? (
+      {rightIcon && isIconProp(rightIcon) ? (
         <ContentIcon
           icon={rightIcon}
           isLoading={isLoading}

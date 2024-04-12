@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React from "react";
 
 import clsx from "clsx";
@@ -18,29 +17,9 @@ export interface BadgeProps
     ExtendingTypographyProps,
     Pick<HTMLElementProps<"div">, "onClick"> {
   readonly children: string;
-  readonly icon?: IconProp | `/${string}.svg` | null;
+  readonly icon?: IconProp | null;
   readonly iconClassName?: ComponentProps["className"];
 }
-
-const IconOrLocalImage = ({
-  icon,
-  iconClassName,
-}: Pick<BadgeProps, "icon" | "iconClassName">): JSX.Element => {
-  if (typeof icon === "string") {
-    return (
-      <Image
-        className={clsx("badge__icon", iconClassName)}
-        src={icon}
-        height={16}
-        width={16}
-        alt="Test"
-      />
-    );
-  } else if (icon) {
-    return <Icon className={clsx("badge__icon", iconClassName)} icon={icon} />;
-  }
-  return <></>;
-};
 
 export const Badge = ({
   children,
@@ -57,16 +36,14 @@ export const Badge = ({
     className={clsx(
       "badge",
       `badge--size-${fontSize}`,
-      {
-        "pointer-events-auto cursor-pointer": props.onClick !== undefined,
-      },
+      { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
       // Omit the font size prop because it is handled by the badge size.
       getTypographyClassName({ fontWeight, transform, fontFamily }),
       props.className,
     )}
   >
     <div className="badge__content">
-      <IconOrLocalImage icon={icon} iconClassName={iconClassName} />
+      {icon && <Icon className={clsx("badge__icon", iconClassName)} icon={icon} />}
       <div className="badge__text">{children}</div>
     </div>
   </div>

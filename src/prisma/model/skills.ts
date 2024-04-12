@@ -13,9 +13,9 @@ import { type ConditionallyInclude } from "./inclusion";
 import { type ApiEducation, type ApiExperience } from ".";
 
 export const ProgrammingLanguages = {
-  [ProgrammingLanguage.BASH]: { label: "Bash", icon: null },
-  [ProgrammingLanguage.CPLUSPLUS]: { label: "C++", icon: null },
-  [ProgrammingLanguage.CSS]: { label: "CSS", icon: null },
+  [ProgrammingLanguage.BASH]: { label: "Bash", icon: "/programming-languages/bash.svg" },
+  [ProgrammingLanguage.CPLUSPLUS]: { label: "C++", icon: "/programming-languages/cplusplus.svg" },
+  [ProgrammingLanguage.CSS]: { label: "CSS", icon: "/programming-languages/css.svg" },
   [ProgrammingLanguage.PYTHON]: {
     label: "Python",
     icon: "/programming-languages/python.svg",
@@ -29,11 +29,11 @@ export const ProgrammingLanguages = {
     label: "TypeScript",
     icon: "/programming-languages/typescript.svg",
   },
-  [ProgrammingLanguage.JQUERY]: { label: "jQuery", icon: null },
-  [ProgrammingLanguage.SWIFT]: { label: "Swift", icon: null },
-  [ProgrammingLanguage.MATLAB]: { label: "Matlab", icon: null },
-  [ProgrammingLanguage.HTML]: { label: "HTML", icon: null },
-  [ProgrammingLanguage.R]: { label: "R", icon: null },
+  [ProgrammingLanguage.JQUERY]: { label: "jQuery", icon: "/programming-languages/jquery.svg" },
+  [ProgrammingLanguage.SWIFT]: { label: "Swift", icon: "/programming-languages/swift.svg" },
+  [ProgrammingLanguage.MATLAB]: { label: "Matlab", icon: "/programming-languages/matlab.svg" },
+  [ProgrammingLanguage.HTML]: { label: "HTML", icon: "/programming-languages/html.svg" },
+  [ProgrammingLanguage.R]: { label: "R", icon: "/programming-languages/r.svg" },
 } satisfies {
   [key in ProgrammingLanguage]: {
     label: string;

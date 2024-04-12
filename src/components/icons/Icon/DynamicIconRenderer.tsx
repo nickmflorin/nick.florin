@@ -12,12 +12,7 @@ import { Icon } from ".";
 
 export interface DynamicIconRendererProps extends BasicIconProps<DynamicIconProp> {}
 
-export const DynamicIconRenderer = ({
-  icon,
-  iconStyle,
-  family,
-  ...props
-}: DynamicIconRendererProps) => {
+export const DynamicIconRenderer = ({ icon, ...props }: DynamicIconRendererProps) => {
   const [icons, setIcons] = useState<DynamicIcon[] | null>(null);
 
   useEffect(() => {
@@ -68,8 +63,6 @@ export const DynamicIconRenderer = ({
         // Omit the hidden flag - it is encompassed in the isVisible flag.
         const ps = {
           ...props,
-          iconStyle,
-          family,
           icon: i.icon,
         } as IconProps;
         // There should only be one visible icon at a time, due to the checks in the effect.

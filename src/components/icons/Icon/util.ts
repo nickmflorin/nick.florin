@@ -16,6 +16,7 @@ import {
   IconDimensions,
   IconFits,
   type ChildrenIconProps,
+  type FontAwesomeIconProp,
   type BasicIconProps,
 } from "../types";
 
@@ -41,13 +42,13 @@ const getIconStyleClassName = (iconStyle: IconStyle = DEFAULT_ICON_STYLE) =>
  * class name for the <i> element, based on the provided icon information, so that the class names
  * defined in the stylesheets loaded from the CDN can properly render the icon.
  *
- * @param {IconProp} icon
+ * @param {FontAwesomeIconProp} icon
  *   The properties of the icon to be rendered.  This includes the icon's name, {@link IconName},
  *   and optionally the icon's style, {@link IconStyle} and family, {@link IconFamily}.
  *
  * @returns {string}
  */
-export const getNativeIconClassName = ({ family, iconStyle, name }: IconProp): string =>
+export const getNativeIconClassName = ({ family, iconStyle, name }: FontAwesomeIconProp): string =>
   clsx(
     getIconFamilyClassName(family),
     getIconStyleClassName(iconStyle),
@@ -110,5 +111,5 @@ export const getIconClassName = ({
   icon,
   ...rest
 }: Pick<BasicIconProps<IconProp>, "className" | DynamicIconClassNamePropName> & {
-  icon: IconProp;
+  icon: FontAwesomeIconProp;
 }): string => clsx(getNativeIconClassName(icon), getInternalIconClassName(rest));

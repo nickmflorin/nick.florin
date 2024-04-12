@@ -1,13 +1,15 @@
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import React from "react";
 
+import clsx from "clsx";
 import pick from "lodash.pick";
 
 import { Spinner } from "../Spinner";
-import { type IconProp, type DynamicIconProp, type IconProps } from "../types";
+import { type IconProp, type DynamicIconProp, type IconProps, isSvgIconProp } from "../types";
 
 import { NativeIcon } from "./NativeIcon";
-import { getIconClassName, getInternalIconClassName } from "./util";
+import { getIconClassName, getInternalIconClassName, getNativeIconStyle } from "./util";
 
 const DynamicIconRenderer = dynamic(() => import("./DynamicIconRenderer"));
 
@@ -54,13 +56,28 @@ export const Icon = ({
     return <Spinner isLoading {...pick(props, ["className", "style", "size"])} />;
   }
   const isVisible = hidden !== true && visible !== false;
+
   /* In the case that the 'icon' is explicitly provided, or the 'name' is explicitly provided, the
      icon being rendered is a Font Awesome icon (and not an internal SVG component). */
   if (icon !== undefined || name !== undefined) {
     /* If the icon is dynamic, it will not be included in the component's props as explicit parts
        (i.e. there will be an 'icon' prop, not 'name', 'family', and 'iconStyle' props). */
     if (icon !== undefined && iconIsDynamic(icon)) {
-      return <DynamicIconRenderer icon={icon} iconStyle={iconStyle} family={family} {...props} />;
+      return <DynamicIconRenderer icon={icon} {...props} />;
+    } else if (isSvgIconProp(icon)) {
+      if (!isVisible) {
+        return <></>;
+      }
+      return (
+        <Image
+          className={clsx("icon", props.className)}
+          style={{ ...props.style, ...getNativeIconStyle(props) }}
+          src={icon}
+          height={typeof props.size === "number" ? props.size : 16}
+          width={typeof props.size === "number" ? props.size : 16}
+          alt="Icon"
+        />
+      );
     }
     const ic = icon ?? { name, iconStyle, family };
     return (

@@ -51,26 +51,32 @@ export const IconStyleClassNameMap: { [key in IconStyle]: string } = {
   brands: "fa-brands",
 };
 
-/**
- * Defines the way that an "Icon" can be specified in the props for components in the application.
- */
-export type IconProp = {
+export type FontAwesomeIconProp = {
   readonly name: IconName;
   readonly family?: IconFamily;
   readonly iconStyle?: IconStyle;
 };
 
-export const IconPropSchema = z.object({
+export const FontAwesomeIconPropSchema = z.object({
   name: z.string(),
   family: z.nativeEnum(IconFamilies).optional(),
   iconStyle: z.nativeEnum(IconStyles).optional(),
 });
 
-export const isIconProp = (value: unknown): value is IconProp =>
-  IconPropSchema.safeParse(value).success;
+export const isFontAwesomeIconProp = (value: unknown): value is FontAwesomeIconProp =>
+  FontAwesomeIconPropSchema.safeParse(value).success;
+
+export type SvgIconProp = `/${string}.svg`;
+
+const SvgIconPropSchema = z.custom<SvgIconProp>(
+  val => typeof val === "string" && val.startsWith("/") && val.endsWith(".svg"),
+);
+
+export const isSvgIconProp = (value: unknown): value is SvgIconProp =>
+  SvgIconPropSchema.safeParse(value).success;
 
 export type DynamicIcon = {
-  readonly icon: IconProp;
+  readonly icon: FontAwesomeIconProp;
   readonly visible: boolean;
 };
 
@@ -182,7 +188,7 @@ export type DynamicIconProp = DynamicIcon[];
 
 export const DynamicIconPropSchema = z.array(
   z.object({
-    icon: IconPropSchema,
+    icon: FontAwesomeIconPropSchema,
     visible: z.boolean(),
   }),
 );
@@ -190,7 +196,21 @@ export const DynamicIconPropSchema = z.array(
 export const isDynamicIconProp = (value: unknown): value is DynamicIconProp =>
   DynamicIconPropSchema.safeParse(value).success;
 
-type _BaseIconProps = ComponentProps & {
+export const IconPropSchema = z.union([
+  FontAwesomeIconPropSchema,
+  DynamicIconPropSchema,
+  SvgIconPropSchema,
+]);
+
+export const isIconProp = (value: unknown): value is IconProp =>
+  IconPropSchema.safeParse(value).success;
+
+/**
+ * Defines the way that an "Icon" can be specified in the props for components in the application.
+ */
+export type IconProp = DynamicIconProp | FontAwesomeIconProp | SvgIconProp;
+
+type BaseIconProps = ComponentProps & {
   /**
    * Whether or not the Icon should be rendered as a "loading" spinner.  Useful in cases where a
    * component contains an Icon but needs to replace it with a loading indicator when in a loading
@@ -206,7 +226,6 @@ type _BaseIconProps = ComponentProps & {
    * Default: "square"
    */
   readonly fit?: IconFit;
-  readonly size?: IconSize;
   /**
    * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
    * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.
@@ -214,50 +233,61 @@ type _BaseIconProps = ComponentProps & {
    * Default: "height";
    */
   readonly dimension?: IconDimension;
+};
+
+type IfDynamic<T, I extends IconProp, R = never> = I extends DynamicIconProp ? T : R;
+type IfSvg<T, I extends IconProp, R = never> = I extends SvgIconProp ? T : R;
+
+export type BasicIconProps<I extends IconProp = FontAwesomeIconProp> = BaseIconProps & {
+  [key in keyof FontAwesomeIconProp]?: never;
+} & {
+  readonly icon: I;
+  readonly children?: never;
+  readonly size?: IfSvg<number, I, IconSize>;
   /**
    * Used to control dynamically rendered icons.
    *
    * @see DynamicIconProp;
    */
-  readonly visible?: boolean;
-  readonly hidden?: boolean;
-  readonly isDisabled?: boolean;
+  readonly visible?: IfDynamic<never, I, boolean>;
+  readonly hidden?: IfDynamic<never, I, boolean>;
+  readonly isDisabled?: IfSvg<never, I, boolean>;
 };
 
-export type BasicIconProps<I extends IconProp | DynamicIconProp = IconProp> = _BaseIconProps & {
-  [key in keyof IconProp]?: never;
-} & {
-  readonly icon: I;
-  readonly children?: never;
-};
-
-export type EmbeddedIconProps = _BaseIconProps &
-  IconProp & {
+export type EmbeddedIconProps = BaseIconProps &
+  FontAwesomeIconProp & {
+    readonly size?: IconSize;
     readonly icon?: never;
     readonly children?: never;
+    readonly hidden?: boolean;
+    readonly visible?: boolean;
+    readonly isDisabled?: boolean;
   };
 
-export type ChildrenIconProps = _BaseIconProps & {
-  [key in keyof IconProp]?: never;
+export type ChildrenIconProps = BaseIconProps & {
+  [key in keyof FontAwesomeIconProp]?: never;
 } & {
+  readonly size?: IconSize;
   readonly icon?: never;
   /* If the icon is an SVG, instead of a Font Awesome configured icon, it can be passed to the
-       component as a child. */
+     component as a child. */
   readonly children: JSX.Element;
+  readonly hidden?: boolean;
+  readonly visible?: boolean;
+  readonly isDisabled?: never;
 };
 
-export type SpinnerProps = Omit<BasicIconProps, keyof IconProp | "spin" | "icon" | "fit">;
+export type SpinnerProps = Omit<
+  BasicIconProps<FontAwesomeIconProp>,
+  "spin" | "icon" | "fit" | "isDisabled" | "visible" | "hidden"
+>;
 
 export type IconProps =
   | EmbeddedIconProps
   | ChildrenIconProps
+  | BasicIconProps<SvgIconProp>
   | BasicIconProps<IconProp>
   | BasicIconProps<DynamicIconProp>;
-
-export const isBasicIconProps = (
-  params: IconProps,
-): params is BasicIconProps<IconProp> | BasicIconProps<DynamicIconProp> =>
-  (params as BasicIconProps<IconProp> | BasicIconProps<DynamicIconProp>).icon !== undefined;
 
 export type IconElement = React.ReactElement<IconProps>;
 
