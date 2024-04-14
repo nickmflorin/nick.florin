@@ -6,8 +6,8 @@ import { type getEducations } from "~/actions/fetches/educations";
 import { type getExperiences } from "~/actions/fetches/experiences";
 import { type IconProp } from "~/components/icons";
 
-import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "./core";
 import { type ApiCourse } from "./course";
+import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "./generated";
 import { type ConditionallyInclude } from "./inclusion";
 
 import { type ApiEducation, type ApiExperience } from ".";

@@ -1,7 +1,5 @@
 "use client";
-import clsx from "clsx";
-
-import { Button } from "~/components/buttons";
+import { TabButton } from "~/components/buttons/TabButton";
 import { useNavigatable } from "~/hooks";
 
 import { type TabItem } from "./types";
@@ -13,27 +11,16 @@ export interface TabProps {
 export const Tab = ({ item }: TabProps) => {
   const { isActive, isPending, setActiveOptimistically, href } = useNavigatable({ item });
   return (
-    <Button.Bare
+    <TabButton
       href={href}
       options={{ as: "link" }}
-      className={clsx(
-        "rounded-none rounded-t-md relative top-[2px]",
-        "border-b-[2px] text-gray-800",
-        "hover:bg-neutral-100",
-        {
-          "border-transparent hover:border-gray-300": !(isActive || isPending),
-          "border-blue-700": isActive || isPending,
-        },
-      )}
-      fontWeight="regular"
-      size="medium"
       icon={item.icon}
-      isLoading={isPending}
-      isLocked={isActive}
+      isPending={isPending}
+      isActive={isActive}
       onClick={() => setActiveOptimistically()}
     >
       {item.label}
-    </Button.Bare>
+    </TabButton>
   );
 };
 

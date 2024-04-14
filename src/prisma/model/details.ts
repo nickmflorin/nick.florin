@@ -1,6 +1,6 @@
 import type { BrandNestedDetail, BrandDetail, BrandEducation, BrandExperience } from "./brand";
 
-import { type DetailEntityType } from "./core";
+import { type DetailEntityType } from "./generated";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiProject } from "./project";
 import { type ApiSkill } from "./skills";

@@ -2,13 +2,19 @@ import clsx from "clsx";
 
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import { type ComponentProps, withoutOverridingClassName } from "~/components/types";
+import {
+  type ComponentProps,
+  withoutOverridingClassName,
+  type Size,
+  sizeToString,
+} from "~/components/types";
 
 import { Text, type TextProps } from "../typography/Text";
 
-export interface TagProps extends Omit<TextProps, "fontWeight"> {
+export interface TagProps extends TextProps {
   readonly textClassName?: ComponentProps["className"];
   readonly icon: IconProp;
+  readonly gap?: Size;
 }
 
 export const Tag = ({
@@ -16,13 +22,18 @@ export const Tag = ({
   textClassName,
   size = "sm",
   className,
+  gap = "4px",
   style,
   children,
   ...props
 }: TagProps): JSX.Element => (
-  <div style={style} className={clsx("flex flex-row items-center gap-[4px]", className)}>
+  <div
+    className={clsx("flex flex-row items-center", className)}
+    style={{ ...style, gap: sizeToString(gap) }}
+  >
     <Icon icon={icon} size="15px" className="text-label" />
     <Text
+      fontWeight="medium"
       {...props}
       size={size}
       className={clsx(
@@ -30,7 +41,6 @@ export const Tag = ({
         withoutOverridingClassName("leading-[16px]", textClassName),
         textClassName,
       )}
-      fontWeight="medium"
     >
       {children}
     </Text>

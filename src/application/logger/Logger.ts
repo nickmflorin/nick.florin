@@ -18,14 +18,14 @@ type NotSet = typeof __NOT_SET__;
 export class Logger {
   private readonly instance: string;
   private _pino: pino.Logger | null = null;
-  private _prettyStream: DestinationStream | NotSet | null = null;
+  private _prettyStream: DestinationStream | NotSet | null = __NOT_SET__;
   private _logflareStream:
     | {
         stream: DestinationStream;
         send: (level: number | Level, logEvent: LogEvent) => void;
       }
     | NotSet
-    | null = null;
+    | null = __NOT_SET__;
 
   constructor() {
     this.instance = uuid();

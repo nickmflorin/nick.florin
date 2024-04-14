@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Resume" ADD COLUMN     "size" BIGINT NOT NULL DEFAULT 0;

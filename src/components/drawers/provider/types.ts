@@ -29,6 +29,7 @@ export const DrawerIds = enumeratedLiterals(
     "update-project",
     "update-course",
     "create-course",
+    "view-resumes",
   ] as const,
   {},
 );
@@ -59,6 +60,7 @@ export type DrawerProps<D extends DrawerId> = {
   "create-company": {};
   "create-project": {};
   "create-course": {};
+  "view-resumes": {};
   /* eslint-enable @typescript-eslint/ban-types */
 }[D];
 

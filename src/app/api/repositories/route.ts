@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { getAuthUserFromRequest } from "~/application/auth";
 import { type RepositoryIncludes } from "~/prisma/model";
-import { getRepositorys } from "~/actions/fetches/repositories";
+import { getRespositories } from "~/actions/fetches/repositories";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 import { parseInclusion, parseVisibility } from "~/api/query";
 
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       return ApiClientGlobalError.Forbidden().response;
     }
   }
-  const repositories = await getRepositorys({
+  const repositories = await getRespositories({
     includes: parseInclusion(request, ["projects", "skills"] as const) as RepositoryIncludes,
     visibility,
   });

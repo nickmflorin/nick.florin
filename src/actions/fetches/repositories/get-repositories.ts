@@ -46,10 +46,10 @@ export const getRepositorysCount = cache(
 export const preloadRepositorys = <I extends RepositoryIncludes>(
   params: GetRepositorysParams<I>,
 ) => {
-  void getRepositorys(params);
+  void getRespositories(params);
 };
 
-export const getRepositorys = cache(
+export const getRespositories = cache(
   async <I extends RepositoryIncludes>({
     includes,
     page,

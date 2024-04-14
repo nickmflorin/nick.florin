@@ -1,7 +1,7 @@
 import { type BrandModel } from "./brand";
-import { Degree } from "./core";
 import { type ApiCourse } from "./course";
 import { type ApiDetail } from "./details";
+import { Degree } from "./generated";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
 

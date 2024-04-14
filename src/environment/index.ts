@@ -38,6 +38,7 @@ export const environment = Environment.create(
       APP_NAME_FORMAL: process.env.APP_NAME_FORMAL,
       FONT_AWESOME_KIT_TOKEN: process.env.FONT_AWESOME_KIT_TOKEN,
       SITE_URL: process.env.SITE_URL,
+      BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
       /* ---------------------------- Client Environment Variables ---------------------------- */
       NEXT_PUBLIC_PRETTY_LOGGING: process.env.NEXT_PUBLIC_PRETTY_LOGGING,
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
@@ -63,6 +64,7 @@ export const environment = Environment.create(
       APP_NAME_FORMAL: z.string(),
       NODE_ENV: z.enum(["development", "test", "production"]),
       VERCEL_ENV: z.enum(["development", "production", "preview"]),
+      BLOB_READ_WRITE_TOKEN: z.string(),
       SITE_URL: z.string().url(),
       ANALYZE_BUNDLE: StringBooleanFlagSchema.optional(),
       CLERK_SECRET_KEY: environmentLookup<z.ZodString | z.ZodOptional<z.ZodLiteral<"">>>({

@@ -1,3 +1,4 @@
+import { ResumesAdminTab } from "~/components/layout/ResumesAdminTab";
 import { Tabs } from "~/components/layout/Tabs";
 
 interface AdminLayoutProps {
@@ -40,7 +41,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
             active: { leadingPath: "/admin/courses" },
           },
         ]}
-      />
+      >
+        <ResumesAdminTab />
+      </Tabs>
       <div className="grow max-h-full h-full overflow-hidden flex flex-col">{children}</div>
     </div>
   );

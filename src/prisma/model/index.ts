@@ -1,4 +1,4 @@
-export * from "./core";
+export * from "./generated";
 export * from "./company";
 export * from "./course";
 export * from "./details";

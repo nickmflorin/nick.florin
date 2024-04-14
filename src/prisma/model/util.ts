@@ -1,4 +1,4 @@
-import { Prisma } from "./core";
+import { Prisma } from "./generated";
 
 export const getModel = (name: Prisma.ModelName): Prisma.DMMF.Model => {
   const model = Prisma.dmmf.datamodel.models.find(m => m.name === name);

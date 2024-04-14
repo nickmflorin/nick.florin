@@ -9,7 +9,8 @@ import {
   type Skill,
   type Course,
   type Repository,
-} from "./core";
+  type Resume,
+} from "./generated";
 
 export type ToBrandedModel<M, T extends string> = M & {
   readonly $kind: T;
@@ -26,6 +27,7 @@ export type Brands = {
   skill: Skill;
   repository: Repository;
   course: Course;
+  resume: Resume;
 };
 
 export type BrandedModels = { [key in keyof Brands]: ToBrandedModel<Brands[key], key> };
@@ -45,3 +47,4 @@ export type BrandProject = BrandModel<"project">;
 export type BrandSkill = BrandModel<"skill">;
 export type BrandRepository = BrandModel<"repository">;
 export type BrandCourse = BrandModel<"course">;
+export type BrandResume = BrandModel<"resume">;

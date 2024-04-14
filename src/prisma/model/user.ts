@@ -4,7 +4,7 @@ import { humanizeList } from "~/lib/formatters";
 
 import { prisma } from "../client";
 
-import { type User } from "./core";
+import { type User } from "./generated";
 
 type RequiredClerkField = "emailAddress" | "firstName" | "lastName";
 type ClerkField = RequiredClerkField | "imageUrl";

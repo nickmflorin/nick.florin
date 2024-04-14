@@ -10,15 +10,22 @@ const Tab = dynamic(() => import("./Tab"));
 
 export interface TabsProps extends ComponentProps {
   readonly items: TabItem[];
+  readonly children?: JSX.Element | JSX.Element[];
 }
 
-export const Tabs = ({ items, ...props }: TabsProps) => (
+export const Tabs = ({ items, children, ...props }: TabsProps) => (
   <div
     {...props}
-    className={clsx("flex flex-row items-center border-b-[2px] border-gray-200", props.className)}
+    className={clsx(
+      "flex flex-row items-center justify-between border-b-[2px] border-gray-200",
+      props.className,
+    )}
   >
-    {items.map((item, index) => (
-      <Tab key={index} item={item} />
-    ))}
+    <div className="flex flex-row items-center">
+      {items.map((item, index) => (
+        <Tab key={index} item={item} />
+      ))}
+    </div>
+    {children}
   </div>
 );
