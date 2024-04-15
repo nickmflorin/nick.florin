@@ -6,7 +6,12 @@ import { DrawerHeader } from "~/components/drawers/DrawerHeader";
 import { ManagedResumeUploads } from "~/components/uploads/ManagedResumeUploads";
 import { useResumes } from "~/hooks";
 
-export const ResumeDrawer = (): JSX.Element => {
+import { type ExtendingDrawerProps } from "../provider";
+
+export interface ResumeDrawerProps extends ExtendingDrawerProps {}
+
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+export const ResumeDrawer = (props: ResumeDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useResumes({ keepPreviousData: true });
 
   return (
