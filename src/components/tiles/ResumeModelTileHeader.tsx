@@ -28,17 +28,17 @@ const LinkFontSizes: { [key in HeaderSize]: FontSize } = {
   large: "md",
 };
 
-export interface ResumeTileHeaderProps<M extends BrandModel<T>, T extends ResumeBrand>
+export interface ResumeModelTileHeaderProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends ComponentProps {
   readonly size: HeaderSize;
   readonly model: M;
 }
 
-export const ResumeTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>({
+export const ResumeModelTileHeader = <M extends BrandModel<T>, T extends ResumeBrand>({
   size,
   model,
   ...props
-}: ResumeTileHeaderProps<M, T>) => (
+}: ResumeModelTileHeaderProps<M, T>) => (
   <div {...props} className={clsx("flex flex-row gap-[12px] max-w-full w-full", props.className)}>
     <ResumeModelImage model={model} size={ImageSizes[size]} />
     <div className="flex flex-col gap-[8px]">

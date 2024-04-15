@@ -1,9 +1,11 @@
 import { DateTime } from "luxon";
 
+import { TimeDisplay } from "~/components/typography/TimeDisplay";
+
 import { Tag, type TagProps } from "./Tag";
 
 export interface DateTimeTagProps extends Omit<TagProps, "children" | "icon"> {
-  readonly date: Date;
+  readonly date: Date | string;
   readonly prefix?: string;
   readonly format?: Intl.DateTimeFormatOptions;
 }
@@ -15,8 +17,6 @@ export const DateTimeTag = ({
   ...props
 }: DateTimeTagProps): JSX.Element => (
   <Tag {...props} icon={{ name: "calendar" }}>
-    {prefix
-      ? `${prefix} ${DateTime.fromJSDate(date).toLocaleString(format)}`
-      : DateTime.fromJSDate(date).toLocaleString(format)}
+    <TimeDisplay date={date} prefix={prefix} format={format} />
   </Tag>
 );

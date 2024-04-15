@@ -23,7 +23,7 @@ const Div = (
   props: Omit<HTMLElementProps<"div">, keyof ComponentProps> & ComponentProps,
 ): JSX.Element => <div {...props} className={clsx(props.className)} />;
 
-export const Text = ({
+const LocalText = ({
   children,
   style,
   span,
@@ -53,3 +53,5 @@ export const Text = ({
     </Component>
   );
 };
+
+export const Text = Object.assign(LocalText, { displayName: "Text" });

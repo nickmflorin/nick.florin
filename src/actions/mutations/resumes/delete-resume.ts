@@ -1,15 +1,18 @@
 "use server";
+import { revalidatePath } from "next/cache";
+
 import { del } from "@vercel/blob";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import type { BrandResume } from "~/prisma/model";
+import { type ApiResume, type BrandResume } from "~/prisma/model";
+import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError } from "~/api";
 
-export const deleteResume = async (id: string): Promise<void> => {
+export const deleteResume = async (id: string): Promise<ApiResume<["primary"]>[]> => {
   await getAuthAdminUser({ strict: true });
 
-  await prisma.$transaction(async tx => {
+  return await prisma.$transaction(async tx => {
     let resume: BrandResume;
     try {
       resume = await tx.resume.findUniqueOrThrow({ where: { id } });
@@ -22,5 +25,8 @@ export const deleteResume = async (id: string): Promise<void> => {
 
     await tx.resume.delete({ where: { id: resume.id } });
     await del(resume.url);
+
+    revalidatePath("/api/resumes");
+    return getResumes(tx);
   });
 };

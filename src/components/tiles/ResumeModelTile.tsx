@@ -8,7 +8,7 @@ import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 
 import { DetailsTile } from "./DetailsTile";
-import { ResumeTileHeader } from "./ResumeTileHeader";
+import { ResumeModelTileHeader } from "./ResumeModelTileHeader";
 
 interface ResumeModelTileSectionProps extends ComponentProps {
   readonly children: JSX.Element;
@@ -34,7 +34,7 @@ export interface ResumeModelTileProps extends ComponentProps {
 
 export const ResumeModelTile = ({ model, ...props }: ResumeModelTileProps): JSX.Element => (
   <div {...props} className={clsx("flex flex-col w-full gap-[10px] max-w-100%", props.className)}>
-    <ResumeTileHeader size="large" model={model} />
+    <ResumeModelTileHeader size="large" model={model} />
     <div className="flex flex-col pl-[84px] gap-[12px]">
       <div className="flex flex-col gap-[10px] max-w-[700px]">
         <Description

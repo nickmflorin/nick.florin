@@ -143,7 +143,7 @@ export class ApiClientGlobalError extends ApiClientError<
     new ApiClientGlobalError({
       extra,
       code: ApiClientErrorCodes.BAD_REQUEST,
-      message: typeof message === "string" ? undefined : message?.public,
+      message: typeof message === "string" ? message : message?.public,
       internalMessage: typeof message === "string" ? message : message?.internal,
     });
 
@@ -154,7 +154,7 @@ export class ApiClientGlobalError extends ApiClientError<
     new ApiClientGlobalError({
       code: ApiClientErrorCodes.NOT_AUTHENTICATED,
       extra,
-      message: typeof message === "string" ? undefined : message?.public,
+      message: typeof message === "string" ? message : message?.public,
       internalMessage: typeof message === "string" ? message : message?.internal,
     });
 
@@ -162,7 +162,7 @@ export class ApiClientGlobalError extends ApiClientError<
     new ApiClientGlobalError({
       code: ApiClientErrorCodes.FORBIDDEN,
       extra,
-      message: typeof message === "string" ? undefined : message?.public,
+      message: typeof message === "string" ? message : message?.public,
       internalMessage: typeof message === "string" ? message : message?.internal,
     });
 
@@ -170,7 +170,7 @@ export class ApiClientGlobalError extends ApiClientError<
     new ApiClientGlobalError({
       code: ApiClientErrorCodes.NOT_FOUND,
       extra,
-      message: typeof message === "string" ? undefined : message?.public,
+      message: typeof message === "string" ? message : message?.public,
       internalMessage: typeof message === "string" ? message : message?.internal,
     });
 

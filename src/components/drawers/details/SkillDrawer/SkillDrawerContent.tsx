@@ -6,7 +6,7 @@ import { SkillCategories } from "~/components/badges/collections/SkillCategories
 import { SkillExperienceBadge } from "~/components/badges/SkillExperienceBadge";
 import { Link } from "~/components/buttons";
 import { RepositoryTile } from "~/components/tiles/RepositoryTile";
-import { ResumeTileHeader } from "~/components/tiles/ResumeTileHeader";
+import { ResumeModelTileHeader } from "~/components/tiles/ResumeModelTileHeader";
 import { Label } from "~/components/typography/Label";
 import { ShowHide } from "~/components/util";
 
@@ -71,12 +71,12 @@ export const SkillDrawerContent = ({
     </DetailDrawerSection>
     <DetailDrawerSection label="Experiences">
       {experiences.map((experience, index) => (
-        <ResumeTileHeader key={index} model={experience} size="small" />
+        <ResumeModelTileHeader key={index} model={experience} size="small" />
       ))}
     </DetailDrawerSection>
     <DetailDrawerSection label="Educations">
       {educations.map((education, index) => (
-        <ResumeTileHeader key={index} model={education} size="small" />
+        <ResumeModelTileHeader key={index} model={education} size="small" />
       ))}
     </DetailDrawerSection>
     {courses.length !== 0 ? (
