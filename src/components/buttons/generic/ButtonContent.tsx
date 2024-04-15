@@ -19,7 +19,7 @@ const toIconSize = (size: types.ButtonIconSize | undefined): Size | undefined =>
      abstract form of the button.  Otherwise, the size has to be provided directly to the Icon
      component, in the case that it is non discrete (e.g. 32px, not "small"). */
   size !== undefined && !types.ButtonDiscreteIconSizes.contains(size)
-    ? sizeToString(size)
+    ? sizeToString(size, "px")
     : undefined;
 
 const Spin = ({
@@ -104,7 +104,7 @@ export const ButtonContent = ({
     <div
       {...props}
       className={clsx("button__content", props.className)}
-      style={{ ...props.style, gap: gap !== undefined ? sizeToString(gap) : undefined }}
+      style={{ ...props.style, gap: gap !== undefined ? sizeToString(gap, "px") : undefined }}
     >
       {leftIcon && isIconProp(leftIcon) ? (
         <ContentIcon

@@ -36,7 +36,7 @@ const LocalActions = ({
   return (
     <div
       className={clsx("flex flex-row items-center h-full [&>*]:max-h-full", props.className)}
-      style={{ ...props.style, gap: sizeToString(gap) }}
+      style={{ ...props.style, gap: sizeToString(gap, "px") }}
     >
       {a.map((ai, index) => (
         <React.Fragment key={index}>

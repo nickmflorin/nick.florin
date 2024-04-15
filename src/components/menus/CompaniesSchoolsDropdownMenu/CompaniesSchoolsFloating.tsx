@@ -34,24 +34,16 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
   children,
   modelType,
 }: CompaniesSchoolsFloatingProps<M>) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   return (
     <>
       <Floating
-        isOpen={isOpen}
         withArrow={false}
-        onOpenChange={v => setIsOpen(v)}
         content={
           <FloatingContent className="p-[0px] rounded-md overflow-hidden" variant="white">
             <MenuContainer className="box-shadow-none">
               {children}
-              <CompaniesSchoolsMenuFooter
-                onCreate={() => {
-                  setIsOpen(false);
-                  setDrawerVisible(true);
-                }}
-              />
+              <CompaniesSchoolsMenuFooter onCreate={() => setDrawerVisible(true)} />
             </MenuContainer>
           </FloatingContent>
         }

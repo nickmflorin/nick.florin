@@ -18,7 +18,7 @@ import { flushSync } from "react-dom";
 
 import type * as types from "./types";
 
-import { type Size } from "~/components/types";
+import { type QuantitativeSize, type Size, sizeToNumber, sizeToString } from "~/components/types";
 
 export interface UseFloatingConfig {
   readonly isOpen?: boolean;
@@ -26,8 +26,8 @@ export interface UseFloatingConfig {
   readonly triggers?: types.FloatingTrigger[];
   readonly offset?: OffsetOptions;
   readonly placement?: Placement;
-  readonly width?: number | "target";
-  readonly maxHeight?: Size;
+  readonly width?: QuantitativeSize<"px"> | "target" | "available";
+  readonly maxHeight?: Size<"px">;
   readonly middleware?: Array<Middleware | null | undefined | false>;
   readonly onOpen?: (e: Event) => void;
   readonly onClose?: (e: Event) => void;
@@ -49,7 +49,9 @@ export const useFloating = ({
   onOpenChange,
 }: UseFloatingConfig) => {
   const [_isOpen, setIsOpen] = useState(false);
-  const [maxHeight, setMaxHeight] = useState<Size | null>(_propMaxHeight ?? null);
+  const [maxHeight, setMaxHeight] = useState<Size<"px"> | null>(
+    _propMaxHeight !== undefined ? sizeToString(_propMaxHeight, "px") : null,
+  );
 
   /* Allow the open state of the floating element to be controlled externally to the component if
      desired. */
@@ -76,15 +78,20 @@ export const useFloating = ({
       }),
       offset ? offsetMiddleware(offset) : undefined,
       size({
-        padding: 10,
-        apply({ availableHeight, rects, elements }) {
+        // padding: 10,
+        apply({ availableHeight, availableWidth, rects, elements }) {
           if (width !== undefined) {
             Object.assign(elements.floating.style, {
-              width: typeof width === "number" ? `${width}px` : `${rects.reference.width}px`,
+              width:
+                width === "target"
+                  ? `${rects.reference.width}px`
+                  : width === "available"
+                    ? sizeToString(availableWidth, "px")
+                    : sizeToString(Math.min(sizeToNumber(width), availableWidth), "px"),
             });
           }
           if (_propMaxHeight === undefined) {
-            flushSync(() => setMaxHeight(`${availableHeight}px`));
+            flushSync(() => setMaxHeight(`${availableHeight - 10}px`));
           }
         },
       }),

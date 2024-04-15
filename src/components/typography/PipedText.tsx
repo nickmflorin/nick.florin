@@ -41,7 +41,7 @@ export const PipedText = ({
   return (
     <div
       className={clsx("flex flex-row items-center", className)}
-      style={{ ...style, gap: sizeToString(gap) }}
+      style={{ ...style, gap: sizeToString(gap, "px") }}
     >
       {filtered.map((child, index) => {
         if (index !== filtered.length - 1) {

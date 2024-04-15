@@ -3,7 +3,7 @@ import { type ReactNode, cloneElement, useMemo } from "react";
 
 import { FloatingPortal } from "@floating-ui/react";
 
-import { type ComponentProps, sizeToString } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
 
 import { Arrow } from "./Arrow";
 import * as types from "./types";
@@ -90,7 +90,10 @@ export const Floating = ({
 
   const content = useMemo(() => {
     const styles = maxHeight
-      ? { ...floatingStyles, maxHeight: sizeToString(maxHeight) }
+      ? {
+          ...floatingStyles,
+          maxHeight: maxHeight ?? undefined,
+        }
       : floatingStyles;
     if (typeof _content === "function") {
       return _content({

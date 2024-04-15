@@ -1,14 +1,18 @@
 @use "partials";
 @use "./typography" as typography;
 
+.floating-content {
+  > .menu {
+    max-height: inherit !important;
+  }
+}
+
 .menu {
   display: flex;
   flex-direction: column;
   gap: theme("spacing.1");
   overflow: hidden;
-  background-color: theme("colors.white");
-  box-shadow: theme("boxShadow.md");
-  border-radius: theme("borderRadius.md");
+  max-height: 100%;
 
   > .menu__content-wrapper {
     display: flex;

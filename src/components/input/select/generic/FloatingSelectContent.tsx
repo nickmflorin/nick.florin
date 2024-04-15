@@ -19,7 +19,7 @@ import {
 import { type ComponentProps } from "~/components/types";
 
 const AbstractMenu = dynamic(() => import("~/components/menus/generic/AbstractMenu"), {
-  loading: () => <Loading isLoading={true} />,
+  loading: () => <Loading isLoading={true} spinnerSize="16px" />,
 }) as AbstractMenuComponent;
 
 export interface FloatingSelectContentProps<M extends MenuModel, O extends MenuOptions<M>>

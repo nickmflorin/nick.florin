@@ -62,7 +62,7 @@ const LocalIconButton = forwardRef(
               size={
                 props.iconSize !== undefined &&
                 !types.ButtonDiscreteIconSizes.contains(props.iconSize)
-                  ? sizeToString(props.iconSize)
+                  ? sizeToString(props.iconSize, "px")
                   : undefined
               }
             />

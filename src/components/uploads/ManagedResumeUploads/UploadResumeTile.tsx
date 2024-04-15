@@ -12,6 +12,8 @@ import { Icon } from "~/components/icons/Icon";
 import * as types from "../types";
 import { UploadTile, type UploadTileProps } from "../UploadTile";
 
+import { UploadResumeTileEllipsisMenu } from "./UploadResumeTileEllipsisMenu";
+
 export interface UploadResumeTileProps
   extends Omit<UploadTileProps<ApiResume<["primary"]>>, "actions"> {}
 
@@ -60,6 +62,9 @@ export const UploadResumeTile = ({ upload, ...props }: UploadResumeTileProps) =>
               }
             }}
           />
+        ) : null,
+        types.isUploadOfState(upload, ["uploaded", "existing"]) ? (
+          <UploadResumeTileEllipsisMenu key="2" />
         ) : null,
       ]}
     />

@@ -90,6 +90,7 @@ const LocalSelect = forwardRef<
       actions,
       placeholder,
       maximumNumBadges,
+      maxHeight,
       initialValue,
       value: _propValue,
       isReady = true,
@@ -128,6 +129,7 @@ const LocalSelect = forwardRef<
             }
           }
         }}
+        maxHeight={maxHeight}
         isReady={isReady}
         isLoading={isLoading}
         menuPlacement={menuPlacement}

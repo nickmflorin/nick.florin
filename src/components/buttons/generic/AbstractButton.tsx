@@ -82,7 +82,7 @@ const getButtonStyle = <T extends types.ButtonType, O extends types.ButtonOption
      individual button component that extends the AbstractButton.  This is because the icon size
      must be provided directly to the Icon component being rendered. */
   !types.ButtonDiscreteIconSizes.contains(props.size) && props.size !== undefined
-    ? { ...props.style, height: sizeToString(props.size) }
+    ? { ...props.style, height: sizeToString(props.size, "px") }
     : props.style;
 
 const INTERNAL_BUTTON_PROPS = [

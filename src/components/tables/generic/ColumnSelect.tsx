@@ -26,10 +26,10 @@ export const ColumnSelect = <T extends TableModel>() => {
       value={visibleColumnIds}
       data={columns.filter(c => c.isHideable !== false)}
       inputClassName="w-[240px]"
-      menuClassName="max-h-[260px]"
-      menuPlacement="bottom-end"
-      menuOffset={{ mainAxis: 4 }}
-      menuWidth={400}
+      // menuPlacement="bottom-end"
+      menuOffset={{ mainAxis: 4, crossAxis: -50 }}
+      menuWidth="available"
+      maxHeight={260}
       onChange={v => setVisibleColumns(v)}
     >
       {({ ref, params, isOpen }) => (

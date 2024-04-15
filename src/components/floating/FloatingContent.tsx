@@ -32,10 +32,19 @@ export const FloatingContent = forwardRef<HTMLDivElement, FloatingContentProps>(
     <div
       {...props}
       ref={ref}
-      className={clsx(types.getFloatingVariantClassName(variant, className), "z-50", {
-        "rounded-sm": !classNameContains(className, v => v.startsWith("rounded-")),
-      })}
-      style={maxHeight ? { ...props.style, maxHeight: sizeToString(maxHeight) } : props.style}
+      className={clsx(
+        /* Note: We need to use the 'floating-content' class so that we can set the 'max-height'
+           of any potentially underlying Menu to the same max height that is set on the outer
+           FloatingContent element. */
+        "floating-content",
+        types.getFloatingVariantClassName(variant, className),
+        "z-50",
+        { "rounded-sm": !classNameContains(className, v => v.startsWith("rounded-")) },
+      )}
+      style={{
+        ...props.style,
+        maxHeight: maxHeight ? sizeToString(maxHeight, "px") : props.style?.maxHeight,
+      }}
     >
       {children}
     </div>

@@ -34,7 +34,7 @@ export const ErrorDetail = ({
   error,
 }: ErrorDetailProps): JSX.Element => (
   <div
-    style={{ ...style, gap: sizeToString(gap) }}
+    style={{ ...style, gap: sizeToString(gap, "px") }}
     className={clsx("flex flex-col justify-center max-w-[90%]", className)}
   >
     <ErrorTitle

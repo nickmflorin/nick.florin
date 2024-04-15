@@ -125,6 +125,10 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
           ),
       );
       return [
+        /* Prepend new models to the state as existing uploads.  We prepend to the beginning because
+           the default ordering is by the created at date of the upload, with newer uploads
+           appearing first. */
+        ...newModels.map((model): types.ExistingUpload<M> => ({ state: "existing", model })),
         ...curr.reduce((prev: types.Upload<M>[], upload: types.Upload<M>): types.Upload<M>[] => {
           /* If the upload is already in the existing state, and there is a corresponding model in
              the new data, simply update the existing upload's model attribute in state.  However,
@@ -146,8 +150,6 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
           // If the upload is not in the existing or uploaded state, simply leave it in state.
           return prev;
         }, []),
-        // Add new models to the state as existing uploads.
-        ...newModels.map((model): types.ExistingUpload<M> => ({ state: "existing", model })),
       ];
     });
   }, []);
