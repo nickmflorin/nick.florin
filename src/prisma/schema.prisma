@@ -138,7 +138,7 @@ model Resume {
   updatedAt   DateTime @updatedAt
   updatedBy   User     @relation("updatedResumes", fields: [updatedById], references: [id])
   updatedById String   @db.Uuid
-  exposed     Boolean  @default(false)
+  primary     Boolean  @default(false)
   downloadUrl String
   url         String
   pathname    String

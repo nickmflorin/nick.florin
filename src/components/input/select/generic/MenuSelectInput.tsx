@@ -11,7 +11,7 @@ import {
   getModelLabel,
   type MenuInitialValue,
   type MenuInitialModelValue,
-  getItemValueLabel,
+  getModelValueLabel,
 } from "~/components/menus";
 
 import { SelectInput, type SelectInputProps } from "./SelectInput";
@@ -78,7 +78,7 @@ export const MenuSelectInput = forwardRef<
       } else if (valueModelRenderer) {
         return valueModelRenderer(_value, { model: _models });
       }
-      const valueLabel = getItemValueLabel(_models, options);
+      const valueLabel = getModelValueLabel(_models, options);
       return valueLabel ?? getModelLabel(_models, options);
     }, [valueRenderer, valueModelRenderer, models, value, options, maximumNumBadges]);
 

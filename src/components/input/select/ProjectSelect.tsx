@@ -5,9 +5,9 @@ import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
   isNullable: true,
-  getItemValue: (m: Project) => m.id,
-  getItemLabel: (m: Project) => m.name,
-  getItemValueLabel: (m: Project) => m.shortName ?? m.name,
+  getModelValue: (m: Project) => m.id,
+  getModelLabel: (m: Project) => m.name,
+  getModelValueLabel: (m: Project) => m.shortName ?? m.name,
 } as const;
 
 export interface ProjectSelectProps<O extends { isMulti?: boolean }>

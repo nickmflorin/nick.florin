@@ -6377,7 +6377,7 @@ export namespace Prisma {
     createdById: string | null
     updatedAt: Date | null
     updatedById: string | null
-    exposed: boolean | null
+    primary: boolean | null
     downloadUrl: string | null
     url: string | null
     pathname: string | null
@@ -6391,7 +6391,7 @@ export namespace Prisma {
     createdById: string | null
     updatedAt: Date | null
     updatedById: string | null
-    exposed: boolean | null
+    primary: boolean | null
     downloadUrl: string | null
     url: string | null
     pathname: string | null
@@ -6405,7 +6405,7 @@ export namespace Prisma {
     createdById: number
     updatedAt: number
     updatedById: number
-    exposed: number
+    primary: number
     downloadUrl: number
     url: number
     pathname: number
@@ -6429,7 +6429,7 @@ export namespace Prisma {
     createdById?: true
     updatedAt?: true
     updatedById?: true
-    exposed?: true
+    primary?: true
     downloadUrl?: true
     url?: true
     pathname?: true
@@ -6443,7 +6443,7 @@ export namespace Prisma {
     createdById?: true
     updatedAt?: true
     updatedById?: true
-    exposed?: true
+    primary?: true
     downloadUrl?: true
     url?: true
     pathname?: true
@@ -6457,7 +6457,7 @@ export namespace Prisma {
     createdById?: true
     updatedAt?: true
     updatedById?: true
-    exposed?: true
+    primary?: true
     downloadUrl?: true
     url?: true
     pathname?: true
@@ -6558,7 +6558,7 @@ export namespace Prisma {
     createdById: string
     updatedAt: Date
     updatedById: string
-    exposed: boolean
+    primary: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -6591,7 +6591,7 @@ export namespace Prisma {
     createdById?: boolean
     updatedAt?: boolean
     updatedById?: boolean
-    exposed?: boolean
+    primary?: boolean
     downloadUrl?: boolean
     url?: boolean
     pathname?: boolean
@@ -6607,7 +6607,7 @@ export namespace Prisma {
     createdById?: boolean
     updatedAt?: boolean
     updatedById?: boolean
-    exposed?: boolean
+    primary?: boolean
     downloadUrl?: boolean
     url?: boolean
     pathname?: boolean
@@ -6633,7 +6633,7 @@ export namespace Prisma {
       createdById: string
       updatedAt: Date
       updatedById: string
-      exposed: boolean
+      primary: boolean
       downloadUrl: string
       url: string
       pathname: string
@@ -7041,7 +7041,7 @@ export namespace Prisma {
     readonly createdById: FieldRef<"Resume", 'String'>
     readonly updatedAt: FieldRef<"Resume", 'DateTime'>
     readonly updatedById: FieldRef<"Resume", 'String'>
-    readonly exposed: FieldRef<"Resume", 'Boolean'>
+    readonly primary: FieldRef<"Resume", 'Boolean'>
     readonly downloadUrl: FieldRef<"Resume", 'String'>
     readonly url: FieldRef<"Resume", 'String'>
     readonly pathname: FieldRef<"Resume", 'String'>
@@ -17035,7 +17035,7 @@ export namespace Prisma {
     createdById: 'createdById',
     updatedAt: 'updatedAt',
     updatedById: 'updatedById',
-    exposed: 'exposed',
+    primary: 'primary',
     downloadUrl: 'downloadUrl',
     url: 'url',
     pathname: 'pathname',
@@ -17745,7 +17745,7 @@ export namespace Prisma {
     createdById?: UuidFilter<"Resume"> | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     updatedById?: UuidFilter<"Resume"> | string
-    exposed?: BoolFilter<"Resume"> | boolean
+    primary?: BoolFilter<"Resume"> | boolean
     downloadUrl?: StringFilter<"Resume"> | string
     url?: StringFilter<"Resume"> | string
     pathname?: StringFilter<"Resume"> | string
@@ -17761,7 +17761,7 @@ export namespace Prisma {
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
-    exposed?: SortOrder
+    primary?: SortOrder
     downloadUrl?: SortOrder
     url?: SortOrder
     pathname?: SortOrder
@@ -17780,7 +17780,7 @@ export namespace Prisma {
     createdById?: UuidFilter<"Resume"> | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     updatedById?: UuidFilter<"Resume"> | string
-    exposed?: BoolFilter<"Resume"> | boolean
+    primary?: BoolFilter<"Resume"> | boolean
     downloadUrl?: StringFilter<"Resume"> | string
     url?: StringFilter<"Resume"> | string
     pathname?: StringFilter<"Resume"> | string
@@ -17796,7 +17796,7 @@ export namespace Prisma {
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
-    exposed?: SortOrder
+    primary?: SortOrder
     downloadUrl?: SortOrder
     url?: SortOrder
     pathname?: SortOrder
@@ -17818,7 +17818,7 @@ export namespace Prisma {
     createdById?: UuidWithAggregatesFilter<"Resume"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
     updatedById?: UuidWithAggregatesFilter<"Resume"> | string
-    exposed?: BoolWithAggregatesFilter<"Resume"> | boolean
+    primary?: BoolWithAggregatesFilter<"Resume"> | boolean
     downloadUrl?: StringWithAggregatesFilter<"Resume"> | string
     url?: StringWithAggregatesFilter<"Resume"> | string
     pathname?: StringWithAggregatesFilter<"Resume"> | string
@@ -19146,7 +19146,7 @@ export namespace Prisma {
     id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -19162,7 +19162,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     updatedById: string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -19174,7 +19174,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -19190,7 +19190,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -19204,7 +19204,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     updatedById: string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -19216,7 +19216,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -19230,7 +19230,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -20732,7 +20732,7 @@ export namespace Prisma {
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
-    exposed?: SortOrder
+    primary?: SortOrder
     downloadUrl?: SortOrder
     url?: SortOrder
     pathname?: SortOrder
@@ -20750,7 +20750,7 @@ export namespace Prisma {
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
-    exposed?: SortOrder
+    primary?: SortOrder
     downloadUrl?: SortOrder
     url?: SortOrder
     pathname?: SortOrder
@@ -20764,7 +20764,7 @@ export namespace Prisma {
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
-    exposed?: SortOrder
+    primary?: SortOrder
     downloadUrl?: SortOrder
     url?: SortOrder
     pathname?: SortOrder
@@ -24933,7 +24933,7 @@ export namespace Prisma {
     id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -24947,7 +24947,7 @@ export namespace Prisma {
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -24969,7 +24969,7 @@ export namespace Prisma {
     id?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -24983,7 +24983,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     updatedById: string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -25579,7 +25579,7 @@ export namespace Prisma {
     createdById?: UuidFilter<"Resume"> | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     updatedById?: UuidFilter<"Resume"> | string
-    exposed?: BoolFilter<"Resume"> | boolean
+    primary?: BoolFilter<"Resume"> | boolean
     downloadUrl?: StringFilter<"Resume"> | string
     url?: StringFilter<"Resume"> | string
     pathname?: StringFilter<"Resume"> | string
@@ -31424,7 +31424,7 @@ export namespace Prisma {
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -31437,7 +31437,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     updatedById: string
-    exposed?: boolean
+    primary?: boolean
     downloadUrl: string
     url: string
     pathname: string
@@ -32479,7 +32479,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -32493,7 +32493,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -32506,7 +32506,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -32518,7 +32518,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -32532,7 +32532,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string
@@ -32545,7 +32545,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
-    exposed?: BoolFieldUpdateOperationsInput | boolean
+    primary?: BoolFieldUpdateOperationsInput | boolean
     downloadUrl?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     pathname?: StringFieldUpdateOperationsInput | string

@@ -20,8 +20,8 @@ export const ColumnSelect = <T extends TableModel>() => {
     <Select
       options={{
         isMulti: true,
-        getItemLabel: (m: Column<T>) => m.title,
-        getItemValue: (m: Column<T>) => getColId(m),
+        getModelLabel: (m: Column<T>) => m.title,
+        getModelValue: (m: Column<T>) => getColId(m),
       }}
       value={visibleColumnIds}
       data={columns.filter(c => c.isHideable !== false)}

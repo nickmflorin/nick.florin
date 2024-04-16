@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
-import type { ApiResume } from "~/prisma/model";
+import type { BrandResume } from "~/prisma/model";
 import { deleteResume } from "~/actions/mutations/resumes";
 import { IconButton } from "~/components/buttons";
 import { Icon } from "~/components/icons/Icon";
@@ -14,8 +14,7 @@ import { UploadTile, type UploadTileProps } from "../UploadTile";
 
 import { UploadResumeTileEllipsisMenu } from "./UploadResumeTileEllipsisMenu";
 
-export interface UploadResumeTileProps
-  extends Omit<UploadTileProps<ApiResume<["primary"]>>, "actions"> {}
+export interface UploadResumeTileProps extends Omit<UploadTileProps<BrandResume>, "actions"> {}
 
 export const UploadResumeTile = ({ upload, ...props }: UploadResumeTileProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -42,7 +41,7 @@ export const UploadResumeTile = ({ upload, ...props }: UploadResumeTileProps) =>
             onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
               setIsDeleting(true);
-              let response: ApiResume<["primary"]>[] | null = null;
+              let response: BrandResume[] | null = null;
               try {
                 response = await deleteResume(upload.model.id);
               } catch (e) {
@@ -64,7 +63,7 @@ export const UploadResumeTile = ({ upload, ...props }: UploadResumeTileProps) =>
           />
         ) : null,
         types.isUploadOfState(upload, ["uploaded", "existing"]) ? (
-          <UploadResumeTileEllipsisMenu key="2" />
+          <UploadResumeTileEllipsisMenu key="2" resume={upload.model} manager={props.manager} />
         ) : null,
       ]}
     />

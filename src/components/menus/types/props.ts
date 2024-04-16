@@ -1,6 +1,7 @@
 import { type ReactNode, type ForwardedRef } from "react";
 
-import { type ComponentProps } from "~/components/types";
+import { type IconSize } from "~/components/icons";
+import { type ComponentProps, type QuantitativeSize } from "~/components/types";
 
 import { type MenuItemFlagProps } from "./flags";
 import { type MenuItemInstance } from "./item";
@@ -29,8 +30,11 @@ export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuO
   readonly id: ModelId<M, O> | undefined;
   readonly model: M;
   readonly options: O;
+  readonly itemHeight?: QuantitativeSize<"px">;
   readonly value: ModelValue<M, O> | ValueNotApplicable;
   readonly menuValue: ModelValue<M, O>[] | ModelValue<M, O> | null | ValueNotApplicable;
+  readonly iconSize?: IconSize;
+  readonly iconClassName?: ComponentProps["className"];
   readonly itemDisabledClassName?:
     | ComponentProps["className"]
     | ((datum: M) => ComponentProps["className"]);

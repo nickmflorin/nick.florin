@@ -10,7 +10,6 @@ export * from "./repository";
 export * from "./school";
 export * from "./skills";
 export * from "./brand";
-export * from "./resume";
 
 import { DateTime } from "luxon";
 

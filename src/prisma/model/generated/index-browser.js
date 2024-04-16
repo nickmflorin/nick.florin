@@ -154,7 +154,7 @@ exports.Prisma.ResumeScalarFieldEnum = {
   createdById: 'createdById',
   updatedAt: 'updatedAt',
   updatedById: 'updatedById',
-  exposed: 'exposed',
+  primary: 'primary',
   downloadUrl: 'downloadUrl',
   url: 'url',
   pathname: 'pathname',

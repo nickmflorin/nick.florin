@@ -6,9 +6,9 @@ import { Select, type SelectProps } from "./generic";
 
 const options = {
   isNullable: false,
-  getItemValue: (m: School) => m.id,
-  getItemLabel: (m: School) => m.name,
-  getItemValueLabel: (m: School) => m.shortName ?? m.name,
+  getModelValue: (m: School) => m.id,
+  getModelLabel: (m: School) => m.name,
+  getModelValueLabel: (m: School) => m.shortName ?? m.name,
 } as const;
 
 export interface SchoolSelectProps

@@ -52,14 +52,20 @@ export const PipedText = ({
               <Text
                 {...props}
                 size={size}
-                className={clsx(withoutOverridingClassName("text-body-light", textClassName))}
+                className={clsx(
+                  withoutOverridingClassName("text-body-light", textClassName),
+                  textClassName,
+                )}
               >
                 {child}
               </Text>
               <Icon
                 name="pipe"
                 size={pipeSize}
-                className={clsx(withoutOverridingClassName("text-gray-800", pipeClassName))}
+                className={clsx(
+                  withoutOverridingClassName("text-gray-800", pipeClassName),
+                  pipeClassName,
+                )}
               />
             </React.Fragment>
           );
@@ -69,7 +75,10 @@ export const PipedText = ({
             {...props}
             key={index}
             size={size}
-            className={clsx(withoutOverridingClassName("text-body-light", textClassName))}
+            className={clsx(
+              withoutOverridingClassName("text-body-light", textClassName),
+              textClassName,
+            )}
           >
             {child}
           </Text>

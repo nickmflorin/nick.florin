@@ -5,11 +5,11 @@ import { del } from "@vercel/blob";
 
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type ApiResume, type BrandResume } from "~/prisma/model";
+import { type BrandResume } from "~/prisma/model";
 import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError } from "~/api";
 
-export const deleteResume = async (id: string): Promise<ApiResume<["primary"]>[]> => {
+export const deleteResume = async (id: string): Promise<BrandResume[]> => {
   await getAuthAdminUser({ strict: true });
 
   return await prisma.$transaction(async tx => {
@@ -27,6 +27,8 @@ export const deleteResume = async (id: string): Promise<ApiResume<["primary"]>[]
     await del(resume.url);
 
     revalidatePath("/api/resumes");
+    /* Deleting a resume can cause the prioritization flag to switch if there were multiple resumes
+       with 'primary' set to 'true'. */
     return getResumes(tx);
   });
 };

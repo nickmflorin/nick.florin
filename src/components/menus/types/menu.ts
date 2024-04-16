@@ -1,4 +1,4 @@
-import { type ModelValue, modelHasParam, type MenuModel } from "./model";
+import { type ModelValue, type MenuModel } from "./model";
 import { type MenuOptions } from "./options";
 
 export type MenuInitialValue<M extends MenuModel, O extends MenuOptions<M>> = O extends {
@@ -49,7 +49,7 @@ export type MenuIsValued<M extends MenuModel, O extends MenuOptions<M>> = M exte
   ? V extends null | undefined
     ? never
     : true
-  : O extends { readonly getItemValue: (m: M) => infer V }
+  : O extends { readonly getModelValue: (m: M) => infer V }
     ? V extends null | undefined
       ? never
       : true
@@ -66,7 +66,7 @@ export const menuIsValued = <M extends MenuModel, O extends MenuOptions<M>>(
   data: M[],
   options: O,
 ): MenuIsValued<M, O> =>
-  (data.some(m => modelHasParam(m, "value")) || options.getItemValue !== undefined) as MenuIsValued<
+  (data.some(m => m.value !== undefined) || options.getModelValue !== undefined) as MenuIsValued<
     M,
     O
   >;

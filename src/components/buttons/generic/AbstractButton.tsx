@@ -5,7 +5,7 @@ import clsx from "clsx";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 
-import { sizeToString } from "~/components/types";
+import { sizeToString, mergeIntoClassNames } from "~/components/types";
 import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
 
 import * as types from "../types";
@@ -72,7 +72,12 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
               : undefined,
         } as BaseTypographyProps)
       : "",
-    props.className,
+    mergeIntoClassNames(props.className, {
+      [clsx(props.lockedClassName)]: props.isLocked,
+      [clsx(props.loadingClassName)]: props.isLoading,
+      [clsx(props.disabledClassName)]: props.isDisabled,
+      [clsx(props.activeClassName)]: props.isActive,
+    }),
   );
 
 const getButtonStyle = <T extends types.ButtonType, O extends types.ButtonOptions>(

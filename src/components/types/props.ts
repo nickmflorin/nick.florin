@@ -14,15 +14,17 @@ export type ComponentProps = {
   readonly style?: Style;
 };
 
+const getClassNameParts = (cs: ClassName | undefined) =>
+  clsx(cs)
+    .split(" ")
+    .map(c => c.trim());
+
 export const classNameContains = (
   className: ClassName | undefined,
   conditional: string | ((v: string) => boolean),
 ): boolean => {
   const cs = clsx(className);
-  const classnames = cs
-    .split(" ")
-    .map(c => c.trim())
-    .map(v => (v.startsWith("!") ? v.slice(1) : v));
+  const classnames = getClassNameParts(cs).map(v => (v.startsWith("!") ? v.slice(1) : v));
   return classnames.some(c =>
     typeof conditional === "string" ? c === conditional : conditional(c),
   );
@@ -30,26 +32,63 @@ export const classNameContains = (
 
 const prefixIsInvalid = (prefix: string): boolean => prefix.trim().length === 0;
 
+type GetClassNamePrefixOptions = {
+  readonly prefix?: string;
+  readonly strict?: boolean;
+};
+
+type ClassNamePrefix<O extends GetClassNamePrefixOptions> = O extends { readonly strict: true }
+  ? string
+  : string | null;
+
+const getClassNamePrefix = <O extends GetClassNamePrefixOptions>(
+  cs: string,
+  opts?: O,
+): ClassNamePrefix<O> => {
+  let prefix: string;
+  if (opts?.prefix !== undefined || cs.includes("-")) {
+    if (opts?.prefix !== undefined) {
+      prefix = opts.prefix;
+    } else {
+      prefix = cs.split("-")[0];
+    }
+    if (prefixIsInvalid(prefix)) {
+      if (opts?.strict) {
+        throw new Error(`The prefix '${prefix}' is invalid, it must have at least 1 character.`);
+      }
+      return null as ClassNamePrefix<O>;
+    }
+    return prefix;
+  }
+  if (opts?.strict) {
+    throw new Error(`The class name '${cs}' is invalid, it must have a valid prefix.`);
+  }
+  return null as ClassNamePrefix<O>;
+};
+
 export const withoutOverridingClassName = (
   overriding: string,
   cs: ClassName,
   opts?: { prefix?: string },
 ): string => {
-  let prefix: string;
-  if (opts?.prefix !== undefined) {
-    if (prefixIsInvalid(opts.prefix)) {
-      throw new Error(`The prefix '${opts.prefix}' is invalid, it must have at least 1 character.`);
-    }
-    prefix = opts.prefix;
-  } else if (!overriding.includes("-") || prefixIsInvalid(overriding.split("-")[0])) {
-    throw new Error(
-      `The overriding class name '${overriding}' is invalid, it must have a valid prefix.`,
-    );
-  } else {
-    prefix = overriding.split("-")[0];
-  }
-  return clsx({ [overriding]: !classNameContains(cs, c => c.startsWith(prefix)) }, cs);
+  const prefix = getClassNamePrefix(overriding, { prefix: opts?.prefix, strict: true });
+  return clsx({ [overriding]: !classNameContains(cs, c => c.startsWith(prefix)) });
 };
+
+export const mergeIntoClassNames = (base: ClassName, override: ClassName): string =>
+  clsx(
+    // Only include the class names from the base set that are not overridden by the override set.
+    ...getClassNameParts(base).filter(pt =>
+      getClassNameParts(override).some(ov => {
+        const prefix = getClassNamePrefix(ov, { strict: false });
+        if (!prefix) {
+          return true;
+        }
+        return !classNameContains(pt, c => c.startsWith(prefix));
+      }),
+    ),
+    override,
+  );
 
 export const BorderRadii = enumeratedLiterals(
   ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full"] as const,

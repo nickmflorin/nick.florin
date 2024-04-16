@@ -73,7 +73,13 @@ export type UploadsManager<M extends BaseUploadModel> = {
   readonly performUpload: (files: FileWithPath[]) => void;
   readonly removeUpload: (id: string) => void;
   readonly setIsUploading: (v: boolean) => void;
-  readonly sync: (data: M[]) => void;
+  /**
+   * Syncs the upload state with data supplied from an external source, such as an API request.
+   *
+   * If the 'prependNew' option is set to false, explicitly, then new uploads will not be added to
+   * the beginning of the uploads state - only uploads already in the uploads state will be updated.
+   */
+  readonly sync: (data: M[], options?: { prependNew?: boolean }) => void;
   readonly addRejectedFiles: (files: FileRejection[]) => void;
 };
 

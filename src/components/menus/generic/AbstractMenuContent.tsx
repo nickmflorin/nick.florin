@@ -38,7 +38,6 @@ export const AbstractMenuContent = <M extends types.MenuModel, O extends types.M
         } else {
           ref = menuItemRefs.current[key];
         }
-
         return (
           <MenuItemModelRenderer<M, O>
             {...props}

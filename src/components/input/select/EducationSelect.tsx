@@ -6,9 +6,9 @@ import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
   isNullable: false,
-  getItemValue: (m: ApiEducation) => m.id,
-  getItemLabel: (m: ApiEducation) => m.major,
-  getItemValueLabel: <E extends ApiEducation>(m: E, options: MenuOptions<E>) =>
+  getModelValue: (m: ApiEducation) => m.id,
+  getModelLabel: (m: ApiEducation) => m.major,
+  getModelValueLabel: <E extends ApiEducation>(m: E, options: MenuOptions<E>) =>
     options.isMulti ? m.shortMajor ?? m.major : m.major,
 } as const;
 

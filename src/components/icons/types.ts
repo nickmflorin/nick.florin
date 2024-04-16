@@ -217,6 +217,7 @@ type BaseIconProps = ComponentProps & {
    * state.
    */
   readonly isLoading?: boolean;
+  readonly loadingClassName?: ComponentProps["className"];
   /**
    * A string, "fit" or "square", that defines whether or not the `svg` element should fit snuggly
    * around the inner `path` element of the Icon or SVG ("fit") or the `svg` element should have
@@ -279,7 +280,7 @@ export type ChildrenIconProps = BaseIconProps & {
 
 export type SpinnerProps = Omit<
   BasicIconProps<FontAwesomeIconProp>,
-  "spin" | "icon" | "fit" | "isDisabled" | "visible" | "hidden"
+  "spin" | "icon" | "fit" | "isDisabled" | "visible" | "hidden" | "loadingClassName"
 >;
 
 export type IconProps =

@@ -2,15 +2,39 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
+import type * as types from "../types";
+
+import { isIconProp } from "~/components/icons";
+import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
 import { Checkbox } from "~/components/input/Checkbox";
-import { type Action } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
-import { type ComponentProps, type Size, type HTMLElementProps } from "~/components/types";
+import {
+  type ComponentProps,
+  type Size,
+  type HTMLElementProps,
+  sizeToString,
+  withoutOverridingClassName,
+  sizeToNumber,
+  type QuantitativeSize,
+} from "~/components/types";
 import { ShowHide } from "~/components/util";
 
-export interface MenuItemProps extends ComponentProps, HTMLElementProps<"div"> {
-  readonly itemHeight?: Size;
+export interface MenuItemProps
+  extends ComponentProps,
+    HTMLElementProps<"div">,
+    Pick<
+      types.MenuModel,
+      | "iconClassName"
+      | "icon"
+      | "iconSize"
+      | "isDisabled"
+      | "isLoading"
+      | "isLocked"
+      | "isVisible"
+      | "actions"
+    > {
+  readonly height?: QuantitativeSize<"px">;
   readonly isSelected: boolean;
   readonly selectedClassName?: ComponentProps["className"];
   readonly disabledClassName?: ComponentProps["className"];
@@ -18,15 +42,27 @@ export interface MenuItemProps extends ComponentProps, HTMLElementProps<"div"> {
   readonly loadingClassName?: ComponentProps["className"];
   readonly children: ReactNode;
   readonly isMulti?: boolean;
-  readonly isDisabled?: boolean;
-  readonly isLoading?: boolean;
-  readonly isLocked?: boolean;
-  readonly isVisible?: boolean;
-  readonly actions?: Action[];
 }
 
+const MenuItemIcon = ({
+  icon,
+  iconClassName,
+  iconSize = "18px",
+  isLoading = false,
+}: Pick<MenuItemProps, "icon" | "iconClassName" | "iconSize" | "isLoading">) => {
+  if (icon) {
+    if (isIconProp(icon)) {
+      return <Icon icon={icon} className={iconClassName} size={iconSize} isLoading={isLoading} />;
+    } else if (isLoading) {
+      return <Spinner isLoading={isLoading} size={iconSize} dimension="height" />;
+    }
+    return icon;
+  }
+  return <></>;
+};
+
 export const MenuItem = ({
-  itemHeight,
+  height,
   actions,
   isSelected = false,
   isMulti = false,
@@ -35,10 +71,13 @@ export const MenuItem = ({
   lockedClassName,
   disabledClassName,
   children,
-  isLoading = false,
   isDisabled = false,
   isLocked = false,
   isVisible = true,
+  icon,
+  iconClassName,
+  iconSize = "18px",
+  isLoading = false,
   ...props
 }: MenuItemProps): JSX.Element => (
   <ShowHide show={isVisible}>
@@ -51,6 +90,8 @@ export const MenuItem = ({
       }}
       className={clsx(
         "menu__item",
+        withoutOverridingClassName("px-[10px]", props.className),
+        withoutOverridingClassName("py-[6px]", props.className),
         {
           [clsx("menu__item--selected", selectedClassName)]: isSelected,
           [clsx("menu__item--loading", loadingClassName)]: isLoading,
@@ -59,13 +100,29 @@ export const MenuItem = ({
         },
         props.className,
       )}
-      style={itemHeight !== undefined ? { ...props.style, height: itemHeight } : props.style}
+      style={
+        height !== undefined
+          ? {
+              ...props.style,
+              height: sizeToString(height, "px"),
+              lineHeight: `${sizeToNumber(height) - 2 * 6}px`,
+            }
+          : props.style
+      }
     >
       {isMulti && (
         <Checkbox readOnly value={isSelected} isDisabled={isDisabled} isLocked={isLocked} />
       )}
+      <MenuItemIcon
+        icon={icon}
+        iconSize={iconSize}
+        iconClassName={iconClassName}
+        isLoading={isLoading}
+      />
       <div className="menu__item__content">{children}</div>
-      <Spinner isLoading={isLoading} size="18px" dimension="height" />
+      {/* Only should the spinner to the right (instead of over the icon) if the icon is not
+          defined. */}
+      {icon === undefined && <Spinner isLoading={isLoading} size="18px" dimension="height" />}
       <Actions actions={actions} />
     </div>
   </ShowHide>

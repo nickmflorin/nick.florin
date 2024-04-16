@@ -5,9 +5,9 @@ import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
   isNullable: false,
-  getItemValue: (m: ApiRepository) => m.id,
-  getItemLabel: (m: ApiRepository) => m.slug,
-  getItemValueLabel: (m: ApiRepository) => m.slug,
+  getModelValue: (m: ApiRepository) => m.id,
+  getModelLabel: (m: ApiRepository) => m.slug,
+  getModelValueLabel: (m: ApiRepository) => m.slug,
 } as const;
 
 export interface RepositorySelectProps<O extends { isMulti?: boolean }, E extends ApiRepository>

@@ -9,7 +9,7 @@ import {
   getModelLabel,
   getModelValue,
   getModelId,
-  getItemValueLabel,
+  getModelValueLabel,
 } from "~/components/menus";
 import { getMenuItemKey } from "~/components/menus/util";
 import { Text } from "~/components/typography/Text";
@@ -55,7 +55,7 @@ export const MultiValueRenderer = <M extends MenuModel, O extends MenuOptions<M>
           );
         }
         const label =
-          getItemValueLabel(model, props.options) ?? getModelLabel(model, props.options);
+          getModelValueLabel(model, props.options) ?? getModelLabel(model, props.options);
         if (typeof label === "string") {
           return (
             <Badge fontSize="xxs" key={i}>

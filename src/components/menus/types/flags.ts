@@ -1,4 +1,4 @@
-import { type MenuModel, modelHasParam } from "./model";
+import { type MenuModel } from "./model";
 
 const MenuItemFlagNames = ["isDisabled", "isLoading", "isVisible", "isLocked"] as const;
 
@@ -29,8 +29,9 @@ export const evalMenuItemFlag = <M extends MenuModel, F extends MenuItemFlagName
   prop: MenuItemFlagProp<M> | undefined,
   model: M,
 ): boolean => {
-  if (modelHasParam(model, flag)) {
-    return model[flag];
+  const modelFlag = model[flag];
+  if (modelFlag !== undefined) {
+    return modelFlag;
   } else if (typeof prop === "function") {
     return prop(model);
   }

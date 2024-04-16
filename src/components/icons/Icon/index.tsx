@@ -5,6 +5,8 @@ import React from "react";
 import clsx from "clsx";
 import pick from "lodash.pick";
 
+import { mergeIntoClassNames } from "~/components/types";
+
 import { Spinner } from "../Spinner";
 import { type IconProp, type DynamicIconProp, type IconProps, isSvgIconProp } from "../types";
 
@@ -47,13 +49,20 @@ export const Icon = ({
   isLoading,
   name,
   iconStyle,
+  loadingClassName,
   family,
   ...props
 }: IconProps) => {
   if (isLoading) {
     /* If the Icon is in a loading state, render the <Spinner /> animated SVG component with the
        exact same size as the <Icon /> component. */
-    return <Spinner isLoading {...pick(props, ["className", "style", "size"])} />;
+    return (
+      <Spinner
+        isLoading
+        {...pick(props, ["className", "style", "size"])}
+        className={mergeIntoClassNames(props.className, loadingClassName)}
+      />
+    );
   }
   const isVisible = hidden !== true && visible !== false;
 

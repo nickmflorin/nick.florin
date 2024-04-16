@@ -8,8 +8,8 @@ type O = {
 };
 
 const options = {
-  getItemValue: (m: O) => m.value,
-  getItemLabel: (m: O) => m.label,
+  getModelValue: (m: O) => m.value,
+  getModelLabel: (m: O) => m.label,
   isMulti: true,
 } as const;
 

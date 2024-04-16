@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { forwardRef, type ForwardedRef, useState, useImperativeHandle, useMemo } from "react";
 
+import clsx from "clsx";
 import isEqual from "lodash.isequal";
 
 import { UnreachableCaseError } from "~/application/errors";
@@ -21,6 +22,8 @@ export const MenuItemModelRenderer = forwardRef(
       value,
       menuValue,
       itemClassName,
+      iconClassName,
+      iconSize,
       itemIsDisabled,
       itemDisabledClassName,
       itemIsLoading,
@@ -28,6 +31,7 @@ export const MenuItemModelRenderer = forwardRef(
       itemIsLocked,
       itemLockedClassName,
       itemSelectedClassName,
+      itemHeight,
       itemIsVisible,
       onClick,
       children,
@@ -72,7 +76,11 @@ export const MenuItemModelRenderer = forwardRef(
       <MenuItem
         id={id}
         actions={actions}
+        height={itemHeight}
         isMulti={options.isMulti}
+        icon={model.icon}
+        iconSize={model.iconSize ?? iconSize}
+        iconClassName={clsx(model.iconClassName, iconClassName)}
         className={typeof itemClassName === "function" ? itemClassName(model) : itemClassName}
         disabledClassName={
           typeof itemDisabledClassName === "function"
@@ -94,13 +102,25 @@ export const MenuItemModelRenderer = forwardRef(
             ? itemLockedClassName(model)
             : itemLockedClassName
         }
-        isDisabled={types.evalMenuItemFlag("isDisabled", itemIsDisabled, model) || _isDisabled}
+        isDisabled={
+          types.evalMenuItemFlag("isDisabled", itemIsDisabled, model) ||
+          _isDisabled ||
+          model.isDisabled
+        }
         isVisible={types.evalMenuItemFlag("isVisible", itemIsVisible, model)}
-        isLocked={types.evalMenuItemFlag("isLocked", itemIsLocked, model) || !isReady || _isLocked}
-        isLoading={types.evalMenuItemFlag("isLoading", itemIsLoading, model) || _isLoading}
+        isLocked={
+          types.evalMenuItemFlag("isLocked", itemIsLocked, model) ||
+          !isReady ||
+          _isLocked ||
+          model.isLocked
+        }
+        isLoading={
+          types.evalMenuItemFlag("isLoading", itemIsLoading, model) || _isLoading || model.isLoading
+        }
         isSelected={isSelected}
-        onClick={() => {
+        onClick={e => {
           onClick();
+          model.onClick?.(e, { setDisabled, setLoading, setLocked });
           if (query) {
             const drawerParsed = types.DrawerQuerySchema.safeParse(query);
             if (drawerParsed.success) {

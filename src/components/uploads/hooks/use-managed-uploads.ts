@@ -41,6 +41,8 @@ export const getRejectedFileErrors = (rej: FileRejection): FileError[] => {
 
 interface UseUploadsConfig<M extends types.BaseUploadModel> {
   readonly initialData?: M[];
+  // Whether or not, by default, the manager should update the state of uploads based on
+  readonly manageResponse?: boolean;
   readonly uploadAction: types.UploadAction<M>;
 }
 
@@ -112,18 +114,22 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
    * Syncs the data that is loaded from an external API request with the current tracked uploads
    * in state.
    */
-  const sync = useCallback((data: M[]) => {
+  const sync = useCallback((data: M[], options?: { prependNew?: boolean }) => {
     setUploads(curr => {
+      const prependNew = options?.prependNew ?? true;
+
       /* Models that are not already represented in the set of uploads as either an existing upload
          or an uploaded upload. */
-      const newModels = data.filter(
-        (model: M): boolean =>
-          !curr.some(
-            upload =>
-              (upload.state === "existing" || upload.state === "uploaded") &&
-              upload.model.id === model.id,
-          ),
-      );
+      const newModels = prependNew
+        ? data.filter(
+            (model: M): boolean =>
+              !curr.some(
+                upload =>
+                  types.isUploadOfState(upload, ["existing", "uploaded"]) &&
+                  upload.model.id === model.id,
+              ),
+          )
+        : [];
       return [
         /* Prepend new models to the state as existing uploads.  We prepend to the beginning because
            the default ordering is by the created at date of the upload, with newer uploads
@@ -140,7 +146,7 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
              new model.  However, if there is NOT a corresponding model in the data, remove the
              upload from state - since it should have a corresponding model it if it fact had
              completed uploading with the server. */
-          if (upload.state === "existing" || upload.state === "uploaded") {
+          if (types.isUploadOfState(upload, ["existing", "uploaded"])) {
             const existing = data.find(m => m.id === upload.model.id);
             if (existing) {
               return [...prev, { state: "existing", model: existing }];
@@ -148,7 +154,7 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
             return prev;
           }
           // If the upload is not in the existing or uploaded state, simply leave it in state.
-          return prev;
+          return [...prev, upload];
         }, []),
       ];
     });
@@ -156,7 +162,6 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
 
   const addRejectedFiles = useCallback((files: FileRejection[]) => {
     setUploads(curr => [
-      ...curr,
       ...files.map(f => {
         const uploadId = createUploadId();
         return {
@@ -166,13 +171,14 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
           errors: getRejectedFileErrors(f),
         };
       }),
+      ...curr,
     ]);
   }, []);
 
   const uploadFile = useCallback(
     async (file: FileWithPath) => {
       const uploadId = createUploadId();
-      setUploads(curr => [...curr, { file, uploadId, state: "uploading" }]);
+      setUploads(curr => [{ file, uploadId, state: "uploading" }, ...curr]);
 
       const formData = new FormData();
       formData.append("file", file);

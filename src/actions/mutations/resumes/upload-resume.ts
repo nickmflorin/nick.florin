@@ -6,8 +6,7 @@ import { put, del, type PutBlobResult } from "@vercel/blob";
 import { getAuthAdminUser } from "~/application/auth";
 import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
-import type { ApiResume, BrandResume } from "~/prisma/model";
-import { getResumes } from "~/actions/fetches/resumes";
+import type { BrandResume } from "~/prisma/model";
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -15,9 +14,7 @@ const resumeFilePath = (name: string) => `resumes/${name}`;
 
 export const uploadResume = async (
   formData: FormData,
-): Promise<
-  { resume: ApiResume<["primary"]>; resumes: ApiResume<["primary"]>[] } | ApiClientGlobalErrorJson
-> => {
+): Promise<BrandResume | ApiClientGlobalErrorJson> => {
   const user = await getAuthAdminUser({ strict: true });
 
   const resumeFile = formData.get("file") as File;
@@ -72,17 +69,6 @@ export const uploadResume = async (
       return ApiClientGlobalError.BadRequest("There was an error uploading the resume.").json;
     }
     revalidatePath("/api/resumes");
-
-    const allResumes = await getResumes(tx);
-    const apiResume: ApiResume<["primary"]> | undefined = allResumes.find(r => r.id === resume.id);
-    if (!apiResume) {
-      throw new Error(
-        `Could not find the resume with ID ${resume.id} in the list of resumes queried from ` +
-          "the database immediately after the resume was created.",
-      );
-    }
-    /* Note: The 'convertToPlainObject' method is already applied to 'allResumes' as a part of the
-       'getResumes' method. */
-    return { resume: convertToPlainObject(apiResume), resumes: allResumes };
+    return convertToPlainObject(resume);
   });
 };
