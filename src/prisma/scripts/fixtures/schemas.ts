@@ -28,13 +28,14 @@ export const CourseJsonSchema = z.object({
   skills: z.array(z.string()).optional(),
 });
 
-export const RepositorySchema = z.object({ slug: z.string(), description: z.string() });
+export const RepositoryJsonSchema = z.object({ slug: z.string(), description: z.string() });
 
-export const ProjectSchema = z.object({
+export const ProjectJsonSchema = z.object({
   name: z.string(),
   shortName: z.string().optional(),
   slug: z.string().optional(),
-  description: z.string().optional(),
+  description: z.string(),
+  icon: z.string(),
   startDate: z.coerce.date(),
   visible: z.boolean().optional(),
   skills: z.array(z.string()).optional(),

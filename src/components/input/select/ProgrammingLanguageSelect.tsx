@@ -1,15 +1,18 @@
+import { type Required } from "utility-types";
+
 import {
   getProgrammingLanguage,
   ProgrammingLanguages,
   type ProgrammingLanguage,
 } from "~/prisma/model";
+import type { MenuModel } from "~/components/menus";
 
 import { Select, type SelectProps } from "./generic";
 
-type O = {
-  readonly value: ProgrammingLanguage;
-  readonly label: string;
-};
+type O = Required<
+  Pick<MenuModel<ProgrammingLanguage>, "value" | "label" | "icon">,
+  "value" | "label" | "icon"
+>;
 
 const options = {
   getModelValue: (m: O) => m.value,
@@ -21,12 +24,14 @@ export const ProgrammingLanguageSelect = (
   props: Omit<SelectProps<O, typeof options>, "options" | "data">,
 ): JSX.Element => (
   <Select<O, typeof options>
+    maxHeight={240}
     {...props}
     options={options}
     data={Object.keys(ProgrammingLanguages).map(
       (key): O => ({
         label: getProgrammingLanguage(key as ProgrammingLanguage).label,
         value: key as ProgrammingLanguage,
+        icon: getProgrammingLanguage(key as ProgrammingLanguage).icon,
       }),
     )}
   />

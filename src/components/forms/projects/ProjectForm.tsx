@@ -3,6 +3,7 @@ import { type z } from "zod";
 
 import { ProjectSchema } from "~/api/schemas";
 import { DateSelect } from "~/components/input/dates/DateSelect";
+import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "../generic/Form";
@@ -29,6 +30,17 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
       helpText="If not provided, will be auto generated based on the name."
     >
       <TextInput className="w-full" {...props.form.register("slug")} />
+    </Form.Field>
+    <Form.Field
+      name="icon"
+      label="Icon"
+      form={props.form}
+      helpText="The FontAwesome name of the icon that the project should be associated with."
+    >
+      <TextInput className="w-full" {...props.form.register("icon")} />
+    </Form.Field>
+    <Form.Field name="description" label="Description" form={props.form}>
+      <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
     <Form.ControlledField
       name="startDate"

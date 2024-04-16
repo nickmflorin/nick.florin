@@ -17,6 +17,7 @@ export const SkillCategorySelect = (
   props: Omit<SelectProps<O, typeof options>, "options" | "data">,
 ): JSX.Element => (
   <Select<O, typeof options>
+    maxHeight={240}
     {...props}
     options={options}
     data={Object.keys(SkillCategories).map(

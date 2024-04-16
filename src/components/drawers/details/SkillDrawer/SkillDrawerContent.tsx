@@ -4,7 +4,7 @@ import { ProgrammingDomains } from "~/components/badges/collections/ProgrammingD
 import { ProgrammingLanguages } from "~/components/badges/collections/ProgrammingLanguages";
 import { SkillCategories } from "~/components/badges/collections/SkillCategories";
 import { SkillExperienceBadge } from "~/components/badges/SkillExperienceBadge";
-import { Link } from "~/components/buttons";
+import { ProjectTile } from "~/components/tiles/ProjectTile";
 import { RepositoryTile } from "~/components/tiles/RepositoryTile";
 import { ResumeModelTileHeader } from "~/components/tiles/ResumeModelTileHeader";
 import { Label } from "~/components/typography/Label";
@@ -87,17 +87,8 @@ export const SkillDrawerContent = ({
       <></>
     )}
     <DetailDrawerSection label="Projects">
-      {projects.map((project, index) => (
-        <div className="flex flex-col gap-[8px]" key={index}>
-          <Link
-            options={{ as: "link" }}
-            fontWeight="regular"
-            fontSize="sm"
-            href={`/projects/${project.slug}`}
-          >
-            {project.name}
-          </Link>
-        </div>
+      {projects.map(project => (
+        <ProjectTile key={project.id} project={project} />
       ))}
     </DetailDrawerSection>
   </DetailDrawerContent>

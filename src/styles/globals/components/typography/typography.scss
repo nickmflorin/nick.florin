@@ -213,10 +213,6 @@ h6 {
     }
   }
 
-  &.truncate {
-    @include mixins.truncate();
-  }
-
   &.clamp {
     @include mixins.clamp(2);
   }

@@ -209,12 +209,15 @@ model Course {
   skills      Skill[]   @relation("courseSkills")
 }
 
-// TODO: Add a description field via rich text editor input and show description on project page.
 model Project {
   id            String         @id @default(uuid()) @db.Uuid
   name          String         @unique
   shortName     String?        @unique
+  // TODO: We may want to use a rich text editor for this in the future, so we can show it on the
+  // projects page with embedded links and things of that nature.
+  description   String
   slug          String         @unique
+  icon          String         @unique
   createdAt     DateTime       @default(now())
   createdBy     User           @relation("createdProjects", fields: [createdById], references: [id])
   createdById   String         @db.Uuid

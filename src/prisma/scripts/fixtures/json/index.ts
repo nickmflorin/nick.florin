@@ -21,9 +21,9 @@ export const json = {
   ),
   profile,
   projects: projects.projects.map(
-    (p): z.infer<typeof schemas.ProjectSchema> => schemas.ProjectSchema.parse(p),
+    (p): z.infer<typeof schemas.ProjectJsonSchema> => schemas.ProjectJsonSchema.parse(p),
   ),
   repositories: repositories.repositories.map(
-    (p): z.infer<typeof schemas.RepositorySchema> => schemas.RepositorySchema.parse(p),
+    (p): z.infer<typeof schemas.RepositoryJsonSchema> => schemas.RepositoryJsonSchema.parse(p),
   ),
 };

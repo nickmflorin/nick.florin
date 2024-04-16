@@ -4,6 +4,8 @@ interface AdminLayoutProps {
   readonly children: React.ReactNode;
 }
 
+/* TODO: We should consider - at least eventually - populating the tabs based on the projects in the
+   database. */
 export default async function ProjectsLayout({ children }: AdminLayoutProps): Promise<JSX.Element> {
   return (
     <div className="flex flex-col gap-[15px] w-full h-full overflow-hidden">

@@ -5,12 +5,15 @@
       "shortName": "Asset Visualizations",
       "slug": "asset-visualizations",
       "skills": ["d3js", "javascript", "html"],
-      "startDate": "2017-11-01T00:00:00Z"
+      "startDate": "2017-11-01T00:00:00Z",
+      "description": "An animated JavaScript charting library that can be used to visualize data in up to 5 dimensions simultaneously.",
+      "icon": "chart-scatter-bubble"
     },
     {
       "name": "nick.florin",
       "slug": "website",
       "startDate": "2024-01-15T00:00:00Z",
+      "description": "A CMS-powered, interactive and dynamic personal portfolio & website written using NextJS.",
       "skills": [
         "typescript",
         "react",
@@ -21,7 +24,8 @@
         "tailwindcss",
         "sass"
       ],
-      "repositories": ["nick.florin"]
+      "repositories": ["nick.florin"],
+      "icon": "passport"
     }
   ]
 }

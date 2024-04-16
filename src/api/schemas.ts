@@ -75,10 +75,19 @@ export const ProjectSchema = z.object({
     minErrorMessage: "The name must be at least 3 characters.",
     requiredErrorMessage: "The name is required.",
   }),
+  // TODO: We need to figure out how to add better validation here.
+  icon: NonNullableMinLengthStringField({
+    min: 3,
+    minErrorMessage: "The icon must be at least 3 characters.",
+    requiredErrorMessage: "The icon is required.",
+  }),
   shortName: NullableMinLengthStringField({
     min: 2,
     minErrorMessage: "The short name should be at least 2 characters.",
   }).optional(),
+  description: NonNullableMinLengthStringField({
+    minErrorMessage: "The description must be at least 3 characters.",
+  }),
   slug: NullableMinLengthStringField({
     minErrorMessage: "The slug must be at least 3 characters.",
   }).optional(),

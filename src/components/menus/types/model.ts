@@ -30,7 +30,7 @@ export type AllowedMenuModelValue = string | number | Record<string, unknown>;
 
 export type MenuModelHref = string | { url: string; target?: string; rel?: string };
 
-export type MenuModel = {
+export type MenuModel<V extends AllowedMenuModelValue = AllowedMenuModelValue> = {
   readonly id?: string | number;
   readonly icon?: IconProp | JSX.Element;
   readonly iconClassName?: ComponentProps["className"];
@@ -45,7 +45,7 @@ export type MenuModel = {
   readonly isVisible?: boolean;
   readonly query?: z.infer<typeof QuerySchema> | z.infer<typeof DrawerQuerySchema>;
   readonly actions?: Action[];
-  readonly value?: AllowedMenuModelValue;
+  readonly value?: V;
   readonly onClick?: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     instance: MenuItemInstance,
