@@ -30,7 +30,8 @@ export const classNameContains = (
   );
 };
 
-const prefixIsInvalid = (prefix: string): boolean => prefix.trim().length === 0;
+const prefixIsInvalid = (prefix: string): boolean =>
+  prefix.trim().length === 0 || prefix.includes("-");
 
 type GetClassNamePrefixOptions = {
   readonly prefix?: string;
@@ -49,6 +50,9 @@ const getClassNamePrefix = <O extends GetClassNamePrefixOptions>(
   if (opts?.prefix !== undefined || cs.includes("-")) {
     if (opts?.prefix !== undefined) {
       prefix = opts.prefix;
+      if (prefix.endsWith("-")) {
+        prefix = prefix.slice(0, prefix.length - 1);
+      }
     } else {
       prefix = cs.split("-")[0];
     }
@@ -69,10 +73,13 @@ const getClassNamePrefix = <O extends GetClassNamePrefixOptions>(
 export const withoutOverridingClassName = (
   overriding: string,
   cs: ClassName,
-  opts?: { prefix?: string },
+  opts?: { prefix?: string; includeBase?: boolean },
 ): string => {
   const prefix = getClassNamePrefix(overriding, { prefix: opts?.prefix, strict: true });
-  return clsx({ [overriding]: !classNameContains(cs, c => c.startsWith(prefix)) });
+  return clsx(
+    { [overriding]: !classNameContains(cs, c => c.startsWith(prefix)) },
+    opts?.includeBase ? cs : "",
+  );
 };
 
 export const mergeIntoClassNames = (base: ClassName, override: ClassName): string =>

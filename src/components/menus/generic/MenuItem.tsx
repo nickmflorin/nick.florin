@@ -11,12 +11,12 @@ import { Checkbox } from "~/components/input/Checkbox";
 import { Actions } from "~/components/structural/Actions";
 import {
   type ComponentProps,
-  type Size,
   type HTMLElementProps,
   sizeToString,
   withoutOverridingClassName,
   sizeToNumber,
   type QuantitativeSize,
+  mergeIntoClassNames,
 } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -26,6 +26,7 @@ export interface MenuItemProps
     Pick<
       types.MenuModel,
       | "iconClassName"
+      | "spinnerClassName"
       | "icon"
       | "iconSize"
       | "isDisabled"
@@ -49,12 +50,37 @@ const MenuItemIcon = ({
   iconClassName,
   iconSize = "18px",
   isLoading = false,
-}: Pick<MenuItemProps, "icon" | "iconClassName" | "iconSize" | "isLoading">) => {
+  spinnerClassName,
+}: Pick<
+  MenuItemProps,
+  "icon" | "iconClassName" | "iconSize" | "isLoading" | "spinnerClassName"
+>) => {
   if (icon) {
     if (isIconProp(icon)) {
-      return <Icon icon={icon} className={iconClassName} size={iconSize} isLoading={isLoading} />;
+      return (
+        <Icon
+          icon={icon}
+          className={withoutOverridingClassName("text-gray-600", iconClassName, {
+            includeBase: true,
+            prefix: "text-",
+          })}
+          size={iconSize}
+          isLoading={isLoading}
+        />
+      );
     } else if (isLoading) {
-      return <Spinner isLoading={isLoading} size={iconSize} dimension="height" />;
+      return (
+        <Spinner
+          className={withoutOverridingClassName(
+            "text-gray-600",
+            mergeIntoClassNames(iconClassName, spinnerClassName),
+            { includeBase: true, prefix: "text-" },
+          )}
+          isLoading={isLoading}
+          size={iconSize}
+          dimension="height"
+        />
+      );
     }
     return icon;
   }
@@ -70,13 +96,14 @@ export const MenuItem = ({
   loadingClassName,
   lockedClassName,
   disabledClassName,
+  spinnerClassName,
   children,
   isDisabled = false,
   isLocked = false,
   isVisible = true,
   icon,
   iconClassName,
-  iconSize = "18px",
+  iconSize = "16px",
   isLoading = false,
   ...props
 }: MenuItemProps): JSX.Element => (
@@ -98,7 +125,12 @@ export const MenuItem = ({
           [clsx("disabled", disabledClassName)]: isDisabled,
           [clsx("menu__item--locked", lockedClassName)]: isLocked,
         },
-        props.className,
+        mergeIntoClassNames(props.className, {
+          [clsx(selectedClassName)]: isSelected,
+          [clsx(loadingClassName)]: isLoading,
+          [clsx(disabledClassName)]: isDisabled,
+          [clsx(lockedClassName)]: isLocked,
+        }),
       )}
       style={
         height !== undefined
@@ -118,11 +150,23 @@ export const MenuItem = ({
         iconSize={iconSize}
         iconClassName={iconClassName}
         isLoading={isLoading}
+        spinnerClassName={spinnerClassName}
       />
       <div className="menu__item__content">{children}</div>
       {/* Only should the spinner to the right (instead of over the icon) if the icon is not
           defined. */}
-      {icon === undefined && <Spinner isLoading={isLoading} size="18px" dimension="height" />}
+      {icon === undefined && (
+        <Spinner
+          className={withoutOverridingClassName(
+            "text-gray-600",
+            mergeIntoClassNames(iconClassName, spinnerClassName),
+            { includeBase: true, prefix: "text-" },
+          )}
+          isLoading={isLoading}
+          size="18px"
+          dimension="height"
+        />
+      )}
       <Actions actions={actions} />
     </div>
   </ShowHide>

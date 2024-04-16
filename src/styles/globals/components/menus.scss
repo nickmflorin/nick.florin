@@ -28,7 +28,8 @@
       max-height: 100%;
       height: 100%;
 
-      > .menu__item {
+      // Note: Sometimes a menu__item element is wrapped in an anchor tag if it represents a link.
+      .menu__item {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -78,6 +79,7 @@
           height: 100%;
           line-height: inherit;
           flex-grow: 100;
+          color: inherit;
           @include typography.truncate();
         }
       }

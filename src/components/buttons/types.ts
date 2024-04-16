@@ -138,6 +138,8 @@ export type AbstractLinkProps = Pick<
 
 export type AbstractAnchorProps = Pick<HTMLElementProps<"a">, CommonEventProps> & {
   readonly href: string;
+  readonly target?: string;
+  readonly rel?: string;
 };
 
 export type PolymorphicAbstractButtonProps<F extends ButtonForm> = {

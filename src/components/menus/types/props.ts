@@ -35,6 +35,7 @@ export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuO
   readonly menuValue: ModelValue<M, O>[] | ModelValue<M, O> | null | ValueNotApplicable;
   readonly iconSize?: IconSize;
   readonly iconClassName?: ComponentProps["className"];
+  readonly spinnerClassName?: ComponentProps["className"];
   readonly itemDisabledClassName?:
     | ComponentProps["className"]
     | ((datum: M) => ComponentProps["className"]);

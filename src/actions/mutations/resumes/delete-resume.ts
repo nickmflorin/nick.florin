@@ -24,6 +24,8 @@ export const deleteResume = async (id: string): Promise<BrandResume[]> => {
     }
 
     await tx.resume.delete({ where: { id: resume.id } });
+    /* TODO: We may want to log a warning if we are deleing a resume that exists in the DB but not
+       in the blob storage... We would have to use the 'list' method. */
     await del(resume.url);
 
     revalidatePath("/api/resumes");

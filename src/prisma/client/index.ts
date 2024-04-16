@@ -18,7 +18,6 @@ as global variables are not reloaded:
 See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-management
      #prevent-hot-reloading-from-creating-new-instances-of-prismaclient
 */
-import { logger } from "~/application/logger";
 import { PrismaClient as RootPrismaClient } from "~/prisma/model";
 import { environment } from "~/environment";
 
@@ -28,7 +27,8 @@ import { ModelMetaDataMiddleware } from "./middleware";
 export * from "./errors";
 
 export const initializePrismaClient = () => {
-  logger.info("Initializing Prisma Client");
+  /* eslint-disable-next-line no-console -- The logger is not in context for seeding. */
+  console.info("Initializing Prisma Client");
   const prisma = new RootPrismaClient({
     log: environment.get("DATABASE_LOG_LEVEL"),
   });
@@ -48,7 +48,8 @@ if (typeof window === "undefined") {
   } else {
     if (!globalPrisma.prisma) {
       prisma = initializePrismaClient();
-      logger.info("Storing Globally Instantiated Prisma Client");
+      /* eslint-disable-next-line no-console -- The logger is not in context for seeding. */
+      console.info("Storing Globally Instantiated Prisma Client");
       globalPrisma.prisma = prisma;
     } else {
       prisma = globalPrisma.prisma;

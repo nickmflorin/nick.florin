@@ -35,7 +35,10 @@ const LocalActions = ({
   }
   return (
     <div
-      className={clsx("flex flex-row items-center h-full [&>*]:max-h-full", props.className)}
+      className={clsx(
+        "flex flex-row items-center h-full [&>.button]:max-h-full [&>.icon]:max-h-full",
+        props.className,
+      )}
       style={{ ...props.style, gap: sizeToString(gap, "px") }}
     >
       {a.map((ai, index) => (

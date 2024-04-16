@@ -72,6 +72,8 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
               : undefined,
         } as BaseTypographyProps)
       : "",
+    /* These class names should override any class name that may already exist in the props if the
+       button is in the given state. */
     mergeIntoClassNames(props.className, {
       [clsx(props.lockedClassName)]: props.isLocked,
       [clsx(props.loadingClassName)]: props.isLoading,

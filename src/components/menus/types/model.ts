@@ -7,7 +7,7 @@ import { type IconProp, type IconSize } from "~/components/icons";
 import { type Action } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 
-import { MenuItemInstance } from "./item";
+import { type MenuItemInstance } from "./item";
 import { type MenuOptions } from "./options";
 
 export const VALUE_NOT_APPLICABLE = "__VALUE_NOT_APPLICABLE__";
@@ -28,14 +28,17 @@ export const DrawerQuerySchema = z.object({
 
 export type AllowedMenuModelValue = string | number | Record<string, unknown>;
 
+export type MenuModelHref = string | { url: string; target?: string; rel?: string };
+
 export type MenuModel = {
   readonly id?: string | number;
   readonly icon?: IconProp | JSX.Element;
   readonly iconClassName?: ComponentProps["className"];
+  readonly spinnerClassName?: ComponentProps["className"];
   readonly iconSize?: IconSize;
   readonly label?: ReactNode;
   readonly valueLabel?: ReactNode;
-  readonly href?: string;
+  readonly href?: MenuModelHref;
   readonly isLocked?: boolean;
   readonly isLoading?: boolean;
   readonly isDisabled?: boolean;
@@ -131,7 +134,7 @@ export const getModelHref = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
 ): ModelHref<M, O> | undefined => {
-  let v: string | Never = NEVER;
+  let v: NonNullable<MenuModel["href"]> | Never = NEVER;
   if (options.getModelHref !== undefined) {
     v = options.getModelHref(model);
   } else if (model.href !== undefined) {

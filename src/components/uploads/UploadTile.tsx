@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 import type { FileError } from "react-dropzone-esm";
 
-import { IconButton } from "~/components/buttons";
+import { Link, IconButton } from "~/components/buttons";
 import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
 import { type Action, mergeActions } from "~/components/structural";
@@ -60,12 +60,23 @@ export const UploadTile = <M extends types.BaseUploadModel>({
     <div className="flex flex-col gap-[4px]">
       <div className="flex flex-row w-full justify-between items-center">
         <div className="flex flex-row gap-[8px] items-center">
-          <Icon name="file-pdf" size="14px" className="text-blue-400" />
-          <Label size="xs" fontWeight="medium" className="leading-[18px]">
-            {types.isUploadOfState(upload, ["existing", "uploaded"])
-              ? upload.model.filename
-              : upload.file.name}
-          </Label>
+          <Icon name="file-pdf" size="14px" className="text-gray-600" />
+          {types.isUploadOfState(upload, ["existing", "uploaded"]) ? (
+            <Link
+              options={{ as: "a" }}
+              className="leading-[18px]"
+              fontSize="xs"
+              target="_blank"
+              rel="noopener noreferrer"
+              href={upload.model.url}
+            >
+              {upload.model.filename}
+            </Link>
+          ) : (
+            <Label size="xs" fontWeight="medium" className="leading-[18px]">
+              {upload.file.name}
+            </Label>
+          )}
         </div>
         <Actions
           actions={mergeActions(actions, [

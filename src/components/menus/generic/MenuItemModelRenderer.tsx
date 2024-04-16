@@ -23,6 +23,7 @@ export const MenuItemModelRenderer = forwardRef(
       menuValue,
       itemClassName,
       iconClassName,
+      spinnerClassName,
       iconSize,
       itemIsDisabled,
       itemDisabledClassName,
@@ -81,6 +82,7 @@ export const MenuItemModelRenderer = forwardRef(
         icon={model.icon}
         iconSize={model.iconSize ?? iconSize}
         iconClassName={clsx(model.iconClassName, iconClassName)}
+        spinnerClassName={clsx(model.spinnerClassName, spinnerClassName)}
         className={typeof itemClassName === "function" ? itemClassName(model) : itemClassName}
         disabledClassName={
           typeof itemDisabledClassName === "function"
@@ -139,7 +141,14 @@ export const MenuItemModelRenderer = forwardRef(
     );
 
     if (href) {
-      return <Link href={href}>{Item}</Link>;
+      if (typeof href === "string") {
+        return <Link href={href}>{Item}</Link>;
+      }
+      return (
+        <Link href={href.url} rel={href.rel} target={href.target}>
+          {Item}
+        </Link>
+      );
     }
     return Item;
   },

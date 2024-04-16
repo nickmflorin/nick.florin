@@ -9,6 +9,8 @@ export type BaseUploadModel = {
   readonly size: number | bigint;
   readonly createdAt: Date;
   readonly filename: string;
+  readonly url: string;
+  readonly downloadUrl: string;
 };
 
 export type UploadId = `upload-${string}`;
