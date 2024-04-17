@@ -1,6 +1,7 @@
 import { type z } from "zod";
 
 import { CourseSchema } from "~/api/schemas";
+import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 import { TextInput } from "~/components/input/TextInput";
 
@@ -52,6 +53,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
         />
       )}
     </Form.ControlledField>
+    <CheckboxField name="visible" form={props.form} label="Visible" />
   </Form>
 );
 

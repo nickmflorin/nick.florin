@@ -26,7 +26,7 @@ export const ProjectsCell = ({ skill }: ProjectsCellProps): JSX.Element => {
   return (
     <ClientProjectSelect
       options={{ isMulti: true }}
-      inputClassName="w-[300px]"
+      inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
       onChange={async (v, { item }) => {

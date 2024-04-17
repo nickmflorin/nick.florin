@@ -40,6 +40,12 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
             icon: { name: "backpack" },
             active: { leadingPath: "/admin/courses" },
           },
+          {
+            label: "Repositories",
+            path: "/admin/repositories",
+            icon: { name: "github", iconStyle: "brands" },
+            active: { leadingPath: "/admin/repositories" },
+          },
         ]}
       >
         <ResumesAdminTab />

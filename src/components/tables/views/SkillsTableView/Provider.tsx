@@ -23,6 +23,10 @@ const SlugCell = dynamic(
   () => import("~/components/tables/generic/cells/SlugCell"),
 ) as SlugCellComponent;
 
+const ReadOnlyDateTimeCell = dynamic(
+  () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
+);
+
 const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"));
 const EducationsCell = dynamic(() => import("./cells/EducationsCell"));
 const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"));
@@ -52,7 +56,8 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "label",
           title: "Label",
-          width: 320,
+          width: 200,
+          resizable: true,
           render: ({ model, table }) => (
             <EditableStringCell
               field="label"
@@ -66,7 +71,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "slug",
           title: "Slug",
-          width: 320,
+          width: 200,
           render: ({ model, table }) => (
             <SlugCell<ApiSkill<["experiences", "educations", "projects"]>, BrandSkill>
               model={model}
@@ -80,19 +85,19 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "experiences",
           title: "Experiences",
-          width: 310,
+          width: 240,
           render: ({ model }) => <ExperiencesCell skill={model} />,
         },
         {
           accessor: "educations",
           title: "Educations",
-          width: 310,
+          width: 240,
           render: ({ model }) => <EducationsCell skill={model} />,
         },
         {
           accessor: "projects",
           title: "Projects",
-          width: 310,
+          width: 240,
           render: ({ model }) => <ProjectsCell skill={model} />,
         },
         {
@@ -105,26 +110,42 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "categories",
           title: "Categories",
-          width: 310,
+          width: 220,
           defaultVisible: false,
           render: ({ model }) => <CategoriesCell skill={model} />,
         },
         {
           accessor: "programmingLanguages",
           title: "Prog. Languages",
-          width: 310,
+          width: 220,
           defaultVisible: false,
           render: ({ model }) => <ProgrammingLanguagesCell skill={model} />,
+        },
+        {
+          accessor: "createdAt",
+          title: "Created",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.createdAt} />,
+        },
+        {
+          accessor: "updatedAt",
+          title: "Updated",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
         },
         {
           accessor: "includeInTopSkills",
           title: "Top Skill",
           textAlign: "center",
+          width: 100,
           render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
         },
         {
           accessor: "visible",
           title: "Visible",
+          width: 80,
           textAlign: "center",
           render: ({ model, table }) => (
             <VisibleCell

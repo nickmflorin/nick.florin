@@ -23,7 +23,7 @@ export const UpdateCourseDrawer = ({ schoolId, eager }: UpdateCourseDrawerProps)
   const form = useSchoolForm();
 
   return (
-    <DrawerForm form={form} titleField="name" titlePlaceholder={eager.name}>
+    <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {school => <UpdateSchoolForm form={form} school={school} />}
       </ApiResponseState>

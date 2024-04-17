@@ -1,7 +1,7 @@
 import { environment } from "~/environment";
 
 import { type BrandProject, type BrandRepository } from "./brand";
-import { type ConditionallyInclude } from "./inclusion";
+import { type ConditionallyInclude, type InclusionSubset } from "./inclusion";
 import { type ApiSkill } from "./skills";
 
 export const getRepositoryGithubUrl = (repository: BrandRepository): string => {
@@ -27,3 +27,14 @@ export type ApiRepository<I extends RepositoryIncludes = []> = ConditionallyIncl
   ["skills", "projects"],
   I
 >;
+
+export const repositoryHasIncludedField = <I extends RepositoryIncludes[number]>(
+  repository: ApiRepository<RepositoryIncludes>,
+  field: I,
+): repository is ApiRepository<InclusionSubset<RepositoryIncludes, I>> => {
+  const r = repository as ApiRepository<InclusionSubset<RepositoryIncludes, I>>;
+  if (field in r) {
+    return true;
+  }
+  return false;
+};

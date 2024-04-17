@@ -25,7 +25,7 @@ export const UpdateExperienceDrawer = ({
   const form = useExperienceForm();
 
   return (
-    <DrawerForm form={form} titleField="title" titlePlaceholder={eager.title}>
+    <DrawerForm form={form} titleField="title" eagerTitle={eager.title}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {experience => <UpdateExperienceForm form={form} experience={experience} />}
       </ApiResponseState>

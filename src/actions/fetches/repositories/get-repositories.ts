@@ -25,13 +25,13 @@ const whereClause = ({ filters }: Pick<GetRepositorysParams<RepositoryIncludes>,
     AND: filters?.search ? [constructTableSearchClause("repository", filters.search)] : undefined,
   }) as const;
 
-export const preloadRepositorysCount = (
+export const preloadRepositoriesCount = (
   params: Pick<GetRepositorysParams<RepositoryIncludes>, "filters" | "visibility">,
 ) => {
-  void getRepositorysCount(params);
+  void getRepositoriesCount(params);
 };
 
-export const getRepositorysCount = cache(
+export const getRepositoriesCount = cache(
   async ({
     filters,
     visibility,
@@ -43,13 +43,13 @@ export const getRepositorysCount = cache(
   },
 );
 
-export const preloadRepositorys = <I extends RepositoryIncludes>(
+export const preloadRepositories = <I extends RepositoryIncludes>(
   params: GetRepositorysParams<I>,
 ) => {
-  void getRespositories(params);
+  void getRepositories(params);
 };
 
-export const getRespositories = cache(
+export const getRepositories = cache(
   async <I extends RepositoryIncludes>({
     includes,
     page,
@@ -61,7 +61,7 @@ export const getRespositories = cache(
     const pagination = await parsePagination({
       page,
       pageSize: PAGE_SIZES.repository,
-      getCount: async () => await getRepositorysCount({ filters, visibility }),
+      getCount: async () => await getRepositoriesCount({ filters, visibility }),
     });
 
     const repositories = await prisma.repository.findMany({

@@ -128,6 +128,7 @@ export const CourseSchema = z.object({
     .uuid("The selected education has an invalid UUID."),
   // This still needs to be incorporated.
   skills: z.array(z.string().uuid()).optional(),
+  visible: z.boolean().optional(),
 });
 
 export const DetailSchema = z.object({

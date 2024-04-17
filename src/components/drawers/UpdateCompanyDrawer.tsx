@@ -26,7 +26,7 @@ export const UpdateCompanyDrawer = ({
     { keepPreviousData: true, visibility: "admin", includes: [] },
   );
   return (
-    <DrawerForm form={form} titleField="name" titlePlaceholder={eager.name}>
+    <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {company => <UpdateCompanyForm form={form} company={company} onCancel={() => onClose()} />}
       </ApiResponseState>

@@ -8,11 +8,11 @@ import { Spinner } from "~/components/icons/Spinner";
 import { type Action, mergeActions } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
 import { type ComponentProps } from "~/components/types";
+import { DateTimeDisplay } from "~/components/typography/DateTimeDisplay";
 import { FileSize } from "~/components/typography/FileSize";
 import { Label } from "~/components/typography/Label";
 import { PipedText } from "~/components/typography/PipedText";
 import { Text } from "~/components/typography/Text";
-import { TimeDisplay } from "~/components/typography/TimeDisplay";
 
 import * as types from "./types";
 
@@ -128,7 +128,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
               </Text>
             </div>
           ) : types.isUploadOfState(upload, ["existing", "uploaded"]) ? (
-            <TimeDisplay prefix="Uploaded" date={upload.model.createdAt} />
+            <DateTimeDisplay prefix="Uploaded" date={upload.model.createdAt} />
           ) : null}
         </PipedText>
         {types.isUploadOfState(upload, ["failed", "rejected"]) && (

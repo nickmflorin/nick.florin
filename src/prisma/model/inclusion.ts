@@ -22,3 +22,19 @@ export const fieldIsIncluded = <I extends string[] | []>(
   }
   return (includes as string[]).includes(field);
 };
+
+type RemoveFirst<T extends string[]> = T extends [string, ...infer U extends string[]] ? U : never;
+
+export type InclusionSubset<I extends string[], K extends I[number]> = K extends string
+  ? I extends []
+    ? never
+    : I extends [K]
+      ? [K]
+      : I extends [...infer T extends [T[number], ...T[number][]], infer S extends K]
+        ? [...T, S]
+        : I extends [infer S extends K, ...infer T extends [T[number], ...T[number][]]]
+          ? [S, ...T]
+          : [I[0]] extends ["skills"]
+            ? [I[0], ...InclusionSubset<RemoveFirst<I>, K>]
+            : InclusionSubset<RemoveFirst<I>, K>
+  : never;

@@ -13,7 +13,7 @@ import type * as types from "~/components/tables/types";
 
 interface SchoolCellProps {
   readonly education: ApiEducation<["details"]>;
-  readonly table: types.TableInstance<ApiEducation<["details"]>>;
+  readonly table: types.TableView<ApiEducation<["details"]>>;
 }
 
 export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element => {
@@ -27,7 +27,7 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
 
   return (
     <ClientSchoolSelect
-      inputClassName="w-[300px]"
+      inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
       onChange={async v => {

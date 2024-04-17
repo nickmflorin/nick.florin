@@ -19,6 +19,10 @@ const SlugCell = dynamic(
   () => import("~/components/tables/generic/cells/SlugCell"),
 ) as SlugCellComponent;
 
+const ReadOnlyDateTimeCell = dynamic(
+  () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
+);
+
 export interface TableViewConfig extends Pick<RootTableViewConfig<ApiProject<[]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
@@ -74,6 +78,20 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               action={async (id, value) => await updateProject(id, { slug: value })}
             />
           ),
+        },
+        {
+          accessor: "createdAt",
+          title: "Created",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.createdAt} />,
+        },
+        {
+          accessor: "updatedAt",
+          title: "Updated",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
         },
       ]}
     >

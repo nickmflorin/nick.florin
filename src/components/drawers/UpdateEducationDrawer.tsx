@@ -25,7 +25,7 @@ export const UpdateEducationDrawer = ({
   const form = useEducationForm();
 
   return (
-    <DrawerForm form={form} titleField="major" titlePlaceholder={eager.major}>
+    <DrawerForm form={form} titleField="major" eagerTitle={eager.major}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {education => <UpdateEducationForm form={form} education={education} />}
       </ApiResponseState>

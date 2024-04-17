@@ -26,7 +26,7 @@ export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {
   return (
     <ClientEducationSelect
       visibility="admin"
-      inputClassName="w-[300px]"
+      inputClassName="w-full"
       menuClassName="max-h-[260px]"
       options={{ isMulti: true }}
       value={value}

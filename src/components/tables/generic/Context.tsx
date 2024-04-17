@@ -31,11 +31,14 @@ export const TableViewContext = createContext<TableView<TableModel>>({
   columns: [],
   visibleColumns: [],
   visibleColumnIds: [],
+  rowIsLoading: () => false,
+  rowIsLocked: () => false,
   hideColumn: () => {},
   showColumn: () => {},
   check: () => {},
   uncheck: () => {},
   setVisibleColumns: () => {},
+  setRowLoading: () => {},
 }) as {
   Provider: ProviderExoticComponent;
   Consumer: ConsumerExoticComponent;

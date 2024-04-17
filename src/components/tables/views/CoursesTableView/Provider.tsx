@@ -19,6 +19,14 @@ const SlugCell = dynamic(
   () => import("~/components/tables/generic/cells/SlugCell"),
 ) as SlugCellComponent;
 
+const VisibleCell = dynamic(
+  () => import("~/components/tables/generic/cells/VisibleCell"),
+) as cells.VisibleCellComponent;
+
+const ReadOnlyDateTimeCell = dynamic(
+  () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
+);
+
 const EducationCell = dynamic(() => import("./cells/EducationCell"));
 
 export interface TableViewConfig
@@ -39,7 +47,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "Name",
           title: "Name (Abbv.)",
-          width: 320,
+          width: 240,
           render: ({ model, table }) => (
             <EditableStringCell
               field="name"
@@ -53,7 +61,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "shortName",
           title: "Name (Abbv.)",
-          width: 320,
+          width: 240,
           render: ({ model, table }) => (
             <EditableStringCell
               field="shortName"
@@ -67,7 +75,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "slug",
           title: "Slug",
-          width: 320,
+          width: 240,
           render: ({ model, table }) => (
             <SlugCell<ApiCourse<["education"]>, BrandCourse>
               model={model}
@@ -81,8 +89,38 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "education",
           title: "Education",
-          width: 310,
+          width: 240,
           render: ({ model, table }) => <EducationCell course={model} table={table} />,
+        },
+        {
+          accessor: "createdAt",
+          title: "Created",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.createdAt} />,
+        },
+        {
+          accessor: "updatedAt",
+          title: "Updated",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
+        },
+        {
+          accessor: "visible",
+          title: "Visible",
+          textAlign: "center",
+          width: 80,
+          render: ({ model, table }) => (
+            <VisibleCell
+              model={model}
+              table={table}
+              action={async (id, data) => {
+                await updateCourse(id, data);
+              }}
+              errorMessage="There was an error updating the course."
+            />
+          ),
         },
       ]}
     >

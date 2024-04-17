@@ -18,7 +18,7 @@ $table-size-properties: (
       ),
     ),
     td: (
-      padding: 6px,
+      padding: 6px 4px,
       font: (
         type: "body",
         size: "sm",
@@ -39,7 +39,7 @@ $table-size-properties: (
       ),
     ),
     td: (
-      padding: 8px,
+      padding: 8px 6px,
       font: (
         type: "body",
         size: "md",
@@ -60,7 +60,7 @@ $table-size-properties: (
       ),
     ),
     td: (
-      padding: 8px 10px,
+      padding: 8px 6px,
       font: (
         type: "body",
         size: "lg",
@@ -142,6 +142,7 @@ $table-size-properties: (
   height: 100%;
   max-height: 100%;
   position: relative;
+  border: 1px solid theme("colors.border");
 
   @each $size in $table-sizes {
     &--size-#{$size} {
@@ -161,15 +162,21 @@ $table-size-properties: (
       @include table-th {
         @include th-size($size);
         border-bottom: none !important;
+
+        > .mantine-datatable-header-resizable-handle {
+          &:after {
+            border-right: 1px solid theme("colors.border");
+          }
+        }
       }
       @include table-td {
         @include td-size($size);
       }
       @include first-table-td() {
-        padding-left: 18px;
+        padding-left: 8px;
       }
       @include last-table-td() {
-        padding-right: 18px;
+        padding-right: 8px;
       }
     }
   }

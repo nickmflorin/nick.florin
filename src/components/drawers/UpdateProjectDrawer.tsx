@@ -33,7 +33,7 @@ export const UpdateProjectDrawer = ({
   const form = useProjectForm();
 
   return (
-    <DrawerForm form={form} titleField="name" titlePlaceholder={eager.name}>
+    <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
         {project => <UpdateProjectForm form={form} project={project} />}
       </ApiResponseState>

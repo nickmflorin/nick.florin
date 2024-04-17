@@ -26,7 +26,7 @@ export const ExperiencesCell = ({ skill }: ExperiencesCellProps): JSX.Element =>
   return (
     <ClientExperienceSelect
       visibility="admin"
-      inputClassName="w-[300px]"
+      inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
       onChange={async (v, { item }) => {

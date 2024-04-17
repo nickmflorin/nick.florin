@@ -14,7 +14,7 @@ import { Label } from "~/components/typography/Label";
 
 interface ExperienceCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
-  readonly table: types.TableInstance<ApiSkill<["experiences", "educations", "projects"]>>;
+  readonly table: types.TableView<ApiSkill<["experiences", "educations", "projects"]>>;
 }
 
 export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Element => {

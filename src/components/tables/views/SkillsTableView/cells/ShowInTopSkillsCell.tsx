@@ -13,7 +13,7 @@ import type * as types from "~/components/tables/types";
 
 interface ShowInTopSkillsCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
-  readonly table: types.TableInstance<ApiSkill<["experiences", "educations", "projects"]>>;
+  readonly table: types.TableView<ApiSkill<["experiences", "educations", "projects"]>>;
 }
 
 export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps): JSX.Element => {

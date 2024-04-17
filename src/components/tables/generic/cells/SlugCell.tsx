@@ -12,7 +12,7 @@ import type * as types from "~/components/tables/types";
 
 export interface SlugCellProps<M extends { id: string; slug: string }, T> {
   readonly model: M;
-  readonly table: types.TableInstance<M>;
+  readonly table: types.TableView<M>;
   readonly modelType: string;
   readonly getSluggifiedFieldValue: (m: M) => string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

@@ -1,16 +1,16 @@
 import { DateTime } from "luxon";
 
-export interface TimeDisplayProps {
+export interface DateTimeDisplayProps {
   readonly date: Date | string;
   readonly prefix?: string;
   readonly format?: Intl.DateTimeFormatOptions;
 }
 
-export const TimeDisplay = ({
+export const DateTimeDisplay = ({
   date,
   prefix,
   format = DateTime.DATETIME_MED,
-}: TimeDisplayProps): string =>
+}: DateTimeDisplayProps): string =>
   prefix
     ? `${prefix} ${
         typeof date !== "string" ? DateTime.fromJSDate(date).toLocaleString(format) : date

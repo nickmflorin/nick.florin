@@ -3,6 +3,7 @@ import { type ReactNode, useState, useCallback } from "react";
 
 import uniq from "lodash.uniq";
 
+import { Spinner } from "~/components/icons/Spinner";
 import { Checkbox } from "~/components/input/Checkbox";
 import { useDeepEqualMemo } from "~/hooks";
 
@@ -12,6 +13,11 @@ import * as types from "../types";
 import { TableViewContext } from "./Context";
 
 const ActionsCell = dynamic(() => import("./cells/ActionsCell"));
+
+type RowLoadingState<T extends types.TableModel> = {
+  readonly id: T["id"];
+  readonly locked?: boolean;
+};
 
 export interface TableViewConfig<T extends types.TableModel> {
   readonly isCheckable?: boolean;
@@ -38,6 +44,8 @@ export const useTableView = <T extends types.TableModel>({
   types.TableView<T>,
   "isReady" | "id" | "canToggleColumnVisibility"
 > => {
+  const [rowStates, setRowStates] = useState<RowLoadingState<T>[]>([]);
+
   const [checked, { uncheck, check }] = useCheckedRows<T>({
     enabled: isCheckable,
     useQueryParams: useCheckedRowsQuery,
@@ -57,7 +65,7 @@ export const useTableView = <T extends types.TableModel>({
           id: "checkable",
           title: "",
           accessor: "checkable",
-          width: "40px",
+          width: "32px",
           cellsClassName: "loading-cell",
           isHideable: false,
           render: ({ model }) => (
@@ -75,6 +83,18 @@ export const useTableView = <T extends types.TableModel>({
             </div>
           ),
         },
+        {
+          title: "",
+          accessor: "loading",
+          width: "24px",
+          cellsClassName: "loading-cell",
+          isHideable: false,
+          render: ({ model }) => (
+            <div className="flex flex-row items-center justify-center">
+              <Spinner size="18px" isLoading={rowStates.map(st => st.id).includes(model.id)} />
+            </div>
+          ),
+        },
         ...cs,
       ];
     }
@@ -85,7 +105,6 @@ export const useTableView = <T extends types.TableModel>({
           accessor: "actions",
           title: "",
           textAlign: "center",
-          width: 140,
           isHideable: false,
           render: ({ model }) => (
             <ActionsCell
@@ -110,6 +129,15 @@ export const useTableView = <T extends types.TableModel>({
     deleteIsDisabled,
     onEdit,
   ]);
+
+  const setRowLoading = useCallback((id: T["id"], value: boolean, opts?: { locked?: boolean }) => {
+    setRowStates(curr => {
+      if (value) {
+        return [...curr.filter(st => st.id !== id), { id, locked: opts?.locked !== false }];
+      }
+      return [...curr.filter(st => st.id !== id)];
+    });
+  }, []);
 
   const visibleColumns = useDeepEqualMemo(
     () =>
@@ -138,6 +166,13 @@ export const useTableView = <T extends types.TableModel>({
     check,
     uncheck,
     setVisibleColumns: setVisibleColumnIds,
+    setRowLoading,
+    rowIsLoading: (id: T["id"]) => rowStates.map(st => st.id).includes(id),
+    rowIsLocked: (id: T["id"]) =>
+      rowStates
+        .filter(st => st.locked === true)
+        .map(st => st.id)
+        .includes(id),
   };
 };
 

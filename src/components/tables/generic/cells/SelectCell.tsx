@@ -32,7 +32,7 @@ export const SelectCell = <M extends TableModel, N extends keyof M, T>({
   action,
   errorMessage,
   attribute,
-  inputClassName = "w-[300px]",
+  inputClassName = "w-full",
   component: Component,
 }: SelectCellProps<M, N, T>): JSX.Element => {
   const [value, setValue] = useState<AttributeValue<M, N>>(model[attribute]);

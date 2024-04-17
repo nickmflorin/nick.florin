@@ -1,8 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiExperience } from "~/prisma/model";
-import { deleteExperience, updateExperience } from "~/actions/mutations/experiences";
+import { type ApiRepository } from "~/prisma/model";
+import { deleteRepository, updateRepository } from "~/actions/mutations/repositories";
+import { RepositoryLink } from "~/components/buttons/RepositoryLink";
 import { useDrawers } from "~/components/drawers/hooks";
 import type * as cells from "~/components/tables/generic/cells";
 import {
@@ -10,81 +11,53 @@ import {
   type TableViewConfig as RootTableViewConfig,
 } from "~/components/tables/generic/Provider";
 
-const VisibleCell = dynamic(
-  () => import("~/components/tables/generic/cells/VisibleCell"),
-) as cells.VisibleCellComponent;
-
-const DetailsCell = dynamic(() => import("./cells/DetailsCell"));
-
 const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
+
+const VisibleCell = dynamic(
+  () => import("~/components/tables/generic/cells/VisibleCell"),
+) as cells.VisibleCellComponent;
 
 const ReadOnlyDateTimeCell = dynamic(
   () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
 );
 
-const CompanyCell = dynamic(() => import("./cells/CompanyCell"));
-
 export interface TableViewConfig
-  extends Pick<RootTableViewConfig<ApiExperience<["details"]>>, "children"> {}
+  extends Pick<RootTableViewConfig<ApiRepository<["projects"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiExperience<["details"]>>
-      id="experiences-table"
+    <RootTableViewProvider<ApiRepository<["projects"]>>
+      id="repositories-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
       canToggleColumnVisibility={true}
-      deleteErrorMessage="There was an error deleting the experience."
-      deleteAction={async id => {
-        await deleteExperience(id);
-      }}
-      onEdit={(id, m) =>
-        open(ids.UPDATE_EXPERIENCE, { experienceId: id, eager: { title: m.title } })
-      }
+      deleteErrorMessage="There was an error deleting the repository."
+      deleteAction={async id => await deleteRepository(id)}
+      onEdit={(id, m) => open(ids.UPDATE_REPOSITORY, { repositoryId: id, eager: { slug: m.slug } })}
       columns={[
         {
-          accessor: "title",
-          title: "Title",
-          width: 260,
+          accessor: "slug",
+          title: "Slug",
+          width: 320,
           render: ({ model, table }) => (
             <EditableStringCell
-              field="title"
+              field="slug"
               model={model}
               table={table}
-              errorMessage="There was an error updating the experience."
-              action={updateExperience.bind(null, model.id)}
+              errorMessage="There was an error updating the project."
+              action={updateRepository.bind(null, model.id)}
             />
           ),
         },
         {
-          accessor: "shortTitle",
-          title: "Title (Abbv.)",
-          width: 220,
-          render: ({ model, table }) => (
-            <EditableStringCell
-              field="shortTitle"
-              model={model}
-              table={table}
-              errorMessage="There was an error updating the experience."
-              action={updateExperience.bind(null, model.id)}
-            />
-          ),
-        },
-        {
-          accessor: "company",
-          title: "Company",
-          width: 260,
-          render: ({ model, table }) => <CompanyCell experience={model} table={table} />,
-        },
-        {
-          accessor: "details",
-          title: "Details",
-          width: 120,
+          accessor: "url",
+          title: "",
           textAlign: "center",
-          render: ({ model }) => <DetailsCell model={model} />,
+          width: 240,
+          render: ({ model }) => <RepositoryLink repository={model} />,
         },
         {
           accessor: "createdAt",
@@ -110,9 +83,9 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               model={model}
               table={table}
               action={async (id, data) => {
-                await updateExperience(id, data);
+                await updateRepository(id, data);
               }}
-              errorMessage="There was an error updating the experience."
+              errorMessage="There was an error updating the repository."
             />
           ),
         },

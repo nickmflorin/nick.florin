@@ -9,7 +9,7 @@ export interface EditableStringCellProps<
 > {
   readonly model: M;
   readonly field: K;
-  readonly table: types.TableInstance<M>;
+  readonly table: types.TableView<M>;
   readonly errorMessage: string;
   readonly action: (data: P) => Promise<T | ApiClientErrorJson>;
 }
@@ -27,7 +27,7 @@ export type EditableStringCellComponent = {
 
 export interface VisibleCellProps<M extends { id: string; visible: boolean }, T> {
   readonly model: M;
-  readonly table: types.TableInstance<M>;
+  readonly table: types.TableView<M>;
   readonly errorMessage: string;
   readonly action: (id: string, data: { visible: boolean }) => Promise<T | ApiClientErrorJson>;
 }

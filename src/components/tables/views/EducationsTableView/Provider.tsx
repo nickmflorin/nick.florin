@@ -18,6 +18,10 @@ const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
+const ReadOnlyDateTimeCell = dynamic(
+  () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
+);
+
 const SchoolCell = dynamic(() => import("./cells/SchoolCell"));
 const DetailsCell = dynamic(() => import("./cells/DetailsCell"));
 
@@ -41,13 +45,13 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "major",
           title: "Major",
-          width: 320,
+          width: 240,
           render: ({ model, table }) => (
             <EditableStringCell
               field="major"
               model={model}
               table={table}
-              errorMessage="There was an error updating the experience."
+              errorMessage="There was an error updating the education."
               action={updateEducation.bind(null, model.id)}
             />
           ),
@@ -55,7 +59,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "shortMajor",
           title: "Major (Abbv.)",
-          width: 320,
+          width: 240,
           render: ({ model, table }) => (
             <EditableStringCell
               field="shortMajor"
@@ -69,7 +73,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "school",
           title: "School",
-          width: 320,
+          width: 240,
           render: ({ model, table }) => <SchoolCell education={model} table={table} />,
         },
         {
@@ -80,9 +84,24 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           render: ({ model }) => <DetailsCell model={model} />,
         },
         {
+          accessor: "createdAt",
+          title: "Created",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.createdAt} />,
+        },
+        {
+          accessor: "updatedAt",
+          title: "Updated",
+          textAlign: "center",
+          width: 170,
+          render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
+        },
+        {
           accessor: "visible",
           title: "Visible",
           textAlign: "center",
+          width: 80,
           render: ({ model, table }) => (
             <VisibleCell
               model={model}
@@ -90,7 +109,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               action={async (id, data) => {
                 await updateEducation(id, data);
               }}
-              errorMessage="There was an error updating the experience."
+              errorMessage="There was an error updating the education."
             />
           ),
         },

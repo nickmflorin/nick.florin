@@ -13,7 +13,7 @@ import type * as types from "~/components/tables/types";
 
 interface CompanyCellProps {
   readonly experience: ApiExperience<["details"]>;
-  readonly table: types.TableInstance<ApiExperience<["details"]>>;
+  readonly table: types.TableView<ApiExperience<["details"]>>;
 }
 
 export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Element => {
@@ -27,7 +27,7 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
 
   return (
     <ClientCompanySelect
-      inputClassName="w-[300px]"
+      inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
       onChange={async v => {

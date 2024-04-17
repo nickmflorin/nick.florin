@@ -1,4 +1,4 @@
-import { type ReactNode, type ForwardedRef } from "react";
+import { type ReactNode } from "react";
 
 import clsx from "clsx";
 import omit from "lodash.omit";
@@ -7,25 +7,24 @@ import { type DataTableColumn, type DataTableRowExpansionProps } from "mantine-d
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ClassName, type ComponentProps } from "~/components/types";
 
-export type TableModel = {
-  readonly id: string;
+export type RootColumn<T extends TableModel> = Omit<DataTableColumn<T>, "id" | "accessor"> & {
+  readonly id?: string;
+  readonly accessor: string;
 };
 
-export type TableInstance<T extends TableModel> = {
-  readonly rowIsLoading: (id: T["id"]) => boolean;
-  readonly setRowLoading: (id: T["id"], loading: boolean, opts?: { locked?: boolean }) => void;
+export type TableModel = {
+  readonly id: string;
 };
 
 export type CellRenderProps<T extends TableModel> = {
   readonly model: T;
   readonly index: number;
-  readonly table: TableInstance<T>;
+  readonly table: TableView<T>;
 };
 
 export type CellRenderer<T extends TableModel> = (props: CellRenderProps<T>) => ReactNode;
 
-export type Column<T extends TableModel> = Omit<DataTableColumn, "render"> & {
-  readonly id?: string;
+export type Column<T extends TableModel> = Omit<RootColumn<T>, "render"> & {
   readonly defaultVisible?: boolean;
   readonly isHideable?: boolean;
   readonly render?: CellRenderer<T>;
@@ -35,16 +34,16 @@ export const getColId = <T extends TableModel>(col: Column<T>): string => col.id
 
 export const toNativeColumn = <T extends TableModel>(
   col: Column<T>,
-  table: TableInstance<T>,
-): DataTableColumn<T> => {
+  table: TableView<T>,
+): RootColumn<T> => {
   const { render } = col;
   if (render !== undefined) {
     return {
       ...omit(col, ["id", "render", "defaultVisible", "isHideable"]),
       render: (model: T, index: number) => render({ model, index, table }),
-    } as DataTableColumn<T>;
+    } as RootColumn<T>;
   }
-  return col as DataTableColumn<T>;
+  return col as RootColumn<T>;
 };
 
 export const TableSizes = enumeratedLiterals(["sm", "md", "lg"] as const, {});
@@ -55,12 +54,16 @@ export type RowClassName<T extends TableModel> = ClassName | RowClassNameFn<T>;
 
 export interface TableProps<T extends TableModel> extends ComponentProps {
   readonly data: T[];
-  readonly columns: Column<T>[];
+  readonly columns: RootColumn<T>[];
   readonly size?: TableSize;
   readonly isLoading?: boolean;
   readonly rowClassName?: RowClassName<T>;
   readonly rowExpansion?: DataTableRowExpansionProps<T>;
   readonly noHeader?: boolean;
+}
+
+export interface ContextTableProps<T extends TableModel> extends Omit<TableProps<T>, "columns"> {
+  readonly columns: Column<T>[];
 }
 
 export const mergeRowClassNames =
@@ -83,6 +86,9 @@ export type TableView<T extends TableModel> = {
   readonly columns: Column<T>[];
   readonly visibleColumns: Column<T>[];
   readonly visibleColumnIds: string[];
+  readonly rowIsLoading: (id: T["id"]) => boolean;
+  readonly rowIsLocked: (id: T["id"]) => boolean;
+  readonly setRowLoading: (id: T["id"], loading: boolean, opts?: { locked?: boolean }) => void;
   readonly hideColumn: (id: string) => void;
   readonly showColumn: (id: string) => void;
   readonly check: (m: T | T["id"]) => void;
@@ -91,7 +97,5 @@ export type TableView<T extends TableModel> = {
 };
 
 export type ContextTableComponent = {
-  <T extends TableModel>(
-    props: Omit<TableProps<T>, "columns"> & { readonly ref?: ForwardedRef<TableInstance<T>> },
-  ): JSX.Element;
+  <T extends TableModel>(props: Omit<TableProps<T>, "columns">): JSX.Element;
 };

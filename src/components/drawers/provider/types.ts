@@ -7,6 +7,7 @@ import type {
   BrandProject,
   BrandEducation,
   BrandExperience,
+  BrandRepository,
 } from "~/prisma/model";
 
 export const DrawerIds = enumeratedLiterals(
@@ -30,6 +31,8 @@ export const DrawerIds = enumeratedLiterals(
     "update-course",
     "create-course",
     "view-resumes",
+    "update-repository",
+    "create-repository",
   ] as const,
   {},
 );
@@ -44,6 +47,7 @@ export type DrawerProps<D extends DrawerId> = {
   "update-skill": { skillId: string; eager: Pick<BrandSkill, "label"> };
   "update-company": { companyId: string; eager: Pick<BrandCompany, "name"> };
   "update-school": { schoolId: string; eager: Pick<BrandSchool, "name"> };
+  "update-repository": { repositoryId: string; eager: Pick<BrandRepository, "slug"> };
   "view-skill": { skillId: string };
   "view-course": { courseId: string };
   "update-education-details": {
@@ -60,6 +64,7 @@ export type DrawerProps<D extends DrawerId> = {
   "create-company": {};
   "create-project": {};
   "create-course": {};
+  "create-repository": {};
   "view-resumes": {};
   /* eslint-enable @typescript-eslint/ban-types */
 }[D];

@@ -9,11 +9,11 @@ import { type ApiCourse } from "~/prisma/model";
 import { updateCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
-import type { TableInstance } from "~/components/tables/types";
+import type { TableView } from "~/components/tables/types";
 
 interface EducationCellProps {
   readonly course: ApiCourse<["education"]>;
-  readonly table: TableInstance<ApiCourse<["education"]>>;
+  readonly table: TableView<ApiCourse<["education"]>>;
 }
 
 export const EducationCell = ({ course, table }: EducationCellProps): JSX.Element => {
@@ -28,7 +28,7 @@ export const EducationCell = ({ course, table }: EducationCellProps): JSX.Elemen
   return (
     <ClientEducationSelect
       visibility="admin"
-      inputClassName="w-[300px]"
+      inputClassName="w-full"
       menuClassName="max-h-[260px]"
       options={{ isMulti: false }}
       useAbbreviatedOptionLabels={false}
