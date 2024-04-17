@@ -26,13 +26,10 @@ export const UpdateDetailsCollapsedDrawer = <T extends DetailEntityType>(
     includes: ["nestedDetails"],
     visibility: "admin",
   });
-
   return (
     <ApiResponseState error={error} isLoading={isLoading} data={data}>
       {obj => {
-        const title = (obj as { education: Education }).education
-          ? (obj as { education: Education }).education.major
-          : (obj as { experience: Experience }).experience.title;
+        const title = obj.entity.$kind === "education" ? obj.entity.major : obj.entity.title;
         return (
           <>
             <DrawerHeader>{title}</DrawerHeader>

@@ -1,10 +1,10 @@
 import { encodeQueryParam } from "~/lib/urls";
 import {
   type ApiDetail,
-  type Education,
-  type Experience,
   DetailEntityType,
   type DetailIncludes,
+  type BrandExperience,
+  type BrandEducation,
 } from "~/prisma/model";
 import type { Visibility } from "~/api/query";
 
@@ -13,11 +13,11 @@ import { useSWR, type SWRConfig } from "./use-swr";
 type Response<I extends DetailIncludes, T extends DetailEntityType> = {
   [DetailEntityType.EDUCATION]: {
     readonly details: ApiDetail<I>[];
-    readonly education: Education;
+    readonly entity: BrandEducation;
   };
   [DetailEntityType.EXPERIENCE]: {
     readonly details: ApiDetail<I>[];
-    readonly experience: Experience;
+    readonly entity: BrandExperience;
   };
 }[T];
 
