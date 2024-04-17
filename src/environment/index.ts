@@ -48,11 +48,13 @@ export const environment = Environment.create(
       NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
       NEXT_PUBLIC_WELCOME_TOAST: process.env.NEXT_PUBLIC_WELCOME_TOAST,
       NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: process.env.NEXT_PUBLIC_GITHUB_PROFILE_PREFIX,
+      NEXT_PUBLIC_DASHBOARD_ENABLED: process.env.NEXT_PUBLIC_DASHBOARD_ENABLED,
     },
     validators: {
       NEXT_PUBLIC_PRETTY_LOGGING: StringBooleanFlagSchema.default(
         environmentLookup(DEFAULT_PRETTY_LOGGING),
       ),
+      NEXT_PUBLIC_DASHBOARD_ENABLED: StringBooleanFlagSchema.optional(),
       NEXT_PUBLIC_WELCOME_TOAST: StringBooleanFlagSchema.optional(),
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
         process.env.NODE_ENV === "test" ? z.literal("") : z.string(),

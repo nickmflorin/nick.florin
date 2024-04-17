@@ -60,12 +60,34 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
   return (
     <div className="layout-nav" onMouseLeave={() => setGroupOpenIndex(null)}>
       <div className="flex flex-col gap-[8px] items-center">
-        {items.map((item, i) => {
-          if (layoutNavItemHasChildren(item)) {
-            const offset = getAnimatedOffset({
-              previousItems: items.slice(0, i),
-              groupOpenIndex,
-            });
+        {items
+          .filter(item => item.visible !== false)
+          .map((item, i) => {
+            if (layoutNavItemHasChildren(item)) {
+              const offset = getAnimatedOffset({
+                previousItems: items.slice(0, i),
+                groupOpenIndex,
+              });
+              return (
+                <motion.div
+                  key={item.path}
+                  variants={ItemVariants}
+                  initial={false}
+                  animate={offset !== 0 ? "offset" : "normal"}
+                  custom={{
+                    offset,
+                  }}
+                  className="w-full"
+                >
+                  <LayoutNavGroup
+                    item={item}
+                    isOpen={groupOpenIndex === i}
+                    onOpen={() => setGroupOpenIndex(i)}
+                  />
+                </motion.div>
+              );
+            }
+            const offset = getAnimatedOffset({ previousItems: items.slice(0, i), groupOpenIndex });
             return (
               <motion.div
                 key={item.path}
@@ -75,32 +97,12 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
                 custom={{
                   offset,
                 }}
-                className="w-full"
+                className="w-full h-[48px] aspect-square"
               >
-                <LayoutNavGroup
-                  item={item}
-                  isOpen={groupOpenIndex === i}
-                  onOpen={() => setGroupOpenIndex(i)}
-                />
+                <LayoutNavItem item={item} />
               </motion.div>
             );
-          }
-          const offset = getAnimatedOffset({ previousItems: items.slice(0, i), groupOpenIndex });
-          return (
-            <motion.div
-              key={item.path}
-              variants={ItemVariants}
-              initial={false}
-              animate={offset !== 0 ? "offset" : "normal"}
-              custom={{
-                offset,
-              }}
-              className="w-full h-[48px] aspect-square"
-            >
-              <LayoutNavItem item={item} />
-            </motion.div>
-          );
-        })}
+          })}
       </div>
     </div>
   );

@@ -56,6 +56,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Layout
             nav={[
               {
+                tooltipLabel: "Dashboard",
+                icon: { name: "grid" },
+                path: "/dashboard",
+                active: [{ leadingPath: "/dashboard" }],
+                visible: environment.get("NEXT_PUBLIC_DASHBOARD_ENABLED"),
+              },
+              {
                 tooltipLabel: "Resume",
                 icon: { name: "list-check" },
                 path: "/resume",

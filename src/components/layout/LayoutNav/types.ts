@@ -4,6 +4,7 @@ import { type NavItem } from "~/hooks";
 
 export interface ILayoutNavItem extends Required<NavItem, "icon"> {
   readonly tooltipLabel: string;
+  readonly visible?: boolean;
   readonly children?: [Omit<ILayoutNavItem, "children">, ...Omit<ILayoutNavItem, "children">[]];
 }
 
@@ -25,4 +26,5 @@ export const layoutNavItemHasChildren = (
   item: ILayoutNavItem | Required<ILayoutNavItem, "children">,
 ): item is Required<ILayoutNavItem, "children"> =>
   (item as Required<ILayoutNavItem, "children">).children !== undefined &&
-  (item as Required<ILayoutNavItem, "children">).children.length !== 0;
+  (item as Required<ILayoutNavItem, "children">).children.filter(child => child.visible !== false)
+    .length !== 0;
