@@ -1,3 +1,7 @@
+@use "partials";
+
+@use "./fn" as *;
+
 @mixin truncate {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -9,4 +13,169 @@
   -webkit-line-clamp: $line-clamp;
   -webkit-box-orient: vertical;
   display: block;
+}
+
+@mixin inherit-font-properties() {
+  color: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-transform: inherit;
+  text-decoration: inherit;
+}
+
+@mixin font-family($type) {
+  font-family: get-font-family($type);
+}
+
+@mixin body-font-family() {
+  @include font-family("body");
+}
+
+@mixin title-font-family() {
+  @include font-family("title");
+}
+
+@mixin label-font-family() {
+  @include font-family("label");
+}
+
+/* --------------------------------------- Font Weights ----------------------------------------- */
+@mixin font-weight($args...) {
+  font-weight: get-font-weight($args...);
+}
+
+@mixin body-font-weight($args...) {
+  font-weight: get-font-weight($type: "body", $args...);
+}
+
+@mixin title-font-weight($args...) {
+  font-weight: get-font-weight($type: "title", $args...);
+}
+
+@mixin label-font-weight($args...) {
+  font-weight: get-font-weight($type: "label", $args...);
+}
+
+/* --------------------------------------- Font Sizes ----------------------------------------- */
+@mixin font-size($type, $size: null) {
+  font-size: get-font-size($type, $size);
+}
+
+@mixin title-font-size($size: null) {
+  @include font-size("title", $size);
+}
+
+@mixin body-font-size($size: null) {
+  @include font-size("body", $size);
+}
+
+@mixin label-font-size($size: null) {
+  @include font-size("label", $size);
+}
+
+@mixin line-height($type, $size: null) {
+  line-height: get-line-height($type, $size);
+}
+
+@mixin title-line-height($size: null) {
+  @include line-height("title", $size);
+}
+
+@mixin body-line-height($size: null) {
+  @include line-height("body", $size);
+}
+
+@mixin label-line-height($size: null) {
+  @include line-height("label", $size);
+}
+
+/* --------------------------------------- Font Colors ------------------------------------------ */
+@mixin font-color($type, $color: null) {
+  color: get-font-color($type, $color);
+}
+
+@mixin body-font-color($args...) {
+  @include font-color("body", $args...);
+}
+
+@mixin title-font-color($args...) {
+  @include font-color("title", $args...);
+}
+
+@mixin label-font-color($args...) {
+  @include font-color("label", $args...);
+}
+
+/* --------------------------------------- Font Specs ------------------------------------------ */
+@mixin font($type, $args...) {
+  $properties: get-font($type, $args...);
+  @include partials.mapped-properties($properties);
+}
+
+@mixin with-font-sizes($type) {
+  @each $size in $typography-sizes {
+    $properties: get-font($type, $size: $size);
+    @content ($size, $properties);
+  }
+}
+
+@mixin with-font-weights() {
+  @each $weight in $font-weight-names {
+    &.font-weight-#{$weight} {
+      font-weight: get-font-weight($weight: $weight);
+    }
+  }
+}
+
+@mixin with-font-families() {
+  &.font-family-inter {
+    font-family: $font-family-inter;
+  }
+  &.font-family-roboto {
+    font-family: $font-family-roboto;
+  }
+  &.font-family-avenir {
+    font-family: $font-family-avenir;
+  }
+}
+
+@mixin with-text-transforms() {
+  @each $transform in $text-transforms {
+    &.transform-#{$transform} {
+      text-transform: $transform;
+    }
+  }
+}
+
+@mixin title($args...) {
+  @include font("title", $args...);
+}
+
+@mixin body($args...) {
+  @include font("body", $args...);
+}
+
+@mixin label($args...) {
+  @include font("label", $args...);
+}
+
+@mixin with-fonts($type) {
+  @include with-font-weights();
+  @include with-font-families();
+  @include with-text-transforms();
+
+  @include with-font-sizes($type) using ($size, $data) {
+    &.font-size-#{$size} {
+      font-size: partials.mapget($data, font-size);
+      line-height: partials.mapget($data, line-height);
+      font-weight: partials.mapget($data, font-weight);
+
+      // Allow the font-weight to be overridden for each size.
+      @include with-font-weights();
+
+      @content ($data);
+    }
+  }
 }

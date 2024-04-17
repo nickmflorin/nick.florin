@@ -1,0 +1,18 @@
+%typography-base {
+  font-feature-settings:
+    "tnum" on,
+    "lnum" on;
+  font-style: normal !important;
+  font-variant: tabular-nums;
+  margin: 0;
+  padding: 0;
+
+  em,
+  b {
+    font-style: normal !important;
+  }
+
+  i {
+    font-style: normal !important;
+  }
+}

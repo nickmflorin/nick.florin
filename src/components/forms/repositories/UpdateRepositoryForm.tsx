@@ -2,50 +2,48 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type ApiProject } from "~/prisma/model";
-import { updateProject } from "~/actions/mutations/projects";
+import { type ApiRepository } from "~/prisma/model";
+import { updateRepository } from "~/actions/mutations/repositories";
 import { isApiClientErrorJson } from "~/api";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 
-import { ProjectForm, type ProjectFormProps } from "./ProjectForm";
+import { RepositoryForm, type RepositoryFormProps } from "./RepositoryForm";
 
-export interface UpdateProjectFormProps extends Omit<ProjectFormProps, "action"> {
-  readonly project: ApiProject<["skills", "repositories", "nestedDetails", "details"]>;
+export interface UpdateRepositoryFormProps extends Omit<RepositoryFormProps, "action"> {
+  readonly repository: ApiRepository<["projects", "skills"]>;
   readonly onCancel?: () => void;
 }
 
-export const UpdateProjectForm = ({
-  project,
+export const UpdateRepositoryForm = ({
+  repository,
   onCancel,
   ...props
-}: UpdateProjectFormProps): JSX.Element => {
-  const updateProjectWithId = updateProject.bind(null, project.id);
+}: UpdateRepositoryFormProps): JSX.Element => {
+  const updateRepositoryWithId = updateRepository.bind(null, repository.id);
   const { refresh } = useRouter();
   const [pending, transition] = useTransition();
 
   // Prevents the form from resetting when an error occurs.
   useDeepEqualEffect(() => {
     props.form.setValues({
-      ...project,
-      shortName: project.shortName ?? "",
-      repositories: project.repositories.map(r => r.id),
+      ...repository,
+      slug: repository.slug,
+      projects: repository.projects.map(p => p.id),
       /* Even though these aren't modifiable by the form yet, it is important they be stored with
          the form data so that they are not treated as an empty array which will wipe the previously
          stored data on save. */
-      skills: project.skills.map(sk => sk.id),
-      details: project.details.map(d => d.id),
-      nestedDetails: project.nestedDetails.map(d => d.id),
+      skills: repository.skills.map(sk => sk.id),
     });
-  }, [project, props.form.setValues]);
+  }, [repository, props.form.setValues]);
 
   return (
-    <ProjectForm
+    <RepositoryForm
       {...props}
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateProjectWithId(data);
+        const response = await updateRepositoryWithId(data);
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {
@@ -58,4 +56,4 @@ export const UpdateProjectForm = ({
   );
 };
 
-export default UpdateProjectForm;
+export default UpdateRepositoryForm;

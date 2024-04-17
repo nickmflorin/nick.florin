@@ -67,16 +67,8 @@ export const Floating = ({
   variant = types.FloatingVariants.SECONDARY,
   ...config
 }: FloatingProps) => {
-  const {
-    refs,
-    referenceProps,
-    isOpen,
-    floatingProps,
-    maxHeight,
-    floatingStyles,
-    arrowRef,
-    context,
-  } = useFloating(config);
+  const { refs, referenceProps, isOpen, floatingProps, floatingStyles, arrowRef, context } =
+    useFloating(config);
 
   const children = useMemo(() => {
     if (typeof _children === "function") {
@@ -89,17 +81,11 @@ export const Floating = ({
   }, [_children, refs, referenceProps, isOpen]);
 
   const content = useMemo(() => {
-    const styles = maxHeight
-      ? {
-          ...floatingStyles,
-          maxHeight: maxHeight ?? undefined,
-        }
-      : floatingStyles;
     if (typeof _content === "function") {
       return _content({
         ref: refs.setFloating,
         params: floatingProps,
-        styles: styles,
+        styles: floatingStyles,
       });
     }
     return cloneElement(
@@ -107,7 +93,7 @@ export const Floating = ({
       {
         ...floatingProps,
         ref: refs.setFloating,
-        style: { ..._content.props.style, ...styles },
+        style: { ..._content.props.style, ...floatingStyles },
       },
       <>
         {_content.props.children}
@@ -120,7 +106,6 @@ export const Floating = ({
     _content,
     floatingProps,
     refs,
-    maxHeight,
     floatingStyles,
     context,
     arrowRef,

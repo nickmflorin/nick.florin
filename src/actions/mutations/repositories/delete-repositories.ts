@@ -5,7 +5,7 @@ import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { ApiClientGlobalError } from "~/api";
 
-export const deleteProjects = async (ids: string[]): Promise<void> => {
+export const deleteRepositories = async (ids: string[]): Promise<void> => {
   await getAuthAdminUser({ strict: true });
 
   const invalid = ids.filter(id => !isUuid(id));
@@ -19,10 +19,10 @@ export const deleteProjects = async (ids: string[]): Promise<void> => {
     );
   }
   await prisma.$transaction(async tx => {
-    const projects = await tx.project.findMany({
+    const repositories = await tx.repository.findMany({
       where: { id: { in: ids } },
     });
-    const nonexistent = ids.filter(id => !projects.some(p => p.id === id));
+    const nonexistent = ids.filter(id => !repositories.some(p => p.id === id));
     if (nonexistent.length > 0) {
       return ApiClientGlobalError.BadRequest(
         `The id(s) ${humanizeList(nonexistent, {
@@ -32,6 +32,6 @@ export const deleteProjects = async (ids: string[]): Promise<void> => {
         { nonexistent },
       );
     }
-    await tx.project.deleteMany({ where: { id: { in: ids } } });
+    await tx.repository.deleteMany({ where: { id: { in: ids } } });
   });
 };

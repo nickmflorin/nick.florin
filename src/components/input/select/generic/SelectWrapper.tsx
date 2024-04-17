@@ -63,6 +63,18 @@ export const SelectWrapper = forwardRef<types.SelectInstance, SelectWrapperProps
     return (
       <Floating
         {...props}
+        /* Note: Using autoUpdate for the Select is particularly important - especially for Select
+           elements inside of Forms that exist in Drawers - because the first time the Select is
+           opened after initial render, the Select's content menu will appear with the best
+           placement (bottom or top), based on the 'autoPlacement' middleware used below.
+           Otherwise, the optimal autoPlacement does not seem to take appropriate effect until the
+           second time the Select is opened, after the initial render (for unknown reasons).
+
+           However, it can be a performance hog - so we should leave it off for now, and investigate
+           further to see exactly what performance impact it has as well as why the Select seems
+           to not appropriately use the 'autoPlacement' behavior when inside of a Drawer during the
+           first open of the Select's menu content. */
+        //  autoUpdate
         placement={menuPlacement}
         middleware={[autoPlacement({ allowedPlacements: ["bottom", "top"] })]}
         triggers={["click"]}

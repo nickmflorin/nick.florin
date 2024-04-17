@@ -1,7 +1,7 @@
 @use "sass:list";
 
 @use "partials";
-@use "./properties" as properties;
+@use "./fn" as properties;
 
 /* ------------------------------------ Font Face Specifications -------------------------------- */
 $font-file-types: (svg, eot, ttf, woff, woff2);

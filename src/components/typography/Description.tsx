@@ -45,21 +45,20 @@ export const Description = ({
     }, []);
   }, [description, children]);
 
+  const isFlex =
+    validDescriptions.length > 1 &&
+    validDescriptions.filter(d => typeof d === "string").length === validDescriptions.length;
+
   return validDescriptions.length !== 0 ? (
     <div
       className={clsx(
         "description",
         // TODO: Improve multi-line logic.
-        {
-          "flex flex-col":
-            validDescriptions.length > 1 &&
-            validDescriptions.filter(d => typeof d === "string").length ===
-              validDescriptions.length,
-        },
+        { "flex flex-col": isFlex },
         getTypographyClassName({ fontFamily, fontSize, fontWeight }),
         props.className,
       )}
-      style={{ ...props.style, gap }}
+      style={{ ...props.style, gap: isFlex ? gap : undefined }}
     >
       {validDescriptions.map((d, index) =>
         typeof d === "string" ? (

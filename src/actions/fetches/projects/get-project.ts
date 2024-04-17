@@ -34,7 +34,7 @@ export const getProject = cache(
       });
       return null;
     }
-    const project = await prisma.project.findUnique({
+    let project = (await prisma.project.findUnique({
       where: { id },
       include: {
         repositories: fieldIsIncluded("repositories", includes)
@@ -44,8 +44,27 @@ export const getProject = cache(
           ? { where: { visible: visibility === "public" ? true : undefined } }
           : undefined,
       },
-    });
-    return project ? (convertToPlainObject(project) as ApiProject<I>) : null;
+    })) as ApiProject<I>;
+
+    if (fieldIsIncluded("details", includes)) {
+      project = {
+        ...project,
+        details: await prisma.detail.findMany({
+          where: { projectId: project.id },
+        }),
+      };
+    }
+
+    if (fieldIsIncluded("nestedDetails", includes)) {
+      project = {
+        ...project,
+        nestedDetails: await prisma.nestedDetail.findMany({
+          where: { projectId: project.id },
+        }),
+      };
+    }
+
+    return convertToPlainObject(project);
   },
 ) as {
   <I extends ProjectIncludes>(

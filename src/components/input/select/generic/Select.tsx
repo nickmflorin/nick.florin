@@ -90,7 +90,7 @@ const LocalSelect = forwardRef<
       actions,
       placeholder,
       maximumNumBadges,
-      maxHeight,
+      maxHeight = 240,
       initialValue,
       value: _propValue,
       isReady = true,

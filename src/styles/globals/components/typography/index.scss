@@ -1,4 +1,10 @@
-@use "./typography";
+@forward "./util";
 
-@forward "./properties";
-@forward "./mixins";
+@use "./font-faces" as font-faces;
+
+@use "./body";
+@use "./description";
+@use "./heading";
+@use "./label";
+
+@include font-faces.font-faces();

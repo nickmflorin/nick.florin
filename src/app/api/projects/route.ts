@@ -17,7 +17,12 @@ export async function GET(request: NextRequest) {
     }
   }
   const courses = await getProjects({
-    includes: parseInclusion(request, ["repositories", "skills"] as const) as ProjectIncludes,
+    includes: parseInclusion(request, [
+      "repositories",
+      "skills",
+      "details",
+      "nestedDetails",
+    ] as const) as ProjectIncludes,
     visibility,
   });
   return ClientResponse.OK(courses).response;

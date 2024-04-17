@@ -64,7 +64,7 @@ export const getProjects = cache(
       getCount: async () => await getProjectsCount({ filters, visibility }),
     });
 
-    const projects = await prisma.project.findMany({
+    let projects = (await prisma.project.findMany({
       where: whereClause({ filters }),
       include: {
         repositories: fieldIsIncluded("repositories", includes)
@@ -77,8 +77,29 @@ export const getProjects = cache(
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,
-    });
-    return projects.map(convertToPlainObject) as ApiProject<[]>[] as ApiProject<I>[];
+    })) as ApiProject<I>[];
+
+    if (fieldIsIncluded("details", includes)) {
+      const details = await prisma.detail.findMany({
+        where: { projectId: { in: projects.map(p => p.id) } },
+      });
+      projects = projects.map(proj => ({
+        ...proj,
+        details: details.filter(d => d.projectId === proj.id),
+      }));
+    }
+
+    if (fieldIsIncluded("nestedDetails", includes)) {
+      const nestedDetails = await prisma.nestedDetail.findMany({
+        where: { projectId: { in: projects.map(p => p.id) } },
+      });
+      projects = projects.map(proj => ({
+        ...proj,
+        nestedDetails: nestedDetails.filter(d => d.projectId === proj.id),
+      }));
+    }
+
+    return projects.map(convertToPlainObject);
   },
 ) as {
   <I extends ProjectIncludes>(params: GetProjectsParams<I>): Promise<ApiProject<I>[]>;

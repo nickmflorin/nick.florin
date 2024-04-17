@@ -22,6 +22,6 @@ export const RepositorySelect = <O extends { isMulti?: boolean }, E extends ApiR
   <Select<E, typeof options & O>
     {...props}
     options={{ ...globalOptions, ...options }}
-    itemRenderer={m => <RepositoryTile repository={m} />}
+    itemRenderer={m => <RepositoryTile repository={m} className="items-center" />}
   />
 );

@@ -3,6 +3,7 @@ import { type z } from "zod";
 
 import { ProjectSchema } from "~/api/schemas";
 import { DateSelect } from "~/components/input/dates/DateSelect";
+import { ClientRepositorySelect } from "~/components/input/select/ClientRepositorySelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 
@@ -42,6 +43,21 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
     <Form.Field name="description" label="Description" form={props.form}>
       <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
+    <Form.ControlledField
+      name="repositories"
+      label="Repositories"
+      form={props.form}
+      helpText="Any repositories that are associated with the project."
+    >
+      {({ value, onChange }) => (
+        <ClientRepositorySelect
+          inputClassName="w-full"
+          options={{ isMulti: true }}
+          value={value}
+          onChange={onChange}
+        />
+      )}
+    </Form.ControlledField>
     <Form.ControlledField
       name="startDate"
       label="Start Date"

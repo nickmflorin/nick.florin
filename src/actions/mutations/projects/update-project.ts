@@ -141,7 +141,15 @@ export const updateProject = async (
     }
 
     const fieldErrors = new ApiClientFieldErrors();
-    const { slug: _slug, skills: _skills, details: _details, name: _name, ...data } = parsed.data;
+    const {
+      slug: _slug,
+      skills: _skills,
+      details: _details,
+      name: _name,
+      nestedDetails: _nestedDetails,
+      repositories: _repositories,
+      ...data
+    } = parsed.data;
 
     const name = _name !== undefined ? _name : project.name;
 
@@ -179,22 +187,33 @@ export const updateProject = async (
     ) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
+    if (
+      data.icon &&
+      (await tx.project.count({ where: { icon: data.icon, id: { notIn: [project.id] } } }))
+    ) {
+      fieldErrors.addUnique("icon", "The icon must be unique.");
+    }
 
     const [details] = await queryM2MsDynamically(tx, {
       model: "detail",
       // It is important to cast to undefined if the details are not provided in the payload!
-      ids: _details ? _details.filter(d => d.type === "detail").map(d => d.id) : undefined,
+      ids: _details,
       fieldErrors,
     });
     const [nestedDetails] = await queryM2MsDynamically(tx, {
       model: "nestedDetail",
       // It is important to cast to undefined if the details are not provided in the payload!
-      ids: _details ? _details.filter(d => d.type === "nestedDetail").map(d => d.id) : undefined,
+      ids: _nestedDetails,
       fieldErrors,
     });
     const [skills] = await queryM2MsDynamically(tx, {
       model: "skill",
       ids: _skills,
+      fieldErrors,
+    });
+    const [repositories] = await queryM2MsDynamically(tx, {
+      model: "repository",
+      ids: _repositories,
       fieldErrors,
     });
 
@@ -210,6 +229,9 @@ export const updateProject = async (
         name:
           _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
         updatedById: user.id,
+        repositories: repositories
+          ? { connect: repositories.map(repo => ({ slug: repo.slug })) }
+          : undefined,
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
@@ -224,6 +246,7 @@ export const updateProject = async (
     revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");
     revalidatePath(`/api/projects/${project.id}`);
+    repositories?.map(repo => revalidatePath(`/api/repositories/${repo.id}`));
     revalidatePath(`/projects/${project.slug}`, "page");
     return project;
   });

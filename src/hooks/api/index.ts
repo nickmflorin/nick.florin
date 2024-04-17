@@ -13,3 +13,5 @@ export * from "./use-projects";
 export * from "./use-project";
 export * from "./use-course";
 export * from "./use-resumes";
+export * from "./use-repositories";
+export * from "./use-repository";

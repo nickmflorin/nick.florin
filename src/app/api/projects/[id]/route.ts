@@ -25,7 +25,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
   }
   const project = await getProject(params.id, {
-    includes: parseInclusion(request, ["repositories", "skills"]) as ProjectIncludes,
+    includes: parseInclusion(request, [
+      "repositories",
+      "skills",
+      "details",
+      "nestedDetails",
+    ]) as ProjectIncludes,
     visibility,
   });
   if (!project) {

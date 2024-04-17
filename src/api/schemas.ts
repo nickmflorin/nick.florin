@@ -64,11 +64,6 @@ export const EducationSchema = z.object({
   visible: z.boolean().optional(),
 });
 
-const DetailInputSchema = z.object({
-  id: z.string().uuid(),
-  type: z.union([z.literal("detail"), z.literal("nestedDetail")]),
-});
-
 export const ProjectSchema = z.object({
   name: NonNullableMinLengthStringField({
     min: 3,
@@ -92,9 +87,27 @@ export const ProjectSchema = z.object({
     minErrorMessage: "The slug must be at least 3 characters.",
   }).optional(),
   startDate: z.date(),
-  // These two still need to be incorporated.
+  repositories: z.array(z.string().uuid()).optional(),
+  /* These still need to be incorporated.  We may also eventually want to figure out how to allow
+     details to be modified or specified when updating or creating a project. */
   skills: z.array(z.string().uuid()).optional(),
-  details: z.array(DetailInputSchema).optional(),
+  details: z.array(z.string().uuid()).optional(),
+  nestedDetails: z.array(z.string().uuid()).optional(),
+});
+
+export const RepositorySchema = z.object({
+  slug: NonNullableMinLengthStringField({
+    min: 3,
+    minErrorMessage: "The slug must be at least 3 characters.",
+    requiredErrorMessage: "The slug is required.",
+  }),
+  description: NonNullableMinLengthStringField({
+    minErrorMessage: "The description must be at least 3 characters.",
+  }),
+  visible: z.boolean().optional(),
+  projects: z.array(z.string().uuid()).optional(),
+  // This still needs to be incorporated.
+  skills: z.array(z.string().uuid()).optional(),
 });
 
 export const CourseSchema = z.object({
@@ -129,7 +142,7 @@ export const DetailSchema = z.object({
   shortDescription: NullableMinLengthStringField({
     minErrorMessage: "The short description must be at least 3 characters.",
   }).optional(),
-  visible: z.boolean(),
+  visible: z.boolean().optional(),
   project: z.string().uuid().nullable().optional(),
 });
 

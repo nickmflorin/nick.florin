@@ -14,7 +14,6 @@ import {
   autoUpdate as autoUpdater,
   type Middleware,
 } from "@floating-ui/react";
-import { flushSync } from "react-dom";
 
 import type * as types from "./types";
 
@@ -49,9 +48,6 @@ export const useFloating = ({
   onOpenChange,
 }: UseFloatingConfig) => {
   const [_isOpen, setIsOpen] = useState(false);
-  const [maxHeight, setMaxHeight] = useState<Size<"px"> | null>(
-    _propMaxHeight !== undefined ? sizeToString(_propMaxHeight, "px") : null,
-  );
 
   /* Allow the open state of the floating element to be controlled externally to the component if
      desired. */
@@ -91,7 +87,17 @@ export const useFloating = ({
             });
           }
           if (_propMaxHeight === undefined) {
-            flushSync(() => setMaxHeight(`${availableHeight - 10}px`));
+            Object.assign(elements.floating.style, {
+              maxHeight: `${availableHeight - 10}px`,
+            });
+            // flushSync(() => setMaxHeight(`${availableHeight - 10}px`));
+          } else {
+            Object.assign(elements.floating.style, {
+              maxHeight:
+                _propMaxHeight !== "fit-content"
+                  ? `${sizeToNumber(_propMaxHeight)}px`
+                  : _propMaxHeight,
+            });
           }
         },
       }),
@@ -109,7 +115,6 @@ export const useFloating = ({
   const floatingProps = useMemo(() => getFloatingProps(), [getFloatingProps]);
 
   return {
-    maxHeight,
     referenceProps,
     floatingProps,
     context,

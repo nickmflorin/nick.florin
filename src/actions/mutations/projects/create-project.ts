@@ -20,7 +20,14 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
   if (!parsed.success) {
     return ApiClientFieldErrors.fromZodError(parsed.error, ProjectSchema).json;
   }
-  const { slug: _slug, details: _details, skills: _skills, ...data } = parsed.data;
+  const {
+    slug: _slug,
+    details: _details,
+    nestedDetails: _nestedDetails,
+    skills: _skills,
+    repositories: _repositories,
+    ...data
+  } = parsed.data;
 
   const slug = _slug ?? slugify(data.name);
 
@@ -41,16 +48,19 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
     if (_slug && (await tx.project.count({ where: { slug: _slug } }))) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
+    if (await tx.project.count({ where: { icon: data.icon } })) {
+      fieldErrors.addUnique("icon", "The icon must be unique.");
+    }
     const [details] = await queryM2MsDynamically(tx, {
       model: "detail",
       // It is important to cast to undefined if the details are not provided in the payload!
-      ids: _details ? _details.filter(d => d.type === "detail").map(d => d.id) : undefined,
+      ids: _details,
       fieldErrors,
     });
     const [nestedDetails] = await queryM2MsDynamically(tx, {
       model: "nestedDetail",
       // It is important to cast to undefined if the details are not provided in the payload!
-      ids: _details ? _details.filter(d => d.type === "nestedDetail").map(d => d.id) : undefined,
+      ids: _nestedDetails,
       fieldErrors,
     });
     const [skills] = await queryM2MsDynamically(tx, {
@@ -58,6 +68,12 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
       ids: _skills,
       fieldErrors,
     });
+    const [repositories] = await queryM2MsDynamically(tx, {
+      model: "repository",
+      ids: _repositories,
+      fieldErrors,
+    });
+
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
     }
@@ -68,6 +84,9 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
         slug,
         createdById: user.id,
         updatedById: user.id,
+        repositories: repositories
+          ? { connect: repositories.map(repo => ({ slug: repo.slug })) }
+          : undefined,
         skills: skills ? { connect: skills.map(skill => ({ slug: skill.slug })) } : undefined,
       },
     });
@@ -104,6 +123,8 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
 
     revalidatePath("/admin/projects", "page");
     revalidatePath("/api/projects");
+    revalidatePath("/api/repositories");
+    repositories?.map(repo => revalidatePath(`/api/repositories/${repo.id}`));
     revalidatePath(`/projects/${project.slug}`, "page");
     return convertToPlainObject(project);
   });

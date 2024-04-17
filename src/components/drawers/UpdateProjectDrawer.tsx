@@ -8,16 +8,27 @@ import { useProject } from "~/hooks";
 import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-interface UpdateCourseDrawerProps
+interface UpdateProjectDrawerProps
   extends ExtendingDrawerProps<{
     readonly projectId: string;
     readonly eager: Pick<BrandProject, "name">;
   }> {}
 
-export const UpdateCourseDrawer = ({ projectId, eager }: UpdateCourseDrawerProps): JSX.Element => {
+export const UpdateProjectDrawer = ({
+  projectId,
+  eager,
+}: UpdateProjectDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useProject(
     isUuid(projectId) ? projectId : null,
-    { keepPreviousData: true, visibility: "admin", includes: [] },
+    {
+      keepPreviousData: true,
+      visibility: "admin",
+      /* Note: We are not using skills, details or nested details in the Form yet, but since the
+         action to update the project is already implemented, we need to include those in the
+         Form data (not the Form inputs) so that they are not wiped everytime a project is
+         updated. */
+      includes: ["skills", "repositories", "details", "nestedDetails"],
+    },
   );
   const form = useProjectForm();
 
@@ -30,4 +41,4 @@ export const UpdateCourseDrawer = ({ projectId, eager }: UpdateCourseDrawerProps
   );
 };
 
-export default UpdateCourseDrawer;
+export default UpdateProjectDrawer;
