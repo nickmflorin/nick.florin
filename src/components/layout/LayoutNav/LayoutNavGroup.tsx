@@ -30,7 +30,7 @@ export const LayoutNavGroup = ({ item, isOpen, onOpen }: LayoutNavGroupProps) =>
     className="flex flex-col min-h-[48px] items-center w-full"
     initial={false}
     animate={isOpen ? "open" : "closed"}
-    custom={{ count: item.children.length }}
+    custom={{ count: item.children.filter(item => item.visible !== false).length }}
     variants={groupVariants}
   >
     <LayoutNavItem item={item} onOpen={() => onOpen()} isOpen={isOpen} />

@@ -45,7 +45,7 @@ const getAnimatedOffset = ({
 }) => {
   const previousOpenedGroup = getPreviousOpenedGroup({ previousItems, groupOpenIndex });
   if (previousOpenedGroup) {
-    return (previousOpenedGroup.item.children.length - 1) * 48;
+    return (previousOpenedGroup.item.children.filter(c => c.visible !== false).length - 1) * 48;
   }
   return 0;
 };
@@ -65,7 +65,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
           .map((item, i) => {
             if (layoutNavItemHasChildren(item)) {
               const offset = getAnimatedOffset({
-                previousItems: items.slice(0, i),
+                previousItems: items.filter(item => item.visible !== false).slice(0, i),
                 groupOpenIndex,
               });
               return (
@@ -87,7 +87,10 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
                 </motion.div>
               );
             }
-            const offset = getAnimatedOffset({ previousItems: items.slice(0, i), groupOpenIndex });
+            const offset = getAnimatedOffset({
+              previousItems: items.filter(item => item.visible !== false).slice(0, i),
+              groupOpenIndex,
+            });
             return (
               <motion.div
                 key={item.path}

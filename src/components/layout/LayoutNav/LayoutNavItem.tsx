@@ -27,9 +27,14 @@ export const LayoutNavItem = <I extends ILayoutNavItem | Required<ILayoutNavItem
   <LayoutNavAnchor
     item={item}
     className={clsx({
-      "z-10": item.children !== undefined && item.children.length !== 0,
-      "mb-[6px] z-10": item.children !== undefined && item.children.length !== 0 && isOpen,
-      "mb-[6px] last:mb-0": item.children === undefined || item.children.length === 0,
+      "z-10":
+        item.children !== undefined && item.children.filter(c => c.visible !== false).length !== 0,
+      "mb-[6px] z-10":
+        item.children !== undefined &&
+        item.children.filter(c => c.visible !== false).length !== 0 &&
+        isOpen,
+      "mb-[6px] last:mb-0":
+        item.children === undefined || item.children.filter(c => c.visible !== false).length === 0,
     })}
     onMouseEnter={() => onOpen?.()}
   />
