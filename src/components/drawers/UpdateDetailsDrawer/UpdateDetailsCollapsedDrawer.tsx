@@ -1,10 +1,4 @@
-import {
-  type Education,
-  type DetailEntityType,
-  type Experience,
-  type NestedApiDetail,
-  type ApiDetail,
-} from "~/prisma/model";
+import { type DetailEntityType, type NestedApiDetail, type ApiDetail } from "~/prisma/model";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { ModifyDetailsView } from "~/components/forms/details/ModifyDetailsView";
 import { useDetails } from "~/hooks";
