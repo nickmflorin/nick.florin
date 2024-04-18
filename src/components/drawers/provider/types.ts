@@ -76,3 +76,7 @@ export type InjectedDrawerProps = {
 export type ExtendingDrawerProps<P = Record<never, never>> = P & InjectedDrawerProps;
 
 export type WithInjectedDrawerProps<D extends DrawerId> = DrawerProps<D> & InjectedDrawerProps;
+
+export type DrawerIdPropsPair<I extends DrawerId = DrawerId> = I extends DrawerId
+  ? { id: I; props: DrawerProps<I> }
+  : never;

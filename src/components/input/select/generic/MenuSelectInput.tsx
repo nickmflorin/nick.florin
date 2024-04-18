@@ -1,18 +1,15 @@
 import dynamic from "next/dynamic";
 import React, { type ForwardedRef, forwardRef, useMemo } from "react";
 
-import type * as types from "../types";
-
 import {
-  type MenuModel,
-  type MenuOptions,
   type MenuValue,
-  type MenuModelValue,
   getModelLabel,
   type MenuInitialValue,
   type MenuInitialModelValue,
-  getModelValueLabel,
+  type MenuModelValue,
 } from "~/components/menus";
+
+import * as types from "../types";
 
 import { SelectInput, type SelectInputProps } from "./SelectInput";
 
@@ -20,7 +17,7 @@ const MultiValueRenderer = dynamic(
   () => import("./MultiValueRenderer"),
 ) as types.MultiValueRendererCompoennt;
 
-export interface MenuSelectInputProps<M extends MenuModel, O extends MenuOptions<M>>
+export interface MenuSelectInputProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
   extends Omit<SelectInputProps, "showPlaceholder" | "dynamicHeight" | "children"> {
   readonly isReady?: boolean;
   readonly options: O;
@@ -33,9 +30,9 @@ export interface MenuSelectInputProps<M extends MenuModel, O extends MenuOptions
 
 export const MenuSelectInput = forwardRef<
   HTMLDivElement,
-  MenuSelectInputProps<MenuModel, MenuOptions<MenuModel>>
+  MenuSelectInputProps<types.SelectModel, types.SelectOptions<types.SelectModel>>
 >(
-  <M extends MenuModel, O extends MenuOptions<M>>(
+  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     {
       isReady = true,
       value,
@@ -78,7 +75,7 @@ export const MenuSelectInput = forwardRef<
       } else if (valueModelRenderer) {
         return valueModelRenderer(_value, { model: _models });
       }
-      const valueLabel = getModelValueLabel(_models, options);
+      const valueLabel = types.getModelValueLabel(_models, options);
       return valueLabel ?? getModelLabel(_models, options);
     }, [valueRenderer, valueModelRenderer, models, value, options, maximumNumBadges]);
 
@@ -97,7 +94,7 @@ export const MenuSelectInput = forwardRef<
     );
   },
 ) as {
-  <M extends MenuModel, O extends MenuOptions<M>>(
+  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     props: MenuSelectInputProps<M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
   ): JSX.Element;
 };

@@ -43,6 +43,7 @@ export interface MenuItemProps
   readonly loadingClassName?: ComponentProps["className"];
   readonly children: ReactNode;
   readonly isMulti?: boolean;
+  readonly selectionIndicator?: types.MenuItemSelectionIndicator;
 }
 
 const MenuItemIcon = ({
@@ -105,6 +106,7 @@ export const MenuItem = ({
   iconClassName,
   iconSize = "16px",
   isLoading = false,
+  selectionIndicator = "checkbox",
   ...props
 }: MenuItemProps): JSX.Element => (
   <ShowHide show={isVisible}>
@@ -142,9 +144,9 @@ export const MenuItem = ({
           : props.style
       }
     >
-      {isMulti && (
+      <ShowHide show={isMulti && selectionIndicator === "checkbox"}>
         <Checkbox readOnly value={isSelected} isDisabled={isDisabled} isLocked={isLocked} />
-      )}
+      </ShowHide>
       <MenuItemIcon
         icon={icon}
         iconSize={iconSize}
@@ -153,7 +155,7 @@ export const MenuItem = ({
         spinnerClassName={spinnerClassName}
       />
       <div className="menu__item__content">{children}</div>
-      {/* Only should the spinner to the right (instead of over the icon) if the icon is not
+      {/* Only show the spinner to the right (instead of over the icon) if the icon is not
           defined. */}
       {icon === undefined && (
         <Spinner

@@ -8,8 +8,6 @@ import type * as types from "../types";
 import { Loading } from "~/components/feedback/Loading";
 import { FloatingContent } from "~/components/floating/FloatingContent";
 import {
-  type MenuModel,
-  type MenuOptions,
   type MenuProps,
   type AbstractMenuProps,
   type MenuValue,
@@ -22,8 +20,10 @@ const AbstractMenu = dynamic(() => import("~/components/menus/generic/AbstractMe
   loading: () => <Loading isLoading={true} spinnerSize="16px" />,
 }) as AbstractMenuComponent;
 
-export interface FloatingSelectContentProps<M extends MenuModel, O extends MenuOptions<M>>
-  extends Omit<AbstractMenuProps<M, O>, "value" | "children" | keyof ComponentProps>,
+export interface FloatingSelectContentProps<
+  M extends types.SelectModel,
+  O extends types.SelectOptions<M>,
+> extends Omit<AbstractMenuProps<M, O>, "value" | "children" | keyof ComponentProps>,
     ComponentProps {
   readonly value: MenuInitialValue<M, O> | MenuValue<M, O>;
   readonly itemRenderer?: types.SelectItemRenderer<M>;
@@ -31,9 +31,9 @@ export interface FloatingSelectContentProps<M extends MenuModel, O extends MenuO
 
 export const FloatingSelectContent = forwardRef<
   HTMLDivElement,
-  FloatingSelectContentProps<MenuModel, MenuOptions<MenuModel>>
+  FloatingSelectContentProps<types.SelectModel, types.SelectOptions<types.SelectModel>>
 >(
-  <M extends MenuModel, O extends MenuOptions<M>>(
+  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     { className, style, isReady, value, itemRenderer, ...props }: FloatingSelectContentProps<M, O>,
     ref: ForwardedRef<HTMLDivElement>,
   ) => (
@@ -51,7 +51,7 @@ export const FloatingSelectContent = forwardRef<
     </FloatingContent>
   ),
 ) as {
-  <M extends MenuModel, O extends MenuOptions<M>>(
+  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     props: FloatingSelectContentProps<M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
   ): JSX.Element;
 };

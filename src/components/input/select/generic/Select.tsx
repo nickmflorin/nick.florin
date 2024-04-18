@@ -7,8 +7,6 @@ import { type Optional } from "utility-types";
 import type * as types from "../types";
 
 import {
-  type MenuModel,
-  type MenuOptions,
   type MenuValue,
   type MenuModelValue,
   type MenuItemInstance,
@@ -22,7 +20,7 @@ import { FloatingSelectContent, type FloatingSelectContentProps } from "./Floati
 import { MenuSelectInput, type MenuSelectInputProps } from "./MenuSelectInput";
 import { SelectWrapper, type SelectWrapperProps } from "./SelectWrapper";
 
-export interface SelectProps<M extends MenuModel, O extends MenuOptions<M>>
+export interface SelectProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
   extends Omit<FloatingSelectContentProps<M, O>, "onSelect" | "value" | "className">,
     Optional<
       Omit<SelectWrapperProps, "content" | "onOpen" | "onClose" | "onOpenChange">,
@@ -72,9 +70,9 @@ export interface SelectProps<M extends MenuModel, O extends MenuOptions<M>>
 
 const LocalSelect = forwardRef<
   types.SelectInstance,
-  SelectProps<MenuModel, MenuOptions<MenuModel>>
+  SelectProps<types.SelectModel, types.SelectOptions<types.SelectModel>>
 >(
-  <M extends MenuModel, O extends MenuOptions<M>>(
+  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     {
       children,
       menuOffset = { mainAxis: 2 },
@@ -187,7 +185,7 @@ const LocalSelect = forwardRef<
 );
 
 export const Select = LocalSelect as {
-  <M extends MenuModel, O extends MenuOptions<M>>(
+  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     props: SelectProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
   ): JSX.Element;
 };

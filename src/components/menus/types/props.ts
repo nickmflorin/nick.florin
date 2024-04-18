@@ -9,6 +9,12 @@ import { type MenuValue, type MenuInitialValue, type IfMenuValued } from "./menu
 import { type MenuModel, type ModelValue, type ValueNotApplicable, type ModelId } from "./model";
 import { type MenuOptions } from "./options";
 
+type ItemClassName<M extends MenuModel> =
+  | ComponentProps["className"]
+  | ((datum: M) => ComponentProps["className"]);
+
+export type MenuItemSelectionIndicator = "checkbox" | null;
+
 export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuOptions<M>>
   extends MenuItemFlagProps<M> {
   /**
@@ -36,24 +42,13 @@ export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuO
   readonly iconSize?: IconSize;
   readonly iconClassName?: ComponentProps["className"];
   readonly spinnerClassName?: ComponentProps["className"];
-  readonly itemDisabledClassName?:
-    | ComponentProps["className"]
-    | ((datum: M) => ComponentProps["className"]);
-  readonly itemLoadingClassName?:
-    | ComponentProps["className"]
-    | ((datum: M) => ComponentProps["className"]);
-  readonly itemLockedClassName?:
-    | ComponentProps["className"]
-    | ((datum: M) => ComponentProps["className"]);
-  readonly itemSelectedClassName?: IfMenuValued<
-    ComponentProps["className"] | ((datum: M) => ComponentProps["className"]),
-    M,
-    O
-  >;
-  readonly itemClassName?:
-    | ComponentProps["className"]
-    | ((datum: M) => ComponentProps["className"]);
-  readonly onClick: () => void;
+  readonly itemDisabledClassName?: ItemClassName<M>;
+  readonly itemLoadingClassName?: ItemClassName<M>;
+  readonly itemLockedClassName?: ItemClassName<M>;
+  readonly itemSelectedClassName?: IfMenuValued<ItemClassName<M>, M, O>;
+  readonly itemClassName?: ItemClassName<M>;
+  readonly selectionIndicator?: MenuItemSelectionIndicator;
+  readonly onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   readonly children?: (datum: M) => ReactNode;
 }
 

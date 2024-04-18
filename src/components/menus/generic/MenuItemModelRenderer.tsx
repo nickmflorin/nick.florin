@@ -4,9 +4,7 @@ import { forwardRef, type ForwardedRef, useState, useImperativeHandle, useMemo }
 import clsx from "clsx";
 import isEqual from "lodash.isequal";
 
-import { UnreachableCaseError } from "~/application/errors";
 import { useDrawers } from "~/components/drawers/hooks";
-import { useMutableParams } from "~/hooks";
 
 import * as types from "../types";
 
@@ -39,7 +37,6 @@ export const MenuItemModelRenderer = forwardRef(
     }: types.MenuItemModelRendererProps<M, O>,
     ref: ForwardedRef<types.MenuItemInstance>,
   ) => {
-    const { set } = useMutableParams();
     const { open } = useDrawers();
 
     const [_isLoading, setLoading] = useState(false);
@@ -69,7 +66,7 @@ export const MenuItemModelRenderer = forwardRef(
 
     const href = useMemo(() => types.getModelHref(model, options), [model, options]);
 
-    const query = useMemo(() => types.getModelQuery(model, options), [model, options]);
+    const drawer = useMemo(() => types.getModelDrawer(model, options), [model, options]);
 
     const actions = useMemo(() => types.getModelActions(model, options), [model, options]);
 
@@ -121,18 +118,10 @@ export const MenuItemModelRenderer = forwardRef(
         }
         isSelected={isSelected}
         onClick={e => {
-          onClick();
+          onClick(e);
           model.onClick?.(e, { setDisabled, setLoading, setLocked });
-          if (query) {
-            const drawerParsed = types.DrawerQuerySchema.safeParse(query);
-            if (drawerParsed.success) {
-              return open(drawerParsed.data.drawerId, drawerParsed.data.props);
-            }
-            const queryParsed = types.QuerySchema.safeParse(query);
-            if (queryParsed.success) {
-              return set(queryParsed.data.params, { clear: queryParsed.data.clear ?? [] });
-            }
-            throw new UnreachableCaseError();
+          if (drawer) {
+            return open(drawer.id, drawer.props);
           }
         }}
       >

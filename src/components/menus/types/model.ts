@@ -1,8 +1,6 @@
 import { type ReactNode } from "react";
 
-import { z } from "zod";
-
-import { DrawerIds } from "~/components/drawers";
+import { type DrawerIdPropsPair } from "~/components/drawers";
 import { type IconProp, type IconSize } from "~/components/icons";
 import { type Action } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
@@ -16,16 +14,6 @@ export type ValueNotApplicable = typeof VALUE_NOT_APPLICABLE;
 const NEVER = "__NEVER__" as const;
 type Never = typeof NEVER;
 
-export const QuerySchema = z.object({
-  params: z.record(z.string()),
-  clear: z.union([z.string(), z.literal(true), z.array(z.string())]).optional(),
-});
-
-export const DrawerQuerySchema = z.object({
-  drawerId: DrawerIds.schema,
-  props: z.record(z.string()),
-});
-
 export type AllowedMenuModelValue = string | number | Record<string, unknown>;
 
 export type MenuModelHref = string | { url: string; target?: string; rel?: string };
@@ -37,13 +25,12 @@ export type MenuModel<V extends AllowedMenuModelValue = AllowedMenuModelValue> =
   readonly spinnerClassName?: ComponentProps["className"];
   readonly iconSize?: IconSize;
   readonly label?: ReactNode;
-  readonly valueLabel?: ReactNode;
   readonly href?: MenuModelHref;
   readonly isLocked?: boolean;
   readonly isLoading?: boolean;
   readonly isDisabled?: boolean;
   readonly isVisible?: boolean;
-  readonly query?: z.infer<typeof QuerySchema> | z.infer<typeof DrawerQuerySchema>;
+  readonly drawer?: DrawerIdPropsPair;
   readonly actions?: Action[];
   readonly value?: V;
   readonly onClick?: (
@@ -169,55 +156,25 @@ export const getModelActions = <M extends MenuModel, O extends MenuOptions<M>>(
   return v as ModelActions<M, O>;
 };
 
-export type ModelQuery<M extends MenuModel, O extends MenuOptions<M>> = M extends {
-  readonly query: infer Q extends NonNullable<MenuModel["query"]>;
+export type ModelDrawer<M extends MenuModel, O extends MenuOptions<M>> = M extends {
+  readonly drawer: infer Q extends NonNullable<MenuModel["drawer"]>;
 }
   ? Q
   : O extends {
-        readonly getModelQuery: (m: M) => infer Q extends NonNullable<MenuModel["query"]>;
+        readonly getModelDrawer: (m: M) => infer Q extends NonNullable<MenuModel["drawer"]>;
       }
     ? Q
     : never;
 
-export const getModelQuery = <M extends MenuModel, O extends MenuOptions<M>>(
+export const getModelDrawer = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
-): ModelQuery<M, O> | undefined => {
-  let v: NonNullable<MenuModel["query"]> | Never = NEVER;
-  if (options.getModelQuery !== undefined) {
-    v = options.getModelQuery(model);
-  } else if (model.query) {
-    v = model.query;
+): ModelDrawer<M, O> | undefined => {
+  let v: NonNullable<MenuModel["drawer"]> | Never = NEVER;
+  if (options.getModelDrawer !== undefined) {
+    v = options.getModelDrawer(model);
+  } else if (model.drawer) {
+    v = model.drawer;
   }
-  return v === NEVER ? undefined : (v as ModelQuery<M, O>);
-};
-
-export type ModelValueLabel<M extends MenuModel, O extends MenuOptions<M>> = M extends {
-  readonly valueLabel: infer L extends MenuModel["valueLabel"];
-}
-  ? L
-  : O extends {
-        readonly getModelValueLabel: (
-          m: M,
-          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-          o: any,
-        ) => infer L extends MenuModel["valueLabel"];
-      }
-    ? L
-    : undefined;
-
-export const getModelValueLabel = <M extends MenuModel, O extends MenuOptions<M>>(
-  model: M,
-  options: O,
-): ModelValueLabel<M, O> | undefined => {
-  let v: ReactNode | Never = NEVER;
-  if (options.getModelValueLabel !== undefined) {
-    v = options.getModelValueLabel(model, {
-      isMulti: options?.isMulti ?? false,
-      isNullable: options?.isNullable ?? false,
-    });
-  } else if (model.valueLabel !== undefined) {
-    v = model.valueLabel;
-  }
-  return v === NEVER ? undefined : (v as ModelValueLabel<M, O>);
+  return v === NEVER ? undefined : (v as ModelDrawer<M, O>);
 };
