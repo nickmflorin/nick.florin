@@ -25,6 +25,7 @@ type GetEducationsParams<I extends EducationIncludes> = {
   includes: I;
   filters?: GetEducationsFilters;
   page?: number;
+  limit?: number;
 };
 
 const whereClause = ({
@@ -72,6 +73,7 @@ export const getEducations = cache(
     includes,
     filters,
     page,
+    limit,
   }: GetEducationsParams<I>): Promise<ApiEducation<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
 
@@ -80,6 +82,10 @@ export const getEducations = cache(
       pageSize: PAGE_SIZES.education,
       getCount: async () => await getEducationsCount({ filters, visibility }),
     });
+
+    if (pagination !== null && limit !== undefined) {
+      throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
+    }
 
     const educations = await prisma.education.findMany({
       where: whereClause({ filters, visibility }),
@@ -101,7 +107,7 @@ export const getEducations = cache(
       },
       orderBy: { startDate: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
-      take: pagination ? pagination.pageSize : undefined,
+      take: pagination ? pagination.pageSize : limit,
     });
 
     if (fieldIsIncluded("details", includes)) {

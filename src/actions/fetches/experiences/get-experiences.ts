@@ -25,6 +25,7 @@ type GetExperiencesParams<I extends ExperienceIncludes> = {
   includes: I;
   filters?: GetExperiencesFilters;
   page?: number;
+  limit?: number;
 };
 
 const whereClause = ({
@@ -74,6 +75,7 @@ export const getExperiences = cache(
     includes,
     filters,
     page,
+    limit,
   }: GetExperiencesParams<I>): Promise<ApiExperience<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
 
@@ -82,6 +84,10 @@ export const getExperiences = cache(
       pageSize: PAGE_SIZES.experience,
       getCount: async () => await getExperiencesCount({ filters, visibility }),
     });
+
+    if (pagination !== null && limit !== undefined) {
+      throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
+    }
 
     const experiences = await prisma.experience.findMany({
       where: whereClause({ filters, visibility }),
@@ -93,7 +99,7 @@ export const getExperiences = cache(
       },
       orderBy: { startDate: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
-      take: pagination ? pagination.pageSize : undefined,
+      take: pagination ? pagination.pageSize : limit,
     });
 
     if (fieldIsIncluded("details", includes)) {

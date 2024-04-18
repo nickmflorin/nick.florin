@@ -39,7 +39,7 @@ export const DrawerIds = enumeratedLiterals(
 
 export type DrawerId = EnumeratedLiteralsType<typeof DrawerIds>;
 
-export type DrawerProps<D extends DrawerId> = {
+export type DrawerIdProps<D extends DrawerId> = {
   "update-education": { educationId: string; eager: Pick<BrandEducation, "major"> };
   "update-experience": { experienceId: string; eager: Pick<BrandExperience, "title"> };
   "update-project": { projectId: string; eager: Pick<BrandProject, "name"> };
@@ -75,8 +75,8 @@ export type InjectedDrawerProps = {
 
 export type ExtendingDrawerProps<P = Record<never, never>> = P & InjectedDrawerProps;
 
-export type WithInjectedDrawerProps<D extends DrawerId> = DrawerProps<D> & InjectedDrawerProps;
+export type WithInjectedDrawerProps<D extends DrawerId> = DrawerIdProps<D> & InjectedDrawerProps;
 
 export type DrawerIdPropsPair<I extends DrawerId = DrawerId> = I extends DrawerId
-  ? { id: I; props: DrawerProps<I> }
+  ? { id: I; props: DrawerIdProps<I> }
   : never;
