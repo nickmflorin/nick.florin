@@ -60,7 +60,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 icon: { name: "grid" },
                 path: "/dashboard",
                 active: [{ leadingPath: "/dashboard" }],
-                visible: environment.get("NEXT_PUBLIC_DASHBOARD_ENABLED"),
+                visible: environment.get("NEXT_PUBLIC_DASHBOARD_ENABLED") === true,
               },
               {
                 tooltipLabel: "Resume",
