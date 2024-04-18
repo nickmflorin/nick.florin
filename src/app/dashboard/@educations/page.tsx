@@ -3,7 +3,6 @@ import { ResumeModelTileHeader } from "~/components/tiles/ResumeModelTileHeader"
 
 export default async function EducationsPage() {
   const educations = await getEducations({ visibility: "public", includes: [], limit: 5 });
-  console.log({ educations });
   return (
     <div className="flex flex-col gap-[12px]">
       {educations.map((education, index) => (
