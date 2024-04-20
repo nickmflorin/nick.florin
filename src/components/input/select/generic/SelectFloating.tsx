@@ -9,7 +9,7 @@ import type * as types from "../types";
 import { Floating, type FloatingProps } from "~/components/floating/Floating";
 import { type FloatingRenderProps } from "~/components/floating/types";
 
-export interface SelectWrapperProps
+export interface SelectFloatingProps
   extends Pick<FloatingProps, "inPortal" | "content" | "maxHeight"> {
   readonly menuPlacement?: FloatingProps["placement"];
   readonly menuOffset?: FloatingProps["offset"];
@@ -28,21 +28,21 @@ export interface SelectWrapperProps
   ) => JSX.Element;
 }
 
-export const SelectWrapper = forwardRef<types.SelectInstance, SelectWrapperProps>(
+export const SelectFloating = forwardRef<types.SelectInstance, SelectFloatingProps>(
   (
     {
-      children,
       content,
       menuOffset = { mainAxis: 2 },
       menuPlacement,
       menuWidth = "target",
       isLoading: _propIsLoading,
       isReady,
+      children,
       onOpen,
       onClose,
       onOpenChange,
       ...props
-    }: SelectWrapperProps,
+    }: SelectFloatingProps,
     ref: ForwardedRef<types.SelectInstance>,
   ): JSX.Element => {
     const [_isLoading, setLoading] = useState(false);

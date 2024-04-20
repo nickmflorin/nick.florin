@@ -1,7 +1,6 @@
 import { isUuid } from "~/lib/typeguards";
-import { encodeQueryParam } from "~/lib/urls";
 import { type ApiEducation, type EducationIncludes } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type Visibility } from "~/api/route";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
@@ -20,7 +19,7 @@ export const useEducation = <I extends EducationIncludes>(
     ...config,
     query: {
       ...config.query,
-      visibility: encodeQueryParam(visibility),
-      includes: encodeQueryParam(includes),
+      includes,
+      visibility,
     },
   });

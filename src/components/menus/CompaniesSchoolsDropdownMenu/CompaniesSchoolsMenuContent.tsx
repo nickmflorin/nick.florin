@@ -1,13 +1,20 @@
+import dynamic from "next/dynamic";
+
+import type * as types from "../types";
+
 import { stringifyLocation } from "~/prisma/model";
 import { getCompanies } from "~/actions/fetches/companies";
 import { getSchools } from "~/actions/fetches/schools";
 import { type DrawerId, DrawerIds, type DrawerIdPropsPair } from "~/components/drawers";
+import { Loading } from "~/components/feedback/Loading";
 import { Text } from "~/components/typography/Text";
-
-import { MenuContent } from "../generic/MenuContent";
 
 import { DeleteCompanySchoolButton } from "./DeleteCompanySchoolButton";
 import { type ModelType, type Model } from "./types";
+
+const MenuContent = dynamic(() => import("../generic/MenuContent"), {
+  loading: () => <Loading isLoading={true} />,
+}) as types.MenuContentComponent;
 
 export interface CompaniesSchoolsMenuContentProps<M extends ModelType> {
   readonly modelType: M;

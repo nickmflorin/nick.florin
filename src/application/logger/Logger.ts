@@ -128,18 +128,34 @@ export class Logger {
   }
 
   public warn(message: string, context?: object, ...args: any[]): void {
-    this.pino.warn(context, message, ...args);
+    if (context !== undefined) {
+      this.pino.warn(context, message, ...args);
+    } else {
+      this.pino.warn(message, ...args);
+    }
   }
 
   public error(message: string, context?: object, ...args: any[]): void {
-    this.pino.error(context, message, ...args);
+    if (context !== undefined) {
+      this.pino.error(context, message, ...args);
+    } else {
+      this.pino.error(message, ...args);
+    }
   }
 
   public info(message: string, context?: object, ...args: any[]): void {
-    this.pino.info(context, message, ...args);
+    if (context !== undefined) {
+      this.pino.info(context, message, ...args);
+    } else {
+      this.pino.info(message, ...args);
+    }
   }
 
   public debug(message: string, context?: object, ...args: any[]): void {
-    this.pino.debug(context, message, ...args);
+    if (context !== undefined) {
+      this.pino.debug(context, message, ...args);
+    } else {
+      this.pino.debug(message, ...args);
+    }
   }
 }

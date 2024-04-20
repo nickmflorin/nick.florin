@@ -51,6 +51,7 @@ export interface MultiValueRendererProps<M extends SelectModel, O extends Select
   readonly maximumNumBadges?: number;
   readonly options: O;
   readonly value: MenuValue<M, O>;
+  readonly dynamicHeight?: boolean;
   readonly valueModelRenderer?: SelectValueModelRenderer<M, O, { model: M }>;
 }
 

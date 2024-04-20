@@ -1,11 +1,8 @@
-import { type NextRequest } from "next/server";
-
-import { getAuthUserFromRequest } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type RepositoryIncludes } from "~/prisma/model";
 import { getRepository } from "~/actions/fetches/repositories";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
-import { parseInclusion, parseVisibility } from "~/api/query";
+import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
   const repositories = await prisma.repository.findMany();
@@ -14,22 +11,13 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const visibility = parseVisibility(request);
-  if (visibility === "admin") {
-    const user = await getAuthUserFromRequest(request);
-    if (!user) {
-      return ApiClientGlobalError.NotAuthenticated().response;
-    } else if (!user.isAdmin) {
-      return ApiClientGlobalError.Forbidden().response;
-    }
-  }
+export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
   const repository = await getRepository(params.id, {
-    includes: parseInclusion(request, ["projects", "skills"]) as RepositoryIncludes,
-    visibility,
+    includes: query.includes as RepositoryIncludes,
+    visibility: query.visibility,
   });
   if (!repository) {
     return ApiClientGlobalError.NotFound().response;
   }
   return ClientResponse.OK(repository).response;
-}
+});

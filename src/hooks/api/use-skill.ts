@@ -1,5 +1,4 @@
 import { isUuid } from "~/lib/typeguards";
-import { encodeQueryParam } from "~/lib/urls";
 import { type SkillIncludes, type ApiSkill } from "~/prisma/model";
 import type { Visibility } from "~/api/query";
 
@@ -17,7 +16,7 @@ export const useSkill = <I extends SkillIncludes>(
     ...config,
     query: {
       ...config?.query,
-      includes: encodeQueryParam(includes),
-      visibility: encodeQueryParam(visibility),
+      includes,
+      visibility,
     },
   });

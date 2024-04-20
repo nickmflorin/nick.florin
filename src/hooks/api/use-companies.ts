@@ -1,4 +1,3 @@
-import { encodeQueryParam } from "~/lib/urls";
 import { type CompanyIncludes, type Company } from "~/prisma/model";
 import type { Visibility } from "~/api/query";
 
@@ -13,7 +12,7 @@ export const useCompanies = <I extends CompanyIncludes>({
     ...config,
     query: {
       ...config.query,
-      includes: encodeQueryParam(includes),
-      visibility: encodeQueryParam(visibility),
+      includes,
+      visibility,
     },
   });

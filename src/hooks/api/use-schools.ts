@@ -1,6 +1,5 @@
-import { encodeQueryParam } from "~/lib/urls";
 import { type SchoolIncludes, type ApiSchool } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type Visibility } from "~/api/route";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
@@ -13,7 +12,7 @@ export const useSchools = <I extends SchoolIncludes>({
     ...config,
     query: {
       ...config.query,
-      includes: encodeQueryParam(includes),
-      visibility: encodeQueryParam(visibility),
+      includes,
+      visibility,
     },
   });

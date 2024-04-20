@@ -11,6 +11,10 @@ import {
   getQueryParamForm,
 } from "./util";
 
+/**
+ * @deprecated
+ * Deprecated in favor of the 'qs' package.
+ */
 export const encodeQueryParam = (
   v: Exclude<QueryParamValue, undefined>,
 ): EncodedQueryParamValue => {
@@ -25,6 +29,10 @@ export const encodeQueryParam = (
   return v;
 };
 
+/**
+ * @deprecated
+ * Deprecated in favor of the 'qs' package.
+ */
 export const encodeQueryParams = <Q extends QueryParams>(
   params: Q,
 ): QueryParams<InferQueryParamsForm<Q>, EncodedQueryParamValue> => {

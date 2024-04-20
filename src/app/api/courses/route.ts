@@ -1,24 +1,12 @@
-import { type NextRequest } from "next/server";
-
-import { getAuthUserFromRequest } from "~/application/auth";
 import { type CourseIncludes } from "~/prisma/model";
 import { getCourses } from "~/actions/fetches/courses";
-import { ApiClientGlobalError, ClientResponse } from "~/api";
-import { parseInclusion, parseVisibility } from "~/api/query";
+import { ClientResponse } from "~/api";
+import { apiRoute } from "~/api/route";
 
-export async function GET(request: NextRequest) {
-  const visibility = parseVisibility(request);
-  if (visibility === "admin") {
-    const user = await getAuthUserFromRequest(request);
-    if (!user) {
-      return ApiClientGlobalError.NotAuthenticated().response;
-    } else if (!user.isAdmin) {
-      return ApiClientGlobalError.Forbidden().response;
-    }
-  }
+export const GET = apiRoute(async (request, params, query) => {
   const courses = await getCourses({
-    includes: parseInclusion(request, ["education", "skills"] as const) as CourseIncludes,
-    visibility,
+    includes: query.includes as CourseIncludes,
+    visibility: query.visibility,
   });
   return ClientResponse.OK(courses).response;
-}
+});

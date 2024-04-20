@@ -18,20 +18,23 @@ const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
+const SkillsCell = dynamic(() => import("~/components/tables/generic/cells/SkillsCell"));
+
+const DetailsCell = dynamic(() => import("~/components/tables/generic/cells/DetailsCell"));
+
 const ReadOnlyDateTimeCell = dynamic(
   () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
 );
 
 const SchoolCell = dynamic(() => import("./cells/SchoolCell"));
-const DetailsCell = dynamic(() => import("./cells/DetailsCell"));
 
 export interface TableViewConfig
-  extends Pick<RootTableViewConfig<ApiEducation<["details"]>>, "children"> {}
+  extends Pick<RootTableViewConfig<ApiEducation<["details", "skills"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiEducation<["details"]>>
+    <RootTableViewProvider<ApiEducation<["details", "skills"]>>
       id="educations-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
@@ -82,6 +85,13 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           width: 120,
           textAlign: "center",
           render: ({ model }) => <DetailsCell model={model} />,
+        },
+        {
+          accessor: "skills",
+          title: "Skills",
+          width: 320,
+          textAlign: "center",
+          render: ({ model }) => <SkillsCell model={model} />,
         },
         {
           accessor: "createdAt",

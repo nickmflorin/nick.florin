@@ -18,7 +18,7 @@ const MultiValueRenderer = dynamic(
 ) as types.MultiValueRendererCompoennt;
 
 export interface MenuSelectInputProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
-  extends Omit<SelectInputProps, "showPlaceholder" | "dynamicHeight" | "children"> {
+  extends Omit<SelectInputProps, "showPlaceholder" | "children"> {
   readonly isReady?: boolean;
   readonly options: O;
   readonly maximumNumBadges?: number;
@@ -35,6 +35,7 @@ export const MenuSelectInput = forwardRef<
   <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     {
       isReady = true,
+      dynamicHeight = true,
       value,
       options,
       maximumNumBadges,
@@ -69,20 +70,31 @@ export const MenuSelectInput = forwardRef<
             models={_models as M[]}
             value={_value}
             options={options}
+            dynamicHeight={dynamicHeight}
             maximumNumBadges={maximumNumBadges}
           />
         );
+        /* TODO: Figure out how to allow the 'valueModelRenderer' to be specified for each model
+           in the array, and then assemble them in a fashion similar to the MultiValueRenderer. */
       } else if (valueModelRenderer) {
         return valueModelRenderer(_value, { model: _models });
       }
       const valueLabel = types.getModelValueLabel(_models, options);
       return valueLabel ?? getModelLabel(_models, options);
-    }, [valueRenderer, valueModelRenderer, models, value, options, maximumNumBadges]);
+    }, [
+      valueRenderer,
+      valueModelRenderer,
+      models,
+      value,
+      options,
+      maximumNumBadges,
+      dynamicHeight,
+    ]);
 
     return (
       <SelectInput
         {...props}
-        dynamicHeight={true}
+        dynamicHeight={dynamicHeight}
         ref={ref}
         isLocked={props.isLocked || !isReady}
         showPlaceholder={

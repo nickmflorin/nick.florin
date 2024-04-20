@@ -40,6 +40,10 @@ type DecodeQueryParamReturn<O extends DecodeQueryParamOptions> = O extends {
     : never
   : Exclude<QueryParamValue, undefined>;
 
+/**
+ * @deprecated
+ * Deprecated in favor of the 'qs' package.
+ */
 export const decodeQueryParam = <O extends DecodeQueryParamOptions>(
   v: EncodedQueryParamValue,
   opts: O,
@@ -68,6 +72,10 @@ export const decodeQueryParam = <O extends DecodeQueryParamOptions>(
   return undefined as unknown as DecodeQueryParamReturn<O>;
 };
 
+/**
+ * @deprecated
+ * Deprecated in favor of the 'qs' package.
+ */
 export const decodeQueryParams = (
   params: QueryParams<QueryParamsForm, EncodedQueryParamValue>,
 ): QueryParams<"record", QueryParamValue> => {

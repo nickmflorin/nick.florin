@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-import { ProgrammingDomain, SkillCategory, ProgrammingLanguage } from "~/prisma/model";
-import { SHOW_TOP_SKILLS, type ShowTopSkills, type ShowTopSkillsString } from "~/api/schemas";
+import { SkillsFiltersSchema } from "~/api/schemas";
 import { Form, type FormProps } from "~/components/forms/generic/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
@@ -10,16 +9,17 @@ import { ProgrammingDomainSelect } from "~/components/input/select/ProgrammingDo
 import { ProgrammingLanguageSelect } from "~/components/input/select/ProgrammingLanguageSelect";
 import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
 
-export const SkillsChartFilterFormSchema = z.object({
-  showTopSkills: z.union([z.literal(5), z.literal(8), z.literal(12), z.literal("all")]),
-  experiences: z.array(z.string()),
-  educations: z.array(z.string()),
-  programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)),
-  programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)),
-  categories: z.array(z.nativeEnum(SkillCategory)),
-});
+const SHOW_TOP_SKILLS = [5, 8, 12, "all"] as const;
+
+export const SkillsChartFilterFormSchema = SkillsFiltersSchema.required()
+  .omit({ includeInTopSkills: true, search: true })
+  .extend({
+    showTopSkills: z.union([z.literal(5), z.literal(8), z.literal(12), z.literal("all")]),
+  });
 
 export type SkillsChartFilterFormValues = z.infer<typeof SkillsChartFilterFormSchema>;
+
+type ShowTopSkillsString = "5" | "8" | "12" | "all";
 
 const ShowTopSkillsLabels: { [key in ShowTopSkillsString]: string } = {
   "5": "5",
@@ -47,7 +47,9 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
             label: ShowTopSkillsLabels[String(v) as ShowTopSkillsString],
             value: String(v) as ShowTopSkillsString,
           }))}
-          onChange={v => _onChange?.(v === "all" ? v : (parseInt(v) as ShowTopSkills))}
+          onChange={v =>
+            _onChange?.(v === "all" ? v : (parseInt(v) as (typeof SHOW_TOP_SKILLS)[number]))
+          }
         />
       )}
     </Form.ControlledField>

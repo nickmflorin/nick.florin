@@ -1,24 +1,12 @@
-import { type NextRequest } from "next/server";
-
-import { getAuthUserFromRequest } from "~/application/auth";
 import { type RepositoryIncludes } from "~/prisma/model";
 import { getRepositories } from "~/actions/fetches/repositories";
-import { ApiClientGlobalError, ClientResponse } from "~/api";
-import { parseInclusion, parseVisibility } from "~/api/query";
+import { ClientResponse } from "~/api";
+import { apiRoute } from "~/api/route";
 
-export async function GET(request: NextRequest) {
-  const visibility = parseVisibility(request);
-  if (visibility === "admin") {
-    const user = await getAuthUserFromRequest(request);
-    if (!user) {
-      return ApiClientGlobalError.NotAuthenticated().response;
-    } else if (!user.isAdmin) {
-      return ApiClientGlobalError.Forbidden().response;
-    }
-  }
+export const GET = apiRoute(async (request, params, query) => {
   const repositories = await getRepositories({
-    includes: parseInclusion(request, ["projects", "skills"] as const) as RepositoryIncludes,
-    visibility,
+    includes: query.includes as RepositoryIncludes,
+    visibility: query.visibility,
   });
   return ClientResponse.OK(repositories).response;
-}
+});

@@ -2,15 +2,20 @@ import React, { type ForwardedRef, forwardRef, useMemo, type ReactNode } from "r
 
 import clsx from "clsx";
 
-import { CaretIcon } from "~/components/icons/CaretIcon";
-import { mergeActions } from "~/components/structural";
-
 import { Input, type InputProps } from "../../generic";
 
 export interface SelectInputProps
   extends Pick<
     InputProps,
-    "isLocked" | "isLoading" | "size" | "isDisabled" | "actions" | "className" | "dynamicHeight"
+    | "isLocked"
+    | "isLoading"
+    | "size"
+    | "isDisabled"
+    | "actions"
+    | "className"
+    | "withCaret"
+    | "caretIsOpen"
+    | "dynamicHeight"
   > {
   readonly isOpen: boolean;
   readonly children?: ReactNode;
@@ -20,7 +25,7 @@ export interface SelectInputProps
 
 export const SelectInput = forwardRef<HTMLDivElement, SelectInputProps>(
   (
-    { actions, isOpen, placeholder, showPlaceholder = false, children, ...props }: SelectInputProps,
+    { isOpen, placeholder, showPlaceholder = false, children, ...props }: SelectInputProps,
     ref: ForwardedRef<HTMLDivElement>,
   ) => {
     const renderedValue = useMemo(() => {
@@ -34,11 +39,10 @@ export const SelectInput = forwardRef<HTMLDivElement, SelectInputProps>(
       <Input
         dynamicHeight={true}
         {...props}
+        withCaret
+        caretIsOpen={isOpen}
         className={clsx("select", props.className)}
         ref={ref}
-        actions={mergeActions(actions, {
-          right: [<CaretIcon key="0" open={isOpen} />],
-        })}
         isActive={isOpen}
       >
         {renderedValue}

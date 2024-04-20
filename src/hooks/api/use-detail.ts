@@ -1,4 +1,3 @@
-import { encodeQueryParam } from "~/lib/urls";
 import {
   type ApiDetail,
   type DetailIncludes,
@@ -42,8 +41,8 @@ export function useDetail<P extends NestedParams | PrimaryParams, I extends Deta
     ...(rest as SWRConfig<M<P, I>>),
     query: {
       ...rest.query,
-      includes: encodeQueryParam(includes),
-      visibility: encodeQueryParam(visibility),
+      includes,
+      visibility,
     },
   });
   return result as SWRResponse<M<P, I>>;

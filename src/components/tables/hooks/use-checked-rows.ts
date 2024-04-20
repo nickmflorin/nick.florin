@@ -3,11 +3,10 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useTransition, useCallback } from "react";
 
 import uniq from "lodash.uniq";
+import qs from "qs";
 import { z } from "zod";
 
 import type * as types from "../types";
-
-import { decodeQueryParams, encodeQueryParam } from "~/lib/urls";
 
 const CheckedRowsQuerySchema = z
   .object({
@@ -28,9 +27,10 @@ const parseCheckedRowsFromQuery = ({
      In each case, we don't want to use the existing potential search parameters to modify the
      checked rows param, because it either does not exist or is invalid. */
   if (searchParams) {
-    const parsed = CheckedRowsQuerySchema.safeParse(decodeQueryParams(searchParams));
-    if (parsed.success) {
-      return parsed.data.checkedRows;
+    const parsed = qs.parse(searchParams.toString(), { allowEmptyArrays: true });
+    const safeParsed = CheckedRowsQuerySchema.safeParse(parsed);
+    if (safeParsed.success) {
+      return safeParsed.data.checkedRows;
     }
   }
   return [];
@@ -64,7 +64,7 @@ export const useCheckedRows = <T extends types.TableModel>({
     (checkedRows: string[]) => {
       const newParams = new URLSearchParams(searchParams?.toString());
       if (checkedRows.length !== 0) {
-        newParams.set("checkedRows", encodeQueryParam(checkedRows));
+        newParams.set("checkedRows", qs.stringify(checkedRows, { allowEmptyArrays: true }));
       } else {
         newParams.delete("checkedRows");
       }

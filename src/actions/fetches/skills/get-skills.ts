@@ -11,39 +11,30 @@ import {
   type ApiSkill,
   type ApiProject,
   type ApiEducation,
-  type SkillCategory,
-  type ProgrammingLanguage,
-  type ProgrammingDomain,
   type SkillIncludes,
   type ApiCourse,
   type ApiExperience,
   fieldIsIncluded,
 } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
-import { parsePagination } from "~/api/query";
-import { type Visibility } from "~/api/query";
+import { parsePagination, type Visibility } from "~/api/query";
+import { type SkillsFilters } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
-import { convertToPlainObject } from "../../../api/serialization";
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
-export type GetSkillsFilters = {
-  readonly educations?: string[];
-  readonly experiences?: string[];
-  readonly search?: string;
-  readonly includeInTopSkills?: boolean;
-  readonly categories?: SkillCategory[];
-  readonly programmingLanguages?: ProgrammingLanguage[];
-  readonly programmingDomains?: ProgrammingDomain[];
-};
+const skillExperience = <I extends SkillIncludes>(skill: ApiSkill<I>): number =>
+  skill.experience === null ? skill.autoExperience : skill.experience;
 
 type GetSkillsParams<I extends SkillIncludes> = {
   readonly visibility: Visibility;
-  readonly filters?: GetSkillsFilters;
+  readonly filters?: SkillsFilters;
   readonly page?: number;
   readonly includes: I;
+  readonly limit?: number;
 };
 
-const filtersClause = (filters: GetSkillsFilters) =>
+const filtersClause = (filters: SkillsFilters) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("skill", filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
@@ -156,6 +147,7 @@ export const getSkills = cache(
     filters,
     visibility,
     includes,
+    limit,
   }: GetSkillsParams<I>): Promise<ApiSkill<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
 
@@ -165,10 +157,15 @@ export const getSkills = cache(
       getCount: async () => await getSkillsCount({ filters, visibility }),
     });
 
+    if (pagination !== null && limit !== undefined) {
+      throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
+    }
+
     const skills = (await prisma.skill.findMany({
       where: whereClause({ filters, visibility }),
       orderBy: { createdAt: "desc" },
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
+      // The limit has to be applie after the sorting is applied external to the query.
       take: pagination ? pagination.pageSize : undefined,
       include: {
         courses: fieldIsIncluded("courses", includes)
@@ -219,10 +216,12 @@ export const getSkills = cache(
       orderBy: { education: { startDate: "asc" } },
     });
 
-    return skills.map(skill =>
+    const withAutoExperience = skills.map(skill =>
       convertToPlainObject(
         includeAutoExperience({ skill, experiences, educations, projects, courses }),
       ),
     );
+    const data = withAutoExperience.sort((a, b) => skillExperience(b) - skillExperience(a));
+    return limit ? data.slice(0, limit) : data;
   },
 ) as <I extends SkillIncludes>(params: GetSkillsParams<I>) => Promise<ApiSkill<I>[]>;

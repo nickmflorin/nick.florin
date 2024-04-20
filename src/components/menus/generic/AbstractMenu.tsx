@@ -18,7 +18,6 @@ export const AbstractMenu = forwardRef(
       value,
       children,
       onItemClick,
-      onSelect,
       ...props
     }: types.AbstractMenuProps<M, O>,
     ref: ForwardedRef<HTMLDivElement>,
@@ -26,13 +25,7 @@ export const AbstractMenu = forwardRef(
     <MenuContainer style={style} className={className} ref={ref}>
       <MenuHeader>{header}</MenuHeader>
       <div className="menu__content-wrapper">
-        <AbstractMenuContent
-          {...props}
-          data={data}
-          value={value}
-          onSelect={onSelect}
-          onItemClick={onItemClick}
-        >
+        <AbstractMenuContent {...props} data={data} value={value} onItemClick={onItemClick}>
           {children}
         </AbstractMenuContent>
       </div>

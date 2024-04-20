@@ -1,5 +1,6 @@
 import { prisma } from "~/prisma/client";
 import { type BrandResume } from "~/prisma/model";
+import { convertToPlainObject } from "~/api/serialization";
 import { PublicResumeDownloadMenu } from "~/components/menus/PublicResumeDropdownMenu";
 
 interface ResumeLayoutProps {
@@ -14,7 +15,7 @@ export default async function ResumeLayout({ children, chart }: ResumeLayoutProp
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
   });
   if (resumes.length !== 0) {
-    resume = resumes[0];
+    resume = convertToPlainObject(resumes[0]);
   }
   return (
     <div className="flex flex-row gap-[20px] min-h-full max-h-full">

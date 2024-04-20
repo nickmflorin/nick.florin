@@ -1,5 +1,4 @@
 import { isUuid } from "~/lib/typeguards";
-import { encodeQueryParam } from "~/lib/urls";
 import { type ApiProject, type ProjectIncludes } from "~/prisma/model";
 import type { Visibility } from "~/api/query";
 
@@ -20,7 +19,7 @@ export const useProject = <I extends ProjectIncludes>(
     ...config,
     query: {
       ...config.query,
-      includes: encodeQueryParam(includes),
-      visibility: encodeQueryParam(visibility),
+      includes,
+      visibility,
     },
   });

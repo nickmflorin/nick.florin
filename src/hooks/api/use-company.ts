@@ -1,5 +1,4 @@
 import { isUuid } from "~/lib/typeguards";
-import { encodeQueryParam } from "~/lib/urls";
 import { type ApiCompany, type CompanyIncludes } from "~/prisma/model";
 import type { Visibility } from "~/api/query";
 
@@ -15,5 +14,5 @@ export const useCompany = <I extends CompanyIncludes>(
 ) =>
   useSWR<ApiCompany<I>>(isUuid(id) ? `/api/companies/${id}` : null, {
     ...config,
-    query: { ...config.query, includes: encodeQueryParam(includes), visibility },
+    query: { ...config.query, includes, visibility },
   });

@@ -15,7 +15,6 @@ export const AbstractMenuContent = <M extends types.MenuModel, O extends types.M
   data,
   value,
   children,
-  onSelect,
   onItemClick,
   ...props
 }: types.AbstractMenuContentProps<M, O>): JSX.Element => {
@@ -47,21 +46,13 @@ export const AbstractMenuContent = <M extends types.MenuModel, O extends types.M
             value={v}
             menuValue={value}
             key={key}
-            onClick={() => {
-              if (v !== types.VALUE_NOT_APPLICABLE) {
-                if (onSelect === undefined) {
-                  throw new Error(
-                    "Unexpectedly encountered undefined 'onSelect' callback for a Menu with " +
-                      "an applicable value.",
-                  );
-                }
-                onSelect?.(v, model, ref.current as types.MenuItemInstance);
-                const fn = onItemClick as types.ValuedMenuItemClickHandler<M, O> | undefined;
-                return fn?.(v, model, ref.current as types.MenuItemInstance);
-              }
-              const fn = onItemClick as types.MenuItemClickHandler<M> | undefined;
-              return fn?.(model, ref.current as types.MenuItemInstance);
-            }}
+            onClick={() =>
+              onItemClick?.(
+                model,
+                v as types.IfMenuValued<types.ModelValue<M, O>, M, O, types.ValueNotApplicable>,
+                ref.current as types.MenuItemInstance,
+              )
+            }
           >
             {children}
           </MenuItemModelRenderer>

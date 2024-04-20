@@ -9,7 +9,7 @@ import { strictArrayLookup, minDate } from "~/lib";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill, type SkillIncludes, fieldIsIncluded } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type Visibility } from "~/api/route";
 import { convertToPlainObject } from "~/api/serialization";
 
 type GetSkillParams<I extends SkillIncludes> = {

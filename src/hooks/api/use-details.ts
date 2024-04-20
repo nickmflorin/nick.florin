@@ -1,4 +1,3 @@
-import { encodeQueryParam } from "~/lib/urls";
 import {
   type ApiDetail,
   DetailEntityType,
@@ -42,7 +41,7 @@ export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>
     ...config,
     query: {
       ...config?.query,
-      includes: encodeQueryParam(includes),
-      visibility: encodeQueryParam(visibility),
+      includes,
+      visibility,
     },
   });

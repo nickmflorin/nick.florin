@@ -25,7 +25,12 @@ export const Menu = forwardRef(
         {...props}
         ref={ref}
         value={value}
-        onSelect={(v, model, instance) => selectModel?.(v, instance)}
+        onItemClick={(model, v, instance) => {
+          if (v !== types.VALUE_NOT_APPLICABLE) {
+            selectModel?.(v as types.ModelValue<M, O>, instance);
+          }
+          props.onItemClick?.(model, v, instance);
+        }}
       />
     );
   },

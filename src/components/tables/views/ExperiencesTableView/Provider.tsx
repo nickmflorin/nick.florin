@@ -14,7 +14,7 @@ const VisibleCell = dynamic(
   () => import("~/components/tables/generic/cells/VisibleCell"),
 ) as cells.VisibleCellComponent;
 
-const DetailsCell = dynamic(() => import("./cells/DetailsCell"));
+const DetailsCell = dynamic(() => import("~/components/tables/generic/cells/DetailsCell"));
 
 const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),

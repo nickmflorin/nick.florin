@@ -6,7 +6,7 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type ApiDetail, type DetailIncludes, fieldIsIncluded } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type Visibility } from "~/api/route";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const getDetail = cache(

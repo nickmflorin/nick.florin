@@ -1,71 +1,28 @@
 "use client";
-import React from "react";
-import { useRef, forwardRef, type ForwardedRef } from "react";
-
-import { type Optional } from "utility-types";
+import dynamic from "next/dynamic";
+import React, { forwardRef, type ForwardedRef } from "react";
 
 import type * as types from "../types";
 
+import { Loading } from "~/components/feedback/Loading";
 import {
-  type MenuValue,
-  type MenuModelValue,
-  type MenuItemInstance,
-  type MenuInitialValue,
-  type MenuInitialModelValue,
+  VALUE_NOT_APPLICABLE,
+  type AbstractMenuProps,
+  type ModelValue,
+  type AbstractMenuComponent,
 } from "~/components/menus";
-import { useMenuValue } from "~/components/menus/hooks";
 import { type ComponentProps } from "~/components/types";
 
-import { FloatingSelectContent, type FloatingSelectContentProps } from "./FloatingSelectContent";
-import { MenuSelectInput, type MenuSelectInputProps } from "./MenuSelectInput";
-import { SelectWrapper, type SelectWrapperProps } from "./SelectWrapper";
+import { SelectBase, type SelectBaseProps } from "./SelectBase";
+
+const AbstractMenu = dynamic(() => import("~/components/menus/generic/AbstractMenu"), {
+  loading: () => <Loading isLoading={true} spinnerSize="16px" />,
+}) as AbstractMenuComponent;
 
 export interface SelectProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
-  extends Omit<FloatingSelectContentProps<M, O>, "onSelect" | "value" | "className">,
-    Optional<
-      Omit<SelectWrapperProps, "content" | "onOpen" | "onClose" | "onOpenChange">,
-      "children"
-    >,
-    Omit<MenuSelectInputProps<M, O>, "value" | "select" | "models" | "isOpen"> {
-  readonly value?: MenuValue<M, O>;
-  readonly initialValue?: MenuInitialValue<M, O>;
-  readonly menuClassName?: ComponentProps["className"];
-  readonly inputClassName?: ComponentProps["className"];
-  readonly closeMenuOnSelect?: boolean;
-  readonly onChange?: (
-    /* Here, the models and value are guaranteed to not be MenuInitialValue and
-       MenuInitialModelValue anymore, because a selection was made. */
-    v: MenuValue<M, O>,
-    params: {
-      models: MenuModelValue<M, O>;
-      item: MenuItemInstance;
-    },
-  ) => void;
-  readonly onOpen?: (
-    e: Event,
-    params: {
-      value: MenuValue<M, O> | MenuInitialValue<M, O>;
-      models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
-      select: types.SelectInstance;
-    },
-  ) => void;
-  readonly onClose?: (
-    e: Event,
-    params: {
-      value: MenuValue<M, O> | MenuInitialValue<M, O>;
-      models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
-      select: types.SelectInstance;
-    },
-  ) => void;
-  readonly onOpenChange?: (
-    e: Event,
-    isOpen: boolean,
-    params: {
-      value: MenuValue<M, O> | MenuInitialValue<M, O>;
-      models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
-      select: types.SelectInstance;
-    },
-  ) => void;
+  extends Omit<SelectBaseProps<M, O>, "content">,
+    Omit<AbstractMenuProps<M, O>, "value" | "children" | keyof ComponentProps> {
+  readonly itemRenderer?: types.SelectItemRenderer<M>;
 }
 
 const LocalSelect = forwardRef<
@@ -81,6 +38,7 @@ const LocalSelect = forwardRef<
       isLocked,
       isLoading,
       size,
+      value,
       inPortal,
       isDisabled,
       menuClassName,
@@ -90,11 +48,11 @@ const LocalSelect = forwardRef<
       maximumNumBadges,
       maxHeight = 240,
       initialValue,
-      value: _propValue,
       isReady = true,
       closeMenuOnSelect,
       onChange,
       valueRenderer,
+      itemRenderer,
       valueModelRenderer,
       onOpen,
       onClose,
@@ -102,86 +60,55 @@ const LocalSelect = forwardRef<
       ...props
     }: SelectProps<M, O>,
     ref: ForwardedRef<types.SelectInstance>,
-  ): JSX.Element => {
-    const internalInstance = useRef<types.SelectInstance | null>(null);
-
-    const [value, models, selectModel] = useMenuValue<true, M, O>({
-      initialValue: initialValue,
-      isValued: true,
-      value: _propValue,
-      options: props.options,
-      data: props.data,
-      isReady,
-      onChange,
-    });
-
-    return (
-      <SelectWrapper
-        ref={instance => {
-          if (instance) {
-            internalInstance.current = instance;
-            if (typeof ref === "function") {
-              ref(instance);
-            } else if (ref) {
-              ref.current = instance;
+  ): JSX.Element => (
+    <SelectBase<M, O>
+      ref={ref}
+      initialValue={initialValue}
+      value={value}
+      maxHeight={maxHeight}
+      isReady={isReady}
+      isLoading={isLoading}
+      menuPlacement={menuPlacement}
+      menuWidth={menuWidth}
+      inPortal={inPortal}
+      menuOffset={menuOffset}
+      isLocked={isLocked}
+      isDisabled={isDisabled}
+      menuClassName={menuClassName}
+      inputClassName={inputClassName}
+      maximumNumBadges={maximumNumBadges}
+      size={size}
+      actions={actions}
+      placeholder={placeholder}
+      data={props.data}
+      options={props.options}
+      closeMenuOnSelect={closeMenuOnSelect}
+      valueRenderer={valueRenderer}
+      onOpen={onOpen}
+      onChange={onChange}
+      onClose={onClose}
+      valueModelRenderer={valueModelRenderer}
+      onOpenChange={onOpenChange}
+      content={({ selectModel, value: _value }) => (
+        <AbstractMenu
+          {...(props as AbstractMenuProps<M, O>)}
+          isReady={isReady}
+          className="z-50"
+          value={_value}
+          onItemClick={(model, v, instance) => {
+            if (v !== VALUE_NOT_APPLICABLE) {
+              selectModel?.(v as ModelValue<M, O>, instance);
             }
-          }
-        }}
-        maxHeight={maxHeight}
-        isReady={isReady}
-        isLoading={isLoading}
-        menuPlacement={menuPlacement}
-        menuWidth={menuWidth}
-        inPortal={inPortal}
-        menuOffset={menuOffset}
-        onOpen={(e, { select }) => onOpen?.(e, { value, models, select })}
-        onClose={(e, { select }) => onClose?.(e, { value, models, select })}
-        onOpenChange={(e, isOpen, { select }) =>
-          onOpenChange?.(e, isOpen, { value, models, select })
-        }
-        content={
-          <FloatingSelectContent
-            {...props}
-            isReady={isReady}
-            onSelect={(value, model, item) => {
-              selectModel(value, item);
-              if (
-                closeMenuOnSelect ||
-                (closeMenuOnSelect === undefined && !props.options.isMulti)
-              ) {
-                internalInstance.current?.setOpen(false);
-              }
-            }}
-            value={value}
-            className={menuClassName}
-          />
-        }
-      >
-        {children ??
-          (({ ref, params, isOpen, isLoading }) => (
-            <MenuSelectInput
-              {...params}
-              valueModelRenderer={valueModelRenderer}
-              valueRenderer={valueRenderer}
-              ref={ref}
-              options={props.options}
-              models={models}
-              actions={actions}
-              maximumNumBadges={maximumNumBadges}
-              placeholder={placeholder}
-              value={value}
-              isOpen={isOpen}
-              isLoading={isLoading}
-              isLocked={isLocked}
-              isReady={isReady}
-              size={size}
-              isDisabled={isDisabled}
-              className={inputClassName}
-            />
-          ))}
-      </SelectWrapper>
-    );
-  },
+            props.onItemClick?.(model, v, instance);
+          }}
+        >
+          {itemRenderer ? m => itemRenderer(m) : undefined}
+        </AbstractMenu>
+      )}
+    >
+      {children}
+    </SelectBase>
+  ),
 );
 
 export const Select = LocalSelect as {

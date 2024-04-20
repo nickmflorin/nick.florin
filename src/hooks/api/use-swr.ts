@@ -1,15 +1,10 @@
 import { useRef } from "react";
 
+import qs from "qs";
 import superjson, { type SuperJSONResult } from "superjson";
 import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
-import {
-  type QueryParams,
-  addQueryParamsToUrl,
-  type QueryParamValue,
-  encodeQueryParams,
-} from "~/lib/urls";
 import {
   isApiClientGlobalErrorJson,
   isApiClientFormErrorJson,
@@ -33,11 +28,8 @@ type FetchResponseBody = { data: SuperJSONResult } | SuperJSONResult;
 const isSuccessResponseBody = (b: FetchResponseBody): b is { data: SuperJSONResult } =>
   typeof b === "object" && b !== null && (b as { data: SuperJSONResult }).data != undefined;
 
-export const swrFetcher = async <T>(
-  path: ApiPath,
-  query?: QueryParams<"record", QueryParamValue>,
-) => {
-  const url = query ? addQueryParamsToUrl(path, encodeQueryParams(query)) : path;
+export const swrFetcher = async <T>(path: ApiPath, query?: Record<string, unknown>) => {
+  const url = query ? `${path}?${qs.stringify(query, { allowEmptyArrays: true })}` : path;
   let response: Response | null = null;
   try {
     response = await fetch(url);
@@ -121,7 +113,7 @@ export type SWRConfig<T> = Omit<
      and should not be overridden. */
   "shouldRetryOnError" | "onError" | "onSuccess"
 > & {
-  readonly query?: QueryParams<"record", QueryParamValue | string[] | number[]>;
+  readonly query?: Record<string, unknown>;
   readonly onError?: (e: HttpError) => void;
   readonly onSuccess?: (data: T) => void;
 };
@@ -147,7 +139,7 @@ export const useSWR = <T>(
   const { data, error, ...others } = useRootSWR<
     T,
     HttpError,
-    [Key, Record<string, QueryParamValue> | undefined] | null
+    [Key, Record<string, unknown> | undefined] | null
   >(shouldFetch(path) ? [path, query] : null, ([p, q]) => swrFetcher<T>(p as ApiPath, q), {
     ...config,
     onSuccess: d => {

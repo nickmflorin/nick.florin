@@ -52,14 +52,9 @@ export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuO
   readonly children?: (datum: M) => ReactNode;
 }
 
-export type ValuedMenuItemClickHandler<M extends MenuModel, O extends MenuOptions<M>> = (
-  v: ModelValue<M, O>,
+export type MenuItemClickHandler<M extends MenuModel, O extends MenuOptions<M>> = (
   model: M,
-  instance: MenuItemInstance,
-) => void;
-
-export type MenuItemClickHandler<M extends MenuModel> = (
-  model: M,
+  v: IfMenuValued<ModelValue<M, O>, M, O, ValueNotApplicable>,
   instance: MenuItemInstance,
 ) => void;
 
@@ -73,13 +68,7 @@ export type AbstractMenuContentProps<
   > & {
     readonly data: M[];
     readonly value: MenuValue<M, O> | MenuInitialValue<M, O> | ValueNotApplicable;
-    readonly onSelect?: (v: ModelValue<M, O>, model: M, instance: MenuItemInstance) => void;
-    readonly onItemClick?: IfMenuValued<
-      ValuedMenuItemClickHandler<M, O>,
-      M,
-      O,
-      MenuItemClickHandler<M>
-    >;
+    readonly onItemClick?: MenuItemClickHandler<M, O>;
   };
 
 export type MenuContainerProps = ComponentProps & {
@@ -90,7 +79,8 @@ export type AbstractMenuProps<M extends MenuModel, O extends MenuOptions<M>> = C
   AbstractMenuContentProps<M, O> & {
     readonly header?: JSX.Element;
     readonly footer?: JSX.Element;
-    readonly onSelect?: ValuedMenuItemClickHandler<M, O>;
+    readonly search?: string;
+    readonly onSearch?: (value: string) => void;
   };
 
 export type AbstractMenuComponent = {
@@ -100,7 +90,7 @@ export type AbstractMenuComponent = {
 };
 
 export type MenuContentProps<M extends MenuModel, O extends MenuOptions<M>> = ComponentProps &
-  Omit<AbstractMenuContentProps<M, O>, "value" | "onSelect"> & {
+  Omit<AbstractMenuContentProps<M, O>, "value"> & {
     readonly value?: IfMenuValued<MenuValue<M, O>, M, O>;
     readonly initialValue?: IfMenuValued<MenuInitialValue<M, O>, M, O>;
     readonly onChange?: IfMenuValued<
@@ -110,10 +100,11 @@ export type MenuContentProps<M extends MenuModel, O extends MenuOptions<M>> = Co
     >;
   };
 
-export type MenuProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
-  MenuContentProps<M, O>,
-  "onSelect"
->;
+export type MenuContentComponent = {
+  <M extends MenuModel, O extends MenuOptions<M>>(props: MenuContentProps<M, O>): JSX.Element;
+};
+
+export type MenuProps<M extends MenuModel, O extends MenuOptions<M>> = MenuContentProps<M, O>;
 
 export type MenuComponent = {
   <M extends MenuModel, O extends MenuOptions<M>>(
