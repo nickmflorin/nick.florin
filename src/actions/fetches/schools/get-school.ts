@@ -6,8 +6,10 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { fieldIsIncluded, type ApiSchool, type SchoolIncludes } from "~/prisma/model";
-import type { Visibility } from "~/api/query";
+import type { ApiStandardDetailQuery, Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
+
+export type GetSchoolParams<I extends SchoolIncludes> = ApiStandardDetailQuery<I>;
 
 export const preloadSchool = <I extends SchoolIncludes>(
   id: string,
@@ -19,7 +21,7 @@ export const preloadSchool = <I extends SchoolIncludes>(
 export const getSchool = cache(
   async <I extends SchoolIncludes>(
     id: string,
-    { includes, visibility }: { includes: I; visibility: Visibility },
+    { includes, visibility }: GetSchoolParams<I>,
   ): Promise<ApiSchool<I> | null> => {
     await getAuthAdminUser({ strict: visibility !== "public" });
     if (!isUuid(id)) {

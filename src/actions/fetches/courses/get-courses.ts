@@ -4,21 +4,19 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type ApiCourse, type CourseIncludes, fieldIsIncluded } from "~/prisma/model";
-import { parsePagination, type Visibility } from "~/api/query";
+import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
-interface GetCoursesFilters {
+type GetCoursesFilters = {
   readonly search: string;
-}
-
-type GetCoursesParams<I extends CourseIncludes> = {
-  readonly includes: I;
-  readonly filters?: GetCoursesFilters;
-  readonly page?: number;
-  readonly visibility: Visibility;
 };
+
+export type GetCoursesParams<I extends CourseIncludes> = Omit<
+  ApiStandardListQuery<I, GetCoursesFilters>,
+  "orderBy" | "limit"
+>;
 
 const whereClause = ({
   filters,

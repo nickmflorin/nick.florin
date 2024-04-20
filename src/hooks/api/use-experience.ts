@@ -1,25 +1,14 @@
 import { isUuid } from "~/lib/typeguards";
 import { type ApiExperience, type ExperienceIncludes } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type GetExperienceParams } from "~/actions/fetches/experiences";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
 export const useExperience = <I extends ExperienceIncludes>(
   id: string | null,
-  {
-    includes,
-    visibility,
-    ...config
-  }: SWRConfig<ApiExperience<I>> & {
-    readonly includes: I;
-    readonly visibility: Visibility;
-  },
+  config: SWRConfig<ApiExperience<I>, GetExperienceParams<I>>,
 ) =>
-  useSWR<ApiExperience<I>>(isUuid(id) ? `/api/experiences/${id}` : null, {
-    ...config,
-    query: {
-      ...config.query,
-      includes,
-      visibility,
-    },
-  });
+  useSWR<ApiExperience<I>, GetExperienceParams<I>>(
+    isUuid(id) ? `/api/experiences/${id}` : null,
+    config,
+  );

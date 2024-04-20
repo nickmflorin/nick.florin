@@ -21,8 +21,7 @@ export const UpdateRepositoryDrawer = ({
   const { data, isLoading, error, isValidating } = useRepository(
     isUuid(repositoryId) ? repositoryId : null,
     {
-      includes: ["projects", "skills"],
-      visibility: "admin",
+      query: { includes: ["projects", "skills"], visibility: "admin" },
       keepPreviousData: true,
     },
   );

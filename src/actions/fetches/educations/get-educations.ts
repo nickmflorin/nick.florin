@@ -10,23 +10,20 @@ import {
   fieldIsIncluded,
   type EducationToDetailIncludes,
 } from "~/prisma/model";
-import { parsePagination, type Visibility } from "~/api/query";
+import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { getDetails } from "../details";
 
-interface GetEducationsFilters {
+type GetEducationsFilters = {
   readonly search: string;
-}
-
-type GetEducationsParams<I extends EducationIncludes> = {
-  visibility: Visibility;
-  includes: I;
-  filters?: GetEducationsFilters;
-  page?: number;
-  limit?: number;
 };
+
+export type GetEducationsParams<I extends EducationIncludes> = Omit<
+  ApiStandardListQuery<I, GetEducationsFilters>,
+  "orderBy"
+>;
 
 const whereClause = ({
   filters,

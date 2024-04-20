@@ -5,7 +5,7 @@ import {
   type BrandExperience,
   type BrandEducation,
 } from "~/prisma/model";
-import type { Visibility } from "~/api/query";
+import { type GetDetailsParams } from "~/actions/fetches/details";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
@@ -28,20 +28,5 @@ const PATHS: { [key in DetailEntityType]: (id: string) => `/api/${string}/${stri
 export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>(
   id: string | null,
   entityType: T,
-  {
-    includes,
-    visibility,
-    ...config
-  }: SWRConfig<Response<I, T>> & {
-    readonly includes: I;
-    readonly visibility: Visibility;
-  },
-) =>
-  useSWR<Response<I, T>>(id ? PATHS[entityType](id) : null, {
-    ...config,
-    query: {
-      ...config?.query,
-      includes,
-      visibility,
-    },
-  });
+  config: SWRConfig<Response<I, T>, GetDetailsParams<I>>,
+) => useSWR<Response<I, T>, GetDetailsParams<I>>(id ? PATHS[entityType](id) : null, config);

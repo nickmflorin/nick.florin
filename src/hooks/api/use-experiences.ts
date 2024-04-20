@@ -1,18 +1,8 @@
 import { type ApiExperience, type ExperienceIncludes } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type GetExperiencesParams } from "~/actions/fetches/experiences";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
-export const useExperiences = <I extends ExperienceIncludes>({
-  visibility,
-  includes,
-  ...config
-}: SWRConfig<ApiExperience<I>[]> & { readonly visibility: Visibility; readonly includes: I }) =>
-  useSWR<ApiExperience<I>[]>("/api/experiences", {
-    ...config,
-    query: {
-      ...config.query,
-      includes,
-      visibility,
-    },
-  });
+export const useExperiences = <I extends ExperienceIncludes>(
+  config: SWRConfig<ApiExperience<I>[], GetExperiencesParams<I>>,
+) => useSWR<ApiExperience<I>[], GetExperiencesParams<I>>("/api/experiences", config);

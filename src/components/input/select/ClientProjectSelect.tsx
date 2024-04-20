@@ -13,7 +13,10 @@ export const ClientProjectSelect = <O extends { isMulti?: boolean }>({
   onError,
   ...props
 }: ClientProjectSelectProps<O>): JSX.Element => {
-  const { data, isLoading, error } = useProjects({ onError, includes: [], visibility: "admin" });
+  const { data, isLoading, error } = useProjects({
+    onError,
+    query: { includes: [], visibility: "admin" },
+  });
 
   return (
     <ProjectSelect

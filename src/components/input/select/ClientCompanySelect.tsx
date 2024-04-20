@@ -12,7 +12,10 @@ export const ClientCompanySelect = ({
   onError,
   ...props
 }: ClientCompanySelectProps): JSX.Element => {
-  const { data, isLoading, error } = useCompanies({ onError, includes: [], visibility: "admin" });
+  const { data, isLoading, error } = useCompanies({
+    onError,
+    query: { includes: [], visibility: "admin" },
+  });
 
   return (
     <CompanySelect

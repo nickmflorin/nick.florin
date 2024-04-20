@@ -17,8 +17,7 @@ export const UpdateDetailExpandedDrawer = ({
     isUuid(detailId) ? { id: detailId, isNested } : null,
     {
       keepPreviousData: true,
-      includes: ["skills", "nestedDetails"],
-      visibility: "admin",
+      query: { includes: ["skills", "nestedDetails"], visibility: "admin" },
     },
   );
   return (

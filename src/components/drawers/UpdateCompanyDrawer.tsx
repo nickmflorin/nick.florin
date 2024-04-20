@@ -23,7 +23,7 @@ export const UpdateCompanyDrawer = ({
 
   const { data, isLoading, error, isValidating } = useCompany(
     isUuid(companyId) ? companyId : null,
-    { keepPreviousData: true, visibility: "admin", includes: [] },
+    { keepPreviousData: true, query: { visibility: "admin", includes: [] } },
   );
   return (
     <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>

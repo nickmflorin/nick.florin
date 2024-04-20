@@ -18,8 +18,7 @@ export const ClientRepositorySelect = <O extends { isMulti?: boolean }>({
 }: ClientRepositorySelectProps<O>): JSX.Element => {
   const { data, isLoading, error } = useRepositories({
     onError,
-    includes: [],
-    visibility: "admin",
+    query: { includes: [], visibility: "admin" },
   });
   return (
     <RepositorySelect<O, ApiRepository>

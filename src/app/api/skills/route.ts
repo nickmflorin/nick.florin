@@ -16,9 +16,8 @@ export const GET = apiRoute(async (request, params, query) => {
   /* This API request is currently only used in the public realm, so admin visibility is not
      applicable at this point in time. */
   const skills = await getSkills({
-    visibility: query.visibility,
+    ...query,
     filters,
-    limit: query.limit,
     includes: query.includes as SkillIncludes,
   });
   return ClientResponse.OK(skills).response;

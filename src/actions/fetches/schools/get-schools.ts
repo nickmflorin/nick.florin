@@ -14,14 +14,16 @@ export const preloadSchools = <I extends SchoolIncludes>(params: {
   void getSchools(params);
 };
 
+export type GetSchoolsParams<I extends SchoolIncludes> = {
+  includes: I;
+  visibility: Visibility;
+};
+
 export const getSchools = cache(
   async <I extends SchoolIncludes>({
     includes,
     visibility,
-  }: {
-    includes: I;
-    visibility: Visibility;
-  }): Promise<ApiSchool<I>[]> => {
+  }: GetSchoolsParams<I>): Promise<ApiSchool<I>[]> => {
     await getAuthAdminUser({ strict: visibility !== "public" });
     return (
       await prisma.school.findMany({

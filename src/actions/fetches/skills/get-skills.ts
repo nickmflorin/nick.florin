@@ -14,10 +14,11 @@ import {
   type SkillIncludes,
   type ApiCourse,
   type ApiExperience,
+  type Prisma,
   fieldIsIncluded,
 } from "~/prisma/model";
 import { conditionalFilters } from "~/prisma/util";
-import { parsePagination, type Visibility } from "~/api/query";
+import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { type SkillsFilters } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -26,13 +27,11 @@ import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 const skillExperience = <I extends SkillIncludes>(skill: ApiSkill<I>): number =>
   skill.experience === null ? skill.autoExperience : skill.experience;
 
-type GetSkillsParams<I extends SkillIncludes> = {
-  readonly visibility: Visibility;
-  readonly filters?: SkillsFilters;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-};
+export type GetSkillsParams<I extends SkillIncludes> = ApiStandardListQuery<
+  I,
+  SkillsFilters,
+  Prisma.SkillOrderByWithRelationInput
+>;
 
 const filtersClause = (filters: SkillsFilters) =>
   conditionalFilters([
@@ -148,6 +147,7 @@ export const getSkills = cache(
     visibility,
     includes,
     limit,
+    orderBy: _orderBy,
   }: GetSkillsParams<I>): Promise<ApiSkill<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
 
@@ -161,12 +161,19 @@ export const getSkills = cache(
       throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
     }
 
+    /* If paginating, the 'orderBy' parameter must be defined - otherwise, the ordering will happen
+       in a manual fashion after the query is made and the pagination will be corrupted. */
+    const orderBy = pagination ? _orderBy ?? [{ createdAt: "desc" }] : _orderBy;
+
     const skills = (await prisma.skill.findMany({
       where: whereClause({ filters, visibility }),
-      orderBy: { createdAt: "desc" },
+      orderBy,
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
-      // The limit has to be applie after the sorting is applied external to the query.
-      take: pagination ? pagination.pageSize : undefined,
+      /* If the orderBy parameter is not present, the default is to sort the skills by their
+         relative experience values, which has to occur after the query is performed.  In that case,
+         the limit has to be applied after the manual sorting, so it cannot be provided as a param
+         here. */
+      take: orderBy !== undefined ? (pagination ? pagination.pageSize : limit) : undefined,
       include: {
         courses: fieldIsIncluded("courses", includes)
           ? { where: { visible: visibility === "public" ? true : undefined } }
@@ -216,12 +223,18 @@ export const getSkills = cache(
       orderBy: { education: { startDate: "asc" } },
     });
 
-    const withAutoExperience = skills.map(skill =>
+    let data = skills.map(skill =>
       convertToPlainObject(
         includeAutoExperience({ skill, experiences, educations, projects, courses }),
       ),
     );
-    const data = withAutoExperience.sort((a, b) => skillExperience(b) - skillExperience(a));
-    return limit ? data.slice(0, limit) : data;
+    if (orderBy === undefined) {
+      /* Here, we have to order manually by the skills' experiences.  The results should include
+         all of the results in the database, so we have to apply a potential limit or pagination
+         after the sorting. */
+      data = data.sort((a, b) => skillExperience(b) - skillExperience(a));
+      return pagination ? data.slice(0, pagination.pageSize) : limit ? data.slice(0, limit) : data;
+    }
+    return data;
   },
 ) as <I extends SkillIncludes>(params: GetSkillsParams<I>) => Promise<ApiSkill<I>[]>;

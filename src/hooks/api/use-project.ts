@@ -1,25 +1,10 @@
 import { isUuid } from "~/lib/typeguards";
 import { type ApiProject, type ProjectIncludes } from "~/prisma/model";
-import type { Visibility } from "~/api/query";
+import { type GetProjectParams } from "~/actions/fetches/projects";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
 export const useProject = <I extends ProjectIncludes>(
   id: string | null,
-  {
-    includes,
-    visibility,
-    ...config
-  }: SWRConfig<ApiProject<I>> & {
-    readonly includes: I;
-    readonly visibility: Visibility;
-  },
-) =>
-  useSWR<ApiProject<I>>(isUuid(id) ? `/api/projects/${id}` : null, {
-    ...config,
-    query: {
-      ...config.query,
-      includes,
-      visibility,
-    },
-  });
+  config: SWRConfig<ApiProject<I>, GetProjectParams<I>>,
+) => useSWR<ApiProject<I>, GetProjectParams<I>>(isUuid(id) ? `/api/projects/${id}` : null, config);

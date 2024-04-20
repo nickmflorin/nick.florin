@@ -13,6 +13,8 @@ export * from "./brand";
 
 import { DateTime } from "luxon";
 
+export { Prisma } from "./generated";
+
 export type ModelTimePeriod = {
   readonly startDate: Date;
   readonly endDate: Date | null;

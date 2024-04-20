@@ -17,7 +17,10 @@ export const ClientExperienceSelect = ({
   visibility,
   ...props
 }: ClientExperienceSelectProps): JSX.Element => {
-  const { data, isLoading, error } = useExperiences({ onError, visibility, includes: [] });
+  const { data, isLoading, error } = useExperiences({
+    onError,
+    query: { visibility, includes: [] },
+  });
 
   return (
     <ExperienceSelect<ApiExperience>

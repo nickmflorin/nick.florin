@@ -1,25 +1,14 @@
 import { isUuid } from "~/lib/typeguards";
 import { type ApiEducation, type EducationIncludes } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type GetEducationParams } from "~/actions/fetches/educations";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
 export const useEducation = <I extends EducationIncludes>(
   id: string | null,
-  {
-    includes,
-    visibility,
-    ...config
-  }: SWRConfig<ApiEducation<I>> & {
-    readonly includes: I;
-    readonly visibility: Visibility;
-  },
+  config: SWRConfig<ApiEducation<I>, GetEducationParams<I>>,
 ) =>
-  useSWR<ApiEducation<I>>(isUuid(id) ? `/api/educations/${id}` : null, {
-    ...config,
-    query: {
-      ...config.query,
-      includes,
-      visibility,
-    },
-  });
+  useSWR<ApiEducation<I>, GetEducationParams<I>>(
+    isUuid(id) ? `/api/educations/${id}` : null,
+    config,
+  );

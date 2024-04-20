@@ -13,10 +13,12 @@ import {
   type DetailIncludes,
   fieldIsIncluded,
 } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type ApiStandardDetailQuery, type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { getEntity } from "../get-entity";
+
+export type GetDetailsParams<I extends DetailIncludes> = ApiStandardDetailQuery<I>;
 
 /*
 Note: (r.e. Ordering):
@@ -43,7 +45,7 @@ export const getDetails = cache(
   async <T extends DetailEntityType, I extends DetailIncludes>(
     ids: string[],
     entityType: T,
-    { includes, visibility }: { includes: I; visibility: Visibility },
+    { includes, visibility }: GetDetailsParams<I>,
   ): Promise<ApiDetail<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
 

@@ -32,11 +32,6 @@ export const parsePagination = async ({
   return null;
 };
 
-/**
- * @deprecated
- * Deprecated in favor of 'parseQuery'.
- * @see processQuery
- */
 const parseInteger = (value: unknown) => {
   const parsed = z.coerce.number().int().safeParse(value);
   if (parsed.success) {
@@ -45,18 +40,37 @@ const parseInteger = (value: unknown) => {
   return undefined;
 };
 
-export interface ApiParsedQuery {
-  readonly [key: string]: ParsedQueryValue;
-  readonly limit?: number;
-  readonly includes: string[];
+export type ApiStandardDetailQuery<I extends string[]> = {
+  readonly includes: I;
   readonly visibility: Visibility;
+};
+
+export type ApiStandardListQuery<
+  I extends string[],
+  F extends Record<string, unknown> | never = never,
+  O = never,
+> = ApiStandardDetailQuery<I> & {
+  readonly limit?: number;
+  readonly page?: number;
+  /* Note: We should consider incorporating a way to provide a schema to the parser so it can
+     automatically validate filter structures if present. */
+  readonly filters?: F;
+  /* Note: We need to figure out a way to validate the orderBy parameter so that we do not get
+     Prisma errors with bad input from query params. */
+  readonly orderBy?: O | O[];
+};
+
+export interface ApiParsedQuery<I extends string[] = string[]> extends ApiStandardListQuery<I> {
+  readonly [key: string]: ParsedQueryValue;
 }
 
-export const parseApiQuery = (query: URLSearchParams | Record<string, string>) => {
+export const parseApiQuery = <I extends string[]>(
+  query: URLSearchParams | Record<string, string>,
+): ApiParsedQuery<I> => {
   const transformed: Record<string, string> =
     query instanceof URLSearchParams ? transformQueryParams(query, { form: "record" }) : query;
 
-  const { visibility: _visibility, includes, limit, ...rest } = parseQuery(transformed);
+  const { visibility: _visibility, includes, page, limit, ...rest } = parseQuery(transformed);
 
   const visibility: Visibility =
     typeof _visibility === "string" && _visibility.toLowerCase() === "admin" ? "admin" : "public";
@@ -64,10 +78,18 @@ export const parseApiQuery = (query: URLSearchParams | Record<string, string>) =
   return {
     ...rest,
     limit: parseInteger(limit),
+    page: parseInteger(page),
     visibility,
     includes:
+      /* Note: This coercion is somewhat dangerous, because the values in the array are not
+         guaranteed to be a valid set of inclusion parameters for a given model, but can have other,
+         invalid strings as well.  However, the extent at which we are using inclusion is limited to
+         making decisions based on the presence of specific strings inside of the array - so it
+         should suffice for now.
+
+         We may want to incorporate stricter validation checks in the near future, however. */
       Array.isArray(includes) && includes.every(i => typeof i === "string")
-        ? (includes as string[])
-        : [],
+        ? (includes as string[] as I)
+        : ([] as string[] as I),
   };
 };

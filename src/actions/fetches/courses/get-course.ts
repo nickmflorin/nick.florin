@@ -6,12 +6,14 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { fieldIsIncluded, type ApiCourse, type CourseIncludes } from "~/prisma/model";
-import type { Visibility } from "~/api/query";
+import type { ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
+
+export type GetCourseParams<I extends CourseIncludes> = ApiStandardDetailQuery<I>;
 
 export const preloadCourse = <I extends CourseIncludes>(
   id: string,
-  { includes, visibility }: { includes: I; visibility: Visibility },
+  { includes, visibility }: GetCourseParams<I>,
 ) => {
   void getCourse(id, { includes, visibility });
 };
@@ -19,7 +21,7 @@ export const preloadCourse = <I extends CourseIncludes>(
 export const getCourse = cache(
   async <I extends CourseIncludes>(
     id: string,
-    { includes, visibility }: { includes: I; visibility: Visibility },
+    { includes, visibility }: GetCourseParams<I>,
   ): Promise<ApiCourse<I> | null> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
     if (!isUuid(id)) {
@@ -48,8 +50,5 @@ export const getCourse = cache(
     return convertToPlainObject(course) as ApiCourse<I>;
   },
 ) as {
-  <I extends CourseIncludes>(
-    id: string,
-    params: { includes: I; visibility: Visibility },
-  ): Promise<ApiCourse<I> | null>;
+  <I extends CourseIncludes>(id: string, params: GetCourseParams<I>): Promise<ApiCourse<I> | null>;
 };

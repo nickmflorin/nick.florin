@@ -12,7 +12,7 @@ export interface ResumeDrawerProps extends ExtendingDrawerProps {}
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export const ResumeDrawer = (props: ResumeDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useResumes({ keepPreviousData: true });
+  const { data, isLoading, error } = useResumes({ keepPreviousData: true, query: {} });
 
   return (
     <Drawer>

@@ -4,21 +4,19 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/prisma/model";
-import { parsePagination, type Visibility } from "~/api/query";
+import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
-interface GetProjectsFilters {
+type GetProjectsFilters = {
   readonly search: string;
-}
-
-type GetProjectsParams<I extends ProjectIncludes> = {
-  includes: I;
-  filters?: GetProjectsFilters;
-  page?: number;
-  visibility: Visibility;
 };
+
+export type GetProjectsParams<I extends ProjectIncludes> = Omit<
+  ApiStandardListQuery<I, GetProjectsFilters>,
+  "orderBy"
+>;
 
 const whereClause = ({ filters }: Pick<GetProjectsParams<ProjectIncludes>, "filters">) =>
   ({

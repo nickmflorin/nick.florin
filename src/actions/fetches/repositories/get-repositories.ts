@@ -13,20 +13,20 @@ interface GetRepositorysFilters {
   readonly search: string;
 }
 
-type GetRepositorysParams<I extends RepositoryIncludes> = {
+export type GetRepositoriesParams<I extends RepositoryIncludes> = {
   includes: I;
   filters?: GetRepositorysFilters;
   page?: number;
   visibility: Visibility;
 };
 
-const whereClause = ({ filters }: Pick<GetRepositorysParams<RepositoryIncludes>, "filters">) =>
+const whereClause = ({ filters }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters">) =>
   ({
     AND: filters?.search ? [constructTableSearchClause("repository", filters.search)] : undefined,
   }) as const;
 
 export const preloadRepositoriesCount = (
-  params: Pick<GetRepositorysParams<RepositoryIncludes>, "filters" | "visibility">,
+  params: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">,
 ) => {
   void getRepositoriesCount(params);
 };
@@ -35,7 +35,7 @@ export const getRepositoriesCount = cache(
   async ({
     filters,
     visibility,
-  }: Pick<GetRepositorysParams<RepositoryIncludes>, "filters" | "visibility">) => {
+  }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">) => {
     await getAuthAdminUser({ strict: visibility === "admin" });
     return await prisma.repository.count({
       where: whereClause({ filters }),
@@ -44,7 +44,7 @@ export const getRepositoriesCount = cache(
 );
 
 export const preloadRepositories = <I extends RepositoryIncludes>(
-  params: GetRepositorysParams<I>,
+  params: GetRepositoriesParams<I>,
 ) => {
   void getRepositories(params);
 };
@@ -55,7 +55,7 @@ export const getRepositories = cache(
     page,
     filters,
     visibility,
-  }: GetRepositorysParams<I>): Promise<ApiRepository<I>[]> => {
+  }: GetRepositoriesParams<I>): Promise<ApiRepository<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
@@ -79,5 +79,5 @@ export const getRepositories = cache(
     return repositories.map(convertToPlainObject) as ApiRepository<[]>[] as ApiRepository<I>[];
   },
 ) as {
-  <I extends RepositoryIncludes>(params: GetRepositorysParams<I>): Promise<ApiRepository<I>[]>;
+  <I extends RepositoryIncludes>(params: GetRepositoriesParams<I>): Promise<ApiRepository<I>[]>;
 };

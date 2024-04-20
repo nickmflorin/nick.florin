@@ -6,7 +6,7 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { fieldIsIncluded, type ApiRepository, type RepositoryIncludes } from "~/prisma/model";
-import type { Visibility } from "~/api/query";
+import type { ApiStandardDetailQuery, Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const preloadRepository = <I extends RepositoryIncludes>(
@@ -16,10 +16,12 @@ export const preloadRepository = <I extends RepositoryIncludes>(
   void getRepository(id, { includes, visibility });
 };
 
+export type GetRepositoryParams<I extends RepositoryIncludes> = ApiStandardDetailQuery<I>;
+
 export const getRepository = cache(
   async <I extends RepositoryIncludes>(
     id: string,
-    { includes, visibility }: { includes: I; visibility: Visibility },
+    { visibility, includes }: GetRepositoryParams<I>,
   ): Promise<ApiRepository<I> | null> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
     if (!isUuid(id)) {

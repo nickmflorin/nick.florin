@@ -6,13 +6,10 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
-type GetProjectParams<I extends ProjectIncludes> = {
-  includes: I;
-  visibility: Visibility;
-};
+export type GetProjectParams<I extends ProjectIncludes> = ApiStandardDetailQuery<I>;
 
 export const preloadProject = <I extends ProjectIncludes>(
   id: string,

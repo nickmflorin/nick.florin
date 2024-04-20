@@ -1,18 +1,8 @@
 import { type ApiEducation, type EducationIncludes } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type GetEducationsParams } from "~/actions/fetches/educations";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
-export const useEducations = <I extends EducationIncludes>({
-  visibility,
-  includes,
-  ...config
-}: SWRConfig<ApiEducation<I>[]> & { readonly visibility: Visibility; readonly includes: I }) =>
-  useSWR<ApiEducation<I>[]>("/api/educations", {
-    ...config,
-    query: {
-      ...config.query,
-      includes,
-      visibility,
-    },
-  });
+export const useEducations = <I extends EducationIncludes>(
+  config: SWRConfig<ApiEducation<I>[], GetEducationsParams<I>>,
+) => useSWR<ApiEducation<I>[], GetEducationsParams<I>>("/api/educations", config);

@@ -19,7 +19,10 @@ export const ClientEducationSelect = <O extends { isMulti?: boolean }>({
   isReady = true,
   ...props
 }: ClientEducationSelectProps<O>): JSX.Element => {
-  const { data, isLoading, error } = useEducations({ onError, visibility, includes: [] });
+  const { data, isLoading, error } = useEducations({
+    onError,
+    query: { visibility, includes: [] },
+  });
 
   return (
     <EducationSelect<O, ApiEducation>

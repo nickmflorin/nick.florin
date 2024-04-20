@@ -16,8 +16,7 @@ interface UpdateCourseDrawerProps
 
 export const UpdateCourseDrawer = ({ courseId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useCourse(isUuid(courseId) ? courseId : null, {
-    includes: ["education"],
-    visibility: "admin",
+    query: { includes: ["education"], visibility: "admin" },
     keepPreviousData: true,
   });
   const form = useCourseForm();

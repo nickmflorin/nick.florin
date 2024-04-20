@@ -9,13 +9,10 @@ import { strictArrayLookup, minDate } from "~/lib";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type ApiSkill, type SkillIncludes, fieldIsIncluded } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
-type GetSkillParams<I extends SkillIncludes> = {
-  readonly visibility: Visibility;
-  readonly includes: I;
-};
+export type GetSkillParams<I extends SkillIncludes> = ApiStandardDetailQuery<I>;
 
 export const preloadSkill = <I extends SkillIncludes>(id: string, params: GetSkillParams<I>) => {
   void getSkill(id, params);

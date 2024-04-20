@@ -28,8 +28,17 @@ type FetchResponseBody = { data: SuperJSONResult } | SuperJSONResult;
 const isSuccessResponseBody = (b: FetchResponseBody): b is { data: SuperJSONResult } =>
   typeof b === "object" && b !== null && (b as { data: SuperJSONResult }).data != undefined;
 
-export const swrFetcher = async <T>(path: ApiPath, query?: Record<string, unknown>) => {
-  const url = query ? `${path}?${qs.stringify(query, { allowEmptyArrays: true })}` : path;
+export const swrFetcher = async <
+  T,
+  Q extends Record<string, unknown> | Record<string, never> = Record<string, never>,
+>(
+  path: ApiPath,
+  query: Q,
+) => {
+  const url =
+    Object.keys(query).length !== 0
+      ? `${path}?${qs.stringify(query, { allowEmptyArrays: true })}`
+      : path;
   let response: Response | null = null;
   try {
     response = await fetch(url);
@@ -107,13 +116,16 @@ export const swrFetcher = async <T>(path: ApiPath, query?: Record<string, unknow
   });
 };
 
-export type SWRConfig<T> = Omit<
+export type SWRConfig<
+  T,
+  Q extends Record<string, unknown> | Record<string, never> = Record<string, never>,
+> = Omit<
   SWRConfiguration<T, HttpError>,
   /* The 'shouldRetryOnError' configuration parameter is set globally in the <SWRConfig> component
      and should not be overridden. */
   "shouldRetryOnError" | "onError" | "onSuccess"
 > & {
-  readonly query?: Record<string, unknown>;
+  readonly query: Q;
   readonly onError?: (e: HttpError) => void;
   readonly onSuccess?: (data: T) => void;
 };
@@ -126,9 +138,12 @@ export type SWRResponse<T> = RootSWRResponse<T, HttpError> & {
 
 const shouldFetch = (k: Key) => ![null, undefined, false].includes(k as null | undefined | boolean);
 
-export const useSWR = <T>(
+export const useSWR = <
+  T,
+  Q extends Record<string, unknown> | Record<string, never> = Record<string, never>,
+>(
   path: Key,
-  { onError: _onError, query, ...config }: SWRConfig<T>,
+  { onError: _onError, query, ...config }: SWRConfig<T, Q>,
 ): SWRResponse<T> => {
   const initialResponseReceived = useRef<boolean>(false);
 
@@ -136,32 +151,32 @@ export const useSWR = <T>(
        configured `onError` configuration callback is *still* called beforehand. */
   const { onError } = useSWRConfig();
 
-  const { data, error, ...others } = useRootSWR<
-    T,
-    HttpError,
-    [Key, Record<string, unknown> | undefined] | null
-  >(shouldFetch(path) ? [path, query] : null, ([p, q]) => swrFetcher<T>(p as ApiPath, q), {
-    ...config,
-    onSuccess: d => {
-      initialResponseReceived.current = true;
-      config.onSuccess?.(d);
-    },
-    onError: (e: unknown, key, c) => {
-      initialResponseReceived.current = true;
+  const { data, error, ...others } = useRootSWR<T, HttpError, [Key, Q] | null>(
+    shouldFetch(path) ? [path, query] : null,
+    ([p, q]) => swrFetcher<T, Q>(p as ApiPath, q),
+    {
+      ...config,
+      onSuccess: d => {
+        initialResponseReceived.current = true;
+        config.onSuccess?.(d);
+      },
+      onError: (e: unknown, key, c) => {
+        initialResponseReceived.current = true;
 
-      // It is important that the globally configured onError callback is called first.
-      onError(e, key, c as PublicConfiguration);
+        // It is important that the globally configured onError callback is called first.
+        onError(e, key, c as PublicConfiguration);
 
-      /* If the error is not an HttpError, it should have already been thrown by the global error
+        /* If the error is not an HttpError, it should have already been thrown by the global error
          handler above.  However, we still need to repeat that check for type safety here. */
-      if (isHttpError(e)) {
-        return _onError?.(e);
-      }
-      /* This will force the useSWR call to throw the error, instead of embedding the error in the
+        if (isHttpError(e)) {
+          return _onError?.(e);
+        }
+        /* This will force the useSWR call to throw the error, instead of embedding the error in the
          hook's return. */
-      throw e;
+        throw e;
+      },
     },
-  });
+  );
 
   if (error && !isHttpError(error)) {
     throw error;

@@ -6,13 +6,15 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type ApiDetail, type DetailIncludes, fieldIsIncluded } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type ApiStandardDetailQuery, type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
+
+export type GetDetailParams<I extends DetailIncludes> = ApiStandardDetailQuery<I>;
 
 export const getDetail = cache(
   async <I extends DetailIncludes>(
     id: string,
-    { includes, visibility }: { includes: I; visibility: Visibility },
+    { includes, visibility }: GetDetailParams<I>,
   ): Promise<ApiDetail<I> | null> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
     if (!isUuid(id)) {

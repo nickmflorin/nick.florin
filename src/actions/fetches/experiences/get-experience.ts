@@ -12,15 +12,12 @@ import {
   fieldIsIncluded,
   type ExperienceToDetailIncludes,
 } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { getDetails } from "../details";
 
-type GetExperienceParams<I extends ExperienceIncludes> = {
-  visibility: Visibility;
-  includes: I;
-};
+export type GetExperienceParams<I extends ExperienceIncludes> = ApiStandardDetailQuery<I>;
 
 export const preloadExperience = <I extends ExperienceIncludes>(
   id: string,

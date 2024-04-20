@@ -31,8 +31,7 @@ export interface SkillsSelectProps<M extends Model> {
 export const SkillsSelect = <M extends Model>({ model }: SkillsSelectProps<M>) => {
   const [search, setSearch] = useState("");
   const { data, isLoading, error } = useSkills({
-    includes: [],
-    visibility: "admin",
+    query: { includes: [], visibility: "admin", orderBy: { label: "asc" } },
     keepPreviousData: true,
   });
   return (

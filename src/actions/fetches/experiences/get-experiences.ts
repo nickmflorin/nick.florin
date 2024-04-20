@@ -10,23 +10,20 @@ import {
   fieldIsIncluded,
   type ExperienceToDetailIncludes,
 } from "~/prisma/model";
-import { parsePagination, type Visibility } from "~/api/query";
+import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { getDetails } from "../details";
 
-interface GetExperiencesFilters {
+type GetExperiencesFilters = {
   readonly search: string;
-}
-
-type GetExperiencesParams<I extends ExperienceIncludes> = {
-  visibility: Visibility;
-  includes: I;
-  filters?: GetExperiencesFilters;
-  page?: number;
-  limit?: number;
 };
+
+export type GetExperiencesParams<I extends ExperienceIncludes> = Omit<
+  ApiStandardListQuery<I, GetExperiencesFilters>,
+  "orderBy"
+>;
 
 const whereClause = ({
   filters,

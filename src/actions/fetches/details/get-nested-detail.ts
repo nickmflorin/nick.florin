@@ -6,13 +6,15 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type NestedApiDetail, type NestedDetailIncludes, fieldIsIncluded } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type Visibility, type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
+
+export type GetNestedDetailsParams<I extends NestedDetailIncludes> = ApiStandardDetailQuery<I>;
 
 export const getNestedDetail = cache(
   async <I extends NestedDetailIncludes>(
     id: string,
-    { includes, visibility }: { includes: I; visibility: Visibility },
+    { includes, visibility }: GetNestedDetailsParams<I>,
   ): Promise<NestedApiDetail<I> | null> => {
     await getAuthAdminUser({ strict: visibility === "admin" });
     if (!isUuid(id)) {

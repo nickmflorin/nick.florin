@@ -6,12 +6,14 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { fieldIsIncluded, type ApiCompany, type CompanyIncludes } from "~/prisma/model";
-import type { Visibility } from "~/api/query";
+import type { ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
+
+export type GetCompanyParams<I extends CompanyIncludes> = ApiStandardDetailQuery<I>;
 
 export const preloadCompany = <I extends CompanyIncludes>(
   id: string,
-  params: { includes: I; visibility: Visibility },
+  params: GetCompanyParams<I>,
 ) => {
   void getCompany(id, params);
 };
@@ -19,7 +21,7 @@ export const preloadCompany = <I extends CompanyIncludes>(
 export const getCompany = cache(
   async <I extends CompanyIncludes>(
     id: string,
-    { includes, visibility }: { includes: I; visibility: Visibility },
+    { includes, visibility }: GetCompanyParams<I>,
   ): Promise<ApiCompany<I> | null> => {
     await getAuthAdminUser({ strict: visibility !== "public" });
     if (!isUuid(id)) {
@@ -45,6 +47,6 @@ export const getCompany = cache(
 ) as {
   <I extends CompanyIncludes>(
     id: string,
-    params: { includes: I; visibility: Visibility },
+    params: GetCompanyParams<I>,
   ): Promise<ApiCompany<I> | null>;
 };

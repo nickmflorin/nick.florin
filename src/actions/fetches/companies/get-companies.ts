@@ -4,13 +4,12 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type CompanyIncludes, type ApiCompany, fieldIsIncluded } from "~/prisma/model";
-import type { Visibility } from "~/api/query";
+import type { ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
-export const preloadCompanies = <I extends CompanyIncludes>(params: {
-  includes: I;
-  visibility: Visibility;
-}) => {
+export type GetCompaniesParams<I extends CompanyIncludes> = ApiStandardDetailQuery<I>;
+
+export const preloadCompanies = <I extends CompanyIncludes>(params: GetCompaniesParams<I>) => {
   void getCompanies(params);
 };
 
@@ -18,10 +17,7 @@ export const getCompanies = cache(
   async <I extends CompanyIncludes>({
     includes,
     visibility,
-  }: {
-    includes: I;
-    visibility: Visibility;
-  }): Promise<ApiCompany<I>[]> => {
+  }: GetCompaniesParams<I>): Promise<ApiCompany<I>[]> => {
     await getAuthAdminUser({ strict: visibility !== "public" });
     return (
       await prisma.company.findMany({

@@ -12,15 +12,12 @@ import {
   fieldIsIncluded,
   type EducationToDetailIncludes,
 } from "~/prisma/model";
-import { type Visibility } from "~/api/query";
+import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { getDetails } from "../details";
 
-type GetEducationParams<I extends EducationIncludes> = {
-  visibility: Visibility;
-  includes: I;
-};
+export type GetEducationParams<I extends EducationIncludes> = ApiStandardDetailQuery<I>;
 
 export const preloadEducation = <I extends EducationIncludes>(
   id: string,
