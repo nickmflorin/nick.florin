@@ -13,8 +13,6 @@ export const GET = apiRoute(async (request, params, query) => {
     }
     filters = parsedQuery.data;
   }
-  console.log({ query, filters });
-
   /* This API request is currently only used in the public realm, so admin visibility is not
      applicable at this point in time. */
   const skills = await getSkills({

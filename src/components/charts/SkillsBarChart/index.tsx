@@ -47,7 +47,6 @@ export const SkillsBarChart = (props: ComponentProps): JSX.Element => {
       setSkillsQuery(values);
     },
   });
-  console.log({ skillsQuery });
   const {
     data: _data,
     error,
