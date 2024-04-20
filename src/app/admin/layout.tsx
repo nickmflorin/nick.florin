@@ -1,5 +1,12 @@
+import dynamic from "next/dynamic";
+
+import { Loading } from "~/components/feedback/Loading";
 import { ResumesAdminTab } from "~/components/layout/ResumesAdminTab";
 import { Tabs } from "~/components/layout/Tabs";
+
+const ProtectedAdmin = dynamic(() => import("./ProtectedAdmin"), {
+  loading: () => <Loading isLoading={true} />,
+});
 
 interface AdminLayoutProps {
   readonly children: React.ReactNode;
@@ -50,7 +57,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
       >
         <ResumesAdminTab />
       </Tabs>
-      <div className="grow max-h-full h-full overflow-hidden flex flex-col">{children}</div>
+      <div className="grow max-h-full h-full overflow-hidden flex flex-col">
+        <ProtectedAdmin>{children}</ProtectedAdmin>
+      </div>
     </div>
   );
 }
