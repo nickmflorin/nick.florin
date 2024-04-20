@@ -13,7 +13,7 @@ import {
   type DetailIncludes,
   fieldIsIncluded,
 } from "~/prisma/model";
-import { type Visibility } from "~/api/route";
+import { type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { getEntity } from "../get-entity";

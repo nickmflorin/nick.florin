@@ -6,7 +6,7 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/prisma/model";
-import { type Visibility } from "~/api/route";
+import { type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 type GetProjectParams<I extends ProjectIncludes> = {

@@ -12,7 +12,7 @@ import {
   fieldIsIncluded,
   type ExperienceToDetailIncludes,
 } from "~/prisma/model";
-import { type Visibility } from "~/api/route";
+import { type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { getDetails } from "../details";

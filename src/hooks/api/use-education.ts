@@ -1,6 +1,6 @@
 import { isUuid } from "~/lib/typeguards";
 import { type ApiEducation, type EducationIncludes } from "~/prisma/model";
-import { type Visibility } from "~/api/route";
+import { type Visibility } from "~/api/query";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
