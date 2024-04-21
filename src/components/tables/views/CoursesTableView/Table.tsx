@@ -19,7 +19,7 @@ export const CoursesAdminTable = async ({ page, filters }: CoursesAdminTableProp
     filters,
     /* We will eventually need to include skills once we create a way to manage skills via a select
        or popover, both in general and in the table. */
-    includes: ["education"],
+    includes: ["education", "skills"],
     visibility: "admin",
   });
   return <ContextTable data={courses} />;

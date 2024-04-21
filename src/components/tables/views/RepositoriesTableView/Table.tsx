@@ -19,7 +19,7 @@ export const RepositoriesAdminTable = async ({ page, filters }: RepositoriesAdmi
     filters,
     /* We will eventually need to include skills once we create a way to manage skills via a select
        or popover, both in general and in the table. */
-    includes: ["projects"],
+    includes: ["projects", "skills"],
     visibility: "admin",
   });
   return <ContextTable data={repositories} />;

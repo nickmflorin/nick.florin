@@ -23,13 +23,15 @@ const ReadOnlyDateTimeCell = dynamic(
   () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
 );
 
+const SkillsCell = dynamic(() => import("./cells/SkillsCell"));
+
 export interface TableViewConfig
-  extends Pick<RootTableViewConfig<ApiRepository<["projects"]>>, "children"> {}
+  extends Pick<RootTableViewConfig<ApiRepository<["projects", "skills"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiRepository<["projects"]>>
+    <RootTableViewProvider<ApiRepository<["projects", "skills"]>>
       id="repositories-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
@@ -58,6 +60,13 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           textAlign: "center",
           width: 240,
           render: ({ model }) => <RepositoryLink repository={model} />,
+        },
+        {
+          accessor: "skills",
+          title: "Skills",
+          width: 320,
+          textAlign: "center",
+          render: ({ model }) => <SkillsCell repository={model} />,
         },
         {
           accessor: "createdAt",

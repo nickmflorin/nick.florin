@@ -12,8 +12,8 @@ import { ClientEducationSelect } from "~/components/input/select/ClientEducation
 import type { TableView } from "~/components/tables/types";
 
 interface EducationCellProps {
-  readonly course: ApiCourse<["education"]>;
-  readonly table: TableView<ApiCourse<["education"]>>;
+  readonly course: ApiCourse<["education", "skills"]>;
+  readonly table: TableView<ApiCourse<["education", "skills"]>>;
 }
 
 export const EducationCell = ({ course, table }: EducationCellProps): JSX.Element => {

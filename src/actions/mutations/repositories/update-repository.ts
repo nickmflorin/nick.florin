@@ -73,8 +73,8 @@ export const updateRepository = async (
       data: {
         ...data,
         updatedById: user.id,
-        projects: projects ? { connect: projects.map(proj => ({ id: proj.id })) } : undefined,
-        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+        projects: projects ? { set: projects.map(proj => ({ id: proj.id })) } : undefined,
+        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
 

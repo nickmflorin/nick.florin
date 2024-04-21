@@ -28,14 +28,15 @@ const ReadOnlyDateTimeCell = dynamic(
 );
 
 const EducationCell = dynamic(() => import("./cells/EducationCell"));
+const SkillsCell = dynamic(() => import("./cells/SkillsCell"));
 
 export interface TableViewConfig
-  extends Pick<RootTableViewConfig<ApiCourse<["education"]>>, "children"> {}
+  extends Pick<RootTableViewConfig<ApiCourse<["education", "skills"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiCourse<["education"]>>
+    <RootTableViewProvider<ApiCourse<["education", "skills"]>>
       id="courses-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
@@ -77,7 +78,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Slug",
           width: 240,
           render: ({ model, table }) => (
-            <SlugCell<ApiCourse<["education"]>, BrandCourse>
+            <SlugCell<ApiCourse<["education", "skills"]>, BrandCourse>
               model={model}
               modelType="course"
               table={table}
@@ -91,6 +92,13 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Education",
           width: 240,
           render: ({ model, table }) => <EducationCell course={model} table={table} />,
+        },
+        {
+          accessor: "skills",
+          title: "Skills",
+          width: 320,
+          textAlign: "center",
+          render: ({ model }) => <SkillsCell course={model} />,
         },
         {
           accessor: "createdAt",
