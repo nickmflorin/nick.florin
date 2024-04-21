@@ -4,6 +4,7 @@ import { type z } from "zod";
 import { RepositorySchema } from "~/api/schemas";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
+import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 
@@ -38,6 +39,11 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
           value={value}
           onChange={onChange}
         />
+      )}
+    </Form.ControlledField>
+    <Form.ControlledField name="skills" label="Skills" form={props.form}>
+      {({ value, onChange }) => (
+        <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
     <CheckboxField name="visible" form={props.form} label="Visible" />

@@ -42,7 +42,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "Name",
           title: "Name (Abbv.)",
-          width: 320,
+          width: 220,
           render: ({ model, table }) => (
             <EditableStringCell
               field="name"
@@ -56,7 +56,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "shortName",
           title: "Name (Abbv.)",
-          width: 320,
+          width: 220,
           render: ({ model, table }) => (
             <EditableStringCell
               field="shortName"
@@ -70,7 +70,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "slug",
           title: "Slug",
-          width: 320,
+          width: 220,
           render: ({ model, table }) => (
             <SlugCell<ApiProject<["skills"]>, BrandProject>
               model={model}

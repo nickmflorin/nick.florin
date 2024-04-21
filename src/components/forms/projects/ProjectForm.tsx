@@ -4,6 +4,7 @@ import { type z } from "zod";
 import { ProjectSchema } from "~/api/schemas";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientRepositorySelect } from "~/components/input/select/ClientRepositorySelect";
+import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 
@@ -56,6 +57,11 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
           value={value}
           onChange={onChange}
         />
+      )}
+    </Form.ControlledField>
+    <Form.ControlledField name="skills" label="Skills" form={props.form}>
+      {({ value, onChange }) => (
+        <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
     <Form.ControlledField

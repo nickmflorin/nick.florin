@@ -9,6 +9,7 @@ import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
 import { DegreeSelect } from "~/components/input/select/DegreeSelect";
+import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 
@@ -101,6 +102,11 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
       <Form.Field name="description" label="Description" form={props.form}>
         <TextArea className="w-full" {...props.form.register("description")} rows={4} />
       </Form.Field>
+      <Form.ControlledField name="skills" label="Skills" form={props.form}>
+        {({ value, onChange }) => (
+          <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
+        )}
+      </Form.ControlledField>
       <Form.ControlledField name="startDate" label="Start Date" form={props.form}>
         {({ value, onChange }) => (
           <DateSelect inputClassName="w-full" value={value} onChange={onChange} />

@@ -30,9 +30,6 @@ export const UpdateRepositoryForm = ({
       ...repository,
       slug: repository.slug,
       projects: repository.projects.map(p => p.id),
-      /* Even though these aren't modifiable by the form yet, it is important they be stored with
-         the form data so that they are not treated as an empty array which will wipe the previously
-         stored data on save. */
       skills: repository.skills.map(sk => sk.id),
     });
   }, [repository, props.form.setValues]);

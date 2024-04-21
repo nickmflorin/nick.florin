@@ -8,6 +8,7 @@ import { ExperienceSchema } from "~/api/schemas";
 import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
+import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { Label } from "~/components/typography/Label";
@@ -74,6 +75,11 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
       <Form.Field name="description" label="Description" form={props.form}>
         <TextArea className="w-full" {...props.form.register("description")} rows={4} />
       </Form.Field>
+      <Form.ControlledField name="skills" label="Skills" form={props.form}>
+        {({ value, onChange }) => (
+          <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
+        )}
+      </Form.ControlledField>
       <Form.ControlledField name="startDate" label="Start Date" form={props.form}>
         {({ value, onChange }) => (
           <DateSelect inputClassName="w-full" value={value} onChange={onChange} />

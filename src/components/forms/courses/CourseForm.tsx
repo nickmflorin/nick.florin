@@ -3,6 +3,7 @@ import { type z } from "zod";
 import { CourseSchema } from "~/api/schemas";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
+import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "../generic/Form";
@@ -51,6 +52,11 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
             props.form.setStaticErrors("education", "There was an error loading the data.")
           }
         />
+      )}
+    </Form.ControlledField>
+    <Form.ControlledField name="skills" label="Skills" form={props.form}>
+      {({ value, onChange }) => (
+        <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
     <CheckboxField name="visible" form={props.form} label="Visible" />
