@@ -18,7 +18,7 @@ export const MenuHeader = ({
   ...props
 }: MenuHeaderProps): JSX.Element => {
   const [_search, setSearch] = useState("");
-  if (children) {
+  if (children || search || onSearch) {
     return (
       <div {...props} className={clsx("menu__header", props.className)}>
         {onSearch && (

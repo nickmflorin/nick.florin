@@ -127,7 +127,7 @@ export type SWRConfig<
 > & {
   readonly query: Q;
   readonly onError?: (e: HttpError) => void;
-  readonly onSuccess?: (data: T) => void;
+  readonly onSuccess?: (data: T, query: Q) => void;
 };
 
 export type SWRResponse<T> = RootSWRResponse<T, HttpError> & {
@@ -158,7 +158,7 @@ export const useSWR = <
       ...config,
       onSuccess: d => {
         initialResponseReceived.current = true;
-        config.onSuccess?.(d);
+        config.onSuccess?.(d, query);
       },
       onError: (e: unknown, key, c) => {
         initialResponseReceived.current = true;

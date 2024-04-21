@@ -11,6 +11,7 @@ export interface ApiResponseViewProps<T> {
   readonly isInitialLoading?: boolean;
   readonly data?: T;
   readonly skeleton?: JSX.Element;
+  readonly hideChildrenOnError?: boolean;
   readonly spinnerSize?: Exclude<SpinnerProps["size"], "full">;
   readonly children: ReactNode | ((data: T) => ReactNode);
 }
@@ -21,12 +22,14 @@ export const ApiResponseState = <T,>({
   spinnerSize,
   data,
   isInitialLoading,
+  hideChildrenOnError = true,
   skeleton,
   children,
 }: ApiResponseViewProps<T>): JSX.Element => (
   <State
     isLoading={isLoading}
     error={error}
+    hideChildrenOnError={hideChildrenOnError}
     loadingProps={{
       spinnerSize,
       dimmed: data !== undefined,

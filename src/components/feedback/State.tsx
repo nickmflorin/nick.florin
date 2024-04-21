@@ -10,11 +10,19 @@ export interface StateProps {
   readonly isError?: boolean;
   readonly error?: ErrorType;
   readonly children: ReactNode;
+  readonly hideChildrenOnError?: boolean;
 }
 
-export const State = ({ children, isLoading, loadingProps, error, isError }: StateProps) => (
+export const State = ({
+  children,
+  isLoading,
+  hideChildrenOnError,
+  loadingProps,
+  error,
+  isError,
+}: StateProps) => (
   <Loading isLoading={isLoading} {...loadingProps}>
-    <Error isError={isError} error={error}>
+    <Error isError={isError} error={error} hideChildrenOnError={hideChildrenOnError}>
       {children}
     </Error>
   </Loading>

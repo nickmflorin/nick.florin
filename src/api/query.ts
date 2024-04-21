@@ -1,5 +1,4 @@
 import clamp from "lodash.clamp";
-import { z } from "zod";
 
 import { transformQueryParams, parseQuery, type ParsedQueryValue } from "~/lib/urls";
 
@@ -30,14 +29,6 @@ export const parsePagination = async ({
     return { page: clamp(pg, 1, numPages), numPages, count, pageSize };
   }
   return null;
-};
-
-const parseInteger = (value: unknown) => {
-  const parsed = z.coerce.number().int().safeParse(value);
-  if (parsed.success) {
-    return parsed.data;
-  }
-  return undefined;
 };
 
 export type ApiStandardDetailQuery<I extends string[]> = {
@@ -77,8 +68,8 @@ export const parseApiQuery = <I extends string[]>(
 
   return {
     ...rest,
-    limit: parseInteger(limit),
-    page: parseInteger(page),
+    limit: typeof limit === "number" ? Number(limit.toFixed(0)) : undefined,
+    page: typeof page === "number" ? Number(page.toFixed(0)) : undefined,
     visibility,
     includes:
       /* Note: This coercion is somewhat dangerous, because the values in the array are not

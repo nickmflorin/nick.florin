@@ -164,7 +164,6 @@ export const getSkills = cache(
     /* If paginating, the 'orderBy' parameter must be defined - otherwise, the ordering will happen
        in a manual fashion after the query is made and the pagination will be corrupted. */
     const orderBy = pagination ? _orderBy ?? [{ createdAt: "desc" }] : _orderBy;
-
     const skills = (await prisma.skill.findMany({
       where: whereClause({ filters, visibility }),
       orderBy,

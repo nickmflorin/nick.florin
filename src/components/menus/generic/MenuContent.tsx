@@ -19,19 +19,18 @@ export const MenuContent = <M extends types.MenuModel, O extends types.MenuOptio
     isReady: props.isReady,
     onChange: (value, params) => onChange?.(value, params.item),
   });
+
   return (
-    <div className="menu__content-wrapper">
-      <AbstractMenuContent
-        {...props}
-        value={value}
-        onItemClick={(model, v, instance) => {
-          if (v !== types.VALUE_NOT_APPLICABLE) {
-            selectModel?.(v as types.ModelValue<M, O>, instance);
-          }
-          props.onItemClick?.(model, v, instance);
-        }}
-      />
-    </div>
+    <AbstractMenuContent
+      {...props}
+      value={value}
+      onItemClick={(model, v, instance) => {
+        if (v !== types.VALUE_NOT_APPLICABLE) {
+          selectModel?.(v as types.ModelValue<M, O>, instance);
+        }
+        props.onItemClick?.(model, v, instance);
+      }}
+    />
   );
 };
 

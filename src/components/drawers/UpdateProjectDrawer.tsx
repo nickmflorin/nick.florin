@@ -25,9 +25,9 @@ export const UpdateProjectDrawer = ({
       query: {
         visibility: "admin",
         /* Note: We are not using skills, details or nested details in the Form yet, but since the
-         action to update the project is already implemented, we need to include those in the
-         Form data (not the Form inputs) so that they are not wiped everytime a project is
-         updated. */
+           action to update the project is already implemented, we need to include those in the
+           Form data (not the Form inputs) so that they are not wiped everytime a project is
+           updated. */
         includes: ["skills", "repositories", "details", "nestedDetails"],
       },
     },

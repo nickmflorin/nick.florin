@@ -2,6 +2,8 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import type * as types from "../types";
 
+import MenuContentWrapper from "~/components/menus/generic/MenuContentWrapper";
+
 import { AbstractMenuContent } from "./AbstractMenuContent";
 import { MenuContainer } from "./MenuContainer";
 import { MenuFooter } from "./MenuFooter";
@@ -24,11 +26,11 @@ export const AbstractMenu = forwardRef(
   ): JSX.Element => (
     <MenuContainer style={style} className={className} ref={ref}>
       <MenuHeader>{header}</MenuHeader>
-      <div className="menu__content-wrapper">
+      <MenuContentWrapper>
         <AbstractMenuContent {...props} data={data} value={value} onItemClick={onItemClick}>
           {children}
         </AbstractMenuContent>
-      </div>
+      </MenuContentWrapper>
       <MenuFooter>{footer}</MenuFooter>
     </MenuContainer>
   ),

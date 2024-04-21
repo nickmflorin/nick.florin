@@ -18,8 +18,6 @@ const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
-const SkillsCell = dynamic(() => import("~/components/tables/generic/cells/SkillsCell"));
-
 const DetailsCell = dynamic(() => import("~/components/tables/generic/cells/DetailsCell"));
 
 const ReadOnlyDateTimeCell = dynamic(
@@ -27,6 +25,7 @@ const ReadOnlyDateTimeCell = dynamic(
 );
 
 const SchoolCell = dynamic(() => import("./cells/SchoolCell"));
+const SkillsCell = dynamic(() => import("./cells/SkillsCell"));
 
 export interface TableViewConfig
   extends Pick<RootTableViewConfig<ApiEducation<["details", "skills"]>>, "children"> {}
@@ -91,7 +90,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Skills",
           width: 320,
           textAlign: "center",
-          render: ({ model }) => <SkillsCell model={model} />,
+          render: ({ model }) => <SkillsCell education={model} />,
         },
         {
           accessor: "createdAt",

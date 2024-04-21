@@ -40,6 +40,7 @@ export const ExperienceSchema = z.object({
   endDate: z.date().nullable().optional(),
   isRemote: z.boolean().optional(),
   visible: z.boolean().optional(),
+  skills: z.array(z.string().uuid()).optional(),
 });
 
 export const EducationSchema = z.object({
@@ -62,6 +63,7 @@ export const EducationSchema = z.object({
   endDate: z.date().nullable().optional(),
   postPoned: z.boolean().optional(),
   visible: z.boolean().optional(),
+  skills: z.array(z.string().uuid()).optional(),
 });
 
 export const ProjectSchema = z.object({

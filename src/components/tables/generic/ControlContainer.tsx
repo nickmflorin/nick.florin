@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
@@ -32,7 +34,7 @@ interface ControlContainerProps extends ComponentProps {
   readonly control: TableControl;
 }
 
-export const ControlContainer = ({ children, control, ...props }: ControlContainerProps) =>
+export const ControlContainer = memo(({ children, control, ...props }: ControlContainerProps) =>
   children ? (
     <div
       className={clsx(
@@ -49,4 +51,5 @@ export const ControlContainer = ({ children, control, ...props }: ControlContain
     </div>
   ) : (
     <></>
-  );
+  ),
+);

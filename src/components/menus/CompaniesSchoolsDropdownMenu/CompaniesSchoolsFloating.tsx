@@ -51,6 +51,7 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
         triggers={["click"]}
         offset={{ mainAxis: 4 }}
         width={400}
+        maxHeight={600}
       >
         {({ ref, params, isOpen }) => (
           <Button.Secondary

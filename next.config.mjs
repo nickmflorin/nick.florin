@@ -20,9 +20,9 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  reactStrictMode: false, // To temporarily prevent effects from firing twice on mount.
   experimental: {
     optimizePackageImports: ["@mantine/core"],
-    experimentalDecorators: true,
   },
   transpilePackages: ["@mantine/core"],
   // webpack: config => {

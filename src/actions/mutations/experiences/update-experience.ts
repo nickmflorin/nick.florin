@@ -6,6 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Experience, type Company, type ApiExperience } from "~/prisma/model";
+import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
@@ -23,7 +24,7 @@ export const updateExperience = async (
     return ApiClientFieldErrors.fromZodError(parsed.error, ExperienceSchema).json;
   }
 
-  const { company: companyId, title, ...data } = parsed.data;
+  const { company: companyId, title, skills: _skills, ...data } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
   const experience = await prisma.$transaction(async tx => {
@@ -68,6 +69,13 @@ export const updateExperience = async (
     ) {
       fieldErrors.addUnique("shortTitle", "The 'shortTitle' must be unique for a given company.");
     }
+
+    const [skills] = await queryM2MsDynamically(tx, {
+      model: "skill",
+      ids: _skills,
+      fieldErrors,
+    });
+
     if (fieldErrors.hasErrors) {
       return fieldErrors.json;
     }
@@ -78,6 +86,7 @@ export const updateExperience = async (
         title,
         companyId: company.id,
         updatedById: user.id,
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
   });

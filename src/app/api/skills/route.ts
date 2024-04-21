@@ -6,6 +6,7 @@ import { SkillsFiltersSchema, type SkillsFilters } from "~/api/schemas/filters";
 
 export const GET = apiRoute(async (request, params, query) => {
   let filters: SkillsFilters | undefined = undefined;
+  console.error(query);
   if (query.filters) {
     const parsedQuery = SkillsFiltersSchema.safeParse(query.filters);
     if (!parsedQuery.success) {

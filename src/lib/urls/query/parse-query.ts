@@ -11,11 +11,20 @@ type ParsedQueryPrimitive = string | number | boolean | null | undefined;
 type _ParsedQueryValue = ParsedQueryPrimitive | ParsedQueryObj | ParsedQueryValue[];
 export type ParsedQueryValue = _ParsedQueryValue | _ParsedQueryValue[];
 
-/* // https://github.com/xpepermint/query-types/tree/master
-    Not parsing scalars and primitives: https://github.com/ljharb/qs?tab=readme-ov-file#parsing-primitivescalar-values-numbers-booleans-null-etc */
-
 const isRecordType = (value: unknown): value is Record<string, unknown> =>
   z.record(z.any()).safeParse(value).success;
+
+const isNumber = (val: string) => {
+  const regex = /^\.?[0-9]+[0-9\.]*$/;
+  return regex.test(val) && !isNaN(parseFloat(val)) && isFinite(parseFloat(val));
+};
+
+export const parseQueryNumber = (val: string) => (isNumber(val) ? parseFloat(val) : undefined);
+
+export const parseQueryInteger = (val: string) => {
+  const num = parseQueryNumber(val);
+  return num ? Number(num.toFixed(0)) : undefined;
+};
 
 /**
  * An adaptive form of the {@link qs.parse} method that recursively attempts to intelligently parse
@@ -77,9 +86,8 @@ export function parseQuery(query: string | string[] | Record<string, string> | U
 
   const parseAsValue = (str: string): number | boolean | string | null => {
     // First, attempt to parse the value as a number.
-    const parsedNumber = z.coerce.number().safeParse(str);
-    if (parsedNumber.success) {
-      return parsedNumber.data;
+    if (isNumber(str)) {
+      return parseFloat(str);
     } else if (str === "true" || str === "false") {
       return str === "true";
     } else if (str === "null") {

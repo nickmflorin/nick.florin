@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 import clsx from "clsx";
 import { type DataTableProps } from "mantine-datatable";
@@ -14,15 +15,16 @@ const MantineDataTable = dynamic(() => import("mantine-datatable").then(i => i.D
   <T>(props: DataTableProps<T>): JSX.Element;
 };
 
-export const Table = <T extends TableModel>({
-  size = TableSizes.SM,
-  columns,
-  data,
-  className,
-  isLoading,
-  ...props
-}: TableProps<T>) => {
-  /* Mantine's <DataTable /> component defines the props as a set of base props intersected with a
+export const Table = memo(
+  <T extends TableModel>({
+    size = TableSizes.SM,
+    columns,
+    data,
+    className,
+    isLoading,
+    ...props
+  }: TableProps<T>) => {
+    /* Mantine's <DataTable /> component defines the props as a set of base props intersected with a
      bunch of supplementary props, such as 'DataTableEmptyStateProps', each of which is a union
      type.  This introduces typing issues when adding our own props into the fold, because the
      intersection of our props with their props does not distribute our props over the union
@@ -30,20 +32,23 @@ export const Table = <T extends TableModel>({
 
      The only ways around this are to define the props for this component in an extremely
      complicated manner, or simply coerce the props as shown below. */
-  const rootProps: DataTableProps<T> = {
-    highlightOnHover: false,
-    height: "100%",
-    className: clsx("data-table", `data-table--size-${size}`, className),
-    customLoader: <Loading overlay={true} isLoading={true} />,
-    // TODO: Revisit this later.
-    emptyState: <></>,
-    ...props,
-    fetching: isLoading,
-    records: data,
-    columns,
-  } as DataTableProps<T>;
+    const rootProps: DataTableProps<T> = {
+      highlightOnHover: false,
+      height: "100%",
+      className: clsx("data-table", `data-table--size-${size}`, className),
+      customLoader: <Loading overlay={true} isLoading={true} />,
+      // TODO: Revisit this later.
+      emptyState: <></>,
+      ...props,
+      fetching: isLoading,
+      records: data,
+      columns,
+    } as DataTableProps<T>;
 
-  return <MantineDataTable<T> {...rootProps} />;
+    return <MantineDataTable<T> {...rootProps} />;
+  },
+) as {
+  <T extends TableModel>(props: TableProps<T>): JSX.Element;
 };
 
 export default Table;
