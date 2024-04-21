@@ -11,7 +11,7 @@ import { useDeepEqualEffect } from "~/hooks";
 import { ExperienceForm, type ExperienceFormProps } from "./ExperienceForm";
 
 export interface UpdateExperienceFormProps extends Omit<ExperienceFormProps, "action"> {
-  readonly experience: ApiExperience;
+  readonly experience: ApiExperience<["skills"]>;
   readonly onCancel?: () => void;
 }
 
@@ -28,6 +28,7 @@ export const UpdateExperienceForm = ({
   useDeepEqualEffect(() => {
     props.form.setValues({
       ...experience,
+      skills: experience.skills.map(s => s.id),
       company: experience.companyId,
       description: experience.description ?? "",
     });

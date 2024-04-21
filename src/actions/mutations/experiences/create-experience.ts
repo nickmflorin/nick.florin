@@ -6,6 +6,7 @@ import { type z } from "zod";
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
+import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
@@ -18,46 +19,56 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
     return ApiClientFieldErrors.fromZodError(parsed.error, ExperienceSchema).json;
   }
 
-  const { company: companyId, ...data } = parsed.data;
+  const { company: companyId, skills: _skills, ...data } = parsed.data;
 
-  let company: Company;
-  try {
-    company = await prisma.company.findUniqueOrThrow({ where: { id: companyId } });
-  } catch (e) {
-    /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
+  return await prisma.$transaction(async tx => {
+    let company: Company;
+    try {
+      company = await tx.company.findUniqueOrThrow({ where: { id: companyId } });
+    } catch (e) {
+      /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
-    if (isPrismaDoesNotExistError(e)) {
-      return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
+      if (isPrismaDoesNotExistError(e)) {
+        return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
+      }
+      throw e;
     }
-    throw e;
-  }
 
-  const fieldErrors = new ApiClientFieldErrors();
+    const fieldErrors = new ApiClientFieldErrors();
 
-  if (await prisma.experience.count({ where: { companyId: company.id, title: data.title } })) {
-    fieldErrors.addUnique("title", "The 'title' must be unique for a given company.");
-  }
-  if (
-    data.shortTitle &&
-    (await prisma.experience.count({
-      where: { companyId: company.id, shortTitle: data.shortTitle },
-    }))
-  ) {
-    fieldErrors.addUnique("shortTitle", "The 'shortTitle' must be unique for a given company.");
-  }
-  if (fieldErrors.hasErrors) {
-    return fieldErrors.json;
-  }
+    if (await tx.experience.count({ where: { companyId: company.id, title: data.title } })) {
+      fieldErrors.addUnique("title", "The 'title' must be unique for a given company.");
+    }
+    if (
+      data.shortTitle &&
+      (await tx.experience.count({
+        where: { companyId: company.id, shortTitle: data.shortTitle },
+      }))
+    ) {
+      fieldErrors.addUnique("shortTitle", "The 'shortTitle' must be unique for a given company.");
+    }
 
-  const experience = await prisma.experience.create({
-    data: {
-      ...data,
-      companyId: company.id,
-      createdById: user.id,
-      updatedById: user.id,
-    },
+    const [skills] = await queryM2MsDynamically(tx, {
+      model: "skill",
+      ids: _skills,
+      fieldErrors,
+    });
+
+    if (fieldErrors.hasErrors) {
+      return fieldErrors.json;
+    }
+
+    const experience = await tx.experience.create({
+      data: {
+        ...data,
+        companyId: company.id,
+        createdById: user.id,
+        updatedById: user.id,
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+      },
+    });
+    revalidatePath("/admin/experiences", "page");
+    revalidatePath("/api/experiences");
+    return convertToPlainObject(experience);
   });
-  revalidatePath("/admin/experiences", "page");
-  revalidatePath("/api/experiences");
-  return convertToPlainObject(experience);
 };

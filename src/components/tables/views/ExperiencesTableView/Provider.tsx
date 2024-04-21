@@ -25,14 +25,15 @@ const ReadOnlyDateTimeCell = dynamic(
 );
 
 const CompanyCell = dynamic(() => import("./cells/CompanyCell"));
+const SkillsCell = dynamic(() => import("./cells/SkillsCell"));
 
 export interface TableViewConfig
-  extends Pick<RootTableViewConfig<ApiExperience<["details"]>>, "children"> {}
+  extends Pick<RootTableViewConfig<ApiExperience<["details", "skills"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiExperience<["details"]>>
+    <RootTableViewProvider<ApiExperience<["details", "skills"]>>
       id="experiences-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
@@ -85,6 +86,13 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           width: 120,
           textAlign: "center",
           render: ({ model }) => <DetailsCell model={model} />,
+        },
+        {
+          accessor: "skills",
+          title: "Skills",
+          width: 320,
+          textAlign: "center",
+          render: ({ model }) => <SkillsCell experience={model} />,
         },
         {
           accessor: "createdAt",

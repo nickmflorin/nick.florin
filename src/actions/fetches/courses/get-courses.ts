@@ -9,7 +9,7 @@ import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
-type GetCoursesFilters = {
+export type GetCoursesFilters = {
   readonly search: string;
 };
 

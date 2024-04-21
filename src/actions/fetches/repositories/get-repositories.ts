@@ -4,22 +4,19 @@ import { cache } from "react";
 import { getAuthAdminUser } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { type ApiRepository, type RepositoryIncludes, fieldIsIncluded } from "~/prisma/model";
-import { parsePagination, type Visibility } from "~/api/query";
+import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
-interface GetRepositorysFilters {
+export type GetRepositoriesFilters = {
   readonly search: string;
-}
-
-export type GetRepositoriesParams<I extends RepositoryIncludes> = {
-  includes: I;
-  filters?: GetRepositorysFilters;
-  page?: number;
-  visibility: Visibility;
 };
 
+export type GetRepositoriesParams<I extends RepositoryIncludes> = Omit<
+  ApiStandardListQuery<I, GetRepositoriesFilters>,
+  "orderBy" | "limit"
+>;
 const whereClause = ({ filters }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters">) =>
   ({
     AND: filters?.search ? [constructTableSearchClause("repository", filters.search)] : undefined,

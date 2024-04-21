@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+import { type GetExperiencesFilters } from "~/actions/fetches/experiences";
 import { DrawerIds } from "~/components/drawers";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { Loading } from "~/components/feedback/Loading";
@@ -15,14 +16,13 @@ import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
 import { TableViewProvider } from "./Provider";
 import { ExperiencesAdminTable } from "./Table";
-import { type Filters } from "./types";
 
 const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearchInput"), {
   loading: () => <TextInput isLoading={true} />,
 });
 
 interface TableViewProps {
-  readonly filters: Filters;
+  readonly filters: GetExperiencesFilters;
   readonly page: number;
 }
 

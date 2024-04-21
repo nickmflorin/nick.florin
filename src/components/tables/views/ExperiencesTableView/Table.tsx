@@ -1,10 +1,8 @@
 import dynamic from "next/dynamic";
 
-import { getExperiences } from "~/actions/fetches/experiences";
+import { getExperiences, type GetExperiencesFilters } from "~/actions/fetches/experiences";
 import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
-
-import { type Filters } from "./types";
 
 const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTable"), {
   loading: () => <Loading isLoading={true} />,
@@ -12,7 +10,7 @@ const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTa
 
 interface ExperiencesAdminTableProps {
   readonly page: number;
-  readonly filters: Filters;
+  readonly filters: GetExperiencesFilters;
 }
 
 export const ExperiencesAdminTable = async ({ page, filters }: ExperiencesAdminTableProps) => {
@@ -20,7 +18,7 @@ export const ExperiencesAdminTable = async ({ page, filters }: ExperiencesAdminT
     page,
     filters,
     visibility: "admin",
-    includes: ["details"],
+    includes: ["details", "skills"],
   });
   return <ContextTable data={experiences} />;
 };

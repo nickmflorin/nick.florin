@@ -32,7 +32,8 @@
     "arrow-body-style",
     "multiline-comment-style",
     "prefer-const",
-    "react/jsx-curly-brace-presence"
+    "react/jsx-curly-brace-presence",
+    "@typescript-eslint/consistent-type-imports"
   ],
 
   "files.trimTrailingWhitespace": true,

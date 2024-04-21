@@ -1,10 +1,8 @@
 import dynamic from "next/dynamic";
 
-import { getProjects } from "~/actions/fetches/projects";
+import { getProjects, type GetProjectsFilters } from "~/actions/fetches/projects";
 import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
-
-import { type Filters } from "./types";
 
 const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTable"), {
   loading: () => <Loading isLoading={true} />,
@@ -12,7 +10,7 @@ const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTa
 
 interface ProjectsAdminTableProps {
   readonly page: number;
-  readonly filters: Filters;
+  readonly filters: GetProjectsFilters;
 }
 
 export const ProjectsAdminTable = async ({ page, filters }: ProjectsAdminTableProps) => {

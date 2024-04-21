@@ -109,9 +109,9 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
         label:
           _label === undefined || _label.trim() === skill.label.trim() ? undefined : _label.trim(),
         updatedById: user.id,
-        projects: projects ? { connect: projects.map(p => ({ id: p.id })) } : undefined,
-        experiences: experiences ? { connect: experiences.map(p => ({ id: p.id })) } : undefined,
-        educations: educations ? { connect: educations.map(p => ({ id: p.id })) } : undefined,
+        projects: projects ? { set: projects.map(p => ({ id: p.id })) } : undefined,
+        experiences: experiences ? { set: experiences.map(p => ({ id: p.id })) } : undefined,
+        educations: educations ? { set: educations.map(p => ({ id: p.id })) } : undefined,
       },
     });
 

@@ -16,7 +16,7 @@ import { convertToPlainObject } from "~/api/serialization";
 import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 import { getDetails } from "../details";
 
-type GetEducationsFilters = {
+export type GetEducationsFilters = {
   readonly search: string;
 };
 

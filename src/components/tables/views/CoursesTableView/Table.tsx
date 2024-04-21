@@ -1,10 +1,8 @@
 import dynamic from "next/dynamic";
 
-import { getCourses } from "~/actions/fetches/courses";
+import { getCourses, type GetCoursesFilters } from "~/actions/fetches/courses";
 import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
-
-import { type Filters } from "./types";
 
 const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTable"), {
   loading: () => <Loading isLoading={true} />,
@@ -12,7 +10,7 @@ const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTa
 
 interface CoursesAdminTableProps {
   readonly page: number;
-  readonly filters: Filters;
+  readonly filters: GetCoursesFilters;
 }
 
 export const CoursesAdminTable = async ({ page, filters }: CoursesAdminTableProps) => {

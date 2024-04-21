@@ -4,8 +4,6 @@ import { EducationsTableView } from "~/components/tables/views/EducationsTableVi
 
 interface EducationsPageProps {
   readonly searchParams: {
-    readonly updateEducationId?: string;
-    readonly updateEducationDetailsId?: string;
     readonly search?: string;
     readonly page?: string;
   };

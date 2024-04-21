@@ -11,7 +11,7 @@ import { useDeepEqualEffect } from "~/hooks";
 import { EducationForm, type EducationFormProps } from "./EducationForm";
 
 export interface UpdateEducationFormProps extends Omit<EducationFormProps, "action"> {
-  readonly education: ApiEducation;
+  readonly education: ApiEducation<["skills"]>;
   readonly onCancel?: () => void;
 }
 
@@ -29,6 +29,7 @@ export const UpdateEducationForm = ({
     props.form.setValues({
       ...education,
       school: education.schoolId,
+      skills: education.skills.map(s => s.id),
       description: education.description ?? "",
       concentration: education.concentration ?? "",
       minor: education.minor ?? "",

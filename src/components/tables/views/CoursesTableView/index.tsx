@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+import { type GetCoursesFilters } from "~/actions/fetches/courses";
 import { DrawerIds } from "~/components/drawers";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { Loading } from "~/components/feedback/Loading";
@@ -13,7 +14,6 @@ import { TableView as RootTableView } from "~/components/tables/generic/TableVie
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
 import { CoursesAdminTable } from "./Table";
-import { type Filters } from "./types";
 
 const TableViewProvider = dynamic(() => import("./Provider"), {
   loading: () => <Loading isLoading={true} />,
@@ -24,7 +24,7 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
 });
 
 interface CoursesTableViewProps {
-  readonly filters: Filters;
+  readonly filters: GetCoursesFilters;
   readonly page: number;
 }
 

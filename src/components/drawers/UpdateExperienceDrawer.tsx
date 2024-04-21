@@ -20,7 +20,7 @@ export const UpdateExperienceDrawer = ({
 }: UpdateExperienceDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useExperience(
     isUuid(experienceId) ? experienceId : null,
-    { keepPreviousData: true, query: { visibility: "admin", includes: [] } },
+    { keepPreviousData: true, query: { visibility: "admin", includes: ["skills"] } },
   );
   const form = useExperienceForm();
 

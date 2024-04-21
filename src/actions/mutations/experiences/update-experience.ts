@@ -86,7 +86,7 @@ export const updateExperience = async (
         title,
         companyId: company.id,
         updatedById: user.id,
-        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
   });
