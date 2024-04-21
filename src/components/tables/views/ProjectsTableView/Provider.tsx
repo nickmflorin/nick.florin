@@ -22,13 +22,15 @@ const SlugCell = dynamic(
 const ReadOnlyDateTimeCell = dynamic(
   () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
 );
+const SkillsCell = dynamic(() => import("./cells/SkillsCell"));
 
-export interface TableViewConfig extends Pick<RootTableViewConfig<ApiProject<[]>>, "children"> {}
+export interface TableViewConfig
+  extends Pick<RootTableViewConfig<ApiProject<["skills"]>>, "children"> {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiProject<[]>>
+    <RootTableViewProvider<ApiProject<["skills"]>>
       id="projects-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
@@ -70,7 +72,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Slug",
           width: 320,
           render: ({ model, table }) => (
-            <SlugCell<ApiProject<[]>, BrandProject>
+            <SlugCell<ApiProject<["skills"]>, BrandProject>
               model={model}
               modelType="project"
               table={table}
@@ -78,6 +80,13 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               action={async (id, value) => await updateProject(id, { slug: value })}
             />
           ),
+        },
+        {
+          accessor: "skills",
+          title: "Skills",
+          width: 320,
+          textAlign: "center",
+          render: ({ model }) => <SkillsCell project={model} />,
         },
         {
           accessor: "createdAt",

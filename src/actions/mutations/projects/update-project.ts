@@ -230,9 +230,9 @@ export const updateProject = async (
           _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
         updatedById: user.id,
         repositories: repositories
-          ? { connect: repositories.map(repo => ({ slug: repo.slug })) }
+          ? { set: repositories.map(repo => ({ slug: repo.slug })) }
           : undefined,
-        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
 
