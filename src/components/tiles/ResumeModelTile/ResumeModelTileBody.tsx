@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { type ApiEducation, type ApiExperience } from "~/prisma/model";
+import { type ApiEducation, type ApiExperience, type ResumeBrand } from "~/prisma/model";
 import { Courses } from "~/components/badges/collections/Courses";
 import { Skills } from "~/components/badges/collections/Skills";
 import { type ComponentProps } from "~/components/types";
@@ -25,18 +25,31 @@ const ResumeModelTileSection = ({
   </div>
 );
 
-export interface ResumeModelTileBodyProps extends ComponentProps {
+type ApiModel<T extends ResumeBrand> = {
+  education: ApiEducation<["details", "skills", "courses"]>;
+  experience: ApiExperience<["details", "skills"]>;
+}[T];
+
+export interface ResumeModelTileBodyProps<M extends ApiModel<T>, T extends ResumeBrand>
+  extends ComponentProps {
   readonly alignment?: "inset" | "left-aligned";
-  readonly model:
-    | ApiEducation<["details", "skills", "courses"]>
-    | ApiExperience<["details", "skills"]>;
+  readonly model: M;
 }
 
-export const ResumeModelTileBody = ({
+const isNonEmpty = (v: string | null) => typeof v === "string" && v.trim().length !== 0;
+
+const hasDescription = <M extends ApiModel<T>, T extends ResumeBrand>(model: M): boolean => {
+  if (model.$kind === "education") {
+    return isNonEmpty(model.note) || isNonEmpty(model.description);
+  }
+  return isNonEmpty(model.description);
+};
+
+export const ResumeModelTileBody = <M extends ApiModel<T>, T extends ResumeBrand>({
   model,
   alignment = "inset",
   ...props
-}: ResumeModelTileBodyProps) => (
+}: ResumeModelTileBodyProps<M, T>) => (
   <div
     {...props}
     className={clsx(
@@ -46,16 +59,18 @@ export const ResumeModelTileBody = ({
       props.className,
     )}
   >
-    <div className="flex flex-col gap-[10px] max-w-[700px]">
-      <Description
-        fontSize="smplus"
-        fontWeight="regular"
-        description={
-          model.$kind === "education" ? [model.description, model.note] : model.description
-        }
-      />
-      <DetailsTile details={model.details} />
-    </div>
+    {(hasDescription(model) || model.details.length !== 0) && (
+      <div className="flex flex-col gap-[10px] max-w-[700px]">
+        <Description
+          fontSize="smplus"
+          fontWeight="regular"
+          description={
+            model.$kind === "education" ? [model.description, model.note] : model.description
+          }
+        />
+        <DetailsTile details={model.details} />
+      </div>
+    )}
     {model.$kind === "education" && model.courses.length !== 0 && (
       <Courses courses={model.courses} className="max-w-[800px]" />
     )}
