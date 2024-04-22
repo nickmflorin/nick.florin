@@ -17,7 +17,8 @@ export const Module = ({ title, actions, ...props }: ModuleProps) => (
   <div
     {...props}
     className={clsx(
-      "flex flex-col gap-[12px] overflow-hidden border rounded-md px-[12px] py-[18px]",
+      "flex flex-col gap-[12px] overflow-hidden border rounded-md py-[12px] px-[18px]",
+      "shadow-sm",
       props.className,
     )}
   >

@@ -41,6 +41,7 @@ export const addQueryParamsToUrl = <U extends string | UrlObject>(
     opts?.replaceExisting === true
       ? new URLSearchParams()
       : parseQueryParams(u, { form: "object" });
+
   urlParams = mergeQueryParams(urlParams, query);
 
   if (urlParams.toString() !== "" && urlParams.size !== 0) {

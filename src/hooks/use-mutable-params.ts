@@ -2,7 +2,9 @@ import { useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useTransition } from "react";
 
-import { type QueryParamValue, encodeQueryParam } from "~/lib/urls";
+import qs from "qs";
+
+import { parseQuery } from "~/lib/urls";
 
 interface UseMutableParamsConfig {
   readonly overwriteParams?: boolean;
@@ -12,8 +14,8 @@ interface UseMutableParamsConfig {
 type SetOpts = { useTransition?: boolean; clear?: string | string[] | true };
 
 type Set = {
-  (key: string, v: Exclude<QueryParamValue, undefined>, opts?: SetOpts): void;
-  (params: Record<string, Exclude<QueryParamValue, undefined>>, opts?: SetOpts): void;
+  (key: string, v: unknown, opts?: SetOpts): void;
+  (params: Record<string, unknown>, opts?: SetOpts): void;
 };
 
 export const useMutableParams = (
@@ -24,7 +26,7 @@ export const useMutableParams = (
   clear: (key: string | string[], opts?: { useTransition?: boolean }) => void;
 } => {
   const [_, transition] = useTransition();
-  const { replace: _replace } = useRouter();
+  const { push } = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
 
@@ -42,27 +44,23 @@ export const useMutableParams = (
       }
       if (withTransition) {
         transition(() => {
-          _replace(`${pathname}?${pms.toString()}`);
+          push(`${pathname}?${pms.toString()}`);
           window.history.pushState(null, "", `?${pms.toString()}`);
         });
       } else {
-        _replace(`${pathname}?${pms.toString()}`);
+        push(`${pathname}?${pms.toString()}`);
       }
     },
-    [config, params, pathname, _replace],
+    [config, params, pathname, push],
   );
 
   const set: Set = useCallback(
-    (
-      arg0: string | Record<string, Exclude<QueryParamValue, undefined>>,
-      arg1?: Exclude<QueryParamValue, undefined> | SetOpts,
-      arg2?: SetOpts,
-    ) => {
-      let toSet: Record<string, Exclude<QueryParamValue, undefined>>;
+    (arg0: string | Record<string, unknown>, arg1?: unknown | SetOpts, arg2?: SetOpts) => {
+      let toSet: Record<string, unknown>;
       let options: SetOpts;
       if (typeof arg0 === "string") {
         options = arg2 ?? {};
-        toSet = { [arg0]: arg1 as Exclude<QueryParamValue, undefined> };
+        toSet = { [arg0]: arg1 as unknown };
       } else {
         options = (arg1 as SetOpts | undefined) ?? {};
         toSet = arg0;
@@ -74,27 +72,29 @@ export const useMutableParams = (
           ? config?.useTransition === undefined ?? false
           : options.useTransition;
 
-      const pms = new URLSearchParams(overwriteParams ? "" : params?.toString());
-      for (const [key, v] of Object.entries(toSet)) {
-        pms.set(key, encodeQueryParam(v));
-      }
+      const existing = parseQuery(new URLSearchParams(overwriteParams ? "" : params?.toString()));
+
+      const pms: Record<string, unknown> = {
+        ...existing,
+        ...toSet,
+      };
 
       if (options.clear && options.clear !== true) {
         const clr = Array.isArray(options.clear) ? options.clear : [options.clear];
         for (const c of clr) {
-          pms.delete(c);
+          delete pms[c];
         }
       }
 
       if (withTransition) {
         transition(() => {
-          _replace(`${pathname}?${pms.toString()}`);
+          push(`${pathname}?${qs.stringify(pms, { allowEmptyArrays: true })}`);
         });
       } else {
-        _replace(`${pathname}?${pms.toString()}`);
+        push(`${pathname}?${qs.stringify(pms, { allowEmptyArrays: true })}}`);
       }
     },
-    [config, params, pathname, _replace],
+    [config, params, pathname, push],
   );
 
   return { params, set, clear };

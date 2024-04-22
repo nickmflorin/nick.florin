@@ -20,7 +20,7 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
-  reactStrictMode: false, // To temporarily prevent effects from firing twice on mount.
+  // reactStrictMode: false,
   experimental: {
     optimizePackageImports: ["@mantine/core"],
   },

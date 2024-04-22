@@ -1,7 +1,7 @@
 import qs from "qs";
 import { z } from "zod";
 
-import { transformQueryParams } from "./transform-query-params";
+import { countCharsInString } from "./util";
 
 export interface ParsedQueryObj {
   [key: string]: ParsedQueryValue;
@@ -11,7 +11,7 @@ type ParsedQueryPrimitive = string | number | boolean | null | undefined;
 type _ParsedQueryValue = ParsedQueryPrimitive | ParsedQueryObj | ParsedQueryValue[];
 export type ParsedQueryValue = _ParsedQueryValue | _ParsedQueryValue[];
 
-const isRecordType = (value: unknown): value is Record<string, unknown> =>
+export const isRecordType = (value: unknown): value is Record<string, unknown> =>
   z.record(z.any()).safeParse(value).success;
 
 const isNumber = (val: string) => {
@@ -67,6 +67,7 @@ export const parseQueryInteger = (val: string) => {
  * parseQuery({ a: "1", b: "2", c: "3"})
  */
 export function parseQuery(query: Record<string, string> | URLSearchParams): ParsedQueryObj;
+export function parseQuery(query: { url: string }): ParsedQueryObj;
 export function parseQuery(query: string[]): ParsedQueryValue[];
 export function parseQuery(query: string): ParsedQueryValue;
 export function parseQuery(query: string | string[] | Record<string, string> | URLSearchParams) {
@@ -126,8 +127,15 @@ export function parseQuery(query: string | string[] | Record<string, string> | U
     }
     return parseAsValue(query);
   } else if (query instanceof URLSearchParams) {
-    const transformed = transformQueryParams(query, { form: "record" });
-    return parseAsObj(transformed);
+    return parseQuery(query.toString());
+  } else if (typeof (query as { url: string }).url === "string") {
+    const { url } = query as { url: string };
+    if (url.includes("?")) {
+      if (countCharsInString(url, "?") > 1) {
+        return {};
+      }
+      return parseQuery(url.split("?")[1]);
+    }
   } else {
     const parsed = qs.parse(query, { allowEmptyArrays: true });
     if (isRecordType(parsed)) {

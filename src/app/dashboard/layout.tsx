@@ -5,13 +5,18 @@ import { Module } from "~/components/modules/generic";
 export interface DashboardPageProps {
   readonly experiences: ReactNode;
   readonly educations: ReactNode;
+  readonly chart: ReactNode;
 }
 
-export default async function DashboardPage({ experiences, educations }: DashboardPageProps) {
+export default async function DashboardPage({
+  experiences,
+  educations,
+  chart,
+}: DashboardPageProps) {
   return (
     <div className="flex flex-row gap-[15px]">
       <div className="flex flex-col gap-[15px] w-[50%] max-w-[50%] min-w-[400px]">
-        <Module title="Skills Overview">Under Construction</Module>
+        <Module title="Skills Overview">{chart}</Module>
       </div>
       <div className="flex flex-col gap-[15px] w-[50%] max-w-[50%] min-w-[400px]">
         <Module title="Recent Experiences">{experiences}</Module>

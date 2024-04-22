@@ -83,6 +83,8 @@ type ParsedQueryParams<P extends QueryParams, O extends ParseQueryParamOptions> 
  *     3. "record": Will return as a record-type, {@link Record<string, string>}.
  *     4. "pairs": Will return as an array of key-value pairs, {@link QueryParamPairs}.
  *     5. "string": Will return as a query string.
+ *
+ * @deprecated
  */
 export const parseQueryParams = <P extends QueryParams, O extends ParseQueryParamOptions>(
   base: P,

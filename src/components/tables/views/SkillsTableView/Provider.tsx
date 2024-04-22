@@ -85,19 +85,22 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "experiences",
           title: "Experiences",
-          width: 240,
+          // width: 240,
+          cellsClassName: "min-w-[200px] max-w-[320px]",
           render: ({ model }) => <ExperiencesCell skill={model} />,
         },
         {
           accessor: "educations",
           title: "Educations",
-          width: 240,
+          // width: 240,
+          cellsClassName: "min-w-[200px] max-w-[320px]",
           render: ({ model }) => <EducationsCell skill={model} />,
         },
         {
           accessor: "projects",
           title: "Projects",
-          width: 240,
+          // width: 240,
+          cellsClassName: "min-w-[200px] max-w-[320px]",
           render: ({ model }) => <ProjectsCell skill={model} />,
         },
         {

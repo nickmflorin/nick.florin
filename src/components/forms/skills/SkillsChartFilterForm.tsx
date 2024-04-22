@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { type z } from "zod";
 
-import { SkillsFiltersSchema } from "~/api/schemas";
+import { ShowTopSkillsSchema, SkillsFiltersSchema, type ShowTopSkillsString } from "~/api/schemas";
 import { Form, type FormProps } from "~/components/forms/generic/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
@@ -14,12 +14,10 @@ const SHOW_TOP_SKILLS = [5, 8, 12, "all"] as const;
 export const SkillsChartFilterFormSchema = SkillsFiltersSchema.required()
   .omit({ includeInTopSkills: true, search: true })
   .extend({
-    showTopSkills: z.union([z.literal(5), z.literal(8), z.literal(12), z.literal("all")]),
+    showTopSkills: ShowTopSkillsSchema,
   });
 
 export type SkillsChartFilterFormValues = z.infer<typeof SkillsChartFilterFormSchema>;
-
-type ShowTopSkillsString = "5" | "8" | "12" | "all";
 
 const ShowTopSkillsLabels: { [key in ShowTopSkillsString]: string } = {
   "5": "5",

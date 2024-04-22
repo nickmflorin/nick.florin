@@ -13,3 +13,13 @@ export const SkillsFiltersSchema = z.object({
 });
 
 export type SkillsFilters = z.infer<typeof SkillsFiltersSchema>;
+
+export const ShowTopSkillsSchema = z.union([
+  z.literal(5),
+  z.literal(8),
+  z.literal(12),
+  z.literal("all"),
+]);
+export type ShowTopSkills = z.infer<typeof ShowTopSkillsSchema>;
+
+export type ShowTopSkillsString = `${ShowTopSkills}`;

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { logger } from "~/application/logger";
+
 type ErrorMessage<V extends string | null = string> =
   | string
   | ((params: { min: number; value: V }) => string);
@@ -73,3 +75,25 @@ export const NonNullableMinLengthStringField = ({
     }
     return value;
   });
+
+export const partiallyParseObjectWithSchema = <S extends z.ZodObject<T>, T extends z.ZodRawShape>(
+  params: Record<string, unknown>,
+  schema: S,
+  options?: { logWhenInvalid?: boolean },
+): Partial<z.infer<S>> => {
+  const result: Partial<z.infer<S>> = {};
+
+  for (const key in schema.shape) {
+    const fieldSchema = schema.shape[key];
+    const parsed = fieldSchema.safeParse(params[key]);
+    if (parsed.success) {
+      result[key] = parsed.data;
+    } else if (options?.logWhenInvalid) {
+      logger.error(
+        `Failed to parse the field '${key}' on the object: ` +
+          `${parsed.error.errors[0].message} (code = ${parsed.error.errors[0].code})`,
+      );
+    }
+  }
+  return result;
+};
