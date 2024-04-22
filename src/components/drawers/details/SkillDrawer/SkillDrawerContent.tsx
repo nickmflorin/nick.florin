@@ -6,7 +6,7 @@ import { SkillCategories } from "~/components/badges/collections/SkillCategories
 import { SkillExperienceBadge } from "~/components/badges/SkillExperienceBadge";
 import { ProjectTile } from "~/components/tiles/ProjectTile";
 import { RepositoryTile } from "~/components/tiles/RepositoryTile";
-import { ResumeModelTileHeader } from "~/components/tiles/ResumeModelTileHeader";
+import { ResumeModelTile } from "~/components/tiles/ResumeModelTile";
 import { Label } from "~/components/typography/Label";
 import { ShowHide } from "~/components/util";
 
@@ -71,12 +71,22 @@ export const SkillDrawerContent = ({
     </DetailDrawerSection>
     <DetailDrawerSection label="Experiences">
       {experiences.map((experience, index) => (
-        <ResumeModelTileHeader key={index} model={experience} size="small" />
+        <ResumeModelTile key={index}>
+          <ResumeModelTile.Header model={experience} size="small" showBadges={false}>
+            <ResumeModelTile.Title model={experience} size="small" expandable />
+            <ResumeModelTile.SubTitle model={experience} size="small" />
+          </ResumeModelTile.Header>
+        </ResumeModelTile>
       ))}
     </DetailDrawerSection>
     <DetailDrawerSection label="Educations">
       {educations.map((education, index) => (
-        <ResumeModelTileHeader key={index} model={education} size="small" />
+        <ResumeModelTile key={index}>
+          <ResumeModelTile.Header model={education} size="small" showBadges={false}>
+            <ResumeModelTile.Title model={education} size="small" expandable />
+            <ResumeModelTile.SubTitle model={education} size="small" />
+          </ResumeModelTile.Header>
+        </ResumeModelTile>
       ))}
     </DetailDrawerSection>
     {courses.length !== 0 ? (

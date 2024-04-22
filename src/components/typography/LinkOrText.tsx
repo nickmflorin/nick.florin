@@ -63,6 +63,8 @@ export const LinkOrText = ({
         fontFamily={fontFamily}
         fontWeight={fontWeight}
         options={{ as: "a" }}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         {children}
       </Link>

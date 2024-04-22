@@ -27,7 +27,13 @@ export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promis
     <CommitTimeline {...props}>
       {experiences.map(experience => (
         <TimelineItem key={experience.id} bullet={<TimelineIcon />}>
-          <ResumeModelTile model={experience} />
+          <ResumeModelTile>
+            <ResumeModelTile.Header model={experience} size="large">
+              <ResumeModelTile.Title model={experience} size="large" />
+              <ResumeModelTile.SubTitle model={experience} size="large" />
+            </ResumeModelTile.Header>
+            <ResumeModelTile.Body model={experience} alignment="inset" />
+          </ResumeModelTile>
         </TimelineItem>
       ))}
     </CommitTimeline>

@@ -33,6 +33,8 @@ export const DrawerIds = enumeratedLiterals(
     "view-resumes",
     "update-repository",
     "create-repository",
+    "view-education",
+    "view-experience",
   ] as const,
   {},
 );
@@ -49,6 +51,8 @@ export type DrawerIdProps<D extends DrawerId> = {
   "update-school": { schoolId: string; eager: Pick<BrandSchool, "name"> };
   "update-repository": { repositoryId: string; eager: Pick<BrandRepository, "slug"> };
   "view-skill": { skillId: string };
+  "view-education": { educationId: string };
+  "view-experience": { experienceId: string };
   "view-course": { courseId: string };
   "update-education-details": {
     entityId: string;

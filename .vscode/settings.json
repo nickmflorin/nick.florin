@@ -5,9 +5,9 @@
   "editor.rulers": [100],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "never",
     "source.fixAll.eslint": "explicit"
   },
+  "editor.parameterHints.enabled": true,
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
@@ -39,21 +39,24 @@
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
 
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.format.enable": false,
   "typescript.preferences.preferTypeOnlyAutoImports": true,
   "typescript.preferences.renameMatchingJsxTags": true,
   "typescript.preferences.autoImportFileExcludePatterns": ["@mantine/*"],
+  "typescript.format.semicolons": "insert",
+  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+  "typescript.preferences.quoteStyle": "double",
 
   "javascript.format.enable": false,
   "javascript.preferences.importModuleSpecifier": "non-relative",
 
-  // These 3 are turned off so that they do not conflict with stylelint.
-  "css.validate": false,
-  "less.validate": false,
-  "scss.validate": false,
+  // When/if we incorporate Stylelint - these need to be set to false.
+  "css.validate": true,
+  "less.validate": true,
+  "scss.validate": true,
 
   "stylelint.validate": ["css", "scss", "less", "postcss"],
   "stylelint.configBasedir": "/",

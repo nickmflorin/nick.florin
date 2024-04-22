@@ -94,7 +94,17 @@ const CreateRepositoryDrawer = dynamic(() => import("../CreateRepositoryDrawer")
   loading: () => <Loading isLoading={true} />,
 });
 
+const EducationDrawer = dynamic(() => import("../details/EducationDrawer"), {
+  loading: () => <Loading isLoading={true} />,
+});
+
+const ExperienceDrawer = dynamic(() => import("../details/ExperienceDrawer"), {
+  loading: () => <Loading isLoading={true} />,
+});
+
 export const Drawers = {
+  [types.DrawerIds.VIEW_EDUCATION]: Drawer(types.DrawerIds.VIEW_EDUCATION, EducationDrawer),
+  [types.DrawerIds.VIEW_EXPERIENCE]: Drawer(types.DrawerIds.VIEW_EXPERIENCE, ExperienceDrawer),
   [types.DrawerIds.UPDATE_EDUCATION]: Drawer(
     types.DrawerIds.UPDATE_EDUCATION,
     UpdateEducationDrawer,

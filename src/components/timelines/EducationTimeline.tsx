@@ -37,7 +37,13 @@ export const EducationTimeline = async (props: EducationTimelineProps): Promise<
     <CommitTimeline {...props}>
       {educations.map(education => (
         <TimelineItem key={education.id} bullet={<TimelineIcon />}>
-          <ResumeModelTile model={education} />
+          <ResumeModelTile>
+            <ResumeModelTile.Header model={education} size="large">
+              <ResumeModelTile.Title model={education} size="large" />
+              <ResumeModelTile.SubTitle model={education} size="large" />
+            </ResumeModelTile.Header>
+            <ResumeModelTile.Body model={education} alignment="inset" />
+          </ResumeModelTile>
         </TimelineItem>
       ))}
     </CommitTimeline>
