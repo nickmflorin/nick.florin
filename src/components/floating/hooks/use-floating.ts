@@ -85,7 +85,7 @@ export const useFloating = ({
   const click = useClick(
     context,
     propIsOpen !== undefined
-      ? types.parseFloatingTriggerOptions(triggers, "hover")
+      ? types.parseFloatingTriggerOptions(triggers, "click")
       : { enabled: false },
   );
 
