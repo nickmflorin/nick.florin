@@ -6,8 +6,8 @@ import { FloatingPortal } from "@floating-ui/react";
 import { type ComponentProps } from "~/components/types";
 
 import { Arrow } from "./Arrow";
+import { usePopover, type UsePopoverConfig } from "./hooks/use-popover";
 import * as types from "./types";
-import { useFloating, type UseFloatingConfig } from "./use-floating";
 
 const ConditionalPortal = ({
   children,
@@ -22,7 +22,7 @@ const ConditionalPortal = ({
   return children;
 };
 
-export interface FloatingProps extends UseFloatingConfig {
+export interface PopoverProps extends UsePopoverConfig {
   /**
    * The content that appears inside of the floating element.
    */
@@ -57,7 +57,7 @@ export interface FloatingProps extends UseFloatingConfig {
   readonly variant?: types.FloatingVariant;
 }
 
-export const Floating = ({
+export const Popover = ({
   children: _children,
   content: _content,
   inPortal,
@@ -66,9 +66,9 @@ export const Floating = ({
   arrowClassName,
   variant = types.FloatingVariants.SECONDARY,
   ...config
-}: FloatingProps) => {
+}: PopoverProps) => {
   const { refs, referenceProps, isOpen, floatingProps, floatingStyles, arrowRef, context } =
-    useFloating(config);
+    usePopover(config);
 
   const children = useMemo(() => {
     if (typeof _children === "function") {
@@ -124,4 +124,4 @@ export const Floating = ({
   );
 };
 
-export default Floating;
+export default Popover;

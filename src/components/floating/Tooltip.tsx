@@ -1,11 +1,11 @@
 import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
-import { type FloatingProps } from "./Floating";
+import { type FloatingProps } from "./Popover";
 import { TooltipContent, type TooltipContentProps } from "./TooltipContent";
 import * as types from "./types";
 
-const Floating = dynamic(() => import("./Floating"));
+const Popover = dynamic(() => import("./Popover"));
 
 export interface TooltipProps extends Omit<FloatingProps, "content"> {
   readonly content: ReactNode;
@@ -20,7 +20,7 @@ export const Tooltip = ({
   variant = types.FloatingVariants.SECONDARY,
   ...props
 }: TooltipProps) => (
-  <Floating
+  <Popover
     {...props}
     content={
       <TooltipContent className={className} variant={variant}>
@@ -29,7 +29,7 @@ export const Tooltip = ({
     }
   >
     {children}
-  </Floating>
+  </Popover>
 );
 
 export default Tooltip;

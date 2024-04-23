@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import { Text } from "~/components/typography/Text";
 
-import { FloatingContent, type FloatingContentProps } from "./FloatingContent";
+import { PopoverContent, type FloatingContentProps } from "./PopoverContent";
 import * as types from "./types";
 
 export type TooltipContentProps = FloatingContentProps;
@@ -19,7 +19,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
     }: TooltipContentProps,
     ref,
   ) => (
-    <FloatingContent {...props} variant={variant} ref={ref} className={clsx(className)}>
+    <PopoverContent {...props} variant={variant} ref={ref} className={clsx(className)}>
       {typeof children === "string" ? (
         <Text inherit className="whitespace-nowrap">
           {children}
@@ -27,6 +27,6 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
       ) : (
         children
       )}
-    </FloatingContent>
+    </PopoverContent>
   ),
 );

@@ -18,7 +18,7 @@ export interface FloatingContentProps extends ComponentProps, HTMLElementProps<"
   readonly maxHeight?: Size | null;
 }
 
-export const FloatingContent = forwardRef<HTMLDivElement, FloatingContentProps>(
+export const PopoverContent = forwardRef<HTMLDivElement, FloatingContentProps>(
   (
     {
       children,
@@ -35,7 +35,7 @@ export const FloatingContent = forwardRef<HTMLDivElement, FloatingContentProps>(
       className={clsx(
         /* Note: We need to use the 'floating-content' class so that we can set the 'max-height'
            of any potentially underlying Menu to the same max height that is set on the outer
-           FloatingContent element. */
+           PopoverContent element. */
         "floating-content",
         types.getFloatingVariantClassName(variant, className),
         "z-50",

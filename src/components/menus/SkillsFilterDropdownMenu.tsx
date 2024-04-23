@@ -1,7 +1,7 @@
 "use client";
 import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
-import { Floating, type FloatingProps } from "~/components/floating/Floating";
-import { FloatingContent } from "~/components/floating/FloatingContent";
+import { Popover, type FloatingProps } from "~/components/floating/Popover";
+import { PopoverContent } from "~/components/floating/PopoverContent";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 import {
   SkillsChartFilterForm,
@@ -40,7 +40,7 @@ export const SkillsFilterDropdownMenu = ({
   });
 
   return (
-    <Floating
+    <Popover
       placement={placement}
       triggers={["click"]}
       offset={{ mainAxis: 4 }}
@@ -48,15 +48,15 @@ export const SkillsFilterDropdownMenu = ({
       withArrow={false}
       isDisabled={isDisabled}
       content={
-        <FloatingContent className="p-[20px] rounded-md overflow-y-auto" variant="white">
+        <PopoverContent className="p-[20px] rounded-md overflow-y-auto" variant="white">
           <SkillsChartFilterForm form={form} isScrollable={false} />
-        </FloatingContent>
+        </PopoverContent>
       }
     >
       {({ ref, params }) => (
         <ChartFilterButton {...params} {...buttonProps} ref={ref} isDisabled={isDisabled} />
       )}
-    </Floating>
+    </Popover>
   );
 };
 

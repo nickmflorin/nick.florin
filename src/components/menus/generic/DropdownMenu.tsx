@@ -5,8 +5,8 @@ import clsx from "clsx";
 import type * as types from "../types";
 
 import { Loading } from "~/components/feedback/Loading";
-import { Floating, type FloatingProps } from "~/components/floating/Floating";
-import { FloatingContent } from "~/components/floating/FloatingContent";
+import { Popover, type FloatingProps } from "~/components/floating/Popover";
+import { PopoverContent } from "~/components/floating/PopoverContent";
 import type { ComponentProps } from "~/components/types";
 
 const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
@@ -50,7 +50,7 @@ export const DropdownMenu = <M extends types.MenuModel, O extends types.MenuOpti
   style,
   ...props
 }: DropdownMenuProps<M, O>) => (
-  <Floating
+  <Popover
     isDisabled={isDisabled}
     middleware={middleware}
     placement={placement}
@@ -62,15 +62,15 @@ export const DropdownMenu = <M extends types.MenuModel, O extends types.MenuOpti
     maxHeight={maxHeight}
     inPortal={inPortal}
     content={
-      <FloatingContent
+      <PopoverContent
         style={style}
         className={clsx("p-[0px] rounded-md overflow-hidden", className)}
         variant="white"
       >
         {content ? content : <Menu {...props} />}
-      </FloatingContent>
+      </PopoverContent>
     }
   >
     {children}
-  </Floating>
+  </Popover>
 );

@@ -9,7 +9,7 @@ import { type Optional } from "utility-types";
 import type * as types from "../select/types";
 
 import { Loading } from "~/components/feedback/Loading";
-import { FloatingContent } from "~/components/floating/FloatingContent";
+import { PopoverContent } from "~/components/floating/PopoverContent";
 import { type ComponentProps } from "~/components/types";
 
 import { SelectFloating, type SelectFloatingProps } from "../select/generic/SelectFloating";
@@ -73,7 +73,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
           }
         }}
         content={
-          <FloatingContent variant="white" className="select__dates-content min-h-[100px]">
+          <PopoverContent variant="white" className="select__dates-content min-h-[100px]">
             <DatePicker
               value={value}
               onChange={dt => {
@@ -84,7 +84,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
                 }
               }}
             />
-          </FloatingContent>
+          </PopoverContent>
         }
       >
         {children ||

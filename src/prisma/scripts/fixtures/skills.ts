@@ -278,7 +278,7 @@ const ORMS: JsonSkill[] = [
 
 const PACKAGES: JsonSkill[] = [
   {
-    label: "Floating UI",
+    label: "Popover UI",
     programmingLanguages: [ProgrammingLanguage.TYPESCRIPT, ProgrammingLanguage.JAVASCRIPT],
     programmingDomains: [ProgrammingDomain.FRONTEND],
     repositories: ["nick.florin"],

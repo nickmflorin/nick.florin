@@ -257,7 +257,7 @@
     },
     {
       "includeInTopSkills": false,
-      "label": "Floating UI",
+      "label": "Popover UI",
       "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
       "programmingDomains": ["FRONTEND"],
       "categories": ["PACKAGE"]

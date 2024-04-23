@@ -9,11 +9,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { AppConfig } from "~/app/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
-import { Text } from "~/components/typography/Text";
-import { ShowHide } from "~/components/util";
 import { environment } from "~/environment";
 
-const Toast = dynamic(() => import("~/components/notifications/Toast"));
+const WelcomeDialog = dynamic(() => import("./config/WelcomeDialog"));
 
 const InterFont = Inter({
   weight: ["400", "500", "600", "700"],
@@ -53,76 +51,60 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body className={InterFont.className}>
         <AppConfig>
-          <Layout
-            nav={[
-              {
-                tooltipLabel: "Dashboard",
-                icon: { name: "grid" },
-                path: "/dashboard",
-                active: [{ leadingPath: "/dashboard" }],
-                visible: environment.get("NEXT_PUBLIC_DASHBOARD_ENABLED") === true,
-              },
-              {
-                tooltipLabel: "Resume",
-                icon: { name: "list-check" },
-                path: "/resume",
-                active: [
-                  { leadingPath: "/resume/experience" },
-                  { leadingPath: "/resume/education" },
-                ],
-                children: [
-                  {
-                    tooltipLabel: "Experience",
-                    icon: { name: "briefcase" },
-                    path: "/resume/experience",
-                    active: [{ leadingPath: "/resume/experience" }],
-                  },
-                  {
-                    tooltipLabel: "Education",
-                    icon: { name: "building-columns" },
-                    path: "/resume/education",
-                    active: [{ leadingPath: "/resume/education" }],
-                  },
-                ],
-              },
-              {
-                tooltipLabel: "Projects",
-                icon: { name: "hammer" },
-                path: "/projects",
-                active: [{ leadingPath: "/projects", endPath: false }],
-              },
-              {
-                tooltipLabel: "Admin CMS",
-                icon: { name: "gear" },
-                path: "/admin/skills",
-                active: [
-                  { leadingPath: "/admin/skills" },
-                  { leadingPath: "/admin/experiences" },
-                  { leadingPath: "/admin/educations" },
-                ],
-              },
-            ]}
-          >
-            {children}
-          </Layout>
-          <ShowHide show={environment.get("NEXT_PUBLIC_WELCOME_TOAST") !== false}>
-            <Toast type="info" autoClose={false}>
-              <div className="flex flex-col gap-[6px] min-w-[200px]">
-                <Text size="md" fontWeight="medium">
-                  Welcome to my Personal Portfolio!
-                </Text>
-                <Text size="sm" className="text-gray-600">
-                  Please note that this site is only a few weeks old and still under active
-                  construction. If you encounter any issues, I will be fixing them as quickly as
-                  possible.
-                </Text>
-                <Text size="sm" className="text-gray-400">
-                  This website is not mobile-friendly - at least not yet. Viewing on a mobile device
-                  will be difficult.
-                </Text>
-              </div>
-            </Toast>
-          </ShowHide>
+          <WelcomeDialog>
+            <Layout
+              nav={[
+                {
+                  tooltipLabel: "Dashboard",
+                  icon: { name: "grid" },
+                  path: "/dashboard",
+                  active: [{ leadingPath: "/dashboard" }],
+                  visible: environment.get("NEXT_PUBLIC_DASHBOARD_ENABLED") === true,
+                },
+                {
+                  tooltipLabel: "Resume",
+                  icon: { name: "list-check" },
+                  path: "/resume",
+                  active: [
+                    { leadingPath: "/resume/experience" },
+                    { leadingPath: "/resume/education" },
+                  ],
+                  children: [
+                    {
+                      tooltipLabel: "Experience",
+                      icon: { name: "briefcase" },
+                      path: "/resume/experience",
+                      active: [{ leadingPath: "/resume/experience" }],
+                    },
+                    {
+                      tooltipLabel: "Education",
+                      icon: { name: "building-columns" },
+                      path: "/resume/education",
+                      active: [{ leadingPath: "/resume/education" }],
+                    },
+                  ],
+                },
+                {
+                  tooltipLabel: "Projects",
+                  icon: { name: "hammer" },
+                  path: "/projects",
+                  active: [{ leadingPath: "/projects", endPath: false }],
+                },
+                {
+                  tooltipLabel: "Admin CMS",
+                  icon: { name: "gear" },
+                  path: "/admin/skills",
+                  active: [
+                    { leadingPath: "/admin/skills" },
+                    { leadingPath: "/admin/experiences" },
+                    { leadingPath: "/admin/educations" },
+                  ],
+                },
+              ]}
+            >
+              {children}
+            </Layout>
+          </WelcomeDialog>
         </AppConfig>
         <Analytics />
         <SpeedInsights />

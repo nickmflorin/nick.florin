@@ -81,6 +81,7 @@
     "luxon": "^3.4.4",
     "mantine-datatable": "^7.5.1",
     "next": "14.2.0-canary.44",
+    "next-client-cookies": "^1.1.1",
     "pino": "^8.17.2",
     "pino-logflare": "^0.4.2",
     "pino-pretty": "^10.3.1",

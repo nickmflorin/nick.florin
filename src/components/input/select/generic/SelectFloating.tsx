@@ -6,7 +6,7 @@ import { autoPlacement } from "@floating-ui/react";
 
 import type * as types from "../types";
 
-import { Floating, type FloatingProps } from "~/components/floating/Floating";
+import { Popover, type FloatingProps } from "~/components/floating/Popover";
 import { type FloatingRenderProps } from "~/components/floating/types";
 
 export interface SelectFloatingProps
@@ -61,7 +61,7 @@ export const SelectFloating = forwardRef<types.SelectInstance, SelectFloatingPro
     useImperativeHandle(ref, () => select);
 
     return (
-      <Floating
+      <Popover
         {...props}
         /* Note: Using autoUpdate for the Select is particularly important - especially for Select
            elements inside of Forms that exist in Drawers - because the first time the Select is
@@ -92,7 +92,7 @@ export const SelectFloating = forwardRef<types.SelectInstance, SelectFloatingPro
         content={content}
       >
         {({ ref: _ref, params }) => children({ ref: _ref, params, isOpen, isLoading })}
-      </Floating>
+      </Popover>
     );
   },
 );

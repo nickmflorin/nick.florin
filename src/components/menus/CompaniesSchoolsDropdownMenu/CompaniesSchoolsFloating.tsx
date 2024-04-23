@@ -5,8 +5,8 @@ import { useState } from "react";
 import { Button } from "~/components/buttons";
 import { DrawerIds } from "~/components/drawers";
 import { Loading } from "~/components/feedback/Loading";
-import { Floating } from "~/components/floating/Floating";
-import { FloatingContent } from "~/components/floating/FloatingContent";
+import { Popover } from "~/components/floating/Popover";
+import { PopoverContent } from "~/components/floating/PopoverContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { ShowHide } from "~/components/util";
 
@@ -37,15 +37,15 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
   const [drawerVisible, setDrawerVisible] = useState(false);
   return (
     <>
-      <Floating
+      <Popover
         withArrow={false}
         content={
-          <FloatingContent className="p-[0px] rounded-md overflow-hidden" variant="white">
+          <PopoverContent className="p-[0px] rounded-md overflow-hidden" variant="white">
             <MenuContainer className="box-shadow-none">
               {children}
               <CompaniesSchoolsMenuFooter onCreate={() => setDrawerVisible(true)} />
             </MenuContainer>
-          </FloatingContent>
+          </PopoverContent>
         }
         placement="bottom-end"
         triggers={["click"]}
@@ -64,7 +64,7 @@ export const CompaniesSchoolsFloating = <M extends ModelType>({
             {ButtonContent[modelType]}
           </Button.Secondary>
         )}
-      </Floating>
+      </Popover>
       <ShowHide show={drawerVisible && modelType === "company"}>
         <ClientDrawer id={DrawerIds.CREATE_COMPANY} props={{}} />
       </ShowHide>

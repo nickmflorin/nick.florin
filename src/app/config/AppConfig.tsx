@@ -1,6 +1,6 @@
 /* eslint-disable import/order */
 import { type ReactNode } from "react";
-
+import { CookiesProvider } from "next-client-cookies/server";
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 
 /*
@@ -39,12 +39,14 @@ export interface AppConfigProps {
 }
 
 export const AppConfig = ({ children }: AppConfigProps): JSX.Element => (
-  <ClerkProvider>
-    <ClerkLoading>
-      <ScreenLoading />
-    </ClerkLoading>
-    <ClerkLoaded>
-      <ClientConfig>{children}</ClientConfig>
-    </ClerkLoaded>
-  </ClerkProvider>
+  <CookiesProvider>
+    <ClerkProvider>
+      <ClerkLoading>
+        <ScreenLoading />
+      </ClerkLoading>
+      <ClerkLoaded>
+        <ClientConfig>{children}</ClientConfig>
+      </ClerkLoaded>
+    </ClerkProvider>
+  </CookiesProvider>
 );

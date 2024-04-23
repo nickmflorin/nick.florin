@@ -7,7 +7,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "editor.parameterHints.enabled": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    "*.ts": "typescript"
+  },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
@@ -17,8 +22,6 @@
     //   "source.fixAll.stylelint": "explicit"
     // }
   },
-
-  "github.copilot.editor.enableCodeActions": false,
 
   "eslint.run": "onSave",
   "eslint.nodePath": "/Users/nickflorin/.nvm/versions/node/v20.0.0/bin/node",
@@ -36,11 +39,8 @@
     "@typescript-eslint/consistent-type-imports"
   ],
 
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "prompt",
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.format.enable": false,
   "typescript.preferences.preferTypeOnlyAutoImports": true,
@@ -49,6 +49,7 @@
   "typescript.format.semicolons": "insert",
   "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
   "typescript.preferences.quoteStyle": "double",
+  "typescript.referencesCodeLens.enabled": true,
 
   "javascript.format.enable": false,
   "javascript.preferences.importModuleSpecifier": "non-relative",
