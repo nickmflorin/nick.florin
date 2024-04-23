@@ -6,7 +6,7 @@ import { removeRedundantTopLevelSkills } from "~/prisma/model";
 import { getEducations } from "~/actions/fetches/educations";
 import { Loading } from "~/components/feedback/Loading";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
-import { ResumeModelTile } from "~/components/tiles/ResumeModelTile";
+import { ResumeModelPageTile } from "~/components/tiles/resume/ResumeModelPageTile";
 import { type ComponentProps } from "~/components/types";
 
 import { CommitTimeline } from "./CommitTimeline";
@@ -37,13 +37,7 @@ export const EducationTimeline = async (props: EducationTimelineProps): Promise<
     <CommitTimeline {...props}>
       {educations.map(education => (
         <TimelineItem key={education.id} bullet={<TimelineIcon />}>
-          <ResumeModelTile>
-            <ResumeModelTile.Header model={education} size="large">
-              <ResumeModelTile.Title model={education} size="large" />
-              <ResumeModelTile.SubTitle model={education} size="large" />
-            </ResumeModelTile.Header>
-            <ResumeModelTile.Body model={education} alignment="inset" />
-          </ResumeModelTile>
+          <ResumeModelPageTile model={education} />
         </TimelineItem>
       ))}
     </CommitTimeline>

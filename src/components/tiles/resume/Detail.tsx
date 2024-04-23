@@ -8,47 +8,51 @@ import { type FontSize } from "~/components/typography";
 import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 
-import { DetailsTile } from "./DetailsTile";
+import { Details } from "./Details";
 
-export interface DetailTileProps<
+export interface DetailProps<
   D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
 > extends ComponentProps {
   readonly detail: D;
   readonly index?: number;
-  readonly textSize?: FontSize;
+  readonly descriptionFontSize?: FontSize;
+  readonly labelFontSize?: FontSize;
+  readonly nestedLabelFontSize?: FontSize;
 }
 
-export const DetailTile = <
+export const Detail = <
   D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
 >({
   detail,
   index,
-  textSize = "sm",
+  descriptionFontSize = "smplus",
+  labelFontSize = "sm",
+  nestedLabelFontSize,
   ...props
-}: DetailTileProps<D>): JSX.Element => (
+}: DetailProps<D>): JSX.Element => (
   <div {...props} className={clsx("flex flex-col gap-[10px]", props.className)}>
     <div className="flex flex-col gap-[4px]">
       {index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
-          <Label size={textSize} className="w-[8px]">
+          <Label size={labelFontSize} className="w-[8px]">
             {`${index}.`}
           </Label>
           {detail.project ? (
             <Link
-              fontSize={textSize}
+              fontSize={labelFontSize}
               options={{ as: "link" }}
               href={`/projects/${detail.project.slug}`}
             >
               {detail.label}
             </Link>
           ) : (
-            <Label size={textSize}>{detail.label}</Label>
+            <Label size={labelFontSize}>{detail.label}</Label>
           )}
         </div>
       ) : detail.project ? (
         <div className="flex flex-row items-center gap-[4px]">
           <Link
-            fontSize={textSize}
+            fontSize={labelFontSize}
             options={{ as: "link" }}
             href={`/projects/${detail.project.slug}`}
             gap="4px"
@@ -59,11 +63,11 @@ export const DetailTile = <
           </Link>
         </div>
       ) : (
-        <Label size={textSize}>{detail.label}</Label>
+        <Label size={labelFontSize}>{detail.label}</Label>
       )}
       {detail.description && (
         <Description
-          fontSize="smplus"
+          fontSize={descriptionFontSize}
           className={clsx("text-gray-600", { "pl-[16px]": index !== undefined })}
         >
           {detail.description}
@@ -71,6 +75,14 @@ export const DetailTile = <
       )}
     </div>
     {detail.skills.length !== 0 && <Skills skills={detail.skills} className="max-w-[800px]" />}
-    {!isNestedDetail(detail) && <DetailsTile details={detail.nestedDetails} isNested={true} />}
+    {!isNestedDetail(detail) && (
+      <Details
+        details={detail.nestedDetails}
+        isNested={true}
+        labelFontSize={labelFontSize}
+        nestedLabelFontSize={nestedLabelFontSize}
+        descriptionFontSize={descriptionFontSize}
+      />
+    )}
   </div>
 );

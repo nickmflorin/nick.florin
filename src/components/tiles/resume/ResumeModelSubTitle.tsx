@@ -1,45 +1,45 @@
-import type { ResumeModelTileSize } from "./types";
+import type { ResumeModelSize } from "./types";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 import { type FontSize, type FontWeight } from "~/components/typography";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 
-const LinkFontWeights: { [key in ResumeModelTileSize]: FontWeight } = {
+const LinkFontWeights: { [key in ResumeModelSize]: FontWeight } = {
   small: "regular",
   medium: "medium",
   large: "medium",
 };
 
-const LinkFontSizes: { [key in ResumeModelTileSize]: FontSize } = {
+const LinkFontSizes: { [key in ResumeModelSize]: FontSize } = {
   small: "sm",
   medium: "smplus",
   large: "md",
 };
 
-const TextClassNames: { [key in ResumeModelTileSize]: string } = {
+const TextClassNames: { [key in ResumeModelSize]: string } = {
   small: "text-body-light",
   medium: "text-body-light",
   large: "",
 };
 
-export interface ResumeModelTileSubTitleProps<M extends BrandModel<T>, T extends ResumeBrand>
+export interface ResumeModelSubTitleProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends ComponentProps {
   readonly model: M;
-  readonly size?: ResumeModelTileSize;
+  readonly size?: ResumeModelSize;
   readonly textClassName?: ComponentProps["className"];
   readonly fontWeight?: FontWeight;
   readonly fontSize?: FontSize;
 }
 
-export const ResumeModelTileSubTitle = <M extends BrandModel<T>, T extends ResumeBrand>({
+export const ResumeModelSubTitle = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
   size,
   fontWeight,
   fontSize,
   textClassName,
   ...props
-}: ResumeModelTileSubTitleProps<M, T>) => (
+}: ResumeModelSubTitleProps<M, T>) => (
   <LinkOrText
     {...props}
     fontWeight={

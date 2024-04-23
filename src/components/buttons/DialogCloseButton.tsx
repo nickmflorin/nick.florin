@@ -5,9 +5,10 @@ import { IconButton, type IconButtonProps } from "./generic";
 export interface DialogCloseButtonProps extends IconButtonProps<{ as: "button" }> {}
 
 export const DialogCloseButton = forwardRef<HTMLButtonElement, DialogCloseButtonProps>(
-  ({ onClick, ...props }: DialogCloseButtonProps): JSX.Element => (
+  ({ onClick, ...props }: DialogCloseButtonProps, ref): JSX.Element => (
     <IconButton.Transparent
       {...props}
+      ref={ref}
       options={{ as: "button" }}
       size="xsmall"
       iconSize="large"

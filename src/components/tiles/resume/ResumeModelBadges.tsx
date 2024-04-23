@@ -1,0 +1,42 @@
+import clsx from "clsx";
+
+import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+import { LocationTag } from "~/components/tags/LocationTag";
+import { TimePeriodTag } from "~/components/tags/TimePeriodTag";
+import { type ComponentProps } from "~/components/types";
+
+export interface ResumeModelBadgesProps<M extends BrandModel<T>, T extends ResumeBrand>
+  extends ComponentProps {
+  readonly model: M;
+}
+
+export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand>({
+  model,
+  ...props
+}: ResumeModelBadgesProps<M, T>) => (
+  <div {...props} className={clsx("flex flex-wrap gap-y-[4px] gap-x-[8px]", props.className)}>
+    <TimePeriodTag
+      size="xs"
+      timePeriod={
+        model.$kind === "experience"
+          ? { startDate: model.startDate, endDate: model.endDate }
+          : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
+      }
+    />
+    <LocationTag
+      size="xs"
+      location={
+        model.$kind === "education"
+          ? {
+              city: model.school.city,
+              state: model.school.state,
+            }
+          : {
+              city: model.company.city,
+              state: model.company.state,
+              isRemote: model.isRemote,
+            }
+      }
+    />
+  </div>
+);

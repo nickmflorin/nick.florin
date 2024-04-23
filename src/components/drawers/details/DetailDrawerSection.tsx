@@ -9,7 +9,7 @@ export const DetailDrawerSection = ({ label, children }: DetailDrawerSectionProp
   Array.isArray(children) && children.length === 0 ? (
     <></>
   ) : (
-    <div className="flex flex-col gap-[8px]">
+    <div className="flex flex-col gap-[8px] pr-[12px]">
       <hr className="w-full border-t border-gray-200" />
       <div className="flex flex-col gap-[12px]">
         <Label size="sm" fontWeight="medium">

@@ -1,6 +1,6 @@
 import { type ApiCourse } from "~/prisma/model";
 import { Skills } from "~/components/badges/collections/Skills";
-import { ResumeModelTile } from "~/components/tiles/ResumeModelTile";
+import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelCondensedTile";
 
 import { DetailDrawerContent } from "../DetailDrawerContent";
 import { DetailDrawerSection } from "../DetailDrawerSection";
@@ -15,12 +15,7 @@ export const CourseDrawerContent = ({
   <DetailDrawerContent description={description} title={name}>
     <Skills skills={skills} />
     <DetailDrawerSection label="Education">
-      <ResumeModelTile>
-        <ResumeModelTile.Header model={education} size="small">
-          <ResumeModelTile.Title model={education} size="small" />
-          <ResumeModelTile.SubTitle model={education} size="small" />
-        </ResumeModelTile.Header>
-      </ResumeModelTile>
+      <ResumeModelCondensedTile model={education} />
     </DetailDrawerSection>
   </DetailDrawerContent>
 );

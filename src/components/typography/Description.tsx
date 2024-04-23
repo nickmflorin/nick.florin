@@ -14,15 +14,20 @@ export interface DescriptionProps extends ComponentProps {
   readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
+  readonly textClassName?: ComponentProps["className"];
   readonly children?: ReactNode[] | ReactNode;
+  // Note: This only works when there is a single description without line breaks.
+  readonly lineClamp?: number;
 }
 
 export const Description = ({
   description,
+  textClassName,
   gap = "4px",
   fontSize = "md",
   fontFamily,
   fontWeight = "regular",
+  lineClamp,
   children,
   ...props
 }: DescriptionProps): JSX.Element => {
@@ -62,7 +67,7 @@ export const Description = ({
     >
       {validDescriptions.map((d, index) =>
         typeof d === "string" ? (
-          <Text key={index} inherit>
+          <Text key={index} inherit lineClamp={lineClamp} className={textClassName}>
             {d}
           </Text>
         ) : (

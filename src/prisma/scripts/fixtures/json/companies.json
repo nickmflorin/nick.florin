@@ -214,7 +214,7 @@
             },
             {
               "label": "Testing",
-              "description": "Spearheaded the implementation of our entire automated testing suite and ci-cd pipeline, which increased test coverage by roughly 70% and improved the stability of the development of new features.",
+              "description": "Spearheaded the implementation of our entire automated testing suite and CI/CD pipeline, which increased test coverage by roughly 70% and improved the stability of the development of new features.",
               "skills": ["pytest", "codecov", "tox", "ci-cd"]
             }
           ]

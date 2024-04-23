@@ -36,7 +36,7 @@ const LocalText = ({
   const Component = span ? Span : Div;
   return (
     <Component
-      style={lineClamp ? { ...style, lineClamp } : style}
+      style={lineClamp ? { ...style, lineClamp, WebkitLineClamp: lineClamp } : style}
       className={clsx(
         "body",
         { "body--inherit": inherit },
@@ -44,7 +44,7 @@ const LocalText = ({
         { ["flex flex-row items-center"]: flex },
         {
           truncate: truncate,
-          clamp: lineClamp !== undefined,
+          // clamp: lineClamp !== undefined,
         },
         getTypographyClassName(props),
       )}

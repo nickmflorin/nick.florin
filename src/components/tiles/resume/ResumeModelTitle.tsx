@@ -1,16 +1,16 @@
 import clsx from "clsx";
 
-import type { ResumeModelTileSize } from "./types";
+import type { ResumeModelSize } from "./types";
 
 import { type BrandModel, type ResumeBrand, getDegree } from "~/prisma/model";
-import { ExpandResumeModelButton } from "~/components/buttons/ExpandResumeModelButton";
+import { ExpandResumeModelButton } from "~/components/buttons/resume";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 import { Title } from "~/components/typography/Title";
 import { ShowHide } from "~/components/util";
 
 const Titles: {
-  [key in ResumeModelTileSize]: ({ children }: { children: string }) => JSX.Element;
+  [key in ResumeModelSize]: ({ children }: { children: string }) => JSX.Element;
 } = {
   small: ({ children }) => (
     <Text size="md" fontWeight="medium" className="leading-[22px]">
@@ -21,19 +21,19 @@ const Titles: {
   large: ({ children }) => <Title order={2}>{children}</Title>,
 };
 
-export interface ResumeModelTileTitleProps<M extends BrandModel<T>, T extends ResumeBrand>
+export interface ResumeModelTitleProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends ComponentProps {
   readonly model: M;
   readonly expandable?: boolean;
-  readonly size: ResumeModelTileSize;
+  readonly size: ResumeModelSize;
 }
 
-export const ResumeModelTileTitle = <M extends BrandModel<T>, T extends ResumeBrand>({
+export const ResumeModelTitle = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
   size,
   expandable = false,
   ...props
-}: ResumeModelTileTitleProps<M, T>) => {
+}: ResumeModelTitleProps<M, T>) => {
   const TitleComponent = Titles[size];
   return (
     <div
