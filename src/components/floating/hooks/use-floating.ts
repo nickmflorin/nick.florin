@@ -82,12 +82,7 @@ export const useFloating = ({
 
   /* If the floating element's open state is being controlled externally, we do not want it to
      automatically change when the reference element is clicked. */
-  const click = useClick(
-    context,
-    propIsOpen !== undefined
-      ? types.parseFloatingTriggerOptions(triggers, "click")
-      : { enabled: false },
-  );
+  const click = useClick(context, types.parseFloatingTriggerOptions(triggers, "click"));
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss, role]);
 
