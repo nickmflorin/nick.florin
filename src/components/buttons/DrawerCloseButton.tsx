@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 import { IconButton, type IconButtonProps } from "./generic";
 
 export interface DrawerCloseButtonProps
@@ -9,6 +11,7 @@ export const DrawerCloseButton = (props: DrawerCloseButtonProps): JSX.Element =>
     options={{ as: "button" }}
     size="xsmall"
     iconSize="large"
+    className={clsx("drawer__close-button", props.className)}
     icon={{ name: "xmark", iconStyle: "solid" }}
   />
 );

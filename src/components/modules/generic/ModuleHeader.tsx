@@ -7,11 +7,10 @@ import { Title } from "~/components/typography/Title";
 
 export interface ModuleHeaderProps extends ComponentProps {
   readonly actions?: Action[];
-  readonly innerActions?: Action[];
   readonly children: string;
 }
 
-export const ModuleHeader = ({ actions, children, innerActions, ...props }: ModuleHeaderProps) => (
+export const ModuleHeader = ({ actions, children, ...props }: ModuleHeaderProps) => (
   <div
     {...props}
     className={clsx("flex flex-row items-center h-[32px] justify-between", props.className)}
@@ -20,7 +19,6 @@ export const ModuleHeader = ({ actions, children, innerActions, ...props }: Modu
       <Title order={3} className="leading-[32px]">
         {children}
       </Title>
-      <Actions actions={innerActions ?? null} />
     </div>
     <Actions actions={actions ?? null} />
   </div>
