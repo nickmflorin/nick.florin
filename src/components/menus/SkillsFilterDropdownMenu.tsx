@@ -1,6 +1,6 @@
 "use client";
 import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
-import { Popover, type FloatingProps } from "~/components/floating/Popover";
+import { Popover, type PopoverProps } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 import {
@@ -15,7 +15,7 @@ export interface SkillsFilterDropdownMenuProps {
   readonly isDisabled?: boolean;
   readonly buttonProps?: ComponentProps & { readonly isLocked?: boolean };
   readonly useSearchParams?: boolean;
-  readonly placement?: FloatingProps["placement"];
+  readonly placement?: PopoverProps["placement"];
   readonly onChange?: (values: SkillsChartFilterFormValues) => void;
 }
 

@@ -14,7 +14,7 @@ import * as types from "./types";
 
 export interface FloatingContentProps extends ComponentProps, HTMLElementProps<"div"> {
   readonly children: ReactNode;
-  readonly variant?: types.FloatingVariant;
+  readonly variant?: types.PopoverVariant;
   readonly maxHeight?: Size | null;
 }
 
@@ -23,7 +23,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, FloatingContentProps>(
     {
       children,
       className = "rounded-sm",
-      variant = types.FloatingVariants.PRIMARY,
+      variant = types.PopoverVariants.PRIMARY,
       maxHeight,
       ...props
     }: FloatingContentProps,
@@ -37,7 +37,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, FloatingContentProps>(
            of any potentially underlying Menu to the same max height that is set on the outer
            PopoverContent element. */
         "floating-content",
-        types.getFloatingVariantClassName(variant, className),
+        types.getPopoverVariantClassName(variant, className),
         "z-50",
         { "rounded-sm": !classNameContains(className, v => v.startsWith("rounded-")) },
       )}

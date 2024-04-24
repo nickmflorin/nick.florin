@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
 import { Loading } from "~/components/feedback/Loading";
@@ -185,9 +185,11 @@ export type DrawersManager = {
 
 export const useDrawersManager = (): Omit<DrawersManager, "isReady"> => {
   const [drawer, setDrawer] = useState<JSX.Element | null>(null);
+  const drawerHistory = useRef<JSX.Element[]>([]);
 
   const close = useCallback(() => {
     setDrawer(null);
+    drawerHistory.current = [];
   }, []);
 
   const open = useCallback(
@@ -199,17 +201,22 @@ export const useDrawersManager = (): Omit<DrawersManager, "isReady"> => {
         onClose: () => setDrawer(null),
       } as React.ComponentProps<typeof Drawer>;
 
-      setDrawer(
-        <DrawerContainer>
-          <Drawer {...ps} />
-          <DrawerCloseButton
-            onClick={() => {
-              handler?.();
-              setDrawer(null);
-            }}
-          />
-        </DrawerContainer>,
-      );
+      setDrawer(curr => {
+        if (curr) {
+          drawerHistory.current = [...drawerHistory.current, curr];
+        }
+        return (
+          <DrawerContainer>
+            <Drawer {...ps} />
+            <DrawerCloseButton
+              onClick={() => {
+                handler?.();
+                setDrawer(null);
+              }}
+            />
+          </DrawerContainer>
+        );
+      });
     },
     [],
   );

@@ -1,15 +1,15 @@
 import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
-import { type FloatingProps } from "./Popover";
+import { type PopoverProps } from "./Popover";
 import { TooltipContent, type TooltipContentProps } from "./TooltipContent";
 import * as types from "./types";
 
 const Popover = dynamic(() => import("./Popover"));
 
-export interface TooltipProps extends Omit<FloatingProps, "content"> {
+export interface TooltipProps extends Omit<PopoverProps, "content"> {
   readonly content: ReactNode;
-  readonly variant?: types.FloatingVariant;
+  readonly variant?: types.PopoverVariant;
   readonly className?: TooltipContentProps["className"];
 }
 
@@ -17,7 +17,7 @@ export const Tooltip = ({
   children,
   content,
   className,
-  variant = types.FloatingVariants.SECONDARY,
+  variant = types.PopoverVariants.SECONDARY,
   ...props
 }: TooltipProps) => (
   <Popover

@@ -29,6 +29,7 @@ export type DetailsProps = TopDetailsProps | NestedDetailsProps;
 export const Details = ({
   details,
   isNested,
+  // TODO: Incorporate collapsable details for purposes of condensed views or mobile viewing.
   collapsable = false,
   labelFontSize = "smplus",
   nestedLabelFontSize = "sm",

@@ -19,12 +19,12 @@ import { type ComponentProps } from "~/components/types";
 
 import { FloatingSelectContent } from "./FloatingSelectContent";
 import { MenuSelectInput, type MenuSelectInputProps } from "./MenuSelectInput";
-import { SelectFloating, type SelectFloatingProps } from "./SelectFloating";
+import { SelectPopover, type SelectPopoverProps } from "./SelectPopover";
 
 export interface SelectBaseProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
   extends Optional<
       Omit<
-        SelectFloatingProps,
+        SelectPopoverProps,
         "content" | "onOpen" | "onClose" | "onOpenChange" | keyof ComponentProps
       >,
       "children"
@@ -54,7 +54,7 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
     },
   ) => void;
   readonly onOpen?: (
-    e: Event,
+    e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
       value: MenuValue<M, O> | MenuInitialValue<M, O>;
       models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
@@ -62,7 +62,7 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
     },
   ) => void;
   readonly onClose?: (
-    e: Event,
+    e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
       value: MenuValue<M, O> | MenuInitialValue<M, O>;
       models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
@@ -70,7 +70,7 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
     },
   ) => void;
   readonly onOpenChange?: (
-    e: Event,
+    e: Event | React.MouseEvent<HTMLButtonElement>,
     isOpen: boolean,
     params: {
       value: MenuValue<M, O> | MenuInitialValue<M, O>;
@@ -124,7 +124,7 @@ const LocalSelectBase = forwardRef<
     });
 
     return (
-      <SelectFloating
+      <SelectPopover
         ref={instance => {
           if (instance) {
             internalInstance.current = instance;
@@ -179,7 +179,7 @@ const LocalSelectBase = forwardRef<
               className={inputClassName}
             />
           ))}
-      </SelectFloating>
+      </SelectPopover>
     );
   },
 );

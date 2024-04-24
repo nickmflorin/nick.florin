@@ -13,7 +13,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
   (
     {
       children,
-      variant = types.FloatingVariants.SECONDARY,
+      variant = types.PopoverVariants.SECONDARY,
       className = "py-[6px] px-[10px] text-md leading-[14px]",
       ...props
     }: TooltipContentProps,

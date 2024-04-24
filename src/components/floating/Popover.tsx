@@ -50,11 +50,11 @@ export interface PopoverProps extends UsePopoverConfig {
    * component does not accept those props - which can lead to bugs with the floating element's
    * usage.
    */
-  readonly children: JSX.Element | ((params: types.FloatingRenderProps) => JSX.Element);
+  readonly children: JSX.Element | ((params: types.PopoverRenderProps) => JSX.Element);
   readonly isDisabled?: boolean;
   readonly withArrow?: boolean;
   readonly arrowClassName?: ComponentProps["className"];
-  readonly variant?: types.FloatingVariant;
+  readonly variant?: types.PopoverVariant;
 }
 
 export const Popover = ({
@@ -64,7 +64,7 @@ export const Popover = ({
   isDisabled,
   withArrow = true,
   arrowClassName,
-  variant = types.FloatingVariants.SECONDARY,
+  variant = types.PopoverVariants.SECONDARY,
   ...config
 }: PopoverProps) => {
   const { refs, referenceProps, isOpen, floatingProps, floatingStyles, arrowRef, context } =

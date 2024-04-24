@@ -12,8 +12,8 @@ import { Loading } from "~/components/feedback/Loading";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { type ComponentProps } from "~/components/types";
 
-import { SelectFloating, type SelectFloatingProps } from "../select/generic/SelectFloating";
 import { SelectInput, type SelectInputProps } from "../select/generic/SelectInput";
+import { SelectPopover, type SelectPopoverProps } from "../select/generic/SelectPopover";
 
 import { toDateTime } from "./util";
 
@@ -22,7 +22,7 @@ const DatePicker = dynamic(() => import("./DatePicker"), {
 });
 
 export interface DateSelectProps
-  extends Optional<Omit<SelectFloatingProps, "content" | "isReady">, "children">,
+  extends Optional<Omit<SelectPopoverProps, "content" | "isReady">, "children">,
     Omit<SelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
   readonly value: Date | string | null;
   readonly inputClassName?: ComponentProps["className"];
@@ -58,7 +58,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
     }, [value]);
 
     return (
-      <SelectFloating
+      <SelectPopover
         menuWidth="target"
         {...props}
         maxHeight="fit-content"
@@ -105,7 +105,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
               {v ? DateTime.fromJSDate(v).toFormat(formatString) : ""}
             </SelectInput>
           ))}
-      </SelectFloating>
+      </SelectPopover>
     );
   },
 );

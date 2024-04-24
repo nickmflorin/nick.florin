@@ -19,30 +19,30 @@ import {
   type ClassName,
 } from "~/components/types";
 
-export const FloatingVariants = enumeratedLiterals(
+export const PopoverVariants = enumeratedLiterals(
   ["primary", "secondary", "light", "white", "none"] as const,
   {},
 );
-export type FloatingVariant = EnumeratedLiteralsType<typeof FloatingVariants>;
+export type PopoverVariant = EnumeratedLiteralsType<typeof PopoverVariants>;
 
-export const FloatingVariantClassNames: {
-  [key in FloatingVariant]: (cs: ComponentProps["className"]) => string;
+export const PopoverVariantClassNames: {
+  [key in PopoverVariant]: (cs: ComponentProps["className"]) => string;
 } = {
-  [FloatingVariants.PRIMARY]: cs =>
+  [PopoverVariants.PRIMARY]: cs =>
     clsx(
       withoutOverridingClassName("text-white", cs),
       withoutOverridingClassName("bg-blue-500", cs),
       withoutOverridingClassName("shadow-md", cs),
       cs,
     ),
-  [FloatingVariants.LIGHT]: cs =>
+  [PopoverVariants.LIGHT]: cs =>
     clsx(
       withoutOverridingClassName("text-body", cs),
       withoutOverridingClassName("bg-gray-50", cs),
       withoutOverridingClassName("shadow-md", cs),
       cs,
     ),
-  [FloatingVariants.SECONDARY]: cs =>
+  [PopoverVariants.SECONDARY]: cs =>
     clsx(
       withoutOverridingClassName("text-heading", cs),
       withoutOverridingClassName("bg-gradient-to-r from-gray-50 to-gray-200", cs, {
@@ -51,49 +51,47 @@ export const FloatingVariantClassNames: {
       withoutOverridingClassName("shadow-md", cs),
       cs,
     ),
-  [FloatingVariants.WHITE]: cs =>
+  [PopoverVariants.WHITE]: cs =>
     clsx(
       withoutOverridingClassName("text-body", cs),
       withoutOverridingClassName("bg-white", cs),
       withoutOverridingClassName("shadow-md", cs),
       cs,
     ),
-  [FloatingVariants.NONE]: cs => clsx(cs),
+  [PopoverVariants.NONE]: cs => clsx(cs),
 };
 
-export const FloatingVariantArrowClassNames: { [key in FloatingVariant]: string } = {
-  [FloatingVariants.PRIMARY]: clsx(
+export const PopoverVariantArrowClassNames: { [key in PopoverVariant]: string } = {
+  [PopoverVariants.PRIMARY]: clsx(
     "fill-blue-500",
     "[&>path:first-of-type]:stroke-blue-500",
     "[&>path:last-of-type]:stroke-blue-500",
   ),
-  [FloatingVariants.LIGHT]: clsx(
+  [PopoverVariants.LIGHT]: clsx(
     "fill-gray-50",
     "[&>path:first-of-type]:stroke-gray-50",
     "[&>path:last-of-type]:stroke-gray-50",
   ),
-  [FloatingVariants.SECONDARY]: clsx(
+  [PopoverVariants.SECONDARY]: clsx(
     "fill-gray-200",
     "[&>path:first-of-type]:stroke-gray-200",
     "[&>path:last-of-type]:stroke-gray-200",
   ),
-  [FloatingVariants.WHITE]: clsx(
+  [PopoverVariants.WHITE]: clsx(
     "fill-white",
     "[&>path:first-of-type]:stroke-white",
     "[&>path:last-of-type]:stroke-white",
   ),
-  [FloatingVariants.NONE]: "",
+  [PopoverVariants.NONE]: "",
 };
 
-export const getFloatingVariantClassName = (
-  variant: FloatingVariant,
-  className: ClassName,
-): string => FloatingVariantClassNames[variant](className);
+export const getPopoverVariantClassName = (variant: PopoverVariant, className: ClassName): string =>
+  PopoverVariantClassNames[variant](className);
 
-export const getFloatingArrowVariantClassName = (variant: FloatingVariant): string =>
-  FloatingVariantArrowClassNames[variant];
+export const getPopoverArrowVariantClassName = (variant: PopoverVariant): string =>
+  PopoverVariantArrowClassNames[variant];
 
-export type FloatingRenderProps = {
+export type PopoverRenderProps = {
   readonly isOpen: boolean;
   readonly params: ReturnType<ReturnType<typeof useInteractions>["getReferenceProps"]>;
   readonly ref: (node: ReferenceType | null) => void;

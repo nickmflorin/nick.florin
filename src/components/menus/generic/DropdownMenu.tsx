@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type * as types from "../types";
 
 import { Loading } from "~/components/feedback/Loading";
-import { Popover, type FloatingProps } from "~/components/floating/Popover";
+import { Popover, type PopoverProps } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import type { ComponentProps } from "~/components/types";
 
@@ -17,7 +17,7 @@ export interface DropdownMenuProps<M extends types.MenuModel, O extends types.Me
   extends Omit<types.MenuProps<M, O>, "children">,
     ComponentProps,
     Pick<
-      FloatingProps,
+      PopoverProps,
       | "placement"
       | "inPortal"
       | "autoUpdate"
