@@ -48,7 +48,7 @@ export const DetailForm = React.memo(
                       />
                     </Form.Field>
                     <div className="flex flex-row gap-[6px] items-center">
-                      <Actions actions={actions} />
+                      <Actions actions={actions ?? null} />
                       <IconButton.Bare
                         key={actions ? actions.length : "0"}
                         size="xsmall"

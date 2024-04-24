@@ -18,7 +18,13 @@ export const ResumeModelDrawerTile = <M extends types.ApiModel<T>, T extends Res
   ...props
 }: ResumeModelDrawerTileProps<M, T>) => (
   <ResumeModelTile>
-    <div {...props} className={clsx("flex flex-col gap-[16px] max-w-full w-full", props.className)}>
+    <div
+      {...props}
+      className={clsx(
+        "flex flex-col gap-[16px] max-w-full w-full overflow-y-hidden",
+        props.className,
+      )}
+    >
       <div className="flex flex-row gap-[12px] max-w-full w-full">
         <ResumeModelTile.Image model={model} size="medium" />
         <div className="flex flex-col grow gap-[4px]">
@@ -28,7 +34,7 @@ export const ResumeModelDrawerTile = <M extends types.ApiModel<T>, T extends Res
       </div>
       <ResumeModelTile.Badges model={model} />
     </div>
-    <div className="flex flex-col gap-[12px]">
+    <div className="flex flex-col gap-[12px] overflow-y-auto">
       {(types.hasDescription(model) || model.details.length !== 0) && (
         <div className="flex flex-col gap-[10px] max-w-[700px]">
           <ResumeModelTile.Description model={model} fontSize="sm" />

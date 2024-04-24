@@ -43,7 +43,7 @@ export const Collapse = ({
           title
         )}
         <div className="flex flex-row gap-[6px] items-center">
-          <Actions actions={actions} />
+          <Actions actions={actions ?? null} />
           <IconButton.Bare
             key={actions ? actions.length : "0"}
             size="xsmall"

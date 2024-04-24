@@ -24,6 +24,7 @@ export const ExpandResumeModelButton = <T extends ResumeBrand>({
           "rounded-full text-gray-500 hover:text-gray-600",
           "min-h-[22px] h-[22px] w-[22px]",
         )}
+        iconSize="14px"
         onClick={() => open()}
       />
     )}

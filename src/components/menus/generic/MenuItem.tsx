@@ -169,7 +169,7 @@ export const MenuItem = ({
           dimension="height"
         />
       )}
-      <Actions actions={actions} />
+      <Actions actions={actions ?? null} />
     </div>
   </ShowHide>
 );

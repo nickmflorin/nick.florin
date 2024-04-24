@@ -20,8 +20,8 @@ export const ModuleHeader = ({ actions, children, innerActions, ...props }: Modu
       <Title order={3} className="leading-[32px]">
         {children}
       </Title>
-      <Actions actions={innerActions} />
+      <Actions actions={innerActions ?? null} />
     </div>
-    <Actions actions={actions} />
+    <Actions actions={actions ?? null} />
   </div>
 );

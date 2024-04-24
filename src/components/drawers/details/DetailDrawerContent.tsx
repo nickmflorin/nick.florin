@@ -20,7 +20,7 @@ export const DetailDrawerContent = ({
   description,
   ...props
 }: DetailDrawerContentProps) => (
-  <DrawerContent {...props} className={clsx("gap-[14px]", props.className)}>
+  <DrawerContent {...props} className={clsx("gap-[14px] overflow-y-hidden", props.className)}>
     <div className="flex flex-col gap-[8px]">
       <div className="flex flex-col gap-[6px]">
         <Title order={2} className="text-gray-700 max-w-fit">
@@ -30,6 +30,6 @@ export const DetailDrawerContent = ({
       </div>
       <Description description={description} />
     </div>
-    <div className="flex flex-col gap-[14px]">{children}</div>
+    <div className="flex flex-col gap-[14px] overflow-y-auto">{children}</div>
   </DrawerContent>
 );
