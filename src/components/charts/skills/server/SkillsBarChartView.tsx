@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import qs from "qs";
+
 import { Loading } from "~/components/feedback/Loading";
 
 import { SkillsBarChart } from "./SkillsBarChart";
@@ -12,11 +14,12 @@ export interface SkillsBarChartViewProps extends Omit<SkillsBarChartContainerPro
 
 export const SkillsBarChartView = (props: SkillsBarChartViewProps): JSX.Element => (
   <SkillsBarChartContainer {...props}>
-    <div className="w-full h-full [&_g]:cursor-pointer">
-      <Suspense fallback={<Loading isLoading={true} />}>
-        <SkillsBarChart filters={props.filters} limit={props.limit} />
-      </Suspense>
-    </div>
+    <Suspense
+      key={qs.stringify(props.filters) + "_" + String(props.limit)}
+      fallback={<Loading isLoading={true} />}
+    >
+      <SkillsBarChart filters={props.filters} limit={props.limit} />
+    </Suspense>
   </SkillsBarChartContainer>
 );
 

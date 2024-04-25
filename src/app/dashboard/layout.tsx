@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import clsx from "clsx";
@@ -5,7 +6,10 @@ import clsx from "clsx";
 import { EducationModule } from "~/components/modules/EducationModule";
 import { ExperienceModule } from "~/components/modules/ExperienceModule";
 import { Module } from "~/components/modules/generic";
-import { type ComponentProps } from "~/components/types";
+
+const SkillsFilterDropdownMenu = dynamic(
+  () => import("~/components/menus/SkillsFilterDropdownMenu"),
+);
 
 export interface DashboardPageProps {
   readonly experiences: ReactNode;
@@ -23,26 +27,28 @@ export default async function DashboardPage({
   projects,
 }: DashboardPageProps) {
   return (
-    <div
-      className={clsx(
-        "grid grid-flow-col grid-rows-3 grid-cols-3",
-        "gap-[15px] max-h-full overflow-y-auto auto-rows-max",
-      )}
-    >
-      <Module className="row-span-3" title="Skills Overview" overflow>
-        {chart}
-      </Module>
-      <ExperienceModule className="row-span-3 flex flex-col gap-[15px]" overflow>
-        {experiences}
-      </ExperienceModule>
-      <div className="grid grid-cols-subgrid row-span-3 gap-[15px]">
-        <EducationModule className="flex-none shrink-0 h-fit">{educations}</EducationModule>
-        <Module className="max-h-fit flex-none shrink-0 h-fit" title="Repositories">
-          {repositories}
+    <div className="h-full w-full max-h-full overflow-y-auto">
+      <div className={clsx("flex flex-row gap-[15px]", "h-full max-h-full")}>
+        <Module
+          className="h-full min-w-[400px] grow"
+          title="Skills Overview"
+          overflow
+          actions={[<SkillsFilterDropdownMenu key="0" placement="bottom-start" useSearchParams />]}
+        >
+          {chart}
         </Module>
-        <Module className="max-h-fit flex-none shrink-0 h-fit" title="Projects">
-          {projects}
-        </Module>
+        <ExperienceModule className="h-full max-w-[520px] min-w-[450px]" overflow>
+          {experiences}
+        </ExperienceModule>
+        <div className="flex flex-col h-full gap-[15px] max-w-[520px] min-w-[450px]">
+          <EducationModule overflow>{educations}</EducationModule>
+          <Module title="Repositories" overflow>
+            {repositories}
+          </Module>
+          <Module className="grow" title="Projects" overflow>
+            {projects}
+          </Module>
+        </div>
       </div>
     </div>
   );

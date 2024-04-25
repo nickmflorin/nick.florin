@@ -20,7 +20,7 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
-  // reactStrictMode: false,
+  reactStrictMode: false,
   experimental: {
     optimizePackageImports: ["@mantine/core"],
   },
@@ -45,7 +45,7 @@ const config = {
   redirects: async () => [
     {
       source: "/",
-      destination: "/resume/experience",
+      destination: "/dashboard",
       permanent: false,
     },
     {

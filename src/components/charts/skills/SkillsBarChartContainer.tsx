@@ -21,7 +21,7 @@ export const SkillsBarChartContainer = ({
 }: SkillsBarChartViewProps): JSX.Element => {
   const colors = useMemo(() => generateChartColors(skills.length), [skills.length]);
   return (
-    <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
+    <div {...props} className={clsx("flex flex-col gap-[8px] h-full w-full", props.className)}>
       <ChartContainer className="grow">{children}</ChartContainer>
       <Legend
         items={skills.map((skill, index) => ({

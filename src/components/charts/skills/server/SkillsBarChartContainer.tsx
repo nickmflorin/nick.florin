@@ -1,14 +1,14 @@
 import { type ReactNode, Suspense } from "react";
 
 import clsx from "clsx";
+import qs from "qs";
 
 import type { SkillsFilters } from "~/api/schemas";
 import { SkillsBarChartLegend } from "~/components/charts/skills/server/SkillsBarChartLegend";
-import { type ComponentProps } from "~/components/types";
 
-import { ChartContainer } from "../../ChartContainer";
+import { ChartContainer, type ChartContainerProps } from "../../ChartContainer";
 
-export interface SkillsBarChartContainerProps extends ComponentProps {
+export interface SkillsBarChartContainerProps extends ChartContainerProps {
   readonly filters: Omit<SkillsFilters, "search" | "includeInTopSkills">;
   readonly limit?: number;
   readonly children: ReactNode;
@@ -18,11 +18,15 @@ export const SkillsBarChartContainer = ({
   children,
   filters,
   limit,
+  className,
+  style,
   ...props
 }: SkillsBarChartContainerProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
-    <ChartContainer className="grow">{children}</ChartContainer>
-    <Suspense>
+  <div style={style} className={clsx("flex flex-col gap-[8px]", className)}>
+    <ChartContainer className="grow" {...props}>
+      {children}
+    </ChartContainer>
+    <Suspense key={qs.stringify(filters) + "_" + String(limit)}>
       <SkillsBarChartLegend filters={filters} limit={limit} />
     </Suspense>
   </div>

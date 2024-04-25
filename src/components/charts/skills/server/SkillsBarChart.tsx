@@ -23,7 +23,11 @@ export const SkillsBarChart = async ({
     filters: { ...filters, includeInTopSkills: true },
     limit,
   });
-  return <Chart skills={skills} />;
+  return (
+    <div className="w-full h-full [&_g]:cursor-pointer">
+      <Chart skills={skills} />
+    </div>
+  );
 };
 
 export default SkillsBarChart;

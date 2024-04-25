@@ -39,6 +39,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: toSiteUrl("/dashboard"),
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
       url: toSiteUrl("/resume/experience"),
       lastModified: await getLastUpdatedExperience(),
       changeFrequency: "monthly",
