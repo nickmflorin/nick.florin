@@ -41,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Script
           type="text/javascript"
           src={`https://kit.fontawesome.com/${environment.get("FONT_AWESOME_KIT_TOKEN")}.js`}
-          crossOrigin="anonymous"
+          // crossOrigin="anonymous"
           /* Using "nest" instead of "replace" avoids errors related to
              NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is
              not a child of this node */

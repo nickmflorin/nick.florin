@@ -13,7 +13,7 @@ import { Text } from "~/components/typography/Text";
 
 import { type BaseTypographyProps } from "./types";
 
-export interface PipedTextProps extends BaseTypographyProps {
+export interface PipedTextProps extends BaseTypographyProps, ComponentProps {
   readonly children: (string | JSX.Element | null | undefined)[];
   readonly gap?: Size;
   readonly textClassName?: ComponentProps["className"];
@@ -24,7 +24,7 @@ export interface PipedTextProps extends BaseTypographyProps {
 export const PipedText = ({
   children,
   pipeClassName,
-  size = "xs",
+  fontSize = "xs",
   pipeSize = "14px",
   gap = "4px",
   textClassName,
@@ -51,7 +51,7 @@ export const PipedText = ({
             <React.Fragment key={index}>
               <Text
                 {...props}
-                size={size}
+                fontSize={fontSize}
                 className={clsx(
                   withoutOverridingClassName("text-body-light", textClassName),
                   textClassName,
@@ -74,7 +74,7 @@ export const PipedText = ({
           <Text
             {...props}
             key={index}
-            size={size}
+            fontSize={fontSize}
             className={clsx(
               withoutOverridingClassName("text-body-light", textClassName),
               textClassName,

@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type * as types from "../types";
 
 import { type Size, type ComponentProps, sizeToString } from "~/components/types";
-import { type ExtendingTypographyProps } from "~/components/typography";
+import { type BaseTypographyProps } from "~/components/typography";
 
 import { ErrorContent } from "./ErrorContent";
 import { ErrorTitle } from "./ErrorTitle";
@@ -16,9 +16,9 @@ export interface ErrorDetailProps extends ComponentProps {
   readonly children?: types.ErrorContentType;
   readonly error?: types.ErrorType;
   readonly titleClassName?: ComponentProps["className"];
-  readonly titleFontSize?: ExtendingTypographyProps["fontSize"];
-  readonly titleFontWeight?: ExtendingTypographyProps["fontWeight"];
-  readonly titleFontFamily?: ExtendingTypographyProps["fontFamily"];
+  readonly titleFontSize?: BaseTypographyProps["fontSize"];
+  readonly titleFontWeight?: BaseTypographyProps["fontWeight"];
+  readonly titleFontFamily?: BaseTypographyProps["fontFamily"];
 }
 
 export const ErrorDetail = ({

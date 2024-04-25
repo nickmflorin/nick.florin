@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 import { ensuresDefinedValue } from "~/lib/typeguards";
-import { type Style } from "~/components/types";
+import { type Style, type ComponentProps } from "~/components/types";
 
 import { type BaseTypographyProps, getTypographyClassName } from "./types";
 
@@ -24,7 +24,7 @@ const factories: Factories = {
   6: props => <h6 {...props} />,
 };
 
-export interface TitleProps extends Omit<BaseTypographyProps, "size"> {
+export interface TitleProps extends Omit<BaseTypographyProps, "fontSize">, ComponentProps {
   readonly children: string | number | undefined | null | false;
   readonly order?: TitleOrder;
 }
@@ -33,5 +33,5 @@ export const Title = ({ order = 3, children, ...props }: TitleProps): JSX.Elemen
   ensuresDefinedValue(factories[order])({
     ...props,
     children,
-    className: clsx("title", getTypographyClassName(props)),
+    className: clsx("title", getTypographyClassName(props), props.className),
   });

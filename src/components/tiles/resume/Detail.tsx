@@ -34,7 +34,7 @@ export const Detail = <
     <div className="flex flex-col gap-[4px]">
       {index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
-          <Label size={labelFontSize} className="w-[8px]">
+          <Label fontSize={labelFontSize} className="w-[8px]">
             {`${index}.`}
           </Label>
           {detail.project ? (
@@ -46,7 +46,7 @@ export const Detail = <
               {detail.label}
             </Link>
           ) : (
-            <Label size={labelFontSize}>{detail.label}</Label>
+            <Label fontSize={labelFontSize}>{detail.label}</Label>
           )}
         </div>
       ) : detail.project ? (
@@ -63,7 +63,7 @@ export const Detail = <
           </Link>
         </div>
       ) : (
-        <Label size={labelFontSize}>{detail.label}</Label>
+        <Label fontSize={labelFontSize}>{detail.label}</Label>
       )}
       {detail.description && (
         <Description

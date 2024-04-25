@@ -15,10 +15,10 @@ export type FileSizeTextProps = FileSizeTextSizeProps | FileSizeTextFileProps;
 export const FileSizeText = ({
   file,
   fileSize,
-  size = "sm",
+  fontSize = "sm",
   ...props
 }: FileSizeTextProps): JSX.Element => (
-  <Text {...props} size={size}>
+  <Text {...props} fontSize={fontSize}>
     <FileSize {...({ file, fileSize } as FileSizeProps)} />
   </Text>
 );

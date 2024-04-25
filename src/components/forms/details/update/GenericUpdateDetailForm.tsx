@@ -141,7 +141,7 @@ export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetai
           form={{ ...form, setValues }}
           label="Label"
           autoRenderErrors={false}
-          labelProps={{ size: "xs" }}
+          labelProps={{ fontSize: "xs" }}
         >
           <TextInput
             className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
@@ -156,7 +156,7 @@ export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetai
         name="description"
         label="Description"
         form={{ ...form, setValues }}
-        labelProps={{ size: "xs" }}
+        labelProps={{ fontSize: "xs" }}
       >
         <TextArea
           className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
@@ -172,7 +172,7 @@ export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetai
         name="shortDescription"
         label="Short Description"
         form={{ ...form, setValues }}
-        labelProps={{ size: "xs" }}
+        labelProps={{ fontSize: "xs" }}
       >
         <TextArea
           className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
@@ -188,7 +188,7 @@ export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetai
       <Form.ControlledField
         name="project"
         label="Project"
-        labelProps={{ size: "xs" }}
+        labelProps={{ fontSize: "xs" }}
         form={{ ...form, setValues }}
         helpText="The project that the detail is associated with, if applicable."
       >

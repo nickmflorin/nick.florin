@@ -26,7 +26,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
     }
     {...props}
   >
-    <Text key="0" className="text-body-light" size="smplus">
+    <Text key="0" className="text-body-light" fontSize="smplus">
       The package supported the following chart types:
     </Text>
     <BubbleChart />

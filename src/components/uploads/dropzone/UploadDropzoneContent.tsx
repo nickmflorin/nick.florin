@@ -11,7 +11,7 @@ export interface UploadDropzoneContentProps extends ComponentProps {}
 export const UploadDropzoneContent = (props: UploadDropzoneContentProps) => (
   <div {...props} className={clsx("flex flex-row gap-[12px] items-center", props.className)}>
     <Icon name="image" size="28px" className="text-gray-600" />
-    <Text size="sm" className="text-body">
+    <Text fontSize="sm" className="text-body">
       Drag files here or click to upload.
     </Text>
   </div>

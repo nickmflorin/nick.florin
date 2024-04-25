@@ -4,12 +4,12 @@ import clsx from "clsx";
 
 import { isHttpError } from "~/api";
 import { type ComponentProps } from "~/components/types";
-import { type ExtendingTypographyProps } from "~/components/typography";
+import { type BaseTypographyProps } from "~/components/typography";
 import { Text } from "~/components/typography/Text";
 
 import * as types from "../types";
 
-export interface ErrorContentProps extends Omit<ExtendingTypographyProps, "transform"> {
+export interface ErrorContentProps extends Omit<BaseTypographyProps, "transform"> {
   readonly textClassName?: ComponentProps["className"];
   readonly children?: types.ErrorContentType;
   readonly error?: types.ErrorType;
@@ -54,7 +54,7 @@ export const ErrorContent = ({
   } else if (typeof message === "string") {
     return (
       <Text
-        size={fontSize}
+        fontSize={fontSize}
         fontFamily={fontFamily}
         fontWeight={fontWeight}
         className={clsx("text-center", textClassName)}

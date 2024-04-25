@@ -16,7 +16,7 @@ export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand
 }: ResumeModelBadgesProps<M, T>) => (
   <div {...props} className={clsx("flex flex-wrap gap-y-[4px] gap-x-[8px]", props.className)}>
     <TimePeriodTag
-      size="xs"
+      fontSize="xs"
       timePeriod={
         model.$kind === "experience"
           ? { startDate: model.startDate, endDate: model.endDate }
@@ -24,7 +24,7 @@ export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand
       }
     />
     <LocationTag
-      size="xs"
+      fontSize="xs"
       location={
         model.$kind === "education"
           ? {

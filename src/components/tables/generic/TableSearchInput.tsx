@@ -97,7 +97,7 @@ export const TableSearchInput = ({
                   </Button.Bare>
                   (
                   <Text
-                    size="xxs"
+                    fontSize="xxs"
                     className="font-mono bg-gray-100 font-sm px-[5px] py-[3px] rounded-sm"
                   >
                     Enter

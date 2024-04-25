@@ -10,11 +10,11 @@ export interface DateTimeDisplayTextProps
 export const DateTimeDisplayText = ({
   date,
   prefix,
-  size = "sm",
+  fontSize = "sm",
   format = DateTime.DATETIME_MED,
   ...props
 }: DateTimeDisplayTextProps): JSX.Element => (
-  <Text {...props} size={size}>
+  <Text {...props} fontSize={fontSize}>
     <DateTimeDisplay date={date} prefix={prefix} format={format} />
   </Text>
 );

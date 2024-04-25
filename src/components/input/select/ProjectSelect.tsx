@@ -33,10 +33,10 @@ export const ProjectSelect = <O extends { isMulti?: boolean }>({
     data={props.data.map(datum => ({ ...datum, icon: { name: datum.icon as IconName } }))}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
-        <Text size="sm" fontWeight="medium" truncate>
+        <Text fontSize="sm" fontWeight="medium" truncate>
           {m.name}
         </Text>
-        <Text size="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-body-light">
           {m.slug}
         </Text>
       </div>

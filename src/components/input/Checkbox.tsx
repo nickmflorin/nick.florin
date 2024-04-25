@@ -44,7 +44,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     return (
       <div className="flex flex-row gap-[6px] items-center">
         <Checkbox value={value} isDisabled={isDisabled} isLocked={isLocked} {...props} />
-        <Label size="sm" fontWeight="medium" className="leading-[16px]">
+        <Label fontSize="sm" fontWeight="medium" className="leading-[16px]">
           {label}
         </Label>
       </div>

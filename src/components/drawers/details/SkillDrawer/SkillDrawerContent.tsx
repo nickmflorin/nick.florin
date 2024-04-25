@@ -41,7 +41,7 @@ export const SkillDrawerContent = ({
     <div className="flex flex-col gap-[8px]">
       <ShowHide show={categories.length !== 0}>
         <div className="flex flex-col gap-[8px]">
-          <Label size="sm" fontWeight="medium">
+          <Label fontSize="sm" fontWeight="medium">
             Categories
           </Label>
           <SkillCategories categories={categories} />
@@ -49,7 +49,7 @@ export const SkillDrawerContent = ({
       </ShowHide>
       <ShowHide show={programmingLanguages.length !== 0}>
         <div className="flex flex-col gap-[8px]">
-          <Label size="sm" fontWeight="medium">
+          <Label fontSize="sm" fontWeight="medium">
             Languages
           </Label>
           <ProgrammingLanguages languages={programmingLanguages} />
@@ -57,7 +57,7 @@ export const SkillDrawerContent = ({
       </ShowHide>
       <ShowHide show={programmingDomains.length !== 0}>
         <div className="flex flex-col gap-[8px]">
-          <Label size="sm" fontWeight="medium">
+          <Label fontSize="sm" fontWeight="medium">
             Development
           </Label>
           <ProgrammingDomains domains={programmingDomains} />

@@ -24,7 +24,7 @@ export const DetailFormFields = ({ form, isExpanded }: DetailFormProps): JSX.Ele
         form={form}
         label="Label"
         autoRenderErrors={false}
-        labelProps={{ size: "xs" }}
+        labelProps={{ fontSize: "xs" }}
       >
         <TextInput
           className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
@@ -35,7 +35,7 @@ export const DetailFormFields = ({ form, isExpanded }: DetailFormProps): JSX.Ele
         />
       </Form.Field>
     </ShowHide>
-    <Form.Field name="description" label="Description" form={form} labelProps={{ size: "xs" }}>
+    <Form.Field name="description" label="Description" form={form} labelProps={{ fontSize: "xs" }}>
       <TextArea
         className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
         autoSize={true}
@@ -50,7 +50,7 @@ export const DetailFormFields = ({ form, isExpanded }: DetailFormProps): JSX.Ele
       name="shortDescription"
       label="Short Description"
       form={form}
-      labelProps={{ size: "xs" }}
+      labelProps={{ fontSize: "xs" }}
     >
       <TextArea
         className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
@@ -66,7 +66,7 @@ export const DetailFormFields = ({ form, isExpanded }: DetailFormProps): JSX.Ele
     <Form.ControlledField
       name="project"
       label="Project"
-      labelProps={{ size: "xs" }}
+      labelProps={{ fontSize: "xs" }}
       form={form}
       helpText="The project that the detail is associated with, if applicable."
     >

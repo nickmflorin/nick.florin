@@ -82,7 +82,7 @@ type ButtonTypographyProps<T extends ButtonType> = {
   readonly fontSize?: IfButton<
     ButtonSize<"button">,
     T,
-    IfLink<BaseTypographyProps["size"], T, never>
+    IfLink<BaseTypographyProps["fontSize"], T, never>
   >;
 };
 

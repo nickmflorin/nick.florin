@@ -23,18 +23,18 @@ export const SeriesItem = ({
     <Text
       fontWeight="medium"
       flex
-      size={textSize}
+      fontSize={textSize}
       className="text-body"
       style={{ maxWidth: titleWidth, minWidth: titleWidth }}
     >
       {title}
       {withColon && (
-        <Text size={textSize} span className="text-body-light">
+        <Text fontSize={textSize} as="span" className="text-body-light">
           :
         </Text>
       )}
     </Text>
-    <Text size={textSize} className="text-body-light">
+    <Text fontSize={textSize} className="text-body-light">
       {children}
     </Text>
   </div>

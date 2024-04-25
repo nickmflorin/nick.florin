@@ -72,7 +72,7 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
             }
           }}
         />
-        <Label size="sm">Auto</Label>
+        <Label fontSize="sm">Auto</Label>
       </div>
       {/* TODO: Figure out how to use an input that forces numeric values only, and appends the
           value with "years". */}

@@ -12,7 +12,7 @@ export const DetailDrawerSection = ({ label, children }: DetailDrawerSectionProp
     <div className="flex flex-col gap-[8px] pr-[12px]">
       <hr className="w-full border-t border-gray-200" />
       <div className="flex flex-col gap-[12px]">
-        <Label size="sm" fontWeight="medium">
+        <Label fontSize="sm" fontWeight="medium">
           {label}
         </Label>
         {Array.isArray(children) ? (

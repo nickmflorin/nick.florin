@@ -78,10 +78,6 @@ p {
     }
   }
 
-  &.clamp {
-    @include mixins.clamp(2);
-  }
-
   > .icon {
     color: inherit;
     font-size: inherit;

@@ -69,10 +69,10 @@ export const CompaniesSchoolsMenuContent = async <M extends ModelType>({
         actions: [<DeleteCompanySchoolButton key="0" modelType={modelType} model={model} />],
         label: (
           <div className="flex flex-col gap-[4px]">
-            <Text size="sm" fontWeight="medium">
+            <Text fontSize="sm" fontWeight="medium">
               {model.name}
             </Text>
-            <Text size="xs" className="text-body-light">
+            <Text fontSize="xs" className="text-body-light">
               {stringifyLocation({ city: model.city, state: model.state })}
             </Text>
           </div>

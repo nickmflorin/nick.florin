@@ -16,7 +16,7 @@ export interface LegendProps extends ComponentProps {
 export const LegendItem = ({ color, label }: ILegendItem) => (
   <div className="flex flex-row gap-[3px]">
     <Circle color={color} size={18} />
-    <Label size="sm" fontWeight="regular" className="leading-[18px]" fontFamily="inter">
+    <Label fontSize="sm" fontWeight="regular" className="leading-[18px]" fontFamily="inter">
       {label}
     </Label>
   </div>

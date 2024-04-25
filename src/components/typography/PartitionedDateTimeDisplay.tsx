@@ -33,7 +33,7 @@ export const PartitionedDateTimeDisplay = ({
 }: PartitionedDateTimeDisplayProps): JSX.Element => (
   <div className={clsx("flex flex-row items-center", className)} style={{ ...style, gap }}>
     <Text
-      size="sm"
+      fontSize="sm"
       fontWeight="medium"
       {...props}
       {...dateProps}
@@ -45,7 +45,7 @@ export const PartitionedDateTimeDisplay = ({
     </Text>
     <Text
       fontWeight="medium"
-      size="sm"
+      fontSize="sm"
       {...props}
       {...timeProps}
       className={clsx(

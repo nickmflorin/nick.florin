@@ -21,7 +21,7 @@ export const ModifyDetailsView = (props: ModifyDetailsViewProps): JSX.Element =>
   return (
     <div className="flex flex-col gap-[12px]">
       <div className="flex flex-row justify-between items-center">
-        <Text size="sm" fontWeight="medium">{`${props.details.length} Details`}</Text>
+        <Text fontSize="sm" fontWeight="medium">{`${props.details.length} Details`}</Text>
         <Link.Primary
           className="text-blue-700 hover:text-blue-800"
           fontSize="sm"

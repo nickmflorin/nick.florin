@@ -9,12 +9,12 @@ import {
   FontSizes,
   FontWeights,
   getTypographyClassName,
-  type ExtendingTypographyProps,
+  type BaseTypographyProps,
 } from "~/components/typography";
 
 export interface BadgeProps
   extends ComponentProps,
-    ExtendingTypographyProps,
+    BaseTypographyProps,
     Pick<HTMLElementProps<"div">, "onClick"> {
   readonly children: string;
   readonly icon?: IconProp | null;

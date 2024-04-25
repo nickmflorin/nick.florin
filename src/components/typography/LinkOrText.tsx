@@ -74,7 +74,7 @@ export const LinkOrText = ({
     <Text
       {...props}
       className={mergeIntoClassNames(props.className, textClassName)}
-      size={fontSize}
+      fontSize={fontSize}
       fontFamily={fontFamily}
       fontWeight={fontWeight}
     >

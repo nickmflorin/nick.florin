@@ -36,7 +36,7 @@ export const Collapse = ({
     <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
       <div className="flex flex-row justify-between overflow-hidden items-center">
         {typeof title === "string" ? (
-          <Text size="sm" fontWeight="medium">
+          <Text fontSize="sm" fontWeight="medium">
             {title}
           </Text>
         ) : (

@@ -8,7 +8,7 @@ export interface FormErrorProps extends ComponentProps {
 }
 
 export const FormError = ({ children, ...props }: FormErrorProps): JSX.Element => (
-  <Text {...props} size="xs" className={clsx("text-danger-400", props.className)}>
+  <Text {...props} fontSize="xs" className={clsx("text-danger-400", props.className)}>
     {children}
   </Text>
 );

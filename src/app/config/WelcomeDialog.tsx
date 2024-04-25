@@ -7,7 +7,6 @@ import { Dialog } from "~/components/floating/Dialog";
 import { Checkbox } from "~/components/input/Checkbox";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { Text } from "~/components/typography/Text";
-import { environment } from "~/environment";
 
 interface WelcomeDialogProps {
   readonly children: ReactNode;
@@ -36,7 +35,7 @@ export const WelcomeDialog = ({ children }: WelcomeDialogProps) => {
         <Dialog.Content>
           <Dialog.Description>Feel free to take a look around.</Dialog.Description>
           <Dialog.Description fontSize="sm">
-            <Text span size="sm" fontWeight="medium" className="text-body">
+            <Text as="span" fontSize="sm" fontWeight="medium" className="text-body">
               Please note
             </Text>{" "}
             that this website is only a few weeks old, and is currently not mobile-friendly. We

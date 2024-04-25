@@ -25,10 +25,10 @@ export const CompanySelect = ({
     options={options}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
-        <Text size="sm" fontWeight="medium">
+        <Text fontSize="sm" fontWeight="medium">
           {useAbbreviatedOptionLabels ? m.shortName ?? m.name : m.name}
         </Text>
-        <Text size="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-body-light">
           {stringifyLocation({ city: m.city, state: m.state })}
         </Text>
       </div>

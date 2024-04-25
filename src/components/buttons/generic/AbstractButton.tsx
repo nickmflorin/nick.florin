@@ -66,9 +66,9 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
     props.buttonType !== "icon-button"
       ? getTypographyClassName({
           ...pick(props, ["fontFamily", "fontWeight", "transform"] as const),
-          size:
+          fontSize:
             props.buttonType === "link"
-              ? (props.fontSize as BaseTypographyProps["size"] | undefined)
+              ? (props.fontSize as BaseTypographyProps["fontSize"] | undefined)
               : undefined,
         } as BaseTypographyProps)
       : "",
@@ -80,6 +80,7 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
       [clsx(props.disabledClassName)]: props.isDisabled,
       [clsx(props.activeClassName)]: props.isActive,
     }),
+    props.className,
   );
 
 const getButtonStyle = <T extends types.ButtonType, O extends types.ButtonOptions>(

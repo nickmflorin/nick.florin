@@ -1,7 +1,9 @@
+import { type ReactElement, type JSXElementConstructor, isValidElement } from "react";
+
 import clsx from "clsx";
+import { isFragment } from "react-is";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
-import { type ComponentProps } from "~/components/types";
 
 export const FontSizes = enumeratedLiterals(
   ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
@@ -24,34 +26,64 @@ export type TextTransform = EnumeratedLiteralsType<typeof TextTransforms>;
 export const FontFamilies = enumeratedLiterals(["inter", "avenir", "roboto"] as const, {});
 export type FontFamily = EnumeratedLiteralsType<typeof FontFamilies>;
 
-export interface BaseTypographyProps extends ComponentProps {
-  readonly size?: FontSize;
+export type LineClamp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+export const lineClampClassName = (clamp: LineClamp = 0) => {
+  if (clamp === 0) {
+    return "";
+  }
+  return clsx({
+    "line-clamp-1": clamp === 1,
+    "line-clamp-2": clamp === 2,
+    "line-clamp-3": clamp === 3,
+    "line-clamp-4": clamp === 4,
+    "line-clamp-5": clamp === 5,
+    "line-clamp-6": clamp === 6,
+  });
+};
+
+export interface BaseTypographyProps {
+  readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
   readonly transform?: TextTransform;
+  readonly lineClamp?: LineClamp;
+  readonly truncate?: boolean;
 }
 
-export interface ExtendingTypographyProps
-  extends Omit<BaseTypographyProps, keyof ComponentProps | "size"> {
-  readonly fontSize?: FontSize;
-}
-
-const isExtendingTypographyProps = (
-  props: ExtendingTypographyProps | BaseTypographyProps,
-  /* Even though this will return true for the BaseTypographyProps if the 'fontSize' is undefined
-     on the props, it is okay because we are only concerned with checking whether or not that
-     property exists for TS purposes below. */
-): props is ExtendingTypographyProps => (props as ExtendingTypographyProps).fontSize !== undefined;
-
-export const getTypographyClassName = <P extends BaseTypographyProps | ExtendingTypographyProps>(
-  props: P,
-): string =>
+export const getTypographyClassName = (props: BaseTypographyProps): string =>
   clsx(
-    isExtendingTypographyProps(props)
-      ? props.fontSize && `font-size-${props.fontSize}`
-      : props.size && `font-size-${props.size}`,
+    props.fontSize && `font-size-${props.fontSize}`,
     props.fontFamily && `font-family-${props.fontFamily}`,
     props.transform && `text-transform-${props.transform}`,
     props.fontWeight && `font-weight-${props.fontWeight}`,
-    isExtendingTypographyProps(props) ? "" : props.className,
+    props.lineClamp !== undefined ? lineClampClassName(props.lineClamp) : "",
+    { truncate: props.truncate },
   );
+
+export type SingleTextNode =
+  | string
+  | number
+  | false
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  | ReactElement<any, string | JSXElementConstructor<any>>
+  | null
+  | undefined;
+
+export type RenderableSingleTextNode =
+  | string
+  | number
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  | ReactElement<any, string | JSXElementConstructor<any>>;
+
+export type TextNode = SingleTextNode | Iterable<TextNode>;
+export type RenderableTextNode = TextNode | Iterable<RenderableTextNode>;
+
+export const singleTextNodeCanRender = (node: SingleTextNode): node is RenderableSingleTextNode => {
+  if (node === null || node === undefined || typeof node === "boolean") {
+    return false;
+  }
+  return isValidElement(node) && !isFragment(node);
+};
+
+export type LineBreakSize = 1 | 2;

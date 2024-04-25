@@ -13,7 +13,7 @@ const Titles: {
   [key in ResumeModelSize]: ({ children }: { children: string }) => JSX.Element;
 } = {
   small: ({ children }) => (
-    <Text size="md" fontWeight="medium" className="leading-[22px]">
+    <Text fontSize="md" fontWeight="medium" className="leading-[22px]">
       {children}
     </Text>
   ),

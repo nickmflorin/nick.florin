@@ -27,13 +27,13 @@ const ConditionLabels: { [key in FieldCondition]: string } = {
 
 const FieldConditionText = ({ condition }: { condition: FieldCondition }): JSX.Element => (
   <div className="flex grow justify-end">
-    <Text size="sm" className="text-gray-700 leading-[20px] mr-[1px]">
+    <Text fontSize="sm" className="text-gray-700 leading-[20px] mr-[1px]">
       (
     </Text>
-    <Text size="sm" className="text-gray-600 leading-[20px]">
+    <Text fontSize="sm" className="text-gray-600 leading-[20px]">
       {ConditionLabels[condition]}
     </Text>
-    <Text size="sm" className="text-gray-700 ml-[1px] leading-[20px]">
+    <Text fontSize="sm" className="text-gray-700 ml-[1px] leading-[20px]">
       )
     </Text>
   </div>
@@ -90,7 +90,7 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
     {(condition !== undefined || label !== undefined) && (
       <div className="w-full mb-[4px] flex h-[20px]">
         {label && (
-          <Label size="sm" fontWeight="medium" {...labelProps} className={labelClassName}>
+          <Label fontSize="sm" fontWeight="medium" {...labelProps} className={labelClassName}>
             {label}
           </Label>
         )}
@@ -98,14 +98,14 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
       </div>
     )}
     {description !== undefined && (
-      <Text size="xs" className="text-gray-500 leading-[16px] mb-[6px]">
+      <Text fontSize="xs" className="text-gray-500 leading-[16px] mb-[6px]">
         {description}
       </Text>
     )}
     <div className="form-field-content">{children}</div>
     {helpText !== undefined && (
       <Text
-        size="xs"
+        fontSize="xs"
         className={clsx(
           "leading-[14px] text-gray-500 pl-[1px]",
           { "mt-[4px]": !classNameContains(helpTextClassName, v => v.startsWith("mt-")) },

@@ -3,7 +3,7 @@ import { forwardRef, type ForwardedRef } from "react";
 import clsx from "clsx";
 
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
-import { type ExtendingTypographyProps, getTypographyClassName } from "~/components/typography";
+import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
 
 import { type InputSize, InputSizes, InputVariants, type InputVariant } from "./types";
 
@@ -16,7 +16,7 @@ type WrapperElement<C extends WrapperComponentName> = {
 
 export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
   HTMLElementProps<C> &
-  Omit<ExtendingTypographyProps, "transform"> & {
+  Omit<BaseTypographyProps, "transform"> & {
     readonly component: C;
     readonly size?: InputSize;
     readonly variant?: InputVariant;

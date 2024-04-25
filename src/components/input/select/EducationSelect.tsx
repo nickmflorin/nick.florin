@@ -28,10 +28,10 @@ export const EducationSelect = <O extends { isMulti?: boolean }, E extends ApiEd
     options={{ ...globalOptions, ...options }}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
-        <Text size="sm" fontWeight="medium">
+        <Text fontSize="sm" fontWeight="medium">
           {useAbbreviatedOptionLabels ? m.shortMajor ?? m.major : m.major}
         </Text>
-        <Text size="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-body-light">
           {m.school.name}
         </Text>
       </div>

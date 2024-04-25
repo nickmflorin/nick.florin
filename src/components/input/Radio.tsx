@@ -47,7 +47,7 @@ export const Radio = forwardRef<HTMLDivElement, RadioProps>(
             }}
             {...props}
           />
-          <Label size="sm" fontWeight="medium" className="leading-[20px]">
+          <Label fontSize="sm" fontWeight="medium" className="leading-[20px]">
             {children}
           </Label>
         </div>

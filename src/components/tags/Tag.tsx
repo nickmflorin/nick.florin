@@ -20,7 +20,7 @@ export interface TagProps extends TextProps {
 export const Tag = ({
   icon,
   textClassName,
-  size = "sm",
+  fontSize = "sm",
   className,
   gap = "4px",
   style,
@@ -35,7 +35,7 @@ export const Tag = ({
     <Text
       fontWeight="medium"
       {...props}
-      size={size}
+      fontSize={fontSize}
       className={clsx(
         withoutOverridingClassName("text-label", textClassName),
         withoutOverridingClassName("leading-[16px]", textClassName),

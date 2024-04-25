@@ -4,18 +4,18 @@ import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
 import {
-  type ExtendingTypographyProps,
+  type BaseTypographyProps,
   FontWeights,
   FontSizes,
   getTypographyClassName,
 } from "~/components/typography";
 
-export interface BadgeCollectionChildrenProps extends ComponentProps, ExtendingTypographyProps {
+export interface BadgeCollectionChildrenProps extends ComponentProps, BaseTypographyProps {
   readonly children: JSX.Element[];
   readonly data?: never;
 }
 
-export interface BadgeCollectionCallbackProps<M> extends ComponentProps, ExtendingTypographyProps {
+export interface BadgeCollectionCallbackProps<M> extends ComponentProps, BaseTypographyProps {
   readonly data: M[];
   readonly children: (model: M) => JSX.Element;
 }

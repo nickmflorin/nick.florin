@@ -38,7 +38,7 @@ export const MultiValueRenderer = <M extends types.SelectModel, O extends types.
             dynamicHeight={dynamicHeight}
             models={partition[0].map(m => m.model)}
           />
-          <Text size="xs" className="text-gray-600">{`${partition[1].length} More...`}</Text>
+          <Text fontSize="xs" className="text-gray-600">{`${partition[1].length} More...`}</Text>
         </div>
       );
     }

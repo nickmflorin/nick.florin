@@ -19,7 +19,7 @@ export const SectionTitle = ({
     {...props}
     fontWeight="medium"
     flex
-    size="smplus"
+    fontSize="smplus"
     className={clsx("text-body", props.className)}
   >
     {children}
@@ -30,7 +30,7 @@ export const SectionDescription = ({
   children,
   ...props
 }: ComponentProps & { readonly children: ReactNode }) => (
-  <Text {...props} className={clsx("text-body-light", props.className)} size="smplus">
+  <Text {...props} className={clsx("text-body-light", props.className)} fontSize="smplus">
     {children}
   </Text>
 );

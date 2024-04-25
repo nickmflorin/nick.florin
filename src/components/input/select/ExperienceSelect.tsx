@@ -28,10 +28,10 @@ export const ExperienceSelect = <E extends Exp>({
     options={options}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
-        <Text size="sm" fontWeight="medium">
+        <Text fontSize="sm" fontWeight="medium">
           {useAbbreviatedOptionLabels ? m.shortTitle ?? m.title : m.title}
         </Text>
-        <Text size="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-body-light">
           {m.company.name}
         </Text>
       </div>

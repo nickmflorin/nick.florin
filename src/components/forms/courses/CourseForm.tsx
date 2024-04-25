@@ -34,7 +34,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
     <Form.ControlledField
       name="education"
       label="Education"
-      labelProps={{ size: "xs" }}
+      labelProps={{ fontSize: "xs" }}
       form={props.form}
       helpText="The educational experience in which the course was taken."
     >

@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp } from "~/components/icons";
 import { type Size } from "~/components/types";
-import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
+import { type BaseTypographyProps } from "~/components/typography";
 
 import * as types from "../types";
 
@@ -28,7 +28,7 @@ export type LinkFlexProps<O extends types.ButtonOptions> = Omit<
   types.AbstractProps<"link", O>,
   "buttonType"
 > &
-  BaseTypographyProps & {
+  Omit<BaseTypographyProps, "fontSize"> & {
     /**
      * Determines whether or not the 'Link' component should be rendered as a flex element, rather
      * than an inline element.
@@ -55,7 +55,7 @@ export type LinkInlineProps<O extends types.ButtonOptions> = Omit<
   types.AbstractProps<"link", O>,
   "buttonType"
 > &
-  BaseTypographyProps & {
+  Omit<BaseTypographyProps, "fontSize"> & {
     /**
      * @see LinkFlexProps
      */
@@ -87,12 +87,8 @@ const LocalLink = forwardRef(
   <O extends types.ButtonOptions>(
     {
       children,
-      transform,
       icon,
-      fontFamily,
       flex,
-      size,
-      fontWeight,
       gap,
       /* Note: Since the 'Link' component does not have a 'height',  and it's 'height' is set based
          on the line-height of the text it contains, the 'iconSize' prop needs to be defaulted to
@@ -112,20 +108,7 @@ const LocalLink = forwardRef(
       buttonType: "link",
     } as types.AbstractProps<"link", O>;
     return (
-      <Base
-        {...ps}
-        ref={ref}
-        className={clsx(
-          getTypographyClassName({
-            size,
-            fontFamily,
-            fontWeight,
-            transform,
-          }),
-          { "link--flex": flex },
-          ps.className,
-        )}
-      >
+      <Base {...ps} ref={ref} className={clsx({ "link--flex": flex }, ps.className)}>
         {flex ? (
           <ButtonContent
             gap={gap}

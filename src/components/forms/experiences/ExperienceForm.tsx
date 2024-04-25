@@ -87,7 +87,7 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
       </Form.ControlledField>
       <div className="flex flex-row gap-[6px] items-center mt-[8px] mb-[8px]">
         <Checkbox value={isCurrent} onChange={e => setIsCurrent(e.target.checked)} />
-        <Label size="sm" fontWeight="medium" className="leading-[16px]">
+        <Label fontSize="sm" fontWeight="medium" className="leading-[16px]">
           Current
         </Label>
       </div>

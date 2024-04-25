@@ -28,7 +28,7 @@ export const DetailDrawerContent = ({
         </Title>
         {badge}
       </div>
-      <Description description={description} />
+      <Description>{description}</Description>
     </div>
     <div className="flex flex-col gap-[14px] overflow-y-auto">{children}</div>
   </DrawerContent>
