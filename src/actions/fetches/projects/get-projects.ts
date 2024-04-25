@@ -52,6 +52,9 @@ export const getProjects = cache(
     includes,
     page,
     filters,
+    /* Since all projects in the database are visible, and there is no visibility field on the
+       model, visibility strictly applies to the nested includes for a project query - not the
+       project itself. */
     visibility,
   }: GetProjectsParams<I>): Promise<ApiProject<I>[]> => {
     await getAuthAdminUser({ strict: visibility === "admin" });

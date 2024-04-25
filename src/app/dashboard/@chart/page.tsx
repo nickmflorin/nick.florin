@@ -33,7 +33,7 @@ export default async function ChartPage({ searchParams }: ChartPageProps) {
     });
   }
 
-  const { showTopSkills = 8, ...rest } = filters;
+  const { showTopSkills = 12, ...rest } = filters;
 
   return (
     <>

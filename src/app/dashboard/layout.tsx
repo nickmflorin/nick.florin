@@ -1,63 +1,48 @@
 import type { ReactNode } from "react";
 
-import { Link } from "~/components/buttons";
+import clsx from "clsx";
+
+import { EducationModule } from "~/components/modules/EducationModule";
+import { ExperienceModule } from "~/components/modules/ExperienceModule";
 import { Module } from "~/components/modules/generic";
+import { type ComponentProps } from "~/components/types";
 
 export interface DashboardPageProps {
   readonly experiences: ReactNode;
   readonly educations: ReactNode;
+  readonly repositories: ReactNode;
+  readonly projects: ReactNode;
   readonly chart: ReactNode;
 }
 
 export default async function DashboardPage({
   experiences,
   educations,
+  repositories,
   chart,
+  projects,
 }: DashboardPageProps) {
   return (
-    <div className="flex flex-row gap-[15px]">
-      <div className="flex flex-1 flex-col gap-[15px] w-[50%] max-w-[50%] min-w-[400px]">
-        <Module title="Skills Overview">{chart}</Module>
-      </div>
-      <div className="flex flex-row flex-1 gap-[15px]">
-        <div className="flex flex-col flex-1 gap-[15px] w-[50%] max-w-[50%] min-w-[300px]">
-          <Module
-            title="Recent Experiences"
-            className="h-[588px]"
-            actions={[
-              <Link.Primary
-                key="0"
-                options={{ as: "link" }}
-                href="/resume/experience"
-                fontSize="xs"
-                fontWeight="medium"
-              >
-                View All
-              </Link.Primary>,
-            ]}
-          >
-            {experiences}
-          </Module>
-        </div>
-        <div className="flex flex-col flex-1 gap-[15px] w-[50%] max-w-[50%] min-w-[300px]">
-          {" "}
-          <Module
-            title="Education"
-            actions={[
-              <Link.Primary
-                key="0"
-                options={{ as: "link" }}
-                href="/resume/education"
-                fontSize="xs"
-                fontWeight="medium"
-              >
-                View All
-              </Link.Primary>,
-            ]}
-          >
-            {educations}
-          </Module>
-        </div>
+    <div
+      className={clsx(
+        "grid grid-flow-col grid-rows-3 grid-cols-3",
+        "gap-[15px] max-h-full overflow-y-auto auto-rows-max",
+      )}
+    >
+      <Module className="row-span-3" title="Skills Overview" overflow>
+        {chart}
+      </Module>
+      <ExperienceModule className="row-span-3 flex flex-col gap-[15px]" overflow>
+        {experiences}
+      </ExperienceModule>
+      <div className="grid grid-cols-subgrid row-span-3 gap-[15px]">
+        <EducationModule className="flex-none shrink-0 h-fit">{educations}</EducationModule>
+        <Module className="max-h-fit flex-none shrink-0 h-fit" title="Repositories">
+          {repositories}
+        </Module>
+        <Module className="max-h-fit flex-none shrink-0 h-fit" title="Projects">
+          {projects}
+        </Module>
       </div>
     </div>
   );

@@ -11,18 +11,21 @@ export interface ModuleProps extends ComponentProps {
   readonly title: string;
   readonly children: ReactNode;
   readonly actions?: Action[];
+  readonly overflow?: boolean;
 }
 
-export const Module = ({ title, actions, ...props }: ModuleProps) => (
+export const Module = ({ title, actions, overflow = false, ...props }: ModuleProps) => (
   <div
     {...props}
     className={clsx(
-      "flex flex-col gap-[12px] overflow-hidden border rounded-md py-[12px] px-[18px]",
-      "shadow-sm",
+      "flex flex-col gap-[12px] border rounded-md py-[12px] px-[18px] shadow-sm",
+      { "overflow-y-auto": overflow },
       props.className,
     )}
   >
     <ModuleHeader actions={actions}>{title}</ModuleHeader>
-    <div className="flex flex-col gap-[12px] overflow-y-auto">{props.children}</div>
+    <div className={clsx("flex flex-col gap-[12px]", { "overflow-y-auto": overflow })}>
+      {props.children}
+    </div>
   </div>
 );
