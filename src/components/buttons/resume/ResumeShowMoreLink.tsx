@@ -1,30 +1,20 @@
 "use client";
-import { type ResumeBrand } from "~/prisma/model";
-import { Link } from "~/components/buttons";
-import { ViewResumeModelDrawer } from "~/components/drawers/details/ResumeModelDetailDrawer";
 
-export interface ResumeShowMoreLinkProps<T extends ResumeBrand> {
-  readonly modelId: string;
-  readonly modelType: T;
+import { Link, type LinkProps } from "~/components/buttons";
+import { type TypographyVisibilityState } from "~/components/typography";
+
+export interface ResumeShowMoreLinkProps
+  extends Omit<LinkProps<{ as: "button" }>, "options" | "flex" | "children"> {
+  readonly state: TypographyVisibilityState;
 }
 
-export const ResumeShowMoreLink = <T extends ResumeBrand>({
-  modelId,
-  modelType,
-}: ResumeShowMoreLinkProps<T>) => (
-  <ViewResumeModelDrawer modelId={modelId} modelType={modelType}>
-    {({ isLoading, open }) => (
-      <Link.Primary
-        fontSize="xs"
-        fontWeight="regular"
-        options={{ as: "button" }}
-        isLoading={isLoading}
-        flex
-        loadingLocation="over"
-        onClick={() => open()}
-      >
-        Show more
-      </Link.Primary>
-    )}
-  </ViewResumeModelDrawer>
+const LinkText: { [key in TypographyVisibilityState]: string } = {
+  collapsed: "Show more",
+  expanded: "Show less",
+};
+
+export const ResumeShowMoreLink = ({ state, ...props }: ResumeShowMoreLinkProps) => (
+  <Link.Primary fontSize="xs" fontWeight="regular" {...props} options={{ as: "button" }} flex>
+    {LinkText[state]}
+  </Link.Primary>
 );

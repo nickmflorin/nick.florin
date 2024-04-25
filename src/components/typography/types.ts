@@ -32,7 +32,7 @@ export const lineClampClassName = (clamp: LineClamp = 0) => {
   if (clamp === 0) {
     return "";
   }
-  return clsx({
+  return clsx("break-words", {
     "line-clamp-1": clamp === 1,
     "line-clamp-2": clamp === 2,
     "line-clamp-3": clamp === 3,
@@ -87,3 +87,5 @@ export const singleTextNodeCanRender = (node: SingleTextNode): node is Renderabl
 };
 
 export type LineBreakSize = 1 | 2;
+
+export type TypographyVisibilityState = "expanded" | "collapsed";

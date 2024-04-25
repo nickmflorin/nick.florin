@@ -1,5 +1,4 @@
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
-import { ResumeShowMoreLink } from "~/components/buttons/resume";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -38,10 +37,12 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
     </div>
     <div className="flex flex-col pl-[40px] gap-[4px]">
       <ShowHide show={types.hasDescription(model) && showDescription}>
-        <ResumeModelTile.Description model={model} fontSize="xs" lineClamp={3} />
-      </ShowHide>
-      <ShowHide show={showMoreLink}>
-        <ResumeShowMoreLink modelType={model.$kind} modelId={model.id} />
+        <ResumeModelTile.Description
+          model={model}
+          fontSize="xs"
+          lineClamp={3}
+          includeShowMoreLink={showMoreLink}
+        />
       </ShowHide>
     </div>
   </ResumeModelTile>

@@ -1,7 +1,11 @@
+"use client";
 import { useMemo } from "react";
 
 import clsx from "clsx";
 
+import { ResumeShowMoreLink } from "~/components/buttons/resume";
+
+import { useControlledTypographyVisibility } from "./hooks";
 import { Text, type TextProps } from "./Text";
 import * as types from "./types";
 
@@ -25,11 +29,34 @@ const splitChildNodeString = (child: string, options: { lineBreakSize: types.Lin
         : c.trim(),
     );
   }
-  return child;
+  return [child];
 };
+
+const WithShowMore = ({
+  includeShowMoreLink = false,
+  state,
+  children,
+  isTruncated,
+  onToggle,
+}: {
+  includeShowMoreLink?: boolean;
+  state: types.TypographyVisibilityState;
+  children: JSX.Element;
+  isTruncated: boolean;
+  onToggle: () => void;
+}) =>
+  includeShowMoreLink && isTruncated ? (
+    <div className="flex flex-col gap-[2px]">
+      {children}
+      <ResumeShowMoreLink state={state} onClick={onToggle} />
+    </div>
+  ) : (
+    children
+  );
 
 export interface DescriptionProps extends Omit<TextProps, "flex" | "children"> {
   readonly lineBreakSize?: types.LineBreakSize;
+  readonly includeShowMoreLink?: boolean;
   /* It is important that we do not use RestrictedNode here because we do not want infinitely nested
      iterables of children, only one level of nesting deep. */
   readonly children: types.SingleTextNode | types.SingleTextNode[];
@@ -40,8 +67,11 @@ export const Description = ({
   fontWeight = "regular",
   children,
   lineBreakSize = 2,
+  includeShowMoreLink = false,
   ...props
 }: DescriptionProps): JSX.Element => {
+  const { ref, state, isTruncated, toggle } = useControlledTypographyVisibility({});
+
   const nodes = useMemo(
     () =>
       (Array.isArray(children) ? children : [children]).reduce(
@@ -71,16 +101,26 @@ export const Description = ({
       ),
     [children, lineBreakSize],
   );
+
   if (nodes.length !== 0) {
     return (
-      <Text
-        {...props}
-        fontSize={fontSize}
-        fontWeight={fontWeight}
-        className={clsx("text-body-light", props.className)}
+      <WithShowMore
+        state={state}
+        onToggle={toggle}
+        isTruncated={isTruncated}
+        includeShowMoreLink={includeShowMoreLink}
       >
-        {nodes}
-      </Text>
+        <Text
+          {...props}
+          ref={ref}
+          fontSize={fontSize}
+          fontWeight={fontWeight}
+          lineClamp={state === "expanded" ? undefined : props.lineClamp}
+          className={clsx("text-body-light", props.className)}
+        >
+          {nodes}
+        </Text>
+      </WithShowMore>
     );
   }
   return <></>;
