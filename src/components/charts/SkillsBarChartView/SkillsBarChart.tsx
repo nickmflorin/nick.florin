@@ -4,7 +4,7 @@ import { getSkills } from "~/actions/fetches/skills";
 import { type SkillsFilters } from "~/api/schemas";
 import { Loading } from "~/components/feedback/Loading";
 
-const Chart = dynamic(() => import("../SkillsBarChart"), {
+const Chart = dynamic(() => import("./ClientSkillsBarChart"), {
   loading: () => <Loading isLoading={true} />,
 });
 

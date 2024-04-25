@@ -5,7 +5,7 @@ import type { z } from "zod";
 import { partiallyParseObjectWithSchema } from "~/lib/schemas";
 import { parseQuery, isRecordType } from "~/lib/urls";
 import { SkillsFiltersSchema, ShowTopSkillsSchema } from "~/api/schemas";
-import { SkillsBarChartView } from "~/components/charts/skills/server/SkillsBarChartView";
+import { SkillsBarChartView } from "~/components/charts/SkillsBarChartView";
 
 interface ChartPageProps {
   readonly searchParams: Record<string, unknown>;

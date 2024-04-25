@@ -4,9 +4,10 @@ import clsx from "clsx";
 import qs from "qs";
 
 import type { SkillsFilters } from "~/api/schemas";
-import { SkillsBarChartLegend } from "~/components/charts/skills/server/SkillsBarChartLegend";
 
-import { ChartContainer, type ChartContainerProps } from "../../ChartContainer";
+import { ChartContainer, type ChartContainerProps } from "../ChartContainer";
+
+import { SkillsBarChartLegend } from "./SkillsBarChartLegend";
 
 export interface SkillsBarChartContainerProps extends ChartContainerProps {
   readonly filters: Omit<SkillsFilters, "search" | "includeInTopSkills">;

@@ -3,7 +3,7 @@ import { getSkills } from "~/actions/fetches/skills";
 import { type SkillsFilters } from "~/api/schemas";
 import { type ComponentProps } from "~/components/types";
 
-import { Legend } from "../../Legend";
+import { Legend } from "../Legend";
 
 export interface SkillsBarChartLegendProps extends ComponentProps {
   readonly filters: Omit<SkillsFilters, "search" | "includeInTopSkills">;

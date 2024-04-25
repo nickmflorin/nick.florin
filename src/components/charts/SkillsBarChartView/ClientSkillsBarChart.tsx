@@ -5,11 +5,10 @@ import clsx from "clsx";
 
 import { generateChartColors } from "~/lib/charts";
 import { type ApiSkill } from "~/prisma/model";
+import { BarChart } from "~/components/charts/BarChart";
 import { useDrawers } from "~/components/drawers/hooks";
 import { Loading } from "~/components/feedback/Loading";
 import { TooltipContent } from "~/components/floating/TooltipContent";
-
-import { BarChart } from "../BarChart";
 
 import { type SkillsBarChartDatum } from "./types";
 
