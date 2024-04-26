@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -55,8 +53,6 @@ export const updateCompany = async (id: string, req: z.infer<typeof CompanySchem
         updatedById: user.id,
       },
     });
-    revalidatePath("/api/companies");
-    revalidatePath(`/api/companies/${updated.id}`);
     return convertToPlainObject(updated);
   });
 };

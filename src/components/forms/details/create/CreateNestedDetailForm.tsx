@@ -9,7 +9,7 @@ import {
 } from "./GenericCreateDetailForm";
 
 export interface CreateNestedDetailFormProps
-  extends Omit<GenericCreateDetailFormProps<NestedApiDetail<[]>>, "action" | "actions"> {
+  extends Omit<GenericCreateDetailFormProps<NestedApiDetail<["skills"]>>, "action" | "actions"> {
   readonly detailId: string;
 }
 
@@ -18,7 +18,12 @@ export const CreateNestedDetailForm = ({
   ...props
 }: CreateNestedDetailFormProps): JSX.Element => {
   const createDetailForParent = useMemo(() => createNestedDetail.bind(null, detailId), [detailId]);
-  return <GenericCreateDetailForm<NestedApiDetail<[]>> action={createDetailForParent} {...props} />;
+  return (
+    <GenericCreateDetailForm<NestedApiDetail<["skills"]>>
+      action={createDetailForParent}
+      {...props}
+    />
+  );
 };
 
 export default CreateNestedDetailForm;

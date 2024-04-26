@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -90,7 +88,6 @@ export const updateExperience = async (
       },
     });
   });
-  revalidatePath("/admin/experiences", "page");
-  revalidatePath("/api/experiences");
+
   return convertToPlainObject(experience);
 };

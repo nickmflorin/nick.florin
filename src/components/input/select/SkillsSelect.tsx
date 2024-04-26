@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 import type { BrandSkill } from "~/prisma/model";
+import { type HttpError } from "~/api";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { DynamicLoader, DynamicLoading } from "~/components/feedback/dynamic-loading";
 import { SelectBase, type SelectBaseProps } from "~/components/input/select/generic/SelectBase";
@@ -29,9 +30,11 @@ export interface SkillsSelectProps
   extends Omit<
     SelectBaseProps<BrandSkill, typeof globalOptions>,
     "data" | "options" | "isReady" | "content" | "maximumNumBadges" | "isLoading"
-  > {}
+  > {
+  readonly onError?: (e: HttpError) => void;
+}
 
-export const SkillsSelect = (props: SkillsSelectProps) => {
+export const SkillsSelect = ({ onError, ...props }: SkillsSelectProps) => {
   const [search, setSearch] = useState("");
 
   const { data, isLoading, error } = useSkills({
@@ -46,6 +49,7 @@ export const SkillsSelect = (props: SkillsSelectProps) => {
   } = useSkills({
     query: { includes: [], visibility: "admin", orderBy: { label: "asc" }, filters: { search } },
     keepPreviousData: true,
+    onError,
   });
 
   return (

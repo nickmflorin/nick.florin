@@ -9,7 +9,7 @@ import {
 } from "./GenericCreateDetailForm";
 
 export interface CreateDetailFormProps
-  extends Omit<GenericCreateDetailFormProps<ApiDetail<[]>>, "action" | "actions"> {
+  extends Omit<GenericCreateDetailFormProps<ApiDetail<["skills"]>>, "action" | "actions"> {
   readonly entityId: string;
   readonly entityType: DetailEntityType;
 }
@@ -23,7 +23,9 @@ export const CreateDetailForm = ({
     () => createDetail.bind(null, entityId, entityType),
     [entityId, entityType],
   );
-  return <GenericCreateDetailForm<ApiDetail<[]>> action={createDetailForEntity} {...props} />;
+  return (
+    <GenericCreateDetailForm<ApiDetail<["skills"]>> action={createDetailForEntity} {...props} />
+  );
 };
 
 export default CreateDetailForm;

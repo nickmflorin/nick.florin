@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -67,8 +65,7 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
-    revalidatePath("/admin/experiences", "page");
-    revalidatePath("/api/experiences");
+
     return convertToPlainObject(experience);
   });
 };

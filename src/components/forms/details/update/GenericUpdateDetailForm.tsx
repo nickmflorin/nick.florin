@@ -13,6 +13,7 @@ import { Form, type FormProps } from "~/components/forms/generic/Form";
 import { useForm } from "~/components/forms/generic/hooks";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
+import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { type Action } from "~/components/structural";
@@ -22,14 +23,17 @@ import { ShowHide } from "~/components/util";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
 
-export interface GenericUpdateDetailFormProps<D extends ApiDetail<[]> | NestedApiDetail<[]>>
-  extends Omit<FormProps<DetailFormValues>, "children" | "contentClassName" | "form" | "action"> {
+export interface GenericUpdateDetailFormProps<
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+> extends Omit<FormProps<DetailFormValues>, "children" | "contentClassName" | "form" | "action"> {
   readonly actions?: Action[];
   readonly isExpanded: boolean;
   readonly detail: D;
 }
 
-export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetail<[]>>({
+export const GenericUpdateDetailForm = <
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+>({
   actions,
   detail,
   isExpanded,
@@ -56,6 +60,7 @@ export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetai
       shortDescription: "",
       project: null,
       visible: true,
+      skills: [],
     },
   });
 
@@ -66,6 +71,7 @@ export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetai
       shortDescription: detail.shortDescription ?? "",
       project: detail.project?.id ?? null,
       visible: detail.visible,
+      skills: detail.skills.map(sk => sk.id),
     });
   }, [detail, setValues]);
 
@@ -185,6 +191,24 @@ export const GenericUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetai
           size="small"
         />
       </Form.Field>
+      <Form.ControlledField
+        name="skills"
+        label="Skills"
+        labelProps={{ fontSize: "xs" }}
+        form={{ ...form, setValues }}
+        helpText="Any skills that the detail is associated with, if applicable."
+      >
+        {({ value, onChange }) => (
+          <SkillsSelect
+            inputClassName="w-full"
+            menuClassName="max-h-[260px]"
+            value={value}
+            onChange={onChange}
+            inPortal
+            onError={() => form.setStaticErrors("skills", "There was an error loading the data.")}
+          />
+        )}
+      </Form.ControlledField>
       <Form.ControlledField
         name="project"
         label="Project"

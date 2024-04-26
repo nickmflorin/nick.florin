@@ -7,9 +7,9 @@ import { ModifyNestedDetailsTimeline } from "./ModifyNestedDetailsTimeline";
 import { CollapsedUpdateDetailForm } from "./update/CollapsedUpdateDetailForm";
 
 export interface ModifyDetailViewProps {
-  readonly detail: ApiDetail<["nestedDetails"]>;
+  readonly detail: ApiDetail<["nestedDetails", "skills"]>;
   readonly onDeleted: () => void;
-  readonly onExpand: (detail: ApiDetail<[]> | NestedApiDetail<[]>) => void;
+  readonly onExpand: (detail: ApiDetail<["skills"]> | NestedApiDetail<["skills"]>) => void;
 }
 
 export const ModifyDetailView = ({ detail, onDeleted, onExpand }: ModifyDetailViewProps) => {

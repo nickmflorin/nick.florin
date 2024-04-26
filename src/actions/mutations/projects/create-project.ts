@@ -1,5 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
 
 import { type z } from "zod";
 
@@ -120,12 +119,6 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
         { projectId: project.id },
       );
     }
-
-    revalidatePath("/admin/projects", "page");
-    revalidatePath("/api/projects");
-    revalidatePath("/api/repositories");
-    repositories?.map(repo => revalidatePath(`/api/repositories/${repo.id}`));
-    revalidatePath(`/projects/${project.slug}`, "page");
     return convertToPlainObject(project);
   });
 };

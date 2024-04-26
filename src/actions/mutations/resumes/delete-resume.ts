@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { del } from "@vercel/blob";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -28,7 +26,6 @@ export const deleteResume = async (id: string): Promise<BrandResume[]> => {
        in the blob storage... We would have to use the 'list' method. */
     await del(resume.url);
 
-    revalidatePath("/api/resumes");
     /* Deleting a resume can cause the prioritization flag to switch if there were multiple resumes
        with 'primary' set to 'true'. */
     return getResumes(tx);

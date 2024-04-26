@@ -9,7 +9,7 @@ import { Text } from "~/components/typography/Text";
 import { ModifyDetailsTimeline } from "./ModifyDetailsTimeline";
 
 export interface ModifyDetailsViewProps extends ComponentProps {
-  readonly details: ApiDetail<["nestedDetails"]>[];
+  readonly details: ApiDetail<["nestedDetails", "skills"]>[];
   readonly entityId: string;
   readonly entityType: DetailEntityType;
   readonly onExpand: (detail: ApiDetail<[]> | NestedApiDetail<[]>) => void;

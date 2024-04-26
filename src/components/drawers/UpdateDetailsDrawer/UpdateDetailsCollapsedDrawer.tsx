@@ -17,7 +17,7 @@ export const UpdateDetailsCollapsedDrawer = <T extends DetailEntityType>(
 ): JSX.Element => {
   const { data, isLoading, error } = useDetails(props.entityId, props.entityType, {
     keepPreviousData: true,
-    query: { includes: ["nestedDetails"], visibility: "admin" },
+    query: { includes: ["nestedDetails", "skills"], visibility: "admin" },
   });
   return (
     <ApiResponseState error={error} isLoading={isLoading} data={data}>

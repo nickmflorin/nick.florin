@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -118,8 +116,7 @@ export const updateCourse = async (
         skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
-    revalidatePath("/admin/courses", "page");
-    revalidatePath(`/api/courses/${course.id}`);
+
     return convertToPlainObject(course);
   });
 };

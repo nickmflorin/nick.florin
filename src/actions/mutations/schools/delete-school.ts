@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type School, type Education } from "~/prisma/model";
@@ -31,7 +29,5 @@ export const deleteSchool = async (id: string) => {
     }
 
     await tx.school.delete({ where: { id: school.id } });
-    revalidatePath("/api/schools");
-    revalidatePath(`/api/schools/${school.id}`);
   });
 };

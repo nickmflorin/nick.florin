@@ -1,13 +1,11 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
-import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { DetailEntityType, type NestedApiDetail, type Project } from "~/prisma/model";
+import { type NestedApiDetail, type Project } from "~/prisma/model";
 import { getDetail } from "~/actions/fetches/details";
+import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import {
   ApiClientFieldErrors,
   ApiClientGlobalError,
@@ -20,7 +18,7 @@ import { convertToPlainObject } from "~/api/serialization";
 export const createNestedDetail = async (
   detailId: string,
   req: z.infer<typeof DetailSchema>,
-): Promise<NestedApiDetail<[]> | ApiClientErrorJson> => {
+): Promise<NestedApiDetail<["skills"]> | ApiClientErrorJson> => {
   const user = await getAuthAdminUser();
 
   const detail = await getDetail(detailId, { includes: [], visibility: "admin" });
@@ -34,63 +32,59 @@ export const createNestedDetail = async (
   }
 
   const fieldErrors = new ApiClientFieldErrors();
+  const { label, project: _project, skills: _skills, ...data } = parsed.data;
 
-  const { label, project: _project, ...data } = parsed.data;
-
-  let project: Project | null = null;
-  if (_project) {
-    try {
-      project = await prisma.project.findUniqueOrThrow({ where: { id: _project } });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        fieldErrors.add("project", {
-          code: "does_not_exist",
-          message: "The project does not exist.",
-          internalMessage: `The project with ID '${_project}' does not exist.`,
-        });
-      } else {
-        throw e;
+  return await prisma.$transaction(async tx => {
+    let project: Project | null = null;
+    if (_project) {
+      try {
+        project = await tx.project.findUniqueOrThrow({ where: { id: _project } });
+      } catch (e) {
+        if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
+          fieldErrors.add("project", {
+            code: "does_not_exist",
+            message: "The project does not exist.",
+            internalMessage: `The project with ID '${_project}' does not exist.`,
+          });
+        } else {
+          throw e;
+        }
       }
     }
-  }
-  if (
-    label &&
-    (await prisma.nestedDetail.count({
-      where: { detailId, label },
-    }))
-  ) {
-    fieldErrors.add("label", {
-      code: ApiClientFieldErrorCodes.unique,
-      message: "The 'label' must be unique for a given parent detail.",
+    if (
+      label &&
+      (await tx.nestedDetail.count({
+        where: { detailId, label },
+      }))
+    ) {
+      fieldErrors.add("label", {
+        code: ApiClientFieldErrorCodes.unique,
+        message: "The 'label' must be unique for a given parent detail.",
+      });
+    }
+
+    const [skills] = await queryM2MsDynamically(tx, {
+      model: "skill",
+      ids: _skills,
+      fieldErrors,
     });
-  }
-  if (!fieldErrors.isEmpty) {
-    return fieldErrors.json;
-  }
-  const nestedDetail = await prisma.nestedDetail.create({
-    data: {
-      ...data,
-      detailId,
-      projectId: project?.id,
-      label,
-      createdById: user.id,
-      updatedById: user.id,
-    },
-    include: { project: true },
+
+    if (!fieldErrors.isEmpty) {
+      return fieldErrors.json;
+    }
+    return convertToPlainObject(
+      await tx.nestedDetail.create({
+        data: {
+          ...data,
+          detailId,
+          projectId: project?.id,
+          label,
+          createdById: user.id,
+          updatedById: user.id,
+          skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+        },
+        include: { project: { include: { skills: true } }, skills: true },
+      }),
+    );
   });
-  switch (detail.entityType) {
-    case DetailEntityType.EDUCATION: {
-      revalidatePath("/admin/educations", "page");
-      revalidatePath("/api/educations");
-      break;
-    }
-    case DetailEntityType.EXPERIENCE: {
-      revalidatePath("/admin/experiences", "page");
-      revalidatePath("/api/experiences");
-      break;
-    }
-    default:
-      throw new UnreachableCaseError();
-  }
-  return convertToPlainObject(nestedDetail);
 };

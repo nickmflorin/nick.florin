@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -107,58 +105,23 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
     }
-    skill = await tx.skill.update({
-      where: { id },
-      data: {
-        ...data,
-        slug: _slug === undefined ? undefined : _slug === null ? slugify(label) : _slug.trim(),
-        label:
-          _label === undefined || _label.trim() === skill.label.trim() ? undefined : _label.trim(),
-        updatedById: user.id,
-        projects: projects ? { set: projects.map(p => ({ id: p.id })) } : undefined,
-        experiences: experiences ? { set: experiences.map(p => ({ id: p.id })) } : undefined,
-        educations: educations ? { set: educations.map(p => ({ id: p.id })) } : undefined,
-        repositories: repositories ? { set: repositories.map(p => ({ id: p.id })) } : undefined,
-      },
-    });
-
-    revalidatePath("/admin/skills", "page");
-    revalidatePath("/api/skills");
-    revalidatePath(`/api/skills/${skill.id}`);
-
-    if (experiences) {
-      revalidatePath("/api/experiences");
-      experiences.forEach(exp => {
-        revalidatePath("/resume/experiences", "page");
-        revalidatePath("/admin/experiences", "page");
-        revalidatePath("/api/experiences");
-        revalidatePath(`/api/experiences/${exp.id}`);
-      });
-    }
-
-    if (educations) {
-      revalidatePath("/api/educations");
-      educations.forEach(edu => {
-        revalidatePath("/resume/educations", "page");
-        revalidatePath("/admin/educations", "page");
-        revalidatePath("/api/educations");
-        revalidatePath(`/api/educations/${edu.id}`);
-      });
-    }
-
-    if (projects) {
-      revalidatePath("/api/projects");
-      projects.forEach(proj => {
-        revalidatePath(`/projects/${proj.id}`, "page");
-        revalidatePath(`/api/projects/${proj.id}`);
-      });
-    }
-
-    if (repositories) {
-      revalidatePath("/api/repositories");
-      repositories.forEach(repo => revalidatePath(`/api/repositories/${repo.id}`));
-    }
-
-    return convertToPlainObject(skill);
+    return convertToPlainObject(
+      await tx.skill.update({
+        where: { id },
+        data: {
+          ...data,
+          slug: _slug === undefined ? undefined : _slug === null ? slugify(label) : _slug.trim(),
+          label:
+            _label === undefined || _label.trim() === skill.label.trim()
+              ? undefined
+              : _label.trim(),
+          updatedById: user.id,
+          projects: projects ? { set: projects.map(p => ({ id: p.id })) } : undefined,
+          experiences: experiences ? { set: experiences.map(p => ({ id: p.id })) } : undefined,
+          educations: educations ? { set: educations.map(p => ({ id: p.id })) } : undefined,
+          repositories: repositories ? { set: repositories.map(p => ({ id: p.id })) } : undefined,
+        },
+      }),
+    );
   });
 };

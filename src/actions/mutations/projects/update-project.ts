@@ -1,5 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
 
 import { type z } from "zod";
 
@@ -242,12 +241,6 @@ export const updateProject = async (
     if (details) {
       await syncDetails(tx, { project, details, user });
     }
-
-    revalidatePath("/admin/projects", "page");
-    revalidatePath("/api/projects");
-    revalidatePath(`/api/projects/${project.id}`);
-    repositories?.map(repo => revalidatePath(`/api/repositories/${repo.id}`));
-    revalidatePath(`/projects/${project.slug}`, "page");
     return project;
   });
 };

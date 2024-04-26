@@ -1,10 +1,7 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { getAuthAdminUser } from "~/application/auth";
-import { UnreachableCaseError } from "~/application/errors";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { DetailEntityType, type NestedDetail, type Detail } from "~/prisma/model";
+import { type NestedDetail, type Detail } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteNestedDetail = async (id: string) => {
@@ -24,20 +21,5 @@ export const deleteNestedDetail = async (id: string) => {
       throw e;
     }
     await tx.nestedDetail.delete({ where: { id: nestedDetail.id } });
-
-    switch (nestedDetail.detail.entityType) {
-      case DetailEntityType.EDUCATION: {
-        revalidatePath("/admin/educations", "page");
-        revalidatePath("/api/educations");
-        break;
-      }
-      case DetailEntityType.EXPERIENCE: {
-        revalidatePath("/admin/experiences", "page");
-        revalidatePath("/api/experiences");
-        break;
-      }
-      default:
-        throw new UnreachableCaseError();
-    }
   });
 };

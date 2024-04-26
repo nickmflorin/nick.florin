@@ -5,10 +5,13 @@ import {
   type GenericUpdateDetailFormProps,
 } from "./GenericUpdateDetailForm";
 
-export interface ExpandedUpdateDetailFormProps<D extends ApiDetail<[]> | NestedApiDetail<[]>>
-  extends Omit<GenericUpdateDetailFormProps<D>, "actions"> {}
+export interface ExpandedUpdateDetailFormProps<
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+> extends Omit<GenericUpdateDetailFormProps<D>, "actions"> {}
 
-export const ExpandedUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetail<[]>>(
+export const ExpandedUpdateDetailForm = <
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+>(
   props: ExpandedUpdateDetailFormProps<D>,
 ): JSX.Element => <GenericUpdateDetailForm {...props} isScrollable={true} />;
 

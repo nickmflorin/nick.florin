@@ -15,9 +15,9 @@ import { CollapsedUpdateDetailForm } from "./update/CollapsedUpdateDetailForm";
 export interface ModifyNestedDetailsTimelineProps
   extends ComponentProps,
     Pick<CreateNestedDetailFormProps, "detailId" | "onCancel" | "onCreated"> {
-  readonly details: NestedApiDetail<[]>[];
+  readonly details: NestedApiDetail<["skills"]>[];
   readonly isCreating: boolean;
-  readonly onExpand: (detail: NestedApiDetail<[]>) => void;
+  readonly onExpand: (detail: NestedApiDetail<["skills"]>) => void;
 }
 
 export const ModifyNestedDetailsTimeline = ({
@@ -29,7 +29,8 @@ export const ModifyNestedDetailsTimeline = ({
   onExpand,
   ...props
 }: ModifyNestedDetailsTimelineProps): JSX.Element => {
-  const [optimisticDetails, setOptimisticDetails] = useState<NestedApiDetail<[]>[]>(details);
+  const [optimisticDetails, setOptimisticDetails] =
+    useState<NestedApiDetail<["skills"]>[]>(details);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);

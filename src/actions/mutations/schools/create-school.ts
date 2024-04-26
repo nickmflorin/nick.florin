@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -38,6 +36,6 @@ export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
       updatedById: user.id,
     },
   });
-  revalidatePath("/api/schools");
+
   return convertToPlainObject(school);
 };

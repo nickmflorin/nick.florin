@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { put, del, type PutBlobResult } from "@vercel/blob";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -68,7 +66,7 @@ export const uploadResume = async (
       }
       return ApiClientGlobalError.BadRequest("There was an error uploading the resume.").json;
     }
-    revalidatePath("/api/resumes");
+
     return convertToPlainObject(resume);
   });
 };

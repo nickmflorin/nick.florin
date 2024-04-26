@@ -11,7 +11,7 @@ import { useDeepEqualEffect } from "~/hooks";
 import { SkillForm, type SkillFormProps } from "./SkillForm";
 
 export interface UpdateSkillFormProps extends Omit<SkillFormProps, "action"> {
-  readonly skill: ApiSkill<["educations", "experiences", "projects"]>;
+  readonly skill: ApiSkill<["educations", "experiences", "projects", "repositories"]>;
   readonly onCancel?: () => void;
 }
 
@@ -32,6 +32,7 @@ export const UpdateSkillForm = ({
       experiences: skill.experiences.map(exp => exp.id),
       educations: skill.educations.map(edu => edu.id),
       projects: skill.projects.map(proj => proj.id),
+      repositories: skill.repositories.map(repo => repo.id),
     });
   }, [skill, props.form.setValues]);
 

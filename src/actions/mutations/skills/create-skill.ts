@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -71,55 +69,21 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
       return fieldErrors.json;
     }
 
-    const skill = await tx.skill.create({
-      data: {
-        ...data,
-        slug,
-        createdById: user.id,
-        updatedById: user.id,
-        experiences: experiences ? { connect: experiences.map(e => ({ id: e.id })) } : undefined,
-        projects: projects ? { connect: projects.map(e => ({ id: e.id })) } : undefined,
-        educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
-        repositories: repositories ? { connect: repositories.map(e => ({ id: e.id })) } : undefined,
-      },
-    });
-    // TODO: We may have to revalidate other API paths as well.
-    revalidatePath("/admin/skills", "page");
-    revalidatePath("/api/skills");
-
-    if (experiences) {
-      revalidatePath("/api/experiences");
-      experiences.forEach(exp => {
-        revalidatePath("/resume/experiences", "page");
-        revalidatePath("/admin/experiences", "page");
-        revalidatePath("/api/experiences");
-        revalidatePath(`/api/experiences/${exp.id}`);
-      });
-    }
-
-    if (educations) {
-      revalidatePath("/api/educations");
-      educations.forEach(edu => {
-        revalidatePath("/resume/educations", "page");
-        revalidatePath("/admin/educations", "page");
-        revalidatePath("/api/educations");
-        revalidatePath(`/api/educations/${edu.id}`);
-      });
-    }
-
-    if (projects) {
-      revalidatePath("/api/projects");
-      projects.forEach(proj => {
-        revalidatePath(`/projects/${proj.id}`, "page");
-        revalidatePath(`/api/projects/${proj.id}`);
-      });
-    }
-
-    if (repositories) {
-      revalidatePath("/api/repositories");
-      repositories.forEach(repo => revalidatePath(`/api/repositories/${repo.id}`));
-    }
-
-    return convertToPlainObject(skill);
+    return convertToPlainObject(
+      await tx.skill.create({
+        data: {
+          ...data,
+          slug,
+          createdById: user.id,
+          updatedById: user.id,
+          experiences: experiences ? { connect: experiences.map(e => ({ id: e.id })) } : undefined,
+          projects: projects ? { connect: projects.map(e => ({ id: e.id })) } : undefined,
+          educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
+          repositories: repositories
+            ? { connect: repositories.map(e => ({ id: e.id })) }
+            : undefined,
+        },
+      }),
+    );
   });
 };

@@ -11,8 +11,9 @@ import { TextInput } from "~/components/input/TextInput";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
 
-export interface GenericCreateDetailFormProps<D extends ApiDetail<[]> | NestedApiDetail<[]>>
-  extends Omit<
+export interface GenericCreateDetailFormProps<
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+> extends Omit<
     FormProps<Pick<DetailFormValues, "label">>,
     "children" | "contentClassName" | "action" | "form"
   > {
@@ -23,7 +24,9 @@ export interface GenericCreateDetailFormProps<D extends ApiDetail<[]> | NestedAp
   ) => Promise<D | ApiClientErrorJson>;
 }
 
-export const GenericCreateDetailForm = <D extends ApiDetail<[]> | NestedApiDetail<[]>>({
+export const GenericCreateDetailForm = <
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+>({
   onCreated,
   onCancel,
   action,

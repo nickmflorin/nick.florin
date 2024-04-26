@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -78,9 +76,6 @@ export const updateRepository = async (
       },
     });
 
-    revalidatePath("/admin/repositories", "page");
-    revalidatePath("/api/repositories");
-    revalidatePath(`/api/repositories/${repository.id}`);
     return repository;
   });
 };

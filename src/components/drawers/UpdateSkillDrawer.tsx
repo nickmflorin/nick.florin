@@ -16,7 +16,10 @@ interface UpdateCourseDrawerProps
 
 export const UpdateCourseDrawer = ({ skillId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useSkill(isUuid(skillId) ? skillId : null, {
-    query: { includes: ["projects", "educations", "experiences"], visibility: "admin" },
+    query: {
+      includes: ["projects", "educations", "experiences", "repositories"],
+      visibility: "admin",
+    },
     keepPreviousData: true,
   });
   const form = useSkillForm();

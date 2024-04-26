@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import type { BrandResume } from "~/prisma/model";
@@ -33,7 +31,7 @@ export const prioritizeResume = async (
       where: { id: { notIn: [updated.id] } },
       data: { primary: false, updatedById: user.id },
     });
-    revalidatePath("/api/resumes");
+
     return {
       resume: convertToPlainObject({ ...updated, primary: true }),
       resumes: await getResumes(tx),

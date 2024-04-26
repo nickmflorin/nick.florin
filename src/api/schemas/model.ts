@@ -121,7 +121,6 @@ export const RepositorySchema = z.object({
   }),
   visible: z.boolean().optional(),
   projects: z.array(z.string().uuid()).optional(),
-  // This still needs to be incorporated.
   skills: z.array(z.string().uuid()).optional(),
 });
 
@@ -142,7 +141,6 @@ export const CourseSchema = z.object({
   education: z
     .string({ required_error: "The course must be associated with an educational experience." })
     .uuid("The selected education has an invalid UUID."),
-  // This still needs to be incorporated.
   skills: z.array(z.string().uuid()).optional(),
   visible: z.boolean().optional(),
 });
@@ -163,10 +161,7 @@ export const DetailSchema = z.object({
   }).optional(),
   visible: z.boolean().optional(),
   project: z.string().uuid().nullable().optional(),
-});
-
-export const DetailsSchema = z.object({
-  details: z.array(DetailSchema),
+  skills: z.array(z.string().uuid()).optional(),
 });
 
 const WebsiteUrlField = z

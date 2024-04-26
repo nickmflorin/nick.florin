@@ -15,7 +15,7 @@ import { ModifyDetailView } from "./ModifyDetailView";
 export interface ModifyDetailsTimelineProps
   extends ComponentProps,
     Pick<CreateDetailFormProps, "entityId" | "entityType" | "onCancel" | "onCreated" | "onCancel"> {
-  readonly details: ApiDetail<["nestedDetails"]>[];
+  readonly details: ApiDetail<["nestedDetails", "skills"]>[];
   readonly createFormVisible: boolean;
   readonly onExpand: (detail: ApiDetail<[]> | NestedApiDetail<[]>) => void;
 }
@@ -31,7 +31,7 @@ export const ModifyDetailsTimeline = ({
   ...props
 }: ModifyDetailsTimelineProps): JSX.Element => {
   const [optimisticDetails, setOptimisticDetails] =
-    useState<ApiDetail<["nestedDetails"]>[]>(details);
+    useState<ApiDetail<["nestedDetails", "skills"]>[]>(details);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);

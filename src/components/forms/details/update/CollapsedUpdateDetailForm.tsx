@@ -15,13 +15,16 @@ import {
   type GenericUpdateDetailFormProps,
 } from "./GenericUpdateDetailForm";
 
-export interface CollapsedUpdateDetailFormProps<D extends ApiDetail<[]> | NestedApiDetail<[]>>
-  extends GenericUpdateDetailFormProps<D> {
+export interface CollapsedUpdateDetailFormProps<
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+> extends GenericUpdateDetailFormProps<D> {
   readonly onDeleted: () => void;
   readonly onExpand: () => void;
 }
 
-export const CollapsedUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDetail<[]>>({
+export const CollapsedUpdateDetailForm = <
+  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+>({
   onDeleted,
   onExpand,
   ...props

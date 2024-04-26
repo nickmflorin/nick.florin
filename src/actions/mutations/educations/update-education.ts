@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -88,7 +86,6 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
       },
     });
   });
-  revalidatePath("/admin/educations", "page");
-  revalidatePath("/api/educations");
+
   return convertToPlainObject(education);
 };

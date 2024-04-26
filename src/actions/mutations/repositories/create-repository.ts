@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -48,8 +46,7 @@ export const createRepository = async (req: z.infer<typeof RepositorySchema>) =>
         skills: skills ? { connect: skills.map(skill => ({ slug: skill.slug })) } : undefined,
       },
     });
-    revalidatePath("/api/repositories");
-    revalidatePath("/admin/repositories", "page");
+
     return convertToPlainObject(repository);
   });
 };

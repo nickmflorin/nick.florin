@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { getAuthAdminUser } from "~/application/auth";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Company, type Experience } from "~/prisma/model";
@@ -31,7 +29,5 @@ export const deleteCompany = async (id: string) => {
     }
 
     await tx.company.delete({ where: { id: company.id } });
-    revalidatePath("/api/companies");
-    revalidatePath(`/api/companies/${company.id}`);
   });
 };

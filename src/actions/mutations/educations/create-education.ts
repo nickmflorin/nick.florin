@@ -1,6 +1,4 @@
 "use server";
-import { revalidatePath } from "next/cache";
-
 import { type z } from "zod";
 
 import { getAuthAdminUser } from "~/application/auth";
@@ -66,8 +64,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
-    revalidatePath("/admin/educations", "page");
-    revalidatePath("/api/educations");
+
     return convertToPlainObject(education);
   });
 };
