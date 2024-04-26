@@ -1,18 +1,19 @@
-import { prisma } from "../../client";
-import { DetailEntityType, type School } from "../../model";
+import { type Transaction } from "~/prisma/client";
+import { DetailEntityType, type School } from "~/prisma/model";
+
 import { json } from "../fixtures/json";
+import { stdout } from "../stdout";
 
 import { seedCourses } from "./seed-courses";
 import { createDetail } from "./seed-details";
-import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
-export async function seedSchools(ctx: SeedContext) {
+export async function seedSchools(tx: Transaction, ctx: SeedContext) {
   if (json.schools.length !== 0) {
     let schools: School[] = [];
 
-    const allSkills = await prisma.skill.findMany({});
+    const allSkills = await tx.skill.findMany({});
 
     /* This is simply for debugging, since in the case that the slug does not correspond to an
        actual skill, the Prisma error is not super descriptive. */
@@ -27,11 +28,11 @@ export async function seedSchools(ctx: SeedContext) {
     const output = stdout.begin(`Generating ${json.schools.length} Schools...`);
 
     for (let i = 0; i < json.schools.length; i++) {
-      const { educations: jsonEducations, ...jsonSchool } = json.schools[i];
+      const { educations: jsonEducations = [], ...jsonSchool } = json.schools[i];
       output.begin(
         `Generating School ${jsonSchool.name} with ${jsonEducations.length} Educations...`,
       );
-      const school = await prisma.school.create({
+      const school = await tx.school.create({
         include: { educations: { include: { skills: true } } },
         data: {
           ...jsonSchool,
@@ -61,7 +62,7 @@ export async function seedSchools(ctx: SeedContext) {
           reference: "education",
           strict: true,
         });
-        await seedCourses(ctx, education, jsonEducation, output);
+        await seedCourses(tx, ctx, education, jsonEducation, output);
 
         const jsonDetails = jsonEducation.details ?? [];
         if (jsonDetails.length !== 0) {
@@ -70,7 +71,7 @@ export async function seedSchools(ctx: SeedContext) {
           );
           const details = await Promise.all(
             jsonDetails.map(jsonDetail =>
-              createDetail(ctx, {
+              createDetail(tx, ctx, {
                 entityId: education.id,
                 entityType: DetailEntityType.EDUCATION,
                 skills: allSkills,

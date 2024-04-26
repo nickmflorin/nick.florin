@@ -1,10 +1,10 @@
 import { humanizeList, slugify } from "~/lib/formatters";
+import { type Transaction, getUniqueConstraintFields } from "~/prisma/client";
+import { type Project, type Skill } from "~/prisma/model";
 
-import { prisma, getUniqueConstraintFields } from "../../client";
-import { type Project, type Skill } from "../../model";
 import { json } from "../fixtures/json";
+import { stdout } from "../stdout";
 
-import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
@@ -19,12 +19,12 @@ export const findCorrespondingProjectSync = (name: string, projects: Project[]):
     },
   );
 
-export const findCorrespondingProject = async (name: string): Promise<Project> => {
-  const projects = await prisma.project.findMany({});
+export const findCorrespondingProject = async (tx: Transaction, name: string): Promise<Project> => {
+  const projects = await tx.project.findMany({});
   return findCorrespondingProjectSync(name, projects);
 };
 
-export async function seedProjects(ctx: SeedContext) {
+export async function seedProjects(tx: Transaction, ctx: SeedContext) {
   if (json.projects.length !== 0) {
     const output = stdout.begin(`Generating ${json.projects.length} Projects...`);
 
@@ -39,12 +39,15 @@ export async function seedProjects(ctx: SeedContext) {
       output.begin(`Generating Project: ${jsonProject.name}...`);
       let project: Project & { readonly skills: Skill[] };
       try {
-        project = await prisma.project.create({
+        project = await tx.project.create({
           include: { skills: true },
           data: {
             ...jsonProject,
             repositories: { connect: (jsonRepositories ?? []).map((slug: string) => ({ slug })) },
-            slug: jsonProject.slug === undefined ? slugify(jsonProject.name) : jsonProject.slug,
+            slug:
+              jsonProject.slug === undefined || jsonProject.slug === null
+                ? slugify(jsonProject.name)
+                : jsonProject.slug,
             createdById: ctx.user.id,
             updatedById: ctx.user.id,
             skills: {

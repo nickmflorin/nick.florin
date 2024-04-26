@@ -1,12 +1,13 @@
-import { prisma } from "../../client";
-import { type DetailEntityType, type Skill } from "../../model";
+import { type Transaction } from "~/prisma/client";
+import { type DetailEntityType, type Skill } from "~/prisma/model";
+
 import { type JsonDetail } from "../fixtures/schemas";
 
+import { findCorrespondingProject } from "./seed-projects";
 import { type SeedContext } from "./types";
 
-import { findCorrespondingProject } from ".";
-
 export const createDetail = async (
+  tx: Transaction,
   ctx: SeedContext,
   {
     entityId,
@@ -30,8 +31,8 @@ export const createDetail = async (
     return skill;
   };
 
-  const projectId = project ? (await findCorrespondingProject(project)).id : undefined;
-  return await prisma.detail.create({
+  const projectId = project ? (await findCorrespondingProject(tx, project)).id : undefined;
+  return await tx.detail.create({
     data: {
       ...jsonDetail,
       entityId,

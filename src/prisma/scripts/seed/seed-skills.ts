@@ -1,33 +1,32 @@
 import { slugify, humanizeList } from "~/lib/formatters";
+import { type Transaction, getUniqueConstraintFields } from "~/prisma/client";
+import { type Skill } from "~/prisma/model";
 
-import { prisma, getUniqueConstraintFields } from "../../client";
-import { type Skill } from "../../model";
 import { json } from "../fixtures/json";
-import { type JsonSkill } from "../fixtures/schemas";
-import { json as tsSkills } from "../fixtures/skills";
+import { stdout } from "../stdout";
 
-import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
 
-const _seedSkills = async (ctx: SeedContext, skills: JsonSkill[]) => {
+export const seedSkills = async (tx: Transaction, ctx: SeedContext) => {
+  const skills = json.skills;
   if (skills.length !== 0) {
     const output = stdout.begin(`Generating Skills from ${skills.length} Fixtures...`);
 
     for (let i = 0; i < skills.length; i++) {
-      const { repositories: jsonRepositories, ...jsonSkill } = skills[i];
+      const jsonSkill = skills[i];
       output.begin(`Generating Skill: ${jsonSkill.label}...`);
       let skill: Skill;
       const data = {
         ...jsonSkill,
-        repositories: {
-          connect: (jsonRepositories ?? []).map(slug => ({ slug })),
-        },
-        slug: jsonSkill.slug === undefined ? slugify(jsonSkill.label) : jsonSkill.slug,
+        slug:
+          jsonSkill.slug === undefined || jsonSkill.slug === null
+            ? slugify(jsonSkill.label)
+            : jsonSkill.slug,
         createdBy: { connect: { id: ctx.user.id } },
         updatedBy: { connect: { id: ctx.user.id } },
       };
       try {
-        skill = await prisma.skill.create({ data });
+        skill = await tx.skill.create({ data });
       } catch (e) {
         const fields = getUniqueConstraintFields(e);
         if (fields !== null && fields.length !== 0) {
@@ -52,7 +51,3 @@ const _seedSkills = async (ctx: SeedContext, skills: JsonSkill[]) => {
     output.complete(`Successfully Created ${json.skills.length} Skills`);
   }
 };
-
-export async function seedSkills(ctx: SeedContext, source: "json" | "ts" = "ts") {
-  await _seedSkills(ctx, source === "ts" ? tsSkills : json.skills);
-}

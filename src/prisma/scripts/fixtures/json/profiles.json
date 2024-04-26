@@ -1,0 +1,19 @@
+{
+  "profiles": [
+    {
+      "createdAt": "2024-04-16T23:24:18.122Z",
+      "updatedAt": "2024-04-16T23:24:18.122Z",
+      "firstName": "Nick",
+      "lastName": "Florin",
+      "displayName": "nickmflorin",
+      "middleName": "Mark",
+      "profileImageUrl": "/profile/headshot.jpeg",
+      "emailAddress": "nickmflorin@gmail.com",
+      "phoneNumber": null,
+      "intro": "A passionate engineer that thrives on solving complex problems - the more complex the problem, the more I am drawn to it.  I love to build things, and sometimes break them as well.",
+      "tagline": null,
+      "githubUrl": "https://github.com/nickmflorin",
+      "linkedinUrl": "https://www.linkedin.com/in/nick-florin-5046063b"
+    }
+  ]
+}

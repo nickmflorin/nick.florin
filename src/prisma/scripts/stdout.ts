@@ -40,13 +40,14 @@ type MessageOptions = {
   readonly indexLineItems?: boolean;
 };
 
-type Level = "info" | "error" | "complete" | "begin";
+type Level = "info" | "error" | "complete" | "begin" | "warn";
 
 const LevelColors: { [key in Level]: string } = {
   info: terminal.GRAY,
   error: terminal.RED,
   complete: terminal.GREEN,
   begin: terminal.YELLOW,
+  warn: terminal.YELLOW,
 };
 
 const IndentedLevelColors: { [key in Level]: string } = {
@@ -54,6 +55,7 @@ const IndentedLevelColors: { [key in Level]: string } = {
   error: terminal.RED,
   complete: terminal.CYAN,
   begin: terminal.YELLOW,
+  warn: terminal.YELLOW,
 };
 
 export class SeedStdout {
@@ -168,6 +170,14 @@ export class SeedStdout {
     }
   }
 
+  public failed(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.info(this.formatMessage(message, "error", opts));
+    if (this.isNested) {
+      this.nestedLevel = Math.max(this.nestedLevel - 1, 0);
+    }
+  }
+
   public info(message: string, opts?: LineItem[] | MessageOptions): void {
     /* eslint-disable-next-line no-console */
     console.info(this.formatMessage(message, "info", opts));
@@ -176,6 +186,11 @@ export class SeedStdout {
   public error(message: string, opts?: LineItem[] | MessageOptions): void {
     /* eslint-disable-next-line no-console */
     console.error(this.formatMessage(message, "error", opts));
+  }
+
+  public warn(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.error(this.formatMessage(message, "warn", opts));
   }
 
   public begin(message: string, opts?: LineItem[] | MessageOptions): SeedStdout {

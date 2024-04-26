@@ -1,15 +1,16 @@
 import { type z } from "zod";
 
 import { slugify, humanizeList } from "~/lib/formatters";
+import { getUniqueConstraintFields, type Transaction } from "~/prisma/client";
+import { type Course, type Education, type Skill } from "~/prisma/model";
 
-import { prisma, getUniqueConstraintFields } from "../../client";
-import { type Course, type Education, type Skill } from "../../model";
 import { type EducationJsonSchema } from "../fixtures/schemas";
+import { type SeedStdout } from "../stdout";
 
-import { type SeedStdout } from "./stdout";
 import { type SeedContext } from "./types";
 
 export async function seedCourses(
+  tx: Transaction,
   ctx: SeedContext,
   education: Education,
   jsonEducation: z.infer<typeof EducationJsonSchema>,
@@ -26,12 +27,15 @@ export async function seedCourses(
 
       let course: Course & { readonly skills: Skill[] };
       try {
-        course = await prisma.course.create({
+        course = await tx.course.create({
           include: { skills: true },
           data: {
             ...jsonCourse,
             educationId: education.id,
-            slug: jsonCourse.slug === undefined ? slugify(jsonCourse.name) : jsonCourse.slug,
+            slug:
+              jsonCourse.slug === undefined || jsonCourse.slug === null
+                ? slugify(jsonCourse.name)
+                : jsonCourse.slug,
             createdById: ctx.user.id,
             updatedById: ctx.user.id,
             skills: {

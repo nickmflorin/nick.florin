@@ -3,7 +3,7 @@ import uniq from "lodash.uniq";
 
 import { UnreachableCaseError } from "~/application/errors";
 import { type Transaction } from "~/prisma/client";
-import { type Brand, type BrandModel } from "~/prisma/model";
+import { type Brand, type BrandModel, type PluralBrand } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 
 type DynamicModel = Extract<
@@ -19,7 +19,7 @@ const FieldErrorKeys = {
   skill: "skills",
   nestedDetail: "nestedDetails",
   repository: "repositories",
-} as const satisfies { [key in DynamicModel]: `${key}s` | "repositories" };
+} as const satisfies { [key in DynamicModel]: PluralBrand<key> };
 
 export const queryIdsDynamically = async <T extends DynamicModel>(
   tx: Transaction,

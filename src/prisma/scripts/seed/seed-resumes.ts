@@ -1,8 +1,9 @@
 import { list, type ListBlobResult } from "@vercel/blob";
 
-import { prisma } from "../../client";
+import { type Transaction } from "~/prisma/client";
 
-import { stdout } from "./stdout";
+import { stdout } from "../stdout";
+
 import { type SeedContext } from "./types";
 
 type Blob = ListBlobResult["blobs"][number];
@@ -57,7 +58,7 @@ const blobIsValid = (blob: Blob): [false, string, Blob] | [true, null, Blob] => 
   return [true, null, blob];
 };
 
-export async function seedResumes(ctx: SeedContext) {
+export async function seedResumes(tx: Transaction, ctx: SeedContext) {
   stdout.begin("Seeding Resumes...");
   const blobs = await fetchBlobs();
 
@@ -77,7 +78,7 @@ export async function seedResumes(ctx: SeedContext) {
     stdout.error(`Encountered ${invalidBlobs.length} invalid blobs:\n${formatted}`);
   }
 
-  const result = await prisma.resume.createMany({
+  const result = await tx.resume.createMany({
     data: validBlobs.map(blob => ({
       updatedById: ctx.user.id,
       createdById: ctx.user.id,

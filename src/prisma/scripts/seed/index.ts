@@ -1,20 +1,17 @@
 import clerk from "@clerk/clerk-sdk-node";
 
+import { prisma } from "~/prisma/client";
+import { upsertUserFromClerk } from "~/prisma/model/user";
 import { environment } from "~/environment";
 
-import { prisma } from "../client";
-import { upsertUserFromClerk } from "../model/user";
-
-import {
-  seedSchools,
-  seedCompanies,
-  type SeedContext,
-  seedProfile,
-  seedSkills,
-  seedProjects,
-  seedRepositories,
-  seedResumes,
-} from "./seeding";
+import { seedCompanies } from "./seed-companies";
+import { seedProfile } from "./seed-profile";
+import { seedProjects } from "./seed-projects";
+import { seedRepositories } from "./seed-repositories";
+import { seedResumes } from "./seed-resumes";
+import { seedSchools } from "./seed-schools";
+import { seedSkills } from "./seed-skills";
+import { type SeedContext } from "./types";
 
 async function main() {
   const { NODE_ENV, VERCEL_ENV, CLERK_SECRET_KEY } = environment.pick([
@@ -87,13 +84,15 @@ async function main() {
     clerkUser,
     user: await upsertUserFromClerk(clerkUser, { isAdmin: true }),
   };
-  await seedProfile(ctx);
-  await seedResumes(ctx);
-  await seedRepositories(ctx); // Must be done before skills and projects.
-  await seedSkills(ctx); // Must be done before projects, schools & companies.
-  await seedProjects(ctx); // Must be done after skills, but before schools and companies.
-  await seedSchools(ctx);
-  await seedCompanies(ctx);
+  await prisma.$transaction(async tx => {
+    await seedProfile(tx, ctx);
+    await seedResumes(tx, ctx);
+    await seedSkills(tx, ctx); // Must be done before projects, repositories, schools & companies.
+    await seedRepositories(tx, ctx); // Must be done after skills but before projects.
+    await seedProjects(tx, ctx); // Must be done after skills, but before schools and companies.
+    await seedSchools(tx, ctx);
+    await seedCompanies(tx, ctx);
+  });
 }
 
 main()

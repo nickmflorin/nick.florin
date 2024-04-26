@@ -3,29 +3,35 @@
     {
       "name": "n-Dimensional Charting Library for Asset Management",
       "shortName": "Asset Visualizations",
-      "slug": "asset-visualizations",
-      "skills": ["d3js", "javascript", "html"],
-      "startDate": "2017-11-01T00:00:00Z",
       "description": "An animated JavaScript charting library that can be used to visualize data in up to 5 dimensions simultaneously.",
-      "icon": "chart-scatter-bubble"
+      "slug": "asset-visualizations",
+      "icon": "chart-scatter-bubble",
+      "createdAt": "2024-04-16T23:24:59.344Z",
+      "updatedAt": "2024-04-16T23:24:59.344Z",
+      "startDate": "2017-11-01T00:00:00.000Z",
+      "skills": ["javascript", "html", "d3js"],
+      "repositories": []
     },
     {
       "name": "nick.florin",
-      "slug": "website",
-      "startDate": "2024-01-15T00:00:00Z",
+      "shortName": null,
       "description": "A CMS-powered, interactive and dynamic personal portfolio & website written using NextJS.",
+      "slug": "website",
+      "icon": "passport",
+      "createdAt": "2024-04-16T23:24:59.768Z",
+      "updatedAt": "2024-04-16T23:24:59.768Z",
+      "startDate": "2024-01-15T00:00:00.000Z",
       "skills": [
         "typescript",
-        "react",
+        "sass",
         "nextjs",
-        "prismajs",
-        "postgresql",
-        "vercel",
+        "react",
         "tailwindcss",
-        "sass"
+        "prismajs",
+        "vercel",
+        "postgresql"
       ],
-      "repositories": ["nick.florin"],
-      "icon": "passport"
+      "repositories": ["nick.florin"]
     }
   ]
 }

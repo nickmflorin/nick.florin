@@ -10,6 +10,7 @@ import {
   type Course,
   type Repository,
   type Resume,
+  type Profile,
 } from "./generated";
 
 export type ToBrandedModel<M, T extends string> = M & {
@@ -28,6 +29,7 @@ export type Brands = {
   repository: Repository;
   course: Course;
   resume: Resume;
+  profile: Profile;
 };
 
 export type BrandedModels = { [key in keyof Brands]: ToBrandedModel<Brands[key], key> };
@@ -48,3 +50,19 @@ export type BrandSkill = BrandModel<"skill">;
 export type BrandRepository = BrandModel<"repository">;
 export type BrandCourse = BrandModel<"course">;
 export type BrandResume = BrandModel<"resume">;
+export type BrandProfile = BrandModel<"profile">;
+
+export type PluralBrand<T extends Brand = Brand> = T extends "repository"
+  ? "repositories"
+  : T extends "company"
+    ? "companies"
+    : `${T}s`;
+
+export const pluralizeBrandModel = <T extends Brand>(brand: T): PluralBrand<T> => {
+  if (brand === "repository") {
+    return "repositories" as PluralBrand<T>;
+  } else if (brand === "company") {
+    return "companies" as PluralBrand<T>;
+  }
+  return `${brand}s` as PluralBrand<T>;
+};

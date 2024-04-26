@@ -1,5 +1,2 @@
-import { jsonfiy as jsonifySkills } from "./skills";
-
-export const generateJson = () => {
-  jsonifySkills();
-};
+export * from "./schemas";
+export * from "./json";

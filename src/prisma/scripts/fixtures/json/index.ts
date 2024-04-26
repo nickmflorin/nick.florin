@@ -3,7 +3,7 @@ import { type z } from "zod";
 import * as schemas from "../schemas";
 
 import companies from "./companies.json";
-import profile from "./profile.json";
+import profiles from "./profiles.json";
 import projects from "./projects.json";
 import repositories from "./repositories.json";
 import schools from "./schools.json";
@@ -19,7 +19,9 @@ export const json = {
   companies: companies.companies.map(
     (c): z.infer<typeof schemas.CompanyJsonSchema> => schemas.CompanyJsonSchema.parse(c),
   ),
-  profile,
+  profiles: profiles.profiles.map(
+    (p): z.infer<typeof schemas.ProfileJsonSchema> => schemas.ProfileJsonSchema.parse(p),
+  ),
   projects: projects.projects.map(
     (p): z.infer<typeof schemas.ProjectJsonSchema> => schemas.ProjectJsonSchema.parse(p),
   ),

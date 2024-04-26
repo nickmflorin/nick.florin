@@ -19,7 +19,7 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
   expandable,
   showBadges = true,
   showDescription = true,
-  showMoreLink = false,
+  showMoreLink = true,
   ...props
 }: ResumeModelCondensedTileProps<M, T>) => (
   <ResumeModelTile {...props} gap="4px">

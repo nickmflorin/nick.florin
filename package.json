@@ -34,9 +34,10 @@
     "generate-client": "pnpm validate-node-version && prisma generate",
     "seeddb": "pnpm validate-node-version && pnpm manual-dev-env-setup -- cross-env NODE_ENV=development prisma db seed",
     "seeddb-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- prisma db seed",
-    "jsonify-fixtures": "pnpm validate-node-version && pnpm manual-dev-env-setup -- npx tsx --tsconfig ./tsconfig.json src/prisma/jsonify.ts",
+    "jsonify-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/jsonify/index.ts && pnpm format-json-fixtures",
     "pullenv": "vercel env pull ./.env --environment=development",
-    "pullenv-prod": "vercel env pull ./.env --environment=production"
+    "pullenv-prod": "vercel env pull ./.env --environment=production",
+    "format-json-fixtures": "npx prettier ./src/prisma/scripts/fixtures/json/**/*.json --write --ignore-path=./.prettierignore"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.7",
@@ -154,6 +155,6 @@
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma",
-    "seed": "npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/seed.ts"
+    "seed": "npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/seed/index.ts"
   }
 }

@@ -6,13 +6,13 @@ type ErrorMessage<V extends string | null = string> =
   | string
   | ((params: { min: number; value: V }) => string);
 
-type NullableStringFieldOptions = {
+interface NullableStringFieldOptions {
   readonly min?: number;
   readonly minErrorMessage?: ErrorMessage<string>;
-};
+}
 
-export const NullableMinLengthStringField = ({
-  min = 3,
+export const NullableStringField = ({
+  min,
   minErrorMessage = `The field must be at least ${min ?? 3} characters.`,
 }: NullableStringFieldOptions) =>
   z
@@ -20,7 +20,7 @@ export const NullableMinLengthStringField = ({
     .nullable()
     .transform(v => (typeof v === "string" && v.trim().length === 0 ? null : v))
     .superRefine((val, ctx) => {
-      if (val !== null && val.length < min) {
+      if (min && val !== null && val.length < min) {
         ctx.addIssue({
           code: z.ZodIssueCode.too_small,
           minimum: min,
@@ -34,14 +34,12 @@ export const NullableMinLengthStringField = ({
       }
     });
 
-type NonNullableStringFieldOptions = {
-  readonly min?: number;
-  readonly minErrorMessage?: ErrorMessage<string | null>;
-  readonly requiredErrorMessage?: ErrorMessage<string | null>;
-};
+interface NonNullableStringFieldOptions extends NullableStringFieldOptions {
+  readonly requiredErrorMessage?: string;
+}
 
-export const NonNullableMinLengthStringField = ({
-  min = 3,
+export const NonNullableStringField = ({
+  min,
   minErrorMessage = ({ min }) => `The field must be at least ${min ?? 3} characters.`,
   requiredErrorMessage = "The field is required.",
 }: NonNullableStringFieldOptions) =>
@@ -50,7 +48,7 @@ export const NonNullableMinLengthStringField = ({
     if (typeof v === "string" && v.trim().length === 0) {
       value = null;
     }
-    if (value !== null && value.length < min) {
+    if (min !== undefined && value !== null && value.length < min) {
       ctx.addIssue({
         code: z.ZodIssueCode.too_small,
         minimum: min,
@@ -61,16 +59,20 @@ export const NonNullableMinLengthStringField = ({
       });
       return z.NEVER;
     } else if (value === null) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.too_small,
-        minimum: min,
-        type: "string",
-        inclusive: true,
-        message:
-          typeof requiredErrorMessage === "function"
-            ? requiredErrorMessage({ value, min })
-            : requiredErrorMessage,
-      });
+      if (min !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.too_small,
+          minimum: min,
+          type: "string",
+          inclusive: true,
+          message: requiredErrorMessage,
+        });
+      } else {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: requiredErrorMessage,
+        });
+      }
       return z.NEVER;
     }
     return value;

@@ -1,23 +1,117 @@
 {
   "repositories": [
-    { "slug": "nick.florin", "description": "Personal Website, Resume & Portfolio" },
-    { "slug": "sportbook", "description": "Pick Up & Social Sports League Management" },
     {
-      "slug": "happybudget-api",
-      "description": "Backend API for Happy Budget Application & Framework"
-    },
-    {
-      "slug": "django-polymorphic-bulk-create",
-      "description": "Experimental Code for Bulk Create Behavior with Polymorphic Models"
-    },
-    {
-      "slug": "portfolio-drf",
-      "description": "Personal Portfolio API w Django REST Framework (Old)"
+      "slug": "sportbook",
+      "description": "Pick Up & Social Sports League Management",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": [
+        "typescript",
+        "javascript",
+        "sass",
+        "css",
+        "html",
+        "nextjs",
+        "react",
+        "scss-css-modules",
+        "jest",
+        "unit-testing",
+        "prismajs",
+        "ssr",
+        "postgresql",
+        "clerk",
+        "relational-databases"
+      ]
     },
     {
       "slug": "portfolio-frontend",
-      "description": "React Application for Personal Portfolio (Old)"
+      "description": "React Application for Personal Portfolio (Old)",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["javascript", "react"]
     },
-    { "slug": "pebl", "description": "iOS Dating Application Based on Event/Date Based Matching" }
+    {
+      "slug": "nick.florin",
+      "description": "Personal Website, Resume & Portfolio",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": [
+        "typescript",
+        "javascript",
+        "sass",
+        "css",
+        "html",
+        "nextjs",
+        "react",
+        "tailwindcss",
+        "scss-css-modules",
+        "jest",
+        "unit-testing",
+        "prismajs",
+        "floating-ui",
+        "vercel",
+        "ssr",
+        "postgresql",
+        "ci-cd",
+        "clerk",
+        "relational-databases"
+      ]
+    },
+    {
+      "slug": "django-polymorphic-bulk-create",
+      "description": "Experimental Code for Bulk Create Behavior with Polymorphic Models",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["python", "django-rest-framework", "django"]
+    },
+    {
+      "slug": "pebl",
+      "description": "iOS Dating Application Based on Event/Date Based Matching",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["swift"]
+    },
+    {
+      "slug": "portfolio-drf",
+      "description": "Personal Portfolio API w Django REST Framework (Old)",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["python", "django-rest-framework", "django"]
+    },
+    {
+      "slug": "happybudget-api",
+      "description": "Backend API for Happy Budget Application & Framework",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": [
+        "python",
+        "django-rest-framework",
+        "django",
+        "tox",
+        "pytest",
+        "mock",
+        "flake8",
+        "pylint",
+        "postgresql",
+        "ci-cd",
+        "aws-s3-storage",
+        "circleci",
+        "jwt-authentication",
+        "aws-ec2",
+        "aws",
+        "django-admin",
+        "rest-api-design",
+        "authentication-protocols",
+        "relational-databases",
+        "sentry"
+      ]
+    }
   ]
 }

@@ -1,14 +1,20 @@
 import { z } from "zod";
 
-import { NullableMinLengthStringField, NonNullableMinLengthStringField } from "~/lib/schemas";
+import { NullableStringField, NonNullableStringField } from "~/lib/schemas";
 import { Degree, ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/prisma/model";
 
 export const SkillSchema = z.object({
-  label: z.string().min(3, "The label must be at least 3 characters."),
-  slug: NullableMinLengthStringField({
+  label: NonNullableStringField({
+    min: 3,
+    minErrorMessage: "The label must be at least 3 characters.",
+    requiredErrorMessage: "The label is a required field.",
+  }),
+  slug: NullableStringField({
+    min: 3,
     minErrorMessage: "The slug must be at least 3 characters.",
   }).optional(),
-  description: NullableMinLengthStringField({
+  description: NullableStringField({
+    min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
   }).optional(),
   experiences: z.array(z.string().uuid()).optional(),
@@ -23,16 +29,17 @@ export const SkillSchema = z.object({
 });
 
 export const ExperienceSchema = z.object({
-  title: NonNullableMinLengthStringField({
+  title: NonNullableStringField({
     min: 3,
     minErrorMessage: "The title must be at least 3 characters.",
-    requiredErrorMessage: "The title is required.",
+    requiredErrorMessage: "The title is a required field.",
   }),
-  shortTitle: NullableMinLengthStringField({
+  shortTitle: NullableStringField({
     min: 3,
     minErrorMessage: "The short title should be at least 3 characters.",
   }).optional(),
-  description: NullableMinLengthStringField({
+  description: NullableStringField({
+    min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
   }).optional(),
   company: z.string().uuid(),
@@ -44,13 +51,13 @@ export const ExperienceSchema = z.object({
 });
 
 export const EducationSchema = z.object({
-  major: NonNullableMinLengthStringField({
+  major: NonNullableStringField({
     min: 3,
     minErrorMessage: "The major must be at least 3 characters.",
-    requiredErrorMessage: "The major is required.",
+    requiredErrorMessage: "The major is a required field.",
   }),
   note: z.string().optional(),
-  shortMajor: NullableMinLengthStringField({
+  shortMajor: NullableStringField({
     min: 2,
     minErrorMessage: "The short major should be at least 3 characters.",
   }).optional(),
@@ -67,25 +74,28 @@ export const EducationSchema = z.object({
 });
 
 export const ProjectSchema = z.object({
-  name: NonNullableMinLengthStringField({
+  name: NonNullableStringField({
     min: 3,
     minErrorMessage: "The name must be at least 3 characters.",
-    requiredErrorMessage: "The name is required.",
+    requiredErrorMessage: "The name is a required field.",
   }),
   // TODO: We need to figure out how to add better validation here.
-  icon: NonNullableMinLengthStringField({
+  icon: NonNullableStringField({
     min: 3,
     minErrorMessage: "The icon must be at least 3 characters.",
-    requiredErrorMessage: "The icon is required.",
+    requiredErrorMessage: "The icon is a required field.",
   }),
-  shortName: NullableMinLengthStringField({
+  shortName: NullableStringField({
     min: 2,
     minErrorMessage: "The short name should be at least 2 characters.",
   }).optional(),
-  description: NonNullableMinLengthStringField({
+  description: NonNullableStringField({
+    min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
+    requiredErrorMessage: "The description is a required field.",
   }),
-  slug: NullableMinLengthStringField({
+  slug: NullableStringField({
+    min: 3,
     minErrorMessage: "The slug must be at least 3 characters.",
   }).optional(),
   startDate: z.date(),
@@ -98,13 +108,15 @@ export const ProjectSchema = z.object({
 });
 
 export const RepositorySchema = z.object({
-  slug: NonNullableMinLengthStringField({
+  slug: NonNullableStringField({
     min: 3,
     minErrorMessage: "The slug must be at least 3 characters.",
-    requiredErrorMessage: "The slug is required.",
+    requiredErrorMessage: "The slug is a required field.",
   }),
-  description: NonNullableMinLengthStringField({
+  description: NonNullableStringField({
+    min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
+    requiredErrorMessage: "The description is a required field.",
   }),
   visible: z.boolean().optional(),
   projects: z.array(z.string().uuid()).optional(),
@@ -113,16 +125,17 @@ export const RepositorySchema = z.object({
 });
 
 export const CourseSchema = z.object({
-  name: NonNullableMinLengthStringField({
+  name: NonNullableStringField({
     min: 3,
     minErrorMessage: "The name must be at least 3 characters.",
-    requiredErrorMessage: "The name is required.",
+    requiredErrorMessage: "The name is a required field.",
   }),
-  shortName: NullableMinLengthStringField({
+  shortName: NullableStringField({
     min: 2,
     minErrorMessage: "The short name should be at least 3 characters.",
   }).optional(),
-  slug: NullableMinLengthStringField({
+  slug: NullableStringField({
+    min: 3,
     minErrorMessage: "The slug must be at least 3 characters.",
   }).optional(),
   education: z
@@ -134,15 +147,17 @@ export const CourseSchema = z.object({
 });
 
 export const DetailSchema = z.object({
-  label: NonNullableMinLengthStringField({
+  label: NonNullableStringField({
     min: 3,
     minErrorMessage: "The label must be at least 3 characters.",
-    requiredErrorMessage: "The label is required.",
+    requiredErrorMessage: "The label is a required field.",
   }),
-  description: NullableMinLengthStringField({
+  description: NullableStringField({
+    min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
   }).optional(),
-  shortDescription: NullableMinLengthStringField({
+  shortDescription: NullableStringField({
+    min: 3,
     minErrorMessage: "The short description must be at least 3 characters.",
   }).optional(),
   visible: z.boolean().optional(),
@@ -165,53 +180,57 @@ const LogoImageUrlField = z
   .transform(v => (typeof v === "string" && v.trim() === "" ? null : v));
 
 export const CompanySchema = z.object({
-  name: NonNullableMinLengthStringField({
+  name: NonNullableStringField({
     min: 3,
     minErrorMessage: "The name must be at least 3 characters.",
-    requiredErrorMessage: "The name is required.",
+    requiredErrorMessage: "The name is a required field.",
   }),
-  shortName: NullableMinLengthStringField({
+  shortName: NullableStringField({
+    min: 3,
     minErrorMessage: "The short name must be at least 3 characters.",
   }).optional(),
-  description: NullableMinLengthStringField({
+  description: NullableStringField({
+    min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
   }).optional(),
   logoImageUrl: LogoImageUrlField,
   websiteUrl: WebsiteUrlField,
-  city: NonNullableMinLengthStringField({
+  city: NonNullableStringField({
     min: 2,
     minErrorMessage: "The city must be at least 2 characters.",
-    requiredErrorMessage: "The city is required.",
+    requiredErrorMessage: "The city is a required field.",
   }),
-  state: NonNullableMinLengthStringField({
+  state: NonNullableStringField({
     min: 2,
     minErrorMessage: "The state must be at least 2 characters.",
-    requiredErrorMessage: "The state is required.",
+    requiredErrorMessage: "The state is a required field.",
   }),
 });
 
 export const SchoolSchema = z.object({
-  name: NonNullableMinLengthStringField({
+  name: NonNullableStringField({
     min: 3,
     minErrorMessage: "The name must be at least 3 characters.",
-    requiredErrorMessage: "The name is required.",
+    requiredErrorMessage: "The name is a required field.",
   }),
-  shortName: NullableMinLengthStringField({
+  shortName: NullableStringField({
+    min: 3,
     minErrorMessage: "The short name must be at least 3 characters.",
   }).optional(),
-  description: NullableMinLengthStringField({
+  description: NullableStringField({
+    min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
   }).optional(),
   logoImageUrl: LogoImageUrlField,
   websiteUrl: WebsiteUrlField,
-  city: NonNullableMinLengthStringField({
+  city: NonNullableStringField({
     min: 2,
     minErrorMessage: "The city must be at least 2 characters.",
-    requiredErrorMessage: "The city is required.",
+    requiredErrorMessage: "The city is a required field.",
   }),
-  state: NonNullableMinLengthStringField({
+  state: NonNullableStringField({
     min: 2,
     minErrorMessage: "The state must be at least 2 characters.",
-    requiredErrorMessage: "The state is required.",
+    requiredErrorMessage: "The state is a required field.",
   }),
 });

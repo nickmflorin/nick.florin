@@ -1,18 +1,19 @@
-import { prisma } from "../../client";
-import { DetailEntityType, type Company } from "../../model";
+import { type Transaction } from "~/prisma/client";
+import { DetailEntityType, type Company } from "~/prisma/model";
+
 import { json } from "../fixtures/json";
+import { stdout } from "../stdout";
 
 import { createDetail } from "./seed-details";
-import { stdout } from "./stdout";
 import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
-export async function seedCompanies(ctx: SeedContext) {
+export async function seedCompanies(tx: Transaction, ctx: SeedContext) {
   if (json.companies.length !== 0) {
     let companies: Company[] = [];
 
     const output = stdout.begin(`Generating ${json.companies.length} Companies...`);
-    const allSkills = await prisma.skill.findMany({});
+    const allSkills = await tx.skill.findMany({});
 
     /* This is simply for debugging, since in the case that the slug does not correspond to an
        actual skill, the Prisma error is not super descriptive. */
@@ -25,11 +26,11 @@ export async function seedCompanies(ctx: SeedContext) {
     };
 
     for (let i = 0; i < json.companies.length; i++) {
-      const { experiences: jsonExperiences, ...jsonCompany } = json.companies[i];
+      const { experiences: jsonExperiences = [], ...jsonCompany } = json.companies[i];
       output.begin(
         `Generating Company ${jsonCompany.name} with ${jsonExperiences.length} Experiences...`,
       );
-      const company = await prisma.company.create({
+      const company = await tx.company.create({
         include: { experiences: { include: { skills: true } } },
         data: {
           ...jsonCompany,
@@ -67,7 +68,7 @@ export async function seedCompanies(ctx: SeedContext) {
           );
           const details = await Promise.all(
             jsonDetails.map(jsonDetail =>
-              createDetail(ctx, {
+              createDetail(tx, ctx, {
                 entityId: experience.id,
                 entityType: DetailEntityType.EXPERIENCE,
                 skills: allSkills,
@@ -103,6 +104,7 @@ export async function seedCompanies(ctx: SeedContext) {
         ],
       });
     }
+
     output.complete(`Generated ${companies.length} Companies`, {
       lineItems: companies.map(s => s.name),
     });
