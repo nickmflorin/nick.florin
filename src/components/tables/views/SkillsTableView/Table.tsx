@@ -20,7 +20,7 @@ export const SkillsAdminTable = async ({ page, filters }: SkillsAdminTableProps)
     page,
     visibility: "admin",
     filters,
-    includes: ["projects", "educations", "experiences"],
+    includes: ["projects", "educations", "experiences", "repositories"],
   });
   return <ContextTable data={skills} />;
 };

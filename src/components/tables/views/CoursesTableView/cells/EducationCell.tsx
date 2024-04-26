@@ -42,7 +42,6 @@ export const EducationCell = ({ course, table }: EducationCellProps): JSX.Elemen
         try {
           response = await updateCourse(course.id, { education: v });
         } catch (e) {
-          const logger = (await import("~/application/logger")).logger;
           logger.error(
             `There was an error updating the education for the course with ID '${course.id}':\n${e}`,
             {

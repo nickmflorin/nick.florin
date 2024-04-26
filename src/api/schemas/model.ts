@@ -20,6 +20,7 @@ export const SkillSchema = z.object({
   experiences: z.array(z.string().uuid()).optional(),
   educations: z.array(z.string().uuid()).optional(),
   projects: z.array(z.string().uuid()).optional(),
+  repositories: z.array(z.string().uuid()).optional(),
   includeInTopSkills: z.boolean().optional(),
   experience: z.number().nullable().optional(),
   visible: z.boolean().optional(),

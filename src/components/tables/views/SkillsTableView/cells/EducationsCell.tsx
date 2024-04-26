@@ -11,7 +11,7 @@ import { isApiClientErrorJson } from "~/api";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 
 interface EducationsCellProps {
-  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
+  readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
 }
 
 export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {

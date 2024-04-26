@@ -41,7 +41,6 @@ export const EditableStringCell = <
         try {
           response = await action({ [field]: value } as P);
         } catch (e) {
-          const logger = (await import("~/application/logger")).logger;
           logger.error(
             `There was a server error updating the field '${String(field)}' for the model:\n${e}`,
             {

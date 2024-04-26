@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 
+import { logger } from "~/application/logger";
+
 import {
   type DynamicIconProp,
   type BasicIconProps,
@@ -23,7 +25,6 @@ export const DynamicIconRenderer = ({ icon, ...props }: DynamicIconRendererProps
       for (const i of ics) {
         if (i.visible) {
           if (visibleEncountered) {
-            const logger = (await import("~/application/logger")).logger;
             logger.error(
               "The dynamically provided set of icons includes multiple visible icons. " +
                 "Only the first will be rendered.",
@@ -39,7 +40,6 @@ export const DynamicIconRenderer = ({ icon, ...props }: DynamicIconRendererProps
         }
       }
       if (!visibleEncountered) {
-        const logger = (await import("~/application/logger")).logger;
         logger.error(
           "The dynamically provided set of icons does not include a visible icon. " +
             "No icon will be rendered.",

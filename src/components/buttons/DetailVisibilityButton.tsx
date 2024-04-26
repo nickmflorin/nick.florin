@@ -3,6 +3,7 @@ import { useTransition, useState, useCallback, useEffect, useMemo } from "react"
 
 import { toast } from "react-toastify";
 
+import { logger } from "~/application/logger";
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
 import { IconButton } from "~/components/buttons";
@@ -46,7 +47,6 @@ export const DetailVisibilityButton = <D extends ApiDetail<[]> | NestedApiDetail
       await updateDetailWithId({ visible: !detail.visible });
       success = true;
     } catch (e) {
-      const logger = (await import("~/application/logger")).logger;
       logger.error("There was an error changing the detail's visibility.", {
         error: e,
         id: detail.id,

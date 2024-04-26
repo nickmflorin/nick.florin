@@ -24,6 +24,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
     experiences: _experiences,
     educations: _educations,
     projects: _projects,
+    repositories: _repositories,
     ...data
   } = parsed.data;
 
@@ -61,6 +62,11 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
       ids: _projects,
       fieldErrors,
     });
+    const [repositories] = await queryM2MsDynamically(tx, {
+      model: "repository",
+      ids: _repositories,
+      fieldErrors,
+    });
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
     }
@@ -74,12 +80,45 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
         experiences: experiences ? { connect: experiences.map(e => ({ id: e.id })) } : undefined,
         projects: projects ? { connect: projects.map(e => ({ id: e.id })) } : undefined,
         educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
+        repositories: repositories ? { connect: repositories.map(e => ({ id: e.id })) } : undefined,
       },
     });
     // TODO: We may have to revalidate other API paths as well.
     revalidatePath("/admin/skills", "page");
-    revalidatePath("/admin/experiences", "page");
-    revalidatePath("/admin/educations", "page");
+    revalidatePath("/api/skills");
+
+    if (experiences) {
+      revalidatePath("/api/experiences");
+      experiences.forEach(exp => {
+        revalidatePath("/resume/experiences", "page");
+        revalidatePath("/admin/experiences", "page");
+        revalidatePath("/api/experiences");
+        revalidatePath(`/api/experiences/${exp.id}`);
+      });
+    }
+
+    if (educations) {
+      revalidatePath("/api/educations");
+      educations.forEach(edu => {
+        revalidatePath("/resume/educations", "page");
+        revalidatePath("/admin/educations", "page");
+        revalidatePath("/api/educations");
+        revalidatePath(`/api/educations/${edu.id}`);
+      });
+    }
+
+    if (projects) {
+      revalidatePath("/api/projects");
+      projects.forEach(proj => {
+        revalidatePath(`/projects/${proj.id}`, "page");
+        revalidatePath(`/api/projects/${proj.id}`);
+      });
+    }
+
+    if (repositories) {
+      revalidatePath("/api/repositories");
+      repositories.forEach(repo => revalidatePath(`/api/repositories/${repo.id}`));
+    }
 
     return convertToPlainObject(skill);
   });

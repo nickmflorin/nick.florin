@@ -3,6 +3,7 @@ import { useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
+import { logger } from "~/application/logger";
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
 import { deleteDetail, deleteNestedDetail } from "~/actions/mutations/details";
 import { IconButton } from "~/components/buttons";
@@ -62,7 +63,6 @@ export const CollapsedUpdateDetailForm = <D extends ApiDetail<[]> | NestedApiDet
               await deleteDetailWithId();
               success = true;
             } catch (e) {
-              const logger = (await import("~/application/logger")).logger;
               logger.error("There was an error deleting the detail.", {
                 error: e,
                 id: props.detail.id,

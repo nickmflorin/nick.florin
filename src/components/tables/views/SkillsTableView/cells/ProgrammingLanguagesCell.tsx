@@ -4,7 +4,7 @@ import { ProgrammingLanguageSelect } from "~/components/input/select/Programming
 import { SelectCell } from "~/components/tables/generic/cells/SelectCell";
 
 interface ProgrammingLanguagesCellProps {
-  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
+  readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
 }
 
 export const ProgrammingLanguagesCell = ({ skill }: ProgrammingLanguagesCellProps): JSX.Element => (

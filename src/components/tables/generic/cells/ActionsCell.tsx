@@ -3,6 +3,7 @@ import { useState, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
+import { logger } from "~/application/logger";
 import { IconButton } from "~/components/buttons";
 
 interface ActionsCellProps {
@@ -53,8 +54,6 @@ export const ActionsCell = ({
               await deleteAction();
             } catch (e) {
               success = false;
-
-              const logger = (await import("~/application/logger")).logger;
               logger.error(deleteErrorMessage, {
                 error: e,
               });

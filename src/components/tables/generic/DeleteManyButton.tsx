@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 import type * as types from "../types";
 
+import { logger } from "~/application/logger";
 import { type ApiClientErrorJson, isApiClientErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 
@@ -33,7 +34,6 @@ export const DeleteManyButton = <T extends types.TableModel>({
           try {
             response = await action(checked);
           } catch (e) {
-            const logger = (await import("~/application/logger")).logger;
             logger.error(`There was a server error deleting the rows of table '${id}':\n${e}`, {
               error: e,
               tableId: id,
@@ -44,7 +44,6 @@ export const DeleteManyButton = <T extends types.TableModel>({
             setIsDeleting(false);
           }
           if (response && isApiClientErrorJson(response)) {
-            const logger = (await import("~/application/logger")).logger;
             logger.error(`There was a client error deleting the rows of table '${id}'.`, {
               error: response,
               tableId: id,

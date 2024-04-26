@@ -11,7 +11,7 @@ import { isApiClientErrorJson } from "~/api";
 import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
 
 interface ProjectsCellProps {
-  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
+  readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
 }
 
 export const ProjectsCell = ({ skill }: ProjectsCellProps): JSX.Element => {
@@ -33,12 +33,10 @@ export const ProjectsCell = ({ skill }: ProjectsCellProps): JSX.Element => {
         // Optimistically update the value.
         setValue(v);
         item.setLoading(true);
-
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
           response = await updateSkill(skill.id, { projects: v });
         } catch (e) {
-          const logger = (await import("~/application/logger")).logger;
           logger.error(
             `There was an error updating the projects for the skill with ID '${skill.id}':\n${e}`,
             {

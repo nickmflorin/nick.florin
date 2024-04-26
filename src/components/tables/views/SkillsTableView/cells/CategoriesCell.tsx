@@ -5,11 +5,15 @@ import { SkillCategorySelect } from "~/components/input/select/SkillCategorySele
 import { SelectCell } from "~/components/tables/generic/cells/SelectCell";
 
 interface CategoriesCellProps {
-  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
+  readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
 }
 
 export const CategoriesCell = ({ skill }: CategoriesCellProps): JSX.Element => (
-  <SelectCell<ApiSkill<["experiences", "educations", "projects"]>, "categories", BrandSkill>
+  <SelectCell<
+    ApiSkill<["experiences", "educations", "projects", "repositories"]>,
+    "categories",
+    BrandSkill
+  >
     component={SkillCategorySelect}
     attribute="categories"
     model={skill}

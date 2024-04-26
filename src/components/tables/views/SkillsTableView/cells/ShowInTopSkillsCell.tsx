@@ -12,8 +12,10 @@ import { Checkbox } from "~/components/input/Checkbox";
 import type * as types from "~/components/tables/types";
 
 interface ShowInTopSkillsCellProps {
-  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
-  readonly table: types.CellTableInstance<ApiSkill<["experiences", "educations", "projects"]>>;
+  readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
+  readonly table: types.CellTableInstance<
+    ApiSkill<["experiences", "educations", "projects", "repositories"]>
+  >;
 }
 
 export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps): JSX.Element => {
@@ -38,7 +40,6 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
           try {
             response = await updateSkill(skill.id, { includeInTopSkills: e.target.checked });
           } catch (e) {
-            const logger = (await import("~/application/logger")).logger;
             logger.error(
               `There was an error updating the top skills flag for the skill with ID '${skill.id}':\n${e}`,
               {

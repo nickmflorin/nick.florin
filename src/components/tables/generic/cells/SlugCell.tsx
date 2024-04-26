@@ -93,7 +93,6 @@ export const SlugCell = <M extends { id: string; slug: string }, T>({
           try {
             await action(model.id, null);
           } catch (e) {
-            const logger = (await import("~/application/logger")).logger;
             logger.error(
               `There was an error updating the slug for the ${modelType} with ID '${model.id}':\n${e}`,
               {

@@ -34,17 +34,18 @@ const ShowInTopSkillsCell = dynamic(() => import("./cells/ShowInTopSkillsCell"))
 const CategoriesCell = dynamic(() => import("./cells/CategoriesCell"));
 const ProgrammingLanguagesCell = dynamic(() => import("./cells/ProgrammingLanguagesCell"));
 const ProjectsCell = dynamic(() => import("./cells/ProjectsCell"));
+const RepositoriesCell = dynamic(() => import("./cells/RepositoriesCell"));
 
 export interface TableViewConfig
   extends Pick<
-    RootTableViewConfig<ApiSkill<["experiences", "educations", "projects"]>>,
+    RootTableViewConfig<ApiSkill<["experiences", "educations", "projects", "repositories"]>>,
     "children"
   > {}
 
 export const TableViewProvider = ({ children }: TableViewConfig) => {
   const { open, ids } = useDrawers();
   return (
-    <RootTableViewProvider<ApiSkill<["experiences", "educations", "projects"]>>
+    <RootTableViewProvider<ApiSkill<["experiences", "educations", "projects", "repositories"]>>
       id="skills-table"
       isCheckable={true}
       useCheckedRowsQuery={false}
@@ -73,7 +74,10 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           title: "Slug",
           width: 200,
           render: ({ model, table }) => (
-            <SlugCell<ApiSkill<["experiences", "educations", "projects"]>, BrandSkill>
+            <SlugCell<
+              ApiSkill<["experiences", "educations", "projects", "repositories"]>,
+              BrandSkill
+            >
               model={model}
               modelType="skill"
               table={table}
@@ -85,23 +89,26 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
         {
           accessor: "experiences",
           title: "Experiences",
-          // width: 240,
           cellsClassName: "min-w-[200px] max-w-[320px]",
           render: ({ model }) => <ExperiencesCell skill={model} />,
         },
         {
           accessor: "educations",
           title: "Educations",
-          // width: 240,
           cellsClassName: "min-w-[200px] max-w-[320px]",
           render: ({ model }) => <EducationsCell skill={model} />,
         },
         {
           accessor: "projects",
           title: "Projects",
-          // width: 240,
           cellsClassName: "min-w-[200px] max-w-[320px]",
           render: ({ model }) => <ProjectsCell skill={model} />,
+        },
+        {
+          accessor: "repositories",
+          title: "Repositories",
+          cellsClassName: "min-w-[200px] max-w-[320px]",
+          render: ({ model }) => <RepositoriesCell skill={model} />,
         },
         {
           accessor: "experience",
@@ -157,7 +164,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
               action={async (id, data) => {
                 await updateSkill(id, data);
               }}
-              errorMessage="There was an error updating the experience."
+              errorMessage="There was an error updating the skill."
             />
           ),
         },

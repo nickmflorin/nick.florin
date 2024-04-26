@@ -8,24 +8,24 @@ import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
-import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
+import { ClientRepositorySelect } from "~/components/input/select/ClientRepositorySelect";
 
-interface ExperiencesCellProps {
+interface RepositoriesCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
 }
 
-export const ExperiencesCell = ({ skill }: ExperiencesCellProps): JSX.Element => {
-  const [value, setValue] = useState(skill.experiences.map(exp => exp.id));
+export const RepositoriesCell = ({ skill }: RepositoriesCellProps): JSX.Element => {
+  const [value, setValue] = useState(skill.repositories.map(p => p.id));
   const router = useRouter();
   const [_, transition] = useTransition();
 
   useEffect(() => {
-    setValue(skill.experiences.map(exp => exp.id));
-  }, [skill.experiences]);
+    setValue(skill.repositories.map(p => p.id));
+  }, [skill.repositories]);
 
   return (
-    <ClientExperienceSelect
-      visibility="admin"
+    <ClientRepositorySelect
+      options={{ isMulti: true }}
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
@@ -33,13 +33,12 @@ export const ExperiencesCell = ({ skill }: ExperiencesCellProps): JSX.Element =>
         // Optimistically update the value.
         setValue(v);
         item.setLoading(true);
-
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
-          response = await updateSkill(skill.id, { experiences: v });
+          response = await updateSkill(skill.id, { repositories: v });
         } catch (e) {
           logger.error(
-            `There was a server error updating the experiences for the skill with ID '${skill.id}':\n${e}`,
+            `There was an error updating the repositories for the skill with ID '${skill.id}':\n${e}`,
             {
               error: e,
               skill: skill.id,
@@ -52,7 +51,7 @@ export const ExperiencesCell = ({ skill }: ExperiencesCellProps): JSX.Element =>
         }
         if (isApiClientErrorJson(response)) {
           logger.error(
-            "There was a client error updating the experiences for the skill with ID " +
+            "There was a client error updating the repositories for the skill with ID " +
               `'${skill.id}': ${response.code}`,
             {
               response,
@@ -73,4 +72,4 @@ export const ExperiencesCell = ({ skill }: ExperiencesCellProps): JSX.Element =>
   );
 };
 
-export default ExperiencesCell;
+export default RepositoriesCell;

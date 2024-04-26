@@ -39,6 +39,7 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
       projects: _projects,
       experiences: _experiences,
       educations: _educations,
+      repositories: _repositories,
       label: _label,
       ...data
     } = parsed.data;
@@ -97,6 +98,11 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
       ids: _projects,
       fieldErrors,
     });
+    const [repositories] = await queryM2MsDynamically(tx, {
+      model: "repository",
+      ids: _repositories,
+      fieldErrors,
+    });
 
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
@@ -112,16 +118,46 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
         projects: projects ? { set: projects.map(p => ({ id: p.id })) } : undefined,
         experiences: experiences ? { set: experiences.map(p => ({ id: p.id })) } : undefined,
         educations: educations ? { set: educations.map(p => ({ id: p.id })) } : undefined,
+        repositories: repositories ? { set: repositories.map(p => ({ id: p.id })) } : undefined,
       },
     });
 
     revalidatePath("/admin/skills", "page");
-    revalidatePath("/admin/experiences", "page");
-    revalidatePath("/admin/educations", "page");
     revalidatePath("/api/skills");
-    revalidatePath("/api/experiences");
-    revalidatePath("/api/educations");
-    revalidatePath("/api/projects");
+    revalidatePath(`/api/skills/${skill.id}`);
+
+    if (experiences) {
+      revalidatePath("/api/experiences");
+      experiences.forEach(exp => {
+        revalidatePath("/resume/experiences", "page");
+        revalidatePath("/admin/experiences", "page");
+        revalidatePath("/api/experiences");
+        revalidatePath(`/api/experiences/${exp.id}`);
+      });
+    }
+
+    if (educations) {
+      revalidatePath("/api/educations");
+      educations.forEach(edu => {
+        revalidatePath("/resume/educations", "page");
+        revalidatePath("/admin/educations", "page");
+        revalidatePath("/api/educations");
+        revalidatePath(`/api/educations/${edu.id}`);
+      });
+    }
+
+    if (projects) {
+      revalidatePath("/api/projects");
+      projects.forEach(proj => {
+        revalidatePath(`/projects/${proj.id}`, "page");
+        revalidatePath(`/api/projects/${proj.id}`);
+      });
+    }
+
+    if (repositories) {
+      revalidatePath("/api/repositories");
+      repositories.forEach(repo => revalidatePath(`/api/repositories/${repo.id}`));
+    }
 
     return convertToPlainObject(skill);
   });

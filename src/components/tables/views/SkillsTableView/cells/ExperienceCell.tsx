@@ -5,6 +5,7 @@ import { useState, useEffect, useTransition, useCallback } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
+import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/mutations/skills";
 import { Checkbox } from "~/components/input/Checkbox";
@@ -13,8 +14,10 @@ import type * as types from "~/components/tables/types";
 import { Label } from "~/components/typography/Label";
 
 interface ExperienceCellProps {
-  readonly skill: ApiSkill<["experiences", "educations", "projects"]>;
-  readonly table: types.CellTableInstance<ApiSkill<["experiences", "educations", "projects"]>>;
+  readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
+  readonly table: types.CellTableInstance<
+    ApiSkill<["experiences", "educations", "projects", "repositories"]>
+  >;
 }
 
 export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Element => {
@@ -53,7 +56,6 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
               try {
                 await updateSkill(skill.id, { experience: null });
               } catch (e) {
-                const logger = (await import("~/application/logger")).logger;
                 logger.error(
                   `There was an error updating the experience for the skill with ID '${skill.id}':\n${e}`,
                   {
@@ -89,7 +91,6 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
             try {
               await updateSkill(skill.id, { experience: parseInt(ex) });
             } catch (e) {
-              const logger = (await import("~/application/logger")).logger;
               logger.error(
                 `There was an error updating the experience for the skill with ID '${skill.id}':\n${e}`,
                 {
