@@ -13,7 +13,7 @@ import type * as types from "~/components/tables/types";
 
 interface CompanyCellProps {
   readonly experience: ApiExperience<["details", "skills"]>;
-  readonly table: types.TableView<ApiExperience<["details", "skills"]>>;
+  readonly table: types.CellTableInstance<ApiExperience<["details", "skills"]>>;
 }
 
 export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Element => {

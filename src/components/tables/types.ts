@@ -16,10 +16,15 @@ export type TableModel = {
   readonly id: string;
 };
 
+export type CellTableInstance<T extends TableModel> = Pick<TableView<T>, "setRowLoading">;
+
 export type CellRenderProps<T extends TableModel> = {
   readonly model: T;
   readonly index: number;
-  readonly table: TableView<T>;
+  /* It is important that the table instance that is passed to the cells does not include the
+     columns, otherwise, it can lead to an infinite recursion as the cells are a part of the
+     columns. */
+  readonly table: CellTableInstance<T>;
 };
 
 export type CellRenderer<T extends TableModel> = (props: CellRenderProps<T>) => ReactNode;
@@ -34,7 +39,7 @@ export const getColId = <T extends TableModel>(col: Column<T>): string => col.id
 
 export const toNativeColumn = <T extends TableModel>(
   col: Column<T>,
-  table: TableView<T>,
+  table: CellTableInstance<T>,
 ): RootColumn<T> => {
   const { render } = col;
   if (render !== undefined) {

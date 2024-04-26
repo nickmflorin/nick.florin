@@ -1,11 +1,10 @@
 import dynamic from "next/dynamic";
-import { type ReactNode, useState, useCallback } from "react";
+import { type ReactNode, useState, useCallback, useMemo, memo } from "react";
 
 import uniq from "lodash.uniq";
 
 import { Spinner } from "~/components/icons/Spinner";
 import { Checkbox } from "~/components/input/Checkbox";
-import { useDeepEqualMemo } from "~/hooks";
 
 import { useCheckedRows } from "../hooks";
 import * as types from "../types";
@@ -57,7 +56,7 @@ export const useTableView = <T extends types.TableModel>({
       .map(c => types.getColId(c)),
   );
 
-  const columns = useDeepEqualMemo(() => {
+  const columns = useMemo(() => {
     let cs: types.Column<T>[] = [..._columns];
     if (isCheckable) {
       cs = [
@@ -108,7 +107,7 @@ export const useTableView = <T extends types.TableModel>({
           isHideable: false,
           render: ({ model }) => (
             <ActionsCell
-              deleteErrorMessage="There was an error deleting the skill."
+              deleteErrorMessage={deleteErrorMessage}
               deleteAction={deleteAction ? deleteAction.bind(null, model.id) : undefined}
               onEdit={onEdit ? () => onEdit(model.id, model) : undefined}
               deleteIsDisabled={deleteIsDisabled}
@@ -120,12 +119,13 @@ export const useTableView = <T extends types.TableModel>({
     return cs.map(col => ({ noWrap: true, ...col }));
   }, [
     _columns,
+    rowStates,
     checked,
     isCheckable,
+    deleteErrorMessage,
     uncheck,
     check,
     deleteAction,
-    deleteErrorMessage,
     deleteIsDisabled,
     onEdit,
   ]);
@@ -139,12 +139,12 @@ export const useTableView = <T extends types.TableModel>({
     });
   }, []);
 
-  const visibleColumns = useDeepEqualMemo(
+  const visibleColumns = useMemo(
     () =>
       columns.filter(c =>
         c.isHideable !== false ? visibleColumnIds.includes(types.getColId(c)) : true,
       ),
-    [columns, visibleColumnIds],
+    [visibleColumnIds, columns],
   );
 
   const hideColumn = useCallback((id: string) => {
@@ -167,29 +167,39 @@ export const useTableView = <T extends types.TableModel>({
     uncheck,
     setVisibleColumns: setVisibleColumnIds,
     setRowLoading,
-    rowIsLoading: (id: T["id"]) => rowStates.map(st => st.id).includes(id),
-    rowIsLocked: (id: T["id"]) =>
-      rowStates
-        .filter(st => st.locked === true)
-        .map(st => st.id)
-        .includes(id),
+    rowIsLoading: useCallback(
+      (id: T["id"]) => rowStates.map(st => st.id).includes(id),
+      [rowStates],
+    ),
+    rowIsLocked: useCallback(
+      (id: T["id"]) =>
+        rowStates
+          .filter(st => st.locked === true)
+          .map(st => st.id)
+          .includes(id),
+      [rowStates],
+    ),
   };
 };
 
-export const TableViewProvider = <T extends types.TableModel>({
-  children,
-  id,
-  canToggleColumnVisibility = false,
-  ...config
-}: TableViewConfig<T>) => {
-  const tableView = useTableView<T>(config);
-  return (
-    <TableViewContext.Provider<T>
-      value={{ ...tableView, isReady: true, id, canToggleColumnVisibility }}
-    >
-      {children}
-    </TableViewContext.Provider>
-  );
+export const TableViewProvider = memo(
+  <T extends types.TableModel>({
+    children,
+    id,
+    canToggleColumnVisibility = false,
+    ...config
+  }: TableViewConfig<T>) => {
+    const tableView = useTableView<T>(config);
+    return (
+      <TableViewContext.Provider<T>
+        value={{ ...tableView, isReady: true, id, canToggleColumnVisibility }}
+      >
+        {children}
+      </TableViewContext.Provider>
+    );
+  },
+) as {
+  <T extends types.TableModel>(props: TableViewConfig<T>): JSX.Element;
 };
 
 export default TableViewProvider;

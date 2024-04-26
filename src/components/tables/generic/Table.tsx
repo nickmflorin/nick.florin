@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 
 import clsx from "clsx";
 import { type DataTableProps } from "mantine-datatable";
@@ -32,18 +32,22 @@ export const Table = memo(
 
      The only ways around this are to define the props for this component in an extremely
      complicated manner, or simply coerce the props as shown below. */
-    const rootProps: DataTableProps<T> = {
-      highlightOnHover: false,
-      height: "100%",
-      className: clsx("data-table", `data-table--size-${size}`, className),
-      customLoader: <Loading overlay={true} isLoading={true} />,
-      // TODO: Revisit this later.
-      emptyState: <></>,
-      ...props,
-      fetching: isLoading,
-      records: data,
-      columns,
-    } as DataTableProps<T>;
+    const rootProps: DataTableProps<T> = useMemo(
+      () =>
+        ({
+          highlightOnHover: false,
+          height: "100%",
+          className: clsx("data-table", `data-table--size-${size}`, className),
+          customLoader: <Loading overlay={true} isLoading={true} />,
+          // TODO: Revisit this later.
+          emptyState: <></>,
+          ...props,
+          fetching: isLoading,
+          records: data,
+          columns,
+        }) as DataTableProps<T>,
+      [columns, data, props, isLoading, className, size],
+    );
 
     return <MantineDataTable<T> {...rootProps} />;
   },

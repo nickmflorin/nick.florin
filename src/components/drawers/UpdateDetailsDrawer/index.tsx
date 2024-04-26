@@ -19,6 +19,7 @@ import { type ExtendingDrawerProps } from "../provider";
 const UpdateDetailsCollapsedDrawer = dynamic(() => import("./UpdateDetailsCollapsedDrawer"), {
   loading: () => <Loading isLoading={true} />,
 });
+
 const UpdateDetailsExpandedDrawer = dynamic(() => import("./UpdateDetailsExpandedDrawer"), {
   loading: () => <Loading isLoading={true} />,
 });

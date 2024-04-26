@@ -13,13 +13,13 @@ import {
 import { Table } from "./Table";
 
 export const ContextTable = <T extends TableModel>(props: Omit<TableProps<T>, "columns">) => {
-  const view = useTableView<T>();
+  const { visibleColumns, setRowLoading, rowIsLoading, rowIsLocked } = useTableView<T>();
   return (
     <Table<T>
       {...props}
-      columns={view.visibleColumns.map((col): RootColumn<T> => toNativeColumn(col, view))}
+      columns={visibleColumns.map((col): RootColumn<T> => toNativeColumn(col, { setRowLoading }))}
       rowClassName={mergeRowClassNames(props.rowClassName, ({ id }) =>
-        clsx({ "row--loading": view.rowIsLoading(id), "row--locked": view.rowIsLocked(id) }),
+        clsx({ "row--loading": rowIsLoading(id), "row--locked": rowIsLocked(id) }),
       )}
     />
   );

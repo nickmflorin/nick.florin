@@ -1,3 +1,5 @@
+import type { DrawerComponent } from "./drawers";
+
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import type {
   BrandSchool,
@@ -84,3 +86,30 @@ export type WithInjectedDrawerProps<D extends DrawerId> = DrawerIdProps<D> & Inj
 export type DrawerIdPropsPair<I extends DrawerId = DrawerId> = I extends DrawerId
   ? { id: I; props: DrawerIdProps<I> }
   : never;
+
+export type DrawerDynamicProps<D extends DrawerId> = Omit<
+  React.ComponentProps<DrawerComponent<D>>,
+  keyof InjectedDrawerProps
+>;
+
+export type DrawersManager = {
+  readonly isReady: boolean;
+  readonly drawer: JSX.Element | null;
+  readonly close: () => void;
+  readonly open: <D extends DrawerId>(
+    id: D,
+    params: DrawerDynamicProps<D>,
+    closeHandler?: () => void,
+  ) => void;
+};
+
+export interface ClientDrawerProps<D extends DrawerId> {
+  readonly id: D;
+  readonly isOpen?: boolean;
+  readonly onClose?: () => void;
+  readonly props: DrawerDynamicProps<D>;
+}
+
+export type ClientDrawerComponent = {
+  <D extends DrawerId>(props: ClientDrawerProps<D>): JSX.Element;
+};
