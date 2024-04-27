@@ -26,22 +26,14 @@ export const Module = ({
   <div
     {...props}
     className={clsx(
-      "flex flex-col border rounded-md py-[12px] px-[18px] shadow-sm",
-      "overflow-x-hidden",
+      "border rounded-md py-[12px] px-[18px] shadow-sm",
+      "flex flex-col gap-[12px] w-full max-w-full",
       props.className,
     )}
   >
-    <div className="flex flex-col gap-[12px] h-full w-full max-h-full max-w-full overflow-x-hidden">
-      <ModuleHeader actions={actions}>{title}</ModuleHeader>
-      <div
-        className={clsx(
-          "flex flex-col gap-[12px] grow max-h-[calc(100%-32px-12px)]",
-          { "overflow-y-auto pr-[16px]": scrollable },
-          contentClassName,
-        )}
-      >
-        {children}
-      </div>
+    <ModuleHeader actions={actions}>{title}</ModuleHeader>
+    <div className={clsx({ "overflow-y-auto pr-[16px]": scrollable }, contentClassName)}>
+      {children}
     </div>
   </div>
 );
