@@ -25,7 +25,17 @@
           "concentration": null,
           "postPoned": false,
           "visible": true,
-          "skills": ["python", "matlab", "django", "numpy", "scipy", "scikit-learn", "pandas"],
+          "skills": [
+            "python",
+            "matlab",
+            "django",
+            "r",
+            "pandas",
+            "scikit-learn",
+            "scipy",
+            "numpy",
+            "numerical-computation"
+          ],
           "courses": [
             {
               "name": "Advanced Equity Derivatives",
@@ -134,7 +144,16 @@
           "concentration": null,
           "postPoned": false,
           "visible": true,
-          "skills": ["python", "matlab", "django", "numpy", "scipy", "scikit-learn", "pandas"],
+          "skills": [
+            "python",
+            "matlab",
+            "django",
+            "pandas",
+            "scikit-learn",
+            "scipy",
+            "numpy",
+            "numerical-computation"
+          ],
           "courses": [
             {
               "name": "Neural Networks",
@@ -206,7 +225,7 @@
           "concentration": "Robotics & Control Systems",
           "postPoned": false,
           "visible": true,
-          "skills": ["c-plus-plus", "python", "matlab"],
+          "skills": ["c-plus-plus", "python", "matlab", "numerical-computation"],
           "courses": [
             {
               "name": "Computer Science",

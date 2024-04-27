@@ -68,15 +68,21 @@ export const Detail = <
       {detail.description && (
         <Description
           fontSize={descriptionFontSize}
-          className={clsx("text-gray-600", { "pl-[16px]": index !== undefined })}
+          className={clsx({ "pl-[16px]": index !== undefined })}
         >
           {detail.description}
         </Description>
       )}
     </div>
-    {detail.skills.length !== 0 && <Skills skills={detail.skills} className="max-w-[800px]" />}
+    {detail.skills.length !== 0 && (
+      <Skills
+        skills={detail.skills}
+        className={clsx("max-w-[800px]", { "pl-[16px]": index !== undefined })}
+      />
+    )}
     {!isNestedDetail(detail) && (
       <Details
+        // className={clsx({ "pl-[16px]": index !== undefined })}
         details={detail.nestedDetails}
         isNested={true}
         labelFontSize={labelFontSize}
