@@ -52,7 +52,7 @@ export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => 
       onClick={datum => open(ids.VIEW_SKILL, { skillId: datum.data.id })}
       tooltip={props => (
         <TooltipContent
-          className={clsx("flex flex-col relative min-h-[40px]", "gap-[10px] px-[8px] py-[10px]")}
+          className={clsx("flex flex-col relative min-h-[40px] gap-[10px] px-[8px] py-[10px]")}
         >
           <SkillsBarChartTooltip {...props} />
         </TooltipContent>

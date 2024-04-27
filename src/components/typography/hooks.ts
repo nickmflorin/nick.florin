@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect, useEffect, useCallback } from "react";
 
 import type * as types from "./types";
 
@@ -11,18 +11,31 @@ export const useControlledTypographyVisibility = ({
 }: ControlledTypographyVisibilityConfig) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
-  // TODO: Make initial state depend on the present of the lineclamp prop
   const [isTruncated, setIsTruncated] = useState(true);
   const [state, setState] = useState<types.TypographyVisibilityState>(initialState);
 
-  useLayoutEffect(() => {
+  const updateTruncation = useCallback(() => {
     const { offsetHeight, scrollHeight } = ref.current || {};
     if (offsetHeight && scrollHeight && offsetHeight < scrollHeight) {
       setIsTruncated(true);
     } else {
       setIsTruncated(false);
     }
-  }, [ref]);
+  }, []);
+
+  useLayoutEffect(() => {
+    updateTruncation();
+  }, [updateTruncation]);
+
+  useEffect(() => {
+    const listener = () => {
+      updateTruncation();
+    };
+    window.addEventListener("resize", listener, false);
+    return () => {
+      window.removeEventListener("resize", listener);
+    };
+  });
 
   return {
     ref,

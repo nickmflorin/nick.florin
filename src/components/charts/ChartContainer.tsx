@@ -20,7 +20,7 @@ export const ChartContainer = ({
 }: ChartContainerProps): JSX.Element => (
   <div
     {...props}
-    className={clsx("w-full relative", props.className)}
+    className={clsx("relative", props.className)}
     style={{
       maxHeight: maxHeight ? sizeToString(maxHeight, "px") : undefined,
       minHeight: minHeight ? sizeToString(minHeight, "px") : undefined,

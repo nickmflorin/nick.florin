@@ -31,8 +31,6 @@ export default async function ChartPage({ searchParams }: ChartPageProps) {
     <SkillsBarChartView
       filters={rest}
       limit={showTopSkills === "all" ? undefined : showTopSkills}
-      maxHeight={400}
-      height={400}
     />
   );
 }

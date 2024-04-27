@@ -13,6 +13,7 @@ export interface SkillsBarChartLegendProps extends ComponentProps {
 export const SkillsBarChartLegend = async ({
   filters,
   limit,
+  ...props
 }: SkillsBarChartLegendProps): Promise<JSX.Element> => {
   const skills = await getSkills({
     includes: [],
@@ -26,11 +27,11 @@ export const SkillsBarChartLegend = async ({
   const colors = generateChartColors(skills.length);
   return (
     <Legend
+      {...props}
       items={skills.map((skill, index) => ({
         label: skill.label,
         color: colors[index],
       }))}
-      className="px-[20px]"
     />
   );
 };

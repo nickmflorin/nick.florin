@@ -181,6 +181,13 @@ export const sizeToNumber = <T extends QuantitativeSize>(size: T): SizeToNumberR
   throw new TypeError(`The provided size string, '${size}', is invalid!`);
 };
 
+export type Breakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+
+export type BreakPointClassName<
+  T extends string,
+  B extends Breakpoint = Breakpoint,
+> = B extends Breakpoint ? T | `${Breakpoint}:${T}` | `max-${Breakpoint}:${T}` : never;
+
 /**
  * A type that represents the string, lowercase name of a native HTML element (i.e. "div" or "p").
  */
