@@ -1,8 +1,8 @@
 import clsx from "clsx";
 
-import { Circle } from "~/components/icons/svgs";
 import { type ComponentProps } from "~/components/types";
-import { Label } from "~/components/typography/Label";
+
+import { LegendItem } from "./LegendItem";
 
 export interface ILegendItem {
   readonly label: string;
@@ -13,17 +13,11 @@ export interface LegendProps extends ComponentProps {
   readonly items: ILegendItem[];
 }
 
-export const LegendItem = ({ color, label }: ILegendItem) => (
-  <div className="flex flex-row items-center h-[18px] gap-[3px]">
-    <Circle color={color} size={18} />
-    <Label fontSize="sm" fontWeight="regular" className="leading-[18px]" fontFamily="inter">
-      {label}
-    </Label>
-  </div>
-);
-
 export const Legend = ({ items, ...props }: LegendProps) => (
-  <div {...props} className={clsx("flex flex-wrap gap-y-[4px] gap-x-[6px]", props.className)}>
+  <div
+    {...props}
+    className={clsx("flex flex-wrap gap-y-[4px] gap-x-[6px] overflow-x-hidden", props.className)}
+  >
     {items.map((item, i) => (
       <LegendItem key={i} {...item} />
     ))}
