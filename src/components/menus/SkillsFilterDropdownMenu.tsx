@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import { useEffect } from "react";
 
 import {
   ChartFilterButton,
@@ -21,31 +22,33 @@ const Popover = dynamic(() => import("~/components/floating/Popover"));
 export interface SkillsFilterDropdownMenuProps {
   readonly isDisabled?: boolean;
   readonly buttonProps?: Omit<ChartFilterButtonProps, "isDisabled">;
-  readonly useSearchParams?: boolean;
   readonly placement?: PopoverProps["placement"];
+  readonly filters: SkillsChartFilterFormValues;
   readonly onChange?: (values: SkillsChartFilterFormValues) => void;
 }
 
 export const SkillsFilterDropdownMenu = ({
   isDisabled = false,
   buttonProps,
-  useSearchParams = false,
   placement = "bottom-end",
+  filters,
   onChange,
 }: SkillsFilterDropdownMenuProps): JSX.Element => {
   const { isLessThan } = useScreenSizes({});
   const { set } = useMutableParams();
 
-  const form = useForm<SkillsChartFilterFormValues>({
+  const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({
     schema: SkillsChartFilterFormSchema,
     defaultValues: { showTopSkills: "all" },
     onChange: ({ values }) => {
-      if (useSearchParams) {
-        set({ filters: values });
-      }
+      set({ filters: values });
       onChange?.(values);
     },
   });
+
+  useEffect(() => {
+    setValues(filters);
+  }, [filters, setValues]);
 
   /* We do not want to show the chart filters on mobile devices until we figure out how to more
      cleanly integrate them into the mobile experience with a drawer instead of a popover. */
@@ -63,7 +66,7 @@ export const SkillsFilterDropdownMenu = ({
       isDisabled={isDisabled}
       content={
         <PopoverContent className="p-[20px] rounded-md overflow-y-auto" variant="white">
-          <SkillsChartFilterForm form={form} isScrollable={false} />
+          <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable={false} />
         </PopoverContent>
       }
     >

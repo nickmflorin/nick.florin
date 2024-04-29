@@ -11,7 +11,7 @@ interface UseMutableParamsConfig {
   readonly useTransition?: boolean;
 }
 
-type SetOpts = { useTransition?: boolean; clear?: string | string[] | true };
+type SetOpts = { clear?: string | string[] | true };
 
 type Set = {
   (key: string, v: unknown, opts?: SetOpts): void;
@@ -26,7 +26,7 @@ export const useMutableParams = (
   clear: (key: string | string[], opts?: { useTransition?: boolean }) => void;
 } => {
   const [_, transition] = useTransition();
-  const { push } = useRouter();
+  const { push, prefetch } = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
 
@@ -67,32 +67,20 @@ export const useMutableParams = (
       }
 
       const overwriteParams = config?.overwriteParams ?? options.clear === true;
-      const withTransition =
-        options.useTransition === undefined
-          ? config?.useTransition === undefined ?? false
-          : options.useTransition;
-
       const existing = parseQuery(new URLSearchParams(overwriteParams ? "" : params?.toString()));
 
       const pms: Record<string, unknown> = {
         ...existing,
         ...toSet,
       };
-
       if (options.clear && options.clear !== true) {
         const clr = Array.isArray(options.clear) ? options.clear : [options.clear];
         for (const c of clr) {
           delete pms[c];
         }
       }
-
-      if (withTransition) {
-        transition(() => {
-          push(`${pathname}?${qs.stringify(pms, { allowEmptyArrays: true })}`);
-        });
-      } else {
-        push(`${pathname}?${qs.stringify(pms, { allowEmptyArrays: true })}}`);
-      }
+      const newUrl = `${pathname}?${qs.stringify(pms, { allowEmptyArrays: true })}}`;
+      push(newUrl, {});
     },
     [config, params, pathname, push],
   );

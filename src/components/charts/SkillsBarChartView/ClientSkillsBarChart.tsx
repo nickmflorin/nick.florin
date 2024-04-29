@@ -9,7 +9,6 @@ import { BarChart } from "~/components/charts/BarChart";
 import { useDrawers } from "~/components/drawers/hooks";
 import { Loading } from "~/components/feedback/Loading";
 import { TooltipContent } from "~/components/floating/TooltipContent";
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
 import { type SkillsBarChartDatum } from "./types";
 

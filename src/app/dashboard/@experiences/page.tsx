@@ -4,7 +4,7 @@ import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelC
 export default async function ExperiencesPage() {
   const experiences = await getExperiences({ visibility: "public", includes: [], limit: 5 });
   return (
-    <div className="flex flex-col gap-[12px]">
+    <>
       {experiences.map((experience, index) => (
         <ResumeModelCondensedTile
           model={experience}
@@ -14,6 +14,6 @@ export default async function ExperiencesPage() {
           showMoreLink
         />
       ))}
-    </div>
+    </>
   );
 }

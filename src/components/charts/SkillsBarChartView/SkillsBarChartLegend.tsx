@@ -1,38 +1,39 @@
+import clsx from "clsx";
+
 import { generateChartColors } from "~/lib/charts";
-import { getSkills } from "~/actions/fetches/skills";
-import { type SkillsFilters } from "~/api/schemas";
+import type { ApiSkill } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 
 import { Legend } from "../Legend";
 
 export interface SkillsBarChartLegendProps extends ComponentProps {
-  readonly filters: Omit<SkillsFilters, "search" | "includeInTopSkills">;
-  readonly limit?: number;
+  readonly skills: ApiSkill[];
 }
 
 export const SkillsBarChartLegend = async ({
-  filters,
-  limit,
+  skills,
   ...props
 }: SkillsBarChartLegendProps): Promise<JSX.Element> => {
-  const skills = await getSkills({
-    includes: [],
-    visibility: "public",
-    filters: { ...filters, includeInTopSkills: true },
-    limit,
-  });
   if (skills.length === 0) {
     return <></>;
   }
   const colors = generateChartColors(skills.length);
   return (
-    <Legend
-      {...props}
-      items={skills.map((skill, index) => ({
-        label: skill.label,
-        color: colors[index],
-      }))}
-    />
+    <div
+      className={clsx(
+        "xl:px-[10px] xl:max-w-full",
+        "max-md:px-[10px] max-md:max-w-full",
+        "md:max-xl:max-h-full md:max-xl:overflow-y-auto md:max-xl:max-w-[390px]",
+      )}
+    >
+      <Legend
+        {...props}
+        items={skills.map((skill, index) => ({
+          label: skill.label,
+          color: colors[index],
+        }))}
+      />
+    </div>
   );
 };
 

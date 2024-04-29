@@ -27,3 +27,5 @@ export const Arrow = forwardRef(
     />
   ),
 );
+
+export default Arrow;

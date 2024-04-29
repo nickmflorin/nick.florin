@@ -1,15 +1,9 @@
-import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import clsx from "clsx";
 
-import { EducationModule } from "~/components/modules/EducationModule";
-import { ExperienceModule } from "~/components/modules/ExperienceModule";
+import { Link } from "~/components/buttons";
 import { Module } from "~/components/modules/generic";
-
-const SkillsFilterDropdownMenu = dynamic(
-  () => import("~/components/menus/SkillsFilterDropdownMenu"),
-);
 
 export interface DashboardPageProps {
   readonly experiences: ReactNode;
@@ -36,25 +30,34 @@ export default async function DashboardPage({
         "xl:h-full xl:max-h-full",
       )}
     >
-      <Module
-        contentClassName="xl:overflow-y-auto xl:pr-[16px]"
-        headerClassName="!pr-[0px]"
-        title="Skills Overview"
-        actions={[<SkillsFilterDropdownMenu key="0" placement="bottom-start" useSearchParams />]}
-      >
-        {chart}
-      </Module>
+      <Module>{chart}</Module>
       <div className={clsx("flex gap-[15px]", "md:flex-row", "xl:h-full", "max-md:flex-col")}>
-        <ExperienceModule
+        <Module
           className={clsx(
             "xl:max-w-[520px] xl:min-w-[400px]",
             "max-xl:w-[50%] max-xl:max-w-[50%]",
             "max-md:w-full max-md:max-w-full",
           )}
-          contentClassName={clsx("xl:overflow-y-auto xl:pr-[16px]")}
         >
-          {experiences}
-        </ExperienceModule>
+          <Module.Header
+            actions={[
+              <Link.Primary
+                key="0"
+                options={{ as: "link" }}
+                href="/resume/experience"
+                fontSize="xs"
+                fontWeight="medium"
+              >
+                View All
+              </Link.Primary>,
+            ]}
+          >
+            Recent Experiences
+          </Module.Header>
+          <Module.Content className="flex flex-col gap-[12px] xl:overflow-y-auto xl:pr-[16px]">
+            {experiences}
+          </Module.Content>
+        </Module>
         <div
           className={clsx(
             "flex flex-col gap-[15px]",
@@ -63,20 +66,41 @@ export default async function DashboardPage({
             "max-md:w-full max-md:max-w-full",
           )}
         >
-          <EducationModule
-            className="xl:overflow-y-hidden"
-            contentClassName="xl:overflow-y-auto xl:grow xl:pr-[16px]"
-          >
-            {educations}
-          </EducationModule>
-          <Module
-            title="Repositories"
-            className="xl:overflow-y-hidden"
-            contentClassName="xl:overflow-y-auto xl:grow xl:pr-[16px]"
-          >
-            {repositories}
+          <Module className="xl:overflow-y-hidden">
+            <Module.Header
+              actions={[
+                <Link.Primary
+                  key="0"
+                  options={{ as: "link" }}
+                  href="/resume/education"
+                  fontSize="xs"
+                  fontWeight="medium"
+                >
+                  View All
+                </Link.Primary>,
+              ]}
+            >
+              Education
+            </Module.Header>
+            <Module.Content
+              className={clsx(
+                "flex flex-col gap-[12px]",
+                "xl:overflow-y-auto xl:grow xl:pr-[16px]",
+              )}
+            >
+              {educations}
+            </Module.Content>
           </Module>
-          <Module title="Projects">{projects}</Module>
+          <Module className="xl:overflow-y-hidden">
+            <Module.Header>Repositories</Module.Header>
+            <Module.Content className={clsx("xl:overflow-y-auto xl:grow xl:pr-[16px]")}>
+              {repositories}
+            </Module.Content>
+          </Module>
+          <Module>
+            <Module.Header>Projects</Module.Header>
+            <Module.Content className={clsx("flex flex-col gap-[12px]")}>{projects}</Module.Content>
+          </Module>
         </div>
       </div>
     </div>

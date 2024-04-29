@@ -1,0 +1,23 @@
+import { type ReactNode } from "react";
+
+import clsx from "clsx";
+
+import { type ComponentProps } from "~/components/types";
+
+export interface ModuleContentProps extends ComponentProps {
+  readonly children: ReactNode;
+  readonly scrollable?: boolean;
+}
+
+export const ModuleContent = ({ scrollable = false, children, ...props }: ModuleContentProps) => (
+  <div
+    {...props}
+    className={clsx(
+      "module__content",
+      { "overflow-y-auto pr-[16px]": scrollable },
+      props.className,
+    )}
+  >
+    {children}
+  </div>
+);
