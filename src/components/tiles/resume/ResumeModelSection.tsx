@@ -1,13 +1,12 @@
 import clsx from "clsx";
 
-import { type ComponentProps } from "~/components/types";
-import type { FontSize } from "~/components/typography";
+import type { BodyFontSize, ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 
 export interface ResumeModelSectionProps extends ComponentProps {
   readonly children: JSX.Element;
   readonly label: string;
-  readonly labelFontSize?: FontSize;
+  readonly labelFontSize?: BodyFontSize;
 }
 
 export const ResumeModelSection = ({

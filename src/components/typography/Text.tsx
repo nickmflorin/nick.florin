@@ -2,9 +2,12 @@ import React, { forwardRef } from "react";
 
 import clsx from "clsx";
 
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
-
-import { type BaseTypographyProps, getTypographyClassName } from "./types";
+import {
+  type ComponentProps,
+  type HTMLElementProps,
+  type BaseTypographyProps,
+  getTypographyClassName,
+} from "~/components/types";
 
 export type TextComponent = "span" | "div" | "p";
 

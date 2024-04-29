@@ -7,6 +7,7 @@ import { sizeToString, type ComponentProps, type Size } from "~/components/types
 import { Details } from "./Details";
 import { ResumeModelBadges } from "./ResumeModelBadges";
 import { ResumeModelDescription } from "./ResumeModelDescription";
+import { ResumeModelHeader } from "./ResumeModelHeader";
 import { ResumeModelImage } from "./ResumeModelImage";
 import { ResumeModelSection } from "./ResumeModelSection";
 import { ResumeModelSubTitle } from "./ResumeModelSubTitle";
@@ -35,6 +36,7 @@ export const ResumeModelTile = Object.assign(LocalResumeModelTile, {
   Details,
   Section: ResumeModelSection,
   Description: ResumeModelDescription,
+  Header: ResumeModelHeader,
 });
 
 export default ResumeModelTile;

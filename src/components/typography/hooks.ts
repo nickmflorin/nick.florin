@@ -1,6 +1,6 @@
 import { useRef, useState, useLayoutEffect, useEffect, useCallback } from "react";
 
-import type * as types from "./types";
+import type * as types from "~/components/types";
 
 export interface ControlledTypographyVisibilityConfig {
   readonly initialState?: types.TypographyVisibilityState;

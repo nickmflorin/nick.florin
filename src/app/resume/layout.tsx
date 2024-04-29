@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 import { prisma } from "~/prisma/client";
 import { type BrandResume } from "~/prisma/model";
 import { convertToPlainObject } from "~/api/serialization";
@@ -23,8 +25,14 @@ export default async function ResumeLayout({ children }: ResumeLayoutProps) {
           <PublicResumeDownloadMenu resume={resume} />
         </div>
       )}
-      <div className="flex flex-col overflow-y-auto grow w-full">
-        <div className="flex flex-col min-w-[680px] max-w-[820px] max-h-full mx-auto my-0">
+      <div className="flex flex-col overflow-y-auto overflow-x-hidden grow w-full">
+        <div
+          className={clsx(
+            "flex flex-col max-h-full my-0",
+            "sm:w-full sm:max-w-full sm:mx-auto",
+            "md:min-w-[680px] md:max-w-[820px]",
+          )}
+        >
           {children}
         </div>
       </div>

@@ -23,23 +23,17 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
   ...props
 }: ResumeModelCondensedTileProps<M, T>) => (
   <ResumeModelTile {...props} gap="4px">
-    <div className="flex flex-col gap-[16px] max-w-full w-full">
-      <div className="flex flex-row gap-[12px] max-w-full w-full">
-        <ResumeModelTile.Image model={model} size="small" />
-        <div className="flex flex-col grow gap-[2px]">
-          <ResumeModelTile.Title model={model} size="small" expandable={expandable} />
-          <ResumeModelTile.SubTitle model={model} size="small" />
-          <ShowHide show={showBadges}>
-            <ResumeModelTile.Badges model={model} />
-          </ShowHide>
-        </div>
-      </div>
-    </div>
+    <ResumeModelTile.Header
+      size="small"
+      model={model}
+      showBadges={showBadges}
+      titleIsExpandable={expandable}
+    />
     <div className="flex flex-col pl-[40px] gap-[4px]">
       <ShowHide show={types.hasDescription(model) && showDescription}>
         <ResumeModelTile.Description
           model={model}
-          fontSize="xs"
+          size="small"
           lineClamp={3}
           includeShowMoreLink={showMoreLink}
         />

@@ -13,12 +13,12 @@ $font-families: ($font-family-avenir, $font-family-roboto, $font-family-inter);
 $text-transforms: ("uppercase", "lowercase", "capitalize", "underline");
 
 /* -------------------------------------- Font Families ----------------------------------------- */
-$title-font-family: $font-family-avenir;
+$title_font-family: $font-family-avenir;
 $body-font-family: $font-family-inter;
 $label-font-family: $font-family-inter;
 
 $typography-font-families: (
-  "title": $title-font-family,
+  "title": $title_font-family,
   "body": $body-font-family,
   "label": $label-font-family,
 );
@@ -72,6 +72,18 @@ $font-family-default-weights: (
 /* --------------------------------------- Font Sizes ----------------------------------------- */
 $typography-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
 
+/* Note: We cannot use Tailwind's 'theme' function here, because there are often cases where these
+   numbers are used in calculations for other properties elsewhere in the SASS code.  Preprocessors
+   like Sass run separately from Tailwind, before Tailwind. This means that you can’t feed output
+   from Tailwind’s theme() function into a Sass color function for example, because the theme()
+   function isn’t actually evaluated until your Sass has been compiled to CSS and fed into PostCSS.
+
+   Important!
+   ----------
+   This means that when we change font-related properties in Tailwind's configuration file, they
+   have to be updated here as well (and vice-versa).
+
+   Reference: https://tailwindcss.com/docs/using-with-preprocessors#using-sass-less-or-stylus */
 $typography-size-properties: (
   "body": (
     "xxxs": (
@@ -111,7 +123,7 @@ $typography-size-properties: (
     ),
     "xl": (
       font-size: 20px,
-      line-height: 28px,
+      line-height: 24px,
       font-weight: "regular",
     ),
   ),
@@ -175,7 +187,7 @@ $typography-size-properties: (
     ),
     "sm": (
       font-size: 14px,
-      line-height: 18px,
+      line-height: 16px,
       font-weight: "medium",
     ),
     "smplus": (
@@ -195,19 +207,19 @@ $typography-size-properties: (
     ),
     "xl": (
       font-size: 20px,
-      line-height: 28px,
+      line-height: 24px,
       font-weight: "medium",
     ),
   ),
 );
 
-$title-default-size: "md";
+$title_default-size: "md";
 $body-default-size: "md";
 $label-default-size: "md";
 
 $typography-default-sizes: (
   "body": $body-default-size,
-  "title": $title-default-size,
+  "title": $title_default-size,
   "label": $label-default-size,
 );
 
@@ -240,11 +252,11 @@ $typography-default-sizes: (
 
 /* --------------------------------------- Font Colors ------------------------------------------ */
 $default-label-color: theme("colors.label");
-$default-title-color: theme("colors.title");
+$default-title_color: theme("colors.title");
 $default-body-color: theme("colors.body");
 
 $typography-default-colors: (
-  "title": $default-title-color,
+  "title": $default-title_color,
   "body": $default-body-color,
   "label": $default-label-color,
 );

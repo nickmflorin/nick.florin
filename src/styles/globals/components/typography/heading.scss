@@ -23,34 +23,30 @@ h6 {
     font-style: inherit;
     font-weight: inherit;
   }
+
+  @include title();
 }
 
 h1 {
   @include mixins.font("title", $size: "xl");
-  @include title();
 }
 
 h2 {
   @include mixins.font("title", $size: "lg");
-  @include title();
 }
 
 h3 {
   @include mixins.font("title", $size: "md");
-  @include title();
 }
 
 h4 {
   @include mixins.font("title", $size: "sm");
-  @include title();
 }
 
 h5 {
   @include mixins.font("title", $size: "xs");
-  @include title();
 }
 
 h6 {
   @include mixins.font("title", $size: "xxs");
-  @include title();
 }

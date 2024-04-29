@@ -4,8 +4,12 @@ import clsx from "clsx";
 
 import type * as types from "../types";
 
-import { type Size, type ComponentProps, sizeToString } from "~/components/types";
-import { type BaseTypographyProps } from "~/components/typography";
+import {
+  type Size,
+  type ComponentProps,
+  sizeToString,
+  type BaseTypographyProps,
+} from "~/components/types";
 
 import { ErrorContent } from "./ErrorContent";
 import { ErrorTitle } from "./ErrorTitle";

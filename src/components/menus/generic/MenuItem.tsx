@@ -61,10 +61,10 @@ const MenuItemIcon = ({
       return (
         <Icon
           icon={icon}
-          className={withoutOverridingClassName("text-gray-600", iconClassName, {
-            includeBase: true,
-            prefix: "text-",
-          })}
+          className={clsx(
+            withoutOverridingClassName("text-gray-600", iconClassName),
+            iconClassName,
+          )}
           size={iconSize}
           isLoading={isLoading}
         />
@@ -72,10 +72,12 @@ const MenuItemIcon = ({
     } else if (isLoading) {
       return (
         <Spinner
-          className={withoutOverridingClassName(
-            "text-gray-600",
-            mergeIntoClassNames(iconClassName, spinnerClassName),
-            { includeBase: true, prefix: "text-" },
+          className={clsx(
+            withoutOverridingClassName(
+              "text-gray-600",
+              mergeIntoClassNames(iconClassName, spinnerClassName),
+            ),
+            spinnerClassName,
           )}
           isLoading={isLoading}
           size={iconSize}
@@ -159,10 +161,12 @@ export const MenuItem = ({
           defined. */}
       {icon === undefined && (
         <Spinner
-          className={withoutOverridingClassName(
-            "text-gray-600",
+          className={clsx(
+            withoutOverridingClassName(
+              "text-gray-600",
+              mergeIntoClassNames(iconClassName, spinnerClassName),
+            ),
             mergeIntoClassNames(iconClassName, spinnerClassName),
-            { includeBase: true, prefix: "text-" },
           )}
           isLoading={isLoading}
           size="18px"

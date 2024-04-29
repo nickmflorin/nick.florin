@@ -7,12 +7,6 @@ import {
 
 export type ResumeModelSize = "small" | "medium" | "large";
 
-export const ImageSizes: { [key in ResumeModelSize]: number } = {
-  small: 28,
-  medium: 44,
-  large: 72,
-};
-
 export type ApiModel<T extends ResumeBrand> = {
   education: ApiEducation<["details", "skills", "courses"]>;
   experience: ApiExperience<["details", "skills"]>;

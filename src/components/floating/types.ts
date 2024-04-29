@@ -45,9 +45,7 @@ export const PopoverVariantClassNames: {
   [PopoverVariants.SECONDARY]: cs =>
     clsx(
       withoutOverridingClassName("text-heading", cs),
-      withoutOverridingClassName("bg-gradient-to-r from-gray-50 to-gray-200", cs, {
-        prefix: "bg-",
-      }),
+      withoutOverridingClassName("bg-gradient-to-r from-gray-50 to-gray-200", cs),
       withoutOverridingClassName("shadow-md", cs),
       cs,
     ),

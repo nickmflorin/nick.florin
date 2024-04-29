@@ -4,8 +4,7 @@ import clsx from "clsx";
 
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp } from "~/components/icons";
-import { type Size } from "~/components/types";
-import { type BaseTypographyProps } from "~/components/typography";
+import { type Size, type BaseTypographyProps } from "~/components/types";
 
 import * as types from "../types";
 

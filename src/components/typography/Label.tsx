@@ -1,8 +1,7 @@
 import clsx from "clsx";
 
-import type { ComponentProps } from "~/components/types";
-
-import { type BaseTypographyProps, getTypographyClassName } from "./types";
+import type { ComponentProps, BaseTypographyProps } from "~/components/types";
+import { getTypographyClassName } from "~/components/types";
 
 export interface LabelProps extends BaseTypographyProps, ComponentProps {
   readonly children: string | number | undefined | null | false;

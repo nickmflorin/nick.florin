@@ -4,7 +4,6 @@ import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/prisma/m
 import { Skills } from "~/components/badges/collections/Skills";
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
-import { type FontSize } from "~/components/typography";
 import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 
@@ -15,9 +14,7 @@ export interface DetailProps<
 > extends ComponentProps {
   readonly detail: D;
   readonly index?: number;
-  readonly descriptionFontSize?: FontSize;
-  readonly labelFontSize?: FontSize;
-  readonly nestedLabelFontSize?: FontSize;
+  readonly isNested?: boolean;
 }
 
 export const Detail = <
@@ -25,50 +22,74 @@ export const Detail = <
 >({
   detail,
   index,
-  descriptionFontSize = "smplus",
-  labelFontSize = "sm",
-  nestedLabelFontSize,
+  isNested,
   ...props
 }: DetailProps<D>): JSX.Element => (
   <div {...props} className={clsx("flex flex-col gap-[10px]", props.className)}>
     <div className="flex flex-col gap-[4px]">
-      {index !== undefined ? (
+      {isNested && index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
-          <Label fontSize={labelFontSize} className="w-[8px]">
+          <Label
+            className={clsx("w-[8px]", {
+              "text-sm": isNested,
+              "text-smplus max-sm:text-sm": !isNested,
+            })}
+          >
             {`${index}.`}
           </Label>
           {detail.project ? (
             <Link
-              fontSize={labelFontSize}
               options={{ as: "link" }}
               href={`/projects/${detail.project.slug}`}
+              className={clsx({
+                "text-sm": isNested,
+                "text-smplus max-sm:text-sm": !isNested,
+              })}
             >
               {detail.label}
             </Link>
           ) : (
-            <Label fontSize={labelFontSize}>{detail.label}</Label>
+            <Label
+              className={clsx({
+                "text-sm": isNested,
+                "text-smplus max-sm:text-sm": !isNested,
+              })}
+            >
+              {detail.label}
+            </Label>
           )}
         </div>
       ) : detail.project ? (
         <div className="flex flex-row items-center gap-[4px]">
           <Link
-            fontSize={labelFontSize}
             options={{ as: "link" }}
             href={`/projects/${detail.project.slug}`}
             gap="4px"
             flex
             icon={{ right: { name: "link" } }}
+            className={clsx({
+              "text-sm": isNested,
+              "text-smplus max-sm:text-sm": !isNested,
+            })}
           >
             {detail.label}
           </Link>
         </div>
       ) : (
-        <Label fontSize={labelFontSize}>{detail.label}</Label>
+        <Label
+          className={clsx({
+            "text-sm": isNested,
+            "text-smplus max-sm:text-sm": !isNested,
+          })}
+        >
+          {detail.label}
+        </Label>
       )}
       {detail.description && (
         <Description
-          fontSize={descriptionFontSize}
-          className={clsx({ "pl-[16px]": index !== undefined })}
+          className={clsx("text-smplus max-sm:text-sm", {
+            "pl-[16px]": index !== undefined && isNested,
+          })}
         >
           {detail.description}
         </Description>
@@ -77,18 +98,9 @@ export const Detail = <
     {detail.skills.length !== 0 && (
       <Skills
         skills={detail.skills}
-        className={clsx("max-w-[800px]", { "pl-[16px]": index !== undefined })}
+        className={clsx("sm:max-w-[800px]", { "pl-[16px]": index !== undefined })}
       />
     )}
-    {!isNestedDetail(detail) && (
-      <Details
-        // className={clsx({ "pl-[16px]": index !== undefined })}
-        details={detail.nestedDetails}
-        isNested={true}
-        labelFontSize={labelFontSize}
-        nestedLabelFontSize={nestedLabelFontSize}
-        descriptionFontSize={descriptionFontSize}
-      />
-    )}
+    {!isNestedDetail(detail) && <Details details={detail.nestedDetails} isNested={true} />}
   </div>
 );

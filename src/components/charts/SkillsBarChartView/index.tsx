@@ -34,7 +34,10 @@ export const SkillsBarChartView = ({
   >
     <div
       className={clsx(
-        "max-md:h-[400px] md:max-lg:h-[500px] lg:h-[600px] md:max-lg:w-[420px] lg:max-xl:w-[640px]",
+        "relative",
+        "md:max-lg:w-[420px] md:max-lg:h-[500px]",
+        "max-md:h-[400px]",
+        "lg:h-[600px] lg:max-xl:w-[640px]",
       )}
     >
       <Suspense
@@ -47,8 +50,8 @@ export const SkillsBarChartView = ({
     <Suspense key={qs.stringify(filters) + "_" + String(limit)}>
       <div
         className={clsx(
-          "xl:px-[20px] xl:max-w-full",
-          "max-md:px-[20px] max-md:max-w-full",
+          "xl:px-[10px] xl:max-w-full",
+          "max-md:px-[10px] max-md:max-w-full",
           "md:max-xl:max-h-full md:max-xl:overflow-y-auto md:max-xl:max-w-[390px]",
         )}
       >

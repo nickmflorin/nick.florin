@@ -2,8 +2,12 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import clsx from "clsx";
 
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
-import { type BaseTypographyProps, getTypographyClassName } from "~/components/typography";
+import {
+  type ComponentProps,
+  type HTMLElementProps,
+  type BaseTypographyProps,
+  getTypographyClassName,
+} from "~/components/types";
 
 import { type InputSize, InputSizes, InputVariants, type InputVariant } from "./types";
 

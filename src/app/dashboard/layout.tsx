@@ -38,6 +38,7 @@ export default async function DashboardPage({
     >
       <Module
         contentClassName="xl:overflow-y-auto xl:pr-[16px]"
+        headerClassName="!pr-[0px]"
         title="Skills Overview"
         actions={[<SkillsFilterDropdownMenu key="0" placement="bottom-start" useSearchParams />]}
       >
@@ -79,6 +80,5 @@ export default async function DashboardPage({
         </div>
       </div>
     </div>
-    // </div>
   );
 }

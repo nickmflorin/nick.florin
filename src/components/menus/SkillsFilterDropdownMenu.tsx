@@ -1,6 +1,11 @@
 "use client";
-import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
-import { Popover, type PopoverProps } from "~/components/floating/Popover";
+import dynamic from "next/dynamic";
+
+import {
+  ChartFilterButton,
+  type ChartFilterButtonProps,
+} from "~/components/buttons/ChartFilterButton";
+import { type PopoverProps } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 import {
@@ -8,12 +13,14 @@ import {
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
 } from "~/components/forms/skills/SkillsChartFilterForm";
-import type { ComponentProps } from "~/components/types";
 import { useMutableParams } from "~/hooks";
+import { useScreenSizes } from "~/hooks/use-screen-sizes";
+
+const Popover = dynamic(() => import("~/components/floating/Popover"));
 
 export interface SkillsFilterDropdownMenuProps {
   readonly isDisabled?: boolean;
-  readonly buttonProps?: ComponentProps & { readonly isLocked?: boolean };
+  readonly buttonProps?: Omit<ChartFilterButtonProps, "isDisabled">;
   readonly useSearchParams?: boolean;
   readonly placement?: PopoverProps["placement"];
   readonly onChange?: (values: SkillsChartFilterFormValues) => void;
@@ -26,11 +33,12 @@ export const SkillsFilterDropdownMenu = ({
   placement = "bottom-end",
   onChange,
 }: SkillsFilterDropdownMenuProps): JSX.Element => {
+  const { isLessThan } = useScreenSizes({});
   const { set } = useMutableParams();
 
   const form = useForm<SkillsChartFilterFormValues>({
     schema: SkillsChartFilterFormSchema,
-    defaultValues: { showTopSkills: 12 },
+    defaultValues: { showTopSkills: "all" },
     onChange: ({ values }) => {
       if (useSearchParams) {
         set({ filters: values });
@@ -38,6 +46,12 @@ export const SkillsFilterDropdownMenu = ({
       onChange?.(values);
     },
   });
+
+  /* We do not want to show the chart filters on mobile devices until we figure out how to more
+     cleanly integrate them into the mobile experience with a drawer instead of a popover. */
+  if (isLessThan("md")) {
+    return <></>;
+  }
 
   return (
     <Popover
@@ -54,7 +68,13 @@ export const SkillsFilterDropdownMenu = ({
       }
     >
       {({ ref, params }) => (
-        <ChartFilterButton {...params} {...buttonProps} ref={ref} isDisabled={isDisabled} />
+        <ChartFilterButton
+          {...params}
+          size={isLessThan("md") ? "xsmall" : "medium"}
+          {...buttonProps}
+          ref={ref}
+          isDisabled={isDisabled}
+        />
       )}
     </Popover>
   );

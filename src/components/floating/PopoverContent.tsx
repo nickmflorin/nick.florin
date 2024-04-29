@@ -39,7 +39,7 @@ export const PopoverContent = forwardRef<HTMLDivElement, FloatingContentProps>(
         "floating-content",
         types.getPopoverVariantClassName(variant, className),
         "z-50",
-        { "rounded-sm": !classNameContains(className, v => v.startsWith("rounded-")) },
+        { "rounded-sm": !classNameContains(className, v => v.prefix.startsWith("rounded-")) },
       )}
       style={{
         ...props.style,

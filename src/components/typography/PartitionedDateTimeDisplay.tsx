@@ -5,8 +5,8 @@ import {
   withoutOverridingClassName,
   type ComponentProps,
   type QuantitativeSize,
+  type BaseTypographyProps,
 } from "~/components/types";
-import { type BaseTypographyProps } from "~/components/typography";
 
 import { DateTimeDisplay } from "./DateTimeDisplay";
 import { Text } from "./Text";
@@ -38,7 +38,8 @@ export const PartitionedDateTimeDisplay = ({
       {...props}
       {...dateProps}
       className={clsx(
-        withoutOverridingClassName("text-gray-800", dateProps?.className, { includeBase: true }),
+        withoutOverridingClassName("text-gray-800", dateProps?.className),
+        dateProps?.className,
       )}
     >
       <DateTimeDisplay date={date} format={dateFormat} />
@@ -49,7 +50,8 @@ export const PartitionedDateTimeDisplay = ({
       {...props}
       {...timeProps}
       className={clsx(
-        withoutOverridingClassName("text-body-light", timeProps?.className, { includeBase: true }),
+        withoutOverridingClassName("text-body-light", timeProps?.className),
+        timeProps?.className,
       )}
     >
       <DateTimeDisplay date={date} format={timeFormat} />

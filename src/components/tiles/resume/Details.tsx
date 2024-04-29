@@ -1,8 +1,7 @@
 import clsx from "clsx";
 
 import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
-import { type ComponentProps } from "~/components/types";
-import { type FontSize } from "~/components/typography";
+import { type ComponentProps, type BodyFontSize } from "~/components/types";
 
 import { Detail } from "./Detail";
 
@@ -10,18 +9,12 @@ export interface TopDetailsProps extends ComponentProps {
   readonly details: ApiDetail<["skills", "nestedDetails"]>[];
   readonly isNested?: false;
   readonly collapsable?: boolean;
-  readonly descriptionFontSize?: FontSize;
-  readonly labelFontSize?: FontSize;
-  readonly nestedLabelFontSize?: FontSize;
 }
 
 export interface NestedDetailsProps extends ComponentProps {
   readonly details: NestedApiDetail<["skills"]>[];
   readonly isNested: true;
   readonly collapsable?: boolean;
-  readonly descriptionFontSize?: FontSize;
-  readonly labelFontSize?: FontSize;
-  readonly nestedLabelFontSize?: FontSize;
 }
 
 export type DetailsProps = TopDetailsProps | NestedDetailsProps;
@@ -31,9 +24,6 @@ export const Details = ({
   isNested,
   // TODO: Incorporate collapsable details for purposes of condensed views or mobile viewing.
   collapsable = false,
-  labelFontSize = "smplus",
-  nestedLabelFontSize = "sm",
-  descriptionFontSize,
   ...props
 }: DetailsProps): JSX.Element => {
   const filtered = details.filter(d => d.visible !== false);
@@ -55,9 +45,8 @@ export const Details = ({
           <Detail
             key={detail.id}
             detail={detail}
+            isNested={isNested}
             index={isNested ? i + 1 : undefined}
-            labelFontSize={isNested ? nestedLabelFontSize : labelFontSize}
-            descriptionFontSize={descriptionFontSize}
           />
         ))}
     </div>

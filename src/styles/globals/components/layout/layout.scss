@@ -25,6 +25,8 @@
       position: relative;
       padding: 15px;
       flex-grow: 100;
+      overflow-x: hidden;
+      overflow: hidden;
     }
   }
 }

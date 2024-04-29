@@ -33,7 +33,7 @@
   @include font-family("body");
 }
 
-@mixin title-font-family() {
+@mixin title_font-family() {
   @include font-family("title");
 }
 
@@ -50,7 +50,7 @@
   font-weight: get-font-weight($type: "body", $args...);
 }
 
-@mixin title-font-weight($args...) {
+@mixin title_font-weight($args...) {
   font-weight: get-font-weight($type: "title", $args...);
 }
 
@@ -63,7 +63,7 @@
   font-size: get-font-size($type, $size);
 }
 
-@mixin title-font-size($size: null) {
+@mixin title_font-size($size: null) {
   @include font-size("title", $size);
 }
 
@@ -79,7 +79,7 @@
   line-height: get-line-height($type, $size);
 }
 
-@mixin title-line-height($size: null) {
+@mixin title_line-height($size: null) {
   @include line-height("title", $size);
 }
 
@@ -100,7 +100,7 @@
   @include font-color("body", $args...);
 }
 
-@mixin title-font-color($args...) {
+@mixin title_font-color($args...) {
   @include font-color("title", $args...);
 }
 

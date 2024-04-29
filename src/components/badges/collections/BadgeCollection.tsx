@@ -2,13 +2,13 @@ import React from "react";
 
 import clsx from "clsx";
 
-import { type ComponentProps } from "~/components/types";
 import {
+  type ComponentProps,
   type BaseTypographyProps,
   FontWeights,
-  FontSizes,
+  BodyFontSizes,
   getTypographyClassName,
-} from "~/components/typography";
+} from "~/components/types";
 
 export interface BadgeCollectionChildrenProps extends ComponentProps, BaseTypographyProps {
   readonly children: JSX.Element[];
@@ -28,7 +28,7 @@ export const BadgeCollection = <M,>({
   data,
   children,
   fontWeight = FontWeights.MEDIUM,
-  fontSize = FontSizes.SM,
+  fontSize = BodyFontSizes.SM,
   transform,
   fontFamily,
   ...props

@@ -8,9 +8,9 @@ export interface ChartFilterButtonProps
 export const ChartFilterButton = forwardRef<HTMLButtonElement, ChartFilterButtonProps>(
   (props: ChartFilterButtonProps, ref): JSX.Element => (
     <IconButton.Secondary
+      size="medium"
       {...props}
       ref={ref}
-      size="medium"
       icon={{ name: "sliders" }}
       options={{ as: "button" }}
     />

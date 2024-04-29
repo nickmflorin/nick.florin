@@ -13,6 +13,7 @@ export interface ModuleProps extends ComponentProps {
   readonly actions?: Action[];
   readonly scrollable?: boolean;
   readonly contentClassName?: ComponentProps["className"];
+  readonly headerClassName?: ComponentProps["className"];
 }
 
 export const Module = ({
@@ -20,18 +21,21 @@ export const Module = ({
   actions,
   scrollable = false,
   contentClassName,
+  headerClassName,
   children,
   ...props
 }: ModuleProps) => (
   <div
     {...props}
     className={clsx(
-      "border rounded-md py-[12px] px-[18px] shadow-sm",
+      "border rounded-md pt-[12px] pb-[18px] pl-[18px] pr-[12px] shadow-sm",
       "flex flex-col gap-[12px] w-full max-w-full",
       props.className,
     )}
   >
-    <ModuleHeader actions={actions}>{title}</ModuleHeader>
+    <ModuleHeader actions={actions} className={headerClassName}>
+      {title}
+    </ModuleHeader>
     <div className={clsx({ "overflow-y-auto pr-[16px]": scrollable }, contentClassName)}>
       {children}
     </div>

@@ -1,17 +1,22 @@
 "use client";
+import clsx from "clsx";
+
 import { Link } from "~/components/buttons";
 import { Tooltip, type TooltipProps } from "~/components/floating/Tooltip";
-import { type ComponentProps, mergeIntoClassNames } from "~/components/types";
+import {
+  type ComponentProps,
+  type BodyFontSize,
+  type FontWeight,
+  type FontFamily,
+} from "~/components/types";
 import { Text } from "~/components/typography/Text";
-
-import { type FontSize, type FontWeight, type FontFamily } from "./types";
 
 export interface LinkOrTextProps extends ComponentProps {
   readonly url?: string | null;
   readonly children: string;
   readonly tooltip?: string;
   readonly tooltipPlacement?: TooltipProps["placement"];
-  readonly fontSize?: FontSize;
+  readonly fontSize?: BodyFontSize;
   readonly fontWeight?: FontWeight;
   readonly textClassName?: ComponentProps["className"];
   readonly linkClassName?: ComponentProps["className"];
@@ -39,7 +44,7 @@ export const LinkOrText = ({
               {...params}
               {...props}
               ref={ref}
-              className={mergeIntoClassNames(props.className, linkClassName)}
+              className={clsx(props.className, linkClassName)}
               href={url}
               fontSize={fontSize}
               fontFamily={fontFamily}
@@ -57,7 +62,7 @@ export const LinkOrText = ({
     return (
       <Link
         {...props}
-        className={mergeIntoClassNames(props.className, linkClassName)}
+        className={clsx(props.className, linkClassName)}
         href={url}
         fontSize={fontSize}
         fontFamily={fontFamily}
@@ -73,7 +78,7 @@ export const LinkOrText = ({
   return (
     <Text
       {...props}
-      className={mergeIntoClassNames(props.className, textClassName)}
+      className={clsx(props.className, textClassName)}
       fontSize={fontSize}
       fontFamily={fontFamily}
       fontWeight={fontWeight}

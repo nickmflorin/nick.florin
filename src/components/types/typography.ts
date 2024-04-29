@@ -5,17 +5,37 @@ import { isFragment } from "react-is";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 
-export const FontSizes = enumeratedLiterals(
+export const BodyFontSizes = enumeratedLiterals(
   ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
   {},
 );
-export type FontSize = EnumeratedLiteralsType<typeof FontSizes>;
+
+export type BodyFontSize = EnumeratedLiteralsType<typeof BodyFontSizes>;
+export type LabelFontSize = BodyFontSize;
+
+export const TitleFontSizes = enumeratedLiterals(
+  ["xxs", "xs", "sm", "md", "lg", "xl"] as const,
+  {},
+);
+export type TitleFontSize = EnumeratedLiteralsType<typeof TitleFontSizes>;
 
 export const FontWeights = enumeratedLiterals(
   ["light", "regular", "medium", "semibold", "bold"] as const,
   {},
 );
+
 export type FontWeight = EnumeratedLiteralsType<typeof FontWeights>;
+
+export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
+
+export const TitleFontSizeOrderMap: { [key in TitleFontSize]: TitleOrder } = {
+  xxs: 6,
+  xs: 5,
+  sm: 4,
+  md: 3,
+  lg: 2,
+  xl: 1,
+};
 
 export const TextTransforms = enumeratedLiterals(
   ["uppercase", "lowercase", "capitalize", "underline"] as const,
@@ -42,8 +62,8 @@ export const lineClampClassName = (clamp: LineClamp = 0) => {
   });
 };
 
-export interface BaseTypographyProps {
-  readonly fontSize?: FontSize;
+export interface BaseTypographyProps<F extends BodyFontSize | TitleFontSize = BodyFontSize> {
+  readonly fontSize?: F;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
   readonly transform?: TextTransform;

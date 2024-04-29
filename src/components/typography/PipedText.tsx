@@ -8,10 +8,9 @@ import {
   type Size,
   type ComponentProps,
   withoutOverridingClassName,
+  type BaseTypographyProps,
 } from "~/components/types";
 import { Text } from "~/components/typography/Text";
-
-import { type BaseTypographyProps } from "./types";
 
 export interface PipedTextProps extends BaseTypographyProps, ComponentProps {
   readonly children: (string | JSX.Element | null | undefined)[];

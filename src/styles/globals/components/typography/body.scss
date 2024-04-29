@@ -56,7 +56,6 @@ p {
        </Text>
 
        Here, "Bar" should be styled with the a "bold" font weight. */
-    // @include partials.with-default-font-size("body");
     @include mixins.font($type: "body");
   }
 
@@ -66,14 +65,12 @@ p {
   }
 
   @include mixins.with-fonts("body") using ($data) {
-    $font-size: partials.mapget($data, font-size);
-    $line-height: partials.mapget($data, line-height);
+    $font-size: (partials.mapget($data, font-size));
+    $line-height: (partials.mapget($data, line-height));
 
     > .icon {
       height: $font-size;
       margin-right: 6px;
-      padding-bottom: 0.5 * ($line-height - $font-size);
-      padding-top: 0.5 * ($line-height - $font-size);
       width: auto;
     }
   }

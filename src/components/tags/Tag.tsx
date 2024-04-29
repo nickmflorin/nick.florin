@@ -28,7 +28,7 @@ export const Tag = ({
   ...props
 }: TagProps): JSX.Element => (
   <div
-    className={clsx("flex flex-row items-center", className)}
+    className={clsx("flex flex-row items-center min-w-fit", className)}
     style={{ ...style, gap: sizeToString(gap, "px") }}
   >
     <Icon icon={icon} size="15px" className="text-label" />

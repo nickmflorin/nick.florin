@@ -4,10 +4,10 @@ import { useMemo } from "react";
 import clsx from "clsx";
 
 import { ResumeShowMoreLink } from "~/components/buttons/resume";
+import * as types from "~/components/types";
 
 import { useControlledTypographyVisibility } from "./hooks";
 import { Text, type TextProps } from "./Text";
-import * as types from "./types";
 
 const descriptionNodeCanRender = (
   node: types.SingleTextNode,

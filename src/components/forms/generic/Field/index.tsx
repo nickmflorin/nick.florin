@@ -108,7 +108,7 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
         fontSize="xs"
         className={clsx(
           "leading-[14px] text-gray-500 pl-[1px]",
-          { "mt-[4px]": !classNameContains(helpTextClassName, v => v.startsWith("mt-")) },
+          { "mt-[4px]": !classNameContains(helpTextClassName, v => v.prefix.startsWith("mt-")) },
           helpTextClassName,
         )}
       >
