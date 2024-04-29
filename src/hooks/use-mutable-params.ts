@@ -26,7 +26,7 @@ export const useMutableParams = (
   clear: (key: string | string[], opts?: { useTransition?: boolean }) => void;
 } => {
   const [_, transition] = useTransition();
-  const { push, prefetch } = useRouter();
+  const { push } = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
 

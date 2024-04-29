@@ -28,7 +28,11 @@ const Titles: {
     </Title>
   ),
   large: ({ children }) => (
-    <Title order={2} truncate className="leading-[22px] max-sm:text-title_md max-sm:leading-[22px]">
+    <Title
+      order={2}
+      truncate
+      className="leading-[22px] text-title_md max-sm:text-title_sm max-sm:leading-[22px]"
+    >
       {children}
     </Title>
   ),

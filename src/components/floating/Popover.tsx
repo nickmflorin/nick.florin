@@ -1,16 +1,13 @@
 "use client";
-import dynamic from "next/dynamic";
-import { type ReactNode, cloneElement, useState, useEffect } from "react";
+import { type ReactNode, cloneElement, useMemo } from "react";
+
+import { FloatingPortal } from "@floating-ui/react";
 
 import { type ComponentProps } from "~/components/types";
 
+import { Arrow } from "./Arrow";
 import { usePopover, type UsePopoverConfig } from "./hooks/use-popover";
 import * as types from "./types";
-
-const Arrow = dynamic(() => import("./Arrow"), { ssr: false });
-const FloatingPortal = dynamic(() => import("@floating-ui/react").then(mod => mod.FloatingPortal), {
-  ssr: false,
-});
 
 const ConditionalPortal = ({
   children,
@@ -70,47 +67,48 @@ export const Popover = ({
   variant = types.PopoverVariants.SECONDARY,
   ...config
 }: PopoverProps) => {
-  const [content, setContent] = useState<JSX.Element | null>(null);
   const { refs, referenceProps, isOpen, floatingProps, floatingStyles, arrowRef, context } =
     usePopover(config);
 
-  useEffect(() => {
+  const children = useMemo(() => {
+    if (typeof _children === "function") {
+      return _children({ ref: refs.setReference, params: referenceProps, isOpen });
+    }
+    return cloneElement(_children, {
+      ref: refs.setReference,
+      ...referenceProps,
+    });
+  }, [_children, refs, referenceProps, isOpen]);
+
+  const content = useMemo(() => {
     if (isOpen && !isDisabled) {
-      let innerContent: JSX.Element;
       if (typeof _content === "function") {
-        innerContent = _content({
+        return _content({
           ref: refs.setFloating,
           params: floatingProps,
           styles: floatingStyles,
         });
-      } else {
-        innerContent = cloneElement(
-          _content,
-          {
-            ...floatingProps,
-            ref: refs.setFloating,
-            style: { ..._content.props.style, ...floatingStyles },
-          },
-          <>
-            {_content.props.children}
-            {context && withArrow && (
-              <Arrow
-                ref={arrowRef}
-                variant={variant}
-                context={context}
-                className={arrowClassName}
-              />
-            )}
-          </>,
-        );
       }
-      setContent(<ConditionalPortal inPortal={inPortal}>{innerContent}</ConditionalPortal>);
-    } else {
-      setContent(null);
+      return cloneElement(
+        _content,
+        {
+          ...floatingProps,
+          ref: refs.setFloating,
+          style: { ..._content.props.style, ...floatingStyles },
+        },
+        <>
+          {_content.props.children}
+          {context && withArrow && (
+            <Arrow ref={arrowRef} variant={variant} context={context} className={arrowClassName} />
+          )}
+        </>,
+      );
     }
+    return <></>;
   }, [
     _content,
-    inPortal,
+    isOpen,
+    isDisabled,
     floatingProps,
     refs,
     floatingStyles,
@@ -119,19 +117,12 @@ export const Popover = ({
     arrowClassName,
     variant,
     withArrow,
-    isOpen,
-    isDisabled,
   ]);
 
   return (
     <>
-      {typeof _children === "function"
-        ? _children({ ref: refs.setReference, params: referenceProps, isOpen })
-        : cloneElement(_children, {
-            ref: refs.setReference,
-            ...referenceProps,
-          })}
-      {content}
+      {children}
+      <ConditionalPortal inPortal={inPortal}>{content}</ConditionalPortal>
     </>
   );
 };

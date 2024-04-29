@@ -46,6 +46,7 @@ export default async function DashboardPage({
                 options={{ as: "link" }}
                 href="/resume/experience"
                 fontSize="xs"
+                flex
                 fontWeight="medium"
               >
                 View All
@@ -71,6 +72,7 @@ export default async function DashboardPage({
               actions={[
                 <Link.Primary
                   key="0"
+                  flex
                   options={{ as: "link" }}
                   href="/resume/education"
                   fontSize="xs"
@@ -99,7 +101,11 @@ export default async function DashboardPage({
           </Module>
           <Module>
             <Module.Header>Projects</Module.Header>
-            <Module.Content className={clsx("flex flex-col gap-[12px]")}>{projects}</Module.Content>
+            <Module.Content
+              className={clsx("flex flex-col gap-[12px] xl:overflow-y-auto xl:grow xl:pr-[16px]")}
+            >
+              {projects}
+            </Module.Content>
           </Module>
         </div>
       </div>

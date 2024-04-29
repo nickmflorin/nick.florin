@@ -9,6 +9,7 @@
   max-width: 100%;
   position: relative;
   border-radius: theme("borderRadius.md");
+  overflow: hidden;
 
   > .module__content {
     position: relative;
@@ -29,7 +30,7 @@
     }
 
     > .title {
-      font-size: theme("fontSize.title_md.0");
+      font-size: theme("fontSize.title_smplus.0");
       line-height: 32px;
 
       @media (max-width: theme("screens.md")) {

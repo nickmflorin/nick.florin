@@ -12,11 +12,7 @@ export interface ModuleHeaderProps extends ComponentProps {
 
 export const ModuleHeader = ({ actions, children, ...props }: ModuleHeaderProps) => (
   <div {...props} className={clsx("module__header", props.className)}>
-    <div className="flex flex-row items-center gap-[12px]">
-      <Title className="leading-[32px] text-title_md max-md:text-title_sm max-md:leading-[26px]">
-        {children}
-      </Title>
-    </div>
+    <Title>{children}</Title>
     <Actions actions={actions ?? null} />
   </div>
 );

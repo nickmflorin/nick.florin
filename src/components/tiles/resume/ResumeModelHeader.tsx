@@ -16,7 +16,7 @@ import { ResumeModelTitle } from "./ResumeModelTitle";
 export const ImageSizes: { [key in types.ResumeModelSize]: { [key in ScreenSize]: number } } = {
   small: { xs: 28, sm: 28, md: 28, lg: 28, xl: 28, "2xl": 28 },
   medium: { xs: 44, sm: 44, md: 44, lg: 44, xl: 44, "2xl": 44 },
-  large: { xs: 72, sm: 72, md: 72, lg: 72, xl: 72, "2xl": 72 },
+  large: { xs: 70, sm: 72, md: 72, lg: 72, xl: 72, "2xl": 72 },
 };
 
 export interface ResumeModelHeaderProps<M extends BrandModel<T>, T extends ResumeBrand>
@@ -39,11 +39,11 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
 
   return (
     <div className="flex flex-col gap-[16px] max-w-full w-full overflow-y-hidden">
-      <div className="flex flex-row gap-[12px] max-w-full w-full">
+      <div className="flex flex-row gap-[12px] max-w-full w-full overflow-x-hidden">
         <ResumeModelImage model={model} size={ImageSizes[size][screenSize]} />
         <div
           className={clsx("flex flex-col grow gap-[4px]", {
-            "pt-[4px] max-sm:pt-[2px]": size === "large",
+            "pt-[2px] max-sm:pt-[0px]": size === "large",
           })}
           style={{ maxWidth: `calc(100% - ${ImageSizes[size][screenSize]}px - 12px)` }}
         >

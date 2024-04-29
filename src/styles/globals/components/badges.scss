@@ -11,10 +11,9 @@ $badge-vertical-padding: 2px;
   vertical-align: middle;
 }
 
-.badge {
+@mixin common() {
   text-decoration: none;
   display: inline-flex;
-  border-radius: theme("borderRadius.md");
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
   -webkit-box-pack: center;
@@ -25,34 +24,43 @@ $badge-vertical-padding: 2px;
   cursor: inherit;
   overflow: hidden;
   outline: 0.0625rem solid transparent;
+  align-items: center;
+}
+
+@mixin content-common($prefix) {
+  @include inherit-font-properties();
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  align-items: center;
+
+  > .icon {
+    color: inherit;
+  }
+
+  > .#{$prefix}__text {
+    display: block;
+    @include typography.truncate();
+    @include inherit-font-properties();
+  }
+}
+
+.badge {
+  @include common();
+  color: theme("colors.body");
+  border-radius: theme("borderRadius.md");
   padding-right: 6px;
   padding-left: 6px;
   padding-top: $badge-vertical-padding;
   padding-bottom: $badge-vertical-padding;
   font-family: typography.get-font-family("body");
-  align-items: center;
   background-color: theme("colors.gray.200");
-  color: theme("colors.body");
 
   > .badge__content {
-    @include inherit-font-properties();
-    display: flex;
-    flex-direction: row;
+    @include content-common("badge");
     gap: 6px;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    align-items: center;
-
-    > .icon {
-      color: inherit;
-    }
-
-    > .badge__text {
-      display: block;
-      @include typography.truncate();
-      @include inherit-font-properties();
-    }
   }
 
   // Allow the font family to be overridden with a prop.
@@ -76,6 +84,27 @@ $badge-vertical-padding: 2px;
         }
       }
     }
+  }
+}
+
+.tag {
+  @include common();
+  font-family: typography.get-font-family("label");
+  height: 18px;
+  font-weight: 500;
+  color: theme("colors.body-light");
+
+  @include typography.with-font-weights();
+  @include typography.with-text-transforms();
+  @include typography.with-font-sizes("label") using ($size, $data) {
+    &.font-size-#{$size} {
+      font-size: partials.mapget($data, font-size);
+    }
+  }
+
+  > .tag__content {
+    @include content-common("tag");
+    gap: 4px;
   }
 }
 

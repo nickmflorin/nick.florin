@@ -20,6 +20,8 @@ export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand
   >
     <TimePeriodTag
       fontSize="xs"
+      className="h-full text-xs max-sm:text-xxs"
+      iconClassName="h-[16px]"
       timePeriod={
         model.$kind === "experience"
           ? { startDate: model.startDate, endDate: model.endDate }
@@ -27,7 +29,8 @@ export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand
       }
     />
     <LocationTag
-      fontSize="xs"
+      className="h-full text-xs max-sm:text-xxs"
+      iconClassName="h-[16px]"
       location={
         model.$kind === "education"
           ? {

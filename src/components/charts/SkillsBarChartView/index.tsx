@@ -43,14 +43,7 @@ export const SkillsBarChartView = async ({
         props.className,
       )}
     >
-      <div
-        className={clsx(
-          "relative",
-          "md:max-lg:w-[420px] md:max-lg:h-[500px]",
-          "max-md:h-[400px]",
-          "lg:h-[600px] lg:max-xl:w-[640px]",
-        )}
-      >
+      <div className={clsx("relative", "md:max-lg:h-[500px]", "max-md:h-[400px]", "lg:h-[600px]")}>
         <Chart skills={skills} />
       </div>
       <SkillsBarChartLegend skills={skills} />

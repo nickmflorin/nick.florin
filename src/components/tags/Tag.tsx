@@ -4,45 +4,35 @@ import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import {
   type ComponentProps,
-  withoutOverridingClassName,
   type Size,
   sizeToString,
+  getTypographyClassName,
+  type BaseTypographyProps,
 } from "~/components/types";
 
-import { Text, type TextProps } from "../typography/Text";
-
-export interface TagProps extends TextProps {
-  readonly textClassName?: ComponentProps["className"];
+export interface TagProps extends BaseTypographyProps, ComponentProps {
+  readonly iconClassName?: ComponentProps["className"];
   readonly icon: IconProp;
   readonly gap?: Size;
+  readonly children: string;
 }
 
 export const Tag = ({
   icon,
-  textClassName,
-  fontSize = "sm",
   className,
+  iconClassName,
   gap = "4px",
   style,
   children,
   ...props
 }: TagProps): JSX.Element => (
   <div
-    className={clsx("flex flex-row items-center min-w-fit", className)}
+    className={clsx("tag", getTypographyClassName(props), className)}
     style={{ ...style, gap: sizeToString(gap, "px") }}
   >
-    <Icon icon={icon} size="15px" className="text-label" />
-    <Text
-      fontWeight="medium"
-      {...props}
-      fontSize={fontSize}
-      className={clsx(
-        withoutOverridingClassName("text-label", textClassName),
-        withoutOverridingClassName("leading-[16px]", textClassName),
-        textClassName,
-      )}
-    >
-      {children}
-    </Text>
+    <div className="tag__content">
+      {icon && <Icon className={clsx("tag__icon", iconClassName)} icon={icon} />}
+      <div className="tag__text">{children}</div>
+    </div>
   </div>
 );

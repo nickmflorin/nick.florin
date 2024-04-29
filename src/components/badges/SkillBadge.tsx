@@ -10,9 +10,11 @@ export interface SkillBadgeProps extends Omit<BadgeProps, "children" | "icon" | 
 
 export const SkillBadge = ({ skill, ...props }: SkillBadgeProps): JSX.Element => (
   <Badge
-    fontSize="xs"
     {...props}
-    className={clsx("bg-blue-100 text-blue-500 hover:bg-blue-200", props.className)}
+    className={clsx(
+      "bg-blue-100 text-blue-500 hover:bg-blue-200 text-sm max-md:text-xs",
+      props.className,
+    )}
   >
     {skill.label}
   </Badge>

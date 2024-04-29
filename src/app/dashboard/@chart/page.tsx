@@ -46,7 +46,6 @@ export default async function ChartPage({ searchParams }: ChartPageProps) {
         actions={[
           <Suspense key="0">
             <SkillsFilterDropdownMenu
-              placement="bottom-start"
               filters={{
                 experiences,
                 educations,

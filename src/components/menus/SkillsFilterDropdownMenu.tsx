@@ -2,11 +2,12 @@
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 
+import { flip } from "@floating-ui/react";
+
 import {
   ChartFilterButton,
   type ChartFilterButtonProps,
 } from "~/components/buttons/ChartFilterButton";
-import { type PopoverProps } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 import {
@@ -22,7 +23,6 @@ const Popover = dynamic(() => import("~/components/floating/Popover"));
 export interface SkillsFilterDropdownMenuProps {
   readonly isDisabled?: boolean;
   readonly buttonProps?: Omit<ChartFilterButtonProps, "isDisabled">;
-  readonly placement?: PopoverProps["placement"];
   readonly filters: SkillsChartFilterFormValues;
   readonly onChange?: (values: SkillsChartFilterFormValues) => void;
 }
@@ -30,7 +30,6 @@ export interface SkillsFilterDropdownMenuProps {
 export const SkillsFilterDropdownMenu = ({
   isDisabled = false,
   buttonProps,
-  placement = "bottom-end",
   filters,
   onChange,
 }: SkillsFilterDropdownMenuProps): JSX.Element => {
@@ -58,12 +57,14 @@ export const SkillsFilterDropdownMenu = ({
 
   return (
     <Popover
-      placement={placement}
+      placement="bottom-end"
       triggers={["click"]}
       offset={{ mainAxis: 4 }}
       width={400}
       withArrow={false}
+      inPortal
       isDisabled={isDisabled}
+      middleware={[flip({})]}
       content={
         <PopoverContent className="p-[20px] rounded-md overflow-y-auto" variant="white">
           <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable={false} />
@@ -73,7 +74,7 @@ export const SkillsFilterDropdownMenu = ({
       {({ ref, params }) => (
         <ChartFilterButton
           {...params}
-          size={isLessThan("md") ? "xsmall" : "medium"}
+          size={isLessThan("md") ? "xsmall" : "small"}
           {...buttonProps}
           ref={ref}
           isDisabled={isDisabled}
