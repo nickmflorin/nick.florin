@@ -11,7 +11,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     title="nick.florin"
     description={
       <Description>
-        A CMS-powered, interactive and dynamic personal portfolio/website written using{" "}
+        A CMS-powered, interactive and dynamic personal portfolio/website written using&nbsp;
         <Link options={{ as: "a" }} href="https://nextjs.org/">
           NextJS
         </Link>
