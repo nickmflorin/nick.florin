@@ -19,13 +19,7 @@ export const SkillsBarChartLegend = async ({
   }
   const colors = generateChartColors(skills.length);
   return (
-    <div
-      className={clsx(
-        "xl:px-[10px] xl:max-w-full",
-        "max-md:px-[10px] max-md:max-w-full",
-        "md:max-xl:max-h-full md:max-xl:overflow-y-auto md:max-xl:max-w-[390px]",
-      )}
-    >
+    <div className={clsx("px-[10px] max-w-full")}>
       <Legend
         {...props}
         items={skills.map((skill, index) => ({

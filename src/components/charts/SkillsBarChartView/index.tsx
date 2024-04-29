@@ -34,16 +34,12 @@ export const SkillsBarChartView = async ({
     <div
       {...props}
       className={clsx(
-        "flex gap-[8px] h-full w-full max-h-full max-w-full",
-        "xl:flex-col",
-        "md:max-xl:flex-row",
-        "max-md:flex-col",
+        "flex flex-col gap-[8px] h-full w-full max-h-full max-w-full",
         "[&_g]:cursor-pointer",
-        "xl:w-full xl:max-w-full",
         props.className,
       )}
     >
-      <div className={clsx("relative", "md:max-lg:h-[500px]", "max-md:h-[400px]", "lg:h-[600px]")}>
+      <div className={clsx("relative", "max-md:h-[340px]", "md:max-lg:h-[500px]", "lg:h-[600px]")}>
         <Chart skills={skills} />
       </div>
       <SkillsBarChartLegend skills={skills} />
