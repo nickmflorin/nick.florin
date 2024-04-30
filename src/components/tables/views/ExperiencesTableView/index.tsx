@@ -31,7 +31,7 @@ export const ExperiencesTableView = ({ filters, page }: TableViewProps) => (
     <RootTableView
       searchBar={
         <TableSearchBar>
-          <SearchInput searchParamName="search" />
+          <SearchInput initialValue={filters.search} />
           <NewButton drawerId={DrawerIds.CREATE_EXPERIENCE} />
           <CompaniesSchoolsDropdownMenu modelType="company" />
         </TableSearchBar>

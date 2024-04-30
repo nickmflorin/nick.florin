@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 import { getSkills } from "~/actions/fetches/skills";
 import { Loading } from "~/components/feedback/Loading";
@@ -15,7 +16,7 @@ interface SkillsAdminTableProps {
   readonly filters: Filters;
 }
 
-export const SkillsAdminTable = async ({ page, filters }: SkillsAdminTableProps) => {
+export const SkillsAdminTable = memo(async ({ page, filters }: SkillsAdminTableProps) => {
   const skills = await getSkills({
     page,
     visibility: "admin",
@@ -23,4 +24,4 @@ export const SkillsAdminTable = async ({ page, filters }: SkillsAdminTableProps)
     includes: ["projects", "educations", "experiences", "repositories"],
   });
   return <ContextTable data={skills} />;
-};
+});

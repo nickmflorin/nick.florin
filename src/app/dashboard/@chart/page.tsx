@@ -1,11 +1,7 @@
 import { Suspense } from "react";
 
-import qs from "qs";
-
-import type { z } from "zod";
-
 import { partiallyParseObjectWithSchema } from "~/lib/schemas";
-import { parseQuery, isRecordType } from "~/lib/urls";
+import { decodeQueryParams, encodeQueryParams } from "~/lib/urls";
 import { SkillsFiltersSchema, ShowTopSkillsSchema } from "~/api/schemas";
 import { SkillsBarChartView } from "~/components/charts/SkillsBarChartView";
 import { Loading } from "~/components/feedback/Loading";
@@ -13,31 +9,26 @@ import { SkillsFilterDropdownMenu } from "~/components/menus/SkillsFilterDropdow
 import { Module } from "~/components/modules/generic";
 
 interface ChartPageProps {
-  readonly searchParams: Record<string, unknown>;
+  readonly searchParams: Record<string, string>;
 }
 
 const FiltersSchema = SkillsFiltersSchema.omit({ search: true, includeInTopSkills: true }).extend({
-  showTopSkills: ShowTopSkillsSchema.optional(),
+  showTopSkills: ShowTopSkillsSchema,
 });
 
 export default async function ChartPage({ searchParams }: ChartPageProps) {
-  const params = parseQuery(qs.stringify(searchParams));
+  const params = decodeQueryParams(encodeQueryParams(searchParams.filters));
 
-  let filters: z.infer<typeof FiltersSchema> = {};
-  if (params && isRecordType(params) && isRecordType(params.filters)) {
-    filters = partiallyParseObjectWithSchema(params.filters, FiltersSchema, {
-      logWhenInvalid: true,
-    });
-  }
-
-  const {
-    showTopSkills = "all",
-    experiences = [],
-    educations = [],
-    categories = [],
-    programmingDomains = [],
-    programmingLanguages = [],
-  } = filters;
+  const { showTopSkills, ...filters } = partiallyParseObjectWithSchema(params, FiltersSchema, {
+    defaults: {
+      showTopSkills: "all",
+      experiences: [],
+      educations: [],
+      categories: [],
+      programmingDomains: [],
+      programmingLanguages: [],
+    },
+  });
 
   return (
     <>
@@ -45,31 +36,16 @@ export default async function ChartPage({ searchParams }: ChartPageProps) {
         className="!pr-[0px]"
         actions={[
           <Suspense key="0">
-            <SkillsFilterDropdownMenu
-              filters={{
-                experiences,
-                educations,
-                categories,
-                programmingDomains,
-                programmingLanguages,
-                showTopSkills,
-              }}
-            />
+            <SkillsFilterDropdownMenu filters={{ ...filters, showTopSkills }} />
           </Suspense>,
         ]}
       >
         Skills Overview
       </Module.Header>
       <Module.Content className="xl:overflow-y-auto xl:pr-[16px]">
-        <Suspense fallback={<Loading isLoading={true} />} key={qs.stringify(filters)}>
+        <Suspense fallback={<Loading isLoading={true} />} key={encodeQueryParams(filters)}>
           <SkillsBarChartView
-            filters={{
-              experiences,
-              educations,
-              categories,
-              programmingDomains,
-              programmingLanguages,
-            }}
+            filters={filters}
             limit={showTopSkills === "all" ? undefined : showTopSkills}
           />
         </Suspense>

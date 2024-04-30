@@ -29,11 +29,11 @@ const skillExperience = <I extends SkillIncludes>(skill: ApiSkill<I>): number =>
 
 export type GetSkillsParams<I extends SkillIncludes> = ApiStandardListQuery<
   I,
-  SkillsFilters,
+  Partial<SkillsFilters>,
   Prisma.SkillOrderByWithRelationInput
 >;
 
-const filtersClause = (filters: SkillsFilters) =>
+const filtersClause = (filters: Partial<SkillsFilters>) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("skill", filters.search) : undefined,
     filters.educations && filters.educations.length !== 0

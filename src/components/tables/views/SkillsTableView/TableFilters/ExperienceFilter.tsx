@@ -1,10 +1,10 @@
 "use client";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo, useTransition, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
-import { encodeQueryParam } from "~/lib/urls";
+import { isRecordType, isUuid } from "~/lib/typeguards";
 import { type ApiExperience } from "~/prisma/model";
 import { ExperienceSelect } from "~/components/input/select/ExperienceSelect";
+import { useMutableParams } from "~/hooks";
 
 import { type Filters } from "../types";
 
@@ -15,10 +15,7 @@ export interface ExperienceFilterProps {
 
 export const ExperienceFilter = ({ filters, experiences }: ExperienceFilterProps) => {
   const [value, _setValue] = useState<string[]>([]);
-  const { replace } = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const [_, transition] = useTransition();
+  const { set } = useMutableParams();
 
   const queryValue = useMemo(() => {
     const ids = experiences.map(e => e.id);
@@ -32,17 +29,16 @@ export const ExperienceFilter = ({ filters, experiences }: ExperienceFilterProps
   const setValue = useCallback(
     (ids: string[]) => {
       _setValue(ids);
-      const newParams = new URLSearchParams(searchParams?.toString());
-      if (ids.length === 0) {
-        newParams.delete("experiences");
-      } else {
-        newParams.set("experiences", encodeQueryParam(ids));
-      }
-      transition(() => {
-        replace(`${pathname}?${newParams.toString()}`);
-      });
+      set("filters", curr =>
+        isRecordType(curr)
+          ? {
+              ...curr,
+              experiences: ids.filter(i => isUuid(i)),
+            }
+          : { experiences: ids.filter(i => isUuid(i)) },
+      );
     },
-    [searchParams, pathname, replace],
+    [set],
   );
 
   return (

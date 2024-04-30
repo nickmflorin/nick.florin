@@ -1,6 +1,6 @@
 import clamp from "lodash.clamp";
 
-import { transformQueryParams, parseQuery, type ParsedQueryValue } from "~/lib/urls";
+import { transformQueryParams, decodeQueryParams, type QueryParamValue } from "~/lib/urls";
 
 export type Visibility = "public" | "admin";
 
@@ -52,7 +52,7 @@ export type ApiStandardListQuery<
 };
 
 export interface ApiParsedQuery<I extends string[] = string[]> extends ApiStandardListQuery<I> {
-  readonly [key: string]: ParsedQueryValue;
+  readonly [key: string]: QueryParamValue | undefined;
 }
 
 export const parseApiQuery = <I extends string[]>(
@@ -61,7 +61,13 @@ export const parseApiQuery = <I extends string[]>(
   const transformed: Record<string, string> =
     query instanceof URLSearchParams ? transformQueryParams(query, { form: "record" }) : query;
 
-  const { visibility: _visibility, includes, page, limit, ...rest } = parseQuery(transformed);
+  const {
+    visibility: _visibility,
+    includes,
+    page,
+    limit,
+    ...rest
+  } = decodeQueryParams(transformed);
 
   const visibility: Visibility =
     typeof _visibility === "string" && _visibility.toLowerCase() === "admin" ? "admin" : "public";

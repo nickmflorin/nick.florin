@@ -33,7 +33,7 @@ export const RepositoriesTableView = ({ filters, page }: RepositoriesTableViewPr
     <RootTableView
       searchBar={
         <TableSearchBar>
-          <SearchInput searchParamName="search" />
+          <SearchInput initialValue={filters.search} />
           <NewButton drawerId={DrawerIds.CREATE_REPOSITORY} />
         </TableSearchBar>
       }

@@ -1,10 +1,10 @@
 "use client";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo, useTransition, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
-import { encodeQueryParam } from "~/lib/urls";
+import { isRecordType, isUuid } from "~/lib/typeguards";
 import { type ApiEducation } from "~/prisma/model";
 import { EducationSelect } from "~/components/input/select/EducationSelect";
+import { useMutableParams } from "~/hooks";
 
 import { type Filters } from "../types";
 
@@ -15,10 +15,7 @@ export interface EducationFilterProps {
 
 export const EducationFilter = ({ filters, educations }: EducationFilterProps) => {
   const [value, _setValue] = useState<string[]>([]);
-  const { replace } = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const [_, transition] = useTransition();
+  const { set } = useMutableParams();
 
   const queryValue = useMemo(() => {
     const ids = educations.map(e => e.id);
@@ -32,17 +29,16 @@ export const EducationFilter = ({ filters, educations }: EducationFilterProps) =
   const setValue = useCallback(
     (ids: string[]) => {
       _setValue(ids);
-      const newParams = new URLSearchParams(searchParams?.toString());
-      if (ids.length === 0) {
-        newParams.delete("educations");
-      } else {
-        newParams.set("educations", encodeQueryParam(ids));
-      }
-      transition(() => {
-        replace(`${pathname}?${newParams.toString()}`);
-      });
+      set("filters", curr =>
+        isRecordType(curr)
+          ? {
+              ...curr,
+              educations: ids.filter(i => isUuid(i)),
+            }
+          : { educations: ids.filter(i => isUuid(i)) },
+      );
     },
-    [searchParams, pathname, replace],
+    [set],
   );
 
   return (

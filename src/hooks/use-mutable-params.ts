@@ -1,21 +1,23 @@
 import { useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useTransition } from "react";
+import { useCallback } from "react";
 
 import qs from "qs";
 
-import { parseQuery } from "~/lib/urls";
+import { type QueryParamValue, decodeQueryParams, encodeQueryParams } from "~/lib/urls";
 
 interface UseMutableParamsConfig {
   readonly overwriteParams?: boolean;
-  readonly useTransition?: boolean;
 }
 
 type SetOpts = { clear?: string | string[] | true };
 
+type SetCallback = (existing: QueryParamValue | undefined) => QueryParamValue;
+
 type Set = {
-  (key: string, v: unknown, opts?: SetOpts): void;
-  (params: Record<string, unknown>, opts?: SetOpts): void;
+  (key: string, v: QueryParamValue, opts?: SetOpts): void;
+  (key: string, v: SetCallback, opts?: SetOpts): void;
+  (params: Record<string, QueryParamValue>, opts?: SetOpts): void;
 };
 
 export const useMutableParams = (
@@ -25,51 +27,57 @@ export const useMutableParams = (
   set: Set;
   clear: (key: string | string[], opts?: { useTransition?: boolean }) => void;
 } => {
-  const [_, transition] = useTransition();
-  const { push } = useRouter();
+  const { replace } = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
 
   const clear = useCallback(
-    (param: string | string[], opts?: { useTransition?: boolean }) => {
-      const withTransition =
-        opts?.useTransition === undefined
-          ? config?.useTransition === undefined ?? false
-          : opts.useTransition;
-
+    (param: string | string[]) => {
       const pms = new URLSearchParams(params?.toString());
       const toDelete = Array.isArray(param) ? param : [param];
       for (const p of toDelete) {
         pms.delete(p);
       }
-      if (withTransition) {
-        transition(() => {
-          push(`${pathname}?${pms.toString()}`);
-          window.history.pushState(null, "", `?${pms.toString()}`);
-        });
-      } else {
-        push(`${pathname}?${pms.toString()}`);
-      }
+      replace(`${pathname}?${pms.toString()}`);
     },
-    [config, params, pathname, push],
+    [params, pathname, replace],
   );
 
   const set: Set = useCallback(
-    (arg0: string | Record<string, unknown>, arg1?: unknown | SetOpts, arg2?: SetOpts) => {
-      let toSet: Record<string, unknown>;
+    (
+      arg0: string | Record<string, QueryParamValue>,
+      arg1?: QueryParamValue | SetCallback | SetOpts,
+      arg2?: SetOpts,
+    ) => {
       let options: SetOpts;
       if (typeof arg0 === "string") {
         options = arg2 ?? {};
-        toSet = { [arg0]: arg1 as unknown };
       } else {
         options = (arg1 as SetOpts | undefined) ?? {};
-        toSet = arg0;
       }
 
       const overwriteParams = config?.overwriteParams ?? options.clear === true;
-      const existing = parseQuery(new URLSearchParams(overwriteParams ? "" : params?.toString()));
+      const existing = decodeQueryParams(
+        new URLSearchParams(overwriteParams ? "" : params?.toString()),
+      );
 
-      const pms: Record<string, unknown> = {
+      let toSet: Record<string, QueryParamValue>;
+      if (typeof arg0 === "string") {
+        if (typeof arg1 === "function") {
+          toSet = { [arg0]: arg1(existing[arg0]) };
+        } else if (arg1 === undefined) {
+          // This is not to satisfy TS, but rather to ensure proper implementation of the method.
+          throw new TypeError(
+            `Encountered undefined query parameter value for argument '${arg0}'!`,
+          );
+        } else {
+          toSet = { [arg0]: arg1 as QueryParamValue };
+        }
+      } else {
+        toSet = arg0;
+      }
+
+      const pms: Record<string, QueryParamValue> = {
         ...existing,
         ...toSet,
       };
@@ -79,10 +87,10 @@ export const useMutableParams = (
           delete pms[c];
         }
       }
-      const newUrl = `${pathname}?${qs.stringify(pms, { allowEmptyArrays: true })}}`;
-      push(newUrl, {});
+      const newUrl = `${pathname}?${encodeQueryParams(pms)}`;
+      replace(newUrl, {});
     },
-    [config, params, pathname, push],
+    [config, params, pathname, replace],
   );
 
   return { params, set, clear };

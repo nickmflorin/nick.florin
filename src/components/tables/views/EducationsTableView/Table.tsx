@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 import { getEducations, type GetEducationsFilters } from "~/actions/fetches/educations";
 import { Loading } from "~/components/feedback/Loading";
@@ -13,7 +14,7 @@ interface EducationsAdminTableProps {
   readonly filters: GetEducationsFilters;
 }
 
-export const EducationsAdminTable = async ({ page, filters }: EducationsAdminTableProps) => {
+export const EducationsAdminTable = memo(async ({ page, filters }: EducationsAdminTableProps) => {
   const educations = await getEducations({
     page,
     filters,
@@ -21,4 +22,4 @@ export const EducationsAdminTable = async ({ page, filters }: EducationsAdminTab
     includes: ["details", "skills"],
   });
   return <ContextTable data={educations} />;
-};
+});

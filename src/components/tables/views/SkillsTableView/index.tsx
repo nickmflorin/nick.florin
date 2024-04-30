@@ -33,7 +33,9 @@ export const SkillsTableView = ({ filters, page }: SkillsTableViewProps) => (
     <RootTableView
       searchBar={
         <TableSearchBar>
-          <SearchInput searchParamName="search" />
+          <Suspense fallback={<TextInput isLoading={true} />}>
+            <SearchInput initialValue={filters.search} />
+          </Suspense>
           <NewButton drawerId={DrawerIds.CREATE_SKILL} />
         </TableSearchBar>
       }

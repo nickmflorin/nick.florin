@@ -33,7 +33,7 @@ export const ProjectsTableView = ({ filters, page }: ProjectsTableViewProps) => 
     <RootTableView
       searchBar={
         <TableSearchBar>
-          <SearchInput searchParamName="search" />
+          <SearchInput initialValue={filters.search} />
           <NewButton drawerId={DrawerIds.CREATE_PROJECT} />
         </TableSearchBar>
       }

@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 import { getRepositories, type GetRepositoriesFilters } from "~/actions/fetches/repositories";
 import { Loading } from "~/components/feedback/Loading";
@@ -13,14 +14,16 @@ interface RepositoriesAdminTableProps {
   readonly filters: GetRepositoriesFilters;
 }
 
-export const RepositoriesAdminTable = async ({ page, filters }: RepositoriesAdminTableProps) => {
-  const repositories = await getRepositories({
-    page,
-    filters,
-    /* We will eventually need to include skills once we create a way to manage skills via a select
-       or popover, both in general and in the table. */
-    includes: ["projects", "skills"],
-    visibility: "admin",
-  });
-  return <ContextTable data={repositories} />;
-};
+export const RepositoriesAdminTable = memo(
+  async ({ page, filters }: RepositoriesAdminTableProps) => {
+    const repositories = await getRepositories({
+      page,
+      filters,
+      /* We will eventually need to include skills once we create a way to manage skills via a
+         select or popover, both in general and in the table. */
+      includes: ["projects", "skills"],
+      visibility: "admin",
+    });
+    return <ContextTable data={repositories} />;
+  },
+);

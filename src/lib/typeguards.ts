@@ -15,3 +15,6 @@ export const ensuresDefinedValue = <V>(value: V | undefined): V => {
 
 export const isUuid = (value: unknown): value is string =>
   z.string().uuid().safeParse(value).success;
+
+export const isRecordType = (value: unknown): value is Record<string, unknown> =>
+  z.record(z.any()).safeParse(value).success;

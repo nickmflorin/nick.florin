@@ -1,50 +1,46 @@
 "use client";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useTransition, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition, useCallback } from "react";
 
 import clsx from "clsx";
 import { toast } from "react-toastify";
 import { useDebouncedCallback } from "use-debounce";
 
 import { logger } from "~/application/logger";
+import { isRecordType } from "~/lib/typeguards";
 import { Button } from "~/components/buttons/generic";
 import { TextInput } from "~/components/input/TextInput";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
+import { useMutableParams } from "~/hooks";
 
 export interface TableSearchInputProps extends ComponentProps {
-  readonly searchParamName: string;
+  readonly initialValue: string;
   readonly onCreate?: (value: string) => Promise<void>;
 }
 
 const isEnterEvent = (e: React.KeyboardEvent<HTMLDivElement>) => e.key === "Enter" && !e.shiftKey;
 
-export const TableSearchInput = ({
-  searchParamName,
-  onCreate,
-  ...props
-}: TableSearchInputProps) => {
-  const { replace, refresh } = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+export const TableSearchInput = ({ onCreate, initialValue, ...props }: TableSearchInputProps) => {
+  const { refresh } = useRouter();
+  const { set } = useMutableParams();
   const [_, transition] = useTransition();
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue);
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleSearch = useDebouncedCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const params = new URLSearchParams(searchParams?.toString());
-    if (e.target.value) {
-      params.set(searchParamName, e.target.value);
-    } else {
-      params.delete(searchParamName);
-    }
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
-
-  useEffect(() => {
-    const v = searchParams?.get("search")?.toString() ?? "";
-    setValue(v);
-  }, [searchParams]);
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      set("filters", curr =>
+        isRecordType(curr)
+          ? {
+              ...curr,
+              search: e.target.value,
+            }
+          : { search: e.target.value },
+      );
+    },
+    [set],
+  );
 
   const create = useCallback(async () => {
     if (onCreate) {

@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 import { getExperiences, type GetExperiencesFilters } from "~/actions/fetches/experiences";
 import { Loading } from "~/components/feedback/Loading";
@@ -13,7 +14,7 @@ interface ExperiencesAdminTableProps {
   readonly filters: GetExperiencesFilters;
 }
 
-export const ExperiencesAdminTable = async ({ page, filters }: ExperiencesAdminTableProps) => {
+export const ExperiencesAdminTable = memo(async ({ page, filters }: ExperiencesAdminTableProps) => {
   const experiences = await getExperiences({
     page,
     filters,
@@ -21,4 +22,4 @@ export const ExperiencesAdminTable = async ({ page, filters }: ExperiencesAdminT
     includes: ["details", "skills"],
   });
   return <ContextTable data={experiences} />;
-};
+});

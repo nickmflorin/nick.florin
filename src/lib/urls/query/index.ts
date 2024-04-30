@@ -5,4 +5,4 @@ export * from "./add-query-params-to-url";
 export * from "./decode-query-params";
 export * from "./encode-query-params";
 export * from "./types";
-export * from "./parse-query";
+export * from "./decode-query-params";

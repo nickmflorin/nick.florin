@@ -1,5 +1,10 @@
-export type EncodedQueryParamValue = string;
-export type QueryParamValue = string | number | boolean | null | undefined | string[] | number[];
+export interface QueryParamObj {
+  [key: string]: QueryParamValue;
+}
+
+export type QueryParamPrimitiveValue = string | number | boolean | null;
+type _ParsedQueryValue = QueryParamPrimitiveValue | QueryParamObj | QueryParamValue[];
+export type QueryParamValue = _ParsedQueryValue | _ParsedQueryValue[];
 
 export type QueryParamsForm = "map" | "object" | "record" | "pairs" | "string";
 

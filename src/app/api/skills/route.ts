@@ -5,10 +5,10 @@ import { apiRoute } from "~/api/route";
 import { SkillsFiltersSchema, type SkillsFilters } from "~/api/schemas/filters";
 
 export const GET = apiRoute(async (request, params, query) => {
-  let filters: SkillsFilters | undefined = undefined;
+  let filters: Partial<SkillsFilters> | undefined = undefined;
 
   if (query.filters) {
-    const parsedQuery = SkillsFiltersSchema.safeParse(query.filters);
+    const parsedQuery = SkillsFiltersSchema.partial().safeParse(query.filters);
     if (!parsedQuery.success) {
       return ApiClientFieldErrors.fromZodError(parsedQuery.error, SkillsFiltersSchema).response;
     }

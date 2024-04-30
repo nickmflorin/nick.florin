@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { memo } from "react";
 
 import { getProjects, type GetProjectsFilters } from "~/actions/fetches/projects";
 import { Loading } from "~/components/feedback/Loading";
@@ -13,7 +14,7 @@ interface ProjectsAdminTableProps {
   readonly filters: GetProjectsFilters;
 }
 
-export const ProjectsAdminTable = async ({ page, filters }: ProjectsAdminTableProps) => {
+export const ProjectsAdminTable = memo(async ({ page, filters }: ProjectsAdminTableProps) => {
   const projects = await getProjects({
     page,
     filters,
@@ -23,4 +24,4 @@ export const ProjectsAdminTable = async ({ page, filters }: ProjectsAdminTablePr
     visibility: "admin",
   });
   return <ContextTable data={projects} />;
-};
+});

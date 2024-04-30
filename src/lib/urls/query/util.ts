@@ -5,7 +5,6 @@ import {
   type QueryParamValue,
   type QueryParamsForm,
   type QueryParamOptions,
-  type EncodedQueryParamValue,
   type OptionsForm,
 } from "./types";
 
@@ -139,9 +138,9 @@ export const getQueryParamsReducer = <F extends QueryParamsForm>(form: F): Query
   queryParamsReducers[form];
 
 const initialQueryParamState: {
-  [key in QueryParamsForm]: () => QueryParams<key, EncodedQueryParamValue>;
+  [key in QueryParamsForm]: () => QueryParams<key, string>;
 } = {
-  map: () => new Map<string, EncodedQueryParamValue>(),
+  map: () => new Map<string, string>(),
   object: () => new URLSearchParams(),
   record: () => ({}),
   pairs: () => [],
@@ -150,7 +149,7 @@ const initialQueryParamState: {
 
 export const getInitialQueryParamsState = <O extends QueryParamOptions>(
   options: O,
-): QueryParams<OptionsForm<O>, EncodedQueryParamValue> => {
+): QueryParams<OptionsForm<O>, string> => {
   const initializer = initialQueryParamState[options.form || "object"];
-  return initializer() as QueryParams<OptionsForm<O>, EncodedQueryParamValue>;
+  return initializer() as QueryParams<OptionsForm<O>, string>;
 };
