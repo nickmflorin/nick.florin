@@ -36,7 +36,7 @@ export const SectionDescription = ({
 );
 
 export const Section = ({ title, description, children, ...props }: SectionProps) => (
-  <div {...props} className={clsx("flex flex-col gap-[12px]", props.className)}>
+  <div {...props} className={clsx("flex flex-col gap-[12px] max-md:gap-[8px]", props.className)}>
     {(title || description) && (
       <div className="flex flex-col gap-[4px] mb-[4px]">
         {typeof title === "string" ? <SectionTitle>{title}</SectionTitle> : title}

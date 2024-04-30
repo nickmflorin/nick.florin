@@ -16,13 +16,19 @@ export interface ProjectProps extends ComponentProps {
 export const Project = ({ title, description, children, project, ...props }: ProjectProps) => (
   <div
     {...props}
-    className={clsx("w-full max-w-[900px] flex flex-col gap-[16px] mx-auto", props.className)}
+    className={clsx(
+      "w-full max-w-[900px] flex flex-col gap-[12px] mx-auto max-md:gap-[8px]",
+      props.className,
+    )}
   >
-    <div {...props} className={clsx("w-full flex flex-col gap-[16px]", props.className)}>
+    <div
+      {...props}
+      className={clsx("w-full flex flex-col gap-[10px] max-md:gap-[8px]", props.className)}
+    >
       <Title order={3} className="max-md:text-title_sm">
         {title}
       </Title>
-      <div className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[12px] max-md:gap-[8px]">
         {description}
         {project.repositories.length !== 0 && (
           // In actuality, there will only ever be 1 repository per project.
@@ -35,7 +41,7 @@ export const Project = ({ title, description, children, project, ...props }: Pro
         <Skills skills={project.skills} />
       </div>
     </div>
-    <div key="1" className="flex flex-col gap-[20px]">
+    <div key="1" className="flex flex-col gap-[12px] max-md:gap-[8px]">
       {children}
     </div>
   </div>
