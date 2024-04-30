@@ -10,7 +10,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
   <Project
     title="nick.florin"
     description={
-      <Description>
+      <Description className="text-smplus max-md:text-sm">
         A CMS-powered, interactive and dynamic personal portfolio/website written using&nbsp;
         <Link options={{ as: "a" }} href="https://nextjs.org/">
           NextJS

@@ -14,23 +14,23 @@ export const BarChart = () => (
     }
   >
     <Series>
-      <SeriesItem textSize="sm" title="X-Axis" titleWidth="70px" withColon>
+      <SeriesItem title="X-Axis">
         The x-axis can be configured with a dropdown menu to represent the desired metric. When
         hovering over a bar in the chart, a dotted line will indicate exactly where that data point
         sits on the x-axis.
       </SeriesItem>
-      <SeriesItem textSize="sm" title="Y-Axis" titleWidth="70px" withColon>
+      <SeriesItem title="Y-Axis">
         The y-axis can be configured with a dropdown menu to represent the desired metric. When
         hovering over a bar in the chart, a dotted line will indicate exactly where that data point
         sits on the x-axis.
       </SeriesItem>
-      <SeriesItem textSize="sm" title="Color" titleWidth="70px" withColon>
+      <SeriesItem title="Color">
         The color of the bar itself can be used to represent a dimension of the data. For discrete,
         string values, the color can be used to group bars together that share the same value. For
         continuous, numeric values, shades of the color can be used to represent the magnitude of
         the value.
       </SeriesItem>
-      <SeriesItem textSize="sm" title="Time" titleWidth="70px" withColon>
+      <SeriesItem title="Time">
         If the data is provided as a time-series, the chart will include an animation play button
         that, when clicked, will animate the dimensions of the chart changing over time.
       </SeriesItem>

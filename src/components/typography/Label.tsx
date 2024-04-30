@@ -4,7 +4,7 @@ import type { ComponentProps, BaseTypographyProps } from "~/components/types";
 import { getTypographyClassName } from "~/components/types";
 
 export interface LabelProps extends BaseTypographyProps, ComponentProps {
-  readonly children: string | number | undefined | null | false;
+  readonly children: React.ReactNode;
 }
 
 export const Label = ({ children, style, ...props }: LabelProps): JSX.Element => (

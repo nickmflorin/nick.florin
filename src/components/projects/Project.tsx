@@ -19,7 +19,9 @@ export const Project = ({ title, description, children, project, ...props }: Pro
     className={clsx("w-full max-w-[900px] flex flex-col gap-[16px] mx-auto", props.className)}
   >
     <div {...props} className={clsx("w-full flex flex-col gap-[16px]", props.className)}>
-      <Title order={3}>{title}</Title>
+      <Title order={3} className="max-md:text-title_sm">
+        {title}
+      </Title>
       <div className="flex flex-col gap-[12px]">
         {description}
         {project.repositories.length !== 0 && (

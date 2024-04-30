@@ -15,7 +15,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
   <ProjectComponent
     title="n-Dimensional Charting Library for Asset Management"
     description={
-      <Description fontSize="smplus">
+      <Description className="text-smplus max-md:text-sm">
         A JavaScript charting library written in&nbsp;
         <Link options={{ as: "a" }} href="https://d3js.org">
           d3.js
@@ -26,7 +26,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
     }
     {...props}
   >
-    <Text key="0" className="text-body-light" fontSize="smplus">
+    <Text key="0" className="text-body-light text-smplus max-md:text-sm">
       The package supported the following chart types:
     </Text>
     <BubbleChart />

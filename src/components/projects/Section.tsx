@@ -2,12 +2,13 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps, type SingleTextNode } from "~/components/types";
+import { Description } from "~/components/typography/Description";
 import { Text } from "~/components/typography/Text";
 
 export interface SectionProps extends ComponentProps {
   readonly title?: JSX.Element | string;
-  readonly description?: JSX.Element | string;
+  readonly description?: SingleTextNode | SingleTextNode[];
   readonly children: ReactNode;
 }
 
@@ -19,8 +20,7 @@ export const SectionTitle = ({
     {...props}
     fontWeight="medium"
     flex
-    fontSize="smplus"
-    className={clsx("text-body", props.className)}
+    className={clsx("text-smplus max-md:text-sm", props.className)}
   >
     {children}
   </Text>
@@ -29,10 +29,10 @@ export const SectionTitle = ({
 export const SectionDescription = ({
   children,
   ...props
-}: ComponentProps & { readonly children: ReactNode }) => (
-  <Text {...props} className={clsx("text-body-light", props.className)} fontSize="smplus">
+}: ComponentProps & { readonly children: SingleTextNode | SingleTextNode[] }) => (
+  <Description {...props} className={clsx("text-md max-md:text-sm", props.className)}>
     {children}
-  </Text>
+  </Description>
 );
 
 export const Section = ({ title, description, children, ...props }: SectionProps) => (
