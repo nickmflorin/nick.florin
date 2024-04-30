@@ -16,7 +16,7 @@ export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand
 }: ResumeModelBadgesProps<M, T>) => (
   <div
     {...props}
-    className={clsx("flex flex-row items-center gap-[8px] h-[22px]", props.className)}
+    className={clsx("flex flex-wrap gap-x-[8px] gap-y-[6px] items-center", props.className)}
   >
     <TimePeriodTag
       fontSize="xs"

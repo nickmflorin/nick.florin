@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
@@ -22,7 +24,7 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
   showMoreLink = true,
   ...props
 }: ResumeModelCondensedTileProps<M, T>) => (
-  <ResumeModelTile {...props} gap="4px">
+  <ResumeModelTile {...props} className={clsx("gap-[4px]", props.className)}>
     <ResumeModelTile.Header
       size="small"
       model={model}

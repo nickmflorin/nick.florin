@@ -25,7 +25,7 @@ export const Detail = <
   isNested,
   ...props
 }: DetailProps<D>): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col gap-[10px]", props.className)}>
+  <div {...props} className={clsx("flex flex-col gap-[10px] max-md:gap-[8px]", props.className)}>
     <div className="flex flex-col gap-[4px]">
       {isNested && index !== undefined ? (
         <div className="flex flex-row gap-[8px]">

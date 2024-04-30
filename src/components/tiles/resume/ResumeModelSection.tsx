@@ -15,7 +15,7 @@ export const ResumeModelSection = ({
   labelFontSize = "sm",
   ...props
 }: ResumeModelSectionProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col gap-[12px]", props.className)}>
+  <div {...props} className={clsx("flex flex-col gap-[10px]", props.className)}>
     <Label fontSize={labelFontSize}>{label}</Label>
     {children}
   </div>

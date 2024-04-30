@@ -86,6 +86,16 @@
 
 .commit-timeline {
   @include timeline-item-offset(22px);
+
+  @media (max-width: theme("screens.md")) {
+    @include timeline-item-offset(14px);
+    @include timeline-item() {
+      &:where(:not(:first-of-type)) {
+        margin-top: theme("spacing.4");
+      }
+    }
+  }
+
   @include timeline-line($width: 2px, $color: theme("colors.gray.200"));
   @include timeline-item-bullet() {
     background-color: theme("colors.gray.200");

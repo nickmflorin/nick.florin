@@ -16,14 +16,13 @@ import { ResumeModelTitle } from "./ResumeModelTitle";
 export const ImageSizes: { [key in types.ResumeModelSize]: { [key in ScreenSize]: number } } = {
   small: { xs: 28, sm: 28, md: 28, lg: 28, xl: 28, "2xl": 28 },
   medium: { xs: 44, sm: 44, md: 44, lg: 44, xl: 44, "2xl": 44 },
-  large: { xs: 70, sm: 72, md: 72, lg: 72, xl: 72, "2xl": 72 },
+  large: { xs: 44, sm: 72, md: 72, lg: 72, xl: 72, "2xl": 72 },
 };
 
 export interface ResumeModelHeaderProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends ComponentProps {
   readonly model: M;
   readonly size: types.ResumeModelSize;
-  readonly insetBadges?: boolean;
   readonly showBadges?: boolean;
   readonly titleIsExpandable?: boolean;
 }
@@ -31,14 +30,13 @@ export interface ResumeModelHeaderProps<M extends BrandModel<T>, T extends Resum
 export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
   size,
-  insetBadges = true,
   titleIsExpandable = false,
   showBadges = true,
 }: ResumeModelHeaderProps<M, T>) => {
   const { size: screenSize } = useScreenSizes({ defaultSize: "lg" });
 
   return (
-    <div className="flex flex-col gap-[16px] max-w-full w-full overflow-y-hidden">
+    <div className="flex flex-col max-w-full w-full overflow-y-hidden gap-[8px]">
       <div className="flex flex-row gap-[12px] max-w-full w-full overflow-x-hidden">
         <ResumeModelImage model={model} size={ImageSizes[size][screenSize]} />
         <div
@@ -56,18 +54,14 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
             <ResumeModelTitle model={model} size={size} expandable={titleIsExpandable} />
             <ResumeModelSubTitle model={model} size={size} />
           </div>
-          {insetBadges && (
-            <ShowHide show={showBadges}>
-              <ResumeModelBadges model={model} />
-            </ShowHide>
-          )}
+          <ShowHide show={showBadges}>
+            <ResumeModelBadges model={model} className="max-md:hidden" />
+          </ShowHide>
         </div>
       </div>
-      {!insetBadges && (
-        <ShowHide show={showBadges}>
-          <ResumeModelBadges model={model} />
-        </ShowHide>
-      )}
+      <ShowHide show={showBadges}>
+        <ResumeModelBadges model={model} className="md:hidden" />
+      </ShowHide>
     </div>
   );
 };

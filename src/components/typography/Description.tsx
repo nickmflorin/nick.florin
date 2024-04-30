@@ -18,14 +18,22 @@ const descriptionNodeCanRender = (
   return types.singleTextNodeCanRender(node);
 };
 
-const splitChildNodeString = (child: string, options: { lineBreakSize: types.LineBreakSize }) => {
+const splitChildNodeString = (
+  child: string,
+  options: { lineBreakHeight?: types.QuantitativeSize },
+) => {
   if (child.includes("\n")) {
     const filtered = child.split("\n").filter(p => descriptionNodeCanRender(p));
     return filtered.flatMap((c, index) =>
       index !== filtered.length - 1
-        ? options.lineBreakSize === 1
-          ? [c.trim(), <br key={`${c}_break`} />]
-          : [c.trim(), <br key={`${c}_break_1`} />, <br key={`${c}_break_2`} />]
+        ? [
+            c.trim(),
+            <span
+              key={`break_${index}`}
+              className="block"
+              style={{ height: types.sizeToString(options.lineBreakHeight ?? 6, "px") }}
+            />,
+          ]
         : c.trim(),
     );
   }
@@ -55,7 +63,7 @@ const WithShowMore = ({
   );
 
 export interface DescriptionProps extends Omit<TextProps, "flex" | "children"> {
-  readonly lineBreakSize?: types.LineBreakSize;
+  readonly lineBreakHeight?: types.QuantitativeSize;
   readonly includeShowMoreLink?: boolean;
   /* It is important that we do not use RestrictedNode here because we do not want infinitely nested
      iterables of children, only one level of nesting deep. */
@@ -66,7 +74,7 @@ export const Description = ({
   fontSize = "md",
   fontWeight = "regular",
   children,
-  lineBreakSize = 2,
+  lineBreakHeight = 6,
   includeShowMoreLink = false,
   ...props
 }: DescriptionProps): JSX.Element => {
@@ -84,14 +92,14 @@ export const Description = ({
                 .reduce(
                   (acc: types.RenderableSingleTextNode[], c) => [
                     ...acc,
-                    ...(typeof c === "string" ? splitChildNodeString(c, { lineBreakSize }) : [c]),
+                    ...(typeof c === "string" ? splitChildNodeString(c, { lineBreakHeight }) : [c]),
                   ],
                   [],
                 ),
             ];
           } else if (descriptionNodeCanRender(child)) {
             if (typeof child === "string") {
-              return [...acc, ...splitChildNodeString(child, { lineBreakSize })];
+              return [...acc, ...splitChildNodeString(child, { lineBreakHeight })];
             }
             return [...acc, child];
           }
@@ -99,7 +107,7 @@ export const Description = ({
         },
         [] as types.RenderableSingleTextNode[],
       ),
-    [children, lineBreakSize],
+    [children, lineBreakHeight],
   );
 
   if (nodes.length !== 0) {

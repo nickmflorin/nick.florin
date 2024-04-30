@@ -2,8 +2,6 @@ import { useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 
-import qs from "qs";
-
 import { type QueryParamValue, decodeQueryParams, encodeQueryParams } from "~/lib/urls";
 
 interface UseMutableParamsConfig {

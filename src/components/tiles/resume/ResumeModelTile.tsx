@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
-import { sizeToString, type ComponentProps, type Size } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
 
 import { Details } from "./Details";
 import { ResumeModelBadges } from "./ResumeModelBadges";
@@ -15,15 +15,10 @@ import { ResumeModelTitle } from "./ResumeModelTitle";
 
 export interface ResumeModelProps extends ComponentProps {
   readonly children: ReactNode;
-  readonly gap?: Size;
 }
 
-const LocalResumeModelTile = ({ children, gap = 10, ...props }: ResumeModelProps): JSX.Element => (
-  <div
-    {...props}
-    className={clsx("flex flex-col w-full max-w-100%", props.className)}
-    style={{ gap: sizeToString(gap, "px") }}
-  >
+const LocalResumeModelTile = ({ children, ...props }: ResumeModelProps): JSX.Element => (
+  <div {...props} className={clsx("flex flex-col w-full max-w-100%", props.className)}>
     {children}
   </div>
 );

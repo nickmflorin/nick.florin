@@ -28,19 +28,16 @@ export const TableSearchInput = ({ onCreate, initialValue, ...props }: TableSear
   const [value, setValue] = useState(initialValue);
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleSearch = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      set("filters", curr =>
-        isRecordType(curr)
-          ? {
-              ...curr,
-              search: e.target.value,
-            }
-          : { search: e.target.value },
-      );
-    },
-    [set],
-  );
+  const handleSearch = useDebouncedCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    set("filters", curr =>
+      isRecordType(curr)
+        ? {
+            ...curr,
+            search: e.target.value,
+          }
+        : { search: e.target.value },
+    );
+  }, 100);
 
   const create = useCallback(async () => {
     if (onCreate) {

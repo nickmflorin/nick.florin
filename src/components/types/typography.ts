@@ -106,6 +106,4 @@ export const singleTextNodeCanRender = (node: SingleTextNode): node is Renderabl
   return isValidElement(node) && !isFragment(node);
 };
 
-export type LineBreakSize = 1 | 2;
-
 export type TypographyVisibilityState = "expanded" | "collapsed";
