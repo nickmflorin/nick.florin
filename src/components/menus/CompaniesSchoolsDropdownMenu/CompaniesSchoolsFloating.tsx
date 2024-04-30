@@ -25,28 +25,26 @@ const ButtonContent: { [key in ModelType]: string } = {
   school: "Schools",
 };
 
-export interface CompaniesSchoolsFloatingProps<M extends ModelType> {
-  readonly children: JSX.Element;
-  readonly modelType: M;
+export interface CompaniesSchoolsFloatingProps {
+  readonly modelType: ModelType;
+  readonly content: JSX.Element;
 }
 
-export const CompaniesSchoolsFloating = <M extends ModelType>({
-  children,
-  modelType,
-}: CompaniesSchoolsFloatingProps<M>) => {
+export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchoolsFloatingProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   return (
     <>
       <Popover
+        content={content}
         withArrow={false}
-        content={
+        outerContent={({ children }) => (
           <PopoverContent className="p-[0px] rounded-md overflow-hidden" variant="white">
             <MenuContainer className="box-shadow-none">
               {children}
               <CompaniesSchoolsMenuFooter onCreate={() => setDrawerVisible(true)} />
             </MenuContainer>
           </PopoverContent>
-        }
+        )}
         placement="bottom-end"
         triggers={["click"]}
         offset={{ mainAxis: 4 }}

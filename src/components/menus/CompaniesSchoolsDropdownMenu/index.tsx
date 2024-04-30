@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+import type { CompaniesSchoolsFloatingProps } from "./CompaniesSchoolsFloating";
+
 import { Button } from "~/components/buttons";
 import { Loading } from "~/components/feedback/Loading";
 import { Icon } from "~/components/icons/Icon";
@@ -27,9 +29,12 @@ export interface CompaniesSchoolsDropdownMenuProps {
 }
 
 export const CompaniesSchoolsDropdownMenu = ({ modelType }: CompaniesSchoolsDropdownMenuProps) => (
-  <CompaniesSchoolsFloating modelType={modelType}>
-    <Suspense fallback={<Loading isLoading={true} />}>
-      <CompaniesSchoolsMenuContent modelType={modelType} />
-    </Suspense>
-  </CompaniesSchoolsFloating>
+  <CompaniesSchoolsFloating
+    modelType={modelType}
+    content={
+      <Suspense fallback={<Loading isLoading={true} />}>
+        <CompaniesSchoolsMenuContent modelType={modelType} />
+      </Suspense>
+    }
+  />
 );

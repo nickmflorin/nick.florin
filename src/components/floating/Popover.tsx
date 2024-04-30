@@ -1,33 +1,13 @@
 "use client";
-import { type ReactNode, cloneElement, useMemo } from "react";
+import { cloneElement, useMemo } from "react";
 
-import { FloatingPortal } from "@floating-ui/react";
-
-import { type ComponentProps } from "~/components/types";
-
-import { Arrow } from "./Arrow";
 import { usePopover, type UsePopoverConfig } from "./hooks/use-popover";
+import { PopoverContentWrapper, type PopoverContentWrapperProps } from "./PopoverContentWrapper";
 import * as types from "./types";
 
-const ConditionalPortal = ({
-  children,
-  inPortal = false,
-}: {
-  inPortal?: boolean;
-  children: ReactNode;
-}) => {
-  if (inPortal) {
-    return <FloatingPortal>{children}</FloatingPortal>;
-  }
-  return children;
-};
-
-export interface PopoverProps extends UsePopoverConfig {
-  /**
-   * The content that appears inside of the floating element.
-   */
-  readonly content: JSX.Element | ((props: types.FloatingContentRenderProps) => JSX.Element);
-  readonly inPortal?: boolean;
+export interface PopoverProps
+  extends UsePopoverConfig,
+    Omit<PopoverContentWrapperProps, "context"> {
   /**
    * The element that should trigger the floating content to apper and/or disappear, depending on
    * its interactions state - such as hovered, clicked, etc.  Can be provided either as a render
@@ -51,15 +31,12 @@ export interface PopoverProps extends UsePopoverConfig {
    * usage.
    */
   readonly children: JSX.Element | ((params: types.PopoverRenderProps) => JSX.Element);
-  readonly isDisabled?: boolean;
-  readonly withArrow?: boolean;
-  readonly arrowClassName?: ComponentProps["className"];
-  readonly variant?: types.PopoverVariant;
 }
 
 export const Popover = ({
   children: _children,
-  content: _content,
+  content,
+  outerContent,
   inPortal,
   isDisabled,
   withArrow = true,
@@ -67,8 +44,7 @@ export const Popover = ({
   variant = types.PopoverVariants.SECONDARY,
   ...config
 }: PopoverProps) => {
-  const { refs, referenceProps, isOpen, floatingProps, floatingStyles, arrowRef, context } =
-    usePopover(config);
+  const { refs, referenceProps, isOpen, ...rest } = usePopover(config);
 
   const children = useMemo(() => {
     if (typeof _children === "function") {
@@ -80,49 +56,19 @@ export const Popover = ({
     });
   }, [_children, refs, referenceProps, isOpen]);
 
-  const content = useMemo(() => {
-    if (isOpen && !isDisabled) {
-      if (typeof _content === "function") {
-        return _content({
-          ref: refs.setFloating,
-          params: floatingProps,
-          styles: floatingStyles,
-        });
-      }
-      return cloneElement(
-        _content,
-        {
-          ...floatingProps,
-          ref: refs.setFloating,
-          style: { ..._content.props.style, ...floatingStyles },
-        },
-        <>
-          {_content.props.children}
-          {context && withArrow && (
-            <Arrow ref={arrowRef} variant={variant} context={context} className={arrowClassName} />
-          )}
-        </>,
-      );
-    }
-    return <></>;
-  }, [
-    _content,
-    isOpen,
-    isDisabled,
-    floatingProps,
-    refs,
-    floatingStyles,
-    context,
-    arrowRef,
-    arrowClassName,
-    variant,
-    withArrow,
-  ]);
-
   return (
     <>
       {children}
-      <ConditionalPortal inPortal={inPortal}>{content}</ConditionalPortal>
+      <PopoverContentWrapper
+        context={{ refs, referenceProps, isOpen, ...rest }}
+        content={content}
+        outerContent={outerContent}
+        arrowClassName={arrowClassName}
+        withArrow={withArrow}
+        inPortal={inPortal}
+        variant={variant}
+        isDisabled={isDisabled}
+      />
     </>
   );
 };

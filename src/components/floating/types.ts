@@ -1,4 +1,4 @@
-import { type CSSProperties, type Dispatch, type SetStateAction } from "react";
+import { type CSSProperties, type Dispatch, type RefObject, type SetStateAction } from "react";
 
 import {
   type ReferenceType,
@@ -145,6 +145,10 @@ export interface FloatingContext {
   readonly context: RootFloatingContext;
   readonly refs: ExtendedRefs<ReferenceType>;
   readonly setIsOpen: (v: boolean, evt: Event | React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export interface PopoverContext extends FloatingContext {
+  readonly arrowRef: RefObject<SVGSVGElement>;
 }
 
 export interface DialogContext extends FloatingContext {

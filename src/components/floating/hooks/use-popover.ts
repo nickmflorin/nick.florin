@@ -2,6 +2,8 @@ import { useRef, useMemo } from "react";
 
 import { arrow, size, offset as offsetMiddleware, type OffsetOptions } from "@floating-ui/react";
 
+import type * as types from "../types";
+
 import { type QuantitativeSize, type Size, sizeToNumber, sizeToString } from "~/components/types";
 
 import { useFloating, type UseFloatingConfig } from "./use-floating";
@@ -13,7 +15,12 @@ export interface UsePopoverConfig extends Omit<UseFloatingConfig, "triggers"> {
   readonly triggers?: ["click", "hover"] | ["click"] | ["hover"] | ["hover", "click"];
 }
 
-export const usePopover = ({ maxHeight, offset, width, ...config }: UsePopoverConfig) => {
+export const usePopover = ({
+  maxHeight,
+  offset,
+  width,
+  ...config
+}: UsePopoverConfig): types.PopoverContext => {
   const arrowRef = useRef<SVGSVGElement>(null);
 
   const floating = useFloating({

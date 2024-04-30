@@ -59,6 +59,7 @@ export const CompaniesSchoolsMenuContent = async <M extends ModelType>({
   modelType,
 }: CompaniesSchoolsMenuContentProps<M>) => {
   const data = await fetchers[modelType]();
+
   return (
     <MenuContent
       itemClassName="px-[18px] first:pt-[12px]"
