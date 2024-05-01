@@ -36,8 +36,13 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
   const { size: screenSize } = useScreenSizes({ defaultSize: "lg" });
 
   return (
-    <div className="flex flex-col max-w-full w-full overflow-y-hidden gap-[8px]">
-      <div className="flex flex-row gap-[12px] max-w-full w-full overflow-x-hidden">
+    <div className="flex flex-col max-w-full w-full overflow-y-hidden gap-[10px]">
+      <div
+        className={clsx(
+          "flex flex-row gap-[12px] max-w-full w-full overflow-x-hidden",
+          "max-md:gap-[8px]",
+        )}
+      >
         <ResumeModelImage model={model} size={ImageSizes[size][screenSize]} />
         <div
           className={clsx("flex flex-col grow gap-[4px]", {

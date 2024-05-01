@@ -35,3 +35,5 @@ export const PublicResumeDownloadMenu = ({ resume }: UploadResumeTileEllipsisMen
     )}
   </DropdownMenu>
 );
+
+export default PublicResumeDownloadMenu;

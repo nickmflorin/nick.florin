@@ -1,9 +1,14 @@
+import dynamic from "next/dynamic";
+
 import clsx from "clsx";
 
 import { prisma } from "~/prisma/client";
 import { type BrandResume } from "~/prisma/model";
 import { convertToPlainObject } from "~/api/serialization";
-import { PublicResumeDownloadMenu } from "~/components/menus/PublicResumeDropdownMenu";
+
+const PublicResumeDownloadMenu = dynamic(
+  () => import("~/components/menus/PublicResumeDropdownMenu"),
+);
 
 interface ResumeLayoutProps {
   readonly children: React.ReactNode;
@@ -21,7 +26,8 @@ export default async function ResumeLayout({ children }: ResumeLayoutProps) {
   return (
     <div className="flex flex-col grow relative max-h-full min-h-full">
       {resume && (
-        <div className="flex flex-row justify-end">
+        // TODO: Figure out an alternative solution for downloading/viewing resume on mobile.
+        <div className="flex flex-row justify-end max-md:hidden">
           <PublicResumeDownloadMenu resume={resume} />
         </div>
       )}
