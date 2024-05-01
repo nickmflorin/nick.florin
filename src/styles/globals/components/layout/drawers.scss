@@ -1,0 +1,72 @@
+@use "./constants" as constants;
+
+@mixin drawer-container {
+  max-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.drawer-wrapper {
+  @include drawer-container();
+  position: relative;
+  min-width: constants.$drawer-width;
+  max-width: constants.$drawer-width;
+  width: constants.$drawer-width;
+  background-color: theme("colors.white");
+  border-left: 1px solid theme("colors.border");
+
+  @media (max-width: theme("screens.md")) {
+    min-width: calc(100% - constants.$layout-nav-width);
+    max-width: calc(100% - constants.$layout-nav-width);
+    width: calc(100% - constants.$layout-nav-width);
+    position: absolute;
+    left: constants.$layout-nav-width;
+    /* The left border is removed when the drawer is opened on mobile because the drawer extends to
+       the side nav bar, which already has a border to its right.  Including the additional border
+       here would make the overall border appear thicker, since it would be the combination of two
+       distinctly different borders. */
+    border-left: none !important;
+  }
+
+  > .drawer-container {
+    @include drawer-container();
+    position: relative;
+
+    .drawer__close-button {
+      position: absolute;
+      z-index: 100;
+      top: 16px;
+      right: 12px;
+    }
+
+    > .drawer {
+      @include drawer-container();
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      width: 100%;
+      min-width: 100%;
+      max-width: 100%;
+
+      .form {
+        height: 100%;
+      }
+
+      > .drawer__header {
+        padding: 24px 6px 0px 24px;
+      }
+
+      > .drawer__content {
+        padding: 16px 6px 24px 24px;
+        overflow-y: auto;
+        flex-grow: 100;
+        max-height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+      }
+    }
+  }
+}

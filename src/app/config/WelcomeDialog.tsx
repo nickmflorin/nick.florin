@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ReactNode, useLayoutEffect } from "react";
+import { useState, type ReactNode, useLayoutEffect, useRef } from "react";
 
 import { useCookies } from "next-client-cookies";
 
@@ -15,15 +15,20 @@ interface WelcomeDialogProps {
 export const WelcomeDialog = ({ children }: WelcomeDialogProps) => {
   const cookies = useCookies();
   const [isOpen, setIsOpen] = useState(false);
+  const wasChecked = useRef<boolean>(false);
 
   useLayoutEffect(() => {
-    // if (environment.get("NEXT_PUBLIC_WELCOME_TOAST") !== false) {
-    const cookie = cookies.get("nick.florin:suppress-welcome-dialog");
-    if (cookie && cookie.toLocaleLowerCase() === "true") {
-      return;
+    if (!wasChecked.current) {
+      wasChecked.current = true;
+      const cookie = cookies.get("nick.florin:suppress-welcome-dialog");
+      if (cookie && cookie.toLocaleLowerCase() === "true") {
+        return;
+      }
+      setIsOpen(true);
     }
-    setIsOpen(true);
-    // }
+    return () => {
+      setIsOpen(false);
+    };
   }, [cookies]);
 
   return (

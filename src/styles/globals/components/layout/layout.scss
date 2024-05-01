@@ -19,6 +19,7 @@
     max-height: calc(100% - #{constants.$header-height});
     overflow: hidden;
     max-width: 100%;
+    position: relative;
 
     > .content {
       overflow-y: hidden;

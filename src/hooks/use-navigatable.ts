@@ -1,10 +1,10 @@
 import { usePathname } from "next/navigation";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 
 import { type PathActive, pathIsActive } from "~/lib/paths";
 import { type Path } from "~/lib/urls";
 import { type IconProp } from "~/components/icons";
-import { useDebouncedValue, useDeepEqualEffect } from "~/hooks";
+import { useDebouncedValue } from "~/hooks";
 
 export interface NavItem {
   readonly icon?: IconProp;
@@ -49,7 +49,7 @@ export const useNavigatable = <N extends Pick<NavItem, "active" | "path">>({
      to prevent flashing loading indicators from appearing when the navigation is immediate. */
   const [isPending] = useDebouncedValue(_optimisticIsActive && !isActive, 200);
 
-  useDeepEqualEffect(() => {
+  useEffect(() => {
     if (_optimisticIsActive) {
       /* Keep the optimistic active state in sync with the real active state after the navigation
          occurs. */

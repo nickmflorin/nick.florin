@@ -2,10 +2,11 @@
 import dynamic from "next/dynamic";
 import React, { type ReactNode } from "react";
 
-import { DrawersProvider } from "~/components/drawers/provider/DrawersProvider";
-
 import { SWRConfig } from "./SWRConfig";
 
+const DrawersProvider = dynamic(() => import("~/components/drawers/provider/DrawersProvider"), {
+  ssr: false,
+});
 const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });
 
 export interface ClientConfigProps {

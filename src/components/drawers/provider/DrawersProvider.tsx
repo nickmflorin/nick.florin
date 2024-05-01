@@ -12,3 +12,5 @@ export const DrawersProvider = ({ children }: { readonly children: ReactNode }) 
     </DrawersContext.Provider>
   );
 };
+
+export default DrawersProvider;

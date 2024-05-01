@@ -11,7 +11,7 @@ import { AppConfig } from "~/app/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
 import { environment } from "~/environment";
 
-const WelcomeDialog = dynamic(() => import("./config/WelcomeDialog"));
+const WelcomeDialog = dynamic(() => import("./config/WelcomeDialog"), { ssr: false });
 
 const InterFont = Inter({
   weight: ["400", "500", "600", "700"],
@@ -34,14 +34,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48" />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
-        />
         <Script
           type="text/javascript"
           src={`https://kit.fontawesome.com/${environment.get("FONT_AWESOME_KIT_TOKEN")}.js`}
-          // crossOrigin="anonymous"
           /* Using "nest" instead of "replace" avoids errors related to
              NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is
              not a child of this node */
@@ -97,6 +92,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     { leadingPath: "/admin/skills" },
                     { leadingPath: "/admin/experiences" },
                     { leadingPath: "/admin/educations" },
+                    { leadingPath: "/admin/courses" },
+                    { leadingPath: "/admin/projects" },
+                    { leadingPath: "/admin/repositories" },
                   ],
                 },
               ]}
@@ -104,9 +102,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
               {children}
             </Layout>
           </WelcomeDialog>
+          <Analytics />
+          <SpeedInsights />
         </AppConfig>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

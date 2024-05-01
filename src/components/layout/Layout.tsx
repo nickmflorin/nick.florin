@@ -3,10 +3,11 @@ import { type ReactNode } from "react";
 import { Suspense } from "react";
 
 import { Header } from "./Header";
-import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
+import { type ILayoutNavItem } from "./LayoutNav";
 
-const LayoutDrawer = dynamic(() => import("./LayoutDrawer"));
+const LayoutDrawer = dynamic(() => import("./LayoutDrawer"), { ssr: false });
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
+const LayoutNav = dynamic(() => import("./LayoutNav"));
 
 export interface LayoutProps {
   readonly children: ReactNode;
