@@ -2,7 +2,7 @@
 
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
@@ -13,7 +13,7 @@ import { convertToPlainObject } from "~/api/serialization";
 import { queryM2MsDynamically } from "../m2ms";
 
 export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = ProjectSchema.safeParse(req);
   if (!parsed.success) {

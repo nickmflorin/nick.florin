@@ -1,11 +1,11 @@
 "use server";
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type School, type Education } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteSchool = async (id: string) => {
-  await getAuthAdminUser({ strict: true });
+  await getAuthedUser({ strict: true });
 
   return await prisma.$transaction(async tx => {
     let school: School & { readonly educations: Education[] };

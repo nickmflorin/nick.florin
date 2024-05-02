@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/prisma/model";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
@@ -36,7 +36,7 @@ export const getProjectsCount = cache(
     filters,
     visibility,
   }: Pick<GetProjectsParams<ProjectIncludes>, "filters" | "visibility">) => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
     return await prisma.project.count({
       where: whereClause({ filters }),
     });
@@ -57,7 +57,7 @@ export const getProjects = cache(
        project itself. */
     visibility,
   }: GetProjectsParams<I>): Promise<ApiProject<I>[]> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
       page,

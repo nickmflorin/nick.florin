@@ -1,11 +1,11 @@
 "use server";
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type NestedDetail, type Detail } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteNestedDetail = async (id: string) => {
-  await getAuthAdminUser();
+  await getAuthedUser();
 
   return await prisma.$transaction(async tx => {
     let nestedDetail: NestedDetail & { readonly detail: Detail };

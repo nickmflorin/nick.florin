@@ -1,7 +1,7 @@
 "use server";
 import { put, del, type PutBlobResult } from "@vercel/blob";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 import type { BrandResume } from "~/prisma/model";
@@ -13,7 +13,7 @@ const resumeFilePath = (name: string) => `resumes/${name}`;
 export const uploadResume = async (
   formData: FormData,
 ): Promise<BrandResume | ApiClientGlobalErrorJson> => {
-  const user = await getAuthAdminUser({ strict: true });
+  const { user } = await getAuthedUser({ strict: true });
 
   const resumeFile = formData.get("file") as File;
 

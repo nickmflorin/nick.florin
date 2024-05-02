@@ -1,5 +1,6 @@
 import clerk from "@clerk/clerk-sdk-node";
 
+import { CMS_USER_ORG_ROLE } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { upsertUserFromClerk } from "~/prisma/model/user";
 import { environment } from "~/environment";
@@ -80,9 +81,17 @@ async function main() {
     );
   }
   const clerkUser = await clerk.users.getUser(personalClerkId);
+
+  const memberships = await clerk.users.getOrganizationMembershipList({
+    userId: clerkUser.id,
+  });
+  if (!memberships.map(m => m.role).includes(CMS_USER_ORG_ROLE)) {
+    throw new Error("The Clerk user must be an admin to seed the database.");
+  }
+
   const ctx: SeedContext = {
     clerkUser,
-    user: await upsertUserFromClerk(clerkUser, { isAdmin: true }),
+    user: await upsertUserFromClerk(clerkUser),
   };
   await prisma.$transaction(async tx => {
     await seedProfile(tx, ctx);

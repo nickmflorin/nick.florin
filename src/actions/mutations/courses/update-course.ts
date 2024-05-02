@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { slugify } from "~/lib/formatters";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type BrandCourse, type Education } from "~/prisma/model";
@@ -17,7 +17,7 @@ export const updateCourse = async (
   id: string,
   req: z.infer<typeof UpdateCourseSchema>,
 ): Promise<ApiClientErrorJson<keyof (typeof UpdateCourseSchema)["shape"]> | BrandCourse> => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = UpdateCourseSchema.safeParse(req);
   if (!parsed.success) {

@@ -3,7 +3,7 @@ import { cache } from "react";
 
 import { DateTime } from "luxon";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { strictArrayLookup, minDate } from "~/lib";
 import { isUuid } from "~/lib/typeguards";
@@ -23,7 +23,7 @@ export const getSkill = cache(
     id: string,
     { visibility, includes }: GetSkillParams<I>,
   ): Promise<ApiSkill<I> | null> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
 
     if (!isUuid(id)) {
       logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a course.`, {

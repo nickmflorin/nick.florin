@@ -3,7 +3,7 @@ import { cache } from "react";
 
 import { DateTime } from "luxon";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { strictArrayLookup, minDate } from "~/lib";
 import { prisma } from "~/prisma/client";
 import {
@@ -82,7 +82,7 @@ export const getSkillsCount = cache(
     filters,
     visibility,
   }: Omit<GetSkillsParams<I>, "page" | "includes">) => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
     return await prisma.skill.count({
       where: whereClause({ filters, visibility }),
     });
@@ -149,7 +149,7 @@ export const getSkills = cache(
     limit,
     orderBy: _orderBy,
   }: GetSkillsParams<I>): Promise<ApiSkill<I>[]> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
       pageSize: PAGE_SIZES.skill,

@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { slugify } from "~/lib/formatters";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type BrandSkill } from "~/prisma/model";
@@ -14,7 +14,7 @@ import { queryM2MsDynamically } from "../m2ms";
 const UpdateSkillSchema = SkillSchema.partial();
 
 export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSchema>) => {
-  const user = await getAuthAdminUser({ strict: true });
+  const { user } = await getAuthedUser({ strict: true });
 
   return await prisma.$transaction(async (tx): Promise<BrandSkill | ApiClientErrorJson> => {
     let skill: BrandSkill;

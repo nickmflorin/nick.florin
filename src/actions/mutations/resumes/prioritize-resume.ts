@@ -1,5 +1,5 @@
 "use server";
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import type { BrandResume } from "~/prisma/model";
 import { getResumes } from "~/actions/fetches/resumes";
@@ -9,7 +9,7 @@ import { convertToPlainObject } from "~/api/serialization";
 export const prioritizeResume = async (
   id: string,
 ): Promise<{ resume: BrandResume; resumes: BrandResume[] } | ApiClientGlobalErrorJson> => {
-  const user = await getAuthAdminUser({ strict: true });
+  const { user } = await getAuthedUser({ strict: true });
 
   return await prisma.$transaction(async tx => {
     let resume: BrandResume;

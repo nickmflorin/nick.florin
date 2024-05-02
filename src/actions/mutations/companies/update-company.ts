@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
@@ -11,7 +11,7 @@ import { convertToPlainObject } from "~/api/serialization";
 const UpdateCompanySchema = CompanySchema.partial();
 
 export const updateCompany = async (id: string, req: z.infer<typeof CompanySchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
   const parsed = UpdateCompanySchema.safeParse(req);
   if (!parsed.success) {
     return ApiClientFieldErrors.fromZodError(parsed.error, UpdateCompanySchema).json;

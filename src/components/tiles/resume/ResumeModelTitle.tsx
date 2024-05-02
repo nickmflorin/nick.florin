@@ -15,7 +15,6 @@ const Titles: {
   small: ({ children }) => (
     <Text
       fontSize="md"
-      truncate
       fontWeight="medium"
       className="leading-[22px] max-sm:text-smplus max-sm:leading-[22px]"
     >
@@ -23,14 +22,13 @@ const Titles: {
     </Text>
   ),
   medium: ({ children }) => (
-    <Title order={3} truncate className="leading-[22px] max-sm:text-title_sm max-sm:leading-[22px]">
+    <Title order={3} className="leading-[22px] max-sm:text-title_sm max-sm:leading-[22px]">
       {children}
     </Title>
   ),
   large: ({ children }) => (
     <Title
       order={2}
-      truncate
       className="leading-[22px] text-title_md max-sm:text-title_sm max-sm:leading-[22px]"
     >
       {children}

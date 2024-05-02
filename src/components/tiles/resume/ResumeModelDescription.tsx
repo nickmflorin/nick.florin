@@ -1,36 +1,22 @@
-import clsx from "clsx";
-
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
-import { Description, type DescriptionProps } from "~/components/typography/Description";
 
+import { ResumeTileDescription, type ResumeTileDescriptionProps } from "./ResumeTileDescription";
 import * as types from "./types";
 
 export interface ResumeModelDescriptionProps<M extends BrandModel<T>, T extends ResumeBrand>
-  extends Omit<DescriptionProps, "children"> {
+  extends Omit<ResumeTileDescriptionProps, "children"> {
   readonly model: M;
-  readonly size: types.ResumeModelSize;
 }
 
 export const ResumeModelDescription = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
-  size,
   ...props
 }: ResumeModelDescriptionProps<M, T>) => {
   if (types.hasDescription(model)) {
     return (
-      <Description
-        fontWeight="regular"
-        {...props}
-        className={clsx(
-          {
-            "text-smplus max-sm:text-sm": ["medium", "large"].includes(size),
-            "text-sm": size === "small",
-          },
-          props.className,
-        )}
-      >
+      <ResumeTileDescription {...props}>
         {model.$kind === "education" ? [model.description, model.note] : model.description}
-      </Description>
+      </ResumeTileDescription>
     );
   }
   return <></>;

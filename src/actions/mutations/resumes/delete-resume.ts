@@ -1,14 +1,14 @@
 "use server";
 import { del } from "@vercel/blob";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type BrandResume } from "~/prisma/model";
 import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteResume = async (id: string): Promise<BrandResume[]> => {
-  await getAuthAdminUser({ strict: true });
+  await getAuthedUser({ strict: true });
 
   return await prisma.$transaction(async tx => {
     let resume: BrandResume;

@@ -1,14 +1,14 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { CompanySchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = CompanySchema.safeParse(req);
   if (!parsed.success) {

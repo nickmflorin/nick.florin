@@ -1,12 +1,12 @@
 "use server";
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteExperiences = async (ids: string[]): Promise<void> => {
-  await getAuthAdminUser({ strict: true });
+  await getAuthedUser({ strict: true });
 
   const invalid = ids.filter(id => !isUuid(id));
   if (invalid.length > 0) {

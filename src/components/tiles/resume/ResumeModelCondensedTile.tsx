@@ -33,11 +33,11 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
     />
     <div className="flex flex-col pl-[40px] gap-[4px]">
       <ShowHide show={types.hasDescription(model) && showDescription}>
-        <ResumeModelTile.Description
-          model={model}
+        <ResumeModelTile.ModelDescription
           size="small"
           lineClamp={3}
           includeShowMoreLink={showMoreLink}
+          model={model}
         />
       </ShowHide>
     </div>

@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
@@ -23,7 +23,7 @@ export const getCourse = cache(
     id: string,
     { includes, visibility }: GetCourseParams<I>,
   ): Promise<ApiCourse<I> | null> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
     if (!isUuid(id)) {
       logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a course.`, {
         id,

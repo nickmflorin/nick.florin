@@ -2665,7 +2665,6 @@ export namespace Prisma {
     clerkId: string | null
     firstName: string | null
     lastName: string | null
-    isAdmin: boolean | null
     profileImageUrl: string | null
     emailAddress: string | null
     createdAt: Date | null
@@ -2677,7 +2676,6 @@ export namespace Prisma {
     clerkId: string | null
     firstName: string | null
     lastName: string | null
-    isAdmin: boolean | null
     profileImageUrl: string | null
     emailAddress: string | null
     createdAt: Date | null
@@ -2689,7 +2687,6 @@ export namespace Prisma {
     clerkId: number
     firstName: number
     lastName: number
-    isAdmin: number
     profileImageUrl: number
     emailAddress: number
     createdAt: number
@@ -2703,7 +2700,6 @@ export namespace Prisma {
     clerkId?: true
     firstName?: true
     lastName?: true
-    isAdmin?: true
     profileImageUrl?: true
     emailAddress?: true
     createdAt?: true
@@ -2715,7 +2711,6 @@ export namespace Prisma {
     clerkId?: true
     firstName?: true
     lastName?: true
-    isAdmin?: true
     profileImageUrl?: true
     emailAddress?: true
     createdAt?: true
@@ -2727,7 +2722,6 @@ export namespace Prisma {
     clerkId?: true
     firstName?: true
     lastName?: true
-    isAdmin?: true
     profileImageUrl?: true
     emailAddress?: true
     createdAt?: true
@@ -2812,7 +2806,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin: boolean
     profileImageUrl: string | null
     emailAddress: string
     createdAt: Date
@@ -2841,7 +2834,6 @@ export namespace Prisma {
     clerkId?: boolean
     firstName?: boolean
     lastName?: boolean
-    isAdmin?: boolean
     profileImageUrl?: boolean
     emailAddress?: boolean
     createdAt?: boolean
@@ -2878,7 +2870,6 @@ export namespace Prisma {
     clerkId?: boolean
     firstName?: boolean
     lastName?: boolean
-    isAdmin?: boolean
     profileImageUrl?: boolean
     emailAddress?: boolean
     createdAt?: boolean
@@ -2947,7 +2938,6 @@ export namespace Prisma {
       clerkId: string
       firstName: string
       lastName: string
-      isAdmin: boolean
       profileImageUrl: string | null
       emailAddress: string
       createdAt: Date
@@ -3397,7 +3387,6 @@ export namespace Prisma {
     readonly clerkId: FieldRef<"User", 'String'>
     readonly firstName: FieldRef<"User", 'String'>
     readonly lastName: FieldRef<"User", 'String'>
-    readonly isAdmin: FieldRef<"User", 'Boolean'>
     readonly profileImageUrl: FieldRef<"User", 'String'>
     readonly emailAddress: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -17006,7 +16995,6 @@ export namespace Prisma {
     clerkId: 'clerkId',
     firstName: 'firstName',
     lastName: 'lastName',
-    isAdmin: 'isAdmin',
     profileImageUrl: 'profileImageUrl',
     emailAddress: 'emailAddress',
     createdAt: 'createdAt',
@@ -17280,13 +17268,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -17297,6 +17278,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -17423,7 +17411,6 @@ export namespace Prisma {
     clerkId?: StringFilter<"User"> | string
     firstName?: StringFilter<"User"> | string
     lastName?: StringFilter<"User"> | string
-    isAdmin?: BoolFilter<"User"> | boolean
     profileImageUrl?: StringNullableFilter<"User"> | string | null
     emailAddress?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -17459,7 +17446,6 @@ export namespace Prisma {
     clerkId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
-    isAdmin?: SortOrder
     profileImageUrl?: SortOrderInput | SortOrder
     emailAddress?: SortOrder
     createdAt?: SortOrder
@@ -17498,7 +17484,6 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     firstName?: StringFilter<"User"> | string
     lastName?: StringFilter<"User"> | string
-    isAdmin?: BoolFilter<"User"> | boolean
     profileImageUrl?: StringNullableFilter<"User"> | string | null
     emailAddress?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -17534,7 +17519,6 @@ export namespace Prisma {
     clerkId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
-    isAdmin?: SortOrder
     profileImageUrl?: SortOrderInput | SortOrder
     emailAddress?: SortOrder
     createdAt?: SortOrder
@@ -17552,7 +17536,6 @@ export namespace Prisma {
     clerkId?: StringWithAggregatesFilter<"User"> | string
     firstName?: StringWithAggregatesFilter<"User"> | string
     lastName?: StringWithAggregatesFilter<"User"> | string
-    isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
     profileImageUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailAddress?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -18793,7 +18776,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -18829,7 +18811,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -18865,7 +18846,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18901,7 +18881,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18937,7 +18916,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -18949,7 +18927,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18961,7 +18938,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20341,11 +20317,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -20502,7 +20473,6 @@ export namespace Prisma {
     clerkId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
-    isAdmin?: SortOrder
     profileImageUrl?: SortOrder
     emailAddress?: SortOrder
     createdAt?: SortOrder
@@ -20514,7 +20484,6 @@ export namespace Prisma {
     clerkId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
-    isAdmin?: SortOrder
     profileImageUrl?: SortOrder
     emailAddress?: SortOrder
     createdAt?: SortOrder
@@ -20526,7 +20495,6 @@ export namespace Prisma {
     clerkId?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
-    isAdmin?: SortOrder
     profileImageUrl?: SortOrder
     emailAddress?: SortOrder
     createdAt?: SortOrder
@@ -20566,14 +20534,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -20604,6 +20564,11 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type UuidNullableFilter<$PrismaModel = never> = {
@@ -20678,6 +20643,14 @@ export namespace Prisma {
     visible?: SortOrder
     detailId?: SortOrder
     projectId?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21728,10 +21701,6 @@ export namespace Prisma {
     set?: string
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
@@ -22446,6 +22415,10 @@ export namespace Prisma {
     create?: XOR<SkillCreateWithoutNestedDetailsInput, SkillUncheckedCreateWithoutNestedDetailsInput> | SkillCreateWithoutNestedDetailsInput[] | SkillUncheckedCreateWithoutNestedDetailsInput[]
     connectOrCreate?: SkillCreateOrConnectWithoutNestedDetailsInput | SkillCreateOrConnectWithoutNestedDetailsInput[]
     connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type UserUpdateOneRequiredWithoutCreatedNestedDetailsNestedInput = {
@@ -23776,11 +23749,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -23848,14 +23816,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -23898,6 +23858,11 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedUuidNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -23907,6 +23872,14 @@ export namespace Prisma {
     gt?: string | StringFieldRefInput<$PrismaModel>
     gte?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -25672,7 +25645,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -25707,7 +25679,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -25747,7 +25718,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -25782,7 +25752,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -25960,7 +25929,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25995,7 +25963,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26041,7 +26008,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26076,7 +26042,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26215,7 +26180,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26250,7 +26214,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26290,7 +26253,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26325,7 +26287,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26504,7 +26465,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26539,7 +26499,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26585,7 +26544,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26620,7 +26578,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26732,7 +26689,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26767,7 +26723,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26807,7 +26762,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26842,7 +26796,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -26893,7 +26846,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26928,7 +26880,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26974,7 +26925,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27009,7 +26959,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27044,7 +26993,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27079,7 +27027,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27119,7 +27066,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27154,7 +27100,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27295,7 +27240,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27330,7 +27274,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27376,7 +27319,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27411,7 +27353,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27478,7 +27419,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27513,7 +27453,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27553,7 +27492,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27588,7 +27526,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -27894,7 +27831,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27929,7 +27865,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27975,7 +27910,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28010,7 +27944,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28157,7 +28090,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28192,7 +28124,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28232,7 +28163,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28267,7 +28197,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28416,7 +28345,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28451,7 +28379,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28497,7 +28424,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28532,7 +28458,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28636,7 +28561,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28671,7 +28595,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28711,7 +28634,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28746,7 +28668,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -28957,7 +28878,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28992,7 +28912,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29038,7 +28957,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29073,7 +28991,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29172,7 +29089,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29207,7 +29123,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29247,7 +29162,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29282,7 +29196,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29375,7 +29288,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29410,7 +29322,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29456,7 +29367,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29491,7 +29401,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29542,7 +29451,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29577,7 +29485,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29617,7 +29524,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29652,7 +29558,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29755,7 +29660,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29790,7 +29694,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29836,7 +29739,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29871,7 +29773,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -29922,7 +29823,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29957,7 +29857,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -29997,7 +29896,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30032,7 +29930,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30169,7 +30066,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30204,7 +30100,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30250,7 +30145,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30285,7 +30179,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30377,7 +30270,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30412,7 +30304,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30452,7 +30343,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30487,7 +30377,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30662,7 +30551,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30697,7 +30585,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30743,7 +30630,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30778,7 +30664,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30886,7 +30771,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30921,7 +30805,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30961,7 +30844,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -30996,7 +30878,6 @@ export namespace Prisma {
     clerkId: string
     firstName: string
     lastName: string
-    isAdmin?: boolean
     profileImageUrl?: string | null
     emailAddress: string
     createdAt?: Date | string
@@ -31047,7 +30928,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31082,7 +30962,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31128,7 +31007,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31163,7 +31041,6 @@ export namespace Prisma {
     clerkId?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
     profileImageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     emailAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

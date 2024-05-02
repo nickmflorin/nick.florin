@@ -1,14 +1,14 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { SchoolSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = SchoolSchema.safeParse(req);
   if (!parsed.success) {

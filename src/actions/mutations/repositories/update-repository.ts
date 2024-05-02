@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type BrandRepository } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
@@ -17,7 +17,7 @@ export const updateRepository = async (
 ): Promise<
   ApiClientErrorJson<keyof (typeof UpdateRepositorySchema)["shape"]> | BrandRepository
 > => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = UpdateRepositorySchema.safeParse(req);
   if (!parsed.success) {

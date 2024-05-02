@@ -141,7 +141,7 @@ export type AbstractLinkProps = Pick<
 >;
 
 export type AbstractAnchorProps = Pick<HTMLElementProps<"a">, CommonEventProps> & {
-  readonly href: string;
+  readonly href?: string;
   readonly target?: string;
   readonly rel?: string;
 };

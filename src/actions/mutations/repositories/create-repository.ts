@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
 import { RepositorySchema } from "~/api/schemas";
@@ -10,7 +10,7 @@ import { convertToPlainObject } from "~/api/serialization";
 import { queryM2MsDynamically } from "../m2ms";
 
 export const createRepository = async (req: z.infer<typeof RepositorySchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = RepositorySchema.safeParse(req);
   if (!parsed.success) {

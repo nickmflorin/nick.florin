@@ -1,10 +1,10 @@
 "use server";
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteRepository = async (id: string): Promise<void> => {
-  await getAuthAdminUser({ strict: true });
+  await getAuthedUser({ strict: true });
   try {
     await prisma.repository.delete({ where: { id } });
   } catch (e) {

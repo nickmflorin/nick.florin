@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Experience, type Company, type ApiExperience } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
@@ -15,7 +15,7 @@ export const updateExperience = async (
   id: string,
   req: z.infer<typeof UpdateExperienceSchema>,
 ): Promise<ApiClientErrorJson<keyof (typeof UpdateExperienceSchema)["shape"]> | Experience> => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = UpdateExperienceSchema.safeParse(req);
   if (!parsed.success) {

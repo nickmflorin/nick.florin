@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type School } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
@@ -11,7 +11,7 @@ import { convertToPlainObject } from "~/api/serialization";
 const UpdateSchoolSchema = SchoolSchema.partial();
 
 export const updateSchool = async (id: string, req: z.infer<typeof SchoolSchema>) => {
-  const user = await getAuthAdminUser({ strict: true });
+  const { user } = await getAuthedUser({ strict: true });
 
   return await prisma.$transaction(async tx => {
     let co: School;

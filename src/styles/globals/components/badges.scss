@@ -11,7 +11,7 @@ $badge-vertical-padding: 2px;
   vertical-align: middle;
 }
 
-@mixin common() {
+@mixin badge-tag() {
   text-decoration: none;
   display: inline-flex;
   -webkit-tap-highlight-color: transparent;
@@ -20,14 +20,12 @@ $badge-vertical-padding: 2px;
   -ms-flex-pack: center;
   justify-content: center;
   width: fit-content;
-  letter-spacing: 0.0156em;
   cursor: inherit;
   overflow: hidden;
-  outline: 0.0625rem solid transparent;
   align-items: center;
 }
 
-@mixin content-common($prefix) {
+@mixin badge-tag-content($prefix) {
   @include inherit-font-properties();
   display: flex;
   flex-direction: row;
@@ -48,7 +46,7 @@ $badge-vertical-padding: 2px;
 }
 
 .badge {
-  @include common();
+  @include badge-tag();
   color: theme("colors.body");
   border-radius: theme("borderRadius.md");
   padding-right: 6px;
@@ -57,9 +55,11 @@ $badge-vertical-padding: 2px;
   padding-bottom: $badge-vertical-padding;
   font-family: typography.get-font-family("body");
   background-color: theme("colors.gray.200");
+  letter-spacing: 0.0156em;
+  outline: 0.0625rem solid transparent;
 
   > .badge__content {
-    @include content-common("badge");
+    @include badge-tag-content("badge");
     gap: 6px;
   }
 
@@ -88,11 +88,12 @@ $badge-vertical-padding: 2px;
 }
 
 .tag {
-  @include common();
+  @include badge-tag();
   font-family: typography.get-font-family("label");
   height: 18px;
   font-weight: 500;
   color: theme("colors.body-light");
+  letter-spacing: -0.01em;
 
   @include typography.with-font-weights();
   @include typography.with-text-transforms();
@@ -103,7 +104,7 @@ $badge-vertical-padding: 2px;
   }
 
   > .tag__content {
-    @include content-common("tag");
+    @include badge-tag-content("tag");
     gap: 4px;
   }
 }

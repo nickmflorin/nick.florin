@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
@@ -47,7 +47,7 @@ export const getDetails = cache(
     entityType: T,
     { includes, visibility }: GetDetailsParams<I>,
   ): Promise<ApiDetail<I>[]> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
 
     const invalid = ids.filter(id => !isUuid(id));
     if (invalid.length > 0) {

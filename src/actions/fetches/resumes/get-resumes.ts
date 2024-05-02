@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { prisma, type Transaction } from "~/prisma/client";
 import { type BrandResume } from "~/prisma/model";
@@ -12,7 +12,7 @@ export const preloadResumes = () => {
 };
 
 export const getResumes = cache(async (tx?: Transaction): Promise<BrandResume[]> => {
-  await getAuthAdminUser({ strict: true });
+  await getClerkAuthedUser({ strict: true });
 
   const trans = tx ?? prisma;
 

@@ -41,8 +41,9 @@
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.7",
-    "@clerk/nextjs": "^4.29.7",
+    "@clerk/nextjs": "^5.0.5",
     "@clerk/themes": "^1.7.9",
+    "@clerk/types": "^4.2.0",
     "@floating-ui/react": "^0.26.9",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",

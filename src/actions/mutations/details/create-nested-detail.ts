@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type NestedApiDetail, type Project } from "~/prisma/model";
 import { getDetail } from "~/actions/fetches/details";
@@ -19,7 +19,7 @@ export const createNestedDetail = async (
   detailId: string,
   req: z.infer<typeof DetailSchema>,
 ): Promise<NestedApiDetail<["skills"]> | ApiClientErrorJson> => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const detail = await getDetail(detailId, { includes: [], visibility: "admin" });
   if (!detail) {

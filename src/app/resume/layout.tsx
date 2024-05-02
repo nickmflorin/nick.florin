@@ -27,7 +27,7 @@ export default async function ResumeLayout({ children }: ResumeLayoutProps) {
     <div className="flex flex-col grow relative max-h-full min-h-full">
       {resume && (
         // TODO: Figure out an alternative solution for downloading/viewing resume on mobile.
-        <div className="flex flex-row justify-end max-md:hidden">
+        <div className="flex flex-row justify-end">
           <PublicResumeDownloadMenu resume={resume} />
         </div>
       )}

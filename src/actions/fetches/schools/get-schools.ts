@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { type SchoolIncludes, type ApiSchool, fieldIsIncluded } from "~/prisma/model";
 import type { Visibility } from "~/api/query";
@@ -24,7 +24,7 @@ export const getSchools = cache(
     includes,
     visibility,
   }: GetSchoolsParams<I>): Promise<ApiSchool<I>[]> => {
-    await getAuthAdminUser({ strict: visibility !== "public" });
+    await getClerkAuthedUser({ strict: visibility !== "public" });
     return (
       await prisma.school.findMany({
         include: {

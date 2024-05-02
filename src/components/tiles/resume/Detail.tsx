@@ -1,13 +1,15 @@
 import clsx from "clsx";
 
+import type { ResumeModelSize } from "./types";
+
 import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 import { Skills } from "~/components/badges/collections/Skills";
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
-import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 
 import { Details } from "./Details";
+import { ResumeTileDescription } from "./ResumeTileDescription";
 
 export interface DetailProps<
   D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
@@ -15,6 +17,7 @@ export interface DetailProps<
   readonly detail: D;
   readonly index?: number;
   readonly isNested?: boolean;
+  readonly size: Exclude<ResumeModelSize, "small">;
 }
 
 export const Detail = <
@@ -22,6 +25,7 @@ export const Detail = <
 >({
   detail,
   index,
+  size,
   isNested,
   ...props
 }: DetailProps<D>): JSX.Element => (
@@ -86,13 +90,14 @@ export const Detail = <
         </Label>
       )}
       {detail.description && (
-        <Description
-          className={clsx("text-smplus max-sm:text-sm", {
+        <ResumeTileDescription
+          size={size}
+          className={clsx({
             "pl-[16px]": index !== undefined && isNested,
           })}
         >
           {detail.description}
-        </Description>
+        </ResumeTileDescription>
       )}
     </div>
     {detail.skills.length !== 0 && (
@@ -101,6 +106,8 @@ export const Detail = <
         className={clsx("sm:max-w-[800px]", { "pl-[16px]": index !== undefined })}
       />
     )}
-    {!isNestedDetail(detail) && <Details details={detail.nestedDetails} isNested={true} />}
+    {!isNestedDetail(detail) && (
+      <Details size={size} details={detail.nestedDetails} isNested={true} />
+    )}
   </div>
 );

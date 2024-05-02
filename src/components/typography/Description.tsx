@@ -124,7 +124,7 @@ export const Description = ({
           fontSize={fontSize}
           fontWeight={fontWeight}
           lineClamp={state === "expanded" ? undefined : props.lineClamp}
-          className={clsx("text-body-light", props.className)}
+          className={clsx("description text-body-light", props.className)}
         >
           {nodes}
         </Text>

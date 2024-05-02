@@ -11,6 +11,9 @@ export interface CoursesProps extends ComponentProps {
   readonly courses: BrandCourse[];
 }
 
+/**
+ * @deprecated
+ */
 export const Courses = ({ courses, ...props }: CoursesProps): JSX.Element => {
   const { open, ids } = useDrawers();
   if (courses.length === 0) {

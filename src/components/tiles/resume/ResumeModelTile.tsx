@@ -12,6 +12,7 @@ import { ResumeModelImage } from "./ResumeModelImage";
 import { ResumeModelSection } from "./ResumeModelSection";
 import { ResumeModelSubTitle } from "./ResumeModelSubTitle";
 import { ResumeModelTitle } from "./ResumeModelTitle";
+import { ResumeTileDescription } from "./ResumeTileDescription";
 
 export interface ResumeModelProps extends ComponentProps {
   readonly children: ReactNode;
@@ -30,7 +31,8 @@ export const ResumeModelTile = Object.assign(LocalResumeModelTile, {
   Badges: ResumeModelBadges,
   Details,
   Section: ResumeModelSection,
-  Description: ResumeModelDescription,
+  Description: ResumeTileDescription,
+  ModelDescription: ResumeModelDescription,
   Header: ResumeModelHeader,
 });
 

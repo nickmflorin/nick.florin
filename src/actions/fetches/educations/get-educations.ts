@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import {
   type ApiEducation,
@@ -53,7 +53,7 @@ export const getEducationsCount = cache(
   }: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">) => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
     return await prisma.education.count({
       where: whereClause({ filters, visibility }),
     });
@@ -72,7 +72,7 @@ export const getEducations = cache(
     page,
     limit,
   }: GetEducationsParams<I>): Promise<ApiEducation<I>[]> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
       page,

@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import {
   type ApiExperience,
@@ -53,7 +53,7 @@ export const getExperiencesCount = cache(
   }: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">) => {
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
     return await prisma.experience.count({
       where: whereClause({ filters, visibility }),
     });
@@ -74,7 +74,7 @@ export const getExperiences = cache(
     page,
     limit,
   }: GetExperiencesParams<I>): Promise<ApiExperience<I>[]> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
       page,

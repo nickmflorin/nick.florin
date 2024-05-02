@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { type ApiCourse, type CourseIncludes, fieldIsIncluded } from "~/prisma/model";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
@@ -42,7 +42,7 @@ export const getCoursesCount = cache(
     filters,
     visibility,
   }: Pick<GetCoursesParams<CourseIncludes>, "filters" | "visibility">) => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
     return await prisma.course.count({
       where: whereClause({ filters, visibility }),
     });
@@ -60,7 +60,7 @@ export const getCourses = cache(
     filters,
     visibility,
   }: GetCoursesParams<I>): Promise<ApiCourse<I>[]> => {
-    await getAuthAdminUser({ strict: visibility !== "public" });
+    await getClerkAuthedUser({ strict: visibility !== "public" });
 
     const pagination = await parsePagination({
       page,

@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type School } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
@@ -10,7 +10,7 @@ import { EducationSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = EducationSchema.safeParse(req);
   if (!parsed.success) {

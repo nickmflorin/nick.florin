@@ -2,7 +2,7 @@
 
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
 import {
@@ -115,7 +115,7 @@ export const updateProject = async (
   id: string,
   req: z.infer<typeof UpdateProjectSchema>,
 ): Promise<ApiClientErrorJson<keyof (typeof UpdateProjectSchema)["shape"]> | BrandProject> => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = UpdateProjectSchema.safeParse(req);
   if (!parsed.success) {

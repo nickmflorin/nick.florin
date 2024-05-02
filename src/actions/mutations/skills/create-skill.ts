@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { ApiClientFieldErrors } from "~/api";
@@ -11,7 +11,7 @@ import { convertToPlainObject } from "~/api/serialization";
 import { queryM2MsDynamically } from "../m2ms";
 
 export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = SkillSchema.safeParse(req);
   if (!parsed.success) {

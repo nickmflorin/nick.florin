@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type DetailEntityType, type Project, type ApiDetail } from "~/prisma/model";
 import { getEntity } from "~/actions/fetches/get-entity";
@@ -16,7 +16,7 @@ export const createDetail = async (
   entityType: DetailEntityType,
   req: z.infer<typeof DetailSchema>,
 ): Promise<ApiDetail<["skills"]> | ApiClientErrorJson> => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const entity = await getEntity(entityId, entityType);
   if (!entity) {

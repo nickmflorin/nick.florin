@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { type ApiRepository, type RepositoryIncludes, fieldIsIncluded } from "~/prisma/model";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
@@ -33,7 +33,7 @@ export const getRepositoriesCount = cache(
     filters,
     visibility,
   }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">) => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
     return await prisma.repository.count({
       where: whereClause({ filters }),
     });
@@ -53,7 +53,7 @@ export const getRepositories = cache(
     filters,
     visibility,
   }: GetRepositoriesParams<I>): Promise<ApiRepository<I>[]> => {
-    await getAuthAdminUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: visibility === "admin" });
 
     const pagination = await parsePagination({
       page,

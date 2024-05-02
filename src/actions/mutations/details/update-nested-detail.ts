@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type NestedDetail, type Detail, type Project } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
@@ -17,7 +17,7 @@ import { convertToPlainObject } from "~/api/serialization";
 const UpdateDetailSchema = DetailSchema.partial();
 
 export const updateNestedDetail = async (id: string, req: z.infer<typeof UpdateDetailSchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = UpdateDetailSchema.safeParse(req);
   if (!parsed.success) {

@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
@@ -23,7 +23,7 @@ export const getCompany = cache(
     id: string,
     { includes, visibility }: GetCompanyParams<I>,
   ): Promise<ApiCompany<I> | null> => {
-    await getAuthAdminUser({ strict: visibility !== "public" });
+    await getClerkAuthedUser({ strict: visibility !== "public" });
     if (!isUuid(id)) {
       logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a company.`, {
         id,

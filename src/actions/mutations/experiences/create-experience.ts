@@ -1,7 +1,7 @@
 "use server";
 import { type z } from "zod";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
 import { type Company } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
@@ -10,7 +10,7 @@ import { ExperienceSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createExperience = async (req: z.infer<typeof ExperienceSchema>) => {
-  const user = await getAuthAdminUser();
+  const { user } = await getAuthedUser();
 
   const parsed = ExperienceSchema.safeParse(req);
   if (!parsed.success) {

@@ -1,4 +1,4 @@
-import { type User as ClerkUser } from "@clerk/nextjs/api";
+import { type User as ClerkUser } from "@clerk/clerk-sdk-node";
 
 import { type User } from "~/prisma/model";
 

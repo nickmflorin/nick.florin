@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 
-import { getAuthAdminUser } from "~/application/auth";
+import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { type CompanyIncludes, type ApiCompany, fieldIsIncluded } from "~/prisma/model";
 import type { ApiStandardDetailQuery } from "~/api/query";
@@ -18,7 +18,7 @@ export const getCompanies = cache(
     includes,
     visibility,
   }: GetCompaniesParams<I>): Promise<ApiCompany<I>[]> => {
-    await getAuthAdminUser({ strict: visibility !== "public" });
+    await getClerkAuthedUser({ strict: visibility !== "public" });
     return (
       await prisma.company.findMany({
         include: {
