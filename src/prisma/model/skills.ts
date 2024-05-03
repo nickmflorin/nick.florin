@@ -1,7 +1,9 @@
 import uniqBy from "lodash.uniqby";
+import { DateTime } from "luxon";
 
 import type { BrandSkill, BrandProject, BrandRepository } from "./brand";
 
+import { strictArrayLookup, minDate } from "~/lib";
 import { type getEducations } from "~/actions/fetches/educations";
 import { type getExperiences } from "~/actions/fetches/experiences";
 import { type IconProp } from "~/components/icons";
@@ -505,4 +507,35 @@ export const removeRedundantTopLevelSkills = <T extends ModelWithRedundantSkills
     details,
     skills: model.skills.filter(sk => !skills.some(nsk => nsk.id === sk.id)),
   };
+};
+
+/* Note: This method assumes that the models associated with the skill are ordered by their start
+   date or related fields, in ascending order. */
+export const calculateSkillExperience = <
+  /* A course in and of itself does not have a start date that can be used for inferring experience
+     of a skill.  However, it is tied to an education that does - so we can use the start date on
+     an education that is tied to a course that is associated with the skill. */
+  T extends ApiSkill<["repositories", "educations", "experiences", "projects"]> & {
+    readonly courses: ApiCourse<["education"]>[];
+  },
+>(
+  skill: T,
+): number => {
+  const oldestEducation = strictArrayLookup(skill.educations, 0, {});
+  const oldestExperience = strictArrayLookup(skill.experiences, 0, {});
+  const oldestProject = strictArrayLookup(skill.projects, 0, {});
+  const oldestCourse = strictArrayLookup(skill.courses, 0, {});
+  const oldestRepository = strictArrayLookup(skill.repositories, 0, {});
+
+  const oldestDate = minDate(
+    oldestEducation?.startDate,
+    oldestExperience?.startDate,
+    oldestProject?.startDate,
+    oldestCourse?.education.startDate,
+    oldestRepository?.startDate,
+  );
+
+  return oldestDate
+    ? Math.round(DateTime.now().diff(DateTime.fromJSDate(oldestDate), "years").years)
+    : 0;
 };

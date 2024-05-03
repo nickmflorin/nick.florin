@@ -26,7 +26,16 @@ export const seedSkills = async (tx: Transaction, ctx: SeedContext) => {
         updatedBy: { connect: { id: ctx.user.id } },
       };
       try {
-        skill = await tx.skill.create({ data });
+        /* Note: We initially seed the skills with a value of 0 for the calculated experience
+           because the calculation requires that the repositories, courses, projects, experiences
+           and educations that are associated with each skill also be in the database.  Since, at
+           least in the current setup, the skills have to be seeded before the repositories,
+           courses, projects, experiences and educations (since it is easier to reference the
+           skills from each of those models - due to the slug reference - rather than referencing
+           each of those models from the skills), this means that we have to initialize the
+           calculated experience as 0, and then recalculate the experience for each skill after its
+           associated models finish seeding. */
+        skill = await tx.skill.create({ data: { ...data, calculatedExperience: 0 } });
       } catch (e) {
         const fields = getUniqueConstraintFields(e);
         if (fields !== null && fields.length !== 0) {

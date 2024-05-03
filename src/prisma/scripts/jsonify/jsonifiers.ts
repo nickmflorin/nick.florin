@@ -73,7 +73,9 @@ export const Jsonifiers: {
 } = {
   skill: {
     data: async tx => await tx.skill.findMany(),
-    jsonify: model => cleanModel(model),
+    /* The calculated experience values should not be stored in JSON, because they will be
+       recalculated during the seeding process. */
+    jsonify: model => omit(cleanModel(model), "calculatedExperience"),
   },
   profile: {
     data: async tx => await tx.profile.findMany(),

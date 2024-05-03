@@ -7382,6 +7382,7 @@ export namespace Prisma {
     updatedAt: Date | null
     updatedById: string | null
     visible: boolean | null
+    startDate: Date | null
   }
 
   export type RepositoryMaxAggregateOutputType = {
@@ -7393,6 +7394,7 @@ export namespace Prisma {
     updatedAt: Date | null
     updatedById: string | null
     visible: boolean | null
+    startDate: Date | null
   }
 
   export type RepositoryCountAggregateOutputType = {
@@ -7404,6 +7406,7 @@ export namespace Prisma {
     updatedAt: number
     updatedById: number
     visible: number
+    startDate: number
     _all: number
   }
 
@@ -7417,6 +7420,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     visible?: true
+    startDate?: true
   }
 
   export type RepositoryMaxAggregateInputType = {
@@ -7428,6 +7432,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     visible?: true
+    startDate?: true
   }
 
   export type RepositoryCountAggregateInputType = {
@@ -7439,6 +7444,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     visible?: true
+    startDate?: true
     _all?: true
   }
 
@@ -7523,6 +7529,7 @@ export namespace Prisma {
     updatedAt: Date
     updatedById: string
     visible: boolean
+    startDate: Date
     _count: RepositoryCountAggregateOutputType | null
     _min: RepositoryMinAggregateOutputType | null
     _max: RepositoryMaxAggregateOutputType | null
@@ -7551,6 +7558,7 @@ export namespace Prisma {
     updatedAt?: boolean
     updatedById?: boolean
     visible?: boolean
+    startDate?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     skills?: boolean | Repository$skillsArgs<ExtArgs>
@@ -7567,6 +7575,7 @@ export namespace Prisma {
     updatedAt?: boolean
     updatedById?: boolean
     visible?: boolean
+    startDate?: boolean
   }
 
   export type RepositoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7595,6 +7604,7 @@ export namespace Prisma {
       updatedAt: Date
       updatedById: string
       visible: boolean
+      startDate: Date
     }, ExtArgs["result"]["repository"]>
     composites: {}
   }
@@ -8004,6 +8014,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Repository", 'DateTime'>
     readonly updatedById: FieldRef<"Repository", 'String'>
     readonly visible: FieldRef<"Repository", 'Boolean'>
+    readonly startDate: FieldRef<"Repository", 'DateTime'>
   }
     
 
@@ -8387,10 +8398,12 @@ export namespace Prisma {
 
   export type SkillAvgAggregateOutputType = {
     experience: number | null
+    calculatedExperience: number | null
   }
 
   export type SkillSumAggregateOutputType = {
     experience: number | null
+    calculatedExperience: number | null
   }
 
   export type SkillMinAggregateOutputType = {
@@ -8404,6 +8417,7 @@ export namespace Prisma {
     visible: boolean | null
     description: string | null
     experience: number | null
+    calculatedExperience: number | null
     includeInTopSkills: boolean | null
   }
 
@@ -8418,6 +8432,7 @@ export namespace Prisma {
     visible: boolean | null
     description: string | null
     experience: number | null
+    calculatedExperience: number | null
     includeInTopSkills: boolean | null
   }
 
@@ -8435,6 +8450,7 @@ export namespace Prisma {
     programmingLanguages: number
     programmingDomains: number
     experience: number
+    calculatedExperience: number
     includeInTopSkills: number
     _all: number
   }
@@ -8442,10 +8458,12 @@ export namespace Prisma {
 
   export type SkillAvgAggregateInputType = {
     experience?: true
+    calculatedExperience?: true
   }
 
   export type SkillSumAggregateInputType = {
     experience?: true
+    calculatedExperience?: true
   }
 
   export type SkillMinAggregateInputType = {
@@ -8459,6 +8477,7 @@ export namespace Prisma {
     visible?: true
     description?: true
     experience?: true
+    calculatedExperience?: true
     includeInTopSkills?: true
   }
 
@@ -8473,6 +8492,7 @@ export namespace Prisma {
     visible?: true
     description?: true
     experience?: true
+    calculatedExperience?: true
     includeInTopSkills?: true
   }
 
@@ -8490,6 +8510,7 @@ export namespace Prisma {
     programmingLanguages?: true
     programmingDomains?: true
     experience?: true
+    calculatedExperience?: true
     includeInTopSkills?: true
     _all?: true
   }
@@ -8594,6 +8615,7 @@ export namespace Prisma {
     programmingLanguages: $Enums.ProgrammingLanguage[]
     programmingDomains: $Enums.ProgrammingDomain[]
     experience: number | null
+    calculatedExperience: number
     includeInTopSkills: boolean
     _count: SkillCountAggregateOutputType | null
     _avg: SkillAvgAggregateOutputType | null
@@ -8630,6 +8652,7 @@ export namespace Prisma {
     programmingLanguages?: boolean
     programmingDomains?: boolean
     experience?: boolean
+    calculatedExperience?: boolean
     includeInTopSkills?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -8657,6 +8680,7 @@ export namespace Prisma {
     programmingLanguages?: boolean
     programmingDomains?: boolean
     experience?: boolean
+    calculatedExperience?: boolean
     includeInTopSkills?: boolean
   }
 
@@ -8701,6 +8725,7 @@ export namespace Prisma {
       programmingLanguages: $Enums.ProgrammingLanguage[]
       programmingDomains: $Enums.ProgrammingDomain[]
       experience: number | null
+      calculatedExperience: number
       includeInTopSkills: boolean
     }, ExtArgs["result"]["skill"]>
     composites: {}
@@ -9126,6 +9151,7 @@ export namespace Prisma {
     readonly programmingLanguages: FieldRef<"Skill", 'ProgrammingLanguage[]'>
     readonly programmingDomains: FieldRef<"Skill", 'ProgrammingDomain[]'>
     readonly experience: FieldRef<"Skill", 'Int'>
+    readonly calculatedExperience: FieldRef<"Skill", 'Int'>
     readonly includeInTopSkills: FieldRef<"Skill", 'Boolean'>
   }
     
@@ -17064,7 +17090,8 @@ export namespace Prisma {
     createdById: 'createdById',
     updatedAt: 'updatedAt',
     updatedById: 'updatedById',
-    visible: 'visible'
+    visible: 'visible',
+    startDate: 'startDate'
   };
 
   export type RepositoryScalarFieldEnum = (typeof RepositoryScalarFieldEnum)[keyof typeof RepositoryScalarFieldEnum]
@@ -17084,6 +17111,7 @@ export namespace Prisma {
     programmingLanguages: 'programmingLanguages',
     programmingDomains: 'programmingDomains',
     experience: 'experience',
+    calculatedExperience: 'calculatedExperience',
     includeInTopSkills: 'includeInTopSkills'
   };
 
@@ -17845,6 +17873,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
     updatedById?: UuidFilter<"Repository"> | string
     visible?: BoolFilter<"Repository"> | boolean
+    startDate?: DateTimeFilter<"Repository"> | Date | string
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -17860,6 +17889,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    startDate?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     skills?: SkillOrderByRelationAggregateInput
@@ -17878,6 +17908,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
     updatedById?: UuidFilter<"Repository"> | string
     visible?: BoolFilter<"Repository"> | boolean
+    startDate?: DateTimeFilter<"Repository"> | Date | string
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -17893,6 +17924,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    startDate?: SortOrder
     _count?: RepositoryCountOrderByAggregateInput
     _max?: RepositoryMaxOrderByAggregateInput
     _min?: RepositoryMinOrderByAggregateInput
@@ -17910,6 +17942,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
     updatedById?: UuidWithAggregatesFilter<"Repository"> | string
     visible?: BoolWithAggregatesFilter<"Repository"> | boolean
+    startDate?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
   }
 
   export type SkillWhereInput = {
@@ -17929,6 +17962,7 @@ export namespace Prisma {
     programmingLanguages?: EnumProgrammingLanguageNullableListFilter<"Skill">
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableFilter<"Skill"> | number | null
+    calculatedExperience?: IntFilter<"Skill"> | number
     includeInTopSkills?: BoolFilter<"Skill"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
@@ -17955,6 +17989,7 @@ export namespace Prisma {
     programmingLanguages?: SortOrder
     programmingDomains?: SortOrder
     experience?: SortOrderInput | SortOrder
+    calculatedExperience?: SortOrder
     includeInTopSkills?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
@@ -17984,6 +18019,7 @@ export namespace Prisma {
     programmingLanguages?: EnumProgrammingLanguageNullableListFilter<"Skill">
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableFilter<"Skill"> | number | null
+    calculatedExperience?: IntFilter<"Skill"> | number
     includeInTopSkills?: BoolFilter<"Skill"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
@@ -18010,6 +18046,7 @@ export namespace Prisma {
     programmingLanguages?: SortOrder
     programmingDomains?: SortOrder
     experience?: SortOrderInput | SortOrder
+    calculatedExperience?: SortOrder
     includeInTopSkills?: SortOrder
     _count?: SkillCountOrderByAggregateInput
     _avg?: SkillAvgOrderByAggregateInput
@@ -18035,6 +18072,7 @@ export namespace Prisma {
     programmingLanguages?: EnumProgrammingLanguageNullableListFilter<"Skill">
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableWithAggregatesFilter<"Skill"> | number | null
+    calculatedExperience?: IntWithAggregatesFilter<"Skill"> | number
     includeInTopSkills?: BoolWithAggregatesFilter<"Skill"> | boolean
   }
 
@@ -19255,6 +19293,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
@@ -19270,6 +19309,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -19281,6 +19321,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
@@ -19296,6 +19337,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -19309,6 +19351,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    startDate: Date | string
   }
 
   export type RepositoryUpdateManyMutationInput = {
@@ -19318,6 +19361,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RepositoryUncheckedUpdateManyInput = {
@@ -19329,6 +19373,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SkillCreateInput = {
@@ -19343,6 +19388,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -19369,6 +19415,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -19391,6 +19438,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -19417,6 +19465,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -19441,6 +19490,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
   }
 
@@ -19456,6 +19506,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -19473,6 +19524,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -20822,6 +20874,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    startDate?: SortOrder
   }
 
   export type RepositoryMaxOrderByAggregateInput = {
@@ -20833,6 +20886,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    startDate?: SortOrder
   }
 
   export type RepositoryMinOrderByAggregateInput = {
@@ -20844,6 +20898,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    startDate?: SortOrder
   }
 
   export type EnumSkillCategoryNullableListFilter<$PrismaModel = never> = {
@@ -20881,6 +20936,17 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type SkillCountOrderByAggregateInput = {
     id?: SortOrder
     label?: SortOrder
@@ -20895,11 +20961,13 @@ export namespace Prisma {
     programmingLanguages?: SortOrder
     programmingDomains?: SortOrder
     experience?: SortOrder
+    calculatedExperience?: SortOrder
     includeInTopSkills?: SortOrder
   }
 
   export type SkillAvgOrderByAggregateInput = {
     experience?: SortOrder
+    calculatedExperience?: SortOrder
   }
 
   export type SkillMaxOrderByAggregateInput = {
@@ -20913,6 +20981,7 @@ export namespace Prisma {
     visible?: SortOrder
     description?: SortOrder
     experience?: SortOrder
+    calculatedExperience?: SortOrder
     includeInTopSkills?: SortOrder
   }
 
@@ -20927,11 +20996,13 @@ export namespace Prisma {
     visible?: SortOrder
     description?: SortOrder
     experience?: SortOrder
+    calculatedExperience?: SortOrder
     includeInTopSkills?: SortOrder
   }
 
   export type SkillSumOrderByAggregateInput = {
     experience?: SortOrder
+    calculatedExperience?: SortOrder
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -20948,6 +21019,22 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EducationRelationFilter = {
@@ -22880,6 +22967,14 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type UserUpdateOneRequiredWithoutCreatedSkillsNestedInput = {
     create?: XOR<UserCreateWithoutCreatedSkillsInput, UserUncheckedCreateWithoutCreatedSkillsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCreatedSkillsInput
@@ -23978,6 +24073,22 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -24032,6 +24143,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -24056,6 +24168,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -24088,6 +24201,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -24112,6 +24226,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -24903,6 +25018,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectCreateNestedManyWithoutRepositoriesInput
@@ -24916,6 +25032,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     visible?: boolean
+    startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -24937,6 +25054,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    startDate: Date | string
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectCreateNestedManyWithoutRepositoriesInput
@@ -24950,6 +25068,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -25069,6 +25188,7 @@ export namespace Prisma {
     programmingLanguages?: EnumProgrammingLanguageNullableListFilter<"Skill">
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableFilter<"Skill"> | number | null
+    calculatedExperience?: IntFilter<"Skill"> | number
     includeInTopSkills?: BoolFilter<"Skill"> | boolean
   }
 
@@ -25573,6 +25693,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
     updatedById?: UuidFilter<"Repository"> | string
     visible?: BoolFilter<"Repository"> | boolean
+    startDate?: DateTimeFilter<"Repository"> | Date | string
   }
 
   export type RepositoryUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -25874,6 +25995,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -25899,6 +26021,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -26410,6 +26533,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -26435,6 +26559,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -27146,6 +27271,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -27171,6 +27297,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -27793,6 +27920,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     projects?: ProjectCreateNestedManyWithoutRepositoriesInput
@@ -27807,6 +27935,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    startDate: Date | string
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
 
@@ -28290,6 +28419,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -28315,6 +28445,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -28714,6 +28845,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -28739,6 +28871,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
@@ -28840,6 +28973,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
@@ -28854,6 +28988,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
   }
 
@@ -29976,6 +30111,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -30001,6 +30137,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -30423,6 +30560,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
@@ -30448,6 +30586,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -31083,6 +31222,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
   }
 
@@ -31099,6 +31239,7 @@ export namespace Prisma {
     programmingLanguages?: SkillCreateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
+    calculatedExperience: number
     includeInTopSkills?: boolean
   }
 
@@ -31376,6 +31517,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     visible?: boolean
+    startDate: Date | string
   }
 
   export type RepositoryCreateManyCreatedByInput = {
@@ -31386,6 +31528,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    startDate: Date | string
   }
 
   export type ResumeCreateManyUpdatedByInput = {
@@ -31426,6 +31569,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -31450,6 +31594,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -31473,6 +31618,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -31488,6 +31634,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -31512,6 +31659,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -31535,6 +31683,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -32395,6 +32544,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUpdateManyWithoutRepositoriesNestedInput
@@ -32408,6 +32558,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -32420,6 +32571,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RepositoryUpdateWithoutCreatedByInput = {
@@ -32429,6 +32581,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUpdateManyWithoutRepositoriesNestedInput
@@ -32442,6 +32595,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -32454,6 +32608,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ResumeUpdateWithoutUpdatedByInput = {
@@ -32546,6 +32701,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -32571,6 +32727,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -32594,6 +32751,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -32663,6 +32821,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -32688,6 +32847,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -32711,6 +32871,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -32726,6 +32887,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -32751,6 +32913,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -32774,6 +32937,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -33121,6 +33285,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     projects?: ProjectUpdateManyWithoutRepositoriesNestedInput
@@ -33135,6 +33300,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
 
@@ -33147,6 +33313,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SkillUpdateWithoutCoursesInput = {
@@ -33161,6 +33328,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -33186,6 +33354,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33209,6 +33378,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -33251,6 +33421,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -33276,6 +33447,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33299,6 +33471,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -33396,6 +33569,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
@@ -33410,6 +33584,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
 
@@ -33422,6 +33597,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ExperienceCreateManyCompanyInput = {
@@ -33578,6 +33754,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -33603,6 +33780,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33626,6 +33804,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -33654,6 +33833,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
@@ -33679,6 +33859,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33702,6 +33883,7 @@ export namespace Prisma {
     programmingLanguages?: SkillUpdateprogrammingLanguagesInput | $Enums.ProgrammingLanguage[]
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
+    calculatedExperience?: IntFieldUpdateOperationsInput | number
     includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
   }
 

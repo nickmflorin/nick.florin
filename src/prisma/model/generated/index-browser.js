@@ -169,7 +169,8 @@ exports.Prisma.RepositoryScalarFieldEnum = {
   createdById: 'createdById',
   updatedAt: 'updatedAt',
   updatedById: 'updatedById',
-  visible: 'visible'
+  visible: 'visible',
+  startDate: 'startDate'
 };
 
 exports.Prisma.SkillScalarFieldEnum = {
@@ -186,6 +187,7 @@ exports.Prisma.SkillScalarFieldEnum = {
   programmingLanguages: 'programmingLanguages',
   programmingDomains: 'programmingDomains',
   experience: 'experience',
+  calculatedExperience: 'calculatedExperience',
   includeInTopSkills: 'includeInTopSkills'
 };
 
