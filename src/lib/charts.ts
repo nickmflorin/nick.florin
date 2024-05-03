@@ -1,6 +1,7 @@
 import resolveConfig from "tailwindcss/resolveConfig";
 
 import { hexToRgb } from "~/lib/colors";
+import { isRecordType } from "~/lib/typeguards";
 import tailwindConfig from "~/tailwind.config";
 
 const resolvedConfig = resolveConfig(tailwindConfig);
@@ -51,13 +52,13 @@ export const generateChartColors = (count: number, alpha = 0.6): Color[] => {
     const s = CHART_COLOR_SHADES[shadeIndex];
     const c = CHART_COLORS[colorIndex];
 
-    const tailwindColorArray = resolvedConfig.theme.colors[c];
-    if (!Array.isArray(tailwindColorArray)) {
+    const tailwindShades = resolvedConfig.theme.colors[c];
+    if (!isRecordType(tailwindShades)) {
       throw new Error(
-        `The color '${c}' does not correspond to an array of shades in the Tailwind config!`,
+        `The color '${c}' does not correspond to a record of shades in the Tailwind config!`,
       );
     }
-    const tailwindHex = tailwindColorArray[s];
+    const tailwindHex = tailwindShades[s];
     if (typeof tailwindHex !== "string" || tailwindHex[0] !== "#") {
       throw new Error(
         `The shade '${s}' of color '${c}' does not correspond to a hex value in the Tailwind config!`,
