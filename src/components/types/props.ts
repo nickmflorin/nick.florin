@@ -1,10 +1,5 @@
 import type React from "react";
 
-import clsx, { type ClassArray, type ClassValue } from "clsx";
-import { z } from "zod";
-
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
-
 import { type ClassName } from "./classes";
 
 export type Style = React.CSSProperties;

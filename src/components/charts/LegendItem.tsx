@@ -12,7 +12,7 @@ export interface LegendItemProps extends ComponentProps {
 }
 
 export const LegendItem = ({ color, label, ...props }: LegendItemProps) => {
-  const { size, isLessThanOrEqualTo } = useScreenSizes({});
+  const { isLessThanOrEqualTo } = useScreenSizes({});
   return (
     <div
       className={clsx(

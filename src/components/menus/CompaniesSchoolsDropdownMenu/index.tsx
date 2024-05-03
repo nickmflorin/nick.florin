@@ -1,8 +1,6 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-import type { CompaniesSchoolsFloatingProps } from "./CompaniesSchoolsFloating";
-
 import { Button } from "~/components/buttons";
 import { Loading } from "~/components/feedback/Loading";
 import { Icon } from "~/components/icons/Icon";
