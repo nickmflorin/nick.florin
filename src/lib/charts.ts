@@ -50,7 +50,20 @@ export const generateChartColors = (count: number, alpha = 0.6): Color[] => {
 
     const s = CHART_COLOR_SHADES[shadeIndex];
     const c = CHART_COLORS[colorIndex];
-    colors.push(hexToRgb(resolvedConfig.theme.colors[c][s], { alpha }));
+
+    const tailwindColorArray = resolvedConfig.theme.colors[c];
+    if (!Array.isArray(tailwindColorArray)) {
+      throw new Error(
+        `The color '${c}' does not correspond to an array of shades in the Tailwind config!`,
+      );
+    }
+    const tailwindHex = tailwindColorArray[s];
+    if (typeof tailwindHex !== "string" || tailwindHex[0] !== "#") {
+      throw new Error(
+        `The shade '${s}' of color '${c}' does not correspond to a hex value in the Tailwind config!`,
+      );
+    }
+    colors.push(hexToRgb(tailwindHex as `#${string}`, { alpha }));
     index += 1;
     colorIndex += 1;
   }
