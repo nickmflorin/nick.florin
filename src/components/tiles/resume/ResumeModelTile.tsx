@@ -5,14 +5,13 @@ import clsx from "clsx";
 import { type ComponentProps } from "~/components/types";
 
 import { Details } from "./Details";
-import { ResumeModelBadges } from "./ResumeModelBadges";
 import { ResumeModelDescription } from "./ResumeModelDescription";
 import { ResumeModelHeader } from "./ResumeModelHeader";
 import { ResumeModelImage } from "./ResumeModelImage";
 import { ResumeModelSection } from "./ResumeModelSection";
 import { ResumeModelSubTitle } from "./ResumeModelSubTitle";
+import { ResumeModelTags } from "./ResumeModelTags";
 import { ResumeModelTitle } from "./ResumeModelTitle";
-import { ResumeTileDescription } from "./ResumeTileDescription";
 
 export interface ResumeModelProps extends ComponentProps {
   readonly children: ReactNode;
@@ -28,10 +27,9 @@ export const ResumeModelTile = Object.assign(LocalResumeModelTile, {
   Title: ResumeModelTitle,
   SubTitle: ResumeModelSubTitle,
   Image: ResumeModelImage,
-  Badges: ResumeModelBadges,
+  Tags: ResumeModelTags,
   Details,
   Section: ResumeModelSection,
-  Description: ResumeTileDescription,
   ModelDescription: ResumeModelDescription,
   Header: ResumeModelHeader,
 });

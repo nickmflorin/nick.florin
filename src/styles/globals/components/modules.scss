@@ -1,6 +1,6 @@
 .module {
   border: 1px solid theme("colors.border");
-  padding: 12px 12px 18px 18px;
+  padding: 12px 18px 18px 18px;
   box-shadow: theme("boxShadow.sm");
   display: flex;
   flex-direction: column;
@@ -30,7 +30,7 @@
     }
 
     > .title {
-      font-size: theme("fontSize.title_smplus.0");
+      font-size: theme("fontSize.title_sm.0");
       line-height: 32px;
 
       @media (max-width: theme("screens.md")) {

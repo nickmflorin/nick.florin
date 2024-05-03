@@ -1,5 +1,7 @@
+import { Description } from "~/components/typography/Description";
+
 import { ProjectImage } from "../ProjectImage";
-import { Section, SectionDescription } from "../Section";
+import { Section } from "../Section";
 import { Series } from "../Series";
 import { SeriesItem } from "../SeriesItem";
 
@@ -7,11 +9,11 @@ export const BubbleChart = () => (
   <Section
     title="Bubble Chart"
     description={
-      <SectionDescription>
+      <Description>
         In the case of a Bubble Chart, data can be simultaneously visualized in 4 different
         dimensions (excluding time), which are represented by the following characteristics of the
         chart:
-      </SectionDescription>
+      </Description>
     }
   >
     <Series>

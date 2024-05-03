@@ -1,6 +1,6 @@
 import { type Config } from "tailwindcss";
 
-const config: Config = {
+const config = {
   content: ["./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
   plugins: [],
   presets: [],
@@ -355,7 +355,7 @@ const config: Config = {
       DEFAULT: "1",
     },
     fontFamily: {
-      title: ["avenir"],
+      title: ["inter"],
       label: ["inter"],
       body: ["inter"],
       sans: ["inter", "ui-sans-serif", "system-ui", "sans-serif"],
@@ -380,16 +380,16 @@ const config: Config = {
       sm: ["14px", { lineHeight: "18px" }],
       smplus: ["15px", { lineHeight: "18px" }],
       md: ["16px", { lineHeight: "20px" }],
-      lg: ["18px", { lineHeight: "24px" }],
+      lg: ["18px", { lineHeight: "22px" }],
       xl: ["20px", { lineHeight: "24px" }],
       title_xxxs: ["12px", { lineHeight: "16px" }],
-      title_xxs: ["13px", { lineHeight: "20px" }],
-      title_xs: ["14px", { lineHeight: "20px" }],
-      title_sm: ["16px", { lineHeight: "22px" }],
-      title_smplus: ["18px", { lineHeight: "22px" }],
-      title_md: ["20px", { lineHeight: "26px" }],
-      title_lg: ["22px", { lineHeight: "28px" }],
-      title_xl: ["24px", { lineHeight: "30px" }],
+      title_xxs: ["13px", { lineHeight: "16px" }],
+      title_xs: ["14px", { lineHeight: "18px" }],
+      title_sm: ["16px", { lineHeight: "20px" }],
+      title_smplus: ["17px", { lineHeight: "20px" }],
+      title_md: ["18px", { lineHeight: "22px" }],
+      title_lg: ["20px", { lineHeight: "24px" }],
+      title_xl: ["22px", { lineHeight: "26px" }],
     },
     fontWeight: {
       light: "300",
@@ -1111,6 +1111,6 @@ const config: Config = {
       50: "50",
     },
   },
-};
+} as const satisfies Config;
 
 export default config;

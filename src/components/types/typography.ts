@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { isFragment } from "react-is";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import tailwindConfig from "~/tailwind.config";
 
 export const BodyFontSizes = enumeratedLiterals(
   ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
@@ -43,7 +44,7 @@ export const TextTransforms = enumeratedLiterals(
 );
 export type TextTransform = EnumeratedLiteralsType<typeof TextTransforms>;
 
-export const FontFamilies = enumeratedLiterals(["inter", "avenir", "roboto"] as const, {});
+export const FontFamilies = enumeratedLiterals(["inter"] as const, {});
 export type FontFamily = EnumeratedLiteralsType<typeof FontFamilies>;
 
 export type LineClamp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
@@ -107,3 +108,12 @@ export const singleTextNodeCanRender = (node: SingleTextNode): node is Renderabl
 };
 
 export type TypographyVisibilityState = "expanded" | "collapsed";
+
+export const isTailwindFontSizeValue = (value: string) =>
+  Object.keys(tailwindConfig.theme.fontSize).includes(value);
+
+const TailwindScreenSizeModifierRegex =
+  /^((xs|sm|md|lg|xl|2xl):max-(xs|sm|md|lg|xl|2xl)|(max-(xs|sm|md|lg|xl|2xl)))$/;
+
+export const isTailwindScreenSizeModifier = (modifier: string) =>
+  TailwindScreenSizeModifierRegex.test(modifier);

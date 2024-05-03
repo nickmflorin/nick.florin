@@ -20,19 +20,10 @@ export const SectionTitle = ({
     {...props}
     fontWeight="medium"
     flex
-    className={clsx("text-smplus max-md:text-sm", props.className)}
+    className={clsx("text-sm max-sm:text-xs", props.className)}
   >
     {children}
   </Text>
-);
-
-export const SectionDescription = ({
-  children,
-  ...props
-}: ComponentProps & { readonly children: SingleTextNode | SingleTextNode[] }) => (
-  <Description {...props} className={clsx("text-md max-md:text-sm", props.className)}>
-    {children}
-  </Description>
 );
 
 export const Section = ({ title, description, children, ...props }: SectionProps) => (
@@ -40,11 +31,7 @@ export const Section = ({ title, description, children, ...props }: SectionProps
     {(title || description) && (
       <div className="flex flex-col gap-[4px] mb-[4px]">
         {typeof title === "string" ? <SectionTitle>{title}</SectionTitle> : title}
-        {typeof description === "string" ? (
-          <SectionDescription>{description}</SectionDescription>
-        ) : (
-          description
-        )}
+        {typeof description === "string" ? <Description>{description}</Description> : description}
       </div>
     )}
     {children}

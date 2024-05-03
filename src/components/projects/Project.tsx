@@ -17,7 +17,7 @@ export const Project = ({ title, description, children, project, ...props }: Pro
   <div
     {...props}
     className={clsx(
-      "w-full max-w-[900px] flex flex-col gap-[12px] mx-auto max-md:gap-[8px]",
+      "w-full max-w-[900px] flex flex-col gap-[12px] mx-auto max-md:gap-[8px] px-[16px]",
       props.className,
     )}
   >

@@ -10,8 +10,8 @@ export default async function EducationsPage() {
           model={education}
           key={index}
           expandable
-          showBadges={false}
-          showMoreLink
+          showTags={false}
+          includeDescriptionShowMoreLink
         />
       ))}
     </>

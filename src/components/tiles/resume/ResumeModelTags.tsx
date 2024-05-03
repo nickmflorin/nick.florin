@@ -1,25 +1,25 @@
 import clsx from "clsx";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+import { Icon } from "~/components/icons/Icon";
 import { LocationTag } from "~/components/tags/LocationTag";
 import { TimePeriodTag } from "~/components/tags/TimePeriodTag";
 import { type ComponentProps } from "~/components/types";
 
-export interface ResumeModelBadgesProps<M extends BrandModel<T>, T extends ResumeBrand>
+export interface ResumeModelTagsProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends ComponentProps {
   readonly model: M;
 }
 
-export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand>({
+export const ResumeModelTags = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
   ...props
-}: ResumeModelBadgesProps<M, T>) => (
+}: ResumeModelTagsProps<M, T>) => (
   <div
     {...props}
-    className={clsx("flex flex-wrap gap-x-[8px] gap-y-[6px] items-center", props.className)}
+    className={clsx("flex flex-row gap-[2px] h-[16px] items-center", props.className)}
   >
     <TimePeriodTag
-      fontSize="xs"
       className="h-full text-xs max-sm:text-xxs"
       iconClassName="h-[16px]"
       timePeriod={
@@ -28,6 +28,7 @@ export const ResumeModelBadges = <M extends BrandModel<T>, T extends ResumeBrand
           : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
       }
     />
+    <Icon name="pipe" className="h-[14px] text-body" />
     <LocationTag
       className="h-full text-xs max-sm:text-xxs"
       iconClassName="h-[16px]"

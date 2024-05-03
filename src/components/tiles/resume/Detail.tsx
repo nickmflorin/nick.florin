@@ -6,10 +6,10 @@ import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/prisma/m
 import { Skills } from "~/components/badges/collections/Skills";
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
+import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
 
 import { Details } from "./Details";
-import { ResumeTileDescription } from "./ResumeTileDescription";
 
 export interface DetailProps<
   D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
@@ -33,34 +33,17 @@ export const Detail = <
     <div className="flex flex-col gap-[4px]">
       {isNested && index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
-          <Label
-            className={clsx("w-[8px]", {
-              "text-sm": isNested,
-              "text-smplus max-sm:text-sm": !isNested,
-            })}
-          >
-            {`${index}.`}
-          </Label>
+          <Label className="w-[8px] text-sm max-sm:text-xs">{`${index}.`}</Label>
           {detail.project ? (
             <Link
               options={{ as: "link" }}
               href={`/projects/${detail.project.slug}`}
-              className={clsx({
-                "text-sm": isNested,
-                "text-smplus max-sm:text-sm": !isNested,
-              })}
+              className="text-sm max-sm:text-xs"
             >
               {detail.label}
             </Link>
           ) : (
-            <Label
-              className={clsx({
-                "text-sm": isNested,
-                "text-smplus max-sm:text-sm": !isNested,
-              })}
-            >
-              {detail.label}
-            </Label>
+            <Label className="text-sm max-sm:text-xs">{detail.label}</Label>
           )}
         </div>
       ) : detail.project ? (
@@ -71,33 +54,22 @@ export const Detail = <
             gap="4px"
             flex
             icon={{ right: { name: "link" } }}
-            className={clsx({
-              "text-sm": isNested,
-              "text-smplus max-sm:text-sm": !isNested,
-            })}
+            className="text-sm max-sm:text-xs"
           >
             {detail.label}
           </Link>
         </div>
       ) : (
-        <Label
-          className={clsx({
-            "text-sm": isNested,
-            "text-smplus max-sm:text-sm": !isNested,
-          })}
-        >
-          {detail.label}
-        </Label>
+        <Label className="text-sm max-sm:text-xs">{detail.label}</Label>
       )}
       {detail.description && (
-        <ResumeTileDescription
-          size={size}
+        <Description
           className={clsx({
             "pl-[16px]": index !== undefined && isNested,
           })}
         >
           {detail.description}
-        </ResumeTileDescription>
+        </Description>
       )}
     </div>
     {detail.skills.length !== 0 && (

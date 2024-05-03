@@ -7,7 +7,5 @@ export interface TimePeriodTagProps extends Omit<TagProps, "children" | "icon"> 
 }
 
 export const TimePeriodTag = ({ timePeriod, ...props }: TimePeriodTagProps): JSX.Element => (
-  <Tag {...props} icon={{ name: "calendar" }}>
-    {stringifyTimePeriod(timePeriod)}
-  </Tag>
+  <Tag {...props}>{stringifyTimePeriod(timePeriod)}</Tag>
 );

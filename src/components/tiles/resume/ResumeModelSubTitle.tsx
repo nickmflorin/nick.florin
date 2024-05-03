@@ -39,7 +39,7 @@ export const ResumeModelSubTitle = <M extends BrandModel<T>, T extends ResumeBra
       {
         small: "text-sm",
         medium: "text-smplus",
-        large: "text-md max-sm:text-sm",
+        large: "text-smplus max-sm:text-sm",
       }[size],
     )}
     fontWeight={

@@ -20,13 +20,15 @@ export const Tabs = ({ items, children, ...props }: TabsProps) => (
       /* The bottom padding of 2px is to make sure that the border on the bottom is not cutoff by
          overflow.  On the other hand, the bottom padding of 8px is for the scrollbar, in the case
          that the tabs overflow the container in mobile views. */
-      "flex flex-row items-center overflow-y-hidden w-full max-w-full pb-[2px]",
+      "flex flex-row items-center overflow-y-hidden w-full min-w-full max-w-full pb-[2px]",
       "max-md:overflow-x-auto max-md:pb-[8px]",
       props.className,
     )}
   >
     <div
-      className={clsx("flex flex-row items-center justify-between border-b-[2px] border-gray-200")}
+      className={clsx(
+        "flex flex-row items-center justify-between border-b-[2px] border-gray-200 w-full",
+      )}
     >
       <div className="flex flex-row items-center">
         {items.map((item, index) => (

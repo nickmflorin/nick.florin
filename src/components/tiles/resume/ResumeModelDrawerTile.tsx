@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { type ResumeBrand } from "~/prisma/model";
 import { Skills } from "~/components/badges/collections/Skills";
 import { type ComponentProps } from "~/components/types";
+import { Description } from "~/components/typography/Description";
 import { HumanizedCourses } from "~/components/typography/HumanizedCourses";
 
 import { ResumeModelTile } from "./ResumeModelTile";
@@ -22,14 +23,14 @@ export const ResumeModelDrawerTile = <M extends types.ApiModel<T>, T extends Res
     <div className="flex flex-col gap-[12px] overflow-y-auto">
       {(types.hasDescription(model) || model.details.length !== 0) && (
         <div className="flex flex-col gap-[10px] max-w-[700px]">
-          <ResumeModelTile.ModelDescription size="medium" model={model} />
+          <ResumeModelTile.ModelDescription model={model} />
           <ResumeModelTile.Details size="medium" details={model.details} />
         </div>
       )}
       {model.$kind === "education" && model.courses.length !== 0 && (
-        <ResumeModelTile.Description className="max-w-[800px]" size="medium">
+        <Description className="max-w-[800px]">
           <HumanizedCourses courses={model.courses} />
-        </ResumeModelTile.Description>
+        </Description>
       )}
       {model.skills.length !== 0 ? (
         model.$kind === "experience" ? (

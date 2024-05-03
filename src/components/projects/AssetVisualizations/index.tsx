@@ -1,6 +1,5 @@
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
-import { Text } from "~/components/typography/Text";
 
 import { Project as ProjectComponent, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
@@ -15,7 +14,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
   <ProjectComponent
     title="n-Dimensional Charting Library for Asset Management"
     description={
-      <Description className="text-smplus max-md:text-sm">
+      <Description>
         A JavaScript charting library written in&nbsp;
         <Link options={{ as: "a" }} href="https://d3js.org">
           d3.js
@@ -26,9 +25,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
     }
     {...props}
   >
-    <Text key="0" className="text-body-light text-smplus max-md:text-sm">
-      The package supported the following chart types:
-    </Text>
+    <Description key="0">The package supported the following chart types:</Description>
     <BubbleChart />
     <BarChart />
     <ProjectImage

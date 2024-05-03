@@ -12,7 +12,7 @@ import {
 
 export interface TagProps extends BaseTypographyProps, ComponentProps {
   readonly iconClassName?: ComponentProps["className"];
-  readonly icon: IconProp;
+  readonly icon?: IconProp;
   readonly gap?: Size;
   readonly children: string;
 }

@@ -6,14 +6,13 @@
 @use "throw";
 
 $typography-types: ("body", "title", "label");
-$font-family-avenir: avenir;
-$font-family-roboto: roboto;
+
 $font-family-inter: var(--font-inter);
-$font-families: ($font-family-avenir, $font-family-roboto, $font-family-inter);
+$font-families: ($font-family-inter);
 $text-transforms: ("uppercase", "lowercase", "capitalize", "underline");
 
 /* -------------------------------------- Font Families ----------------------------------------- */
-$title_font-family: $font-family-avenir;
+$title_font-family: $font-family-inter;
 $body-font-family: $font-family-inter;
 $label-font-family: $font-family-inter;
 
@@ -36,13 +35,6 @@ $font-weights: (
   "medium": theme("fontWeight.medium"),
   "semibold": theme("fontWeight.semibold"),
   "bold": theme("fontWeight.bold"),
-);
-
-// // Used in cases where we are setting the font-weight based on a family but not a weight name.
-$font-family-default-weights: (
-  avenir: "medium",
-  roboto: "regular",
-  inter: "regular",
 );
 
 @function get-font-weight($type: null, $size: null, $weight: null) {
@@ -118,7 +110,7 @@ $typography-size-properties: (
     ),
     "lg": (
       font-size: 18px,
-      line-height: 24px,
+      line-height: 22px,
       font-weight: "regular",
     ),
     "xl": (
@@ -135,38 +127,38 @@ $typography-size-properties: (
     ),
     "xxs": (
       font-size: 13px,
-      line-height: 20px,
+      line-height: 16px,
       font-weight: "medium",
     ),
     "xs": (
       font-size: 14px,
-      line-height: 20px,
+      line-height: 18px,
       font-weight: "medium",
     ),
     "sm": (
       font-size: 16px,
-      line-height: 22px,
-      font-weight: "semibold",
+      line-height: 20px,
+      font-weight: "medium",
     ),
     "smplus": (
-      font-size: 18px,
-      line-height: 22px,
-      font-weight: "semibold",
+      font-size: 17px,
+      line-height: 20px,
+      font-weight: "medium",
     ),
     "md": (
-      font-size: 20px,
-      line-height: 26px,
-      font-weight: "semibold",
+      font-size: 18px,
+      line-height: 22px,
+      font-weight: "medium",
     ),
     "lg": (
-      font-size: 22px,
-      line-height: 28px,
-      font-weight: "semibold",
+      font-size: 20px,
+      line-height: 24px,
+      font-weight: "medium",
     ),
     "xl": (
-      font-size: 24px,
-      line-height: 30px,
-      font-weight: "bold",
+      font-size: 22px,
+      line-height: 26px,
+      font-weight: "medium",
     ),
   ),
   "label": (
@@ -202,7 +194,7 @@ $typography-size-properties: (
     ),
     "lg": (
       font-size: 18px,
-      line-height: 24px,
+      line-height: 22px,
       font-weight: "medium",
     ),
     "xl": (

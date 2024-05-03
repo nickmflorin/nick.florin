@@ -1,10 +1,6 @@
 @forward "./util";
 
-@use "./font-faces" as font-faces;
-
 @use "./body";
 @use "./description";
 @use "./heading";
 @use "./label";
-
-@include font-faces.font-faces();

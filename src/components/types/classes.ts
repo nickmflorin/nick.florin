@@ -7,7 +7,7 @@ const getClassNameParts = (cs: ClassName | undefined) =>
     .split(" ")
     .map(c => c.trim());
 
-const TailwindClassNameRegex = /^!?(([A-Za-z]+):)?([A-Za-z]+)-([A-Za-z0-9_\-\[\]]+)$/;
+const TailwindClassNameRegex = /^!?(([A-Za-z-:\[\]&>_*.]+):)?([A-Za-z]+)-([A-Za-z0-9_\-\[\]]+)$/;
 
 type ParseTailwindClassNameOptions = {
   readonly strict?: boolean;
@@ -82,18 +82,25 @@ export const findClassName = (
   return filtered.length === 0 ? null : filtered[filtered.length - 1];
 };
 
-export const withoutOverridingClassName = (overriding: string, cs: ClassName): string => {
+export const withoutOverridingClassName = (
+  overriding: string,
+  cs: ClassName,
+  conditional?: (parsed: ParsedTailwindClassName) => boolean,
+): string => {
   if (overriding.includes(" ")) {
     const parts = getClassNameParts(overriding);
     if (parts.length === 0) {
       return "";
     } else if (parts.length === 1) {
-      return withoutOverridingClassName(parts[0], cs);
+      return withoutOverridingClassName(parts[0], cs, conditional);
     }
     return clsx(
-      withoutOverridingClassName(parts[0], cs),
-      withoutOverridingClassName(clsx(parts.slice(1)), cs),
+      withoutOverridingClassName(parts[0], cs, conditional),
+      withoutOverridingClassName(clsx(parts.slice(1)), cs, conditional),
     );
+  }
+  if (conditional) {
+    return clsx({ [overriding]: !classNameContains(cs, conditional) });
   }
   const { prefix } = parseTailwindClassName(overriding, { strict: true });
   return clsx({ [overriding]: !classNameHasPrefix(cs, prefix) });

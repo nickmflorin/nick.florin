@@ -7,7 +7,5 @@ export interface LocationTagProps extends Omit<TagProps, "children" | "icon"> {
 }
 
 export const LocationTag = ({ location, ...props }: LocationTagProps): JSX.Element => (
-  <Tag {...props} icon={{ name: "location-dot" }}>
-    {stringifyLocation(location)}
-  </Tag>
+  <Tag {...props}>{stringifyLocation(location)}</Tag>
 );

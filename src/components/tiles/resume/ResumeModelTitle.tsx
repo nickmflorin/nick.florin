@@ -29,7 +29,11 @@ const Titles: {
   large: ({ children }) => (
     <Title
       order={2}
-      className="leading-[22px] text-title_md max-sm:text-title_sm max-sm:leading-[22px]"
+      className={clsx(
+        "leading-[22px] text-title_md",
+        "max-md:leading-[22px] max-md:text-title_smplus",
+        "max-sm:text-title_sm max-sm:leading-[22px]",
+      )}
     >
       {children}
     </Title>

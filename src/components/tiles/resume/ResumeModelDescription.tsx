@@ -1,10 +1,10 @@
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
+import { Description, type DescriptionProps } from "~/components/typography/Description";
 
-import { ResumeTileDescription, type ResumeTileDescriptionProps } from "./ResumeTileDescription";
 import * as types from "./types";
 
 export interface ResumeModelDescriptionProps<M extends BrandModel<T>, T extends ResumeBrand>
-  extends Omit<ResumeTileDescriptionProps, "children"> {
+  extends Omit<DescriptionProps, "children"> {
   readonly model: M;
 }
 
@@ -14,9 +14,9 @@ export const ResumeModelDescription = <M extends BrandModel<T>, T extends Resume
 }: ResumeModelDescriptionProps<M, T>) => {
   if (types.hasDescription(model)) {
     return (
-      <ResumeTileDescription {...props}>
+      <Description {...props}>
         {model.$kind === "education" ? [model.description, model.note] : model.description}
-      </ResumeTileDescription>
+      </Description>
     );
   }
   return <></>;

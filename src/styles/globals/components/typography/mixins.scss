@@ -133,12 +133,6 @@
   &.font-family-inter {
     font-family: $font-family-inter;
   }
-  &.font-family-roboto {
-    font-family: $font-family-roboto;
-  }
-  &.font-family-avenir {
-    font-family: $font-family-avenir;
-  }
 }
 
 @mixin with-text-transforms() {

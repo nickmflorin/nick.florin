@@ -10,8 +10,8 @@ export default async function ExperiencesPage() {
           model={experience}
           key={index}
           expandable
-          showBadges={false}
-          showMoreLink
+          showTags={false}
+          includeDescriptionShowMoreLink
         />
       ))}
     </>

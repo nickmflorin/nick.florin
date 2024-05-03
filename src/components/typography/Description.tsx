@@ -71,8 +71,6 @@ export interface DescriptionProps extends Omit<TextProps, "flex" | "children"> {
 }
 
 export const Description = ({
-  fontSize = "md",
-  fontWeight = "regular",
   children,
   lineBreakHeight = 6,
   includeShowMoreLink = false,
@@ -121,10 +119,30 @@ export const Description = ({
         <Text
           {...props}
           ref={ref}
-          fontSize={fontSize}
-          fontWeight={fontWeight}
           lineClamp={state === "expanded" ? undefined : props.lineClamp}
-          className={clsx("description text-body-light", props.className)}
+          className={clsx(
+            "description text-body-light",
+            {
+              [types.withoutOverridingClassName(
+                "text-sm",
+                props.className,
+                ({ prefix, value, modifier }) =>
+                  !modifier && prefix === "text" && types.isTailwindFontSizeValue(value),
+              )]: props.fontSize === undefined,
+              [types.withoutOverridingClassName(
+                "max-sm:text-xs",
+                props.className,
+                /* If there is any responsive modifier on the text size, do not apply the
+                   max-sm:text-xs class. */
+                ({ prefix, value, modifier }) =>
+                  modifier !== undefined &&
+                  types.isTailwindScreenSizeModifier(modifier) &&
+                  prefix === "text" &&
+                  types.isTailwindFontSizeValue(value),
+              )]: props.fontSize === undefined,
+            },
+            props.className,
+          )}
         >
           {nodes}
         </Text>

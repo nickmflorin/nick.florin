@@ -12,7 +12,7 @@ export interface ModuleHeaderProps extends ComponentProps {
 
 export const ModuleHeader = ({ actions, children, ...props }: ModuleHeaderProps) => (
   <div {...props} className={clsx("module__header", props.className)}>
-    <Title>{children}</Title>
+    <Title order={3}>{children}</Title>
     <Actions actions={actions ?? null} />
   </div>
 );
