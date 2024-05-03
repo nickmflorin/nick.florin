@@ -1,8 +1,10 @@
 import resolveConfig from "tailwindcss/resolveConfig";
 
-import { hexToRgb } from "~/lib/colors";
-import { isRecordType } from "~/lib/typeguards";
 import tailwindConfig from "~/tailwind.config";
+
+import { tupleCycle } from "./arrays";
+import { hexToRgb } from "./colors";
+import { isRecordType } from "./typeguards";
 
 const resolvedConfig = resolveConfig(tailwindConfig);
 
@@ -35,38 +37,25 @@ const CHART_COLOR_SHADES = ["500", "600", "700", "800"] as const;
 type Color = string;
 
 export const generateChartColors = (count: number, alpha = 0.6): Color[] => {
-  let index = 0;
-  let colorIndex = 0;
-  let shadeIndex = 0;
+  const iterator = tupleCycle([...CHART_COLOR_SHADES], [...CHART_COLORS]);
 
-  const colors: Color[] = [];
-  while (index < count) {
-    if (colorIndex === CHART_COLORS.length) {
-      colorIndex = 0;
-      shadeIndex = Math.min(CHART_COLOR_SHADES.length, shadeIndex + 1);
-    }
-    if (shadeIndex === CHART_COLOR_SHADES.length) {
-      shadeIndex = 0;
-    }
+  let colors: Color[] = [];
+  while (colors.length < count) {
+    const [shade, color] = iterator.next().value;
 
-    const s = CHART_COLOR_SHADES[shadeIndex];
-    const c = CHART_COLORS[colorIndex];
-
-    const tailwindShades = resolvedConfig.theme.colors[c];
+    const tailwindShades = resolvedConfig.theme.colors[color];
     if (!isRecordType(tailwindShades)) {
       throw new Error(
-        `The color '${c}' does not correspond to a record of shades in the Tailwind config!`,
+        `The color '${color}' does not correspond to a record of shades in the Tailwind config!`,
       );
     }
-    const tailwindHex = tailwindShades[s];
+    const tailwindHex = tailwindShades[shade];
     if (typeof tailwindHex !== "string" || tailwindHex[0] !== "#") {
       throw new Error(
-        `The shade '${s}' of color '${c}' does not correspond to a hex value in the Tailwind config!`,
+        `The shade '${shade}' of color '${color}' does not correspond to a hex value in the Tailwind config!`,
       );
     }
-    colors.push(hexToRgb(tailwindHex as `#${string}`, { alpha }));
-    index += 1;
-    colorIndex += 1;
+    colors = [...colors, hexToRgb(tailwindHex as `#${string}`, { alpha })];
   }
   return colors;
 };
