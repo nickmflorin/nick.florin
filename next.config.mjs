@@ -21,7 +21,7 @@ const config = {
   },
   reactStrictMode: false,
   experimental: {
-    optimizePackageImports: ["@mantine/core", "@mantine/dates", "zod"],
+    optimizePackageImports: ["@mantine/core", "zod"],
   },
   // webpack: config => {
   //   /* The StylelintPlugin requires the addition to the package.json: "postcss": "^8.4.18". */
