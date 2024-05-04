@@ -72,7 +72,7 @@ export const MenuItemModelRenderer = forwardRef(
 
     const Item = (
       <MenuItem
-        id={id}
+        id={id ? String(id) : undefined}
         actions={actions}
         height={itemHeight}
         isMulti={options.isMulti}

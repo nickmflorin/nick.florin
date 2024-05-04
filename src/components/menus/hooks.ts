@@ -135,7 +135,8 @@ const getMenuModelValue = <M extends types.MenuModel, O extends types.MenuOption
     return null as types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>;
   } else {
     const ms = lookupMenuModel(
-      value,
+      // TODO: This coercion needs to be fixed when we simplify the menu-related types.
+      value as types.MenuInitialValue<M, O> | types.MenuValue<M, O>,
       { data, isReady, options },
       { throwIfNotAssociated: types.menuIsNonNullable<M, O>(options) },
     );
