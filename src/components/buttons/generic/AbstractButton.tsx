@@ -94,7 +94,7 @@ const getButtonStyle = <T extends types.ButtonType, F extends types.ButtonForm>(
     : props.style;
 
 const INTERNAL_BUTTON_PROPS = [
-  "options",
+  "as",
   "variant",
   "isLocked",
   "isActive",
