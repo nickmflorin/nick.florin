@@ -126,7 +126,7 @@ dependencies:
     specifier: ^3.4.4
     version: 3.4.4
   mantine-datatable:
-    specifier: ^7.6.1
+    specifier: ^7.5.1
     version: 7.9.0(@mantine/core@7.6.1)(@mantine/hooks@7.6.1)(clsx@2.1.1)(react@18.3.1)
   next:
     specifier: 14.2.0-canary.44
@@ -824,29 +824,29 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  /@csstools/css-parser-algorithms@2.6.2(@csstools/css-tokenizer@2.3.0):
-    resolution: {integrity: sha512-f/K04/bX1nD3nKOOGfG+duxFeULE1k/qpfgZcQumRrW1I/sE4VqkJqszmZKhaDc04frQwNoKYowJc13i1xyyvw==}
+  /@csstools/css-parser-algorithms@2.6.3(@csstools/css-tokenizer@2.3.1):
+    resolution: {integrity: sha512-xI/tL2zxzEbESvnSxwFgwvy5HS00oCXxL4MLs6HUiDcYfwowsoQaABKxUElp1ARITrINzBnsECOc1q0eg2GOrA==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
-      '@csstools/css-tokenizer': ^2.3.0
+      '@csstools/css-tokenizer': ^2.3.1
     dependencies:
-      '@csstools/css-tokenizer': 2.3.0
+      '@csstools/css-tokenizer': 2.3.1
     dev: true
 
-  /@csstools/css-tokenizer@2.3.0:
-    resolution: {integrity: sha512-v1WxYzvjjv5XwrHhSV/xRQFrToAX5FmRcYCAMzRD+ZTdG7962mf3JJXju7vPodWcuk2fJTmL+xbviMG8IxccHQ==}
+  /@csstools/css-tokenizer@2.3.1:
+    resolution: {integrity: sha512-iMNHTyxLbBlWIfGtabT157LH9DUx9X8+Y3oymFEuMj8HNc+rpE3dPFGFgHjpKfjeFDjLjYIAIhXPGvS2lKxL9g==}
     engines: {node: ^14 || ^16 || >=18}
     dev: true
 
-  /@csstools/media-query-list-parser@2.1.10(@csstools/css-parser-algorithms@2.6.2)(@csstools/css-tokenizer@2.3.0):
-    resolution: {integrity: sha512-PybCvlls9U96grWpJcty1710r5C/lHgdGlcBehpOd/1RwCBa5Xp+WFE6LHWH8sGWEjzpr53HGDb049hzh95AZQ==}
+  /@csstools/media-query-list-parser@2.1.11(@csstools/css-parser-algorithms@2.6.3)(@csstools/css-tokenizer@2.3.1):
+    resolution: {integrity: sha512-uox5MVhvNHqitPP+SynrB1o8oPxPMt2JLgp5ghJOWf54WGQ5OKu47efne49r1SWqs3wRP8xSWjnO9MBKxhB1dA==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
-      '@csstools/css-parser-algorithms': ^2.6.2
-      '@csstools/css-tokenizer': ^2.3.0
+      '@csstools/css-parser-algorithms': ^2.6.3
+      '@csstools/css-tokenizer': ^2.3.1
     dependencies:
-      '@csstools/css-parser-algorithms': 2.6.2(@csstools/css-tokenizer@2.3.0)
-      '@csstools/css-tokenizer': 2.3.0
+      '@csstools/css-parser-algorithms': 2.6.3(@csstools/css-tokenizer@2.3.1)
+      '@csstools/css-tokenizer': 2.3.1
     dev: true
 
   /@csstools/selector-specificity@3.0.3(postcss-selector-parser@6.0.16):
@@ -3173,7 +3173,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.23.0
-      caniuse-lite: 1.0.30001615
+      caniuse-lite: 1.0.30001616
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -3316,7 +3316,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001615
+      caniuse-lite: 1.0.30001616
       electron-to-chromium: 1.4.756
       node-releases: 2.0.14
       update-browserslist-db: 1.0.15(browserslist@4.23.0)
@@ -3403,8 +3403,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite@1.0.30001615:
-    resolution: {integrity: sha512-1IpazM5G3r38meiae0bHRnPhz+CBQ3ZLqbQMtrg+AsTPKAXgW38JNsXkyZ+v8waCsDmPq87lmfun5Q2AGysNEQ==}
+  /caniuse-lite@1.0.30001616:
+    resolution: {integrity: sha512-RHVYKov7IcdNjVHJFNY/78RdG4oGVjbayxv8u5IO74Wv7Hlq4PnJE6mo/OjFijjVFNy5ijnCt6H3IIo4t+wfEw==}
 
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -7089,7 +7089,7 @@ packages:
       '@next/env': 14.2.0-canary.44
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001615
+      caniuse-lite: 1.0.30001616
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -8530,9 +8530,9 @@ packages:
     engines: {node: ^14.13.1 || >=16.0.0}
     hasBin: true
     dependencies:
-      '@csstools/css-parser-algorithms': 2.6.2(@csstools/css-tokenizer@2.3.0)
-      '@csstools/css-tokenizer': 2.3.0
-      '@csstools/media-query-list-parser': 2.1.10(@csstools/css-parser-algorithms@2.6.2)(@csstools/css-tokenizer@2.3.0)
+      '@csstools/css-parser-algorithms': 2.6.3(@csstools/css-tokenizer@2.3.1)
+      '@csstools/css-tokenizer': 2.3.1
+      '@csstools/media-query-list-parser': 2.1.11(@csstools/css-parser-algorithms@2.6.3)(@csstools/css-tokenizer@2.3.1)
       '@csstools/selector-specificity': 3.0.3(postcss-selector-parser@6.0.16)
       balanced-match: 2.0.0
       colord: 2.9.3
