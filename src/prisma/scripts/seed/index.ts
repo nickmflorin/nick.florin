@@ -100,17 +100,20 @@ async function main() {
     clerkUser,
     user: await upsertUserFromClerk(clerkUser),
   };
-  await prisma.$transaction(async tx => {
-    await seedProfile(tx, ctx);
-    await seedResumes(tx, ctx);
-    await seedSkills(tx, ctx); // Must be done before projects, repositories, schools & companies.
-    await seedRepositories(tx, ctx); // Must be done after skills but before projects.
-    await seedProjects(tx, ctx); // Must be done after skills, but before schools and companies.
-    await seedSchools(tx, ctx);
-    await seedCompanies(tx, ctx);
-    // Must be done after all skill-related models have been created.
-    await calculateSkillExperiences(tx, ctx);
-  });
+  await prisma.$transaction(
+    async tx => {
+      await seedProfile(tx, ctx);
+      await seedResumes(tx, ctx);
+      await seedSkills(tx, ctx); // Must be done before projects, repositories, schools & companies.
+      await seedRepositories(tx, ctx); // Must be done after skills but before projects.
+      await seedProjects(tx, ctx); // Must be done after skills, but before schools and companies.
+      await seedSchools(tx, ctx);
+      await seedCompanies(tx, ctx);
+      // Must be done after all skill-related models have been created.
+      await calculateSkillExperiences(tx, ctx);
+    },
+    { timeout: 500000 },
+  );
 }
 
 main()
