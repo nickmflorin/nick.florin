@@ -21,6 +21,7 @@
     "lint": "pnpm validate-node-version && next lint && stylelint \"./src/**/*.{scss,css}\"",
     "eslint": "pnpm validate-node-version && npx eslint .",
     "eslint-fix": "pnpm validate-node-version && npx eslint . --fix",
+    "prettier-fix": "npx prettier . --write",
     "test": "pnpm validate-node-version && jest --watchAll  --silent=false",
     "test:ci": "pnpm validate-node-version && jest --ci",
     "tsc": "pnpm validate-node-version && tsc --project ./tsconfig.json",

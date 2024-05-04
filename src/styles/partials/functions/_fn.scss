@@ -31,7 +31,11 @@ $sass-primitives: (number, string, color, calculation, bool, null);
 
   // The strict parameter can be used to throw the error directly in the function, as opposed to returning the key that
   // is missing and the level it is missing at.
-  $strict: if(map.has-key(meta.keywords($keys), "strict"), map.get(meta.keywords($keys), "strict"), false);
+  $strict: if(
+    map.has-key(meta.keywords($keys), "strict"),
+    map.get(meta.keywords($keys), "strict"),
+    false
+  );
 
   $previous: ();
   @for $i from 1 through list.length($keys) {
@@ -78,7 +82,10 @@ $sass-primitives: (number, string, color, calculation, bool, null);
 /// Validates whether or not the provided value is of any of the provided types.
 @function validate-type($value, $types, $throw: true) {
   @if list.length($types) == 0 {
-    @return throw.error("At least one type must be provided for comparison.", $source: "validate-type()");
+    @return throw.error(
+      "At least one type must be provided for comparison.",
+      $source: "validate-type()"
+    );
   } @else if list.length($types) != 1 {
     @each $tp in $types {
       $result: validate-type($value, $tp, $throw: false);
@@ -192,11 +199,16 @@ $invalid: "__INVALID__";
 @function pick-or-ignore($data, $args...) {
   $ignore: map.get(meta.keywords($args), "ignore");
   $pick: map.get(meta.keywords($args), "pick");
-  $strict: if(map.has-key(meta.keywords($args), "strict"), map.get(meta.keywords($args), "strict"), true);
+  $strict: if(
+    map.has-key(meta.keywords($args), "strict"),
+    map.get(meta.keywords($args), "strict"),
+    true
+  );
   @if $ignore and $pick {
     @return throw.error(
       "The 'ignore' named argument cannot be provided alongside the 'pick' argument.  If selecting " +
-        "just a subset of parameters, provide the 'pick' argument without the 'ignore' named " + "argument.",
+        "just a subset of parameters, provide the 'pick' argument without the 'ignore' named " +
+        "argument.",
       $source: "pick-or-ignore()",
       $pick: $pick,
       $ignore: $ignore,
@@ -225,7 +237,8 @@ $invalid: "__INVALID__";
       @if not map.has-key($data, $pick-property) {
         @if $strict {
           @return throw.error(
-            "The pick property #{$pick-property} does not exist in the set of properties, " + "#{map.keys($data)}.",
+            "The pick property #{$pick-property} does not exist in the set of properties, " +
+              "#{map.keys($data)}.",
             $source: "pick-or-ignore()",
             $pick: $pick,
             $data: $data

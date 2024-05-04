@@ -52,21 +52,23 @@ type GetModelSafe<L extends Literals> = {
   <O extends GetModelSafeOptions>(value: unknown, opts: O): GetModelSafeRT<L, O>;
 };
 
-export type EnumeratedLiteralsType<L> = L extends EnumeratedLiterals<
-  infer Ll extends Literals,
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  infer O
->
-  ? LiteralsValue<Ll>
-  : never;
+export type EnumeratedLiteralsType<L> =
+  L extends EnumeratedLiterals<
+    infer Ll extends Literals,
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    infer O
+  >
+    ? LiteralsValue<Ll>
+    : never;
 
-export type EnumeratedLiteralsModel<L> = L extends EnumeratedLiterals<
-  infer Ll extends Literals,
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  infer O
->
-  ? LiteralsModel<Ll, LiteralsValue<Ll>>
-  : never;
+export type EnumeratedLiteralsModel<L> =
+  L extends EnumeratedLiterals<
+    infer Ll extends Literals,
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    infer O
+  >
+    ? LiteralsModel<Ll, LiteralsValue<Ll>>
+    : never;
 
 /**
  * A generic type that results in a type referred to internally as a set of "EnumeratedLiterals",

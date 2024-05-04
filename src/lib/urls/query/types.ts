@@ -45,17 +45,18 @@ export type PartialQueryParams<
   : never;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type InferQueryParamsForm<Q extends QueryParams> = Q extends Map<string, any>
-  ? "map"
-  : Q extends URLSearchParams
-    ? "object"
-    : Q extends QueryParamPairs<any>
-      ? "pairs"
-      : Q extends Record<string, any>
-        ? "record"
-        : Q extends string
-          ? "string"
-          : never;
+export type InferQueryParamsForm<Q extends QueryParams> =
+  Q extends Map<string, any>
+    ? "map"
+    : Q extends URLSearchParams
+      ? "object"
+      : Q extends QueryParamPairs<any>
+        ? "pairs"
+        : Q extends Record<string, any>
+          ? "record"
+          : Q extends string
+            ? "string"
+            : never;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 export type OptionsForm<O extends QueryParamOptions> = O extends {
@@ -67,20 +68,18 @@ export type OptionsForm<O extends QueryParamOptions> = O extends {
 export const getOptionsForm = <O extends QueryParamOptions>(options: O): OptionsForm<O> =>
   (options.form || "object") as OptionsForm<O>;
 
-export type InferQueryParamsValue<Q extends QueryParams> = Q extends Map<
-  string,
-  infer V extends QueryParamValue
->
-  ? V
-  : Q extends URLSearchParams
-    ? string
-    : Q extends Record<string, infer V>
-      ? V
-      : Q extends { key: string; value: infer V }[]
+export type InferQueryParamsValue<Q extends QueryParams> =
+  Q extends Map<string, infer V extends QueryParamValue>
+    ? V
+    : Q extends URLSearchParams
+      ? string
+      : Q extends Record<string, infer V>
         ? V
-        : Q extends string
-          ? string
-          : never;
+        : Q extends { key: string; value: infer V }[]
+          ? V
+          : Q extends string
+            ? string
+            : never;
 
 export type QueryParamOptions<F extends QueryParamsForm = QueryParamsForm> = {
   readonly form?: F;

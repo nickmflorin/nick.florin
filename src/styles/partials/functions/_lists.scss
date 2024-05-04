@@ -37,8 +37,16 @@
 ///   A default value that should be used in the case that the argument is not present in the set of provided arbitrary
 ///   arguments.
 @function get-optional-kwarg($name, $args...) {
-  $default: if(map.has-key(meta.keywords($args), "default"), map.get(meta.keywords($args), "default"), null);
-  $value: if(map.has-key(meta.keywords($args), $name), map.get(meta.keywords($args), $name), $default);
+  $default: if(
+    map.has-key(meta.keywords($args), "default"),
+    map.get(meta.keywords($args), "default"),
+    null
+  );
+  $value: if(
+    map.has-key(meta.keywords($args), $name),
+    map.get(meta.keywords($args), $name),
+    $default
+  );
   @return $value;
 }
 

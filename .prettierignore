@@ -1,7 +1,7 @@
 node_modules
 .next
 next-env.d.ts
-package-lock.json
+pnpm-lock.yaml
 package.json
 src/prisma/model/generated/**
 src/prisma/migrations/**
