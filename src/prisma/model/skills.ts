@@ -585,7 +585,7 @@ export const calculateSkillsExperience = async <
       ],
     },
   });
-  const experiences = await tx.education.findMany({
+  const experiences = await tx.experience.findMany({
     orderBy: { startDate: "asc" },
     include: { skills: true },
     where: {

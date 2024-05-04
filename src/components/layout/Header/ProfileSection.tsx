@@ -28,7 +28,9 @@ export const ProfileSection = async (props: ProfileSectionProps): Promise<JSX.El
       </Link>
       <div className="flex flex-col">
         <div className="flex flex-row gap-[8px]">
-          <Title order={4}>{profile ? `${profile.firstName} ${profile.lastName}` : ""}</Title>
+          <Title order={4} fontWeight="semibold">
+            {profile ? `${profile.firstName} ${profile.lastName}` : ""}
+          </Title>
           <LinkedInButton />
           <GithubButton />
         </div>
