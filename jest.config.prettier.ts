@@ -1,6 +1,7 @@
+import { TestModule } from "./jest.config.base";
 import { withLintConfig } from "./jest.config.lint";
 
 export default withLintConfig(__dirname, {
-  displayName: "Prettier",
+  module: TestModule.prettier,
   runner: "jest-runner-prettier",
 });

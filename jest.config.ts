@@ -8,9 +8,8 @@ import { withApplicationConfig } from "./jest.config.base";
  * as either jest-*.config.ts or jest.config.ts.
  */
 export default withApplicationConfig(__dirname, [
-  // "<rootDir>/src/tests/components/jest.config.ts",
   "<rootDir>/src/__tests__/unit/jest.config.ts",
-  /* "<rootDir>/jest.config.eslint.ts",
-       "<rootDir>/jest.config.prettier.ts",
-       "<rootDir>/jest.config.stylelint.ts", */
+  "<rootDir>/jest.config.eslint.ts",
+  "<rootDir>/jest.config.prettier.ts",
+  // "<rootDir>/jest.config.stylelint.ts",
 ]);

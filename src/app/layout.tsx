@@ -8,8 +8,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { AppConfig } from "~/app/config/AppConfig";
-import { Layout } from "~/components/layout/Layout";
 import { environment } from "~/environment";
+import { Layout } from "~/components/layout/Layout";
 
 const WelcomeDialog = dynamic(() => import("./config/WelcomeDialog"), { ssr: false });
 

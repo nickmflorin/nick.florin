@@ -1,7 +1,7 @@
-import { withNextConfig } from "./jest.config.base";
+import { withModuleConfig, TestModule } from "./jest.config.base";
 
-export default withNextConfig(__dirname, {
-  displayName: "Stylelint",
+export default withModuleConfig(__dirname, {
+  module: TestModule.stylelint,
   runner: "jest-runner-stylelint",
   testMatch: ["/**/*.scss", "./**/*.module.scss", "./**/*.css", "./**/*.module.css"],
 });

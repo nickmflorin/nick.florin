@@ -24,10 +24,16 @@ const createNextJestConfig = nextJest({
 
 export enum TestModule {
   unit = "unit",
+  prettier = "prettier",
+  eslint = "eslint",
+  stylelint = "stylelint",
 }
 
 const TestModuleDisplayNames: { [key in TestModule]: string } = {
   [TestModule.unit]: "unit-tests",
+  [TestModule.eslint]: "eslint-tests",
+  [TestModule.prettier]: "prettier-tests",
+  [TestModule.stylelint]: "stylelint-tests",
 };
 
 /**
@@ -75,8 +81,7 @@ export const withBaseConfig = (rootDir: string, config: AllowedConfig): Config =
  *   be provided by the __dirname variable inside of the project's `jest.config.ts`.
  *
  * @param {DynamicConfig} config
- *   Optional, additional Jest configuration options (or a function returning additional Jest
- *   configuration options) specific to that project.
+ *   Optional, additional Jest configuration options.
  */
 export const withApplicationConfig = (rootDir: string, projects: string[]) =>
   createNextJestConfig(
@@ -85,17 +90,18 @@ export const withApplicationConfig = (rootDir: string, projects: string[]) =>
     }),
   );
 
-type ModuleConfig = Omit<AllowedConfig, "displayName"> & {
+export type ModuleConfig = Omit<AllowedConfig, "displayName"> & {
   readonly module: TestModule;
 };
 
 /**
- * Returns an async function that Jest will use to establish the configuration for a given "project"
- * in the application, but not the overall Jest configuration itself.
+ * Returns an async function that Jest will use to establish the configuration for a given "module"
+ * in the application.
  *
  * @param {string} rootDir
- *   The root directory of the project which contains the tests it is responsible for.  This should
- *   be provided by the __dirname variable inside of the project's `jest.config.ts`.
+ *   The root directory of the project which contains the tests that the returned configuration is
+ *   responsible for.  This should be provided as the __dirname variable inside of the project's
+ *   `jest.config.ts`.
  *
  * @param {ModuleConfig} config
  *   Optional, additional Jest configuration options for the specific module.
