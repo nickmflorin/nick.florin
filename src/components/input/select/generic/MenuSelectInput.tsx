@@ -56,14 +56,14 @@ export const MenuSelectInput = forwardRef<
       /* Coercion of the models here is safe, because we already checked if the models is null. If
          the models is not null, it is safe to assume that the models is a MenuModelValue, not the
          MenuInitialModelValue. */
-      const _models = models as MenuModelValue<M, O>;
+      const _models = models as M | M[];
       /* Coercion of the value here is safe, because we already checked if the value is null. If the
          value is not null, it is safe to assume that the value is a MenuValue, not the
          MenuInitialValue. */
       const _value = value as MenuValue<M, O>;
 
       if (valueRenderer) {
-        return valueRenderer(_value, { models: _models });
+        return valueRenderer(_value, { models: _models as MenuModelValue<M, O> });
       } else if (Array.isArray(_models)) {
         return (
           <MultiValueRenderer

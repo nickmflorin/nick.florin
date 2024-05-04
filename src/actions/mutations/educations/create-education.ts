@@ -2,8 +2,9 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
-import { type School } from "~/prisma/model";
+import { logger } from "~/application/logger";
+import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors } from "~/api";
 import { EducationSchema } from "~/api/schemas";
@@ -21,18 +22,12 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
   const fieldErrors = new ApiClientFieldErrors();
 
   return await prisma.$transaction(async tx => {
-    let school: School;
-    try {
-      school = await tx.school.findUniqueOrThrow({ where: { id: schoolId } });
-    } catch (e) {
-      /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
+    /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
-      if (isPrismaDoesNotExistError(e)) {
-        return fieldErrors.addDoesNotExist("school", "The school does not exist.").json;
-      }
-      throw e;
+    const school = await tx.school.findUniqueOrThrow({ where: { id: schoolId } });
+    if (!school) {
+      return fieldErrors.addDoesNotExist("school", "The school does not exist.").json;
     }
-
     if (await tx.education.count({ where: { schoolId: school.id, major: data.major } })) {
       fieldErrors.addUnique("major", "The 'major' must be unique for a given school.");
     }
@@ -54,7 +49,6 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
     if (fieldErrors.hasErrors) {
       return fieldErrors.json;
     }
-
     const education = await tx.education.create({
       data: {
         ...data,
@@ -64,7 +58,23 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
-
+    if (skills && skills.length !== 0) {
+      logger.info(
+        `Recalculating experience for ${skills.length} skill(s) associated with new education, ` +
+          `'${education.major}'.`,
+        { educationId: education.id, skills: skills.map(s => s.id) },
+      );
+      await calculateSkillsExperience(
+        tx,
+        skills.map(sk => sk.id),
+        { user },
+      );
+      logger.info(
+        `Successfully recalculated experience for ${skills.length} skill(s) associated with ` +
+          `new education, '${education.major}'.`,
+        { educationId: education.id, skills: skills.map(s => s.id) },
+      );
+    }
     return convertToPlainObject(education);
   });
 };

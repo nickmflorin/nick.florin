@@ -22,13 +22,14 @@ export type FormatAccessorCase<
   S extends string,
   L extends Literals,
   O extends EnumeratedLiteralsOptions<L>,
-> = ParseAccessorCase<L, O> extends "upper"
-  ? Uppercase<S>
-  : ParseAccessorCase<L, O> extends "lower"
-    ? Lowercase<S>
-    : ParseAccessorCase<L, O> extends null
-      ? S
-      : never;
+> =
+  ParseAccessorCase<L, O> extends "upper"
+    ? Uppercase<S>
+    : ParseAccessorCase<L, O> extends "lower"
+      ? Lowercase<S>
+      : ParseAccessorCase<L, O> extends null
+        ? S
+        : never;
 
 export type AccessorSpaceReplacement = "_" | "-" | "";
 
@@ -54,13 +55,14 @@ export type FormatAccessorSpaces<
   S extends string,
   L extends Literals,
   O extends EnumeratedLiteralsOptions<L>,
-> = ParseAccessorSpaceReplacement<L, O> extends "_"
-  ? ReplaceSpacesWith<S, "_">
-  : ParseAccessorCase<L, O> extends "-"
-    ? ReplaceSpacesWith<S, "-">
-    : ParseAccessorSpaceReplacement<L, O> extends ""
-      ? ReplaceSpacesWith<S, "">
-      : never;
+> =
+  ParseAccessorSpaceReplacement<L, O> extends "_"
+    ? ReplaceSpacesWith<S, "_">
+    : ParseAccessorCase<L, O> extends "-"
+      ? ReplaceSpacesWith<S, "-">
+      : ParseAccessorSpaceReplacement<L, O> extends ""
+        ? ReplaceSpacesWith<S, "">
+        : never;
 
 export type AccessorHyphenReplacement = "_" | "" | null;
 
@@ -86,13 +88,14 @@ export type FormatAccessorHyphens<
   S extends string,
   L extends Literals,
   O extends EnumeratedLiteralsOptions<L>,
-> = ParseAccessorHyphenReplacement<L, O> extends "_"
-  ? ReplaceHyphensWith<S, "_">
-  : ParseAccessorHyphenReplacement<L, O> extends ""
-    ? ReplaceHyphensWith<S, "">
-    : ParseAccessorHyphenReplacement<L, O> extends null
-      ? S
-      : never;
+> =
+  ParseAccessorHyphenReplacement<L, O> extends "_"
+    ? ReplaceHyphensWith<S, "_">
+    : ParseAccessorHyphenReplacement<L, O> extends ""
+      ? ReplaceHyphensWith<S, "">
+      : ParseAccessorHyphenReplacement<L, O> extends null
+        ? S
+        : never;
 
 export type LiteralsAccessor<
   V extends string,
@@ -113,7 +116,7 @@ export type EnumeratedLiteralsBaseModelArrayAccessors<
       : L[key] extends { value: infer V extends string }
         ? LiteralsAccessor<V, L, O>
         : never
-    : never]: L[key]["value"];
+    : never]: L[key] extends { value: infer V extends string } ? V : never;
 };
 
 export type EnumeratedLiteralsArrayAccessors<

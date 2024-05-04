@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 export type SizeUnit = "px" | "rem";
 
 export type QualitativeSize = "fit-content";
@@ -46,11 +44,11 @@ export const sizeToNumber = <T extends QuantitativeSize>(size: T): SizeToNumberR
   const executed = QuantitativeSizeRegex.exec(size);
   if (executed) {
     const sz = executed[1];
-    const parsed = z.coerce.number().int().safeParse(sz);
-    if (!parsed.success) {
+    const integer = parseInt(sz);
+    if (isNaN(integer) || !isFinite(integer)) {
       throw new TypeError(`The provided size string, '${size}', is invalid!`);
     }
-    return parsed.data as SizeToNumberRT<T>;
+    return integer as SizeToNumberRT<T>;
   }
   throw new TypeError(`The provided size string, '${size}', is invalid!`);
 };

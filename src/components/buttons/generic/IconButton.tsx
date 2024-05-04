@@ -13,14 +13,15 @@ import * as types from "../types";
 
 import { AbstractButton } from "./AbstractButton";
 
-export type IconButtonProps<O extends types.ButtonOptions> = Optional<
-  Omit<types.AbstractProps<"icon-button", O>, "buttonType">,
+export type IconButtonProps<F extends types.ButtonForm> = Optional<
+  Omit<types.AbstractProps<"icon-button", F>, "buttonType">,
   "children"
 > & {
   readonly icon?: IconProp | IconElement | DynamicIconProp;
 };
 
-const Base = AbstractButton as React.FC<types.AbstractProps<"icon-button", types.ButtonOptions>>;
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+const Base = AbstractButton as React.FC<types.AbstractProps<"icon-button", any>>;
 
 const WithLoading = ({
   children,
@@ -36,23 +37,27 @@ const WithLoading = ({
 };
 
 const LocalIconButton = forwardRef(
-  <O extends types.ButtonOptions>(
-    { children, icon, isLoading, ...props }: IconButtonProps<O>,
-    ref: types.PolymorphicButtonRef<O>,
+  <F extends types.ButtonForm>(
+    { children, icon, ...props }: IconButtonProps<F>,
+    ref: types.PolymorphicButtonRef<F>,
   ) => {
-    const ps = {
-      ...props,
-      buttonType: "icon-button",
-    } as types.AbstractProps<"icon-button", O>;
+    const ps = { ...props, buttonType: "icon-button", ref } as types.AbstractProps<
+      "icon-button",
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      any
+    > & {
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      readonly ref?: types.PolymorphicButtonRef<any>;
+    };
     return (
-      <Base {...ps} ref={ref} isLoading={isLoading}>
+      <Base {...ps}>
         <div className="button__content">
           {children ? (
-            <WithLoading isLoading={isLoading}>{children}</WithLoading>
+            <WithLoading isLoading={props.isLoading}>{children}</WithLoading>
           ) : isIconProp(icon) ? (
             <Icon
               icon={icon}
-              isLoading={isLoading}
+              isLoading={props.isLoading}
               fit="square"
               dimension="height"
               /* If the icon size corresponds to a discrete size, it will be set with a class name
@@ -67,21 +72,21 @@ const LocalIconButton = forwardRef(
               }
             />
           ) : (
-            <WithLoading isLoading={isLoading}>{icon}</WithLoading>
+            <WithLoading isLoading={props.isLoading}>{icon}</WithLoading>
           )}
         </div>
       </Base>
     );
   },
 ) as {
-  <O extends types.ButtonOptions>(
-    props: IconButtonProps<O> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  <F extends types.ButtonForm>(
+    props: IconButtonProps<F> & { readonly ref?: types.PolymorphicButtonRef<F> },
   ): JSX.Element;
 };
 
 type VariantPartial = {
-  <O extends types.ButtonOptions>(
-    props: Omit<IconButtonProps<O>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  <F extends types.ButtonForm>(
+    props: Omit<IconButtonProps<F>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<F> },
   ): JSX.Element;
 };
 
@@ -91,10 +96,10 @@ const withVariants = types.ButtonVariants["icon-button"].values.reduce<WithVaria
   (acc, variant) => ({
     ...acc,
     [capitalize(variant)]: forwardRef(
-      <O extends types.ButtonOptions>(
-        props: Omit<IconButtonProps<O>, "variant">,
-        ref: types.PolymorphicButtonRef<O>,
-      ) => <LocalIconButton<O> {...({ ...props, variant } as IconButtonProps<O>)} ref={ref} />,
+      <F extends types.ButtonForm>(
+        props: Omit<IconButtonProps<F>, "variant">,
+        ref: types.PolymorphicButtonRef<F>,
+      ) => <LocalIconButton<F> {...({ ...props, variant } as IconButtonProps<F>)} ref={ref} />,
     ),
   }),
   {} as WithVariants,

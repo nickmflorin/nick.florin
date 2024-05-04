@@ -1,27 +1,19 @@
 import { type Transaction } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 
-import { json } from "../fixtures/json";
 import { stdout } from "../stdout";
 
 import { type SeedContext } from "./types";
 
-export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
-  if (json.schools.length !== 0) {
-    const output = stdout.begin(`Generating ${json.repositories.length} Repositories...`);
-    const repositories = await Promise.all(
-      json.repositories.map(jsonRepo =>
-        tx.repository.create({
-          data: {
-            ...jsonRepo,
-            createdBy: { connect: { id: ctx.user.id } },
-            updatedBy: { connect: { id: ctx.user.id } },
-            skills: { connect: jsonRepo.skills.map(skill => ({ slug: skill })) },
-          },
-        }),
-      ),
+export async function calculateSkillExperiences(tx: Transaction, ctx: SeedContext) {
+  const skills = await tx.skill.findMany({});
+  if (skills.length !== 0) {
+    stdout.begin(`Calculating experience for ${skills.length} skills...`);
+    await calculateSkillsExperience(
+      tx,
+      skills.map(sk => sk.id),
+      { persist: true, user: ctx.user },
     );
-    output.complete(`Generated ${repositories.length} Repositories`, {
-      lineItems: repositories.map(s => s.slug),
-    });
+    stdout.complete(`Calculated experience for ${skills.length} skills...`);
   }
 }

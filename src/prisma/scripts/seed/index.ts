@@ -1,10 +1,12 @@
 import clerk from "@clerk/clerk-sdk-node";
+import { type OrganizationMembership } from "@clerk/nextjs/server";
 
-import { CMS_USER_ORG_ROLE } from "~/application/auth";
+import { CMS_USER_ORG_ROLE, CMS_USER_ORG_SLUG, USER_ADMIN_ROLE } from "~/application/auth";
 import { prisma } from "~/prisma/client";
 import { upsertUserFromClerk } from "~/prisma/model/user";
 import { environment } from "~/environment";
 
+import { calculateSkillExperiences } from "./calculate-skill-experiences";
 import { seedCompanies } from "./seed-companies";
 import { seedProfile } from "./seed-profile";
 import { seedProjects } from "./seed-projects";
@@ -85,7 +87,12 @@ async function main() {
   const memberships = await clerk.users.getOrganizationMembershipList({
     userId: clerkUser.id,
   });
-  if (!memberships.map(m => m.role).includes(CMS_USER_ORG_ROLE)) {
+
+  const membershipHasCmsAccess = (membership: OrganizationMembership) =>
+    membership.organization.slug === CMS_USER_ORG_SLUG &&
+    [USER_ADMIN_ROLE, CMS_USER_ORG_ROLE].includes(membership.role);
+
+  if (memberships.filter(m => membershipHasCmsAccess(m)).length === 0) {
     throw new Error("The Clerk user must be an admin to seed the database.");
   }
 
@@ -101,6 +108,8 @@ async function main() {
     await seedProjects(tx, ctx); // Must be done after skills, but before schools and companies.
     await seedSchools(tx, ctx);
     await seedCompanies(tx, ctx);
+    // Must be done after all skill-related models have been created.
+    await calculateSkillExperiences(tx, ctx);
   });
 }
 

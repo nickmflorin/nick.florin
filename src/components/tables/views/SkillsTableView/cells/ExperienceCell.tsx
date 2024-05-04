@@ -31,12 +31,12 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
     (v: boolean) => {
       if (v === true) {
         _setIsAuto(true);
-        input.current.setValue(String(skill.autoExperience));
+        input.current.setValue(String(skill.calculatedExperience));
       } else {
         _setIsAuto(false);
       }
     },
-    [input, skill.autoExperience],
+    [input, skill.calculatedExperience],
   );
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
       <ReadWriteTextInput
         className="w-[50px]"
         ref={input}
-        initialValue={skill.experience ? String(skill.experience) : String(skill.autoExperience)}
+        initialValue={String(skill.calculatedExperience)}
         isDisabled={isAuto}
         onPersist={async ex => {
           // This check should be alleviated when we incorporate a numeric input.

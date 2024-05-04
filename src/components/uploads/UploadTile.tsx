@@ -63,7 +63,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
           <Icon name="file-pdf" size="14px" className="text-gray-600" />
           {types.isUploadOfState(upload, ["existing", "uploaded"]) ? (
             <Link
-              options={{ as: "a" }}
+              as="a"
               className="leading-[18px]"
               fontSize="xs"
               target="_blank"

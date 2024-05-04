@@ -2,10 +2,12 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type BrandRepository } from "~/prisma/model";
+import { prisma } from "~/prisma/client";
+import { type BrandRepository, type BrandSkill } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { RepositorySchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";
 
@@ -25,17 +27,15 @@ export const updateRepository = async (
   }
 
   return await prisma.$transaction(async tx => {
-    let repository: BrandRepository;
-    try {
-      repository = await tx.repository.findUniqueOrThrow({
+    const repository: (BrandRepository & { readonly skills: BrandSkill[] }) | null =
+      await tx.repository.findUnique({
         where: { id },
+        include: { skills: true },
       });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+    if (!repository) {
+      throw ApiClientGlobalError.NotFound();
     }
+
     const parsed = UpdateRepositorySchema.safeParse(req);
     if (!parsed.success) {
       return ApiClientFieldErrors.fromZodError(parsed.error, UpdateRepositorySchema).json;
@@ -66,7 +66,8 @@ export const updateRepository = async (
       return fieldErrors.json;
     }
 
-    repository = await tx.repository.update({
+    const sks = [...repository.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    const updated = await tx.repository.update({
       where: { id },
       data: {
         ...data,
@@ -75,7 +76,7 @@ export const updateRepository = async (
         skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
-
-    return repository;
+    await calculateSkillsExperience(tx, sks, { user });
+    return convertToPlainObject(updated);
   });
 };

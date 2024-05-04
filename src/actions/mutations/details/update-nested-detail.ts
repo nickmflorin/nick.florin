@@ -2,8 +2,9 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type NestedDetail, type Detail, type Project } from "~/prisma/model";
+import { prisma } from "~/prisma/client";
+import { type Project } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import {
   ApiClientFieldErrors,
@@ -27,36 +28,23 @@ export const updateNestedDetail = async (id: string, req: z.infer<typeof UpdateD
   const fieldErrors = new ApiClientFieldErrors();
 
   return await prisma.$transaction(async tx => {
-    let nestedDetail: NestedDetail & { readonly detail: Detail };
-    try {
-      nestedDetail = await tx.nestedDetail.findUniqueOrThrow({
-        where: { id },
-        include: { detail: true },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+    const nestedDetail = await tx.nestedDetail.findUnique({
+      where: { id },
+      include: { skills: true, detail: true },
+    });
+    if (!nestedDetail) {
+      throw ApiClientGlobalError.NotFound();
     }
-
     let project: Project | null = null;
     if (_project) {
-      try {
-        project = await tx.project.findUniqueOrThrow({ where: { id: _project } });
-      } catch (e) {
-        if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-          fieldErrors.add("project", {
-            code: "does_not_exist",
-            message: "The project does not exist.",
-            internalMessage: `The project with ID '${_project}' does not exist.`,
-          });
-        } else {
-          throw e;
-        }
+      project = await tx.project.findUnique({ where: { id: _project } });
+      if (!project) {
+        fieldErrors.addDoesNotExist("project", {
+          message: "The project does not exist.",
+          internalMessage: `The project with ID '${_project}' does not exist.`,
+        });
       }
     }
-
     if (
       label &&
       (await tx.nestedDetail.count({
@@ -82,18 +70,18 @@ export const updateNestedDetail = async (id: string, req: z.infer<typeof UpdateD
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
     }
-
-    return convertToPlainObject(
-      await tx.nestedDetail.update({
-        where: { id },
-        data: {
-          ...data,
-          projectId: project?.id,
-          label,
-          updatedById: user.id,
-          skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
-        },
-      }),
-    );
+    const sks = [...nestedDetail.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    const updated = await tx.nestedDetail.update({
+      where: { id },
+      data: {
+        ...data,
+        projectId: project?.id,
+        label,
+        updatedById: user.id,
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+      },
+    });
+    await calculateSkillsExperience(tx, sks, { user });
+    return convertToPlainObject(updated);
   });
 };

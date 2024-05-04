@@ -5,7 +5,7 @@ import { Badge, type BadgeProps } from "./Badge";
 
 export interface SkillExperienceBadgeProps
   extends Omit<BadgeProps, "children" | "icon" | "iconClassName"> {
-  readonly skill: Pick<ApiSkill, "experience" | "autoExperience">;
+  readonly skill: Pick<ApiSkill, "calculatedExperience">;
 }
 
 export const SkillExperienceBadge = ({
@@ -13,8 +13,6 @@ export const SkillExperienceBadge = ({
   ...props
 }: SkillExperienceBadgeProps): JSX.Element => (
   <Badge {...props}>
-    {skill.experience
-      ? `${skill.experience} year${skill.experience === 1 ? "" : "s"}`
-      : `${skill.autoExperience} year${skill.autoExperience === 1 ? "" : "s"}`}
+    {`${skill.calculatedExperience} year${skill.calculatedExperience === 1 ? "" : "s"}`}
   </Badge>
 );

@@ -78,7 +78,7 @@ export const GenericCreateDetailForm = <
             </Form.Field>
             <div className="flex flex-row gap-[6px] items-center">
               <Link.Secondary
-                options={{ as: "button" }}
+                as="button"
                 fontWeight="regular"
                 fontSize="xs"
                 flex
@@ -90,7 +90,7 @@ export const GenericCreateDetailForm = <
                 Cancel
               </Link.Secondary>
               <Link.Primary
-                options={{ as: "button" }}
+                as="button"
                 fontWeight="regular"
                 type="submit"
                 fontSize="xs"

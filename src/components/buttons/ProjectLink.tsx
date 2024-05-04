@@ -5,7 +5,7 @@ import { withoutOverridingClassName } from "~/components/types";
 
 import { Link, type LinkFlexProps } from "./generic";
 
-export type ProjectLinkProps = Omit<LinkFlexProps<{ as: "link" }>, "children" | "href" | "flex"> & {
+export type ProjectLinkProps = Omit<LinkFlexProps<"link">, "children" | "href" | "flex"> & {
   readonly project: BrandProject;
   readonly useAbbreviatedName?: boolean;
 };
@@ -20,7 +20,7 @@ export const ProjectLink = ({
     fontSize="sm"
     {...props}
     flex
-    options={{ as: "a" }}
+    as="a"
     className={clsx(
       withoutOverridingClassName("text-githubBlue", props.className),
       props.className,

@@ -67,16 +67,17 @@ export type LiteralsModelAttributeName<L extends Literals> = L extends LiteralsA
 export type LiteralsBaseModelArrayAttributeValues<
   L extends readonly LiteralsBaseModel[],
   N extends string,
-> = N extends LiteralsModelAttributeName<L>
-  ? L extends readonly [infer Li extends LiteralsBaseModel]
-    ? readonly [Li[N]]
-    : L extends readonly [
-          infer Li extends LiteralsBaseModel,
-          ...infer R extends LiteralsBaseModel[],
-        ]
-      ? readonly [Li[N], ...LiteralsBaseModelArrayAttributeValues<R, N>]
-      : never
-  : never;
+> =
+  N extends LiteralsModelAttributeName<L>
+    ? L extends readonly [infer Li extends LiteralsBaseModel]
+      ? readonly [Li[N]]
+      : L extends readonly [
+            infer Li extends LiteralsBaseModel,
+            ...infer R extends LiteralsBaseModel[],
+          ]
+        ? readonly [Li[N], ...LiteralsBaseModelArrayAttributeValues<R, N>]
+        : never
+    : never;
 
 export type LiteralsAttributeValues<
   L extends Literals,

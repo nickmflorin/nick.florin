@@ -12,7 +12,7 @@ export type CourseIncludes =
 
 export type ApiCourse<I extends CourseIncludes = []> = ConditionallyInclude<
   BrandCourse & {
-    readonly skills: Omit<ApiSkill, "autoExperience">[];
+    readonly skills: ApiSkill[];
     readonly education: BrandEducation;
   },
   ["skills", "education"],

@@ -1,9 +1,14 @@
+import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import clsx from "clsx";
 
-import { Link } from "~/components/buttons";
+import type { LinkComponent } from "~/components/buttons";
 import { Module } from "~/components/modules/generic";
+
+const Link = dynamic(() =>
+  import("~/components/buttons/generic/Link").then(mod => mod.Link),
+) as LinkComponent;
 
 export interface DashboardPageProps {
   readonly experiences: ReactNode;
@@ -34,16 +39,16 @@ export default async function DashboardPage({
           >
             <Module.Header
               actions={[
-                <Link.Primary
+                <Link
                   key="0"
-                  options={{ as: "link" }}
+                  as="link"
                   href="/resume/experience"
                   fontSize="xs"
                   flex
                   fontWeight="medium"
                 >
                   View All
-                </Link.Primary>,
+                </Link>,
               ]}
             >
               Recent Experiences
@@ -63,16 +68,16 @@ export default async function DashboardPage({
             <Module className="xl:overflow-y-hidden">
               <Module.Header
                 actions={[
-                  <Link.Primary
+                  <Link
                     key="0"
                     flex
-                    options={{ as: "link" }}
+                    as="link"
                     href="/resume/education"
                     fontSize="xs"
                     fontWeight="medium"
                   >
                     View All
-                  </Link.Primary>,
+                  </Link>,
                 ]}
               >
                 Education

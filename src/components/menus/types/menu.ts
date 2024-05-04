@@ -55,12 +55,8 @@ export type MenuIsValued<M extends MenuModel, O extends MenuOptions<M>> = M exte
       : true
     : false;
 
-export type IfMenuValued<
-  T,
-  M extends MenuModel,
-  O extends MenuOptions<M>,
-  F = never,
-> = MenuIsValued<M, O> extends true ? T : F;
+export type IfMenuValued<T, M extends MenuModel, O extends MenuOptions<M>, F = never> =
+  MenuIsValued<M, O> extends true ? T : F;
 
 export const menuIsValued = <M extends MenuModel, O extends MenuOptions<M>>(
   data: M[],

@@ -21,9 +21,14 @@ const config = {
   },
   reactStrictMode: false,
   experimental: {
-    optimizePackageImports: ["@mantine/core"],
+    optimizePackageImports: [
+      "@mantine/core",
+      "@mantine/dates",
+      "zod",
+      "@mantine/dropzone",
+      "@mantine/hooks",
+    ],
   },
-  transpilePackages: ["@mantine/core"],
   // webpack: config => {
   //   /* The StylelintPlugin requires the addition to the package.json: "postcss": "^8.4.18". */
   //   config.plugins.push(new StylelintPlugin());

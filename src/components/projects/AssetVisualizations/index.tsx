@@ -16,7 +16,7 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
     description={
       <Description>
         A JavaScript charting library written in&nbsp;
-        <Link options={{ as: "a" }} href="https://d3js.org">
+        <Link as="a" href="https://d3js.org">
           d3.js
         </Link>
         &nbsp;that can be used to visualize data in either 4 or 5 dimensions (depending on the chart

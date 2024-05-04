@@ -3,10 +3,11 @@ import { getAuthedUser } from "~/application/auth/server";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteRepositories = async (ids: string[]): Promise<void> => {
-  await getAuthedUser({ strict: true });
+  const { user } = await getAuthedUser({ strict: true });
 
   const invalid = ids.filter(id => !isUuid(id));
   if (invalid.length > 0) {
@@ -20,6 +21,7 @@ export const deleteRepositories = async (ids: string[]): Promise<void> => {
   }
   await prisma.$transaction(async tx => {
     const repositories = await tx.repository.findMany({
+      include: { skills: true },
       where: { id: { in: ids } },
     });
     const nonexistent = ids.filter(id => !repositories.some(p => p.id === id));
@@ -32,6 +34,8 @@ export const deleteRepositories = async (ids: string[]): Promise<void> => {
         { nonexistent },
       );
     }
+    const skillIds = repositories.flatMap(r => r.skills.map(s => s.id));
     await tx.repository.deleteMany({ where: { id: { in: ids } } });
+    await calculateSkillsExperience(tx, skillIds, { user });
   });
 };

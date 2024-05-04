@@ -1,25 +1,22 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type NestedDetail, type Detail } from "~/prisma/model";
+import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteNestedDetail = async (id: string) => {
-  await getAuthedUser();
+  const { user } = await getAuthedUser();
 
   return await prisma.$transaction(async tx => {
-    let nestedDetail: NestedDetail & { readonly detail: Detail };
-    try {
-      nestedDetail = await tx.nestedDetail.findUniqueOrThrow({
-        where: { id },
-        include: { detail: true },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+    const nestedDetail = await tx.nestedDetail.findUnique({
+      where: { id },
+      include: { detail: true, skills: true },
+    });
+    if (!nestedDetail) {
+      throw ApiClientGlobalError.NotFound();
     }
+    const sks = nestedDetail.skills.map(sk => sk.id);
     await tx.nestedDetail.delete({ where: { id: nestedDetail.id } });
+    await calculateSkillsExperience(tx, sks, { user });
   });
 };

@@ -2,9 +2,11 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
+import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { type BrandEducation } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 import { CourseSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
@@ -66,7 +68,22 @@ export const createCourse = async (req: z.infer<typeof CourseSchema>) => {
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
-
+    if (skills && skills.length !== 0) {
+      logger.info(
+        `Recalculating experience for ${skills.length} skill(s) associated with new course, '${course.name}'.`,
+        { courseId: course.id, skills: skills.map(s => s.id) },
+      );
+      await calculateSkillsExperience(
+        tx,
+        skills.map(sk => sk.id),
+        { user },
+      );
+      logger.info(
+        `Successfully recalculated experience for ${skills.length} skill(s) associated with ` +
+          `new course, '${course.name}'.`,
+        { courseId: course.id, skills: skills.map(s => s.id) },
+      );
+    }
     return convertToPlainObject(course);
   });
 };

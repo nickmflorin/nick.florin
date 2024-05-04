@@ -49,7 +49,7 @@ export const LinkOrText = ({
               fontSize={fontSize}
               fontFamily={fontFamily}
               fontWeight={fontWeight}
-              options={{ as: "a" }}
+              as="a"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -67,7 +67,7 @@ export const LinkOrText = ({
         fontSize={fontSize}
         fontFamily={fontFamily}
         fontWeight={fontWeight}
-        options={{ as: "a" }}
+        as="a"
         target="_blank"
         rel="noopener noreferrer"
       >

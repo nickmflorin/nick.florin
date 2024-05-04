@@ -5,15 +5,12 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
-import {
-  isPrismaDoesNotExistError,
-  isPrismaInvalidIdError,
-  prisma,
-  type Transaction,
-} from "~/prisma/client";
+import { prisma, type Transaction } from "~/prisma/client";
 import { type Detail, type User, type NestedDetail, type BrandProject } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ProjectSchema } from "~/api/schemas";
+import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";
 
@@ -117,23 +114,12 @@ export const updateProject = async (
 ): Promise<ApiClientErrorJson<keyof (typeof UpdateProjectSchema)["shape"]> | BrandProject> => {
   const { user } = await getAuthedUser();
 
-  const parsed = UpdateProjectSchema.safeParse(req);
-  if (!parsed.success) {
-    return ApiClientFieldErrors.fromZodError(parsed.error, UpdateProjectSchema).json;
-  }
-
   return await prisma.$transaction(async tx => {
-    let project: BrandProject;
-    try {
-      project = await tx.project.findUniqueOrThrow({
-        where: { id },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+    const project = await tx.project.findUnique({ where: { id }, include: { skills: true } });
+    if (!project) {
+      throw ApiClientGlobalError.NotFound();
     }
+
     const parsed = UpdateProjectSchema.safeParse(req);
     if (!parsed.success) {
       return ApiClientFieldErrors.fromZodError(parsed.error, UpdateProjectSchema).json;
@@ -220,7 +206,8 @@ export const updateProject = async (
       return fieldErrors.json;
     }
 
-    project = await tx.project.update({
+    const sks = [...project.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    const updated = await tx.project.update({
       where: { id },
       data: {
         ...data,
@@ -241,6 +228,7 @@ export const updateProject = async (
     if (details) {
       await syncDetails(tx, { project, details, user });
     }
-    return project;
+    await calculateSkillsExperience(tx, sks, { user });
+    return convertToPlainObject(updated);
   });
 };

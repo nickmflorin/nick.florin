@@ -6,10 +6,7 @@ import { withoutOverridingClassName } from "~/components/types";
 
 import { Link, type LinkFlexProps } from "./generic";
 
-export type RepositoryLinkProps = Omit<
-  LinkFlexProps<{ as: "link" }>,
-  "children" | "href" | "flex"
-> & {
+export type RepositoryLinkProps = Omit<LinkFlexProps<"link">, "children" | "href" | "flex"> & {
   readonly repository: BrandRepository;
 };
 
@@ -19,7 +16,7 @@ export const RepositoryLink = ({ repository, ...props }: RepositoryLinkProps): J
     fontSize="sm"
     {...props}
     flex
-    options={{ as: "a" }}
+    as="a"
     className={clsx(
       withoutOverridingClassName("text-githubBlue", props.className),
       props.className,

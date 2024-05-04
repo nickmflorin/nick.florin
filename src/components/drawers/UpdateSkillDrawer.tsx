@@ -17,7 +17,7 @@ interface UpdateCourseDrawerProps
 export const UpdateCourseDrawer = ({ skillId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useSkill(isUuid(skillId) ? skillId : null, {
     query: {
-      includes: ["projects", "educations", "experiences", "repositories"],
+      includes: ["projects", "educations", "experiences", "repositories", "courses"],
       visibility: "admin",
     },
     keepPreviousData: true,

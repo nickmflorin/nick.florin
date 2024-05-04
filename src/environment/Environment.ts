@@ -106,7 +106,9 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   private parseClientEnv(): types.ClientEnv<R, V> {
     const parsed = z.object(this.clientValidators).safeParse(this.clientRuntime);
     if (parsed.success) {
-      return parsed.data;
+      /* I do not understand why this type coercion is necessary - but we should investigate it
+         at a later point in time. */
+      return parsed.data as types.ClientEnv<R, V>;
     }
     this.onError(parsed.error);
     throw new Error("The 'onError' option did not throw an error as expected.");

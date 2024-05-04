@@ -18,13 +18,10 @@
   },
   "[scss,css,less]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-    // "editor.codeActionsOnSave": {
-    //   "source.fixAll.stylelint": "explicit"
-    // }
   },
 
   "eslint.run": "onSave",
-  "eslint.nodePath": "/Users/nickflorin/.nvm/versions/node/v20.0.0/bin/node",
+  "eslint.nodePath": "/Users/nickflorin/.nvm/versions/node/v21.0.0/bin/node",
   "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],
   "eslint.format.enable": true,
   "eslint.execArgv": ["--max-old-space-size=16384"],

@@ -32,7 +32,7 @@ export const ActionsCell = ({
       {onEdit && (
         <IconButton.Transparent
           icon={{ name: "pen" }}
-          options={{ as: "button" }}
+          as="button"
           className="text-blue-500 rounded-full hover:text-blue-600"
           disabledClassName="text-disabled"
           loadingClassName="text-gray-400"

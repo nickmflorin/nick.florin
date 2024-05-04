@@ -8,7 +8,14 @@ import { ApiClientFieldErrors } from "~/api";
 
 type DynamicModel = Extract<
   Brand,
-  "experience" | "education" | "project" | "detail" | "skill" | "nestedDetail" | "repository"
+  | "experience"
+  | "education"
+  | "project"
+  | "detail"
+  | "skill"
+  | "nestedDetail"
+  | "repository"
+  | "course"
 >;
 
 const FieldErrorKeys = {
@@ -19,6 +26,7 @@ const FieldErrorKeys = {
   skill: "skills",
   nestedDetail: "nestedDetails",
   repository: "repositories",
+  course: "courses",
 } as const satisfies { [key in DynamicModel]: PluralBrand<key> };
 
 export const queryIdsDynamically = async <T extends DynamicModel>(
@@ -45,6 +53,8 @@ export const queryIdsDynamically = async <T extends DynamicModel>(
       return (await tx.skill.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
     case "repository":
       return (await tx.repository.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
+    case "course":
+      return (await tx.course.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
     default:
       throw new UnreachableCaseError();
   }

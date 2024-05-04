@@ -88,7 +88,7 @@ export const ButtonFooter = ({
     >
       <ShowHide show={visibility.cancel}>
         <Button.Secondary
-          options={{ as: "button" }}
+          as="button"
           className="button-footer__button"
           size={buttonSize}
           onClick={e => onCancel?.(e)}
@@ -102,6 +102,7 @@ export const ButtonFooter = ({
         <Button.Primary
           className="button-footer__button"
           size={buttonSize}
+          as="button"
           type={submitButtonType}
           isLoading={submitting}
           onClick={e => onSubmit?.(e)}

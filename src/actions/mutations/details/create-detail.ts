@@ -2,8 +2,10 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { logger } from "~/application/logger";
+import { prisma } from "~/prisma/client";
 import { type DetailEntityType, type Project, type ApiDetail } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { getEntity } from "~/actions/fetches/get-entity";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors } from "~/api";
@@ -34,17 +36,12 @@ export const createDetail = async (
   return await prisma.$transaction(async tx => {
     let project: Project | null = null;
     if (_project) {
-      try {
-        project = await tx.project.findUniqueOrThrow({ where: { id: _project } });
-      } catch (e) {
-        if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-          fieldErrors.addDoesNotExist("project", {
-            message: "The project does not exist.",
-            internalMessage: `The project with ID '${_project}' does not exist.`,
-          });
-        } else {
-          throw e;
-        }
+      project = await tx.project.findUniqueOrThrow({ where: { id: _project } });
+      if (!project) {
+        fieldErrors.addDoesNotExist("project", {
+          message: "The project does not exist.",
+          internalMessage: `The project with ID '${_project}' does not exist.`,
+        });
       }
     }
     if (
@@ -66,20 +63,36 @@ export const createDetail = async (
       return fieldErrors.json;
     }
 
-    return convertToPlainObject(
-      await tx.detail.create({
-        data: {
-          ...data,
-          projectId: project?.id,
-          entityId: entity.id,
-          entityType,
-          label,
-          createdById: user.id,
-          updatedById: user.id,
-          skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
-        },
-        include: { project: { include: { skills: true } }, skills: true },
-      }),
-    );
+    const detail = await tx.detail.create({
+      data: {
+        ...data,
+        projectId: project?.id,
+        entityId: entity.id,
+        entityType,
+        label,
+        createdById: user.id,
+        updatedById: user.id,
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+      },
+      include: { project: { include: { skills: true } }, skills: true },
+    });
+    if (skills && skills.length !== 0) {
+      logger.info(
+        `Recalculating experience for ${skills.length} skill(s) associated with new detail, ` +
+          `'${detail.id}'.`,
+        { detailId: detail.id, skills: skills.map(s => s.id) },
+      );
+      await calculateSkillsExperience(
+        tx,
+        skills.map(sk => sk.id),
+        { user },
+      );
+      logger.info(
+        `Successfully recalculated experience for ${skills.length} skill(s) associated with ` +
+          `new detail, '${detail.id}'.`,
+        { detailId: detail.id, skills: skills.map(s => s.id) },
+      );
+    }
+    return convertToPlainObject(detail);
   });
 };

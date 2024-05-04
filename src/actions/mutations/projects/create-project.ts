@@ -6,6 +6,7 @@ import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 import { ProjectSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
@@ -119,6 +120,24 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
         { projectId: project.id },
       );
     }
+
+    if (skills && skills.length !== 0) {
+      logger.info(
+        `Recalculating experience for ${skills.length} skill(s) associated with new project, '${project.name}'.`,
+        { projectId: project.id, skills: skills.map(s => s.id) },
+      );
+      await calculateSkillsExperience(
+        tx,
+        skills.map(sk => sk.id),
+        { user },
+      );
+      logger.info(
+        `Successfully recalculated experience for ${skills.length} skill(s) associated with ` +
+          `new project, '${project.name}'.`,
+        { projectId: project.id, skills: skills.map(s => s.id) },
+      );
+    }
+
     return convertToPlainObject(project);
   });
 };

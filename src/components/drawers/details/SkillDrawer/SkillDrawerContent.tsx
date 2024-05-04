@@ -28,13 +28,12 @@ export const SkillDrawerContent = ({
     courses,
     programmingDomains,
     programmingLanguages,
-    experience,
     repositories,
-    autoExperience,
+    calculatedExperience,
   },
 }: SkillDrawerContentProps) => (
   <DetailDrawerContent
-    badge={<SkillExperienceBadge skill={{ experience, autoExperience }} />}
+    badge={<SkillExperienceBadge skill={{ calculatedExperience }} />}
     description={description}
     title={label}
   >

@@ -10,10 +10,10 @@ import { type BaseTypographyProps, getTypographyClassName } from "~/components/t
 
 import * as types from "../types";
 
-const buttonSizeClassName = <T extends types.ButtonType, O extends types.ButtonOptions>({
+const buttonSizeClassName = <T extends types.ButtonType, F extends types.ButtonForm>({
   size = "small",
   buttonType,
-}: Pick<types.AbstractProps<T, O>, "size" | "buttonType">): string | null => {
+}: Pick<types.AbstractProps<T, F>, "size" | "buttonType">): string | null => {
   if (buttonType === "icon-button") {
     return types.ButtonDiscreteSizes.contains(size) ? `button--size-${size}` : null;
   } else if (buttonType === "link") {
@@ -24,9 +24,9 @@ const buttonSizeClassName = <T extends types.ButtonType, O extends types.ButtonO
   return `button--size-${size}`;
 };
 
-const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOptions>(
+const getButtonClassName = <T extends types.ButtonType, F extends types.ButtonForm>(
   props: Pick<
-    types.AbstractProps<T, O>,
+    types.AbstractProps<T, F>,
     | "variant"
     | "isLocked"
     | "isActive"
@@ -83,8 +83,8 @@ const getButtonClassName = <T extends types.ButtonType, O extends types.ButtonOp
     props.className,
   );
 
-const getButtonStyle = <T extends types.ButtonType, O extends types.ButtonOptions>(
-  props: Pick<types.AbstractProps<T, O>, "size" | "style">,
+const getButtonStyle = <T extends types.ButtonType, F extends types.ButtonForm>(
+  props: Pick<types.AbstractProps<T, F>, "size" | "style">,
 ) =>
   /* Note: A potentially non-discrete icon size string provided as a prop must be handled by each
      individual button component that extends the AbstractButton.  This is because the icon size
@@ -117,38 +117,33 @@ const toCoreButtonProps = <T extends Record<string, unknown>>(
 ): Omit<T, (typeof INTERNAL_BUTTON_PROPS)[number]> => omit(props, INTERNAL_BUTTON_PROPS);
 
 export const AbstractButton = forwardRef(
-  <T extends types.ButtonType, O extends types.ButtonOptions>(
-    props: types.AbstractProps<T, O>,
-    ref: types.PolymorphicButtonRef<O>,
+  <T extends types.ButtonType, F extends types.ButtonForm>(
+    props: types.AbstractProps<T, F>,
+    ref: types.PolymorphicButtonRef<F>,
   ): JSX.Element => {
     const className = getButtonClassName(props);
     const style = getButtonStyle(props);
-    if (props.options?.as === "a") {
-      const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "a" }>);
+    if (props.as === "a") {
+      const ps = toCoreButtonProps(props as types.AbstractProps<T, "a">);
       return (
-        <a
-          {...ps}
-          className={className}
-          style={style}
-          ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}
-        >
+        <a {...ps} className={className} style={style} ref={ref as types.PolymorphicButtonRef<"a">}>
           {ps.children}
         </a>
       );
-    } else if (props.options?.as === "link") {
-      const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "link" }>);
+    } else if (props.as === "link") {
+      const ps = toCoreButtonProps(props as types.AbstractProps<T, "link">);
       return (
         <NextLink
           {...ps}
           className={className}
           style={style}
-          ref={ref as types.PolymorphicButtonRef<{ as: "a" }>}
+          ref={ref as types.PolymorphicButtonRef<"a">}
         >
           {ps.children}
         </NextLink>
       );
     }
-    const ps = toCoreButtonProps(props as types.AbstractProps<T, { as: "button" }>);
+    const ps = toCoreButtonProps(props as types.AbstractProps<T, "button">);
     return (
       <button
         type="button"
@@ -156,14 +151,14 @@ export const AbstractButton = forwardRef(
         className={className}
         disabled={props.isDisabled}
         style={style}
-        ref={ref as types.PolymorphicButtonRef<{ as: "button" }>}
+        ref={ref as types.PolymorphicButtonRef<"button">}
       >
         {ps.children}
       </button>
     );
   },
 ) as {
-  <T extends types.ButtonType, O extends types.ButtonOptions>(
-    props: types.AbstractProps<T, O> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  <T extends types.ButtonType, F extends types.ButtonForm>(
+    props: types.AbstractProps<T, F> & { readonly ref?: types.PolymorphicButtonRef<F> },
   ): JSX.Element;
 };

@@ -21,7 +21,7 @@ export type RepositoryIncludes =
 
 export type ApiRepository<I extends RepositoryIncludes = []> = ConditionallyInclude<
   BrandRepository & {
-    readonly skills: Omit<ApiSkill, "autoExperience">[];
+    readonly skills: ApiSkill[];
     readonly projects: BrandProject[];
   },
   ["skills", "projects"],

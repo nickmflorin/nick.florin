@@ -27,7 +27,7 @@ export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => 
     <BarChart<SkillsBarChartDatum>
       data={skills.map(skill => ({
         ...skill,
-        experience: skill.experience ?? skill.autoExperience,
+        experience: skill.calculatedExperience,
       }))}
       indexBy="label"
       keys={["experience"]}

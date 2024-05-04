@@ -17,7 +17,7 @@ const CourseLink = ({ course }: CourseLinkProps) => {
   const { open, ids } = useDrawers();
   return (
     <Link
-      options={{ as: "a" }}
+      as="a"
       fontWeight="regular"
       onClick={() => open(ids.VIEW_COURSE, { courseId: course.id })}
     >

@@ -37,8 +37,14 @@ export const CourseJsonSchema = MetaSchema.extend({
 
 export const RepositoryJsonSchema = MetaSchema.extend({
   slug: z.string(),
-  description: z.string(),
+  visible: z.boolean().optional(),
+  /* This field is optional because it will be supplied via GitHub's API in the case that it is
+     not defined in the fixture. */
+  description: z.string().optional(),
   skills: z.array(z.string()),
+  /* This field is optional because it will be supplied via GitHub's API in the case that it is
+     not defined in the fixture. */
+  startDate: z.coerce.date().optional(),
 });
 
 export const ProjectJsonSchema = MetaSchema.extend({

@@ -1,26 +1,26 @@
 "use client";
 import clsx from "clsx";
 
-import { Button, type ButtonOptions, type ButtonProps } from "~/components/buttons";
+import { Button, type ButtonForm, type ButtonProps } from "~/components/buttons";
 
-export type TabButtonProps<O extends ButtonOptions> = Omit<
-  ButtonProps<O>,
-  "size" | "fontWeight" | "isLoading" | "children" | "isLocked"
+export type TabButtonProps<F extends ButtonForm> = Omit<
+  ButtonProps<F>,
+  "size" | "fontWeight" | "isLoading" | "children" | "isLocked" | "variant"
 > & {
   readonly isPending?: boolean;
   readonly children: string;
   readonly isLoading?: boolean;
 };
 
-export const TabButton = <O extends ButtonOptions>({
+export const TabButton = <F extends ButtonForm>({
   isActive,
   isPending,
   isLoading,
   children,
   ...props
-}: TabButtonProps<O>) => (
-  <Button.Bare
-    {...props}
+}: TabButtonProps<F>) => (
+  <Button.Bare<F>
+    {...(props as ButtonProps<F>)}
     className={clsx(
       "rounded-none rounded-t-md relative top-[2px]",
       "border-b-[2px] text-gray-800",

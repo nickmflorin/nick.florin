@@ -13,7 +13,7 @@ export const Tab = ({ item }: TabProps) => {
   return (
     <TabButton
       href={href}
-      options={{ as: "link" }}
+      as="link"
       icon={item.icon}
       isPending={isPending}
       isActive={isActive}

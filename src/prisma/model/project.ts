@@ -72,7 +72,7 @@ export type ProjectIncludes =
 
 export type ApiProject<I extends ProjectIncludes = []> = ConditionallyInclude<
   BrandProject & {
-    readonly skills: Omit<ApiSkill, "autoExperience">[];
+    readonly skills: ApiSkill[];
     readonly repositories: BrandRepository[];
     readonly details: BrandDetail[];
     readonly nestedDetails: BrandNestedDetail[];

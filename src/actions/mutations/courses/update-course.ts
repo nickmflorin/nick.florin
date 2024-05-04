@@ -3,8 +3,9 @@ import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
 import { slugify } from "~/lib/formatters";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { prisma } from "~/prisma/client";
 import { type BrandCourse, type Education } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { CourseSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
@@ -25,16 +26,9 @@ export const updateCourse = async (
   }
 
   return await prisma.$transaction(async tx => {
-    let course: BrandCourse;
-    try {
-      course = await tx.course.findUniqueOrThrow({
-        where: { id },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+    const course = await tx.course.findUnique({ where: { id }, include: { skills: true } });
+    if (!course) {
+      throw ApiClientGlobalError.NotFound();
     }
     const parsed = UpdateCourseSchema.safeParse(req);
     if (!parsed.success) {
@@ -105,7 +99,8 @@ export const updateCourse = async (
       return fieldErrors.json;
     }
 
-    course = await tx.course.update({
+    const sks = [...course.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    const updated = await tx.course.update({
       where: { id },
       data: {
         ...data,
@@ -116,7 +111,7 @@ export const updateCourse = async (
         skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
-
-    return convertToPlainObject(course);
+    await calculateSkillsExperience(tx, sks, { user });
+    return convertToPlainObject(updated);
   });
 };

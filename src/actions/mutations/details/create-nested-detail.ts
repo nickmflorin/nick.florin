@@ -2,8 +2,10 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+import { logger } from "~/application/logger";
+import { prisma } from "~/prisma/client";
 import { type NestedApiDetail, type Project } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { getDetail } from "~/actions/fetches/details";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import {
@@ -37,26 +39,15 @@ export const createNestedDetail = async (
   return await prisma.$transaction(async tx => {
     let project: Project | null = null;
     if (_project) {
-      try {
-        project = await tx.project.findUniqueOrThrow({ where: { id: _project } });
-      } catch (e) {
-        if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-          fieldErrors.add("project", {
-            code: "does_not_exist",
-            message: "The project does not exist.",
-            internalMessage: `The project with ID '${_project}' does not exist.`,
-          });
-        } else {
-          throw e;
-        }
+      project = await tx.project.findUniqueOrThrow({ where: { id: _project } });
+      if (!project) {
+        fieldErrors.addDoesNotExist("project", {
+          message: "The project does not exist.",
+          internalMessage: `The project with ID '${_project}' does not exist.`,
+        });
       }
     }
-    if (
-      label &&
-      (await tx.nestedDetail.count({
-        where: { detailId, label },
-      }))
-    ) {
+    if (label && (await tx.nestedDetail.count({ where: { detailId, label } }))) {
       fieldErrors.add("label", {
         code: ApiClientFieldErrorCodes.unique,
         message: "The 'label' must be unique for a given parent detail.",
@@ -72,19 +63,35 @@ export const createNestedDetail = async (
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
     }
-    return convertToPlainObject(
-      await tx.nestedDetail.create({
-        data: {
-          ...data,
-          detailId,
-          projectId: project?.id,
-          label,
-          createdById: user.id,
-          updatedById: user.id,
-          skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
-        },
-        include: { project: { include: { skills: true } }, skills: true },
-      }),
-    );
+    const detail = await tx.nestedDetail.create({
+      data: {
+        ...data,
+        detailId,
+        projectId: project?.id,
+        label,
+        createdById: user.id,
+        updatedById: user.id,
+        skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+      },
+      include: { project: { include: { skills: true } }, skills: true },
+    });
+    if (skills && skills.length !== 0) {
+      logger.info(
+        `Recalculating experience for ${skills.length} skill(s) associated with new nested ` +
+          `detail, '${detail.id}'.`,
+        { nestedDetailId: detail.id, skills: skills.map(s => s.id) },
+      );
+      await calculateSkillsExperience(
+        tx,
+        skills.map(sk => sk.id),
+        { user },
+      );
+      logger.info(
+        `Successfully recalculated experience for ${skills.length} skill(s) associated with ` +
+          `new nested detail, '${detail.id}'.`,
+        { nestedDetailId: detail.id, skills: skills.map(s => s.id) },
+      );
+    }
+    return convertToPlainObject(detail);
   });
 };

@@ -36,7 +36,7 @@ export const Detail = <
           <Label className="w-[8px] text-sm max-sm:text-xs">{`${index}.`}</Label>
           {detail.project ? (
             <Link
-              options={{ as: "link" }}
+              as="link"
               href={`/projects/${detail.project.slug}`}
               className="text-sm max-sm:text-xs"
             >
@@ -49,7 +49,7 @@ export const Detail = <
       ) : detail.project ? (
         <div className="flex flex-row items-center gap-[4px]">
           <Link
-            options={{ as: "link" }}
+            as="link"
             href={`/projects/${detail.project.slug}`}
             gap="4px"
             flex

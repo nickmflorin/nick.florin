@@ -15,7 +15,7 @@ export type NestedDetailIncludes = ["skills"] | [];
 export type NestedApiDetail<I extends NestedDetailIncludes = []> = ConditionallyInclude<
   BrandNestedDetail & {
     readonly project: ApiProject<I> | null;
-    readonly skills: Omit<ApiSkill, "autoExperience">[];
+    readonly skills: ApiSkill[];
   },
   ["skills"],
   I
@@ -38,7 +38,7 @@ export type ToSkillIncludes<I extends DetailIncludes> = I extends
 export type ApiDetail<I extends DetailIncludes = []> = ConditionallyInclude<
   BrandDetail & {
     readonly project: ApiProject<ToSkillIncludes<I>> | null;
-    readonly skills: Omit<ApiSkill, "autoExperience">[];
+    readonly skills: ApiSkill[];
     readonly nestedDetails: NestedApiDetail<ToSkillIncludes<I>>[];
   },
   ["skills", "nestedDetails"],

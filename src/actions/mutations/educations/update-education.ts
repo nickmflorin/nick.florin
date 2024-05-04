@@ -2,8 +2,9 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type ApiEducation, type School } from "~/prisma/model";
+import { prisma } from "~/prisma/client";
+import { type School } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { EducationSchema } from "~/api/schemas";
@@ -22,37 +23,28 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
   const { school: schoolId, major, skills: _skills, ...data } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  const education = await prisma.$transaction(async tx => {
-    let edu: ApiEducation;
-    try {
-      edu = await tx.education.findUniqueOrThrow({
-        where: { id },
-        include: { school: true },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+  return await prisma.$transaction(async tx => {
+    const education = await tx.education.findUniqueOrThrow({
+      where: { id },
+      include: { school: true, skills: true },
+    });
+    if (!education) {
+      throw ApiClientGlobalError.NotFound();
     }
-    let school: School = edu.school;
+    let school: School = education.school;
     if (schoolId) {
-      try {
-        school = await tx.school.findUniqueOrThrow({ where: { id: schoolId } });
-      } catch (e) {
-        /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
-        we do not need to worry about checking isPrismaInvalidIdError here. */
-        if (isPrismaDoesNotExistError(e)) {
-          return ApiClientFieldErrors.doesNotExist("school", "The school does not exist.").json;
-        } else {
-          throw e;
-        }
+      /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
+         we do not need to worry about checking isPrismaInvalidIdError here. */
+      const s = await tx.school.findUnique({ where: { id: schoolId } });
+      if (!s) {
+        return ApiClientFieldErrors.doesNotExist("school", "The school does not exist.").json;
       }
+      school = s;
     }
     if (
       major &&
       (await prisma.education.count({
-        where: { schoolId: school.id, major, id: { notIn: [edu.id] } },
+        where: { schoolId: school.id, major, id: { notIn: [education.id] } },
       }))
     ) {
       fieldErrors.addUnique("major", "The 'major' must be unique for a given school.");
@@ -60,7 +52,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
     if (
       data.shortMajor &&
       (await prisma.education.count({
-        where: { schoolId: school.id, shortMajor: data.shortMajor, id: { notIn: [edu.id] } },
+        where: { schoolId: school.id, shortMajor: data.shortMajor, id: { notIn: [education.id] } },
       }))
     ) {
       fieldErrors.addUnique("shortMajor", "The 'shortMajor' must be unique for a given school.");
@@ -75,7 +67,8 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
     if (fieldErrors.hasErrors) {
       return fieldErrors.json;
     }
-    return await tx.education.update({
+    const sks = [...education.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    const updated = await tx.education.update({
       where: { id },
       data: {
         ...data,
@@ -85,7 +78,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
         skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
+    await calculateSkillsExperience(tx, sks, { user });
+    return convertToPlainObject(updated);
   });
-
-  return convertToPlainObject(education);
 };

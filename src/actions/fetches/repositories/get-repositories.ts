@@ -17,9 +17,17 @@ export type GetRepositoriesParams<I extends RepositoryIncludes> = Omit<
   ApiStandardListQuery<I, GetRepositoriesFilters>,
   "orderBy" | "limit"
 >;
-const whereClause = ({ filters }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters">) =>
+const whereClause = ({
+  filters,
+  visibility,
+}: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">) =>
   ({
-    AND: filters?.search ? [constructTableSearchClause("repository", filters.search)] : undefined,
+    AND:
+      filters?.search && visibility === "public"
+        ? [constructTableSearchClause("repository", filters.search), { visible: true }]
+        : visibility === "public"
+          ? { visible: true }
+          : undefined,
   }) as const;
 
 export const preloadRepositoriesCount = (
@@ -35,7 +43,7 @@ export const getRepositoriesCount = cache(
   }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">) => {
     await getClerkAuthedUser({ strict: visibility === "admin" });
     return await prisma.repository.count({
-      where: whereClause({ filters }),
+      where: whereClause({ filters, visibility }),
     });
   },
 );
@@ -62,7 +70,7 @@ export const getRepositories = cache(
     });
 
     const repositories = await prisma.repository.findMany({
-      where: whereClause({ filters }),
+      where: whereClause({ filters, visibility }),
       include: {
         projects: fieldIsIncluded("projects", includes),
         skills: fieldIsIncluded("skills", includes)

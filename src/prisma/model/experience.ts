@@ -23,7 +23,7 @@ export type ExperienceToDetailIncludes<I extends ExperienceIncludes> = I extends
 export type ApiExperience<I extends ExperienceIncludes = []> = ConditionallyInclude<
   BrandModel<"experience"> & {
     readonly details: ApiDetail<ExperienceToDetailIncludes<I>>[];
-    readonly skills: Omit<ApiSkill, "autoExperience">[];
+    readonly skills: ApiSkill[];
   },
   ["skills", "details"],
   I

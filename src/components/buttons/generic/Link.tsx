@@ -23,8 +23,8 @@ import { ButtonContent } from "./ButtonContent";
  * mode, because they cannot be sized properly and will not be aligned with the text which will
  * be vertically aligned at the baseline (not the middle, which is the case for the 'flex' mode).
  */
-export type LinkFlexProps<O extends types.ButtonOptions> = Omit<
-  types.AbstractProps<"link", O>,
+export type LinkFlexProps<F extends types.ButtonForm> = Omit<
+  types.AbstractProps<"link", F>,
   "buttonType"
 > &
   Omit<BaseTypographyProps, "fontSize"> & {
@@ -50,8 +50,8 @@ export type LinkFlexProps<O extends types.ButtonOptions> = Omit<
     readonly loadingLocation?: "left" | "over" | "right";
   };
 
-export type LinkInlineProps<O extends types.ButtonOptions> = Omit<
-  types.AbstractProps<"link", O>,
+export type LinkInlineProps<F extends types.ButtonForm> = Omit<
+  types.AbstractProps<"link", F>,
   "buttonType"
 > &
   Omit<BaseTypographyProps, "fontSize"> & {
@@ -78,12 +78,14 @@ export type LinkInlineProps<O extends types.ButtonOptions> = Omit<
     readonly loadingLocation?: never;
   };
 
-export type LinkProps<O extends types.ButtonOptions> = LinkFlexProps<O> | LinkInlineProps<O>;
+export type LinkProps<F extends types.ButtonForm> = LinkFlexProps<F> | LinkInlineProps<F>;
 
-const Base = AbstractButton as React.FC<types.AbstractProps<"link", types.ButtonOptions>>;
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+const Base = AbstractButton as React.FC<types.AbstractProps<"link", any>>;
 
-const LocalLink = forwardRef(
-  <O extends types.ButtonOptions>(
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+const LocalLink = forwardRef<types.PolymorphicButtonElement<any>, LinkProps<any>>(
+  <F extends types.ButtonForm>(
     {
       children,
       icon,
@@ -95,24 +97,25 @@ const LocalLink = forwardRef(
          be very large. */
       iconSize = "small",
       loadingLocation,
-      isLoading,
       ...props
-    }: LinkProps<O>,
-    ref: types.PolymorphicButtonRef<O>,
+    }: LinkProps<F>,
+    ref: types.PolymorphicButtonRef<F>,
   ) => {
-    const ps = {
-      ...props,
-      iconSize,
-      isLoading,
-      buttonType: "link",
-    } as types.AbstractProps<"link", O>;
+    const ps = { ...props, iconSize, buttonType: "link", ref } as types.AbstractProps<
+      "link",
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      any
+    > & {
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      readonly ref?: types.PolymorphicButtonRef<any>;
+    };
     return (
-      <Base {...ps} ref={ref} className={clsx({ "link--flex": flex }, ps.className)}>
+      <Base {...ps} className={clsx({ "link--flex": flex }, ps.className)}>
         {flex ? (
           <ButtonContent
             gap={gap}
             iconSize={iconSize}
-            isLoading={isLoading}
+            isLoading={props.isLoading}
             icon={icon}
             loadingLocation={loadingLocation}
           >
@@ -125,14 +128,14 @@ const LocalLink = forwardRef(
     );
   },
 ) as {
-  <O extends types.ButtonOptions>(
-    props: LinkProps<O> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  <F extends types.ButtonForm>(
+    props: LinkProps<F> & { readonly ref?: types.PolymorphicButtonRef<F> },
   ): JSX.Element;
 };
 
 type VariantPartial = {
-  <O extends types.ButtonOptions>(
-    props: Omit<LinkProps<O>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<O> },
+  <F extends types.ButtonForm>(
+    props: Omit<LinkProps<F>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<F> },
   ): JSX.Element;
 };
 
@@ -142,13 +145,15 @@ const withVariants = types.ButtonVariants.link.values.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
     [capitalize(variant)]: forwardRef(
-      <O extends types.ButtonOptions>(
-        props: Omit<LinkProps<O>, "variant">,
-        ref: types.PolymorphicButtonRef<O>,
-      ) => <Link<O> {...({ ...props, variant } as LinkProps<O>)} ref={ref} />,
+      <F extends types.ButtonForm>(
+        props: Omit<LinkProps<F>, "variant">,
+        ref: types.PolymorphicButtonRef<F>,
+      ) => <Link<F> {...({ ...props, variant } as LinkProps<F>)} ref={ref} />,
     ),
   }),
   {} as WithVariants,
 );
 
 export const Link = Object.assign(LocalLink, withVariants);
+
+export type LinkComponent = typeof LocalLink & WithVariants;

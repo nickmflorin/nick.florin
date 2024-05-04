@@ -3,10 +3,12 @@ import { getAuthedUser } from "~/application/auth/server";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteCourses = async (ids: string[]): Promise<void> => {
-  getAuthedUser({ strict: true });
+  const { user } = await getAuthedUser({ strict: true });
+
   const invalid = ids.filter(id => !isUuid(id));
   if (invalid.length > 0) {
     throw ApiClientGlobalError.BadRequest(
@@ -32,6 +34,8 @@ export const deleteCourses = async (ids: string[]): Promise<void> => {
         { nonexistent },
       );
     }
+    const skillIds = courses.flatMap(r => r.skills.map(s => s.id));
     await tx.course.deleteMany({ where: { id: { in: ids } } });
+    await calculateSkillsExperience(tx, skillIds, { user, persist: true });
   });
 };

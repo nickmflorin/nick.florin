@@ -2,8 +2,8 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type Detail, type Project } from "~/prisma/model";
+import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience, type Project } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { DetailSchema } from "~/api/schemas";
@@ -23,34 +23,23 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
   const fieldErrors = new ApiClientFieldErrors();
 
   return await prisma.$transaction(async tx => {
-    let detail: Detail;
-    try {
-      detail = await tx.detail.findUniqueOrThrow({
-        where: { id },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+    const detail = await tx.detail.findUnique({
+      where: { id },
+      include: { skills: true },
+    });
+    if (!detail) {
+      throw ApiClientGlobalError.NotFound();
     }
-
     let project: Project | null = null;
     if (_project) {
-      try {
-        project = await tx.project.findUniqueOrThrow({ where: { id: _project } });
-      } catch (e) {
-        if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-          fieldErrors.addDoesNotExist("project", {
-            message: "The project does not exist.",
-            internalMessage: `The project with ID '${_project}' does not exist.`,
-          });
-        } else {
-          throw e;
-        }
+      project = await tx.project.findUnique({ where: { id: _project } });
+      if (!project) {
+        fieldErrors.addDoesNotExist("project", {
+          message: "The project does not exist.",
+          internalMessage: `The project with ID '${_project}' does not exist.`,
+        });
       }
     }
-
     if (
       label &&
       (await tx.detail.count({
@@ -75,17 +64,18 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
       return fieldErrors.json;
     }
 
-    return convertToPlainObject(
-      await tx.detail.update({
-        where: { id },
-        data: {
-          ...data,
-          projectId: project?.id,
-          label,
-          updatedById: user.id,
-          skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
-        },
-      }),
-    );
+    const sks = [...detail.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    const updated = await tx.detail.update({
+      where: { id },
+      data: {
+        ...data,
+        projectId: project?.id,
+        label,
+        updatedById: user.id,
+        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+      },
+    });
+    await calculateSkillsExperience(tx, sks, { user });
+    return convertToPlainObject(updated);
   });
 };

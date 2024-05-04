@@ -4,6 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 import { SkillSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
@@ -23,6 +24,7 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
     educations: _educations,
     projects: _projects,
     repositories: _repositories,
+    courses: _courses,
     ...data
   } = parsed.data;
 
@@ -39,7 +41,8 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
     } else if (!_slug && (await tx.skill.count({ where: { slug } }))) {
       fieldErrors.addUnique(
         "label",
-        "The auto-generated slug for the label is not unique. Please provide a unique slug.",
+        "The auto-generated slug for the label is not unique. Please either provide a unique " +
+          "slug or change the label such that it's slug is unique.",
       );
     }
     if (_slug && (await tx.skill.count({ where: { slug: _slug } }))) {
@@ -65,25 +68,33 @@ export const createSkill = async (req: z.infer<typeof SkillSchema>) => {
       ids: _repositories,
       fieldErrors,
     });
+    const [courses] = await queryM2MsDynamically(tx, {
+      model: "course",
+      ids: _courses,
+      fieldErrors,
+    });
     if (!fieldErrors.isEmpty) {
       return fieldErrors.json;
     }
 
-    return convertToPlainObject(
-      await tx.skill.create({
-        data: {
-          ...data,
-          slug,
-          createdById: user.id,
-          updatedById: user.id,
-          experiences: experiences ? { connect: experiences.map(e => ({ id: e.id })) } : undefined,
-          projects: projects ? { connect: projects.map(e => ({ id: e.id })) } : undefined,
-          educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
-          repositories: repositories
-            ? { connect: repositories.map(e => ({ id: e.id })) }
-            : undefined,
-        },
-      }),
-    );
+    const skill = await tx.skill.create({
+      data: {
+        ...data,
+        slug,
+        createdById: user.id,
+        updatedById: user.id,
+        experiences: experiences ? { connect: experiences.map(e => ({ id: e.id })) } : undefined,
+        projects: projects ? { connect: projects.map(e => ({ id: e.id })) } : undefined,
+        educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
+        repositories: repositories ? { connect: repositories.map(e => ({ id: e.id })) } : undefined,
+        courses: courses ? { connect: courses.map(e => ({ id: e.id })) } : undefined,
+        calculatedExperience: 0,
+      },
+    });
+    const calculatedExperience = await calculateSkillsExperience(tx, skill.id, {
+      user,
+      returnAs: "experience",
+    });
+    return convertToPlainObject({ ...skill, calculatedExperience });
   });
 };

@@ -2,8 +2,9 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, prisma } from "~/prisma/client";
-import { type Company } from "~/prisma/model";
+import { logger } from "~/application/logger";
+import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
@@ -20,16 +21,11 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
   const { company: companyId, skills: _skills, ...data } = parsed.data;
 
   return await prisma.$transaction(async tx => {
-    let company: Company;
-    try {
-      company = await tx.company.findUniqueOrThrow({ where: { id: companyId } });
-    } catch (e) {
-      /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
+    /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
-      if (isPrismaDoesNotExistError(e)) {
-        return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
-      }
-      throw e;
+    const company = await tx.company.findUnique({ where: { id: companyId } });
+    if (!company) {
+      return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
     }
 
     const fieldErrors = new ApiClientFieldErrors();
@@ -66,6 +62,23 @@ export const createExperience = async (req: z.infer<typeof ExperienceSchema>) =>
       },
     });
 
+    if (skills && skills.length !== 0) {
+      logger.info(
+        `Recalculating experience for ${skills.length} skill(s) associated with new experience, ` +
+          `'${experience.title}'.`,
+        { experienceId: experience.id, skills: skills.map(s => s.id) },
+      );
+      await calculateSkillsExperience(
+        tx,
+        skills.map(sk => sk.id),
+        { user },
+      );
+      logger.info(
+        `Successfully recalculated experience for ${skills.length} skill(s) associated with ` +
+          `new experience, '${experience.title}'.`,
+        { experienceId: experience.id, skills: skills.map(s => s.id) },
+      );
+    }
     return convertToPlainObject(experience);
   });
 };

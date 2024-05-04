@@ -2,7 +2,9 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
+import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { ApiClientFieldErrors } from "~/api";
 import { RepositorySchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
@@ -47,6 +49,23 @@ export const createRepository = async (req: z.infer<typeof RepositorySchema>) =>
       },
     });
 
+    if (skills && skills.length !== 0) {
+      logger.info(
+        `Recalculating experience for ${skills.length} skill(s) associated with new repository, ` +
+          `'${repository.slug}'.`,
+        { repositoryId: repository.id, skills: skills.map(s => s.id) },
+      );
+      await calculateSkillsExperience(
+        tx,
+        skills.map(sk => sk.id),
+        { user },
+      );
+      logger.info(
+        `Successfully recalculated experience for ${skills.length} skill(s) associated with ` +
+          `new repository, '${repository.slug}'.`,
+        { repositoryId: repository.id, skills: skills.map(s => s.id) },
+      );
+    }
     return convertToPlainObject(repository);
   });
 };

@@ -4,7 +4,7 @@
   "private": true,
   "engineStrict": true,
   "engines": {
-    "node": ">=20"
+    "node": ">=21"
   },
   "scripts": {
     "validate-node-version": "ts-node --project=./tsconfig.json src/application/support/enforce-node-version.ts",
@@ -134,7 +134,6 @@
     "eslint-config-next": "14.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.2",
-    "extend-expect": "link:@testing-library/jest-dom/extend-expect",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-expect-message": "^1.1.3",

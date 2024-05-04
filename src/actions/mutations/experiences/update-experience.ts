@@ -2,8 +2,9 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type Experience, type Company, type ApiExperience } from "~/prisma/model";
+import { prisma } from "~/prisma/client";
+import { type Experience, type Company } from "~/prisma/model";
+import { calculateSkillsExperience } from "~/prisma/model";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ExperienceSchema } from "~/api/schemas";
@@ -25,36 +26,28 @@ export const updateExperience = async (
   const { company: companyId, title, skills: _skills, ...data } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  const experience = await prisma.$transaction(async tx => {
-    let exp: ApiExperience;
-    try {
-      exp = await tx.experience.findUniqueOrThrow({
-        where: { id },
-        include: { company: true },
-      });
-    } catch (e) {
-      if (isPrismaDoesNotExistError(e) || isPrismaInvalidIdError(e)) {
-        throw ApiClientGlobalError.NotFound();
-      }
-      throw e;
+  return await prisma.$transaction(async tx => {
+    const experience = await tx.experience.findUnique({
+      where: { id },
+      include: { company: true, skills: true },
+    });
+    if (!experience) {
+      throw ApiClientGlobalError.NotFound();
     }
-    let company: Company = exp.company;
+    let company: Company = experience.company;
     if (companyId) {
-      try {
-        company = await tx.company.findUniqueOrThrow({ where: { id: companyId } });
-      } catch (e) {
-        /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
-        we do not need to worry about checking isPrismaInvalidIdError here. */
-        if (isPrismaDoesNotExistError(e)) {
-          return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
-        }
-        throw e;
+      /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
+         we do not need to worry about checking isPrismaInvalidIdError here. */
+      const c = await tx.company.findUnique({ where: { id: companyId } });
+      if (!c) {
+        return ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json;
       }
+      company = c;
     }
     if (
       title &&
       (await prisma.experience.count({
-        where: { companyId: company.id, title, id: { notIn: [exp.id] } },
+        where: { companyId: company.id, title, id: { notIn: [experience.id] } },
       }))
     ) {
       fieldErrors.addUnique("title", "The title must be unique for a given company.");
@@ -62,7 +55,11 @@ export const updateExperience = async (
     if (
       data.shortTitle &&
       (await prisma.experience.count({
-        where: { companyId: company.id, shortTitle: data.shortTitle, id: { notIn: [exp.id] } },
+        where: {
+          companyId: company.id,
+          shortTitle: data.shortTitle,
+          id: { notIn: [experience.id] },
+        },
       }))
     ) {
       fieldErrors.addUnique("shortTitle", "The 'shortTitle' must be unique for a given company.");
@@ -77,7 +74,8 @@ export const updateExperience = async (
     if (fieldErrors.hasErrors) {
       return fieldErrors.json;
     }
-    return await tx.experience.update({
+    const sks = [...experience.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    const updated = await tx.experience.update({
       where: { id },
       data: {
         ...data,
@@ -87,7 +85,7 @@ export const updateExperience = async (
         skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
       },
     });
+    await calculateSkillsExperience(tx, sks, { user });
+    return convertToPlainObject(updated);
   });
-
-  return convertToPlainObject(experience);
 };
