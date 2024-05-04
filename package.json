@@ -4,7 +4,7 @@
   "private": true,
   "engineStrict": true,
   "engines": {
-    "node": ">=21"
+    "node": ">=20"
   },
   "scripts": {
     "validate-node-version": "ts-node --project=./tsconfig.json src/application/support/enforce-node-version.ts",

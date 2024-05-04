@@ -42,7 +42,7 @@ this project.
 
 #### 1.2.a [Node][node]
 
-[Node][node] is the engine that supports the application. This project uses [node] v21.0.0. Your
+[Node][node] is the engine that supports the application. This project uses [node] v20.0.0. Your
 machine will most likely already have a system installation of [node], but even if it does not -
 that is okay, we will not be using the system installation of [node] but will rather isolate the
 version of [node] being used for this project to this repository using [nvm].
@@ -114,8 +114,8 @@ $ nvm use
 If you see an output similar to the following:
 
 ```bash
-Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v21.0.0>
-Now using node v21.0.0 (npm v8.6.0)
+Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v20.0.0>
+Now using node v20.0.0 (npm v8.6.0)
 ```
 
 It means that the correct version of [node] that is required for this project is already installed
@@ -125,10 +125,10 @@ can be skipped and you can proceed to the next step, "1.2.a.iii: Homebrew".
 On the other hand, if you see an error similar to the following:
 
 ```bash
-Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v21.0.0>
-N/A: version "v21.0.0 -> N/A" is not yet installed.
+Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v20.0.0>
+N/A: version "v20.0.0 -> N/A" is not yet installed.
 
-You need to run "nvm install v21.0.0" to install it before using it.
+You need to run "nvm install v20.0.0" to install it before using it.
 ```
 
 It means that the correct version of [node] that is required for this project is not already
