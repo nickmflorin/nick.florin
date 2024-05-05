@@ -7,7 +7,7 @@ import { type DynamicIconProp, type IconProp, type IconElement } from "~/compone
 import { isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import Spinner from "~/components/icons/Spinner";
-import { sizeToString } from "~/components/types";
+import { sizeToString } from "~/components/types/sizes";
 
 import * as types from "../types";
 

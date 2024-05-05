@@ -37,7 +37,7 @@ export const PopoverVariantClassNames: {
     ),
   [PopoverVariants.LIGHT]: cs =>
     clsx(
-      withoutOverridingClassName("text-body", cs),
+      withoutOverridingClassName("text-text", cs),
       withoutOverridingClassName("bg-gray-50", cs),
       withoutOverridingClassName("shadow-md", cs),
       cs,
@@ -51,7 +51,7 @@ export const PopoverVariantClassNames: {
     ),
   [PopoverVariants.WHITE]: cs =>
     clsx(
-      withoutOverridingClassName("text-body", cs),
+      withoutOverridingClassName("text-text", cs),
       withoutOverridingClassName("bg-white", cs),
       withoutOverridingClassName("shadow-md", cs),
       cs,

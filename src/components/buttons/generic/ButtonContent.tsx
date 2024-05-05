@@ -10,7 +10,8 @@ import {
 } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
-import { type Size, sizeToString, type ComponentProps } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type Size, sizeToString } from "~/components/types/sizes";
 
 import * as types from "../types";
 

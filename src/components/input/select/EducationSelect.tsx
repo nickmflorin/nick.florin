@@ -31,7 +31,7 @@ export const EducationSelect = <O extends { isMulti?: boolean }, E extends ApiEd
         <Text fontSize="sm" fontWeight="medium">
           {useAbbreviatedOptionLabels ? m.shortMajor ?? m.major : m.major}
         </Text>
-        <Text fontSize="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-description">
           {m.school.name}
         </Text>
       </div>

@@ -3,14 +3,11 @@ import React from "react";
 import clsx from "clsx";
 
 import { Icon } from "~/components/icons/Icon";
-import {
-  sizeToString,
-  type Size,
-  type ComponentProps,
-  withoutOverridingClassName,
-  type BaseTypographyProps,
-} from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { type ComponentProps, withoutOverridingClassName } from "~/components/types";
+import { type Size, sizeToString } from "~/components/types/sizes";
+import { type BaseTypographyProps } from "~/components/types/typography";
+
+import { Text } from "./Text";
 
 export interface PipedTextProps extends BaseTypographyProps, ComponentProps {
   readonly children: (string | JSX.Element | null | undefined)[];
@@ -52,7 +49,7 @@ export const PipedText = ({
                 {...props}
                 fontSize={fontSize}
                 className={clsx(
-                  withoutOverridingClassName("text-body-light", textClassName),
+                  withoutOverridingClassName("text-description", textClassName),
                   textClassName,
                 )}
               >
@@ -75,7 +72,7 @@ export const PipedText = ({
             key={index}
             fontSize={fontSize}
             className={clsx(
-              withoutOverridingClassName("text-body-light", textClassName),
+              withoutOverridingClassName("text-description", textClassName),
               textClassName,
             )}
           >

@@ -5,8 +5,9 @@ import clsx from "clsx";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 
-import { sizeToString, mergeIntoClassNames } from "~/components/types";
-import { type BaseTypographyProps, getTypographyClassName } from "~/components/types";
+import { mergeIntoClassNames } from "~/components/types";
+import { sizeToString } from "~/components/types/sizes";
+import { type BaseTypographyProps, getTypographyClassName } from "~/components/types/typography";
 
 import * as types from "../types";
 

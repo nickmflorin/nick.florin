@@ -2,19 +2,14 @@ import React, { forwardRef } from "react";
 
 import clsx from "clsx";
 
-import {
-  type ComponentProps,
-  type HTMLElementProps,
-  type BaseTypographyProps,
-  getTypographyClassName,
-} from "~/components/types";
+import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type BaseTypographyProps, getTypographyClassName } from "~/components/types/typography";
 
 export type TextComponent = "span" | "div" | "p";
 
 export interface TextProps extends BaseTypographyProps, ComponentProps {
   readonly children: React.ReactNode;
   readonly as?: TextComponent;
-  readonly truncate?: boolean;
   readonly flex?: boolean;
   readonly inherit?: boolean;
 }
@@ -53,8 +48,8 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
         style={style}
         ref={ref}
         className={clsx(
-          "body",
-          { "body--inherit": inherit },
+          "text",
+          { "text--inherit": inherit },
           { span: as === "span" },
           { ["flex flex-row items-center"]: flex },
           getTypographyClassName(props),

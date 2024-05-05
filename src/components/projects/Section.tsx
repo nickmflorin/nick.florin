@@ -2,7 +2,8 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
-import { type ComponentProps, type SingleTextNode } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type SingleTextNode } from "~/components/types/typography";
 import { Description } from "~/components/typography/Description";
 import { Text } from "~/components/typography/Text";
 

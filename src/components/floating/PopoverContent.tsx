@@ -2,13 +2,9 @@ import { type ReactNode, forwardRef } from "react";
 
 import clsx from "clsx";
 
-import {
-  type HTMLElementProps,
-  type ComponentProps,
-  type Size,
-  sizeToString,
-} from "~/components/types";
+import { type HTMLElementProps, type ComponentProps } from "~/components/types";
 import { classNameContains } from "~/components/types";
+import { type Size, sizeToString } from "~/components/types/sizes";
 
 import * as types from "./types";
 

@@ -5,7 +5,7 @@
 @use "partials";
 @use "throw";
 
-$typography-types: ("body", "title", "label");
+$typography-types: ("text", "description", "title", "label");
 
 $font-family-inter: var(--font-inter);
 $font-families: ($font-family-inter);
@@ -13,13 +13,15 @@ $text-transforms: ("uppercase", "lowercase", "capitalize", "underline");
 
 /* -------------------------------------- Font Families ----------------------------------------- */
 $title_font-family: $font-family-inter;
-$body-font-family: $font-family-inter;
+$text-font-family: $font-family-inter;
+$description-font-family: $font-family-inter;
 $label-font-family: $font-family-inter;
 
 $typography-font-families: (
   "title": $title_font-family,
-  "body": $body-font-family,
+  "text": $text-font-family,
   "label": $label-font-family,
+  "description": $description-font-family,
 );
 
 @function get-font-family($type) {
@@ -62,7 +64,17 @@ $font-weights: (
 }
 
 /* --------------------------------------- Font Sizes ----------------------------------------- */
-$typography-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
+$text-font-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
+$label-font-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
+$description-font-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
+$title-font-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
+
+$typography-sizes: (
+  "text": $text-font-sizes,
+  "description": $description-font-sizes,
+  "title": $title-font-sizes,
+  "label": $label-font-sizes,
+);
 
 /* Note: We cannot use Tailwind's 'theme' function here, because there are often cases where these
    numbers are used in calculations for other properties elsewhere in the SASS code.  Preprocessors
@@ -77,7 +89,7 @@ $typography-sizes: ("xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl");
 
    Reference: https://tailwindcss.com/docs/using-with-preprocessors#using-sass-less-or-stylus */
 $typography-size-properties: (
-  "body": (
+  "text": (
     "xxxs": (
       font-size: 11px,
       line-height: 14px,
@@ -205,14 +217,22 @@ $typography-size-properties: (
   ),
 );
 
+$typography-size-properties: map.set(
+  $typography-size-properties,
+  "description",
+  partials.mapget($typography-size-properties, "text")
+);
+
 $title_default-size: "md";
-$body-default-size: "md";
-$label-default-size: "md";
+$text-default-size: "sm";
+$label-default-size: "sm";
+$description-default-size: "sm";
 
 $typography-default-sizes: (
-  "body": $body-default-size,
+  "text": $text-default-size,
   "title": $title_default-size,
   "label": $label-default-size,
+  "description": $description-default-size,
 );
 
 @function get-default-size($type) {
@@ -221,7 +241,11 @@ $typography-default-sizes: (
 }
 
 @function parse-size($type, $size: null) {
-  @return if($size, partials.validate-value($size, $typography-sizes), get-default-size($type));
+  @return if(
+    $size,
+    partials.validate-value($size, partials.mapget($typography-sizes, $type)),
+    get-default-size($type)
+  );
 }
 
 @function get-font-size($type, $size: null) {
@@ -245,12 +269,14 @@ $typography-default-sizes: (
 /* --------------------------------------- Font Colors ------------------------------------------ */
 $default-label-color: theme("colors.label");
 $default-title_color: theme("colors.title");
-$default-body-color: theme("colors.body");
+$default-text-color: theme("colors.text");
+$default-description-color: theme("colors.description");
 
 $typography-default-colors: (
   "title": $default-title_color,
-  "body": $default-body-color,
+  "text": $default-text-color,
   "label": $default-label-color,
+  "description": $default-description-color,
 );
 
 @function get-font-color($type, $color: null) {
@@ -258,7 +284,7 @@ $typography-default-colors: (
 }
 
 @function fz($type, $value) {
-  @if partials.in-list($value, $typography-sizes) {
+  @if partials.in-list($value, partials.mapget($typography-sizes, $type)) {
     @return get-font-size($type, $size: $value);
   }
   @return $value;

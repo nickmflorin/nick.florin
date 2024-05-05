@@ -2,13 +2,9 @@ import clsx from "clsx";
 
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import {
-  type ComponentProps,
-  type Size,
-  sizeToString,
-  getTypographyClassName,
-  type BaseTypographyProps,
-} from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type Size, sizeToString } from "~/components/types/sizes";
+import { type BaseTypographyProps, getTypographyClassName } from "~/components/types/typography";
 
 export interface TagProps extends BaseTypographyProps, ComponentProps {
   readonly iconClassName?: ComponentProps["className"];

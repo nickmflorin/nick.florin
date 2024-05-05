@@ -10,8 +10,6 @@ import {
   type MenuValue,
   type MenuModelValue,
   type MenuItemInstance,
-  type MenuInitialValue,
-  type MenuInitialModelValue,
   type ModelValue,
 } from "~/components/menus";
 import { useMenuValue } from "~/components/menus/hooks";
@@ -34,19 +32,17 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
       keyof ComponentProps | "value" | "select" | "models" | "isOpen"
     > {
   readonly value?: MenuValue<M, O>;
-  readonly initialValue?: MenuInitialValue<M, O>;
+  readonly initialValue?: MenuValue<M, O>;
   readonly menuClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
   readonly data: M[];
   readonly content: (params: {
-    value: MenuInitialValue<M, O> | MenuValue<M, O>;
+    value: MenuValue<M, O>;
     isReady: boolean;
     selectModel: (v: ModelValue<M, O>, instance: MenuItemInstance) => void;
   }) => JSX.Element;
   readonly onChange?: (
-    /* Here, the models and value are guaranteed to not be MenuInitialValue and
-       MenuInitialModelValue anymore, because a selection was made. */
     v: MenuValue<M, O>,
     params: {
       models: MenuModelValue<M, O>;
@@ -56,16 +52,16 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
   readonly onOpen?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: MenuValue<M, O> | MenuInitialValue<M, O>;
-      models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
+      value: MenuValue<M, O>;
+      models: MenuModelValue<M, O>;
       select: types.SelectInstance;
     },
   ) => void;
   readonly onClose?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: MenuValue<M, O> | MenuInitialValue<M, O>;
-      models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
+      value: MenuValue<M, O>;
+      models: MenuModelValue<M, O>;
       select: types.SelectInstance;
     },
   ) => void;
@@ -73,8 +69,8 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
     e: Event | React.MouseEvent<HTMLButtonElement>,
     isOpen: boolean,
     params: {
-      value: MenuValue<M, O> | MenuInitialValue<M, O>;
-      models: MenuModelValue<M, O> | MenuInitialModelValue<M, O>;
+      value: MenuValue<M, O>;
+      models: MenuModelValue<M, O>;
       select: types.SelectInstance;
     },
   ) => void;

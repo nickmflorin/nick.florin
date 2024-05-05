@@ -10,7 +10,7 @@ $table-size-properties: (
     th: (
       padding: 8px 12px,
       font: (
-        type: "body",
+        type: "text",
         family: typography.$font-family-inter,
         size: "sm",
         weight: "semibold",
@@ -20,7 +20,7 @@ $table-size-properties: (
     td: (
       padding: 6px 4px,
       font: (
-        type: "body",
+        type: "text",
         size: "sm",
         weight: "regular",
         line-height: 16px,
@@ -31,7 +31,7 @@ $table-size-properties: (
     th: (
       padding: 8px 12px,
       font: (
-        type: "body",
+        type: "text",
         family: typography.$font-family-inter,
         size: "md",
         weight: "semibold",
@@ -41,7 +41,7 @@ $table-size-properties: (
     td: (
       padding: 8px 6px,
       font: (
-        type: "body",
+        type: "text",
         size: "md",
         weight: "regular",
         line-height: 16px,
@@ -52,7 +52,7 @@ $table-size-properties: (
     th: (
       padding: 10px 16px,
       font: (
-        type: "body",
+        type: "text",
         family: typography.$font-family-inter,
         size: "lg",
         weight: "semibold",
@@ -62,7 +62,7 @@ $table-size-properties: (
     td: (
       padding: 8px 6px,
       font: (
-        type: "body",
+        type: "text",
         size: "lg",
         weight: "regular",
         line-height: 16px,
@@ -106,7 +106,7 @@ $table-size-properties: (
 
 @mixin table-tr {
   table {
-    tbody {
+    ttext {
       tr {
         @content;
       }

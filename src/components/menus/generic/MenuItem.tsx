@@ -12,12 +12,10 @@ import { Actions } from "~/components/structural/Actions";
 import {
   type ComponentProps,
   type HTMLElementProps,
-  sizeToString,
   withoutOverridingClassName,
-  sizeToNumber,
-  type QuantitativeSize,
   mergeIntoClassNames,
 } from "~/components/types";
+import { sizeToString, sizeToNumber, type QuantitativeSize } from "~/components/types/sizes";
 import { ShowHide } from "~/components/util";
 
 export interface MenuItemProps

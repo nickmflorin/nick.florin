@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
-import type { ComponentProps, BaseTypographyProps } from "~/components/types";
-import { getTypographyClassName } from "~/components/types";
+import type { ComponentProps } from "~/components/types";
+import { type BaseTypographyProps, getTypographyClassName } from "~/components/types/typography";
 
 export interface LabelProps extends BaseTypographyProps, ComponentProps {
   readonly children: React.ReactNode;

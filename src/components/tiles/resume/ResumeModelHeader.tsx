@@ -7,7 +7,8 @@ import { isFragment } from "react-is";
 import type * as types from "./types";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
-import type { ScreenSize, ComponentProps } from "~/components/types";
+import type { ComponentProps } from "~/components/types";
+import { type ScreenSize } from "~/components/types/breakpoints";
 import { ShowHide } from "~/components/util";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
@@ -57,14 +58,14 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
       >
         <ResumeModelImage model={model} size={imageSize} />
         <div
-          className={clsx("flex flex-col grow gap-[6px]", {
+          className={clsx("flex flex-col grow gap-[6px] max-md:gap-[4px]", {
             "pt-[2px] max-sm:pt-[0px]": size === "large",
           })}
           style={{ maxWidth: `calc(100% - ${imageSize}px - ${imageGap}px)` }}
         >
           <div
             className={clsx("flex flex-col", {
-              "gap-[4px]": size === "medium" || size === "large",
+              "gap-[4px] max-md:gap-[2px]": size === "medium" || size === "large",
               "gap-[2px]": size === "small",
             })}
           >

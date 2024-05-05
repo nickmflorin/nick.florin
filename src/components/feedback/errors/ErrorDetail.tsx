@@ -4,12 +4,9 @@ import clsx from "clsx";
 
 import type * as types from "../types";
 
-import {
-  type Size,
-  type ComponentProps,
-  sizeToString,
-  type BaseTypographyProps,
-} from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type Size, sizeToString } from "~/components/types/sizes";
+import { type BaseTypographyProps } from "~/components/types/typography";
 
 import { ErrorContent } from "./ErrorContent";
 import { ErrorTitle } from "./ErrorTitle";
@@ -30,7 +27,7 @@ export const ErrorDetail = ({
   className,
   gap = 12,
   title = "Error",
-  titleClassName = "text-body",
+  titleClassName = "text-text",
   titleFontFamily,
   titleFontWeight = "medium",
   titleFontSize = "lg",

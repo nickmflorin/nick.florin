@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, type LinkProps } from "~/components/buttons";
-import { type TypographyVisibilityState } from "~/components/types";
+import { type TypographyVisibilityState } from "~/components/types/typography";
 
 export interface ResumeShowMoreLinkProps
   extends Omit<LinkProps<"button">, "options" | "flex" | "children"> {

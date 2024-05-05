@@ -98,7 +98,7 @@ $button-font-weights: (
     }
   } @else {
     @include button-font("link");
-    @include typography.with-font-sizes("body") using ($size, $data) {
+    @include typography.with-font-sizes("text") using ($size, $data) {
       &.font-size-#{$size} {
         font-size: partials.mapget($data, font-size);
         line-height: partials.mapget($data, line-height);

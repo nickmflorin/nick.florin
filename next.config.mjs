@@ -21,7 +21,7 @@ const config = {
   },
   reactStrictMode: false,
   experimental: {
-    optimizePackageImports: ["@mantine/core", "zod"],
+    optimizePackageImports: ["@mantine/core", "zod", "@mantine/dropzone", "@mantine/dates"],
   },
   transpilePackages: ["@mantine/core"],
   // webpack: config => {

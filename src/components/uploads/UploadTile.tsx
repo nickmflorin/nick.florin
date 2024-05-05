@@ -26,7 +26,7 @@ const UploadTileError = ({ error }: { error: string | string[] | FileError | Fil
   ) : (
     <div className="flex flex-row items-center gap-[4px]">
       <Icon name="circle-exclamation" size="14px" className="text-red-400" />
-      <Text fontSize="xs" className="text-body-light">
+      <Text fontSize="xs" className="text-description">
         {typeof error === "string" ? error : error.message}
       </Text>
     </div>
@@ -123,7 +123,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
           {types.isUploadOfState(upload, ["uploading"]) ? (
             <div className="flex flex-row gap-[4px] items-center">
               <Spinner className="text-gray-500" />
-              <Text fontSize="xs" className="text-body-light">
+              <Text fontSize="xs" className="text-description">
                 Uploading...
               </Text>
             </div>

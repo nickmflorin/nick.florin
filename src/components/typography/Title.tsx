@@ -1,14 +1,13 @@
 import clsx from "clsx";
 
+import { type Style, type ComponentProps } from "~/components/types";
 import {
-  type Style,
-  type ComponentProps,
   type BaseTypographyProps,
   getTypographyClassName,
   type TitleFontSize,
   TitleFontSizeOrderMap,
   type TitleOrder,
-} from "~/components/types";
+} from "~/components/types/typography";
 
 type Factories = {
   [key in TitleOrder]: (props: {

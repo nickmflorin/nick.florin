@@ -12,8 +12,8 @@ $input-variant-properties: (
   "primary": (
     background-color: theme("colors.white"),
     outline-color: theme("colors.border"),
-    color: theme("colors.body"),
-    caret-color: theme("colors.body"),
+    color: theme("colors.text"),
+    caret-color: theme("colors.text"),
     // TODO: Add to Tailwind Config instead.
     placeholder-color: color.change(#606873, $alpha: 0.6),
     disabled: (
@@ -32,8 +32,8 @@ $input-variant-properties: (
   "bare": (
     background-color: theme("colors.gray.100"),
     outline-color: theme("colors.transparent"),
-    color: theme("colors.body"),
-    caret-color: theme("colors.body"),
+    color: theme("colors.text"),
+    caret-color: theme("colors.text"),
     // TODO: Add to Tailwind Config instead.
     placeholder-color: color.change(#606873, $alpha: 0.6),
     disabled: (

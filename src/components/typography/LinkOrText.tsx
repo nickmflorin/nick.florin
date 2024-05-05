@@ -3,20 +3,17 @@ import clsx from "clsx";
 
 import { Link } from "~/components/buttons";
 import { Tooltip, type TooltipProps } from "~/components/floating/Tooltip";
-import {
-  type ComponentProps,
-  type BodyFontSize,
-  type FontWeight,
-  type FontFamily,
-} from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { type ComponentProps } from "~/components/types";
+import { type TextFontSize, type FontWeight, type FontFamily } from "~/components/types/typography";
+
+import { Text } from "./Text";
 
 export interface LinkOrTextProps extends ComponentProps {
   readonly url?: string | null;
   readonly children: string;
   readonly tooltip?: string;
   readonly tooltipPlacement?: TooltipProps["placement"];
-  readonly fontSize?: BodyFontSize;
+  readonly fontSize?: TextFontSize;
   readonly fontWeight?: FontWeight;
   readonly textClassName?: ComponentProps["className"];
   readonly linkClassName?: ComponentProps["className"];

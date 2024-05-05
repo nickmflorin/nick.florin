@@ -1,12 +1,9 @@
 import clsx from "clsx";
 import { DateTime } from "luxon";
 
-import {
-  withoutOverridingClassName,
-  type ComponentProps,
-  type QuantitativeSize,
-  type BaseTypographyProps,
-} from "~/components/types";
+import { withoutOverridingClassName, type ComponentProps } from "~/components/types";
+import { type QuantitativeSize } from "~/components/types/sizes";
+import { type BaseTypographyProps } from "~/components/types/typography";
 
 import { DateTimeDisplay } from "./DateTimeDisplay";
 import { Text } from "./Text";
@@ -50,7 +47,7 @@ export const PartitionedDateTimeDisplay = ({
       {...props}
       {...timeProps}
       className={clsx(
-        withoutOverridingClassName("text-body-light", timeProps?.className),
+        withoutOverridingClassName("text-description", timeProps?.className),
         timeProps?.className,
       )}
     >

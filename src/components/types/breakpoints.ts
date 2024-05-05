@@ -36,3 +36,9 @@ export type BreakPointClassName<
   T extends string,
   B extends ScreenSize = ScreenSize,
 > = B extends ScreenSize ? T | `${ScreenSize}:${T}` | `max-${ScreenSize}:${T}` : never;
+
+const TailwindScreenSizeModifierRegex =
+  /^((xs|sm|md|lg|xl|2xl):max-(xs|sm|md|lg|xl|2xl)|(max-(xs|sm|md|lg|xl|2xl)))$/;
+
+export const isTailwindScreenSizeModifier = (modifier: string) =>
+  TailwindScreenSizeModifierRegex.test(modifier);

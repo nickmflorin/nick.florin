@@ -28,7 +28,7 @@ export const SchoolSelect = ({
         <Text fontSize="sm" fontWeight="medium">
           {useAbbreviatedOptionLabels ? m.shortName ?? m.name : m.name}
         </Text>
-        <Text fontSize="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-description">
           {stringifyLocation({ city: m.city, state: m.state })}
         </Text>
       </div>

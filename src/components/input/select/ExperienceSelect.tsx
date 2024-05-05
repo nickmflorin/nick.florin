@@ -31,7 +31,7 @@ export const ExperienceSelect = <E extends Exp>({
         <Text fontSize="sm" fontWeight="medium">
           {useAbbreviatedOptionLabels ? m.shortTitle ?? m.title : m.title}
         </Text>
-        <Text fontSize="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-description">
           {m.company.name}
         </Text>
       </div>

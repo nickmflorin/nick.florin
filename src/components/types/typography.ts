@@ -6,19 +6,21 @@ import { isFragment } from "react-is";
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import tailwindConfig from "~/tailwind.config";
 
-export const BodyFontSizes = enumeratedLiterals(
+export const TextFontSizes = enumeratedLiterals(
   ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
   {},
 );
 
-export type BodyFontSize = EnumeratedLiteralsType<typeof BodyFontSizes>;
-export type LabelFontSize = BodyFontSize;
+export type TextFontSize = EnumeratedLiteralsType<typeof TextFontSizes>;
 
-export const TitleFontSizes = enumeratedLiterals(
-  ["xxs", "xs", "sm", "md", "lg", "xl"] as const,
-  {},
-);
-export type TitleFontSize = EnumeratedLiteralsType<typeof TitleFontSizes>;
+export const LabelFontSizes = TextFontSizes;
+export type LabelFontSize = TextFontSize;
+
+export const DescriptionFontSizes = TextFontSizes;
+export type DescriptionFontSize = TextFontSize;
+
+export const TitleFontSizes = TextFontSizes;
+export type TitleFontSize = TextFontSize;
 
 export const FontWeights = enumeratedLiterals(
   ["light", "regular", "medium", "semibold", "bold"] as const,
@@ -30,9 +32,11 @@ export type FontWeight = EnumeratedLiteralsType<typeof FontWeights>;
 export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
 
 export const TitleFontSizeOrderMap: { [key in TitleFontSize]: TitleOrder } = {
+  xxxs: 6,
   xxs: 6,
   xs: 5,
   sm: 4,
+  smplus: 4,
   md: 3,
   lg: 2,
   xl: 1,
@@ -63,7 +67,9 @@ export const lineClampClassName = (clamp: LineClamp = 0) => {
   });
 };
 
-export interface BaseTypographyProps<F extends BodyFontSize | TitleFontSize = BodyFontSize> {
+export interface BaseTypographyProps<
+  F extends TextFontSize | TitleFontSize | LabelFontSize | DescriptionFontSize = TextFontSize,
+> {
   readonly fontSize?: F;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
@@ -111,9 +117,3 @@ export type TypographyVisibilityState = "expanded" | "collapsed";
 
 export const isTailwindFontSizeValue = (value: string) =>
   Object.keys(tailwindConfig.theme.fontSize).includes(value);
-
-const TailwindScreenSizeModifierRegex =
-  /^((xs|sm|md|lg|xl|2xl):max-(xs|sm|md|lg|xl|2xl)|(max-(xs|sm|md|lg|xl|2xl)))$/;
-
-export const isTailwindScreenSizeModifier = (modifier: string) =>
-  TailwindScreenSizeModifierRegex.test(modifier);

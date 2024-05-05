@@ -4,16 +4,16 @@
 @use "./mixins" as mixins;
 
 html,
-body {
+text {
   @extend %typography-base;
-  font-family: theme("fontFamily.body");
-  color: theme("colors.body");
+  font-family: theme("fontFamily.text");
+  color: theme("colors.text");
   margin: 0;
 }
 
 p {
   @extend %typography-base;
-  @include mixins.font("body");
+  @include mixins.font("text");
 
   em,
   b {
@@ -23,14 +23,14 @@ p {
   }
 }
 
-.body {
+.text {
   // Do not define defaults for the typography mixins.  This allows the typography properties
   // to only be applied if the component is provided with the appropriate props, and allows us to
   // override the properties in SASS elsewhere in cases where the component is not provided with
   // those props.
   @extend %typography-base;
 
-  &:not(.span, .body--inherit) {
+  &:not(.span, .text--inherit) {
     /* If the <Text> component is attributed with 'span' and is inside another <Text> element, do
        not set the defaults based on the default size of the <Text> component.  We want the <Text>
        components that are attributed with 'span' to inherit typography related properties from the
@@ -56,15 +56,15 @@ p {
        </Text>
 
        Here, "Bar" should be styled with the a "bold" font weight. */
-    @include mixins.font($type: "body");
+    @include mixins.font($type: "text");
   }
 
   &.span,
-  &.body--inherit {
+  &.text--inherit {
     @include mixins.inherit-font-properties();
   }
 
-  @include mixins.with-fonts("body") using ($data) {
+  @include mixins.with-fonts("text") using ($data) {
     $font-size: partials.mapget($data, font-size);
     $line-height: partials.mapget($data, line-height);
 

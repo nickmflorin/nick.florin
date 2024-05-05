@@ -73,7 +73,7 @@ export const CompaniesSchoolsMenuContent = async <M extends ModelType>({
             <Text fontSize="sm" fontWeight="medium">
               {model.name}
             </Text>
-            <Text fontSize="xs" className="text-body-light">
+            <Text fontSize="xs" className="text-description">
               {stringifyLocation({ city: model.city, state: model.state })}
             </Text>
           </div>

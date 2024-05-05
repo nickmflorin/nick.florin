@@ -22,7 +22,7 @@ export const SkillsBarChartTooltip = (props: { color: string; data: SkillsBarCha
     </div>
     <div className="flex flex-row gap-[4px] items-flex-start w-[200px]">
       <Icon name="info-circle" size="sm" className="text-blue-400" />
-      <Text fontSize="xs" className="text-body-light leading-[14px]">
+      <Text fontSize="xs" className="text-description leading-[14px]">
         Click the bar for more info.
       </Text>
     </div>

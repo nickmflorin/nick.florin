@@ -36,7 +36,7 @@ export const ProjectSelect = <O extends { isMulti?: boolean }>({
         <Text fontSize="sm" fontWeight="medium" truncate>
           {m.name}
         </Text>
-        <Text fontSize="xs" className="text-body-light">
+        <Text fontSize="xs" className="text-description">
           {m.slug}
         </Text>
       </div>

@@ -204,9 +204,9 @@ const config = {
         "950": "#450a0a",
       },
       title: "#111827",
-      body: "#515151",
+      text: "#515151",
       label: "#6a6a6a",
-      "body-light": "#868E96", // Gray 600
+      description: "#868E96", // Gray 600
       border: "#DEE2E6", // Gray 300
       appBackground: "#fbfbfb",
       disabled: "#DEE2E6",
@@ -357,7 +357,7 @@ const config = {
     fontFamily: {
       title: ["inter"],
       label: ["inter"],
-      body: ["inter"],
+      text: ["inter"],
       sans: ["inter", "ui-sans-serif", "system-ui", "sans-serif"],
       serif: ["inter", "ui-serif", "serif"],
       mono: [

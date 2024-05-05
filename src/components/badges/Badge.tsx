@@ -4,14 +4,13 @@ import clsx from "clsx";
 
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
+import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import {
-  type ComponentProps,
-  type HTMLElementProps,
-  BodyFontSizes,
+  TextFontSizes,
   FontWeights,
   getTypographyClassName,
   type BaseTypographyProps,
-} from "~/components/types";
+} from "~/components/types/typography";
 
 export interface BadgeProps
   extends ComponentProps,
@@ -25,7 +24,7 @@ export interface BadgeProps
 export const Badge = ({
   children,
   fontWeight = FontWeights.MEDIUM,
-  fontSize = BodyFontSizes.SM,
+  fontSize = TextFontSizes.SM,
   icon,
   transform,
   fontFamily,

@@ -3,7 +3,8 @@ import React from "react";
 import clsx from "clsx";
 
 import { isHttpError } from "~/api";
-import { type ComponentProps, type BaseTypographyProps } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type BaseTypographyProps } from "~/components/types/typography";
 import { Text } from "~/components/typography/Text";
 
 import * as types from "../types";

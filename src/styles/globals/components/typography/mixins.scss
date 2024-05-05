@@ -29,8 +29,8 @@
   font-family: get-font-family($type);
 }
 
-@mixin body-font-family() {
-  @include font-family("body");
+@mixin text-font-family() {
+  @include font-family("text");
 }
 
 @mixin title_font-family() {
@@ -46,8 +46,8 @@
   font-weight: get-font-weight($args...);
 }
 
-@mixin body-font-weight($args...) {
-  font-weight: get-font-weight($type: "body", $args...);
+@mixin text-font-weight($args...) {
+  font-weight: get-font-weight($type: "text", $args...);
 }
 
 @mixin title_font-weight($args...) {
@@ -67,8 +67,8 @@
   @include font-size("title", $size);
 }
 
-@mixin body-font-size($size: null) {
-  @include font-size("body", $size);
+@mixin text-font-size($size: null) {
+  @include font-size("text", $size);
 }
 
 @mixin label-font-size($size: null) {
@@ -83,8 +83,8 @@
   @include line-height("title", $size);
 }
 
-@mixin body-line-height($size: null) {
-  @include line-height("body", $size);
+@mixin text-line-height($size: null) {
+  @include line-height("text", $size);
 }
 
 @mixin label-line-height($size: null) {
@@ -96,8 +96,8 @@
   color: get-font-color($type, $color);
 }
 
-@mixin body-font-color($args...) {
-  @include font-color("body", $args...);
+@mixin text-font-color($args...) {
+  @include font-color("text", $args...);
 }
 
 @mixin title_font-color($args...) {
@@ -115,7 +115,7 @@
 }
 
 @mixin with-font-sizes($type) {
-  @each $size in $typography-sizes {
+  @each $size in partials.mapget($typography-sizes, $type) {
     $properties: get-font($type, $size: $size);
     @content ($size, $properties);
   }
@@ -147,8 +147,8 @@
   @include font("title", $args...);
 }
 
-@mixin body($args...) {
-  @include font("body", $args...);
+@mixin text($args...) {
+  @include font("text", $args...);
 }
 
 @mixin label($args...) {
@@ -156,6 +156,7 @@
 }
 
 @mixin with-fonts($type) {
+  @include font-color($type);
   @include with-font-weights();
   @include with-font-families();
   @include with-text-transforms();

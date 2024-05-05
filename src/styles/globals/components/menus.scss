@@ -60,7 +60,7 @@
     gap: 10px;
 
     // The line height may be overridden in the component if the height is specified as a prop.
-    @include typography.font($type: "body", $line-height: 28px, $font-size: "xs");
+    @include typography.font($type: "text", $line-height: 28px, $font-size: "xs");
 
     @include partials.disabled {
       color: theme("colors.disabled");

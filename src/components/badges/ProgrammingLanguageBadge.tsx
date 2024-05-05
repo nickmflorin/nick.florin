@@ -16,7 +16,7 @@ export const ProgrammingLanguageBadge = ({
   return (
     <Badge
       {...props}
-      className={clsx("bg-white text-body border", props.className)}
+      className={clsx("bg-white text-text border", props.className)}
       icon={config.icon}
     >
       {config.label}

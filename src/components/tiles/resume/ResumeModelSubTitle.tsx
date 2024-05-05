@@ -3,7 +3,8 @@ import clsx from "clsx";
 import type { ResumeModelSize } from "./types";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
-import { type ComponentProps, type FontWeight } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type FontWeight } from "~/components/types/typography";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 
 const LinkFontWeights: { [key in ResumeModelSize]: FontWeight } = {
@@ -13,8 +14,8 @@ const LinkFontWeights: { [key in ResumeModelSize]: FontWeight } = {
 };
 
 const TextClassNames: { [key in ResumeModelSize]: string } = {
-  small: "text-body-light",
-  medium: "text-body-light",
+  small: "text-description",
+  medium: "text-description",
   large: "",
 };
 

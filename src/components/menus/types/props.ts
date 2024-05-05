@@ -1,11 +1,12 @@
 import { type ReactNode, type ForwardedRef } from "react";
 
 import { type IconSize } from "~/components/icons";
-import { type ComponentProps, type QuantitativeSize } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type QuantitativeSize } from "~/components/types/sizes";
 
 import { type MenuItemFlagProps } from "./flags";
 import { type MenuItemInstance } from "./item";
-import { type MenuValue, type MenuInitialValue, type IfMenuValued } from "./menu";
+import { type MenuValue, type IfMenuValued } from "./menu";
 import { type MenuModel, type ModelValue, type ValueNotApplicable, type ModelId } from "./model";
 import { type MenuOptions } from "./options";
 
@@ -67,7 +68,7 @@ export type AbstractMenuContentProps<
     "value" | "model" | "onClick" | "value" | "menuValue" | "id"
   > & {
     readonly data: M[];
-    readonly value: MenuValue<M, O> | MenuInitialValue<M, O> | ValueNotApplicable;
+    readonly value: MenuValue<M, O> | ValueNotApplicable;
     readonly onItemClick?: MenuItemClickHandler<M, O>;
   };
 
@@ -92,7 +93,7 @@ export type AbstractMenuComponent = {
 export type MenuContentProps<M extends MenuModel, O extends MenuOptions<M>> = ComponentProps &
   Omit<AbstractMenuContentProps<M, O>, "value"> & {
     readonly value?: IfMenuValued<MenuValue<M, O>, M, O>;
-    readonly initialValue?: IfMenuValued<MenuInitialValue<M, O>, M, O>;
+    readonly initialValue?: IfMenuValued<MenuValue<M, O>, M, O>;
     readonly onChange?: IfMenuValued<
       (value: MenuValue<M, O>, item: MenuItemInstance) => void,
       M,

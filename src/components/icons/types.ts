@@ -6,7 +6,8 @@ import {
 import { z } from "zod";
 
 import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
-import { type ComponentProps, type Size } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { type Size } from "~/components/types/sizes";
 
 export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
 export type IconDimension = EnumeratedLiteralsType<typeof IconDimensions>;

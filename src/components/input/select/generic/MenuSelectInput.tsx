@@ -1,13 +1,7 @@
 import dynamic from "next/dynamic";
 import React, { type ForwardedRef, forwardRef, useMemo } from "react";
 
-import {
-  type MenuValue,
-  getModelLabel,
-  type MenuInitialValue,
-  type MenuInitialModelValue,
-  type MenuModelValue,
-} from "~/components/menus";
+import { type MenuValue, getModelLabel, type MenuModelValue } from "~/components/menus";
 
 import * as types from "../types";
 
@@ -22,16 +16,14 @@ export interface MenuSelectInputProps<M extends types.SelectModel, O extends typ
   readonly isReady?: boolean;
   readonly options: O;
   readonly maximumNumBadges?: number;
-  readonly models: MenuInitialModelValue<M, O> | MenuModelValue<M, O>;
-  readonly value: MenuInitialValue<M, O> | MenuValue<M, O>;
+  readonly models: MenuModelValue<M, O>;
+  readonly value: MenuValue<M, O>;
   readonly valueRenderer?: types.SelectValueRenderer<M, O, { models: MenuModelValue<M, O> }>;
   readonly valueModelRenderer?: types.SelectValueModelRenderer<M, O, { model: M }>;
 }
 
-export const MenuSelectInput = forwardRef<
-  HTMLDivElement,
-  MenuSelectInputProps<types.SelectModel, types.SelectOptions<types.SelectModel>>
->(
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export const MenuSelectInput = forwardRef<HTMLDivElement, MenuSelectInputProps<any, any>>(
   <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     {
       isReady = true,
@@ -54,13 +46,9 @@ export const MenuSelectInput = forwardRef<
         return <></>;
       }
       /* Coercion of the models here is safe, because we already checked if the models is null. If
-         the models is not null, it is safe to assume that the models is a MenuModelValue, not the
-         MenuInitialModelValue. */
+         the models is not null, it is safe to assume that the models is a MenuModelValue. */
       const _models = models as M | M[];
-      /* Coercion of the value here is safe, because we already checked if the value is null. If the
-         value is not null, it is safe to assume that the value is a MenuValue, not the
-         MenuInitialValue. */
-      const _value = value as MenuValue<M, O>;
+      const _value = value;
 
       if (valueRenderer) {
         return valueRenderer(_value, { models: _models as MenuModelValue<M, O> });

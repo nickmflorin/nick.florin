@@ -2,12 +2,9 @@ import { type LinkProps as NextLinkProps } from "next/link";
 import { type ReactNode, type ForwardedRef } from "react";
 
 import { type EnumeratedLiteralsType, enumeratedLiterals } from "~/lib/literals";
-import {
-  type Size,
-  type ComponentProps,
-  type HTMLElementProps,
-  type BaseTypographyProps,
-} from "~/components/types";
+import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type Size } from "~/components/types/sizes";
+import { type BaseTypographyProps } from "~/components/types/typography";
 
 export const ButtonLoadingLocations = enumeratedLiterals(["left", "over", "right"] as const, {});
 export type ButtonLoadingLocation = EnumeratedLiteralsType<typeof ButtonLoadingLocations>;

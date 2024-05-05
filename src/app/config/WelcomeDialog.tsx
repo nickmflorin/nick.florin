@@ -34,17 +34,19 @@ export const WelcomeDialog = ({ children }: WelcomeDialogProps) => {
   return (
     <Dialog.Provider isOpen={isOpen} onClose={() => setIsOpen(false)}>
       {children}
-      <Dialog className="max-w-[500px]">
+      <Dialog className="w-[500px]">
         <Dialog.Close />
         <Dialog.Title>Welcome to my Personal Portfolio!</Dialog.Title>
         <Dialog.Content>
-          <Dialog.Description>Feel free to take a look around.</Dialog.Description>
+          <Dialog.Description className="text-text">
+            I hope you get a chance to take a look around.
+          </Dialog.Description>
           <Dialog.Description fontSize="sm">
-            <Text as="span" fontSize="sm" fontWeight="medium" className="text-body">
+            <Text as="span" fontSize="sm" fontWeight="medium" className="text-text">
               Please note
-            </Text>{" "}
-            that this website is only a few weeks old, and is currently not mobile-friendly. We
-            suggest viewing on a desktop or laptop for the best experience.
+            </Text>
+            &nbsp;that this website is only a few months old, and is currently under active
+            development.
           </Dialog.Description>
           <Checkbox
             label="Do not show this message again."
