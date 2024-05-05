@@ -3,6 +3,7 @@ import { type MenuModel } from "./model";
 export type MenuOptions<I extends MenuModel> = Partial<{
   readonly isMulti: boolean;
   readonly isNullable: boolean;
+  readonly isDeselectable: boolean;
   readonly getModelValue: (m: I) => NonNullable<MenuModel["value"]>;
   readonly getModelLabel: (
     m: I,

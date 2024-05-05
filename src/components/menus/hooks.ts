@@ -7,30 +7,40 @@ import { useReferentialCallback } from "~/hooks";
 
 import * as types from "./types";
 
-export const reduceMenuValue = <M extends types.MenuModel, O extends types.MenuOptions<M>>(
-  prev: types.MenuValue<M, O> | types.MenuInitialValue<M, O>,
-  selected: types.ModelValue<M, O>,
+export const updateMenuValueWithSelection = <
+  MV extends types.ModelValue<M, O> | types.ModelValue<M, O>[] | null,
+  M extends types.MenuModel,
+  O extends types.MenuOptions<M>,
+>(
+  prev: MV,
+  // The value corresponding to the menu item that was just selected.
+  selectedValue: types.ModelValue<M, O>,
   options: O,
-): types.MenuValue<M, O> => {
+): MV => {
   if (Array.isArray(prev)) {
-    const exists = (prev as types.MenuValue<M, O>[]).filter(v => isEqual(v, selected)).length > 0;
-    if (exists) {
-      return (prev as types.MenuValue<M, O>[]).filter(
-        v => !isEqual(v, selected),
-      ) as types.MenuValue<M, O>;
+    const isAlreadySelected = prev.filter(v => isEqual(v, selectedValue)).length > 0;
+    /* If the value is already selected, and the 'isDeselectable' is not false, deselect it.
+       Otherwise, do not alter the value. */
+    if (isAlreadySelected) {
+      if (options.isDeselectable !== false) {
+        return prev.filter(v => !isEqual(v, selectedValue)) as MV;
+      }
+      return prev;
     }
-    return [...prev, selected] as types.MenuValue<M, O>;
+    // If the value is not already selected, add it to the selection.
+    return [...prev, selectedValue] as MV;
   } else if (options.isNullable !== false) {
-    if (isEqual(prev, selected)) {
-      return null as types.MenuValue<M, O>;
+    /* If the value is already selected, and the 'isNullable' option is not set to false, and the
+       'isDeselectable' option is also not false, deselect the value. */
+    if (isEqual(prev, selectedValue) && options.isDeselectable !== false) {
+      return null as MV;
     }
-    return selected as types.MenuValue<M, O>;
-  } else {
-    if (selected === null) {
-      throw new TypeError("Unexpectedly encountered null selected value for a non nullable menu.");
-    }
-    return selected as types.MenuValue<M, O>;
+    // Here, nothing should change - because the menu is not configured for deselection.
+    return prev;
+  } else if (selectedValue === null) {
+    throw new TypeError("Unexpectedly encountered null selected value for a non nullable menu.");
   }
+  return selectedValue as MV;
 };
 
 type LookupOptions = { throwIfNotAssociated?: boolean };
@@ -45,19 +55,20 @@ const lookupMenuModel = <
   M extends types.MenuModel,
   O extends types.MenuOptions<M>,
 >(
-  v: types.MenuInitialValue<M, O> | types.MenuValue<M, O>,
+  v: types.MenuValue<M, O>,
   { data, isReady, options }: { data: M[]; isReady?: boolean; options: O },
   opts?: Opts,
 ): LookupRT<Opts, M> => {
   const corresponding = data.filter(m => isEqual(types.getModelValue(m, options), v));
   if (corresponding.length > 1) {
     logger.error(
-      `Multiple select models correspond to the same value, '${v}'!  This should not happen, ` +
-        "the value should be unique!",
+      `Multiple menu models correspond to the same value, '${v}'!  This should not happen, ` +
+        "the value should uniquely identify a model in the data!",
     );
-    /* The relationship between the model and value should be unique, but in case it is not - just
-       all of the models that correspond to the value to the set anyways.  It will just mean
-       multiple models will be selected for the same value. */
+    /* The relationship between the model and value should be unique, but in case it is not - we
+       do not want to throw an error, but rather log it.  The effect will be that multiple models
+       can be selected for the same value - but that is better than crashing the app with an error.
+       */
     return corresponding as [M, ...M[]];
   } else if (corresponding.length === 0) {
     /* If the asynchronously loaded data has not yet been received, do not issue a warning if the
@@ -112,9 +123,9 @@ const lookupMenuModel = <
 };
 
 const getMenuModelValue = <M extends types.MenuModel, O extends types.MenuOptions<M>>(
-  value: types.MenuInitialValue<M, O> | types.MenuValue<M, O>,
+  value: types.AnyMenuValue<M, O>,
   { data, isReady, options }: { data: M[]; isReady?: boolean; options: O },
-): types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O> => {
+): types.MenuModelValue<M, O> => {
   if (Array.isArray(value)) {
     return value.reduce<M[]>((prev, v) => {
       const ms = lookupMenuModel(v, { data, isReady, options });
@@ -130,13 +141,12 @@ const getMenuModelValue = <M extends types.MenuModel, O extends types.MenuOption
         return prev;
       }
       return [...prev, ms];
-    }, []) as types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>;
+    }, []) as types.MenuModelValue<M, O>;
   } else if (value === null) {
-    return null as types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>;
+    return null as types.MenuModelValue<M, O>;
   } else {
     const ms = lookupMenuModel(
-      // TODO: This coercion needs to be fixed when we simplify the menu-related types.
-      value as types.MenuInitialValue<M, O> | types.MenuValue<M, O>,
+      value,
       { data, isReady, options },
       { throwIfNotAssociated: types.menuIsNonNullable<M, O>(options) },
     );
@@ -145,15 +155,15 @@ const getMenuModelValue = <M extends types.MenuModel, O extends types.MenuOption
        lead to buggy behavior, but is better than crashing the app with an error. */
     if (Array.isArray(ms)) {
       // The array will not be empty, based on checks in the lookup method.
-      return ms[0] as types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>;
+      return ms[0] as types.MenuModelValue<M, O>;
     } else if (ms === null) {
       /* This should not happen - and means that the value is not tied to a model.  It is already
          logged, but since we are not dealing with a multi-select menu, we can only return null
          if the menu is not non-nullable... Otherwise, we have to throw an error, because a null
          model value is not expected. */
-      return null as types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>;
+      return null as types.MenuModelValue<M, O>;
     }
-    return ms as types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>;
+    return ms as types.MenuModelValue<M, O>;
   }
 };
 
@@ -163,8 +173,8 @@ type MenuValueReturnType<
   O extends types.MenuOptions<M>,
 > = V extends true
   ? [
-      types.MenuInitialValue<M, O> | types.MenuValue<M, O>,
-      types.MenuInitialModelValue<M, O> | types.MenuModelValue<M, O>,
+      types.MenuValue<M, O>,
+      types.MenuModelValue<M, O>,
       (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => void,
       (v: types.MenuValue<M, O>) => void,
     ]
@@ -184,29 +194,27 @@ export const useMenuValue = <
   data,
 }: Pick<types.MenuProps<M, O>, "data" | "options" | "isReady"> & {
   readonly value?: types.MenuValue<M, O>;
-  readonly initialValue?: types.MenuInitialValue<M, O>;
+  readonly initialValue?: types.MenuValue<M, O>;
   readonly isValued: V;
   readonly onChange?: (
     value: types.MenuValue<M, O>,
     params: { item: types.MenuItemInstance; models: types.MenuModelValue<M, O> },
   ) => void;
 }): MenuValueReturnType<V, M, O> => {
-  const [_value, setValue] = useState<
-    types.MenuInitialValue<M, O> | types.MenuValue<M, O> | types.ValueNotApplicable
-  >(() => {
+  const [_value, setValue] = useState<types.MenuValue<M, O> | types.ValueNotApplicable>(() => {
     if (isValued) {
       if (initialValue === undefined) {
         if (types.menuIsNonNullable<M, O>(options)) {
           /* If the menu is non nullable and not multi-select, the initial value can still be null
              even if the menu is non nullable.  This is because non-nullability refers to the case
              that the value cannot be cleared, or changed to null, after it is set. */
-          return null as types.MenuInitialValue<M, O>;
+          return null as types.MenuValue<M, O>;
         } else if (options.isMulti) {
-          return [] as types.MenuInitialValue<M, O>;
+          return [] as types.MenuValue<M, O>;
         }
-        return null as types.MenuInitialValue<M, O>;
+        return null as types.MenuValue<M, O>;
       }
-      return initialValue as types.MenuInitialValue<M, O>;
+      return initialValue as types.MenuValue<M, O>;
     }
     return types.VALUE_NOT_APPLICABLE;
   });
@@ -216,15 +224,14 @@ export const useMenuValue = <
     [_propValue, _value],
   );
 
-  const modelValue = useMemo(():
-    | types.MenuInitialModelValue<M, O>
-    | types.MenuModelValue<M, O>
-    | types.ValueNotApplicable => {
+  const modelValue = useMemo((): types.MenuModelValue<M, O> | types.ValueNotApplicable => {
     if (isValued) {
       if (value === types.VALUE_NOT_APPLICABLE) {
         throw new Error("Unexpectedly encountered non applicable menu value for a valued menu.");
       }
-      return getMenuModelValue(value, { data, isReady, options });
+      /* This type coercion is safe, because the AnyMenuValue is just a distributed union of the
+         possible values that the conditional type MenuValue represents. */
+      return getMenuModelValue(value as types.AnyMenuValue<M, O>, { data, isReady, options });
     }
     return types.VALUE_NOT_APPLICABLE;
   }, [data, value, options, isValued, isReady]);
@@ -235,7 +242,7 @@ export const useMenuValue = <
       if (existingValue === types.VALUE_NOT_APPLICABLE) {
         throw new Error("A model cannot be selected if the Menu is not valued.");
       }
-      const newValue: types.MenuValue<M, O> = reduceMenuValue(existingValue, v, options);
+      const newValue = updateMenuValueWithSelection(existingValue, v, options);
       /* At this point, since the model has already been selected, any potential initially null
          values for the Menu's value should not be present if the Menu is non nullable - because if
          the Menu is non-nullable, the value should not be able to be cleared after it was
@@ -244,8 +251,13 @@ export const useMenuValue = <
         throw new Error("Unexpectedly encountered null model value for a non nullable menu.");
       }
       setValue(newValue);
-
-      const modelV = getMenuModelValue(newValue, { data, isReady, options });
+      /* This type coercion is safe, because the AnyMenuValue is just a distributed union of the
+         possible values that the conditional type MenuValue represents. */
+      const modelV = getMenuModelValue(newValue as types.AnyMenuValue<M, O>, {
+        data,
+        isReady,
+        options,
+      });
       /* At this point, since the model has already been selected, any potential initially null
          values for the Menu's value should not be present if the Menu is non nullable - because if
          the Menu is non-nullable, the value should not be able to be cleared after it was
