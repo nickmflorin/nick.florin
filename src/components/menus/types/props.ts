@@ -7,7 +7,12 @@ import { type QuantitativeSize } from "~/components/types/sizes";
 import { type MenuItemFlagProps } from "./flags";
 import { type MenuItemInstance } from "./item";
 import { type MenuValue, type IfMenuValued } from "./menu";
-import { type MenuModel, type ModelValue, type ValueNotApplicable, type ModelId } from "./model";
+import {
+  type MenuModel,
+  type MenuModelValue,
+  type ValueNotApplicable,
+  type ModelId,
+} from "./model";
 import { type MenuOptions } from "./options";
 
 type ItemClassName<M extends MenuModel> =
@@ -38,8 +43,8 @@ export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuO
   readonly model: M;
   readonly options: O;
   readonly itemHeight?: QuantitativeSize<"px">;
-  readonly value: ModelValue<M, O> | ValueNotApplicable;
-  readonly menuValue: ModelValue<M, O>[] | ModelValue<M, O> | null | ValueNotApplicable;
+  readonly value: MenuModelValue<M, O> | ValueNotApplicable;
+  readonly menuValue: MenuModelValue<M, O>[] | MenuModelValue<M, O> | null | ValueNotApplicable;
   readonly iconSize?: IconSize;
   readonly iconClassName?: ComponentProps["className"];
   readonly spinnerClassName?: ComponentProps["className"];
@@ -55,7 +60,7 @@ export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuO
 
 export type MenuItemClickHandler<M extends MenuModel, O extends MenuOptions<M>> = (
   model: M,
-  v: IfMenuValued<ModelValue<M, O>, M, O, ValueNotApplicable>,
+  v: IfMenuValued<MenuModelValue<M, O>, M, O, ValueNotApplicable>,
   instance: MenuItemInstance,
 ) => void;
 

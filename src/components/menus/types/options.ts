@@ -14,6 +14,3 @@ export type MenuOptions<I extends MenuModel> = Partial<{
   readonly getModelActions: (m: I) => NonNullable<MenuModel["actions"]>;
   readonly getModelDrawer: (m: I) => NonNullable<MenuModel["drawer"]>;
 }>;
-
-export const menuIsNonNullable = <M extends MenuModel, O extends MenuOptions<M>>(options: O) =>
-  options.isNullable === false && options.isMulti !== true;

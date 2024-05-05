@@ -2,133 +2,19 @@ import { useState, useMemo, useRef } from "react";
 
 import isEqual from "lodash.isequal";
 
-import { logger } from "~/application/logger";
 import { useReferentialCallback } from "~/hooks";
 
-import * as types from "./types";
+import * as types from "../types";
 
-export const updateMenuValueWithSelection = <
-  MV extends types.ModelValue<M, O> | types.ModelValue<M, O>[] | null,
-  M extends types.MenuModel,
-  O extends types.MenuOptions<M>,
->(
-  prev: MV,
-  // The value corresponding to the menu item that was just selected.
-  selectedValue: types.ModelValue<M, O>,
-  options: O,
-): MV => {
-  if (Array.isArray(prev)) {
-    const isAlreadySelected = prev.filter(v => isEqual(v, selectedValue)).length > 0;
-    /* If the value is already selected, and the 'isDeselectable' is not false, deselect it.
-       Otherwise, do not alter the value. */
-    if (isAlreadySelected) {
-      if (options.isDeselectable !== false) {
-        return prev.filter(v => !isEqual(v, selectedValue)) as MV;
-      }
-      return prev;
-    }
-    // If the value is not already selected, add it to the selection.
-    return [...prev, selectedValue] as MV;
-  } else if (options.isNullable !== false) {
-    /* If the value is already selected, and the 'isNullable' option is not set to false, and the
-       'isDeselectable' option is also not false, deselect the value. */
-    if (isEqual(prev, selectedValue) && options.isDeselectable !== false) {
-      return null as MV;
-    }
-    // Here, nothing should change - because the menu is not configured for deselection.
-    return prev;
-  } else if (selectedValue === null) {
-    throw new TypeError("Unexpectedly encountered null selected value for a non nullable menu.");
-  }
-  return selectedValue as MV;
-};
-
-type LookupOptions = { throwIfNotAssociated?: boolean };
-type LookupRT<Opts extends LookupOptions, M extends types.MenuModel> = Opts extends {
-  throwIfNotAssociated: true;
-}
-  ? M | [M, ...M[]]
-  : M | [M, ...M[]] | null;
-
-const lookupMenuModel = <
-  Opts extends LookupOptions,
-  M extends types.MenuModel,
-  O extends types.MenuOptions<M>,
->(
-  v: types.MenuValue<M, O>,
-  { data, isReady, options }: { data: M[]; isReady?: boolean; options: O },
-  opts?: Opts,
-): LookupRT<Opts, M> => {
-  const corresponding = data.filter(m => isEqual(types.getModelValue(m, options), v));
-  if (corresponding.length > 1) {
-    logger.error(
-      `Multiple menu models correspond to the same value, '${v}'!  This should not happen, ` +
-        "the value should uniquely identify a model in the data!",
-    );
-    /* The relationship between the model and value should be unique, but in case it is not - we
-       do not want to throw an error, but rather log it.  The effect will be that multiple models
-       can be selected for the same value - but that is better than crashing the app with an error.
-       */
-    return corresponding as [M, ...M[]];
-  } else if (corresponding.length === 0) {
-    /* If the asynchronously loaded data has not yet been received, do not issue a warning if the
-       Menu's value cannot be associated with a model in the data.  In this case, the Menu will be
-       in a "locked" state, and prevent selection.  */
-    if (!isReady) {
-      /* Note: This may be inconsistent with whether or not the Menu is nullable or allows multiple
-         selection - but since we are preventing the Menu from being used in this case, it is fine
-         - since it is only temporary until the data is received. */
-      return null as LookupRT<Opts, M>;
-    }
-    /*
-    Non Multi Menu Case
-    -------------------
-    In the case of a non-multi menu, if the value is not null but is not associated with any model
-    in the dataset, we cannot return a null model value if the menu is also non-nullable.  This is
-    because all of the callback logic in the Menu will assume that the model value is non-nullable
-    (since it should be) if the value is also non-nullable.
-
-    In this case, we have to throw an error that indicates the value is not tied to a model in the
-    data, instead of logging it discretely.
-
-    If the above case holds with the exception that the menu is nullable, we can more gracefully log
-    the error, and return a null model value - since the callback logic will be typed such that a
-    null model value is possible (since the value can be nullable).
-
-    Multi Menu Case
-    ---------------
-    In the case of a multi menu, if a value in the value array is not associated with any model in
-    the dataset, this is still an error - but we can more gracefully handle it by logging and simply
-    excluding that potential model from the set of models represented by the array of values. */
-
-    let msg: string;
-    if (typeof v === "string" && v.trim() === "") {
-      msg =
-        "The value is an empty string, which is not associated with any model in the data!\n" +
-        "Did you forget to set the 'isReady' flag?";
-    } else {
-      msg =
-        `No models correspond to the value, '${v}'!  This should not happen, the value ` +
-        "should uniquely identify the model!\n" +
-        "Did you forget to set the 'isReady' flag?";
-    }
-    // Throw the error if the menu is non-multi and non-nullable.
-    if (opts?.throwIfNotAssociated === true) {
-      throw new TypeError(msg);
-    }
-    logger.error(msg);
-    return null as LookupRT<Opts, M>;
-  }
-  return corresponding[0];
-};
+import { lookupModelsInData } from "./lookup-models";
 
 const getMenuModelValue = <M extends types.MenuModel, O extends types.MenuOptions<M>>(
-  value: types.AnyMenuValue<M, O>,
+  value: types.MenuValue<M, O>,
   { data, isReady, options }: { data: M[]; isReady?: boolean; options: O },
-): types.MenuModelValue<M, O> => {
+): types.MenuModeledValue<M, O> => {
   if (Array.isArray(value)) {
     return value.reduce<M[]>((prev, v) => {
-      const ms = lookupMenuModel(v, { data, isReady, options });
+      const ms = lookupModelsInData(v, { data, isReady, options });
       /* The relationship between the model and value should be unique, but in case it is not - but,
          just add all of the models that correspond to the value to the set anyways.  It will just
          mean multiple models will be selected for the same value. */
@@ -141,29 +27,29 @@ const getMenuModelValue = <M extends types.MenuModel, O extends types.MenuOption
         return prev;
       }
       return [...prev, ms];
-    }, []) as types.MenuModelValue<M, O>;
+    }, []) as types.MenuModeledValue<M, O>;
   } else if (value === null) {
-    return null as types.MenuModelValue<M, O>;
+    return null as types.MenuModeledValue<M, O>;
   } else {
     const ms = lookupMenuModel(
       value,
       { data, isReady, options },
-      { throwIfNotAssociated: types.menuIsNonNullable<M, O>(options) },
+      { throwIfNotAssociated: options.isNullable === false },
     );
     /* The relationship between the model and value should be unique, but in case it is not - we
        will have to assume/pick a model in the set of models that correspond to the value. This will
        lead to buggy behavior, but is better than crashing the app with an error. */
     if (Array.isArray(ms)) {
       // The array will not be empty, based on checks in the lookup method.
-      return ms[0] as types.MenuModelValue<M, O>;
+      return ms[0] as types.MenuModeledValue<M, O>;
     } else if (ms === null) {
       /* This should not happen - and means that the value is not tied to a model.  It is already
          logged, but since we are not dealing with a multi-select menu, we can only return null
          if the menu is not non-nullable... Otherwise, we have to throw an error, because a null
          model value is not expected. */
-      return null as types.MenuModelValue<M, O>;
+      return null as types.MenuModeledValue<M, O>;
     }
-    return ms as types.MenuModelValue<M, O>;
+    return ms as types.MenuModeledValue<M, O>;
   }
 };
 
@@ -174,8 +60,8 @@ type MenuValueReturnType<
 > = V extends true
   ? [
       types.MenuValue<M, O>,
-      types.MenuModelValue<M, O>,
-      (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => void,
+      types.MenuModeledValue<M, O>,
+      (v: types.MenuModelValue<M, O>, instance: types.MenuItemInstance) => void,
       (v: types.MenuValue<M, O>) => void,
     ]
   : [types.ValueNotApplicable, types.ValueNotApplicable, undefined, undefined];
@@ -198,7 +84,7 @@ export const useMenuValue = <
   readonly isValued: V;
   readonly onChange?: (
     value: types.MenuValue<M, O>,
-    params: { item: types.MenuItemInstance; models: types.MenuModelValue<M, O> },
+    params: { item: types.MenuItemInstance; models: types.MenuModeledValue<M, O> },
   ) => void;
 }): MenuValueReturnType<V, M, O> => {
   const [_value, setValue] = useState<types.MenuValue<M, O> | types.ValueNotApplicable>(() => {
@@ -224,7 +110,7 @@ export const useMenuValue = <
     [_propValue, _value],
   );
 
-  const modelValue = useMemo((): types.MenuModelValue<M, O> | types.ValueNotApplicable => {
+  const modelValue = useMemo((): types.MenuModeledValue<M, O> | types.ValueNotApplicable => {
     if (isValued) {
       if (value === types.VALUE_NOT_APPLICABLE) {
         throw new Error("Unexpectedly encountered non applicable menu value for a valued menu.");
@@ -237,7 +123,7 @@ export const useMenuValue = <
   }, [data, value, options, isValued, isReady]);
 
   const selectModel = useReferentialCallback(
-    (v: types.ModelValue<M, O>, instance: types.MenuItemInstance) => {
+    (v: types.MenuModelValue<M, O>, instance: types.MenuItemInstance) => {
       const existingValue = value;
       if (existingValue === types.VALUE_NOT_APPLICABLE) {
         throw new Error("A model cannot be selected if the Menu is not valued.");
@@ -272,7 +158,7 @@ export const useMenuValue = <
       } else if (Array.isArray(existingValue) || !isEqual(existingValue, newValue)) {
         _onChange?.(newValue, {
           item: instance,
-          models: modelV as types.MenuModelValue<M, O>,
+          models: modelV as types.MenuModeledValue<M, O>,
         });
       }
     },

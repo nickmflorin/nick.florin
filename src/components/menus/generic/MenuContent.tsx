@@ -26,7 +26,7 @@ export const MenuContent = <M extends types.MenuModel, O extends types.MenuOptio
       value={value}
       onItemClick={(model, v, instance) => {
         if (v !== types.VALUE_NOT_APPLICABLE) {
-          selectModel?.(v as types.ModelValue<M, O>, instance);
+          selectModel?.(v as types.MenuModelValue<M, O>, instance);
         }
         props.onItemClick?.(model, v, instance);
       }}

@@ -6,12 +6,7 @@ import { type Optional } from "utility-types";
 
 import type * as types from "../types";
 
-import {
-  type MenuValue,
-  type MenuModelValue,
-  type MenuItemInstance,
-  type ModelValue,
-} from "~/components/menus";
+import { type MenuItemInstance } from "~/components/menus";
 import { useMenuValue } from "~/components/menus/hooks";
 import { type ComponentProps } from "~/components/types";
 
@@ -19,8 +14,11 @@ import { FloatingSelectContent } from "./FloatingSelectContent";
 import { MenuSelectInput, type MenuSelectInputProps } from "./MenuSelectInput";
 import { SelectPopover, type SelectPopoverProps } from "./SelectPopover";
 
-export interface SelectBaseProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
-  extends Optional<
+export interface SelectBaseProps<
+  M extends types.SelectModel,
+  O extends types.SelectOptions<M>,
+  D extends types.SelectDataOptions<M, O>,
+> extends Optional<
       Omit<
         SelectPopoverProps,
         "content" | "onOpen" | "onClose" | "onOpenChange" | keyof ComponentProps
@@ -31,37 +29,37 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
       MenuSelectInputProps<M, O>,
       keyof ComponentProps | "value" | "select" | "models" | "isOpen"
     > {
-  readonly value?: MenuValue<M, O>;
-  readonly initialValue?: MenuValue<M, O>;
+  readonly value?: types.SelectValue<M, O, D>;
+  readonly initialValue?: types.SelectValue<M, O, D>;
   readonly menuClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
   readonly data: M[];
   readonly content: (params: {
-    value: MenuValue<M, O>;
+    value: types.SelectValue<M, O, D>;
     isReady: boolean;
-    selectModel: (v: ModelValue<M, O>, instance: MenuItemInstance) => void;
+    selectModel: (v: types.SelectModelValue<M, O, D>, instance: MenuItemInstance) => void;
   }) => JSX.Element;
   readonly onChange?: (
-    v: MenuValue<M, O>,
+    v: types.SelectValue<M, O, D>,
     params: {
-      models: MenuModelValue<M, O>;
+      models: types.SelectModeledValue<M, O, D>;
       item: MenuItemInstance;
     },
   ) => void;
   readonly onOpen?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: MenuValue<M, O>;
-      models: MenuModelValue<M, O>;
+      value: types.SelectValue<M, O, D>;
+      models: types.SelectModeledValue<M, O, D>;
       select: types.SelectInstance;
     },
   ) => void;
   readonly onClose?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: MenuValue<M, O>;
-      models: MenuModelValue<M, O>;
+      value: types.SelectValue<M, O, D>;
+      models: types.SelectModeledValue<M, O, D>;
       select: types.SelectInstance;
     },
   ) => void;
@@ -69,8 +67,8 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
     e: Event | React.MouseEvent<HTMLButtonElement>,
     isOpen: boolean,
     params: {
-      value: MenuValue<M, O>;
-      models: MenuModelValue<M, O>;
+      value: types.SelectValue<M, O, D>;
+      models: types.SelectModelValue<M, O, D>;
       select: types.SelectInstance;
     },
   ) => void;
@@ -78,10 +76,20 @@ export interface SelectBaseProps<M extends types.SelectModel, O extends types.Se
 
 const LocalSelectBase = forwardRef<
   types.SelectInstance,
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  SelectBaseProps<any, types.SelectOptions<any>>
+  SelectBaseProps<
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    any,
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    types.SelectOptions<any>,
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    types.SelectDataOptions<any, types.SelectOptions<any>>
+  >
 >(
-  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
+  <
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
+    D extends types.SelectDataOptions<M, O>,
+  >(
     {
       menuOffset = { mainAxis: 2 },
       menuPlacement,
@@ -104,7 +112,7 @@ const LocalSelectBase = forwardRef<
       onClose,
       onOpenChange,
       ...props
-    }: SelectBaseProps<M, O>,
+    }: SelectBaseProps<M, O, D>,
     ref: ForwardedRef<types.SelectInstance>,
   ): JSX.Element => {
     const internalInstance = useRef<types.SelectInstance | null>(null);
@@ -181,7 +189,11 @@ const LocalSelectBase = forwardRef<
 );
 
 export const SelectBase = LocalSelectBase as {
-  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
-    props: SelectBaseProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
+  <
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
+    D extends types.SelectDataOptions<M, O>,
+  >(
+    props: SelectBaseProps<M, O, D> & { readonly ref?: ForwardedRef<types.SelectInstance> },
   ): JSX.Element;
 };

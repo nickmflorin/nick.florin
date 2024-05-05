@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import React, { type ForwardedRef, forwardRef, useMemo } from "react";
 
-import { type MenuValue, getModelLabel, type MenuModelValue } from "~/components/menus";
+import { type MenuValue, getModelLabel, type MenuModeledValue } from "~/components/menus";
 
 import * as types from "../types";
 
@@ -16,9 +16,9 @@ export interface MenuSelectInputProps<M extends types.SelectModel, O extends typ
   readonly isReady?: boolean;
   readonly options: O;
   readonly maximumNumBadges?: number;
-  readonly models: MenuModelValue<M, O>;
+  readonly models: MenuModeledValue<M, O>;
   readonly value: MenuValue<M, O>;
-  readonly valueRenderer?: types.SelectValueRenderer<M, O, { models: MenuModelValue<M, O> }>;
+  readonly valueRenderer?: types.SelectValueRenderer<M, O, { models: MenuModeledValue<M, O> }>;
   readonly valueModelRenderer?: types.SelectValueModelRenderer<M, O, { model: M }>;
 }
 
@@ -46,12 +46,12 @@ export const MenuSelectInput = forwardRef<HTMLDivElement, MenuSelectInputProps<a
         return <></>;
       }
       /* Coercion of the models here is safe, because we already checked if the models is null. If
-         the models is not null, it is safe to assume that the models is a MenuModelValue. */
+         the models is not null, it is safe to assume that the models is a MenuModeledValue. */
       const _models = models as M | M[];
       const _value = value;
 
       if (valueRenderer) {
-        return valueRenderer(_value, { models: _models as MenuModelValue<M, O> });
+        return valueRenderer(_value, { models: _models as MenuModeledValue<M, O> });
       } else if (Array.isArray(_models)) {
         return (
           <MultiValueRenderer

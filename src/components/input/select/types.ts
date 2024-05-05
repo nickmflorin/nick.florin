@@ -5,24 +5,70 @@ import {
   type MenuOptions,
   type MenuValue,
   type AllowedMenuModelValue,
+  type MenuModeledValue,
   type MenuModelValue,
 } from "~/components/menus";
 
 const NEVER = "__NEVER__" as const;
 type Never = typeof NEVER;
 
+export type SelectModelValue<
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+  D extends SelectDataOptions<M, O>,
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+> = D extends { valueData: (infer T extends { value: any })[] }
+  ? T extends { value: infer V extends MenuModelValue<M, O> }
+    ? V
+    : never
+  : MenuModelValue<M, O>;
+
+export type SelectModeledValue<
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+  D extends SelectDataOptions<M, O>,
+> = D extends { valueData: (infer T extends SelectValueDatum<M, O>)[] }
+  ? O extends {
+      isMulti: true;
+    }
+    ? T[]
+    : O extends { isNullable: true }
+      ? T | null
+      : T
+  : MenuModeledValue<M, O>;
+
+export type SelectValue<
+  M extends MenuModel,
+  O extends MenuOptions<M>,
+  D extends SelectDataOptions<M, O>,
+> = O extends { isMulti: true }
+  ? SelectModelValue<M, O, D>[]
+  : O extends { isNullable: true }
+    ? SelectModelValue<M, O, D> | null
+    : SelectModelValue<M, O, D>;
+
 export type SelectModel<V extends AllowedMenuModelValue = AllowedMenuModelValue> = MenuModel<V> & {
-  // The element that will be used to communicate the value of the select in the select input.
+  /* The element that will be used to communicate the label representation of the Select's value
+     in the Select's rendered input. */
   readonly valueLabel?: ReactNode;
 };
 
-export type SelectOptions<I extends SelectModel> = MenuOptions<I> &
+export type SelectValueDatum<M extends SelectModel, O extends SelectOptions<M>> = {
+  readonly value: MenuModelValue<M, O>;
+  readonly label: ReactNode;
+};
+
+export type SelectOptions<M extends SelectModel> = MenuOptions<M> &
   Partial<{
     readonly getModelValueLabel: (
-      m: I,
+      m: M,
       opts: { isMulti: boolean; isNullable: boolean },
     ) => SelectModel["valueLabel"];
   }>;
+
+export type SelectDataOptions<M extends SelectModel, O extends SelectOptions<M>> = Partial<{
+  readonly valueData?: SelectValueDatum<M, O>[];
+}>;
 
 export type SelectInstance = {
   readonly setOpen: (v: boolean) => void;
@@ -32,8 +78,8 @@ export type SelectInstance = {
 export type SelectValueRenderer<
   M extends SelectModel,
   O extends SelectOptions<M>,
-  P extends { models: MenuModelValue<M, O> } = {
-    models: MenuModelValue<M, O>;
+  P extends { models: MenuModeledValue<M, O> } = {
+    models: MenuModeledValue<M, O>;
     select: SelectInstance;
   },
 > = (v: MenuValue<M, O>, params: P) => ReactNode;

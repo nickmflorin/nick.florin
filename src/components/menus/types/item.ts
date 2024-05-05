@@ -2,7 +2,7 @@ import { type RefObject } from "react";
 
 import {
   type MenuModel,
-  type ModelValue,
+  type MenuModelValue,
   type ModelId,
   type ValueNotApplicable,
   VALUE_NOT_APPLICABLE,
@@ -16,7 +16,7 @@ export const getMenuItemKey = <M extends MenuModel, O extends MenuOptions<M>>({
   id,
   index,
 }: {
-  value: ModelValue<M, O> | ValueNotApplicable;
+  value: MenuModelValue<M, O> | ValueNotApplicable;
   index: number;
   id: ModelId<M, O>;
 }): MenuItemKey =>

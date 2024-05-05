@@ -24,7 +24,7 @@ export const AbstractMenuContent = <M extends types.MenuModel, O extends types.M
     <div style={style} className={clsx("menu__content", className)}>
       {data.map((model, index) => {
         const id = types.getModelId(model, props.options);
-        const v: types.ModelValue<M, O> | types.ValueNotApplicable =
+        const v: types.MenuModelValue<M, O> | types.ValueNotApplicable =
           value !== types.VALUE_NOT_APPLICABLE
             ? types.getModelValue(model, props.options)
             : types.VALUE_NOT_APPLICABLE;
@@ -49,7 +49,7 @@ export const AbstractMenuContent = <M extends types.MenuModel, O extends types.M
             onClick={() =>
               onItemClick?.(
                 model,
-                v as types.IfMenuValued<types.ModelValue<M, O>, M, O, types.ValueNotApplicable>,
+                v as types.IfMenuValued<types.MenuModelValue<M, O>, M, O, types.ValueNotApplicable>,
                 ref.current as types.MenuItemInstance,
               )
             }

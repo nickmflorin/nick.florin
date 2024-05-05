@@ -1,34 +1,29 @@
-import { type ModelValue, type MenuModel } from "./model";
+import { type MenuModelValue, type MenuModel } from "./model";
 import { type MenuOptions } from "./options";
 
 export type MenuValue<M extends MenuModel, O extends MenuOptions<M>> = O extends { isMulti: true }
-  ? ModelValue<M, O>[]
+  ? MenuModelValue<M, O>[]
   : O extends { isNullable: true }
-    ? ModelValue<M, O> | null
-    : ModelValue<M, O>;
-
-export type AnyMenuValue<M extends MenuModel, O extends MenuOptions<M>> =
-  | ModelValue<M, O>[]
-  | null
-  | ModelValue<M, O>;
+    ? MenuModelValue<M, O> | null
+    : MenuModelValue<M, O>;
 
 export const valueIsMulti = <
-  V extends MenuModelValue<M, O>,
+  V extends MenuModeledValue<M, O>,
   M extends MenuModel,
   O extends MenuOptions<M>,
 >(
   value: V,
-): value is V & ModelValue<M, O>[] => Array.isArray(value);
+): value is V & MenuModelValue<M, O>[] => Array.isArray(value);
 
 export const valueIsNotMulti = <
-  V extends MenuModelValue<M, O>,
+  V extends MenuModeledValue<M, O>,
   M extends MenuModel,
   O extends MenuOptions<M>,
 >(
   value: V,
-): value is V & ModelValue<M, O> => !Array.isArray(value) && value !== null;
+): value is V & MenuModelValue<M, O> => !Array.isArray(value) && value !== null;
 
-export type MenuModelValue<M extends MenuModel, O extends MenuOptions<M>> = O extends {
+export type MenuModeledValue<M extends MenuModel, O extends MenuOptions<M>> = O extends {
   isMulti: true;
 }
   ? M[]

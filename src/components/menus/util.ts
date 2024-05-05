@@ -7,7 +7,7 @@ export const getMenuItemKey = <M extends types.MenuModel, O extends types.MenuOp
   id,
   index,
 }: {
-  value: types.ModelValue<M, O> | types.ValueNotApplicable;
+  value: types.MenuModelValue<M, O> | types.ValueNotApplicable;
   index: number;
   id?: types.ModelId<M, O>;
 }): MenuItemKey =>

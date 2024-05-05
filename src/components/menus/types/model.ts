@@ -40,7 +40,7 @@ export type MenuModel<V extends AllowedMenuModelValue = AllowedMenuModelValue> =
   [key: string]: unknown;
 };
 
-export type ModelValue<M extends MenuModel, O extends MenuOptions<M>> = M extends {
+export type MenuModelValue<M extends MenuModel, O extends MenuOptions<M>> = M extends {
   readonly value: infer V;
 }
   ? V
@@ -51,14 +51,14 @@ export type ModelValue<M extends MenuModel, O extends MenuOptions<M>> = M extend
 export const getModelValue = <M extends MenuModel, O extends MenuOptions<M>>(
   model: M,
   options: O,
-): ModelValue<M, O> | ValueNotApplicable => {
+): MenuModelValue<M, O> | ValueNotApplicable => {
   let v: unknown = VALUE_NOT_APPLICABLE;
   if (options.getModelValue !== undefined) {
     v = options.getModelValue(model);
   } else if (model.value !== undefined) {
     v = model.value;
   }
-  return v as ModelValue<M, O>;
+  return v as MenuModelValue<M, O>;
 };
 
 export type ModelId<M extends MenuModel, O extends MenuOptions<M>> = M extends {
