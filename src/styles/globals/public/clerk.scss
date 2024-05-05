@@ -57,11 +57,7 @@ button.cl-socialButtonsBlockButton__google {
 }
 
 .cl-userButtonPopoverCard {
-  padding: 12px 0px;
-
-  .cl-userPreview {
-    padding: 0px 12px;
-  }
+  border-radius: theme("borderRadius.md");
 
   .cl-userButtonPopoverActions {
     .cl-userButtonPopoverActionButton {
