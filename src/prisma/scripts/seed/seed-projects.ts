@@ -1,11 +1,11 @@
 import { humanizeList, slugify } from "~/lib/formatters";
 import { type Transaction, getUniqueConstraintFields } from "~/prisma/client";
 import { type Project, type Skill } from "~/prisma/model";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { json } from "../fixtures/json";
 import { stdout } from "../stdout";
 
-import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
 export const findCorrespondingProjectSync = (name: string, projects: Project[]): Project =>

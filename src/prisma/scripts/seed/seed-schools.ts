@@ -1,12 +1,12 @@
 import { type Transaction } from "~/prisma/client";
 import { DetailEntityType, type School } from "~/prisma/model";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { json } from "../fixtures/json";
 import { stdout } from "../stdout";
 
 import { seedCourses } from "./seed-courses";
 import { createDetail } from "./seed-details";
-import { type SeedContext } from "./types";
 import { findCorresponding } from "./util";
 
 export async function seedSchools(tx: Transaction, ctx: SeedContext) {

@@ -1,9 +1,8 @@
 import { type Transaction } from "~/prisma/client";
 import { calculateSkillsExperience } from "~/prisma/model";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { stdout } from "../stdout";
-
-import { type SeedContext } from "./types";
 
 export async function calculateSkillExperiences(tx: Transaction, ctx: SeedContext) {
   const skills = await tx.skill.findMany({});

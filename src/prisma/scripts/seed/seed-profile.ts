@@ -1,9 +1,8 @@
 import { type Transaction } from "~/prisma/client";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { json } from "../fixtures/json";
 import { stdout } from "../stdout";
-
-import { type SeedContext } from "./types";
 
 export async function seedProfile(tx: Transaction, ctx: SeedContext) {
   stdout.begin(`Seeding ${json.profiles.length} Profiles...`);

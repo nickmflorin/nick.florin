@@ -1,8 +1,7 @@
 import { type EmailAddress, type User as ClerkUser } from "@clerk/clerk-sdk-node";
 
 import { humanizeList } from "~/lib/formatters";
-
-import { prisma } from "../client";
+import { type Transaction } from "~/prisma/client";
 
 import { type User } from "./generated";
 
@@ -92,8 +91,8 @@ export const getTransformedClerkData = (u: ClerkUser): ClerkTransformedFields =>
   };
 };
 
-export const upsertUserFromClerk = async (u: ClerkUser): Promise<User> =>
-  await prisma.user.upsert({
+export const upsertUserFromClerk = async (tx: Transaction, u: ClerkUser): Promise<User> =>
+  await tx.user.upsert({
     where: { clerkId: u.id },
     update: getTransformedClerkData(u),
     create: {

@@ -1,10 +1,10 @@
 import { type Transaction } from "~/prisma/client";
 import { type DetailEntityType, type Skill } from "~/prisma/model";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { type JsonDetail } from "../fixtures/schemas";
 
 import { findCorrespondingProject } from "./seed-projects";
-import { type SeedContext } from "./types";
 
 export const createDetail = async (
   tx: Transaction,

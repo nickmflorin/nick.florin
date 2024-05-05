@@ -3,11 +3,10 @@ import { type z } from "zod";
 import { slugify, humanizeList } from "~/lib/formatters";
 import { getUniqueConstraintFields, type Transaction } from "~/prisma/client";
 import { type Course, type Education, type Skill } from "~/prisma/model";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { type EducationJsonSchema } from "../fixtures/schemas";
 import { type SeedStdout } from "../stdout";
-
-import { type SeedContext } from "./types";
 
 export async function seedCourses(
   tx: Transaction,

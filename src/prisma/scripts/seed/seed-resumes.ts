@@ -1,10 +1,9 @@
 import { list, type ListBlobResult } from "@vercel/blob";
 
 import { type Transaction } from "~/prisma/client";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { stdout } from "../stdout";
-
-import { type SeedContext } from "./types";
 
 type Blob = ListBlobResult["blobs"][number];
 

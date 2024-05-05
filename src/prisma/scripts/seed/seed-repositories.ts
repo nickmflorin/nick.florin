@@ -3,12 +3,11 @@ import isEqual from "lodash.isequal";
 import { humanizeList } from "~/lib/formatters";
 import { type Transaction } from "~/prisma/client";
 import type { BrandRepository, BrandSkill } from "~/prisma/model";
+import { type SeedContext } from "~/prisma/scripts/context";
 import { githubClient } from "~/integrations/github";
 
 import { json } from "../fixtures/json";
 import { stdout } from "../stdout";
-
-import { type SeedContext } from "./types";
 
 type DifferingField<
   M extends Record<string, unknown>,

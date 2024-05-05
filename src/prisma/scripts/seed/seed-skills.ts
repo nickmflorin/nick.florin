@@ -1,11 +1,10 @@
 import { slugify, humanizeList } from "~/lib/formatters";
 import { type Transaction, getUniqueConstraintFields } from "~/prisma/client";
 import { type Skill } from "~/prisma/model";
+import { type SeedContext } from "~/prisma/scripts/context";
 
 import { json } from "../fixtures/json";
 import { stdout } from "../stdout";
-
-import { type SeedContext } from "./types";
 
 export const seedSkills = async (tx: Transaction, ctx: SeedContext) => {
   const skills = json.skills;

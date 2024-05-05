@@ -40,7 +40,7 @@ type MessageOptions = {
   readonly indexLineItems?: boolean;
 };
 
-type Level = "info" | "error" | "complete" | "begin" | "warn";
+type Level = "info" | "error" | "complete" | "begin" | "warn" | "success";
 
 const LevelColors: { [key in Level]: string } = {
   info: terminal.GRAY,
@@ -48,6 +48,7 @@ const LevelColors: { [key in Level]: string } = {
   complete: terminal.GREEN,
   begin: terminal.YELLOW,
   warn: terminal.YELLOW,
+  success: terminal.GREEN,
 };
 
 const IndentedLevelColors: { [key in Level]: string } = {
@@ -56,6 +57,7 @@ const IndentedLevelColors: { [key in Level]: string } = {
   complete: terminal.CYAN,
   begin: terminal.YELLOW,
   warn: terminal.YELLOW,
+  success: terminal.GREEN,
 };
 
 export class SeedStdout {
@@ -191,6 +193,11 @@ export class SeedStdout {
   public warn(message: string, opts?: LineItem[] | MessageOptions): void {
     /* eslint-disable-next-line no-console */
     console.error(this.formatMessage(message, "warn", opts));
+  }
+
+  public success(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.error(this.formatMessage(message, "success", opts));
   }
 
   public begin(message: string, opts?: LineItem[] | MessageOptions): SeedStdout {
