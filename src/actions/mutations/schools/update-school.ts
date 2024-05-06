@@ -47,7 +47,6 @@ export const updateSchool = async (id: string, req: z.infer<typeof SchoolSchema>
         ...data,
         name,
         shortName,
-        createdById: user.id,
         updatedById: user.id,
       },
     });
