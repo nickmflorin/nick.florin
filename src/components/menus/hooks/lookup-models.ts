@@ -1,18 +1,28 @@
-import type { ReactNode } from "react";
-
 import isEqual from "lodash.isequal";
 
 import { logger } from "~/application/logger";
 import {
+  type SelectDataOptions,
+  type SelectModel,
+  type SelectValue,
+  type SelectOptions,
+  type SelectValueDatum,
+  type SelectModelValue,
+} from "~/components/input/select";
+import {
   type MenuOptions,
-  type AllowedMenuModelValue,
-  MenuValue,
+  type MenuValue,
+  type MenuModelValue,
   type MenuModel,
   getModelValue,
 } from "~/components/menus";
 
-export const lookupModelsInData = <M extends MenuModel, O extends MenuOptions<M>>(
-  v: MenuModelValue<M>,
+export const lookupModelsInData = <
+  M extends MenuModel | SelectModel,
+  O extends MenuOptions<M> | SelectOptions<M>,
+  D extends SelectDataOptions<M, O>,
+>(
+  v: MenuModelValue<M, O> | SelectModelValue<M, O, D>,
   {
     data,
     isReady,
@@ -87,18 +97,19 @@ export const lookupModelsInData = <M extends MenuModel, O extends MenuOptions<M>
 };
 
 export const lookupModelsInValueData = <
-  V extends AllowedMenuModelValue,
-  M extends { value: V; label: ReactNode },
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+  D extends SelectDataOptions<M, O>,
 >(
-  v: V,
+  v: SelectModelValue<M, O, D>,
   {
     data,
     options: { isNullable = true, isMulti = false },
   }: {
-    data: M[];
+    data: SelectValueDatum<M, O>[];
     options: Pick<MenuOptions<M>, "isNullable" | "isMulti">;
   },
-): M[] => {
+): SelectValueDatum<M, O>[] => {
   const corresponding = data.filter(m => isEqual(m.value, v));
   if (corresponding.length > 1) {
     logger.error(
@@ -108,7 +119,7 @@ export const lookupModelsInValueData = <
     /* The relationship between the model and value should be unique, but in case it is not - we
        do not want to throw an error, but rather log it.  The effect will be slightly buggy
        behavior, in the sense that multiple models will be selected for the same value. */
-    return corresponding as [M, ...M[]];
+    return corresponding as [SelectValueDatum<M, O>, ...SelectValueDatum<M, O>[]];
   } else if (corresponding.length === 0) {
     /*
     Non Multi Menu Case
