@@ -8,13 +8,15 @@ import { ViewResumeModelDrawer } from "~/components/drawers/details/ResumeModelD
 export interface ExpandResumeModelButtonProps<T extends ResumeBrand> {
   readonly modelId: string;
   readonly modelType: T;
+  readonly push?: boolean;
 }
 
 export const ExpandResumeModelButton = <T extends ResumeBrand>({
   modelId,
   modelType,
+  push,
 }: ExpandResumeModelButtonProps<T>) => (
-  <ViewResumeModelDrawer modelId={modelId} modelType={modelType}>
+  <ViewResumeModelDrawer modelId={modelId} modelType={modelType} push={push}>
     {({ isLoading, open }) => (
       <IconButton.Transparent
         size="small"

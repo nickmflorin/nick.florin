@@ -92,22 +92,31 @@ export type DrawerDynamicProps<D extends DrawerId> = Omit<
   keyof InjectedDrawerProps
 >;
 
+export type OpenDrawerParams = {
+  readonly push?: boolean;
+  readonly closeHandler?: () => void;
+};
+
 export type DrawersManager = {
   readonly isReady: boolean;
   readonly drawer: JSX.Element | null;
+  readonly forwardEnabled: boolean;
+  readonly backEnabled: boolean;
+  readonly forward: () => void;
+  readonly back: () => void;
   readonly close: () => void;
   readonly open: <D extends DrawerId>(
     id: D,
-    params: DrawerDynamicProps<D>,
-    closeHandler?: () => void,
+    props: DrawerDynamicProps<D>,
+    options?: OpenDrawerParams,
   ) => void;
 };
 
 export interface ClientDrawerProps<D extends DrawerId> {
   readonly id: D;
-  readonly isOpen?: boolean;
-  readonly onClose?: () => void;
   readonly props: DrawerDynamicProps<D>;
+  readonly push?: boolean;
+  readonly onClose?: () => void;
 }
 
 export type ClientDrawerComponent = {

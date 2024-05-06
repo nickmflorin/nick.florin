@@ -70,12 +70,24 @@ export const SkillDrawerContent = ({
     </DetailDrawerSection>
     <DetailDrawerSection label="Experiences">
       {experiences.map((experience, index) => (
-        <ResumeModelCondensedTile key={index} model={experience} expandable showTags={false} />
+        <ResumeModelCondensedTile
+          key={index}
+          model={experience}
+          titleIsExpandable
+          pushOnExpandTitle
+          showTags={false}
+        />
       ))}
     </DetailDrawerSection>
     <DetailDrawerSection label="Educations">
       {educations.map((education, index) => (
-        <ResumeModelCondensedTile key={index} model={education} expandable showTags={false} />
+        <ResumeModelCondensedTile
+          key={index}
+          model={education}
+          titleIsExpandable
+          pushOnExpandTitle
+          showTags={false}
+        />
       ))}
     </DetailDrawerSection>
     {courses.length !== 0 ? (

@@ -32,15 +32,9 @@
     @include drawer-container();
     position: relative;
 
-    .drawer__close-button {
-      position: absolute;
-      z-index: 100;
-      top: 16px;
-      right: 12px;
-    }
-
     > .drawer {
       @include drawer-container();
+      z-index: 0;
       position: relative;
       display: flex;
       flex-direction: column;

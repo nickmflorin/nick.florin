@@ -9,7 +9,7 @@ export default async function EducationsPage() {
         <ResumeModelCondensedTile
           model={education}
           key={index}
-          expandable
+          titleIsExpandable
           showTags={false}
           includeDescriptionShowMoreLink
         />

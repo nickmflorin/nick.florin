@@ -9,7 +9,7 @@ export default async function ExperiencesPage() {
         <ResumeModelCondensedTile
           model={experience}
           key={index}
-          expandable
+          titleIsExpandable
           showTags={false}
           includeDescriptionShowMoreLink
         />

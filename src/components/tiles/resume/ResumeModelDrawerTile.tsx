@@ -12,14 +12,16 @@ import * as types from "./types";
 export interface ResumeModelDrawerTileProps<M extends types.ApiModel<T>, T extends ResumeBrand>
   extends ComponentProps {
   readonly model: M;
+  readonly titleProps?: ComponentProps;
 }
 
 export const ResumeModelDrawerTile = <M extends types.ApiModel<T>, T extends ResumeBrand>({
   model,
+  titleProps,
   ...props
 }: ResumeModelDrawerTileProps<M, T>) => (
   <ResumeModelTile {...props} className={clsx("gap-[10px]", props.className)}>
-    <ResumeModelTile.Header size="medium" model={model} />
+    <ResumeModelTile.Header size="medium" model={model} titleProps={titleProps} />
     <div className="flex flex-col gap-[12px] overflow-y-auto">
       {(types.hasDescription(model) || model.details.length !== 0) && (
         <div className="flex flex-col gap-[10px] max-w-[700px]">

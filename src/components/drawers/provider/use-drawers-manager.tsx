@@ -1,125 +1,140 @@
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, cloneElement } from "react";
 
-import clsx from "clsx";
+import type * as types from "./types";
 
-import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
-import { DrawerHistoryButtons } from "~/components/buttons/DrawerHistoryButtons";
+import { logger } from "~/application/logger";
 import { Loading } from "~/components/feedback/Loading";
-import { ShowHide } from "~/components/util";
+import { useReferentialCallback } from "~/hooks";
 
-import { DrawerContainer } from "../DrawerContainer";
-
-import { getDrawerComponent } from "./drawers";
+const DrawerRenderer = dynamic(() => import("./DrawerRenderer"), {
+  loading: () => <Loading isLoading={true} />,
+});
 
 type DrawerHistory = {
-  drawers: JSX.Element[];
+  rendered: {
+    drawer: JSX.Element;
+    id: types.DrawerId;
+  }[];
   index: number;
 };
 
-const canGoBack = (history: DrawerHistory | null) =>
-  history !== null && history.drawers.length > 1 && history.index > 0;
-
-const canGoForward = (history: DrawerHistory | null) =>
-  history !== null && history.drawers.length > 1 && history.index < history.drawers.length - 1;
-
-const DrawerRenderer = <D extends types.DrawerId>({
-  id,
-  backEnabled,
-  forwardEnabled,
-  props,
-  onBack,
-  onClose,
-}: {
-  backEnabled: boolean;
-  forwardEnabled: boolean;
-  id: D;
-  props: DrawerDynamicProps<D>;
-  onBack: () => void;
-  onClose: () => void;
-}) => {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const Drawer = getDrawerComponent(id) as React.ComponentType<any>;
-  const ps = {
-    ...props,
-    onClose,
-  } as React.ComponentProps<typeof Drawer>;
-
-  return (
-    <DrawerContainer
-      className={clsx({
-        "pt-[48px]": backEnabled || forwardEnabled,
-      })}
-    >
-      <Drawer {...ps} />
-      <div
-        className={clsx(
-          "flex flex-row items-center justify-between",
-          "absolute z-100 top-[16px] right-[12px]",
-        )}
-      >
-        <ShowHide show={backEnabled || forwardEnabled}>
-          <DrawerHistoryButtons
-            backEnabled={backEnabled}
-            forwardEnabled={forwardEnabled}
-            onBack={() => onBack()}
-          />
-        </ShowHide>
-        <DrawerCloseButton key="1" onClick={() => onClose()} />
-      </div>
-    </DrawerContainer>
-  );
-};
-
-export const useDrawersManager = (): Omit<DrawersManager, "isReady"> => {
-  // const [drawer, setDrawer] = useState<JSX.Element | null>(null);
-
+export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
   const [drawerHistory, setDrawerHistory] = useState<DrawerHistory | null>(null);
+
+  const forwardEnabled = useMemo(
+    () =>
+      drawerHistory !== null &&
+      drawerHistory.rendered.length > 1 &&
+      drawerHistory.index < drawerHistory.rendered.length,
+    [drawerHistory],
+  );
+
+  const backEnabled = useMemo(
+    () => drawerHistory !== null && drawerHistory.rendered.length > 1 && drawerHistory.index > 1,
+    [drawerHistory],
+  );
 
   const close = useCallback(() => {
     setDrawerHistory(null);
   }, []);
 
+  const back = useReferentialCallback(() => {
+    if (!drawerHistory) {
+      /* This should not occur because if this were the case, the back button should either be
+         disabled or not present. */
+      logger.warn(
+        "Suspicous State w Managed Drawers: The back event was triggered when there is no " +
+          "drawer history! There must be drawer history in order to go back, and this " +
+          "indicates there is an inconsistency in state or in the logic itself.",
+      );
+      return;
+    } else if (drawerHistory.index < 2) {
+      /* This should not occur because if this were the case, the back button should either be
+         disabled or not present. */
+      logger.warn(
+        "Suspicous State w Managed Drawers: The back event was triggered when the active index " +
+          `'${drawerHistory.index}', is less than 2!  There must be at least one drawer before the ` +
+          "active index in order to go back, and this indicates there is an inconsistency in " +
+          "state or the logic itself.",
+        { index: drawerHistory.index, historyCount: drawerHistory.rendered.length },
+      );
+      return;
+    }
+    setDrawerHistory({ ...drawerHistory, index: Math.max(drawerHistory.index - 1, 1) });
+  });
+
+  const forward = useCallback(() => {
+    setDrawerHistory(history => {
+      if (!history) {
+        /* This should not occur because if this were the case, the forward  button should either be
+           disabled or not present. */
+        logger.warn(
+          "Suspicous State w Managed Drawers: The forward event was triggered when there is no " +
+            "drawer history! There must be drawer history in order to go forward, and this " +
+            "indicates there is an inconsistency in state or in the logic itself.",
+        );
+        return history;
+      } else if (history.index === history.rendered.length) {
+        /* This should not occur because if this were the case, the back button should either be
+           disabled or not present. */
+        logger.warn(
+          "Suspicous State w Managed Drawers: The forward event was triggered when the active " +
+            `index, '${history.index}', is the last index of the history array!  There must be ` +
+            "at least one drawer after the active index in order to go forward, and this " +
+            "indicates there is an inconsistency in state or the logic itself.",
+          { index: history.index, historyCount: history.rendered.length },
+        );
+        return history;
+      }
+      return { ...history, index: Math.min(history.index + 1, history.rendered.length) };
+    });
+  }, []);
+
   const open = useCallback(
-    <D extends types.DrawerId>(id: D, props: DrawerDynamicProps<D>, handler?: () => void) =>
-      setDrawerHistory(curr => {
-        const newDrawers = [
-          ...(curr?.drawers ?? []),
-          <DrawerRenderer
-            key={curr?.drawers.length ?? "0"}
-            id={id}
-            props={props}
-            forwardEnabled={curr !== null && curr.drawers.length >= 1}
-            backEnabled={curr !== null && curr.drawers.length >= 1}
-            onBack={() => {
-              // Temporary - just for checking
-              setDrawerHistory(null);
-            }}
-            onClose={() => {
-              handler?.();
-              setDrawerHistory({ drawers: [], index: 0 });
-            }}
-          />,
-        ];
-        /* Note: Since opening a drawer always means showing the new drawer being opened, we always
-           increment the index to the end of the 'drawers' array in history. */
-        return { drawers: newDrawers, index: newDrawers.length - 1 };
-      }),
+    <D extends types.DrawerId>(
+      id: D,
+      props: types.DrawerDynamicProps<D>,
+      options?: types.OpenDrawerParams,
+    ) => {
+      setDrawerHistory(history => {
+        const rendered = history?.rendered || [];
+        const newDrawer = (
+          <DrawerRenderer id={id} props={props} onClose={() => options?.closeHandler?.()} />
+        );
+        if (options?.push) {
+          return {
+            index: rendered.length + 1,
+            rendered: [...rendered, { drawer: newDrawer, id }],
+          };
+        }
+        return {
+          index: 1,
+          rendered: [{ drawer: newDrawer, id }],
+        };
+      });
+    },
     [],
   );
 
   const drawer = useMemo(() => {
-    if (drawerHistory !== null && drawerHistory.drawers.length > 0) {
-      const drawer = drawerHistory.drawers[drawerHistory.index];
+    if (drawerHistory !== null && drawerHistory.rendered.length > 0) {
+      const drawer = drawerHistory.rendered[drawerHistory.index - 1];
       if (drawer === undefined) {
-        console.warn("");
+        logger.warn(
+          `Suspicous State w Managed Drawers: No drawer exists at index '${drawerHistory.index - 1}'!`,
+          { historyCount: drawerHistory.rendered.length, index: drawerHistory.index },
+        );
         return null;
       }
-      return drawer;
+      if (drawerHistory.index < drawerHistory.rendered.length) {
+        return cloneElement(drawer.drawer, { ...drawer.drawer.props, forwardEnabled: true });
+      }
+      return cloneElement(drawer.drawer, { ...drawer.drawer.props, forwardEnabled: false });
     }
     return null;
   }, [drawerHistory]);
 
-  return { drawer, open, close };
+  return { drawer, forwardEnabled, backEnabled, forward, back, open, close };
 };

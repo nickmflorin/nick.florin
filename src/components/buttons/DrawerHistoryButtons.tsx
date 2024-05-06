@@ -29,4 +29,4 @@ export const DrawerHistoryButtons = forwardRef<HTMLDivElement, DrawerHistoryButt
   ),
 );
 
-export default DrawerHistoryButton;
+export default DrawerHistoryButtons;

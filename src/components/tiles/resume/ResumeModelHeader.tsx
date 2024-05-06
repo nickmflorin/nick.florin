@@ -29,7 +29,9 @@ export interface ResumeModelHeaderProps<M extends BrandModel<T>, T extends Resum
   readonly size: types.ResumeModelSize;
   readonly showTags?: boolean;
   readonly titleIsExpandable?: boolean;
+  readonly pushOnExpandTitle?: boolean;
   readonly children?: ReactNode;
+  readonly titleProps?: ComponentProps;
 }
 
 const ImageGaps: { [key in types.ResumeModelSize]: { [key in ScreenSize]: number } } = {
@@ -42,7 +44,9 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
   model,
   size,
   children,
+  titleProps,
   titleIsExpandable = false,
+  pushOnExpandTitle = false,
   showTags = true,
   ...props
 }: ResumeModelHeaderProps<M, T>) => {
@@ -69,7 +73,13 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
               "gap-[2px]": size === "small",
             })}
           >
-            <ResumeModelTitle model={model} size={size} expandable={titleIsExpandable} />
+            <ResumeModelTitle
+              {...titleProps}
+              model={model}
+              size={size}
+              expandable={titleIsExpandable}
+              pushOnExpand={pushOnExpandTitle}
+            />
             <ResumeModelSubTitle model={model} size={size} />
           </div>
           <ShowHide show={showTags}>

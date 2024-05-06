@@ -37,16 +37,17 @@ export const ModelDrawerProps: {
 export interface ResumeModelDetailDrawerProps<T extends ResumeBrand> {
   readonly modelId: string;
   readonly modelType: T;
+  readonly push?: boolean;
   readonly children: (params: { isLoading: boolean; open: () => void }) => JSX.Element;
 }
 
 export const ViewResumeModelDrawer = <T extends ResumeBrand>({
   modelId,
   modelType,
+  push = false,
   children,
 }: ResumeModelDetailDrawerProps<T>) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   return (
     <>
       <DynamicLoading>
@@ -57,6 +58,7 @@ export const ViewResumeModelDrawer = <T extends ResumeBrand>({
           id={ModelDrawerProps[modelType](modelId).id}
           props={ModelDrawerProps[modelType](modelId).props}
           onClose={() => setDrawerOpen(false)}
+          push={push}
         />
       )}
     </>
