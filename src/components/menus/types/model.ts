@@ -14,7 +14,7 @@ export type ValueNotApplicable = typeof VALUE_NOT_APPLICABLE;
 const NEVER = "__NEVER__" as const;
 type Never = typeof NEVER;
 
-export type AllowedMenuModelValue = string | number | Record<string, unknown>;
+export type AllowedMenuModelValue = string;
 
 export type MenuModelHref = string | { url: string; target?: string; rel?: string };
 
@@ -41,10 +41,10 @@ export type MenuModel<V extends AllowedMenuModelValue = AllowedMenuModelValue> =
 };
 
 export type ModelValue<M extends MenuModel, O extends MenuOptions<M>> = M extends {
-  readonly value: infer V;
+  readonly value: infer V extends AllowedMenuModelValue;
 }
   ? V
-  : O extends { readonly getModelValue: (m: M) => infer V }
+  : O extends { readonly getModelValue: (m: M) => infer V extends AllowedMenuModelValue }
     ? V
     : never;
 
