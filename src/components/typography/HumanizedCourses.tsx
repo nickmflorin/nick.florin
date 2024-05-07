@@ -5,7 +5,7 @@ import isEqual from "lodash.isequal";
 
 import type { BrandCourse } from "~/prisma/model";
 import { Link } from "~/components/buttons";
-import { useDrawers } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { type SingleTextNode } from "~/components/types/typography";
 import { Text } from "~/components/typography/Text";
 

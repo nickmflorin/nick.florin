@@ -2,32 +2,20 @@
 import dynamic from "next/dynamic";
 import React, { forwardRef, type ForwardedRef } from "react";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
 import { Loading } from "~/components/feedback/Loading";
-import {
-  VALUE_NOT_APPLICABLE,
-  type AbstractMenuProps,
-  type ModelValue,
-  type AbstractMenuComponent,
-} from "~/components/menus";
-import { type ComponentProps } from "~/components/types";
+import { type MenuComponent, type MenuProps } from "~/components/menus";
 
-import { SelectBase, type SelectBaseProps } from "./SelectBase";
+import { SelectBase } from "./SelectBase";
 
-const AbstractMenu = dynamic(() => import("~/components/menus/generic/AbstractMenu"), {
+const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
   loading: () => <Loading isLoading={true} spinnerSize="16px" />,
-}) as AbstractMenuComponent;
-
-export interface SelectProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
-  extends Omit<SelectBaseProps<M, O>, "content">,
-    Omit<AbstractMenuProps<M, O>, "value" | "children" | keyof ComponentProps> {
-  readonly itemRenderer?: types.SelectItemRenderer<M>;
-}
+}) as MenuComponent;
 
 const LocalSelect = forwardRef<
   types.SelectInstance,
-  SelectProps<types.SelectModel, types.SelectOptions<types.SelectModel>>
+  types.SelectProps<types.SelectModel, types.SelectOptions<types.SelectModel>>
 >(
   <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     {
@@ -58,7 +46,7 @@ const LocalSelect = forwardRef<
       onClose,
       onOpenChange,
       ...props
-    }: SelectProps<M, O>,
+    }: types.SelectProps<M, O>,
     ref: ForwardedRef<types.SelectInstance>,
   ): JSX.Element => (
     <SelectBase<M, O>
@@ -89,21 +77,19 @@ const LocalSelect = forwardRef<
       onClose={onClose}
       valueModelRenderer={valueModelRenderer}
       onOpenChange={onOpenChange}
-      content={({ selectModel, value: _value }) => (
-        <AbstractMenu
-          {...(props as AbstractMenuProps<M, O>)}
-          isReady={isReady}
+      content={({ onSelect, isSelected }) => (
+        <Menu
+          {...(props as MenuProps<M, O>)}
+          isLocked={!isReady}
           className="z-50"
-          value={_value}
-          onItemClick={(model, v, instance) => {
-            if (v !== VALUE_NOT_APPLICABLE) {
-              selectModel?.(v as ModelValue<M, O>, instance);
-            }
-            props.onItemClick?.(model, v, instance);
+          itemIsSelected={m => isSelected(m)}
+          onItemClick={(model, instance) => {
+            onSelect(model, instance);
+            props.onItemClick?.(model, instance);
           }}
         >
           {itemRenderer ? m => itemRenderer(m) : undefined}
-        </AbstractMenu>
+        </Menu>
       )}
     >
       {children}
@@ -113,6 +99,6 @@ const LocalSelect = forwardRef<
 
 export const Select = LocalSelect as {
   <M extends types.SelectModel, O extends types.SelectOptions<M>>(
-    props: SelectProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
+    props: types.SelectProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
   ): JSX.Element;
 };

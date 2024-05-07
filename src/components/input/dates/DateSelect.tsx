@@ -6,14 +6,14 @@ import { useRef, forwardRef, type ForwardedRef, useState } from "react";
 import { DateTime } from "luxon";
 import { type Optional } from "utility-types";
 
-import type * as types from "../select/types";
+import type * as types from "../select/generic/types";
 
 import { Loading } from "~/components/feedback/Loading";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { type ComponentProps } from "~/components/types";
 
-import { SelectInput, type SelectInputProps } from "../select/generic/SelectInput";
-import { SelectPopover, type SelectPopoverProps } from "../select/generic/SelectPopover";
+import { BaseSelectInput } from "../select/generic/BaseSelectInput";
+import { SelectPopover } from "../select/generic/SelectPopover";
 
 import { toDateTime } from "./util";
 
@@ -22,8 +22,8 @@ const DatePicker = dynamic(() => import("./DatePicker"), {
 });
 
 export interface DateSelectProps
-  extends Optional<Omit<SelectPopoverProps, "content" | "isReady">, "children">,
-    Omit<SelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
+  extends Optional<Omit<types.SelectPopoverProps, "content" | "isReady">, "children">,
+    Omit<types.BaseSelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
   readonly value: Date | string | null;
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
@@ -89,7 +89,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
       >
         {children ||
           (({ ref, params, isOpen, isLoading }) => (
-            <SelectInput
+            <BaseSelectInput
               {...params}
               dynamicHeight={false}
               ref={ref}
@@ -103,7 +103,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
               className={inputClassName}
             >
               {v ? DateTime.fromJSDate(v).toFormat(formatString) : ""}
-            </SelectInput>
+            </BaseSelectInput>
           ))}
       </SelectPopover>
     );

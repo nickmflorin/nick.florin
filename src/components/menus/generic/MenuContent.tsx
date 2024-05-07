@@ -1,36 +1,53 @@
 "use client";
-import * as hooks from "../hooks";
+import { useRef, createRef, type RefObject } from "react";
+
+import clsx from "clsx";
+
 import * as types from "../types";
 
-import { AbstractMenuContent } from "./AbstractMenuContent";
+import { MenuItemModelRenderer } from "./MenuItemModelRenderer";
+
+type MenuItemRefs = { [key in types.MenuItemKey]: RefObject<types.MenuItemInstance> };
 
 export const MenuContent = <M extends types.MenuModel, O extends types.MenuOptions<M>>({
-  initialValue,
-  value: _propValue,
-  onChange,
+  className,
+  style,
+  data,
+  isLocked,
+  children,
+  onItemClick,
   ...props
 }: types.MenuContentProps<M, O>): JSX.Element => {
-  const [value, _, selectModel] = hooks.useMenuValue<boolean, M, O>({
-    initialValue,
-    isValued: types.menuIsValued(props.data, props.options),
-    value: _propValue,
-    options: props.options,
-    data: props.data,
-    isReady: props.isReady,
-    onChange: (value, params) => onChange?.(value, params.item),
-  });
+  const menuItemRefs = useRef<MenuItemRefs>({});
 
   return (
-    <AbstractMenuContent
-      {...props}
-      value={value}
-      onItemClick={(model, v, instance) => {
-        if (v !== types.VALUE_NOT_APPLICABLE) {
-          selectModel?.(v as types.ModelValue<M, O>, instance);
+    <div style={style} className={clsx("menu__content", className)}>
+      {data.map((model, index) => {
+        const id = types.getModelId(model, props.options);
+        const key: types.MenuItemKey = types.getMenuItemKey({ id, index });
+
+        let ref: RefObject<types.MenuItemInstance>;
+        if (menuItemRefs.current[key] === undefined) {
+          ref = createRef<types.MenuItemInstance>();
+          menuItemRefs.current[key] = ref;
+        } else {
+          ref = menuItemRefs.current[key];
         }
-        props.onItemClick?.(model, v, instance);
-      }}
-    />
+        return (
+          <MenuItemModelRenderer<M, O>
+            {...props}
+            itemIsLocked={m => Boolean(isLocked || props.itemIsLocked?.(m))}
+            ref={ref}
+            id={id}
+            model={model}
+            key={key}
+            onClick={() => onItemClick?.(model, ref.current as types.MenuItemInstance)}
+          >
+            {children}
+          </MenuItemModelRenderer>
+        );
+      })}
+    </div>
   );
 };
 

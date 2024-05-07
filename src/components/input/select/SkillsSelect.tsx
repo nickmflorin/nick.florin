@@ -5,19 +5,17 @@ import type { BrandSkill } from "~/prisma/model";
 import { type HttpError } from "~/api";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { DynamicLoader, DynamicLoading } from "~/components/feedback/dynamic-loading";
-import { SelectBase, type SelectBaseProps } from "~/components/input/select/generic/SelectBase";
-import type { AbstractMenuComponent } from "~/components/menus";
+import { type SelectBaseProps } from "~/components/input/select/generic";
+import { SelectBase } from "~/components/input/select/generic/SelectBase";
+import type { MenuContentComponent } from "~/components/menus";
 import { MenuContainer } from "~/components/menus/generic/MenuContainer";
 import { MenuContentWrapper } from "~/components/menus/generic/MenuContentWrapper";
 import { MenuHeader } from "~/components/menus/generic/MenuHeader";
 import { useSkills } from "~/hooks";
 
-const AbstractMenuContent = dynamic(
-  () => import("~/components/menus/generic/AbstractMenuContent"),
-  {
-    loading: () => <DynamicLoader />,
-  },
-) as AbstractMenuComponent;
+const MenuContent = dynamic(() => import("~/components/menus/generic/MenuContent"), {
+  loading: () => <DynamicLoader />,
+}) as MenuContentComponent;
 
 const globalOptions = {
   isMulti: true,
@@ -63,7 +61,7 @@ export const SkillsSelect = ({ onError, ...props }: SkillsSelectProps) => {
           maximumNumBadges={3}
           isReady={data !== undefined}
           isLoading={isLoading || filteredDataIsLoading || _isDynamicallyLoading}
-          content={({ selectModel, isReady, value }) => (
+          content={({ onSelect, isSelected }) => (
             <MenuContainer className="box-shadow-none">
               <MenuHeader search={search} onSearch={(e, v) => setSearch(v)} />
               <MenuContentWrapper>
@@ -78,12 +76,11 @@ export const SkillsSelect = ({ onError, ...props }: SkillsSelectProps) => {
                        want the MenuComponent to manage the value because it will issue warnings
                        about not being able to find the value in the data since the data provided
                        to the MenuComponent is filtered. */
-                    <AbstractMenuContent<BrandSkill, typeof globalOptions>
+                    <MenuContent<BrandSkill, typeof globalOptions>
                       options={globalOptions}
                       data={skills}
-                      value={value}
-                      isReady={isReady}
-                      onItemClick={(model, v, instance) => selectModel(v, instance)}
+                      itemIsSelected={isSelected}
+                      onItemClick={(model, instance) => onSelect(model, instance)}
                     />
                   )}
                 </ApiResponseState>

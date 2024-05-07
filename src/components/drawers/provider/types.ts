@@ -94,7 +94,6 @@ export type DrawerDynamicProps<D extends DrawerId> = Omit<
 
 export type OpenDrawerParams = {
   readonly push?: boolean;
-  readonly closeHandler?: () => void;
 };
 
 export type DrawersManager = {
@@ -116,7 +115,6 @@ export interface ClientDrawerProps<D extends DrawerId> {
   readonly id: D;
   readonly props: DrawerDynamicProps<D>;
   readonly push?: boolean;
-  readonly onClose?: () => void;
 }
 
 export type ClientDrawerComponent = {

@@ -5,16 +5,13 @@ import { type ComponentProps } from "~/components/types";
 import { type QuantitativeSize } from "~/components/types/sizes";
 
 import { type MenuItemFlagProps } from "./flags";
-import { type MenuItemInstance } from "./item";
-import { type MenuValue, type IfMenuValued } from "./menu";
-import { type MenuModel, type ModelValue, type ValueNotApplicable, type ModelId } from "./model";
+import { type MenuItemInstance, type MenuItemSelectionIndicator } from "./item";
+import { type MenuModel, type ModelId } from "./model";
 import { type MenuOptions } from "./options";
 
 type ItemClassName<M extends MenuModel> =
   | ComponentProps["className"]
   | ((datum: M) => ComponentProps["className"]);
-
-export type MenuItemSelectionIndicator = "checkbox" | null;
 
 export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuOptions<M>>
   extends MenuItemFlagProps<M> {
@@ -33,73 +30,42 @@ export interface MenuItemModelRendererProps<M extends MenuModel, O extends MenuO
    *
    * Default: true
    */
-  readonly isReady?: boolean;
   readonly id: ModelId<M, O> | undefined;
   readonly model: M;
   readonly options: O;
   readonly itemHeight?: QuantitativeSize<"px">;
-  readonly value: ModelValue<M, O> | ValueNotApplicable;
-  readonly menuValue: ModelValue<M, O>[] | ModelValue<M, O> | null | ValueNotApplicable;
   readonly iconSize?: IconSize;
   readonly iconClassName?: ComponentProps["className"];
   readonly spinnerClassName?: ComponentProps["className"];
   readonly itemDisabledClassName?: ItemClassName<M>;
   readonly itemLoadingClassName?: ItemClassName<M>;
   readonly itemLockedClassName?: ItemClassName<M>;
-  readonly itemSelectedClassName?: IfMenuValued<ItemClassName<M>, M, O>;
+  readonly itemSelectedClassName?: ItemClassName<M>;
   readonly itemClassName?: ItemClassName<M>;
   readonly selectionIndicator?: MenuItemSelectionIndicator;
   readonly onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   readonly children?: (datum: M) => ReactNode;
 }
 
-export type MenuItemClickHandler<M extends MenuModel, O extends MenuOptions<M>> = (
+export type MenuItemClickHandler<M extends MenuModel> = (
   model: M,
-  v: IfMenuValued<ModelValue<M, O>, M, O, ValueNotApplicable>,
   instance: MenuItemInstance,
 ) => void;
 
-export type AbstractMenuContentProps<
-  M extends MenuModel,
-  O extends MenuOptions<M>,
-> = ComponentProps &
-  Omit<
-    MenuItemModelRendererProps<M, O>,
-    "value" | "model" | "onClick" | "value" | "menuValue" | "id"
-  > & {
+export type MenuContentProps<M extends MenuModel, O extends MenuOptions<M>> = ComponentProps &
+  Omit<MenuItemModelRendererProps<M, O>, "model" | "onClick" | "id"> & {
     readonly data: M[];
-    readonly value: MenuValue<M, O> | ValueNotApplicable;
-    readonly onItemClick?: MenuItemClickHandler<M, O>;
+    readonly header?: JSX.Element;
+    readonly footer?: JSX.Element;
+    readonly search?: string;
+    readonly isLocked?: boolean;
+    readonly onSearch?: (value: string) => void;
+    readonly onItemClick?: MenuItemClickHandler<M>;
   };
 
 export type MenuContainerProps = ComponentProps & {
   readonly children: JSX.Element | JSX.Element[];
 };
-
-export type AbstractMenuProps<M extends MenuModel, O extends MenuOptions<M>> = ComponentProps &
-  AbstractMenuContentProps<M, O> & {
-    readonly header?: JSX.Element;
-    readonly footer?: JSX.Element;
-    readonly search?: string;
-    readonly onSearch?: (value: string) => void;
-  };
-
-export type AbstractMenuComponent = {
-  <M extends MenuModel, O extends MenuOptions<M>>(
-    props: AbstractMenuProps<M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
-  ): JSX.Element;
-};
-
-export type MenuContentProps<M extends MenuModel, O extends MenuOptions<M>> = ComponentProps &
-  Omit<AbstractMenuContentProps<M, O>, "value"> & {
-    readonly value?: IfMenuValued<MenuValue<M, O>, M, O>;
-    readonly initialValue?: IfMenuValued<MenuValue<M, O>, M, O>;
-    readonly onChange?: IfMenuValued<
-      (value: MenuValue<M, O>, item: MenuItemInstance) => void,
-      M,
-      O
-    >;
-  };
 
 export type MenuContentComponent = {
   <M extends MenuModel, O extends MenuOptions<M>>(props: MenuContentProps<M, O>): JSX.Element;

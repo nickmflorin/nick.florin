@@ -4,7 +4,7 @@ export type MenuOptions<I extends MenuModel> = Partial<{
   readonly isMulti: boolean;
   readonly isNullable: boolean;
   readonly isDeselectable: boolean;
-  readonly getModelValue: (m: I) => NonNullable<MenuModel["value"]>;
+  readonly isFiltered: boolean;
   readonly getModelLabel: (
     m: I,
     opts: { isMulti: boolean; isNullable: boolean },

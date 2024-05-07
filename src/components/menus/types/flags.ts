@@ -1,6 +1,12 @@
 import { type MenuModel } from "./model";
 
-const MenuItemFlagNames = ["isDisabled", "isLoading", "isVisible", "isLocked"] as const;
+const MenuItemFlagNames = [
+  "isDisabled",
+  "isLoading",
+  "isVisible",
+  "isLocked",
+  "isSelected",
+] as const;
 
 type MenuItemFlagName = (typeof MenuItemFlagNames)[number];
 
@@ -9,6 +15,7 @@ const MenuItemFlagMenuNames = {
   isLoading: "itemIsLoading",
   isVisible: "itemIsVisible",
   isLocked: "itemIsLocked",
+  isSelected: "itemIsSelected",
 } as const;
 
 const MenuItemDefaultFlags = {
@@ -16,6 +23,7 @@ const MenuItemDefaultFlags = {
   isLoading: false,
   isVisible: true,
   isLocked: false,
+  isSelected: false,
 };
 
 type MenuItemFlagProp<M extends MenuModel> = (model: M) => boolean;

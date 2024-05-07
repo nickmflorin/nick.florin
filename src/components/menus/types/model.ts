@@ -5,60 +5,32 @@ import { type IconProp, type IconSize } from "~/components/icons";
 import { type Action } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 
-import { type MenuItemInstance } from "./item";
+import { type MenuItemInstance, type MenuItemHref } from "./item";
 import { type MenuOptions } from "./options";
-
-export const VALUE_NOT_APPLICABLE = "__VALUE_NOT_APPLICABLE__";
-export type ValueNotApplicable = typeof VALUE_NOT_APPLICABLE;
 
 const NEVER = "__NEVER__" as const;
 type Never = typeof NEVER;
 
-export type AllowedMenuModelValue = string;
-
-export type MenuModelHref = string | { url: string; target?: string; rel?: string };
-
-export type MenuModel<V extends AllowedMenuModelValue = AllowedMenuModelValue> = {
+export type MenuModel = {
   readonly id?: string | number;
   readonly icon?: IconProp | JSX.Element;
   readonly iconClassName?: ComponentProps["className"];
   readonly spinnerClassName?: ComponentProps["className"];
   readonly iconSize?: IconSize;
   readonly label?: ReactNode;
-  readonly href?: MenuModelHref;
+  readonly href?: MenuItemHref;
   readonly isLocked?: boolean;
   readonly isLoading?: boolean;
+  readonly isSelected?: boolean;
   readonly isDisabled?: boolean;
   readonly isVisible?: boolean;
   readonly drawer?: DrawerIdPropsPair;
   readonly actions?: Action[];
-  readonly value?: V;
   readonly onClick?: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     instance: MenuItemInstance,
   ) => void;
   [key: string]: unknown;
-};
-
-export type ModelValue<M extends MenuModel, O extends MenuOptions<M>> = M extends {
-  readonly value: infer V extends AllowedMenuModelValue;
-}
-  ? V
-  : O extends { readonly getModelValue: (m: M) => infer V extends AllowedMenuModelValue }
-    ? V
-    : never;
-
-export const getModelValue = <M extends MenuModel, O extends MenuOptions<M>>(
-  model: M,
-  options: O,
-): ModelValue<M, O> | ValueNotApplicable => {
-  let v: unknown = VALUE_NOT_APPLICABLE;
-  if (options.getModelValue !== undefined) {
-    v = options.getModelValue(model);
-  } else if (model.value !== undefined) {
-    v = model.value;
-  }
-  return v as ModelValue<M, O>;
 };
 
 export type ModelId<M extends MenuModel, O extends MenuOptions<M>> = M extends {

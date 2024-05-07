@@ -12,7 +12,7 @@ import { Text } from "~/components/typography/Text";
 import { DeleteCompanySchoolButton } from "./DeleteCompanySchoolButton";
 import { type ModelType, type Model } from "./types";
 
-const MenuContent = dynamic(() => import("../generic/MenuContent"), {
+const MenuContent = dynamic(() => import("~/components/menus/generic/MenuContent"), {
   loading: () => <Loading isLoading={true} />,
 }) as types.MenuContentComponent;
 

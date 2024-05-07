@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 import { type ApiEducation } from "~/prisma/model";
 import { DrawerContent } from "~/components/drawers/DrawerContent";
-import { useDrawers } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { ResumeModelDrawerTile } from "~/components/tiles/resume/ResumeModelDrawerTile";
 
 export interface EducationDrawerContentProps {

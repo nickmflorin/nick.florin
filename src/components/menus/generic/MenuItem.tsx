@@ -1,14 +1,11 @@
+import dynamic from "next/dynamic";
+import Link from "next/link";
 import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
 import type * as types from "../types";
 
-import { isIconProp } from "~/components/icons";
-import { Icon } from "~/components/icons/Icon";
-import { Spinner } from "~/components/icons/Spinner";
-import { Checkbox } from "~/components/input/Checkbox";
-import { Actions } from "~/components/structural/Actions";
 import {
   type ComponentProps,
   type HTMLElementProps,
@@ -18,7 +15,13 @@ import {
 import { sizeToString, sizeToNumber, type QuantitativeSize } from "~/components/types/sizes";
 import { ShowHide } from "~/components/util";
 
-export interface MenuItemProps
+import { MenuItemIcon } from "./MenuItemIcon";
+
+const Spinner = dynamic(() => import("~/components/icons/Spinner"));
+const Checkbox = dynamic(() => import("~/components/input/Checkbox"));
+const Actions = dynamic(() => import("~/components/structural/Actions"));
+
+interface LocalMenuItemProps
   extends ComponentProps,
     HTMLElementProps<"div">,
     Pick<
@@ -44,51 +47,7 @@ export interface MenuItemProps
   readonly selectionIndicator?: types.MenuItemSelectionIndicator;
 }
 
-const MenuItemIcon = ({
-  icon,
-  iconClassName,
-  iconSize = "18px",
-  isLoading = false,
-  spinnerClassName,
-}: Pick<
-  MenuItemProps,
-  "icon" | "iconClassName" | "iconSize" | "isLoading" | "spinnerClassName"
->) => {
-  if (icon) {
-    if (isIconProp(icon)) {
-      return (
-        <Icon
-          icon={icon}
-          className={clsx(
-            withoutOverridingClassName("text-gray-600", iconClassName),
-            iconClassName,
-          )}
-          size={iconSize}
-          isLoading={isLoading}
-        />
-      );
-    } else if (isLoading) {
-      return (
-        <Spinner
-          className={clsx(
-            withoutOverridingClassName(
-              "text-gray-600",
-              mergeIntoClassNames(iconClassName, spinnerClassName),
-            ),
-            spinnerClassName,
-          )}
-          isLoading={isLoading}
-          size={iconSize}
-          dimension="height"
-        />
-      );
-    }
-    return icon;
-  }
-  return <></>;
-};
-
-export const MenuItem = ({
+const LocalMenuItem = ({
   height,
   actions,
   isSelected = false,
@@ -108,7 +67,7 @@ export const MenuItem = ({
   isLoading = false,
   selectionIndicator = "checkbox",
   ...props
-}: MenuItemProps): JSX.Element => (
+}: LocalMenuItemProps): JSX.Element => (
   <ShowHide show={isVisible}>
     <div
       {...props}
@@ -175,3 +134,25 @@ export const MenuItem = ({
     </div>
   </ShowHide>
 );
+
+export interface MenuItemProps extends LocalMenuItemProps {
+  readonly href?: string | { url: string; target?: string; rel?: string };
+}
+
+export const MenuItem = ({ href, ...props }: MenuItemProps): JSX.Element => {
+  if (href) {
+    if (typeof href === "string") {
+      return (
+        <Link href={href}>
+          <LocalMenuItem {...props} />
+        </Link>
+      );
+    }
+    return (
+      <Link href={href.url} rel={href.rel} target={href.target}>
+        <LocalMenuItem {...props} />
+      </Link>
+    );
+  }
+  return <LocalMenuItem {...props} />;
+};

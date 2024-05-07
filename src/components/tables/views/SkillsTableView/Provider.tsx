@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 import { type ApiSkill, type BrandSkill } from "~/prisma/model";
 import { deleteSkill, updateSkill } from "~/actions/mutations/skills";
-import { useDrawers } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import type * as cells from "~/components/tables/generic/cells";
 import { type SlugCellComponent } from "~/components/tables/generic/cells/SlugCell";
 import {

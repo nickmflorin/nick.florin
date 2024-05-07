@@ -1,5 +1,4 @@
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
 import { type ApiEducation, type ApiExperience } from "~/prisma/model";
 import { Link } from "~/components/buttons";
@@ -8,6 +7,7 @@ import {
   DrawerIds,
   type DrawerDynamicProps,
 } from "~/components/drawers";
+import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";
 import { DynamicLoading, DynamicLoader } from "~/components/feedback/dynamic-loading";
 
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
@@ -42,20 +42,19 @@ interface DetailsCellProps {
 }
 
 export const DetailsCell = ({ model }: DetailsCellProps) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { isOpen, open } = useDrawerState();
   return (
     <DynamicLoading>
       {({ isLoading }) => (
         <>
           <Link.Primary
             isLoading={isLoading}
-            onClick={() => setDrawerOpen(true)}
+            onClick={() => open()}
           >{`${model.details.length} Details`}</Link.Primary>
-          {drawerOpen && (
+          {isOpen && (
             <ClientDrawer
               id={DrawerProps[model.$kind].id}
               props={DrawerProps[model.$kind].props(model.id)}
-              onClose={() => setDrawerOpen(false)}
             />
           )}
         </>

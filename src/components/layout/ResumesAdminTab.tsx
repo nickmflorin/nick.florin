@@ -1,9 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
 import { TabButton } from "~/components/buttons/TabButton";
 import { DrawerIds } from "~/components/drawers";
+import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";
 import { DynamicLoading, DynamicLoader } from "~/components/feedback/dynamic-loading";
 
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
@@ -11,7 +11,7 @@ const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), 
 });
 
 export const ResumesAdminTab = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { isOpen, open } = useDrawerState();
   return (
     <DynamicLoading>
       {({ isLoading }) => (
@@ -19,19 +19,13 @@ export const ResumesAdminTab = () => {
           <TabButton
             as="button"
             icon={{ name: "list-check" }}
-            isActive={drawerOpen}
+            isActive={isOpen}
             isLoading={isLoading}
-            onClick={() => setDrawerOpen(true)}
+            onClick={() => open()}
           >
             Resumes
           </TabButton>
-          {drawerOpen && (
-            <ClientDrawer
-              id={DrawerIds.VIEW_RESUMES}
-              props={{}}
-              onClose={() => setDrawerOpen(false)}
-            />
-          )}
+          {isOpen && <ClientDrawer id={DrawerIds.VIEW_RESUMES} props={{}} />}
         </>
       )}
     </DynamicLoading>

@@ -109,3 +109,5 @@ export const Actions = ({ actions, children, gap = 8, ...props }: ActionsProps):
     </LocalActions>
   );
 };
+
+export default Actions;

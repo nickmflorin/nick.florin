@@ -5,12 +5,11 @@ import {
   ProgrammingLanguages,
   type ProgrammingLanguage,
 } from "~/prisma/model";
-import type { MenuModel } from "~/components/menus";
 
-import { Select, type SelectProps } from "./generic";
+import { Select, type SelectProps, type SelectModel } from "./generic";
 
 type O = Required<
-  Pick<MenuModel<ProgrammingLanguage>, "value" | "label" | "icon">,
+  Pick<SelectModel<ProgrammingLanguage>, "value" | "label" | "icon">,
   "value" | "label" | "icon"
 >;
 

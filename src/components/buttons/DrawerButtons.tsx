@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import clsx from "clsx";
 
 import { DrawerCloseButton } from "~/components/buttons/DrawerCloseButton";
-import { useDrawers } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { ShowHide } from "~/components/util";
 
 const DrawerHistoryButtons = dynamic(() => import("./DrawerHistoryButtons"));

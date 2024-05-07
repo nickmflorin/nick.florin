@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 import { type ApiExperience } from "~/prisma/model";
 import { deleteExperience, updateExperience } from "~/actions/mutations/experiences";
-import { useDrawers } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import type * as cells from "~/components/tables/generic/cells";
 import {
   TableViewProvider as RootTableViewProvider,

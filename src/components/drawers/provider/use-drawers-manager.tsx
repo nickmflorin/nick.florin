@@ -5,6 +5,7 @@ import React, { useState, useCallback, useMemo, cloneElement } from "react";
 import type * as types from "./types";
 
 import { logger } from "~/application/logger";
+import { publish } from "~/events/drawer-state-change-event";
 import { Loading } from "~/components/feedback/Loading";
 import { useReferentialCallback } from "~/hooks";
 
@@ -38,6 +39,7 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
 
   const close = useCallback(() => {
     setDrawerHistory(null);
+    publish({ state: "closed" });
   }, []);
 
   const back = useReferentialCallback(() => {
@@ -100,9 +102,7 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
     ) => {
       setDrawerHistory(history => {
         const rendered = history?.rendered || [];
-        const newDrawer = (
-          <DrawerRenderer id={id} props={props} onClose={() => options?.closeHandler?.()} />
-        );
+        const newDrawer = <DrawerRenderer id={id} props={props} />;
         if (options?.push) {
           return {
             index: rendered.length + 1,
@@ -114,6 +114,7 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
           rendered: [{ drawer: newDrawer, id }],
         };
       });
+      publish({ state: "opened" });
     },
     [],
   );

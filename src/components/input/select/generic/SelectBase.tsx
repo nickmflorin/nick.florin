@@ -2,84 +2,17 @@
 import React from "react";
 import { useRef, forwardRef, type ForwardedRef } from "react";
 
-import { type Optional } from "utility-types";
-
-import type * as types from "../types";
-
-import {
-  type MenuValue,
-  type MenuModelValue,
-  type MenuItemInstance,
-  type ModelValue,
-} from "~/components/menus";
-import { useMenuValue } from "~/components/menus/hooks";
-import { type ComponentProps } from "~/components/types";
+import type * as types from "./types";
 
 import { FloatingSelectContent } from "./FloatingSelectContent";
-import { MenuSelectInput, type MenuSelectInputProps } from "./MenuSelectInput";
-import { SelectPopover, type SelectPopoverProps } from "./SelectPopover";
-
-export interface SelectBaseProps<M extends types.SelectModel, O extends types.SelectOptions<M>>
-  extends Optional<
-      Omit<
-        SelectPopoverProps,
-        "content" | "onOpen" | "onClose" | "onOpenChange" | keyof ComponentProps
-      >,
-      "children"
-    >,
-    Omit<
-      MenuSelectInputProps<M, O>,
-      keyof ComponentProps | "value" | "select" | "models" | "isOpen"
-    > {
-  readonly value?: MenuValue<M, O>;
-  readonly initialValue?: MenuValue<M, O>;
-  readonly menuClassName?: ComponentProps["className"];
-  readonly inputClassName?: ComponentProps["className"];
-  readonly closeMenuOnSelect?: boolean;
-  readonly data: M[];
-  readonly content: (params: {
-    value: MenuValue<M, O>;
-    isReady: boolean;
-    selectModel: (v: ModelValue<M, O>, instance: MenuItemInstance) => void;
-  }) => JSX.Element;
-  readonly onChange?: (
-    v: MenuValue<M, O>,
-    params: {
-      models: MenuModelValue<M, O>;
-      item: MenuItemInstance;
-    },
-  ) => void;
-  readonly onOpen?: (
-    e: Event | React.MouseEvent<HTMLButtonElement>,
-    params: {
-      value: MenuValue<M, O>;
-      models: MenuModelValue<M, O>;
-      select: types.SelectInstance;
-    },
-  ) => void;
-  readonly onClose?: (
-    e: Event | React.MouseEvent<HTMLButtonElement>,
-    params: {
-      value: MenuValue<M, O>;
-      models: MenuModelValue<M, O>;
-      select: types.SelectInstance;
-    },
-  ) => void;
-  readonly onOpenChange?: (
-    e: Event | React.MouseEvent<HTMLButtonElement>,
-    isOpen: boolean,
-    params: {
-      value: MenuValue<M, O>;
-      models: MenuModelValue<M, O>;
-      select: types.SelectInstance;
-    },
-  ) => void;
-}
+import { useSelectValue } from "./hooks/use-select-value";
+import { SelectInput } from "./SelectInput";
+import { SelectPopover } from "./SelectPopover";
 
 const LocalSelectBase = forwardRef<
   types.SelectInstance,
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  SelectBaseProps<any, types.SelectOptions<any>>
+  types.SelectBaseProps<any, types.SelectOptions<any>>
 >(
   <M extends types.SelectModel, O extends types.SelectOptions<M>>(
     {
@@ -104,19 +37,17 @@ const LocalSelectBase = forwardRef<
       onClose,
       onOpenChange,
       ...props
-    }: SelectBaseProps<M, O>,
+    }: types.SelectBaseProps<M, O>,
     ref: ForwardedRef<types.SelectInstance>,
   ): JSX.Element => {
     const internalInstance = useRef<types.SelectInstance | null>(null);
 
-    const [value, models, selectModel] = useMenuValue<true, M, O>({
-      initialValue: initialValue,
-      isValued: true,
+    const { value, models, selectValue, isSelected, onSelect } = useSelectValue<M, O>({
+      initialValue,
       value: _propValue,
       options: props.options,
       data,
       isReady,
-      onChange,
     });
 
     return (
@@ -138,18 +69,29 @@ const LocalSelectBase = forwardRef<
         menuWidth={menuWidth}
         inPortal={inPortal}
         menuOffset={menuOffset}
-        onOpen={(e, { select }) => onOpen?.(e, { value, models, select })}
-        onClose={(e, { select }) => onClose?.(e, { value, models, select })}
+        onOpen={(e, { select }) => onOpen?.(e, { value: selectValue, select })}
+        onClose={(e, { select }) => onClose?.(e, { value: selectValue, select })}
         onOpenChange={(e, isOpen, { select }) =>
-          onOpenChange?.(e, isOpen, { value, models, select })
+          onOpenChange?.(e, isOpen, { value: selectValue, select })
         }
         content={
           <FloatingSelectContent className={menuClassName}>
             {content({
-              value,
-              isReady,
-              selectModel: (v, instance) => {
-                selectModel(v, instance);
+              value: selectValue,
+              isSelected,
+              onSelect: (v, instance) => {
+                const newState = onSelect(v);
+                if (props.options.isFiltered) {
+                  onChange?.(newState.selectValue, { item: instance } as types.SelectChangeParams<
+                    M,
+                    O
+                  >);
+                } else {
+                  onChange?.(newState.selectValue, {
+                    item: instance,
+                    models: newState.models,
+                  } as types.SelectChangeParams<M, O>);
+                }
                 if (
                   closeMenuOnSelect ||
                   (closeMenuOnSelect === undefined && !props.options.isMulti)
@@ -163,7 +105,7 @@ const LocalSelectBase = forwardRef<
       >
         {children ??
           (({ ref, params, isOpen, isLoading }) => (
-            <MenuSelectInput
+            <SelectInput
               {...params}
               {...props}
               dynamicHeight={dynamicHeight}
@@ -182,6 +124,6 @@ const LocalSelectBase = forwardRef<
 
 export const SelectBase = LocalSelectBase as {
   <M extends types.SelectModel, O extends types.SelectOptions<M>>(
-    props: SelectBaseProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
+    props: types.SelectBaseProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
   ): JSX.Element;
 };

@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { forwardRef, type ForwardedRef, useState, useImperativeHandle, useMemo } from "react";
 
 import clsx from "clsx";
-import isEqual from "lodash.isequal";
 
-import { useDrawers } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 
 import * as types from "../types";
 
@@ -14,22 +12,22 @@ export const MenuItemModelRenderer = forwardRef(
   <M extends types.MenuModel, O extends types.MenuOptions<M>>(
     {
       id,
-      isReady = true,
       model,
       options,
-      value,
-      menuValue,
+      /* value,
+         menuValue, */
       itemClassName,
       iconClassName,
       spinnerClassName,
       iconSize,
       itemIsDisabled,
       itemDisabledClassName,
+      itemSelectedClassName,
+      itemIsSelected,
       itemIsLoading,
       itemLoadingClassName,
       itemIsLocked,
       itemLockedClassName,
-      itemSelectedClassName,
       itemHeight,
       itemIsVisible,
       onClick,
@@ -45,19 +43,6 @@ export const MenuItemModelRenderer = forwardRef(
 
     const label = types.getModelLabel(model, options);
 
-    const isSelected = useMemo(() => {
-      if (menuValue !== types.VALUE_NOT_APPLICABLE) {
-        if (options.isMulti) {
-          if (!Array.isArray(menuValue)) {
-            throw new Error("Unexpectedly encountered non-iterable value for a multi-valued Menu.");
-          }
-          return menuValue.filter(vi => isEqual(vi, value)).length > 0;
-        }
-        return isEqual(menuValue, value);
-      }
-      return false;
-    }, [menuValue, value, options.isMulti]);
-
     useImperativeHandle(ref, () => ({
       setLoading,
       setDisabled,
@@ -70,12 +55,13 @@ export const MenuItemModelRenderer = forwardRef(
 
     const actions = useMemo(() => types.getModelActions(model, options), [model, options]);
 
-    const Item = (
+    return (
       <MenuItem
         id={id ? String(id) : undefined}
         actions={actions}
         height={itemHeight}
         isMulti={options.isMulti}
+        href={href}
         icon={model.icon}
         iconSize={model.iconSize ?? iconSize}
         iconClassName={clsx(model.iconClassName, iconClassName)}
@@ -108,15 +94,14 @@ export const MenuItemModelRenderer = forwardRef(
         }
         isVisible={types.evalMenuItemFlag("isVisible", itemIsVisible, model)}
         isLocked={
-          types.evalMenuItemFlag("isLocked", itemIsLocked, model) ||
-          !isReady ||
-          _isLocked ||
-          model.isLocked
+          types.evalMenuItemFlag("isLocked", itemIsLocked, model) || _isLocked || model.isLocked
         }
         isLoading={
           types.evalMenuItemFlag("isLoading", itemIsLoading, model) || _isLoading || model.isLoading
         }
-        isSelected={isSelected}
+        isSelected={Boolean(
+          types.evalMenuItemFlag("isSelected", itemIsSelected, model) || model.isSelected,
+        )}
         onClick={e => {
           onClick(e);
           model.onClick?.(e, { setDisabled, setLoading, setLocked });
@@ -128,18 +113,6 @@ export const MenuItemModelRenderer = forwardRef(
         {children ? children(model) : label}
       </MenuItem>
     );
-
-    if (href) {
-      if (typeof href === "string") {
-        return <Link href={href}>{Item}</Link>;
-      }
-      return (
-        <Link href={href.url} rel={href.rel} target={href.target}>
-          {Item}
-        </Link>
-      );
-    }
-    return Item;
   },
 ) as {
   <M extends types.MenuModel, O extends types.MenuOptions<M>>(

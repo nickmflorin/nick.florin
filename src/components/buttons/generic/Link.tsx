@@ -158,3 +158,5 @@ const withVariants = types.ButtonVariants.link.values.reduce<WithVariants>(
 export const Link = Object.assign(LocalLink, withVariants);
 
 export type LinkComponent = typeof LocalLink & WithVariants;
+
+export default Link;

@@ -51,3 +51,5 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     );
   },
 );
+
+export default Checkbox;

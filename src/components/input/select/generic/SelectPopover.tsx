@@ -4,37 +4,11 @@ import { useState, forwardRef, type ForwardedRef, useImperativeHandle, useMemo }
 
 import { autoPlacement } from "@floating-ui/react";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
-import { Popover, type PopoverProps } from "~/components/floating/Popover";
-import { type PopoverRenderProps } from "~/components/floating/types";
+import { Popover } from "~/components/floating/Popover";
 
-export interface SelectPopoverProps
-  extends Pick<PopoverProps, "inPortal" | "content" | "maxHeight"> {
-  readonly menuPlacement?: PopoverProps["placement"];
-  readonly menuOffset?: PopoverProps["offset"];
-  readonly menuWidth?: PopoverProps["width"];
-  readonly isLoading?: boolean;
-  readonly isReady?: boolean;
-  readonly onOpen?: (
-    e: Event | React.MouseEvent<HTMLButtonElement>,
-    params: { select: types.SelectInstance },
-  ) => void;
-  readonly onClose?: (
-    e: Event | React.MouseEvent<HTMLButtonElement>,
-    params: { select: types.SelectInstance },
-  ) => void;
-  readonly onOpenChange?: (
-    e: Event | React.MouseEvent<HTMLButtonElement>,
-    isOpen: boolean,
-    params: { select: types.SelectInstance },
-  ) => void;
-  readonly children: (
-    params: PopoverRenderProps & { readonly isOpen: boolean; readonly isLoading: boolean },
-  ) => JSX.Element;
-}
-
-export const SelectPopover = forwardRef<types.SelectInstance, SelectPopoverProps>(
+export const SelectPopover = forwardRef<types.SelectInstance, types.SelectPopoverProps>(
   (
     {
       content,
@@ -48,7 +22,7 @@ export const SelectPopover = forwardRef<types.SelectInstance, SelectPopoverProps
       onClose,
       onOpenChange,
       ...props
-    }: SelectPopoverProps,
+    }: types.SelectPopoverProps,
     ref: ForwardedRef<types.SelectInstance>,
   ): JSX.Element => {
     const [_isLoading, setLoading] = useState(false);

@@ -1,9 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
 import { Button } from "~/components/buttons";
 import { type DrawerId } from "~/components/drawers";
+import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";
 import { DynamicLoading, DynamicLoader } from "~/components/feedback/dynamic-loading";
 
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
@@ -15,17 +15,15 @@ export interface NewButtonProps {
 }
 
 export const NewButton = ({ drawerId }: NewButtonProps) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { isOpen, open } = useDrawerState();
   return (
     <DynamicLoading>
       {({ isLoading }) => (
         <>
-          <Button.Primary isLoading={isLoading} onClick={() => setDrawerOpen(true)}>
+          <Button.Primary isLoading={isLoading} onClick={() => open()}>
             New
           </Button.Primary>
-          {drawerOpen && (
-            <ClientDrawer id={drawerId} props={{}} onClose={() => setDrawerOpen(false)} />
-          )}
+          {isOpen && <ClientDrawer id={drawerId} props={{}} />}
         </>
       )}
     </DynamicLoading>

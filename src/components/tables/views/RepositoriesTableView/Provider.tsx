@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { type ApiRepository } from "~/prisma/model";
 import { deleteRepository, updateRepository } from "~/actions/mutations/repositories";
 import { RepositoryLink } from "~/components/buttons/RepositoryLink";
-import { useDrawers } from "~/components/drawers/hooks";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import type * as cells from "~/components/tables/generic/cells";
 import {
   TableViewProvider as RootTableViewProvider,
