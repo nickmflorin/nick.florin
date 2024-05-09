@@ -15,13 +15,13 @@ import {
 } from "~/components/menus";
 import { type ComponentProps } from "~/components/types";
 
-import { type SelectModel, type SelectModelValue, type SelectValueDatum } from "./model";
+import { type SelectModel, type SelectModelValue, type SelectValueModel } from "./model";
 import { type SelectOptions, type IfSelectFiltered } from "./options";
 
 export type SelectPropValue<
   M extends SelectModel,
   O extends { isFiltered?: boolean; isMulti?: boolean },
-> = IfSelectFiltered<SelectValueDatum<M, O>[], O, SelectValue<M, O>>;
+> = IfSelectFiltered<SelectValueModel<M, O>[], O, SelectValue<M, O>>;
 
 export type SelectModels<M extends SelectModel, O extends SelectOptions<M>> = IfSelectFiltered<
   undefined,
@@ -31,7 +31,7 @@ export type SelectModels<M extends SelectModel, O extends SelectOptions<M>> = If
 
 export type AnySelectPropValue<M extends SelectModel, O extends SelectOptions<M>> =
   | SelectModelValue<M, O>[]
-  | SelectValueDatum<M, O>[]
+  | SelectValueModel<M, O>[]
   | SelectModelValue<M, O>
   | null;
 
@@ -60,7 +60,7 @@ export type SelectModelValueRenderer<
 export type SelectItemRenderer<M extends SelectModel> = (model: M) => ReactNode;
 
 export interface MultiValueRendererProps<
-  D extends SelectValueDatum<M, O> | M,
+  D extends SelectValueModel<M, O> | M,
   M extends SelectModel,
   O extends SelectOptions<M>,
 > {
@@ -70,7 +70,7 @@ export interface MultiValueRendererProps<
 }
 
 export interface MultiValueDatumRendererProps<M extends SelectModel, O extends SelectOptions<M>>
-  extends MultiValueRendererProps<SelectValueDatum<M, O>, M, O> {}
+  extends MultiValueRendererProps<SelectValueModel<M, O>, M, O> {}
 
 export interface MultiValueModelRendererProps<M extends SelectModel, O extends SelectOptions<M>>
   extends MultiValueRendererProps<M, M, O> {
@@ -184,9 +184,9 @@ export interface SelectBaseProps<M extends SelectModel, O extends SelectOptions<
   readonly onChange?: SelectChangeHandler<M, O>;
   readonly content: (params: {
     readonly value: SelectValue<M, O>;
-    readonly isSelected: (v: SelectValueDatum<M, O> | SelectModelValue<M, O> | M) => boolean;
+    readonly isSelected: (v: SelectValueModel<M, O> | SelectModelValue<M, O> | M) => boolean;
     readonly onSelect: (
-      v: SelectValueDatum<M, O> | SelectModelValue<M, O> | M,
+      v: SelectValueModel<M, O> | SelectModelValue<M, O> | M,
       instance: MenuItemInstance,
     ) => void;
   }) => JSX.Element;

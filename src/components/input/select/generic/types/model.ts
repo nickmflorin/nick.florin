@@ -18,7 +18,7 @@ export type SelectModel<V extends AllowedSelectModelValue = AllowedSelectModelVa
   readonly value?: V;
 };
 
-export type SelectValueDatum<M extends SelectModel, O extends SelectOptions<M>> = {
+export type SelectValueModel<M extends SelectModel, O extends SelectOptions<M>> = {
   readonly value: SelectModelValue<M, O>;
   readonly label: ReactNode;
   readonly id: string;
@@ -34,7 +34,7 @@ const SelectValueDatumSchema = z
 
 export const isSelectValueDatum = <M extends SelectModel, O extends SelectOptions<M>>(
   v: unknown,
-): v is SelectValueDatum<M, O> => SelectValueDatumSchema.safeParse(v).success;
+): v is SelectValueModel<M, O> => SelectValueDatumSchema.safeParse(v).success;
 
 export type SelectModelValue<M extends SelectModel, O extends SelectOptions<M>> = M extends {
   readonly value: infer V extends AllowedSelectModelValue;

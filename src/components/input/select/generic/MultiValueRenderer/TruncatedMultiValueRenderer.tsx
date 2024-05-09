@@ -6,7 +6,7 @@ import { Text } from "~/components/typography/Text";
 
 export type TruncatedMultiValueRendererComponent = {
   <
-    D extends M | types.SelectValueDatum<M, O>,
+    D extends M | types.SelectValueModel<M, O>,
     M extends types.SelectModel,
     O extends types.SelectOptions<M>,
   >(
@@ -15,7 +15,7 @@ export type TruncatedMultiValueRendererComponent = {
 };
 
 export interface TruncatedMultiValueRendererProps<
-  D extends M | types.SelectValueDatum<M, O>,
+  D extends M | types.SelectValueModel<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 > extends Pick<types.MultiValueRendererProps<D, M, O>, "data" | "maximumNumBadges"> {
@@ -24,7 +24,7 @@ export interface TruncatedMultiValueRendererProps<
 
 export const TruncatedMultiValueRenderer = memo(
   <
-    D extends M | types.SelectValueDatum<M, O>,
+    D extends M | types.SelectValueModel<M, O>,
     M extends types.SelectModel,
     O extends types.SelectOptions<M>,
   >({

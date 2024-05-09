@@ -34,7 +34,7 @@ export const SelectInput = forwardRef<HTMLDivElement, types.SelectInputProps<any
   ) => {
     const renderedValue = useMemo(() => {
       if (types.selectIsFiltered(options)) {
-        const v = value as types.SelectValueDatum<
+        const v = value as types.SelectValueModel<
           M,
           Overwrite<O, { isFiltered: true; isMulti: true }>
         >[];

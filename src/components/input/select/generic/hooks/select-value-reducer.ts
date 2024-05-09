@@ -11,7 +11,7 @@ interface SelectValueReducerConfig<M extends types.SelectModel, O extends types.
 }
 
 export interface SelectValueState<
-  D extends types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 > {
@@ -28,7 +28,7 @@ export enum SelectValueActionType {
 }
 
 type SelectValueSyncAction<
-  D extends types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 > = {
@@ -39,7 +39,7 @@ type SelectValueSyncAction<
 };
 
 type SelectValueSelectAction<
-  D extends types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 > = {
@@ -48,7 +48,7 @@ type SelectValueSelectAction<
 };
 
 export type SelectValueAction<
-  D extends types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 > = SelectValueSelectAction<D, M, O> | SelectValueSyncAction<D, M, O>;
@@ -128,7 +128,7 @@ const findModelInData = <M extends types.SelectModel, O extends types.SelectOpti
 };
 
 const updateModelsAndReturn = <
-  D extends types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 >(
@@ -159,14 +159,14 @@ const updateModelsAndReturn = <
 };
 
 export type SelectValueReducer<
-  D extends types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 > = Reducer<SelectValueState<D, M, O>, SelectValueAction<D, M, O>>;
 
 export const createSelectValueReducer =
   <
-    D extends types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+    D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
     M extends types.SelectModel,
     O extends types.SelectOptions<M>,
   >({

@@ -28,7 +28,7 @@ export const useSelectValue = <M extends types.SelectModel, O extends types.Sele
 }: UseSelectValueConfig<M, O>) => {
   const reducer = useMemo(
     () =>
-      createSelectValueReducer<types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>, M, O>({
+      createSelectValueReducer<types.SelectValueModel<M, O> | types.SelectModelValue<M, O>, M, O>({
         options,
       }),
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
@@ -41,19 +41,19 @@ export const useSelectValue = <M extends types.SelectModel, O extends types.Sele
         if (!Array.isArray(v)) {
           throw new TypeError(`Expected an array value for a multi-select, but received: ${v}!`);
         }
-        return v as types.SelectValueDatum<M, O>[] | types.SelectModelValue<M, O>[];
+        return v as types.SelectValueModel<M, O>[] | types.SelectModelValue<M, O>[];
       } else if (Array.isArray(v)) {
         throw new TypeError(`Expected a non-array value for a single-select, but received: ${v}!`);
       } else if (v === null) {
-        return [] as types.SelectValueDatum<M, O>[] | types.SelectModelValue<M, O>[];
+        return [] as types.SelectValueModel<M, O>[] | types.SelectModelValue<M, O>[];
       }
-      return [v] as types.SelectValueDatum<M, O>[] | types.SelectModelValue<M, O>[];
+      return [v] as types.SelectValueModel<M, O>[] | types.SelectModelValue<M, O>[];
     },
     [options],
   );
 
   const [state, dispatch] = useReducer<
-    SelectValueReducer<types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>, M, O>
+    SelectValueReducer<types.SelectValueModel<M, O> | types.SelectModelValue<M, O>, M, O>
   >(reducer, {
     value: initialValue ? toValueArray(initialValue) : value ? toValueArray(value) : [],
     models: [],
@@ -74,7 +74,7 @@ export const useSelectValue = <M extends types.SelectModel, O extends types.Sele
   const transformToSelectValue = useCallback(
     (
       v: SelectValueState<
-        types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>,
+        types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
         M,
         O
       >["value"],
@@ -105,8 +105,8 @@ export const useSelectValue = <M extends types.SelectModel, O extends types.Sele
   /* TODO: We should use generic types to ensure that the provided value argument is valid for
      the given case. */
   const onSelect = useCallback(
-    (v: types.SelectValueDatum<M, O> | types.SelectModelValue<M, O> | M) => {
-      let valueToSelect: types.SelectValueDatum<M, O> | types.SelectModelValue<M, O>;
+    (v: types.SelectValueModel<M, O> | types.SelectModelValue<M, O> | M) => {
+      let valueToSelect: types.SelectValueModel<M, O> | types.SelectModelValue<M, O>;
       if (typeof v === "string") {
         if (options.isFiltered) {
           throw new Error("For a filtered select, the value must be a model - not a string.");
@@ -114,9 +114,9 @@ export const useSelectValue = <M extends types.SelectModel, O extends types.Sele
         valueToSelect = v;
       } else if (options.isFiltered) {
         if (!types.isSelectValueDatum(v)) {
-          throw new TypeError("For a filtered select, the value must be a SelectValueDatum!");
+          throw new TypeError("For a filtered select, the value must be a SelectValueModel!");
         }
-        valueToSelect = v as types.SelectValueDatum<M, O>;
+        valueToSelect = v as types.SelectValueModel<M, O>;
       } else {
         valueToSelect = types.getSelectModelValue(v as M, options);
       }
@@ -128,7 +128,7 @@ export const useSelectValue = <M extends types.SelectModel, O extends types.Sele
   );
 
   const isSelected = useCallback(
-    (v: types.SelectValueDatum<M, O> | types.SelectModelValue<M, O> | M) =>
+    (v: types.SelectValueModel<M, O> | types.SelectModelValue<M, O> | M) =>
       state.value.includes(
         types.isSelectValueDatum(v)
           ? v.value
