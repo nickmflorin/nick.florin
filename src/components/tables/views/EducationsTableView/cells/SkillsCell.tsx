@@ -7,19 +7,21 @@ import { logger } from "~/application/logger";
 import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
-import { SkillsSelect } from "~/components/input/select/SkillsSelect";
+import { SkillsSelect, type SkillSelectValueModel } from "~/components/input/select/SkillsSelect";
 
 interface SkillsCellProps {
   readonly education: ApiEducation<["skills"]>;
 }
 
 export const SkillsCell = ({ education }: SkillsCellProps) => {
-  const [optimisticValue, setOptimisticValue] = useState<string[]>(education.skills.map(s => s.id));
+  const [optimisticValue, setOptimisticValue] = useState<SkillSelectValueModel[]>(
+    education.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
+  );
   const [_, transition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
-    setOptimisticValue(education.skills.map(s => s.id));
+    setOptimisticValue(education.skills.map(s => ({ id: s.id, label: s.label, value: s.id })));
   }, [education.skills]);
 
   return (
@@ -30,7 +32,7 @@ export const SkillsCell = ({ education }: SkillsCellProps) => {
         item.setLoading(true);
         let response: Awaited<ReturnType<typeof updateEducation>> | null = null;
         try {
-          response = await updateEducation(education.id, { skills: v });
+          response = await updateEducation(education.id, { skills: v.map(s => s.id) });
         } catch (e) {
           logger.error(
             "There was a server error updating the skills for the education with " +

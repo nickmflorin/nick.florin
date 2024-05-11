@@ -28,7 +28,7 @@ export const CreateEducationForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createEducation(data);
+        const response = await createEducation({ ...data, skills: data.skills.map(sk => sk.id) });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

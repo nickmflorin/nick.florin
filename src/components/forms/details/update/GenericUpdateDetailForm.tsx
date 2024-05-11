@@ -71,7 +71,7 @@ export const GenericUpdateDetailForm = <
       shortDescription: detail.shortDescription ?? "",
       project: detail.project?.id ?? null,
       visible: detail.visible,
-      skills: detail.skills.map(sk => sk.id),
+      skills: detail.skills.map(sk => ({ id: sk.id, value: sk.id, label: sk.label })),
     });
   }, [detail, setValues]);
 
@@ -81,7 +81,10 @@ export const GenericUpdateDetailForm = <
       footer={<ButtonFooter submitText="Save" buttonSize="xsmall" />}
       form={{ setValues, ...form }}
       action={async data => {
-        const response = await updateDetailWithId(data);
+        const response = await updateDetailWithId({
+          ...data,
+          skills: data.skills.map(sk => sk.id),
+        });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

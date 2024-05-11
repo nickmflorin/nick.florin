@@ -2,9 +2,7 @@
 import { useState, useCallback, useEffect } from "react";
 
 import { useWatch } from "react-hook-form";
-import { type z } from "zod";
 
-import { EducationSchema } from "~/api/schemas";
 import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
@@ -16,9 +14,7 @@ import { TextInput } from "~/components/input/TextInput";
 import { CheckboxField } from "../fields/CheckboxField";
 import { Form, type FormProps } from "../generic/Form";
 
-export const EducationFormSchema = EducationSchema.required();
-
-export type EducationFormValues = z.infer<typeof EducationFormSchema>;
+import { type EducationFormValues } from "./schema";
 
 export interface EducationFormProps
   extends Omit<FormProps<EducationFormValues>, "children" | "onSubmit" | "contentClassName"> {}

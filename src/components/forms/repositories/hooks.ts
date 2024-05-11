@@ -1,15 +1,18 @@
 import { type ApiRepository } from "~/prisma/model";
-import { RepositorySchema } from "~/api/schemas";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
+
+import { RepositoryFormSchema } from "./schema";
 
 export const useRepositoryForm = (repository?: Partial<ApiRepository<["skills", "projects"]>>) =>
   useForm({
-    schema: RepositorySchema.required(),
+    schema: RepositoryFormSchema,
     defaultValues: {
       visible: repository?.visible ?? false,
       slug: repository?.slug ?? "",
       description: repository?.description ?? "",
-      skills: repository?.skills ? repository.skills.map(sk => sk.id) : [],
+      skills: repository?.skills
+        ? repository.skills.map(sk => ({ id: sk.id, value: sk.id, label: sk.label }))
+        : [],
       projects: repository?.projects ? repository.projects.map(p => p.id) : [],
     },
   });

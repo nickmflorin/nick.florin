@@ -9,11 +9,10 @@ const globalOptions = {
   getModelValueLabel: (m: ApiCourse) => m.shortName ?? m.name,
 } as const;
 
+type Opts<O extends { isMulti?: boolean }> = typeof globalOptions & { isMulti: O["isMulti"] };
+
 export interface CourseSelectProps<O extends { isMulti?: boolean }>
-  extends Omit<
-    SelectProps<string, ApiCourse, typeof globalOptions & O>,
-    "options" | "itemRenderer"
-  > {
+  extends Omit<SelectProps<string, ApiCourse, Opts<O>>, "options" | "itemRenderer"> {
   readonly options: O;
 }
 
@@ -21,8 +20,8 @@ export const CourseSelect = <O extends { isMulti?: boolean }>({
   options,
   ...props
 }: CourseSelectProps<O>): JSX.Element => (
-  <Select<string, ApiCourse, typeof options & O>
+  <Select<string, ApiCourse, Opts<O>>
     {...props}
-    options={{ ...globalOptions, ...options }}
+    options={{ ...globalOptions, isMulti: options.isMulti }}
   />
 );

@@ -30,7 +30,7 @@ export const CreateRepositoryForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createRepository(data);
+        const response = await createRepository({ ...data, skills: data.skills.map(sk => sk.id) });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

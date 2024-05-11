@@ -10,8 +10,10 @@ const globalOptions = {
   getModelValueLabel: (m: ApiRepository) => m.slug,
 } as const;
 
+type Opts<O extends { isMulti?: boolean }> = typeof globalOptions & { isMulti: O["isMulti"] };
+
 export interface RepositorySelectProps<O extends { isMulti?: boolean }, E extends ApiRepository>
-  extends Omit<SelectProps<string, E, typeof globalOptions & O>, "options" | "itemRenderer"> {
+  extends Omit<SelectProps<string, E, Opts<O>>, "options" | "itemRenderer"> {
   readonly options: O;
 }
 
@@ -19,9 +21,9 @@ export const RepositorySelect = <O extends { isMulti?: boolean }, E extends ApiR
   options,
   ...props
 }: RepositorySelectProps<O, E>): JSX.Element => (
-  <Select<string, E, typeof options & O>
+  <Select<string, E, Opts<O>>
     {...props}
-    options={{ ...globalOptions, ...options }}
+    options={{ ...globalOptions, isMulti: options.isMulti }}
     itemRenderer={m => <RepositoryTile repository={m} className="items-center" />}
   />
 );

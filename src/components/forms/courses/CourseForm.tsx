@@ -1,6 +1,3 @@
-import { type z } from "zod";
-
-import { CourseSchema } from "~/api/schemas";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 import { SkillsSelect } from "~/components/input/select/SkillsSelect";
@@ -8,9 +5,7 @@ import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "../generic/Form";
 
-export const CourseFormSchema = CourseSchema.required();
-
-export type CourseFormValues = z.infer<typeof CourseFormSchema>;
+import { type CourseFormValues } from "./schema";
 
 export interface CourseFormProps
   extends Omit<FormProps<CourseFormValues>, "children" | "onSubmit" | "contentClassName"> {}

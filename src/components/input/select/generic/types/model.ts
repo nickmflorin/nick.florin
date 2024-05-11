@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 
+import { type Assign } from "utility-types";
 import { z } from "zod";
 
 import { ReactNodeSchema } from "~/lib/core";
@@ -12,16 +13,31 @@ type Never = typeof NEVER;
 
 export type AllowedSelectModelValue = string;
 
-export type SelectModel<V extends AllowedSelectModelValue> = MenuModel & {
+export type SelectModelValue<
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+> = O["getModelValue"] extends ((...args: any[]) => infer V extends AllowedSelectModelValue)
+  ? V
+  : M extends { readonly value: infer V extends AllowedSelectModelValue }
+    ? V
+    : AllowedSelectModelValue;
+
+export type SelectModel<V extends AllowedSelectModelValue = AllowedSelectModelValue> = MenuModel & {
   // The element that will be used to communicate the value of the select in the select input.
   readonly valueLabel?: ReactNode;
   readonly value?: V;
 };
 
-export type SelectValueModel<V extends AllowedSelectModelValue = AllowedSelectModelValue> = {
-  readonly value: V;
+export type UnsafeSelectValueModel<M extends SelectModel, O extends SelectOptions<M>> = {
+  readonly value: SelectModelValue<M, O>;
   readonly label: ReactNode;
   readonly id?: string;
+};
+
+export type SelectValueModel<
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+> = UnsafeSelectValueModel<M, O> & {
   readonly __valueModel__: true;
 };
 
@@ -34,30 +50,26 @@ const SelectValueModelSchema = z
   })
   .strict();
 
-export const isSelectValueModel = <V extends AllowedSelectModelValue>(
+export const isSelectValueModel = <M extends SelectModel, O extends SelectOptions<M>>(
   v: unknown,
-): v is SelectValueModel<V> => SelectValueModelSchema.safeParse(v).success;
+): v is SelectValueModel<M, O> => SelectValueModelSchema.safeParse(v).success;
 
-export const selectValueModel = <V extends AllowedSelectModelValue = AllowedSelectModelValue>(
-  params: Omit<SelectValueModel<V>, "__valueModel__">,
-): SelectValueModel<V> => ({
+export const selectValueModel = <M extends SelectModel, O extends SelectOptions<M>>(
+  params: Omit<SelectValueModel<M, O>, "__valueModel__">,
+): SelectValueModel<M, O> => ({
   ...params,
   __valueModel__: true,
 });
 
-export const getSelectModelValue = <
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
->(
+export const getSelectModelValue = <M extends SelectModel, O extends SelectOptions<M>>(
   model: M,
   options: O,
-): V => {
-  let v: V | undefined = undefined;
+): SelectModelValue<M, O> => {
+  let v: SelectModelValue<M, O> | undefined = undefined;
   if (options.getModelValue !== undefined) {
-    v = options.getModelValue(model) as V;
+    v = options.getModelValue(model) as SelectModelValue<M, O>;
   } else if (model.value !== undefined) {
-    v = model.value;
+    v = model.value as SelectModelValue<M, O>;
   }
   if (v === undefined) {
     throw new Error(
@@ -65,14 +77,10 @@ export const getSelectModelValue = <
         "the 'getModelValue' option must be provided.",
     );
   }
-  return v as V;
+  return v as SelectModelValue<M, O>;
 };
 
-export type SelectModelValueLabel<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
-> = M extends {
+export type SelectModelValueLabel<M extends SelectModel, O extends SelectOptions<M>> = M extends {
   readonly valueLabel: infer L extends ReactNode;
 }
   ? L
@@ -86,14 +94,10 @@ export type SelectModelValueLabel<
     ? L
     : undefined;
 
-export const getSelectModelValueLabel = <
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
->(
+export const getSelectModelValueLabel = <M extends SelectModel, O extends SelectOptions<M>>(
   model: M,
   options: O,
-): SelectModelValueLabel<V, M, O> | undefined => {
+): SelectModelValueLabel<M, O> | undefined => {
   let v: ReactNode | Never = NEVER;
   if (options.getModelValueLabel !== undefined) {
     v = options.getModelValueLabel(model, {
@@ -103,41 +107,55 @@ export const getSelectModelValueLabel = <
   } else if (model.valueLabel !== undefined) {
     v = model.valueLabel;
   }
-  return v === NEVER ? undefined : (v as SelectModelValueLabel<V, M, O>);
+  return v === NEVER ? undefined : (v as SelectModelValueLabel<M, O>);
 };
 
-export type SelectData<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends { isValueModeled?: boolean },
-> = O extends { isValueModeled: true } ? never : M[];
+export type UnsafeSelectValueForm<M extends SelectModel, O extends SelectOptions<M>> = O extends {
+  isValueModeled: true;
+}
+  ? UnsafeSelectValueModel<M, O>
+  : SelectModelValue<M, O>;
 
-export type SelectDataValue<
-  V extends AllowedSelectModelValue,
-  O extends { isValueModeled?: boolean },
-> = O extends { isValueModeled: true } ? SelectValueModel<V> : V;
+export type SelectValueForm<
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+> = V extends UnsafeSelectValueModel<M, O> ? Assign<V, { __valueModel__: true }> : V;
 
 export type SelectValue<
-  V extends AllowedSelectModelValue,
-  O extends { isMulti?: boolean; isNullable?: boolean; isValueModeled?: boolean },
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > = O extends {
   isMulti: true;
 }
-  ? SelectDataValue<V, O>[]
+  ? SelectValueForm<V, M, O>[]
   : O extends { isNullable: true }
-    ? SelectDataValue<V, O> | null
-    : SelectDataValue<V, O>;
+    ? SelectValueForm<V, M, O> | null
+    : SelectValueForm<V, M, O>;
+
+export type UnsafeSelectValue<
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+> = O extends {
+  isMulti: true;
+}
+  ? V[]
+  : O extends { isNullable: true }
+    ? V | null
+    : V;
 
 export type SelectDataModel<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends { isValueModeled?: boolean },
-> = O extends { isValueModeled: true } ? M : SelectValueModel<V>;
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+> = V extends UnsafeSelectValueModel<M, O> ? SelectValueForm<V, M, O> : M;
 
 export type SelectModeledValue<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends { isMulti?: boolean; isNullable?: boolean; isValueModeled?: boolean },
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > = O extends {
   isMulti: true;
 }

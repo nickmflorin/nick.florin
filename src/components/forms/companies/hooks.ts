@@ -1,9 +1,10 @@
-import { CompanySchema } from "~/api/schemas";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
+
+import { CompanyFormSchema } from "./schema";
 
 export const useCompanyForm = () =>
   useForm({
-    schema: CompanySchema.required(),
+    schema: CompanyFormSchema,
     defaultValues: {
       name: "",
       shortName: "",

@@ -30,7 +30,7 @@ export const UpdateProjectForm = ({
       ...project,
       shortName: project.shortName ?? "",
       repositories: project.repositories.map(r => r.id),
-      skills: project.skills.map(sk => sk.id),
+      skills: project.skills.map(sk => ({ id: sk.id, label: sk.label, value: sk.id })),
       details: project.details.map(d => d.id),
       nestedDetails: project.nestedDetails.map(d => d.id),
     });
@@ -42,7 +42,10 @@ export const UpdateProjectForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateProjectWithId(data);
+        const response = await updateProjectWithId({
+          ...data,
+          skills: data.skills.map(sk => sk.id),
+        });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

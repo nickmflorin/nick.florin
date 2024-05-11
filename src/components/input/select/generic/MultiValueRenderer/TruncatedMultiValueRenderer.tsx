@@ -6,18 +6,18 @@ import { Text } from "~/components/typography/Text";
 
 export type TruncatedMultiValueRendererComponent = {
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >(
     props: TruncatedMultiValueRendererProps<V, M, O>,
   ): JSX.Element;
 };
 
 export interface TruncatedMultiValueRendererProps<
-  V extends types.AllowedSelectModelValue,
-  M extends types.SelectModel<V>,
-  O extends types.SelectOptions<V, M>,
+  V extends types.UnsafeSelectValueForm<M, O>,
+  M extends types.SelectModel,
+  O extends types.SelectOptions<M>,
 > extends Pick<types.MultiValueRendererProps<V, M, O>, "models" | "maximumValuesToRender"> {
   readonly children: (params: {
     models: types.MultiValueRendererProps<V, M, O>["models"];
@@ -26,9 +26,9 @@ export interface TruncatedMultiValueRendererProps<
 
 export const TruncatedMultiValueRenderer = memo(
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >({
     maximumValuesToRender,
     children,

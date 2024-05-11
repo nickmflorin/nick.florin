@@ -29,7 +29,7 @@ export const UpdateEducationForm = ({
     props.form.setValues({
       ...education,
       school: education.schoolId,
-      skills: education.skills.map(s => s.id),
+      skills: education.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
       description: education.description ?? "",
       concentration: education.concentration ?? "",
       minor: education.minor ?? "",
@@ -43,7 +43,10 @@ export const UpdateEducationForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateEducationWithId(data);
+        const response = await updateEducationWithId({
+          ...data,
+          skills: data.skills.map(sk => sk.id),
+        });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

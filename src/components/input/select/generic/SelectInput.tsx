@@ -8,14 +8,14 @@ import * as types from "./types";
 
 const MultiValueRenderer = dynamic(
   () => import("./MultiValueRenderer"),
-) as types.MultiValueRendererCompoennt;
+) as types.MultiValueRendererCompoenent;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const SelectInput = forwardRef<HTMLDivElement, types.SelectInputProps<any, any, any>>(
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >(
     {
       isReady = true,
@@ -74,9 +74,9 @@ export const SelectInput = forwardRef<HTMLDivElement, types.SelectInputProps<any
   },
 ) as {
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >(
     props: types.SelectInputProps<V, M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
   ): JSX.Element;

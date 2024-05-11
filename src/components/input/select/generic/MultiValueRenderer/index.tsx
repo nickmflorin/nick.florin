@@ -10,9 +10,9 @@ import { TruncatedMultiValueRenderer } from "./TruncatedMultiValueRenderer";
 
 export const MultiValueRenderer = memo(
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >({
     maximumValuesToRender,
     models,

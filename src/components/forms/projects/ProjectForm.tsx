@@ -1,7 +1,4 @@
 "use client";
-import { type z } from "zod";
-
-import { ProjectSchema } from "~/api/schemas";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientRepositorySelect } from "~/components/input/select/ClientRepositorySelect";
 import { SkillsSelect } from "~/components/input/select/SkillsSelect";
@@ -10,9 +7,7 @@ import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "../generic/Form";
 
-export const ProjectFormSchema = ProjectSchema.required();
-
-export type ProjectFormValues = z.infer<typeof ProjectFormSchema>;
+import { type ProjectFormValues } from "./schema";
 
 export interface ProjectFormProps
   extends Omit<FormProps<ProjectFormValues>, "children" | "onSubmit" | "contentClassName"> {}

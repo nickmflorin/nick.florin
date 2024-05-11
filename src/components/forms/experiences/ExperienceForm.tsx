@@ -2,9 +2,7 @@
 import { useState, useEffect } from "react";
 
 import { useWatch } from "react-hook-form";
-import { type z } from "zod";
 
-import { ExperienceSchema } from "~/api/schemas";
 import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
@@ -16,9 +14,7 @@ import { Label } from "~/components/typography/Label";
 import { CheckboxField } from "../fields/CheckboxField";
 import { Form, type FormProps } from "../generic/Form";
 
-export const ExperienceFormSchema = ExperienceSchema.required();
-
-export type ExperienceFormValues = z.infer<typeof ExperienceFormSchema>;
+import { type ExperienceFormValues } from "./schema";
 
 export interface ExperienceFormProps
   extends Omit<FormProps<ExperienceFormValues>, "children" | "onSubmit" | "contentClassName"> {}

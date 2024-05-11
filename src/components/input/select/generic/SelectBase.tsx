@@ -14,17 +14,13 @@ import { SelectPopover } from "./SelectPopover";
 const LocalSelectBase = forwardRef<
   types.SelectInstance,
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  types.SelectBaseProps<
-    any,
-    types.SelectModel<any>,
-    types.SelectOptions<any, types.SelectModel<any>>
-  >
+  types.SelectBaseProps<any, types.SelectModel<any>, types.SelectOptions<any>>
   /* eslint-enable @typescript-eslint/no-explicit-any */
 >(
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >(
     {
       menuOffset = { mainAxis: 2 },
@@ -132,9 +128,9 @@ const LocalSelectBase = forwardRef<
 
 export const SelectBase = LocalSelectBase as {
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >(
     props: types.SelectBaseProps<V, M, O> & {
       readonly ref?: ForwardedRef<types.SelectInstance>;

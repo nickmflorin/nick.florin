@@ -1,9 +1,10 @@
-import { EducationSchema } from "~/api/schemas";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
+
+import { EducationFormSchema } from "./schema";
 
 export const useEducationForm = () =>
   useForm({
-    schema: EducationSchema.required(),
+    schema: EducationFormSchema,
     defaultValues: {
       major: "",
       concentration: "",

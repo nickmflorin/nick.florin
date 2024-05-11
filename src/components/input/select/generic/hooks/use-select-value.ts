@@ -10,21 +10,21 @@ import {
 } from "./select-value-reducer";
 
 interface UseSelectValueConfig<
-  V extends types.AllowedSelectModelValue,
-  M extends types.SelectModel<V>,
-  O extends types.SelectOptions<V, M>,
+  V extends types.UnsafeSelectValueForm<M, O>,
+  M extends types.SelectModel,
+  O extends types.SelectOptions<M>,
 > {
   readonly options: O;
-  readonly initialValue?: types.SelectValue<V, O>;
-  readonly value?: types.SelectValue<V, O>;
+  readonly initialValue?: types.UnsafeSelectValue<V, M, O>;
+  readonly value?: types.UnsafeSelectValue<V, M, O>;
   readonly isReady: boolean;
-  readonly data?: types.SelectData<V, M, O>;
+  readonly data: M[];
 }
 
 export const useSelectValue = <
-  V extends types.AllowedSelectModelValue,
-  M extends types.SelectModel<V>,
-  O extends types.SelectOptions<V, M>,
+  V extends types.UnsafeSelectValueForm<M, O>,
+  M extends types.SelectModel,
+  O extends types.SelectOptions<M>,
 >({
   options,
   initialValue,
@@ -57,7 +57,7 @@ export const useSelectValue = <
   }, [isReady, value, data]);
 
   const onSelect = useCallback(
-    (v: types.SelectArg<V, M, O>) => {
+    (v: types.SelectArg<M, O>) => {
       dispatch({ type: SelectValueActionType.Select, value: v });
       return reducer(state, { type: SelectValueActionType.Select, value: v });
     },
@@ -65,9 +65,14 @@ export const useSelectValue = <
   );
 
   const isSelected = useCallback(
-    (val: types.SelectArg<V, M, O>) => {
+    (val: types.SelectArg<M, O>) => {
       const v = typeof val === "string" ? val : types.getSelectModelValue(val as M, options);
-      return state.valueArray.map(sv => (typeof sv === "string" ? sv : sv.value)).includes(v as V);
+      return state.valueArray
+        .map(
+          (sv): types.SelectModelValue<M, O> =>
+            (typeof sv === "string" ? sv : sv.value) as types.SelectModelValue<M, O>,
+        )
+        .includes(v);
     },
     [state.valueArray, options],
   );

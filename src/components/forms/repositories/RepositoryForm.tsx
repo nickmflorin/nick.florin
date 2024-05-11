@@ -1,7 +1,4 @@
 "use client";
-import { type z } from "zod";
-
-import { RepositorySchema } from "~/api/schemas";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
 import { SkillsSelect } from "~/components/input/select/SkillsSelect";
@@ -10,9 +7,7 @@ import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "../generic/Form";
 
-export const RepositoryFormSchema = RepositorySchema.required();
-
-export type RepositoryFormValues = z.infer<typeof RepositoryFormSchema>;
+import { type RepositoryFormValues } from "./schema";
 
 export interface RepositoryFormProps
   extends Omit<FormProps<RepositoryFormValues>, "children" | "onSubmit" | "contentClassName"> {}

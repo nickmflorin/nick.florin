@@ -19,14 +19,21 @@ const MenuContent = dynamic(() => import("~/components/menus/generic/MenuContent
 
 const globalOptions = {
   isMulti: true,
+  isValueModeled: true,
   getModelValue: (m: BrandSkill) => m.id,
   getModelLabel: (m: BrandSkill) => m.label,
   getModelValueLabel: (m: BrandSkill) => m.label,
 } as const;
 
+export type SkillSelectValueModel = {
+  id: BrandSkill["id"];
+  value: BrandSkill["id"];
+  label: BrandSkill["label"];
+};
+
 export interface SkillsSelectProps
   extends Omit<
-    SelectBaseProps<string, BrandSkill, typeof globalOptions>,
+    SelectBaseProps<SkillSelectValueModel, BrandSkill, typeof globalOptions>,
     "data" | "options" | "isReady" | "content" | "maximumValuesToRender" | "isLoading"
   > {
   readonly onError?: (e: HttpError) => void;
@@ -35,15 +42,10 @@ export interface SkillsSelectProps
 export const SkillsSelect = ({ onError, ...props }: SkillsSelectProps) => {
   const [search, setSearch] = useState("");
 
-  const { data, isLoading, error } = useSkills({
-    query: { includes: [], visibility: "admin", orderBy: { label: "asc" } },
-    keepPreviousData: true,
-  });
-
   const {
-    data: filteredData,
-    isLoading: filteredDataIsLoading,
-    error: filteredError,
+    data,
+    isLoading: isLoading,
+    error,
   } = useSkills({
     query: { includes: [], visibility: "admin", orderBy: { label: "asc" }, filters: { search } },
     keepPreviousData: true,
@@ -56,20 +58,16 @@ export const SkillsSelect = ({ onError, ...props }: SkillsSelectProps) => {
         <SelectBase
           dynamicHeight={false}
           {...props}
-          options={globalOptions}
           data={data ?? []}
+          options={globalOptions}
           maximumValuesToRender={3}
           isReady={data !== undefined}
-          isLoading={isLoading || filteredDataIsLoading || _isDynamicallyLoading}
+          isLoading={isLoading || _isDynamicallyLoading}
           content={({ onSelect, isSelected }) => (
             <MenuContainer className="box-shadow-none">
               <MenuHeader search={search} onSearch={(e, v) => setSearch(v)} />
               <MenuContentWrapper>
-                <ApiResponseState
-                  isLoading={isLoading || filteredDataIsLoading}
-                  error={error || filteredError}
-                  data={filteredData}
-                >
+                <ApiResponseState isLoading={isLoading} error={error} data={data}>
                   {skills => (
                     /* We have to use the Abstract version of the MenuContent component because the
                        value is already being managed by the 'SelectBase' component, and we do not

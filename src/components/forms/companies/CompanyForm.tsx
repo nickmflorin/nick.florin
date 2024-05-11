@@ -1,14 +1,9 @@
-import { type z } from "zod";
-
-import { CompanySchema } from "~/api/schemas";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 
 import { Form, type FormProps } from "../generic/Form";
 
-export const CompanyFormSchema = CompanySchema.required();
-
-export type CompanyFormValues = z.infer<typeof CompanyFormSchema>;
+import { type CompanyFormValues } from "./schema";
 
 export interface CompanyFormProps
   extends Omit<FormProps<CompanyFormValues>, "children" | "onSubmit" | "contentClassName"> {}

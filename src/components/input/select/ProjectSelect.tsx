@@ -15,11 +15,10 @@ const globalOptions = {
   getModelValueLabel: (m: Proj) => m.shortName ?? m.name,
 } as const;
 
+type Opts<O extends { isMulti?: boolean }> = typeof globalOptions & { isMulti: O["isMulti"] };
+
 export interface ProjectSelectProps<O extends { isMulti?: boolean }>
-  extends Omit<
-    SelectProps<string, Proj, typeof globalOptions & O>,
-    "options" | "itemRenderer" | "data"
-  > {
+  extends Omit<SelectProps<string, Proj, Opts<O>>, "options" | "itemRenderer" | "data"> {
   readonly data: BrandProject[];
   readonly options: O;
 }
@@ -28,9 +27,9 @@ export const ProjectSelect = <O extends { isMulti?: boolean }>({
   options,
   ...props
 }: ProjectSelectProps<O>): JSX.Element => (
-  <Select<string, Proj, typeof options & O>
+  <Select<string, Proj, Opts<O>>
     {...props}
-    options={{ ...globalOptions, ...options }}
+    options={{ ...globalOptions, isMulti: options.isMulti }}
     /* TODO: We eventually may want to solidify types related to the available IconName(s) so we can
        use it for schema validation of data coming from the database. */
     data={props.data.map(datum => ({ ...datum, icon: { name: datum.icon as IconName } }))}

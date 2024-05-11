@@ -12,8 +12,10 @@ const globalOptions = {
     options.isMulti ? m.shortMajor ?? m.major : m.major,
 } as const;
 
+type Opts<O extends { isMulti?: boolean }> = typeof globalOptions & { isMulti: O["isMulti"] };
+
 export interface EducationSelectProps<O extends { isMulti?: boolean }, E extends ApiEducation>
-  extends Omit<SelectProps<string, E, typeof globalOptions & O>, "options" | "itemRenderer"> {
+  extends Omit<SelectProps<string, E, Opts<O>>, "options" | "itemRenderer"> {
   readonly useAbbreviatedOptionLabels?: boolean;
   readonly options: O;
 }
@@ -23,9 +25,9 @@ export const EducationSelect = <O extends { isMulti?: boolean }, E extends ApiEd
   options,
   ...props
 }: EducationSelectProps<O, E>): JSX.Element => (
-  <Select<string, E, typeof options & O>
+  <Select<string, E, Opts<O>>
     {...props}
-    options={{ ...globalOptions, ...options }}
+    options={{ ...globalOptions, isMulti: options.isMulti }}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium">

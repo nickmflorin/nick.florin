@@ -7,21 +7,21 @@ import { logger } from "~/application/logger";
 import { type ApiRepository } from "~/prisma/model";
 import { updateRepository } from "~/actions/mutations/repositories";
 import { isApiClientErrorJson } from "~/api";
-import { SkillsSelect } from "~/components/input/select/SkillsSelect";
+import { SkillsSelect, type SkillSelectValueModel } from "~/components/input/select/SkillsSelect";
 
 interface SkillsCellProps {
   readonly repository: ApiRepository<["skills"]>;
 }
 
 export const SkillsCell = ({ repository }: SkillsCellProps) => {
-  const [optimisticValue, setOptimisticValue] = useState<string[]>(
-    repository.skills.map(s => s.id),
+  const [optimisticValue, setOptimisticValue] = useState<SkillSelectValueModel[]>(
+    repository.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
   );
   const [_, transition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
-    setOptimisticValue(repository.skills.map(s => s.id));
+    setOptimisticValue(repository.skills.map(s => ({ id: s.id, label: s.label, value: s.id })));
   }, [repository.skills]);
 
   return (
@@ -32,7 +32,7 @@ export const SkillsCell = ({ repository }: SkillsCellProps) => {
         item.setLoading(true);
         let response: Awaited<ReturnType<typeof updateRepository>> | null = null;
         try {
-          response = await updateRepository(repository.id, { skills: v });
+          response = await updateRepository(repository.id, { skills: v.map(sk => sk.id) });
         } catch (e) {
           logger.error(
             "There was a server error updating the skills for the repository with " +

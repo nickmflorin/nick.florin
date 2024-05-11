@@ -1,9 +1,10 @@
-import { ExperienceSchema } from "~/api/schemas";
 import { useForm } from "~/components/forms/generic/hooks/use-form";
+
+import { ExperienceFormSchema } from "./schema";
 
 export const useExperienceForm = () =>
   useForm({
-    schema: ExperienceSchema.required(),
+    schema: ExperienceFormSchema,
     defaultValues: {
       title: "",
       shortTitle: "",

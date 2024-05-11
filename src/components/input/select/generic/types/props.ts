@@ -7,9 +7,9 @@ import type {
   SelectValue,
   SelectDataModel,
   SelectModel,
-  SelectValueModel,
-  AllowedSelectModelValue,
-  SelectData,
+  UnsafeSelectValue,
+  SelectModelValue,
+  UnsafeSelectValueForm,
 } from "./model";
 
 import { type PopoverProps } from "~/components/floating/Popover";
@@ -26,33 +26,31 @@ export type SelectInstance = {
 };
 
 export type SelectValueRendererParams<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > = {
   models: SelectModeledValue<V, M, O>;
 };
 
 export type SelectValueRenderer<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
-> = (v: SelectValue<V, O>, params: SelectValueRendererParams<V, M, O>) => ReactNode;
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+> = (v: SelectValue<V, M, O>, params: SelectValueRendererParams<V, M, O>) => ReactNode;
 
 export type SelectValueModelRenderer<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > = (v: SelectDataModel<V, M, O>) => ReactNode;
 
-export type SelectItemRenderer<V extends AllowedSelectModelValue, M extends SelectModel<V>> = (
-  model: M,
-) => ReactNode;
+export type SelectItemRenderer<M extends SelectModel> = (model: M) => ReactNode;
 
 export interface MultiValueRendererProps<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > {
   readonly models: SelectDataModel<V, M, O>[];
   readonly maximumValuesToRender?: number;
@@ -61,26 +59,26 @@ export interface MultiValueRendererProps<
   readonly valueModelRenderer?: SelectValueModelRenderer<V, M, O>;
 }
 
-export type MultiValueRendererCompoennt = {
-  <V extends AllowedSelectModelValue, M extends SelectModel<V>, O extends SelectOptions<V, M>>(
+export type MultiValueRendererCompoenent = {
+  <V extends UnsafeSelectValueForm<M, O>, M extends SelectModel, O extends SelectOptions<M>>(
     props: MultiValueRendererProps<V, M, O>,
   ): JSX.Element;
 };
 
 export type SelectChangeParams<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > = {
   item: MenuItemInstance;
   models: SelectModeledValue<V, M, O>;
 };
 
 export type SelectChangeHandler<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
-> = (value: SelectValue<V, O>, params: SelectChangeParams<V, M, O>) => void;
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
+> = (value: SelectValue<V, M, O>, params: SelectChangeParams<V, M, O>) => void;
 
 export interface SelectPopoverProps
   extends Pick<PopoverProps, "inPortal" | "content" | "maxHeight"> {
@@ -127,29 +125,27 @@ export interface BaseSelectInputProps
 }
 
 export interface SelectInputProps<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > extends Omit<BaseSelectInputProps, "showPlaceholder" | "children"> {
   readonly isReady?: boolean;
   readonly options: O;
   readonly maximumValuesToRender?: number;
   readonly models: SelectDataModel<V, M, O>[];
-  readonly value: SelectValue<V, O>;
+  readonly value: SelectValue<V, M, O>;
   readonly valueRenderer?: () => ReactNode;
   readonly valueModelRenderer?: SelectValueModelRenderer<V, M, O>;
 }
 
-export type SelectArg<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends { isValueModeled?: boolean },
-> = O extends { isValueModeled: true } ? SelectValueModel<V> : M;
+export type SelectArg<M extends SelectModel, O extends SelectOptions<M>> =
+  | SelectModelValue<M, O>
+  | M;
 
 export interface SelectBaseProps<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > extends Optional<
       Omit<
         SelectPopoverProps,
@@ -161,30 +157,30 @@ export interface SelectBaseProps<
       SelectInputProps<V, M, O>,
       keyof ComponentProps | "value" | "select" | "models" | "isOpen" | "valueRenderer"
     > {
-  readonly value?: SelectValue<V, O>;
-  readonly initialValue?: SelectValue<V, O>;
+  readonly value?: UnsafeSelectValue<V, M, O>;
+  readonly initialValue?: UnsafeSelectValue<V, M, O>;
   readonly menuClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
-  readonly data?: SelectData<V, M, O>;
+  readonly data: M[];
   readonly valueRenderer?: SelectValueRenderer<V, M, O>;
   readonly onChange?: SelectChangeHandler<V, M, O>;
   readonly content: (params: {
-    readonly value: SelectValue<V, O>;
-    readonly isSelected: (v: SelectArg<V, M, O>) => boolean;
-    readonly onSelect: (v: SelectArg<V, M, O>, instance: MenuItemInstance) => void;
+    readonly value: SelectValue<V, M, O>;
+    readonly isSelected: (v: SelectArg<M, O>) => boolean;
+    readonly onSelect: (v: SelectArg<M, O>, instance: MenuItemInstance) => void;
   }) => JSX.Element;
   readonly onOpen?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: SelectValue<V, O>;
+      value: SelectValue<V, M, O>;
       select: SelectInstance;
     },
   ) => void;
   readonly onClose?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: SelectValue<V, O>;
+      value: SelectValue<V, M, O>;
       select: SelectInstance;
     },
   ) => void;
@@ -192,17 +188,17 @@ export interface SelectBaseProps<
     e: Event | React.MouseEvent<HTMLButtonElement>,
     isOpen: boolean,
     params: {
-      value: SelectValue<V, O>;
+      value: SelectValue<V, M, O>;
       select: SelectInstance;
     },
   ) => void;
 }
 
 export interface SelectProps<
-  V extends AllowedSelectModelValue,
-  M extends SelectModel<V>,
-  O extends SelectOptions<V, M>,
+  V extends UnsafeSelectValueForm<M, O>,
+  M extends SelectModel,
+  O extends SelectOptions<M>,
 > extends Omit<SelectBaseProps<V, M, O>, "content" | "data">,
     Omit<MenuProps<M, O>, "children" | "itemIsSelected" | keyof ComponentProps> {
-  readonly itemRenderer?: SelectItemRenderer<V, M>;
+  readonly itemRenderer?: SelectItemRenderer<M>;
 }

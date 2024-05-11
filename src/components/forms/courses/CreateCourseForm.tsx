@@ -32,7 +32,7 @@ export const CreateCourseForm = ({
       isLoading={pending}
       form={form}
       action={async (data, form) => {
-        const response = await createCourse(data);
+        const response = await createCourse({ ...data, skills: data.skills.map(sk => sk.id) });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

@@ -28,7 +28,7 @@ export const UpdateExperienceForm = ({
   useDeepEqualEffect(() => {
     props.form.setValues({
       ...experience,
-      skills: experience.skills.map(s => s.id),
+      skills: experience.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
       company: experience.companyId,
       description: experience.description ?? "",
     });
@@ -40,7 +40,10 @@ export const UpdateExperienceForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateExperienceWithId(data);
+        const response = await updateExperienceWithId({
+          ...data,
+          skills: data.skills.map(sk => sk.id),
+        });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

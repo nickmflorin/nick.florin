@@ -16,13 +16,13 @@ const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
 const LocalSelect = forwardRef<
   types.SelectInstance,
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  types.SelectProps<any, types.SelectModel<any>, types.SelectOptions<any, types.SelectModel<any>>>
+  types.SelectProps<any, types.SelectModel<any>, types.SelectOptions<any>>
   /* eslint-enable @typescript-eslint/no-explicit-any */
 >(
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >(
     {
       children,
@@ -74,10 +74,7 @@ const LocalSelect = forwardRef<
       size={size}
       actions={actions}
       placeholder={placeholder}
-      /* When the Select is value modeled, the data is not used by the SelectBase because it does
-         not need to correlate the models in the data with the value.  The data is only used to
-         render the MenuItem(s) in the Menu. */
-      data={(props.options.isValueModeled ? undefined : props.data) as types.SelectData<V, M, O>}
+      data={props.data}
       options={props.options}
       closeMenuOnSelect={closeMenuOnSelect}
       valueRenderer={valueRenderer}
@@ -91,9 +88,9 @@ const LocalSelect = forwardRef<
           {...(props as MenuProps<M, O>)}
           isLocked={!isReady}
           className="z-50"
-          itemIsSelected={m => isSelected(m as types.SelectArg<V, M, O>)}
+          itemIsSelected={m => isSelected(m as types.SelectArg<M, O>)}
           onItemClick={(model, instance) => {
-            onSelect(model as types.SelectArg<V, M, O>, instance);
+            onSelect(model as types.SelectArg<M, O>, instance);
             props.onItemClick?.(model, instance);
           }}
         >
@@ -108,9 +105,9 @@ const LocalSelect = forwardRef<
 
 export const Select = LocalSelect as {
   <
-    V extends types.AllowedSelectModelValue,
-    M extends types.SelectModel<V>,
-    O extends types.SelectOptions<V, M>,
+    V extends types.UnsafeSelectValueForm<M, O>,
+    M extends types.SelectModel,
+    O extends types.SelectOptions<M>,
   >(
     props: types.SelectProps<V, M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
   ): JSX.Element;
