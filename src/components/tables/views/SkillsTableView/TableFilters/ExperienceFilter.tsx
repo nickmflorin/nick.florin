@@ -48,7 +48,7 @@ export const ExperienceFilter = ({ filters, experiences }: ExperienceFilterProps
       placeholder="Experiences"
       data={experiences}
       value={value}
-      maximumNumBadges={1}
+      maximumValuesToRender={1}
       onChange={v => setValue(v)}
       menuPlacement="bottom"
     />

@@ -106,10 +106,8 @@ $table-size-properties: (
 
 @mixin table-tr {
   table {
-    ttext {
-      tr {
-        @content;
-      }
+    tr {
+      @content;
     }
   }
 }
@@ -144,13 +142,20 @@ $table-size-properties: (
   position: relative;
   border: 1px solid theme("colors.border");
 
+  @include table-td {
+    &.loading-cell {
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+  }
+
   @each $size in $table-sizes {
     &--size-#{$size} {
       @include table-tr {
         @include tr-size($size);
         &.row--loading {
           td:not(.loading-cell) {
-            opacity: 0.3;
+            opacity: 0.1;
           }
         }
         &.row--locked {

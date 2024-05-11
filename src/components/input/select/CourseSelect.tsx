@@ -10,7 +10,10 @@ const globalOptions = {
 } as const;
 
 export interface CourseSelectProps<O extends { isMulti?: boolean }>
-  extends Omit<SelectProps<ApiCourse, typeof globalOptions & O>, "options" | "itemRenderer"> {
+  extends Omit<
+    SelectProps<string, ApiCourse, typeof globalOptions & O>,
+    "options" | "itemRenderer"
+  > {
   readonly options: O;
 }
 
@@ -18,5 +21,8 @@ export const CourseSelect = <O extends { isMulti?: boolean }>({
   options,
   ...props
 }: CourseSelectProps<O>): JSX.Element => (
-  <Select<ApiCourse, typeof options & O> {...props} options={{ ...globalOptions, ...options }} />
+  <Select<string, ApiCourse, typeof options & O>
+    {...props}
+    options={{ ...globalOptions, ...options }}
+  />
 );

@@ -12,7 +12,7 @@ const NEVER = "__NEVER__" as const;
 type Never = typeof NEVER;
 
 export type MenuModel = {
-  readonly id?: string | number;
+  readonly id?: string;
   readonly icon?: IconProp | JSX.Element;
   readonly iconClassName?: ComponentProps["className"];
   readonly spinnerClassName?: ComponentProps["className"];

@@ -15,7 +15,7 @@ const options = {
 } as const;
 
 export interface ExperienceSelectProps<E extends Exp>
-  extends Omit<SelectProps<E, typeof options>, "options" | "itemRenderer"> {
+  extends Omit<SelectProps<string, E, typeof options>, "options" | "itemRenderer"> {
   readonly useAbbreviatedOptionLabels?: boolean;
 }
 
@@ -23,7 +23,7 @@ export const ExperienceSelect = <E extends Exp>({
   useAbbreviatedOptionLabels = true,
   ...props
 }: ExperienceSelectProps<E>): JSX.Element => (
-  <Select<E, typeof options>
+  <Select<string, E, typeof options>
     {...props}
     options={options}
     itemRenderer={m => (

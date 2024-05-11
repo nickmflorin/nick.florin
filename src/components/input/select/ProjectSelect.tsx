@@ -16,7 +16,10 @@ const globalOptions = {
 } as const;
 
 export interface ProjectSelectProps<O extends { isMulti?: boolean }>
-  extends Omit<SelectProps<Proj, typeof globalOptions & O>, "options" | "itemRenderer" | "data"> {
+  extends Omit<
+    SelectProps<string, Proj, typeof globalOptions & O>,
+    "options" | "itemRenderer" | "data"
+  > {
   readonly data: BrandProject[];
   readonly options: O;
 }
@@ -25,7 +28,7 @@ export const ProjectSelect = <O extends { isMulti?: boolean }>({
   options,
   ...props
 }: ProjectSelectProps<O>): JSX.Element => (
-  <Select<Proj, typeof options & O>
+  <Select<string, Proj, typeof options & O>
     {...props}
     options={{ ...globalOptions, ...options }}
     /* TODO: We eventually may want to solidify types related to the available IconName(s) so we can

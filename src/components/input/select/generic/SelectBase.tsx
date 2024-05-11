@@ -2,6 +2,8 @@
 import React from "react";
 import { useRef, forwardRef, type ForwardedRef } from "react";
 
+import isEqual from "lodash.isequal";
+
 import type * as types from "./types";
 
 import { FloatingSelectContent } from "./FloatingSelectContent";
@@ -11,10 +13,19 @@ import { SelectPopover } from "./SelectPopover";
 
 const LocalSelectBase = forwardRef<
   types.SelectInstance,
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  types.SelectBaseProps<any, types.SelectOptions<any>>
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  types.SelectBaseProps<
+    any,
+    types.SelectModel<any>,
+    types.SelectOptions<any, types.SelectModel<any>>
+  >
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 >(
-  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
+  <
+    V extends types.AllowedSelectModelValue,
+    M extends types.SelectModel<V>,
+    O extends types.SelectOptions<V, M>,
+  >(
     {
       menuOffset = { mainAxis: 2 },
       menuPlacement,
@@ -37,12 +48,12 @@ const LocalSelectBase = forwardRef<
       onClose,
       onOpenChange,
       ...props
-    }: types.SelectBaseProps<M, O>,
+    }: types.SelectBaseProps<V, M, O>,
     ref: ForwardedRef<types.SelectInstance>,
   ): JSX.Element => {
     const internalInstance = useRef<types.SelectInstance | null>(null);
 
-    const { value, models, selectValue, isSelected, onSelect } = useSelectValue<M, O>({
+    const { value, models, modelsArray, isSelected, onSelect } = useSelectValue<V, M, O>({
       initialValue,
       value: _propValue,
       options: props.options,
@@ -69,34 +80,28 @@ const LocalSelectBase = forwardRef<
         menuWidth={menuWidth}
         inPortal={inPortal}
         menuOffset={menuOffset}
-        onOpen={(e, { select }) => onOpen?.(e, { value: selectValue, select })}
-        onClose={(e, { select }) => onClose?.(e, { value: selectValue, select })}
-        onOpenChange={(e, isOpen, { select }) =>
-          onOpenChange?.(e, isOpen, { value: selectValue, select })
-        }
+        onOpen={(e, { select }) => onOpen?.(e, { value, select })}
+        onClose={(e, { select }) => onClose?.(e, { value, select })}
+        onOpenChange={(e, isOpen, { select }) => onOpenChange?.(e, isOpen, { value, select })}
         content={
           <FloatingSelectContent className={menuClassName}>
             {content({
-              value: selectValue,
+              value,
               isSelected,
               onSelect: (v, instance) => {
                 const newState = onSelect(v);
-                if (props.options.isFiltered) {
-                  onChange?.(newState.selectValue, { item: instance } as types.SelectChangeParams<
-                    M,
-                    O
-                  >);
-                } else {
-                  onChange?.(newState.selectValue, {
+
+                if (!isEqual(newState.value, value)) {
+                  onChange?.(newState.value, {
                     item: instance,
                     models: newState.models,
-                  } as types.SelectChangeParams<M, O>);
-                }
-                if (
-                  closeMenuOnSelect ||
-                  (closeMenuOnSelect === undefined && !props.options.isMulti)
-                ) {
-                  internalInstance.current?.setOpen(false);
+                  } as types.SelectChangeParams<V, M, O>);
+                  if (
+                    closeMenuOnSelect ||
+                    (closeMenuOnSelect === undefined && !props.options.isMulti)
+                  ) {
+                    internalInstance.current?.setOpen(false);
+                  }
                 }
               },
             })}
@@ -113,8 +118,11 @@ const LocalSelectBase = forwardRef<
               isOpen={isOpen}
               isLoading={isLoading}
               ref={ref}
-              models={models}
+              models={modelsArray}
               className={inputClassName}
+              valueRenderer={
+                props.valueRenderer ? () => props.valueRenderer?.(value, { models }) : undefined
+              }
             />
           ))}
       </SelectPopover>
@@ -123,7 +131,13 @@ const LocalSelectBase = forwardRef<
 );
 
 export const SelectBase = LocalSelectBase as {
-  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
-    props: types.SelectBaseProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
+  <
+    V extends types.AllowedSelectModelValue,
+    M extends types.SelectModel<V>,
+    O extends types.SelectOptions<V, M>,
+  >(
+    props: types.SelectBaseProps<V, M, O> & {
+      readonly ref?: ForwardedRef<types.SelectInstance>;
+    },
   ): JSX.Element;
 };

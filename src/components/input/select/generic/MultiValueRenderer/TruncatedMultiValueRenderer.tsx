@@ -6,50 +6,55 @@ import { Text } from "~/components/typography/Text";
 
 export type TruncatedMultiValueRendererComponent = {
   <
-    D extends M | types.SelectValueModel<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
+    V extends types.AllowedSelectModelValue,
+    M extends types.SelectModel<V>,
+    O extends types.SelectOptions<V, M>,
   >(
-    props: TruncatedMultiValueRendererProps<D, M, O>,
+    props: TruncatedMultiValueRendererProps<V, M, O>,
   ): JSX.Element;
 };
 
 export interface TruncatedMultiValueRendererProps<
-  D extends M | types.SelectValueModel<M, O>,
-  M extends types.SelectModel,
-  O extends types.SelectOptions<M>,
-> extends Pick<types.MultiValueRendererProps<D, M, O>, "data" | "maximumNumBadges"> {
-  readonly children: (params: { data: D[] }) => JSX.Element;
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+> extends Pick<types.MultiValueRendererProps<V, M, O>, "models" | "maximumValuesToRender"> {
+  readonly children: (params: {
+    models: types.MultiValueRendererProps<V, M, O>["models"];
+  }) => JSX.Element;
 }
 
 export const TruncatedMultiValueRenderer = memo(
   <
-    D extends M | types.SelectValueModel<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
+    V extends types.AllowedSelectModelValue,
+    M extends types.SelectModel<V>,
+    O extends types.SelectOptions<V, M>,
   >({
-    maximumNumBadges,
+    maximumValuesToRender,
     children,
     ...props
-  }: TruncatedMultiValueRendererProps<D, M, O>) => {
+  }: TruncatedMultiValueRendererProps<V, M, O>) => {
     /* Note: The models must be sorted before being provided as a prop to this component, because
        the partition will be made assuming that the models are in a specific order. */
     const partition = useMemo(() => {
-      if (maximumNumBadges) {
-        return [props.data.slice(0, maximumNumBadges), props.data.slice(maximumNumBadges)];
+      if (maximumValuesToRender) {
+        return [
+          props.models.slice(0, maximumValuesToRender),
+          props.models.slice(maximumValuesToRender),
+        ];
       }
       return null;
-    }, [props.data, maximumNumBadges]);
+    }, [props.models, maximumValuesToRender]);
 
     if (partition && partition[1].length !== 0) {
       return (
         <div className="flex flex-row gap-[4px] items-center overflow-hidden">
-          {children({ data: partition[0] })}
+          {children({ models: partition[0] })}
           <Text fontSize="xs" className="text-gray-600">{`${partition[1].length} More...`}</Text>
         </div>
       );
     }
-    return children({ data: props.data });
+    return children({ models: props.models });
   },
 ) as TruncatedMultiValueRendererComponent;
 

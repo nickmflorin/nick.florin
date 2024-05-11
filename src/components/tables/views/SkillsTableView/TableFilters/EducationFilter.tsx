@@ -49,7 +49,7 @@ export const EducationFilter = ({ filters, educations }: EducationFilterProps) =
       data={educations}
       options={{ isMulti: true }}
       value={value}
-      maximumNumBadges={1}
+      maximumValuesToRender={1}
       onChange={v => setValue(v)}
       menuPlacement="bottom"
     />

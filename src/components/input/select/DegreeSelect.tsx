@@ -16,9 +16,9 @@ const options = {
 } as const;
 
 export const DegreeSelect = (
-  props: Omit<SelectProps<O, typeof options>, "options" | "data">,
+  props: Omit<SelectProps<Degree, O, typeof options>, "options" | "data">,
 ): JSX.Element => (
-  <Select<O, typeof options>
+  <Select<Degree, O, typeof options>
     {...props}
     options={options}
     data={Object.keys(Degrees).map(

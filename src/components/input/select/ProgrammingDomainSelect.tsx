@@ -14,9 +14,9 @@ const options = {
 } as const;
 
 export const ProgrammingDomainSelect = (
-  props: Omit<SelectProps<O, typeof options>, "options" | "data">,
+  props: Omit<SelectProps<ProgrammingDomain, O, typeof options>, "options" | "data">,
 ): JSX.Element => (
-  <Select<O, typeof options>
+  <Select<ProgrammingDomain, O, typeof options>
     {...props}
     options={options}
     data={Object.keys(ProgrammingDomains).map(

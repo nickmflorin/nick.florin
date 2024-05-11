@@ -2,24 +2,32 @@ import { type Reducer } from "react";
 
 import isEqual from "lodash.isequal";
 
+import { UnreachableCaseError } from "~/application/errors";
 import { logger } from "~/application/logger";
+import { getModelId, getModelLabel } from "~/components/menus";
 
 import * as types from "../types";
 
-interface SelectValueReducerConfig<M extends types.SelectModel, O extends types.SelectOptions<M>> {
+interface SelectValueReducerConfig<
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+> {
   readonly options: O;
 }
 
 export interface SelectValueState<
-  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
-  M extends types.SelectModel,
-  O extends types.SelectOptions<M>,
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
 > {
-  readonly value: D[];
-  readonly models: M[];
-  readonly data: M[];
+  readonly valueArray: types.SelectDataValue<V, O>[];
+  readonly value: types.SelectValue<V, O>;
+  readonly modelsArray: types.SelectDataModel<V, M, O>[];
+  readonly models: types.SelectModeledValue<V, M, O>;
+  readonly data: types.SelectData<V, M, O>;
   readonly isReady: boolean;
-  readonly pendingValue?: D[];
+  readonly pendingValue?: types.SelectDataValue<V, O>[];
 }
 
 export enum SelectValueActionType {
@@ -28,32 +36,36 @@ export enum SelectValueActionType {
 }
 
 type SelectValueSyncAction<
-  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
-  M extends types.SelectModel,
-  O extends types.SelectOptions<M>,
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
 > = {
   readonly type: typeof SelectValueActionType.Sync;
-  readonly value?: D[];
-  readonly data: M[];
+  readonly value?: types.SelectValue<V, O>;
+  readonly data?: types.SelectData<V, M, O>;
   readonly isReady: boolean;
 };
 
 type SelectValueSelectAction<
-  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
-  M extends types.SelectModel,
-  O extends types.SelectOptions<M>,
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
 > = {
   readonly type: typeof SelectValueActionType.Select;
-  readonly value: D;
+  readonly value: types.SelectArg<V, M, O>;
 };
 
 export type SelectValueAction<
-  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
-  M extends types.SelectModel,
-  O extends types.SelectOptions<M>,
-> = SelectValueSelectAction<D, M, O> | SelectValueSyncAction<D, M, O>;
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+> = SelectValueSelectAction<V, M, O> | SelectValueSyncAction<V, M, O>;
 
-const findModelInData = <M extends types.SelectModel, O extends types.SelectOptions<M>>({
+const findModelInData = <
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+>({
   data,
   value,
   options,
@@ -61,7 +73,7 @@ const findModelInData = <M extends types.SelectModel, O extends types.SelectOpti
 }: {
   isReady: boolean | undefined;
   data: M[];
-  value: types.SelectModelValue<M, O>;
+  value: V;
   options: O;
 }): M | null => {
   const corresponding = data.filter(m => isEqual(types.getSelectModelValue(m, options), value));
@@ -127,21 +139,76 @@ const findModelInData = <M extends types.SelectModel, O extends types.SelectOpti
   return corresponding[0];
 };
 
-const updateModelsAndReturn = <
-  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
-  M extends types.SelectModel,
-  O extends types.SelectOptions<M>,
+const syncModels = <
+  S extends Pick<
+    SelectValueState<V, M, O>,
+    "isReady" | "valueArray" | "data" | "pendingValue" | "modelsArray"
+  >,
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
 >(
-  state: SelectValueState<D, M, O>,
+  state: S,
   options: O,
-): SelectValueState<D, M, O> => {
+): S & Pick<SelectValueState<V, M, O>, "models"> => {
+  if (options.isMulti) {
+    return { ...state, models: state.modelsArray as types.SelectModeledValue<V, M, O> };
+  } else if (state.modelsArray.length === 0) {
+    if (options.isNullable === false) {
+      throw new TypeError("Detected an empty array of models for non-nullable select!");
+    }
+    return { ...state, models: null as types.SelectModeledValue<V, M, O> };
+  } else if (state.modelsArray.length > 1) {
+    logger.warn("Detected multiple models in state for a single-select... using the first value.", {
+      models: state.modelsArray,
+      options,
+    });
+  }
+  return { ...state, models: state.modelsArray[0] as types.SelectModeledValue<V, M, O> };
+};
+
+const syncSelectValue = <
+  S extends Pick<SelectValueState<V, M, O>, "isReady" | "valueArray" | "data" | "pendingValue">,
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+>(
+  state: S,
+  options: O,
+): S & Pick<SelectValueState<V, M, O>, "value"> => {
+  if (options.isMulti) {
+    return { ...state, value: state.valueArray as types.SelectValue<V, O> };
+  } else if (state.valueArray.length === 0) {
+    if (options.isNullable === false) {
+      throw new TypeError("Detected an empty array of values in state for non-nullable select!");
+    }
+    return { ...state, value: null as types.SelectValue<V, O> };
+  } else if (state.valueArray.length > 1) {
+    logger.warn("Detected multiple values in state for a single-select... using the first value.", {
+      value: state.valueArray,
+      options,
+    });
+  }
+  return { ...state, value: state.valueArray[0] as types.SelectValue<V, O> };
+};
+
+export const syncState = <
+  S extends Pick<SelectValueState<V, M, O>, "isReady" | "valueArray" | "data" | "pendingValue">,
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+>(
+  state: S,
+  options: O,
+): S & Pick<SelectValueState<V, M, O>, "modelsArray" | "models" | "value"> => {
+  let update0: S & Pick<SelectValueState<V, M, O>, "modelsArray">;
   /* Finding the corresponding models for the case when the Select is filtered is not applicable,
      because all the models that correspond to each value in the Select's value array may not be
      present if the models/data are filtered. */
-  if (state.isReady && !options.isFiltered) {
-    return {
+  if (state.isReady && options.isValueModeled !== true) {
+    update0 = {
       ...state,
-      models: (state.value as types.SelectModelValue<M, O>[]).reduce((prev: M[], curr): M[] => {
+      modelsArray: (state.valueArray as V[]).reduce((prev: M[], curr: V): M[] => {
         const model = findModelInData({
           data: state.data,
           isReady: true,
@@ -152,72 +219,201 @@ const updateModelsAndReturn = <
           return [...prev, model];
         }
         return prev;
-      }, [] as M[]),
+      }, [] as M[]) as types.SelectDataModel<V, M, O>[],
+    };
+  } else {
+    update0 = {
+      ...state,
+      modelsArray: state.valueArray as types.SelectValueModel<V>[] as types.SelectDataModel<
+        V,
+        M,
+        O
+      >[],
     };
   }
-  return state;
+  const update1 = syncSelectValue<typeof update0, V, M, O>(update0, options);
+  return syncModels<typeof update1, V, M, O>(update1, options);
+};
+
+export const toValueArray = <
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+>(
+  v: types.SelectValue<V, O>,
+  options: O,
+) => {
+  if (options.isMulti) {
+    if (!Array.isArray(v)) {
+      throw new TypeError(`Expected an array value for a multi-select, but received: ${v}!`);
+    }
+    return v as types.SelectDataValue<V, O>[];
+  } else if (Array.isArray(v)) {
+    throw new TypeError(`Expected a non-array value for a single-select, but received: ${v}!`);
+  } else if (v === null) {
+    return [] as types.SelectDataValue<V, O>[];
+  }
+  return [v] as types.SelectDataValue<V, O>[];
+};
+
+export const initializeState = <
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+>({
+  initialValue,
+  value,
+  options,
+  data,
+}: {
+  readonly initialValue?: types.SelectValue<V, O>;
+  readonly value?: types.SelectValue<V, O>;
+  readonly data?: types.SelectData<V, M, O>;
+  readonly options: O;
+}): SelectValueState<V, M, O> => {
+  if (options.isValueModeled !== true && data === undefined) {
+    throw new TypeError(
+      "The 'data' must be used to initialize the reducer state when the 'isValueModeled' " +
+        "option is not true!",
+    );
+  }
+  return syncState(
+    {
+      valueArray: initialValue
+        ? toValueArray<V, M, O>(initialValue, options)
+        : value
+          ? toValueArray<V, M, O>(value, options)
+          : [],
+      modelsArray: [],
+      isReady: false,
+      data: data as types.SelectData<V, M, O>,
+      pendingValue: [],
+    },
+    options,
+  );
 };
 
 export type SelectValueReducer<
-  D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
-  M extends types.SelectModel,
-  O extends types.SelectOptions<M>,
-> = Reducer<SelectValueState<D, M, O>, SelectValueAction<D, M, O>>;
+  V extends types.AllowedSelectModelValue,
+  M extends types.SelectModel<V>,
+  O extends types.SelectOptions<V, M>,
+> = Reducer<SelectValueState<V, M, O>, SelectValueAction<V, M, O>>;
 
 export const createSelectValueReducer =
   <
-    D extends types.SelectValueModel<M, O> | types.SelectModelValue<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
+    V extends types.AllowedSelectModelValue,
+    M extends types.SelectModel<V>,
+    O extends types.SelectOptions<V, M>,
   >({
     options,
-  }: SelectValueReducerConfig<M, O>): SelectValueReducer<D, M, O> =>
+  }: SelectValueReducerConfig<V, M, O>): SelectValueReducer<V, M, O> =>
   (
-    state: SelectValueState<D, M, O>,
-    action: SelectValueAction<D, M, O>,
-  ): SelectValueState<D, M, O> => {
+    state: SelectValueState<V, M, O>,
+    action: SelectValueAction<V, M, O>,
+  ): SelectValueState<V, M, O> => {
     switch (action.type) {
       case SelectValueActionType.Sync:
-        return updateModelsAndReturn(
+        if (options.isValueModeled !== true && action.data === undefined) {
+          throw new TypeError(
+            "The 'data' must be used to sync the reducer state when the 'isValueModeled' " +
+              "option is not true!",
+          );
+        }
+        return syncState(
           {
             ...state,
             isReady: action.isReady,
-            data: action.data,
-            value: action.value ?? state.value,
+            data: action.data as types.SelectData<V, M, O>,
+            valueArray:
+              action.value !== undefined
+                ? toValueArray<V, M, O>(action.value, options)
+                : state.valueArray,
           },
           options,
         );
       case SelectValueActionType.Select: {
-        const isAlreadySelected =
-          state.value.filter(v => isEqual(typeof v === "string" ? v : v.value, action.value))
-            .length > 0;
-        /* If the value is already selected, and the Select is "de-selectable" or "nullable",
-           deselect it - otherwise, do nothing. */
-        if (isAlreadySelected) {
-          if (options.isDeselectable !== false || options.isNullable !== false) {
-            return updateModelsAndReturn(
+        if (options.isValueModeled) {
+          if (typeof action.value === "string") {
+            throw new TypeError(
+              "The select's state cannot be altered with a string value when using value models!",
+            );
+          }
+          const actionV = types.getSelectModelValue<V, M, O>(action.value as M, options);
+          const stateV = state.valueArray as types.SelectValueModel<V>[];
+
+          /* If the value is already selected, and the Select is "de-selectable" or "nullable",
+             deselect it - otherwise, do nothing. */
+          if (stateV.map(v => v.value).includes(actionV)) {
+            if (options.isDeselectable !== false || options.isNullable !== false) {
+              const newState: SelectValueState<V, M, O> = {
+                ...state,
+                valueArray: stateV.filter(v => v.value !== actionV) as types.SelectDataValue<
+                  V,
+                  O
+                >[],
+              };
+              return syncState<SelectValueState<V, M, O>, V, M, O>(newState, options);
+            }
+            // Do nothing.
+            return state;
+          }
+          const newV: types.SelectValueModel<V> = types.selectValueModel({
+            value: actionV,
+            /* Note: The label may be undefined here - but that is okay because it is assignable to
+               a ReactNode.  We may want to restrict the type in the future, however, so that the
+               label must be defined when using value models. */
+            label: getModelLabel(action.value as M, options),
+            id: getModelId(action.value as M, options),
+          });
+          if (options.isMulti) {
+            return syncState<SelectValueState<V, M, O>, V, M, O>(
               {
                 ...state,
-                value: state.value.filter(
-                  v => !isEqual(typeof v === "string" ? v : v.value, action.value),
-                ),
+                valueArray: [...state.valueArray, newV] as types.SelectDataValue<V, O>[],
               },
               options,
             );
           }
+          return syncState(
+            { ...state, valueArray: [newV] as types.SelectDataValue<V, O>[] },
+            options,
+          );
+        }
+        const actionV =
+          typeof action.value === "string"
+            ? (action.value as V)
+            : types.getSelectModelValue<V, M, O>(action.value as M, options);
+        const stateV = state.valueArray as V[];
+
+        /* If the value is already selected, and the Select is "de-selectable" or "nullable",
+             deselect it - otherwise, do nothing. */
+        if (stateV.includes(actionV)) {
+          if (options.isDeselectable !== false && options.isNullable !== false) {
+            const newState: SelectValueState<V, M, O> = {
+              ...state,
+              valueArray: stateV.filter(v => v !== actionV) as types.SelectDataValue<V, O>[],
+            };
+            return syncState<SelectValueState<V, M, O>, V, M, O>(newState, options);
+          }
+          // Do nothing.
           return state;
         } else if (options.isMulti) {
-          return updateModelsAndReturn(
+          return syncState<SelectValueState<V, M, O>, V, M, O>(
             {
               ...state,
-              value: [...state.value, action.value],
+              valueArray: [...state.valueArray, actionV] as types.SelectDataValue<V, O>[],
             },
             options,
           );
         }
-        return updateModelsAndReturn({ ...state, value: [action.value] }, options);
+        /* In this case, the Select is a single-select, and the updated value is simply the value
+           associated with the action. */
+        return syncState(
+          { ...state, valueArray: [actionV] as types.SelectDataValue<V, O>[] },
+          options,
+        );
       }
       default:
-        return state;
+        throw new UnreachableCaseError();
     }
   };

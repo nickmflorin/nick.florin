@@ -12,7 +12,7 @@ const options = {
 } as const;
 
 export interface CompanySelectProps
-  extends Omit<SelectProps<Company, typeof options>, "options" | "itemRenderer"> {
+  extends Omit<SelectProps<string, Company, typeof options>, "options" | "itemRenderer"> {
   readonly useAbbreviatedOptionLabels?: boolean;
 }
 
@@ -20,7 +20,7 @@ export const CompanySelect = ({
   useAbbreviatedOptionLabels = true,
   ...props
 }: CompanySelectProps): JSX.Element => (
-  <Select<Company, typeof options>
+  <Select<string, Company, typeof options>
     {...props}
     options={options}
     itemRenderer={m => (

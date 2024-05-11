@@ -15,9 +15,15 @@ const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
 
 const LocalSelect = forwardRef<
   types.SelectInstance,
-  types.SelectProps<types.SelectModel, types.SelectOptions<types.SelectModel>>
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  types.SelectProps<any, types.SelectModel<any>, types.SelectOptions<any, types.SelectModel<any>>>
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 >(
-  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
+  <
+    V extends types.AllowedSelectModelValue,
+    M extends types.SelectModel<V>,
+    O extends types.SelectOptions<V, M>,
+  >(
     {
       children,
       menuOffset = { mainAxis: 2 },
@@ -33,7 +39,7 @@ const LocalSelect = forwardRef<
       inputClassName,
       actions,
       placeholder,
-      maximumNumBadges,
+      maximumValuesToRender,
       maxHeight = 240,
       initialValue,
       isReady = true,
@@ -46,10 +52,10 @@ const LocalSelect = forwardRef<
       onClose,
       onOpenChange,
       ...props
-    }: types.SelectProps<M, O>,
+    }: types.SelectProps<V, M, O>,
     ref: ForwardedRef<types.SelectInstance>,
   ): JSX.Element => (
-    <SelectBase<M, O>
+    <SelectBase<V, M, O>
       ref={ref}
       initialValue={initialValue}
       value={value}
@@ -64,11 +70,14 @@ const LocalSelect = forwardRef<
       isDisabled={isDisabled}
       menuClassName={menuClassName}
       inputClassName={inputClassName}
-      maximumNumBadges={maximumNumBadges}
+      maximumValuesToRender={maximumValuesToRender}
       size={size}
       actions={actions}
       placeholder={placeholder}
-      data={props.data}
+      /* When the Select is value modeled, the data is not used by the SelectBase because it does
+         not need to correlate the models in the data with the value.  The data is only used to
+         render the MenuItem(s) in the Menu. */
+      data={(props.options.isValueModeled ? undefined : props.data) as types.SelectData<V, M, O>}
       options={props.options}
       closeMenuOnSelect={closeMenuOnSelect}
       valueRenderer={valueRenderer}
@@ -82,9 +91,9 @@ const LocalSelect = forwardRef<
           {...(props as MenuProps<M, O>)}
           isLocked={!isReady}
           className="z-50"
-          itemIsSelected={m => isSelected(m)}
+          itemIsSelected={m => isSelected(m as types.SelectArg<V, M, O>)}
           onItemClick={(model, instance) => {
-            onSelect(model, instance);
+            onSelect(model as types.SelectArg<V, M, O>, instance);
             props.onItemClick?.(model, instance);
           }}
         >
@@ -98,7 +107,11 @@ const LocalSelect = forwardRef<
 );
 
 export const Select = LocalSelect as {
-  <M extends types.SelectModel, O extends types.SelectOptions<M>>(
-    props: types.SelectProps<M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
+  <
+    V extends types.AllowedSelectModelValue,
+    M extends types.SelectModel<V>,
+    O extends types.SelectOptions<V, M>,
+  >(
+    props: types.SelectProps<V, M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
   ): JSX.Element;
 };

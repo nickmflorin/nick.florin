@@ -14,9 +14,9 @@ const options = {
 } as const;
 
 export const SkillCategorySelect = (
-  props: Omit<SelectProps<O, typeof options>, "options" | "data">,
+  props: Omit<SelectProps<SkillCategory, O, typeof options>, "options" | "data">,
 ): JSX.Element => (
-  <Select<O, typeof options>
+  <Select<SkillCategory, O, typeof options>
     maxHeight={240}
     {...props}
     options={options}

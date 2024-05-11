@@ -26,8 +26,8 @@ const globalOptions = {
 
 export interface SkillsSelectProps
   extends Omit<
-    SelectBaseProps<BrandSkill, typeof globalOptions>,
-    "data" | "options" | "isReady" | "content" | "maximumNumBadges" | "isLoading"
+    SelectBaseProps<string, BrandSkill, typeof globalOptions>,
+    "data" | "options" | "isReady" | "content" | "maximumValuesToRender" | "isLoading"
   > {
   readonly onError?: (e: HttpError) => void;
 }
@@ -58,7 +58,7 @@ export const SkillsSelect = ({ onError, ...props }: SkillsSelectProps) => {
           {...props}
           options={globalOptions}
           data={data ?? []}
-          maximumNumBadges={3}
+          maximumValuesToRender={3}
           isReady={data !== undefined}
           isLoading={isLoading || filteredDataIsLoading || _isDynamicallyLoading}
           content={({ onSelect, isSelected }) => (

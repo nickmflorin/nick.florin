@@ -11,7 +11,7 @@ const globalOptions = {
 } as const;
 
 export interface RepositorySelectProps<O extends { isMulti?: boolean }, E extends ApiRepository>
-  extends Omit<SelectProps<E, typeof globalOptions & O>, "options" | "itemRenderer"> {
+  extends Omit<SelectProps<string, E, typeof globalOptions & O>, "options" | "itemRenderer"> {
   readonly options: O;
 }
 
@@ -19,7 +19,7 @@ export const RepositorySelect = <O extends { isMulti?: boolean }, E extends ApiR
   options,
   ...props
 }: RepositorySelectProps<O, E>): JSX.Element => (
-  <Select<E, typeof options & O>
+  <Select<string, E, typeof options & O>
     {...props}
     options={{ ...globalOptions, ...options }}
     itemRenderer={m => <RepositoryTile repository={m} className="items-center" />}

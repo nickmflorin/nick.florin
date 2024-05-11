@@ -90,7 +90,7 @@ export const useTableView = <T extends types.TableModel>({
           isHideable: false,
           render: ({ model }) => (
             <div className="flex flex-row items-center justify-center">
-              <Spinner size="18px" isLoading={rowStates.map(st => st.id).includes(model.id)} />
+              <Spinner size="16px" isLoading={rowStates.map(st => st.id).includes(model.id)} />
             </div>
           ),
         },
