@@ -1,10 +1,9 @@
 import { Suspense } from "react";
 
 import { partiallyParseObjectWithSchema } from "~/lib/schemas";
-import { decodeQueryParams, encodeQueryParams } from "~/lib/urls";
+import { decodeQueryParams } from "~/lib/urls";
 import { SkillsFiltersSchema, ShowTopSkillsSchema } from "~/api/schemas";
 import { SkillsBarChartView } from "~/components/charts/SkillsBarChartView";
-import { Loading } from "~/components/feedback/Loading";
 import { SkillsFilterDropdownMenu } from "~/components/menus/SkillsFilterDropdownMenu";
 import { Module } from "~/components/modules/generic";
 
@@ -47,12 +46,10 @@ export default async function ChartPage({ searchParams }: ChartPageProps) {
         Skills Overview
       </Module.Header>
       <Module.Content className="xl:overflow-y-auto xl:pr-[16px]">
-        <Suspense fallback={<Loading isLoading={true} />} key={encodeQueryParams(filters)}>
-          <SkillsBarChartView
-            filters={filters}
-            limit={showTopSkills === "all" ? undefined : showTopSkills}
-          />
-        </Suspense>
+        <SkillsBarChartView
+          filters={filters}
+          limit={showTopSkills === "all" ? undefined : showTopSkills}
+        />
       </Module.Content>
     </>
   );

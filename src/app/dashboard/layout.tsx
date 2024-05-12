@@ -49,10 +49,12 @@ export default async function DashboardPage({
     <div className={clsx("max-h-full", "overflow-y-auto pr-[12px]")}>
       <div className={clsx("flex gap-[15px]", "xl:flex-row", "max-xl:flex-col")}>
         {/* The 655px comes from 2(320px for each column) + 15px for gap = 655px. */}
-        <Module className={clsx("md:max-lg:min-w-[655px] lg:min-w-[320px]")}>{chart}</Module>
+        <Module className={clsx("md:max-lg:min-w-[655px] lg:min-w-[320px] min-h-[200px]")}>
+          {chart}
+        </Module>
         <div className={clsx("flex gap-[15px]", "md:flex-row", "max-md:flex-col")}>
           <Column className="md:flex-1">
-            <Module className="xl:overflow-y-hidden grow">
+            <Module className="xl:overflow-y-hidden grow min-h-[200px]">
               <Module.Header
                 actions={[
                   <Link
@@ -73,7 +75,7 @@ export default async function DashboardPage({
                 {experiences}
               </Module.Content>
             </Module>
-            <Module>
+            <Module className="min-h-[200px]">
               <Module.Header>Projects</Module.Header>
               <Module.Content
                 className={clsx("flex flex-col gap-[12px] xl:overflow-y-auto xl:grow xl:pr-[16px]")}
@@ -83,7 +85,7 @@ export default async function DashboardPage({
             </Module>
           </Column>
           <Column className="md:flex-1">
-            <Module className="xl:overflow-y-hidden">
+            <Module className="xl:overflow-y-hidden min-h-[200px]">
               <Module.Header
                 actions={[
                   <Link
@@ -109,7 +111,7 @@ export default async function DashboardPage({
                 {educations}
               </Module.Content>
             </Module>
-            <Module className="xl:overflow-y-hidden grow">
+            <Module className="xl:overflow-y-hidden grow min-h-[200px]">
               <Module.Header>Repositories</Module.Header>
               <Module.Content className={clsx("xl:overflow-y-auto xl:grow xl:pr-[16px]")}>
                 {repositories}

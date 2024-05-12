@@ -427,7 +427,7 @@ export const createSelectValueReducer =
         /* If the value is already selected, and the Select is "de-selectable" or "nullable",
            deselect it - otherwise, do nothing. */
         if (stateV.includes(actionV)) {
-          if (options.isDeselectable !== false && options.isNullable !== false) {
+          if (options.isDeselectable !== false || options.isNullable !== false) {
             const newState: SelectValueState<V, M, O> = {
               ...state,
               valueArray: stateV.filter(v => v !== actionV) as types.SelectValueForm<V, M, O>[],
