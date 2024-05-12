@@ -17,18 +17,22 @@ const FiltersSchema = SkillsFiltersSchema.omit({ search: true, includeInTopSkill
 });
 
 export default async function ChartPage({ searchParams }: ChartPageProps) {
-  const params = decodeQueryParams(encodeQueryParams(searchParams.filters));
+  const params = decodeQueryParams(searchParams);
 
-  const { showTopSkills, ...filters } = partiallyParseObjectWithSchema(params, FiltersSchema, {
-    defaults: {
-      showTopSkills: "all",
-      experiences: [],
-      educations: [],
-      categories: [],
-      programmingDomains: [],
-      programmingLanguages: [],
+  const { showTopSkills, ...filters } = partiallyParseObjectWithSchema(
+    params.filters,
+    FiltersSchema,
+    {
+      defaults: {
+        showTopSkills: "all",
+        experiences: [],
+        educations: [],
+        categories: [],
+        programmingDomains: [],
+        programmingLanguages: [],
+      },
     },
-  });
+  );
 
   return (
     <>
