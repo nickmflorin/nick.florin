@@ -29,7 +29,7 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
     <Form.ControlledField name="projects" label="Projects" form={props.form}>
       {({ value, onChange }) => (
         <ClientProjectSelect
-          options={{ isMulti: true }}
+          options={{ isMulti: true, isClearable: true }}
           inputClassName="w-full"
           value={value}
           onChange={onChange}

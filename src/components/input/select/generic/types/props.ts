@@ -69,10 +69,16 @@ export type SelectChangeParams<
   V extends UnsafeSelectValueForm<M, O>,
   M extends SelectModel,
   O extends SelectOptions<M>,
-> = {
-  item: MenuItemInstance;
-  models: SelectModeledValue<V, M, O>;
-};
+> = O extends { isClearable: true }
+  ? {
+      // The item will be undefined when the change occurred due to a clear event.
+      item?: MenuItemInstance;
+      models: SelectModeledValue<V, M, O>;
+    }
+  : {
+      item: MenuItemInstance;
+      models: SelectModeledValue<V, M, O>;
+    };
 
 export type SelectChangeHandler<
   V extends UnsafeSelectValueForm<M, O>,
@@ -117,6 +123,8 @@ export interface BaseSelectInputProps
     | "withCaret"
     | "caretIsOpen"
     | "dynamicHeight"
+    | "onClear"
+    | "clearDisabled"
   > {
   readonly isOpen: boolean;
   readonly children?: ReactNode;
@@ -155,7 +163,14 @@ export interface SelectBaseProps<
     >,
     Omit<
       SelectInputProps<V, M, O>,
-      keyof ComponentProps | "value" | "select" | "models" | "isOpen" | "valueRenderer"
+      | keyof ComponentProps
+      | "value"
+      | "select"
+      | "models"
+      | "isOpen"
+      | "valueRenderer"
+      | "onClear"
+      | "clearDisabled"
     > {
   readonly value?: UnsafeSelectValue<V, M, O>;
   readonly initialValue?: UnsafeSelectValue<V, M, O>;

@@ -4,12 +4,12 @@ import { useProjects } from "~/hooks";
 
 import { ProjectSelect, type ProjectSelectProps } from "./ProjectSelect";
 
-export interface ClientProjectSelectProps<O extends { isMulti?: boolean }>
+export interface ClientProjectSelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
   extends Omit<ProjectSelectProps<O>, "data"> {
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientProjectSelect = <O extends { isMulti?: boolean }>({
+export const ClientProjectSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
   onError,
   ...props
 }: ClientProjectSelectProps<O>): JSX.Element => {

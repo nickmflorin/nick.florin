@@ -224,7 +224,7 @@ export const GenericUpdateDetailForm = <
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
-            options={{ isMulti: false }}
+            options={{ isMulti: false, isClearable: true }}
             onChange={onChange}
             inPortal
             onError={() => form.setStaticErrors("project", "There was an error loading the data.")}

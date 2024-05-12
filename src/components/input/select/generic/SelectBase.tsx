@@ -49,7 +49,11 @@ const LocalSelectBase = forwardRef<
   ): JSX.Element => {
     const internalInstance = useRef<types.SelectInstance | null>(null);
 
-    const { value, models, modelsArray, isSelected, onSelect } = useSelectValue<V, M, O>({
+    const { value, models, modelsArray, isNullish, clear, isSelected, onSelect } = useSelectValue<
+      V,
+      M,
+      O
+    >({
       initialValue,
       value: _propValue,
       options: props.options,
@@ -86,7 +90,6 @@ const LocalSelectBase = forwardRef<
               isSelected,
               onSelect: (v, instance) => {
                 const newState = onSelect(v);
-
                 if (!isEqual(newState.value, value)) {
                   onChange?.(newState.value, {
                     item: instance,
@@ -114,6 +117,19 @@ const LocalSelectBase = forwardRef<
               isOpen={isOpen}
               isLoading={isLoading}
               ref={ref}
+              clearDisabled={isNullish}
+              onClear={
+                props.options.isClearable
+                  ? () => {
+                      const newState = clear();
+                      if (!isEqual(newState.value, value)) {
+                        onChange?.(newState.value, {
+                          models: newState.models,
+                        } as types.SelectChangeParams<V, M, O>);
+                      }
+                    }
+                  : undefined
+              }
               models={modelsArray}
               className={inputClassName}
               valueRenderer={

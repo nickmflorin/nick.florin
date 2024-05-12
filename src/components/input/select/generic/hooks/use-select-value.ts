@@ -64,6 +64,11 @@ export const useSelectValue = <
     [state, reducer],
   );
 
+  const clear = useCallback(() => {
+    dispatch({ type: SelectValueActionType.Clear });
+    return reducer(state, { type: SelectValueActionType.Clear });
+  }, [state, reducer]);
+
   const isSelected = useCallback(
     (val: types.SelectArg<M, O>) => {
       const v = typeof val === "string" ? val : types.getSelectModelValue(val as M, options);
@@ -77,8 +82,12 @@ export const useSelectValue = <
     [state.valueArray, options],
   );
 
+  const isNullish = useMemo(() => state.valueArray.length === 0, [state.valueArray]);
+
   return {
     ...state,
+    isNullish,
+    clear,
     onSelect,
     isSelected,
   };

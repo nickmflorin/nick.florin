@@ -7,12 +7,12 @@ import {
 } from "~/components/input/select/RepositorySelect";
 import { useRepositories } from "~/hooks";
 
-export interface ClientRepositorySelectProps<O extends { isMulti?: boolean }>
+export interface ClientRepositorySelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
   extends Omit<RepositorySelectProps<O, ApiRepository>, "data"> {
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientRepositorySelect = <O extends { isMulti?: boolean }>({
+export const ClientRepositorySelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
   onError,
   ...props
 }: ClientRepositorySelectProps<O>): JSX.Element => {

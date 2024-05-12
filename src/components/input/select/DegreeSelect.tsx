@@ -2,27 +2,38 @@ import { getDegree, Degrees, type Degree } from "~/prisma/model";
 
 import { Select, type SelectProps } from "./generic";
 
-type O = {
+type M = {
   readonly value: Degree;
   readonly label: string;
   readonly shortLabel: string;
 };
 
-const options = {
+const globalOptions = {
   isNullable: false,
-  getModelValue: (m: O) => m.value,
-  getModelLabel: (m: O) => m.label,
-  getModelValueLabel: (m: O) => m.shortLabel,
+  getModelValue: (m: M) => m.value,
+  getModelLabel: (m: M) => m.label,
+  getModelValueLabel: (m: M) => m.shortLabel,
 } as const;
 
-export const DegreeSelect = (
-  props: Omit<SelectProps<Degree, O, typeof options>, "options" | "data">,
-): JSX.Element => (
-  <Select<Degree, O, typeof options>
+type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
+  isMulti: O["isMulti"];
+  isClearable: O["isClearable"];
+};
+
+export interface DegreeSelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
+  extends Omit<SelectProps<Degree, M, Opts<O>>, "options" | "data"> {
+  readonly options: O;
+}
+
+export const DegreeSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
+  options,
+  ...props
+}: DegreeSelectProps<O>): JSX.Element => (
+  <Select<Degree, M, Opts<O>>
     {...props}
-    options={options}
+    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
     data={Object.keys(Degrees).map(
-      (key): O => ({
+      (key): M => ({
         label: getDegree(key as Degree).label,
         value: key as Degree,
         shortLabel: getDegree(key as Degree).shortLabel,

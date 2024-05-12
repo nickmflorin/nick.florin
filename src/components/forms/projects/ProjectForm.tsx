@@ -48,7 +48,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
       {({ value, onChange }) => (
         <ClientRepositorySelect
           inputClassName="w-full"
-          options={{ isMulti: true }}
+          options={{ isMulti: true, isClearable: true }}
           value={value}
           onChange={onChange}
         />

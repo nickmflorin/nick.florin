@@ -28,6 +28,7 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
   return (
     <ClientSchoolSelect
       inputClassName="w-full"
+      options={{ isClearable: true, isMulti: false }}
       menuClassName="max-h-[260px]"
       value={value}
       onChange={async v => {

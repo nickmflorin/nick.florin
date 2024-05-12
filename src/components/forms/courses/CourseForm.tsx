@@ -39,7 +39,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
           menuClassName="max-h-[260px]"
           value={value}
           visibility="admin"
-          options={{ isMulti: false }}
+          options={{ isMulti: false, isClearable: true }}
           useAbbreviatedOptionLabels={false}
           onChange={onChange}
           inPortal

@@ -11,30 +11,47 @@ import { type TableModel } from "~/components/tables/types";
 
 type AttributeValue<M extends TableModel, N extends keyof M> = M[N];
 
-interface BaseSelectProps<M extends TableModel, N extends keyof M> {
+interface BaseSelectProps<
+  O extends { isMulti?: boolean },
+  M extends TableModel,
+  N extends keyof M,
+> {
   readonly menuClassName: string;
   readonly inputClassName: string;
   readonly value: M[N];
+  readonly options: O;
   readonly onChange: (value: NonNullable<M[N]>, params: { item: MenuItemInstance }) => void;
 }
 
-interface SelectCellProps<M extends TableModel, N extends keyof M, T> {
+interface SelectCellProps<
+  O extends { isMulti?: boolean },
+  M extends TableModel,
+  N extends keyof M,
+  T,
+> {
   readonly inputClassName?: string;
   readonly errorMessage: string;
   readonly model: M;
-  readonly component: React.ComponentType<BaseSelectProps<M, N>>;
+  readonly options: O;
+  readonly component: React.ComponentType<BaseSelectProps<O, M, N>>;
   readonly attribute: N;
   readonly action: (value: NonNullable<M[N]>) => Promise<T | ApiClientErrorJson>;
 }
 
-export const SelectCell = <M extends TableModel, N extends keyof M, T>({
+export const SelectCell = <
+  O extends { isMulti?: boolean },
+  M extends TableModel,
+  N extends keyof M,
+  T,
+>({
   model,
   action,
   errorMessage,
+  options,
   attribute,
   inputClassName = "w-full",
   component: Component,
-}: SelectCellProps<M, N, T>): JSX.Element => {
+}: SelectCellProps<O, M, N, T>): JSX.Element => {
   const [value, setValue] = useState<AttributeValue<M, N>>(model[attribute]);
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -48,6 +65,7 @@ export const SelectCell = <M extends TableModel, N extends keyof M, T>({
       inputClassName={inputClassName}
       menuClassName="max-h-[260px]"
       value={value}
+      options={{ ...options, isClearable: true }}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);

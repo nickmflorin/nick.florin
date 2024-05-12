@@ -2,25 +2,36 @@ import { getProgrammingDomain, ProgrammingDomains, type ProgrammingDomain } from
 
 import { Select, type SelectProps } from "./generic";
 
-type O = {
+type M = {
   readonly value: ProgrammingDomain;
   readonly label: string;
 };
 
-const options = {
-  getModelValue: (m: O) => m.value,
-  getModelLabel: (m: O) => m.label,
-  isMulti: true,
+const globalOptions = {
+  getModelValue: (m: M) => m.value,
+  getModelLabel: (m: M) => m.label,
 } as const;
 
-export const ProgrammingDomainSelect = (
-  props: Omit<SelectProps<ProgrammingDomain, O, typeof options>, "options" | "data">,
-): JSX.Element => (
-  <Select<ProgrammingDomain, O, typeof options>
+type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
+  isMulti: O["isMulti"];
+  isClearable: O["isClearable"];
+};
+
+export interface ProgrammingDomainSelectProps<
+  O extends { isMulti?: boolean; isClearable?: boolean },
+> extends Omit<SelectProps<ProgrammingDomain, M, Opts<O>>, "options" | "data"> {
+  readonly options: O;
+}
+
+export const ProgrammingDomainSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
+  options,
+  ...props
+}: ProgrammingDomainSelectProps<O>): JSX.Element => (
+  <Select<ProgrammingDomain, M, Opts<O>>
     {...props}
-    options={options}
+    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
     data={Object.keys(ProgrammingDomains).map(
-      (key): O => ({
+      (key): M => ({
         label: getProgrammingDomain(key as ProgrammingDomain).label,
         value: key as ProgrammingDomain,
       }),

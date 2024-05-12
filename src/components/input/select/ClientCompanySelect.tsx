@@ -4,14 +4,15 @@ import { useCompanies } from "~/hooks";
 
 import { CompanySelect, type CompanySelectProps } from "./CompanySelect";
 
-export interface ClientCompanySelectProps extends Omit<CompanySelectProps, "data"> {
+export interface ClientCompanySelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
+  extends Omit<CompanySelectProps<O>, "data"> {
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientCompanySelect = ({
+export const ClientCompanySelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
   onError,
   ...props
-}: ClientCompanySelectProps): JSX.Element => {
+}: ClientCompanySelectProps<O>): JSX.Element => {
   const { data, isLoading, error } = useCompanies({
     onError,
     query: { includes: [], visibility: "admin" },

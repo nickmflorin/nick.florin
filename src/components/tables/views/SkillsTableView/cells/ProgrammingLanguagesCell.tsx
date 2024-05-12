@@ -9,11 +9,13 @@ interface ProgrammingLanguagesCellProps {
 
 export const ProgrammingLanguagesCell = ({ skill }: ProgrammingLanguagesCellProps): JSX.Element => (
   <SelectCell<
+    { isMulti: true },
     ApiSkill<["experiences", "educations", "projects"]>,
     "programmingLanguages",
     BrandSkill
   >
     component={ProgrammingLanguageSelect}
+    options={{ isMulti: true }}
     attribute="programmingLanguages"
     model={skill}
     action={async v => await updateSkill(skill.id, { programmingLanguages: v })}

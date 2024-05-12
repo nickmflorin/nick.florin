@@ -45,6 +45,7 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
           <ClientCompanySelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
+            options={{ isMulti: false, isClearable: true }}
             value={value}
             onChange={onChange}
             inPortal

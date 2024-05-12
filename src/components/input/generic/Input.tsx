@@ -1,4 +1,7 @@
+import dynamic from "next/dynamic";
 import { forwardRef } from "react";
+
+import clsx from "clsx";
 
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { Spinner } from "~/components/icons/Spinner";
@@ -7,6 +10,8 @@ import { Actions } from "~/components/structural/Actions";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 
 import { InputWrapper, type InputWrapperProps } from "./InputWrapper";
+
+const ClearButton = dynamic(() => import("~/components/buttons/ClearButton"), {});
 
 export interface InputProps
   extends Omit<InputWrapperProps<"div">, "component" | "onChange">,
@@ -25,22 +30,52 @@ export interface InputProps
   readonly actions?: ActionsType;
   readonly withCaret?: boolean;
   readonly caretIsOpen?: boolean;
+  readonly reserveSpaceForLoadingIndicator?: boolean;
+  readonly clearDisabled?: boolean;
+  readonly onClear?: () => void;
 }
 
 export const Input = forwardRef<HTMLDivElement, InputProps>(
-  ({ children, actions, caretIsOpen = false, withCaret, ...props }: InputProps, ref) => (
+  (
+    {
+      children,
+      actions,
+      caretIsOpen = false,
+      clearDisabled = false,
+      reserveSpaceForLoadingIndicator = true,
+      onClear,
+      withCaret,
+      ...props
+    }: InputProps,
+    ref,
+  ) => (
     <InputWrapper {...props} ref={ref} component="div">
       <Actions
-        gap={8}
+        gap={6}
         actions={mergeActions(actions, {
           right: [
-            /* Always leave space for the Spinner, regardless of whether or not it is loading.  This
-               prevents the shifting of elements and text inside the Input when the loading state
-               changes. */
-            <div className="w-[14px] items-center justify-center" key="0">
+            /* By default, leave space for the Spinner, regardless of whether or not it is loading.
+               This prevents the shifting of elements and text inside the Input when the loading
+               state changes. */
+            <div
+              key="0"
+              className={clsx("w-[14px] items-center justify-center", {
+                "w-[14px]": reserveSpaceForLoadingIndicator,
+              })}
+            >
               <Spinner isLoading={props.isLoading} size="14px" className="text-gray-500" />
             </div>,
-            withCaret ? <CaretIcon key="1" open={caretIsOpen} /> : null,
+            onClear ? (
+              <ClearButton
+                key="1"
+                isDisabled={clearDisabled}
+                onClick={e => {
+                  e.stopPropagation();
+                  onClear();
+                }}
+              />
+            ) : null,
+            withCaret ? <CaretIcon key="2" open={caretIsOpen} /> : null,
           ],
         })}
       >

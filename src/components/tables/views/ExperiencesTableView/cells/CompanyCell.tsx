@@ -29,6 +29,7 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
     <ClientCompanySelect
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
+      options={{ isClearable: true, isMulti: false }}
       value={value}
       onChange={async v => {
         // Optimistically update the value.

@@ -6,6 +6,7 @@ import { type AllowedSelectModelValue, type SelectModel } from "./model";
 
 export type SelectOptions<M extends SelectModel> = MenuOptions<M> &
   Partial<{
+    readonly isClearable?: boolean;
     readonly isValueModeled?: boolean;
     readonly getModelValue: (m: M) => AllowedSelectModelValue;
     readonly getModelValueLabel: (

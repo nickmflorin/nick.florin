@@ -90,7 +90,7 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           accessor: "experiences",
           title: "Experiences",
           cellsClassName: "min-w-[200px] max-w-[320px]",
-          render: ({ model }) => <ExperiencesCell skill={model} />,
+          render: ({ model, table }) => <ExperiencesCell skill={model} table={table} />,
         },
         {
           accessor: "educations",
@@ -102,13 +102,13 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           accessor: "projects",
           title: "Projects",
           cellsClassName: "min-w-[200px] max-w-[320px]",
-          render: ({ model }) => <ProjectsCell skill={model} />,
+          render: ({ model, table }) => <ProjectsCell skill={model} table={table} />,
         },
         {
           accessor: "repositories",
           title: "Repositories",
           cellsClassName: "min-w-[200px] max-w-[320px]",
-          render: ({ model }) => <RepositoriesCell skill={model} />,
+          render: ({ model, table }) => <RepositoriesCell skill={model} table={table} />,
         },
         {
           accessor: "experience",

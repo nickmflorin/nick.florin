@@ -65,6 +65,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             visibility="admin"
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
+            options={{ isMulti: true, isClearable: true }}
             value={value}
             onChange={onChange}
             inPortal
@@ -80,7 +81,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             visibility="admin"
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true }}
+            options={{ isMulti: true, isClearable: true }}
             value={value}
             onChange={onChange}
             inPortal
@@ -95,7 +96,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
           <ClientProjectSelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true }}
+            options={{ isMulti: true, isClearable: true }}
             value={value}
             onChange={onChange}
             inPortal
@@ -110,7 +111,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
           <ClientRepositorySelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true }}
+            options={{ isMulti: true, isClearable: true }}
             value={value}
             onChange={onChange}
             inPortal
@@ -125,7 +126,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
           <ClientCourseSelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true }}
+            options={{ isMulti: true, isClearable: true }}
             value={value}
             onChange={onChange}
             inPortal
@@ -145,6 +146,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
+            options={{ isMulti: true, isClearable: true }}
             menuPlacement="top"
             onChange={onChange}
           />
@@ -156,6 +158,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
+            options={{ isMulti: true, isClearable: true }}
             menuPlacement="top"
             onChange={onChange}
           />
@@ -167,6 +170,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
+            options={{ isMulti: true, isClearable: true }}
             menuPlacement="top"
             onChange={onChange}
           />

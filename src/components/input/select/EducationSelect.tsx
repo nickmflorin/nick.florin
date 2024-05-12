@@ -12,22 +12,30 @@ const globalOptions = {
     options.isMulti ? m.shortMajor ?? m.major : m.major,
 } as const;
 
-type Opts<O extends { isMulti?: boolean }> = typeof globalOptions & { isMulti: O["isMulti"] };
+type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
+  isMulti: O["isMulti"];
+  isClearable: O["isClearable"];
+};
 
-export interface EducationSelectProps<O extends { isMulti?: boolean }, E extends ApiEducation>
-  extends Omit<SelectProps<string, E, Opts<O>>, "options" | "itemRenderer"> {
+export interface EducationSelectProps<
+  O extends { isMulti?: boolean; isClearable?: boolean },
+  E extends ApiEducation,
+> extends Omit<SelectProps<string, E, Opts<O>>, "options" | "itemRenderer"> {
   readonly useAbbreviatedOptionLabels?: boolean;
   readonly options: O;
 }
 
-export const EducationSelect = <O extends { isMulti?: boolean }, E extends ApiEducation>({
+export const EducationSelect = <
+  O extends { isMulti?: boolean; isClearable?: boolean },
+  E extends ApiEducation,
+>({
   useAbbreviatedOptionLabels = true,
   options,
   ...props
 }: EducationSelectProps<O, E>): JSX.Element => (
   <Select<string, E, Opts<O>>
     {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti }}
+    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium">

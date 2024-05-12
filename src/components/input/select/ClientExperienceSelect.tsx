@@ -6,24 +6,24 @@ import { useExperiences } from "~/hooks";
 
 import { ExperienceSelect, type ExperienceSelectProps } from "./ExperienceSelect";
 
-export interface ClientExperienceSelectProps
-  extends Omit<ExperienceSelectProps<ApiExperience>, "data"> {
+export interface ClientExperienceSelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
+  extends Omit<ExperienceSelectProps<O, ApiExperience>, "data"> {
   readonly visibility: Visibility;
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientExperienceSelect = ({
+export const ClientExperienceSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
   onError,
   visibility,
   ...props
-}: ClientExperienceSelectProps): JSX.Element => {
+}: ClientExperienceSelectProps<O>): JSX.Element => {
   const { data, isLoading, error } = useExperiences({
     onError,
     query: { visibility, includes: [] },
   });
 
   return (
-    <ExperienceSelect<ApiExperience>
+    <ExperienceSelect<O, ApiExperience>
       {...props}
       data={data ?? []}
       isReady={data !== undefined}

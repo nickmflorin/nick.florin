@@ -4,25 +4,32 @@ import { Text } from "~/components/typography/Text";
 
 import { Select, type SelectProps } from "./generic";
 
-const options = {
+const globalOptions = {
   isNullable: false,
   getModelValue: (m: School) => m.id,
   getModelLabel: (m: School) => m.name,
   getModelValueLabel: (m: School) => m.shortName ?? m.name,
 } as const;
 
-export interface SchoolSelectProps
-  extends Omit<SelectProps<string, School, typeof options>, "options" | "itemRenderer"> {
+type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
+  isMulti: O["isMulti"];
+  isClearable: O["isClearable"];
+};
+
+export interface SchoolSelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
+  extends Omit<SelectProps<string, School, Opts<O>>, "options" | "itemRenderer"> {
   readonly useAbbreviatedOptionLabels?: boolean;
+  readonly options: O;
 }
 
-export const SchoolSelect = ({
+export const SchoolSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
   useAbbreviatedOptionLabels,
+  options,
   ...props
-}: SchoolSelectProps): JSX.Element => (
-  <Select<string, School, typeof options>
+}: SchoolSelectProps<O>): JSX.Element => (
+  <Select<string, School, Opts<O>>
     {...props}
-    options={options}
+    options={{ ...globalOptions, isClearable: options.isClearable, isMulti: options.isMulti }}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium">

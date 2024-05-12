@@ -2,26 +2,36 @@ import { type SkillCategory, getSkillCategory, SkillCategories } from "~/prisma/
 
 import { Select, type SelectProps } from "./generic";
 
-type O = {
+type M = {
   readonly value: SkillCategory;
   readonly label: string;
 };
 
-const options = {
-  getModelValue: (m: O) => m.value,
-  getModelLabel: (m: O) => m.label,
-  isMulti: true,
+const globalOptions = {
+  getModelValue: (m: M) => m.value,
+  getModelLabel: (m: M) => m.label,
 } as const;
 
-export const SkillCategorySelect = (
-  props: Omit<SelectProps<SkillCategory, O, typeof options>, "options" | "data">,
-): JSX.Element => (
-  <Select<SkillCategory, O, typeof options>
+type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
+  isMulti: O["isMulti"];
+  isClearable: O["isClearable"];
+};
+
+export interface SkillCategorySelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
+  extends Omit<SelectProps<SkillCategory, M, Opts<O>>, "options" | "data"> {
+  readonly options: O;
+}
+
+export const SkillCategorySelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
+  options,
+  ...props
+}: SkillCategorySelectProps<O>): JSX.Element => (
+  <Select<SkillCategory, M, Opts<O>>
     maxHeight={240}
     {...props}
-    options={options}
+    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
     data={Object.keys(SkillCategories).map(
-      (key): O => ({
+      (key): M => ({
         label: getSkillCategory(key as SkillCategory).label,
         value: key as SkillCategory,
       }),

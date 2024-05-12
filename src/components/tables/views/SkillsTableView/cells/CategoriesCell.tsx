@@ -10,6 +10,7 @@ interface CategoriesCellProps {
 
 export const CategoriesCell = ({ skill }: CategoriesCellProps): JSX.Element => (
   <SelectCell<
+    { isMulti: true },
     ApiSkill<["experiences", "educations", "projects", "repositories"]>,
     "categories",
     BrandSkill
@@ -17,6 +18,7 @@ export const CategoriesCell = ({ skill }: CategoriesCellProps): JSX.Element => (
     component={SkillCategorySelect}
     attribute="categories"
     model={skill}
+    options={{ isMulti: true }}
     action={async v => await updateSkill(skill.id, { categories: v })}
     errorMessage="There was an error updating the skill."
   />

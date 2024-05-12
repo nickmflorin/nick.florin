@@ -56,6 +56,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
           <ClientSchoolSelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
+            options={{ isMulti: false, isClearable: true }}
             value={value}
             onChange={onChange}
             inPortal
@@ -85,6 +86,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
+            options={{ isMulti: false, isClearable: true }}
             onChange={onChange}
           />
         )}

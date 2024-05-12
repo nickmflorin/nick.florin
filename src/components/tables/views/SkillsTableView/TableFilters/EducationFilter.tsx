@@ -47,7 +47,7 @@ export const EducationFilter = ({ filters, educations }: EducationFilterProps) =
       menuClassName="max-h-[260px]"
       placeholder="Educations"
       data={educations}
-      options={{ isMulti: true }}
+      options={{ isMulti: true, isClearable: true }}
       value={value}
       maximumValuesToRender={1}
       onChange={v => setValue(v)}

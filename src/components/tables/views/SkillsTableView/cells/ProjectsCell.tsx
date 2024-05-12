@@ -9,12 +9,16 @@ import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
 import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
+import type * as types from "~/components/tables/types";
 
 interface ProjectsCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
+  readonly table: types.CellTableInstance<
+    ApiSkill<["experiences", "educations", "projects", "repositories"]>
+  >;
 }
 
-export const ProjectsCell = ({ skill }: ProjectsCellProps): JSX.Element => {
+export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element => {
   const [value, setValue] = useState(skill.projects.map(p => p.id));
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -25,14 +29,18 @@ export const ProjectsCell = ({ skill }: ProjectsCellProps): JSX.Element => {
 
   return (
     <ClientProjectSelect
-      options={{ isMulti: true }}
+      options={{ isMulti: true, isClearable: true }}
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);
-        item.setLoading(true);
+        if (item) {
+          item.setLoading(true);
+        } else {
+          table.setRowLoading(skill.id, true);
+        }
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
           response = await updateSkill(skill.id, { projects: v });
@@ -47,7 +55,11 @@ export const ProjectsCell = ({ skill }: ProjectsCellProps): JSX.Element => {
           );
           toast.error("There was an error updating the skill.");
         } finally {
-          item.setLoading(false);
+          if (item) {
+            item.setLoading(false);
+          } else {
+            table.setRowLoading(skill.id, false);
+          }
         }
         if (isApiClientErrorJson(response)) {
           logger.error(

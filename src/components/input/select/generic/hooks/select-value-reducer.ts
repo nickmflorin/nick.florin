@@ -28,6 +28,7 @@ export interface SelectValueState<
 export enum SelectValueActionType {
   Select = "SELECT",
   Sync = "SYNC",
+  Clear = "CLEAR",
 }
 
 type SelectValueSyncAction<
@@ -46,11 +47,15 @@ type SelectValueSelectAction<M extends types.SelectModel, O extends types.Select
   readonly value: types.SelectArg<M, O>;
 };
 
+type SelectValueClearAction = {
+  readonly type: typeof SelectValueActionType.Clear;
+};
+
 export type SelectValueAction<
   V extends types.UnsafeSelectValueForm<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
-> = SelectValueSelectAction<M, O> | SelectValueSyncAction<V, M, O>;
+> = SelectValueSelectAction<M, O> | SelectValueSyncAction<V, M, O> | SelectValueClearAction;
 
 const findModelInData = <M extends types.SelectModel, O extends types.SelectOptions<M>>({
   data,
@@ -353,6 +358,15 @@ export const createSelectValueReducer =
     };
 
     switch (action.type) {
+      case SelectValueActionType.Clear:
+        return syncState(
+          {
+            ...state,
+            valueArray: [],
+          },
+          options,
+        );
+
       case SelectValueActionType.Sync:
         if (options.isValueModeled !== true && action.data === undefined) {
           throw new TypeError(
@@ -372,6 +386,7 @@ export const createSelectValueReducer =
           },
           options,
         );
+
       case SelectValueActionType.Select: {
         // Do not make a selection if the Select is not yet ready.
         if (!state.isReady) {

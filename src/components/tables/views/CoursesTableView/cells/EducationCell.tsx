@@ -30,7 +30,7 @@ export const EducationCell = ({ course, table }: EducationCellProps): JSX.Elemen
       visibility="admin"
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
-      options={{ isMulti: false }}
+      options={{ isMulti: false, isClearable: true }}
       useAbbreviatedOptionLabels={false}
       value={value}
       onChange={async v => {

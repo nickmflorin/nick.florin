@@ -48,6 +48,7 @@ export const ExperienceFilter = ({ filters, experiences }: ExperienceFilterProps
       placeholder="Experiences"
       data={experiences}
       value={value}
+      options={{ isMulti: true, isClearable: true }}
       maximumValuesToRender={1}
       onChange={v => setValue(v)}
       menuPlacement="bottom"

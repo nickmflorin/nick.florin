@@ -4,11 +4,15 @@ import { useSchools } from "~/hooks";
 
 import { SchoolSelect, type SchoolSelectProps } from "./SchoolSelect";
 
-export interface ClientSchoolSelectProps extends Omit<SchoolSelectProps, "data"> {
+export interface ClientSchoolSelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
+  extends Omit<SchoolSelectProps<O>, "data"> {
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientSchoolSelect = ({ onError, ...props }: ClientSchoolSelectProps): JSX.Element => {
+export const ClientSchoolSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
+  onError,
+  ...props
+}: ClientSchoolSelectProps<O>): JSX.Element => {
   const { data, isLoading, error } = useSchools({
     onError,
     query: { includes: [], visibility: "admin" },
