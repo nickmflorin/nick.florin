@@ -3,6 +3,7 @@ import { Description } from "~/components/typography/Description";
 
 import { Project as ProjectComponent, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
+import { ProjectImageWrapper } from "../ProjectImageWrapper";
 
 import { BarChart } from "./BarChart";
 import { BubbleChart } from "./BubbleChart";
@@ -28,23 +29,27 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
     <Description key="0">The package supported the following chart types:</Description>
     <BubbleChart />
     <BarChart />
-    <ProjectImage
-      src="/projects/asset-visualizations/changing-parameters.png"
-      alt="Bubble Chart"
-      caption={[
-        "For all chart types, the metrics that each dimension represent can be changed using a " +
-          "dropdown menu embedded in the canvas view.  The manner in which this is done is " +
-          "completely configurable during instantiation of the JavaScript chart instance.",
-      ]}
-    />
-    <ProjectImage
-      src="/projects/asset-visualizations/hiding-showing.png"
-      alt="Bubble Chart"
-      caption={[
-        "Individual data points can be dynamically hidden and shown, allowing the user to focus " +
-          "on certain data points of interest over time.",
-      ]}
-    />
+    <ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/asset-visualizations/changing-parameters.png"
+        alt="Bubble Chart"
+        caption={[
+          "For all chart types, the metrics that each dimension represent can be changed using a " +
+            "dropdown menu embedded in the canvas view.  The manner in which this is done is " +
+            "completely configurable during instantiation of the JavaScript chart instance.",
+        ]}
+      />
+    </ProjectImageWrapper>
+    <ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/asset-visualizations/hiding-showing.png"
+        alt="Bubble Chart"
+        caption={[
+          "Individual data points can be dynamically hidden and shown, allowing the user to " +
+            "focus on certain data points of interest over time.",
+        ]}
+      />
+    </ProjectImageWrapper>
   </ProjectComponent>
 );
 

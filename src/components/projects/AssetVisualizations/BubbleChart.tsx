@@ -1,6 +1,7 @@
 import { Description } from "~/components/typography/Description";
 
 import { ProjectImage } from "../ProjectImage";
+import { ProjectImageWrapper } from "../ProjectImageWrapper";
 import { Section } from "../Section";
 import { Series } from "../Series";
 import { SeriesItem } from "../SeriesItem";
@@ -44,15 +45,17 @@ export const BubbleChart = () => (
         that, when clicked, will animate the dimensions of the chart changing over time.
       </SeriesItem>
     </Series>
-    <ProjectImage
-      src="/projects/asset-visualizations/bubble-chart.png"
-      alt="Bubble Chart"
-      caption={[
-        "In this example, the color dimension is used to represent each distinct data point. " +
-          "The exact x and y coordinates of each bubble are shown when the bubble is hovered.",
-        "Clicking on a bubble causes a draggable tag to appear in the chart view, which can be " +
-          "hidden by clicking on the bubble a second time.",
-      ]}
-    />
+    <ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/asset-visualizations/bubble-chart.png"
+        alt="Bubble Chart"
+        caption={[
+          "In this example, the color dimension is used to represent each distinct data point. " +
+            "The exact x and y coordinates of each bubble are shown when the bubble is hovered.",
+          "Clicking on a bubble causes a draggable tag to appear in the chart view, which can be " +
+            "hidden by clicking on the bubble a second time.",
+        ]}
+      />
+    </ProjectImageWrapper>
   </Section>
 );
