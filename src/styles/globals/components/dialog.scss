@@ -1,3 +1,5 @@
+@use "partials";
+
 .dialog__overlay {
   background: rgba(0, 0, 0, 0.1);
   display: grid;
@@ -12,7 +14,7 @@
     // a lot better.
     outline: none !important;
     padding: 16px;
-    border-radius: theme("borderRadius.md");
+    @include partials.border-radius(theme("borderRadius.md"));
     box-shadow: theme("boxShadow.md");
     overflow: hidden;
     max-height: 90vh;

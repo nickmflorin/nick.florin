@@ -25,6 +25,22 @@
   transition: $value;
 }
 
+@mixin border-radius($value, $sides: null) {
+  @if $sides {
+    @each $side in $sides {
+      border-#{$side}-radius: $value;
+      -o-border-#{$side}-radius: $value;
+      -moz-border-#{$side}-radius: $value;
+      -webkit-border-#{$side}-radius: $value;
+    }
+  } @else {
+    border-radius: $value;
+    -o-border-radius: $value;
+    -moz-border-radius: $value;
+    -webkit-border-radius: $value;
+  }
+}
+
 @mixin mapped-properties($map, $strict: false) {
   @each $k in map.keys($map) {
     @if fn.mapget($map, $k) {

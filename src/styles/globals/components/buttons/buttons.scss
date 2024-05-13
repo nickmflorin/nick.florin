@@ -1,6 +1,7 @@
 @use "sass:list";
 @use "sass:map";
 
+@use "partials";
 @use "../typography" as typography;
 
 @use "./base" as *;
@@ -55,11 +56,7 @@ a:not(.button--type-link) {
 }
 
 .button {
-  border-radius: constants.$button-border-radius;
-  border-top-left-radius: constants.$button-border-radius;
-  border-bottom-left-radius: constants.$button-border-radius;
-  border-top-right-radius: constants.$button-border-radius;
-  border-bottom-right-radius: constants.$button-border-radius;
+  @include partials.border-radius(constants.$button-border-radius);
 
   outline-offset: -1 * constants.$button-outline-width;
 

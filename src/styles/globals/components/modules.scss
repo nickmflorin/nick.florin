@@ -1,3 +1,5 @@
+@use "partials";
+
 .module {
   border: 1px solid theme("colors.border");
   padding: 12px 18px 18px 18px;
@@ -8,7 +10,7 @@
   width: 100%;
   max-width: 100%;
   position: relative;
-  border-radius: theme("borderRadius.md");
+  @include partials.border-radius(theme("borderRadius.md"));
   overflow: hidden;
 
   > .module__content {

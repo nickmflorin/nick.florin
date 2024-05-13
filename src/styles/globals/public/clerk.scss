@@ -1,3 +1,5 @@
+@use "partials";
+
 @use "../components/typography" as typography;
 @use "../components/buttons" as buttons;
 
@@ -57,7 +59,7 @@ button.cl-socialButtonsBlockButton__google {
 }
 
 .cl-userButtonPopoverCard {
-  border-radius: theme("borderRadius.md");
+  @include partials.border-radius(theme("borderRadius.md"));
 
   .cl-userButtonPopoverActions {
     .cl-userButtonPopoverActionButton {

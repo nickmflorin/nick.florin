@@ -48,7 +48,7 @@ $badge-vertical-padding: 2px;
 .badge {
   @include badge-tag();
   color: theme("colors.text");
-  border-radius: theme("borderRadius.md");
+  @include partials.border-radius(theme("borderRadius.md"));
   padding-right: 6px;
   padding-left: 6px;
   padding-top: $badge-vertical-padding;

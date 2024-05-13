@@ -14,7 +14,7 @@
   @include partials.disabled;
 
   appearance: none;
-  border-radius: $button-border-radius;
+  @include partials.border-radius($button-border-radius);
   box-shadow: none !important;
   box-sizing: border-box;
   cursor: pointer;
