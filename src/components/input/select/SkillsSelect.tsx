@@ -70,11 +70,6 @@ export const SkillsSelect = ({ onError, ...props }: SkillsSelectProps) => {
               <MenuContentWrapper>
                 <ApiResponseState isLoading={isLoading} error={error} data={data}>
                   {skills => (
-                    /* We have to use the Abstract version of the MenuContent component because the
-                       value is already being managed by the 'SelectBase' component, and we do not
-                       want the MenuComponent to manage the value because it will issue warnings
-                       about not being able to find the value in the data since the data provided
-                       to the MenuComponent is filtered. */
                     <MenuContent<BrandSkill, typeof globalOptions>
                       options={globalOptions}
                       data={skills}
