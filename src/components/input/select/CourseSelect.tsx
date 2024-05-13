@@ -3,7 +3,6 @@ import { type ApiCourse } from "~/prisma/model";
 import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
-  isNullable: false,
   getModelValue: (m: ApiCourse) => m.id,
   getModelLabel: (m: ApiCourse) => m.shortName ?? m.name,
   getModelValueLabel: (m: ApiCourse) => m.shortName ?? m.name,

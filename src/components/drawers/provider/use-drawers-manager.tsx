@@ -9,6 +9,8 @@ import { publish } from "~/events/drawer-state-change-event";
 import { Loading } from "~/components/feedback/Loading";
 import { useReferentialCallback } from "~/hooks";
 
+import { type DrawerDynamicProps } from "./drawers";
+
 const DrawerRenderer = dynamic(() => import("./DrawerRenderer"), {
   loading: () => <Loading isLoading={true} />,
 });
@@ -16,7 +18,7 @@ const DrawerRenderer = dynamic(() => import("./DrawerRenderer"), {
 type DrawerHistory = {
   rendered: {
     drawer: JSX.Element;
-    id: types.DrawerId;
+    id: DrawerId;
   }[];
   index: number;
 };
@@ -95,11 +97,7 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
   }, []);
 
   const open = useCallback(
-    <D extends types.DrawerId>(
-      id: D,
-      props: types.DrawerDynamicProps<D>,
-      options?: types.OpenDrawerParams,
-    ) => {
+    <D extends DrawerId>(id: D, props: DrawerDynamicProps<D>, options?: types.OpenDrawerParams) => {
       setDrawerHistory(history => {
         const rendered = history?.rendered || [];
         const newDrawer = <DrawerRenderer id={id} props={props} />;
@@ -109,12 +107,15 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
             rendered: [...rendered, { drawer: newDrawer, id }],
           };
         }
+        for (let i = 0; i < rendered.length; i++) {
+          publish({ state: "closed", id: rendered[i].id });
+        }
         return {
           index: 1,
           rendered: [{ drawer: newDrawer, id }],
         };
       });
-      publish({ state: "opened" });
+      publish({ state: "opened", id, props });
     },
     [],
   );

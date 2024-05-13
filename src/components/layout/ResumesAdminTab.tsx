@@ -11,7 +11,7 @@ const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), 
 });
 
 export const ResumesAdminTab = () => {
-  const { isOpen, open } = useDrawerState();
+  const { isOpen, open } = useDrawerState({ drawerId: DrawerIds.VIEW_RESUMES, props: {} });
   return (
     <DynamicLoading>
       {({ isLoading }) => (

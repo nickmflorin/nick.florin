@@ -12,11 +12,26 @@ interface SelectValueReducerConfig<M extends types.SelectModel, O extends types.
   readonly options: O;
 }
 
-export interface SelectValueState<
+export interface UnsetSelectValueState<
   V extends types.UnsafeSelectValueForm<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
 > {
+  readonly selectionMade: false;
+  readonly valueArray: types.SelectValueForm<V, M, O>[];
+  readonly value: types.ValueNotSet;
+  readonly modelsArray: types.SelectDataModel<V, M, O>[];
+  readonly models: types.ValueNotSet;
+  readonly data: M[];
+  readonly isReady: boolean;
+}
+
+export interface SetSelectValueState<
+  V extends types.UnsafeSelectValueForm<M, O>,
+  M extends types.SelectModel,
+  O extends types.SelectOptions<M>,
+> {
+  readonly selectionMade: true;
   readonly valueArray: types.SelectValueForm<V, M, O>[];
   readonly value: types.SelectValue<V, M, O>;
   readonly modelsArray: types.SelectDataModel<V, M, O>[];
@@ -24,6 +39,12 @@ export interface SelectValueState<
   readonly data: M[];
   readonly isReady: boolean;
 }
+
+export type SelectValueState<
+  V extends types.UnsafeSelectValueForm<M, O>,
+  M extends types.SelectModel,
+  O extends types.SelectOptions<M>,
+> = SetSelectValueState<V, M, O> | UnsetSelectValueState<V, M, O>;
 
 export enum SelectValueActionType {
   Select = "SELECT",
@@ -128,7 +149,7 @@ const findModelInData = <M extends types.SelectModel, O extends types.SelectOpti
       // Log the error and exclude the model from the valued data set.
       logger.error(msg);
       return null;
-    } else if (options.isNullable === false) {
+    } else if (!options.isDeselectable) {
       throw new TypeError(msg);
     }
     logger.error(msg);
@@ -138,7 +159,10 @@ const findModelInData = <M extends types.SelectModel, O extends types.SelectOpti
 };
 
 const syncModels = <
-  S extends Pick<SelectValueState<V, M, O>, "isReady" | "valueArray" | "data" | "modelsArray">,
+  S extends Pick<
+    SelectValueState<V, M, O>,
+    "isReady" | "valueArray" | "data" | "modelsArray" | "selectionMade"
+  >,
   V extends types.UnsafeSelectValueForm<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
@@ -149,8 +173,17 @@ const syncModels = <
   if (options.isMulti) {
     return { ...state, models: state.modelsArray as types.SelectModeledValue<V, M, O> };
   } else if (state.modelsArray.length === 0) {
-    if (options.isNullable === false) {
-      throw new TypeError("Detected an empty array of models for non-nullable select!");
+    /* For a non-nullable Select, there may be a period of time before a selection was made that
+       the models array is empty (because no selection was made yet).  This is okay - the
+       nullability of the Select refers to the nullability of the Select's value after a selection
+       is made, not when it is immediately rendered. */
+    if (options.isDeselectable !== true) {
+      /* If a selection has been made, and the value array is empty, it means that there is a bug
+           in the code. */
+      if (state.selectionMade) {
+        throw new TypeError("Detected an empty array of models in state for non-nullable select!");
+      }
+      return { ...state, models: types.VALUE_NOT_SET };
     }
     return { ...state, models: null as types.SelectModeledValue<V, M, O> };
   } else if (state.modelsArray.length > 1) {
@@ -163,7 +196,7 @@ const syncModels = <
 };
 
 const syncSelectValue = <
-  S extends Pick<SelectValueState<V, M, O>, "isReady" | "valueArray" | "data">,
+  S extends Pick<SelectValueState<V, M, O>, "isReady" | "valueArray" | "data" | "selectionMade">,
   V extends types.UnsafeSelectValueForm<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
@@ -174,8 +207,17 @@ const syncSelectValue = <
   if (options.isMulti) {
     return { ...state, value: state.valueArray as types.SelectValue<V, M, O> };
   } else if (state.valueArray.length === 0) {
-    if (options.isNullable === false) {
-      throw new TypeError("Detected an empty array of values in state for non-nullable select!");
+    /* For a non-nullable Select, there may be a period of time before a selection was made that
+       the value array is empty (because no selection was made yet).  This is okay - the nullability
+       of the Select refers to the nullability of the Select's value after a selection is made, not
+       when it is immediately rendered. */
+    if (options.isDeselectable !== true) {
+      /* If a selection has been made, and the value array is empty, it means that there is a bug
+         in the code. */
+      if (state.selectionMade) {
+        throw new TypeError("Detected an empty array of values in state for non-nullable select!");
+      }
+      return { ...state, value: types.VALUE_NOT_SET };
     }
     return { ...state, value: null as types.SelectValue<V, M, O> };
   } else if (state.valueArray.length > 1) {
@@ -188,7 +230,7 @@ const syncSelectValue = <
 };
 
 export const syncState = <
-  S extends Pick<SelectValueState<V, M, O>, "isReady" | "valueArray" | "data">,
+  S extends Pick<SelectValueState<V, M, O>, "isReady" | "valueArray" | "data" | "selectionMade">,
   V extends types.UnsafeSelectValueForm<M, O>,
   M extends types.SelectModel,
   O extends types.SelectOptions<M>,
@@ -220,6 +262,12 @@ export const syncState = <
       ) as types.SelectDataModel<V, M, O>[],
     };
   } else {
+    /* In the case that the Select is value modeled, we do not need to wait for the Select to be
+       in a ready state to set the models array because the models are represented by the valued
+       models (provided as the 'value' prop) that are not dependent on asynchronously or externally
+       loaded data.  Setting the models array in this fashion, without waiting for the Select to
+       be in a ready state, causes the rendered SelectInput to immediately show the value
+       representaiton of the Select, even if it is still waiting on asynchronously loaded data. */
     update0 = {
       ...state,
       modelsArray: state.valueArray as V[] as types.SelectDataModel<V, M, O>[],
@@ -285,20 +333,22 @@ export const initializeState = <
   readonly value?: types.UnsafeSelectValue<V, M, O>;
   readonly data: M[];
   readonly options: O;
-}): SelectValueState<V, M, O> =>
+}): UnsetSelectValueState<V, M, O> =>
   syncState(
     {
-      valueArray: initialValue
-        ? toValueArray<V, M, O>(initialValue, options)
-        : value
-          ? toValueArray<V, M, O>(value, options)
-          : [],
+      valueArray:
+        initialValue !== undefined
+          ? toValueArray<V, M, O>(initialValue, options)
+          : value !== undefined
+            ? toValueArray<V, M, O>(value, options)
+            : [],
       modelsArray: [],
+      selectionMade: false,
       isReady: false,
       data: data,
     },
     options,
-  );
+  ) as UnsetSelectValueState<V, M, O>;
 
 export type SelectValueReducer<
   V extends types.UnsafeSelectValueForm<M, O>,
@@ -406,14 +456,17 @@ export const createSelectValueReducer =
           /* If the value is already selected, and the Select is "de-selectable" or "nullable",
              deselect it - otherwise, do nothing. */
           if (stateV.map(v => v.value).includes(selectValueModel.value)) {
-            if (options.isDeselectable !== false || options.isNullable !== false) {
-              const newState: SelectValueState<V, M, O> = {
-                ...state,
-                valueArray: stateV.filter(
-                  v => v.value !== selectValueModel.value,
-                ) as types.SelectValueForm<V, M, O>[],
-              };
-              return syncState<SelectValueState<V, M, O>, V, M, O>(newState, options);
+            if (options.isDeselectable === true) {
+              return syncState<SelectValueState<V, M, O>, V, M, O>(
+                {
+                  ...state,
+                  selectionMade: true,
+                  valueArray: stateV.filter(
+                    v => v.value !== selectValueModel.value,
+                  ) as types.SelectValueForm<V, M, O>[],
+                } as SelectValueState<V, M, O>,
+                options,
+              ) as SetSelectValueState<V, M, O>;
             }
             // Do nothing.
             return state;
@@ -422,15 +475,20 @@ export const createSelectValueReducer =
             return syncState<SelectValueState<V, M, O>, V, M, O>(
               {
                 ...state,
+                selectionMade: true,
                 valueArray: [...stateV, selectValueModel] as types.SelectValueForm<V, M, O>[],
-              },
+              } as SelectValueState<V, M, O>,
               options,
-            );
+            ) as SetSelectValueState<V, M, O>;
           }
           return syncState(
-            { ...state, valueArray: [selectValueModel] as types.SelectValueForm<V, M, O>[] },
+            {
+              ...state,
+              selectionMade: true,
+              valueArray: [selectValueModel] as types.SelectValueForm<V, M, O>[],
+            } as SelectValueState<V, M, O>,
             options,
-          );
+          ) as SetSelectValueState<V, M, O>;
         }
         const actionV =
           typeof action.value === "string"
@@ -442,12 +500,15 @@ export const createSelectValueReducer =
         /* If the value is already selected, and the Select is "de-selectable" or "nullable",
            deselect it - otherwise, do nothing. */
         if (stateV.includes(actionV)) {
-          if (options.isDeselectable !== false || options.isNullable !== false) {
-            const newState: SelectValueState<V, M, O> = {
-              ...state,
-              valueArray: stateV.filter(v => v !== actionV) as types.SelectValueForm<V, M, O>[],
-            };
-            return syncState<SelectValueState<V, M, O>, V, M, O>(newState, options);
+          if (options.isDeselectable === true) {
+            return syncState<SelectValueState<V, M, O>, V, M, O>(
+              {
+                ...state,
+                selectionMade: true,
+                valueArray: stateV.filter(v => v !== actionV) as types.SelectValueForm<V, M, O>[],
+              } as SelectValueState<V, M, O>,
+              options,
+            ) as SetSelectValueState<V, M, O>;
           }
           // Do nothing.
           return state;
@@ -455,17 +516,22 @@ export const createSelectValueReducer =
           return syncState<SelectValueState<V, M, O>, V, M, O>(
             {
               ...state,
+              selectionMade: true,
               valueArray: [...state.valueArray, actionV] as types.SelectValueForm<V, M, O>[],
-            },
+            } as SelectValueState<V, M, O>,
             options,
-          );
+          ) as SetSelectValueState<V, M, O>;
         }
         /* In this case, the Select is a single-select, and the updated value is simply the value
            associated with the action. */
         return syncState(
-          { ...state, valueArray: [actionV] as types.SelectValueForm<V, M, O>[] },
+          {
+            ...state,
+            selectionMade: true,
+            valueArray: [actionV] as types.SelectValueForm<V, M, O>[],
+          } as SelectValueState<V, M, O>,
           options,
-        );
+        ) as SetSelectValueState<V, M, O>;
       }
       default:
         throw new UnreachableCaseError();

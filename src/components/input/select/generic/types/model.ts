@@ -8,6 +8,9 @@ import { type MenuModel } from "~/components/menus";
 
 import { type SelectOptions } from "./options";
 
+export const VALUE_NOT_SET = "__VALUE_NOT_SET__" as const;
+export type ValueNotSet = typeof VALUE_NOT_SET;
+
 const NEVER = "__NEVER__" as const;
 type Never = typeof NEVER;
 
@@ -102,7 +105,7 @@ export const getSelectModelValueLabel = <M extends SelectModel, O extends Select
   if (options.getModelValueLabel !== undefined) {
     v = options.getModelValueLabel(model, {
       isMulti: options?.isMulti ?? false,
-      isNullable: options?.isNullable ?? false,
+      isDeselectable: options?.isDeselectable ?? false,
     });
   } else if (model.valueLabel !== undefined) {
     v = model.valueLabel;
@@ -130,7 +133,7 @@ export type SelectValue<
   isMulti: true;
 }
   ? SelectValueForm<V, M, O>[]
-  : O extends { isNullable: true }
+  : O extends { isDeselectable: true }
     ? SelectValueForm<V, M, O> | null
     : SelectValueForm<V, M, O>;
 
@@ -142,7 +145,7 @@ export type UnsafeSelectValue<
   isMulti: true;
 }
   ? V[]
-  : O extends { isNullable: true }
+  : O extends { isDeselectable: true }
     ? V | null
     : V;
 
@@ -160,6 +163,6 @@ export type SelectModeledValue<
   isMulti: true;
 }
   ? SelectDataModel<V, M, O>[]
-  : O extends { isNullable: true }
+  : O extends { isDeselectable: true }
     ? SelectDataModel<V, M, O> | null
     : SelectDataModel<V, M, O>;

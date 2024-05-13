@@ -2,7 +2,6 @@
 import dynamic from "next/dynamic";
 
 import { Button } from "~/components/buttons";
-import { type DrawerId } from "~/components/drawers";
 import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";
 import { DynamicLoading, DynamicLoader } from "~/components/feedback/dynamic-loading";
 
@@ -15,7 +14,7 @@ export interface NewButtonProps {
 }
 
 export const NewButton = ({ drawerId }: NewButtonProps) => {
-  const { isOpen, open } = useDrawerState();
+  const { isOpen, open } = useDrawerState({ drawerId, props: {} });
   return (
     <DynamicLoading>
       {({ isLoading }) => (

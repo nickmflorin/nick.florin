@@ -49,17 +49,14 @@ const LocalSelectBase = forwardRef<
   ): JSX.Element => {
     const internalInstance = useRef<types.SelectInstance | null>(null);
 
-    const { value, models, modelsArray, isNullish, clear, isSelected, onSelect } = useSelectValue<
-      V,
-      M,
-      O
-    >({
-      initialValue,
-      value: _propValue,
-      options: props.options,
-      data,
-      isReady,
-    });
+    const { value, models, modelsArray, isNullish, selectionMade, clear, isSelected, onSelect } =
+      useSelectValue<V, M, O>({
+        initialValue,
+        value: _propValue,
+        options: props.options,
+        data,
+        isReady,
+      });
 
     return (
       <SelectPopover
@@ -113,7 +110,6 @@ const LocalSelectBase = forwardRef<
               {...params}
               {...props}
               dynamicHeight={dynamicHeight}
-              value={value}
               isOpen={isOpen}
               isLoading={isLoading}
               ref={ref}
@@ -133,7 +129,14 @@ const LocalSelectBase = forwardRef<
               models={modelsArray}
               className={inputClassName}
               valueRenderer={
-                props.valueRenderer ? () => props.valueRenderer?.(value, { models }) : undefined
+                props.valueRenderer
+                  ? () => {
+                      if (!selectionMade) {
+                        return null;
+                      }
+                      return props.valueRenderer?.(value, { models });
+                    }
+                  : undefined
               }
             />
           ))}

@@ -73,7 +73,7 @@ export const getModelLabel = <M extends MenuModel, O extends MenuOptions<M>>(
   if (options.getModelLabel !== undefined) {
     v = options.getModelLabel(model, {
       isMulti: options?.isMulti ?? false,
-      isNullable: options?.isNullable ?? false,
+      isDeselectable: options?.isDeselectable ?? false,
     });
   } else if (model.label !== undefined) {
     v = model.label;

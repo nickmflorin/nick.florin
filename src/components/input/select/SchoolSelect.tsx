@@ -5,7 +5,6 @@ import { Text } from "~/components/typography/Text";
 import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
-  isNullable: false,
   getModelValue: (m: School) => m.id,
   getModelLabel: (m: School) => m.name,
   getModelValueLabel: (m: School) => m.shortName ?? m.name,

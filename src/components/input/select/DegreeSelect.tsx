@@ -9,7 +9,6 @@ type M = {
 };
 
 const globalOptions = {
-  isNullable: false,
   getModelValue: (m: M) => m.value,
   getModelLabel: (m: M) => m.label,
   getModelValueLabel: (m: M) => m.shortLabel,

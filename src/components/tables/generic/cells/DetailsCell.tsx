@@ -2,12 +2,9 @@ import dynamic from "next/dynamic";
 
 import { type ApiEducation, type ApiExperience } from "~/prisma/model";
 import { Link } from "~/components/buttons";
-import {
-  type ClientDrawerComponent,
-  DrawerIds,
-  type DrawerDynamicProps,
-} from "~/components/drawers";
+import { type ClientDrawerComponent, DrawerIds } from "~/components/drawers";
 import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";
+import { type DrawerDynamicProps } from "~/components/drawers/provider/drawers";
 import { DynamicLoading, DynamicLoader } from "~/components/feedback/dynamic-loading";
 
 const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
@@ -42,7 +39,11 @@ interface DetailsCellProps {
 }
 
 export const DetailsCell = ({ model }: DetailsCellProps) => {
-  const { isOpen, open } = useDrawerState();
+  const { isOpen, open } = useDrawerState({
+    drawerId: DrawerProps[model.$kind].id,
+    props: DrawerProps[model.$kind].props(model.id),
+  });
+
   return (
     <DynamicLoading>
       {({ isLoading }) => (

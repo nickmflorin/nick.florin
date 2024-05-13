@@ -11,6 +11,6 @@ export type SelectOptions<M extends SelectModel> = MenuOptions<M> &
     readonly getModelValue: (m: M) => AllowedSelectModelValue;
     readonly getModelValueLabel: (
       m: M,
-      opts: { isMulti: boolean; isNullable: boolean },
+      opts: { isMulti: boolean; isDeselectable: boolean },
     ) => ReactNode;
   }>;

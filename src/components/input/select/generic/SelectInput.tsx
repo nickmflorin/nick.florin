@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import React, { type ForwardedRef, forwardRef, useMemo } from "react";
 
+import { isFragment } from "react-is";
+
 import { getModelLabel } from "~/components/menus";
 
 import { BaseSelectInput } from "./BaseSelectInput";
@@ -20,7 +22,6 @@ export const SelectInput = forwardRef<HTMLDivElement, types.SelectInputProps<any
     {
       isReady = true,
       dynamicHeight = true,
-      value,
       options,
       maximumValuesToRender,
       models,
@@ -65,7 +66,11 @@ export const SelectInput = forwardRef<HTMLDivElement, types.SelectInputProps<any
         ref={ref}
         isLocked={props.isLocked || !isReady}
         showPlaceholder={
-          value === null || models === null || (Array.isArray(models) && models.length === 0)
+          renderedValue === null ||
+          renderedValue === undefined ||
+          typeof renderedValue === "boolean" ||
+          (typeof renderedValue === "string" && renderedValue.length === 0) ||
+          isFragment(renderedValue)
         }
       >
         <>{renderedValue}</>

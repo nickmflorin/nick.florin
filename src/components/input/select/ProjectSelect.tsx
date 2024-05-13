@@ -9,30 +9,39 @@ import { Select, type SelectProps } from "./generic";
 type Proj = Omit<BrandProject, "icon"> & { readonly icon: IconProp };
 
 const globalOptions = {
-  isNullable: true,
   getModelValue: (m: Proj) => m.id,
   getModelLabel: (m: Proj) => m.name,
   getModelValueLabel: (m: Proj) => m.shortName ?? m.name,
 } as const;
 
-type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
-  isMulti: O["isMulti"];
-  isClearable: O["isClearable"];
-};
+type Opts<O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean }> =
+  typeof globalOptions & {
+    isMulti: O["isMulti"];
+    isClearable: O["isClearable"];
+    isDeselectable: O["isDeselectable"];
+  };
 
-export interface ProjectSelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
-  extends Omit<SelectProps<string, Proj, Opts<O>>, "options" | "itemRenderer" | "data"> {
+export interface ProjectSelectProps<
+  O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean },
+> extends Omit<SelectProps<string, Proj, Opts<O>>, "options" | "itemRenderer" | "data"> {
   readonly data: BrandProject[];
   readonly options: O;
 }
 
-export const ProjectSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
+export const ProjectSelect = <
+  O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean },
+>({
   options,
   ...props
 }: ProjectSelectProps<O>): JSX.Element => (
   <Select<string, Proj, Opts<O>>
     {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
+    options={{
+      ...globalOptions,
+      isMulti: options.isMulti,
+      isClearable: options.isClearable,
+      isDeselectable: options.isDeselectable,
+    }}
     /* TODO: We eventually may want to solidify types related to the available IconName(s) so we can
        use it for schema validation of data coming from the database. */
     data={props.data.map(datum => ({ ...datum, icon: { name: datum.icon as IconName } }))}

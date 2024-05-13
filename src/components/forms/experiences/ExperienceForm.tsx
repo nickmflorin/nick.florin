@@ -98,8 +98,10 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
           />
         )}
       </Form.ControlledField>
-      <CheckboxField name="isRemote" form={props.form} label="Remote" />
-      <CheckboxField name="visible" form={props.form} label="Visible" />
+      <div className="flex flex-col gap-[16px] mt-[6px]">
+        <CheckboxField name="isRemote" form={props.form} label="Remote" />
+        <CheckboxField name="visible" form={props.form} label="Visible" />
+      </div>
     </Form>
   );
 };

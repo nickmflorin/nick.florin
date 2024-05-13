@@ -4,7 +4,6 @@ import { RepositoryTile } from "~/components/tiles/RepositoryTile";
 import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
-  isNullable: false,
   getModelValue: (m: ApiRepository) => m.id,
   getModelLabel: (m: ApiRepository) => m.slug,
   getModelValueLabel: (m: ApiRepository) => m.slug,

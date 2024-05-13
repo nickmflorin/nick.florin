@@ -10,6 +10,7 @@ import type {
   UnsafeSelectValue,
   SelectModelValue,
   UnsafeSelectValueForm,
+  ValueNotSet,
 } from "./model";
 
 import { type PopoverProps } from "~/components/floating/Popover";
@@ -141,7 +142,6 @@ export interface SelectInputProps<
   readonly options: O;
   readonly maximumValuesToRender?: number;
   readonly models: SelectDataModel<V, M, O>[];
-  readonly value: SelectValue<V, M, O>;
   readonly valueRenderer?: () => ReactNode;
   readonly valueModelRenderer?: SelectValueModelRenderer<V, M, O>;
 }
@@ -181,21 +181,21 @@ export interface SelectBaseProps<
   readonly valueRenderer?: SelectValueRenderer<V, M, O>;
   readonly onChange?: SelectChangeHandler<V, M, O>;
   readonly content: (params: {
-    readonly value: SelectValue<V, M, O>;
+    readonly value: SelectValue<V, M, O> | ValueNotSet;
     readonly isSelected: (v: SelectArg<M, O>) => boolean;
     readonly onSelect: (v: SelectArg<M, O>, instance: MenuItemInstance) => void;
   }) => JSX.Element;
   readonly onOpen?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: SelectValue<V, M, O>;
+      value: SelectValue<V, M, O> | ValueNotSet;
       select: SelectInstance;
     },
   ) => void;
   readonly onClose?: (
     e: Event | React.MouseEvent<HTMLButtonElement>,
     params: {
-      value: SelectValue<V, M, O>;
+      value: SelectValue<V, M, O> | ValueNotSet;
       select: SelectInstance;
     },
   ) => void;
@@ -203,7 +203,7 @@ export interface SelectBaseProps<
     e: Event | React.MouseEvent<HTMLButtonElement>,
     isOpen: boolean,
     params: {
-      value: SelectValue<V, M, O>;
+      value: SelectValue<V, M, O> | ValueNotSet;
       select: SelectInstance;
     },
   ) => void;

@@ -1,14 +1,12 @@
 import dynamic from "next/dynamic";
+import React from "react";
 
 import { Loading } from "~/components/feedback/Loading";
 
-import * as types from "./types";
+import { DrawerIds } from "./types";
 
-export const Drawer = <
-  D extends types.DrawerId,
-  P extends types.WithInjectedDrawerProps<D>,
-  C extends React.ComponentType<P>,
->(
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export const Drawer = <D extends DrawerId, C extends React.ComponentType<any>>(
   id: D,
   component: C,
 ) => ({
@@ -109,68 +107,53 @@ const ExperienceDrawer = dynamic(() => import("../details/ExperienceDrawer"), {
 });
 
 export const Drawers = {
-  [types.DrawerIds.VIEW_EDUCATION]: Drawer(types.DrawerIds.VIEW_EDUCATION, EducationDrawer),
-  [types.DrawerIds.VIEW_EXPERIENCE]: Drawer(types.DrawerIds.VIEW_EXPERIENCE, ExperienceDrawer),
-  [types.DrawerIds.UPDATE_EDUCATION]: Drawer(
-    types.DrawerIds.UPDATE_EDUCATION,
-    UpdateEducationDrawer,
-  ),
-  [types.DrawerIds.UPDATE_EDUCATION_DETAILS]: Drawer(
-    types.DrawerIds.UPDATE_EDUCATION_DETAILS,
+  [DrawerIds.VIEW_EDUCATION]: Drawer(DrawerIds.VIEW_EDUCATION, EducationDrawer),
+  [DrawerIds.VIEW_EXPERIENCE]: Drawer(DrawerIds.VIEW_EXPERIENCE, ExperienceDrawer),
+  [DrawerIds.UPDATE_EDUCATION]: Drawer(DrawerIds.UPDATE_EDUCATION, UpdateEducationDrawer),
+  [DrawerIds.UPDATE_EDUCATION_DETAILS]: Drawer(
+    DrawerIds.UPDATE_EDUCATION_DETAILS,
     UpdateEducationDetailsDrawer,
   ),
-  [types.DrawerIds.UPDATE_EXPERIENCE]: Drawer(
-    types.DrawerIds.UPDATE_EXPERIENCE,
-    UpdateExperienceDrawer,
-  ),
-  [types.DrawerIds.UPDATE_EXPERIENCE_DETAILS]: Drawer(
-    types.DrawerIds.UPDATE_EXPERIENCE_DETAILS,
+  [DrawerIds.UPDATE_EXPERIENCE]: Drawer(DrawerIds.UPDATE_EXPERIENCE, UpdateExperienceDrawer),
+  [DrawerIds.UPDATE_EXPERIENCE_DETAILS]: Drawer(
+    DrawerIds.UPDATE_EXPERIENCE_DETAILS,
     UpdateExperienceDetailsDrawer,
   ),
-  [types.DrawerIds.UPDATE_COMPANY]: Drawer(types.DrawerIds.UPDATE_COMPANY, UpdateCompanyDrawer),
-  [types.DrawerIds.UPDATE_SCHOOL]: Drawer(types.DrawerIds.UPDATE_SCHOOL, UpdateSchoolDrawer),
-  [types.DrawerIds.VIEW_SKILL]: Drawer(types.DrawerIds.VIEW_SKILL, SkillDrawer),
-  [types.DrawerIds.UPDATE_SKILL]: Drawer(types.DrawerIds.UPDATE_SKILL, UpdateSkillDrawer),
-  [types.DrawerIds.CREATE_COMPANY]: Drawer(types.DrawerIds.CREATE_COMPANY, CreateCompanyDrawer),
-  [types.DrawerIds.CREATE_SCHOOL]: Drawer(types.DrawerIds.CREATE_SCHOOL, CreateSchoolDrawer),
-  [types.DrawerIds.CREATE_SKILL]: Drawer(types.DrawerIds.CREATE_SKILL, CreateSkillDrawer),
-  [types.DrawerIds.CREATE_EDUCATION]: Drawer(
-    types.DrawerIds.CREATE_EDUCATION,
-    CreateEducationDrawer,
-  ),
-  [types.DrawerIds.CREATE_EXPERIENCE]: Drawer(
-    types.DrawerIds.CREATE_EXPERIENCE,
-    CreateExperienceDrawer,
-  ),
-  [types.DrawerIds.CREATE_PROJECT]: Drawer(types.DrawerIds.CREATE_PROJECT, CreateProjectDrawer),
-  [types.DrawerIds.UPDATE_PROJECT]: Drawer(types.DrawerIds.UPDATE_PROJECT, UpdateProjectDrawer),
-  [types.DrawerIds.VIEW_COURSE]: Drawer(types.DrawerIds.VIEW_COURSE, CourseDrawer),
-  [types.DrawerIds.CREATE_COURSE]: Drawer(types.DrawerIds.CREATE_COURSE, CreateCourseDrawer),
-  [types.DrawerIds.UPDATE_COURSE]: Drawer(types.DrawerIds.UPDATE_COURSE, UpdateCourseDrawer),
-  [types.DrawerIds.VIEW_RESUMES]: Drawer(types.DrawerIds.VIEW_RESUMES, ResumeDrawer),
-  [types.DrawerIds.UPDATE_REPOSITORY]: Drawer(
-    types.DrawerIds.UPDATE_REPOSITORY,
-    UpdateRepositoryDrawer,
-  ),
-  [types.DrawerIds.CREATE_REPOSITORY]: Drawer(
-    types.DrawerIds.CREATE_REPOSITORY,
-    CreateRepositoryDrawer,
-  ),
+  [DrawerIds.UPDATE_COMPANY]: Drawer(DrawerIds.UPDATE_COMPANY, UpdateCompanyDrawer),
+  [DrawerIds.UPDATE_SCHOOL]: Drawer(DrawerIds.UPDATE_SCHOOL, UpdateSchoolDrawer),
+  [DrawerIds.VIEW_SKILL]: Drawer(DrawerIds.VIEW_SKILL, SkillDrawer),
+  [DrawerIds.UPDATE_SKILL]: Drawer(DrawerIds.UPDATE_SKILL, UpdateSkillDrawer),
+  [DrawerIds.CREATE_COMPANY]: Drawer(DrawerIds.CREATE_COMPANY, CreateCompanyDrawer),
+  [DrawerIds.CREATE_SCHOOL]: Drawer(DrawerIds.CREATE_SCHOOL, CreateSchoolDrawer),
+  [DrawerIds.CREATE_SKILL]: Drawer(DrawerIds.CREATE_SKILL, CreateSkillDrawer),
+  [DrawerIds.CREATE_EDUCATION]: Drawer(DrawerIds.CREATE_EDUCATION, CreateEducationDrawer),
+  [DrawerIds.CREATE_EXPERIENCE]: Drawer(DrawerIds.CREATE_EXPERIENCE, CreateExperienceDrawer),
+  [DrawerIds.CREATE_PROJECT]: Drawer(DrawerIds.CREATE_PROJECT, CreateProjectDrawer),
+  [DrawerIds.UPDATE_PROJECT]: Drawer(DrawerIds.UPDATE_PROJECT, UpdateProjectDrawer),
+  [DrawerIds.VIEW_COURSE]: Drawer(DrawerIds.VIEW_COURSE, CourseDrawer),
+  [DrawerIds.CREATE_COURSE]: Drawer(DrawerIds.CREATE_COURSE, CreateCourseDrawer),
+  [DrawerIds.UPDATE_COURSE]: Drawer(DrawerIds.UPDATE_COURSE, UpdateCourseDrawer),
+  [DrawerIds.VIEW_RESUMES]: Drawer(DrawerIds.VIEW_RESUMES, ResumeDrawer),
+  [DrawerIds.UPDATE_REPOSITORY]: Drawer(DrawerIds.UPDATE_REPOSITORY, UpdateRepositoryDrawer),
+  [DrawerIds.CREATE_REPOSITORY]: Drawer(DrawerIds.CREATE_REPOSITORY, CreateRepositoryDrawer),
 } as const satisfies {
-  [key in types.DrawerId]: {
+  [key in DrawerId]: {
     id: key;
-    component: React.ComponentType<types.WithInjectedDrawerProps<key>>;
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    component: React.ComponentType<any>;
   };
 };
 
-export type DrawersType = typeof Drawers;
+export type DrawerComponent<D extends DrawerId> = (typeof Drawers)[D]["component"];
 
-type DrawerConfig<D extends types.DrawerId> = DrawersType[D];
+export type DrawerDynamicProps<D extends DrawerId> = React.ComponentProps<
+  (typeof Drawers)[D]["component"]
+>;
 
-export const getDrawerConfig = <D extends types.DrawerId>(id: D): DrawerConfig<D> =>
+type DrawerConfig<D extends DrawerId> = (typeof Drawers)[D];
+
+export const getDrawerConfig = <D extends DrawerId>(id: D): DrawerConfig<D> =>
   Drawers[id] as DrawerConfig<D>;
 
-export type DrawerComponent<D extends types.DrawerId> = DrawersType[D]["component"];
-
-export const getDrawerComponent = <D extends types.DrawerId>(id: D): DrawerComponent<D> =>
+export const getDrawerComponent = <D extends DrawerId>(id: D): DrawerComponent<D> =>
   getDrawerConfig(id).component;

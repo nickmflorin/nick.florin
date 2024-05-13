@@ -9,7 +9,9 @@ export interface ClientProjectSelectProps<O extends { isMulti?: boolean; isClear
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientProjectSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
+export const ClientProjectSelect = <
+  O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean },
+>({
   onError,
   ...props
 }: ClientProjectSelectProps<O>): JSX.Element => {

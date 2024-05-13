@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { type ResumeBrand } from "~/prisma/model";
-import { type DrawerId, DrawerIds, type DrawerIdPropsPair } from "~/components/drawers";
+import { DrawerIds, type DrawerIdPropsPair } from "~/components/drawers";
 import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";
 import { DynamicLoading, DynamicLoader } from "~/components/feedback/dynamic-loading";
 
@@ -47,7 +47,10 @@ export const ViewResumeModelDrawer = <T extends ResumeBrand>({
   push = false,
   children,
 }: ResumeModelDetailDrawerProps<T>) => {
-  const { isOpen, open } = useDrawerState();
+  const { isOpen, open } = useDrawerState({
+    drawerId: ModelDrawerProps[modelType](modelId).id,
+    props: ModelDrawerProps[modelType](modelId).props,
+  });
   return (
     <>
       <DynamicLoading>

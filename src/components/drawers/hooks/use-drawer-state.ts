@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 
+import isEqual from "lodash.isequal";
+
 import { subscribe, unsubscribe } from "~/events/drawer-state-change-event";
+import { type DrawerDynamicProps } from "~/components/drawers/provider/drawers";
+
+export interface DrawerStateOptions<D extends DrawerId> {
+  drawerId: D;
+  props: DrawerDynamicProps<D>;
+}
 
 /**
  * A hook that provides the means of managing the state of a drawer locally to the component,
@@ -38,7 +46,7 @@ import { subscribe, unsubscribe } from "~/events/drawer-state-change-event";
  * const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {});
  *
  * const MyComponent = () => {
- *   const { isOpen, open } = useDrawerState();
+ *   const { isOpen, open } = useDrawerState({ drawerId: "my-drawer-id" });
  *
  *   return (
  *     <>
@@ -51,21 +59,28 @@ import { subscribe, unsubscribe } from "~/events/drawer-state-change-event";
  * }
  * ```
  */
-export const useDrawerState = () => {
+export const useDrawerState = <D extends DrawerId>({ drawerId, props }: DrawerStateOptions<D>) => {
   const [state, setState] = useState<DrawerState>("closed");
 
   useEffect(() => {
     const handler = (e: DrawerStateChangeEvent) => {
-      const state = e.detail.state;
-      setTimeout(() => {
-        setState(state);
-      });
+      if (e.detail.state === "opened") {
+        if (e.detail.id === drawerId && isEqual(e.detail.props, props)) {
+          setState("opened");
+        }
+      } else if (e.detail.id !== undefined) {
+        if (e.detail.id === drawerId) {
+          setState("closed");
+        }
+      } else {
+        setState("closed");
+      }
     };
     subscribe(handler);
     return () => {
       unsubscribe(handler);
     };
-  }, []);
+  }, [drawerId, props]);
 
   /* Note: The 'open' method here is not actually what opens the drawer.  The 'open' method is
      simply used to set the open state locally (and eagerly) to trigger the rendering of the

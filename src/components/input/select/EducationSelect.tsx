@@ -5,7 +5,6 @@ import { Text } from "~/components/typography/Text";
 import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
-  isNullable: false,
   getModelValue: (m: ApiEducation) => m.id,
   getModelLabel: (m: ApiEducation) => m.major,
   getModelValueLabel: <E extends ApiEducation>(m: E, options: MenuOptions<E>) =>
