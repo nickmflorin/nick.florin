@@ -28,6 +28,12 @@
       flex-grow: 100;
       overflow-x: hidden;
       overflow: hidden;
+
+      > * {
+        @media (max-width: theme("screens.sm")) {
+          overflow-x: hidden;
+        }
+      }
     }
   }
 }

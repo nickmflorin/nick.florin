@@ -19,7 +19,7 @@ const Column = ({ children, ...props }: ColumnProps): JSX.Element => (
   <div
     {...props}
     className={clsx(
-      "flex flex-col gap-[15px] min-w-[320px]",
+      "flex flex-col gap-[15px] lg:min-w-[320px]",
       "xl:max-w-[520px]",
       "max-xl:w-[50%] max-xl:max-w-[50%]",
       "max-md:w-full max-md:max-w-full",
