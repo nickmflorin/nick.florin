@@ -73,10 +73,7 @@ export const ModelImage = ({
   const _url = getImageVar("url", { image, url });
   const _size = getImageVar("size", { image, size });
   return (
-    <div
-      style={{ ...style, height: size, width: size }}
-      className={clsx("model-image", `model-image--radius-${radius}`, className)}
-    >
+    <div style={{ ...style, height: size, width: size }} className={clsx("model-image", className)}>
       <Loading isLoading={loading === true} />
       {_url !== undefined && _url !== null && _url.trim() !== "" ? (
         <Image
@@ -85,7 +82,11 @@ export const ModelImage = ({
           src={_url}
           alt={alt}
           priority={priority}
-          className={clsx(imageClassName)}
+          className={clsx(
+            "model-image__image",
+            `model-image__image--radius-${radius}`,
+            imageClassName,
+          )}
         />
       ) : (
         <div className="model-image__fallback">

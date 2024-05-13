@@ -11,12 +11,18 @@
   width: auto;
   aspect-ratio: 1;
 
-  @include radii.with-radius using ($size, $value) {
-    &--radius-#{$size} {
-      -o-clip-path: inset(0px round $value);
-      -moz-clip-path: inset(0px round $value);
-      -webkit-clip-path: inset(0px round $value);
-      clip-path: inset(0px round $value);
+  > .model-image__image {
+    @include radii.with-radius using ($size, $value) {
+      &--radius-#{$size} {
+        @include partials.border-radius($value);
+        // The reasoning is unclear, but it appears that the border-radius property must be applied
+        // to work on Safari or iOS devices, whereas the clip-path property must be defined to work
+        // on Chrome.
+        -o-clip-path: inset(0px round $value);
+        -moz-clip-path: inset(0px round $value);
+        -webkit-clip-path: inset(0px round $value);
+        clip-path: inset(0px round $value);
+      }
     }
   }
 
