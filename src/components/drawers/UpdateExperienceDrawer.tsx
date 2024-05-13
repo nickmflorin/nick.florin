@@ -8,11 +8,10 @@ import { useExperience } from "~/hooks";
 import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-interface UpdateExperienceDrawerProps
-  extends ExtendingDrawerProps<{
-    readonly experienceId: string;
-    readonly eager: Pick<BrandExperience, "title">;
-  }> {}
+interface UpdateExperienceDrawerProps extends ExtendingDrawerProps {
+  readonly experienceId: string;
+  readonly eager: Pick<BrandExperience, "title">;
+}
 
 export const UpdateExperienceDrawer = ({
   experienceId,

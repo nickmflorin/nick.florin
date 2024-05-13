@@ -7,15 +7,21 @@ declare global {
 
   type DrawerId = EnumeratedLiteralsType<TypeOfDrawerIds>;
 
-  type DrawerStateOpenedEventDetail<D extends DrawerId = DrawerId> = D extends DrawerId
-    ? { id: D; state: "opened"; props: DrawerDynamicProps<D> }
-    : never;
+  type DrawerStateOpenedEventDetail<D extends DrawerId = DrawerId> = {
+    id: D;
+    state: "opened";
+    props: DrawerDynamicProps<D>;
+  };
 
-  type DrawerStateClosedEventDetail = { id?: DrawerId; state: "closed" };
+  type DrawerStateClosedEventDetail<D extends DrawerId = DrawerId> = {
+    id?: D;
+    state: "closed";
+    props?: never;
+  };
 
   type DrawerStateChangeEventDetail<D extends DrawerId = DrawerId> =
     | DrawerStateOpenedEventDetail<D>
-    | DrawerStateClosedEventDetail;
+    | DrawerStateClosedEventDetail<D>;
 
   type DrawerStateChangeEvent<D extends DrawerId = DrawerId> = CustomEvent<
     DrawerStateChangeEventDetail<D>

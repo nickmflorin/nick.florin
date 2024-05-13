@@ -8,11 +8,10 @@ import { useProject } from "~/hooks";
 import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-interface UpdateProjectDrawerProps
-  extends ExtendingDrawerProps<{
-    readonly projectId: string;
-    readonly eager: Pick<BrandProject, "name">;
-  }> {}
+interface UpdateProjectDrawerProps extends ExtendingDrawerProps {
+  readonly projectId: string;
+  readonly eager: Pick<BrandProject, "name">;
+}
 
 export const UpdateProjectDrawer = ({
   projectId,

@@ -5,20 +5,21 @@ import { Text } from "~/components/typography/Text";
 import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
-  isDeselectable: true,
   getModelValue: (m: ApiEducation) => m.id,
   getModelLabel: (m: ApiEducation) => m.major,
   getModelValueLabel: <E extends ApiEducation>(m: E, options: MenuOptions<E>) =>
     options.isMulti ? m.shortMajor ?? m.major : m.major,
 } as const;
 
-type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
-  isMulti: O["isMulti"];
-  isClearable: O["isClearable"];
-};
+type Opts<O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean }> =
+  typeof globalOptions & {
+    isMulti: O["isMulti"];
+    isClearable: O["isClearable"];
+    isDeselectable: O["isDeselectable"];
+  };
 
 export interface EducationSelectProps<
-  O extends { isMulti?: boolean; isClearable?: boolean },
+  O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean },
   E extends ApiEducation,
 > extends Omit<SelectProps<string, E, Opts<O>>, "options" | "itemRenderer"> {
   readonly useAbbreviatedOptionLabels?: boolean;
@@ -26,7 +27,7 @@ export interface EducationSelectProps<
 }
 
 export const EducationSelect = <
-  O extends { isMulti?: boolean; isClearable?: boolean },
+  O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean },
   E extends ApiEducation,
 >({
   useAbbreviatedOptionLabels = true,
@@ -35,7 +36,12 @@ export const EducationSelect = <
 }: EducationSelectProps<O, E>): JSX.Element => (
   <Select<string, E, Opts<O>>
     {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
+    options={{
+      ...globalOptions,
+      isMulti: options.isMulti,
+      isClearable: options.isClearable,
+      isDeselectable: options.isDeselectable,
+    }}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium">

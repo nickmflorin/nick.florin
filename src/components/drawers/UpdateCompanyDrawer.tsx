@@ -8,11 +8,10 @@ import { useCompany } from "~/hooks";
 import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-interface UpdateCompanyDrawerProps
-  extends ExtendingDrawerProps<{
-    readonly companyId: string;
-    readonly eager: Pick<BrandCompany, "name">;
-  }> {}
+interface UpdateCompanyDrawerProps extends ExtendingDrawerProps {
+  readonly companyId: string;
+  readonly eager: Pick<BrandCompany, "name">;
+}
 
 export const UpdateCompanyDrawer = ({
   companyId,

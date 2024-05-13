@@ -1,15 +1,13 @@
+import { type ExtendingDrawerProps } from "~/components/drawers";
+import { Drawer } from "~/components/drawers/Drawer";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { useSkill } from "~/hooks";
 
-import { Drawer } from "../../Drawer";
-import { type ExtendingDrawerProps } from "../../provider";
-
 import { SkillDrawerContent } from "./SkillDrawerContent";
 
-export interface SkillDrawerProps
-  extends ExtendingDrawerProps<{
-    readonly skillId: string;
-  }> {}
+export interface SkillDrawerProps extends ExtendingDrawerProps {
+  readonly skillId: string;
+}
 
 export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useSkill(skillId, {

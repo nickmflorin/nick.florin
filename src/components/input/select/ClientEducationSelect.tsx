@@ -13,7 +13,9 @@ export interface ClientEducationSelectProps<O extends { isMulti?: boolean; isCle
   readonly onError?: (e: HttpError) => void;
 }
 
-export const ClientEducationSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
+export const ClientEducationSelect = <
+  O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean },
+>({
   onError,
   visibility,
   isReady = true,

@@ -57,6 +57,10 @@ export type DrawersManager = {
   ) => void;
 };
 
+export interface ExtendingDrawerProps {
+  readonly onClose: () => void;
+}
+
 export interface ClientDrawerProps<D extends DrawerId> {
   readonly id: D;
   readonly props: DrawerDynamicProps<D>;

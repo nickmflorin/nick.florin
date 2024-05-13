@@ -8,11 +8,10 @@ import { useSchool } from "~/hooks";
 import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-interface UpdateCourseDrawerProps
-  extends ExtendingDrawerProps<{
-    readonly schoolId: string;
-    readonly eager: Pick<BrandSchool, "name">;
-  }> {}
+interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
+  readonly schoolId: string;
+  readonly eager: Pick<BrandSchool, "name">;
+}
 
 export const UpdateCourseDrawer = ({ schoolId, eager }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useSchool(isUuid(schoolId) ? schoolId : null, {

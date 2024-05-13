@@ -6,10 +6,9 @@ import { type ExtendingDrawerProps } from "../../provider";
 
 import { CourseDrawerContent } from "./CourseDrawerContent";
 
-export interface CourseDrawerProps
-  extends ExtendingDrawerProps<{
-    readonly courseId: string;
-  }> {}
+export interface CourseDrawerProps extends ExtendingDrawerProps {
+  readonly courseId: string;
+}
 
 export const CourseDrawer = ({ courseId }: CourseDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useCourse(courseId, {

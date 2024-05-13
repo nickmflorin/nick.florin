@@ -1,18 +1,22 @@
-import type * as types from "./types";
-
 import { DrawerContainer } from "../DrawerContainer";
 
+import { type DrawerDynamicProps } from "./drawers";
 import { getDrawerComponent } from "./drawers";
 
-interface DrawerRendererProps<D extends types.DrawerId> {
+interface DrawerRendererProps<D extends DrawerId> {
   readonly id: D;
-  readonly props: types.DrawerDynamicProps<D>;
+  readonly onClose: () => void;
+  readonly props: DrawerDynamicProps<D>;
 }
 
-export const DrawerRenderer = <D extends types.DrawerId>({ id, props }: DrawerRendererProps<D>) => {
+export const DrawerRenderer = <D extends DrawerId>({
+  id,
+  props,
+  onClose,
+}: DrawerRendererProps<D>) => {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const Drawer = getDrawerComponent(id) as React.ComponentType<any>;
-  const ps = props as React.ComponentProps<typeof Drawer>;
+  const ps = { ...props, onClose } as React.ComponentProps<typeof Drawer>;
 
   return (
     <DrawerContainer>

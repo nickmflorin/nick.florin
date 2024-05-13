@@ -8,11 +8,10 @@ import { useRepository } from "~/hooks";
 import { DrawerForm } from "./DrawerForm";
 import { type ExtendingDrawerProps } from "./provider";
 
-interface UpdateRepositoryDrawerProps
-  extends ExtendingDrawerProps<{
-    readonly repositoryId: string;
-    readonly eager: Pick<BrandRepository, "slug">;
-  }> {}
+interface UpdateRepositoryDrawerProps extends ExtendingDrawerProps {
+  readonly repositoryId: string;
+  readonly eager: Pick<BrandRepository, "slug">;
+}
 
 export const UpdateRepositoryDrawer = ({
   repositoryId,

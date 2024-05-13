@@ -24,11 +24,10 @@ const UpdateDetailsExpandedDrawer = dynamic(() => import("./UpdateDetailsExpande
   loading: () => <Loading isLoading={true} />,
 });
 
-export interface UpdateDetailsDrawerProps<T extends DetailEntityType>
-  extends ExtendingDrawerProps<{
-    readonly entityType: T;
-    readonly entityId: string;
-  }> {}
+export interface UpdateDetailsDrawerProps<T extends DetailEntityType> extends ExtendingDrawerProps {
+  readonly entityType: T;
+  readonly entityId: string;
+}
 
 export const UpdateDetailsDrawer = <T extends DetailEntityType>({
   entityType,

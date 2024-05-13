@@ -146,8 +146,9 @@ export const Drawers = {
 
 export type DrawerComponent<D extends DrawerId> = (typeof Drawers)[D]["component"];
 
-export type DrawerDynamicProps<D extends DrawerId> = React.ComponentProps<
-  (typeof Drawers)[D]["component"]
+export type DrawerDynamicProps<D extends DrawerId> = Omit<
+  React.ComponentProps<(typeof Drawers)[D]["component"]>,
+  "onClose"
 >;
 
 type DrawerConfig<D extends DrawerId> = (typeof Drawers)[D];
