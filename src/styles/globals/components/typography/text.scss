@@ -4,7 +4,7 @@
 @use "./mixins" as mixins;
 
 html,
-text {
+body {
   @extend %typography-base;
   font-family: theme("fontFamily.text");
   color: theme("colors.text");

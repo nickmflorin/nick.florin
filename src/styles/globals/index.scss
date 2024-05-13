@@ -4,3 +4,12 @@
 
 @use "./components";
 @use "./public";
+
+html,
+body {
+  overflow: hidden;
+}
+
+body {
+  position: relative;
+}
