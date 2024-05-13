@@ -20,6 +20,7 @@ const MenuContent = dynamic(() => import("~/components/menus/generic/MenuContent
 const globalOptions = {
   isMulti: true,
   isValueModeled: true,
+  isDeselectable: true,
   getModelValue: (m: BrandSkill) => m.id,
   getModelLabel: (m: BrandSkill) => m.label,
   getModelValueLabel: (m: BrandSkill) => m.label,

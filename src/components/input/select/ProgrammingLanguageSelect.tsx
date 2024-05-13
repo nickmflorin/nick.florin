@@ -14,6 +14,7 @@ type M = Required<
 >;
 
 const globalOptions = {
+  isDeselectable: true,
   getModelValue: (m: M) => m.value,
   getModelLabel: (m: M) => m.label,
 } as const;

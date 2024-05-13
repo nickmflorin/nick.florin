@@ -8,6 +8,7 @@ type Exp = Pick<Experience, "title" | "id" | "shortTitle"> & {
 };
 
 const globalOptions = {
+  isDeselectable: true,
   getModelValue: (m: Exp) => m.id,
   getModelLabel: (m: Exp) => m.title,
   getModelValueLabel: (m: Exp) => m.shortTitle ?? m.title,
