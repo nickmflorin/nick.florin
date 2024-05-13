@@ -1,9 +1,4 @@
-/*
-Buttons  need to leverage an outline instead of a border, because an outline is inset and a border
-is outset. In other words, the border will contribute size to the overall Button, while the outline
-will not.
-*/
-$button-outline-width: 1px;
+$button-border-width: 1px;
 
 $button-state-names: ("hovered", "focused", "disabled", "active");
 

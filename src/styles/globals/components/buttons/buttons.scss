@@ -57,9 +57,6 @@ a:not(.button--type-link) {
 
 .button {
   @include partials.border-radius(constants.$button-border-radius);
-
-  outline-offset: -1 * constants.$button-outline-width;
-
   @include mixins.button-locked-or-loading();
 
   .icon {

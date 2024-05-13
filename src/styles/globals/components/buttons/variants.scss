@@ -22,61 +22,61 @@ $button-color-properties: (
     "primary": (
       background-color: theme("colors.blue.600"),
       color: theme("colors.white"),
-      outline-color: theme("colors.blue.600"),
+      border-color: theme("colors.blue.600"),
       hovered: (
         background-color: theme("colors.blue.800"),
-        outline-color: theme("colors.blue.800"),
+        border-color: theme("colors.blue.800"),
       ),
       focused: (
         background-color: theme("colors.blue.800"),
-        outline-color: theme("colors.blue.800"),
+        border-color: theme("colors.blue.800"),
       ),
       disabled: (
         background-color: theme("colors.disabledBackground"),
-        outline-color: theme("colors.disabledBorder"),
+        border-color: theme("colors.disabledBorder"),
       ),
     ),
     "secondary": (
       background-color: theme("colors.gray.200"),
       color: theme("colors.gray.700"),
-      outline-color: theme("colors.gray.200"),
+      border-color: theme("colors.gray.200"),
       hovered: (
         background-color: theme("colors.gray.300"),
-        outline-color: theme("colors.gray.300"),
+        border-color: theme("colors.gray.300"),
         active: (
-          outline-color: theme("colors.gray.500"),
+          border-color: theme("colors.gray.500"),
         ),
       ),
       focused: (
         background-color: theme("colors.gray.300"),
-        outline-color: theme("colors.gray.300"),
+        border-color: theme("colors.gray.300"),
         active: (
-          outline-color: theme("colors.gray.500"),
+          border-color: theme("colors.gray.500"),
         ),
       ),
       active: (
-        outline-color: theme("colors.gray.500"),
+        border-color: theme("colors.gray.500"),
       ),
       disabled: (
         background-color: theme("colors.disabledBackground"),
-        outline-color: theme("colors.disabledBorder"),
+        border-color: theme("colors.disabledBorder"),
       ),
     ),
     "danger": (
       background-color: theme("colors.danger.500"),
       color: theme("colors.white"),
-      outline-color: theme("colors.danger.500"),
+      border-color: theme("colors.danger.500"),
       hovered: (
         background-color: theme("colors.danger.600"),
-        outline-color: theme("colors.danger.600"),
+        border-color: theme("colors.danger.600"),
       ),
       focused: (
         background-color: theme("colors.danger.600"),
-        outline-color: theme("colors.danger.600"),
+        border-color: theme("colors.danger.600"),
       ),
       disabled: (
         background-color: theme("colors.red.200"),
-        outline-color: theme("colors.red.200"),
+        border-color: theme("colors.red.200"),
       ),
     ),
     "bare": (),
@@ -85,41 +85,41 @@ $button-color-properties: (
     "primary": (
       background-color: theme("colors.blue.600"),
       color: theme("colors.white"),
-      outline-color: theme("colors.blue.600"),
+      border-color: theme("colors.blue.600"),
       hovered: (
         background-color: theme("colors.blue.800"),
-        outline-color: theme("colors.blue.800"),
+        border-color: theme("colors.blue.800"),
       ),
       focused: (
         background-color: theme("colors.blue.800"),
-        outline-color: theme("colors.blue.800"),
+        border-color: theme("colors.blue.800"),
       ),
       disabled: (
         background-color: theme("colors.disabledBackground"),
-        outline-color: theme("colors.disabledBorder"),
+        border-color: theme("colors.disabledBorder"),
       ),
     ),
     "secondary": (
       background-color: theme("colors.gray.200"),
       color: theme("colors.gray.700"),
-      outline-color: theme("colors.gray.200"),
+      border-color: theme("colors.gray.200"),
       hovered: (
         background-color: theme("colors.gray.300"),
-        outline-color: theme("colors.gray.300"),
+        border-color: theme("colors.gray.300"),
       ),
       focused: (
         background-color: theme("colors.gray.300"),
-        outline-color: theme("colors.gray.300"),
+        border-color: theme("colors.gray.300"),
       ),
       disabled: (
         background-color: theme("colors.disabledBackground"),
-        outline-color: theme("colors.disabledBorder"),
+        border-color: theme("colors.disabledBorder"),
       ),
     ),
     "light": (
       background-color: theme("colors.transparent"),
       color: theme("colors.gray.400"),
-      outline-color: theme("colors.transparent"),
+      border-color: theme("colors.transparent"),
       hovered: (
         color: theme("colors.gray.600"),
       ),
@@ -133,7 +133,7 @@ $button-color-properties: (
     "transparent": (
       background-color: theme("colors.transparent"),
       color: theme("colors.gray.500"),
-      outline-color: theme("colors.transparent"),
+      border-color: theme("colors.transparent"),
       hovered: (
         background-color: theme("colors.gray.100"),
         color: theme("colors.gray.600"),
@@ -149,18 +149,18 @@ $button-color-properties: (
     "danger": (
       background-color: theme("colors.danger.500"),
       color: theme("colors.white"),
-      outline-color: theme("colors.danger.500"),
+      border-color: theme("colors.danger.500"),
       hovered: (
         background-color: theme("colors.danger.600"),
-        outline-color: theme("colors.danger.600"),
+        border-color: theme("colors.danger.600"),
       ),
       focused: (
         background-color: theme("colors.danger.600"),
-        outline-color: theme("colors.danger.600"),
+        border-color: theme("colors.danger.600"),
       ),
       disabled: (
         background-color: theme("colors.red.200"),
-        outline-color: theme("colors.red.200"),
+        border-color: theme("colors.red.200"),
       ),
     ),
     "bare": (),
@@ -213,14 +213,14 @@ $button-color-properties: (
   $arguments: meta.keywords($args);
   @if map.has-key($arguments, $state-name) {
     $state: partials.mapget($arguments, $state-name);
-    // If the state defines an override for the outline-color, we need to also override the outline
+    // If the state defines an override for the border-color, we need to also override the border
     // because it will have been defaulted in the original base set of attributes based on the
-    // outline color of the base state.
-    @if map.has-key($state, outline-color) and not map.has-key($state, outline) {
+    // border color of the base state.
+    @if map.has-key($state, border-color) and not map.has-key($state, border) {
       $state: map.set(
         $state,
-        outline,
-        $button-outline-width solid partials.mapget($state, outline-color)
+        border,
+        $button-border-width solid partials.mapget($state, border-color)
       );
     }
     @return map.merge($attributes, $state);
@@ -258,7 +258,7 @@ $fallbacks: (
 }
 
 @function parse-core-attributes($attrs) {
-  $attributes: (background-color, outline-color, color);
+  $attributes: (background-color, border-color, color);
   $parsed: ();
   @each $a in $attributes {
     $v: map.get($attrs, $a);
@@ -327,7 +327,7 @@ $fallbacks: (
 
              (
               background-color: theme("colors.blue.600"),
-              outline-color: theme("colors.blue.800"),
+              border-color: theme("colors.blue.800"),
               "hovered": (  ----------------> The level we are currently looking at in the loop.
                 background-color: theme("colors.blue.800"), -> Overrides former background-color.
                 "active": (
@@ -350,24 +350,24 @@ $fallbacks: (
       $default: theme("colors.transparent"),
       $args...
     );
-    $outline-color: partials.get-optional-kwarg(outline-color, $default: null, $args...);
-    $outline: partials.get-optional-kwarg(
-      outline,
-      $default: if($outline-color, $button-outline-width solid $outline-color, null),
+    $border-color: partials.get-optional-kwarg(border-color, $default: null, $args...);
+    $border: partials.get-optional-kwarg(
+      border,
+      $default: if($border-color, $button-border-width solid $border-color, null),
       $args...
     );
     @if $border {
       @return (
         background-color: $background-color,
-        border-color: $outline-color,
-        border: $outline,
+        border-color: $border-color,
+        border: $border,
         color: partials.get-optional-kwarg(color, $default: null, $args...)
       );
     }
     @return (
       background-color: $background-color,
-      outline-color: $outline-color,
-      outline: $outline,
+      border-color: $border-color,
+      border: $border,
       color: partials.get-optional-kwarg(color, $default: null, $args...)
     );
   }
