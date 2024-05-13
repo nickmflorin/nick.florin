@@ -13,6 +13,7 @@
 
   @include radii.with-radius using ($size, $value) {
     &--radius-#{$size} {
+      -webkit-clip-path: inset(0px round $value);
       clip-path: inset(0px round $value);
     }
   }
