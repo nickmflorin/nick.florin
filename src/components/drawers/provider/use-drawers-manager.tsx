@@ -98,26 +98,27 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
 
   const open = useCallback(
     <D extends DrawerId>(id: D, props: DrawerDynamicProps<D>, options?: types.OpenDrawerParams) => {
-      setDrawerHistory(history => {
-        const rendered = history?.rendered || [];
-        const newDrawer = <DrawerRenderer id={id} props={props} onClose={() => close()} />;
-        if (options?.push) {
-          return {
-            index: rendered.length + 1,
-            rendered: [...rendered, { drawer: newDrawer, id }],
-          };
-        }
+      const rendered = drawerHistory?.rendered || [];
+      const newDrawer = <DrawerRenderer id={id} props={props} onClose={() => close()} />;
+      if (options?.push) {
+        setDrawerHistory({
+          index: rendered.length + 1,
+          rendered: [...rendered, { drawer: newDrawer, id }],
+        });
+        return setTimeout(() => publish({ state: "opened", id, props }));
+      }
+      setDrawerHistory({
+        index: 1,
+        rendered: [{ drawer: newDrawer, id }],
+      });
+      setTimeout(() => {
         for (let i = 0; i < rendered.length; i++) {
           publish({ state: "closed", id: rendered[i].id });
         }
-        return {
-          index: 1,
-          rendered: [{ drawer: newDrawer, id }],
-        };
+        publish({ state: "opened", id, props });
       });
-      publish({ state: "opened", id, props });
     },
-    [close],
+    [close, drawerHistory],
   );
 
   const drawer = useMemo(() => {
