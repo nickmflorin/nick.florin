@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 
 import { useDrawers } from "./hooks/use-drawers";
 import { type ClientDrawerProps } from "./provider";
-import { type DrawerId } from "./provider/types";
 
 export const ClientDrawer = <D extends DrawerId>({
   id,
