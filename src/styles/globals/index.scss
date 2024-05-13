@@ -5,9 +5,11 @@
 @use "./components";
 @use "./public";
 
+@import "~normalize.css/normalize.css";
+
 html,
 body {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 body {
