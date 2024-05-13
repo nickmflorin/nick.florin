@@ -41,7 +41,9 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isReady"> => {
 
   const close = useCallback(() => {
     setDrawerHistory(null);
-    publish({ state: "closed" });
+    setTimeout(() => {
+      publish({ state: "closed" });
+    });
   }, []);
 
   const back = useReferentialCallback(() => {
