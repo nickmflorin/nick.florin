@@ -49,6 +49,8 @@ h6.cl-headerTitle {
 
 button.cl-formButtonPrimary {
   @include buttons.button("button", $variant: "primary", $size: "small");
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 button.cl-socialButtonsBlockButton__google {
