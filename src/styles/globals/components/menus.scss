@@ -7,6 +7,21 @@
   }
 }
 
+@mixin menu-content-wrapper() {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  flex-grow: 100;
+  position: relative;
+  min-height: 100px;
+  @content;
+
+  > .menu__content {
+    max-height: 100%;
+    height: 100%;
+  }
+}
+
 .menu {
   display: flex;
   flex-direction: column;
@@ -30,16 +45,31 @@
   // or errors can be shown in the interim, before the content is either dynamically loaded or the
   // data is populated.;
   > .menu__content-wrapper {
-    display: flex;
-    flex-direction: column;
-    overflow-y: hidden;
-    flex-grow: 100;
-    position: relative;
+    @include menu-content-wrapper() {
+      > .menu__content {
+        overflow-y: auto;
+      }
+    }
+  }
+}
 
-    > .menu__content {
-      overflow-y: auto;
-      max-height: 100%;
-      height: 100%;
+.menu__item-group {
+  display: flex;
+  flex-direction: column;
+
+  > .menu__item-group__label {
+    padding: 10px 10px;
+  }
+
+  > .menu__content-wrapper {
+    @include menu-content-wrapper();
+  }
+}
+
+@mixin bordered-menu-item() {
+  > .menu__item {
+    &:not(:last-of-type) {
+      border-bottom: 1px solid theme("colors.border");
     }
   }
 }
@@ -50,14 +80,24 @@
   overflow-x: hidden;
   position: relative;
 
+  &--bordered {
+    @include bordered-menu-item();
+    > a {
+      @include bordered-menu-item();
+    }
+  }
+
   // Note: Sometimes a menu__item element is wrapped in an anchor tag if it represents a link.
   .menu__item {
     display: flex;
     flex-direction: row;
     align-items: center;
-    // Currently applied via Tailwind in the component.
-    // padding: 6px 10px;
+    padding: 6px 10px;
     gap: 10px;
+    color: theme("colors.text");
+    transition-property: background-color, background, border-color, color, fill, stroke, opacity,
+      box-shadow, transform;
+    transition-duration: 100ms;
 
     // The line height may be overridden in the component if the height is specified as a prop.
     @include typography.font($type: "text", $line-height: 28px, $font-size: "xs");
@@ -73,13 +113,14 @@
 
     @include partials.hovered {
       &:not(.menu__item--selected, .disabled, .menu__item--locked) {
-        background-color: theme("colors.gray.100");
+        background-color: theme("colors.gray.50");
+        color: theme("colors.textHover");
       }
     }
 
     @include partials.focused {
       &:not(.menu__item--selected, .disabled, .menu__item--locked) {
-        background-color: theme("colors.gray.100");
+        background-color: theme("colors.gray.50");
       }
     }
 
@@ -103,6 +144,10 @@
       line-height: inherit;
       flex-grow: 100;
       color: inherit;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
       @include typography.truncate();
     }
   }

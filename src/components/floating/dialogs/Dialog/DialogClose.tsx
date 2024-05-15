@@ -5,7 +5,7 @@ import {
   type DialogCloseButtonProps,
 } from "~/components/buttons/DialogCloseButton";
 
-import { useDialogContext } from "../hooks/use-dialog-context";
+import { useDialogContext } from "../../hooks/use-dialog-context";
 
 export const DialogClose = forwardRef<HTMLButtonElement, DialogCloseButtonProps>((props, ref) => {
   const { setIsOpen } = useDialogContext();

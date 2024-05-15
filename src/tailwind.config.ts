@@ -205,7 +205,9 @@ const config = {
       },
       title: "#111827",
       text: "#515151",
+      textHover: "#404040",
       label: "#6a6a6a",
+      labelDark: "#515151",
       description: "#868E96", // Gray 600
       border: "#DEE2E6", // Gray 300
       appBackground: "#fbfbfb",

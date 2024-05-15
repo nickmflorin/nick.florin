@@ -61,7 +61,7 @@ export type ButtonIconSize = ButtonDiscreteIconSize | Size;
 export const ButtonTypes = enumeratedLiterals(["button", "icon-button", "link"] as const, {});
 export type ButtonType = EnumeratedLiteralsType<typeof ButtonTypes>;
 
-export const ButtonForms = enumeratedLiterals(["button", "a", "link"] as const, {});
+export const ButtonForms = enumeratedLiterals(["button", "a", "link", "div"] as const, {});
 export type ButtonForm = EnumeratedLiteralsType<typeof ButtonForms>;
 
 type IfButtonOrLink<V, T extends ButtonType, R = never> = T extends "button" | "link" ? V : R;
@@ -101,6 +101,7 @@ export type AbstractProps<T extends ButtonType, F extends ButtonForm> = Componen
   readonly activeClassName?: ComponentProps["className"];
   readonly children: ReactNode;
   readonly iconSize?: ButtonIconSize;
+  readonly tourId?: string;
 } & PolymorphicAbstractButtonProps<F>;
 
 type CommonEventProps =
@@ -113,16 +114,18 @@ type CommonEventProps =
   | "onMouseMove"
   | "onClick";
 
-export type AbstractButtonProps = Pick<HTMLElementProps<"button">, CommonEventProps> & {
+export type AbstractButtonProps = Pick<HTMLElementProps<"button">, CommonEventProps | "id"> & {
   readonly type?: "submit" | "button";
 };
+
+export type AbstractDivProps = Pick<HTMLElementProps<"div">, CommonEventProps | "id">;
 
 export type AbstractLinkProps = Pick<
   NextLinkProps,
   "href" | (CommonEventProps & keyof NextLinkProps)
 >;
 
-export type AbstractAnchorProps = Pick<HTMLElementProps<"a">, CommonEventProps> & {
+export type AbstractAnchorProps = Pick<HTMLElementProps<"a">, CommonEventProps | "id"> & {
   readonly href?: string;
   readonly target?: string;
   readonly rel?: string;
@@ -132,16 +135,19 @@ export type PolymorphicAbstractButtonProps<F extends ButtonForm> = {
   link: AbstractLinkProps;
   button: AbstractButtonProps;
   a: AbstractAnchorProps;
+  div: AbstractDivProps;
 }[F];
 
 export type PolymorphicButtonElement<F extends ButtonForm> = {
   link: HTMLAnchorElement;
   a: HTMLAnchorElement;
   button: HTMLButtonElement;
+  div: HTMLDivElement;
 }[F];
 
 export type PolymorphicButtonRef<F extends ButtonForm> = {
   link: ForwardedRef<HTMLAnchorElement>;
   a: ForwardedRef<HTMLAnchorElement>;
   button: ForwardedRef<HTMLButtonElement>;
+  div: ForwardedRef<HTMLDivElement>;
 }[F];

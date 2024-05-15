@@ -110,7 +110,10 @@ export const singleTextNodeCanRender = (node: SingleTextNode): node is Renderabl
   if (node === null || node === undefined || typeof node === "boolean") {
     return false;
   }
-  return isValidElement(node) && !isFragment(node);
+  return (
+    (isValidElement(node) || typeof node === "string" || typeof node === "number") &&
+    !isFragment(node)
+  );
 };
 
 export type TypographyVisibilityState = "expanded" | "collapsed";

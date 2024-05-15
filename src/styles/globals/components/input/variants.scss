@@ -19,7 +19,6 @@ $input-variant-properties: (
     disabled: (
       color: theme("colors.disabled"),
       placeholder-color: theme("colors.disabled"),
-      // background-color: theme("colors.disabledBackground"),
       outline-color: theme("colors.disabledBorder"),
     ),
     focused: (
@@ -39,7 +38,6 @@ $input-variant-properties: (
     disabled: (
       color: theme("colors.disabled"),
       placeholder-color: theme("colors.disabled"),
-      // background-color: theme("colors.disabledBackground"),
     ),
     focused: (
       background-color: theme("colors.gray.200"),

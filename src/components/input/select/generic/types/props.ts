@@ -16,7 +16,7 @@ import type {
 import { type PopoverProps } from "~/components/floating/Popover";
 import { type PopoverRenderProps } from "~/components/floating/types";
 import { type InputProps } from "~/components/input/generic";
-import { type MenuProps, type MenuItemInstance } from "~/components/menus";
+import { type MenuDataProps, type MenuItemInstance } from "~/components/menus";
 import { type ComponentProps } from "~/components/types";
 
 import { type SelectOptions } from "./options";
@@ -214,6 +214,6 @@ export interface SelectProps<
   M extends SelectModel,
   O extends SelectOptions<M>,
 > extends Omit<SelectBaseProps<V, M, O>, "content" | "data">,
-    Omit<MenuProps<M, O>, "children" | "itemIsSelected" | keyof ComponentProps> {
+    Omit<MenuDataProps<M, O>, "children" | "itemIsSelected" | keyof ComponentProps> {
   readonly itemRenderer?: SelectItemRenderer<M>;
 }

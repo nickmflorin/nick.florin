@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import { type ReactNode } from "react";
@@ -10,8 +9,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppConfig } from "~/app/config/AppConfig";
 import { environment } from "~/environment";
 import { Layout } from "~/components/layout/Layout";
-
-const WelcomeDialog = dynamic(() => import("./config/WelcomeDialog"), { ssr: false });
 
 const InterFont = Inter({
   weight: ["400", "500", "600", "700"],
@@ -46,62 +43,60 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body className={InterFont.className}>
         <AppConfig>
-          <WelcomeDialog>
-            <Layout
-              nav={[
-                {
-                  tooltipLabel: "Dashboard",
-                  icon: { name: "grid" },
-                  path: "/dashboard",
-                  active: [{ leadingPath: "/dashboard" }],
-                },
-                {
-                  tooltipLabel: "Resume",
-                  icon: { name: "list-check" },
-                  path: "/resume",
-                  active: [
-                    { leadingPath: "/resume/experience" },
-                    { leadingPath: "/resume/education" },
-                  ],
-                  children: [
-                    {
-                      tooltipLabel: "Experience",
-                      icon: { name: "briefcase" },
-                      path: "/resume/experience",
-                      active: [{ leadingPath: "/resume/experience" }],
-                    },
-                    {
-                      tooltipLabel: "Education",
-                      icon: { name: "building-columns" },
-                      path: "/resume/education",
-                      active: [{ leadingPath: "/resume/education" }],
-                    },
-                  ],
-                },
-                {
-                  tooltipLabel: "Projects",
-                  icon: { name: "hammer" },
-                  path: "/projects",
-                  active: [{ leadingPath: "/projects", endPath: false }],
-                },
-                {
-                  tooltipLabel: "Admin CMS",
-                  icon: { name: "gear" },
-                  path: "/admin/skills",
-                  active: [
-                    { leadingPath: "/admin/skills" },
-                    { leadingPath: "/admin/experiences" },
-                    { leadingPath: "/admin/educations" },
-                    { leadingPath: "/admin/courses" },
-                    { leadingPath: "/admin/projects" },
-                    { leadingPath: "/admin/repositories" },
-                  ],
-                },
-              ]}
-            >
-              {children}
-            </Layout>
-          </WelcomeDialog>
+          <Layout
+            nav={[
+              {
+                tooltipLabel: "Dashboard",
+                icon: { name: "grid" },
+                path: "/dashboard",
+                active: [{ leadingPath: "/dashboard" }],
+              },
+              {
+                tooltipLabel: "Resume",
+                icon: { name: "list-check" },
+                path: "/resume",
+                active: [
+                  { leadingPath: "/resume/experience" },
+                  { leadingPath: "/resume/education" },
+                ],
+                children: [
+                  {
+                    tooltipLabel: "Experience",
+                    icon: { name: "briefcase" },
+                    path: "/resume/experience",
+                    active: [{ leadingPath: "/resume/experience" }],
+                  },
+                  {
+                    tooltipLabel: "Education",
+                    icon: { name: "building-columns" },
+                    path: "/resume/education",
+                    active: [{ leadingPath: "/resume/education" }],
+                  },
+                ],
+              },
+              {
+                tooltipLabel: "Projects",
+                icon: { name: "hammer" },
+                path: "/projects",
+                active: [{ leadingPath: "/projects", endPath: false }],
+              },
+              {
+                tooltipLabel: "Admin CMS",
+                icon: { name: "gear" },
+                path: "/admin/skills",
+                active: [
+                  { leadingPath: "/admin/skills" },
+                  { leadingPath: "/admin/experiences" },
+                  { leadingPath: "/admin/educations" },
+                  { leadingPath: "/admin/courses" },
+                  { leadingPath: "/admin/projects" },
+                  { leadingPath: "/admin/repositories" },
+                ],
+              },
+            ]}
+          >
+            {children}
+          </Layout>
           <Analytics />
           <SpeedInsights />
         </AppConfig>

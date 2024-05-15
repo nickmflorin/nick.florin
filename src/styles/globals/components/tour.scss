@@ -1,0 +1,40 @@
+.reactour__mask {
+  opacity: 0.4;
+}
+
+.reactour__popover {
+  // These important flags are required because the package applies the styles we are overridding
+  // inline.
+  box-shadow: none !important;
+  border-radius: 0px !important;
+  background-color: theme("colors.transparent") !important;
+  padding: 0px !important;
+
+  .tour__container {
+    display: flex;
+    flex-direction: column;
+
+    .tour__container__inner {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      background-color: theme("colors.white");
+      box-shadow: theme("boxShadow.md");
+      border-radius: theme("borderRadius.md");
+      border: 1px solid theme("colors.border");
+      gap: 12px;
+      max-width: 320px;
+
+      .tour__content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex-grow: 100;
+      }
+
+      .tour__footer {
+        padding: 10px;
+      }
+    }
+  }
+}

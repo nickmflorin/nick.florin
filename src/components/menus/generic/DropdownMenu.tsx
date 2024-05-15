@@ -1,3 +1,4 @@
+"use client";
 import dynamic from "next/dynamic";
 
 import clsx from "clsx";
@@ -13,25 +14,40 @@ const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
   loading: () => <Loading isLoading={true} className="h-[80px]" />,
 }) as types.MenuComponent;
 
-export interface DropdownMenuProps<M extends types.MenuModel, O extends types.MenuOptions<M>>
-  extends Omit<types.MenuProps<M, O>, "children">,
-    ComponentProps,
-    Pick<
-      PopoverProps,
-      | "placement"
-      | "inPortal"
-      | "autoUpdate"
-      | "middleware"
-      | "offset"
-      | "width"
-      | "withArrow"
-      | "isDisabled"
-      | "maxHeight"
-      | "triggers"
-      | "children"
-    > {
+type WithDropdownMenuProps<T> = Omit<T, "children"> &
+  Pick<
+    PopoverProps,
+    | "placement"
+    | "inPortal"
+    | "autoUpdate"
+    | "middleware"
+    | "offset"
+    | "width"
+    | "withArrow"
+    | "isDisabled"
+    | "maxHeight"
+    | "triggers"
+    | "children"
+  >;
+
+export interface DropdownMenuContentlessProps extends WithDropdownMenuProps<ComponentProps> {
+  readonly content?: never;
+}
+
+export interface DropdownMenuComponentProps
+  extends WithDropdownMenuProps<types.MenuComponentProps> {
   readonly content?: JSX.Element;
 }
+
+export interface DropdownMenuDataProps<M extends types.MenuModel, O extends types.MenuOptions<M>>
+  extends WithDropdownMenuProps<types.MenuDataProps<M, O>> {
+  readonly content?: JSX.Element;
+}
+
+export type DropdownMenuProps<M extends types.MenuModel, O extends types.MenuOptions<M>> =
+  | DropdownMenuComponentProps
+  | DropdownMenuContentlessProps
+  | DropdownMenuDataProps<M, O>;
 
 export const DropdownMenu = <M extends types.MenuModel, O extends types.MenuOptions<M>>({
   placement = "bottom",
@@ -39,15 +55,15 @@ export const DropdownMenu = <M extends types.MenuModel, O extends types.MenuOpti
   autoUpdate = false,
   middleware,
   offset = { mainAxis: 4 },
-  width = "target",
+  width,
   withArrow = false,
   isDisabled = false,
   maxHeight,
   children,
   triggers = ["click"],
-  content,
   className,
   style,
+  content,
   ...props
 }: DropdownMenuProps<M, O>) => (
   <Popover
@@ -67,7 +83,11 @@ export const DropdownMenu = <M extends types.MenuModel, O extends types.MenuOpti
         className={clsx("p-[0px] rounded-md overflow-hidden", className)}
         variant="white"
       >
-        {content ? content : <Menu {...props} />}
+        {content ? (
+          content
+        ) : (
+          <Menu {...(props as types.MenuDataProps<M, O> | types.MenuComponentProps)} />
+        )}
       </PopoverContent>
     }
   >

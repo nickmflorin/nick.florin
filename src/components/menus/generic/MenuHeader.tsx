@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import clsx from "clsx";
 
 import { TextInput } from "~/components/input/TextInput";
@@ -17,19 +15,12 @@ export const MenuHeader = ({
   onSearch,
   ...props
 }: MenuHeaderProps): JSX.Element => {
-  const [_search, setSearch] = useState("");
+  /* Note: We may want to allow the search to be uncontrolled here - but that would require state
+     and turning this into a client component. */
   if (children || search || onSearch) {
     return (
       <div {...props} className={clsx("menu__header", props.className)}>
-        {onSearch && (
-          <TextInput
-            value={search ?? _search}
-            onChange={e => {
-              setSearch(e.target.value);
-              onSearch(e, e.target.value);
-            }}
-          />
-        )}
+        {onSearch && <TextInput value={search} onChange={e => onSearch(e, e.target.value)} />}
         {children}
       </div>
     );

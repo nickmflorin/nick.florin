@@ -70,7 +70,12 @@ export const ResumeModelTitle = <M extends BrandModel<T>, T extends ResumeBrand>
           : `${getDegree(model.degree).shortLabel} in ${model.major}`}
       </TitleComponent>
       <ShowHide show={expandable}>
-        <ExpandResumeModelButton modelType={model.$kind} modelId={model.id} push={pushOnExpand} />
+        <ExpandResumeModelButton
+          tourId="expand-button"
+          modelType={model.$kind}
+          modelId={model.id}
+          push={pushOnExpand}
+        />
       </ShowHide>
     </div>
   );

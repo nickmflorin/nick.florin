@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import { type ComponentProps } from "~/components/types";
 
-import { useDialogContext } from "../hooks/use-dialog-context";
+import { useDialogContext } from "../../hooks/use-dialog-context";
 
 import { DialogDescription } from "./DialogDescription";
 

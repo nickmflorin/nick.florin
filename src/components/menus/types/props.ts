@@ -1,8 +1,10 @@
 import { type ReactNode, type ForwardedRef } from "react";
 
+import { type Prettify } from "~/lib/types";
 import { type IconSize } from "~/components/icons";
 import { type ComponentProps } from "~/components/types";
 import { type QuantitativeSize } from "~/components/types/sizes";
+import type { SingleTextNode } from "~/components/types/typography";
 
 import { type MenuItemFlagProps } from "./flags";
 import { type MenuItemInstance, type MenuItemSelectionIndicator } from "./item";
@@ -52,26 +54,95 @@ export type MenuItemClickHandler<M extends MenuModel> = (
   instance: MenuItemInstance,
 ) => void;
 
-export type MenuContentProps<M extends MenuModel, O extends MenuOptions<M>> = ComponentProps &
-  Omit<MenuItemModelRendererProps<M, O>, "model" | "onClick" | "id"> & {
-    readonly data: M[];
-    readonly header?: JSX.Element;
-    readonly footer?: JSX.Element;
-    readonly search?: string;
-    readonly isLocked?: boolean;
-    readonly onSearch?: (value: string) => void;
-    readonly onItemClick?: MenuItemClickHandler<M>;
-  };
+type _MenuContentInheritedDataProps<M extends MenuModel, O extends MenuOptions<M>> = Omit<
+  MenuItemModelRendererProps<M, O>,
+  "model" | "onClick" | "id"
+>;
+
+export interface MenuDataContentProps<M extends MenuModel, O extends MenuOptions<M>>
+  extends ComponentProps,
+    _MenuContentInheritedDataProps<M, O> {
+  readonly data: M[];
+  readonly isLocked?: boolean;
+  readonly isBordered?: boolean;
+  readonly onItemClick?: MenuItemClickHandler<M>;
+}
+
+type InheritedPropNames = keyof _MenuContentInheritedDataProps<never, never>;
+type TransformedClassNameProps = Extract<InheritedPropNames, `item${string}ClassName`>;
+
+type _MenuContentInheritedComponentProps = Prettify<
+  Pick<
+    _MenuContentInheritedDataProps<never, never>,
+    "itemHeight" | "selectionIndicator" | "iconSize" | "spinnerClassName" | "iconClassName"
+  > & {
+    readonly [key in TransformedClassNameProps]?: ComponentProps["className"];
+  } & {
+    readonly children: (JSX.Element | null | (JSX.Element | null)[])[];
+  }
+>;
+
+export interface MenuComponentContentProps
+  extends ComponentProps,
+    _MenuContentInheritedComponentProps {
+  readonly data?: never;
+  readonly isLocked?: boolean;
+  readonly isBordered?: boolean;
+}
+
+export type MenuContentProps<M extends MenuModel, O extends MenuOptions<M>> =
+  | MenuComponentContentProps
+  | MenuDataContentProps<M, O>;
 
 export type MenuContainerProps = ComponentProps & {
-  readonly children: JSX.Element | JSX.Element[];
+  readonly children: ReactNode;
 };
 
 export type MenuContentComponent = {
   <M extends MenuModel, O extends MenuOptions<M>>(props: MenuContentProps<M, O>): JSX.Element;
 };
 
-export type MenuProps<M extends MenuModel, O extends MenuOptions<M>> = MenuContentProps<M, O>;
+export interface MenuItemGroupComponentProps extends MenuComponentContentProps {
+  readonly contentIsLoading?: boolean;
+  readonly label: SingleTextNode;
+  readonly labelContainerClassName?: ComponentProps["className"];
+  readonly labelClassName?: ComponentProps["className"];
+}
+
+export interface MenuItemGroupDataProps<M extends MenuModel, O extends MenuOptions<M>>
+  extends MenuDataContentProps<M, O> {
+  readonly contentIsLoading?: boolean;
+  readonly label: SingleTextNode;
+  readonly labelContainerClassName?: ComponentProps["className"];
+  readonly labelClassName?: ComponentProps["className"];
+}
+
+export type MenuItemGroupProps<M extends MenuModel, O extends MenuOptions<M>> =
+  | MenuItemGroupDataProps<M, O>
+  | MenuItemGroupComponentProps;
+
+export interface MenuComponentProps extends MenuComponentContentProps {
+  readonly header?: JSX.Element;
+  readonly footer?: JSX.Element;
+  readonly search?: string;
+  readonly contentIsLoading?: boolean;
+  readonly isBordered?: boolean;
+  readonly onSearch?: (e: React.ChangeEvent<HTMLInputElement>, value: string) => void;
+}
+
+export interface MenuDataProps<M extends MenuModel, O extends MenuOptions<M>>
+  extends MenuDataContentProps<M, O> {
+  readonly header?: JSX.Element;
+  readonly footer?: JSX.Element;
+  readonly search?: string;
+  readonly contentIsLoading?: boolean;
+  readonly isBordered?: boolean;
+  readonly onSearch?: (e: React.ChangeEvent<HTMLInputElement>, value: string) => void;
+}
+
+export type MenuProps<M extends MenuModel, O extends MenuOptions<M>> =
+  | MenuDataProps<M, O>
+  | MenuComponentProps;
 
 export type MenuComponent = {
   <M extends MenuModel, O extends MenuOptions<M>>(

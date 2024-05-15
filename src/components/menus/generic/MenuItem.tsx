@@ -37,7 +37,8 @@ interface LocalMenuItemProps
       | "actions"
     > {
   readonly height?: QuantitativeSize<"px">;
-  readonly isSelected: boolean;
+  readonly isSelected?: boolean;
+  readonly contentClassName?: ComponentProps["className"];
   readonly selectedClassName?: ComponentProps["className"];
   readonly disabledClassName?: ComponentProps["className"];
   readonly lockedClassName?: ComponentProps["className"];
@@ -57,6 +58,7 @@ const LocalMenuItem = ({
   lockedClassName,
   disabledClassName,
   spinnerClassName,
+  contentClassName,
   children,
   isDisabled = false,
   isLocked = false,
@@ -78,8 +80,7 @@ const LocalMenuItem = ({
       }}
       className={clsx(
         "menu__item",
-        withoutOverridingClassName("px-[10px]", props.className),
-        withoutOverridingClassName("py-[6px]", props.className),
+        { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
         {
           [clsx("menu__item--selected", selectedClassName)]: isSelected,
           [clsx("menu__item--loading", loadingClassName)]: isLoading,
@@ -113,7 +114,7 @@ const LocalMenuItem = ({
         isLoading={isLoading}
         spinnerClassName={spinnerClassName}
       />
-      <div className="menu__item__content">{children}</div>
+      <div className={clsx("menu__item__content", contentClassName)}>{children}</div>
       {/* Only show the spinner to the right (instead of over the icon) if the icon is not
           defined. */}
       {icon === undefined && (

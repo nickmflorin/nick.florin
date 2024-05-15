@@ -5,7 +5,7 @@ import React, { forwardRef, type ForwardedRef } from "react";
 import type * as types from "./types";
 
 import { Loading } from "~/components/feedback/Loading";
-import { type MenuComponent, type MenuProps } from "~/components/menus";
+import { type MenuComponent, type MenuDataProps, type MenuItemInstance } from "~/components/menus";
 
 import { SelectBase } from "./SelectBase";
 
@@ -85,16 +85,16 @@ const LocalSelect = forwardRef<
       onOpenChange={onOpenChange}
       content={({ onSelect, isSelected }) => (
         <Menu
-          {...(props as MenuProps<M, O>)}
+          {...(props as MenuDataProps<M, O>)}
           isLocked={!isReady}
           className="z-50"
-          itemIsSelected={m => isSelected(m as types.SelectArg<M, O>)}
-          onItemClick={(model, instance) => {
+          itemIsSelected={(m: M) => isSelected(m as types.SelectArg<M, O>)}
+          onItemClick={(model: M, instance: MenuItemInstance) => {
             onSelect(model as types.SelectArg<M, O>, instance);
             props.onItemClick?.(model, instance);
           }}
         >
-          {itemRenderer ? m => itemRenderer(m) : undefined}
+          {itemRenderer ? (m: M) => itemRenderer(m) : undefined}
         </Menu>
       )}
     >

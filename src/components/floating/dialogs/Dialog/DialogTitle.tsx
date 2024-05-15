@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 
-import { useDialogContext } from "../hooks/use-dialog-context";
+import { useDialogContext } from "../../hooks/use-dialog-context";
 
 export interface DialogTitleProps
   extends ComponentProps,

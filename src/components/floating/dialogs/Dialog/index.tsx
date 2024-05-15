@@ -9,10 +9,10 @@ import {
 } from "@floating-ui/react";
 import clsx from "clsx";
 
-import DialogProvider from "~/components/floating/Dialog/DialogProvider";
+import DialogProvider from "~/components/floating/dialogs/Dialog/DialogProvider";
 import { type ComponentProps } from "~/components/types";
 
-import { useDialogContext } from "../hooks/use-dialog-context";
+import { useDialogContext } from "../../hooks/use-dialog-context";
 
 import { DialogClose } from "./DialogClose";
 import { DialogContent } from "./DialogContent";

@@ -24,6 +24,10 @@
 
   display: flex;
 
+  &--dark {
+    color: theme("colors.labelDark");
+  }
+
   &--transform-underline {
     text-decoration: underline;
   }

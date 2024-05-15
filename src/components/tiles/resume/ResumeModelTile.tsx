@@ -18,7 +18,11 @@ export interface ResumeModelProps extends ComponentProps {
 }
 
 const LocalResumeModelTile = ({ children, ...props }: ResumeModelProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col w-full max-w-100%", props.className)}>
+  <div
+    {...props}
+    className={clsx("flex flex-col w-full max-w-100%", props.className)}
+    data-attr-tour-id="resume-model-tile"
+  >
     {children}
   </div>
 );

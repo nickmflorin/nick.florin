@@ -57,6 +57,7 @@
     "@nextui-org/skeleton": "^2.0.24",
     "@nivo/bar": "^0.84.0",
     "@prisma/client": "5.8.0",
+    "@reactour/tour": "^3.6.2",
     "@t3-oss/env-nextjs": "^0.7.1",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.union": "^4.6.9",

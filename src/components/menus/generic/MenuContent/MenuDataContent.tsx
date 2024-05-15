@@ -3,25 +3,28 @@ import { useRef, createRef, type RefObject } from "react";
 
 import clsx from "clsx";
 
-import * as types from "../types";
-
-import { MenuItemModelRenderer } from "./MenuItemModelRenderer";
+import * as types from "~/components/menus";
+import { MenuItemModelRenderer } from "~/components/menus/generic/MenuItemModelRenderer";
 
 type MenuItemRefs = { [key in types.MenuItemKey]: RefObject<types.MenuItemInstance> };
 
-export const MenuContent = <M extends types.MenuModel, O extends types.MenuOptions<M>>({
+export const MenuDataContent = <M extends types.MenuModel, O extends types.MenuOptions<M>>({
   className,
   style,
   data,
   isLocked,
+  isBordered,
   children,
   onItemClick,
   ...props
-}: types.MenuContentProps<M, O>): JSX.Element => {
+}: types.MenuDataContentProps<M, O>): JSX.Element => {
   const menuItemRefs = useRef<MenuItemRefs>({});
 
   return (
-    <div style={style} className={clsx("menu__content", className)}>
+    <div
+      style={style}
+      className={clsx("menu__content", { "menu__content--bordered": isBordered }, className)}
+    >
       {data.map((model, index) => {
         const id = types.getModelId(model, props.options);
         const key: types.MenuItemKey = types.getMenuItemKey({ id, index });
@@ -51,4 +54,4 @@ export const MenuContent = <M extends types.MenuModel, O extends types.MenuOptio
   );
 };
 
-export default MenuContent;
+export default MenuDataContent;

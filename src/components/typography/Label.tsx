@@ -5,10 +5,19 @@ import { type BaseTypographyProps, getTypographyClassName } from "~/components/t
 
 export interface LabelProps extends BaseTypographyProps, ComponentProps {
   readonly children: React.ReactNode;
+  readonly dark?: boolean;
 }
 
-export const Label = ({ children, style, ...props }: LabelProps): JSX.Element => (
-  <label style={style} className={clsx("label", getTypographyClassName(props), props.className)}>
+export const Label = ({ children, style, dark, ...props }: LabelProps): JSX.Element => (
+  <label
+    style={style}
+    className={clsx(
+      "label",
+      { "label--dark": dark },
+      getTypographyClassName(props),
+      props.className,
+    )}
+  >
     {children}
   </label>
 );

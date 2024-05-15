@@ -20,7 +20,7 @@ export const SkillsBarChartView = async ({
   <div
     {...props}
     className={clsx(
-      "flex flex-col gap-[8px] h-full w-full max-h-full max-w-full",
+      "skills-bar-chart-view flex flex-col gap-[8px] h-full w-full max-h-full max-w-full",
       "[&_g]:cursor-pointer",
       props.className,
     )}

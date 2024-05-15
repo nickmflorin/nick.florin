@@ -8,6 +8,7 @@ const DrawersProvider = dynamic(() => import("~/components/drawers/provider/Draw
   ssr: false,
 });
 const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });
+const TourProvider = dynamic(() => import("./TourProvider"), { ssr: false });
 
 export interface ClientConfigProps {
   readonly children: ReactNode;
@@ -17,7 +18,9 @@ function ClientConfig(props: ClientConfigProps) {
   return (
     <SWRConfig>
       <MantineProvider>
-        <DrawersProvider>{props.children}</DrawersProvider>
+        <DrawersProvider>
+          <TourProvider>{props.children}</TourProvider>
+        </DrawersProvider>
       </MantineProvider>
     </SWRConfig>
   );

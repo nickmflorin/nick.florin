@@ -1,8 +1,8 @@
 "use client";
 import type { ReactNode } from "react";
 
-import { DialogContext } from "../hooks/context";
-import { useDialog, type DialogConfig } from "../hooks/use-dialog";
+import { DialogContext } from "../../hooks/context";
+import { useDialog, type DialogConfig } from "../../hooks/use-dialog";
 
 export interface DialogProviderProps extends DialogConfig {
   readonly children: ReactNode;

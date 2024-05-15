@@ -32,6 +32,7 @@ export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => 
       indexBy="label"
       keys={["experience"]}
       enableLabel={false}
+      barAriaLabel={d => `skill-${String(d.data.id)}`}
       borderColor={{
         from: "color",
         modifiers: [["darker", 1.6]],
