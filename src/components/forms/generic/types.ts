@@ -1,3 +1,4 @@
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 import {
   type FieldValues,
   type UseFormReturn,
@@ -7,7 +8,6 @@ import {
 } from "react-hook-form";
 import { type z } from "zod";
 
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ApiClientErrorJson, type HttpError } from "~/api";
 
 export type BaseFormValues = FieldValues;

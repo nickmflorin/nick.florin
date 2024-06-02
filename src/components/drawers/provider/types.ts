@@ -1,6 +1,6 @@
-import type { DrawerDynamicProps } from "./drawers";
+import { enumeratedLiterals } from "enumerated-literals";
 
-import { enumeratedLiterals } from "~/lib/literals";
+import type { DrawerDynamicProps } from "./drawers";
 
 export const DrawerIds = enumeratedLiterals(
   [

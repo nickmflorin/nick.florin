@@ -1,6 +1,5 @@
 import clsx from "clsx";
-
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 
 export const BorderRadii = enumeratedLiterals(
   ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full"] as const,

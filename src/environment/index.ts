@@ -5,6 +5,7 @@ import {
   LogLevels,
   DEFAULT_LOG_LEVELS,
   PrismaLogLevelSchema,
+  type LogLevel,
 } from "./constants";
 import { Environment } from "./Environment";
 import {
@@ -56,7 +57,17 @@ export const environment = Environment.create(
         process.env.NODE_ENV === "test" ? z.literal("") : z.string(),
       NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
       NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
-      NEXT_PUBLIC_LOG_LEVEL: LogLevels.schema.default(environmentLookup(DEFAULT_LOG_LEVELS)),
+      NEXT_PUBLIC_LOG_LEVEL: z
+        .union([
+          z.literal(LogLevels.DEBUG),
+          z.literal(LogLevels.ERROR),
+          z.literal(LogLevels.FATAL),
+          z.literal(LogLevels.INFO),
+          z.literal(LogLevels.SILENT),
+          z.literal(LogLevels.TRACE),
+          z.literal(LogLevels.WARN),
+        ] as [z.ZodLiteral<LogLevel>, z.ZodLiteral<LogLevel>, ...z.ZodLiteral<LogLevel>[]])
+        .default(environmentLookup(DEFAULT_LOG_LEVELS)),
       NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
       NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: z.string().url(),
       APP_NAME_FORMAL: z.string(),

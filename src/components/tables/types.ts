@@ -1,10 +1,10 @@
 import { type ReactNode } from "react";
 
 import clsx from "clsx";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 import omit from "lodash.omit";
 import { type DataTableColumn, type DataTableRowExpansionProps } from "mantine-datatable";
 
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ClassName, type ComponentProps } from "~/components/types";
 
 export type RootColumn<T extends TableModel> = Omit<DataTableColumn<T>, "id" | "accessor"> & {

@@ -1,4 +1,5 @@
-import type { EnumeratedLiteralsType } from "~/lib/literals";
+import type { EnumeratedLiteralsType } from "enumerated-literals";
+
 import { type DrawerDynamicProps } from "~/components/drawers/provider/drawers";
 import type { TypeOfDrawerIds } from "~/components/drawers/provider/types";
 

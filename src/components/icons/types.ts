@@ -3,9 +3,9 @@ import {
   type IconFamily as RootIconFamily,
   type IconName,
 } from "@fortawesome/fontawesome-svg-core";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 import { z } from "zod";
 
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { type ComponentProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";
 

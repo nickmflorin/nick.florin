@@ -1,9 +1,9 @@
 import { type ReactElement, type JSXElementConstructor, isValidElement } from "react";
 
 import clsx from "clsx";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 import { isFragment } from "react-is";
 
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import tailwindConfig from "~/tailwind.config";
 
 export const TextFontSizes = enumeratedLiterals(

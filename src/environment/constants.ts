@@ -1,4 +1,4 @@
-import { type EnumeratedLiteralsType, enumeratedLiterals } from "~/lib/literals";
+import { type EnumeratedLiteralsType, enumeratedLiterals } from "enumerated-literals";
 
 import { createCommaSeparatedArraySchema } from "./util";
 

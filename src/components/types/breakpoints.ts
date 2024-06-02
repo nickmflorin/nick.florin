@@ -1,4 +1,4 @@
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 
 export const ScreenSizes = enumeratedLiterals(["xs", "sm", "md", "lg", "xl", "2xl"] as const, {});
 export type ScreenSize = EnumeratedLiteralsType<typeof ScreenSizes>;

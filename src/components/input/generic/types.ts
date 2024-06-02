@@ -1,4 +1,4 @@
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 
 export const InputSizes = enumeratedLiterals(["small", "medium", "large"] as const, {});
 export type InputSize = EnumeratedLiteralsType<typeof InputSizes>;

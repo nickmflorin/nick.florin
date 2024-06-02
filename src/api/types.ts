@@ -1,11 +1,10 @@
-import { type Optional } from "utility-types";
-import { z } from "zod";
-
 import {
   type EnumeratedLiteralsType,
   type EnumeratedLiteralsModel,
   enumeratedLiterals,
-} from "~/lib/literals";
+} from "enumerated-literals";
+import { type Optional } from "utility-types";
+import { z } from "zod";
 
 import {
   type ApiClientErrorCode,
@@ -97,8 +96,12 @@ export interface ApiClientGlobalErrorJson<
 }
 
 const ApiClientGlobalErrorJsonSchema = z.object({
-  code: ApiClientErrorCodes.schema,
-  // It's not worth making this a literal type because it can easily lead to mishandling of errors.
+  code: z.union([
+    z.literal(ApiClientErrorCodes.BAD_REQUEST),
+    z.literal(ApiClientErrorCodes.NOT_AUTHENTICATED),
+    z.literal(ApiClientErrorCodes.FORBIDDEN),
+    z.literal(ApiClientErrorCodes.NOT_FOUND),
+  ]),
   statusCode: z.number().int(),
   internalMessage: z.string(),
   message: z.string(),

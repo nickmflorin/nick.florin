@@ -2,7 +2,7 @@ import {
   type EnumeratedLiteralsType,
   type EnumeratedLiteralsModel,
   enumeratedLiterals,
-} from "~/lib/literals";
+} from "enumerated-literals";
 
 export const ApiClientErrorCodes = enumeratedLiterals(
   [

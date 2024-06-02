@@ -11,8 +11,8 @@ import {
   type FloatingContext as RootFloatingContext,
 } from "@floating-ui/react";
 import clsx from "clsx";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import {
   withoutOverridingClassName,
   type ComponentProps,

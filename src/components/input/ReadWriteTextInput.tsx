@@ -11,10 +11,10 @@ import React, {
 } from "react";
 
 import clsx from "clsx";
+import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "~/lib/literals";
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
 import { useReferentialCallback } from "~/hooks";
