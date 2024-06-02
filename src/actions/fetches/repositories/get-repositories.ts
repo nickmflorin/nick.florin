@@ -4,6 +4,7 @@ import { cache } from "react";
 import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { type ApiRepository, type RepositoryIncludes, fieldIsIncluded } from "~/prisma/model";
+import { conditionalAndClause } from "~/prisma/util";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -11,24 +12,23 @@ import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
 export type GetRepositoriesFilters = {
   readonly search: string;
+  readonly highlighted: boolean;
 };
 
 export type GetRepositoriesParams<I extends RepositoryIncludes> = Omit<
-  ApiStandardListQuery<I, GetRepositoriesFilters>,
+  ApiStandardListQuery<I, Partial<GetRepositoriesFilters>>,
   "orderBy" | "limit"
 >;
+
 const whereClause = ({
   filters,
   visibility,
 }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">) =>
-  ({
-    AND:
-      filters?.search && visibility === "public"
-        ? [constructTableSearchClause("repository", filters.search), { visible: true }]
-        : visibility === "public"
-          ? { visible: true }
-          : undefined,
-  }) as const;
+  conditionalAndClause([
+    { clause: { visible: true }, condition: visibility === "public" },
+    filters?.search ? constructTableSearchClause("repository", filters.search) : null,
+    filters?.highlighted !== undefined ? { highlighted: filters.highlighted } : null,
+  ]);
 
 export const preloadRepositoriesCount = (
   params: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">,

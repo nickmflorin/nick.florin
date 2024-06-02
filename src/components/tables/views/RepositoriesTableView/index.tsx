@@ -26,7 +26,7 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
 const SyncRepositoriesButton = dynamic(() => import("./SyncRepositoriesButton"));
 
 interface RepositoriesTableViewProps {
-  readonly filters: GetRepositoriesFilters;
+  readonly filters: Omit<GetRepositoriesFilters, "highlighted">;
   readonly page: number;
 }
 

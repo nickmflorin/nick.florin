@@ -7382,6 +7382,7 @@ export namespace Prisma {
     updatedAt: Date | null
     updatedById: string | null
     visible: boolean | null
+    highlighted: boolean | null
     startDate: Date | null
   }
 
@@ -7394,6 +7395,7 @@ export namespace Prisma {
     updatedAt: Date | null
     updatedById: string | null
     visible: boolean | null
+    highlighted: boolean | null
     startDate: Date | null
   }
 
@@ -7406,6 +7408,7 @@ export namespace Prisma {
     updatedAt: number
     updatedById: number
     visible: number
+    highlighted: number
     startDate: number
     _all: number
   }
@@ -7420,6 +7423,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     visible?: true
+    highlighted?: true
     startDate?: true
   }
 
@@ -7432,6 +7436,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     visible?: true
+    highlighted?: true
     startDate?: true
   }
 
@@ -7444,6 +7449,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     visible?: true
+    highlighted?: true
     startDate?: true
     _all?: true
   }
@@ -7529,6 +7535,7 @@ export namespace Prisma {
     updatedAt: Date
     updatedById: string
     visible: boolean
+    highlighted: boolean
     startDate: Date
     _count: RepositoryCountAggregateOutputType | null
     _min: RepositoryMinAggregateOutputType | null
@@ -7558,6 +7565,7 @@ export namespace Prisma {
     updatedAt?: boolean
     updatedById?: boolean
     visible?: boolean
+    highlighted?: boolean
     startDate?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -7575,6 +7583,7 @@ export namespace Prisma {
     updatedAt?: boolean
     updatedById?: boolean
     visible?: boolean
+    highlighted?: boolean
     startDate?: boolean
   }
 
@@ -7604,6 +7613,7 @@ export namespace Prisma {
       updatedAt: Date
       updatedById: string
       visible: boolean
+      highlighted: boolean
       startDate: Date
     }, ExtArgs["result"]["repository"]>
     composites: {}
@@ -8014,6 +8024,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Repository", 'DateTime'>
     readonly updatedById: FieldRef<"Repository", 'String'>
     readonly visible: FieldRef<"Repository", 'Boolean'>
+    readonly highlighted: FieldRef<"Repository", 'Boolean'>
     readonly startDate: FieldRef<"Repository", 'DateTime'>
   }
     
@@ -17091,6 +17102,7 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     updatedById: 'updatedById',
     visible: 'visible',
+    highlighted: 'highlighted',
     startDate: 'startDate'
   };
 
@@ -17873,6 +17885,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
     updatedById?: UuidFilter<"Repository"> | string
     visible?: BoolFilter<"Repository"> | boolean
+    highlighted?: BoolFilter<"Repository"> | boolean
     startDate?: DateTimeFilter<"Repository"> | Date | string
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
@@ -17889,6 +17902,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     startDate?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
@@ -17908,6 +17922,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
     updatedById?: UuidFilter<"Repository"> | string
     visible?: BoolFilter<"Repository"> | boolean
+    highlighted?: BoolFilter<"Repository"> | boolean
     startDate?: DateTimeFilter<"Repository"> | Date | string
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
@@ -17924,6 +17939,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     startDate?: SortOrder
     _count?: RepositoryCountOrderByAggregateInput
     _max?: RepositoryMaxOrderByAggregateInput
@@ -17942,6 +17958,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
     updatedById?: UuidWithAggregatesFilter<"Repository"> | string
     visible?: BoolWithAggregatesFilter<"Repository"> | boolean
+    highlighted?: BoolWithAggregatesFilter<"Repository"> | boolean
     startDate?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
   }
 
@@ -19293,6 +19310,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
@@ -19309,6 +19327,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
@@ -19321,6 +19340,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
@@ -19337,6 +19357,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
@@ -19351,6 +19372,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
   }
 
@@ -19361,6 +19383,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -19373,6 +19396,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -20874,6 +20898,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     startDate?: SortOrder
   }
 
@@ -20886,6 +20911,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     startDate?: SortOrder
   }
 
@@ -20898,6 +20924,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     startDate?: SortOrder
   }
 
@@ -25018,6 +25045,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
@@ -25032,6 +25060,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
@@ -25054,6 +25083,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
@@ -25068,6 +25098,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
@@ -25693,6 +25724,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
     updatedById?: UuidFilter<"Repository"> | string
     visible?: BoolFilter<"Repository"> | boolean
+    highlighted?: BoolFilter<"Repository"> | boolean
     startDate?: DateTimeFilter<"Repository"> | Date | string
   }
 
@@ -27920,6 +27952,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
@@ -27935,6 +27968,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -28973,6 +29007,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
@@ -28988,6 +29023,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -31517,6 +31553,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
   }
 
@@ -31528,6 +31565,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     visible?: boolean
+    highlighted?: boolean
     startDate: Date | string
   }
 
@@ -32544,6 +32582,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
@@ -32558,6 +32597,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
@@ -32571,6 +32611,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -32581,6 +32622,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
@@ -32595,6 +32637,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
@@ -32608,6 +32651,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -33285,6 +33329,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
@@ -33300,6 +33345,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -33313,6 +33359,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -33569,6 +33616,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
@@ -33584,6 +33632,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -33597,6 +33646,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

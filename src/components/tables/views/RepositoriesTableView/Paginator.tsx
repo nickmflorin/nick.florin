@@ -6,7 +6,7 @@ import { getRepositoriesCount, type GetRepositoriesFilters } from "~/actions/fet
 const RootPaginator = dynamic(() => import("~/components/pagination/Paginator"), {});
 
 interface PaginatorProps {
-  readonly filters: GetRepositoriesFilters;
+  readonly filters: Omit<GetRepositoriesFilters, "highlighted">;
 }
 
 export const Paginator = async ({ filters }: PaginatorProps) => {

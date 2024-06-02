@@ -19,6 +19,10 @@ const VisibleCell = dynamic(
   () => import("~/components/tables/generic/cells/VisibleCell"),
 ) as cells.VisibleCellComponent;
 
+const HighlightedCell = dynamic(
+  () => import("~/components/tables/generic/cells/HighlightedCell"),
+) as cells.HighlightedCellComponent;
+
 const ReadOnlyDateTimeCell = dynamic(
   () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
 );
@@ -81,6 +85,22 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           textAlign: "center",
           width: 170,
           render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
+        },
+        {
+          accessor: "highlighted",
+          title: "Highlighted",
+          textAlign: "center",
+          width: 80,
+          render: ({ model, table }) => (
+            <HighlightedCell
+              model={model}
+              table={table}
+              action={async (id, data) => {
+                await updateRepository(id, data);
+              }}
+              errorMessage="There was an error updating the repository."
+            />
+          ),
         },
         {
           accessor: "visible",

@@ -126,6 +126,7 @@ export const RepositorySchema = z.object({
     requiredErrorMessage: "The description is a required field.",
   }),
   visible: z.boolean().optional(),
+  highlighted: z.boolean().optional(),
   projects: z.array(z.string().uuid()).optional(),
   skills: z.array(z.string().uuid()).optional(),
   startDate: z.date(),

@@ -158,6 +158,7 @@ model Repository {
   skills      Skill[]   @relation("skillRepositories")
   projects    Project[] @relation("projectRepositories")
   visible     Boolean   @default(true)
+  highlighted Boolean   @default(true)
   // The start date is used to determine the experience of a given skill in the repository.
   startDate   DateTime
 }

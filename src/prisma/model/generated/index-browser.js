@@ -170,6 +170,7 @@ exports.Prisma.RepositoryScalarFieldEnum = {
   updatedAt: 'updatedAt',
   updatedById: 'updatedById',
   visible: 'visible',
+  highlighted: 'highlighted',
   startDate: 'startDate'
 };
 
