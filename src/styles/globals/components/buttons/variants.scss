@@ -273,7 +273,6 @@ $fallbacks: (
   $arguments: meta.keywords($args);
   $type: map.get($arguments, "type");
   $variant: map.get($arguments, "variant");
-  $border: map.get($arguments, "border");
 
   @if $variant or $type {
     @if not $variant or not $type {
@@ -343,7 +342,7 @@ $fallbacks: (
         }
       }
     }
-    @return get-button-attributes($core-attributes..., $border: $border);
+    @return get-button-attributes($core-attributes...);
   } @else {
     $background-color: partials.get-optional-kwarg(
       background-color,
@@ -356,14 +355,6 @@ $fallbacks: (
       $default: if($border-color, $button-border-width solid $border-color, null),
       $args...
     );
-    @if $border {
-      @return (
-        background-color: $background-color,
-        border-color: $border-color,
-        border: $border,
-        color: partials.get-optional-kwarg(color, $default: null, $args...)
-      );
-    }
     @return (
       background-color: $background-color,
       border-color: $border-color,
@@ -373,12 +364,11 @@ $fallbacks: (
   }
 }
 
-@mixin button-variant-properties($type, $variant, $state: null, $border: false) {
+@mixin button-variant-properties($type, $variant, $state: null) {
   $attrs: get-button-attributes(
     $type: $type,
     $variant: $variant,
     $state: $state,
-    $border: $border,
   );
   @each $attr in map.keys($attrs) {
     // Do not set null values or values.
@@ -389,24 +379,18 @@ $fallbacks: (
 }
 
 @mixin button-variant($type, $variant, $border: false, $active-selector: ".button--active") {
-  @include button-variant-properties($type: $type, $variant: $variant, $border: $border);
+  @include button-variant-properties($type: $type, $variant: $variant);
 
   @include mixins.button-placeholder {
     color: theme("colors.placeholder");
   }
 
   @include mixins.button-hovered {
-    @include button-variant-properties(
-      $type: $type,
-      $variant: $variant,
-      $state: "hovered",
-      $border: $border
-    );
+    @include button-variant-properties($type: $type, $variant: $variant, $state: "hovered");
     @include mixins.button-active($active-selector) {
       @include button-variant-properties(
         $type: $type,
         $variant: $variant,
-        $border: $border,
         $state: (
           "focused",
           "active",
@@ -416,17 +400,11 @@ $fallbacks: (
   }
 
   @include mixins.button-focused {
-    @include button-variant-properties(
-      $type: $type,
-      $variant: $variant,
-      $state: "focused",
-      $border: $border
-    );
+    @include button-variant-properties($type: $type, $variant: $variant, $state: "focused");
     @include mixins.button-active($active-selector) {
       @include button-variant-properties(
         $type: $type,
         $variant: $variant,
-        $border: $border,
         $state: (
           "focused",
           "active",
@@ -436,33 +414,18 @@ $fallbacks: (
   }
 
   @include partials.disabled {
-    @include button-variant-properties(
-      $type: $type,
-      $variant: $variant,
-      $state: "disabled",
-      $border: $border
-    );
+    @include button-variant-properties($type: $type, $variant: $variant, $state: "disabled");
   }
 
   @include mixins.button-active($active-selector) {
-    @include button-variant-properties(
-      $type: $type,
-      $variant: $variant,
-      $state: "active",
-      $border: $border
-    );
+    @include button-variant-properties($type: $type, $variant: $variant, $state: "active");
   }
 }
 
-@mixin button-variants($type, $border: false, $active-selector: ".button--active") {
+@mixin button-variants($type, $active-selector: ".button--active") {
   @each $variant in partials.mapget($button-variants, $type) {
     &.button--variant-#{$variant} {
-      @include button-variant(
-        $type: $type,
-        $variant: $variant,
-        $border: $border,
-        $active-selector: $active-selector
-      );
+      @include button-variant($type: $type, $variant: $variant, $active-selector: $active-selector);
     }
   }
 }

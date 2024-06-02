@@ -31,13 +31,7 @@
   vertical-align: middle;
 }
 
-@mixin button(
-  $type,
-  $variant: null,
-  $size: null,
-  $border: false,
-  $active-selector: ".button--active"
-) {
+@mixin button($type, $variant: null, $size: null, $active-selector: ".button--active") {
   $variant: if(
     $variant,
     partials.validate-value($variant, partials.mapget($button-variants, $type)),
@@ -47,7 +41,6 @@
   @include variants.button-variant(
     $type: $type,
     $variant: $variant,
-    $border: $border,
     $active-selector: $active-selector
   );
   @include sizing.button-size($type, $size);
@@ -57,9 +50,9 @@
   }
 }
 
-@mixin button-properties($type, $border: false, $active-selector: ".button--active") {
+@mixin button-properties($type, $active-selector: ".button--active") {
   @include button-base;
-  @include variants.button-variants($type, $border: $border, $active-selector: $active-selector);
+  @include variants.button-variants($type, $active-selector: $active-selector);
   @include sizing.button-sizes($type);
 
   @if $type != "icon-button" {

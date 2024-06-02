@@ -12,7 +12,6 @@ import { type RepositoryFormValues } from "./schema";
 export interface RepositoryFormProps
   extends Omit<FormProps<RepositoryFormValues>, "children" | "onSubmit" | "contentClassName"> {}
 
-// TODO: Add ability to specify skills in form.
 export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
   <Form {...props} contentClassName="gap-[12px]">
     <Form.Field
@@ -41,7 +40,10 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
         <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
-    <CheckboxField name="visible" form={props.form} label="Visible" />
+    <div className="flex flex-col gap-[16px] mt-[6px]">
+      <CheckboxField name="highlighted" form={props.form} label="Highlighted" />
+      <CheckboxField name="visible" form={props.form} label="Visible" />
+    </div>
   </Form>
 );
 
