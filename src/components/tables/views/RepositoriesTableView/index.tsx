@@ -23,6 +23,8 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
   loading: () => <TextInput isLoading={true} />,
 });
 
+const SyncRepositoriesButton = dynamic(() => import("./SyncRepositoriesButton"));
+
 interface RepositoriesTableViewProps {
   readonly filters: GetRepositoriesFilters;
   readonly page: number;
@@ -35,6 +37,7 @@ export const RepositoriesTableView = ({ filters, page }: RepositoriesTableViewPr
         <TableSearchBar>
           <SearchInput initialValue={filters.search} />
           <NewButton drawerId={DrawerIds.CREATE_REPOSITORY} />
+          <SyncRepositoriesButton />
         </TableSearchBar>
       }
       controlBar={<ControlBar />}

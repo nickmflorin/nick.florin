@@ -1,5 +1,4 @@
-import isEqual from "lodash.isequal";
-
+import { differingFields } from "~/lib/differences";
 import { humanizeList } from "~/lib/formatters";
 import { type Transaction } from "~/prisma/client";
 import type { BrandRepository, BrandSkill } from "~/prisma/model";
@@ -8,35 +7,6 @@ import { githubClient } from "~/integrations/github";
 
 import { json } from "../fixtures/json";
 import { stdout } from "../stdout";
-
-type DifferingField<
-  M extends Record<string, unknown>,
-  Mi extends Record<string, unknown>,
-  F extends keyof M & keyof Mi,
-> = {
-  readonly field: F;
-  readonly previousValue?: M[F];
-  readonly newValue?: Mi[F];
-};
-
-const differingFields = <
-  M extends Record<string, unknown>,
-  Mi extends Record<string, unknown>,
-  F extends keyof M & keyof Mi,
->(
-  existing: M,
-  additional: Mi,
-  fields: F[],
-): DifferingField<M, Mi, F>[] =>
-  fields.reduce(
-    (acc: DifferingField<M, Mi, F>[], field: F): DifferingField<M, Mi, F>[] => {
-      if (!isEqual(existing[field], additional[field])) {
-        return [...acc, { field, previousValue: existing[field], newValue: additional[field] }];
-      }
-      return acc;
-    },
-    [] as DifferingField<M, Mi, F>[],
-  );
 
 export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
   const output = stdout.begin("Generating Repositories...");
