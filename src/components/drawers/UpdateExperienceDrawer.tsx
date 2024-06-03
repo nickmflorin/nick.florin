@@ -21,7 +21,7 @@ export const UpdateExperienceDrawer = ({
     isUuid(experienceId) ? experienceId : null,
     { keepPreviousData: true, query: { visibility: "admin", includes: ["skills"] } },
   );
-  const form = useExperienceForm();
+  const form = useExperienceForm({ experience: data });
 
   return (
     <DrawerForm form={form} titleField="title" eagerTitle={eager.title}>

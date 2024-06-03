@@ -7,7 +7,7 @@ import { type ExtendingDrawerProps } from "./provider";
 interface CreateExperienceDrawerProps extends ExtendingDrawerProps {}
 
 export const CreateExperienceDrawer = ({ onClose }: CreateExperienceDrawerProps): JSX.Element => {
-  const form = useExperienceForm();
+  const form = useExperienceForm({});
   return (
     <DrawerForm form={form} titleField="title" titlePlaceholder="New Experience">
       <CreateExperienceForm form={form} onCancel={() => onClose()} onSuccess={() => onClose()} />
