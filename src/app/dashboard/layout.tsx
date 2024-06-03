@@ -22,7 +22,7 @@ const Column = ({ children, ...props }: ColumnProps): JSX.Element => (
     {...props}
     className={clsx(
       "flex flex-col gap-[15px] lg:min-w-[320px]",
-      "xl:max-w-[520px]",
+      // "xl:max-w-[520px]",
       "max-xl:w-[50%] max-xl:max-w-[50%]",
       "max-md:w-full max-md:max-w-full",
       props.className,
@@ -50,13 +50,17 @@ export default async function DashboardPage({
   return (
     <>
       <Tour />
-      <div className={clsx("max-h-full", "overflow-y-auto pr-[12px]")}>
+      <div className={clsx("max-h-full", "overflow-y-auto pr-[16px]")}>
         <div className={clsx("flex gap-[15px]", "xl:flex-row", "max-xl:flex-col")}>
           {/* The 655px comes from 2(320px for each column) + 15px for gap = 655px. */}
-          <Module className={clsx("md:max-lg:min-w-[655px] lg:min-w-[320px] min-h-[200px]")}>
+          <Module
+            className={clsx(
+              "md:max-lg:min-w-[655px] xl:max-w-[1000px] lg:min-w-[320px] min-h-[200px]",
+            )}
+          >
             {chart}
           </Module>
-          <div className={clsx("flex gap-[15px]", "md:flex-row", "max-md:flex-col")}>
+          <div className={clsx("flex gap-[15px]", "md:flex-row md:grow", "max-md:flex-col")}>
             <Column className="md:flex-1">
               <Module
                 className="xl:overflow-y-hidden grow min-h-[200px]"
