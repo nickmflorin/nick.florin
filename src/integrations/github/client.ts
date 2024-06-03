@@ -1,5 +1,6 @@
 import { prisma } from "~/prisma/client";
 import type { User } from "~/prisma/model";
+import { environment } from "~/environment";
 
 import * as types from "./types";
 
@@ -52,4 +53,5 @@ export class GithubClient<U extends string> {
   }
 }
 
-export const githubClient = new GithubClient("nickmflorin");
+const username = environment.get("GITHUB_USERNAME");
+export const githubClient = new GithubClient(username);

@@ -40,6 +40,7 @@ export const environment = Environment.create(
       FONT_AWESOME_KIT_TOKEN: process.env.FONT_AWESOME_KIT_TOKEN,
       SITE_URL: process.env.SITE_URL,
       BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
+      GITHUB_USERNAME: process.env.GITHUB_USERNAME,
       /* ---------------------------- Client Environment Variables ---------------------------- */
       NEXT_PUBLIC_PRETTY_LOGGING: process.env.NEXT_PUBLIC_PRETTY_LOGGING,
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
@@ -70,6 +71,7 @@ export const environment = Environment.create(
         .default(environmentLookup(DEFAULT_LOG_LEVELS)),
       NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
       NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: z.string().url(),
+      GITHUB_USERNAME: z.string(),
       APP_NAME_FORMAL: z.string(),
       NODE_ENV: z.enum(["development", "test", "production"]),
       VERCEL_ENV: z.enum(["development", "production", "preview"]),
@@ -121,6 +123,7 @@ export const environment = Environment.create(
     },
   },
   {
+    validationMethod: "instantiation",
     errorMessage: {
       title: `Environment Configuration Error: VERCEL_ENV='${process.env.VERCEL_ENV}' NODE_ENV='${process.env.NODE_ENV}'`,
     },

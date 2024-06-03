@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import type * as types from "./types";
-
 import * as terminal from "~/application/support/terminal";
 
 import {
@@ -9,6 +7,7 @@ import {
   type ConfigurationErrorFormattingOptions,
   type ConfiguredError,
 } from "./configuration-error";
+import * as types from "./types";
 
 type EnvironmentConfiguration<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> = {
   readonly runtime: R;
@@ -16,6 +15,7 @@ type EnvironmentConfiguration<R extends types.RuntimeEnv<V>, V extends types.Val
 };
 
 type EnvironmentOptions<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> = {
+  readonly validationMethod?: types.EnvironmentValidationMethod;
   readonly errorMessage?: ConfigurationErrorFormattingOptions<R, V>;
   readonly onError?: (err: ConfigurationError<R, V>) => void;
 };
@@ -35,6 +35,10 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     this.validators = validators;
     this.runtime = runtime;
     this._options = options;
+
+    if (this.validationMethod === "instantiation") {
+      this.parseAgnosticEnv();
+    }
   }
 
   public static create<R extends types.RuntimeEnv<V>, V extends types.Validators<R>>(
@@ -44,12 +48,8 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     return new Environment({ validators, runtime }, options);
   }
 
-  private isClientKey(key: string): key is types.ClientKey<R, V> {
-    return key.startsWith("NEXT_PUBLIC_");
-  }
-
-  private isServerOnlyKey(key: string): key is types.ServerOnlyKey<R, V> {
-    return !key.startsWith("NEXT_PUBLIC_");
+  private get validationMethod(): types.EnvironmentValidationMethod {
+    return this._options?.validationMethod ?? "first-access";
   }
 
   private get errorMessageConfig(): ConfigurationErrorFormattingOptions<R, V> | undefined {
@@ -59,7 +59,7 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   private get clientValidators(): types.ClientValidators<R, V> {
     const vs = {} as types.ClientValidators<R, V>;
     for (const key in this.validators) {
-      if (this.isClientKey(key)) {
+      if (types.isClientKey(key)) {
         vs[key] = this.validators[key];
       }
     }
@@ -69,7 +69,7 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   private get serverOnlyValidators(): types.ServerOnlyValidators<R, V> {
     const vs = {} as types.ServerOnlyValidators<R, V>;
     for (const key in this.validators) {
-      if (this.isServerOnlyKey(key)) {
+      if (types.isServerOnlyKey(key)) {
         vs[key] = this.validators[key];
       }
     }
@@ -79,7 +79,7 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   private get clientRuntime(): types.ClientRuntime<R, V> {
     const runtime = {} as types.ClientRuntime<R, V>;
     for (const key in this.runtime) {
-      if (this.isClientKey(key)) {
+      if (types.isClientKey(key)) {
         runtime[key] = this.runtime[key];
       }
     }
@@ -89,7 +89,7 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   private get serverOnlyRuntime(): types.ServerOnlyRuntime<R, V> {
     const runtime = {} as types.ServerOnlyRuntime<R, V>;
     for (const key in this.runtime) {
-      if (this.isServerOnlyKey(key)) {
+      if (types.isServerOnlyKey(key)) {
         runtime[key] = this.runtime[key];
       }
     }
@@ -98,9 +98,31 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
 
   private get clientEnv(): types.ClientEnv<R, V> {
     if (this._clientEnv === undefined) {
+      this.parseClientEnv();
+    }
+    /* The client environment is set on the instance via the 'parseClientEnv' method, so this type
+       coercion is safe. */
+    return this._clientEnv as types.ClientEnv<R, V>;
+  }
+
+  private parseAgnosticEnv() {
+    if (typeof window === "undefined") {
+      const parsed = z
+        .object({ ...this.clientValidators, ...this.serverOnlyValidators })
+        .safeParse({ ...this.clientRuntime, ...this.serverOnlyRuntime });
+      if (parsed.success) {
+        const env = parsed.data as types.MergedEnv<R, V>;
+        const { client, server } = types.splitEnv(env);
+
+        this._clientEnv = client;
+        this._serverOnlyEnv = server;
+      } else {
+        this.onError(parsed.error);
+        throw new Error("The 'onError' option did not throw an error as expected.");
+      }
+    } else {
       this._clientEnv = this.parseClientEnv();
     }
-    return this._clientEnv;
   }
 
   private parseClientEnv(): types.ClientEnv<R, V> {
@@ -108,7 +130,8 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
     if (parsed.success) {
       /* I do not understand why this type coercion is necessary - but we should investigate it
          at a later point in time. */
-      return parsed.data as types.ClientEnv<R, V>;
+      this._clientEnv = parsed.data as types.ClientEnv<R, V>;
+      return this._clientEnv;
     }
     this.onError(parsed.error);
     throw new Error("The 'onError' option did not throw an error as expected.");
@@ -124,7 +147,8 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   private parseServerOnlyEnv(): types.ServerOnlyEnv<R, V> {
     const parsed = z.object(this.serverOnlyValidators).safeParse(this.serverOnlyRuntime);
     if (parsed.success) {
-      return parsed.data;
+      this._serverOnlyEnv = parsed.data;
+      return this._serverOnlyEnv;
     }
     this.onError(parsed.error);
     throw new Error("The 'onError' option did not throw an error as expected.");
@@ -201,12 +225,12 @@ export class Environment<R extends types.RuntimeEnv<V>, V extends types.Validato
   }
 
   public get<K extends types.EnvKey<R, V>>(key: K): types.EnvValue<K, R, V> {
-    if (typeof window !== "undefined" || this.isClientKey(key)) {
-      if (!this.isClientKey(key)) {
+    if (typeof window !== "undefined" || types.isClientKey(key)) {
+      if (!types.isClientKey(key)) {
         throw new Error(`Attempted to access server-only key '${key}' on the client!`);
       }
       return this.clientEnv[key];
-    } else if (this.isServerOnlyKey(key)) {
+    } else if (types.isServerOnlyKey(key)) {
       return this.serverOnlyEnv[key];
     }
     throw new Error(

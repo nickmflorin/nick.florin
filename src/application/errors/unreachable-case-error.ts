@@ -1,6 +1,6 @@
 export class UnreachableCaseError extends Error {
-  constructor() {
-    super("Unreachable Case!");
+  constructor(message?: string) {
+    super(message ? `Unreachable Case: ${message}` : "Unreachable Case!");
     this.name = "UnreachableCaseError";
   }
 }
