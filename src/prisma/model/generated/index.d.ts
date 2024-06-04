@@ -10693,6 +10693,7 @@ export namespace Prisma {
     updatedAt: Date | null
     updatedById: string | null
     startDate: Date | null
+    highlighted: boolean | null
   }
 
   export type ProjectMaxAggregateOutputType = {
@@ -10707,6 +10708,7 @@ export namespace Prisma {
     updatedAt: Date | null
     updatedById: string | null
     startDate: Date | null
+    highlighted: boolean | null
   }
 
   export type ProjectCountAggregateOutputType = {
@@ -10721,6 +10723,7 @@ export namespace Prisma {
     updatedAt: number
     updatedById: number
     startDate: number
+    highlighted: number
     _all: number
   }
 
@@ -10737,6 +10740,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     startDate?: true
+    highlighted?: true
   }
 
   export type ProjectMaxAggregateInputType = {
@@ -10751,6 +10755,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     startDate?: true
+    highlighted?: true
   }
 
   export type ProjectCountAggregateInputType = {
@@ -10765,6 +10770,7 @@ export namespace Prisma {
     updatedAt?: true
     updatedById?: true
     startDate?: true
+    highlighted?: true
     _all?: true
   }
 
@@ -10852,6 +10858,7 @@ export namespace Prisma {
     updatedAt: Date
     updatedById: string
     startDate: Date
+    highlighted: boolean
     _count: ProjectCountAggregateOutputType | null
     _min: ProjectMinAggregateOutputType | null
     _max: ProjectMaxAggregateOutputType | null
@@ -10883,6 +10890,7 @@ export namespace Prisma {
     updatedAt?: boolean
     updatedById?: boolean
     startDate?: boolean
+    highlighted?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     skills?: boolean | Project$skillsArgs<ExtArgs>
@@ -10904,6 +10912,7 @@ export namespace Prisma {
     updatedAt?: boolean
     updatedById?: boolean
     startDate?: boolean
+    highlighted?: boolean
   }
 
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10939,6 +10948,7 @@ export namespace Prisma {
       updatedAt: Date
       updatedById: string
       startDate: Date
+      highlighted: boolean
     }, ExtArgs["result"]["project"]>
     composites: {}
   }
@@ -11355,6 +11365,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
     readonly updatedById: FieldRef<"Project", 'String'>
     readonly startDate: FieldRef<"Project", 'DateTime'>
+    readonly highlighted: FieldRef<"Project", 'Boolean'>
   }
     
 
@@ -13846,6 +13857,7 @@ export namespace Prisma {
     description: string | null
     isRemote: boolean | null
     visible: boolean | null
+    highlighted: boolean | null
   }
 
   export type ExperienceMaxAggregateOutputType = {
@@ -13862,6 +13874,7 @@ export namespace Prisma {
     description: string | null
     isRemote: boolean | null
     visible: boolean | null
+    highlighted: boolean | null
   }
 
   export type ExperienceCountAggregateOutputType = {
@@ -13878,6 +13891,7 @@ export namespace Prisma {
     description: number
     isRemote: number
     visible: number
+    highlighted: number
     _all: number
   }
 
@@ -13896,6 +13910,7 @@ export namespace Prisma {
     description?: true
     isRemote?: true
     visible?: true
+    highlighted?: true
   }
 
   export type ExperienceMaxAggregateInputType = {
@@ -13912,6 +13927,7 @@ export namespace Prisma {
     description?: true
     isRemote?: true
     visible?: true
+    highlighted?: true
   }
 
   export type ExperienceCountAggregateInputType = {
@@ -13928,6 +13944,7 @@ export namespace Prisma {
     description?: true
     isRemote?: true
     visible?: true
+    highlighted?: true
     _all?: true
   }
 
@@ -14017,6 +14034,7 @@ export namespace Prisma {
     description: string | null
     isRemote: boolean
     visible: boolean
+    highlighted: boolean
     _count: ExperienceCountAggregateOutputType | null
     _min: ExperienceMinAggregateOutputType | null
     _max: ExperienceMaxAggregateOutputType | null
@@ -14050,6 +14068,7 @@ export namespace Prisma {
     description?: boolean
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     skills?: boolean | Experience$skillsArgs<ExtArgs>
@@ -14071,6 +14090,7 @@ export namespace Prisma {
     description?: boolean
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type ExperienceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14104,6 +14124,7 @@ export namespace Prisma {
       description: string | null
       isRemote: boolean
       visible: boolean
+      highlighted: boolean
     }, ExtArgs["result"]["experience"]>
     composites: {}
   }
@@ -14518,6 +14539,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Experience", 'String'>
     readonly isRemote: FieldRef<"Experience", 'Boolean'>
     readonly visible: FieldRef<"Experience", 'Boolean'>
+    readonly highlighted: FieldRef<"Experience", 'Boolean'>
   }
     
 
@@ -14894,6 +14916,7 @@ export namespace Prisma {
     schoolId: string | null
     postPoned: boolean | null
     visible: boolean | null
+    highlighted: boolean | null
   }
 
   export type EducationMaxAggregateOutputType = {
@@ -14914,6 +14937,7 @@ export namespace Prisma {
     schoolId: string | null
     postPoned: boolean | null
     visible: boolean | null
+    highlighted: boolean | null
   }
 
   export type EducationCountAggregateOutputType = {
@@ -14934,6 +14958,7 @@ export namespace Prisma {
     schoolId: number
     postPoned: number
     visible: number
+    highlighted: number
     _all: number
   }
 
@@ -14956,6 +14981,7 @@ export namespace Prisma {
     schoolId?: true
     postPoned?: true
     visible?: true
+    highlighted?: true
   }
 
   export type EducationMaxAggregateInputType = {
@@ -14976,6 +15002,7 @@ export namespace Prisma {
     schoolId?: true
     postPoned?: true
     visible?: true
+    highlighted?: true
   }
 
   export type EducationCountAggregateInputType = {
@@ -14996,6 +15023,7 @@ export namespace Prisma {
     schoolId?: true
     postPoned?: true
     visible?: true
+    highlighted?: true
     _all?: true
   }
 
@@ -15089,6 +15117,7 @@ export namespace Prisma {
     schoolId: string
     postPoned: boolean
     visible: boolean
+    highlighted: boolean
     _count: EducationCountAggregateOutputType | null
     _min: EducationMinAggregateOutputType | null
     _max: EducationMaxAggregateOutputType | null
@@ -15126,6 +15155,7 @@ export namespace Prisma {
     schoolId?: boolean
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     skills?: boolean | Education$skillsArgs<ExtArgs>
@@ -15152,6 +15182,7 @@ export namespace Prisma {
     schoolId?: boolean
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type EducationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15191,6 +15222,7 @@ export namespace Prisma {
       schoolId: string
       postPoned: boolean
       visible: boolean
+      highlighted: boolean
     }, ExtArgs["result"]["education"]>
     composites: {}
   }
@@ -15611,6 +15643,7 @@ export namespace Prisma {
     readonly schoolId: FieldRef<"Education", 'String'>
     readonly postPoned: FieldRef<"Education", 'Boolean'>
     readonly visible: FieldRef<"Education", 'Boolean'>
+    readonly highlighted: FieldRef<"Education", 'Boolean'>
   }
     
 
@@ -17170,7 +17203,8 @@ export namespace Prisma {
     createdById: 'createdById',
     updatedAt: 'updatedAt',
     updatedById: 'updatedById',
-    startDate: 'startDate'
+    startDate: 'startDate',
+    highlighted: 'highlighted'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -17225,7 +17259,8 @@ export namespace Prisma {
     shortTitle: 'shortTitle',
     description: 'description',
     isRemote: 'isRemote',
-    visible: 'visible'
+    visible: 'visible',
+    highlighted: 'highlighted'
   };
 
   export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
@@ -17248,7 +17283,8 @@ export namespace Prisma {
     concentration: 'concentration',
     schoolId: 'schoolId',
     postPoned: 'postPoned',
-    visible: 'visible'
+    visible: 'visible',
+    highlighted: 'highlighted'
   };
 
   export type EducationScalarFieldEnum = (typeof EducationScalarFieldEnum)[keyof typeof EducationScalarFieldEnum]
@@ -18219,6 +18255,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     updatedById?: UuidFilter<"Project"> | string
     startDate?: DateTimeFilter<"Project"> | Date | string
+    highlighted?: BoolFilter<"Project"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -18239,6 +18276,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
+    highlighted?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     skills?: SkillOrderByRelationAggregateInput
@@ -18262,6 +18300,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     updatedById?: UuidFilter<"Project"> | string
     startDate?: DateTimeFilter<"Project"> | Date | string
+    highlighted?: BoolFilter<"Project"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -18282,6 +18321,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
+    highlighted?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
     _min?: ProjectMinOrderByAggregateInput
@@ -18302,6 +18342,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedById?: UuidWithAggregatesFilter<"Project"> | string
     startDate?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+    highlighted?: BoolWithAggregatesFilter<"Project"> | boolean
   }
 
   export type CompanyWhereInput = {
@@ -18513,6 +18554,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Experience"> | string | null
     isRemote?: BoolFilter<"Experience"> | boolean
     visible?: BoolFilter<"Experience"> | boolean
+    highlighted?: BoolFilter<"Experience"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -18533,6 +18575,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     skills?: SkillOrderByRelationAggregateInput
@@ -18557,6 +18600,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Experience"> | string | null
     isRemote?: BoolFilter<"Experience"> | boolean
     visible?: BoolFilter<"Experience"> | boolean
+    highlighted?: BoolFilter<"Experience"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -18577,6 +18621,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     _count?: ExperienceCountOrderByAggregateInput
     _max?: ExperienceMaxOrderByAggregateInput
     _min?: ExperienceMinOrderByAggregateInput
@@ -18599,6 +18644,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Experience"> | string | null
     isRemote?: BoolWithAggregatesFilter<"Experience"> | boolean
     visible?: BoolWithAggregatesFilter<"Experience"> | boolean
+    highlighted?: BoolWithAggregatesFilter<"Experience"> | boolean
   }
 
   export type EducationWhereInput = {
@@ -18622,6 +18668,7 @@ export namespace Prisma {
     schoolId?: UuidFilter<"Education"> | string
     postPoned?: BoolFilter<"Education"> | boolean
     visible?: BoolFilter<"Education"> | boolean
+    highlighted?: BoolFilter<"Education"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -18647,6 +18694,7 @@ export namespace Prisma {
     schoolId?: SortOrder
     postPoned?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     skills?: SkillOrderByRelationAggregateInput
@@ -18677,6 +18725,7 @@ export namespace Prisma {
     schoolId?: UuidFilter<"Education"> | string
     postPoned?: BoolFilter<"Education"> | boolean
     visible?: BoolFilter<"Education"> | boolean
+    highlighted?: BoolFilter<"Education"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -18702,6 +18751,7 @@ export namespace Prisma {
     schoolId?: SortOrder
     postPoned?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
     _count?: EducationCountOrderByAggregateInput
     _max?: EducationMaxOrderByAggregateInput
     _min?: EducationMinOrderByAggregateInput
@@ -18728,6 +18778,7 @@ export namespace Prisma {
     schoolId?: UuidWithAggregatesFilter<"Education"> | string
     postPoned?: BoolWithAggregatesFilter<"Education"> | boolean
     visible?: BoolWithAggregatesFilter<"Education"> | boolean
+    highlighted?: BoolWithAggregatesFilter<"Education"> | boolean
   }
 
   export type ProfileWhereInput = {
@@ -19685,6 +19736,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -19705,6 +19757,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -19721,6 +19774,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -19741,6 +19795,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -19759,6 +19814,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
   }
 
   export type ProjectUpdateManyMutationInput = {
@@ -19771,6 +19827,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProjectUncheckedUpdateManyInput = {
@@ -19785,6 +19842,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompanyCreateInput = {
@@ -20012,6 +20070,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedExperiencesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedExperiencesInput
     skills?: SkillCreateNestedManyWithoutExperiencesInput
@@ -20032,6 +20091,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutExperiencesInput
   }
 
@@ -20046,6 +20106,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedExperiencesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedExperiencesNestedInput
     skills?: SkillUpdateManyWithoutExperiencesNestedInput
@@ -20066,6 +20127,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutExperiencesNestedInput
   }
 
@@ -20083,6 +20145,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type ExperienceUpdateManyMutationInput = {
@@ -20096,6 +20159,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ExperienceUncheckedUpdateManyInput = {
@@ -20112,6 +20176,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type EducationCreateInput = {
@@ -20129,6 +20194,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedEducationsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedEducationsInput
     skills?: SkillCreateNestedManyWithoutEducationsInput
@@ -20154,6 +20220,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutEducationsInput
     courses?: CourseUncheckedCreateNestedManyWithoutEducationInput
   }
@@ -20173,6 +20240,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedEducationsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedEducationsNestedInput
     skills?: SkillUpdateManyWithoutEducationsNestedInput
@@ -20198,6 +20266,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutEducationsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutEducationNestedInput
   }
@@ -20220,6 +20289,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type EducationUpdateManyMutationInput = {
@@ -20237,6 +20307,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type EducationUncheckedUpdateManyInput = {
@@ -20257,6 +20328,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProfileCreateInput = {
@@ -21150,6 +21222,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type ProjectMaxOrderByAggregateInput = {
@@ -21164,6 +21237,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type ProjectMinOrderByAggregateInput = {
@@ -21178,6 +21252,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type CompanyCountOrderByAggregateInput = {
@@ -21305,6 +21380,7 @@ export namespace Prisma {
     description?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type ExperienceMaxOrderByAggregateInput = {
@@ -21321,6 +21397,7 @@ export namespace Prisma {
     description?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type ExperienceMinOrderByAggregateInput = {
@@ -21337,6 +21414,7 @@ export namespace Prisma {
     description?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21393,6 +21471,7 @@ export namespace Prisma {
     schoolId?: SortOrder
     postPoned?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type EducationMaxOrderByAggregateInput = {
@@ -21413,6 +21492,7 @@ export namespace Prisma {
     schoolId?: SortOrder
     postPoned?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type EducationMinOrderByAggregateInput = {
@@ -21433,6 +21513,7 @@ export namespace Prisma {
     schoolId?: SortOrder
     postPoned?: SortOrder
     visible?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type EnumDegreeWithAggregatesFilter<$PrismaModel = never> = {
@@ -24392,6 +24473,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedExperiencesInput
     skills?: SkillCreateNestedManyWithoutExperiencesInput
     company: CompanyCreateNestedOneWithoutExperiencesInput
@@ -24410,6 +24492,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutExperiencesInput
   }
 
@@ -24434,6 +24517,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     updatedBy: UserCreateNestedOneWithoutUpdatedExperiencesInput
     skills?: SkillCreateNestedManyWithoutExperiencesInput
     company: CompanyCreateNestedOneWithoutExperiencesInput
@@ -24452,6 +24536,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutExperiencesInput
   }
 
@@ -24560,6 +24645,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedEducationsInput
     skills?: SkillCreateNestedManyWithoutEducationsInput
     school: SchoolCreateNestedOneWithoutEducationsInput
@@ -24583,6 +24669,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutEducationsInput
     courses?: CourseUncheckedCreateNestedManyWithoutEducationInput
   }
@@ -24612,6 +24699,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     updatedBy: UserCreateNestedOneWithoutUpdatedEducationsInput
     skills?: SkillCreateNestedManyWithoutEducationsInput
     school: SchoolCreateNestedOneWithoutEducationsInput
@@ -24635,6 +24723,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutEducationsInput
     courses?: CourseUncheckedCreateNestedManyWithoutEducationInput
   }
@@ -24987,6 +25076,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
     details?: DetailCreateNestedManyWithoutProjectInput
@@ -25005,6 +25095,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -25031,6 +25122,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
     details?: DetailCreateNestedManyWithoutProjectInput
@@ -25049,6 +25141,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -25353,6 +25446,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Experience"> | string | null
     isRemote?: BoolFilter<"Experience"> | boolean
     visible?: BoolFilter<"Experience"> | boolean
+    highlighted?: BoolFilter<"Experience"> | boolean
   }
 
   export type ExperienceUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -25458,6 +25552,7 @@ export namespace Prisma {
     schoolId?: UuidFilter<"Education"> | string
     postPoned?: BoolFilter<"Education"> | boolean
     visible?: BoolFilter<"Education"> | boolean
+    highlighted?: BoolFilter<"Education"> | boolean
   }
 
   export type EducationUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -25709,6 +25804,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     updatedById?: UuidFilter<"Project"> | string
     startDate?: DateTimeFilter<"Project"> | Date | string
+    highlighted?: BoolFilter<"Project"> | boolean
   }
 
   export type ProjectUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -26018,6 +26114,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -26037,6 +26134,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     repositories?: RepositoryUncheckedCreateNestedManyWithoutProjectsInput
@@ -26322,6 +26420,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -26341,6 +26440,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     repositories?: RepositoryUncheckedUpdateManyWithoutProjectsNestedInput
@@ -26556,6 +26656,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -26575,6 +26676,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
     repositories?: RepositoryUncheckedCreateNestedManyWithoutProjectsInput
@@ -26833,6 +26935,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -26852,6 +26955,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
     repositories?: RepositoryUncheckedUpdateManyWithoutProjectsNestedInput
@@ -27386,6 +27490,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -27405,6 +27510,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -27762,6 +27868,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedExperiencesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedExperiencesInput
     company: CompanyCreateNestedOneWithoutExperiencesInput
@@ -27781,6 +27888,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type ExperienceCreateOrConnectWithoutSkillsInput = {
@@ -27803,6 +27911,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedEducationsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedEducationsInput
     school: SchoolCreateNestedOneWithoutEducationsInput
@@ -27827,6 +27936,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     courses?: CourseUncheckedCreateNestedManyWithoutEducationInput
   }
 
@@ -27878,6 +27988,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     details?: DetailCreateNestedManyWithoutProjectInput
@@ -27897,6 +28008,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
     repositories?: RepositoryUncheckedCreateNestedManyWithoutProjectsInput
@@ -28443,6 +28555,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedEducationsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedEducationsInput
     skills?: SkillCreateNestedManyWithoutEducationsInput
@@ -28467,6 +28580,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutEducationsInput
   }
 
@@ -28712,6 +28826,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedEducationsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedEducationsNestedInput
     skills?: SkillUpdateManyWithoutEducationsNestedInput
@@ -28736,6 +28851,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutEducationsNestedInput
   }
 
@@ -29448,6 +29564,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedExperiencesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedExperiencesInput
     skills?: SkillCreateNestedManyWithoutExperiencesInput
@@ -29466,6 +29583,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutExperiencesInput
   }
 
@@ -29814,6 +29932,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedEducationsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedEducationsInput
     skills?: SkillCreateNestedManyWithoutEducationsInput
@@ -29837,6 +29956,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutEducationsInput
     courses?: CourseUncheckedCreateNestedManyWithoutEducationInput
   }
@@ -31356,6 +31476,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type ExperienceCreateManyCreatedByInput = {
@@ -31371,6 +31492,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type SchoolCreateManyUpdatedByInput = {
@@ -31418,6 +31540,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type EducationCreateManyCreatedByInput = {
@@ -31437,6 +31560,7 @@ export namespace Prisma {
     schoolId: string
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type ProfileCreateManyUpdatedByInput = {
@@ -31566,6 +31690,7 @@ export namespace Prisma {
     createdById: string
     updatedAt?: Date | string
     startDate: Date | string
+    highlighted?: boolean
   }
 
   export type ProjectCreateManyCreatedByInput = {
@@ -31579,6 +31704,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
+    highlighted?: boolean
   }
 
   export type RepositoryCreateManyUpdatedByInput = {
@@ -31862,6 +31988,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedExperiencesNestedInput
     skills?: SkillUpdateManyWithoutExperiencesNestedInput
     company?: CompanyUpdateOneRequiredWithoutExperiencesNestedInput
@@ -31880,6 +32007,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutExperiencesNestedInput
   }
 
@@ -31896,6 +32024,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ExperienceUpdateWithoutCreatedByInput = {
@@ -31909,6 +32038,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedExperiencesNestedInput
     skills?: SkillUpdateManyWithoutExperiencesNestedInput
     company?: CompanyUpdateOneRequiredWithoutExperiencesNestedInput
@@ -31927,6 +32057,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutExperiencesNestedInput
   }
 
@@ -31943,6 +32074,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SchoolUpdateWithoutUpdatedByInput = {
@@ -32048,6 +32180,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedEducationsNestedInput
     skills?: SkillUpdateManyWithoutEducationsNestedInput
     school?: SchoolUpdateOneRequiredWithoutEducationsNestedInput
@@ -32071,6 +32204,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutEducationsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutEducationNestedInput
   }
@@ -32092,6 +32226,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type EducationUpdateWithoutCreatedByInput = {
@@ -32109,6 +32244,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedEducationsNestedInput
     skills?: SkillUpdateManyWithoutEducationsNestedInput
     school?: SchoolUpdateOneRequiredWithoutEducationsNestedInput
@@ -32132,6 +32268,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutEducationsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutEducationNestedInput
   }
@@ -32153,6 +32290,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProfileUpdateWithoutUpdatedByInput = {
@@ -32529,6 +32667,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
     details?: DetailUpdateManyWithoutProjectNestedInput
@@ -32547,6 +32686,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -32564,6 +32704,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProjectUpdateWithoutCreatedByInput = {
@@ -32576,6 +32717,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
     details?: DetailUpdateManyWithoutProjectNestedInput
@@ -32594,6 +32736,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -32611,6 +32754,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RepositoryUpdateWithoutUpdatedByInput = {
@@ -33039,6 +33183,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -33058,6 +33203,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -33075,6 +33221,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ExperienceUpdateWithoutSkillsInput = {
@@ -33088,6 +33235,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedExperiencesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedExperiencesNestedInput
     company?: CompanyUpdateOneRequiredWithoutExperiencesNestedInput
@@ -33107,6 +33255,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ExperienceUncheckedUpdateManyWithoutSkillsInput = {
@@ -33123,6 +33272,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type EducationUpdateWithoutSkillsInput = {
@@ -33140,6 +33290,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedEducationsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedEducationsNestedInput
     school?: SchoolUpdateOneRequiredWithoutEducationsNestedInput
@@ -33164,6 +33315,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     courses?: CourseUncheckedUpdateManyWithoutEducationNestedInput
   }
 
@@ -33185,6 +33337,7 @@ export namespace Prisma {
     schoolId?: StringFieldUpdateOperationsInput | string
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CourseUpdateWithoutSkillsInput = {
@@ -33239,6 +33392,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     details?: DetailUpdateManyWithoutProjectNestedInput
@@ -33258,6 +33412,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
     repositories?: RepositoryUncheckedUpdateManyWithoutProjectsNestedInput
@@ -33275,6 +33430,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DetailUpdateWithoutSkillsInput = {
@@ -33713,6 +33869,7 @@ export namespace Prisma {
     description?: string | null
     isRemote?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type ExperienceUpdateWithoutCompanyInput = {
@@ -33726,6 +33883,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedExperiencesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedExperiencesNestedInput
     skills?: SkillUpdateManyWithoutExperiencesNestedInput
@@ -33744,6 +33902,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutExperiencesNestedInput
   }
 
@@ -33760,6 +33919,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type EducationCreateManySchoolInput = {
@@ -33779,6 +33939,7 @@ export namespace Prisma {
     concentration?: string | null
     postPoned?: boolean
     visible?: boolean
+    highlighted?: boolean
   }
 
   export type EducationUpdateWithoutSchoolInput = {
@@ -33796,6 +33957,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedEducationsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedEducationsNestedInput
     skills?: SkillUpdateManyWithoutEducationsNestedInput
@@ -33819,6 +33981,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutEducationsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutEducationNestedInput
   }
@@ -33840,6 +34003,7 @@ export namespace Prisma {
     concentration?: NullableStringFieldUpdateOperationsInput | string | null
     postPoned?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillUpdateWithoutExperiencesInput = {

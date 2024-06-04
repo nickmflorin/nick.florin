@@ -218,7 +218,8 @@ exports.Prisma.ProjectScalarFieldEnum = {
   createdById: 'createdById',
   updatedAt: 'updatedAt',
   updatedById: 'updatedById',
-  startDate: 'startDate'
+  startDate: 'startDate',
+  highlighted: 'highlighted'
 };
 
 exports.Prisma.CompanyScalarFieldEnum = {
@@ -264,7 +265,8 @@ exports.Prisma.ExperienceScalarFieldEnum = {
   shortTitle: 'shortTitle',
   description: 'description',
   isRemote: 'isRemote',
-  visible: 'visible'
+  visible: 'visible',
+  highlighted: 'highlighted'
 };
 
 exports.Prisma.EducationScalarFieldEnum = {
@@ -284,7 +286,8 @@ exports.Prisma.EducationScalarFieldEnum = {
   concentration: 'concentration',
   schoolId: 'schoolId',
   postPoned: 'postPoned',
-  visible: 'visible'
+  visible: 'visible',
+  highlighted: 'highlighted'
 };
 
 exports.Prisma.ProfileScalarFieldEnum = {

@@ -19,5 +19,6 @@ export const useExperienceForm = ({ experience }: UseExperienceFormConfig) =>
       endDate: experience?.endDate ?? null,
       skills: experience?.skills ?? [],
       visible: experience?.visible ?? true,
+      highlighted: experience?.highlighted ?? false,
     },
   });

@@ -68,15 +68,19 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
       return fieldErrors.json;
     }
     const sks = [...education.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    let updateData = {
+      ...data,
+      major,
+      schoolId: school.id,
+      updatedById: user.id,
+      skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+    };
+    if (updateData.visible === false) {
+      updateData = { ...updateData, highlighted: false };
+    }
     const updated = await tx.education.update({
       where: { id },
-      data: {
-        ...data,
-        major,
-        schoolId: school.id,
-        updatedById: user.id,
-        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
-      },
+      data: updateData,
     });
     await calculateSkillsExperience(tx, sks, { user });
     return convertToPlainObject(updated);

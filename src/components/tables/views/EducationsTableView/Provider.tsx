@@ -18,6 +18,10 @@ const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
+const HighlightedCell = dynamic(
+  () => import("~/components/tables/generic/cells/HighlightedCell"),
+) as cells.HighlightedCellComponent;
+
 const DetailsCell = dynamic(() => import("~/components/tables/generic/cells/DetailsCell"));
 
 const ReadOnlyDateTimeCell = dynamic(
@@ -105,6 +109,22 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           textAlign: "center",
           width: 170,
           render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
+        },
+        {
+          accessor: "highlighted",
+          title: "Highlighted",
+          textAlign: "center",
+          width: 80,
+          render: ({ model, table }) => (
+            <HighlightedCell
+              model={model}
+              table={table}
+              action={async (id, data) => {
+                await updateEducation(id, data);
+              }}
+              errorMessage="There was an error updating the education."
+            />
+          ),
         },
         {
           accessor: "visible",

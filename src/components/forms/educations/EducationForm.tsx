@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 
 import { useWatch } from "react-hook-form";
 
+import { Checkboxes } from "~/components/forms/fields/Checkboxes";
 import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
@@ -148,7 +149,19 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
       <Form.Field name="note" label="Note" form={props.form}>
         <TextArea className="w-full" {...props.form.register("note")} />
       </Form.Field>
-      <CheckboxField name="visible" form={props.form} label="Visible" />
+      <Checkboxes outer>
+        <CheckboxField name="highlighted" form={props.form} label="Highlighted" />
+        <CheckboxField
+          name="visible"
+          form={props.form}
+          label="Visible"
+          onChange={e => {
+            if (!e.target.checked) {
+              props.form.setValue("highlighted", false);
+            }
+          }}
+        />
+      </Checkboxes>
     </Form>
   );
 };

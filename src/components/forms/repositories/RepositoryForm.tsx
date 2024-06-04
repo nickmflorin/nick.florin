@@ -1,4 +1,5 @@
 "use client";
+import { Checkboxes } from "~/components/forms/fields/Checkboxes";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
 import { SkillsSelect } from "~/components/input/select/SkillsSelect";
@@ -48,10 +49,19 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
     >
       <TextInput className="w-full" {...props.form.register("npmPackageName")} />
     </Form.Field>
-    <div className="flex flex-col gap-[16px] mt-[6px]">
+    <Checkboxes outer>
       <CheckboxField name="highlighted" form={props.form} label="Highlighted" />
-      <CheckboxField name="visible" form={props.form} label="Visible" />
-    </div>
+      <CheckboxField
+        name="visible"
+        form={props.form}
+        label="Visible"
+        onChange={e => {
+          if (!e.target.checked) {
+            props.form.setValue("highlighted", false);
+          }
+        }}
+      />
+    </Checkboxes>
   </Form>
 );
 

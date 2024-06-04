@@ -21,7 +21,7 @@ export const UpdateEducationDrawer = ({
     isUuid(educationId) ? educationId : null,
     { keepPreviousData: true, query: { visibility: "admin", includes: ["skills"] } },
   );
-  const form = useEducationForm();
+  const form = useEducationForm({ education: data });
 
   return (
     <DrawerForm form={form} titleField="major" eagerTitle={eager.major}>

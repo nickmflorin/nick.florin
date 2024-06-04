@@ -75,15 +75,19 @@ export const updateExperience = async (
       return fieldErrors.json;
     }
     const sks = [...experience.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+    let updateData = {
+      ...data,
+      title,
+      companyId: company.id,
+      updatedById: user.id,
+      skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+    };
+    if (updateData.visible === false) {
+      updateData = { ...updateData, highlighted: false };
+    }
     const updated = await tx.experience.update({
       where: { id },
-      data: {
-        ...data,
-        title,
-        companyId: company.id,
-        updatedById: user.id,
-        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
-      },
+      data: updateData,
     });
     await calculateSkillsExperience(tx, sks, { user });
     return convertToPlainObject(updated);

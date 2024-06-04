@@ -76,14 +76,20 @@ export const updateRepository = async (
     }
 
     const sks = [...repository.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+
+    let updateData = {
+      ...data,
+      updatedById: user.id,
+      projects: projects ? { set: projects.map(proj => ({ id: proj.id })) } : undefined,
+      skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+    };
+    if (updateData.visible === false) {
+      updateData = { ...updateData, highlighted: false };
+    }
+
     const updated = await tx.repository.update({
       where: { id },
-      data: {
-        ...data,
-        updatedById: user.id,
-        projects: projects ? { set: projects.map(proj => ({ id: proj.id })) } : undefined,
-        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
-      },
+      data: updateData,
     });
     await calculateSkillsExperience(tx, sks, { user });
     return convertToPlainObject(updated);

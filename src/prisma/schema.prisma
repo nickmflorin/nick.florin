@@ -234,6 +234,7 @@ model Project {
   details       Detail[]       @relation("details")
   nestedDetails NestedDetail[] @relation("nestedDetails")
   repositories  Repository[]   @relation("projectRepositories")
+  highlighted   Boolean        @default(true)
 }
 
 model Company {
@@ -290,6 +291,7 @@ model Experience {
   description String?
   isRemote    Boolean   @default(false)
   visible     Boolean   @default(true)
+  highlighted Boolean   @default(true)
 
   @@unique([title, companyId])
 }
@@ -322,6 +324,7 @@ model Education {
   schoolId      String    @db.Uuid
   postPoned     Boolean   @default(false)
   visible       Boolean   @default(true)
+  highlighted   Boolean   @default(true)
   courses       Course[]  @relation("courses")
 
   @@unique([major, schoolId])

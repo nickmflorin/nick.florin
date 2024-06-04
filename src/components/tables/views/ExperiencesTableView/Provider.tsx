@@ -20,6 +20,10 @@ const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
+const HighlightedCell = dynamic(
+  () => import("~/components/tables/generic/cells/HighlightedCell"),
+) as cells.HighlightedCellComponent;
+
 const ReadOnlyDateTimeCell = dynamic(
   () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
 );
@@ -107,6 +111,22 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           textAlign: "center",
           width: 170,
           render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
+        },
+        {
+          accessor: "highlighted",
+          title: "Highlighted",
+          textAlign: "center",
+          width: 80,
+          render: ({ model, table }) => (
+            <HighlightedCell
+              model={model}
+              table={table}
+              action={async (id, data) => {
+                await updateExperience(id, data);
+              }}
+              errorMessage="There was an error updating the experience."
+            />
+          ),
         },
         {
           accessor: "visible",

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import { useWatch } from "react-hook-form";
 
+import { Checkboxes } from "~/components/forms/fields/Checkboxes";
 import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { ClientCompanySelect } from "~/components/input/select/ClientCompanySelect";
@@ -98,10 +99,20 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
           />
         )}
       </Form.ControlledField>
-      <div className="flex flex-col gap-[16px] mt-[6px]">
+      <Checkboxes orientation="horizontal" outer>
         <CheckboxField name="isRemote" form={props.form} label="Remote" />
-        <CheckboxField name="visible" form={props.form} label="Visible" />
-      </div>
+        <CheckboxField name="highlighted" form={props.form} label="Highlighted" />
+        <CheckboxField
+          name="visible"
+          form={props.form}
+          label="Visible"
+          onChange={e => {
+            if (!e.target.checked) {
+              props.form.setValue("highlighted", false);
+            }
+          }}
+        />
+      </Checkboxes>
     </Form>
   );
 };

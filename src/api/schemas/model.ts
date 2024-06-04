@@ -55,6 +55,7 @@ export const ExperienceSchema = z.object({
   isRemote: z.boolean().optional(),
   visible: z.boolean().optional(),
   skills: z.array(z.string().uuid()).optional(),
+  highlighted: z.boolean().optional(),
 });
 
 export const EducationSchema = z.object({
@@ -78,6 +79,7 @@ export const EducationSchema = z.object({
   postPoned: z.boolean().optional(),
   visible: z.boolean().optional(),
   skills: z.array(z.string().uuid()).optional(),
+  highlighted: z.boolean().optional(),
 });
 
 export const ProjectSchema = z.object({
@@ -112,6 +114,7 @@ export const ProjectSchema = z.object({
   skills: z.array(z.string().uuid()).optional(),
   details: z.array(z.string().uuid()).optional(),
   nestedDetails: z.array(z.string().uuid()).optional(),
+  highlighted: z.boolean().optional(),
 });
 
 export const RepositorySchema = z.object({
