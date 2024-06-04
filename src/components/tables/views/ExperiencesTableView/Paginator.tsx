@@ -6,7 +6,7 @@ import { getExperiencesCount, type GetExperiencesFilters } from "~/actions/fetch
 const RootPaginator = dynamic(() => import("~/components/pagination/Paginator"), {});
 
 interface PaginatorProps {
-  readonly filters: GetExperiencesFilters;
+  readonly filters: Omit<GetExperiencesFilters, "highlighted">;
 }
 
 export const Paginator = async ({ filters }: PaginatorProps) => {

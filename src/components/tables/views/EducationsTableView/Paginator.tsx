@@ -6,7 +6,7 @@ import { getEducationsCount, type GetEducationsFilters } from "~/actions/fetches
 const RootPaginator = dynamic(() => import("~/components/pagination/Paginator"), {});
 
 interface PaginatorProps {
-  readonly filters: GetEducationsFilters;
+  readonly filters: Omit<GetEducationsFilters, "highlighted">;
 }
 
 export const Paginator = async ({ filters }: PaginatorProps) => {

@@ -22,7 +22,7 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
 });
 
 interface TableViewProps {
-  readonly filters: GetEducationsFilters;
+  readonly filters: Omit<GetEducationsFilters, "highlighted">;
   readonly page: number;
 }
 

@@ -24,7 +24,7 @@ const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearc
 });
 
 interface ProjectsTableViewProps {
-  readonly filters: GetProjectsFilters;
+  readonly filters: Omit<GetProjectsFilters, "highlighted">;
   readonly page: number;
 }
 

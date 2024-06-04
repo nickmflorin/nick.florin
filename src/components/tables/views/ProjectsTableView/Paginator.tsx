@@ -6,7 +6,7 @@ import { getProjectsCount, type GetProjectsFilters } from "~/actions/fetches/pro
 const RootPaginator = dynamic(() => import("~/components/pagination/Paginator"), {});
 
 interface PaginatorProps {
-  readonly filters: GetProjectsFilters;
+  readonly filters: Omit<GetProjectsFilters, "highlighted">;
 }
 
 export const Paginator = async ({ filters }: PaginatorProps) => {

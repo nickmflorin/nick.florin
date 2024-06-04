@@ -11,7 +11,7 @@ const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTa
 
 interface EducationsAdminTableProps {
   readonly page: number;
-  readonly filters: GetEducationsFilters;
+  readonly filters: Omit<GetEducationsFilters, "highlighted">;
 }
 
 export const EducationsAdminTable = memo(async ({ page, filters }: EducationsAdminTableProps) => {
