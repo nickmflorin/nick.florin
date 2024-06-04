@@ -3,8 +3,6 @@ import { type ReactNode } from "react";
 import clsx from "clsx";
 import { type Required } from "utility-types";
 
-import type { P } from "pino";
-
 import {
   isIconProp,
   type IconProp,
