@@ -14,32 +14,6 @@
       "includeInTopSkills": false
     },
     {
-      "label": "Responsive Design",
-      "slug": "responsive-design",
-      "createdAt": "2024-05-13T20:39:30.867Z",
-      "updatedAt": "2024-06-03T20:41:04.282Z",
-      "visible": true,
-      "description": null,
-      "categories": [],
-      "programmingLanguages": ["SCSS", "CSS"],
-      "programmingDomains": ["FRONTEND", "MOBILE"],
-      "experience": 8,
-      "includeInTopSkills": false
-    },
-    {
-      "label": "npm",
-      "slug": "npm",
-      "createdAt": "2024-04-16T23:24:29.321Z",
-      "updatedAt": "2024-06-03T20:41:04.282Z",
-      "visible": true,
-      "description": null,
-      "categories": ["PACKAGE_MANAGER"],
-      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
-      "programmingDomains": [],
-      "experience": null,
-      "includeInTopSkills": false
-    },
-    {
       "label": "Javascript",
       "slug": "javascript",
       "createdAt": "2024-04-16T23:24:20.960Z",
@@ -287,6 +261,45 @@
       "includeInTopSkills": false
     },
     {
+      "label": "Responsive Design",
+      "slug": "responsive-design",
+      "createdAt": "2024-05-13T20:39:30.867Z",
+      "updatedAt": "2024-06-04T16:49:27.051Z",
+      "visible": true,
+      "description": null,
+      "categories": [],
+      "programmingLanguages": ["SCSS", "CSS"],
+      "programmingDomains": ["FRONTEND", "MOBILE"],
+      "experience": 8,
+      "includeInTopSkills": false
+    },
+    {
+      "label": "Test Skill",
+      "slug": "test-skill",
+      "createdAt": "2024-06-04T16:50:32.931Z",
+      "updatedAt": "2024-06-04T16:50:32.931Z",
+      "visible": true,
+      "description": null,
+      "categories": [],
+      "programmingLanguages": [],
+      "programmingDomains": [],
+      "experience": null,
+      "includeInTopSkills": false
+    },
+    {
+      "label": "npm",
+      "slug": "npm",
+      "createdAt": "2024-04-16T23:24:29.321Z",
+      "updatedAt": "2024-06-04T16:53:14.669Z",
+      "visible": true,
+      "description": null,
+      "categories": ["PACKAGE_MANAGER"],
+      "programmingLanguages": ["TYPESCRIPT", "JAVASCRIPT"],
+      "programmingDomains": [],
+      "experience": null,
+      "includeInTopSkills": false
+    },
+    {
       "label": "asyncio",
       "slug": "asyncio",
       "createdAt": "2024-04-16T23:24:39.847Z",
@@ -352,6 +365,19 @@
       "includeInTopSkills": true
     },
     {
+      "label": "TypeScript",
+      "slug": "typescript",
+      "createdAt": "2024-04-16T23:24:19.755Z",
+      "updatedAt": "2024-06-04T16:53:14.669Z",
+      "visible": true,
+      "description": null,
+      "categories": ["PROGRAMMING_LANGUAGE"],
+      "programmingLanguages": ["TYPESCRIPT"],
+      "programmingDomains": ["FULL_STACK"],
+      "experience": 5,
+      "includeInTopSkills": true
+    },
+    {
       "label": "PrismaJS",
       "slug": "prismajs",
       "createdAt": "2024-04-16T23:24:34.387Z",
@@ -388,19 +414,6 @@
       "programmingLanguages": ["PYTHON"],
       "programmingDomains": ["BACKEND"],
       "experience": 8,
-      "includeInTopSkills": true
-    },
-    {
-      "label": "TypeScript",
-      "slug": "typescript",
-      "createdAt": "2024-04-16T23:24:19.755Z",
-      "updatedAt": "2024-06-03T20:41:04.282Z",
-      "visible": true,
-      "description": null,
-      "categories": ["PROGRAMMING_LANGUAGE"],
-      "programmingLanguages": ["TYPESCRIPT"],
-      "programmingDomains": ["FULL_STACK"],
-      "experience": 5,
       "includeInTopSkills": true
     },
     {
@@ -1434,7 +1447,7 @@
       "label": "Package & Dependency Management",
       "slug": "package-dependency-management",
       "createdAt": "2024-04-16T23:24:53.811Z",
-      "updatedAt": "2024-06-03T20:41:04.282Z",
+      "updatedAt": "2024-06-04T16:53:14.669Z",
       "visible": true,
       "description": null,
       "categories": [],
