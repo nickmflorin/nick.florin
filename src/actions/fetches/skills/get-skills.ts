@@ -121,12 +121,14 @@ export const getSkills = cache(
           ? {
               where: { visible: visibility === "public" ? true : undefined },
               include: { school: true },
+              orderBy: { startDate: "desc" },
             }
           : undefined,
         experiences: fieldIsIncluded("experiences", includes)
           ? {
               where: { visible: visibility === "public" ? true : undefined },
               include: { company: true },
+              orderBy: { startDate: "desc" },
             }
           : undefined,
       },
