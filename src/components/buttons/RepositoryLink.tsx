@@ -18,7 +18,7 @@ export const RepositoryLink = ({ repository, ...props }: RepositoryLinkProps): J
     flex
     as="a"
     className={clsx(
-      withoutOverridingClassName("text-githubBlue", props.className),
+      withoutOverridingClassName("text-github-blue", props.className),
       props.className,
     )}
     href={getRepositoryGithubUrl(repository)}

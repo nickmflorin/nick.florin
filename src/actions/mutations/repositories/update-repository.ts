@@ -51,6 +51,15 @@ export const updateRepository = async (
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
 
+    if (
+      data.npmPackageName &&
+      (await tx.repository.count({
+        where: { npmPackageName: data.npmPackageName, id: { notIn: [repository.id] } },
+      }))
+    ) {
+      fieldErrors.addUnique("npmPackageName", "The npm package name must be unique.");
+    }
+
     const [skills] = await queryM2MsDynamically(tx, {
       model: "skill",
       ids: _skills,

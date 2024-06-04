@@ -7384,6 +7384,7 @@ export namespace Prisma {
     visible: boolean | null
     highlighted: boolean | null
     startDate: Date | null
+    npmPackageName: string | null
   }
 
   export type RepositoryMaxAggregateOutputType = {
@@ -7397,6 +7398,7 @@ export namespace Prisma {
     visible: boolean | null
     highlighted: boolean | null
     startDate: Date | null
+    npmPackageName: string | null
   }
 
   export type RepositoryCountAggregateOutputType = {
@@ -7410,6 +7412,7 @@ export namespace Prisma {
     visible: number
     highlighted: number
     startDate: number
+    npmPackageName: number
     _all: number
   }
 
@@ -7425,6 +7428,7 @@ export namespace Prisma {
     visible?: true
     highlighted?: true
     startDate?: true
+    npmPackageName?: true
   }
 
   export type RepositoryMaxAggregateInputType = {
@@ -7438,6 +7442,7 @@ export namespace Prisma {
     visible?: true
     highlighted?: true
     startDate?: true
+    npmPackageName?: true
   }
 
   export type RepositoryCountAggregateInputType = {
@@ -7451,6 +7456,7 @@ export namespace Prisma {
     visible?: true
     highlighted?: true
     startDate?: true
+    npmPackageName?: true
     _all?: true
   }
 
@@ -7537,6 +7543,7 @@ export namespace Prisma {
     visible: boolean
     highlighted: boolean
     startDate: Date
+    npmPackageName: string | null
     _count: RepositoryCountAggregateOutputType | null
     _min: RepositoryMinAggregateOutputType | null
     _max: RepositoryMaxAggregateOutputType | null
@@ -7567,6 +7574,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate?: boolean
+    npmPackageName?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     skills?: boolean | Repository$skillsArgs<ExtArgs>
@@ -7585,6 +7593,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate?: boolean
+    npmPackageName?: boolean
   }
 
   export type RepositoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7615,6 +7624,7 @@ export namespace Prisma {
       visible: boolean
       highlighted: boolean
       startDate: Date
+      npmPackageName: string | null
     }, ExtArgs["result"]["repository"]>
     composites: {}
   }
@@ -8026,6 +8036,7 @@ export namespace Prisma {
     readonly visible: FieldRef<"Repository", 'Boolean'>
     readonly highlighted: FieldRef<"Repository", 'Boolean'>
     readonly startDate: FieldRef<"Repository", 'DateTime'>
+    readonly npmPackageName: FieldRef<"Repository", 'String'>
   }
     
 
@@ -17103,7 +17114,8 @@ export namespace Prisma {
     updatedById: 'updatedById',
     visible: 'visible',
     highlighted: 'highlighted',
-    startDate: 'startDate'
+    startDate: 'startDate',
+    npmPackageName: 'npmPackageName'
   };
 
   export type RepositoryScalarFieldEnum = (typeof RepositoryScalarFieldEnum)[keyof typeof RepositoryScalarFieldEnum]
@@ -17887,6 +17899,7 @@ export namespace Prisma {
     visible?: BoolFilter<"Repository"> | boolean
     highlighted?: BoolFilter<"Repository"> | boolean
     startDate?: DateTimeFilter<"Repository"> | Date | string
+    npmPackageName?: StringNullableFilter<"Repository"> | string | null
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -17904,6 +17917,7 @@ export namespace Prisma {
     visible?: SortOrder
     highlighted?: SortOrder
     startDate?: SortOrder
+    npmPackageName?: SortOrderInput | SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     skills?: SkillOrderByRelationAggregateInput
@@ -17913,6 +17927,7 @@ export namespace Prisma {
   export type RepositoryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     slug?: string
+    npmPackageName?: string
     AND?: RepositoryWhereInput | RepositoryWhereInput[]
     OR?: RepositoryWhereInput[]
     NOT?: RepositoryWhereInput | RepositoryWhereInput[]
@@ -17928,7 +17943,7 @@ export namespace Prisma {
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
     projects?: ProjectListRelationFilter
-  }, "id" | "slug">
+  }, "id" | "slug" | "npmPackageName">
 
   export type RepositoryOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17941,6 +17956,7 @@ export namespace Prisma {
     visible?: SortOrder
     highlighted?: SortOrder
     startDate?: SortOrder
+    npmPackageName?: SortOrderInput | SortOrder
     _count?: RepositoryCountOrderByAggregateInput
     _max?: RepositoryMaxOrderByAggregateInput
     _min?: RepositoryMinOrderByAggregateInput
@@ -17960,6 +17976,7 @@ export namespace Prisma {
     visible?: BoolWithAggregatesFilter<"Repository"> | boolean
     highlighted?: BoolWithAggregatesFilter<"Repository"> | boolean
     startDate?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
+    npmPackageName?: StringNullableWithAggregatesFilter<"Repository"> | string | null
   }
 
   export type SkillWhereInput = {
@@ -19312,6 +19329,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
@@ -19329,6 +19347,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -19342,6 +19361,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
@@ -19359,6 +19379,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -19374,6 +19395,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
   }
 
   export type RepositoryUpdateManyMutationInput = {
@@ -19385,6 +19407,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepositoryUncheckedUpdateManyInput = {
@@ -19398,6 +19421,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SkillCreateInput = {
@@ -20900,6 +20924,7 @@ export namespace Prisma {
     visible?: SortOrder
     highlighted?: SortOrder
     startDate?: SortOrder
+    npmPackageName?: SortOrder
   }
 
   export type RepositoryMaxOrderByAggregateInput = {
@@ -20913,6 +20938,7 @@ export namespace Prisma {
     visible?: SortOrder
     highlighted?: SortOrder
     startDate?: SortOrder
+    npmPackageName?: SortOrder
   }
 
   export type RepositoryMinOrderByAggregateInput = {
@@ -20926,6 +20952,7 @@ export namespace Prisma {
     visible?: SortOrder
     highlighted?: SortOrder
     startDate?: SortOrder
+    npmPackageName?: SortOrder
   }
 
   export type EnumSkillCategoryNullableListFilter<$PrismaModel = never> = {
@@ -25047,6 +25074,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectCreateNestedManyWithoutRepositoriesInput
@@ -25062,6 +25090,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -25085,6 +25114,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectCreateNestedManyWithoutRepositoriesInput
@@ -25100,6 +25130,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
@@ -25726,6 +25757,7 @@ export namespace Prisma {
     visible?: BoolFilter<"Repository"> | boolean
     highlighted?: BoolFilter<"Repository"> | boolean
     startDate?: DateTimeFilter<"Repository"> | Date | string
+    npmPackageName?: StringNullableFilter<"Repository"> | string | null
   }
 
   export type RepositoryUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -27954,6 +27986,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     projects?: ProjectCreateNestedManyWithoutRepositoriesInput
@@ -27970,6 +28003,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     projects?: ProjectUncheckedCreateNestedManyWithoutRepositoriesInput
   }
 
@@ -29009,6 +29043,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     createdBy: UserCreateNestedOneWithoutCreatedRepositoriesInput
     updatedBy: UserCreateNestedOneWithoutUpdatedRepositoriesInput
     skills?: SkillCreateNestedManyWithoutRepositoriesInput
@@ -29025,6 +29060,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
     skills?: SkillUncheckedCreateNestedManyWithoutRepositoriesInput
   }
 
@@ -31555,6 +31591,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
   }
 
   export type RepositoryCreateManyCreatedByInput = {
@@ -31567,6 +31604,7 @@ export namespace Prisma {
     visible?: boolean
     highlighted?: boolean
     startDate: Date | string
+    npmPackageName?: string | null
   }
 
   export type ResumeCreateManyUpdatedByInput = {
@@ -32584,6 +32622,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUpdateManyWithoutRepositoriesNestedInput
@@ -32599,6 +32638,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -32613,6 +32653,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RepositoryUpdateWithoutCreatedByInput = {
@@ -32624,6 +32665,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUpdateManyWithoutRepositoriesNestedInput
@@ -32639,6 +32681,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
@@ -32653,6 +32696,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ResumeUpdateWithoutUpdatedByInput = {
@@ -33331,6 +33375,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     projects?: ProjectUpdateManyWithoutRepositoriesNestedInput
@@ -33347,6 +33392,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     projects?: ProjectUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
 
@@ -33361,6 +33407,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SkillUpdateWithoutCoursesInput = {
@@ -33618,6 +33665,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: UserUpdateOneRequiredWithoutCreatedRepositoriesNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedRepositoriesNestedInput
     skills?: SkillUpdateManyWithoutRepositoriesNestedInput
@@ -33634,6 +33682,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: SkillUncheckedUpdateManyWithoutRepositoriesNestedInput
   }
 
@@ -33648,6 +33697,7 @@ export namespace Prisma {
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    npmPackageName?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ExperienceCreateManyCompanyInput = {

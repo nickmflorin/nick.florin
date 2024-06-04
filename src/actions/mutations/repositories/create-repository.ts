@@ -26,6 +26,9 @@ export const createRepository = async (req: z.infer<typeof RepositorySchema>) =>
     if (await tx.repository.count({ where: { slug: data.slug } })) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
+    if (await tx.repository.count({ where: { npmPackageName: data.npmPackageName } })) {
+      fieldErrors.addUnique("npmPackageName", "The npm package name must be unique.");
+    }
     const [skills] = await queryM2MsDynamically(tx, {
       model: "skill",
       ids: _skills,

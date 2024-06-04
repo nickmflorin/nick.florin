@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp } from "~/components/icons";
+import { type ComponentProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";
 import { type BaseTypographyProps } from "~/components/types/typography";
 
@@ -47,6 +48,8 @@ export type LinkFlexProps<F extends types.ButtonForm> = Omit<
      */
     readonly inline?: false;
     readonly icon?: MultipleIconProp;
+    readonly iconClassName?: ComponentProps["className"];
+    readonly spinnerClassName?: ComponentProps["className"];
     readonly gap?: Size;
     readonly loadingLocation?: "left" | "over" | "right";
   };
@@ -77,6 +80,7 @@ export type LinkInlineProps<F extends types.ButtonForm> = Omit<
     readonly icon?: never;
     readonly gap?: never;
     readonly loadingLocation?: never;
+    readonly iconClassName?: never;
   };
 
 export type LinkProps<F extends types.ButtonForm> = LinkFlexProps<F> | LinkInlineProps<F>;
@@ -92,6 +96,7 @@ const LocalLink = forwardRef<types.PolymorphicButtonElement<any>, LinkProps<any>
       icon,
       flex,
       gap,
+      iconClassName,
       /* Note: Since the 'Link' component does not have a 'height',  and it's 'height' is set based
          on the line-height of the text it contains, the 'iconSize' prop needs to be defaulted to
          a value that is not 100% of its parent container.  Otherwise, the icon and spinner will
@@ -116,6 +121,7 @@ const LocalLink = forwardRef<types.PolymorphicButtonElement<any>, LinkProps<any>
           <ButtonContent
             gap={gap}
             iconSize={iconSize}
+            iconClassName={iconClassName}
             isLoading={props.isLoading}
             icon={icon}
             loadingLocation={loadingLocation}

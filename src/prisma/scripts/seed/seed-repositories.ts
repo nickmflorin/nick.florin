@@ -43,6 +43,7 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
             createdBy: { connect: { id: ctx.user.id } },
             updatedBy: { connect: { id: ctx.user.id } },
             visible: false,
+            highlighted: false,
           },
         });
       } else {
@@ -66,12 +67,13 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
           repository = await tx.repository.create({
             include: { skills: true },
             data: {
-              slug: existing.slug,
+              highlighted: false,
+              visible: false,
+              ...existing,
               description: existing.description ?? repo.description,
               startDate: existing.startDate ?? new Date(repo.created_at),
               createdBy: { connect: { id: ctx.user.id } },
               updatedBy: { connect: { id: ctx.user.id } },
-              visible: existing.visible ?? false,
               skills: { connect: existing.skills.map(skill => ({ slug: skill })) },
             },
           });
@@ -102,6 +104,7 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
               createdBy: { connect: { id: ctx.user.id } },
               updatedBy: { connect: { id: ctx.user.id } },
               visible: existing.visible ?? false,
+              highlighted: existing.highlighted ?? false,
               skills: { connect: existing.skills.map(skill => ({ slug: skill })) },
             },
           });
@@ -148,12 +151,13 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
       const repository = await tx.repository.create({
         include: { skills: true },
         data: {
-          slug: repo.slug,
+          ...repo,
           description: repo.description,
           startDate: new Date(repo.startDate),
           createdBy: { connect: { id: ctx.user.id } },
           updatedBy: { connect: { id: ctx.user.id } },
           visible: repo.visible ?? false,
+          highlighted: repo.highlighted ?? false,
           skills: { connect: repo.skills.map(skill => ({ slug: skill })) },
         },
       });

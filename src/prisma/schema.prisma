@@ -146,21 +146,22 @@ model Resume {
 }
 
 model Repository {
-  id          String    @id @default(uuid()) @db.Uuid
-  slug        String    @unique
-  description String
-  createdAt   DateTime  @default(now())
-  createdBy   User      @relation("createdRepositories", fields: [createdById], references: [id])
-  createdById String    @db.Uuid
-  updatedAt   DateTime  @updatedAt
-  updatedBy   User      @relation("updatedRepositories", fields: [updatedById], references: [id])
-  updatedById String    @db.Uuid
-  skills      Skill[]   @relation("skillRepositories")
-  projects    Project[] @relation("projectRepositories")
-  visible     Boolean   @default(true)
-  highlighted Boolean   @default(true)
+  id             String    @id @default(uuid()) @db.Uuid
+  slug           String    @unique
+  description    String
+  createdAt      DateTime  @default(now())
+  createdBy      User      @relation("createdRepositories", fields: [createdById], references: [id])
+  createdById    String    @db.Uuid
+  updatedAt      DateTime  @updatedAt
+  updatedBy      User      @relation("updatedRepositories", fields: [updatedById], references: [id])
+  updatedById    String    @db.Uuid
+  skills         Skill[]   @relation("skillRepositories")
+  projects       Project[] @relation("projectRepositories")
+  visible        Boolean   @default(true)
+  highlighted    Boolean   @default(true)
   // The start date is used to determine the experience of a given skill in the repository.
-  startDate   DateTime
+  startDate      DateTime
+  npmPackageName String?   @unique
 }
 
 model Skill {

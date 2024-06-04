@@ -22,7 +22,7 @@ export const ProjectLink = ({
     flex
     as="a"
     className={clsx(
-      withoutOverridingClassName("text-githubBlue", props.className),
+      withoutOverridingClassName("text-github-blue", props.className),
       props.className,
     )}
     href={`/projects/${project.slug}`}

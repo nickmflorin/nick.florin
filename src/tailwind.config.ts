@@ -184,6 +184,7 @@ const config = {
       "github-blue": "#0969da",
       "github-black": "#1f2328",
       "github-gray": "#636c76",
+      "npm-red": "#ea2039",
       indigo: colors.indigo,
       violet: colors.violet,
       purple: colors.purple,

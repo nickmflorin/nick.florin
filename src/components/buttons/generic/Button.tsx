@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 
 import { capitalize } from "~/lib/formatters";
 import { type MultipleIconProp } from "~/components/icons";
+import { type ComponentProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";
 
 import * as types from "../types";
@@ -16,6 +17,8 @@ export type ButtonProps<F extends types.ButtonForm> = Omit<
   readonly icon?: MultipleIconProp;
   readonly gap?: Size;
   readonly loadingLocation?: "left" | "over" | "right";
+  readonly iconClassName?: ComponentProps["className"];
+  readonly spinnerClassName?: ComponentProps["className"];
 };
 
 type LocalButtonType = {
@@ -30,7 +33,7 @@ const Base = AbstractButton as React.FC<types.AbstractProps<"button", any>>;
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const LocalButton = forwardRef<types.PolymorphicButtonElement<any>, ButtonProps<any>>(
   <F extends types.ButtonForm>(
-    { icon, loadingLocation, gap, ...props }: ButtonProps<F>,
+    { icon, loadingLocation, gap, iconClassName, ...props }: ButtonProps<F>,
     ref: types.PolymorphicButtonRef<F>,
   ): JSX.Element => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -43,6 +46,7 @@ const LocalButton = forwardRef<types.PolymorphicButtonElement<any>, ButtonProps<
         <ButtonContent
           isLoading={props.isLoading}
           iconSize={props.iconSize}
+          iconClassName={iconClassName}
           gap={gap}
           icon={icon}
           loadingLocation={loadingLocation}

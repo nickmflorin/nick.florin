@@ -125,6 +125,10 @@ export const RepositorySchema = z.object({
     minErrorMessage: "The description must be at least 3 characters.",
     requiredErrorMessage: "The description is a required field.",
   }),
+  npmPackageName: NullableStringField({
+    min: 3,
+    minErrorMessage: "The npm package name must be at least 3 characters.",
+  }),
   visible: z.boolean().optional(),
   highlighted: z.boolean().optional(),
   projects: z.array(z.string().uuid()).optional(),

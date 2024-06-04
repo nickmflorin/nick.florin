@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type BrandRepository } from "~/prisma/model";
+import { NpmLink } from "~/components/buttons/NpmLink";
 import { RepositoryLink } from "~/components/buttons/RepositoryLink";
 import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps } from "~/components/types";
@@ -19,6 +20,7 @@ export const RepositoryTile = ({ repository, ...props }: RepositoryTileProps) =>
     <div className={clsx("flex flex-col gap-[4px] overflow-hidden")}>
       <RepositoryLink repository={repository} />
       <Description fontSize="xs">{repository.description}</Description>
+      {repository.npmPackageName && <NpmLink npmPackageName={repository.npmPackageName} />}
     </div>
   </div>
 );

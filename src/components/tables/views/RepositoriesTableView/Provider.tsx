@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 
 import { type ApiRepository } from "~/prisma/model";
 import { deleteRepository, updateRepository } from "~/actions/mutations/repositories";
+import { NpmLink } from "~/components/buttons/NpmLink";
 import { RepositoryLink } from "~/components/buttons/RepositoryLink";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import type * as cells from "~/components/tables/generic/cells";
@@ -64,6 +65,14 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           textAlign: "center",
           width: 240,
           render: ({ model }) => <RepositoryLink repository={model} />,
+        },
+        {
+          accessor: "npmPackageName",
+          title: "",
+          textAlign: "center",
+          width: 240,
+          render: ({ model }) =>
+            model.npmPackageName ? <NpmLink npmPackageName={model.npmPackageName} /> : <></>,
         },
         {
           accessor: "skills",

@@ -10,6 +10,7 @@ export const useRepositoryForm = (repository?: Partial<ApiRepository<["skills", 
       highlighted: repository?.highlighted ?? false,
       visible: repository?.visible ?? false,
       slug: repository?.slug ?? "",
+      npmPackageName: repository?.npmPackageName ?? "",
       description: repository?.description ?? "",
       skills: repository?.skills
         ? repository.skills.map(sk => ({ id: sk.id, value: sk.id, label: sk.label }))

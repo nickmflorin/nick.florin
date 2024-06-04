@@ -12,6 +12,9 @@ export const getRepositoryGithubUrl = (repository: BrandRepository): string => {
   return `${basePath}${repository.slug}`;
 };
 
+export const getNpmPackageUrl = (packageName: string): string =>
+  `https://www.npmjs.com/package/${packageName}`;
+
 export type RepositoryIncludes =
   | ["skills", "projects"]
   | ["projects", "skills"]

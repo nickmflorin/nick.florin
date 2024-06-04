@@ -45,6 +45,8 @@ export const RepositoryJsonSchema = MetaSchema.extend({
   /* This field is optional because it will be supplied via GitHub's API in the case that it is
      not defined in the fixture. */
   startDate: z.coerce.date().optional(),
+  npmPackageName: z.string().optional(),
+  highlighted: z.boolean().optional(),
 });
 
 export const ProjectJsonSchema = MetaSchema.extend({

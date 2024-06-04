@@ -171,7 +171,8 @@ exports.Prisma.RepositoryScalarFieldEnum = {
   updatedById: 'updatedById',
   visible: 'visible',
   highlighted: 'highlighted',
-  startDate: 'startDate'
+  startDate: 'startDate',
+  npmPackageName: 'npmPackageName'
 };
 
 exports.Prisma.SkillScalarFieldEnum = {
