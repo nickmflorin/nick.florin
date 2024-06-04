@@ -32,7 +32,6 @@ export class GithubClient<U extends string> {
                 startDate: existing.startDate ?? new Date(repo.created_at),
                 createdBy: { connect: { id: user.id } },
                 updatedBy: { connect: { id: user.id } },
-                visible: existing.visible ?? false,
               },
             });
           }
@@ -45,6 +44,7 @@ export class GithubClient<U extends string> {
               createdBy: { connect: { id: user.id } },
               updatedBy: { connect: { id: user.id } },
               visible: false,
+              highlighted: false,
             },
           });
         }

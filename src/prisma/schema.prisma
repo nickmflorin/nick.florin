@@ -157,8 +157,8 @@ model Repository {
   updatedById    String    @db.Uuid
   skills         Skill[]   @relation("skillRepositories")
   projects       Project[] @relation("projectRepositories")
-  visible        Boolean   @default(true)
-  highlighted    Boolean   @default(true)
+  visible        Boolean   @default(false)
+  highlighted    Boolean   @default(false)
   // The start date is used to determine the experience of a given skill in the repository.
   startDate      DateTime
   npmPackageName String?   @unique
