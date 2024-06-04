@@ -22,7 +22,7 @@ export const SEARCH_FIELDS = {
   experience: ["title", "shortTitle"],
   education: ["major", "concentration", "minor"],
   project: ["name", "shortName", "slug"],
-  repository: ["slug"],
+  repository: ["slug", "npmPackageName"],
 } as const satisfies {
   [key in TabledBrand]: (keyof BrandModel<key>)[];
 };

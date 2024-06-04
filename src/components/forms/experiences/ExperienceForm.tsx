@@ -101,7 +101,16 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
       </Form.ControlledField>
       <Checkboxes orientation="horizontal" outer>
         <CheckboxField name="isRemote" form={props.form} label="Remote" />
-        <CheckboxField name="highlighted" form={props.form} label="Highlighted" />
+        <CheckboxField
+          name="highlighted"
+          form={props.form}
+          label="Highlighted"
+          onChange={e => {
+            if (e.target.checked) {
+              props.form.setValue("visible", true);
+            }
+          }}
+        />
         <CheckboxField
           name="visible"
           form={props.form}

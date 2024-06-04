@@ -10,6 +10,7 @@ import {
   fieldIsIncluded,
   type EducationToDetailIncludes,
 } from "~/prisma/model";
+import { conditionalAndClause } from "~/prisma/util";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -18,27 +19,23 @@ import { getDetails } from "../details";
 
 export type GetEducationsFilters = {
   readonly search: string;
+  readonly highlighted: boolean;
 };
 
 export type GetEducationsParams<I extends EducationIncludes> = Omit<
-  ApiStandardListQuery<I, GetEducationsFilters>,
+  ApiStandardListQuery<I, Partial<GetEducationsFilters>>,
   "orderBy"
 >;
 
 const whereClause = ({
   filters,
   visibility,
-}: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">) =>
-  ({
-    AND:
-      filters?.search && visibility === "public"
-        ? [constructTableSearchClause("education", filters.search), { visible: true }]
-        : filters?.search
-          ? [constructTableSearchClause("education", filters.search)]
-          : visibility === "public"
-            ? { visible: true }
-            : undefined,
-  }) as const;
+}: Pick<GetEducationsParams<EducationIncludes>, "filters" | "visibility">) =>
+  conditionalAndClause([
+    { clause: { visible: true }, condition: visibility === "public" },
+    filters?.search ? constructTableSearchClause("education", filters.search) : null,
+    filters?.highlighted !== undefined ? { highlighted: filters.highlighted } : null,
+  ]);
 
 export const preloadEducationsCount = (
   params: Pick<GetEducationsParams<EducationIncludes>, "visibility" | "filters">,

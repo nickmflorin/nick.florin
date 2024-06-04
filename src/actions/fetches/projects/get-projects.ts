@@ -4,6 +4,7 @@ import { cache } from "react";
 import { getClerkAuthedUser } from "~/application/auth/server";
 import { prisma } from "~/prisma/client";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/prisma/model";
+import { conditionalAndClause } from "~/prisma/util";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -11,17 +12,19 @@ import { PAGE_SIZES, constructTableSearchClause } from "../constants";
 
 export type GetProjectsFilters = {
   readonly search: string;
+  readonly highlighted: boolean;
 };
 
 export type GetProjectsParams<I extends ProjectIncludes> = Omit<
-  ApiStandardListQuery<I, GetProjectsFilters>,
+  ApiStandardListQuery<I, Partial<GetProjectsFilters>>,
   "orderBy"
 >;
 
 const whereClause = ({ filters }: Pick<GetProjectsParams<ProjectIncludes>, "filters">) =>
-  ({
-    AND: filters?.search ? [constructTableSearchClause("project", filters.search)] : undefined,
-  }) as const;
+  conditionalAndClause([
+    filters?.search ? constructTableSearchClause("repository", filters.search) : null,
+    filters?.highlighted !== undefined ? { highlighted: filters.highlighted } : null,
+  ]);
 
 export const preloadProjectsCount = (
   params: Pick<GetProjectsParams<ProjectIncludes>, "filters" | "visibility">,

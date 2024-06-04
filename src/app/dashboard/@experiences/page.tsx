@@ -2,7 +2,11 @@ import { getExperiences } from "~/actions/fetches/experiences";
 import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelCondensedTile";
 
 export default async function ExperiencesPage() {
-  const experiences = await getExperiences({ visibility: "public", includes: [], limit: 5 });
+  const experiences = await getExperiences({
+    visibility: "public",
+    includes: [],
+    filters: { highlighted: true },
+  });
   return (
     <>
       {experiences.map((experience, index) => (

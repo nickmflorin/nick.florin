@@ -83,8 +83,10 @@ export const updateRepository = async (
       projects: projects ? { set: projects.map(proj => ({ id: proj.id })) } : undefined,
       skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
     };
-    if (updateData.visible === false) {
+    if (updateData.visible === false && updateData.highlighted === undefined) {
       updateData = { ...updateData, highlighted: false };
+    } else if (updateData.highlighted === true && updateData.visible === undefined) {
+      updateData = { ...updateData, visible: true };
     }
 
     const updated = await tx.repository.update({

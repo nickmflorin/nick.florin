@@ -77,7 +77,7 @@ export const getRepositories = cache(
           ? { where: { visible: visibility === "public" ? true : undefined } }
           : undefined,
       },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      orderBy: [{ startDate: "desc" }, { createdAt: "desc" }, { id: "desc" }],
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : undefined,
     });

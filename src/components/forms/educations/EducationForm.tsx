@@ -150,7 +150,16 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
         <TextArea className="w-full" {...props.form.register("note")} />
       </Form.Field>
       <Checkboxes outer>
-        <CheckboxField name="highlighted" form={props.form} label="Highlighted" />
+        <CheckboxField
+          name="highlighted"
+          form={props.form}
+          label="Highlighted"
+          onChange={e => {
+            if (e.target.checked) {
+              props.form.setValue("visible", true);
+            }
+          }}
+        />
         <CheckboxField
           name="visible"
           form={props.form}

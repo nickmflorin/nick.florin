@@ -50,7 +50,16 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
       <TextInput className="w-full" {...props.form.register("npmPackageName")} />
     </Form.Field>
     <Checkboxes outer>
-      <CheckboxField name="highlighted" form={props.form} label="Highlighted" />
+      <CheckboxField
+        name="highlighted"
+        form={props.form}
+        label="Highlighted"
+        onChange={e => {
+          if (e.target.checked) {
+            props.form.setValue("visible", true);
+          }
+        }}
+      />
       <CheckboxField
         name="visible"
         form={props.form}

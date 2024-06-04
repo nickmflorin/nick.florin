@@ -10,6 +10,7 @@ import {
   fieldIsIncluded,
   type ExperienceToDetailIncludes,
 } from "~/prisma/model";
+import { conditionalAndClause } from "~/prisma/util";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -18,27 +19,23 @@ import { getDetails } from "../details";
 
 export type GetExperiencesFilters = {
   readonly search: string;
+  readonly highlighted: boolean;
 };
 
 export type GetExperiencesParams<I extends ExperienceIncludes> = Omit<
-  ApiStandardListQuery<I, GetExperiencesFilters>,
+  ApiStandardListQuery<I, Partial<GetExperiencesFilters>>,
   "orderBy"
 >;
 
 const whereClause = ({
   filters,
   visibility,
-}: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">) =>
-  ({
-    AND:
-      filters?.search && visibility === "public"
-        ? [constructTableSearchClause("experience", filters.search), { visible: true }]
-        : filters?.search
-          ? [constructTableSearchClause("experience", filters.search)]
-          : visibility === "public"
-            ? { visible: true }
-            : undefined,
-  }) as const;
+}: Pick<GetExperiencesParams<ExperienceIncludes>, "filters" | "visibility">) =>
+  conditionalAndClause([
+    { clause: { visible: true }, condition: visibility === "public" },
+    filters?.search ? constructTableSearchClause("experience", filters.search) : null,
+    filters?.highlighted !== undefined ? { highlighted: filters.highlighted } : null,
+  ]);
 
 export const preloadExperiencesCount = (
   params: Pick<GetExperiencesParams<ExperienceIncludes>, "visibility" | "filters">,
