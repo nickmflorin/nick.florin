@@ -20,9 +20,9 @@
 $button-color-properties: (
   "button": (
     "primary": (
-      background-color: theme("colors.blue.600"),
+      background-color: theme("colors.blue.900"),
       color: theme("colors.white"),
-      border-color: theme("colors.blue.600"),
+      border-color: theme("colors.blue.900"),
       hovered: (
         background-color: theme("colors.blue.800"),
         border-color: theme("colors.blue.800"),
@@ -83,9 +83,9 @@ $button-color-properties: (
   ),
   "icon-button": (
     "primary": (
-      background-color: theme("colors.blue.600"),
+      background-color: theme("colors.blue.900"),
       color: theme("colors.white"),
-      border-color: theme("colors.blue.600"),
+      border-color: theme("colors.blue.900"),
       hovered: (
         background-color: theme("colors.blue.800"),
         border-color: theme("colors.blue.800"),
@@ -168,7 +168,7 @@ $button-color-properties: (
   "link": (
     "primary": (
       background-color: theme("colors.transparent"),
-      color: theme("colors.blue.600"),
+      color: theme("colors.blue.900"),
       hovered: (
         color: theme("colors.blue.800"),
       ),

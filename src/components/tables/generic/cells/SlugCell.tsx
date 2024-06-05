@@ -84,7 +84,7 @@ export const SlugCell = <M extends { id: string; slug: string }, T>({
       />
       <IconButton.Transparent
         icon={{ name: "refresh" }}
-        className="text-blue-600"
+        className="text-blue-800"
         disabledClassName="text-disabled"
         isLoading={loading}
         isDisabled={model.slug === slugify(getSluggifiedFieldValue(model))}

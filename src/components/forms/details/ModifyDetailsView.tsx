@@ -23,7 +23,7 @@ export const ModifyDetailsView = (props: ModifyDetailsViewProps): JSX.Element =>
       <div className="flex flex-row justify-between items-center">
         <Text fontSize="sm" fontWeight="medium">{`${props.details.length} Details`}</Text>
         <Link.Primary
-          className="text-blue-700 hover:text-blue-800"
+          className="text-blue-800 hover:text-blue-900"
           fontSize="sm"
           fontWeight="regular"
           isDisabled={createFormVisible}

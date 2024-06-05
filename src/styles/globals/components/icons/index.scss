@@ -153,7 +153,7 @@
 
 .spinner {
   // The default color, unless overridden via Tailwind classes or elsewhere in the SASS files.
-  color: theme("colors.blue.400");
+  color: theme("colors.blue.800");
   -webkit-animation: spin 1s infinite linear;
   animation: spin 1s infinite linear;
   z-index: 100;

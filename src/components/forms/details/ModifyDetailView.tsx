@@ -24,7 +24,7 @@ export const ModifyDetailView = ({ detail, onDeleted, onExpand }: ModifyDetailVi
         actions={[
           <IconButton.Bare
             key="0"
-            className="text-blue-700 hover:text-blue-800"
+            className="text-blue-800 hover:text-blue-900"
             icon={{ name: "plus-circle" }}
             isDisabled={createFormVisible}
             onClick={() => setCreateFormVisible(true)}

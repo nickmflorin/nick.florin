@@ -21,7 +21,7 @@ export const SkillsBarChartTooltip = (props: { color: string; data: SkillsBarCha
       >{`${props.data.experience} years`}</Text>
     </div>
     <div className="flex flex-row gap-[4px] items-flex-start w-[200px]">
-      <Icon name="info-circle" size="sm" className="text-blue-400" />
+      <Icon name="info-circle" size="sm" className="text-blue-800" />
       <Text fontSize="xs" className="text-description leading-[14px]">
         Click the bar for more info.
       </Text>

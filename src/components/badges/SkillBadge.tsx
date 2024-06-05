@@ -13,7 +13,7 @@ export const SkillBadge = ({ skill, ...props }: SkillBadgeProps): JSX.Element =>
   <Badge
     {...props}
     className={clsx(
-      "bg-blue-100 text-blue-500",
+      "bg-blue-100 text-blue-900",
       props.fontSize === undefined && withoutOverridingClassName("text-sm", props.className),
       props.fontSize === undefined && withoutOverridingClassName("max-md:text-xs", props.className),
       { "hover:bg-blue-200": props.onClick !== undefined },

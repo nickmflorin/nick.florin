@@ -33,7 +33,7 @@ export const ActionsCell = ({
         <IconButton.Transparent
           icon={{ name: "pen" }}
           as="button"
-          className="text-blue-500 rounded-full hover:text-blue-600"
+          className="text-blue-800 rounded-full hover:text-blue-900"
           disabledClassName="text-disabled"
           loadingClassName="text-gray-400"
           onClick={() => onEdit()}

@@ -21,10 +21,7 @@ export const ProjectLink = ({
     {...props}
     flex
     as="a"
-    className={clsx(
-      withoutOverridingClassName("text-github-blue", props.className),
-      props.className,
-    )}
+    className={clsx(withoutOverridingClassName("text-blue-900", props.className), props.className)}
     href={`/projects/${project.slug}`}
   >
     {useAbbreviatedName ? project.shortName ?? project.name : project.name}
