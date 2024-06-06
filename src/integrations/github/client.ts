@@ -1,8 +1,34 @@
-import { prisma } from "~/prisma/client";
+import { prisma, type Transaction } from "~/prisma/client";
 import type { User } from "~/prisma/model";
 import { environment } from "~/environment";
 
 import * as types from "./types";
+
+interface SyncRepositoriesParams {
+  readonly user: User;
+  readonly tx?: Transaction;
+}
+
+type TransactionCallback<T> = (tx: Transaction) => Promise<T>;
+
+async function withinTransaction<T>(fn: TransactionCallback<T>): Promise<T>;
+
+async function withinTransaction<T>(
+  tx: Transaction | undefined,
+  fn: TransactionCallback<T>,
+): Promise<T>;
+
+async function withinTransaction<T>(
+  tx: Transaction | undefined | TransactionCallback<T>,
+  fn?: TransactionCallback<T>,
+): Promise<T> {
+  if (typeof tx === "function") {
+    return await prisma.$transaction(async t => tx(t));
+  } else if (fn !== undefined && tx !== undefined) {
+    return fn(tx);
+  }
+  throw new Error("Invalid method implementation!");
+}
 
 export class GithubClient<U extends string> {
   private readonly username: U;
@@ -17,10 +43,10 @@ export class GithubClient<U extends string> {
     return await response.json();
   }
 
-  async syncRepositories(user: User): Promise<void> {
+  async syncRepositories({ tx: _tx, user }: SyncRepositoriesParams): Promise<void> {
     const githubRepos = await this.fetchRepositories();
 
-    await prisma.$transaction(async tx => {
+    withinTransaction(_tx, async tx => {
       for (const repo of githubRepos) {
         const existing = await tx.repository.findUnique({ where: { slug: repo.name } });
         if (existing) {

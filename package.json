@@ -39,6 +39,8 @@
     "pullenv": "vercel env pull ./.env --environment=development",
     "pullenv-prod": "vercel env pull ./.env --environment=production",
     "format-json-fixtures": "npx prettier ./src/prisma/scripts/fixtures/json/*.json --write --ignore-path=./.prettierignore",
+    "sync-repositories": "pnpm validate-node-version && pnpm manual-dev-env-setup -- npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/sync-repositories.ts",
+    "sync-repositories-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/sync-repositories.ts",
     "calculate-experience": "pnpm validate-node-version && pnpm manual-dev-env-setup -- npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/calculate-experience.ts",
     "calculate-experience-prod": "pnpm validate-node-version && pnpm manual-prod-env-setup -- npx tsx --tsconfig ./tsconfig.json src/prisma/scripts/calculate-experience.ts"
   },

@@ -4,5 +4,5 @@ import { githubClient } from "~/integrations/github";
 
 export const syncRepositories = async () => {
   const { user } = await getAuthedUser();
-  await githubClient.syncRepositories(user);
+  await githubClient.syncRepositories({ user });
 };
