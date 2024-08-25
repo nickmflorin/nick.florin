@@ -22,20 +22,20 @@ type UseScreenSizeReturn<C extends UseScreenSizeConfig> = C extends { defaultSiz
 
 const getScreenSize = (w: Window): ScreenSize => {
   let size: ScreenSize | null = null;
-  for (let i = 0; i < ScreenSizes.values.length; i++) {
+  for (let i = 0; i < ScreenSizes.members.length; i++) {
     let mediaQuery: string;
-    if (i === ScreenSizes.values.length - 1) {
+    if (i === ScreenSizes.members.length - 1) {
       mediaQuery = getMediaQuery({
-        min: ScreenSizes.values[i],
+        min: ScreenSizes.members[i],
       });
     } else {
       mediaQuery = getMediaQuery({
-        min: ScreenSizes.values[i],
-        max: ScreenSizes.values[i + 1] as Exclude<ScreenSize, "xs">,
+        min: ScreenSizes.members[i],
+        max: ScreenSizes.members[i + 1] as Exclude<ScreenSize, "xs">,
       });
     }
     if (w.matchMedia(mediaQuery).matches) {
-      size = ScreenSizes.values[i];
+      size = ScreenSizes.members[i];
     }
   }
   if (!size) {
@@ -61,20 +61,20 @@ export const useScreenSizes = <C extends UseScreenSizeConfig>({
 
   const handleResize = useCallback(() => {
     let size: ScreenSize | null = null;
-    for (let i = 0; i < ScreenSizes.values.length; i++) {
+    for (let i = 0; i < ScreenSizes.members.length; i++) {
       let mediaQuery: string;
-      if (i === ScreenSizes.values.length - 1) {
+      if (i === ScreenSizes.members.length - 1) {
         mediaQuery = getMediaQuery({
-          min: ScreenSizes.values[i],
+          min: ScreenSizes.members[i],
         });
       } else {
         mediaQuery = getMediaQuery({
-          min: ScreenSizes.values[i],
-          max: ScreenSizes.values[i + 1] as Exclude<ScreenSize, "xs">,
+          min: ScreenSizes.members[i],
+          max: ScreenSizes.members[i + 1] as Exclude<ScreenSize, "xs">,
         });
       }
       if (window.matchMedia(mediaQuery).matches) {
-        size = ScreenSizes.values[i];
+        size = ScreenSizes.members[i];
       }
     }
     if (!size) {
@@ -99,7 +99,7 @@ export const useScreenSizes = <C extends UseScreenSizeConfig>({
   const isLessThanOrEqualTo = useCallback(
     (sz: ScreenSize) => {
       if (size !== null) {
-        return ScreenSizes.values.indexOf(size) <= ScreenSizes.values.indexOf(sz);
+        return ScreenSizes.members.indexOf(size) <= ScreenSizes.members.indexOf(sz);
       }
       return false;
     },
@@ -109,7 +109,7 @@ export const useScreenSizes = <C extends UseScreenSizeConfig>({
   const isLessThan = useCallback(
     (sz: Exclude<ScreenSize, "xs">) => {
       if (size !== null) {
-        return ScreenSizes.values.indexOf(size) < ScreenSizes.values.indexOf(sz);
+        return ScreenSizes.members.indexOf(size) < ScreenSizes.members.indexOf(sz);
       }
       return false;
     },

@@ -1,4 +1,4 @@
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import {
   type FieldValues,
   type UseFormReturn,
@@ -16,7 +16,7 @@ export type BaseFormValues = FieldValues;
 export type FieldError = string;
 
 export const FieldConditions = enumeratedLiterals(["required", "optional"] as const, {});
-export type FieldCondition = EnumeratedLiteralsType<typeof FieldConditions>;
+export type FieldCondition = EnumeratedLiteralsMember<typeof FieldConditions>;
 
 export type FieldErrorAssertion = (v: unknown) => asserts v is FieldError;
 
@@ -61,11 +61,6 @@ export type SetFormErrors<I extends BaseFormValues> = {
   (errors: FieldErrors<I>): void;
 };
 
-export type SetFormStaticErrors<I extends BaseFormValues> = {
-  (field: FieldName<I>, errors: string | string[]): void;
-  (errors: FieldErrors<I>): void;
-};
-
 export type FormInstance<I extends BaseFormValues> = Omit<UseFormReturn<I>, "setError"> & {
   readonly errors: string[];
   readonly fieldErrors: FieldErrors<I>;
@@ -76,6 +71,5 @@ export type FormInstance<I extends BaseFormValues> = Omit<UseFormReturn<I>, "set
   readonly setValues: (values: FormValues<I>) => void;
   readonly clearErrors: () => void;
   readonly setErrors: SetFormErrors<I>;
-  readonly setStaticErrors: SetFormStaticErrors<I>;
   readonly handleApiError: (e: HttpError | ApiClientErrorJson) => void;
 };

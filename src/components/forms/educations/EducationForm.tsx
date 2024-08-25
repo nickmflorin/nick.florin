@@ -61,9 +61,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
             value={value}
             onChange={onChange}
             inPortal
-            onError={() =>
-              props.form.setStaticErrors("school", "There was an error loading the data.")
-            }
+            onError={() => props.form.setErrors("school", "There was an error loading the data.")}
           />
         )}
       </Form.ControlledField>

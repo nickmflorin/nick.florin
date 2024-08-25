@@ -11,7 +11,7 @@ import {
   type FloatingContext as RootFloatingContext,
 } from "@floating-ui/react";
 import clsx from "clsx";
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 
 import {
   withoutOverridingClassName,
@@ -23,7 +23,7 @@ export const PopoverVariants = enumeratedLiterals(
   ["primary", "secondary", "light", "white", "none"] as const,
   {},
 );
-export type PopoverVariant = EnumeratedLiteralsType<typeof PopoverVariants>;
+export type PopoverVariant = EnumeratedLiteralsMember<typeof PopoverVariants>;
 
 export const PopoverVariantClassNames: {
   [key in PopoverVariant]: (cs: ComponentProps["className"]) => string;

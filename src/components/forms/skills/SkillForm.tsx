@@ -70,7 +70,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             onChange={onChange}
             inPortal
             onError={() =>
-              props.form.setStaticErrors("educations", "There was an error loading the data.")
+              props.form.setErrors("educations", "There was an error loading the data.")
             }
           />
         )}
@@ -86,7 +86,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             onChange={onChange}
             inPortal
             onError={() =>
-              props.form.setStaticErrors("educations", "There was an error loading the data.")
+              props.form.setErrors("educations", "There was an error loading the data.")
             }
           />
         )}
@@ -100,9 +100,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             value={value}
             onChange={onChange}
             inPortal
-            onError={() =>
-              props.form.setStaticErrors("projects", "There was an error loading the data.")
-            }
+            onError={() => props.form.setErrors("projects", "There was an error loading the data.")}
           />
         )}
       </Form.ControlledField>
@@ -116,7 +114,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             onChange={onChange}
             inPortal
             onError={() =>
-              props.form.setStaticErrors("repositories", "There was an error loading the data.")
+              props.form.setErrors("repositories", "There was an error loading the data.")
             }
           />
         )}
@@ -130,9 +128,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             value={value}
             onChange={onChange}
             inPortal
-            onError={() =>
-              props.form.setStaticErrors("courses", "There was an error loading the data.")
-            }
+            onError={() => props.form.setErrors("courses", "There was an error loading the data.")}
           />
         )}
       </Form.ControlledField>

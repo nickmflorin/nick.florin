@@ -9,5 +9,10 @@ export const useProjectForm = () =>
       name: "",
       shortName: "",
       slug: "",
+      repositories: [],
+      skills: [],
+      details: [],
+      nestedDetails: [],
+      highlighted: true,
     },
   });

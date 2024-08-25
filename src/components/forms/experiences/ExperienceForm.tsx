@@ -50,9 +50,7 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
             value={value}
             onChange={onChange}
             inPortal
-            onError={() =>
-              props.form.setStaticErrors("company", "There was an error loading the data.")
-            }
+            onError={() => props.form.setErrors("company", "There was an error loading the data.")}
           />
         )}
       </Form.ControlledField>

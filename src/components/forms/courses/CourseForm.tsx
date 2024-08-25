@@ -43,9 +43,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
           useAbbreviatedOptionLabels={false}
           onChange={onChange}
           inPortal
-          onError={() =>
-            props.form.setStaticErrors("education", "There was an error loading the data.")
-          }
+          onError={() => props.form.setErrors("education", "There was an error loading the data.")}
         />
       )}
     </Form.ControlledField>

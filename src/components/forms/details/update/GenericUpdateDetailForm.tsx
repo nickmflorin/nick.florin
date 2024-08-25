@@ -208,7 +208,7 @@ export const GenericUpdateDetailForm = <
             value={value}
             onChange={onChange}
             inPortal
-            onError={() => form.setStaticErrors("skills", "There was an error loading the data.")}
+            onError={() => form.setErrors("skills", "There was an error loading the data.")}
           />
         )}
       </Form.ControlledField>
@@ -227,7 +227,7 @@ export const GenericUpdateDetailForm = <
             options={{ isMulti: false, isClearable: true, isDeselectable: true }}
             onChange={onChange}
             inPortal
-            onError={() => form.setStaticErrors("project", "There was an error loading the data.")}
+            onError={() => form.setErrors("project", "There was an error loading the data.")}
           />
         )}
       </Form.ControlledField>

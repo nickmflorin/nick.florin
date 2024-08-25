@@ -87,8 +87,8 @@ dependencies:
     specifier: ^7.3.0
     version: 7.4.1
   enumerated-literals:
-    specifier: ^1.1.4
-    version: 1.1.4
+    specifier: ^1.2.5
+    version: 1.2.5
   framer-motion:
     specifier: ^10.18.0
     version: 10.18.0(react-dom@18.3.1)(react@18.3.1)
@@ -4278,10 +4278,8 @@ packages:
     engines: {node: '>=0.12'}
     dev: true
 
-  /enumerated-literals@1.1.4:
-    resolution: {integrity: sha512-ou05dqXk1I4K3gXHdEvr3Ku1mfK7DuxEo1YyRG1GLWJ9UMeFZKmawJ3yOeYRDzpG0EkhKajTKA1PpxVDed+6LQ==}
-    dependencies:
-      zod: 3.23.8
+  /enumerated-literals@1.2.5:
+    resolution: {integrity: sha512-Zbuf1G1RTnqMJtyrBjI3x2OfPvbL8Umx/uOtg5iXIbprIvJ99uOqKCNaDMs/0o1hoC9DC1TYKN1iIYl4NPdGSQ==}
     dev: false
 
   /error-ex@1.3.2:
@@ -9689,8 +9687,4 @@ packages:
 
   /zod@3.23.6:
     resolution: {integrity: sha512-RTHJlZhsRbuA8Hmp/iNL7jnfc4nZishjsanDAfEY1QpDQZCahUp3xDzl+zfweE9BklxMUcgBgS1b7Lvie/ZVwA==}
-    dev: false
-
-  /zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: false

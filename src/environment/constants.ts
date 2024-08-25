@@ -1,12 +1,12 @@
-import { type EnumeratedLiteralsType, enumeratedLiterals } from "enumerated-literals";
+import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
 
 import { createCommaSeparatedArraySchema } from "./util";
 
 export const PrismaLogLevels = enumeratedLiterals(["info", "query", "warn", "error"] as const, {});
-export type PrismaLogLevel = EnumeratedLiteralsType<typeof PrismaLogLevels>;
+export type PrismaLogLevel = EnumeratedLiteralsMember<typeof PrismaLogLevels>;
 
 export const PrismaLogLevelSchema = createCommaSeparatedArraySchema({
-  options: PrismaLogLevels.values,
+  options: PrismaLogLevels.members,
   partTransformer: v => v.toLowerCase(),
 });
 
@@ -14,13 +14,13 @@ export const EnvironmentNames = enumeratedLiterals(
   ["test", "local", "development", "production", "preview"] as const,
   {},
 );
-export type EnvironmentName = EnumeratedLiteralsType<typeof EnvironmentNames>;
+export type EnvironmentName = EnumeratedLiteralsMember<typeof EnvironmentNames>;
 
 export const LogLevels = enumeratedLiterals(
   ["fatal", "error", "info", "warn", "debug", "trace", "silent"] as const,
   {},
 );
-export type LogLevel = EnumeratedLiteralsType<typeof LogLevels>;
+export type LogLevel = EnumeratedLiteralsMember<typeof LogLevels>;
 
 export const DEFAULT_LOG_LEVELS: { [key in EnvironmentName]: LogLevel } = {
   development: "info",

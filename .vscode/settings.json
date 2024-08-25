@@ -11,24 +11,37 @@
   "files.insertFinalNewline": true,
   "files.associations": {
     "*.tsx": "typescriptreact",
-    "*.ts": "typescript"
+    "*.ts": "typescript",
+    "*.zmodel": "zmodel"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
-  "[scss,css,less]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
-  "eslint.run": "onSave",
-  "eslint.nodePath": "/Users/nickflorin/.nvm/versions/node/v20.0.0/bin/node",
-  "eslint.probe": ["typescript", "typescriptreact", "html", "markdown", "scss"],
+  "eslint.probe": [
+    "typescript",
+    "typescriptreact",
+    "html",
+    "markdown",
+    "scss",
+    "json",
+    "javascript",
+    "javscriptreact"
+  ],
   "eslint.format.enable": true,
+  "eslint.useFlatConfig": false,
   "eslint.execArgv": ["--max-old-space-size=16384"],
   "eslint.debug": false,
   "eslint.codeActionsOnSave.rules": [
+    "prettier/prettier",
     "import/*",
     "quotes",
+    "@typescript-eslint/indent",
     "arrow-body-style",
     "multiline-comment-style",
     "prefer-const",
@@ -37,26 +50,35 @@
   ],
 
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.updateImportsOnFileMove.enabled": "prompt",
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.format.enable": false,
   "typescript.preferences.preferTypeOnlyAutoImports": true,
   "typescript.preferences.renameMatchingJsxTags": true,
-  "typescript.preferences.autoImportFileExcludePatterns": ["@mantine/*"],
   "typescript.format.semicolons": "insert",
   "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
   "typescript.preferences.quoteStyle": "double",
-  "typescript.referencesCodeLens.enabled": true,
+  "typescript.preferences.autoImportFileExcludePatterns": ["@mantine/*"],
 
   "javascript.format.enable": false,
   "javascript.preferences.importModuleSpecifier": "non-relative",
 
-  // When/if we incorporate Stylelint - these need to be set to false.
-  "css.validate": true,
-  "less.validate": true,
-  "scss.validate": true,
-
-  "stylelint.validate": ["css", "scss", "less", "postcss"],
-  "stylelint.configBasedir": "/",
-  "stylelint.packageManager": "pnpm"
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/tmp": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/tmp/**": true,
+    "**/bower_components/**": true,
+    "**/dist/**": true
+  }
 }

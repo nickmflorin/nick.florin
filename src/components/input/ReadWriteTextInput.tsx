@@ -11,7 +11,7 @@ import React, {
 } from "react";
 
 import clsx from "clsx";
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import omit from "lodash.omit";
 import pick from "lodash.pick";
 
@@ -23,7 +23,7 @@ import { SaveAction, CancelAction } from "./actions";
 import { type InputProps, Input, NativeInput, type NativeInputProps } from "./generic";
 
 export const ReadWriteTextInputStates = enumeratedLiterals(["reading", "writing"] as const, {});
-export type ReadWriteTextInputState = EnumeratedLiteralsType<typeof ReadWriteTextInputStates>;
+export type ReadWriteTextInputState = EnumeratedLiteralsMember<typeof ReadWriteTextInputStates>;
 
 export type ReadWriteTextInputInstance = {
   readonly clear: () => void;

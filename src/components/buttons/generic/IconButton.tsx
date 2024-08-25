@@ -92,7 +92,7 @@ type VariantPartial = {
 
 type WithVariants = { [key in Capitalize<types.ButtonVariant<"icon-button">>]: VariantPartial };
 
-const withVariants = types.ButtonVariants["icon-button"].values.reduce<WithVariants>(
+const withVariants = types.ButtonVariants["icon-button"].members.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
     [capitalize(variant)]: forwardRef(

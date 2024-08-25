@@ -39,6 +39,33 @@
         "clerk"
       ],
       "repositories": ["nick.florin"]
+    },
+    {
+      "name": "ToolTrack",
+      "shortName": null,
+      "description": "A CMS-powered, interactive and dynamic personal portfolio & website written using NextJS.",
+      "slug": "tooltrack",
+      "icon": "screwdriver-wrench",
+      "createdAt": "2024-08-25T23:24:59.768Z",
+      "updatedAt": "2024-08-25T23:24:59.768Z",
+      "startDate": "2024-05-01T00:00:00.000Z",
+      "skills": [
+        "javascript",
+        "sass",
+        "css",
+        "application-security",
+        "react",
+        "postgresql",
+        "floating-ui",
+        "responsive-design",
+        "tailwindcss",
+        "typescript",
+        "prismajs",
+        "nextjs",
+        "ssr",
+        "clerk"
+      ],
+      "repositories": ["tooltrack"]
     }
   ]
 }

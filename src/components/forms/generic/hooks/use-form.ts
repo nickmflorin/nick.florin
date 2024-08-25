@@ -26,6 +26,7 @@ import {
   isHttpError,
   ApiClientFormError,
 } from "~/api";
+import { useDeepEqualEffect } from "~/hooks";
 
 import {
   type FormInstance,
@@ -35,7 +36,6 @@ import {
   type ControlledFieldChangeHandler,
   type FieldErrors,
   type SetFormErrors,
-  type SetFormStaticErrors,
 } from "../types";
 
 /* TODO: We may have to revisit this.  When determining the string error message from a react hook
@@ -106,8 +106,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   onChange,
   ...options
 }: FormConfig<I, IN>): FormInstance<I> => {
-  const [internalFieldErrors, _setInternalFieldErrors] = useState<FieldErrors<I>>({});
-  const [internalStaticFieldErrors, _setInternalStaticFieldErrors] = useState<FieldErrors<I>>({});
+  const [fieldErrors, _setFieldErrors] = useState<FieldErrors<I>>({});
   const [globalErrors, setGlobalErrors] = useState<string[]>([]);
   const registeredFields = useRef<FieldName<I>[]>([]);
 
@@ -176,7 +175,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [getValues, onChange],
   );
 
-  const setInternalFieldErrors = useCallback((fieldErrors: FieldErrors<I>) => {
+  const setFieldErrors = useCallback((fieldErrors: FieldErrors<I>) => {
     const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
       if (!registeredFields.current.includes(curr as FieldName<I>)) {
         return [...prev, curr];
@@ -194,61 +193,14 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         { invalidFields, registered: registeredFields.current },
       );
     }
-    return _setInternalFieldErrors(fieldErrors);
+    return _setFieldErrors(fieldErrors);
   }, []);
-
-  const setInternalStaticFieldErrors = useCallback(
-    (fieldErrors: FieldErrors<I> | ((curr: FieldErrors<I>) => FieldErrors<I>)) => {
-      const validate = (fieldErrors: FieldErrors<I>) => {
-        const invalidFields = Object.keys(fieldErrors).reduce((prev: string[], curr: string) => {
-          if (!registeredFields.current.includes(curr as FieldName<I>)) {
-            return [...prev, curr];
-          }
-          return prev;
-        }, [] as string[]);
-        if (invalidFields.length !== 0) {
-          const humanized = humanizeList(registeredFields.current, {
-            conjunction: "and",
-            formatter: v => `'${v}'`,
-          });
-          logger.warn(
-            "The form received static field errors for fields that are not registered with the " +
-              `form! Current fields registered with the form are: ${humanized}.`,
-            { invalidFields, registered: registeredFields.current },
-          );
-        }
-      };
-      if (typeof fieldErrors === "function") {
-        return _setInternalStaticFieldErrors(curr => {
-          validate(curr);
-          return fieldErrors(curr);
-        });
-      }
-      validate(fieldErrors);
-      return _setInternalStaticFieldErrors(fieldErrors);
-    },
-    [],
-  );
 
   const clearErrors = useCallback(() => {
     setGlobalErrors([]);
-    setInternalFieldErrors({});
+    setFieldErrors({});
     clearNativeErrors();
-  }, [clearNativeErrors, setInternalFieldErrors]);
-
-  const setStaticErrors: SetFormStaticErrors<I> = useCallback(
-    (arg0: FieldName<I> | FieldErrors<I>, arg1?: string | string[]) => {
-      if (arg1 && typeof arg0 === "string") {
-        const fieldName = arg0 as FieldName<I>;
-        return setInternalStaticFieldErrors(curr => mergeIntoFieldErrors(curr, fieldName, arg1));
-      } else if (arg0 && typeof arg0 !== "string") {
-        return setInternalStaticFieldErrors(curr => mergeIntoFieldErrors(curr, arg0));
-      } else {
-        throw new TypeError("Invalid method implementation!");
-      }
-    },
-    [setInternalStaticFieldErrors],
-  );
+  }, [clearNativeErrors, setFieldErrors]);
 
   const setErrors: SetFormErrors<I> = useCallback(
     (arg0: FieldName<I> | FieldErrors<I> | string | string[], arg1?: string | string[]) => {
@@ -256,16 +208,16 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         if (typeof arg0 !== "string") {
           throw new TypeError("Invalid method implementation!");
         }
-        return setInternalFieldErrors({
+        return setFieldErrors({
           [arg0 as FieldName<I>]: Array.isArray(arg1) ? arg1 : [arg1],
         } as FieldErrors<I>);
       } else if (typeof arg0 === "string" || Array.isArray(arg0)) {
         return setGlobalErrors(Array.isArray(arg0) ? arg0 : [arg0]);
       } else {
-        setInternalFieldErrors(arg0);
+        setFieldErrors(arg0);
       }
     },
-    [setInternalFieldErrors],
+    [setFieldErrors],
   );
 
   const setInternalFieldErrorsFromResponse = useCallback(
@@ -277,7 +229,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
           { error: e },
         );
       }
-      return setInternalFieldErrors(
+      return setFieldErrors(
         Object.keys(errs).reduce((prev: FieldErrors<I>, key): FieldErrors<I> => {
           const _details = (errs as ApiClientFieldErrorsObj)[key];
           const details = _details ? (Array.isArray(_details) ? _details : [_details]) : _details;
@@ -300,7 +252,7 @@ export const useForm = <I extends BaseFormValues, IN = I>({
         }, {} as FieldErrors<I>),
       );
     },
-    [setInternalFieldErrors],
+    [setFieldErrors],
   );
 
   const handleApiError = useCallback(
@@ -323,14 +275,9 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [setErrors, setInternalFieldErrorsFromResponse],
   );
 
-  const fieldErrors = useMemo(
-    () =>
-      mergeIntoFieldErrors(
-        mergeIntoFieldErrors(internalStaticFieldErrors, internalFieldErrors),
-        formState.errors,
-      ),
-    [formState.errors, internalStaticFieldErrors, internalFieldErrors],
-  );
+  useDeepEqualEffect(() => {
+    setFieldErrors(mergeIntoFieldErrors({}, formState.errors));
+  }, [formState.errors]);
 
   const handleSubmit = useCallback(
     (fn: SubmitHandler<I>, onError?: SubmitErrorHandler<I> | undefined) =>
@@ -354,7 +301,6 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     handleApiError,
     clearErrors,
     setErrors,
-    setStaticErrors,
     ...omit(form, ["setError"]),
   };
 };

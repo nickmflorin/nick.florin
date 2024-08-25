@@ -23,6 +23,12 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
             active: { leadingPath: "/projects/website" },
             icon: { name: "passport" },
           },
+          {
+            label: "ToolTrack",
+            path: "/projects/tooltrack",
+            active: { leadingPath: "/projects/tooltrack" },
+            icon: { name: "screwdriver-wrench" },
+          },
         ]}
       />
       <div className="grow max-h-full h-full overflow-y-auto flex flex-col">{children}</div>

@@ -10,7 +10,7 @@ export interface WebsiteProps extends Omit<ProjectProps, "title" | "description"
 
 export const Website = (props: WebsiteProps): JSX.Element => (
   <Project
-    title="nick.florin"
+    title={props.project.name}
     description={
       <Description>
         A CMS-powered, interactive and dynamic personal portfolio/website written using&nbsp;

@@ -1,7 +1,7 @@
 import { type ReactElement, type JSXElementConstructor, isValidElement } from "react";
 
 import clsx from "clsx";
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { isFragment } from "react-is";
 
 import tailwindConfig from "~/tailwind.config";
@@ -11,7 +11,7 @@ export const TextFontSizes = enumeratedLiterals(
   {},
 );
 
-export type TextFontSize = EnumeratedLiteralsType<typeof TextFontSizes>;
+export type TextFontSize = EnumeratedLiteralsMember<typeof TextFontSizes>;
 
 export const LabelFontSizes = TextFontSizes;
 export type LabelFontSize = TextFontSize;
@@ -27,7 +27,7 @@ export const FontWeights = enumeratedLiterals(
   {},
 );
 
-export type FontWeight = EnumeratedLiteralsType<typeof FontWeights>;
+export type FontWeight = EnumeratedLiteralsMember<typeof FontWeights>;
 
 export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -46,10 +46,10 @@ export const TextTransforms = enumeratedLiterals(
   ["uppercase", "lowercase", "capitalize", "underline"] as const,
   {},
 );
-export type TextTransform = EnumeratedLiteralsType<typeof TextTransforms>;
+export type TextTransform = EnumeratedLiteralsMember<typeof TextTransforms>;
 
 export const FontFamilies = enumeratedLiterals(["inter"] as const, {});
-export type FontFamily = EnumeratedLiteralsType<typeof FontFamilies>;
+export type FontFamily = EnumeratedLiteralsMember<typeof FontFamilies>;
 
 export type LineClamp = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 

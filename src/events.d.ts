@@ -1,4 +1,4 @@
-import type { EnumeratedLiteralsType } from "enumerated-literals";
+import type { EnumeratedLiteralsMember } from "enumerated-literals";
 
 import { type DrawerDynamicProps } from "~/components/drawers/provider/drawers";
 import type { TypeOfDrawerIds } from "~/components/drawers/provider/types";
@@ -6,7 +6,7 @@ import type { TypeOfDrawerIds } from "~/components/drawers/provider/types";
 declare global {
   type DrawerState = "opened" | "closed";
 
-  type DrawerId = EnumeratedLiteralsType<TypeOfDrawerIds>;
+  type DrawerId = EnumeratedLiteralsMember<TypeOfDrawerIds>;
 
   type DrawerStateOpenedEventDetail<D extends DrawerId = DrawerId> = {
     id: D;

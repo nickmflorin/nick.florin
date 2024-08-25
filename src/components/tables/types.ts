@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 
 import clsx from "clsx";
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import omit from "lodash.omit";
 import { type DataTableColumn, type DataTableRowExpansionProps } from "mantine-datatable";
 
@@ -52,7 +52,7 @@ export const toNativeColumn = <T extends TableModel>(
 };
 
 export const TableSizes = enumeratedLiterals(["sm", "md", "lg"] as const, {});
-export type TableSize = EnumeratedLiteralsType<typeof TableSizes>;
+export type TableSize = EnumeratedLiteralsMember<typeof TableSizes>;
 
 export type RowClassNameFn<T extends TableModel> = (record: T, index: number) => ClassName;
 export type RowClassName<T extends TableModel> = ClassName | RowClassNameFn<T>;

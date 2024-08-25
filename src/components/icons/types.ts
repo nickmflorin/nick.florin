@@ -3,23 +3,23 @@ import {
   type IconFamily as RootIconFamily,
   type IconName,
 } from "@fortawesome/fontawesome-svg-core";
-import { enumeratedLiterals, type EnumeratedLiteralsType } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { z } from "zod";
 
 import { type ComponentProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";
 
 export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
-export type IconDimension = EnumeratedLiteralsType<typeof IconDimensions>;
+export type IconDimension = EnumeratedLiteralsMember<typeof IconDimensions>;
 
 export const IconFits = enumeratedLiterals(["square", "fit"] as const, {});
-export type IconFit = EnumeratedLiteralsType<typeof IconFits>;
+export type IconFit = EnumeratedLiteralsMember<typeof IconFits>;
 
 export const IconDiscreteSizes = enumeratedLiterals(
   ["xxs", "xs", "sm", "md", "lg", "xl", "fill"] as const,
   {},
 );
-export type IconDiscreteSize = EnumeratedLiteralsType<typeof IconDiscreteSizes>;
+export type IconDiscreteSize = EnumeratedLiteralsMember<typeof IconDiscreteSizes>;
 export type IconSize = IconDiscreteSize | Size;
 
 export type IconFamily = Exclude<RootIconFamily, "duotone">;

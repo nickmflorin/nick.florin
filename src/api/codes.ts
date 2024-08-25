@@ -1,5 +1,5 @@
 import {
-  type EnumeratedLiteralsType,
+  type EnumeratedLiteralsMember,
   type EnumeratedLiteralsModel,
   enumeratedLiterals,
 } from "enumerated-literals";
@@ -26,7 +26,7 @@ export const ApiClientErrorCodes = enumeratedLiterals(
   {},
 );
 
-export type ApiClientErrorCode = EnumeratedLiteralsType<typeof ApiClientErrorCodes>;
+export type ApiClientErrorCode = EnumeratedLiteralsMember<typeof ApiClientErrorCodes>;
 
 export type ApiClientErrorStatusCode<C extends ApiClientErrorCode = ApiClientErrorCode> = Extract<
   EnumeratedLiteralsModel<typeof ApiClientErrorCodes>,
@@ -56,4 +56,4 @@ export const ApiClientFieldErrorCodes = enumeratedLiterals(
   {},
 );
 
-export type ApiClientFieldErrorCode = EnumeratedLiteralsType<typeof ApiClientFieldErrorCodes>;
+export type ApiClientFieldErrorCode = EnumeratedLiteralsMember<typeof ApiClientFieldErrorCodes>;

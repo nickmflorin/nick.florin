@@ -158,15 +158,30 @@
       "skills": ["npm", "typescript", "package-dependency-management"]
     },
     {
-      "slug": "stockings",
-      "description": "Stock Notification & Alert Management System for ECommerce Sites",
-      "createdAt": "2024-06-02T22:55:04.739Z",
-      "updatedAt": "2024-06-02T22:55:50.384Z",
+      "slug": "tooltrack",
+      "description": "An application that allows users to monitor, manage and configure notifications and alerts that they will receive as it relates to inventory & price changes that occur for products offered by the woodworking hand tool manufacturer, Lie Nielsen.",
+      "createdAt": "2024-05-02T22:55:04.739Z",
+      "updatedAt": "2024-05-02T22:55:50.384Z",
       "visible": true,
       "highlighted": true,
-      "startDate": "2024-05-11T22:31:03.000Z",
+      "startDate": "2024-05-01T22:31:03.000Z",
       "npmPackageName": null,
-      "skills": ["data-scraping", "prismajs"]
+      "skills": [
+        "javascript",
+        "sass",
+        "css",
+        "application-security",
+        "react",
+        "postgresql",
+        "floating-ui",
+        "responsive-design",
+        "tailwindcss",
+        "typescript",
+        "prismajs",
+        "nextjs",
+        "ssr",
+        "clerk"
+      ]
     },
     {
       "slug": "uslege-assign",
