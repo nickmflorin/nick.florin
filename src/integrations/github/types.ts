@@ -28,7 +28,7 @@ export type GithubRepo<U extends string = string, N extends string = string> = {
     site_admin: boolean;
   };
   html_url: `https://github.com/${U}/${N}`;
-  description: string;
+  description: string | null;
   fork: false;
   url: `${GithubBaseUrl}/repos/${U}/${N}`;
   forks_url: `${GithubBaseUrl}/repos/${U}/${N}/forks`;

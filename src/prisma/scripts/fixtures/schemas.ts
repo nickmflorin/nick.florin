@@ -40,7 +40,7 @@ export const RepositoryJsonSchema = MetaSchema.extend({
   visible: z.boolean().optional(),
   /* This field is optional because it will be supplied via GitHub's API in the case that it is
      not defined in the fixture. */
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   skills: z.array(z.string()),
   /* This field is optional because it will be supplied via GitHub's API in the case that it is
      not defined in the fixture. */

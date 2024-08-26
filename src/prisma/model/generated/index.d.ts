@@ -7535,7 +7535,7 @@ export namespace Prisma {
   export type RepositoryGroupByOutputType = {
     id: string
     slug: string
-    description: string
+    description: string | null
     createdAt: Date
     createdById: string
     updatedAt: Date
@@ -7616,7 +7616,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       slug: string
-      description: string
+      description: string | null
       createdAt: Date
       createdById: string
       updatedAt: Date
@@ -17927,7 +17927,7 @@ export namespace Prisma {
     NOT?: RepositoryWhereInput | RepositoryWhereInput[]
     id?: UuidFilter<"Repository"> | string
     slug?: StringFilter<"Repository"> | string
-    description?: StringFilter<"Repository"> | string
+    description?: StringNullableFilter<"Repository"> | string | null
     createdAt?: DateTimeFilter<"Repository"> | Date | string
     createdById?: UuidFilter<"Repository"> | string
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
@@ -17945,7 +17945,7 @@ export namespace Prisma {
   export type RepositoryOrderByWithRelationInput = {
     id?: SortOrder
     slug?: SortOrder
-    description?: SortOrder
+    description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     createdById?: SortOrder
     updatedAt?: SortOrder
@@ -17967,7 +17967,7 @@ export namespace Prisma {
     AND?: RepositoryWhereInput | RepositoryWhereInput[]
     OR?: RepositoryWhereInput[]
     NOT?: RepositoryWhereInput | RepositoryWhereInput[]
-    description?: StringFilter<"Repository"> | string
+    description?: StringNullableFilter<"Repository"> | string | null
     createdAt?: DateTimeFilter<"Repository"> | Date | string
     createdById?: UuidFilter<"Repository"> | string
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
@@ -17984,7 +17984,7 @@ export namespace Prisma {
   export type RepositoryOrderByWithAggregationInput = {
     id?: SortOrder
     slug?: SortOrder
-    description?: SortOrder
+    description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     createdById?: SortOrder
     updatedAt?: SortOrder
@@ -18004,7 +18004,7 @@ export namespace Prisma {
     NOT?: RepositoryScalarWhereWithAggregatesInput | RepositoryScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Repository"> | string
     slug?: StringWithAggregatesFilter<"Repository"> | string
-    description?: StringWithAggregatesFilter<"Repository"> | string
+    description?: StringNullableWithAggregatesFilter<"Repository"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
     createdById?: UuidWithAggregatesFilter<"Repository"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"Repository"> | Date | string
@@ -19374,7 +19374,7 @@ export namespace Prisma {
   export type RepositoryCreateInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
@@ -19390,7 +19390,7 @@ export namespace Prisma {
   export type RepositoryUncheckedCreateInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
@@ -19406,7 +19406,7 @@ export namespace Prisma {
   export type RepositoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
@@ -19422,7 +19422,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19438,7 +19438,7 @@ export namespace Prisma {
   export type RepositoryCreateManyInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
@@ -19452,7 +19452,7 @@ export namespace Prisma {
   export type RepositoryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
@@ -19464,7 +19464,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -25161,7 +25161,7 @@ export namespace Prisma {
   export type RepositoryCreateWithoutUpdatedByInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
@@ -25176,7 +25176,7 @@ export namespace Prisma {
   export type RepositoryUncheckedCreateWithoutUpdatedByInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
@@ -25201,7 +25201,7 @@ export namespace Prisma {
   export type RepositoryCreateWithoutCreatedByInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
@@ -25216,7 +25216,7 @@ export namespace Prisma {
   export type RepositoryUncheckedCreateWithoutCreatedByInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     updatedById: string
@@ -25845,7 +25845,7 @@ export namespace Prisma {
     NOT?: RepositoryScalarWhereInput | RepositoryScalarWhereInput[]
     id?: UuidFilter<"Repository"> | string
     slug?: StringFilter<"Repository"> | string
-    description?: StringFilter<"Repository"> | string
+    description?: StringNullableFilter<"Repository"> | string | null
     createdAt?: DateTimeFilter<"Repository"> | Date | string
     createdById?: UuidFilter<"Repository"> | string
     updatedAt?: DateTimeFilter<"Repository"> | Date | string
@@ -28092,7 +28092,7 @@ export namespace Prisma {
   export type RepositoryCreateWithoutSkillsInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
@@ -28107,7 +28107,7 @@ export namespace Prisma {
   export type RepositoryUncheckedCreateWithoutSkillsInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
@@ -29153,7 +29153,7 @@ export namespace Prisma {
   export type RepositoryCreateWithoutProjectsInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     visible?: boolean
@@ -29168,7 +29168,7 @@ export namespace Prisma {
   export type RepositoryUncheckedCreateWithoutProjectsInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
@@ -31710,7 +31710,7 @@ export namespace Prisma {
   export type RepositoryCreateManyUpdatedByInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
@@ -31723,7 +31723,7 @@ export namespace Prisma {
   export type RepositoryCreateManyCreatedByInput = {
     id?: string
     slug: string
-    description: string
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     updatedById: string
@@ -32760,7 +32760,7 @@ export namespace Prisma {
   export type RepositoryUpdateWithoutUpdatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
@@ -32775,7 +32775,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateWithoutUpdatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32790,7 +32790,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateManyWithoutUpdatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -32803,7 +32803,7 @@ export namespace Prisma {
   export type RepositoryUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
@@ -32818,7 +32818,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
@@ -32833,7 +32833,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
@@ -33525,7 +33525,7 @@ export namespace Prisma {
   export type RepositoryUpdateWithoutSkillsInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
@@ -33540,7 +33540,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateWithoutSkillsInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33555,7 +33555,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateManyWithoutSkillsInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33815,7 +33815,7 @@ export namespace Prisma {
   export type RepositoryUpdateWithoutProjectsInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     visible?: BoolFieldUpdateOperationsInput | boolean
@@ -33830,7 +33830,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateWithoutProjectsInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33845,7 +33845,7 @@ export namespace Prisma {
   export type RepositoryUncheckedUpdateManyWithoutProjectsInput = {
     id?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

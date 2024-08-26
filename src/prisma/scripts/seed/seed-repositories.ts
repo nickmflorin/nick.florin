@@ -113,7 +113,7 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
       output.complete("Successfully Processed Repository", {
         lineItems: [
           { label: "Slug", value: repository.slug },
-          { label: "Description", value: repository.description },
+          { label: "Description", value: repository.description ?? "" },
           repository.skills.length !== 0
             ? {
                 label: "Skills",
@@ -164,7 +164,7 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
       output.complete("Successfully Processed Repository", {
         lineItems: [
           { label: "Slug", value: repository.slug },
-          { label: "Description", value: repository.description },
+          { label: "Description", value: repository.description ?? "" },
           repository.skills.length !== 0
             ? {
                 label: "Skills",

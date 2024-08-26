@@ -82,7 +82,6 @@ export const getExperiences = cache(
     if (pagination !== null && limit !== undefined) {
       throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
     }
-
     const experiences = await prisma.experience.findMany({
       where: whereClause({ filters, visibility }),
       include: {

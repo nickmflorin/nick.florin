@@ -123,10 +123,9 @@ export const RepositorySchema = z.object({
     minErrorMessage: "The slug must be at least 3 characters.",
     requiredErrorMessage: "The slug is a required field.",
   }),
-  description: NonNullableStringField({
+  description: NullableStringField({
     min: 3,
     minErrorMessage: "The description must be at least 3 characters.",
-    requiredErrorMessage: "The description is a required field.",
   }),
   npmPackageName: NullableStringField({
     min: 3,
