@@ -43,7 +43,7 @@
     {
       "name": "ToolTrack",
       "shortName": null,
-      "description": "A CMS-powered, interactive and dynamic personal portfolio & website written using NextJS.",
+      "description": "An application that allows users to monitor, manage and configure notifications and alerts that they will receive as it relates to inventory & price changes that occur for products offered by the woodworking hand tool manufacturer, Lie Nielsen.",
       "slug": "tooltrack",
       "icon": "screwdriver-wrench",
       "createdAt": "2024-08-25T23:24:59.768Z",
