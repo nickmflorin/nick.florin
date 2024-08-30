@@ -6,7 +6,12 @@ import { type Required } from "utility-types";
 
 import { LayoutNavGroup } from "./LayoutNavGroup";
 import { LayoutNavItem } from "./LayoutNavItem";
-import { type ILayoutNavItem, layoutNavItemHasChildren } from "./types";
+import {
+  type ILayoutNavItem,
+  layoutNavItemHasChildren,
+  type IInternalLayoutNavItem,
+  layoutNavItemIsExternal,
+} from "./types";
 
 export { type ILayoutNavItem } from "./types";
 
@@ -27,8 +32,10 @@ const getPreviousOpenedGroup = ({
   const previousOpenedGroup = previousItems
     .map((it, ind) => ({ ind, item: it }))
     .filter(
-      (d): d is { item: Required<ILayoutNavItem, "children">; ind: number } =>
-        layoutNavItemHasChildren(d.item) && d.ind === groupOpenIndex,
+      (d): d is { item: Required<IInternalLayoutNavItem, "children">; ind: number } =>
+        !layoutNavItemIsExternal(d.item) &&
+        layoutNavItemHasChildren(d.item) &&
+        d.ind === groupOpenIndex,
     );
   if (previousOpenedGroup.length === 0) {
     return null;
@@ -63,7 +70,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
         {items
           .filter(item => item.visible !== false)
           .map((item, i) => {
-            if (layoutNavItemHasChildren(item)) {
+            if (!layoutNavItemIsExternal(item) && layoutNavItemHasChildren(item)) {
               const offset = getAnimatedOffset({
                 previousItems: items.filter(item => item.visible !== false).slice(0, i),
                 groupOpenIndex,

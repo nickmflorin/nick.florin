@@ -5,7 +5,11 @@ import { motion } from "framer-motion";
 import { LayoutNavAnchor } from "~/components/buttons/LayoutNavAnchor";
 
 import * as constants from "./constants";
-import { type ILayoutNavItem } from "./types";
+import {
+  type IExternalLayoutNavItem,
+  type IInternalLayoutNavItem,
+  type ILayoutNavItem,
+} from "./types";
 
 const itemVariants = {
   open: () => ({
@@ -21,7 +25,7 @@ const itemVariants = {
 
 export interface LayoutNavItemChildProps {
   readonly index: number;
-  readonly item: Omit<ILayoutNavItem, "children">;
+  readonly item: Omit<IInternalLayoutNavItem, "children"> | IExternalLayoutNavItem;
 }
 
 export const LayoutNavItemChild = ({ index, item }: LayoutNavItemChildProps) => (

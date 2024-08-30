@@ -81,6 +81,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 active: [{ leadingPath: "/projects", endPath: false }],
               },
               {
+                tooltipLabel: "Blog",
+                icon: { name: "medium", iconStyle: "brands" },
+                href: "https://medium.com/@nickmflorin",
+              },
+              {
                 tooltipLabel: "Admin CMS",
                 icon: { name: "gear" },
                 path: "/admin/skills",

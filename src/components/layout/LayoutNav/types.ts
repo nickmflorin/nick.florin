@@ -2,16 +2,38 @@ import { type Required } from "utility-types";
 
 import { type NavItem } from "~/hooks";
 
-export interface ILayoutNavItem extends Required<NavItem, "icon"> {
+export interface IInternalLayoutNavItem extends Required<NavItem, "icon"> {
   readonly tooltipLabel: string;
   readonly visible?: boolean;
-  readonly children?: [Omit<ILayoutNavItem, "children">, ...Omit<ILayoutNavItem, "children">[]];
+  readonly href?: never;
+  readonly children?: [
+    Omit<IInternalLayoutNavItem, "children">,
+    ...Omit<IInternalLayoutNavItem, "children">[],
+  ];
 }
+
+export interface IExternalLayoutNavItem extends Required<Pick<NavItem, "icon">, "icon"> {
+  readonly children?: never;
+  readonly tooltipLabel: string;
+  readonly visible?: boolean;
+  readonly href: string;
+  readonly path?: never;
+  readonly active?: never;
+}
+
+export type ILayoutNavItem = IInternalLayoutNavItem | IExternalLayoutNavItem;
+
+export const layoutNavItemIsExternal = (
+  navItem: ILayoutNavItem,
+): navItem is IExternalLayoutNavItem => (navItem as IExternalLayoutNavItem).href !== undefined;
 
 export type LayoutNavItemHasChildren<
   I extends ILayoutNavItem | Required<ILayoutNavItem, "children">,
 > = I extends {
-  children: [Omit<ILayoutNavItem, "children">, ...Omit<ILayoutNavItem, "children">[]];
+  children: [
+    Omit<IInternalLayoutNavItem, "children">,
+    ...Omit<IInternalLayoutNavItem, "children">[],
+  ];
 }
   ? true
   : false;
@@ -23,8 +45,9 @@ export type IfLayoutNavItemHasChildren<
 > = LayoutNavItemHasChildren<I> extends true ? T : R;
 
 export const layoutNavItemHasChildren = (
-  item: ILayoutNavItem | Required<ILayoutNavItem, "children">,
-): item is Required<ILayoutNavItem, "children"> =>
-  (item as Required<ILayoutNavItem, "children">).children !== undefined &&
-  (item as Required<ILayoutNavItem, "children">).children.filter(child => child.visible !== false)
-    .length !== 0;
+  item: IInternalLayoutNavItem | Required<IInternalLayoutNavItem, "children">,
+): item is Required<IInternalLayoutNavItem, "children"> =>
+  (item as Required<IInternalLayoutNavItem, "children">).children !== undefined &&
+  (item as Required<IInternalLayoutNavItem, "children">).children.filter(
+    child => child.visible !== false,
+  ).length !== 0;

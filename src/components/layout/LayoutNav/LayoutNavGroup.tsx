@@ -4,11 +4,11 @@ import { type Required } from "utility-types";
 import * as constants from "./constants";
 import { LayoutNavItem } from "./LayoutNavItem";
 import { LayoutNavItemChild } from "./LayoutNavItemChild";
-import { type ILayoutNavItem } from "./types";
+import { type IInternalLayoutNavItem } from "./types";
 
 export interface LayoutNavGroupProps {
   readonly isOpen: boolean;
-  readonly item: Required<ILayoutNavItem, "children">;
+  readonly item: Required<IInternalLayoutNavItem, "children">;
   readonly onOpen: () => void;
 }
 
