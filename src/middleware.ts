@@ -17,10 +17,10 @@ export default clerkMiddleware((auth, req) => {
          redirect them to a 404 page.
 
          Note: Redirecting back to the dashboard can cause issues with the 'useNavigatable' hook
-               and loading indicators on the navigation button, because if the navigation button is
-               clicked while on the dashboard, and we redirect to the dashboard, this redirect will
-               happen server side, and the page change will not be detected by the hook and the
-               navigation button will show a loading indicator indefinitely. */
+         and loading indicators on the navigation button, because if the navigation button is
+         clicked while on the dashboard, and we redirect to the dashboard, this redirect will
+         happen server side, and the page change will not be detected by the hook and the
+         navigation button will show a loading indicator indefinitely. */
       return NextResponse.redirect(new URL("/404", req.url));
     } else if (!userId) {
       return redirectToSignIn({ returnBackUrl: req.url });

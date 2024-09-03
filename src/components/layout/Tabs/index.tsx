@@ -2,14 +2,13 @@ import dynamic from "next/dynamic";
 
 import clsx from "clsx";
 
+import { type LabeledNavItem } from "~/application/pages";
 import { type ComponentProps } from "~/components/types";
-
-import { type TabItem } from "./types";
 
 const Tab = dynamic(() => import("./Tab"));
 
 export interface TabsProps extends ComponentProps {
-  readonly items: TabItem[];
+  readonly items: LabeledNavItem[];
   readonly children?: JSX.Element | JSX.Element[];
 }
 

@@ -1,15 +1,17 @@
 "use client";
+import { type LabeledNavItem } from "~/application/pages";
 import { TabButton } from "~/components/buttons/TabButton";
 import { useNavigatable } from "~/hooks";
 
-import { type TabItem } from "./types";
-
 export interface TabProps {
-  readonly item: TabItem;
+  readonly item: LabeledNavItem;
 }
 
 export const Tab = ({ item }: TabProps) => {
-  const { isActive, isPending, setActiveOptimistically, href } = useNavigatable({ item });
+  const { isActive, isPending, setActiveOptimistically, href } = useNavigatable({
+    id: item.path,
+    item,
+  });
   return (
     <TabButton
       href={href}

@@ -13,38 +13,38 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
           {
             label: "Skills",
             path: "/admin/skills",
-            active: { leadingPath: "/admin/skills" },
+            activePaths: { leadingPath: "/admin/skills" },
             icon: { name: "palette" },
           },
           {
             label: "Experiences",
             path: "/admin/experiences",
             icon: { name: "briefcase" },
-            active: { leadingPath: "/admin/experiences" },
+            activePaths: { leadingPath: "/admin/experiences" },
           },
           {
             label: "Educations",
             path: "/admin/educations",
             icon: { name: "building-columns" },
-            active: { leadingPath: "/admin/educations" },
+            activePaths: { leadingPath: "/admin/educations" },
           },
           {
             label: "Projects",
             path: "/admin/projects",
             icon: { name: "hammer" },
-            active: { leadingPath: "/admin/projects" },
+            activePaths: { leadingPath: "/admin/projects" },
           },
           {
             label: "Courses",
             path: "/admin/courses",
             icon: { name: "backpack" },
-            active: { leadingPath: "/admin/courses" },
+            activePaths: { leadingPath: "/admin/courses" },
           },
           {
             label: "Repositories",
             path: "/admin/repositories",
             icon: { name: "github", iconStyle: "brands" },
-            active: { leadingPath: "/admin/repositories" },
+            activePaths: { leadingPath: "/admin/repositories" },
           },
         ]}
       >

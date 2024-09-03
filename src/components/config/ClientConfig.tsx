@@ -9,6 +9,9 @@ const DrawersProvider = dynamic(() => import("~/components/drawers/provider/Draw
 });
 const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });
 const TourProvider = dynamic(() => import("./TourProvider"), { ssr: false });
+const GlobalNavigatableProvider = dynamic(() => import("./GlobalNavigatableProvider"), {
+  ssr: false,
+});
 
 export interface ClientConfigProps {
   readonly children: ReactNode;
@@ -18,9 +21,11 @@ function ClientConfig(props: ClientConfigProps) {
   return (
     <SWRConfig>
       <MantineProvider>
-        <DrawersProvider>
-          <TourProvider>{props.children}</TourProvider>
-        </DrawersProvider>
+        <GlobalNavigatableProvider>
+          <DrawersProvider>
+            <TourProvider>{props.children}</TourProvider>
+          </DrawersProvider>
+        </GlobalNavigatableProvider>
       </MantineProvider>
     </SWRConfig>
   );

@@ -33,7 +33,10 @@ export const InternalLayoutNavAnchor = forwardRef<
   types.PolymorphicButtonElement<"link">,
   InternalLayoutNavAnchorProps
 >(({ item, ...props }: InternalLayoutNavAnchorProps, ref: types.PolymorphicButtonRef<"link">) => {
-  const { isActive, href, isPending, setActiveOptimistically } = useNavigatable({ item });
+  const { isActive, href, isPending, setActiveOptimistically } = useNavigatable({
+    id: item.path,
+    item,
+  });
   return (
     <IconButton<"link">
       {...props}

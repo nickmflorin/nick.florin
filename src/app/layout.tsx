@@ -6,8 +6,8 @@ import { type ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-import { AppConfig } from "~/app/config/AppConfig";
 import { environment } from "~/environment";
+import { AppConfig } from "~/components/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
 
 const InterFont = Inter({
@@ -49,13 +49,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 tooltipLabel: "Dashboard",
                 icon: { name: "grid" },
                 path: "/dashboard",
-                active: [{ leadingPath: "/dashboard" }],
+                activePaths: [{ leadingPath: "/dashboard" }],
               },
               {
                 tooltipLabel: "Resume",
                 icon: { name: "list-check" },
                 path: "/resume",
-                active: [
+                activePaths: [
                   { leadingPath: "/resume/experience" },
                   { leadingPath: "/resume/education" },
                 ],
@@ -64,13 +64,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     tooltipLabel: "Experience",
                     icon: { name: "briefcase" },
                     path: "/resume/experience",
-                    active: [{ leadingPath: "/resume/experience" }],
+                    activePaths: [{ leadingPath: "/resume/experience" }],
                   },
                   {
                     tooltipLabel: "Education",
                     icon: { name: "building-columns" },
                     path: "/resume/education",
-                    active: [{ leadingPath: "/resume/education" }],
+                    activePaths: [{ leadingPath: "/resume/education" }],
                   },
                 ],
               },
@@ -78,7 +78,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 tooltipLabel: "Projects",
                 icon: { name: "hammer" },
                 path: "/projects",
-                active: [{ leadingPath: "/projects", endPath: false }],
+                activePaths: [{ leadingPath: "/projects", endPath: false }],
               },
               {
                 tooltipLabel: "Blog",
@@ -89,7 +89,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 tooltipLabel: "Admin CMS",
                 icon: { name: "gear" },
                 path: "/admin/skills",
-                active: [
+                activePaths: [
                   { leadingPath: "/admin/skills" },
                   { leadingPath: "/admin/experiences" },
                   { leadingPath: "/admin/educations" },

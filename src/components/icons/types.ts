@@ -1,13 +1,15 @@
 import {
   type IconStyle as RootIconStyle,
   type IconFamily as RootIconFamily,
-  type IconName,
+  type IconName as RootIconName,
 } from "@fortawesome/fontawesome-svg-core";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { z } from "zod";
 
 import { type ComponentProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";
+
+export type IconName = RootIconName;
 
 export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
 export type IconDimension = EnumeratedLiteralsMember<typeof IconDimensions>;
