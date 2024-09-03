@@ -48,6 +48,16 @@ export const useNavigatable = <N extends Pick<NavItem, "activePaths" | "path">>(
   const setActiveOptimistically = useCallback(() => {
     if (!isActive) {
       setOptimisticActiveNavigation(id);
+    } else {
+      /* If the clicked element is already active, then we need to set the global optimistically
+         active element to null.  This is because if an already active element is clicked, and
+         there is another element that is pending, we need to remove the pending state from the
+         pending element because the page navigation will not transition to the path associated
+         with the pending element (it will in effect be cancelled, and the navigation will remain
+         on the existing page).  If we did not do this, then we would wind up with an infinite
+         loading indicator on the previously pending element, because the pathname would not change
+         and the pending element would never "finish" pending. */
+      setOptimisticActiveNavigation(null);
     }
   }, [id, isActive, setOptimisticActiveNavigation]);
 
