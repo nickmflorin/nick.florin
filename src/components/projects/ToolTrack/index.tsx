@@ -112,14 +112,38 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
       </div>
     </Section>
-    <Section title="Subscription & Notification Management" marginBottom={false}>
+    <Section title="Subscribing to Events" marginBottom={false}>
       <Description>
-        This application was designed such that users can configure their own subscriptions to
-        various events that may occur as it relates to inventory and prices on&nbsp;
+        This application was designed such that users can subscribe to various events that may occur
+        as it relates to a specific product offered on{" "}
         <Link as="a" href="https://lie-nielsen.com/">
           Lie Nielsen
         </Link>
-        &apos;s website. .
+        &apos;s website. Currently, these events include subscribing to changes in price of a
+        product or changes in inventory status of a product (i.e. &quot;In Stock&quot;, &quot;Out of
+        Stock&quot;, etc.).
+      </Description>
+      <Description>
+        The application scrapes the data from the company&apos;s website at regular intervals and
+        when it notices a change in the data, it will add the appropriate event to a queue that will
+        result in a notification being sent to the subscribed user when it is processed.
+      </Description>
+      <ProjectImageWrapper className="mt-[8px]">
+        <ProjectImage
+          src="/projects/tooltrack/subscribing-to-products.png"
+          alt="Subscribing to Products"
+          caption={[
+            "Users can view all of the products listed on the company's website and subscribe to " +
+              "receive notifications for various events that may occur for a given product.",
+          ]}
+        />
+      </ProjectImageWrapper>
+    </Section>
+    <Section title="Managing Subscriptions" marginBottom={false}>
+      <Description>
+        Users can view all of their active product subscriptions in a centralized view. From this
+        view, they can make changes to their active subscriptions, disable them temporarily or
+        unsubscribe from them entirely.
       </Description>
       <ProjectImageWrapper className="mt-[8px]">
         <ProjectImage
@@ -131,16 +155,12 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
           ]}
         />
       </ProjectImageWrapper>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/tooltrack/subscribing-to-products.png"
-          alt="Subscribing to Products"
-          caption={[
-            "Users can view the products listed on the company's website and subscribe to " +
-              "the various events that the application listens to for that product.",
-          ]}
-        />
-      </ProjectImageWrapper>
+    </Section>
+    <Section title="Product Detail" marginBottom={false}>
+      <Description>
+        Users can get more detailed information about a specific product, their subscriptions to
+        that product and historical data related to that product in the product&apos;s detail view.
+      </Description>
       <ProjectImageWrapper className="mt-[8px]">
         <ProjectImage
           src="/projects/tooltrack/product-detail.png"
