@@ -1,7 +1,28 @@
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+
 import type { BrandDetail, BrandNestedDetail, BrandProject, BrandRepository } from "./brand";
+
+import type { IconName, IconProp } from "~/components/icons";
 
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
+
+/* Even though these are populated in the database - we need to have a non-dynamic (i.e. hard-coded)
+   list of project slugs to reference in UI logic. */
+export const ProjectSlugs = enumeratedLiterals(
+  [
+    { value: "greenbudget", icon: "leaf" },
+    { value: "asset-visualizations", icon: "chart-scatter-bubble" },
+    { value: "website", icon: "passport" },
+    { value: "tooltrack", icon: "screwdriver-wrench" },
+  ] as const satisfies {
+    readonly value: string;
+    readonly icon: IconName | IconProp;
+  }[],
+  {},
+);
+
+export type ProjectSlug = EnumeratedLiteralsMember<typeof ProjectSlugs>;
 
 export type ProjectIncludes =
   | ["skills", "repositories", "nestedDetails", "details"]

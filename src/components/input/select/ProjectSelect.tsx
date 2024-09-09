@@ -1,7 +1,6 @@
-import type { IconName } from "@fortawesome/fontawesome-svg-core";
-
-import { type BrandProject } from "~/prisma/model";
-import type { IconProp } from "~/components/icons";
+import { logger } from "~/application/logger";
+import { type BrandProject, ProjectSlugs } from "~/prisma/model";
+import type { IconProp, IconName } from "~/components/icons";
 import { Text } from "~/components/typography/Text";
 
 import { Select, type SelectProps } from "./generic";
@@ -44,7 +43,21 @@ export const ProjectSelect = <
     }}
     /* TODO: We eventually may want to solidify types related to the available IconName(s) so we can
        use it for schema validation of data coming from the database. */
-    data={props.data.map(datum => ({ ...datum, icon: { name: datum.icon as IconName } }))}
+    data={props.data.map(datum => {
+      let icon: IconName;
+      const slug = datum.slug;
+      if (!ProjectSlugs.contains(slug)) {
+        logger.warn(
+          `Encountered a project stored in the database without a corresponding hard-coded slug: ${slug}.`,
+          { slug },
+        );
+        // This is the default, fallback icon...
+        icon = "chart-kanban";
+      } else {
+        icon = ProjectSlugs.getModel(slug).icon;
+      }
+      return { ...datum, icon: { name: icon } };
+    })}
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium" truncate>

@@ -213,13 +213,13 @@ exports.Prisma.ProjectScalarFieldEnum = {
   shortName: 'shortName',
   description: 'description',
   slug: 'slug',
-  icon: 'icon',
   createdAt: 'createdAt',
   createdById: 'createdById',
   updatedAt: 'updatedAt',
   updatedById: 'updatedById',
   startDate: 'startDate',
-  highlighted: 'highlighted'
+  highlighted: 'highlighted',
+  visible: 'visible'
 };
 
 exports.Prisma.CompanyScalarFieldEnum = {

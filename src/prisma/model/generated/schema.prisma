@@ -221,7 +221,6 @@ model Project {
   // projects page with embedded links and things of that nature.
   description   String
   slug          String         @unique
-  icon          String         @unique
   createdAt     DateTime       @default(now())
   createdBy     User           @relation("createdProjects", fields: [createdById], references: [id])
   createdById   String         @db.Uuid
@@ -234,7 +233,8 @@ model Project {
   details       Detail[]       @relation("details")
   nestedDetails NestedDetail[] @relation("nestedDetails")
   repositories  Repository[]   @relation("projectRepositories")
-  highlighted   Boolean        @default(true)
+  highlighted   Boolean        @default(false)
+  visible       Boolean        @default(false)
 }
 
 model Company {

@@ -172,12 +172,6 @@ export const updateProject = async (
     ) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
-    if (
-      data.icon &&
-      (await tx.project.count({ where: { icon: data.icon, id: { notIn: [project.id] } } }))
-    ) {
-      fieldErrors.addUnique("icon", "The icon must be unique.");
-    }
 
     const [details] = await queryM2MsDynamically(tx, {
       model: "detail",
@@ -207,19 +201,26 @@ export const updateProject = async (
     }
 
     const sks = [...project.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
+
+    let updateData = {
+      ...data,
+      slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
+      name: _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
+      updatedById: user.id,
+      repositories: repositories
+        ? { set: repositories.map(repo => ({ slug: repo.slug })) }
+        : undefined,
+      skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+    };
+    if (updateData.visible === false && updateData.highlighted === undefined) {
+      updateData = { ...updateData, highlighted: false };
+    } else if (updateData.highlighted === true && updateData.visible === undefined) {
+      updateData = { ...updateData, visible: true };
+    }
+
     const updated = await tx.project.update({
       where: { id },
-      data: {
-        ...data,
-        slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
-        name:
-          _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
-        updatedById: user.id,
-        repositories: repositories
-          ? { set: repositories.map(repo => ({ slug: repo.slug })) }
-          : undefined,
-        skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
-      },
+      data: updateData,
     });
 
     if (nestedDetails) {

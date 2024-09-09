@@ -1,5 +1,3 @@
-import { forwardRef, type ForwardedRef } from "react";
-
 import clsx from "clsx";
 
 import type * as types from "../types";

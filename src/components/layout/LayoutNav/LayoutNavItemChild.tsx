@@ -8,7 +8,6 @@ import * as constants from "./constants";
 import {
   type IExternalLayoutNavItem,
   type IInternalLayoutNavItem,
-  type ILayoutNavItem,
 } from "./types";
 
 const itemVariants = {

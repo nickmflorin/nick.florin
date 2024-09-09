@@ -13,6 +13,5 @@ export const useProjectForm = () =>
       skills: [],
       details: [],
       nestedDetails: [],
-      highlighted: true,
     },
   });

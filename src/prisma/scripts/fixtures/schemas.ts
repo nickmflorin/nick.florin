@@ -54,7 +54,6 @@ export const ProjectJsonSchema = MetaSchema.extend({
   shortName: NullableStringField({}).optional(),
   slug: NullableStringField({}).optional(),
   description: NonNullableStringField({}),
-  icon: NonNullableStringField({}),
   startDate: z.coerce.date(),
   visible: z.boolean().optional(),
   skills: z.array(z.string()).optional(),

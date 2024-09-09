@@ -11,6 +11,10 @@ import {
   type TableViewConfig as RootTableViewConfig,
 } from "~/components/tables/generic/Provider";
 
+const VisibleCell = dynamic(
+  () => import("~/components/tables/generic/cells/VisibleCell"),
+) as cells.VisibleCellComponent;
+
 const EditableStringCell = dynamic(
   () => import("~/components/tables/generic/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
@@ -113,6 +117,22 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           width: 80,
           render: ({ model, table }) => (
             <HighlightedCell
+              model={model}
+              table={table}
+              action={async (id, data) => {
+                await updateProject(id, data);
+              }}
+              errorMessage="There was an error updating the project."
+            />
+          ),
+        },
+        {
+          accessor: "visible",
+          title: "Visible",
+          textAlign: "center",
+          width: 80,
+          render: ({ model, table }) => (
+            <VisibleCell
               model={model}
               table={table}
               action={async (id, data) => {

@@ -48,9 +48,7 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
     if (_slug && (await tx.project.count({ where: { slug: _slug } }))) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }
-    if (await tx.project.count({ where: { icon: data.icon } })) {
-      fieldErrors.addUnique("icon", "The icon must be unique.");
-    }
+
     const [details] = await queryM2MsDynamically(tx, {
       model: "detail",
       // It is important to cast to undefined if the details are not provided in the payload!
@@ -78,18 +76,23 @@ export const createProject = async (req: z.infer<typeof ProjectSchema>) => {
       return fieldErrors.json;
     }
 
-    const project = await tx.project.create({
-      data: {
-        ...data,
-        slug,
-        createdById: user.id,
-        updatedById: user.id,
-        repositories: repositories
-          ? { connect: repositories.map(repo => ({ slug: repo.slug })) }
-          : undefined,
-        skills: skills ? { connect: skills.map(skill => ({ slug: skill.slug })) } : undefined,
-      },
-    });
+    let createData = {
+      ...data,
+      slug,
+      createdById: user.id,
+      updatedById: user.id,
+      repositories: repositories
+        ? { connect: repositories.map(repo => ({ slug: repo.slug })) }
+        : undefined,
+      skills: skills ? { connect: skills.map(skill => ({ slug: skill.slug })) } : undefined,
+    };
+    if (createData.visible === false && createData.highlighted === undefined) {
+      createData = { ...createData, highlighted: false };
+    } else if (createData.highlighted === true && createData.visible === undefined) {
+      createData = { ...createData, visible: true };
+    }
+
+    const project = await tx.project.create({ data: createData });
     if (details && details.length !== 0) {
       logger.info(`Associating ${details.length} details with new project, '${project.name}'.`, {
         projectId: project.id,

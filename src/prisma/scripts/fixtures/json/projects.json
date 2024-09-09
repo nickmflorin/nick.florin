@@ -5,22 +5,24 @@
       "shortName": "Asset Visualizations",
       "description": "An animated JavaScript charting library that can be used to visualize data in up to 5 dimensions simultaneously.",
       "slug": "asset-visualizations",
-      "icon": "chart-scatter-bubble",
       "createdAt": "2024-04-16T23:24:59.344Z",
       "updatedAt": "2024-04-16T23:24:59.344Z",
       "startDate": "2017-11-01T00:00:00.000Z",
       "skills": ["javascript", "responsive-design", "d3js", "html"],
-      "repositories": []
+      "repositories": [],
+      "visible": true,
+      "highlighted": true
     },
     {
       "name": "nick.florin",
       "shortName": null,
       "description": "A CMS-powered, interactive and dynamic personal portfolio & website written using NextJS.",
       "slug": "website",
-      "icon": "passport",
       "createdAt": "2024-04-16T23:24:59.768Z",
       "updatedAt": "2024-04-16T23:24:59.768Z",
       "startDate": "2024-01-15T00:00:00.000Z",
+      "visible": true,
+      "highlighted": true,
       "skills": [
         "javascript",
         "sass",
@@ -41,11 +43,23 @@
       "repositories": ["nick.florin"]
     },
     {
+      "name": "GreenBudget",
+      "shortName": null,
+      "description": "A modern, multi-user collaborative budgeting & accounting solution for film production.",
+      "slug": "greenbudget",
+      "createdAt": "2024-09-09T23:24:59.768Z",
+      "updatedAt": "2024-09-09T23:24:59.768Z",
+      "startDate": "2021-03-01T00:00:00.000Z",
+      "skills": [],
+      "repositories": ["happybudget", "happybudget-api"],
+      "visible": true,
+      "highlighted": true
+    },
+    {
       "name": "ToolTrack",
       "shortName": null,
       "description": "An application that allows users to monitor, manage and configure notifications and alerts that they will receive as it relates to inventory & price changes that occur for products offered by the woodworking hand tool manufacturer, Lie Nielsen.",
       "slug": "tooltrack",
-      "icon": "screwdriver-wrench",
       "createdAt": "2024-08-25T23:24:59.768Z",
       "updatedAt": "2024-08-25T23:24:59.768Z",
       "startDate": "2024-05-01T00:00:00.000Z",
@@ -65,7 +79,9 @@
         "ssr",
         "clerk"
       ],
-      "repositories": ["tooltrack"]
+      "repositories": ["tooltrack"],
+      "visible": true,
+      "highlighted": true
     }
   ]
 }

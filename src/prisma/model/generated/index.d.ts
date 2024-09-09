@@ -10687,13 +10687,13 @@ export namespace Prisma {
     shortName: string | null
     description: string | null
     slug: string | null
-    icon: string | null
     createdAt: Date | null
     createdById: string | null
     updatedAt: Date | null
     updatedById: string | null
     startDate: Date | null
     highlighted: boolean | null
+    visible: boolean | null
   }
 
   export type ProjectMaxAggregateOutputType = {
@@ -10702,13 +10702,13 @@ export namespace Prisma {
     shortName: string | null
     description: string | null
     slug: string | null
-    icon: string | null
     createdAt: Date | null
     createdById: string | null
     updatedAt: Date | null
     updatedById: string | null
     startDate: Date | null
     highlighted: boolean | null
+    visible: boolean | null
   }
 
   export type ProjectCountAggregateOutputType = {
@@ -10717,13 +10717,13 @@ export namespace Prisma {
     shortName: number
     description: number
     slug: number
-    icon: number
     createdAt: number
     createdById: number
     updatedAt: number
     updatedById: number
     startDate: number
     highlighted: number
+    visible: number
     _all: number
   }
 
@@ -10734,13 +10734,13 @@ export namespace Prisma {
     shortName?: true
     description?: true
     slug?: true
-    icon?: true
     createdAt?: true
     createdById?: true
     updatedAt?: true
     updatedById?: true
     startDate?: true
     highlighted?: true
+    visible?: true
   }
 
   export type ProjectMaxAggregateInputType = {
@@ -10749,13 +10749,13 @@ export namespace Prisma {
     shortName?: true
     description?: true
     slug?: true
-    icon?: true
     createdAt?: true
     createdById?: true
     updatedAt?: true
     updatedById?: true
     startDate?: true
     highlighted?: true
+    visible?: true
   }
 
   export type ProjectCountAggregateInputType = {
@@ -10764,13 +10764,13 @@ export namespace Prisma {
     shortName?: true
     description?: true
     slug?: true
-    icon?: true
     createdAt?: true
     createdById?: true
     updatedAt?: true
     updatedById?: true
     startDate?: true
     highlighted?: true
+    visible?: true
     _all?: true
   }
 
@@ -10852,13 +10852,13 @@ export namespace Prisma {
     shortName: string | null
     description: string
     slug: string
-    icon: string
     createdAt: Date
     createdById: string
     updatedAt: Date
     updatedById: string
     startDate: Date
     highlighted: boolean
+    visible: boolean
     _count: ProjectCountAggregateOutputType | null
     _min: ProjectMinAggregateOutputType | null
     _max: ProjectMaxAggregateOutputType | null
@@ -10884,13 +10884,13 @@ export namespace Prisma {
     shortName?: boolean
     description?: boolean
     slug?: boolean
-    icon?: boolean
     createdAt?: boolean
     createdById?: boolean
     updatedAt?: boolean
     updatedById?: boolean
     startDate?: boolean
     highlighted?: boolean
+    visible?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     skills?: boolean | Project$skillsArgs<ExtArgs>
@@ -10906,13 +10906,13 @@ export namespace Prisma {
     shortName?: boolean
     description?: boolean
     slug?: boolean
-    icon?: boolean
     createdAt?: boolean
     createdById?: boolean
     updatedAt?: boolean
     updatedById?: boolean
     startDate?: boolean
     highlighted?: boolean
+    visible?: boolean
   }
 
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10942,13 +10942,13 @@ export namespace Prisma {
       shortName: string | null
       description: string
       slug: string
-      icon: string
       createdAt: Date
       createdById: string
       updatedAt: Date
       updatedById: string
       startDate: Date
       highlighted: boolean
+      visible: boolean
     }, ExtArgs["result"]["project"]>
     composites: {}
   }
@@ -11359,13 +11359,13 @@ export namespace Prisma {
     readonly shortName: FieldRef<"Project", 'String'>
     readonly description: FieldRef<"Project", 'String'>
     readonly slug: FieldRef<"Project", 'String'>
-    readonly icon: FieldRef<"Project", 'String'>
     readonly createdAt: FieldRef<"Project", 'DateTime'>
     readonly createdById: FieldRef<"Project", 'String'>
     readonly updatedAt: FieldRef<"Project", 'DateTime'>
     readonly updatedById: FieldRef<"Project", 'String'>
     readonly startDate: FieldRef<"Project", 'DateTime'>
     readonly highlighted: FieldRef<"Project", 'Boolean'>
+    readonly visible: FieldRef<"Project", 'Boolean'>
   }
     
 
@@ -17198,13 +17198,13 @@ export namespace Prisma {
     shortName: 'shortName',
     description: 'description',
     slug: 'slug',
-    icon: 'icon',
     createdAt: 'createdAt',
     createdById: 'createdById',
     updatedAt: 'updatedAt',
     updatedById: 'updatedById',
     startDate: 'startDate',
-    highlighted: 'highlighted'
+    highlighted: 'highlighted',
+    visible: 'visible'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -18249,13 +18249,13 @@ export namespace Prisma {
     shortName?: StringNullableFilter<"Project"> | string | null
     description?: StringFilter<"Project"> | string
     slug?: StringFilter<"Project"> | string
-    icon?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     createdById?: UuidFilter<"Project"> | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     updatedById?: UuidFilter<"Project"> | string
     startDate?: DateTimeFilter<"Project"> | Date | string
     highlighted?: BoolFilter<"Project"> | boolean
+    visible?: BoolFilter<"Project"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
@@ -18270,13 +18270,13 @@ export namespace Prisma {
     shortName?: SortOrderInput | SortOrder
     description?: SortOrder
     slug?: SortOrder
-    icon?: SortOrder
     createdAt?: SortOrder
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
     highlighted?: SortOrder
+    visible?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     skills?: SkillOrderByRelationAggregateInput
@@ -18290,7 +18290,6 @@ export namespace Prisma {
     name?: string
     shortName?: string
     slug?: string
-    icon?: string
     AND?: ProjectWhereInput | ProjectWhereInput[]
     OR?: ProjectWhereInput[]
     NOT?: ProjectWhereInput | ProjectWhereInput[]
@@ -18301,13 +18300,14 @@ export namespace Prisma {
     updatedById?: UuidFilter<"Project"> | string
     startDate?: DateTimeFilter<"Project"> | Date | string
     highlighted?: BoolFilter<"Project"> | boolean
+    visible?: BoolFilter<"Project"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     skills?: SkillListRelationFilter
     details?: DetailListRelationFilter
     nestedDetails?: NestedDetailListRelationFilter
     repositories?: RepositoryListRelationFilter
-  }, "id" | "name" | "shortName" | "slug" | "icon">
+  }, "id" | "name" | "shortName" | "slug">
 
   export type ProjectOrderByWithAggregationInput = {
     id?: SortOrder
@@ -18315,13 +18315,13 @@ export namespace Prisma {
     shortName?: SortOrderInput | SortOrder
     description?: SortOrder
     slug?: SortOrder
-    icon?: SortOrder
     createdAt?: SortOrder
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
     highlighted?: SortOrder
+    visible?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
     _min?: ProjectMinOrderByAggregateInput
@@ -18336,13 +18336,13 @@ export namespace Prisma {
     shortName?: StringNullableWithAggregatesFilter<"Project"> | string | null
     description?: StringWithAggregatesFilter<"Project"> | string
     slug?: StringWithAggregatesFilter<"Project"> | string
-    icon?: StringWithAggregatesFilter<"Project"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     createdById?: UuidWithAggregatesFilter<"Project"> | string
     updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     updatedById?: UuidWithAggregatesFilter<"Project"> | string
     startDate?: DateTimeWithAggregatesFilter<"Project"> | Date | string
     highlighted?: BoolWithAggregatesFilter<"Project"> | boolean
+    visible?: BoolWithAggregatesFilter<"Project"> | boolean
   }
 
   export type CompanyWhereInput = {
@@ -19732,11 +19732,11 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -19751,13 +19751,13 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -19770,11 +19770,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -19789,13 +19789,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -19808,13 +19808,13 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
   }
 
   export type ProjectUpdateManyMutationInput = {
@@ -19823,11 +19823,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProjectUncheckedUpdateManyInput = {
@@ -19836,13 +19836,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompanyCreateInput = {
@@ -21216,13 +21216,13 @@ export namespace Prisma {
     shortName?: SortOrder
     description?: SortOrder
     slug?: SortOrder
-    icon?: SortOrder
     createdAt?: SortOrder
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
     highlighted?: SortOrder
+    visible?: SortOrder
   }
 
   export type ProjectMaxOrderByAggregateInput = {
@@ -21231,13 +21231,13 @@ export namespace Prisma {
     shortName?: SortOrder
     description?: SortOrder
     slug?: SortOrder
-    icon?: SortOrder
     createdAt?: SortOrder
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
     highlighted?: SortOrder
+    visible?: SortOrder
   }
 
   export type ProjectMinOrderByAggregateInput = {
@@ -21246,13 +21246,13 @@ export namespace Prisma {
     shortName?: SortOrder
     description?: SortOrder
     slug?: SortOrder
-    icon?: SortOrder
     createdAt?: SortOrder
     createdById?: SortOrder
     updatedAt?: SortOrder
     updatedById?: SortOrder
     startDate?: SortOrder
     highlighted?: SortOrder
+    visible?: SortOrder
   }
 
   export type CompanyCountOrderByAggregateInput = {
@@ -25072,11 +25072,11 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
     details?: DetailCreateNestedManyWithoutProjectInput
@@ -25090,12 +25090,12 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -25118,11 +25118,11 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
     details?: DetailCreateNestedManyWithoutProjectInput
@@ -25136,12 +25136,12 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -25798,13 +25798,13 @@ export namespace Prisma {
     shortName?: StringNullableFilter<"Project"> | string | null
     description?: StringFilter<"Project"> | string
     slug?: StringFilter<"Project"> | string
-    icon?: StringFilter<"Project"> | string
     createdAt?: DateTimeFilter<"Project"> | Date | string
     createdById?: UuidFilter<"Project"> | string
     updatedAt?: DateTimeFilter<"Project"> | Date | string
     updatedById?: UuidFilter<"Project"> | string
     startDate?: DateTimeFilter<"Project"> | Date | string
     highlighted?: BoolFilter<"Project"> | boolean
+    visible?: BoolFilter<"Project"> | boolean
   }
 
   export type ProjectUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -26110,11 +26110,11 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -26128,13 +26128,13 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     repositories?: RepositoryUncheckedCreateNestedManyWithoutProjectsInput
@@ -26416,11 +26416,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -26434,13 +26434,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     repositories?: RepositoryUncheckedUpdateManyWithoutProjectsNestedInput
@@ -26652,11 +26652,11 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -26670,13 +26670,13 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
     repositories?: RepositoryUncheckedCreateNestedManyWithoutProjectsInput
@@ -26931,11 +26931,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -26949,13 +26949,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
     repositories?: RepositoryUncheckedUpdateManyWithoutProjectsNestedInput
@@ -27486,11 +27486,11 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     skills?: SkillCreateNestedManyWithoutProjectsInput
@@ -27504,13 +27504,13 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     skills?: SkillUncheckedCreateNestedManyWithoutProjectsInput
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
@@ -27984,11 +27984,11 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedProjectsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedProjectsInput
     details?: DetailCreateNestedManyWithoutProjectInput
@@ -28002,13 +28002,13 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
     details?: DetailUncheckedCreateNestedManyWithoutProjectInput
     nestedDetails?: NestedDetailUncheckedCreateNestedManyWithoutProjectInput
     repositories?: RepositoryUncheckedCreateNestedManyWithoutProjectsInput
@@ -31685,12 +31685,12 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     createdById: string
     updatedAt?: Date | string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
   }
 
   export type ProjectCreateManyCreatedByInput = {
@@ -31699,12 +31699,12 @@ export namespace Prisma {
     shortName?: string | null
     description: string
     slug: string
-    icon: string
     createdAt?: Date | string
     updatedAt?: Date | string
     updatedById: string
     startDate: Date | string
     highlighted?: boolean
+    visible?: boolean
   }
 
   export type RepositoryCreateManyUpdatedByInput = {
@@ -32663,11 +32663,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
     details?: DetailUpdateManyWithoutProjectNestedInput
@@ -32681,12 +32681,12 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -32699,12 +32699,12 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProjectUpdateWithoutCreatedByInput = {
@@ -32713,11 +32713,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
     details?: DetailUpdateManyWithoutProjectNestedInput
@@ -32731,12 +32731,12 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -32749,12 +32749,12 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type RepositoryUpdateWithoutUpdatedByInput = {
@@ -33179,11 +33179,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     skills?: SkillUpdateManyWithoutProjectsNestedInput
@@ -33197,13 +33197,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     skills?: SkillUncheckedUpdateManyWithoutProjectsNestedInput
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
@@ -33215,13 +33215,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ExperienceUpdateWithoutSkillsInput = {
@@ -33388,11 +33388,11 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedProjectsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedProjectsNestedInput
     details?: DetailUpdateManyWithoutProjectNestedInput
@@ -33406,13 +33406,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
     details?: DetailUncheckedUpdateManyWithoutProjectNestedInput
     nestedDetails?: NestedDetailUncheckedUpdateManyWithoutProjectNestedInput
     repositories?: RepositoryUncheckedUpdateManyWithoutProjectsNestedInput
@@ -33424,13 +33424,13 @@ export namespace Prisma {
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    icon?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedById?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    visible?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DetailUpdateWithoutSkillsInput = {

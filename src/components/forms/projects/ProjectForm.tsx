@@ -28,14 +28,6 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
     >
       <TextInput className="w-full" {...props.form.register("slug")} />
     </Form.Field>
-    <Form.Field
-      name="icon"
-      label="Icon"
-      form={props.form}
-      helpText="The FontAwesome name of the icon that the project should be associated with."
-    >
-      <TextInput className="w-full" {...props.form.register("icon")} />
-    </Form.Field>
     <Form.Field name="description" label="Description" form={props.form}>
       <TextArea className="w-full" {...props.form.register("description")} rows={4} />
     </Form.Field>
