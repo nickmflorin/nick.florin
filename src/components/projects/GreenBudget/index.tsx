@@ -17,13 +17,13 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
     description={
       <div className="flex flex-col gap-[6px]">
         <Description>
-          <b>GreenBudget</b> is an application that was created to address a niche market
-          opportunity by providing a modern, web-based, multi-user collaborative budgeting solution
-          for the film production industry. It replaced many outdated, inflexible and somewhat
-          manual solutions that previously existed in the market.
+          <span className="font-medium text-text">GreenBudget</span> is an application that was
+          created to address a niche market opportunity by providing a modern, web-based, multi-user
+          collaborative budgeting solution for the film production industry. It replaced many
+          outdated, inflexible and somewhat manual solutions that previously existed in the market.
         </Description>
         <Description>
-          <b>GreenBudget</b> is powered by a&nbsp;
+          <span className="font-medium text-text">GreenBudget</span> is powered by a&nbsp;
           <Link as="a" href="https://react.dev/">
             React
           </Link>
@@ -43,9 +43,24 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           .
         </Description>
         <Description>
-          By the time I stopped working on the project, <b>GreenBudget</b> boasted a couple thousand
-          subscribed (paying) users and had drawn interest from a number of enterprise clients who
-          had expressed interest in adopting the platform for their own use.
+          The application relies on several different open-source tabling libraries interwoven with
+          a large amount of internal, custom built tabling mechanics, that operate with the help of
+          technology such as&nbsp;
+          <Link as="a" href="https://react-redux.js.org/">
+            React Redux
+          </Link>
+          &nbsp;and&nbsp;
+          <Link as="a" href="https://redux-saga.js.org/">
+            Redux Sagas
+          </Link>
+          .
+        </Description>
+        <Description>
+          By the time I stopped working on the project,&nbsp;
+          <span className="font-medium text-text">GreenBudget</span>&nbsp;boasted a&nbsp;
+          <i>couple thousand subscribed (paying) users</i>&nbsp;and had drawn interest from a number
+          of enterprise clients who had expressed interest in adopting the platform for their own
+          use.
         </Description>
       </div>
     }
@@ -54,9 +69,10 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
     <Disclaimer className="mt-3 mb-3">
       <div className="flex flex-col gap-2">
         <Description>
-          Throughout the development of <b>GreenBudget</b>, I was working closely with a film
-          producer in Los Angeles, CA. Unfortunately, after 2 years of development, he stole the
-          software from me, and decided to relaunch it on servers that only he had access to.
+          Throughout the development of <span className="font-medium text-text">GreenBudget</span>,
+          I was working closely with a film producer in Los Angeles, CA. Unfortunately, after 2
+          years of development, he stole the software from me, and decided to relaunch it on servers
+          that only he had access to.
         </Description>
         <Description>
           After approximately 8 months of GreenBudget running on these new servers, he was forced to
@@ -69,10 +85,13 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         </Description>
         <Description>
           After this occurred, I decided to change the official name of the project from&nbsp;
-          <b>GreenBudget</b>&nbsp;to&nbsp;<b>HappyBudget</b>, to ensure that I was not incidentally
-          infringing on a trademark. This is why you will sometimes see the project referred to
-          as&nbsp;
-          <b>HappyBudget</b>, but&nbsp;<b>GreenBudget</b>&nbsp;still remains as the legacy.
+          <span className="font-medium text-text">GreenBudget</span>&nbsp;to&nbsp;
+          <span className="font-medium text-text">HappyBudget</span>, to ensure that I was not
+          incidentally infringing on a trademark. This is why you will sometimes see the project
+          referred to as&nbsp;
+          <span className="font-medium text-text">HappyBudget</span>, but&nbsp;
+          <span className="font-medium text-text">GreenBudget</span>&nbsp;still remains as the
+          legacy.
         </Description>
         <Description>
           The circumstances of this situation are still being worked out today. If you are
