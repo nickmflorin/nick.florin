@@ -59,7 +59,7 @@ const config = {
     },
     {
       source: "/projects",
-      destination: "/projects/greenbudget",
+      destination: "/projects/asset-visualizations",
       permanent: false,
     },
   ],
