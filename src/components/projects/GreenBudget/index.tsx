@@ -174,7 +174,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           est laborum.
         </Description>
       </div>
-      <Section title="Grouping" marginBottom={false} subSection>
+      <Section title="Sub-Totaling" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
           <Description>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -205,6 +205,25 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           <ProjectImage
             src="/projects/greenbudget/reordering.gif"
             alt="GreenBudget Reordering"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
+      <Section title="Intelligent Autocomplete" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/autocomplete.gif"
+            alt="GreenBudget Autocomplete"
             caption={[
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
                 "incididunt ut labore et dolore magna aliqua.",
