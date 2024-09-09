@@ -12,18 +12,17 @@ export interface ProjectImageProps extends ComponentProps {
 }
 
 export const ProjectImage = ({ src, caption, alt, ...props }: ProjectImageProps) => (
-  <div
-    {...props}
-    className={clsx("flex flex-col gap-[12px] max-md:gap-[8px] w-full h-full", props.className)}
-  >
-    <Image
-      height={420}
-      width={760}
-      layout="responsive"
-      src={src}
-      alt={alt}
-      className="md:mx-auto max-w-[100%] border grow"
-    />
+  <div {...props} className={clsx("project-image max-md:gap-[8px]", props.className)}>
+    <div className="project-image-wrapper md:mx-auto">
+      <Image
+        height={420}
+        width={760}
+        layout="responsive"
+        src={src}
+        alt={alt}
+        className="project-image-image w-full h-full max-w-full"
+      />
+    </div>
     <div className="flex flex-col gap-[6px]">
       {caption.map((c, index) => (
         <Text key={index} className="text-description text-sm max-md:text-xs">

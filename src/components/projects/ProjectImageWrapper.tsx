@@ -10,6 +10,6 @@ export interface ProjectImageWrapperProps extends ComponentProps {
 
 export const ProjectImageWrapper = ({ children, ...props }: ProjectImageWrapperProps) => (
   <div {...props} className={clsx("flex flex-col w-full", props.className)}>
-    <div className="flex flex-col md:mx-auto max-w-[100%] md:w-[760px]">{children}</div>
+    <div className="flex flex-col md:mx-auto max-w-[100%] md:w-[840px]">{children}</div>
   </div>
 );

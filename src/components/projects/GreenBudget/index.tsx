@@ -71,8 +71,8 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         <Description>
           Throughout the development of <span className="font-medium text-text">GreenBudget</span>,
           I was working closely with a film producer in Los Angeles, CA. Unfortunately, after 2
-          years of development, he stole the software from me, and decided to relaunch it on servers
-          that only he had access to.
+          years of working together, he decided to steal the software from me and relaunch it on
+          servers that he had sole access to.
         </Description>
         <Description>
           After approximately 8 months of GreenBudget running on these new servers, he was forced to
@@ -115,8 +115,8 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           src="/projects/greenbudget/landing.png"
           alt="GreenBudget Landing Page"
           caption={[
-            "Users can view all of the products listed on the company's website and subscribe to " +
-              "receive notifications for various events that may occur for a given product.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
           ]}
         />
       </ProjectImageWrapper>
@@ -137,8 +137,28 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           src="/projects/greenbudget/topsheet.png"
           alt="GreenBudget Top Sheet"
           caption={[
-            "Users can view all of the products listed on the company's website and subscribe to " +
-              "receive notifications for various events that may occur for a given product.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
+      </ProjectImageWrapper>
+      <div className="flex flex-col gap-[8px]">
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+          est laborum.
+        </Description>
+      </div>
+      <ProjectImageWrapper className="mt-[8px]">
+        <ProjectImage
+          src="/projects/greenbudget/expanding.gif"
+          alt="GreenBudget Top Sheet"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
           ]}
         />
       </ProjectImageWrapper>
@@ -157,8 +177,8 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           src="/projects/greenbudget/subaccounts.png"
           alt="GreenBudget Nested Accounts"
           caption={[
-            "Users can view all of the products listed on the company's website and subscribe to " +
-              "receive notifications for various events that may occur for a given product.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
           ]}
         />
       </ProjectImageWrapper>
@@ -186,6 +206,25 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           <ProjectImage
             src="/projects/greenbudget/grouping.gif"
             alt="GreenBudget Grouping"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
+      <Section title="Markup" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/markup.gif"
+            alt="GreenBudget Markup"
             caption={[
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
                 "incididunt ut labore et dolore magna aliqua.",
