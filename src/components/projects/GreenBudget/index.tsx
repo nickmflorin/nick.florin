@@ -1,6 +1,7 @@
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 
+import { Disclaimer } from "../Disclaimer";
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 import { ProjectImageWrapper } from "../ProjectImageWrapper";
@@ -12,127 +13,88 @@ export interface GreenBudgetProps
 export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
   <Project
     title={props.project.name}
+    underConstruction
     description={
       <div className="flex flex-col gap-[6px]">
         <Description>
-          An application written using&nbsp;
+          <b>GreenBudget</b> is an application that was created to address a niche market
+          opportunity by providing a modern, web-based, multi-user collaborative budgeting solution
+          for the film production industry. It replaced many outdated, inflexible and somewhat
+          manual solutions that previously existed in the market.
+        </Description>
+        <Description>
+          <b>GreenBudget</b> is powered by a&nbsp;
+          <Link as="a" href="https://react.dev/">
+            React
+          </Link>
+          &nbsp;frontend consuming a powerful, REST API written using&nbsp;
+          <Link as="a" href="https://www.djangoproject.com/">
+            Django
+          </Link>
+          &nbsp;and&nbsp;
+          <Link as="a" href="https://www.django-rest-framework.org/">
+            Django REST Framework
+          </Link>
+          &nbsp; on the server. At the time in which I stopped working on the project, we were in
+          the midst of transitioning the frontend to&nbsp;
           <Link as="a" href="https://nextjs.org/">
             NextJS
-          </Link>
-          &nbsp; that allows users to monitor, manage and configure notifications and alerts that
-          they will receive as it relates to inventory & price changes that occur for products
-          offered by the woodworking hand tool manufacturer, &nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
-            Lie Nielsen
           </Link>
           .
         </Description>
         <Description>
-          The application works by scraping publically available data from the company&apos;s
-          website at regular intervals and then using this data to determine when changes to
-          inventory and/or prices occur.
+          By the time I stopped working on the project, <b>GreenBudget</b> boasted a couple thousand
+          subscribed (paying) users and had drawn interest from a number of enterprise clients who
+          had expressed interest in adopting the platform for their own use.
         </Description>
       </div>
     }
     {...props}
   >
-    <Section title="Background" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+    <Disclaimer className="mt-3 mb-3">
+      <div className="flex flex-col gap-2">
         <Description>
-          As a woodworker myself, I am deeply involved in the woodworking community. I have a strong
-          interest in hand tools, particularly hand-planes, chisels and saws, and how they can be
-          used to create strong, beautiful joints in furniture.
+          Throughout the development of <b>GreenBudget</b>, I was working closely with a film
+          producer in Los Angeles, CA. Unfortunately, after 2 years of development, he stole the
+          software from me, and decided to relaunch it on servers that only he had access to.
         </Description>
         <Description>
-          Before World War 2, the highest quality hand tools were made in the United States, by the
-          company Stanley (now Stanley Black & Decker). These tools were so sought after that
-          collectors now search the globe for old Stanley hand-planes, causing some of the rarer
-          tools the company produced to be worth a fortune. However, after the war, the quality of
-          their tools dropped off significantly, and as a result, there was not a leading
-          manufacturer of high quality hand tools until the 1980s - when a man named Thomas
-          Lie-Nielsen started producing hand tools.
-        </Description>
-        <Description>
-          Today, &nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
-            Lie Nielsen
-          </Link>
-          &nbsp; is considered by most to be the best manufacturer of North American-style hand
-          tools in the world. Their beautiful, perfectly-made tools are sought after by woodworkers
-          across the globe.
-        </Description>
-      </div>
-    </Section>
-    <Section title="The Problem" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
-        <Description>
-          The problem that this application attempts to solve is that purchasing tools from&nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
-            Lie Nielsen
-          </Link>
-          &nbsp;can sometimes be difficult. The company itself - which is located in Maine, is very
-          small - somewhat intentionally - and large portions of their inventory are made in small
-          batches, released to the public only to be sold out within a matter of hours after they
-          become available. Additionally, the company occasionally produces small batches of very
-          rare, custom tools that they do not intend to make again. These tools are often made out
-          of less common materials, such as white bronze, and they often have unique features such
-          as handles and/or knobs made out of exotic woods.
-        </Description>
-        <Description>
-          The difficulty in getting your hands on some&nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
-            Lie Nielsen
-          </Link>
-          &nbsp;tools has warranted the need for an application like this - one that allows users to
-          receive immediate notifications when new products are added, inventory changes or prices
-          are updated.
-        </Description>
-      </div>
-    </Section>
-    <Section title="Internal Component Library" marginBottom={false}>
-      <div className="flex flex-col gap-[4px]">
-        <Description>
-          Like this website, this application does not rely on any third-party component library.
-          Instead, it leverages an internal component library developed using frameworks like&nbsp;
-          <Link as="a" href="https://sass-lang.com/">
-            SASS
-          </Link>
-          &nbsp;and&nbsp;
-          <Link as="a" href="https://tailwindcss.com/">
-            TailwindCSS
-          </Link>
-          ,&nbsp;along with tooling libraries such as&nbsp;
-          <Link as="a" href="https://floating-ui.com/">
-            Floating UI
-          </Link>
-          &nbsp;and&nbsp;
-          <Link as="a" href="https://www.framer.com/motion/">
-            Framer Motion
+          After approximately 8 months of GreenBudget running on these new servers, he was forced to
+          shut the servers down. However, a few months later, GreenBudget had been rebranded and
+          expanded upon, and was subsequently launched under what is now called&nbsp;
+          <Link as="a" href="https://saturation.io/">
+            Saturation IO
           </Link>
           .
         </Description>
+        <Description>
+          After this occurred, I decided to change the official name of the project from&nbsp;
+          <b>GreenBudget</b>&nbsp;to&nbsp;<b>HappyBudget</b>, to ensure that I was not incidentally
+          infringing on a trademark. This is why you will sometimes see the project referred to
+          as&nbsp;
+          <b>HappyBudget</b>, but&nbsp;<b>GreenBudget</b>&nbsp;still remains as the legacy.
+        </Description>
+        <Description>
+          The circumstances of this situation are still being worked out today. If you are
+          interested in learning more, feel free to reach out to me directly.
+        </Description>
       </div>
-    </Section>
-    <Section title="Subscribing to Events" marginBottom={false}>
-      <Description>
-        This application was designed such that users can subscribe to various events that may occur
-        as it relates to a specific product offered on{" "}
-        <Link as="a" href="https://lie-nielsen.com/">
-          Lie Nielsen
-        </Link>
-        &apos;s website. Currently, these events include subscribing to changes in price of a
-        product or changes in inventory status of a product (i.e. &quot;In Stock&quot;, &quot;Out of
-        Stock&quot;, etc.).
-      </Description>
-      <Description>
-        The application scrapes the data from the company&apos;s website at regular intervals and
-        when it notices a change in the data, it will add the appropriate event to a queue that will
-        result in a notification being sent to the subscribed user when it is processed.
-      </Description>
+    </Disclaimer>
+    <Section title="Background" marginBottom={false}>
+      <div className="flex flex-col gap-[8px]">
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+          est laborum.
+        </Description>
+      </div>
       <ProjectImageWrapper className="mt-[8px]">
         <ProjectImage
-          src="/projects/tooltrack/subscribing-to-products.png"
-          alt="Subscribing to Products"
+          src="/projects/greenbudget/landing.png"
+          alt="GreenBudget Landing Page"
           caption={[
             "Users can view all of the products listed on the company's website and subscribe to " +
               "receive notifications for various events that may occur for a given product.",
@@ -140,38 +102,164 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         />
       </ProjectImageWrapper>
     </Section>
-    <Section title="Managing Subscriptions" marginBottom={false}>
-      <Description>
-        Users can view all of their active product subscriptions in a centralized view. From this
-        view, they can make changes to their active subscriptions, disable them temporarily or
-        unsubscribe from them entirely.
-      </Description>
+    <Section title="Concepts" marginBottom={false}>
+      <div className="flex flex-col gap-[8px]">
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+          est laborum.
+        </Description>
+      </div>
       <ProjectImageWrapper className="mt-[8px]">
         <ProjectImage
-          src="/projects/tooltrack/managing-subscriptions.png"
-          alt="Managing Subscriptions"
+          src="/projects/greenbudget/topsheet.png"
+          alt="GreenBudget Top Sheet"
           caption={[
-            "Subscriptions to all products offered by the company can be managed in a " +
-              "centralized view.",
+            "Users can view all of the products listed on the company's website and subscribe to " +
+              "receive notifications for various events that may occur for a given product.",
+          ]}
+        />
+      </ProjectImageWrapper>
+      <div className="flex flex-col gap-[8px]">
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+          est laborum.
+        </Description>
+      </div>
+      <ProjectImageWrapper className="mt-[8px]">
+        <ProjectImage
+          src="/projects/greenbudget/subaccounts.png"
+          alt="GreenBudget Nested Accounts"
+          caption={[
+            "Users can view all of the products listed on the company's website and subscribe to " +
+              "receive notifications for various events that may occur for a given product.",
           ]}
         />
       </ProjectImageWrapper>
     </Section>
-    <Section title="Product Detail" marginBottom={false}>
-      <Description>
-        Users can get more detailed information about a specific product, their subscriptions to
-        that product and historical data related to that product in the product&apos;s detail view.
-      </Description>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/tooltrack/product-detail.png"
-          alt="Product Detail"
-          caption={[
-            "Users can view historical data for, manage their subscriptions of and view " +
-              "current up to date information for each product the company offers.",
-          ]}
-        />
-      </ProjectImageWrapper>
+    <Section title="Features" marginBottom={false}>
+      <div className="flex flex-col gap-[8px]">
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+          est laborum.
+        </Description>
+      </div>
+      <Section title="Grouping" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/grouping.gif"
+            alt="GreenBudget Grouping"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
+      <Section title="Reordering" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/reordering.gif"
+            alt="GreenBudget Reordering"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
+      <Section title="Attachments" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/attachments.gif"
+            alt="GreenBudget Attachments"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
+      <Section title="Exporting" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/exporting.png"
+            alt="GreenBudget Attachments"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/exporting-top-sheet.png"
+            alt="GreenBudget Exporting"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
+      <Section title="Mobile" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/mobile-analysis.png"
+            alt="GreenBudget Mobile"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
     </Section>
   </Project>
 );

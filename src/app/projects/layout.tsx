@@ -59,7 +59,7 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
   );
 
   return (
-    <div className="flex flex-col gap-[15px] w-full h-full overflow-hidden">
+    <div className="flex flex-col gap-[24px] w-full h-full overflow-hidden">
       <Tabs items={items} />
       <div className="grow max-h-full h-full overflow-y-auto flex flex-col">{children}</div>
     </div>

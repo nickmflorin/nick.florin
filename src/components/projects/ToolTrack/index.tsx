@@ -14,7 +14,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
     description={
       <div className="flex flex-col gap-[6px]">
         <Description>
-          An application written using&nbsp;
+          ToolTrack application written using&nbsp;
           <Link as="a" href="https://nextjs.org/">
             NextJS
           </Link>
@@ -115,7 +115,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
     <Section title="Subscribing to Events" marginBottom={false}>
       <Description>
         This application was designed such that users can subscribe to various events that may occur
-        as it relates to a specific product offered on{" "}
+        as it relates to a specific product offered on&nbsp;
         <Link as="a" href="https://lie-nielsen.com/">
           Lie Nielsen
         </Link>
