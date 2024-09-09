@@ -15,17 +15,16 @@ import { browserWriter } from "./browser-writer";
 const __NOT_SET__ = "__NOT_SET__" as const;
 type NotSet = typeof __NOT_SET__;
 
+type LogflareStream = {
+  stream: DestinationStream;
+  send: (level: number | Level, logEvent: LogEvent) => void;
+};
+
 export class Logger {
   private readonly instance: string;
   private _pino: pino.Logger | null = null;
   private _prettyStream: DestinationStream | NotSet | null = __NOT_SET__;
-  private _logflareStream:
-    | {
-        stream: DestinationStream;
-        send: (level: number | Level, logEvent: LogEvent) => void;
-      }
-    | NotSet
-    | null = __NOT_SET__;
+  private _logflareStream: LogflareStream | NotSet | null = __NOT_SET__;
 
   constructor() {
     this.instance = uuid();
@@ -39,19 +38,20 @@ export class Logger {
     return process.env.VERCEL_ENV;
   }
 
-  private get prettyStream() {
+  private get prettyStream(): DestinationStream | null {
     if (this._prettyStream === __NOT_SET__) {
       if (typeof window === "undefined" && environment.get("NEXT_PUBLIC_PRETTY_LOGGING") === true) {
         /* eslint-disable-next-line @typescript-eslint/no-var-requires */
         const pretty = require("pino-pretty");
-        return pretty({ colorize: true, sync: true });
+        this._prettyStream = pretty({ colorize: true, sync: true });
+      } else {
+        this._prettyStream = null;
       }
-      return null;
     }
-    return this._prettyStream;
+    return this._prettyStream as DestinationStream | null;
   }
 
-  private get logflareStream() {
+  private get logflareStream(): LogflareStream | null {
     if (this._logflareStream === __NOT_SET__) {
       if (
         this.vercelEnv &&
@@ -70,13 +70,13 @@ export class Logger {
             !sourceToken ? { field: "LOGFLARE_SOURCE_TOKEN" } : null,
           ]);
         }
-        const { stream, send } = logflarePinoVercel({
+        this._logflareStream = logflarePinoVercel({
           apiKey,
           sourceToken,
         });
-        return { stream, send };
+      } else {
+        this._logflareStream = null;
       }
-      return null;
     }
     return this._logflareStream;
   }
@@ -86,11 +86,11 @@ export class Logger {
     if (typeof window === "undefined" && this.logflareStream && this.prettyStream) {
       /* eslint-disable-next-line no-console -- The logger is not yet configured here. */
       console.info("Configuring logger for logflare logging and pretty logging...");
-      return multistream([this.prettyStream, this.logflareStream]);
+      return multistream([this.prettyStream, this.logflareStream.stream]);
     } else if (this.logflareStream) {
       /* eslint-disable-next-line no-console -- The logger is not yet configured here. */
       console.info("Configuring logger for logflare logging...");
-      return this.logflareStream;
+      return this.logflareStream.stream;
     } else if (this.prettyStream) {
       /* eslint-disable-next-line no-console -- The logger is not yet configured here. */
       console.info("Configuring logger for pretty logging...");
