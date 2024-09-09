@@ -23,7 +23,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     {...props}
   >
     <Section title="Internal Component Library" marginBottom={false}>
-      <div className="flex flex-col gap-[4px]">
+      <div className="flex flex-col gap-[8px]">
         <Description>
           The application does not rely on any third-party component library. Instead, it leverages
           an internal component library developed using frameworks like&nbsp;
@@ -67,7 +67,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
       </div>
     </Section>
     <Section title="Skill-Centric Design" marginBottom={false}>
-      <div className="flex flex-col gap-[4px]">
+      <div className="flex flex-col gap-[8px]">
         <Description>
           The application was designed with the concept of a <i>Skill</i> at its core. A&nbsp;
           <i>Skill</i>&nbsp;represents a particular ability or expertise learned throughout an
@@ -130,7 +130,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
       </ProjectImageWrapper>
     </Section>
     <Section title="Integrations" marginBottom={false}>
-      <div className="flex flex-col gap-[4px]">
+      <div className="flex flex-col gap-[8px]">
         <Description>
           The application integrates directly with APIs from sources such as&nbsp;
           <Link as="a" href="https://linkedin.com/">
@@ -156,7 +156,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
       </div>
     </Section>
     <Section title="Resume Management" marginBottom={false}>
-      <div className="flex flex-col gap-[4px]">
+      <div className="flex flex-col gap-[8px]">
         <Description>
           The application offers the ability to manage resume(s) directly in the admin-only CMS.
           Resumes can be uploaded, deleted and toggled between, with the ability to expose a

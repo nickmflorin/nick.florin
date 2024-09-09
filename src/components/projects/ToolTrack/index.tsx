@@ -89,7 +89,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
       </div>
     </Section>
     <Section title="Internal Component Library" marginBottom={false}>
-      <div className="flex flex-col gap-[4px]">
+      <div className="flex flex-col gap-[8px]">
         <Description>
           Like this website, this application does not rely on any third-party component library.
           Instead, it leverages an internal component library developed using frameworks like&nbsp;

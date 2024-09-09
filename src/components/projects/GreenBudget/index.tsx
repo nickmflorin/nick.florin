@@ -14,60 +14,8 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
   <Project
     title={props.project.name}
     underConstruction
-    description={
-      <div className="flex flex-col gap-[6px]">
-        <Description>
-          <span className="font-medium text-text">GreenBudget</span> is an application that was
-          created to address a niche market opportunity by providing a modern, web-based, multi-user
-          collaborative budgeting solution for the film production industry. It replaced many
-          outdated, inflexible and somewhat manual solutions that previously existed in the market.
-        </Description>
-        <Description>
-          <span className="font-medium text-text">GreenBudget</span> is powered by a&nbsp;
-          <Link as="a" href="https://react.dev/">
-            React
-          </Link>
-          &nbsp;frontend consuming a powerful, REST API written using&nbsp;
-          <Link as="a" href="https://www.djangoproject.com/">
-            Django
-          </Link>
-          &nbsp;and&nbsp;
-          <Link as="a" href="https://www.django-rest-framework.org/">
-            Django REST Framework
-          </Link>
-          &nbsp; on the server. At the time in which I stopped working on the project, we were in
-          the midst of transitioning the frontend to&nbsp;
-          <Link as="a" href="https://nextjs.org/">
-            NextJS
-          </Link>
-          .
-        </Description>
-        <Description>
-          The application relies on several different open-source tabling libraries interwoven with
-          a large amount of internal, custom built tabling mechanics, that operate with the help of
-          technology such as&nbsp;
-          <Link as="a" href="https://react-redux.js.org/">
-            React Redux
-          </Link>
-          &nbsp;and&nbsp;
-          <Link as="a" href="https://redux-saga.js.org/">
-            Redux Sagas
-          </Link>
-          .
-        </Description>
-        <Description>
-          By the time I stopped working on the project,&nbsp;
-          <span className="font-medium text-text">GreenBudget</span>&nbsp;boasted a&nbsp;
-          <i>couple thousand subscribed (paying) users</i>&nbsp;and had drawn interest from a number
-          of enterprise clients who had expressed interest in adopting the platform for their own
-          use.
-        </Description>
-      </div>
-    }
-    {...props}
-  >
-    <Disclaimer className="mt-3 mb-3">
-      <div className="flex flex-col gap-2">
+    disclaimer={
+      <div className="flex flex-col gap-[8px]">
         <Description>
           Throughout the development of <span className="font-medium text-text">GreenBudget</span>,
           I was working closely with a film producer in Los Angeles, CA. Unfortunately, after 2
@@ -98,26 +46,81 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           interested in learning more, feel free to reach out to me directly.
         </Description>
       </div>
-    </Disclaimer>
+    }
+    description={
+      <div className="flex flex-col gap-[8px]">
+        <Description>
+          <span className="font-medium text-text">GreenBudget</span> is an application that was
+          created to address a niche market opportunity by providing a modern, web-based, multi-user
+          collaborative budgeting solution for the film production industry. It replaced many
+          outdated, inflexible and somewhat manual solutions that previously existed in the market.
+        </Description>
+        <Description>
+          The application consists of an extensive&nbsp;
+          <Link as="a" href="https://react.dev/">
+            React
+          </Link>
+          &nbsp;frontend powered by a robust, REST API written using&nbsp;
+          <Link as="a" href="https://www.djangoproject.com/">
+            Django
+          </Link>
+          &nbsp;and&nbsp;
+          <Link as="a" href="https://www.django-rest-framework.org/">
+            Django REST Framework
+          </Link>
+          &nbsp;. At the time in which I stopped working on the project, we were in the midst of
+          transitioning the frontend to the populate&nbsp;
+          <Link as="a" href="https://nextjs.org/">
+            NextJS
+          </Link>
+          &nbsp;framework.
+        </Description>
+        <Description>
+          The application relies on several different open-source tabling libraries interwoven with
+          a large amount of internal, custom built tabling mechanics that are built primarily with
+          the help of technology such as &nbsp;
+          <Link as="a" href="https://react-redux.js.org/">
+            React Redux
+          </Link>
+          &nbsp;and&nbsp;
+          <Link as="a" href="https://redux-saga.js.org/">
+            Redux Sagas
+          </Link>
+          .
+        </Description>
+        <Description>
+          By the time I stopped working on the project,&nbsp;
+          <span className="font-medium text-text">GreenBudget</span>&nbsp;boasted a&nbsp;
+          <i>couple thousand subscribed (paying) users</i>&nbsp;and had drawn interest from a number
+          of enterprise clients who had expressed interest in adopting the platform for their own
+          use.
+        </Description>
+      </div>
+    }
+    {...props}
+  >
     <Section title="Background" marginBottom={false}>
       <div className="flex flex-col gap-[8px]">
         <Description>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-          est laborum.
+          The way that film producers manage budgets is different than how people in any other
+          industry manages budgets - standard, general accounting/budgeting tools do not work. The
+          majority of (if not all) producers relied on a combination of internal, overly-complicated
+          spreadsheets with custom macros, third-party Excel integrations and/or the popular
+          MovieMagic budgeting software - which is a desktop-only, single tenant, expensive and
+          severely outdated piece of software.
+        </Description>
+        <Description>
+          When I was approached by a film producer out in Los Angeles, CA with an idea to modernize
+          film budgeting with a web-based, mult-user, collaborative solution tailored specifically
+          towards film production, I thought it was a great idea - and we began working together on
+          what would eventually become <span className="font-medium text-text">GreenBudget</span>.
         </Description>
       </div>
       <ProjectImageWrapper className="mt-[8px]">
         <ProjectImage
           src="/projects/greenbudget/landing.png"
           alt="GreenBudget Landing Page"
-          caption={[
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-              "incididunt ut labore et dolore magna aliqua.",
-          ]}
+          caption={["GreenBudget's original landing/splash page."]}
         />
       </ProjectImageWrapper>
     </Section>

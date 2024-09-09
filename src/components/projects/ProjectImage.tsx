@@ -25,7 +25,10 @@ export const ProjectImage = ({ src, caption, alt, ...props }: ProjectImageProps)
     </div>
     <div className="flex flex-col gap-[6px]">
       {caption.map((c, index) => (
-        <Text key={index} className="text-description text-sm max-md:text-xs">
+        <Text
+          key={index}
+          className="text-description text-sm max-md:text-xs text-center max-w-[90%]"
+        >
           {c}
         </Text>
       ))}
