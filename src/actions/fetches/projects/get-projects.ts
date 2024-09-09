@@ -63,7 +63,7 @@ export const getProjects = cache(
     filters,
     visibility,
   }: GetProjectsParams<I>): Promise<ApiProject<I>[]> => {
-    await getClerkAuthedUser({ strict: visibility === "admin" });
+    await getClerkAuthedUser({ strict: false });
 
     const pagination = await parsePagination({
       page,
