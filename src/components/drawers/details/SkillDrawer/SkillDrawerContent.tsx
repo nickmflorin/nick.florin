@@ -1,4 +1,5 @@
 import { type ApiSkill } from "~/prisma/model";
+
 import { Courses } from "~/components/badges/collections/Courses";
 import { ProgrammingDomains } from "~/components/badges/collections/ProgrammingDomains";
 import { ProgrammingLanguages } from "~/components/badges/collections/ProgrammingLanguages";

@@ -5,8 +5,10 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiEducation } from "~/prisma/model";
+
 import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
+
 import { SkillsSelect, type SkillSelectValueModel } from "~/components/input/select/SkillsSelect";
 
 interface SkillsCellProps {

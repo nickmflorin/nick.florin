@@ -2,7 +2,9 @@ import { logger } from "~/application/logger";
 import type { LabeledNavItem } from "~/application/pages";
 import { humanizeList } from "~/lib/formatters";
 import { ProjectSlugs } from "~/prisma/model";
+
 import { getProjects } from "~/actions/fetches/projects";
+
 import { Tabs } from "~/components/layout/Tabs";
 
 interface AdminLayoutProps {

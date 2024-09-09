@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type Skill } from "~/prisma/model";
+
 import { withoutOverridingClassName } from "~/components/types";
 
 import { Badge, type BadgeProps } from "./Badge";

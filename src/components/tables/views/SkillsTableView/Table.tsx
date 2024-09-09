@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { memo } from "react";
 
 import { getSkills } from "~/actions/fetches/skills";
+
 import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
 

@@ -1,5 +1,6 @@
 "use client";
 import { deleteCourses } from "~/actions/mutations/courses";
+
 /* eslint-disable-next-line max-len */
 import { DeleteManyButton as RootDeleteManyButton } from "~/components/tables/generic/DeleteManyButton";
 

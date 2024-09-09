@@ -5,7 +5,9 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
+
 import { syncRepositories } from "~/actions/mutations/repositories";
+
 import { Button } from "~/components/buttons";
 
 export const SyncRepositoriesButton = () => {

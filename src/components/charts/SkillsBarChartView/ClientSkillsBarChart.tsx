@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 import { generateChartColors } from "~/lib/charts";
 import { type ApiSkill } from "~/prisma/model";
+
 import { BarChart } from "~/components/charts/BarChart";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { Loading } from "~/components/feedback/Loading";

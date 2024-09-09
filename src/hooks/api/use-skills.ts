@@ -1,4 +1,5 @@
 import { type ApiSkill, type SkillIncludes } from "~/prisma/model";
+
 import type { GetSkillsParams } from "~/actions/fetches/skills";
 
 import { useSWR, type SWRConfig } from "./use-swr";

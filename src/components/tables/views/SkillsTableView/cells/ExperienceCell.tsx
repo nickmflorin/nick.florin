@@ -7,7 +7,9 @@ import { z } from "zod";
 
 import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
+
 import { updateSkill } from "~/actions/mutations/skills";
+
 import { Checkbox } from "~/components/input/Checkbox";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import type * as types from "~/components/tables/types";

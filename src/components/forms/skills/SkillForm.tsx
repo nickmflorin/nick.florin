@@ -5,7 +5,9 @@ import { useWatch } from "react-hook-form";
 import { type z } from "zod";
 
 import { slugify } from "~/lib/formatters";
+
 import { SkillSchema } from "~/api/schemas";
+
 import { ClientCourseSelect } from "~/components/input/select/ClientCourseSelect";
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";

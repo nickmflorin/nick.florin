@@ -1,6 +1,7 @@
 import { type MetadataRoute } from "next";
 
 import { prisma } from "~/prisma/client";
+
 import { environment } from "~/environment";
 
 const toSiteUrl = (path: `/${string}` = "/"): string => {

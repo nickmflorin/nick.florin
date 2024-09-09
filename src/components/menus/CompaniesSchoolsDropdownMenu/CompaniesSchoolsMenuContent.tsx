@@ -3,8 +3,10 @@ import dynamic from "next/dynamic";
 import type * as types from "../types";
 
 import { stringifyLocation } from "~/prisma/model";
+
 import { getCompanies } from "~/actions/fetches/companies";
 import { getSchools } from "~/actions/fetches/schools";
+
 import { DrawerIds, type DrawerIdPropsPair } from "~/components/drawers";
 import { Loading } from "~/components/feedback/Loading";
 import { Text } from "~/components/typography/Text";

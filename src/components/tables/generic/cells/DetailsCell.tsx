@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 
 import { type ApiEducation, type ApiExperience } from "~/prisma/model";
+
 import { Link } from "~/components/buttons";
 import { type ClientDrawerComponent, DrawerIds } from "~/components/drawers";
 import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";

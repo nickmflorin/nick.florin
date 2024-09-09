@@ -1,7 +1,9 @@
 import dynamic from "next/dynamic";
 
 import { removeRedundantTopLevelSkills } from "~/prisma/model";
+
 import { getExperiences } from "~/actions/fetches/experiences";
+
 import { Loading } from "~/components/feedback/Loading";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { ResumeModelPageTile } from "~/components/tiles/resume/ResumeModelPageTile";

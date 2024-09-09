@@ -5,8 +5,10 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type School } from "~/prisma/model";
+
 import { createSchool } from "~/actions/mutations/schools";
 import { isApiClientErrorJson } from "~/api";
+
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { SchoolForm, type SchoolFormProps } from "./SchoolForm";

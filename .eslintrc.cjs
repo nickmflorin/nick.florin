@@ -1,16 +1,8 @@
-const FIRST_INTERNAL_MODULE_GROUP = ["application", "lib", "server", "prisma"];
-
-const SECOND_INTERNAL_MODULE_GROUP = [
-  "app",
-  "actions",
-  "api",
-  "integrations",
-  "environment",
-  "events",
+const ModuleGroups = [
+  ["application", "lib", "server", "prisma"],
+  ["app", "actions", "api", "integrations", "environment", "events"],
+  ["components", "hooks", "styles"],
 ];
-
-// Components and styles should always be the last absolute imports.
-const THIRD_INTERNAL_MODULE_GROUP = ["components", "hooks", "styles"];
 
 const toAbsoluteImports = v => [`~/${v}`, `~/${v}/**`];
 
@@ -25,7 +17,7 @@ const BASE_RULES = {
       groups: ["builtin", "external", "type", "internal", "parent", "sibling", "index", "object"],
       "newlines-between": "always",
       warnOnUnassignedImports: true,
-      distinctGroup: false,
+      distinctGroup: true,
       pathGroupsExcludedImportTypes: ["react", "next"],
       pathGroups: [
         {
@@ -39,7 +31,6 @@ const BASE_RULES = {
           position: "after",
         },
         {
-          /* eslint-disable-next-line max-len */
           pattern:
             "{@prisma,@prisma/**,prisma,prisma/**,server,server/**,application,application/**}",
           group: "external",
@@ -55,30 +46,13 @@ const BASE_RULES = {
           group: "sibling",
           position: "after",
         },
-        {
-          pattern: `{${FIRST_INTERNAL_MODULE_GROUP.reduce(
-            (prev, v) => [...prev, ...toAbsoluteImports(v)],
-            [],
-          ).join(",")}}`,
+        ...ModuleGroups.map(group => ({
+          pattern: `{${group
+            .reduce((prev, v) => [...prev, ...toAbsoluteImports(v)], [])
+            .join(",")}}`,
           group: "internal",
           position: "before",
-        },
-        {
-          pattern: `{${SECOND_INTERNAL_MODULE_GROUP.reduce(
-            (prev, v) => [...prev, ...toAbsoluteImports(v)],
-            [],
-          ).join(",")}}`,
-          group: "internal",
-          position: "before",
-        },
-        {
-          pattern: `{${THIRD_INTERNAL_MODULE_GROUP.reduce(
-            (prev, v) => [...prev, ...toAbsoluteImports(v)],
-            [],
-          ).join(",")}}`,
-          group: "internal",
-          position: "before",
-        },
+        })),
       ],
       alphabetize: {
         order: "asc",
@@ -100,12 +74,15 @@ const BASE_RULES = {
       ignoreUrls: true,
       ignoreTemplateLiterals: true,
       ignoreRegExpLiterals: true,
-      ignorePattern: "\\/\\*\\s+eslint-disable-next-line(.?)+\\*\\/$",
+      /* eslint-disable-next-line quotes */
+      ignorePattern: '^import\\s(.?)+(from|as)\\s"(.?)+";$',
     },
   ],
   "arrow-body-style": ["error", "as-needed"],
-  // This should eventually be an error...
   "no-console": "error",
+  "no-useless-escape": ["error"],
+  "no-case-declarations": ["error"],
+  "no-extra-boolean-cast": ["error"],
   "no-unused-vars": "warn",
   "no-multiple-empty-lines": "error",
   "multiline-comment-style": ["error", "bare-block"],
@@ -121,6 +98,10 @@ const BASE_RULES = {
         {
           group: ["@prisma/client/*", "@prisma/client"],
           message: "Please import from '~/prisma/model` instead.",
+        },
+        {
+          group: ["~/database/model/generated"],
+          message: "Please import directly from '~/prisma/model` instead.",
         },
       ],
     },

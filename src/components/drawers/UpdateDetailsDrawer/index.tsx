@@ -7,6 +7,7 @@ import {
   type ApiDetail,
   isNestedDetail,
 } from "~/prisma/model";
+
 import { IconButton } from "~/components/buttons";
 import { Loading } from "~/components/feedback/Loading";
 import { Title } from "~/components/typography/Title";

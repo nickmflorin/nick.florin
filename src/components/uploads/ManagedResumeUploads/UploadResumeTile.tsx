@@ -1,4 +1,5 @@
 import type { BrandResume } from "~/prisma/model";
+
 import { Icon } from "~/components/icons/Icon";
 
 import * as types from "../types";

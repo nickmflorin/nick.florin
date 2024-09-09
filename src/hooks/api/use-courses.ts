@@ -1,4 +1,5 @@
 import { type ApiCourse, type CourseIncludes } from "~/prisma/model";
+
 import { type GetCoursesParams } from "~/actions/fetches/courses";
 
 import { useSWR, type SWRConfig } from "./use-swr";

@@ -5,8 +5,10 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type Course } from "~/prisma/model";
+
 import { createCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";
+
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
 import { CourseForm, type CourseFormProps } from "./CourseForm";

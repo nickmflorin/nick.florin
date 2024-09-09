@@ -1,11 +1,12 @@
 import clsx from "clsx";
 
 import { type ApiProject } from "~/prisma/model";
+
+import Badge from "~/components/badges/Badge";
 import { Skills } from "~/components/badges/collections/Skills";
 import { RepositoryTile } from "~/components/tiles/RepositoryTile";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
-import Badge from "~/components/badges/Badge";
 
 export interface ProjectProps extends ComponentProps {
   readonly title: string;

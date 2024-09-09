@@ -2,7 +2,9 @@
 import dynamic from "next/dynamic";
 
 import { type ApiCourse, type BrandCourse } from "~/prisma/model";
+
 import { deleteCourse, updateCourse } from "~/actions/mutations/courses";
+
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import type * as cells from "~/components/tables/generic/cells";
 import { type SlugCellComponent } from "~/components/tables/generic/cells/SlugCell";

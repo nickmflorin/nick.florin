@@ -5,7 +5,9 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
+
 import { deleteDetail, deleteNestedDetail } from "~/actions/mutations/details";
+
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
 import { mergeActions } from "~/components/structural";

@@ -1,4 +1,5 @@
 import { SchoolSchema } from "~/api/schemas";
+
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 
 export const useSchoolForm = () =>

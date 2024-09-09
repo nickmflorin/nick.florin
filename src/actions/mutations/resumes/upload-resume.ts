@@ -5,6 +5,7 @@ import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 import type { BrandResume } from "~/prisma/model";
+
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 import { convertToPlainObject } from "~/api/serialization";
 

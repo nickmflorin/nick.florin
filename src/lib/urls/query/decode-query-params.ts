@@ -13,7 +13,7 @@ type _ParsedQueryValue = ParsedQueryPrimitive | ParsedQueryObj | ParsedQueryValu
 export type ParsedQueryValue = _ParsedQueryValue | _ParsedQueryValue[];
 
 const isNumber = (val: string) => {
-  const regex = /^\.?[0-9]+[0-9\.]*$/;
+  const regex = /^\.?[0-9]+[0-9\\.]*$/;
   return regex.test(val) && !isNaN(parseFloat(val)) && isFinite(parseFloat(val));
 };
 

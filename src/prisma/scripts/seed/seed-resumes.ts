@@ -50,7 +50,7 @@ const blobIsValid = (blob: Blob): [false, string, Blob] | [true, null, Blob] => 
   }
   /* As a final check, before we insert into the database, use a regex to ensure the pathname is
      correct. */
-  const regex = /^resumes\/[^\/]*.pdf$/;
+  const regex = /^resumes\/[^\\/]*.pdf$/;
   if (!regex.test(blob.pathname)) {
     return [false, "The blob pathname does not match the expected format!", blob];
   }

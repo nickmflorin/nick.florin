@@ -2,7 +2,9 @@ import { Suspense } from "react";
 
 import { partiallyParseObjectWithSchema } from "~/lib/schemas";
 import { decodeQueryParams } from "~/lib/urls";
+
 import { SkillsFiltersSchema, ShowTopSkillsSchema } from "~/api/schemas";
+
 import { SkillsBarChartView } from "~/components/charts/SkillsBarChartView";
 import { SkillsFilterDropdownMenu } from "~/components/menus/SkillsFilterDropdownMenu";
 import { Module } from "~/components/modules/generic";

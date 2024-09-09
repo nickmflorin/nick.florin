@@ -1,5 +1,6 @@
 import { isUuid } from "~/lib/typeguards";
 import { type ApiProject, type ProjectIncludes } from "~/prisma/model";
+
 import { type GetProjectParams } from "~/actions/fetches/projects";
 
 import { useSWR, type SWRConfig } from "./use-swr";

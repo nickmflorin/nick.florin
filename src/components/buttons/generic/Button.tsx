@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 
 import { capitalize } from "~/lib/formatters";
+
 import { type MultipleIconProp } from "~/components/icons";
 import { type ComponentProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";

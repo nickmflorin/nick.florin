@@ -1,4 +1,5 @@
 import "server-only";
+
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
@@ -6,6 +7,7 @@ import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { type NestedApiDetail, type NestedDetailIncludes, fieldIsIncluded } from "~/prisma/model";
+
 import { type Visibility, type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 

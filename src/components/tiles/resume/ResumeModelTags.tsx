@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+
 import { Icon } from "~/components/icons/Icon";
 import { LocationTag } from "~/components/tags/LocationTag";
 import { TimePeriodTag } from "~/components/tags/TimePeriodTag";

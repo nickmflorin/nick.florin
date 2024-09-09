@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 import { type GetProjectsFilters } from "~/actions/fetches/projects";
+
 import { DrawerIds } from "~/components/drawers";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { Loading } from "~/components/feedback/Loading";

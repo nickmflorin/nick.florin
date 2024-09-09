@@ -3,6 +3,7 @@ import Link from "next/link";
 import clsx from "clsx";
 
 import { getProfile } from "~/actions/fetches/get-profile";
+
 import { GithubButton } from "~/components/buttons/GithubButton";
 import { LinkedInButton } from "~/components/buttons/LinkedInButton";
 import { ModelImage } from "~/components/images/ModelImage";

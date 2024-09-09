@@ -1,6 +1,7 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
+
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteSkill = async (id: string): Promise<void> => {

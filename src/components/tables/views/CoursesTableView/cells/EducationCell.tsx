@@ -6,8 +6,10 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiCourse } from "~/prisma/model";
+
 import { updateCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";
+
 import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
 import type { CellTableInstance } from "~/components/tables/types";
 

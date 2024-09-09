@@ -6,6 +6,7 @@ import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 import { type NestedApiDetail, type Project } from "~/prisma/model";
 import { calculateSkillsExperience } from "~/prisma/model";
+
 import { getDetail } from "~/actions/fetches/details";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import {

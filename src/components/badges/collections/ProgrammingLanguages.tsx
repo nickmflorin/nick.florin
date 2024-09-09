@@ -1,4 +1,5 @@
 import { type ProgrammingLanguage } from "~/prisma/model";
+
 import { type ComponentProps } from "~/components/types";
 
 import { ProgrammingLanguageBadge } from "../ProgrammingLanguageBadge";

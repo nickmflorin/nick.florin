@@ -4,6 +4,7 @@ import isEqual from "lodash.isequal";
 
 import { UnreachableCaseError } from "~/application/errors";
 import { logger } from "~/application/logger";
+
 import { getModelId, getModelLabel } from "~/components/menus";
 
 import * as types from "../types";

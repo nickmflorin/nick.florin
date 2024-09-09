@@ -1,5 +1,6 @@
 import { prisma } from "~/prisma/client";
 import { type SchoolIncludes } from "~/prisma/model";
+
 import { getSchool } from "~/actions/fetches/schools";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";

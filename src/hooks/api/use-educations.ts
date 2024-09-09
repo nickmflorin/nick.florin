@@ -1,4 +1,5 @@
 import { type ApiEducation, type EducationIncludes } from "~/prisma/model";
+
 import { type GetEducationsParams } from "~/actions/fetches/educations";
 
 import { useSWR, type SWRConfig } from "./use-swr";

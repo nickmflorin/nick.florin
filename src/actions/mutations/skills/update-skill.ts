@@ -6,6 +6,7 @@ import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { type BrandSkill } from "~/prisma/model";
 import { calculateSkillsExperience } from "~/prisma/model";
+
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { SkillSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";

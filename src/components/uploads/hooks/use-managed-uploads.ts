@@ -5,6 +5,7 @@ import { v4 as uuid } from "uuid";
 import type { FileWithPath, FileRejection, ErrorCode, FileError } from "react-dropzone-esm";
 
 import { logger } from "~/application/logger";
+
 import { isApiClientGlobalErrorJson, type ApiClientGlobalErrorJson } from "~/api";
 
 import * as types from "../types";

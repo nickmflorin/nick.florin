@@ -1,5 +1,6 @@
 import { prisma } from "~/prisma/client";
 import { DetailEntityType, type DetailIncludes } from "~/prisma/model";
+
 import { getEntityDetails } from "~/actions/fetches/details";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 import { apiRoute } from "~/api/route";

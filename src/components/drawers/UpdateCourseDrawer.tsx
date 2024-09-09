@@ -1,5 +1,6 @@
 import { isUuid } from "~/lib/typeguards";
 import type { BrandCourse } from "~/prisma/model";
+
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { useCourseForm } from "~/components/forms/courses/hooks";
 import { UpdateCourseForm } from "~/components/forms/courses/UpdateCourseF";

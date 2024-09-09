@@ -2,6 +2,7 @@ import { type DropzoneProps } from "@mantine/dropzone";
 import { type FileRejection, type FileError, type FileWithPath } from "react-dropzone-esm";
 
 import type { ApiClientGlobalErrorJson } from "~/api";
+
 import { type ComponentProps } from "~/components/types";
 
 export type BaseUploadModel = {

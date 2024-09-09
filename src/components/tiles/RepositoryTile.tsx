@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type BrandRepository } from "~/prisma/model";
+
 import { NpmIconLink } from "~/components/buttons/NpmIconLink";
 import { RepositoryLink } from "~/components/buttons/RepositoryLink";
 import { Icon } from "~/components/icons/Icon";

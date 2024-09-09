@@ -1,4 +1,5 @@
 import { type ProgrammingDomain } from "~/prisma/model";
+
 import { type ComponentProps } from "~/components/types";
 
 import { ProgrammingDomainBadge } from "../ProgrammingDomainBadge";

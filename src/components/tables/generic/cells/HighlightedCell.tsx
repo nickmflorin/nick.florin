@@ -4,7 +4,9 @@ import { useTransition, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
+
 import { isApiClientErrorJson } from "~/api";
+
 import { Checkbox } from "~/components/input/Checkbox";
 
 import { type HighlightedCellProps } from "./types";

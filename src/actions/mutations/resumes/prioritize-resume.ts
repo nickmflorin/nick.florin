@@ -2,6 +2,7 @@
 import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import type { BrandResume } from "~/prisma/model";
+
 import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 import { convertToPlainObject } from "~/api/serialization";

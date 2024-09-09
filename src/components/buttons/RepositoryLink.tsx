@@ -2,6 +2,7 @@ import clsx from "clsx";
 
 import type { BrandRepository } from "~/prisma/model";
 import { getRepositoryGithubUrl } from "~/prisma/model/repository";
+
 import { withoutOverridingClassName } from "~/components/types";
 
 import { Link, type LinkFlexProps } from "./generic";

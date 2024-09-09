@@ -5,7 +5,9 @@ import React, { useState, useCallback, useMemo, cloneElement } from "react";
 import type * as types from "./types";
 
 import { logger } from "~/application/logger";
+
 import { publish } from "~/events/drawer-state-change-event";
+
 import { Loading } from "~/components/feedback/Loading";
 import { useReferentialCallback } from "~/hooks";
 

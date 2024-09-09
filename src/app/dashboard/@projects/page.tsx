@@ -1,4 +1,5 @@
 import { getProjects } from "~/actions/fetches/projects";
+
 import { ProjectTile } from "~/components/tiles/ProjectTile";
 
 export default async function ProjectsPage() {

@@ -1,4 +1,5 @@
 import { type ApiCourse } from "~/prisma/model";
+
 import { Skills } from "~/components/badges/collections/Skills";
 import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelCondensedTile";
 

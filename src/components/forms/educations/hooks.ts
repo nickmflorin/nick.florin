@@ -1,4 +1,5 @@
 import type { ApiEducation } from "~/prisma/model";
+
 import { useForm } from "~/components/forms/generic/hooks/use-form";
 
 import { EducationFormSchema } from "./schema";

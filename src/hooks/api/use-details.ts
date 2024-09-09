@@ -5,6 +5,7 @@ import {
   type BrandExperience,
   type BrandEducation,
 } from "~/prisma/model";
+
 import { type GetDetailsParams } from "~/actions/fetches/details";
 
 import { useSWR, type SWRConfig } from "./use-swr";

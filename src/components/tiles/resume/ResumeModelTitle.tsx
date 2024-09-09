@@ -3,6 +3,7 @@ import clsx from "clsx";
 import type { ResumeModelSize } from "./types";
 
 import { type BrandModel, type ResumeBrand, getDegree } from "~/prisma/model";
+
 import { ExpandResumeModelButton } from "~/components/buttons/resume";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";

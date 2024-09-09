@@ -8,8 +8,10 @@ import { strictArrayLookup, minDate } from "~/lib";
 import type { Transaction } from "~/prisma/client";
 import { type User, type ApiEducation, type ApiExperience } from "~/prisma/model";
 import { DetailEntityType } from "~/prisma/model";
+
 import { type getEducations } from "~/actions/fetches/educations";
 import { type getExperiences } from "~/actions/fetches/experiences";
+
 import { type IconProp } from "~/components/icons";
 
 import { type ApiCourse } from "./course";

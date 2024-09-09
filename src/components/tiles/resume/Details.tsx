@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
+
 import { type ComponentProps } from "~/components/types";
 
 import { Detail } from "./Detail";

@@ -1,5 +1,6 @@
 import { type School } from "~/prisma/model";
 import { stringifyLocation } from "~/prisma/model";
+
 import { Text } from "~/components/typography/Text";
 
 import { Select, type SelectProps } from "./generic";

@@ -3,7 +3,9 @@ import dynamic from "next/dynamic";
 import uniqBy from "lodash.uniqby";
 
 import { removeRedundantTopLevelSkills } from "~/prisma/model";
+
 import { getEducations } from "~/actions/fetches/educations";
+
 import { Loading } from "~/components/feedback/Loading";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { ResumeModelPageTile } from "~/components/tiles/resume/ResumeModelPageTile";

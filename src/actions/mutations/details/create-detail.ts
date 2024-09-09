@@ -6,6 +6,7 @@ import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";
 import { type DetailEntityType, type Project, type ApiDetail } from "~/prisma/model";
 import { calculateSkillsExperience } from "~/prisma/model";
+
 import { getEntity } from "~/actions/fetches/get-entity";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ApiClientFieldErrors } from "~/api";

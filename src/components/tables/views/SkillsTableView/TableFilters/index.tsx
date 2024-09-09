@@ -2,6 +2,7 @@ import clsx from "clsx";
 
 import { getEducations } from "~/actions/fetches/educations";
 import { getExperiences } from "~/actions/fetches/experiences";
+
 import { type ComponentProps } from "~/components/types";
 
 import { type Filters } from "../types";

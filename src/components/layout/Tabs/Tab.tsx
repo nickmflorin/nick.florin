@@ -1,5 +1,6 @@
 "use client";
 import { type LabeledNavItem } from "~/application/pages";
+
 import { TabButton } from "~/components/buttons/TabButton";
 import { useNavigatable } from "~/hooks";
 

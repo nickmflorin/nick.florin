@@ -1,5 +1,6 @@
 import { isUuid } from "~/lib/typeguards";
 import type { BrandSchool } from "~/prisma/model";
+
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { useSchoolForm } from "~/components/forms/schools/hooks";
 import UpdateSchoolForm from "~/components/forms/schools/UpdateSchoolForm";

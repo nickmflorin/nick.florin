@@ -2,6 +2,7 @@
 import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type Company, type Experience } from "~/prisma/model";
+
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteCompany = async (id: string) => {

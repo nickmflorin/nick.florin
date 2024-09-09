@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type ResumeBrand } from "~/prisma/model";
+
 import { Skills } from "~/components/badges/collections/Skills";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography/Description";

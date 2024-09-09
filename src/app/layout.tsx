@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { environment } from "~/environment";
+
 import { AppConfig } from "~/components/config/AppConfig";
 import { Layout } from "~/components/layout/Layout";
 

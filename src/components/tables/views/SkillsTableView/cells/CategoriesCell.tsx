@@ -1,6 +1,8 @@
 "use client";
 import { type ApiSkill, type BrandSkill } from "~/prisma/model";
+
 import { updateSkill } from "~/actions/mutations/skills";
+
 import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
 import { SelectCell } from "~/components/tables/generic/cells/SelectCell";
 

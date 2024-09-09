@@ -8,6 +8,7 @@ import { slugify } from "~/lib/formatters";
 import { prisma, type Transaction } from "~/prisma/client";
 import { type Detail, type User, type NestedDetail, type BrandProject } from "~/prisma/model";
 import { calculateSkillsExperience } from "~/prisma/model";
+
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
 import { ProjectSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";

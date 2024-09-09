@@ -3,8 +3,10 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { type ApiCourse } from "~/prisma/model";
+
 import { updateCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";
+
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 

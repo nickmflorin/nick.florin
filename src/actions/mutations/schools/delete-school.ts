@@ -2,6 +2,7 @@
 import { getAuthedUser } from "~/application/auth/server";
 import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
 import { type School, type Education } from "~/prisma/model";
+
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteSchool = async (id: string) => {

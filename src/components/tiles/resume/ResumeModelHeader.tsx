@@ -7,6 +7,7 @@ import { isFragment } from "react-is";
 import type * as types from "./types";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+
 import type { ComponentProps } from "~/components/types";
 import { type ScreenSize } from "~/components/types/breakpoints";
 import { ShowHide } from "~/components/util";

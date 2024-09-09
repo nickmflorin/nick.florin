@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { partiallyParseObjectWithSchema } from "~/lib/schemas";
 import { decodeQueryParams } from "~/lib/urls";
+
 import { EducationsTableView } from "~/components/tables/views/EducationsTableView";
 
 const EducationsPageFiltersSchema = z.object({

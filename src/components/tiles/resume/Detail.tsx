@@ -3,6 +3,7 @@ import clsx from "clsx";
 import type { ResumeModelSize } from "./types";
 
 import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/prisma/model";
+
 import { Skills } from "~/components/badges/collections/Skills";
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";

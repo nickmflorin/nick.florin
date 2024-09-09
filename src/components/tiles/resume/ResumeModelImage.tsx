@@ -1,4 +1,5 @@
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+
 import { ModelImage, type ModelImageSpreadProps } from "~/components/images/ModelImage";
 
 export interface ResumeModelImageProps<M extends BrandModel<T>, T extends ResumeBrand>

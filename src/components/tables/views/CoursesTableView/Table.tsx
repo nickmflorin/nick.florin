@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { memo } from "react";
 
 import { getCourses, type GetCoursesFilters } from "~/actions/fetches/courses";
+
 import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
 

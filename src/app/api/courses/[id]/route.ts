@@ -1,5 +1,6 @@
 import { prisma } from "~/prisma/client";
 import { type CourseIncludes } from "~/prisma/model";
+
 import { getCourse } from "~/actions/fetches/courses";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";

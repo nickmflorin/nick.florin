@@ -7,6 +7,7 @@ import { slugify } from "~/lib/formatters";
 import { prisma } from "~/prisma/client";
 import { type BrandEducation } from "~/prisma/model";
 import { calculateSkillsExperience } from "~/prisma/model";
+
 import { ApiClientFieldErrors } from "~/api";
 import { CourseSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";

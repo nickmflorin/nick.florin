@@ -2,6 +2,7 @@ import clsx from "clsx";
 
 import { generateChartColors } from "~/lib/charts";
 import type { ApiSkill } from "~/prisma/model";
+
 import { type ComponentProps } from "~/components/types";
 
 import { Legend } from "../Legend";

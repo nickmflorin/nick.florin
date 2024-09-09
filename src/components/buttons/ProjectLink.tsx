@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import type { BrandProject } from "~/prisma/model";
+
 import { withoutOverridingClassName } from "~/components/types";
 
 import { Link, type LinkFlexProps } from "./generic";

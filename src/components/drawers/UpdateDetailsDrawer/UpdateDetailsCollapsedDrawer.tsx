@@ -1,4 +1,5 @@
 import { type DetailEntityType, type NestedApiDetail, type ApiDetail } from "~/prisma/model";
+
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { ModifyDetailsView } from "~/components/forms/details/ModifyDetailsView";
 import { useDetails } from "~/hooks";

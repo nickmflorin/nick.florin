@@ -3,6 +3,7 @@ import clsx from "clsx";
 import type { ResumeModelSize } from "./types";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+
 import { type ComponentProps } from "~/components/types";
 import { type FontWeight } from "~/components/types/typography";
 import { LinkOrText } from "~/components/typography/LinkOrText";

@@ -6,8 +6,10 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiSkill } from "~/prisma/model";
+
 import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
+
 import { Checkbox } from "~/components/input/Checkbox";
 import type * as types from "~/components/tables/types";
 

@@ -19,6 +19,7 @@ See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-m
      #prevent-hot-reloading-from-creating-new-instances-of-prismaclient
 */
 import { PrismaClient as RootPrismaClient } from "~/prisma/model";
+
 import { environment } from "~/environment";
 
 import { brandExtension } from "./brand-extension";

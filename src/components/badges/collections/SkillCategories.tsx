@@ -1,4 +1,5 @@
 import { type SkillCategory } from "~/prisma/model";
+
 import { type ComponentProps } from "~/components/types";
 
 import { SkillCategoryBadge } from "../SkillCategoryBadge";

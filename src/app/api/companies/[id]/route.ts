@@ -1,5 +1,6 @@
 import { prisma } from "~/prisma/client";
 import { type CompanyIncludes } from "~/prisma/model";
+
 import { getCompany } from "~/actions/fetches/companies";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";

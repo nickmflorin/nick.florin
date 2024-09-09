@@ -5,8 +5,10 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import type { BrandResume } from "~/prisma/model";
+
 import { deleteResume, prioritizeResume } from "~/actions/mutations/resumes";
 import { isApiClientGlobalErrorJson } from "~/api";
+
 import { IconButton } from "~/components/buttons";
 import { Icon } from "~/components/icons/Icon";
 import { DropdownMenu } from "~/components/menus/generic/DropdownMenu";

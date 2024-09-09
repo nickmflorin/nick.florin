@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
+
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 

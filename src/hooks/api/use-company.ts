@@ -1,5 +1,6 @@
 import { isUuid } from "~/lib/typeguards";
 import { type ApiCompany, type CompanyIncludes } from "~/prisma/model";
+
 import { type GetCompanyParams } from "~/actions/fetches/companies";
 
 import { useSWR, type SWRConfig } from "./use-swr";

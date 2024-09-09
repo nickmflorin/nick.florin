@@ -5,6 +5,7 @@ import type { IconName } from "@fortawesome/fontawesome-svg-core";
 import { logger } from "~/application/logger";
 import { ProjectSlugs } from "~/prisma/model";
 import { type BrandProject } from "~/prisma/model";
+
 import { ProjectLink } from "~/components/buttons/ProjectLink";
 import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps } from "~/components/types";

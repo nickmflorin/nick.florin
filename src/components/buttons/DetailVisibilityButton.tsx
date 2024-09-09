@@ -5,7 +5,9 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
+
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
+
 import { IconButton } from "~/components/buttons";
 
 export interface DetailVisibilityButtonProps<D extends ApiDetail<[]> | NestedApiDetail<[]>> {

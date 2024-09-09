@@ -4,6 +4,7 @@ import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
 import { calculateSkillsExperience } from "~/prisma/model";
+
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteProjects = async (ids: string[]): Promise<void> => {

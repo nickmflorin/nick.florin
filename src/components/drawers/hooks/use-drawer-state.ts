@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import isEqual from "lodash.isequal";
 
 import { subscribe, unsubscribe } from "~/events/drawer-state-change-event";
+
 import { type DrawerDynamicProps } from "~/components/drawers/provider/drawers";
 
 export interface DrawerStateOptions<D extends DrawerId> {

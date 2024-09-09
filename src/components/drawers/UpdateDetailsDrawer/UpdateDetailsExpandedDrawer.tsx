@@ -1,4 +1,5 @@
 import { isUuid } from "~/lib/typeguards";
+
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 /* eslint-disable-next-line max-len */
 import { ExpandedUpdateDetailForm } from "~/components/forms/details/update/ExpandedUpdateDetailForm";

@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import clsx from "clsx";
 
 import { type LabeledNavItem } from "~/application/pages";
+
 import { type ComponentProps } from "~/components/types";
 
 const Tab = dynamic(() => import("./Tab"));

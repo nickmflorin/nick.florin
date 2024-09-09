@@ -4,6 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
 import { type School } from "~/prisma/model";
+
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
 import { SchoolSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";

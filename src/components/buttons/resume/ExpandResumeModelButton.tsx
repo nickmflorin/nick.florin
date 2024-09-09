@@ -2,6 +2,7 @@
 import clsx from "clsx";
 
 import { type ResumeBrand } from "~/prisma/model";
+
 import { IconButton } from "~/components/buttons";
 import { ViewResumeModelDrawer } from "~/components/drawers/details/ResumeModelDetailDrawer";
 

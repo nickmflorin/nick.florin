@@ -4,8 +4,10 @@ import React, { useState, useTransition, useMemo, useEffect } from "react";
 import clsx from "clsx";
 
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
+
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
 import { isApiClientErrorJson } from "~/api";
+
 import { IconButton } from "~/components/buttons";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { FormFieldErrors } from "~/components/forms/generic/Field/FieldErrors";

@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 import { getSkills } from "~/actions/fetches/skills";
 import type { SkillsFilters } from "~/api/schemas";
+
 import { Loading } from "~/components/feedback/Loading";
 
 import { SkillsBarChartLegend } from "./SkillsBarChartLegend";

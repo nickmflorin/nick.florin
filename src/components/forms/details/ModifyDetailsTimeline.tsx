@@ -4,6 +4,7 @@ import { Timeline } from "@mantine/core";
 import clsx from "clsx";
 
 import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
+
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { DetailsTimeline } from "~/components/timelines/DetailsTimeline";
 import { type ComponentProps } from "~/components/types";

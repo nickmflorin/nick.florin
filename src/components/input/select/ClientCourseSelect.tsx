@@ -1,5 +1,6 @@
 "use client";
 import { type HttpError } from "~/api";
+
 import { useCourses } from "~/hooks";
 
 import { CourseSelect, type CourseSelectProps } from "./CourseSelect";

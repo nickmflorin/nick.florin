@@ -5,8 +5,10 @@ import { autoPlacement } from "@floating-ui/react";
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
+
 import { deleteCompany } from "~/actions/mutations/companies";
 import { deleteSchool } from "~/actions/mutations/schools";
+
 import { IconButton } from "~/components/buttons";
 import { Tooltip } from "~/components/floating/Tooltip";
 import { Text } from "~/components/typography/Text";

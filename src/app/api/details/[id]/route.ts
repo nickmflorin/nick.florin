@@ -1,5 +1,6 @@
 import { prisma } from "~/prisma/client";
 import { type DetailIncludes } from "~/prisma/model";
+
 import { getDetail } from "~/actions/fetches/details";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";

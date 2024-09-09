@@ -2,7 +2,9 @@
 import dynamic from "next/dynamic";
 
 import { type ApiEducation } from "~/prisma/model";
+
 import { deleteEducation, updateEducation } from "~/actions/mutations/educations";
+
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import type * as cells from "~/components/tables/generic/cells";
 import {

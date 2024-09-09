@@ -3,8 +3,10 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { type ApiSkill } from "~/prisma/model";
+
 import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
+
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
 

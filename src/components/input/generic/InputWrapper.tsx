@@ -71,7 +71,7 @@ export const InputWrapper = forwardRef(
     switch (component) {
       case "div":
         return <div {...(ps as HTMLElementProps<"div">)} />;
-      case "textarea":
+      case "textarea": {
         const className = clsx("text-area", ps.className);
         return (
           <textarea
@@ -80,6 +80,7 @@ export const InputWrapper = forwardRef(
             className={className}
           />
         );
+      }
     }
   },
 ) as {

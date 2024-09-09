@@ -4,6 +4,7 @@ import { useTour as useRootTour } from "@reactour/tour";
 import { useCookies } from "next-client-cookies";
 
 import { logger } from "~/application/logger";
+
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
 export const useTour = () => {

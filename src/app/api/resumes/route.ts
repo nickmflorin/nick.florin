@@ -1,6 +1,7 @@
 import { type NextRequest } from "next/server";
 
 import { getClerkUser } from "~/application/auth/server";
+
 import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 

@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import { type ApiDetail, type NestedApiDetail, type DetailEntityType } from "~/prisma/model";
+
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";

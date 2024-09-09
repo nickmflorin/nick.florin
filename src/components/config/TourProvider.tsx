@@ -5,6 +5,7 @@ import { TourProvider as RootTourProvider } from "@reactour/tour";
 import { useCookies } from "next-client-cookies";
 
 import { logger } from "~/application/logger";
+
 import { SkillBadge } from "~/components/badges/SkillBadge";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { TourContent } from "~/components/tours/TourContent";

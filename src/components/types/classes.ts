@@ -7,7 +7,7 @@ const getClassNameParts = (cs: ClassName | undefined) =>
     .split(" ")
     .map(c => c.trim());
 
-const TailwindClassNameRegex = /^!?(([A-Za-z-:\[\]&>_*.]+):)?([A-Za-z]+)-([A-Za-z0-9_\-\[\]]+)$/;
+const TailwindClassNameRegex = /^!?(([A-Za-z-:\\[\]&>_*.]+):)?([A-Za-z]+)-([A-Za-z0-9_\-\\[\]]+)$/;
 
 type ParseTailwindClassNameOptions = {
   readonly strict?: boolean;

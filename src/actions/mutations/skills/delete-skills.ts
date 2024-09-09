@@ -3,6 +3,7 @@ import { getAuthedUser } from "~/application/auth/server";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
 import { prisma } from "~/prisma/client";
+
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteSkills = async (ids: string[]): Promise<void> => {

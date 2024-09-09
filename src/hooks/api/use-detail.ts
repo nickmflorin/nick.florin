@@ -4,6 +4,7 @@ import {
   type NestedApiDetail,
   type ToSkillIncludes,
 } from "~/prisma/model";
+
 import { type GetDetailParams } from "~/actions/fetches/details";
 
 import { useSWR, type SWRConfig, type SWRResponse } from "./use-swr";
