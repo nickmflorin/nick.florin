@@ -122,7 +122,7 @@ export class Logger {
 
   private get pino() {
     if (!this._pino) {
-      this._pino = pino(this.config, this.stream);
+      this._pino = pino(this.config, this.stream ?? undefined);
     }
     return this._pino;
   }
