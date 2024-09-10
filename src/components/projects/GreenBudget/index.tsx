@@ -5,7 +5,6 @@ import { Description } from "~/components/typography/Description";
 
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
-import { ProjectImageWrapper } from "../ProjectImageWrapper";
 import { Section } from "../Section";
 
 export interface GreenBudgetProps
@@ -118,17 +117,15 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           what would eventually become <Emphasize>GreenBudget</Emphasize>.
         </Description>
       </div>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/greenbudget/landing.png"
-          alt="GreenBudget Landing Page"
-          caption={
-            <Description>
-              <Emphasize>GreenBudget</Emphasize>&apos;s original landing/slash page.
-            </Description>
-          }
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/greenbudget/landing.png"
+        alt="GreenBudget Landing Page"
+        caption={
+          <Description>
+            <Emphasize>GreenBudget</Emphasize>&apos;s original landing/slash page.
+          </Description>
+        }
+      />
     </Section>
     <Section title="Concepts" marginBottom={false}>
       <div className="flex flex-col gap-[8px]">
@@ -139,18 +136,15 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           accumulation of related values on each <Emphasize>Sub Account</Emphasize> it contains.
         </Description>
       </div>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/greenbudget/topsheet.png"
-          alt="GreenBudget Top Sheet"
-          caption={
-            <Description>
-              An example of a <Emphasize>Top Sheet</Emphasize> in <Emphasize>GreenBudget</Emphasize>
-              .
-            </Description>
-          }
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/greenbudget/topsheet.png"
+        alt="GreenBudget Top Sheet"
+        caption={
+          <Description>
+            An example of a <Emphasize>Top Sheet</Emphasize> in <Emphasize>GreenBudget</Emphasize>.
+          </Description>
+        }
+      />
       <div className="flex flex-col gap-[8px]">
         <Description>
           When an <Emphasize>Account</Emphasize> is &quot;expanded&quot;, the&nbsp;
@@ -162,18 +156,16 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           <Emphasize>Top Sheet</Emphasize>.
         </Description>
       </div>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/greenbudget/subaccounts.png"
-          alt="GreenBudget Nested Accounts"
-          caption={
-            <Description>
-              An example of the expanded <Emphasize>Sub Account</Emphasize>(s) view for&nbsp;
-              <Emphasize>Account 1001; Construction Contracts for Set</Emphasize>.
-            </Description>
-          }
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/greenbudget/subaccounts.png"
+        alt="GreenBudget Nested Accounts"
+        caption={
+          <Description>
+            An example of the expanded <Emphasize>Sub Account</Emphasize>(s) view for&nbsp;
+            <Emphasize>Account 1001; Construction Contracts for Set</Emphasize>.
+          </Description>
+        }
+      />
       <Section title="Infinitely Recursive Tree Structure" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
           <Description>
@@ -207,23 +199,20 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             show updated values after a change occurred.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/expanding.gif"
-            alt="GreenBudget Top Sheet"
-            caption={
-              <Description>
-                An example of a user expanding 3 layers deep in a budget, to the second layer
-                of&nbsp;
-                <Emphasize>Sub Account</Emphasize>(s). Notice how the total values in the&nbsp;
-                <Emphasize>Top Sheet</Emphasize> (shown at the bottom in the gray bar labeled
-                &apos;Test Budget Total&apos;) update as the user pastes the copied content
-                into&nbsp; the&nbsp;
-                <Emphasize>Sub Account</Emphasize> view.
-              </Description>
-            }
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/expanding.gif"
+          alt="GreenBudget Top Sheet"
+          caption={
+            <Description>
+              An example of a user expanding 3 layers deep in a budget, to the second layer of&nbsp;
+              <Emphasize>Sub Account</Emphasize>(s). Notice how the total values in the&nbsp;
+              <Emphasize>Top Sheet</Emphasize> (shown at the bottom in the gray bar labeled
+              &apos;Test Budget Total&apos;) update as the user pastes the copied content into&nbsp;
+              the&nbsp;
+              <Emphasize>Sub Account</Emphasize> view.
+            </Description>
+          }
+        />
         <div className="flex flex-col gap-[8px]">
           <Description>
             Luckily, I developed a solution for this problem - which allowed us to both load and
@@ -254,16 +243,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/actualization.gif"
-            alt="GreenBudget Actualization"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/actualization.gif"
+          alt="GreenBudget Actualization"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Fringes" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -273,16 +260,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/fringes.gif"
-            alt="GreenBudget Fringes"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/fringes.gif"
+          alt="GreenBudget Fringes"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Sub-Totaling" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -292,16 +277,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/grouping.gif"
-            alt="GreenBudget Grouping"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/grouping.gif"
+          alt="GreenBudget Grouping"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
         <div className="flex flex-col gap-[8px]">
           <Description>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -309,16 +292,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/grouping-from-checkboxes.gif"
-            alt="GreenBudget Checkbox Grouping"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/grouping-from-checkboxes.gif"
+          alt="GreenBudget Checkbox Grouping"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Markup" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -328,16 +309,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/markup.gif"
-            alt="GreenBudget Markup"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/markup.gif"
+          alt="GreenBudget Markup"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Reordering" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -347,16 +326,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/reordering.gif"
-            alt="GreenBudget Reordering"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/reordering.gif"
+          alt="GreenBudget Reordering"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Intelligent Autocomplete" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -366,16 +343,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/autocomplete.gif"
-            alt="GreenBudget Autocomplete"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/autocomplete.gif"
+          alt="GreenBudget Autocomplete"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Attachments" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -385,16 +360,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/attachments.gif"
-            alt="GreenBudget Attachments"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/attachments.gif"
+          alt="GreenBudget Attachments"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Exporting" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -404,26 +377,22 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/exporting.png"
-            alt="GreenBudget Attachments"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/exporting-top-sheet.png"
-            alt="GreenBudget Exporting"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/exporting.png"
+          alt="GreenBudget Attachments"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
+        <ProjectImage
+          src="/projects/greenbudget/exporting-top-sheet.png"
+          alt="GreenBudget Exporting"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Sharing" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -433,16 +402,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/share-view.png"
-            alt="GreenBudget Share View"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/share-view.png"
+          alt="GreenBudget Share View"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
       <Section title="Mobile" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -452,16 +419,14 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </Description>
         </div>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/greenbudget/mobile-analysis.png"
-            alt="GreenBudget Mobile"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/greenbudget/mobile-analysis.png"
+          alt="GreenBudget Mobile"
+          caption={[
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+              "incididunt ut labore et dolore magna aliqua.",
+          ]}
+        />
       </Section>
     </Section>
   </Project>

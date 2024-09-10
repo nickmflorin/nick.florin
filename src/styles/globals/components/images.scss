@@ -2,56 +2,6 @@
 @use "./radii" as radii;
 @use "./typography" as typography;
 
-.project-image {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  height: 100%;
-  width: 100%;
-
-  // flex flex-col gap-[12px] max-md:gap-[8px] w-full h-full
-
-  > .project-image-wrapper {
-    @include partials.border-radius(theme("borderRadius.md"));
-    position: relative;
-    max-width: 100%;
-    max-height: 100%;
-    flex-grow: 100;
-    // box-shadow: theme("boxShadow.md");
-
-    border: 1px solid theme("colors.neutral.100");
-    overflow: hidden;
-    background-attachment: fixed;
-    background-attachment: fixed;
-    -webkit-box-shadow: inset 0px -2px 10px -1px rgb(225, 0, 0);
-    -moz-box-shadow: inset 0px -2px 10px -1px rgb(225, 0, 0);
-    box-shadow: inset 0px -2px 10px -1px rgb(225, 0, 0);
-
-    > .project-image-image {
-      // clip-path: inset(0px 0px 1px 0px);
-      overflow: hidden;
-      background-attachment: fixed;
-      -webkit-box-shadow: inset 0px -2px 10px -1px rgba(255, 255, 255, 1);
-      -moz-box-shadow: inset 0px -2px 10px -1px rgba(255, 255, 255, 1);
-      box-shadow: inset 0px -2px 10px -1px rgba(255, 255, 255, 1);
-    }
-  }
-  // clip-path: inset(0px 0px 1px 0px);
-  // The reasoning is unclear, but it appears that the border-radius property must be applied
-  // to work on Safari or iOS devices, whereas the clip-path property must be defined to work
-  // on Chrome.
-  // -o-clip-path: inset(0px round theme("borderRadius.md"));
-  // -moz-clip-path: inset(0px round theme("borderRadius.md"));
-  // -webkit-clip-path: inset(0px round theme("borderRadius.md"));
-  // clip-path: inset(0px round theme("borderRadius.md"));
-
-  // clip-path: inset(-1% -1% 1% -1%);
-  // -o-clip-path: inset(0px round theme("borderRadius.md"));
-  // -moz-clip-path: inset(0px round theme("borderRadius.md"));
-  // -webkit-clip-path: inset(0px round theme("borderRadius.md"));
-  // clip-path: inset(0px round theme("borderRadius.md"));
-}
-
 .model-image {
   display: flex;
   flex-direction: row;

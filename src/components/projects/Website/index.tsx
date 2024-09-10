@@ -3,7 +3,6 @@ import { Description } from "~/components/typography/Description";
 
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
-import { ProjectImageWrapper } from "../ProjectImageWrapper";
 import { Section } from "../Section";
 
 export interface WebsiteProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
@@ -84,30 +83,26 @@ export const Website = (props: WebsiteProps): JSX.Element => (
           metrics (usually in years) for every <i>Skill</i> in the application.
         </Description>
       </div>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/website/modifying-skills.png"
-          alt="Modifying Skills"
-          caption={[
-            "Skill(s) can be modified, deleted and/or created via the admin-only CMS.  Skill(s) " +
-              "can then be associated with other models in the application, which factor " +
-              "into the calculation of experience metrics for each Skill it relates to.",
-          ]}
-        />
-      </ProjectImageWrapper>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/website/modifying-courses.png"
-          alt="Modifying Courses"
-          caption={[
-            "The relationship between Skill(s) and associated models can also be modified in the " +
-              "reverse direction.  Here, the Skill(s) associated with a Course are being " +
-              "modified. This will affect the academic experience metrics for each Skill that " +
-              "is added to or removed from the Course, since each Course is tied to an " +
-              "Education model with a specific start and end date.",
-          ]}
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/website/modifying-skills.png"
+        alt="Modifying Skills"
+        caption={[
+          "Skill(s) can be modified, deleted and/or created via the admin-only CMS.  Skill(s) " +
+            "can then be associated with other models in the application, which factor " +
+            "into the calculation of experience metrics for each Skill it relates to.",
+        ]}
+      />
+      <ProjectImage
+        src="/projects/website/modifying-courses.png"
+        alt="Modifying Courses"
+        caption={[
+          "The relationship between Skill(s) and associated models can also be modified in the " +
+            "reverse direction.  Here, the Skill(s) associated with a Course are being " +
+            "modified. This will affect the academic experience metrics for each Skill that " +
+            "is added to or removed from the Course, since each Course is tied to an " +
+            "Education model with a specific start and end date.",
+        ]}
+      />
       <Description>
         All of the content of the application can be dynamically modified directly via the
         admin-only CMS. This includes the ability to modify, create, delete and update the
@@ -121,13 +116,11 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         </Link>
         &nbsp;pages.
       </Description>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/website/modifying-experience.png"
-          alt="Modifying Experience"
-          caption={["Modifying experience history via the admin-only CMS."]}
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/website/modifying-experience.png"
+        alt="Modifying Experience"
+        caption={["Modifying experience history via the admin-only CMS."]}
+      />
     </Section>
     <Section title="Integrations" marginBottom={false}>
       <div className="flex flex-col gap-[8px]">
@@ -143,16 +136,14 @@ export const Website = (props: WebsiteProps): JSX.Element => (
           ,&nbsp;allowing relevant data to be prepopulated or imported directly from these sources,
           and then reconciled with internal data.
         </Description>
-        <ProjectImageWrapper className="mt-[8px]">
-          <ProjectImage
-            src="/projects/website/modifying-repositories.png"
-            alt="Modifying Experience"
-            caption={[
-              "Modifying the repositories visible in the application after they are imported via " +
-                "GitHub's API.",
-            ]}
-          />
-        </ProjectImageWrapper>
+        <ProjectImage
+          src="/projects/website/modifying-repositories.png"
+          alt="Modifying Experience"
+          caption={[
+            "Modifying the repositories visible in the application after they are imported via " +
+              "GitHub's API.",
+          ]}
+        />
       </div>
     </Section>
     <Section title="Resume Management" marginBottom={false}>
@@ -162,20 +153,18 @@ export const Website = (props: WebsiteProps): JSX.Element => (
           Resumes can be uploaded, deleted and toggled between, with the ability to expose a
           specific, most up-to-date resume for public download and viewing in the application.
         </Description>
-        <ProjectImageWrapper className="mt-[8px]">
-          <div className="flex flex-row gap-[24px]">
-            <ProjectImage
-              src="/projects/website/uploading-resumes.png"
-              alt="Uploading Resumes"
-              caption={["Uploading resumes via the admin-only CMS."]}
-            />
-            <ProjectImage
-              src="/projects/website/modifying-resumes.png"
-              alt="Modifying Resumes"
-              caption={["Modifying resumes via the admin-only CMS."]}
-            />
-          </div>
-        </ProjectImageWrapper>
+        <div className="flex flex-row gap-[24px]">
+          <ProjectImage
+            src="/projects/website/uploading-resumes.png"
+            alt="Uploading Resumes"
+            caption={["Uploading resumes via the admin-only CMS."]}
+          />
+          <ProjectImage
+            src="/projects/website/modifying-resumes.png"
+            alt="Modifying Resumes"
+            caption={["Modifying resumes via the admin-only CMS."]}
+          />
+        </div>
       </div>
     </Section>
   </Project>

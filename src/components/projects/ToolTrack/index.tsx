@@ -3,7 +3,6 @@ import { Description } from "~/components/typography/Description";
 
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
-import { ProjectImageWrapper } from "../ProjectImageWrapper";
 import { Section } from "../Section";
 
 export interface ToolTrackProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
@@ -128,16 +127,14 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         when it notices a change in the data, it will add the appropriate event to a queue that will
         result in a notification being sent to the subscribed user when it is processed.
       </Description>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/tooltrack/subscribing-to-products.png"
-          alt="Subscribing to Products"
-          caption={[
-            "Users can view all of the products listed on the company's website and subscribe to " +
-              "receive notifications for various events that may occur for a given product.",
-          ]}
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/tooltrack/subscribing-to-products.png"
+        alt="Subscribing to Products"
+        caption={[
+          "Users can view all of the products listed on the company's website and subscribe to " +
+            "receive notifications for various events that may occur for a given product.",
+        ]}
+      />
     </Section>
     <Section title="Managing Subscriptions" marginBottom={false}>
       <Description>
@@ -145,32 +142,28 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         view, they can make changes to their active subscriptions, disable them temporarily or
         unsubscribe from them entirely.
       </Description>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/tooltrack/managing-subscriptions.png"
-          alt="Managing Subscriptions"
-          caption={[
-            "Subscriptions to all products offered by the company can be managed in a " +
-              "centralized view.",
-          ]}
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/tooltrack/managing-subscriptions.png"
+        alt="Managing Subscriptions"
+        caption={[
+          "Subscriptions to all products offered by the company can be managed in a " +
+            "centralized view.",
+        ]}
+      />
     </Section>
     <Section title="Product Detail" marginBottom={false}>
       <Description>
         Users can get more detailed information about a specific product, their subscriptions to
         that product and historical data related to that product in the product&apos;s detail view.
       </Description>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/tooltrack/product-detail.png"
-          alt="Product Detail"
-          caption={[
-            "Users can view historical data for, manage their subscriptions of and view " +
-              "current up to date information for each product the company offers.",
-          ]}
-        />
-      </ProjectImageWrapper>
+      <ProjectImage
+        src="/projects/tooltrack/product-detail.png"
+        alt="Product Detail"
+        caption={[
+          "Users can view historical data for, manage their subscriptions of and view " +
+            "current up to date information for each product the company offers.",
+        ]}
+      />
     </Section>
   </Project>
 );

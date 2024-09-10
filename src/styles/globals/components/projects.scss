@@ -1,0 +1,35 @@
+@use "partials";
+
+.project-image-container {
+  margin-top: theme("spacing.2");
+  margin-bottom: theme("spacing.2");
+  width: 100%;
+  max-width: 100%;
+
+  > .project-image {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+
+    > .project-image-wrapper {
+      @include partials.border-radius(theme("borderRadius.md"));
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      flex-grow: 100;
+      border: 1px solid theme("colors.border");
+      overflow: hidden;
+
+      -webkit-box-shadow: theme("boxShadow.md");
+      -moz-box-shadow: theme("boxShadow.md");
+      box-shadow: theme("boxShadow.md");
+
+      > .project-image-image {
+        overflow: hidden;
+      }
+    }
+  }
+}
