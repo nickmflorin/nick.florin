@@ -4,6 +4,8 @@ import { convertToPlainObject } from "~/api/serialization";
 
 import { AssetVisualizations } from "~/components/projects/AssetVisualizations";
 
+import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
+
 export default async function AssetVisualizationsPage() {
   const project = convertToPlainObject(
     await prisma.project.findUniqueOrThrow({
@@ -11,5 +13,9 @@ export default async function AssetVisualizationsPage() {
       include: { repositories: true, skills: true },
     }),
   );
-  return <AssetVisualizations project={project} />;
+  return (
+    <RedirectIfNotVisible project={project}>
+      <AssetVisualizations project={project} />
+    </RedirectIfNotVisible>
+  );
 }

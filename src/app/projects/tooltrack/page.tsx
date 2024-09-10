@@ -4,6 +4,8 @@ import { convertToPlainObject } from "~/api/serialization";
 
 import { ToolTrack } from "~/components/projects/ToolTrack";
 
+import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
+
 export default async function ToolTrackPage() {
   const project = convertToPlainObject(
     await prisma.project.findUniqueOrThrow({
@@ -11,5 +13,10 @@ export default async function ToolTrackPage() {
       include: { repositories: true, skills: true },
     }),
   );
-  return <ToolTrack project={project} />;
+
+  return (
+    <RedirectIfNotVisible project={project}>
+      <ToolTrack project={project} />
+    </RedirectIfNotVisible>
+  );
 }

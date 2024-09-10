@@ -4,6 +4,8 @@ import { convertToPlainObject } from "~/api/serialization";
 
 import { Website } from "~/components/projects/Website";
 
+import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
+
 export default async function WebsitePage() {
   const project = convertToPlainObject(
     await prisma.project.findUniqueOrThrow({
@@ -11,5 +13,10 @@ export default async function WebsitePage() {
       include: { repositories: true, skills: true },
     }),
   );
-  return <Website project={project} />;
+
+  return (
+    <RedirectIfNotVisible project={project}>
+      <Website project={project} />
+    </RedirectIfNotVisible>
+  );
 }

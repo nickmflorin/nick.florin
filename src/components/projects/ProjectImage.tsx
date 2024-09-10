@@ -19,6 +19,7 @@ export const ProjectImage = ({ src, caption, alt, ...props }: ProjectImageProps)
         height={420}
         width={760}
         layout="responsive"
+        priority={true}
         src={src}
         alt={alt}
         className="project-image-image w-full h-full max-w-full"
