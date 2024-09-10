@@ -131,7 +131,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
       <div className="flex flex-col gap-[8px]">
         <Description>
           In production budgeting, the <Emphasize>Top Sheet</Emphasize> represents the top level
-          line-items, or <Emphasize>Account</Emphasize>(s) in the budget. The estimated, actual and
+          line items, or <Emphasize>Account</Emphasize>(s) in the budget. The estimated, actual and
           variance values for each <Emphasize>Account</Emphasize> are determined based on the
           accumulation of related values on each <Emphasize>Sub Account</Emphasize> it contains.
         </Description>
@@ -237,10 +237,10 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         <div className="flex flex-col gap-[8px]">
           <Description>
             In film production, an <Emphasize>Actual</Emphasize> is a term that is used to describe
-            the <i>actual</i>, realized cost of a given line-item in a budget. Sometimes, rather
-            more often than not, the actual cost of a given line-item differs from the line
-            item&spos;s original <Emphasize>estimated</Emphasize> value, and the difference is
-            referred to as the&nbsp;
+            the <i>actual</i>, realized cost of a given line item in a budget. Sometimes (more often
+            than not) the actual cost of a given line item differs from the line item&spos;s
+            original <Emphasize>estimated</Emphasize> value, and the difference is referred to as
+            the&nbsp;
             <Emphasize>variance</Emphasize>.
           </Description>
           <Description>
@@ -270,10 +270,10 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         <div className="flex flex-col gap-[8px]">
           <Description>
             A <Emphasize>Fringe</Emphasize> represents a percentage or flat rate markup that can be
-            applied to individual line-items in a production budget. <Emphasize>Fringe</Emphasize>
-            (s) are often reused across multiple line-items in a table and across multiple tables in
+            applied to individual line items in a production budget. <Emphasize>Fringe</Emphasize>
+            (s) are often reused across multiple line items in a table and across multiple tables in
             a budget. A <Emphasize>Fringe</Emphasize> will affect the&nbsp;
-            <Emphasize>estimated</Emphasize> value of any line-item it is applied to (assuming it
+            <Emphasize>estimated</Emphasize> value of any line item it is applied to (assuming it
             has a non-zero percentage or flat rate value).
           </Description>
         </div>
