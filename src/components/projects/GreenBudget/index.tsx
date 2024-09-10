@@ -227,29 +227,43 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
     <Section title="Features" marginBottom={false}>
       <div className="flex flex-col gap-[8px]">
         <Description>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-          est laborum.
+          Even when in its infancy, <Emphasize>GreenBudget</Emphasize> was packed with features that
+          were not available in any other production budgeting tool on the market. It is impossible
+          to describe each and every feature on this page - so the following represents a brief
+          summary of just <i>some</i> of the features that were available.
         </Description>
       </div>
       <Section title="Actualization" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            In film production, an <Emphasize>Actual</Emphasize> is a term that is used to describe
+            the <i>actual</i>, realized cost of a given line-item in a budget. Sometimes, rather
+            more often than not, the actual cost of a given line-item differs from the line
+            item&spos;s original <Emphasize>estimated</Emphasize> value, and the difference is
+            referred to as the&nbsp;
+            <Emphasize>variance</Emphasize>.
+          </Description>
+          <Description>
+            In a production budget, <Emphasize>Actual</Emphasize>(s) are stored in separate tables -
+            and then tied to individual line items of the budget through foreign-key relationships.
+            This allows other information to be stored alongside the <Emphasize>Actual</Emphasize>,
+            such as attachments, notes, etc. It is often the case that a producer will want to keep
+            a record of, for instance, the receipts that were used to justify the actual cost of a
+            line item.
           </Description>
         </div>
         <ProjectImage
           src="/projects/greenbudget/actualization.gif"
           alt="GreenBudget Actualization"
-          caption={[
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-              "incididunt ut labore et dolore magna aliqua.",
-          ]}
+          caption={
+            <Description>
+              An example of a user creating a new <Emphasize>Actual</Emphasize>, &nbsp;
+              <Emphasize>1001-A-7</Emphasize>, and associating the <Emphasize>Actual</Emphasize>
+              &nbsp; with the&nbsp;
+              <Emphasize>Sub Account</Emphasize> for <Emphasize>Hotel Stay</Emphasize> costs in the
+              budget.
+            </Description>
+          }
         />
       </Section>
       <Section title="Fringes" marginBottom={false} subSection>
