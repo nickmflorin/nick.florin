@@ -72,7 +72,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             Django REST Framework
           </Link>
           &nbsp;. At the time in which I stopped working on the project, we were in the midst of
-          transitioning the frontend to the populate&nbsp;
+          transitioning the frontend to the popular&nbsp;
           <Link as="a" href="https://nextjs.org/">
             NextJS
           </Link>
@@ -174,26 +174,66 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           }
         />
       </ProjectImageWrapper>
-      <div className="flex flex-col gap-[8px]">
-        <Description>
-          It&apos;s not just <Emphasize>Account</Emphasize>(s) that can expand. Any given&nbsp;
-          <Emphasize>Sub Account</Emphasize> row can expand as well - creating an infinitely
-          recursive tree structure. At each level of the tree, values funnel upwards to the parent -
-          all the way until the <Emphasize>Top Sheet</Emphasize> is reached.
-        </Description>
-      </div>
-      <ProjectImageWrapper className="mt-[8px]">
-        <ProjectImage
-          src="/projects/greenbudget/expanding.gif"
-          alt="GreenBudget Top Sheet"
-          caption={
-            <Description>
-              An example of a user expanding 3 layers deep in a budget, to the second layer of&nbsp;
-              <Emphasize>Sub Account</Emphasize>(s).
-            </Description>
-          }
-        />
-      </ProjectImageWrapper>
+      <Section title="Infinitely Recursive Tree Structure" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            It&apos;s not just <Emphasize>Account</Emphasize>(s) that can expand. Any given&nbsp;
+            <Emphasize>Sub Account</Emphasize> row at any level deep in the budget can expand as
+            well. This results in a budget being represented as an infinitely recursive tree-like
+            structure, where at each level of the tree, values continue to funnel upwards from
+            parent to parent - all the way until the <Emphasize>Top Sheet</Emphasize> is reached.
+          </Description>
+          <Description>
+            This infinitely recursive tree structure can lead to truly enormous data structures. For
+            instance, it would not be uncommon for a budget to be structured such that the&nbsp;
+            <Emphasize>Top Sheet</Emphasize> had 100 <Emphasize>Account</Emphasize>(s), where
+            each&nbsp;
+            <Emphasize>Account</Emphasize> had 50 <Emphasize>Sub Account</Emphasize>(s), and each of
+            those <Emphasize>Sub Account</Emphasize>(s) had 50 <Emphasize>Sub Account</Emphasize>
+            (s), and each of those <Emphasize>Sub Account</Emphasize>(s) has 20&nbsp;
+            <Emphasize>Sub Account</Emphasize>(s). In this case, the budget would have 5 million
+            rows of data.
+          </Description>
+          <Description>
+            It is not difficult to see how this can quickly become a complex problem to solve,
+            particularly as it relates to performance issues, loading the data for a given
+            table&nbsp;
+            <Emphasize>and</Emphasize> applying the appropriate changes to the parent table(s) when
+            a given value in the child table is changed. Since each table had to be aware of the
+            affect that changing a value in a row would have on its parent, and the&nbsp;
+            <Emphasize>Top Sheet</Emphasize>, it is easy to gather how important it was to
+            intelligently load data and apply updates in the most performant ways to prevent a given
+            table view inside of the budget from taking a large amount of time to load, render or
+            show updated values after a change occurred.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/expanding.gif"
+            alt="GreenBudget Top Sheet"
+            caption={
+              <Description>
+                An example of a user expanding 3 layers deep in a budget, to the second layer
+                of&nbsp;
+                <Emphasize>Sub Account</Emphasize>(s). Notice how the total values in the&nbsp;
+                <Emphasize>Top Sheet</Emphasize> (shown at the bottom in the gray bar labeled
+                &apos;Test Budget Total&apos;) update as the user pastes the copied content
+                into&nbsp; the&nbsp;
+                <Emphasize>Sub Account</Emphasize> view.
+              </Description>
+            }
+          />
+        </ProjectImageWrapper>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Luckily, I developed a solution for this problem - which allowed us to both load and
+            render given views of the budget extremely quickly and apply updates that affected
+            several layers of parent tables in a fraction of the time it would have taken to do so
+            otherwise. If you are interested in learning more, please feel free to reach out to me
+            directly.
+          </Description>
+        </div>
+      </Section>
     </Section>
     <Section title="Features" marginBottom={false}>
       <div className="flex flex-col gap-[8px]">
