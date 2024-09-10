@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { type ReactNode } from "react";
 
 import clsx from "clsx";
 
@@ -7,7 +8,7 @@ import { Text } from "~/components/typography/Text";
 
 export interface ProjectImageProps extends ComponentProps {
   readonly src: string;
-  readonly caption: string[];
+  readonly caption: ReactNode;
   readonly alt: string;
 }
 
@@ -23,8 +24,8 @@ export const ProjectImage = ({ src, caption, alt, ...props }: ProjectImageProps)
         className="project-image-image w-full h-full max-w-full"
       />
     </div>
-    <div className="flex flex-col gap-[6px]">
-      {caption.map((c, index) => (
+    <div className="flex flex-col gap-[6px] items-center">
+      {(Array.isArray(caption) ? caption : [caption]).map((c, index) => (
         <Text
           key={index}
           className="text-description text-sm max-md:text-xs text-center max-w-[90%]"
