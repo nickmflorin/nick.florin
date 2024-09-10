@@ -124,7 +124,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           alt="GreenBudget Landing Page"
           caption={
             <Description>
-              <Emphasize>GreenBudget</Emphasize>&apos; original landing/slash page.
+              <Emphasize>GreenBudget</Emphasize>&apos;s original landing/slash page.
             </Description>
           }
         />
