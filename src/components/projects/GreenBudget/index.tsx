@@ -154,10 +154,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
       <div className="flex flex-col gap-[8px]">
         <Description>
           When an <Emphasize>Account</Emphasize> is &quot;expanded&quot;, the&nbsp;
-          <Emphasize>Account</Emphasize>
-          row expands into a new table showing all of the <Emphasize>Sub Account</Emphasize>(s) that
-          it contains. The metrics for each row (i.e. <Emphasize>Sub Account</Emphasize>(s)) funnel
-          upwards to the associated <Emphasize>Account</Emphasize> row in the&nbsp;
+          <Emphasize>Account</Emphasize>&nbsp; row expands into a new table showing all of the&nbsp;
+          <Emphasize>Sub Account</Emphasize>(s) that it contains. The metrics for each row
+          (i.e.&nbsp;
+          <Emphasize>Sub Account</Emphasize>(s)) funnel upwards to the associated&nbsp;
+          <Emphasize>Account</Emphasize> row in the&nbsp;
           <Emphasize>Top Sheet</Emphasize>.
         </Description>
       </div>
