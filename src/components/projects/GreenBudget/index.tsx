@@ -302,6 +302,23 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             ]}
           />
         </ProjectImageWrapper>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/grouping-from-checkboxes.gif"
+            alt="GreenBudget Checkbox Grouping"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
       </Section>
       <Section title="Markup" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
@@ -401,6 +418,25 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           <ProjectImage
             src="/projects/greenbudget/exporting-top-sheet.png"
             alt="GreenBudget Exporting"
+            caption={[
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                "incididunt ut labore et dolore magna aliqua.",
+            ]}
+          />
+        </ProjectImageWrapper>
+      </Section>
+      <Section title="Sharing" marginBottom={false} subSection>
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </Description>
+        </div>
+        <ProjectImageWrapper className="mt-[8px]">
+          <ProjectImage
+            src="/projects/greenbudget/share-view.png"
+            alt="GreenBudget Share View"
             caption={[
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
                 "incididunt ut labore et dolore magna aliqua.",
