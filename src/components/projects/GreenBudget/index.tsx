@@ -175,7 +175,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
       </ProjectImageWrapper>
       <div className="flex flex-col gap-[8px]">
         <Description>
-          It&apos;s not just <Emphasize>Account</Emphasize>(s) that can expand. Any given{" "}
+          It&apos;s not just <Emphasize>Account</Emphasize>(s) that can expand. Any given&nbsp;
           <Emphasize>Sub Account</Emphasize> row can expand as well - creating an infinitely
           recursive tree structure. At each level of the tree, values funnel upwards to the parent -
           all the way until the <Emphasize>Top Sheet</Emphasize> is reached.
