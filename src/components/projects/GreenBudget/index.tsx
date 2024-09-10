@@ -269,17 +269,35 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
       <Section title="Fringes" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            A <Emphasize>Fringe</Emphasize> represents a percentage or flat rate markup that can be
+            applied to individual line-items in a production budget. <Emphasize>Fringe</Emphasize>
+            (s) are often reused across multiple line-items in a table and across multiple tables in
+            a budget. A <Emphasize>Fringe</Emphasize> will affect the&nbsp;
+            <Emphasize>estimated</Emphasize> value of any line-item it is applied to (assuming it
+            has a non-zero percentage or flat rate value).
           </Description>
         </div>
         <ProjectImage
           src="/projects/greenbudget/fringes.gif"
           alt="GreenBudget Fringes"
           caption={[
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-              "incididunt ut labore et dolore magna aliqua.",
+            <Description key="0">
+              An example of a user creating a new <Emphasize>Fringe</Emphasize>, &nbsp;
+              <Emphasize>Fringe I</Emphasize>, and associating the <Emphasize>Fringe</Emphasize>
+              &nbsp; with the&nbsp;
+              <Emphasize>Sub Account</Emphasize> for <Emphasize>Accountants</Emphasize> in the
+              budget.
+            </Description>,
+            <Description key="1">
+              The <Emphasize>Fringe</Emphasize> has a percentage rate of 25%, and a cutoff of
+              $1000.00. This means that it will apply a 25% markup to the first $1000.00 of
+              the&nbsp;
+              <Emphasize>Sub Account</Emphasize>&apos;s <Emphasize>estimated</Emphasize> value. You
+              can see the <Emphasize>estimated</Emphasize> value of the&nbsp;
+              <Emphasize>Sub Account</Emphasize>&nbsp; change from $11,250.00 to $11,500.00
+              immediately after the&nbsp;
+              <Emphasize>Fringe</Emphasize> is applied in the above image.
+            </Description>,
           ]}
         />
       </Section>
