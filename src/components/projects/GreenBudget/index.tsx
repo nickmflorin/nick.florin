@@ -104,7 +104,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
       <div className="flex flex-col gap-[8px]">
         <Description>
           The way that film producers manage budgets is different than how people in any other
-          industry manages budgets - standard, general accounting/budgeting tools do not work. The
+          industry manage budgets - standard, general accounting/budgeting tools do not work. The
           majority of (if not all) producers relied on a combination of internal, overly-complicated
           spreadsheets with custom macros, third-party Excel integrations and/or the popular
           MovieMagic budgeting software - which is a desktop-only, single tenant, expensive and
