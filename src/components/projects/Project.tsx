@@ -35,7 +35,10 @@ export const Project = ({
       props.className,
     )}
   >
-    <div {...props} className={clsx("w-full flex flex-col gap-[16px]", props.className)}>
+    <div
+      {...props}
+      className={clsx("w-full flex flex-col gap-[16px] max-sm:gap-[12px]", props.className)}
+    >
       <div
         className={clsx(
           "flex flex-row sm:items-center gap-4",
@@ -53,7 +56,7 @@ export const Project = ({
         {description}
         {project.repositories.length !== 0 && (
           // In actuality, there will only ever be 1 repository per project.
-          <div className="flex flex-row gap-[10px] mb-2">
+          <div className="flex flex-row gap-[10px] mb-2 max-sm:flex-col">
             {project.repositories.map((repo, index) => (
               <RepositoryTile key={index} repository={repo} />
             ))}

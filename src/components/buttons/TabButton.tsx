@@ -25,10 +25,13 @@ export const TabButton = <F extends ButtonForm>({
       "rounded-none rounded-t-md relative top-[2px]",
       "border-b-[2px] text-gray-800",
       "hover:bg-neutral-100",
+      "max-sm:rounded-md top-0",
       {
         "border-transparent hover:border-gray-300": !(isActive || isPending),
         "border-blue-700": isActive || isPending,
+        "max-sm:bg-neutral-200": isActive || isPending,
       },
+      "max-sm:border-none",
       props.className,
     )}
     fontWeight="regular"

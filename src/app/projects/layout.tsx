@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 import { logger } from "~/application/logger";
 import type { LabeledNavItem } from "~/application/pages";
 import { humanizeList } from "~/lib/formatters";
@@ -61,9 +63,15 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
   );
 
   return (
-    <div className="flex flex-col gap-[24px] w-full h-full overflow-hidden">
+    <div className="flex flex-col gap-[24px] w-full h-full overflow-hidden max-sm:overflow-y-auto">
       <Tabs items={items} />
-      <div className="grow max-h-full h-full overflow-y-auto flex flex-col">{children}</div>
+      <div
+        className={clsx(
+          "grow max-h-full h-full overflow-y-auto flex flex-col max-sm:overflow-y-visible",
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }
