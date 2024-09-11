@@ -1,8 +1,6 @@
-import clsx from "clsx";
-
 import type { BrandProject } from "~/prisma/model";
 
-import { withoutOverridingClassName } from "~/components/types";
+import { classNames } from "~/components/types";
 
 import { Link, type LinkFlexProps } from "./generic";
 
@@ -22,7 +20,7 @@ export const ProjectLink = ({
     {...props}
     flex
     as="a"
-    className={clsx(withoutOverridingClassName("text-blue-900", props.className), props.className)}
+    className={classNames("text-blue-900", props.className)}
     href={`/projects/${project.slug}`}
   >
     {useAbbreviatedName ? project.shortName ?? project.name : project.name}

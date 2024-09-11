@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import clsx from "clsx";
 import { toast } from "react-toastify";
 
 import { logger } from "~/application/logger";
@@ -12,6 +11,7 @@ import { isApiClientGlobalErrorJson } from "~/api";
 import { IconButton } from "~/components/buttons";
 import { Icon } from "~/components/icons/Icon";
 import { DropdownMenu } from "~/components/menus/generic/DropdownMenu";
+import { classNames } from "~/components/types";
 import type { UploadsManager } from "~/components/uploads";
 
 export interface UploadResumeTileEllipsisMenuProps {
@@ -117,7 +117,7 @@ export const UploadResumeTileEllipsisMenu = ({
       <IconButton.Bare
         size="xsmall"
         icon={{ name: "ellipsis-h" }}
-        className={clsx(
+        className={classNames(
           "text-gray-500 hover:text-gray-600 disabled:text-gray-300",
           "h-[18px] w-[18px] min-h-[18px]",
         )}

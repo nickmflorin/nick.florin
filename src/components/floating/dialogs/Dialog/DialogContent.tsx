@@ -1,8 +1,7 @@
 "use client";
 import { forwardRef, useId, useLayoutEffect, type ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { useDialogContext } from "../../hooks/use-dialog-context";
@@ -28,7 +27,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
     }, [id, setContentId]);
 
     return (
-      <div {...props} ref={ref} className={clsx("dialog__content", props.className)}>
+      <div {...props} ref={ref} className={classNames("dialog__content", props.className)}>
         {typeof children === "string" ? (
           <DialogDescription>{children}</DialogDescription>
         ) : (

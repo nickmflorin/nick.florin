@@ -1,6 +1,6 @@
-import clsx from "clsx";
-
 import { type Course } from "~/prisma/model";
+
+import { classNames } from "~/components/types";
 
 import { Badge, type BadgeProps } from "./Badge";
 
@@ -15,7 +15,7 @@ export const CourseBadge = ({ course, ...props }: CourseBadgeProps): JSX.Element
   <Badge
     fontSize="xs"
     {...props}
-    className={clsx("bg-blue-500 text-white hover:bg-blue-400", props.className)}
+    className={classNames("bg-blue-500 text-white hover:bg-blue-400", props.className)}
   >
     {course.name}
   </Badge>

@@ -1,15 +1,13 @@
 import React from "react";
 
-import clsx from "clsx";
-
 import { Icon } from "~/components/icons/Icon";
-import { type ComponentProps, withoutOverridingClassName } from "~/components/types";
+import { type ComponentProps, classNames } from "~/components/types";
 import { type Size, sizeToString } from "~/components/types/sizes";
-import { type BaseTypographyProps } from "~/components/types/typography";
+import { type TypographyCharacteristics } from "~/components/types/typography";
 
 import { Text } from "./Text";
 
-export interface PipedTextProps extends BaseTypographyProps, ComponentProps {
+export interface PipedTextProps extends TypographyCharacteristics, ComponentProps {
   readonly children: (string | JSX.Element | null | undefined)[];
   readonly gap?: Size;
   readonly textClassName?: ComponentProps["className"];
@@ -36,7 +34,7 @@ export const PipedText = ({
   }
   return (
     <div
-      className={clsx("flex flex-row items-center", className)}
+      className={classNames("flex flex-row items-center", className)}
       style={{ ...style, gap: sizeToString(gap, "px") }}
     >
       {filtered.map((child, index) => {
@@ -48,20 +46,14 @@ export const PipedText = ({
               <Text
                 {...props}
                 fontSize={fontSize}
-                className={clsx(
-                  withoutOverridingClassName("text-description", textClassName),
-                  textClassName,
-                )}
+                className={classNames("text-description", textClassName)}
               >
                 {child}
               </Text>
               <Icon
                 name="pipe"
                 size={pipeSize}
-                className={clsx(
-                  withoutOverridingClassName("text-gray-800", pipeClassName),
-                  pipeClassName,
-                )}
+                className={classNames("text-gray-800", pipeClassName)}
               />
             </React.Fragment>
           );
@@ -71,10 +63,7 @@ export const PipedText = ({
             {...props}
             key={index}
             fontSize={fontSize}
-            className={clsx(
-              withoutOverridingClassName("text-description", textClassName),
-              textClassName,
-            )}
+            className={classNames("text-description", textClassName)}
           >
             {child}
           </Text>

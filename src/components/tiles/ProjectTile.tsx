@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import type { IconName } from "@fortawesome/fontawesome-svg-core";
 
 import { logger } from "~/application/logger";
@@ -8,6 +6,7 @@ import { type BrandProject } from "~/prisma/model";
 
 import { ProjectLink } from "~/components/buttons/ProjectLink";
 import { Icon } from "~/components/icons/Icon";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography/Description";
 
@@ -31,9 +30,12 @@ export const ProjectTile = ({ project, ...props }: ProjectTileProps) => {
     icon = ProjectSlugs.getModel(slug).icon;
   }
   return (
-    <div {...props} className={clsx("flex flex-row gap-[12px] max-w-full w-full", props.className)}>
+    <div
+      {...props}
+      className={classNames("flex flex-row gap-[12px] max-w-full w-full", props.className)}
+    >
       <Icon className="text-gray-600" name={icon} size={20} />
-      <div className={clsx("flex flex-col gap-[4px] max-w-[calc(100%-40px)]")}>
+      <div className={classNames("flex flex-col gap-[4px] max-w-[calc(100%-40px)]")}>
         <ProjectLink project={project} className="truncate" />
         <Description className="text-description" fontSize="xs">
           {project.description}

@@ -1,8 +1,6 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition, useMemo, useEffect } from "react";
 
-import clsx from "clsx";
-
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
 
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
@@ -21,6 +19,7 @@ import { TextInput } from "~/components/input/TextInput";
 import { type Action } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { classNames } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
@@ -155,7 +154,7 @@ export const GenericUpdateDetailForm = <
           labelProps={{ fontSize: "xs" }}
         >
           <TextInput
-            className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
+            className={classNames("w-full", { "p-0 outline-none": !isExpanded })}
             {...form.register("label")}
             placeholder="Label"
             fontWeight={isExpanded ? "regular" : "medium"}
@@ -170,7 +169,7 @@ export const GenericUpdateDetailForm = <
         labelProps={{ fontSize: "xs" }}
       >
         <TextArea
-          className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
+          className={classNames("w-full", { "p-0 outline-none": !isExpanded })}
           autoSize={true}
           {...form.register("description")}
           size="small"
@@ -186,7 +185,7 @@ export const GenericUpdateDetailForm = <
         labelProps={{ fontSize: "xs" }}
       >
         <TextArea
-          className={clsx("w-full", { "p-0 outline-none": !isExpanded })}
+          className={classNames("w-full", { "p-0 outline-none": !isExpanded })}
           autoSize={true}
           {...form.register("shortDescription")}
           /* This simply sets the text area to a single row unless it has content in it that spans

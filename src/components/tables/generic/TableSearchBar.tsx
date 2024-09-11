@@ -1,7 +1,6 @@
 import { memo } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface TableSearchBarProps extends ComponentProps {
@@ -9,7 +8,7 @@ export interface TableSearchBarProps extends ComponentProps {
 }
 
 export const TableSearchBar = memo(({ children, ...props }: TableSearchBarProps) => (
-  <div {...props} className={clsx("flex flex-row w-full gap-[8px]", props.className)}>
+  <div {...props} className={classNames("flex flex-row w-full gap-[8px]", props.className)}>
     {children}
   </div>
 ));

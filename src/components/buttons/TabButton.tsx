@@ -1,7 +1,6 @@
 "use client";
-import clsx from "clsx";
-
 import { Button, type ButtonForm, type ButtonProps } from "~/components/buttons";
+import { classNames } from "~/components/types";
 
 export type TabButtonProps<F extends ButtonForm> = Omit<
   ButtonProps<F>,
@@ -21,7 +20,7 @@ export const TabButton = <F extends ButtonForm>({
 }: TabButtonProps<F>) => (
   <Button.Bare<F>
     {...(props as ButtonProps<F>)}
-    className={clsx(
+    className={classNames(
       "rounded-none rounded-t-md relative top-[2px]",
       "border-b-[2px] text-gray-800",
       "hover:bg-neutral-100",

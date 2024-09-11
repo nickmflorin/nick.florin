@@ -1,6 +1,5 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
 import { type Required } from "utility-types";
 
 import {
@@ -11,6 +10,7 @@ import {
 } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { type Size, sizeToString } from "~/components/types/sizes";
 
@@ -63,7 +63,9 @@ const RenderOrSpinner = ({
   ...props
 }: RenderOrSpinnerProps): JSX.Element => {
   if (isLoading && location === loadingLocation) {
-    return <Spin {...props} isLoading={true} className={clsx(iconClassName, spinnerClassName)} />;
+    return (
+      <Spin {...props} isLoading={true} className={classNames(iconClassName, spinnerClassName)} />
+    );
   }
   return <>{children}</>;
 };
@@ -92,7 +94,7 @@ const ContentIcon = ({
     fit="square"
     dimension="height"
     size={toIconSize(iconSize)}
-    loadingClassName={clsx(iconClassName, spinnerClassName)}
+    loadingClassName={classNames(iconClassName, spinnerClassName)}
     className={iconClassName}
   />
 );
@@ -129,7 +131,7 @@ export const ButtonContent = ({
   return (
     <div
       {...props}
-      className={clsx("button__content", props.className)}
+      className={classNames("button__content", props.className)}
       style={{ ...props.style, gap: gap !== undefined ? sizeToString(gap, "px") : undefined }}
     >
       {leftIcon && isIconProp(leftIcon) ? (
@@ -140,7 +142,7 @@ export const ButtonContent = ({
         </RenderOrSpinner>
       )}
       <div
-        className={clsx("button__sub-content", {
+        className={classNames("button__sub-content", {
           "opacity-0": isLoading && loadingLocation === "over",
         })}
       >
@@ -148,7 +150,7 @@ export const ButtonContent = ({
       </div>
       <Spin
         iconSize={iconSize}
-        className={clsx("absolute mx-auto", iconClassName, spinnerClassName)}
+        className={classNames("absolute mx-auto", iconClassName, spinnerClassName)}
         isLoading={isLoading && loadingLocation === "over"}
       />
       {rightIcon && isIconProp(rightIcon) ? (

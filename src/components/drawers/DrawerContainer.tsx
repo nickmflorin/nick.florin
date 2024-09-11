@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface DrawerContainerProps extends ComponentProps {
@@ -9,7 +8,7 @@ export interface DrawerContainerProps extends ComponentProps {
 }
 
 export const DrawerContainer = ({ children, ...props }: DrawerContainerProps) => (
-  <div {...props} className={clsx("drawer-container", props.className)}>
+  <div {...props} className={classNames("drawer-container", props.className)}>
     {children}
   </div>
 );

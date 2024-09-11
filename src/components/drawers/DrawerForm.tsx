@@ -1,9 +1,9 @@
 "use client";
-import clsx from "clsx";
 import { useWatch } from "react-hook-form";
 import { type PickByValueExact } from "utility-types";
 
 import type { BaseFormValues, FormInstance, FieldName } from "~/components/forms/generic";
+import { classNames } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 
 import { Drawer } from "./Drawer";
@@ -32,7 +32,10 @@ export const DrawerForm = <I extends BaseFormValues>({
     <Drawer>
       <DrawerHeader>
         {titleValue.trim().length === 0 && (eagerTitle || titlePlaceholder) ? (
-          <Title order={4} className={clsx({ "text-gray-300": titlePlaceholder !== undefined })}>
+          <Title
+            order={4}
+            className={classNames({ "text-gray-300": titlePlaceholder !== undefined })}
+          >
             {titlePlaceholder ?? eagerTitle}
           </Title>
         ) : (

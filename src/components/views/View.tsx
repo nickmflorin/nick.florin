@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import { State, type StateProps } from "../feedback/State";
 
@@ -14,7 +14,7 @@ export const View = ({
   isError,
   ...props
 }: ViewProps) => (
-  <AbstractView {...props} className={clsx("view", props.className)}>
+  <AbstractView {...props} className={classNames("view", props.className)}>
     <State isLoading={isLoading} loadingProps={loadingProps} error={error} isError={isError}>
       {children}
     </State>

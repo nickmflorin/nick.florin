@@ -1,5 +1,4 @@
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface MenuFooterProps extends ComponentProps {
@@ -8,7 +7,7 @@ export interface MenuFooterProps extends ComponentProps {
 
 export const MenuFooter = ({ children, ...props }: MenuFooterProps): JSX.Element =>
   children ? (
-    <div {...props} className={clsx("menu__footer", props.className)}>
+    <div {...props} className={classNames("menu__footer", props.className)}>
       {children}
     </div>
   ) : (

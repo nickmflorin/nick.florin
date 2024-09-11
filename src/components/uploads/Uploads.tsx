@@ -1,7 +1,6 @@
 import React from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import * as types from "./types";
@@ -19,7 +18,10 @@ export const Uploads = <M extends types.BaseUploadModel>({
   children,
   ...props
 }: UploadsProps<M>) => (
-  <div {...props} className={clsx("relative w-full flex flex-col gap-[4px]", props.className)}>
+  <div
+    {...props}
+    className={classNames("relative w-full flex flex-col gap-[4px]", props.className)}
+  >
     {manager.uploads.map(upload => {
       const key = types.isUploadOfState(upload, ["existing", "uploaded"])
         ? upload.model.id

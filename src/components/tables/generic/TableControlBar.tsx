@@ -1,8 +1,7 @@
 "use client";
 import { memo } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface TableControlBarProps extends ComponentProps {
@@ -14,7 +13,7 @@ export const TableControlBar = memo(
   ({ children, deleteButton, ...props }: TableControlBarProps) => (
     <div
       {...props}
-      className={clsx(
+      className={classNames(
         "flex flex-row gap-[8px] items-center justify-between w-full h-[32px]",
         props.className,
       )}

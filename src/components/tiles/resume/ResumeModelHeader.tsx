@@ -1,7 +1,6 @@
 "use client";
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
 import { isFragment } from "react-is";
 
 import type * as types from "./types";
@@ -9,6 +8,7 @@ import type * as types from "./types";
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 
 import type { ComponentProps } from "~/components/types";
+import { classNames } from "~/components/types";
 import { type ScreenSize } from "~/components/types/breakpoints";
 import { ShowHide } from "~/components/util";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
@@ -56,20 +56,20 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
   const imageGap = ImageGaps[size][screenSize];
 
   return (
-    <div {...props} className={clsx("flex flex-col", props.className)}>
+    <div {...props} className={classNames("flex flex-col", props.className)}>
       <div
-        className={clsx("flex flex-row max-w-full w-full overflow-x-hidden")}
+        className={classNames("flex flex-row max-w-full w-full overflow-x-hidden")}
         style={{ gap: `${imageGap}px` }}
       >
         <ResumeModelImage model={model} size={imageSize} />
         <div
-          className={clsx("flex flex-col grow gap-[6px] max-md:gap-[4px]", {
+          className={classNames("flex flex-col grow gap-[6px] max-md:gap-[4px]", {
             "pt-[2px] max-sm:pt-[0px]": size === "large",
           })}
           style={{ maxWidth: `calc(100% - ${imageSize}px - ${imageGap}px)` }}
         >
           <div
-            className={clsx("flex flex-col", {
+            className={classNames("flex flex-col", {
               "gap-[4px] max-md:gap-[2px]": size === "medium" || size === "large",
               "gap-[2px]": size === "small",
             })}

@@ -5,7 +5,7 @@ import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-li
 
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";
-import { type BaseTypographyProps } from "~/components/types/typography";
+import { type TypographyCharacteristics } from "~/components/types/typography";
 
 export const ButtonLoadingLocations = enumeratedLiterals(["left", "over", "right"] as const, {});
 export type ButtonLoadingLocation = EnumeratedLiteralsMember<typeof ButtonLoadingLocations>;
@@ -70,16 +70,16 @@ type IfButtonOrLink<V, T extends ButtonType, R = never> = T extends "button" | "
 type ButtonFontSize<T extends ButtonType> = {
   button: ButtonSize<"button">;
   "icon-button": never;
-  link: BaseTypographyProps["fontSize"];
+  link: TypographyCharacteristics["fontSize"];
 }[T];
 
 export type AbstractProps<T extends ButtonType, F extends ButtonForm> = ComponentProps & {
   readonly buttonType: T;
   readonly as?: F;
   readonly variant?: ButtonVariant<T>;
-  readonly fontFamily?: IfButtonOrLink<BaseTypographyProps["fontFamily"], T, never>;
-  readonly fontWeight?: IfButtonOrLink<BaseTypographyProps["fontWeight"], T, never>;
-  readonly transform?: IfButtonOrLink<BaseTypographyProps["transform"], T, never>;
+  readonly fontFamily?: IfButtonOrLink<TypographyCharacteristics["fontFamily"], T, never>;
+  readonly fontWeight?: IfButtonOrLink<TypographyCharacteristics["fontWeight"], T, never>;
+  readonly transform?: IfButtonOrLink<TypographyCharacteristics["transform"], T, never>;
   readonly fontSize?: ButtonFontSize<T>;
   /**
    * Sets the element in a "locked" state, which is a state in which the non-visual

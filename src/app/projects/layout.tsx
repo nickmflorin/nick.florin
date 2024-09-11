@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import { logger } from "~/application/logger";
 import type { LabeledNavItem } from "~/application/pages";
 import { humanizeList } from "~/lib/formatters";
@@ -8,6 +6,7 @@ import { ProjectSlugs } from "~/prisma/model";
 import { getProjects } from "~/actions/fetches/projects";
 
 import { Tabs } from "~/components/layout/Tabs";
+import { classNames } from "~/components/types";
 
 interface AdminLayoutProps {
   readonly children: React.ReactNode;
@@ -66,7 +65,7 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
     <div className="flex flex-col gap-[24px] w-full h-full overflow-hidden max-sm:overflow-y-auto">
       <Tabs items={items} />
       <div
-        className={clsx(
+        className={classNames(
           "grow max-h-full h-full overflow-y-auto flex flex-col max-sm:overflow-y-visible",
         )}
       >

@@ -123,21 +123,21 @@
 
 @mixin with-font-weights() {
   @each $weight in $font-weight-names {
-    &.font-weight-#{$weight} {
+    &.f-weight-#{$weight} {
       font-weight: get-font-weight($weight: $weight);
     }
   }
 }
 
 @mixin with-font-families() {
-  &.font-family-inter {
+  &.f-family-inter {
     font-family: $font-family-inter;
   }
 }
 
 @mixin with-text-transforms() {
   @each $transform in $text-transforms {
-    &.transform-#{$transform} {
+    &.f-transform-#{$transform} {
       text-transform: $transform;
     }
   }
@@ -162,7 +162,7 @@
   @include with-text-transforms();
 
   @include with-font-sizes($type) using ($size, $data) {
-    &.font-size-#{$size} {
+    &.f-size-#{$size} {
       font-size: partials.mapget($data, font-size);
       line-height: partials.mapget($data, line-height);
       font-weight: partials.mapget($data, font-weight);

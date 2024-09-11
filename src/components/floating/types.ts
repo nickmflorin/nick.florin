@@ -10,14 +10,9 @@ import {
   type ExtendedRefs,
   type FloatingContext as RootFloatingContext,
 } from "@floating-ui/react";
-import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 
-import {
-  withoutOverridingClassName,
-  type ComponentProps,
-  type ClassName,
-} from "~/components/types";
+import { classNames, type ComponentProps, type ClassName } from "~/components/types";
 
 export const PopoverVariants = enumeratedLiterals(
   ["primary", "secondary", "light", "white", "none"] as const,
@@ -26,56 +21,33 @@ export const PopoverVariants = enumeratedLiterals(
 export type PopoverVariant = EnumeratedLiteralsMember<typeof PopoverVariants>;
 
 export const PopoverVariantClassNames: {
-  [key in PopoverVariant]: (cs: ComponentProps["className"]) => string;
+  [key in PopoverVariant]: (cs?: ComponentProps["className"]) => string;
 } = {
-  [PopoverVariants.PRIMARY]: cs =>
-    clsx(
-      withoutOverridingClassName("text-white", cs),
-      withoutOverridingClassName("bg-blue-500", cs),
-      withoutOverridingClassName("shadow-md", cs),
-      cs,
-    ),
-  [PopoverVariants.LIGHT]: cs =>
-    clsx(
-      withoutOverridingClassName("text-text", cs),
-      withoutOverridingClassName("bg-gray-50", cs),
-      withoutOverridingClassName("shadow-md", cs),
-      cs,
-    ),
+  [PopoverVariants.PRIMARY]: cs => classNames("text-white", "bg-blue-500", "shadow-md", cs),
+  [PopoverVariants.LIGHT]: cs => classNames("text-text", "bg-gray-50", "shadow-md", cs),
   [PopoverVariants.SECONDARY]: cs =>
-    clsx(
-      withoutOverridingClassName("text-heading", cs),
-      withoutOverridingClassName("bg-gradient-to-r from-gray-50 to-gray-200", cs),
-      withoutOverridingClassName("shadow-md", cs),
-      cs,
-    ),
-  [PopoverVariants.WHITE]: cs =>
-    clsx(
-      withoutOverridingClassName("text-text", cs),
-      withoutOverridingClassName("bg-white", cs),
-      withoutOverridingClassName("shadow-md", cs),
-      cs,
-    ),
-  [PopoverVariants.NONE]: cs => clsx(cs),
+    classNames("text-heading", "bg-gradient-to-r from-gray-50 to-gray-200", "shadow-md", cs),
+  [PopoverVariants.WHITE]: cs => classNames("text-text", "bg-white", "shadow-md", cs),
+  [PopoverVariants.NONE]: cs => classNames(cs),
 };
 
 export const PopoverVariantArrowClassNames: { [key in PopoverVariant]: string } = {
-  [PopoverVariants.PRIMARY]: clsx(
+  [PopoverVariants.PRIMARY]: classNames(
     "fill-blue-500",
     "[&>path:first-of-type]:stroke-blue-500",
     "[&>path:last-of-type]:stroke-blue-500",
   ),
-  [PopoverVariants.LIGHT]: clsx(
+  [PopoverVariants.LIGHT]: classNames(
     "fill-gray-50",
     "[&>path:first-of-type]:stroke-gray-50",
     "[&>path:last-of-type]:stroke-gray-50",
   ),
-  [PopoverVariants.SECONDARY]: clsx(
+  [PopoverVariants.SECONDARY]: classNames(
     "fill-gray-200",
     "[&>path:first-of-type]:stroke-gray-200",
     "[&>path:last-of-type]:stroke-gray-200",
   ),
-  [PopoverVariants.WHITE]: clsx(
+  [PopoverVariants.WHITE]: classNames(
     "fill-white",
     "[&>path:first-of-type]:stroke-white",
     "[&>path:last-of-type]:stroke-white",
@@ -83,8 +55,10 @@ export const PopoverVariantArrowClassNames: { [key in PopoverVariant]: string } 
   [PopoverVariants.NONE]: "",
 };
 
-export const getPopoverVariantClassName = (variant: PopoverVariant, className: ClassName): string =>
-  PopoverVariantClassNames[variant](className);
+export const getPopoverVariantClassName = (
+  variant: PopoverVariant,
+  className?: ClassName,
+): string => PopoverVariantClassNames[variant](className);
 
 export const getPopoverArrowVariantClassName = (variant: PopoverVariant): string =>
   PopoverVariantArrowClassNames[variant];

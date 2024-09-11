@@ -1,5 +1,3 @@
-import clsx from "clsx";
-
 import type { FileError } from "react-dropzone-esm";
 
 import { Link, IconButton } from "~/components/buttons";
@@ -7,6 +5,7 @@ import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
 import { type Action, mergeActions } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { DateTimeDisplay } from "~/components/typography/DateTimeDisplay";
 import { FileSize } from "~/components/typography/FileSize";
@@ -51,7 +50,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
 }: UploadTileProps<M>): JSX.Element => (
   <div
     {...props}
-    className={clsx(
+    className={classNames(
       "relative p-[8px] border rounded-md",
       { "opacity-50": upload.state === "uploading" },
       props.className,
@@ -84,7 +83,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
               <IconButton.Bare
                 size="xsmall"
                 icon={{ name: "xmark" }}
-                className={clsx(
+                className={classNames(
                   "text-gray-500 hover:text-gray-600",
                   "h-[20px] w-[20px] min-h-[20px]",
                 )}
@@ -98,7 +97,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
               <IconButton.Bare
                 size="xsmall"
                 icon={{ name: "xmark" }}
-                className={clsx(
+                className={classNames(
                   "text-gray-500 hover:text-gray-600",
                   "h-[20px] w-[20px] min-h-[20px]",
                 )}

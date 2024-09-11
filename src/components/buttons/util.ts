@@ -1,9 +1,11 @@
-import clsx from "clsx";
 import { pick } from "lodash-es";
 
-import { type ComponentProps, mergeIntoClassNames } from "~/components/types";
+import { type ComponentProps, classNames } from "~/components/types";
 import { sizeToString } from "~/components/types/sizes";
-import { type BaseTypographyProps, getTypographyClassName } from "~/components/types/typography";
+import {
+  type TypographyCharacteristics,
+  getTypographyClassName,
+} from "~/components/types/typography";
 
 import * as types from "./types";
 
@@ -48,40 +50,32 @@ const buttonSizeClassName = <T extends types.ButtonType, F extends types.ButtonF
 export const getButtonClassName = <T extends types.ButtonType, F extends types.ButtonForm>(
   props: ButtonClassNameProps<T, F>,
 ) =>
-  clsx(
+  classNames(
     "button",
     `button--variant-${props.variant ?? "primary"}`,
     `button--type-${props.buttonType}`,
     // The size may be provided as a size string (e.g. 32px).
     buttonSizeClassName<T, F>(props),
-    props.buttonType === "button" && props.fontSize ? `font-size-${props.fontSize}` : null,
+    props.buttonType === "button" && props.fontSize ? `f-size-${props.fontSize}` : null,
     // The icon size may be provided as a size string (e.g. 32px).
     props.iconSize && types.ButtonDiscreteIconSizes.contains(props.iconSize)
       ? `button--icon-size-${props.iconSize}`
       : "",
     {
-      [clsx("button--locked", props.lockedClassName)]: props.isLocked,
-      [clsx("button--loading", props.loadingClassName)]: props.isLoading,
-      [clsx("button--disabled", props.disabledClassName)]: props.isDisabled,
-      [clsx("button--active", props.activeClassName)]: props.isActive,
+      [classNames("button--locked", props.lockedClassName)]: props.isLocked,
+      [classNames("button--loading", props.loadingClassName)]: props.isLoading,
+      [classNames("button--disabled", props.disabledClassName)]: props.isDisabled,
+      [classNames("button--active", props.activeClassName)]: props.isActive,
     },
     props.buttonType !== "icon-button"
       ? getTypographyClassName({
           ...pick(props, ["fontFamily", "fontWeight", "transform"] as const),
           fontSize:
             props.buttonType === "link"
-              ? (props.fontSize as BaseTypographyProps["fontSize"] | undefined)
+              ? (props.fontSize as TypographyCharacteristics["fontSize"] | undefined)
               : undefined,
-        } as BaseTypographyProps)
+        } as TypographyCharacteristics)
       : "",
-    /* These class names should override any class name that may already exist in the props if the
-       button is in the given state. */
-    mergeIntoClassNames(props.className, {
-      [clsx(props.lockedClassName)]: props.isLocked,
-      [clsx(props.loadingClassName)]: props.isLoading,
-      [clsx(props.disabledClassName)]: props.isDisabled,
-      [clsx(props.activeClassName)]: props.isActive,
-    }),
     props.className,
   );
 

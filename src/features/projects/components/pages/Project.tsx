@@ -1,10 +1,9 @@
-import clsx from "clsx";
-
 import { type ApiProject } from "~/prisma/model";
 
 import Badge from "~/components/badges/Badge";
 import { Skills } from "~/components/badges/collections/Skills";
 import { RepositoryTile } from "~/components/tiles/RepositoryTile";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 
@@ -30,17 +29,17 @@ export const Project = ({
 }: ProjectProps) => (
   <div
     {...props}
-    className={clsx(
+    className={classNames(
       "w-full max-w-[900px] flex flex-col gap-[12px] mx-auto max-md:gap-[8px] px-[16px]",
       props.className,
     )}
   >
     <div
       {...props}
-      className={clsx("w-full flex flex-col gap-[16px] max-sm:gap-[12px]", props.className)}
+      className={classNames("w-full flex flex-col gap-[16px] max-sm:gap-[12px]", props.className)}
     >
       <div
-        className={clsx(
+        className={classNames(
           "flex flex-row sm:items-center gap-4",
           "max-sm:flex-col max-sm:items-start max-sm:gap-2",
         )}

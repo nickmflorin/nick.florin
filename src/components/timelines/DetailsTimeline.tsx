@@ -1,8 +1,7 @@
 import dynamic from "next/dynamic";
 
-import clsx from "clsx";
-
 import { Loading } from "~/components/feedback/Loading";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { type TimelineProps } from "./generic";
@@ -13,7 +12,7 @@ const Timeline = dynamic(() => import("./generic/Timeline"), {
 export interface DetailsTimelineProps extends ComponentProps, TimelineProps {}
 
 export const DetailsTimeline = (props: DetailsTimelineProps) => (
-  <Timeline {...props} className={clsx("details-timeline", props.className)} />
+  <Timeline {...props} className={classNames("details-timeline", props.className)} />
 );
 
 export default DetailsTimeline;

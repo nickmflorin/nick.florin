@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 
-import clsx from "clsx";
-
 import { Loading } from "~/components/feedback/Loading";
 import type { ComponentProps } from "~/components/types";
+import { classNames } from "~/components/types";
 
 import {
   SkillsBarChartViewContent,
@@ -19,7 +18,7 @@ export const SkillsBarChartView = async ({
 }: SkillsBarChartViewProps): Promise<JSX.Element> => (
   <div
     {...props}
-    className={clsx(
+    className={classNames(
       "skills-bar-chart-view flex flex-col gap-[8px] h-full w-full max-h-full max-w-full",
       "[&_g]:cursor-pointer",
       props.className,

@@ -3,8 +3,8 @@
 import { useRef, forwardRef } from "react";
 
 import { Radio as RootRadio, type RadioProps as RootRadioProps } from "@mantine/core";
-import clsx from "clsx";
 
+import { classNames } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 
 import { type ComponentProps } from "../types";
@@ -24,7 +24,7 @@ export const Radio = forwardRef<HTMLDivElement, RadioProps>(
       return (
         <div
           style={style}
-          className={clsx("flex flex-row gap-[4px] h-[20px]", className)}
+          className={classNames("flex flex-row gap-[4px] h-[20px]", className)}
           onClick={() => {
             if (ref.current) {
               /* eslint-disable-next-line quotes */

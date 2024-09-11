@@ -1,11 +1,10 @@
-import clsx from "clsx";
-
 import type { ResumeModelSize } from "./types";
 
 import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 
 import { Skills } from "~/components/badges/collections/Skills";
 import { Link } from "~/components/buttons";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography/Description";
 import { Label } from "~/components/typography/Label";
@@ -30,7 +29,10 @@ export const Detail = <
   isNested,
   ...props
 }: DetailProps<D>): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col gap-[10px] max-md:gap-[8px]", props.className)}>
+  <div
+    {...props}
+    className={classNames("flex flex-col gap-[10px] max-md:gap-[8px]", props.className)}
+  >
     <div className="flex flex-col gap-[4px]">
       {isNested && index !== undefined ? (
         <div className="flex flex-row gap-[8px]">
@@ -65,7 +67,7 @@ export const Detail = <
       )}
       {detail.description && (
         <Description
-          className={clsx({
+          className={classNames({
             "pl-[16px]": index !== undefined && isNested,
           })}
         >
@@ -76,7 +78,7 @@ export const Detail = <
     {detail.skills.length !== 0 && (
       <Skills
         skills={detail.skills}
-        className={clsx("sm:max-w-[800px]", { "pl-[16px]": index !== undefined })}
+        className={classNames("sm:max-w-[800px]", { "pl-[16px]": index !== undefined })}
       />
     )}
     {!isNestedDetail(detail) && (

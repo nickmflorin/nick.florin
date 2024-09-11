@@ -1,10 +1,9 @@
-import clsx from "clsx";
-
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 
 import { Icon } from "~/components/icons/Icon";
 import { LocationTag } from "~/components/tags/LocationTag";
 import { TimePeriodTag } from "~/components/tags/TimePeriodTag";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface ResumeModelTagsProps<M extends BrandModel<T>, T extends ResumeBrand>
@@ -18,7 +17,7 @@ export const ResumeModelTags = <M extends BrandModel<T>, T extends ResumeBrand>(
 }: ResumeModelTagsProps<M, T>) => (
   <div
     {...props}
-    className={clsx("flex flex-row gap-[2px] h-[16px] items-center", props.className)}
+    className={classNames("flex flex-row gap-[2px] h-[16px] items-center", props.className)}
   >
     <TimePeriodTag
       className="h-full text-xs max-sm:text-xxs"

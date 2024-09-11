@@ -1,5 +1,4 @@
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface SeriesProps extends ComponentProps {
@@ -7,7 +6,7 @@ export interface SeriesProps extends ComponentProps {
 }
 
 export const Series = ({ children, ...props }: SeriesProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
+  <div {...props} className={classNames("flex flex-col gap-[8px]", props.className)}>
     {children}
   </div>
 );

@@ -1,8 +1,7 @@
 import { forwardRef, type ForwardedRef, useState, useImperativeHandle, useMemo } from "react";
 
-import clsx from "clsx";
-
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
+import { classNames } from "~/components/types";
 
 import * as types from "../types";
 
@@ -64,8 +63,8 @@ export const MenuItemModelRenderer = forwardRef(
         href={href}
         icon={model.icon}
         iconSize={model.iconSize ?? iconSize}
-        iconClassName={clsx(model.iconClassName, iconClassName)}
-        spinnerClassName={clsx(model.spinnerClassName, spinnerClassName)}
+        iconClassName={classNames(model.iconClassName, iconClassName)}
+        spinnerClassName={classNames(model.spinnerClassName, spinnerClassName)}
         className={typeof itemClassName === "function" ? itemClassName(model) : itemClassName}
         disabledClassName={
           typeof itemDisabledClassName === "function"

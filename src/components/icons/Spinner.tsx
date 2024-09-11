@@ -1,6 +1,6 @@
 import React from "react";
 
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import Icon from "./Icon";
 import { CircleNotch } from "./svgs/CircleNotch";
@@ -8,7 +8,7 @@ import { type SpinnerProps } from "./types";
 
 export const Spinner = ({ isLoading, ...props }: SpinnerProps): JSX.Element =>
   isLoading === true ? (
-    <Icon {...props} className={clsx("spinner", props.className)}>
+    <Icon {...props} className={classNames("spinner", props.className)}>
       <CircleNotch />
     </Icon>
   ) : (

@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
 
-import clsx from "clsx";
 import { clamp } from "lodash-es";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 const Skeleton = dynamic(() => import("@nextui-org/skeleton").then(mod => mod.Skeleton));
@@ -44,7 +44,7 @@ export const BarChartSkeleton = ({
 }: BarChartSkeletonProps) => (
   <div
     {...props}
-    className={clsx("flex flex-row h-full w-full items-end", props.className)}
+    className={classNames("flex flex-row h-full w-full items-end", props.className)}
     style={{ ...props.style, gap }}
   >
     {generateHeights({ numBars, minBarHeight, maxBarHeight, heightStep }).map((height, i) => (

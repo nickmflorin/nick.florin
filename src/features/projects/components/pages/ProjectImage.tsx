@@ -4,9 +4,9 @@ import { useState } from "react";
 import { type ReactNode } from "react";
 
 import { Skeleton } from "@mantine/core";
-import clsx from "clsx";
 import { motion } from "framer-motion";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -28,10 +28,13 @@ export const ProjectImage = ({
 }: ProjectImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   return (
-    <div {...props} className={clsx("project-image-container", props.className)}>
+    <div {...props} className={classNames("project-image-container", props.className)}>
       <div
         {...props}
-        className={clsx("project-image md:mx-auto max-md:gap-[8px] max-w-full", props.className)}
+        className={classNames(
+          "project-image md:mx-auto max-md:gap-[8px] max-w-full",
+          props.className,
+        )}
       >
         <div className="project-image-wrapper">
           <ShowHide show={isLoading}>
@@ -49,7 +52,7 @@ export const ProjectImage = ({
               priority={true}
               src={src}
               alt={alt}
-              className={clsx("project-image-image w-full h-full max-w-full", {
+              className={classNames("project-image-image w-full h-full max-w-full", {
                 hidden: isLoading,
               })}
               onLoad={() => setIsLoading(false)}

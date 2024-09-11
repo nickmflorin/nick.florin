@@ -1,7 +1,6 @@
-import clsx from "clsx";
-
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -34,7 +33,7 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
       showTags={showTags}
       titleIsExpandable={titleIsExpandable}
       pushOnExpandTitle={pushOnExpandTitle}
-      className={clsx("gap-[4px] max-md:gap-[6px]")}
+      className={classNames("gap-[4px] max-md:gap-[6px]")}
     >
       <ShowHide show={types.hasDescription(model) && includeDescription}>
         <ResumeModelTile.ModelDescription

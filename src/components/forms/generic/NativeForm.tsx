@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 
 export type NativeFormProps = ComponentProps &
@@ -12,7 +11,7 @@ export type NativeFormProps = ComponentProps &
 export const NativeForm = ({ children, ...props }: NativeFormProps): JSX.Element => (
   <form
     {...props}
-    className={clsx(props.className)}
+    className={classNames(props.className)}
     onSubmit={
       /* Do not use the onSubmit handler unless it is defined.  Forcing the event to
          preventDefault() will cause the server actions on a Form to not be called. */

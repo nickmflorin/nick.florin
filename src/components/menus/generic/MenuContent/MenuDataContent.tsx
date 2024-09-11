@@ -1,10 +1,9 @@
 "use client";
 import { useRef, createRef, type RefObject } from "react";
 
-import clsx from "clsx";
-
 import * as types from "~/components/menus";
 import { MenuItemModelRenderer } from "~/components/menus/generic/MenuItemModelRenderer";
+import { classNames } from "~/components/types";
 
 type MenuItemRefs = { [key in types.MenuItemKey]: RefObject<types.MenuItemInstance> };
 
@@ -23,7 +22,7 @@ export const MenuDataContent = <M extends types.MenuModel, O extends types.MenuO
   return (
     <div
       style={style}
-      className={clsx("menu__content", { "menu__content--bordered": isBordered }, className)}
+      className={classNames("menu__content", { "menu__content--bordered": isBordered }, className)}
     >
       {data.map((model, index) => {
         const id = types.getModelId(model, props.options);

@@ -1,6 +1,5 @@
-import clsx from "clsx";
-
 import type { ComponentProps } from "~/components/types";
+import { classNames } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 
 export interface ResumeModelSectionProps extends ComponentProps {
@@ -13,7 +12,7 @@ export const ResumeModelSection = ({
   label,
   ...props
 }: ResumeModelSectionProps): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col gap-[10px]", props.className)}>
+  <div {...props} className={classNames("flex flex-col gap-[10px]", props.className)}>
     <Label className="text-sm max-md:text-xs">{label}</Label>
     {children}
   </div>

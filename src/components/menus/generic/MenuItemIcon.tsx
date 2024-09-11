@@ -1,11 +1,9 @@
 import dynamic from "next/dynamic";
 
-import clsx from "clsx";
-
 import type * as types from "../types";
 
 import { isIconProp } from "~/components/icons";
-import { withoutOverridingClassName, mergeIntoClassNames } from "~/components/types";
+import { classNames } from "~/components/types";
 
 const Icon = dynamic(() => import("~/components/icons/Icon"));
 const Spinner = dynamic(() => import("~/components/icons/Spinner"));
@@ -28,10 +26,7 @@ export const MenuItemIcon = ({
       return (
         <Icon
           icon={icon}
-          className={clsx(
-            withoutOverridingClassName("text-gray-600", iconClassName),
-            iconClassName,
-          )}
+          className={classNames("text-gray-600", iconClassName)}
           size={iconSize}
           isLoading={isLoading}
         />
@@ -39,13 +34,7 @@ export const MenuItemIcon = ({
     } else if (isLoading) {
       return (
         <Spinner
-          className={clsx(
-            withoutOverridingClassName(
-              "text-gray-600",
-              mergeIntoClassNames(iconClassName, spinnerClassName),
-            ),
-            spinnerClassName,
-          )}
+          className={classNames("text-gray-600", iconClassName, spinnerClassName)}
           isLoading={isLoading}
           size={iconSize}
           dimension="height"

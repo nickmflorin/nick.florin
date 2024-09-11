@@ -1,13 +1,15 @@
 import React, { forwardRef } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
-import { type BaseTypographyProps, getTypographyClassName } from "~/components/types/typography";
+import {
+  type TypographyCharacteristics,
+  getTypographyClassName,
+} from "~/components/types/typography";
 
 export type TextComponent = "span" | "div" | "p";
 
-export interface TextProps extends BaseTypographyProps, ComponentProps {
+export interface TextProps extends TypographyCharacteristics, ComponentProps {
   readonly children: React.ReactNode;
   readonly as?: TextComponent;
   readonly flex?: boolean;
@@ -18,15 +20,17 @@ type TextComponentProps<T extends TextComponent> = Omit<HTMLElementProps<T>, key
   ComponentProps;
 
 const Span = forwardRef<HTMLDivElement, TextComponentProps<"span">>(
-  (props, ref): JSX.Element => <span {...props} ref={ref} className={clsx(props.className)} />,
+  (props, ref): JSX.Element => (
+    <span {...props} ref={ref} className={classNames(props.className)} />
+  ),
 );
 
 const Div = forwardRef<HTMLDivElement, TextComponentProps<"div">>(
-  (props, ref): JSX.Element => <div {...props} ref={ref} className={clsx(props.className)} />,
+  (props, ref): JSX.Element => <div {...props} ref={ref} className={classNames(props.className)} />,
 );
 
 const P = forwardRef<HTMLDivElement, TextComponentProps<"p">>(
-  (props, ref): JSX.Element => <p {...props} ref={ref} className={clsx(props.className)} />,
+  (props, ref): JSX.Element => <p {...props} ref={ref} className={classNames(props.className)} />,
 );
 
 const Components = {
@@ -47,7 +51,7 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
       <Component
         style={style}
         ref={ref}
-        className={clsx(
+        className={classNames(
           "text",
           { "text--inherit": inherit },
           { span: as === "span" },

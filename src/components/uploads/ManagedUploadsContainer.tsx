@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
 
-import clsx from "clsx";
 import { type FileWithPath } from "react-dropzone-esm";
 
 import type * as types from "./types";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { UploadDropzonePlaceholder } from "./dropzone/UploadDropzonePlaceholder";
@@ -30,7 +30,10 @@ export const ManagedUploadsContainer = <M extends types.BaseUploadModel>({
 }: ManagedUploadsContainerProps<M>) => (
   <div
     style={style}
-    className={clsx("flex flex-col gap-[12px] h-full max-h-full overflow-y-hidden", className)}
+    className={classNames(
+      "flex flex-col gap-[12px] h-full max-h-full overflow-y-hidden",
+      className,
+    )}
   >
     <div
       className="relative flex flex-col overflow-y-auto grow"

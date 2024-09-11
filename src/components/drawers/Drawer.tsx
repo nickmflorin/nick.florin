@@ -1,9 +1,8 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
 import { DrawerButtons } from "~/components/buttons/DrawerButtons";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface DrawerProps extends ComponentProps {
@@ -11,7 +10,7 @@ export interface DrawerProps extends ComponentProps {
 }
 
 export const Drawer = ({ children, ...props }: DrawerProps): JSX.Element => (
-  <div {...props} className={clsx("drawer", props.className)}>
+  <div {...props} className={classNames("drawer", props.className)}>
     <ErrorBoundary>{children}</ErrorBoundary>
     <DrawerButtons />
   </div>

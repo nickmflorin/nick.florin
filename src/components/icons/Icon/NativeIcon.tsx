@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import { type IconProps } from "../types";
 
@@ -11,7 +11,7 @@ export const NativeIcon = (
   >,
 ) => (
   <i
-    className={clsx(props.className)}
+    className={classNames(props.className)}
     style={
       props.isVisible === false
         ? { ...props.style, display: "none", ...getNativeIconStyle(props) }

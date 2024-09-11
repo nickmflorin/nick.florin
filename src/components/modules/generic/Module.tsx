@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { ModuleContent } from "./ModuleContent";
@@ -12,7 +11,7 @@ export interface ModuleProps extends ComponentProps {
 }
 
 const LocalModule = ({ children, ...props }: ModuleProps) => (
-  <div {...props} className={clsx("module", props.className)}>
+  <div {...props} className={classNames("module", props.className)}>
     {children}
   </div>
 );

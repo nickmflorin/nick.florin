@@ -1,20 +1,19 @@
-import clsx from "clsx";
 import { DateTime } from "luxon";
 
-import { withoutOverridingClassName, type ComponentProps } from "~/components/types";
+import { classNames, type ComponentProps } from "~/components/types";
 import { type QuantitativeSize } from "~/components/types/sizes";
-import { type BaseTypographyProps } from "~/components/types/typography";
+import { type TypographyCharacteristics } from "~/components/types/typography";
 
 import { DateTimeDisplay } from "./DateTimeDisplay";
 import { Text } from "./Text";
 
-export interface PartitionedDateTimeDisplayProps extends BaseTypographyProps, ComponentProps {
+export interface PartitionedDateTimeDisplayProps extends TypographyCharacteristics, ComponentProps {
   readonly date: Date | string;
   readonly gap?: QuantitativeSize<"px">;
   readonly dateFormat?: Intl.DateTimeFormatOptions;
   readonly timeFormat?: Intl.DateTimeFormatOptions;
-  readonly dateProps?: BaseTypographyProps & ComponentProps;
-  readonly timeProps?: BaseTypographyProps & ComponentProps;
+  readonly dateProps?: TypographyCharacteristics & ComponentProps;
+  readonly timeProps?: TypographyCharacteristics & ComponentProps;
 }
 
 export const PartitionedDateTimeDisplay = ({
@@ -28,16 +27,13 @@ export const PartitionedDateTimeDisplay = ({
   timeProps,
   ...props
 }: PartitionedDateTimeDisplayProps): JSX.Element => (
-  <div className={clsx("flex flex-row items-center", className)} style={{ ...style, gap }}>
+  <div className={classNames("flex flex-row items-center", className)} style={{ ...style, gap }}>
     <Text
       fontSize="sm"
       fontWeight="medium"
       {...props}
       {...dateProps}
-      className={clsx(
-        withoutOverridingClassName("text-gray-800", dateProps?.className),
-        dateProps?.className,
-      )}
+      className={classNames("text-gray-800", dateProps?.className)}
     >
       <DateTimeDisplay date={date} format={dateFormat} />
     </Text>
@@ -46,10 +42,7 @@ export const PartitionedDateTimeDisplay = ({
       fontSize="sm"
       {...props}
       {...timeProps}
-      className={clsx(
-        withoutOverridingClassName("text-description", timeProps?.className),
-        timeProps?.className,
-      )}
+      className={classNames("text-description", timeProps?.className)}
     >
       <DateTimeDisplay date={date} format={timeFormat} />
     </Text>

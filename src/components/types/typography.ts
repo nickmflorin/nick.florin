@@ -1,10 +1,26 @@
 import { type ReactElement, type JSXElementConstructor, isValidElement } from "react";
 
-import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { isFragment } from "react-is";
 
+import { classNames } from "~/components/types";
+
 import tailwindConfig from "~/tailwind.config";
+
+export const TextAligns = enumeratedLiterals(
+  ["left", "center", "right", "justify", "start", "end"] as const,
+  {},
+);
+export type TextAlign = EnumeratedLiteralsMember<typeof TextAligns>;
+
+export const TextAlignClassNames: { [key in TextAlign]: `text-${key}` } = {
+  left: "text-left",
+  center: "text-center",
+  right: "text-right",
+  justify: "text-justify",
+  start: "text-start",
+  end: "text-end",
+};
 
 export const TextFontSizes = enumeratedLiterals(
   ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
@@ -57,7 +73,7 @@ export const lineClampClassName = (clamp: LineClamp = 0) => {
   if (clamp === 0) {
     return "";
   }
-  return clsx("break-words", {
+  return classNames("break-words", {
     "line-clamp-1": clamp === 1,
     "line-clamp-2": clamp === 2,
     "line-clamp-3": clamp === 3,
@@ -67,7 +83,7 @@ export const lineClampClassName = (clamp: LineClamp = 0) => {
   });
 };
 
-export interface BaseTypographyProps<
+export interface TypographyCharacteristics<
   F extends TextFontSize | TitleFontSize | LabelFontSize | DescriptionFontSize = TextFontSize,
 > {
   readonly fontSize?: F;
@@ -76,14 +92,19 @@ export interface BaseTypographyProps<
   readonly transform?: TextTransform;
   readonly lineClamp?: LineClamp;
   readonly truncate?: boolean;
+  readonly align?: TextAlign;
 }
 
-export const getTypographyClassName = (props: BaseTypographyProps): string =>
-  clsx(
-    props.fontSize && `font-size-${props.fontSize}`,
-    props.fontFamily && `font-family-${props.fontFamily}`,
-    props.transform && `text-transform-${props.transform}`,
-    props.fontWeight && `font-weight-${props.fontWeight}`,
+export const getTypographyClassName = (props: TypographyCharacteristics): string =>
+  classNames(
+    /* Note: The 'fontSize' class name cannot be called 'font-size-<size>' because it can conflict
+       with Tailwind class names and confuses the TWMerge package:
+       https://github.com/dcastil/tailwind-merge/blob/v2.4.0/docs/limitations.md  */
+    props.fontSize ? `f-size-${props.fontSize}` : "",
+    props.fontFamily && `f-family-${props.fontFamily}`,
+    props.transform && `f-transform-${props.transform}`,
+    props.fontWeight && `f-weight-${props.fontWeight}`,
+    props.align && TextAlignClassNames[props.align],
     props.lineClamp !== undefined ? lineClampClassName(props.lineClamp) : "",
     { truncate: props.truncate },
   );

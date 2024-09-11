@@ -10,11 +10,11 @@ import React, {
   useMemo,
 } from "react";
 
-import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { pick, omit } from "lodash-es";
 
 import { mergeActions } from "~/components/structural";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { useReferentialCallback } from "~/hooks";
 
@@ -250,11 +250,11 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
         {...pick(props, INPUT_PROPS)}
         isLoading={isLoading}
         actions={actions}
-        className={clsx(
+        className={classNames(
           "text-input",
           {
-            [clsx(writingClassName)]: state === ReadWriteTextInputStates.WRITING,
-            [clsx(readingClassName)]: state === ReadWriteTextInputStates.READING,
+            [classNames(writingClassName)]: state === ReadWriteTextInputStates.WRITING,
+            [classNames(readingClassName)]: state === ReadWriteTextInputStates.READING,
           },
           props.className,
         )}

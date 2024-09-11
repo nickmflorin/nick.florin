@@ -1,5 +1,6 @@
-import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+
+import { classNames } from "~/components/types";
 
 export const BorderRadii = enumeratedLiterals(
   ["none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full"] as const,
@@ -17,7 +18,7 @@ export const radiusClassName = <R extends BorderRadius | null | undefined>(
   if (!radius) {
     return null as RadiusClassNameRT<R>;
   }
-  return clsx({
+  return classNames({
     ["rounded-none"]: radius === BorderRadii.NONE,
     ["rounded-xs"]: radius === BorderRadii.XS,
     ["rounded-sm"]: radius === BorderRadii.SM,

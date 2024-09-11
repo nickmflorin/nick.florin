@@ -1,8 +1,7 @@
 import React, { type ForwardedRef, forwardRef } from "react";
 
-import clsx from "clsx";
-
 import { PopoverContent } from "~/components/floating/PopoverContent";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface FloatingSelectContentProps extends ComponentProps {
@@ -16,7 +15,12 @@ export const FloatingSelectContent = forwardRef<HTMLDivElement, FloatingSelectCo
   ) => (
     /* The style is needed for the PopoverContent to be positioned correctly with the Popover
        component's prop injection. */
-    <PopoverContent variant="white" ref={ref} style={style} className={clsx("border", className)}>
+    <PopoverContent
+      variant="white"
+      ref={ref}
+      style={style}
+      className={classNames("border", className)}
+    >
       {children}
     </PopoverContent>
   ),

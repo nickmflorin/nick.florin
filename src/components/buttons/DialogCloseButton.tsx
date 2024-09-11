@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import { IconButton, type IconButtonProps } from "./generic";
 
@@ -16,7 +16,7 @@ export const DialogCloseButton = forwardRef<HTMLButtonElement, DialogCloseButton
       size="xsmall"
       iconSize="large"
       icon={{ name: "xmark", iconStyle: "solid" }}
-      className={clsx("dialog__close-button", props.className)}
+      className={classNames("dialog__close-button", props.className)}
     />
   ),
 );

@@ -1,8 +1,7 @@
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type Style, type ComponentProps } from "~/components/types";
 import {
-  type BaseTypographyProps,
+  type TypographyCharacteristics,
   getTypographyClassName,
   type TitleFontSize,
   TitleFontSizeOrderMap,
@@ -26,7 +25,7 @@ const factories: Factories = {
   6: props => <h6 {...props} />,
 };
 
-export interface TitleProps extends BaseTypographyProps<TitleFontSize>, ComponentProps {
+export interface TitleProps extends TypographyCharacteristics<TitleFontSize>, ComponentProps {
   readonly children: string | number | undefined | null | false;
   readonly order?: TitleOrder;
 }
@@ -45,6 +44,6 @@ export const Title = ({
   return f({
     style,
     children,
-    className: clsx("title", getTypographyClassName({ ...props, fontSize }), className),
+    className: classNames("title", getTypographyClassName({ ...props, fontSize }), className),
   });
 };

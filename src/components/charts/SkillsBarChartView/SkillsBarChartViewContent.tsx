@@ -1,12 +1,11 @@
 import dynamic from "next/dynamic";
 import { memo } from "react";
 
-import clsx from "clsx";
-
 import { getSkills } from "~/actions/fetches/skills";
 import type { SkillsFilters } from "~/api/schemas";
 
 import { Loading } from "~/components/feedback/Loading";
+import { classNames } from "~/components/types";
 
 import { SkillsBarChartLegend } from "./SkillsBarChartLegend";
 
@@ -30,7 +29,12 @@ export const SkillsBarChartViewContent = memo(
     return (
       <>
         <div
-          className={clsx("relative", "max-md:h-[340px]", "md:max-lg:h-[500px]", "lg:h-[600px]")}
+          className={classNames(
+            "relative",
+            "max-md:h-[340px]",
+            "md:max-lg:h-[500px]",
+            "lg:h-[600px]",
+          )}
         >
           <Chart skills={skills} />
         </div>

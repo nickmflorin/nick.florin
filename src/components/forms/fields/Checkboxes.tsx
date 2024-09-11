@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { sizeToString, type Size } from "~/components/types/sizes";
 
@@ -21,7 +20,7 @@ export const Checkboxes = ({
 }: CheckboxesProps) => (
   <div
     {...props}
-    className={clsx("flex", {
+    className={classNames("flex", {
       "flex-row": orientation === "horizontal",
       "flex-col": orientation === "vertical",
       "mt-[6px]": outer,

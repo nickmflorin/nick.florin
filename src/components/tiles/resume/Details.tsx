@@ -1,7 +1,6 @@
-import clsx from "clsx";
-
 import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { Detail } from "./Detail";
@@ -29,7 +28,7 @@ export const Details = ({ details, size, isNested, ...props }: DetailsProps): JS
   return (
     <div
       {...props}
-      className={clsx(
+      className={classNames(
         "flex flex-col",
         { "gap-[10px] max-md:gap-[8px]": isNested !== true, "gap-[6px] pl-[12px]": isNested },
         props.className,

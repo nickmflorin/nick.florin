@@ -1,12 +1,11 @@
 import dynamic from "next/dynamic";
 import { forwardRef } from "react";
 
-import clsx from "clsx";
-
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { Spinner } from "~/components/icons/Spinner";
 import { type ActionsType, mergeActions } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
+import { classNames } from "~/components/types";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 
 import { InputWrapper, type InputWrapperProps } from "./InputWrapper";
@@ -59,7 +58,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>(
                state changes. */
             <div
               key="0"
-              className={clsx("w-[14px] items-center justify-center", {
+              className={classNames("w-[14px] items-center justify-center", {
                 "w-[14px]": reserveSpaceForLoadingIndicator,
               })}
             >

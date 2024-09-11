@@ -1,13 +1,12 @@
 import { forwardRef } from "react";
 
-import clsx from "clsx";
-
 import { capitalize } from "~/lib/formatters";
 
 import { type MultipleIconProp } from "~/components/icons";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { type Size } from "~/components/types/sizes";
-import { type BaseTypographyProps } from "~/components/types/typography";
+import { type TypographyCharacteristics } from "~/components/types/typography";
 
 import * as types from "../types";
 
@@ -30,7 +29,7 @@ export type LinkFlexProps<F extends types.ButtonForm> = Omit<
   types.AbstractProps<"link", F>,
   "buttonType"
 > &
-  Omit<BaseTypographyProps, "fontSize"> & {
+  Omit<TypographyCharacteristics, "fontSize"> & {
     /**
      * Determines whether or not the 'Link' component should be rendered as a flex element, rather
      * than an inline element.
@@ -59,7 +58,7 @@ export type LinkInlineProps<F extends types.ButtonForm> = Omit<
   types.AbstractProps<"link", F>,
   "buttonType"
 > &
-  Omit<BaseTypographyProps, "fontSize"> & {
+  Omit<TypographyCharacteristics, "fontSize"> & {
     /**
      * @see LinkFlexProps
      */
@@ -117,7 +116,7 @@ const LocalLink = forwardRef<types.PolymorphicButtonElement<any>, LinkProps<any>
       readonly ref?: types.PolymorphicButtonRef<any>;
     };
     return (
-      <Base {...ps} className={clsx({ "link--flex": flex }, ps.className)}>
+      <Base {...ps} className={classNames({ "link--flex": flex }, ps.className)}>
         {flex ? (
           <ButtonContent
             gap={gap}

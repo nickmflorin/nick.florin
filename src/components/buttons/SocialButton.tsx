@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import { type IconButtonProps, IconButton } from "./generic";
 
@@ -8,7 +8,7 @@ export const SocialButton = (props: SocialButtonProps): JSX.Element => (
   <IconButton.Bare
     {...props}
     as="a"
-    className={clsx("h-[22px] w-[22px] min-h-[22px] text-gray-500", props.className)}
+    className={classNames("h-[22px] w-[22px] min-h-[22px] text-gray-500", props.className)}
     iconSize="full"
   />
 );

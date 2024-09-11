@@ -1,8 +1,8 @@
 import { type ReactNode } from "react";
 
 import { Skeleton } from "@mantine/core";
-import clsx from "clsx";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -15,9 +15,12 @@ export interface CaptionProps extends ComponentProps {
 }
 
 export const Caption = ({ children, centered, isLoading, ...props }: CaptionProps) => (
-  <div {...props} className={clsx("relative flex flex-col w-full items-center", props.className)}>
+  <div
+    {...props}
+    className={classNames("relative flex flex-col w-full items-center", props.className)}
+  >
     <div
-      className={clsx(
+      className={classNames(
         "flex flex-col items-center gap-[6px]",
         "max-w-[90%] min-w-[90%] max-md:max-w-full max-md:min-w-full",
       )}

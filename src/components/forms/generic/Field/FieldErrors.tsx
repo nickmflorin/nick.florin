@@ -1,9 +1,8 @@
 import { useMemo } from "react";
 
-import clsx from "clsx";
-
 import { ensuresDefinedValue } from "~/lib/typeguards";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import {
@@ -50,7 +49,7 @@ export const FormFieldErrors = <N extends FieldName<I>, I extends BaseFormValues
 
   if (errors.length !== 0) {
     return (
-      <div {...props} className={clsx("flex flex-col gap-[2px] mt-[4px]", props.className)}>
+      <div {...props} className={classNames("flex flex-col gap-[2px] mt-[4px]", props.className)}>
         {errors.map((e, i) => (
           <FormFieldError key={i}>{e}</FormFieldError>
         ))}

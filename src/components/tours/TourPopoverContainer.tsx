@@ -1,13 +1,13 @@
 import { type ReactNode, useMemo, useCallback, useRef, useEffect } from "react";
 
 import { type PopoverContentProps } from "@reactour/tour";
-import clsx from "clsx";
 
 import { logger } from "~/application/logger";
 import { isUuid } from "~/lib/typeguards";
 
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { classNames } from "~/components/types";
 
 const findBar = () =>
   // The first two <g/> elements are for the axis of the chart.
@@ -145,7 +145,7 @@ export const TourPopoverContainer = ({
   if (content) {
     return (
       <div
-        className={clsx("tour__container flex flex-col gap-[12px]", {
+        className={classNames("tour__container flex flex-col gap-[12px]", {
           "pr-[10px]": steps[currentStep].position === "left",
           "pl-[10px]": steps[currentStep].position === "right",
           "pt-[10px]": steps[currentStep].position === "bottom",

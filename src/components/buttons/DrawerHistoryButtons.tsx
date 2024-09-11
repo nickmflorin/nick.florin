@@ -1,7 +1,6 @@
 import { forwardRef } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { DrawerHistoryButton } from "./DrawerHistoryButton";
@@ -21,7 +20,7 @@ export const DrawerHistoryButtons = forwardRef<HTMLDivElement, DrawerHistoryButt
     <div
       {...props}
       ref={ref}
-      className={clsx("flex flex-row items-center gap-[6px]", props.className)}
+      className={classNames("flex flex-row items-center gap-[6px]", props.className)}
     >
       <DrawerHistoryButton direction="back" isDisabled={!backEnabled} onClick={onBack} />
       <DrawerHistoryButton direction="forward" isDisabled={!forwardEnabled} onClick={onForward} />

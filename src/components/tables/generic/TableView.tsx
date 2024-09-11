@@ -1,7 +1,6 @@
 import { memo } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { ControlContainer, getLeftoverHeight, GAP } from "./ControlContainer";
@@ -19,7 +18,7 @@ export const TableView = memo(
     return (
       <div
         {...props}
-        className={clsx("flex flex-col h-full relative overflow-hidden", props.className)}
+        className={classNames("flex flex-col h-full relative overflow-hidden", props.className)}
         style={{ ...props.style, gap: `${GAP}px` }}
       >
         <ControlContainer control="searchBar">{searchBar}</ControlContainer>

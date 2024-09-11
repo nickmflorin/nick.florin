@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface MultiValueRendererContainerProps extends ComponentProps {
@@ -21,7 +20,7 @@ export const MultiValueRendererContainer = ({
 }: MultiValueRendererContainerProps) => (
   <div
     {...props}
-    className={clsx(
+    className={classNames(
       "flex gap-x-[4px] overflow-hidden",
       {
         "flex-wrap gap-y-[4px]": dynamicHeight,

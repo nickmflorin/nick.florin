@@ -1,21 +1,24 @@
 import React from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import {
-  type BaseTypographyProps,
+  type TypographyCharacteristics,
   FontWeights,
   TextFontSizes,
   getTypographyClassName,
 } from "~/components/types/typography";
 
-export interface BadgeCollectionChildrenProps extends ComponentProps, BaseTypographyProps {
+export interface BadgeCollectionChildrenProps
+  extends ComponentProps,
+    Omit<TypographyCharacteristics, "align" | "truncate"> {
   readonly children: JSX.Element[];
   readonly data?: never;
 }
 
-export interface BadgeCollectionCallbackProps<M> extends ComponentProps, BaseTypographyProps {
+export interface BadgeCollectionCallbackProps<M>
+  extends ComponentProps,
+    Omit<TypographyCharacteristics, "align" | "truncate"> {
   readonly data: M[];
   readonly children: (model: M) => JSX.Element;
 }
@@ -37,7 +40,10 @@ export const BadgeCollection = <M,>({
     return data.length === 0 ? (
       <></>
     ) : (
-      <div {...props} className={clsx("flex flex-wrap gap-y-[4px] gap-x-[4px]", props.className)}>
+      <div
+        {...props}
+        className={classNames("flex flex-wrap gap-y-[4px] gap-x-[4px]", props.className)}
+      >
         {data.map((datum, i) => (
           <React.Fragment key={i}>{children(datum)}</React.Fragment>
         ))}
@@ -49,7 +55,7 @@ export const BadgeCollection = <M,>({
   return children.length !== 0 ? (
     <div
       {...props}
-      className={clsx(
+      className={classNames(
         "badge-collection",
         `badge-collection--size-${fontSize}`,
         // Omit the font size prop because it is handled by the badge size.

@@ -1,8 +1,8 @@
-import clsx from "clsx";
 import { useFormStatus } from "react-dom";
 
 import { type ButtonSize } from "~/components/buttons";
 import { Button } from "~/components/buttons/generic/Button";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 
@@ -76,7 +76,7 @@ export const ButtonFooter = ({
   return (
     <div
       {...props}
-      className={clsx(
+      className={classNames(
         "flex flex-row w-full items-center gap-2",
         {
           "justify-end": orientation === "right",

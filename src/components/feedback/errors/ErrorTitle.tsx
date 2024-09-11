@@ -1,16 +1,15 @@
 import React, { useMemo } from "react";
 
-import clsx from "clsx";
-
 import { isHttpError, ApiClientError } from "~/api";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { type BaseTypographyProps } from "~/components/types/typography";
+import { type TypographyCharacteristics } from "~/components/types/typography";
 import { Text } from "~/components/typography/Text";
 
 import { type ErrorType } from "../types";
 
-export interface ErrorTitleProps extends BaseTypographyProps, ComponentProps {
+export interface ErrorTitleProps extends TypographyCharacteristics, ComponentProps {
   readonly children?: string;
   readonly error?: ErrorType;
 }
@@ -37,7 +36,7 @@ export const ErrorTitle = ({
       {...props}
       fontSize={fontSize}
       fontWeight={fontWeight}
-      className={clsx("text-center", className)}
+      className={classNames("text-center", className)}
     >
       {title}
     </Text>

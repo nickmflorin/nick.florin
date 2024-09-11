@@ -90,7 +90,7 @@ $button-font-weights: (
         @include button-font($type, $size);
         // Allow the font size to be overridden for a Button independently of the Button's size.
         @each $font-size in $button-size-names {
-          &.font-size-#{$font-size} {
+          &.f-size-#{$font-size} {
             @include button-font($type, $font-size);
           }
         }
@@ -99,7 +99,7 @@ $button-font-weights: (
   } @else {
     @include button-font("link");
     @include typography.with-font-sizes("text") using ($size, $data) {
-      &.font-size-#{$size} {
+      &.f-size-#{$size} {
         font-size: partials.mapget($data, font-size);
         line-height: partials.mapget($data, line-height);
       }

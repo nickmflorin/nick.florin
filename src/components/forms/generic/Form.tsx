@@ -1,6 +1,6 @@
-import clsx from "clsx";
 import { type SubmitErrorHandler } from "react-hook-form";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { FormField, ControlledField } from "./Field";
@@ -41,7 +41,7 @@ export const Form = <I extends BaseFormValues>({
   return (
     <NativeForm
       style={style}
-      className={clsx("form", className)}
+      className={classNames("form", className)}
       action={
         action !== undefined
           ? () => {

@@ -1,10 +1,9 @@
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
-import clsx from "clsx";
-
 import type { LinkComponent } from "~/components/buttons";
 import { Module } from "~/components/modules/generic";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 const Tour = dynamic(() => import("~/components/tours/Tour"));
@@ -20,7 +19,7 @@ interface ColumnProps extends ComponentProps {
 const Column = ({ children, ...props }: ColumnProps): JSX.Element => (
   <div
     {...props}
-    className={clsx(
+    className={classNames(
       "flex flex-col gap-[15px] lg:min-w-[320px]",
       "max-xl:w-[50%] max-xl:max-w-[50%]",
       "max-md:w-full max-md:max-w-full",
@@ -49,17 +48,17 @@ export default async function DashboardPage({
   return (
     <>
       <Tour />
-      <div className={clsx("max-h-full", "overflow-y-auto pr-[16px]")}>
-        <div className={clsx("flex gap-[15px]", "xl:flex-row", "max-xl:flex-col")}>
+      <div className={classNames("max-h-full", "overflow-y-auto pr-[16px]")}>
+        <div className={classNames("flex gap-[15px]", "xl:flex-row", "max-xl:flex-col")}>
           {/* The 655px comes from 2(320px for each column) + 15px for gap = 655px. */}
           <Module
-            className={clsx(
+            className={classNames(
               "md:max-lg:min-w-[655px] xl:max-w-[1000px] lg:min-w-[320px] min-h-[200px]",
             )}
           >
             {chart}
           </Module>
-          <div className={clsx("flex gap-[15px]", "md:flex-row md:grow", "max-md:flex-col")}>
+          <div className={classNames("flex gap-[15px]", "md:flex-row md:grow", "max-md:flex-col")}>
             <Column className="md:flex-1">
               <Module
                 className="xl:overflow-y-hidden grow min-h-[200px]"
@@ -82,7 +81,10 @@ export default async function DashboardPage({
                   Recent Experiences
                 </Module.Header>
                 <Module.Content
-                  className={clsx("flex flex-col gap-[12px]", "xl:overflow-y-auto xl:pr-[16px]")}
+                  className={classNames(
+                    "flex flex-col gap-[12px]",
+                    "xl:overflow-y-auto xl:pr-[16px]",
+                  )}
                 >
                   {experiences}
                 </Module.Content>
@@ -90,7 +92,7 @@ export default async function DashboardPage({
               <Module className="min-h-[200px]">
                 <Module.Header>Projects</Module.Header>
                 <Module.Content
-                  className={clsx(
+                  className={classNames(
                     "flex flex-col gap-[12px] xl:overflow-y-auto xl:grow xl:pr-[16px]",
                   )}
                 >
@@ -117,7 +119,7 @@ export default async function DashboardPage({
                   Education
                 </Module.Header>
                 <Module.Content
-                  className={clsx(
+                  className={classNames(
                     "flex flex-col gap-[12px]",
                     "xl:overflow-y-auto xl:grow xl:pr-[16px]",
                   )}
@@ -127,7 +129,7 @@ export default async function DashboardPage({
               </Module>
               <Module className="xl:overflow-y-hidden grow min-h-[200px]">
                 <Module.Header>Repositories</Module.Header>
-                <Module.Content className={clsx("xl:overflow-y-auto xl:grow xl:pr-[16px]")}>
+                <Module.Content className={classNames("xl:overflow-y-auto xl:grow xl:pr-[16px]")}>
                   {repositories}
                 </Module.Content>
               </Module>

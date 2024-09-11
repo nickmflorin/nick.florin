@@ -1,8 +1,6 @@
 "use client";
 import { forwardRef } from "react";
 
-import clsx from "clsx";
-
 import type * as types from "./types";
 
 import { Tooltip } from "~/components/floating/Tooltip";
@@ -11,6 +9,7 @@ import {
   type IExternalLayoutNavItem,
   type IInternalLayoutNavItem,
 } from "~/components/layout/LayoutNav/types";
+import { classNames } from "~/components/types";
 import { useNavigatable } from "~/hooks";
 
 import { IconButton, type IconButtonProps } from "./generic";
@@ -42,7 +41,7 @@ export const InternalLayoutNavAnchor = forwardRef<
       {...props}
       isLoading={isPending}
       onClick={() => setActiveOptimistically()}
-      className={clsx("z-0", props.className)}
+      className={classNames("z-0", props.className)}
       ref={ref}
       as="link"
       href={href}
@@ -60,7 +59,7 @@ export const ExternalLayoutNavAnchor = forwardRef<
 >(({ item, ...props }: ExternalLayoutNavAnchorProps, ref: types.PolymorphicButtonRef<"link">) => (
   <IconButton<"a">
     {...props}
-    className={clsx("z-0", props.className)}
+    className={classNames("z-0", props.className)}
     ref={ref}
     as="a"
     href={item.href}

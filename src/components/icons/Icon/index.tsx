@@ -2,10 +2,9 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import React from "react";
 
-import clsx from "clsx";
 import { pick } from "lodash-es";
 
-import { mergeIntoClassNames } from "~/components/types";
+import { classNames } from "~/components/types";
 
 import { Spinner } from "../Spinner";
 import { type IconProp, type DynamicIconProp, type IconProps, isSvgIconProp } from "../types";
@@ -60,7 +59,7 @@ export const Icon = ({
       <Spinner
         isLoading
         {...pick(props, ["className", "style", "size"])}
-        className={mergeIntoClassNames(props.className, loadingClassName)}
+        className={classNames(loadingClassName, props.className)}
       />
     );
   }
@@ -79,7 +78,7 @@ export const Icon = ({
       }
       return (
         <Image
-          className={clsx("icon", props.className)}
+          className={classNames("icon", props.className)}
           style={{ ...props.style, ...getNativeIconStyle(props) }}
           src={icon}
           height={typeof props.size === "number" ? props.size : 16}

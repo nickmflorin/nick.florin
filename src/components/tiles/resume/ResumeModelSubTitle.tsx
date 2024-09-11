@@ -1,9 +1,8 @@
-import clsx from "clsx";
-
 import type { ResumeModelSize } from "./types";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { type FontWeight } from "~/components/types/typography";
 import { LinkOrText } from "~/components/typography/LinkOrText";
@@ -37,7 +36,7 @@ export const ResumeModelSubTitle = <M extends BrandModel<T>, T extends ResumeBra
 }: ResumeModelSubTitleProps<M, T>) => (
   <LinkOrText
     {...props}
-    className={clsx(
+    className={classNames(
       {
         small: "text-sm",
         medium: "text-smplus",

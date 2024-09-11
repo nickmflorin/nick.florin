@@ -98,7 +98,7 @@ $badge-vertical-padding: 2px;
   @include typography.with-font-weights();
   @include typography.with-text-transforms();
   @include typography.with-font-sizes("label") using ($size, $data) {
-    &.font-size-#{$size} {
+    &.f-size-#{$size} {
       font-size: partials.mapget($data, font-size);
     }
   }

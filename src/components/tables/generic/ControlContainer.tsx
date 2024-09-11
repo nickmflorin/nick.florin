@@ -1,7 +1,6 @@
 import { memo } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export type TableControl = "paginator" | "searchBar" | "controlBar";
@@ -37,7 +36,7 @@ interface ControlContainerProps extends ComponentProps {
 export const ControlContainer = memo(({ children, control, ...props }: ControlContainerProps) =>
   children ? (
     <div
-      className={clsx(
+      className={classNames(
         "flex flex-row items-center relative [&>*]:h-fill [&>*]:max-h-fill",
         props.className,
       )}

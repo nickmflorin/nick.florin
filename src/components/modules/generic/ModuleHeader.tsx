@@ -1,7 +1,6 @@
-import clsx from "clsx";
-
 import { type Action } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 
@@ -11,7 +10,7 @@ export interface ModuleHeaderProps extends ComponentProps {
 }
 
 export const ModuleHeader = ({ actions, children, ...props }: ModuleHeaderProps) => (
-  <div {...props} className={clsx("module__header", props.className)}>
+  <div {...props} className={classNames("module__header", props.className)}>
     <Title order={3}>{children}</Title>
     <Actions actions={actions ?? null} />
   </div>

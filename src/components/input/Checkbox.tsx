@@ -2,8 +2,8 @@
 import { forwardRef, useState } from "react";
 
 import { Checkbox as RootCheckbox, type CheckboxProps as RootCheckboxProps } from "@mantine/core";
-import clsx from "clsx";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography/Label";
 
@@ -33,7 +33,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             setIsChecked(e.target.checked);
             props.onChange?.(e);
           }}
-          className={clsx(
+          className={classNames(
             "checkbox",
             { disabled: isDisabled, "checkbox--locked": isLocked },
             props.className,

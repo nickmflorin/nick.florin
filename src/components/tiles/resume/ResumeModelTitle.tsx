@@ -1,10 +1,9 @@
-import clsx from "clsx";
-
 import type { ResumeModelSize } from "./types";
 
 import { type BrandModel, type ResumeBrand, getDegree } from "~/prisma/model";
 
 import { ExpandResumeModelButton } from "~/components/buttons/resume";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 import { Title } from "~/components/typography/Title";
@@ -30,7 +29,7 @@ const Titles: {
   large: ({ children }) => (
     <Title
       order={2}
-      className={clsx(
+      className={classNames(
         "leading-[22px] text-title_md",
         "max-md:leading-[22px] max-md:text-title_smplus",
         "max-sm:text-title_sm max-sm:leading-[22px]",
@@ -60,7 +59,7 @@ export const ResumeModelTitle = <M extends BrandModel<T>, T extends ResumeBrand>
   return (
     <div
       {...props}
-      className={clsx(
+      className={classNames(
         "flex flex-row justify-between items-center w-full gap-[8px]",
         props.className,
       )}

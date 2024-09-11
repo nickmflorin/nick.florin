@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import { IconButton, type IconButtonProps } from "./generic";
 
@@ -16,7 +16,7 @@ export const ClearButton = forwardRef<HTMLButtonElement, ClearButtonProps>(
       size="xsmall"
       iconSize="16px"
       icon={{ name: "circle-xmark", iconStyle: "solid" }}
-      className={clsx("text-gray-500 disabled:text-gray-200", props.className)}
+      className={classNames("text-gray-500 disabled:text-gray-200", props.className)}
     />
   ),
 );

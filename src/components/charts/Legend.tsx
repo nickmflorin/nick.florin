@@ -1,5 +1,4 @@
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { LegendItem } from "./LegendItem";
@@ -16,7 +15,10 @@ export interface LegendProps extends ComponentProps {
 export const Legend = ({ items, ...props }: LegendProps) => (
   <div
     {...props}
-    className={clsx("flex flex-wrap gap-y-[4px] gap-x-[6px] overflow-x-hidden", props.className)}
+    className={classNames(
+      "flex flex-wrap gap-y-[4px] gap-x-[6px] overflow-x-hidden",
+      props.className,
+    )}
   >
     {items.map((item, i) => (
       <LegendItem key={i} {...item} />

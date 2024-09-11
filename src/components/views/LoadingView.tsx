@@ -1,9 +1,8 @@
 import React from "react";
 
-import clsx from "clsx";
-
 import { type SpinnerProps } from "~/components/icons";
 import { Spinner } from "~/components/icons/Spinner";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { AbstractView, type AbstractViewProps } from "./AbstractView";
@@ -32,7 +31,7 @@ export const LoadingView = ({
     overflow="hidden"
     absolute
     centerChildren
-    className={clsx(
+    className={classNames(
       "loading",
       {
         /* If the spinner is being displayed, the view needs to have a higher z-index than it other

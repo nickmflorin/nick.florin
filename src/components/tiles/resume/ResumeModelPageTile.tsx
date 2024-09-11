@@ -1,8 +1,7 @@
-import clsx from "clsx";
-
 import { type ResumeBrand } from "~/prisma/model";
 
 import { Skills } from "~/components/badges/collections/Skills";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography/Description";
 import { HumanizedCourses } from "~/components/typography/HumanizedCourses";
@@ -19,7 +18,7 @@ export const ResumeModelPageTile = <M extends types.ApiModel<T>, T extends Resum
   model,
   ...props
 }: ResumeModelPageTileProps<M, T>) => (
-  <ResumeModelTile {...props} className={clsx("gap-[10px] max-md:gap-[8px]")}>
+  <ResumeModelTile {...props} className={classNames("gap-[10px] max-md:gap-[8px]")}>
     <ResumeModelTile.Header size="large" model={model} className="gap-[8px]">
       <div className="flex flex-col gap-[10px] max-md:gap-[8px]">
         {(types.hasDescription(model) || model.details.length !== 0) && (

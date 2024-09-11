@@ -1,9 +1,10 @@
 import React, { cloneElement, useCallback } from "react";
 
-import clsx from "clsx";
 import { isFragment } from "react-is";
 
 import type * as types from "../../types";
+
+import { classNames } from "~/components/types";
 
 import { type MenuItemProps } from "../MenuItem";
 
@@ -43,11 +44,11 @@ export const MenuComponentContent = ({
           ...ch.props,
           isLocked: Boolean(isLocked || ch.props.isLocked),
           height: ch.props.height ?? itemHeight,
-          selectedClassName: clsx(ch.props.selectedClassName, itemSelectedClassName),
-          lockedClassName: clsx(ch.props.lockedClassName, itemLockedClassName),
-          disabledClassName: clsx(ch.props.disabledClassName, itemDisabledClassName),
-          loadingClassName: clsx(ch.props.loadingClassName, itemLoadingClassName),
-          className: clsx(ch.props.className, itemClassName),
+          selectedClassName: classNames(ch.props.selectedClassName, itemSelectedClassName),
+          lockedClassName: classNames(ch.props.lockedClassName, itemLockedClassName),
+          disabledClassName: classNames(ch.props.disabledClassName, itemDisabledClassName),
+          loadingClassName: classNames(ch.props.loadingClassName, itemLoadingClassName),
+          className: classNames(ch.props.className, itemClassName),
         };
         return cloneElement(child, newProps);
       } else if (isMenuItemGroup(child)) {
@@ -55,15 +56,15 @@ export const MenuComponentContent = ({
         const newProps: types.MenuItemGroupComponentProps = {
           ...ch.props,
           itemHeight: ch.props.itemHeight ?? itemHeight,
-          itemClassName: clsx(ch.props.itemClassName, itemClassName),
-          itemDisabledClassName: clsx(ch.props.itemDisabledClassName, itemDisabledClassName),
-          itemSelectedClassName: clsx(ch.props.itemSelectedClassName, itemSelectedClassName),
-          itemLockedClassName: clsx(ch.props.itemLockedClassName, itemLockedClassName),
-          itemLoadingClassName: clsx(ch.props.itemLoadingClassName, itemLoadingClassName),
+          itemClassName: classNames(ch.props.itemClassName, itemClassName),
+          itemDisabledClassName: classNames(ch.props.itemDisabledClassName, itemDisabledClassName),
+          itemSelectedClassName: classNames(ch.props.itemSelectedClassName, itemSelectedClassName),
+          itemLockedClassName: classNames(ch.props.itemLockedClassName, itemLockedClassName),
+          itemLoadingClassName: classNames(ch.props.itemLoadingClassName, itemLoadingClassName),
           selectionIndicator: ch.props.selectionIndicator ?? selectionIndicator,
           iconSize: ch.props.iconSize ?? iconSize,
-          iconClassName: clsx(ch.props.iconClassName, iconClassName),
-          spinnerClassName: clsx(ch.props.spinnerClassName, spinnerClassName),
+          iconClassName: classNames(ch.props.iconClassName, iconClassName),
+          spinnerClassName: classNames(ch.props.spinnerClassName, spinnerClassName),
         };
         return cloneElement(child, newProps);
       }
@@ -87,7 +88,7 @@ export const MenuComponentContent = ({
   return (
     <div
       style={style}
-      className={clsx("menu__content", { "menu__content--bordered": isBordered }, className)}
+      className={classNames("menu__content", { "menu__content--bordered": isBordered }, className)}
     >
       {children
         .flatMap(ch => (Array.isArray(ch) ? ch : [ch]))

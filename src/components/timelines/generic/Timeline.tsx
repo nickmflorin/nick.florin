@@ -2,12 +2,13 @@
 import React from "react";
 
 import { Timeline as RootTimeline } from "@mantine/core";
-import clsx from "clsx";
+
+import { classNames } from "~/components/types";
 
 import { type TimelineProps } from "./types";
 
 export const Timeline = ({ children, style, className, ...props }: TimelineProps) => (
-  <div style={style} className={clsx("timeline", className)}>
+  <div style={style} className={classNames("timeline", className)}>
     <div className="timeline__inner">
       <RootTimeline
         bulletSize={24}

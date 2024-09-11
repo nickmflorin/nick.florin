@@ -1,12 +1,11 @@
 import Link from "next/link";
 
-import clsx from "clsx";
-
 import { getProfile } from "~/actions/fetches/get-profile";
 
 import { GithubButton } from "~/components/buttons/GithubButton";
 import { LinkedInButton } from "~/components/buttons/LinkedInButton";
 import { ModelImage } from "~/components/images/ModelImage";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 
@@ -16,7 +15,10 @@ export const ProfileSection = async (props: ProfileSectionProps): Promise<JSX.El
   const profile = await getProfile();
 
   return (
-    <div {...props} className={clsx("flex flex-row gap-[16px] items-center", props.className)}>
+    <div
+      {...props}
+      className={classNames("flex flex-row gap-[16px] items-center", props.className)}
+    >
       <Link href="/">
         <ModelImage
           url={profile?.profileImageUrl}

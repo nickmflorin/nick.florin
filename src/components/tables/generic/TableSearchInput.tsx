@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition, useCallback } from "react";
 
-import clsx from "clsx";
 import { toast } from "react-toastify";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -11,6 +10,7 @@ import { isRecordType } from "~/lib/typeguards";
 
 import { Button } from "~/components/buttons/generic";
 import { TextInput } from "~/components/input/TextInput";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 import { useMutableParams } from "~/hooks";
@@ -63,7 +63,7 @@ export const TableSearchInput = ({ onCreate, initialValue, ...props }: TableSear
   return (
     <TextInput
       {...props}
-      className={clsx("grow", props.className)}
+      className={classNames("grow", props.className)}
       value={value}
       onChange={e => {
         setValue(e.target.value);
@@ -80,7 +80,7 @@ export const TableSearchInput = ({ onCreate, initialValue, ...props }: TableSear
               right: [
                 <div key="0" className="flex flex-row gap-[2px] items-center">
                   <Button.Bare
-                    className={clsx(
+                    className={classNames(
                       "px-[8px] py-[2px] bg-gray-200 hover:bg-gray-300 min-h-[26px] h-[26px]",
                     )}
                     size="xsmall"

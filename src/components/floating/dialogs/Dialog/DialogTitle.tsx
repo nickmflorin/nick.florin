@@ -1,8 +1,7 @@
 "use client";
 import { forwardRef, useId, useLayoutEffect } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 
@@ -27,7 +26,7 @@ export const DialogTitle = forwardRef<HTMLDivElement, DialogTitleProps>(
     }, [id, setTitleId]);
 
     return (
-      <div {...props} ref={ref} className={clsx("dialog__title", props.className)}>
+      <div {...props} ref={ref} className={classNames("dialog__title", props.className)}>
         {typeof children === "string" ? <Title order={3}>{children}</Title> : children}
       </div>
     );

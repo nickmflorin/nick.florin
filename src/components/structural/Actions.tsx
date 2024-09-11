@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
 
-import clsx from "clsx";
 import { isFragment } from "react-is";
 
 import type * as types from "./types";
 
 import { isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { type QuantitativeSize, sizeToString } from "~/components/types/sizes";
 
@@ -68,7 +68,7 @@ const LocalActions = ({
   }
   return (
     <div
-      className={clsx(
+      className={classNames(
         "flex flex-row items-center [&>.button]:max-h-full [&>.icon]:max-h-full",
         props.className,
       )}

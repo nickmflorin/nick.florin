@@ -1,10 +1,10 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { omit } from "lodash-es";
 import { type DataTableColumn, type DataTableRowExpansionProps } from "mantine-datatable";
 
+import { classNames } from "~/components/types";
 import { type ClassName, type ComponentProps } from "~/components/types";
 
 export type RootColumn<T extends TableModel> = Omit<DataTableColumn<T>, "id" | "accessor"> & {
@@ -72,13 +72,13 @@ export interface ContextTableProps<T extends TableModel> extends Omit<TableProps
 }
 
 export const mergeRowClassNames =
-  <T extends TableModel>(...classNames: (RowClassName<T> | undefined)[]): RowClassNameFn<T> =>
+  <T extends TableModel>(...cs: (RowClassName<T> | undefined)[]): RowClassNameFn<T> =>
   (record, index) =>
-    classNames.reduce((prev: ClassName, curr: RowClassName<T>) => {
+    cs.reduce((prev: ClassName, curr: RowClassName<T>) => {
       if (typeof curr === "function") {
-        return clsx(prev, curr(record, index));
+        return classNames(prev, curr(record, index));
       } else {
-        return clsx(prev, curr);
+        return classNames(prev, curr);
       }
     }, "");
 

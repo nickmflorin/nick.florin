@@ -1,9 +1,8 @@
 import dynamic from "next/dynamic";
 
-import clsx from "clsx";
-
 import { type LabeledNavItem } from "~/application/pages";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 const Tab = dynamic(() => import("./Tab"));
@@ -16,7 +15,7 @@ export interface TabsProps extends ComponentProps {
 export const Tabs = ({ items, children, ...props }: TabsProps) => (
   <div
     {...props}
-    className={clsx(
+    className={classNames(
       /* The bottom padding of 2px is to make sure that the border on the bottom is not cutoff by
          overflow.  On the other hand, the bottom padding of 8px is for the scrollbar, in the case
          that the tabs overflow the container in mobile views. */
@@ -26,13 +25,13 @@ export const Tabs = ({ items, children, ...props }: TabsProps) => (
     )}
   >
     <div
-      className={clsx(
+      className={classNames(
         "flex flex-row items-center justify-between border-b-[2px] border-gray-200 w-full",
         "max-sm:flex-col max-sm:justify-center max-sm:border-none max-sm:w-full",
       )}
     >
       <div
-        className={clsx(
+        className={classNames(
           "flex flex-row items-center max-sm:flex-col max-sm:justify-center max-sm:w-full",
         )}
       >

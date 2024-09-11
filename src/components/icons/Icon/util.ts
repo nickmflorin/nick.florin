@@ -1,6 +1,6 @@
 import { type IconName } from "@fortawesome/fontawesome-svg-core";
-import clsx from "clsx";
 
+import { classNames } from "~/components/types";
 import { type Style } from "~/components/types";
 
 import {
@@ -49,7 +49,7 @@ const getIconStyleClassName = (iconStyle: IconStyle = DEFAULT_ICON_STYLE) =>
  * @returns {string}
  */
 export const getNativeIconClassName = ({ family, iconStyle, name }: FontAwesomeIconProp): string =>
-  clsx(
+  classNames(
     getIconFamilyClassName(family),
     getIconStyleClassName(iconStyle),
     getIconNameClassName(name),
@@ -94,7 +94,7 @@ const getDynamicIconClassName = (props: Pick<IconProps, DynamicIconClassNameProp
   [...DynamicIconClassNamePropNames].reduce(
     <N extends DynamicIconClassNamePropName>(prev: string, curr: N) => {
       const propName = curr as N;
-      return clsx(prev, DynamicClassNameConfig[propName](props[propName]));
+      return classNames(prev, DynamicClassNameConfig[propName](props[propName]));
     },
     "",
   );
@@ -105,11 +105,11 @@ export const getInternalIconClassName = ({
 }: Pick<
   BasicIconProps<IconProp> | ChildrenIconProps,
   "className" | DynamicIconClassNamePropName
->): string => clsx("icon", getDynamicIconClassName(props), className);
+>): string => classNames("icon", getDynamicIconClassName(props), className);
 
 export const getIconClassName = ({
   icon,
   ...rest
 }: Pick<BasicIconProps<IconProp>, "className" | DynamicIconClassNamePropName> & {
   icon: FontAwesomeIconProp;
-}): string => clsx(getNativeIconClassName(icon), getInternalIconClassName(rest));
+}): string => classNames(getNativeIconClassName(icon), getInternalIconClassName(rest));

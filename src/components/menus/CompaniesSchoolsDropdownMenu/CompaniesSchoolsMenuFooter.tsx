@@ -1,6 +1,5 @@
-import clsx from "clsx";
-
 import { Button } from "~/components/buttons";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { MenuFooter } from "../generic/MenuFooter";
@@ -15,7 +14,7 @@ export const CompaniesSchoolsMenuFooter = ({
 }: CompaniesSchoolsMenuFooterProps) => (
   <MenuFooter
     {...props}
-    className={clsx(
+    className={classNames(
       "w-full flex flex-row item-center justify-center px-[18px] pb-[12px] pt-[6px]",
       props.className,
     )}

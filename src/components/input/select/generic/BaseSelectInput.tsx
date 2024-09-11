@@ -1,8 +1,8 @@
 import React, { type ForwardedRef, forwardRef, useMemo } from "react";
 
-import clsx from "clsx";
-
 import type * as types from "./types";
+
+import { classNames } from "~/components/types";
 
 import { Input } from "../../generic";
 
@@ -30,7 +30,7 @@ export const BaseSelectInput = forwardRef<HTMLDivElement, types.BaseSelectInputP
         {...props}
         withCaret
         caretIsOpen={isOpen}
-        className={clsx("select", props.className)}
+        className={classNames("select", props.className)}
         ref={ref}
         isActive={isOpen}
       >

@@ -1,8 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import clsx from "clsx";
-
 import { generateChartColors } from "~/lib/charts";
 import { type ApiSkill } from "~/prisma/model";
 
@@ -10,6 +8,7 @@ import { BarChart } from "~/components/charts/BarChart";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { Loading } from "~/components/feedback/Loading";
 import { TooltipContent } from "~/components/floating/TooltipContent";
+import { classNames } from "~/components/types";
 
 import { type SkillsBarChartDatum } from "./types";
 
@@ -53,7 +52,9 @@ export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => 
       onClick={datum => open(ids.VIEW_SKILL, { skillId: datum.data.id })}
       tooltip={props => (
         <TooltipContent
-          className={clsx("flex flex-col relative min-h-[40px] gap-[10px] px-[8px] py-[10px]")}
+          className={classNames(
+            "flex flex-col relative min-h-[40px] gap-[10px] px-[8px] py-[10px]",
+          )}
         >
           <SkillsBarChartTooltip {...props} />
         </TooltipContent>

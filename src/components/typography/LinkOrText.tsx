@@ -1,8 +1,8 @@
 "use client";
-import clsx from "clsx";
 
 import { Link } from "~/components/buttons";
 import { Tooltip, type TooltipProps } from "~/components/floating/Tooltip";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { type TextFontSize, type FontWeight, type FontFamily } from "~/components/types/typography";
 
@@ -41,7 +41,7 @@ export const LinkOrText = ({
               {...params}
               {...props}
               ref={ref}
-              className={clsx(props.className, linkClassName)}
+              className={classNames(props.className, linkClassName)}
               href={url}
               fontSize={fontSize}
               fontFamily={fontFamily}
@@ -59,7 +59,7 @@ export const LinkOrText = ({
     return (
       <Link
         {...props}
-        className={clsx(props.className, linkClassName)}
+        className={classNames(props.className, linkClassName)}
         href={url}
         fontSize={fontSize}
         fontFamily={fontFamily}
@@ -75,7 +75,7 @@ export const LinkOrText = ({
   return (
     <Text
       {...props}
-      className={clsx(props.className, textClassName)}
+      className={classNames(props.className, textClassName)}
       fontSize={fontSize}
       fontFamily={fontFamily}
       fontWeight={fontWeight}

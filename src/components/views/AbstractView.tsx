@@ -1,7 +1,6 @@
-import clsx from "clsx";
-
 import { logger } from "~/application/logger";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 type Position = "relative" | "absolute";
@@ -83,7 +82,7 @@ const parseFill = ({
 };
 
 const OverflowClassName = (overflow: Overflow) =>
-  clsx({
+  classNames({
     "overflow-hidden": overflow === "hidden",
     "overflow-visible": overflow === "visible",
     "overflow-scroll": overflow === "scroll",
@@ -91,7 +90,7 @@ const OverflowClassName = (overflow: Overflow) =>
   });
 
 const OverflowXClassName = (overflow: Overflow) =>
-  clsx({
+  classNames({
     "overflow-x-hidden": overflow === "hidden",
     "overflow-x-visible": overflow === "visible",
     "overflow-x-scroll": overflow === "scroll",
@@ -99,7 +98,7 @@ const OverflowXClassName = (overflow: Overflow) =>
   });
 
 const OverflowYClassName = (overflow: Overflow) =>
-  clsx({
+  classNames({
     "overflow-y-hidden": overflow === "hidden",
     "overflow-y-visible": overflow === "visible",
     "overflow-y-scroll": overflow === "scroll",
@@ -119,9 +118,9 @@ const parseOverflow = ({
         { overflow, overflowX, overflowY },
       );
     }
-    return clsx(OverflowClassName(overflow));
+    return classNames(OverflowClassName(overflow));
   } else if (overflowX && overflowY) {
-    return clsx(OverflowXClassName(overflowX), OverflowYClassName(overflowY));
+    return classNames(OverflowXClassName(overflowX), OverflowYClassName(overflowY));
   } else if (overflowX) {
     return OverflowXClassName(overflowX);
   } else if (overflowY) {
@@ -153,7 +152,7 @@ export const AbstractView = ({
   return (
     <div
       style={style}
-      className={clsx(
+      className={classNames(
         _position,
         parseOverflow({ overflow, overflowX, overflowY }),
         {

@@ -1,8 +1,7 @@
-import clsx from "clsx";
-
 import { generateChartColors } from "~/lib/charts";
 import type { ApiSkill } from "~/prisma/model";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { Legend } from "../Legend";
@@ -20,7 +19,7 @@ export const SkillsBarChartLegend = async ({
   }
   const colors = generateChartColors(skills.length);
   return (
-    <div className={clsx("px-[10px] max-w-full")}>
+    <div className={classNames("px-[10px] max-w-full")}>
       <Legend
         {...props}
         items={skills.map((skill, index) => ({

@@ -7,9 +7,9 @@ import {
   FloatingFocusManager,
   FloatingOverlay,
 } from "@floating-ui/react";
-import clsx from "clsx";
 
 import DialogProvider from "~/components/floating/dialogs/Dialog/DialogProvider";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { useDialogContext } from "../../hooks/use-dialog-context";
@@ -47,7 +47,7 @@ const LocalDialog = forwardRef<HTMLDivElement, DialogProps>(
                  of properly centering in the middle of the viewport based on the styling defined
                  in the SASS file for the "dialog__overlay" class. */
               {...props}
-              className={clsx("dialog", props.className)}
+              className={classNames("dialog", props.className)}
               ref={ref}
               aria-labelledby={titleId}
               aria-describedby={contentId}

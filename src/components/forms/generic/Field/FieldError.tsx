@@ -1,5 +1,4 @@
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 
@@ -8,7 +7,7 @@ export interface FormFieldErrorProps extends ComponentProps {
 }
 
 export const FormFieldError = ({ children, ...props }: FormFieldErrorProps): JSX.Element => (
-  <Text {...props} fontSize="xs" className={clsx("text-danger-400", props.className)}>
+  <Text {...props} fontSize="xs" className={classNames("text-danger-400", props.className)}>
     {children}
   </Text>
 );

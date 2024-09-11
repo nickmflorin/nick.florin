@@ -1,9 +1,8 @@
 import React from "react";
 
-import clsx from "clsx";
-
 import { type HexColor } from "~/lib/colors";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export type CircleProps = ComponentProps & {
@@ -24,7 +23,7 @@ export const Circle = ({
 }: CircleProps) => (
   <svg
     {...props}
-    className={clsx("icon", props.className)}
+    className={classNames("icon", props.className)}
     style={{ ...props.style, height: `${size}px`, width: `${size}px` }}
   >
     {(selectable || selected !== undefined) && (

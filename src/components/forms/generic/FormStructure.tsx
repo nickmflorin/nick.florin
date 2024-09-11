@@ -1,8 +1,7 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
 import { Loading } from "~/components/feedback/Loading";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography/Title";
 
@@ -47,12 +46,12 @@ const Body = <I extends BaseFormValues>({
   children,
 }: Pick<FormStructureProps<I>, "isLoading" | "isScrollable" | "children" | "contentClassName">) => (
   <div
-    className={clsx("flex flex-col grow relative", {
+    className={classNames("flex flex-col grow relative", {
       "overflow-y-auto pr-[18px]": isScrollable,
     })}
   >
     <Loading isLoading={isLoading}>
-      <div className={clsx("flex flex-col gap-[8px]", contentClassName)}>{children}</div>
+      <div className={classNames("flex flex-col gap-[8px]", contentClassName)}>{children}</div>
     </Loading>
   </div>
 );
@@ -66,7 +65,11 @@ const Footer = <I extends BaseFormValues>({
   <>
     {(form.errors.length !== 0 || footer) && (
       <div
-        className={clsx("flex flex-col mt-[16px]", { "pr-[18px]": isScrollable }, footerClassName)}
+        className={classNames(
+          "flex flex-col mt-[16px]",
+          { "pr-[18px]": isScrollable },
+          footerClassName,
+        )}
       >
         <FormErrors form={form} className="my-[4px]" />
         {footer}

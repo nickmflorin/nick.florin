@@ -1,6 +1,6 @@
-import clsx from "clsx";
-
 import { type ProgrammingLanguage, getProgrammingLanguage } from "~/prisma/model";
+
+import { classNames } from "~/components/types";
 
 import { Badge, type BadgeProps } from "./Badge";
 
@@ -16,7 +16,7 @@ export const ProgrammingLanguageBadge = ({
   return (
     <Badge
       {...props}
-      className={clsx("bg-white text-text border", props.className)}
+      className={classNames("bg-white text-text border", props.className)}
       icon={config.icon}
     >
       {config.label}

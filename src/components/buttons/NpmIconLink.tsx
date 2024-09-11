@@ -1,6 +1,6 @@
-import clsx from "clsx";
-
 import { getNpmPackageUrl } from "~/prisma/model/repository";
+
+import { classNames } from "~/components/types";
 
 import { IconButton, type IconButtonProps } from "./generic";
 
@@ -17,7 +17,7 @@ export const NpmIconLink = ({ npmPackageName, ...props }: NpmIconLinkProps): JSX
     iconSize="24px"
     {...props}
     as="a"
-    className={clsx("text-npm-red", props.className)}
+    className={classNames("text-npm-red", props.className)}
     icon={{ name: "npm", iconStyle: "brands" }}
     href={getNpmPackageUrl(npmPackageName)}
     target="_blank"

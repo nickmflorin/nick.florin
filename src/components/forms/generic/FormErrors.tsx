@@ -1,5 +1,4 @@
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { FormError } from "./FormError";
@@ -17,7 +16,7 @@ export const FormErrors = <I extends BaseFormValues>({
     return <></>;
   }
   return (
-    <div {...props} className={clsx("flex flex-col gap-[2px]", props.className)}>
+    <div {...props} className={classNames("flex flex-col gap-[2px]", props.className)}>
       {form.errors.map((e, i) => (
         <FormError key={i}>{e}</FormError>
       ))}

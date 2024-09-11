@@ -1,7 +1,6 @@
 import { forwardRef } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 
 export interface NativeInputProps
@@ -15,7 +14,7 @@ export const NativeInput = forwardRef<HTMLInputElement, NativeInputProps>(
     <input
       {...props}
       disabled={isDisabled}
-      className={clsx("native-input", props.className)}
+      className={classNames("native-input", props.className)}
       ref={ref}
     />
   ),

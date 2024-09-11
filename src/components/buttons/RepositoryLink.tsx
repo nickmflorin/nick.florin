@@ -1,9 +1,7 @@
-import clsx from "clsx";
-
 import type { BrandRepository } from "~/prisma/model";
 import { getRepositoryGithubUrl } from "~/prisma/model/repository";
 
-import { withoutOverridingClassName } from "~/components/types";
+import { classNames } from "~/components/types";
 
 import { Link, type LinkFlexProps } from "./generic";
 
@@ -18,7 +16,7 @@ export const RepositoryLink = ({ repository, ...props }: RepositoryLinkProps): J
     {...props}
     flex
     as="a"
-    className={clsx(withoutOverridingClassName("text-blue-900", props.className), props.className)}
+    className={classNames("text-blue-900", props.className)}
     href={getRepositoryGithubUrl(repository)}
     target="_blank"
     rel="noopener noreferrer"

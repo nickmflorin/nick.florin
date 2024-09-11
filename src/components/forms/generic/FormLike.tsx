@@ -1,5 +1,4 @@
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { FormStructure, type FormStructureProps } from "./FormStructure";
@@ -18,7 +17,7 @@ export const FormLike = <I extends BaseFormValues>({
   style,
   ...props
 }: FormLikeProps<I>): JSX.Element => (
-  <div style={style} className={clsx("form", { "pr-[18px]": props.isScrollable }, className)}>
+  <div style={style} className={classNames("form", { "pr-[18px]": props.isScrollable }, className)}>
     <FormStructure {...props} form={form}>
       {children}
     </FormStructure>

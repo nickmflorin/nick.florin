@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { type SingleTextNode } from "~/components/types/typography";
 import { Description } from "~/components/typography/Description";
@@ -24,7 +23,7 @@ export const SectionTitle = ({
     {...props}
     fontWeight="medium"
     flex
-    className={clsx(
+    className={classNames(
       { "text-md max-sm:text-sm": !subSection, "text-sm max-sm:text-xs": subSection },
       props.className,
     )}
@@ -41,9 +40,12 @@ export const Section = ({
   subSection,
   ...props
 }: SectionProps) => (
-  <div {...props} className={clsx("flex flex-col gap-[12px] max-md:gap-[8px]", props.className)}>
+  <div
+    {...props}
+    className={classNames("flex flex-col gap-[12px] max-md:gap-[8px]", props.className)}
+  >
     {(title || description) && (
-      <div className={clsx("flex flex-col gap-[4px]", { "mb-[4px]": marginBottom })}>
+      <div className={classNames("flex flex-col gap-[4px]", { "mb-[4px]": marginBottom })}>
         {typeof title === "string" ? (
           <SectionTitle subSection={subSection}>{title}</SectionTitle>
         ) : (

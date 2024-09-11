@@ -1,10 +1,9 @@
-import clsx from "clsx";
-
 import { type ApiEducation } from "~/prisma/model";
 
 import { DrawerContent } from "~/components/drawers/DrawerContent";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { ResumeModelDrawerTile } from "~/components/tiles/resume/ResumeModelDrawerTile";
+import { classNames } from "~/components/types";
 
 export interface EducationDrawerContentProps {
   readonly education: ApiEducation<["courses", "skills", "details"]>;
@@ -17,7 +16,7 @@ export const EducationDrawerContent = ({ education }: EducationDrawerContentProp
       <ResumeModelDrawerTile
         model={education}
         titleProps={{
-          className: clsx("pr-[30px]", { "pr-[100px]": forwardEnabled || backEnabled }),
+          className: classNames("pr-[30px]", { "pr-[100px]": forwardEnabled || backEnabled }),
         }}
       />
     </DrawerContent>

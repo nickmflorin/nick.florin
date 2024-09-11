@@ -1,6 +1,6 @@
-import clsx from "clsx";
-
 import { type SkillCategory, getSkillCategory } from "~/prisma/model";
+
+import { classNames } from "~/components/types";
 
 import { Badge, type BadgeProps } from "./Badge";
 
@@ -12,7 +12,7 @@ export const SkillCategoryBadge = ({
   category,
   ...props
 }: SkillCategoryBadgeProps): JSX.Element => (
-  <Badge {...props} className={clsx("bg-orange-100 text-orange-800", props.className)}>
+  <Badge {...props} className={classNames("bg-orange-100 text-orange-800", props.className)}>
     {getSkillCategory(category).label}
   </Badge>
 );

@@ -2,11 +2,11 @@
 import React from "react";
 
 import { Dropzone } from "@mantine/dropzone";
-import clsx from "clsx";
 
 import type * as types from "../types";
 
 import { Loading } from "~/components/feedback/Loading";
+import { classNames } from "~/components/types";
 
 import { UploadDropzoneContent } from "./UploadDropzoneContent";
 
@@ -22,7 +22,7 @@ export const UploadDropzone = ({
 }: types.UploadDropzoneProps) => (
   <Dropzone
     {...props}
-    className={clsx(
+    className={classNames(
       "relative w-full min-h-[60px] h-[60px] border border-dashed rounded-md",
       "flex flex-col justify-center items-center hover:border-blue-600",
       { "pointer-events-none": isDisabled },

@@ -1,10 +1,9 @@
 "use client";
 import { type ReactNode, useState } from "react";
 
-import clsx from "clsx";
-
 import { IconButton } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography/Text";
 
@@ -33,7 +32,7 @@ export const Collapse = ({
   const open = _propOpen ?? _open;
 
   return (
-    <div {...props} className={clsx("flex flex-col gap-[8px]", props.className)}>
+    <div {...props} className={classNames("flex flex-col gap-[8px]", props.className)}>
       <div className="flex flex-row justify-between overflow-hidden items-center">
         {typeof title === "string" ? (
           <Text fontSize="sm" fontWeight="medium">
@@ -56,7 +55,7 @@ export const Collapse = ({
           </IconButton.Bare>
         </div>
       </div>
-      {open && <div className={clsx("flex flex-col", contentClassName)}>{children}</div>}
+      {open && <div className={classNames("flex flex-col", contentClassName)}>{children}</div>}
     </div>
   );
 };

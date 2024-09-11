@@ -1,12 +1,12 @@
 import Image from "next/image";
 import React from "react";
 
-import clsx from "clsx";
 import { type Optional } from "utility-types";
 
 import { Loading } from "~/components/feedback/Loading";
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { BorderRadii, type BorderRadius } from "~/components/types/borders";
 
@@ -73,7 +73,10 @@ export const ModelImage = ({
   const _url = getImageVar("url", { image, url });
   const _size = getImageVar("size", { image, size });
   return (
-    <div style={{ ...style, height: size, width: size }} className={clsx("model-image", className)}>
+    <div
+      style={{ ...style, height: size, width: size }}
+      className={classNames("model-image", className)}
+    >
       <Loading isLoading={loading === true} />
       {_url !== undefined && _url !== null && _url.trim() !== "" ? (
         <Image
@@ -82,7 +85,7 @@ export const ModelImage = ({
           src={_url}
           alt={alt}
           priority={priority}
-          className={clsx(
+          className={classNames(
             "model-image__image",
             `model-image__image--radius-${radius}`,
             imageClassName,

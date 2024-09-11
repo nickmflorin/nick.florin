@@ -1,10 +1,9 @@
 import { type JSX } from "react";
 
-import clsx from "clsx";
 import { Controller, type ControllerRenderProps } from "react-hook-form";
 
 import { type ComponentProps } from "~/components/types";
-import { classNameContains } from "~/components/types";
+import { classNames } from "~/components/types";
 import { Label, type LabelProps } from "~/components/typography/Label";
 import { Text } from "~/components/typography/Text";
 import { ShowHide } from "~/components/util";
@@ -86,7 +85,7 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
   helpTextClassName,
   ...props
 }: FieldProps<N, I>): JSX.Element => (
-  <div {...props} className={clsx("flex flex-col w-full", props.className)}>
+  <div {...props} className={classNames("flex flex-col w-full", props.className)}>
     {(condition !== undefined || label !== undefined) && (
       <div className="w-full mb-[4px] flex h-[20px]">
         {label && (
@@ -106,9 +105,9 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
     {helpText !== undefined && (
       <Text
         fontSize="xs"
-        className={clsx(
+        className={classNames(
           "leading-[14px] text-gray-500 pl-[1px]",
-          { "mt-[4px]": !classNameContains(helpTextClassName, v => v.prefix.startsWith("mt-")) },
+          "mt-[4px]",
           helpTextClassName,
         )}
       >

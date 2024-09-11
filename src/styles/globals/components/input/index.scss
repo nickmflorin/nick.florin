@@ -24,7 +24,7 @@
 
       // Allow the font size to be overridden with a prop for each input size.
       @include typography.with-font-sizes("text") using ($size, $data) {
-        &.font-size-#{$size} {
+        &.f-size-#{$size} {
           font-size: partials.mapget($data, font-size);
         }
       }
@@ -57,7 +57,7 @@
 
   // Allow the font size to be specified independently of the input's size.
   @include typography.with-font-sizes("text") using ($size, $data) {
-    &.font-size-#{$size} {
+    &.f-size-#{$size} {
       font-size: partials.mapget($data, font-size);
     }
   }

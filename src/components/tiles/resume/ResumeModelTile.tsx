@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 import { Details } from "./Details";
@@ -20,7 +19,7 @@ export interface ResumeModelProps extends ComponentProps {
 const LocalResumeModelTile = ({ children, ...props }: ResumeModelProps): JSX.Element => (
   <div
     {...props}
-    className={clsx("flex flex-col w-full max-w-100%", props.className)}
+    className={classNames("flex flex-col w-full max-w-100%", props.className)}
     data-attr-tour-id="resume-model-tile"
   >
     {children}

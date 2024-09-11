@@ -1,9 +1,11 @@
 import { forwardRef, type ForwardedRef } from "react";
 
-import clsx from "clsx";
-
+import { classNames } from "~/components/types";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
-import { type BaseTypographyProps, getTypographyClassName } from "~/components/types/typography";
+import {
+  type TypographyCharacteristics,
+  getTypographyClassName,
+} from "~/components/types/typography";
 
 import { type InputSize, InputSizes, InputVariants, type InputVariant } from "./types";
 
@@ -16,7 +18,7 @@ type WrapperElement<C extends WrapperComponentName> = {
 
 export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
   HTMLElementProps<C> &
-  Omit<BaseTypographyProps, "transform"> & {
+  Omit<TypographyCharacteristics, "transform"> & {
     readonly component: C;
     readonly size?: InputSize;
     readonly variant?: InputVariant;
@@ -52,7 +54,7 @@ export const InputWrapper = forwardRef(
       ...props,
       ref,
       children,
-      className: clsx(
+      className: classNames(
         "input",
         `input--size-${size}`,
         `input--variant-${variant}`,
@@ -72,7 +74,7 @@ export const InputWrapper = forwardRef(
       case "div":
         return <div {...(ps as HTMLElementProps<"div">)} />;
       case "textarea": {
-        const className = clsx("text-area", ps.className);
+        const className = classNames("text-area", ps.className);
         return (
           <textarea
             disabled={isDisabled}

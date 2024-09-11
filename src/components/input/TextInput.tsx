@@ -1,7 +1,8 @@
 import { forwardRef } from "react";
 
-import clsx from "clsx";
 import { pick, omit } from "lodash-es";
+
+import { classNames } from "~/components/types";
 
 import { type InputProps, Input, NativeInput, type NativeInputProps } from "./generic";
 
@@ -37,7 +38,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     <Input
       {...pick(props, INPUT_PROPS)}
       isDisabled={isDisabled}
-      className={clsx("text-input", props.className)}
+      className={classNames("text-input", props.className)}
       dynamicHeight={false}
     >
       <NativeInput {...omit(props, INPUT_PROPS)} isDisabled={isDisabled} ref={ref} />

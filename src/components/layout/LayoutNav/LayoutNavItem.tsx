@@ -1,7 +1,7 @@
-import clsx from "clsx";
 import { type Required } from "utility-types";
 
 import { LayoutNavAnchor } from "~/components/buttons/LayoutNavAnchor";
+import { classNames } from "~/components/types";
 
 import {
   type IExternalLayoutNavItem,
@@ -39,7 +39,7 @@ export const LayoutNavItem = <
 }: LayoutNavItemParentProps<I>) => (
   <LayoutNavAnchor
     item={item as IExternalLayoutNavItem | Omit<IInternalLayoutNavItem, "children">}
-    className={clsx({
+    className={classNames({
       "z-10":
         item.children !== undefined && item.children.filter(c => c.visible !== false).length !== 0,
       "mb-[6px] z-10":

@@ -1,12 +1,11 @@
 import React from "react";
 
-import clsx from "clsx";
-
 import type * as types from "../types";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { type Size, sizeToString } from "~/components/types/sizes";
-import { type BaseTypographyProps } from "~/components/types/typography";
+import { type TypographyCharacteristics } from "~/components/types/typography";
 
 import { ErrorContent } from "./ErrorContent";
 import { ErrorTitle } from "./ErrorTitle";
@@ -17,9 +16,9 @@ export interface ErrorDetailProps extends ComponentProps {
   readonly children?: types.ErrorContentType;
   readonly error?: types.ErrorType;
   readonly titleClassName?: ComponentProps["className"];
-  readonly titleFontSize?: BaseTypographyProps["fontSize"];
-  readonly titleFontWeight?: BaseTypographyProps["fontWeight"];
-  readonly titleFontFamily?: BaseTypographyProps["fontFamily"];
+  readonly titleFontSize?: TypographyCharacteristics["fontSize"];
+  readonly titleFontWeight?: TypographyCharacteristics["fontWeight"];
+  readonly titleFontFamily?: TypographyCharacteristics["fontFamily"];
 }
 
 export const ErrorDetail = ({
@@ -36,7 +35,7 @@ export const ErrorDetail = ({
 }: ErrorDetailProps): JSX.Element => (
   <div
     style={{ ...style, gap: sizeToString(gap, "px") }}
-    className={clsx("flex flex-col justify-center max-w-[90%]", className)}
+    className={classNames("flex flex-col justify-center max-w-[90%]", className)}
   >
     <ErrorTitle
       error={error}

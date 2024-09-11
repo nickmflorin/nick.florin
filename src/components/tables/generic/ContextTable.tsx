@@ -1,5 +1,5 @@
 "use client";
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import { useTableView } from "../hooks";
 import {
@@ -19,7 +19,7 @@ export const ContextTable = <T extends TableModel>(props: Omit<TableProps<T>, "c
       {...props}
       columns={visibleColumns.map((col): RootColumn<T> => toNativeColumn(col, { setRowLoading }))}
       rowClassName={mergeRowClassNames(props.rowClassName, ({ id }) =>
-        clsx({ "row--loading": rowIsLoading(id), "row--locked": rowIsLocked(id) }),
+        classNames({ "row--loading": rowIsLoading(id), "row--locked": rowIsLocked(id) }),
       )}
     />
   );

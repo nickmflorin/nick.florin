@@ -2,16 +2,9 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { type ReactNode } from "react";
 
-import clsx from "clsx";
-
 import type * as types from "../types";
 
-import {
-  type ComponentProps,
-  type HTMLElementProps,
-  withoutOverridingClassName,
-  mergeIntoClassNames,
-} from "~/components/types";
+import { type ComponentProps, type HTMLElementProps, classNames } from "~/components/types";
 import { sizeToString, sizeToNumber, type QuantitativeSize } from "~/components/types/sizes";
 import { ShowHide } from "~/components/util";
 
@@ -78,21 +71,16 @@ const LocalMenuItem = ({
           props.onClick?.(e);
         }
       }}
-      className={clsx(
+      className={classNames(
         "menu__item",
         { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
         {
-          [clsx("menu__item--selected", selectedClassName)]: isSelected,
-          [clsx("menu__item--loading", loadingClassName)]: isLoading,
-          [clsx("disabled", disabledClassName)]: isDisabled,
-          [clsx("menu__item--locked", lockedClassName)]: isLocked,
+          [classNames("menu__item--selected", selectedClassName)]: isSelected,
+          [classNames("menu__item--loading", loadingClassName)]: isLoading,
+          [classNames("disabled", disabledClassName)]: isDisabled,
+          [classNames("menu__item--locked", lockedClassName)]: isLocked,
         },
-        mergeIntoClassNames(props.className, {
-          [clsx(selectedClassName)]: isSelected,
-          [clsx(loadingClassName)]: isLoading,
-          [clsx(disabledClassName)]: isDisabled,
-          [clsx(lockedClassName)]: isLocked,
-        }),
+        props.className,
       )}
       style={
         height !== undefined
@@ -114,18 +102,12 @@ const LocalMenuItem = ({
         isLoading={isLoading}
         spinnerClassName={spinnerClassName}
       />
-      <div className={clsx("menu__item__content", contentClassName)}>{children}</div>
+      <div className={classNames("menu__item__content", contentClassName)}>{children}</div>
       {/* Only show the spinner to the right (instead of over the icon) if the icon is not
           defined. */}
       {icon === undefined && (
         <Spinner
-          className={clsx(
-            withoutOverridingClassName(
-              "text-gray-600",
-              mergeIntoClassNames(iconClassName, spinnerClassName),
-            ),
-            mergeIntoClassNames(iconClassName, spinnerClassName),
-          )}
+          className={classNames("text-gray-600", iconClassName, spinnerClassName)}
           isLoading={isLoading}
           size="18px"
           dimension="height"

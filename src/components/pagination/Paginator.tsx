@@ -3,10 +3,10 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 
 import { Pagination } from "@mantine/core";
-import clsx from "clsx";
 import { clamp } from "lodash-es";
 import { z } from "zod";
 
+import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface PaginatorProps extends Pick<ComponentProps, "className"> {
@@ -45,7 +45,7 @@ export const Paginator = ({ count, pageSize = 10, ...props }: PaginatorProps) =>
 
   return (
     <Pagination
-      className={clsx("paginator", props.className)}
+      className={classNames("paginator", props.className)}
       value={activePage}
       onChange={setPage}
       // Setting the total to 0 causes the paginator to disappear.
