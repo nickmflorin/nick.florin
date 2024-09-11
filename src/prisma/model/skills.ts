@@ -1,5 +1,4 @@
-import omit from "lodash.omit";
-import uniqBy from "lodash.uniqby";
+import { omit, uniqBy } from "lodash-es";
 import { DateTime } from "luxon";
 
 import type { BrandSkill, BrandProject, BrandRepository } from "./brand";

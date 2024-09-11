@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
 import clsx from "clsx";
-import clamp from "lodash.clamp";
+import { clamp } from "lodash-es";
 
 import { type ComponentProps } from "~/components/types";
 

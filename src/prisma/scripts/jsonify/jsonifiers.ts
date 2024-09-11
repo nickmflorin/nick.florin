@@ -1,4 +1,4 @@
-import omit from "lodash.omit";
+import { omit } from "lodash-es";
 import { type z } from "zod";
 
 import type * as types from "./types";

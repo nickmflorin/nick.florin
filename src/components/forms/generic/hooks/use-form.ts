@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useState, useRef } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import omit from "lodash.omit";
-import uniq from "lodash.uniq";
+import { omit, uniq } from "lodash-es";
 import {
   useForm as useReactHookForm,
   type Path,

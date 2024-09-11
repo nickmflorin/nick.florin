@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { type ReactNode } from "react";
 
-import sortBy from "lodash.sortby";
+import { sortBy } from "lodash-es";
 
 import { logger } from "~/application/logger";
 import { prisma } from "~/prisma/client";

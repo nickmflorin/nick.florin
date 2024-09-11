@@ -1,6 +1,6 @@
 import { useRef, useEffect, useMemo, type DependencyList } from "react";
 
-import isEqual from "lodash.isequal";
+import { isEqual } from "lodash-es";
 
 export const useDeepEqualMemo: typeof useMemo = (fn, deps) => {
   const ref = useRef<DependencyList>();

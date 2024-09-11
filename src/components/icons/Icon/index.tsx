@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 
 import clsx from "clsx";
-import pick from "lodash.pick";
+import { pick } from "lodash-es";
 
 import { mergeIntoClassNames } from "~/components/types";
 

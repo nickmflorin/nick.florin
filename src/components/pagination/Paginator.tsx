@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 
 import { Pagination } from "@mantine/core";
 import clsx from "clsx";
-import clamp from "lodash.clamp";
+import { clamp } from "lodash-es";
 import { z } from "zod";
 
 import { type ComponentProps } from "~/components/types";

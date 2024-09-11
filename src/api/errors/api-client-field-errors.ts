@@ -1,4 +1,4 @@
-import uniqBy from "lodash.uniqby";
+import { uniqBy } from "lodash-es";
 import { type z } from "zod";
 
 import { logger } from "~/application/logger";

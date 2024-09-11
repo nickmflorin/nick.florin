@@ -1,8 +1,7 @@
 import { forwardRef } from "react";
 
 import clsx from "clsx";
-import omit from "lodash.omit";
-import pick from "lodash.pick";
+import { pick, omit } from "lodash-es";
 
 import { type InputProps, Input, NativeInput, type NativeInputProps } from "./generic";
 

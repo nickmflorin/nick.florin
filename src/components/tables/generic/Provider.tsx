@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { type ReactNode, useState, useCallback, useMemo, memo } from "react";
 
-import uniq from "lodash.uniq";
+import { uniq } from "lodash-es";
 
 import { Spinner } from "~/components/icons/Spinner";
 import { Checkbox } from "~/components/input/Checkbox";

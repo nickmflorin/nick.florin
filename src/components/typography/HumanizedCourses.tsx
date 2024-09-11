@@ -1,7 +1,7 @@
 "use client";
 import React, { memo, useMemo } from "react";
 
-import isEqual from "lodash.isequal";
+import { isEqual } from "lodash-es";
 
 import type { BrandCourse } from "~/prisma/model";
 

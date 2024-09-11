@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import isEqual from "lodash.isequal";
+import { isEqual } from "lodash-es";
 
 import { subscribe, unsubscribe } from "~/events/drawer-state-change-event";
 

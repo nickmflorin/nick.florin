@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import uniqBy from "lodash.uniqby";
+import { uniqBy } from "lodash-es";
 
 import { removeRedundantTopLevelSkills } from "~/prisma/model";
 

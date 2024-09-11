@@ -1,5 +1,5 @@
 "use server";
-import uniq from "lodash.uniq";
+import { uniq } from "lodash-es";
 
 import { UnreachableCaseError } from "~/application/errors";
 import { type Transaction } from "~/prisma/client";

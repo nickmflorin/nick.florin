@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import pick from "lodash.pick";
+import { pick } from "lodash-es";
 
 import { type ComponentProps, mergeIntoClassNames } from "~/components/types";
 import { sizeToString } from "~/components/types/sizes";

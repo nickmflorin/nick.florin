@@ -1,7 +1,7 @@
 import NextLink from "next/link";
 import React, { forwardRef } from "react";
 
-import omit from "lodash.omit";
+import { omit } from "lodash-es";
 
 import type * as types from "../types";
 

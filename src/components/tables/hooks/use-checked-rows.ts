@@ -2,7 +2,7 @@ import { useSearchParams, type ReadonlyURLSearchParams, usePathname } from "next
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useTransition, useCallback } from "react";
 
-import uniq from "lodash.uniq";
+import { uniq } from "lodash-es";
 import qs from "qs";
 import { z } from "zod";
 

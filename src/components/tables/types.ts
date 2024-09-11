@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
-import omit from "lodash.omit";
+import { omit } from "lodash-es";
 import { type DataTableColumn, type DataTableRowExpansionProps } from "mantine-datatable";
 
 import { type ClassName, type ComponentProps } from "~/components/types";

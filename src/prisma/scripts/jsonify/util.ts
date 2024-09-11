@@ -1,4 +1,4 @@
-import omit from "lodash.omit";
+import { omit } from "lodash-es";
 
 type ForeignKeyId = `${string}Id`;
 type FieldsToClean = "id" | "updatedById" | "createdById" | "$kind" | ForeignKeyId;

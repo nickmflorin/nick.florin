@@ -2,7 +2,7 @@
 import React from "react";
 import { useRef, forwardRef, type ForwardedRef } from "react";
 
-import isEqual from "lodash.isequal";
+import { isEqual } from "lodash-es";
 
 import type * as types from "./types";
 

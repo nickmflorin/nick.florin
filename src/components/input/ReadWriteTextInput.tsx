@@ -12,8 +12,7 @@ import React, {
 
 import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
-import omit from "lodash.omit";
-import pick from "lodash.pick";
+import { pick, omit } from "lodash-es";
 
 import { mergeActions } from "~/components/structural";
 import { type ComponentProps } from "~/components/types";
