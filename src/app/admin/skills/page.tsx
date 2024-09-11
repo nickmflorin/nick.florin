@@ -4,7 +4,7 @@ import { partiallyParseObjectWithSchema } from "~/lib/schemas";
 import { isUuid } from "~/lib/typeguards";
 import { decodeQueryParams } from "~/lib/urls";
 
-import { SkillsTableView } from "~/components/tables/views/SkillsTableView";
+import { SkillsTableView } from "~/features/skills/components/tables/SkillsTableView";
 
 const SkillsPageFiltersSchema = z.object({
   search: z.string(),

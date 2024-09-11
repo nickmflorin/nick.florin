@@ -2,7 +2,7 @@ import { prisma } from "~/prisma/client";
 
 import { convertToPlainObject } from "~/api/serialization";
 
-import { AssetVisualizations } from "~/components/projects/AssetVisualizations";
+import { AssetVisualizations } from "~/features/projects/components/pages/AssetVisualizations";
 
 import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
 

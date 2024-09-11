@@ -2,7 +2,7 @@ import { prisma } from "~/prisma/client";
 
 import { convertToPlainObject } from "~/api/serialization";
 
-import { Website } from "~/components/projects/Website";
+import { Website } from "~/features/projects/components/pages/Website";
 
 import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
 

@@ -7,9 +7,8 @@ import { getExperiences } from "~/actions/fetches/experiences";
 import { Loading } from "~/components/feedback/Loading";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { ResumeModelPageTile } from "~/components/tiles/resume/ResumeModelPageTile";
+import { CommitTimeline } from "~/components/timelines/CommitTimeline";
 import { type ComponentProps } from "~/components/types";
-
-import { CommitTimeline } from "./CommitTimeline";
 
 const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.TimelineItem), {
   loading: () => <Loading isLoading={true} />,

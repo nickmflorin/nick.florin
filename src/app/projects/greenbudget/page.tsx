@@ -2,7 +2,7 @@ import { prisma } from "~/prisma/client";
 
 import { convertToPlainObject } from "~/api/serialization";
 
-import { GreenBudget } from "~/components/projects/GreenBudget";
+import { GreenBudget } from "~/features/projects/components/pages/GreenBudget";
 
 import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
 

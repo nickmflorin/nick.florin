@@ -3,7 +3,7 @@ import { z } from "zod";
 import { partiallyParseObjectWithSchema } from "~/lib/schemas";
 import { decodeQueryParams } from "~/lib/urls";
 
-import { ProjectsTableView } from "~/components/tables/views/ProjectsTableView";
+import { ProjectsTableView } from "~/features/projects/components/tables/ProjectsTableView";
 
 const ProjectsPageFiltersSchema = z.object({
   search: z.string(),

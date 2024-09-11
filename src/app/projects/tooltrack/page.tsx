@@ -2,7 +2,7 @@ import { prisma } from "~/prisma/client";
 
 import { convertToPlainObject } from "~/api/serialization";
 
-import { ToolTrack } from "~/components/projects/ToolTrack";
+import { ToolTrack } from "~/features/projects/components/pages/ToolTrack";
 
 import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
 

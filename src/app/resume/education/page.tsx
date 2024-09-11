@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
 import { Loading } from "~/components/feedback/Loading";
-import EducationTimeline from "~/components/timelines/EducationTimeline";
+import EducationTimeline from "~/features/educations/components/EducationTimeline";
 
 export default function EducationPage() {
   return (
