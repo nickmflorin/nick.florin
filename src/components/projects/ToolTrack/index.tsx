@@ -1,6 +1,7 @@
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 
+import { DescriptionGroup } from "../DescriptionGroup";
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 import { Section } from "../Section";
@@ -11,7 +12,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
   <Project
     title={props.project.name}
     description={
-      <div className="flex flex-col gap-[6px]">
+      <DescriptionGroup>
         <Description>
           ToolTrack application written using&nbsp;
           <Link as="a" href="https://nextjs.org/">
@@ -30,12 +31,12 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
           website at regular intervals and then using this data to determine when changes to
           inventory and/or prices occur.
         </Description>
-      </div>
+      </DescriptionGroup>
     }
     {...props}
   >
     <Section title="Background" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           As a woodworker myself, I am deeply involved in the woodworking community. I have a strong
           interest in hand tools, particularly hand-planes, chisels and saws, and how they can be
@@ -59,10 +60,10 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
           tools in the world. Their beautiful, perfectly-made tools are sought after by woodworkers
           across the globe.
         </Description>
-      </div>
+      </DescriptionGroup>
     </Section>
     <Section title="The Problem" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           The problem that this application attempts to solve is that purchasing tools from&nbsp;
           <Link as="a" href="https://lie-nielsen.com/">
@@ -85,10 +86,10 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
           receive immediate notifications when new products are added, inventory changes or prices
           are updated.
         </Description>
-      </div>
+      </DescriptionGroup>
     </Section>
     <Section title="Internal Component Library" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           Like this website, this application does not rely on any third-party component library.
           Instead, it leverages an internal component library developed using frameworks like&nbsp;
@@ -109,7 +110,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
           </Link>
           .
         </Description>
-      </div>
+      </DescriptionGroup>
     </Section>
     <Section title="Subscribing to Events" marginBottom={false}>
       <Description>

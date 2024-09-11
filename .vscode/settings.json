@@ -11,8 +11,7 @@
   "files.insertFinalNewline": true,
   "files.associations": {
     "*.tsx": "typescriptreact",
-    "*.ts": "typescript",
-    "*.zmodel": "zmodel"
+    "*.ts": "typescript"
   },
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
@@ -35,7 +34,6 @@
   ],
   "eslint.format.enable": true,
   "eslint.useFlatConfig": false,
-  "eslint.execArgv": ["--max-old-space-size=16384"],
   "eslint.debug": false,
   "eslint.codeActionsOnSave.rules": [
     "prettier/prettier",

@@ -3,6 +3,8 @@ import { type ReactNode } from "react";
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 
+import { CaptionDescription } from "../CaptionDescription";
+import { DescriptionGroup } from "../DescriptionGroup";
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 import { Section } from "../Section";
@@ -14,12 +16,16 @@ const Emphasize = ({ children }: { children: ReactNode }): JSX.Element => (
   <span className="font-medium text-text">{children}</span>
 );
 
+const CaptionEmphasize = ({ children }: { children: ReactNode }): JSX.Element => (
+  <span className="font-medium text-[#7f7f7f]">{children}</span>
+);
+
 export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
   <Project
     title={props.project.name}
     underConstruction
     disclaimer={
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           Throughout the development of <Emphasize>GreenBudget</Emphasize>, I was working closely
           with a film producer in Los Angeles, CA. Unfortunately, after 2 years of working together,
@@ -47,10 +53,10 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           The circumstances of this situation are still being worked out today. If you are
           interested in learning more, feel free to reach out to me directly.
         </Description>
-      </div>
+      </DescriptionGroup>
     }
     description={
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           <Emphasize>GreenBudget</Emphasize> is an application that was created to address a niche
           market opportunity by providing a modern, web-based, multi-user collaborative budgeting
@@ -96,12 +102,12 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           <i>2 thousand subscribed (paying) users</i>&nbsp;and had drawn interest from a number of
           enterprise clients who had expressed interest in adopting the platform for their own use.
         </Description>
-      </div>
+      </DescriptionGroup>
     }
     {...props}
   >
     <Section title="Background" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           The way that film producers manage budgets is different than how people in any other
           industry manage budgets - standard, general accounting/budgeting tools do not work. The
@@ -116,58 +122,55 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           towards film production, I thought it was a great idea - and we began working together on
           what would eventually become <Emphasize>GreenBudget</Emphasize>.
         </Description>
-      </div>
+      </DescriptionGroup>
       <ProjectImage
         src="/projects/greenbudget/landing.png"
         alt="GreenBudget Landing Page"
         caption={
-          <Description>
-            <Emphasize>GreenBudget</Emphasize>&apos;s original landing/slash page.
-          </Description>
+          <CaptionDescription centered>
+            <CaptionEmphasize>GreenBudget</CaptionEmphasize>&apos;s original landing/slash page.
+          </CaptionDescription>
         }
       />
     </Section>
     <Section title="Concepts" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
-        <Description>
-          In production budgeting, the <Emphasize>Top Sheet</Emphasize> represents the top level
-          line items, or <Emphasize>Account</Emphasize>(s) in the budget. The estimated, actual and
-          variance values for each <Emphasize>Account</Emphasize> are determined based on the
-          accumulation of related values on each <Emphasize>Sub Account</Emphasize> it contains.
-        </Description>
-      </div>
+      <Description>
+        In production budgeting, the <Emphasize>Top Sheet</Emphasize> represents the top level line
+        items, or <Emphasize>Account</Emphasize>(s) in the budget. The estimated, actual and
+        variance values for each <Emphasize>Account</Emphasize> are determined based on the
+        accumulation of related values on each <Emphasize>Sub Account</Emphasize> it contains.
+      </Description>
       <ProjectImage
         src="/projects/greenbudget/topsheet.png"
         alt="GreenBudget Top Sheet"
         caption={
-          <Description>
-            An example of a <Emphasize>Top Sheet</Emphasize> in <Emphasize>GreenBudget</Emphasize>.
-          </Description>
+          <CaptionDescription centered>
+            An example of a <CaptionEmphasize>Top Sheet</CaptionEmphasize> in&nbsp;
+            <CaptionEmphasize>GreenBudget</CaptionEmphasize>.
+          </CaptionDescription>
         }
       />
-      <div className="flex flex-col gap-[8px]">
-        <Description>
-          When an <Emphasize>Account</Emphasize> is &quot;expanded&quot;, the&nbsp;
-          <Emphasize>Account</Emphasize>&nbsp; row expands into a new table showing all of the&nbsp;
-          <Emphasize>Sub Account</Emphasize>(s) that it contains. The metrics for each row
-          (i.e.&nbsp;
-          <Emphasize>Sub Account</Emphasize>(s)) funnel upwards to the associated&nbsp;
-          <Emphasize>Account</Emphasize> row in the&nbsp;
-          <Emphasize>Top Sheet</Emphasize>.
-        </Description>
-      </div>
+      <Description>
+        When an <Emphasize>Account</Emphasize> is &quot;expanded&quot;, the&nbsp;
+        <Emphasize>Account</Emphasize>&nbsp; row expands into a new table showing all of the&nbsp;
+        <Emphasize>Sub Account</Emphasize>(s) that it contains. The metrics for each row (i.e.&nbsp;
+        <Emphasize>Sub Account</Emphasize>(s)) funnel upwards to the associated&nbsp;
+        <Emphasize>Account</Emphasize> row in the&nbsp;
+        <Emphasize>Top Sheet</Emphasize>.
+      </Description>
       <ProjectImage
         src="/projects/greenbudget/subaccounts.png"
         alt="GreenBudget Nested Accounts"
         caption={
-          <Description>
-            An example of the expanded <Emphasize>Sub Account</Emphasize>(s) view for&nbsp;
-            <Emphasize>Account 1001; Construction Contracts for Set</Emphasize>.
-          </Description>
+          <CaptionDescription centered>
+            An example of the expanded <CaptionEmphasize>Sub Account</CaptionEmphasize>(s) view
+            for&nbsp;
+            <CaptionEmphasize>Account 1001; Construction Contracts for Set</CaptionEmphasize>.
+          </CaptionDescription>
         }
       />
       <Section title="Infinitely Recursive Tree Structure" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
+        <DescriptionGroup>
           <Description>
             It&apos;s not just <Emphasize>Account</Emphasize>(s) that can expand. Any given&nbsp;
             <Emphasize>Sub Account</Emphasize> row at any level deep in the budget can expand as
@@ -198,43 +201,39 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             table view inside of the budget from taking a large amount of time to load, render or
             show updated values after a change occurred.
           </Description>
-        </div>
+        </DescriptionGroup>
         <ProjectImage
           src="/projects/greenbudget/expanding.gif"
           alt="GreenBudget Top Sheet"
           caption={
-            <Description>
+            <CaptionDescription>
               An example of a user expanding 3 layers deep in a budget, to the second layer of&nbsp;
-              <Emphasize>Sub Account</Emphasize>(s). Notice how the total values in the&nbsp;
-              <Emphasize>Top Sheet</Emphasize> (shown at the bottom in the gray bar labeled
-              &apos;Test Budget Total&apos;) update as the user pastes the copied content into&nbsp;
+              <CaptionEmphasize>Sub Account</CaptionEmphasize>(s). Notice how the total values in
               the&nbsp;
-              <Emphasize>Sub Account</Emphasize> view.
-            </Description>
+              <CaptionEmphasize>Top Sheet</CaptionEmphasize> (shown at the bottom in the gray bar
+              labeled &apos;Test Budget Total&apos;) update as the user pastes the copied content
+              into&nbsp; the&nbsp;
+              <CaptionEmphasize>Sub Account</CaptionEmphasize> view.
+            </CaptionDescription>
           }
         />
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Luckily, I developed a solution for this problem - which allowed us to both load and
-            render given views of the budget extremely quickly and apply updates that affected
-            several layers of parent tables in a fraction of the time it would have taken to do so
-            otherwise. If you are interested in learning more, please feel free to reach out to me
-            directly.
-          </Description>
-        </div>
+        <Description>
+          Luckily, I developed a solution for this problem - which allowed us to both load and
+          render given views of the budget extremely quickly and apply updates that affected several
+          layers of parent tables in a fraction of the time it would have taken to do so otherwise.
+          If you are interested in learning more, please feel free to reach out to me directly.
+        </Description>
       </Section>
     </Section>
     <Section title="Features" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
-        <Description>
-          Even when in its infancy, <Emphasize>GreenBudget</Emphasize> was packed with features that
-          were not available in any other production budgeting tool on the market. It is impossible
-          to describe each and every feature on this page - so the following represents a brief
-          summary of just <i>some</i> of the features that were available.
-        </Description>
-      </div>
+      <Description>
+        Even when in its infancy, <Emphasize>GreenBudget</Emphasize> was packed with features that
+        were not available in any other production budgeting tool on the market. It is impossible to
+        describe each and every feature on this page - so the following represents a brief summary
+        of just <i>some</i> of the features that were available.
+      </Description>
       <Section title="Actualization" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
+        <DescriptionGroup>
           <Description>
             In film production, an <Emphasize>Actual</Emphasize> is a term that is used to describe
             the <i>actual</i>, realized cost of a given line item in a budget. Sometimes (more often
@@ -251,132 +250,152 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             a record of, for instance, the receipts that were used to justify the actual cost of a
             line item.
           </Description>
-        </div>
+        </DescriptionGroup>
         <ProjectImage
           src="/projects/greenbudget/actualization.gif"
           alt="GreenBudget Actualization"
           caption={
-            <Description>
-              An example of a user creating a new <Emphasize>Actual</Emphasize>, &nbsp;
-              <Emphasize>1001-A-7</Emphasize>, and associating the <Emphasize>Actual</Emphasize>
+            <CaptionDescription>
+              An example of a user creating a new <CaptionEmphasize>Actual</CaptionEmphasize>,
+              &nbsp;<CaptionEmphasize>1001-A-7</CaptionEmphasize>, and associating the&nbsp;
+              <CaptionEmphasize>Actual</CaptionEmphasize>
               &nbsp; with the&nbsp;
-              <Emphasize>Sub Account</Emphasize> for <Emphasize>Hotel Stay</Emphasize> costs in the
-              budget.
-            </Description>
+              <CaptionEmphasize>Sub Account</CaptionEmphasize> for&nbsp;
+              <CaptionEmphasize>Hotel Stay</CaptionEmphasize> costs in the budget.
+            </CaptionDescription>
           }
         />
       </Section>
       <Section title="Fringes" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            A <Emphasize>Fringe</Emphasize> represents a percentage or flat rate markup that can be
-            applied to individual line items in a production budget. <Emphasize>Fringe</Emphasize>
-            (s) are often reused across multiple line items in a table and across multiple tables in
-            a budget. A <Emphasize>Fringe</Emphasize> will affect the&nbsp;
-            <Emphasize>estimated</Emphasize> value of any line item it is applied to (assuming it
-            has a non-zero percentage or flat rate value).
-          </Description>
-        </div>
+        <Description>
+          A <Emphasize>Fringe</Emphasize> represents a percentage or flat rate markup that can be
+          applied to individual line items in a production budget. <Emphasize>Fringe</Emphasize>
+          (s) are often reused across multiple line items in a table and across multiple tables in a
+          budget. A <Emphasize>Fringe</Emphasize> will affect the&nbsp;
+          <Emphasize>estimated</Emphasize> value of any line item it is applied to (assuming it has
+          a non-zero percentage or flat rate value).
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/fringes.gif"
           alt="GreenBudget Fringes"
           caption={[
-            <Description key="0">
-              An example of a user creating a new <Emphasize>Fringe</Emphasize>, &nbsp;
-              <Emphasize>Fringe I</Emphasize>, and associating the <Emphasize>Fringe</Emphasize>
+            <CaptionDescription key="0">
+              An example of a user creating a new <CaptionEmphasize>Fringe</CaptionEmphasize>,
+              &nbsp;<CaptionEmphasize>Fringe I</CaptionEmphasize>, and associating the&nbsp;
+              <CaptionEmphasize>Fringe</CaptionEmphasize>
               &nbsp; with the&nbsp;
-              <Emphasize>Sub Account</Emphasize> for <Emphasize>Accountants</Emphasize> in the
-              budget.
-            </Description>,
-            <Description key="1">
-              The <Emphasize>Fringe</Emphasize> has a percentage rate of 25%, and a cutoff of
-              $1000.00. This means that it will apply a 25% markup to the first $1000.00 of
-              the&nbsp;
-              <Emphasize>Sub Account</Emphasize>&apos;s <Emphasize>estimated</Emphasize> value. You
-              can see the <Emphasize>estimated</Emphasize> value of the&nbsp;
-              <Emphasize>Sub Account</Emphasize>&nbsp; change from $11,250.00 to $11,500.00
-              immediately after the&nbsp;
-              <Emphasize>Fringe</Emphasize> is applied in the above image.
-            </Description>,
+              <CaptionEmphasize>Sub Account</CaptionEmphasize> for&nbsp;
+              <CaptionEmphasize>Accountants</CaptionEmphasize> in the budget.
+            </CaptionDescription>,
+            <CaptionDescription key="1">
+              The <CaptionEmphasize>Fringe</CaptionEmphasize> has a percentage rate of 25%, and a
+              cutoff of $1000.00. This means that it will apply a 25% markup to the first $1000.00
+              of the&nbsp;
+              <CaptionEmphasize>Sub Account</CaptionEmphasize>&apos;s&nbsp;
+              <CaptionEmphasize>estimated</CaptionEmphasize> value. You can see the&nbsp;
+              <CaptionEmphasize>estimated</CaptionEmphasize> value of the&nbsp;
+              <CaptionEmphasize>Sub Account</CaptionEmphasize>&nbsp; change from $11,250.00 to
+              $11,500.00 immediately after the&nbsp;
+              <CaptionEmphasize>Fringe</CaptionEmphasize> is applied in the above image.
+            </CaptionDescription>,
           ]}
         />
       </Section>
       <Section title="Sub-Totaling" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
+        <DescriptionGroup>
           <Description>
-            The Sub-Totaling feature can be used to summarize metrics for a group of line items,
-            referred to as a <Emphasize>Group</Emphasize>, in any table inside of the budget.
-            <Emphasize>Group</Emphasize>(s) are represented by a single, colored row in the table,
-            and include all line items above the <Emphasize>Group</Emphasize> row up until either
-            the top of the table is reached or another <Emphasize>Group</Emphasize> row is
-            encountered.
+            The Sub-Totaling feature can be used to summarize metrics for a&nbsp;
+            <Emphasize>Group</Emphasize> of line items belonging to any table inside of the budget.
+            Each <Emphasize>Group</Emphasize>, which is represented by a single, colored-configured
+            row in the table, includes all line items above the <Emphasize>Group</Emphasize> row up
+            until either the top of the table is reached or another <Emphasize>Group</Emphasize> row
+            is encountered.
           </Description>
           <Description>
-            The contents of each <Emphasize>Group</Emphasize> depend on the ordering of the line
-            items in the table, because the contents of each <Emphasize>Group</Emphasize> are
-            determined by the line items above the <Emphasize>Group</Emphasize> row in the table.
-            This means that reordering rows can affect the contents of of any given&nbsp;
+            As such, the contents inside of each <Emphasize>Group</Emphasize> depend on the ordering
+            of the rows in the table. This means that reordering rows can affect the contents of any
+            given&nbsp;
             <Emphasize>Group</Emphasize> in the table. For example, moving a row down in the table
-            may cause it to be removed from one <Emphasize>Group</Emphasize> and added to another.
-            Additionally, both adding a new <Emphasize>Group</Emphasize> in the middle of the table,
-            or removing a <Emphasize>Group</Emphasize> from the table can cause rows to be reordered
-            or removed from the previous <Emphasize>Group</Emphasize> they belonged to.
+            may cause it to be removed from one <Emphasize>Group</Emphasize> towards the top of the
+            table and added to another <Emphasize>Group</Emphasize> below it. Additionally, both
+            adding a new <Emphasize>Group</Emphasize> in the middle of the table and/or removing
+            a&nbsp;
+            <Emphasize>Group</Emphasize> from the table in general can cause the rows of the table
+            to be automatically reordered based on the new <Emphasize>Group</Emphasize> structure.
           </Description>
           <Description>
-            As such, the ability to reorder rows of the table in conjunction with the ability to
-            group rows in the table introduced a complicated problem that we had to solve.
+            With this in mind, it is clear that the ability to reorder rows in the table in
+            conjunction with the ability to group rows in the table introduced a rather complicated
+            problem that had to be solved in order to support both features in tandem.
           </Description>
-        </div>
+        </DescriptionGroup>
         <ProjectImage
           src="/projects/greenbudget/grouping.gif"
           alt="GreenBudget Grouping"
           caption={[
-            <Description key="0">
-              An example of a user creating a new <Emphasize>Group</Emphasize> from the 3 selected
-              rows in the table.
-            </Description>,
-            <Description key="1">
-              The rows in the newly created <Emphasize>Group</Emphasize> had previously belonged to
-              the <Emphasize>Group</Emphasize> for <Emphasize>Miscellaneous</Emphasize>, but were
-              removed from that <Emphasize>Group</Emphasize> when the new&nbsp;
-              <Emphasize>Group</Emphasize>
-              was created.
-            </Description>,
-            <Description key="2">
-              You can see this transition represented by the metrics associated with both the&nbsp;
-              <Emphasize>Miscellaneous</Emphasize>
-              <Emphasize>Group</Emphasize> and the new <Emphasize>Group</Emphasize> in the above
-              image. When the new <Emphasize>Group</Emphasize> is created, the summarized values of
-              the <Emphasize>Miscellaneous</Emphasize> decrease by the same amount that the
-              summarized values of the new <Emphasize>Group</Emphasize> total to.
-            </Description>,
+            <CaptionDescription key="0">
+              An example of a user creating a new <CaptionEmphasize>Group</CaptionEmphasize> from
+              the 3 highlighted rows in the table. The rows in the newly created&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize>, which had previously belonged to the&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize> named&nbsp;
+              <CaptionEmphasize>Miscellaneous</CaptionEmphasize>, were removed from that&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize> while being added to the new&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize> simultaneously.
+            </CaptionDescription>,
+            <CaptionDescription key="1">
+              You can see this transition occur by focusing on the summarized, calculated values
+              associated with both the&nbsp;
+              <CaptionEmphasize>Miscellaneous</CaptionEmphasize>
+              <CaptionEmphasize>Group</CaptionEmphasize> and the newly created&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize> in the above image. When the new&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize> is created, the summarized values of
+              the&nbsp;
+              <CaptionEmphasize>Miscellaneous</CaptionEmphasize>&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize>&nbsp; decrease by the same amount that the
+              summarized values of the new&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize> total to.
+            </CaptionDescription>,
           ]}
         />
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            <Emphasize>Group</Emphasize>(s) can also be created by selecting (checking) individual
-            rows in the table.
-          </Description>
-        </div>
+        <Description>
+          <Emphasize>Group</Emphasize>(s) can also be created by selecting (checking) individual
+          rows in the table.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/grouping-from-checkboxes.gif"
           alt="GreenBudget Checkbox Grouping"
           caption={
-            <Description key="0">
-              An example of a user creating a new <Emphasize>Group</Emphasize> from the 3 checked
-              rows in the table.
-            </Description>
+            <CaptionDescription centered>
+              An example of a user creating a new <CaptionEmphasize>Group</CaptionEmphasize> from
+              the 3 checked rows in the table.
+            </CaptionDescription>
+          }
+        />
+        <Description>
+          Rows of the table can be removed from the <Emphasize>Group</Emphasize> they belong to by
+          either dragging the row out of the <Emphasize>Group</Emphasize> or by right-clicking the
+          row and selecting the &quot;Remove from Group&quot; option in the context menu.
+        </Description>
+        <ProjectImage
+          src="/projects/greenbudget/removing-from-group.gif"
+          alt="GreenBudget Removing From Group"
+          caption={
+            <CaptionDescription>
+              An example of a user removing a row from the&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize> it belongs to. The row is moves to the
+              bottom of the table, underneath the last&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize>, because it no longer belongs to any&nbsp;
+              <CaptionEmphasize>Group</CaptionEmphasize>&nbsp; in the table.
+            </CaptionDescription>
           }
         />
       </Section>
       <Section title="Reordering" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/reordering.gif"
           alt="GreenBudget Reordering"
@@ -387,13 +406,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         />
       </Section>
       <Section title="Markup" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/markup.gif"
           alt="GreenBudget Markup"
@@ -404,13 +421,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         />
       </Section>
       <Section title="Intelligent Autocomplete" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/autocomplete.gif"
           alt="GreenBudget Autocomplete"
@@ -421,13 +436,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         />
       </Section>
       <Section title="Attachments" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/attachments.gif"
           alt="GreenBudget Attachments"
@@ -438,13 +451,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         />
       </Section>
       <Section title="Exporting" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/exporting.png"
           alt="GreenBudget Attachments"
@@ -463,13 +474,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         />
       </Section>
       <Section title="Sharing" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/share-view.png"
           alt="GreenBudget Share View"
@@ -480,13 +489,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         />
       </Section>
       <Section title="Mobile" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </Description>
         <ProjectImage
           src="/projects/greenbudget/mobile-analysis.png"
           alt="GreenBudget Mobile"

@@ -1,6 +1,7 @@
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 
+import { DescriptionGroup } from "../DescriptionGroup";
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 import { Section } from "../Section";
@@ -22,7 +23,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     {...props}
   >
     <Section title="Internal Component Library" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           The application does not rely on any third-party component library. Instead, it leverages
           an internal component library developed using frameworks like&nbsp;
@@ -63,10 +64,10 @@ export const Website = (props: WebsiteProps): JSX.Element => (
           &nbsp;was used to a minimal extent in a couple of places where it did not make any sense
           to develop the component internally.
         </Description>
-      </div>
+      </DescriptionGroup>
     </Section>
     <Section title="Skill-Centric Design" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           The application was designed with the concept of a <i>Skill</i> at its core. A&nbsp;
           <i>Skill</i>&nbsp;represents a particular ability or expertise learned throughout an
@@ -82,7 +83,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
           associated models were relevant can then be used to dynamically reconstruct experience
           metrics (usually in years) for every <i>Skill</i> in the application.
         </Description>
-      </div>
+      </DescriptionGroup>
       <ProjectImage
         src="/projects/website/modifying-skills.png"
         alt="Modifying Skills"
@@ -123,7 +124,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
       />
     </Section>
     <Section title="Integrations" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           The application integrates directly with APIs from sources such as&nbsp;
           <Link as="a" href="https://linkedin.com/">
@@ -144,10 +145,10 @@ export const Website = (props: WebsiteProps): JSX.Element => (
               "GitHub's API.",
           ]}
         />
-      </div>
+      </DescriptionGroup>
     </Section>
     <Section title="Resume Management" marginBottom={false}>
-      <div className="flex flex-col gap-[8px]">
+      <DescriptionGroup>
         <Description>
           The application offers the ability to manage resume(s) directly in the admin-only CMS.
           Resumes can be uploaded, deleted and toggled between, with the ability to expose a
@@ -165,7 +166,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
             caption={["Modifying resumes via the admin-only CMS."]}
           />
         </div>
-      </div>
+      </DescriptionGroup>
     </Section>
   </Project>
 );
