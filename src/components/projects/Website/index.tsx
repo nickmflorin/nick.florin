@@ -1,7 +1,9 @@
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 
+import { CaptionDescription } from "../CaptionDescription";
 import { DescriptionGroup } from "../DescriptionGroup";
+import { Emphasize } from "../Emphasize";
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 import { Section } from "../Section";
@@ -66,43 +68,55 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         </Description>
       </DescriptionGroup>
     </Section>
-    <Section title="Skill-Centric Design" marginBottom={false}>
+    <Section title="<Emphasize>Skill</Emphasize>-Centric Design" marginBottom={false}>
       <DescriptionGroup>
         <Description>
-          The application was designed with the concept of a <i>Skill</i> at its core. A&nbsp;
-          <i>Skill</i>&nbsp;represents a particular ability or expertise learned throughout an
-          academic and/or professional career, such as&nbsp;
+          The application was designed with the concept of a <Emphasize>Skill</Emphasize> at its
+          core. A&nbsp;
+          <Emphasize>Skill</Emphasize>&nbsp;represents a particular ability or expertise learned
+          throughout an academic and/or professional career, such as&nbsp;
           <Link as="a" href="https://nextjs.org/">
             NextJS
           </Link>
           .
         </Description>
         <Description>
-          <i>Skill</i>(s) can then be associated with all other models in the application via the
-          admin-only CMS, such as an <i>Experience</i> or <i>Project</i>. The dates for which the
-          associated models were relevant can then be used to dynamically reconstruct experience
-          metrics (usually in years) for every <i>Skill</i> in the application.
+          <Emphasize>Skill</Emphasize>(s) can then be associated with all other models in the
+          application via the admin-only CMS, such as an <Emphasize>Experience</Emphasize> or&nbsp;
+          <Emphasize>Project</Emphasize>. The dates for which the associated models were relevant
+          can then be used to dynamically reconstruct experience metrics (usually in years) for
+          every <Emphasize>Skill</Emphasize> in the application.
         </Description>
       </DescriptionGroup>
       <ProjectImage
         src="/projects/website/modifying-skills.png"
         alt="Modifying Skills"
-        caption={[
-          "Skill(s) can be modified, deleted and/or created via the admin-only CMS.  Skill(s) " +
-            "can then be associated with other models in the application, which factor " +
-            "into the calculation of experience metrics for each Skill it relates to.",
-        ]}
+        caption={
+          <CaptionDescription>
+            <Emphasize.Caption>Skill</Emphasize.Caption>(s) can be modified, deleted and/or created
+            via the admin-only CMS. Skill(s) can then be associated with other models in the
+            application, which factor into the calculation of experience metrics for each Skill it
+            relates to.
+          </CaptionDescription>
+        }
       />
       <ProjectImage
         src="/projects/website/modifying-courses.png"
         alt="Modifying Courses"
-        caption={[
-          "The relationship between Skill(s) and associated models can also be modified in the " +
-            "reverse direction.  Here, the Skill(s) associated with a Course are being " +
-            "modified. This will affect the academic experience metrics for each Skill that " +
-            "is added to or removed from the Course, since each Course is tied to an " +
-            "Education model with a specific start and end date.",
-        ]}
+        caption={
+          <CaptionDescription>
+            The relationship between <Emphasize.Caption>Skill</Emphasize.Caption>(s) and associated
+            models can also be modified in the reverse direction. Here, the&nbsp;
+            <Emphasize.Caption>Skill</Emphasize.Caption>(s) associated with a&nbsp;
+            <Emphasize.Caption>Course</Emphasize.Caption> are being modified. This will affect the
+            academic experience metrics for each <Emphasize.Caption>Skill</Emphasize.Caption> that
+            is added to or removed from the
+            <Emphasize.Caption>Course</Emphasize.Caption>, since each&nbsp;
+            <Emphasize.Caption>Course</Emphasize.Caption> is tied to an&nbsp;
+            <Emphasize.Caption>Education</Emphasize.Caption> model with a specific start and end
+            date.
+          </CaptionDescription>
+        }
       />
       <Description>
         All of the content of the application can be dynamically modified directly via the
@@ -120,6 +134,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
       <ProjectImage
         src="/projects/website/modifying-experience.png"
         alt="Modifying Experience"
+        captionCentered
         caption={["Modifying experience history via the admin-only CMS."]}
       />
     </Section>
@@ -140,6 +155,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         <ProjectImage
           src="/projects/website/modifying-repositories.png"
           alt="Modifying Experience"
+          captionCentered
           caption={[
             "Modifying the repositories visible in the application after they are imported via " +
               "GitHub's API.",
@@ -159,11 +175,13 @@ export const Website = (props: WebsiteProps): JSX.Element => (
             src="/projects/website/uploading-resumes.png"
             alt="Uploading Resumes"
             caption={["Uploading resumes via the admin-only CMS."]}
+            captionCentered
           />
           <ProjectImage
             src="/projects/website/modifying-resumes.png"
             alt="Modifying Resumes"
             caption={["Modifying resumes via the admin-only CMS."]}
+            captionCentered
           />
         </div>
       </DescriptionGroup>

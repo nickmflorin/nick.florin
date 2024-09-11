@@ -1,18 +1,26 @@
 import clsx, { type ClassArray, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export type ClassName = ClassValue | ClassArray;
 
+export const classNames = (...classNames: ClassName[]): string =>
+  twMerge(classNames.map(c => clsx(c)));
+
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 const getClassNameParts = (cs: ClassName | undefined) =>
   clsx(cs)
     .split(" ")
     .map(c => c.trim());
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 const TailwindClassNameRegex = /^!?(([A-Za-z-:\\[\]&>_*.]+):)?([A-Za-z]+)-([A-Za-z0-9_\-\\[\]]+)$/;
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 type ParseTailwindClassNameOptions = {
   readonly strict?: boolean;
 };
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export type ParsedTailwindClassName<T extends string | null = string> = {
   readonly modifier?: T;
   readonly prefix: T;
@@ -20,14 +28,17 @@ export type ParsedTailwindClassName<T extends string | null = string> = {
   readonly original: string;
 };
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export type ParseTailwindClassNameRT<O extends ParseTailwindClassNameOptions> = O extends {
   strict: true;
 }
   ? ParsedTailwindClassName
   : ParsedTailwindClassName | ParsedTailwindClassName<null>;
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export const isTailwindClassName = (cs: string): boolean => TailwindClassNameRegex.test(cs);
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export const parseTailwindClassName = <O extends ParseTailwindClassNameOptions>(
   original: string,
   opts: O,
@@ -54,6 +65,7 @@ export const parseTailwindClassName = <O extends ParseTailwindClassNameOptions>(
   return { prefix: null, value: null, original } as ParseTailwindClassNameRT<O>;
 };
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export const classNameContains = (
   className: ClassName | undefined,
   conditional: (v: ParsedTailwindClassName) => boolean,
@@ -65,9 +77,11 @@ export const classNameContains = (
     return false;
   });
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export const classNameHasPrefix = (className: ClassName | undefined, prefix: string): boolean =>
   classNameContains(className, c => c.prefix === prefix);
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export const findClassName = (
   className: ClassName,
   conditional: (v: ParsedTailwindClassName) => boolean,
@@ -82,6 +96,7 @@ export const findClassName = (
   return filtered.length === 0 ? null : filtered[filtered.length - 1];
 };
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export const withoutOverridingClassName = (
   overriding: string,
   cs: ClassName,
@@ -106,6 +121,7 @@ export const withoutOverridingClassName = (
   return clsx({ [overriding]: !classNameHasPrefix(cs, prefix) });
 };
 
+/** @deprecated - Functionality is no longer necessary with new 'classNames' method. */
 export const mergeIntoClassNames = (base: ClassName, override: ClassName): string =>
   clsx(
     // Only include the class names from the base set that are not overridden by the override set.

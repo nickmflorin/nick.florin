@@ -11,9 +11,10 @@ import { CaptionDescription } from "./CaptionDescription";
 export interface CaptionProps extends ComponentProps {
   readonly children: ReactNode;
   readonly isLoading: boolean;
+  readonly centered?: boolean;
 }
 
-export const Caption = ({ children, isLoading, ...props }: CaptionProps) => (
+export const Caption = ({ children, centered, isLoading, ...props }: CaptionProps) => (
   <div {...props} className={clsx("relative flex flex-col w-full items-center", props.className)}>
     <div
       className={clsx(
@@ -28,7 +29,9 @@ export const Caption = ({ children, isLoading, ...props }: CaptionProps) => (
       <ShowHide show={!isLoading}>
         {(Array.isArray(children) ? children : [children]).map((c, index) =>
           typeof c === "string" ? (
-            <CaptionDescription key={index}>{c}</CaptionDescription>
+            <CaptionDescription key={index} centered={centered}>
+              {c}
+            </CaptionDescription>
           ) : (
             <>{c}</>
           ),

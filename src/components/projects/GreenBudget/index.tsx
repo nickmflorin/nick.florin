@@ -1,24 +1,15 @@
-import { type ReactNode } from "react";
-
 import { Link } from "~/components/buttons";
 import { Description } from "~/components/typography/Description";
 
 import { CaptionDescription } from "../CaptionDescription";
 import { DescriptionGroup } from "../DescriptionGroup";
+import { Emphasize } from "../Emphasize";
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
 import { Section } from "../Section";
 
 export interface GreenBudgetProps
   extends Omit<ProjectProps, "title" | "description" | "children"> {}
-
-const Emphasize = ({ children }: { children: ReactNode }): JSX.Element => (
-  <span className="font-medium text-text">{children}</span>
-);
-
-const CaptionEmphasize = ({ children }: { children: ReactNode }): JSX.Element => (
-  <span className="font-medium text-[#7f7f7f]">{children}</span>
-);
 
 export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
   <Project
@@ -128,7 +119,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         alt="GreenBudget Landing Page"
         caption={
           <CaptionDescription centered>
-            <CaptionEmphasize>GreenBudget</CaptionEmphasize>&apos;s original landing/slash page.
+            <Emphasize.Caption>GreenBudget</Emphasize.Caption>&apos;s original landing/slash page.
           </CaptionDescription>
         }
       />
@@ -145,8 +136,8 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         alt="GreenBudget Top Sheet"
         caption={
           <CaptionDescription centered>
-            An example of a <CaptionEmphasize>Top Sheet</CaptionEmphasize> in&nbsp;
-            <CaptionEmphasize>GreenBudget</CaptionEmphasize>.
+            An example of a <Emphasize.Caption>Top Sheet</Emphasize.Caption> in&nbsp;
+            <Emphasize.Caption>GreenBudget</Emphasize.Caption>.
           </CaptionDescription>
         }
       />
@@ -163,9 +154,9 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         alt="GreenBudget Nested Accounts"
         caption={
           <CaptionDescription centered>
-            An example of the expanded <CaptionEmphasize>Sub Account</CaptionEmphasize>(s) view
+            An example of the expanded <Emphasize.Caption>Sub Account</Emphasize.Caption>(s) view
             for&nbsp;
-            <CaptionEmphasize>Account 1001; Construction Contracts for Set</CaptionEmphasize>.
+            <Emphasize.Caption>Account 1001; Construction Contracts for Set</Emphasize.Caption>.
           </CaptionDescription>
         }
       />
@@ -208,12 +199,12 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           caption={
             <CaptionDescription>
               An example of a user expanding 3 layers deep in a budget, to the second layer of&nbsp;
-              <CaptionEmphasize>Sub Account</CaptionEmphasize>(s). Notice how the total values in
+              <Emphasize.Caption>Sub Account</Emphasize.Caption>(s). Notice how the total values in
               the&nbsp;
-              <CaptionEmphasize>Top Sheet</CaptionEmphasize> (shown at the bottom in the gray bar
+              <Emphasize.Caption>Top Sheet</Emphasize.Caption> (shown at the bottom in the gray bar
               labeled &apos;Test Budget Total&apos;) update as the user pastes the copied content
               into&nbsp; the&nbsp;
-              <CaptionEmphasize>Sub Account</CaptionEmphasize> view.
+              <Emphasize.Caption>Sub Account</Emphasize.Caption> view.
             </CaptionDescription>
           }
         />
@@ -256,12 +247,12 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           alt="GreenBudget Actualization"
           caption={
             <CaptionDescription>
-              An example of a user creating a new <CaptionEmphasize>Actual</CaptionEmphasize>,
-              &nbsp;<CaptionEmphasize>1001-A-7</CaptionEmphasize>, and associating the&nbsp;
-              <CaptionEmphasize>Actual</CaptionEmphasize>
+              An example of a user creating a new <Emphasize.Caption>Actual</Emphasize.Caption>,
+              &nbsp;<Emphasize.Caption>1001-A-7</Emphasize.Caption>, and associating the&nbsp;
+              <Emphasize.Caption>Actual</Emphasize.Caption>
               &nbsp; with the&nbsp;
-              <CaptionEmphasize>Sub Account</CaptionEmphasize> for&nbsp;
-              <CaptionEmphasize>Hotel Stay</CaptionEmphasize> costs in the budget.
+              <Emphasize.Caption>Sub Account</Emphasize.Caption> for&nbsp;
+              <Emphasize.Caption>Hotel Stay</Emphasize.Caption> costs in the budget.
             </CaptionDescription>
           }
         />
@@ -280,23 +271,23 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           alt="GreenBudget Fringes"
           caption={[
             <CaptionDescription key="0">
-              An example of a user creating a new <CaptionEmphasize>Fringe</CaptionEmphasize>,
-              &nbsp;<CaptionEmphasize>Fringe I</CaptionEmphasize>, and associating the&nbsp;
-              <CaptionEmphasize>Fringe</CaptionEmphasize>
+              An example of a user creating a new <Emphasize.Caption>Fringe</Emphasize.Caption>,
+              &nbsp;<Emphasize.Caption>Fringe I</Emphasize.Caption>, and associating the&nbsp;
+              <Emphasize.Caption>Fringe</Emphasize.Caption>
               &nbsp; with the&nbsp;
-              <CaptionEmphasize>Sub Account</CaptionEmphasize> for&nbsp;
-              <CaptionEmphasize>Accountants</CaptionEmphasize> in the budget.
+              <Emphasize.Caption>Sub Account</Emphasize.Caption> for&nbsp;
+              <Emphasize.Caption>Accountants</Emphasize.Caption> in the budget.
             </CaptionDescription>,
             <CaptionDescription key="1">
-              The <CaptionEmphasize>Fringe</CaptionEmphasize> has a percentage rate of 25%, and a
+              The <Emphasize.Caption>Fringe</Emphasize.Caption> has a percentage rate of 25%, and a
               cutoff of $1000.00. This means that it will apply a 25% markup to the first $1000.00
               of the&nbsp;
-              <CaptionEmphasize>Sub Account</CaptionEmphasize>&apos;s&nbsp;
-              <CaptionEmphasize>estimated</CaptionEmphasize> value. You can see the&nbsp;
-              <CaptionEmphasize>estimated</CaptionEmphasize> value of the&nbsp;
-              <CaptionEmphasize>Sub Account</CaptionEmphasize>&nbsp; change from $11,250.00 to
+              <Emphasize.Caption>Sub Account</Emphasize.Caption>&apos;s&nbsp;
+              <Emphasize.Caption>estimated</Emphasize.Caption> value. You can see the&nbsp;
+              <Emphasize.Caption>estimated</Emphasize.Caption> value of the&nbsp;
+              <Emphasize.Caption>Sub Account</Emphasize.Caption>&nbsp; change from $11,250.00 to
               $11,500.00 immediately after the&nbsp;
-              <CaptionEmphasize>Fringe</CaptionEmphasize> is applied in the above image.
+              <Emphasize.Caption>Fringe</Emphasize.Caption> is applied in the above image.
             </CaptionDescription>,
           ]}
         />
@@ -334,26 +325,27 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           alt="GreenBudget Grouping"
           caption={[
             <CaptionDescription key="0">
-              An example of a user creating a new <CaptionEmphasize>Group</CaptionEmphasize> from
+              An example of a user creating a new <Emphasize.Caption>Group</Emphasize.Caption> from
               the 3 highlighted rows in the table. The rows in the newly created&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize>, which had previously belonged to the&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize> named&nbsp;
-              <CaptionEmphasize>Miscellaneous</CaptionEmphasize>, were removed from that&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize> while being added to the new&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize> simultaneously.
+              <Emphasize.Caption>Group</Emphasize.Caption>, which had previously belonged to
+              the&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption> named&nbsp;
+              <Emphasize.Caption>Miscellaneous</Emphasize.Caption>, were removed from that&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption> while being added to the new&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption> simultaneously.
             </CaptionDescription>,
             <CaptionDescription key="1">
               You can see this transition occur by focusing on the summarized, calculated values
               associated with both the&nbsp;
-              <CaptionEmphasize>Miscellaneous</CaptionEmphasize>
-              <CaptionEmphasize>Group</CaptionEmphasize> and the newly created&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize> in the above image. When the new&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize> is created, the summarized values of
+              <Emphasize.Caption>Miscellaneous</Emphasize.Caption>
+              <Emphasize.Caption>Group</Emphasize.Caption> and the newly created&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption> in the above image. When the new&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption> is created, the summarized values of
               the&nbsp;
-              <CaptionEmphasize>Miscellaneous</CaptionEmphasize>&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize>&nbsp; decrease by the same amount that the
-              summarized values of the new&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize> total to.
+              <Emphasize.Caption>Miscellaneous</Emphasize.Caption>&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption>&nbsp; decrease by the same amount that
+              the summarized values of the new&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption> total to.
             </CaptionDescription>,
           ]}
         />
@@ -366,7 +358,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           alt="GreenBudget Checkbox Grouping"
           caption={
             <CaptionDescription centered>
-              An example of a user creating a new <CaptionEmphasize>Group</CaptionEmphasize> from
+              An example of a user creating a new <Emphasize.Caption>Group</Emphasize.Caption> from
               the 3 checked rows in the table.
             </CaptionDescription>
           }
@@ -382,10 +374,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           caption={
             <CaptionDescription>
               An example of a user removing a row from the&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize> it belongs to. The row is moves to the
+              <Emphasize.Caption>Group</Emphasize.Caption> it belongs to. The row is moves to the
               bottom of the table, underneath the last&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize>, because it no longer belongs to any&nbsp;
-              <CaptionEmphasize>Group</CaptionEmphasize>&nbsp; in the table.
+              <Emphasize.Caption>Group</Emphasize.Caption>, because it no longer belongs to
+              any&nbsp;
+              <Emphasize.Caption>Group</Emphasize.Caption>&nbsp; in the table.
             </CaptionDescription>
           }
         />

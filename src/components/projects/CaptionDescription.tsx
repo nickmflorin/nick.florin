@@ -15,7 +15,7 @@ export const CaptionDescription = ({
     {...props}
     className={clsx(
       "text-sm max-md:text-xs text-left text-[#a4a4a4]",
-      { "w-full": !centered },
+      { "w-full": !centered, "text-center": centered },
       props.className,
     )}
   >

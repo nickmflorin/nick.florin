@@ -16,18 +16,22 @@ export interface ProjectImageProps extends ComponentProps {
   readonly src: string;
   readonly caption: ReactNode;
   readonly alt: string;
+  readonly captionCentered?: boolean;
 }
 
-export const ProjectImage = ({ src, caption, alt, ...props }: ProjectImageProps) => {
+export const ProjectImage = ({
+  src,
+  caption,
+  alt,
+  captionCentered = false,
+  ...props
+}: ProjectImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   return (
     <div {...props} className={clsx("project-image-container", props.className)}>
       <div
         {...props}
-        className={clsx(
-          "project-image md:w-[840px] md:mx-auto max-md:gap-[8px] max-w-full",
-          props.className,
-        )}
+        className={clsx("project-image md:mx-auto max-md:gap-[8px] max-w-full", props.className)}
       >
         <div className="project-image-wrapper">
           <ShowHide show={isLoading}>
@@ -52,7 +56,9 @@ export const ProjectImage = ({ src, caption, alt, ...props }: ProjectImageProps)
             />
           </motion.div>
         </div>
-        <Caption isLoading={isLoading}>{caption}</Caption>
+        <Caption isLoading={isLoading} centered={captionCentered}>
+          {caption}
+        </Caption>
       </div>
     </div>
   );
