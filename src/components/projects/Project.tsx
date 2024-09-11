@@ -35,11 +35,13 @@ export const Project = ({
       props.className,
     )}
   >
-    <div
-      {...props}
-      className={clsx("w-full flex flex-col gap-[16px] max-md:gap-[8px]", props.className)}
-    >
-      <div className="flex flex-row items-center gap-4">
+    <div {...props} className={clsx("w-full flex flex-col gap-[16px]", props.className)}>
+      <div
+        className={clsx(
+          "flex flex-row sm:items-center gap-4",
+          "max-sm:flex-col max-sm:items-start max-sm:gap-2",
+        )}
+      >
         <Title order={3} className="max-md:text-title_sm max-w-fit">
           {title}
         </Title>
