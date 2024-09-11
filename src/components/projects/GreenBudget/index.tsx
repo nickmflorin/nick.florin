@@ -304,19 +304,72 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
       <Section title="Sub-Totaling" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            The Sub-Totaling feature can be used to summarize metrics for a group of line items,
+            referred to as a <Emphasize>Group</Emphasize>, in any table inside of the budget.
+            <Emphasize>Group</Emphasize>(s) are represented by a single, colored row in the table,
+            and include all line items above the <Emphasize>Group</Emphasize> row up until either
+            the top of the table is reached or another <Emphasize>Group</Emphasize> row is
+            encountered.
+          </Description>
+          <Description>
+            The contents of each <Emphasize>Group</Emphasize> depend on the ordering of the line
+            items in the table, because the contents of each <Emphasize>Group</Emphasize> are
+            determined by the line items above the <Emphasize>Group</Emphasize> row in the table.
+            This means that reordering rows can affect the contents of of any given&nbsp;
+            <Emphasize>Group</Emphasize> in the table. For example, moving a row down in the table
+            may cause it to be removed from one <Emphasize>Group</Emphasize> and added to another.
+            Additionally, both adding a new <Emphasize>Group</Emphasize> in the middle of the table,
+            or removing a <Emphasize>Group</Emphasize> from the table can cause rows to be reordered
+            or removed from the previous <Emphasize>Group</Emphasize> they belonged to.
+          </Description>
+          <Description>
+            As such, the ability to reorder rows of the table in conjunction with the ability to
+            group rows in the table introduced a complicated problem that we had to solve.
           </Description>
         </div>
         <ProjectImage
           src="/projects/greenbudget/grouping.gif"
           alt="GreenBudget Grouping"
           caption={[
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-              "incididunt ut labore et dolore magna aliqua.",
+            <Description key="0">
+              An example of a user creating a new <Emphasize>Group</Emphasize> from the 3 selected
+              rows in the table.
+            </Description>,
+            <Description key="1">
+              The rows in the newly created <Emphasize>Group</Emphasize> had previously belonged to
+              the <Emphasize>Group</Emphasize> for <Emphasize>Miscellaneous</Emphasize>, but were
+              removed from that <Emphasize>Group</Emphasize> when the new&nbsp;
+              <Emphasize>Group</Emphasize>
+              was created.
+            </Description>,
+            <Description key="2">
+              You can see this transition represented by the metrics associated with both the&nbsp;
+              <Emphasize>Miscellaneous</Emphasize>
+              <Emphasize>Group</Emphasize> and the new <Emphasize>Group</Emphasize> in the above
+              image. When the new <Emphasize>Group</Emphasize> is created, the summarized values of
+              the <Emphasize>Miscellaneous</Emphasize> decrease by the same amount that the
+              summarized values of the new <Emphasize>Group</Emphasize> total to.
+            </Description>,
           ]}
         />
+        <div className="flex flex-col gap-[8px]">
+          <Description>
+            <Emphasize>Group</Emphasize>(s) can also be created by selecting (checking) individual
+            rows in the table.
+          </Description>
+        </div>
+        <ProjectImage
+          src="/projects/greenbudget/grouping-from-checkboxes.gif"
+          alt="GreenBudget Checkbox Grouping"
+          caption={
+            <Description key="0">
+              An example of a user creating a new <Emphasize>Group</Emphasize> from the 3 checked
+              rows in the table.
+            </Description>
+          }
+        />
+      </Section>
+      <Section title="Reordering" marginBottom={false} subSection>
         <div className="flex flex-col gap-[8px]">
           <Description>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -325,8 +378,8 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           </Description>
         </div>
         <ProjectImage
-          src="/projects/greenbudget/grouping-from-checkboxes.gif"
-          alt="GreenBudget Checkbox Grouping"
+          src="/projects/greenbudget/reordering.gif"
+          alt="GreenBudget Reordering"
           caption={[
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
               "incididunt ut labore et dolore magna aliqua.",
@@ -344,23 +397,6 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         <ProjectImage
           src="/projects/greenbudget/markup.gif"
           alt="GreenBudget Markup"
-          caption={[
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-              "incididunt ut labore et dolore magna aliqua.",
-          ]}
-        />
-      </Section>
-      <Section title="Reordering" marginBottom={false} subSection>
-        <div className="flex flex-col gap-[8px]">
-          <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </Description>
-        </div>
-        <ProjectImage
-          src="/projects/greenbudget/reordering.gif"
-          alt="GreenBudget Reordering"
           caption={[
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
               "incididunt ut labore et dolore magna aliqua.",
