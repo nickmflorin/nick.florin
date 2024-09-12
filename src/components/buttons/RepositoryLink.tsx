@@ -5,7 +5,7 @@ import { classNames } from "~/components/types";
 
 import { Link, type LinkProps } from "./generic";
 
-export type RepositoryLinkProps = Omit<LinkProps<"link">, "children" | "href" | "flex"> & {
+export type RepositoryLinkProps = Omit<LinkProps<"link">, "children" | "href"> & {
   readonly repository: BrandRepository;
 };
 

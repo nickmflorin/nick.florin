@@ -3,8 +3,7 @@
 import { Link, type LinkProps } from "~/components/buttons";
 import { type TypographyVisibilityState } from "~/components/types";
 
-export interface ResumeShowMoreLinkProps
-  extends Omit<LinkProps<"button">, "options" | "flex" | "children"> {
+export interface ResumeShowMoreLinkProps extends Omit<LinkProps<"button">, "options" | "children"> {
   readonly state: TypographyVisibilityState;
 }
 
@@ -14,7 +13,7 @@ const LinkText: { [key in TypographyVisibilityState]: string } = {
 };
 
 export const ResumeShowMoreLink = ({ state, ...props }: ResumeShowMoreLinkProps) => (
-  <Link.Primary fontSize="xs" fontWeight="regular" {...props} element="button" flex>
+  <Link.Primary fontSize="xs" fontWeight="regular" {...props} element="button">
     {LinkText[state]}
   </Link.Primary>
 );

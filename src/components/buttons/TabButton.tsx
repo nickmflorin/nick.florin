@@ -1,9 +1,10 @@
 "use client";
-import { Button, type ButtonForm, type ButtonProps } from "~/components/buttons";
-import { classNames } from "~/components/types";
+import clsx from "clsx";
 
-export type TabButtonProps<F extends ButtonForm> = Omit<
-  ButtonProps<F>,
+import { Button, type ButtonProps } from "./generic";
+
+export type TabButtonProps = Omit<
+  ButtonProps<"a">,
   "size" | "fontWeight" | "isLoading" | "children" | "isLocked" | "variant"
 > & {
   readonly isPending?: boolean;
@@ -11,25 +12,24 @@ export type TabButtonProps<F extends ButtonForm> = Omit<
   readonly isLoading?: boolean;
 };
 
-export const TabButton = <F extends ButtonForm>({
+export const TabButton = ({
   isActive,
   isPending,
   isLoading,
   children,
   ...props
-}: TabButtonProps<F>) => (
-  <Button.Transparent<F>
-    {...(props as ButtonProps<F>)}
-    className={classNames(
+}: TabButtonProps) => (
+  <Button.Transparent
+    {...(props as ButtonProps<"a">)}
+    className={clsx(
       "rounded-none rounded-t-md relative top-[2px]",
       "border-b-[2px] text-gray-800",
       "hover:bg-neutral-100",
+      "px-3",
       {
         "border-transparent hover:border-gray-300": !(isActive || isPending),
         "border-blue-700": isActive || isPending,
-        "max-sm:bg-neutral-200": isActive || isPending,
       },
-      "max-sm:border-none max-sm:rounded-md max-sm:top-0",
       props.className,
     )}
     fontWeight="regular"

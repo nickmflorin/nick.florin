@@ -101,7 +101,9 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
                     )}
                   >
                     {item.children.map((child, index) => (
-                      <LayoutNavItem item={child} key={index} />
+                      <div key={index} className="w-full h-[48px] aspect-square">
+                        <LayoutNavItem item={child} />
+                      </div>
                     ))}
                   </div>
                 </React.Fragment>

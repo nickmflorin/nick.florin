@@ -19,7 +19,7 @@ export const MenuItemGroup = <M extends types.MenuModel, O extends types.MenuOpt
     {label && (
       <div className={classNames("menu__item-group__label", labelContainerClassName)}>
         {typeof label === "string" ? (
-          <Label dark className={labelClassName} fontSize="sm">
+          <Label className={classNames("text-label-dark", labelClassName)} fontSize="sm">
             {label}
           </Label>
         ) : (

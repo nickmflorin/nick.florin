@@ -1,5 +1,4 @@
 import type * as types from "./types";
-import type * as Sentry from "@sentry/nextjs";
 
 import {
   LogLevels,
@@ -28,12 +27,3 @@ export const DEFAULT_LOGGING_TRANSPORTS: Record<EnvironmentName, types.NextLogge
   test: [],
   local: ["browser"],
 };
-
-// A mapping of internal log levels to Sentry's severity levels.
-export const LevelSeverityLevelMap: { [key in Exclude<LogLevel, "silent">]: Sentry.SeverityLevel } =
-  {
-    error: "error",
-    warn: "warning",
-    info: "info",
-    debug: "debug",
-  };

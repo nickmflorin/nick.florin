@@ -6,7 +6,7 @@ import { IconButton, type IconButtonProps } from "./generic";
 
 export type NpmIconLinkProps = Omit<
   IconButtonProps<"a">,
-  "children" | "href" | "flex" | "icon" | "target" | "rel"
+  "children" | "href" | "icon" | "target" | "rel"
 > & {
   readonly npmPackageName: string;
 };

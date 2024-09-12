@@ -1,12 +1,12 @@
 import { type ReactNode } from "react";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps, type SingleTextNode } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
 import { Text, Description } from "~/components/typography";
 
 export interface SectionProps extends ComponentProps {
   readonly title?: JSX.Element | string;
-  readonly description?: SingleTextNode | SingleTextNode[];
+  readonly description?: ReactNode;
   readonly children?: ReactNode;
   readonly marginBottom?: boolean;
   readonly subSection?: boolean;

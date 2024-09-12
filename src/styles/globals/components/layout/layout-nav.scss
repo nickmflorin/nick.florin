@@ -9,7 +9,8 @@
   background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
     theme("colors.gray.50");
 
-  @media (max-width: theme("screens.xs")) {
-    display: none;
-  }
+  // TODO: Uncomment me once we build the separate nav.
+  // @media (max-width: theme("screens.xs")) {
+  //   display: none;
+  // }
 }

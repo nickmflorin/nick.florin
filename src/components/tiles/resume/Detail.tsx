@@ -54,7 +54,6 @@ export const Detail = <
             element="link"
             href={`/projects/${detail.project.slug}`}
             gap="4px"
-            flex
             icon={{ right: { name: "link" } }}
             className="text-sm max-sm:text-xs"
           >

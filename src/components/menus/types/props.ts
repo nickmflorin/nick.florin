@@ -3,7 +3,7 @@ import { type ReactNode, type ForwardedRef } from "react";
 import { type Prettify } from "~/lib/types";
 
 import { type IconSize } from "~/components/icons";
-import type { SingleTextNode, ComponentProps, QuantitativeSize } from "~/components/types";
+import type { ComponentProps, QuantitativeSize } from "~/components/types";
 
 import { type MenuItemFlagProps } from "./flags";
 import { type MenuItemInstance, type MenuItemSelectionIndicator } from "./item";
@@ -103,7 +103,7 @@ export type MenuContentComponent = {
 
 export interface MenuItemGroupComponentProps extends MenuComponentContentProps {
   readonly contentIsLoading?: boolean;
-  readonly label: SingleTextNode;
+  readonly label: ReactNode;
   readonly labelContainerClassName?: ComponentProps["className"];
   readonly labelClassName?: ComponentProps["className"];
 }
@@ -111,7 +111,7 @@ export interface MenuItemGroupComponentProps extends MenuComponentContentProps {
 export interface MenuItemGroupDataProps<M extends MenuModel, O extends MenuOptions<M>>
   extends MenuDataContentProps<M, O> {
   readonly contentIsLoading?: boolean;
-  readonly label: SingleTextNode;
+  readonly label: ReactNode;
   readonly labelContainerClassName?: ComponentProps["className"];
   readonly labelClassName?: ComponentProps["className"];
 }

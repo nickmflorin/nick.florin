@@ -43,7 +43,7 @@ export const InternalLayoutNavAnchor = forwardRef<
       isLoading={isPending}
       onClick={() => setActiveOptimistically()}
       className={classNames(
-        "z-0 text-body outline-transparent bg-transparent",
+        "z-0 text-body outline-transparent bg-transparent w-full h-full",
         { ["hover:bg-gray-300 hover:outline-gray-300"]: !isActive },
         props.className,
       )}
@@ -64,7 +64,7 @@ export const ExternalLayoutNavAnchor = forwardRef<
   <IconButton.Solid<"a">
     {...props}
     className={classNames(
-      "z-0 text-body outline-transparent bg-transparent",
+      "z-0 text-body outline-transparent bg-transparent w-full h-full",
       "hover:bg-gray-300 hover:outline-gray-300",
       props.className,
     )}
