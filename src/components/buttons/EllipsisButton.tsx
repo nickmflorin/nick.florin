@@ -6,6 +6,12 @@ export interface EllipsisButtonProps extends Omit<IconButtonProps<"button">, "op
 
 export const EllipsisButton = forwardRef<HTMLButtonElement, EllipsisButtonProps>(
   (props: EllipsisButtonProps, ref): JSX.Element => (
-    <IconButton.Secondary {...props} ref={ref} as="button" icon={{ name: "ellipsis-h" }} />
+    <IconButton.Solid
+      {...props}
+      scheme="secondary"
+      ref={ref}
+      element="button"
+      icon={{ name: "ellipsis-h" }}
+    />
   ),
 );

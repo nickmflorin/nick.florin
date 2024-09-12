@@ -94,13 +94,13 @@
     align-items: center;
     padding: 6px 10px;
     gap: 10px;
-    color: theme("colors.text");
+    color: theme("colors.body");
     transition-property: background-color, background, border-color, color, fill, stroke, opacity,
       box-shadow, transform;
     transition-duration: 100ms;
 
     // The line height may be overridden in the component if the height is specified as a prop.
-    @include typography.font($type: "text", $line-height: 28px, $font-size: "xs");
+    @include typography.font($type: "body", $size: "xs", $line-height: 28px);
 
     @include partials.disabled {
       color: theme("colors.disabled");
@@ -114,7 +114,7 @@
     @include partials.hovered {
       &:not(.menu__item--selected, .disabled, .menu__item--locked) {
         background-color: theme("colors.gray.50");
-        color: theme("colors.textHover");
+        color: theme("colors.body-hover");
       }
     }
 

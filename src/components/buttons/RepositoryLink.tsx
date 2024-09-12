@@ -3,9 +3,9 @@ import { getRepositoryGithubUrl } from "~/prisma/model/repository";
 
 import { classNames } from "~/components/types";
 
-import { Link, type LinkFlexProps } from "./generic";
+import { Link, type LinkProps } from "./generic";
 
-export type RepositoryLinkProps = Omit<LinkFlexProps<"link">, "children" | "href" | "flex"> & {
+export type RepositoryLinkProps = Omit<LinkProps<"link">, "children" | "href" | "flex"> & {
   readonly repository: BrandRepository;
 };
 
@@ -14,12 +14,10 @@ export const RepositoryLink = ({ repository, ...props }: RepositoryLinkProps): J
     fontWeight="medium"
     fontSize="sm"
     {...props}
-    flex
-    as="a"
+    element="a"
     className={classNames("text-blue-900", props.className)}
     href={getRepositoryGithubUrl(repository)}
-    target="_blank"
-    rel="noopener noreferrer"
+    openInNewTab
   >
     {repository.slug}
   </Link>

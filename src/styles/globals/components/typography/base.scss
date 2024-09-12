@@ -1,4 +1,4 @@
-%typography-base {
+@mixin typography-base() {
   font-feature-settings:
     "tnum" on,
     "lnum" on;

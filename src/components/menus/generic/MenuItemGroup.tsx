@@ -1,8 +1,7 @@
 import type * as types from "../types";
 
 import { classNames } from "~/components/types";
-import { singleTextNodeCanRender } from "~/components/types/typography";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 import { MenuContent } from "./MenuContent";
 import { MenuContentWrapper } from "./MenuContentWrapper";
@@ -17,7 +16,7 @@ export const MenuItemGroup = <M extends types.MenuModel, O extends types.MenuOpt
   ...props
 }: types.MenuItemGroupProps<M, O>): JSX.Element => (
   <div style={style} className={classNames("menu__item-group", className)}>
-    {singleTextNodeCanRender(label) && (
+    {label && (
       <div className={classNames("menu__item-group__label", labelContainerClassName)}>
         {typeof label === "string" ? (
           <Label dark className={labelClassName} fontSize="sm">

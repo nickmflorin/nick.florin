@@ -1,41 +1,32 @@
-import { forwardRef } from "react";
+import { forwardRef, type ReactNode } from "react";
 
 import { capitalize } from "~/lib/formatters";
 
-import { type MultipleIconProp } from "~/components/icons";
-import { type ComponentProps } from "~/components/types";
-import { type Size } from "~/components/types/sizes";
-
-import * as types from "../types";
+import * as types from "~/components/buttons";
 
 import { AbstractButton } from "./AbstractButton";
 import { ButtonContent } from "./ButtonContent";
 
-export type ButtonProps<F extends types.ButtonForm> = Omit<
-  types.AbstractProps<"button", F>,
+export type ButtonProps<E extends types.ButtonElement> = Omit<
+  types.AbstractProps<"button", E>,
   "buttonType"
 > & {
-  readonly icon?: MultipleIconProp;
-  readonly gap?: Size;
-  readonly loadingLocation?: "left" | "over" | "right";
-  readonly iconClassName?: ComponentProps["className"];
-  readonly spinnerClassName?: ComponentProps["className"];
+  readonly children?: ReactNode;
 };
 
 type LocalButtonType = {
-  <F extends types.ButtonForm>(
-    props: ButtonProps<F> & { readonly ref?: types.PolymorphicButtonRef<F> },
+  <E extends types.ButtonElement>(
+    props: ButtonProps<E> & { readonly ref?: types.PolymorphicButtonRef<E> },
   ): JSX.Element;
 };
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const Base = AbstractButton as React.FC<types.AbstractProps<"button", any>>;
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const LocalButton = forwardRef<types.PolymorphicButtonElement<any>, ButtonProps<any>>(
-  <F extends types.ButtonForm>(
-    { icon, loadingLocation, gap, iconClassName, ...props }: ButtonProps<F>,
-    ref: types.PolymorphicButtonRef<F>,
+const LocalButton = forwardRef(
+  <E extends types.ButtonElement>(
+    { icon, loadingLocation, gap, iconClassName, spinnerSize, children, ...props }: ButtonProps<E>,
+    ref: types.PolymorphicButtonRef<E>,
   ): JSX.Element => {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const ps = { ...props, buttonType: "button", ref } as types.AbstractProps<"button", any> & {
@@ -48,11 +39,12 @@ const LocalButton = forwardRef<types.PolymorphicButtonElement<any>, ButtonProps<
           isLoading={props.isLoading}
           iconSize={props.iconSize}
           iconClassName={iconClassName}
+          spinnerSize={spinnerSize}
           gap={gap}
           icon={icon}
           loadingLocation={loadingLocation}
         >
-          {props.children}
+          {children}
         </ButtonContent>
       </Base>
     );
@@ -60,8 +52,8 @@ const LocalButton = forwardRef<types.PolymorphicButtonElement<any>, ButtonProps<
 ) as LocalButtonType;
 
 type VariantPartial = {
-  <F extends types.ButtonForm>(
-    props: Omit<ButtonProps<F>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<F> },
+  <E extends types.ButtonElement>(
+    props: Omit<ButtonProps<E>, "variant"> & { readonly ref?: types.PolymorphicButtonRef<E> },
   ): JSX.Element;
 };
 
@@ -70,16 +62,11 @@ type WithVariants = { [key in Capitalize<types.ButtonVariant<"button">>]: Varian
 const withVariants = types.ButtonVariants.button.members.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
-    [capitalize(variant)]: forwardRef<
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      types.PolymorphicButtonElement<any>,
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      Omit<ButtonProps<any>, "variant">
-    >(
-      <F extends types.ButtonForm>(
-        props: Omit<ButtonProps<F>, "variant">,
-        ref: types.PolymorphicButtonRef<F>,
-      ) => <Button<F> {...({ ...props, variant } as ButtonProps<F>)} ref={ref} />,
+    [capitalize(variant)]: forwardRef(
+      <E extends types.ButtonElement>(
+        props: Omit<ButtonProps<E>, "variant">,
+        ref: types.PolymorphicButtonRef<E>,
+      ) => <LocalButton<E> {...({ ...props, variant } as ButtonProps<E>)} ref={ref} />,
     ) as VariantPartial,
   }),
   {} as WithVariants,

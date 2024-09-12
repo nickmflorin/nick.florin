@@ -80,10 +80,9 @@ export const GenericCreateDetailForm = <
             </Form.Field>
             <div className="flex flex-row gap-[6px] items-center">
               <Link.Secondary
-                as="button"
+                element="button"
                 fontWeight="regular"
                 fontSize="xs"
-                flex
                 onClick={() => {
                   form.reset();
                   onCancel();
@@ -92,12 +91,11 @@ export const GenericCreateDetailForm = <
                 Cancel
               </Link.Secondary>
               <Link.Primary
-                as="button"
+                element="button"
                 fontWeight="regular"
                 type="submit"
                 fontSize="xs"
                 loadingLocation="over"
-                flex
                 isLoading={isCreating}
               >
                 Create

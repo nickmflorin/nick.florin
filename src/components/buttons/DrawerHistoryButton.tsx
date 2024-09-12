@@ -12,7 +12,7 @@ export const DrawerHistoryButton = forwardRef<HTMLButtonElement, DrawerHistoryBu
     <IconButton.Transparent
       {...props}
       ref={ref}
-      as="button"
+      element="button"
       size="xsmall"
       iconSize="large"
       icon={{ name: direction === "back" ? "arrow-left" : "arrow-right", iconStyle: "solid" }}

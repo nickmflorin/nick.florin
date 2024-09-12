@@ -1,5 +1,5 @@
-import { logger } from "~/application/logger";
 import type { LabeledNavItem } from "~/application/pages";
+import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
 import { ProjectSlugs } from "~/prisma/model";
 

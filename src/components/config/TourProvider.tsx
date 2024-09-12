@@ -4,14 +4,13 @@ import type { ReactNode } from "react";
 import { TourProvider as RootTourProvider } from "@reactour/tour";
 import { useCookies } from "next-client-cookies";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { SkillBadge } from "~/components/badges/SkillBadge";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { TourContent } from "~/components/tours/TourContent";
 import { TourPopoverContainer } from "~/components/tours/TourPopoverContainer";
-import { Description } from "~/components/typography/Description";
-import { Text } from "~/components/typography/Text";
+import { Text, Description } from "~/components/typography";
 
 export interface TourProviderProps {
   readonly children: ReactNode;
@@ -59,7 +58,7 @@ export const TourProvider = ({ children }: TourProviderProps) => {
             <TourContent label="Expand Button">
               <Description fontSize="xs">
                 If you see an&nbsp;
-                <Text as="span" fontWeight="medium" className="text-text">
+                <Text component="span" fontWeight="medium" className="text-body">
                   Expand Button
                 </Text>
                 &nbsp;, clicking on it will reveal more information about the item in the side
@@ -84,7 +83,7 @@ export const TourProvider = ({ children }: TourProviderProps) => {
           content: (
             <TourContent label="Skills">
               <Description fontSize="xs">
-                <Text as="span" fontWeight="medium" className="text-text">
+                <Text component="span" fontWeight="medium" className="text-body">
                   Any reference to a skill in the application can be clicked.
                 </Text>
                 &nbsp; This includes both elements of the chart (shown here) as well as badges

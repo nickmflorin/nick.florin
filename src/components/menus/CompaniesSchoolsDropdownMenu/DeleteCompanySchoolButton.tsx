@@ -4,14 +4,14 @@ import { useMemo, useState } from "react";
 import { autoPlacement } from "@floating-ui/react";
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { deleteCompany } from "~/actions/mutations/companies";
 import { deleteSchool } from "~/actions/mutations/schools";
 
 import { IconButton } from "~/components/buttons";
 import { Tooltip } from "~/components/floating/Tooltip";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { type ModelType, type Model } from "./types";
 

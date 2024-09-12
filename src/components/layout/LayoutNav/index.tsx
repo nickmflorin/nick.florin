@@ -1,19 +1,21 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { motion } from "framer-motion";
-import { type Required } from "utility-types";
 
-import { LayoutNavGroup } from "./LayoutNavGroup";
-import { LayoutNavItem } from "./LayoutNavItem";
+import { classNames } from "~/components/types";
+
 import {
   type ILayoutNavItem,
   layoutNavItemHasChildren,
-  type IInternalLayoutNavItem,
   layoutNavItemIsExternal,
-} from "./types";
+  type IInternalGroupedLayoutNavItem,
+} from "../types";
 
-export { type ILayoutNavItem } from "./types";
+import { LayoutNavGroup } from "./LayoutNavGroup";
+import { LayoutNavItem } from "./LayoutNavItem";
+
+export { type ILayoutNavItem } from "../types";
 
 const ItemVariants = {
   offset: ({ offset }: { offset: number }) => ({
@@ -32,10 +34,8 @@ const getPreviousOpenedGroup = ({
   const previousOpenedGroup = previousItems
     .map((it, ind) => ({ ind, item: it }))
     .filter(
-      (d): d is { item: Required<IInternalLayoutNavItem, "children">; ind: number } =>
-        !layoutNavItemIsExternal(d.item) &&
-        layoutNavItemHasChildren(d.item) &&
-        d.ind === groupOpenIndex,
+      (d): d is { item: IInternalGroupedLayoutNavItem; ind: number } =>
+        layoutNavItemHasChildren(d.item) && d.ind === groupOpenIndex,
     );
   if (previousOpenedGroup.length === 0) {
     return null;
@@ -75,23 +75,36 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
                 previousItems: items.filter(item => item.visible !== false).slice(0, i),
                 groupOpenIndex,
               });
+              /* For smaller screens, we want to render the children of the group outside of the
+                 group - and hide the group nav item itself. */
               return (
-                <motion.div
-                  key={item.path}
-                  variants={ItemVariants}
-                  initial={false}
-                  animate={offset !== 0 ? "offset" : "normal"}
-                  custom={{
-                    offset,
-                  }}
-                  className="w-full"
-                >
-                  <LayoutNavGroup
-                    item={item}
-                    isOpen={groupOpenIndex === i}
-                    onOpen={() => setGroupOpenIndex(i)}
-                  />
-                </motion.div>
+                <React.Fragment key={item.path + String(i)}>
+                  <motion.div
+                    variants={ItemVariants}
+                    initial={false}
+                    animate={offset !== 0 ? "offset" : "normal"}
+                    custom={{
+                      offset,
+                    }}
+                    className="w-full max-md:hidden"
+                  >
+                    <LayoutNavGroup
+                      item={item}
+                      isOpen={groupOpenIndex === i}
+                      onOpen={() => setGroupOpenIndex(i)}
+                    />
+                  </motion.div>
+                  <div
+                    className={classNames(
+                      "hidden",
+                      "max-md:flex max-md:flex-col max-md:gap-[8px] max-md:items-center",
+                    )}
+                  >
+                    {item.children.map((child, index) => (
+                      <LayoutNavItem item={child} key={index} />
+                    ))}
+                  </div>
+                </React.Fragment>
               );
             }
             const offset = getAnimatedOffset({
@@ -100,7 +113,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
             });
             return (
               <motion.div
-                key={item.path}
+                key={item.path + String(i)}
                 variants={ItemVariants}
                 initial={false}
                 animate={offset !== 0 ? "offset" : "normal"}

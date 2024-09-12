@@ -4,20 +4,24 @@ import {
   type FileSizeFileProps,
   type FileSizeProps,
 } from "./FileSize";
-import { Text, type TextProps } from "./Text";
+import { Text, type TextProps, type TextComponent } from "./Text";
 
-type FileSizeTextSizeProps = Omit<TextProps, "children"> & FileSizeSizeProps;
+type FileSizeTextSizeProps<C extends TextComponent> = Omit<TextProps<C>, "children"> &
+  FileSizeSizeProps;
 
-type FileSizeTextFileProps = Omit<TextProps, "children"> & FileSizeFileProps;
+type FileSizeTextFileProps<C extends TextComponent> = Omit<TextProps<C>, "children"> &
+  FileSizeFileProps;
 
-export type FileSizeTextProps = FileSizeTextSizeProps | FileSizeTextFileProps;
+export type FileSizeTextProps<C extends TextComponent> =
+  | FileSizeTextSizeProps<C>
+  | FileSizeTextFileProps<C>;
 
-export const FileSizeText = ({
+export const FileSizeText = <C extends TextComponent>({
   file,
   fileSize,
   fontSize = "sm",
   ...props
-}: FileSizeTextProps): JSX.Element => (
+}: FileSizeTextProps<C>): JSX.Element => (
   <Text {...props} fontSize={fontSize}>
     <FileSize {...({ file, fileSize } as FileSizeProps)} />
   </Text>

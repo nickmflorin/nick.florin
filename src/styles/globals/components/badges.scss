@@ -47,13 +47,13 @@ $badge-vertical-padding: 2px;
 
 .badge {
   @include badge-tag();
-  color: theme("colors.text");
+  color: theme("colors.body");
   @include partials.border-radius(theme("borderRadius.md"));
   padding-right: 6px;
   padding-left: 6px;
   padding-top: $badge-vertical-padding;
   padding-bottom: $badge-vertical-padding;
-  font-family: typography.get-font-family("text");
+  font-family: typography.get-font-family("body");
   background-color: theme("colors.gray.200");
   letter-spacing: 0.0156em;
   outline: 0.0625rem solid transparent;
@@ -66,20 +66,19 @@ $badge-vertical-padding: 2px;
   // Allow the font family to be overridden with a prop.
   @include typography.with-font-families();
 
-  @include typography.with-font-sizes("text") using ($size, $data) {
+  @include typography.use-fonts("body") using ($size, $data) {
     &.badge--size-#{$size} {
-      $line-height: partials.mapget($data, line-height);
-      $height: $line-height + 2 * $badge-vertical-padding;
+      // $height: $line-height + 2 * $badge-vertical-padding;
       font-size: partials.mapget($data, font-size);
-      line-height: $line-height;
+      line-height: partials.mapget($data, line-height);
       font-weight: partials.mapget($data, font-weight);
-      height: $height;
+      // height: $height;
 
       // Allow the font-weight to be overridden for each size.
       @include typography.with-font-weights();
       > .badge__content {
         > .badge__icon {
-          height: $line-height - 4px;
+          // height: $line-height - 4px;
           width: auto;
         }
       }
@@ -96,12 +95,8 @@ $badge-vertical-padding: 2px;
   letter-spacing: -0.01em;
 
   @include typography.with-font-weights();
-  @include typography.with-text-transforms();
-  @include typography.with-font-sizes("label") using ($size, $data) {
-    &.f-size-#{$size} {
-      font-size: partials.mapget($data, font-size);
-    }
-  }
+  @include typography.with-font-transforms();
+  @include typography.with-font-sizes("label");
 
   > .tag__content {
     @include badge-tag-content("tag");
@@ -110,7 +105,7 @@ $badge-vertical-padding: 2px;
 }
 
 .badge-collection {
-  font-family: typography.get-font-family("text");
+  font-family: typography.get-font-family("body");
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
@@ -122,10 +117,10 @@ $badge-vertical-padding: 2px;
     font-family: inherit;
   }
 
-  @include typography.with-font-sizes("text") using ($size, $data) {
+  @include typography.use-fonts("body") using ($size, $data) {
     &.badge-collection--size-#{$size} {
-      $line-height: partials.mapget($data, line-height);
-      $height: $line-height + 2 * $badge-vertical-padding;
+      // $line-height: partials.mapget($data, line-height);
+      // $height: $line-height + 2 * $badge-vertical-padding;
       font-weight: partials.mapget($data, font-weight);
 
       // Allow the font-weight to be overridden for each size.
@@ -133,12 +128,12 @@ $badge-vertical-padding: 2px;
 
       > .badge {
         font-size: partials.mapget($data, font-size);
-        line-height: $line-height;
-        height: $height;
+        line-height: partials.mapget($data, line-height);
+        // height: $height;
 
         > .badge__content {
           > .badge__icon {
-            height: $line-height - 4px;
+            // height: $line-height - 4px;
             width: auto;
           }
         }

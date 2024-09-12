@@ -1,6 +1,6 @@
 import { type Experience, type Company } from "~/prisma/model";
 
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { Select, type SelectProps } from "./generic";
 

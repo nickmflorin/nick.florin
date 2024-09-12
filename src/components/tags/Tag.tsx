@@ -1,12 +1,12 @@
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { type Size, sizeToString } from "~/components/types/sizes";
 import {
+  type ComponentProps,
   type TypographyCharacteristics,
   getTypographyClassName,
-} from "~/components/types/typography";
+} from "~/components/types";
+import { type Size, sizeToString } from "~/components/types/sizes";
 
 export interface TagProps extends TypographyCharacteristics, ComponentProps {
   readonly iconClassName?: ComponentProps["className"];

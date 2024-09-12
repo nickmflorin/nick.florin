@@ -1,11 +1,12 @@
 import { forwardRef, type ForwardedRef } from "react";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import {
+  type ComponentProps,
+  type HTMLElementProps,
   type TypographyCharacteristics,
   getTypographyClassName,
-} from "~/components/types/typography";
+} from "~/components/types";
 
 import { type InputSize, InputSizes, InputVariants, type InputVariant } from "./types";
 

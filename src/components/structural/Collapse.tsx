@@ -5,7 +5,7 @@ import { IconButton } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { Actions } from "./Actions";
 import { type Action } from "./types";
@@ -43,7 +43,7 @@ export const Collapse = ({
         )}
         <div className="flex flex-row gap-[6px] items-center">
           <Actions actions={actions ?? null} />
-          <IconButton.Bare
+          <IconButton.Transparent
             key={actions ? actions.length : "0"}
             size="xsmall"
             onClick={() => {
@@ -52,7 +52,7 @@ export const Collapse = ({
             }}
           >
             <CaretIcon open={open} />
-          </IconButton.Bare>
+          </IconButton.Transparent>
         </div>
       </div>
       {open && <div className={classNames("flex flex-col", contentClassName)}>{children}</div>}

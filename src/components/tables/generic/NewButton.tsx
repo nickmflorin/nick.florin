@@ -19,9 +19,9 @@ export const NewButton = ({ drawerId }: NewButtonProps) => {
     <DynamicLoading>
       {({ isLoading }) => (
         <>
-          <Button.Primary isLoading={isLoading} onClick={() => open()}>
+          <Button.Solid isLoading={isLoading} scheme="primary" onClick={() => open()}>
             New
-          </Button.Primary>
+          </Button.Solid>
           {isOpen && <ClientDrawer id={drawerId} props={{}} />}
         </>
       )}

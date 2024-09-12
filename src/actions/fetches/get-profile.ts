@@ -2,7 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { prisma } from "~/prisma/client";
 import { type Profile } from "~/prisma/model";
 

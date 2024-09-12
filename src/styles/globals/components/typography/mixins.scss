@@ -1,6 +1,7 @@
-@use "partials";
+@use "sass:map";
 
-@use "./fn" as *;
+@use "partials";
+@use "./constants" as constants;
 
 @mixin truncate {
   text-overflow: ellipsis;
@@ -26,11 +27,11 @@
 }
 
 @mixin font-family($type) {
-  font-family: get-font-family($type);
+  font-family: partials.mapget(constants.$font-families, $type);
 }
 
 @mixin text-font-family() {
-  @include font-family("text");
+  @include font-family("body");
 }
 
 @mixin title_font-family() {
@@ -41,136 +42,159 @@
   @include font-family("label");
 }
 
+@mixin description-font-family() {
+  @include font-family("description");
+}
+
 /* --------------------------------------- Font Weights ----------------------------------------- */
-@mixin font-weight($args...) {
-  font-weight: get-font-weight($args...);
+@mixin font-weight($type, $size) {
+  font-weight: constants.get-font-weight($type, $size);
 }
 
-@mixin text-font-weight($args...) {
-  font-weight: get-font-weight($type: "text", $args...);
+@mixin text-font-weight($size) {
+  @include font-weight("body", $size);
 }
 
-@mixin title_font-weight($args...) {
-  font-weight: get-font-weight($type: "title", $args...);
+@mixin title-font-weight($size) {
+  @include font-weight("title", $size);
 }
 
-@mixin label-font-weight($args...) {
-  font-weight: get-font-weight($type: "label", $args...);
+@mixin label-font-weight($size) {
+  @include font-weight("label", $size);
+}
+
+@mixin description-font-weight($size) {
+  @include font-weight("description", $size);
 }
 
 /* --------------------------------------- Font Sizes ----------------------------------------- */
-@mixin font-size($type, $size: null) {
+@mixin font-size($type, $size) {
   font-size: get-font-size($type, $size);
 }
 
-@mixin title_font-size($size: null) {
+@mixin title_font-size($size) {
   @include font-size("title", $size);
 }
 
-@mixin text-font-size($size: null) {
-  @include font-size("text", $size);
+@mixin text-font-size($size) {
+  @include font-size("body", $size);
 }
 
-@mixin label-font-size($size: null) {
+@mixin label-font-size($size) {
   @include font-size("label", $size);
 }
 
-@mixin line-height($type, $size: null) {
+@mixin description-font-size($size) {
+  @include font-size("description", $size);
+}
+
+@mixin line-height($type, $size) {
   line-height: get-line-height($type, $size);
 }
 
-@mixin title_line-height($size: null) {
+@mixin title_line-height($size) {
   @include line-height("title", $size);
 }
 
-@mixin text-line-height($size: null) {
-  @include line-height("text", $size);
+@mixin text-line-height($size) {
+  @include line-height("body", $size);
 }
 
-@mixin label-line-height($size: null) {
+@mixin label-line-height($size) {
   @include line-height("label", $size);
 }
 
+@mixin description-line-height($size) {
+  @include line-height("description", $size);
+}
+
 /* --------------------------------------- Font Colors ------------------------------------------ */
-@mixin font-color($type, $color: null) {
-  color: get-font-color($type, $color);
+@mixin default-font-color($type) {
+  color: constants.get-default-font-color($type);
 }
 
-@mixin text-font-color($args...) {
-  @include font-color("text", $args...);
+@mixin text-default-font-color() {
+  @include default-font-color("body");
 }
 
-@mixin title_font-color($args...) {
-  @include font-color("title", $args...);
+@mixin title-default-font-color() {
+  @include default-font-color("title");
 }
 
-@mixin label-font-color($args...) {
-  @include font-color("label", $args...);
+@mixin label-default-font-color() {
+  @include default-font-color("label");
+}
+
+@mixin description-default-font-color() {
+  @include default-font-color("description");
 }
 
 /* --------------------------------------- Font Specs ------------------------------------------ */
-@mixin font($type, $args...) {
-  $properties: get-font($type, $args...);
-  @include partials.mapped-properties($properties);
+@mixin font($type, $size, $args...) {
+  $properties: constants.get-font($type, $size, $args...);
+  font-family: partials.mapget($properties, font-family);
+  font-size: partials.mapget($properties, font-size);
+  line-height: partials.mapget($properties, line-height);
+  font-weight: partials.mapget($properties, font-weight);
+  color: partials.mapget($properties, color);
 }
 
-@mixin with-font-sizes($type) {
-  @each $size in partials.mapget($typography-sizes, $type) {
-    $properties: get-font($type, $size: $size);
+@mixin use-fonts($type) {
+  @each $size in map.keys(partials.mapget(constants.$typography-size-properties, $type)) {
+    $properties: constants.get-font($type, $size);
     @content ($size, $properties);
   }
 }
 
 @mixin with-font-weights() {
-  @each $weight in $font-weight-names {
+  @each $weight in map.keys(constants.$font-weights) {
     &.f-weight-#{$weight} {
-      font-weight: get-font-weight($weight: $weight);
+      font-weight: partials.mapget(constants.$font-weights, $weight);
+    }
+  }
+}
+
+@mixin with-font-sizes($type) {
+  @include use-fonts($type) using ($size, $properties) {
+    &.f-size-#{$size} {
+      font-size: partials.mapget($properties, font-size);
     }
   }
 }
 
 @mixin with-font-families() {
   &.f-family-inter {
-    font-family: $font-family-inter;
+    font-family: theme("fontFamily.inter");
   }
 }
 
-@mixin with-text-transforms() {
-  @each $transform in $text-transforms {
+@mixin with-font-transforms() {
+  @each $transform in constants.$text-transforms {
     &.f-transform-#{$transform} {
       text-transform: $transform;
     }
   }
 }
 
-@mixin title($args...) {
-  @include font("title", $args...);
-}
-
-@mixin text($args...) {
-  @include font("text", $args...);
-}
-
-@mixin label($args...) {
-  @include font("label", $args...);
-}
-
 @mixin with-fonts($type) {
-  @include font-color($type);
-  @include with-font-weights();
-  @include with-font-families();
-  @include with-text-transforms();
+  @include use-fonts($type) using ($size, $properties) {
+    font-family: partials.mapget($properties, font-family);
+    &.#{constants.get-font-size-class($size)} {
+      font-size: partials.mapget($properties, font-size);
+      line-height: partials.mapget($properties, line-height);
+      font-weight: partials.mapget($properties, font-weight);
+      color: partials.mapget($properties, color);
 
-  @include with-font-sizes($type) using ($size, $data) {
-    &.f-size-#{$size} {
-      font-size: partials.mapget($data, font-size);
-      line-height: partials.mapget($data, line-height);
-      font-weight: partials.mapget($data, font-weight);
-
-      // Allow the font-weight to be overridden for each size.
+      // Allow the font-weight to be overridden with the appropriate class name.
       @include with-font-weights();
-
-      @content ($data);
     }
+    @include with-font-families();
   }
+}
+
+@mixin with-typography-classes($type) {
+  @include with-font-families();
+  @include with-font-transforms();
+  @include with-font-weights();
+  @include with-font-sizes($type);
 }

@@ -1,4 +1,4 @@
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 interface DetailDrawerSectionProps {
   readonly label: string;

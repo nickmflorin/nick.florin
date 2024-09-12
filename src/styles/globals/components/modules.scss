@@ -33,11 +33,11 @@
     }
 
     > .title {
-      font-size: theme("fontSize.title_sm.0");
+      font-size: theme("fontSize.title-sm.0");
       line-height: 32px;
 
       @media (max-width: theme("screens.md")) {
-        font-size: theme("fontSize.title_sm.0");
+        font-size: theme("fontSize.title-sm.0");
         line-height: 26px;
       }
     }

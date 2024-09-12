@@ -3,7 +3,7 @@ import { useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
 
 import { deleteDetail, deleteNestedDetail } from "~/actions/mutations/details";
@@ -47,7 +47,7 @@ export const CollapsedUpdateDetailForm = <
     <GenericUpdateDetailForm
       {...props}
       actions={mergeActions(props.actions, [
-        <IconButton.Bare
+        <IconButton.Transparent
           className="text-gray-600 hover:text-gray-700"
           key="0"
           icon={{ name: "up-right-and-down-left-from-center" }}
@@ -55,7 +55,7 @@ export const CollapsedUpdateDetailForm = <
           onClick={() => onExpand()}
         />,
         <DetailVisibilityButton<D> key="1" detail={props.detail} />,
-        <IconButton.Bare
+        <IconButton.Transparent
           className="text-red-600 hover:text-red-700"
           key="2"
           icon={{ name: "trash-alt" }}

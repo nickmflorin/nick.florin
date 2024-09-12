@@ -2,7 +2,7 @@ import React, { memo, useMemo } from "react";
 
 import type * as types from "../types";
 
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 export type TruncatedMultiValueRendererComponent = {
   <

@@ -8,7 +8,7 @@ import { SkillExperienceBadge } from "~/components/badges/SkillExperienceBadge";
 import { ProjectTile } from "~/components/tiles/ProjectTile";
 import { RepositoryTile } from "~/components/tiles/RepositoryTile";
 import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelCondensedTile";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 import { ShowHide } from "~/components/util";
 
 import { DetailDrawerContent } from "../DetailDrawerContent";

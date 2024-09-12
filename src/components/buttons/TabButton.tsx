@@ -18,7 +18,7 @@ export const TabButton = <F extends ButtonForm>({
   children,
   ...props
 }: TabButtonProps<F>) => (
-  <Button.Bare<F>
+  <Button.Transparent<F>
     {...(props as ButtonProps<F>)}
     className={classNames(
       "rounded-none rounded-t-md relative top-[2px]",
@@ -38,5 +38,5 @@ export const TabButton = <F extends ButtonForm>({
     isLocked={isActive}
   >
     {children}
-  </Button.Bare>
+  </Button.Transparent>
 );

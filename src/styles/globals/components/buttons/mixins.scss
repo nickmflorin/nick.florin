@@ -2,6 +2,7 @@
 
 $button-locked-class: ".button--locked";
 $button-loading-class: ".button--loading";
+$button-active-class: ".button--active";
 
 @mixin button-hovered {
   @include partials.hovered {
@@ -29,14 +30,8 @@ $button-loading-class: ".button--loading";
   }
 }
 
-@mixin button-placeholder {
-  &.button--placeholder {
-    @content;
-  }
-}
-
-@mixin button-active($active-selector: ".button--active") {
-  @include partials.with-selectors(($active-selector)) {
+@mixin button-active() {
+  @include partials.with-selectors(($button-active-class)) {
     &:not(:disabled) {
       @content;
     }

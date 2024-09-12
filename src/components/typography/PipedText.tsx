@@ -1,9 +1,12 @@
 import React from "react";
 
 import { Icon } from "~/components/icons/Icon";
-import { type ComponentProps, classNames } from "~/components/types";
+import {
+  type ComponentProps,
+  classNames,
+  type TypographyCharacteristics,
+} from "~/components/types";
 import { type Size, sizeToString } from "~/components/types/sizes";
-import { type TypographyCharacteristics } from "~/components/types/typography";
 
 import { Text } from "./Text";
 
@@ -51,7 +54,7 @@ export const PipedText = ({
                 {child}
               </Text>
               <Icon
-                name="pipe"
+                icon="pipe"
                 size={pipeSize}
                 className={classNames("text-gray-800", pipeClassName)}
               />

@@ -8,7 +8,7 @@ export const DeleteManyButtonPlaceholder = ({
   isCheckable = true,
 }: DeleteManyButtonPlaceholderProps) => {
   if (isCheckable) {
-    return <IconButton.Danger icon={{ name: "trash-alt" }} isDisabled={true} />;
+    return <IconButton.Solid scheme="danger" icon={{ name: "trash-alt" }} isDisabled={true} />;
   }
   return <></>;
 };

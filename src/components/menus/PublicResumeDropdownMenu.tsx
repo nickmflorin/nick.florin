@@ -30,9 +30,14 @@ export const PublicResumeDownloadMenu = ({ resume }: UploadResumeTileEllipsisMen
     ]}
   >
     {({ ref, params, isOpen }) => (
-      <Button.Secondary {...params} ref={ref} icon={{ right: <CaretIcon open={isOpen} /> }}>
+      <Button.Solid
+        {...params}
+        scheme="secondary"
+        ref={ref}
+        icon={{ right: <CaretIcon open={isOpen} /> }}
+      >
         Resume
-      </Button.Secondary>
+      </Button.Solid>
     )}
   </DropdownMenu>
 );

@@ -8,7 +8,7 @@ export interface DrawerCloseButtonProps
 export const DrawerCloseButton = (props: DrawerCloseButtonProps): JSX.Element => (
   <IconButton.Transparent
     {...props}
-    as="button"
+    element="button"
     size="xsmall"
     iconSize="large"
     className={classNames("drawer__close-button", props.className)}

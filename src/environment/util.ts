@@ -1,16 +1,5 @@
 import { z } from "zod";
 
-import { type EnvironmentName, EnvironmentNames } from "./constants";
-
-export const STRICT_OMISSION = z.literal("").optional();
-
-export const testRestricted = <T>(v: T) => {
-  if (process.env.NODE_ENV === "test") {
-    return STRICT_OMISSION;
-  }
-  return v;
-};
-
 export const StringBooleanFlagSchema = z.union([
   z
     .custom<true>(val => typeof val === "string" && val.toLowerCase() === "true")
@@ -18,6 +7,7 @@ export const StringBooleanFlagSchema = z.union([
   z
     .custom<false>(val => typeof val === "string" && val.toLowerCase() === "false")
     .transform(() => false),
+  z.boolean(),
 ]);
 
 type CommaSeparatedArraySchemaOptions<V extends readonly string[]> = {
@@ -51,17 +41,3 @@ export const createCommaSeparatedArraySchema = <V extends readonly string[]>(
       return parsed;
     })
     .optional();
-
-export const environmentLookup = <T>(map: { [key in EnvironmentName]: T }): T => {
-  if (process.env.VERCEL_ENV !== undefined) {
-    if (!EnvironmentNames.contains(process.env.VERCEL_ENV)) {
-      throw new Error(
-        `The provided map does not have a key for VERCEL_ENV='${process.env.VERCEL_ENV}'!`,
-      );
-    }
-    return map[process.env.VERCEL_ENV];
-  } else if (process.env.NODE_ENV === "development") {
-    return map.local;
-  }
-  return map[process.env.NODE_ENV];
-};

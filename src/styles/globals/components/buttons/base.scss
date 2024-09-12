@@ -1,61 +1,29 @@
+@use "sass:list";
 @use "sass:map";
 
 @use "partials";
 
-@use "../typography" as typography;
-
-@use "./variants" as variants;
-@use "./sizing" as sizing;
-@use "./constants" as *;
-@use "./fonts" as fonts;
+@use "./constants" as constants;
 
 @mixin button-base() {
   @include partials.transition(none);
   @include partials.disabled;
-
   appearance: none;
-  @include partials.border-radius($button-border-radius);
+  @include partials.border-radius(constants.$button-default-border-radius);
   box-shadow: none !important;
   box-sizing: border-box;
   cursor: pointer;
   font-stretch: normal;
   // The default font family.
-  font-family: $button-font-family;
+  font-family: constants.$button-default-font-family;
   // The default font weight.
-  font-weight: typography.get-font-weight($type: "text", $weight: "medium");
+  font-weight: constants.$button-default-font-weight;
   margin: 0;
   min-height: 0px;
+  outline-width: constants.$button-outline-width;
+  outline-offset: constants.$button-outline-offset;
   -webkit-tap-highlight-color: transparent;
   text-decoration: none;
   user-select: none;
   vertical-align: middle;
-}
-
-@mixin button($type, $variant: null, $size: null, $active-selector: ".button--active") {
-  $variant: if(
-    $variant,
-    partials.validate-value($variant, partials.mapget($button-variants, $type)),
-    partials.mapget($button-default-variant, $type)
-  );
-  $size: if($size, $size, $button-default-size);
-  @include variants.button-variant(
-    $type: $type,
-    $variant: $variant,
-    $active-selector: $active-selector
-  );
-  @include sizing.button-size($type, $size);
-
-  @if $type != "icon-button" {
-    @include fonts.button-font($type, $size: $size);
-  }
-}
-
-@mixin button-properties($type, $active-selector: ".button--active") {
-  @include button-base;
-  @include variants.button-variants($type, $active-selector: $active-selector);
-  @include sizing.button-sizes($type);
-
-  @if $type != "icon-button" {
-    @include fonts.button-fonts($type);
-  }
 }

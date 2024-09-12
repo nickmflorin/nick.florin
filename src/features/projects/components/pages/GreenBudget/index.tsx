@@ -1,5 +1,5 @@
 import { Link } from "~/components/buttons";
-import { Description } from "~/components/typography/Description";
+import { Description } from "~/components/typography";
 
 import { CaptionDescription } from "../CaptionDescription";
 import { DescriptionGroup } from "../DescriptionGroup";
@@ -27,7 +27,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           After approximately 8 months of GreenBudget running on these new servers, he was forced to
           shut the servers down. However, a few months later, GreenBudget had been rebranded and
           expanded upon, and was subsequently launched under what is now called&nbsp;
-          <Link as="a" href="https://saturation.io/">
+          <Link element="a" href="https://saturation.io/">
             Saturation IO
           </Link>
           .
@@ -56,20 +56,20 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
         </Description>
         <Description>
           The application consists of an extensive&nbsp;
-          <Link as="a" href="https://react.dev/">
+          <Link element="a" href="https://react.dev/">
             React
           </Link>
           &nbsp;frontend powered by a robust, REST API written using&nbsp;
-          <Link as="a" href="https://www.djangoproject.com/">
+          <Link element="a" href="https://www.djangoproject.com/">
             Django
           </Link>
           &nbsp;and&nbsp;
-          <Link as="a" href="https://www.django-rest-framework.org/">
+          <Link element="a" href="https://www.django-rest-framework.org/">
             Django REST Framework
           </Link>
           &nbsp;. At the time in which I stopped working on the project, we were in the midst of
           transitioning the frontend to the popular&nbsp;
-          <Link as="a" href="https://nextjs.org/">
+          <Link element="a" href="https://nextjs.org/">
             NextJS
           </Link>
           &nbsp;framework.
@@ -78,11 +78,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
           The application relies on several different open-source tabling libraries interwoven with
           a large amount of internal, custom built tabling mechanics that are built primarily with
           the help of technology such as &nbsp;
-          <Link as="a" href="https://react-redux.js.org/">
+          <Link element="a" href="https://react-redux.js.org/">
             React Redux
           </Link>
           &nbsp;and&nbsp;
-          <Link as="a" href="https://redux-saga.js.org/">
+          <Link element="a" href="https://redux-saga.js.org/">
             Redux Sagas
           </Link>
           .

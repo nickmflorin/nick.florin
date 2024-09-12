@@ -4,8 +4,8 @@ import { Controller, type ControllerRenderProps } from "react-hook-form";
 
 import { type ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
+import { Text } from "~/components/typography";
 import { Label, type LabelProps } from "~/components/typography/Label";
-import { Text } from "~/components/typography/Text";
 import { ShowHide } from "~/components/util";
 
 import {

@@ -1,5 +1,5 @@
 import { Link } from "~/components/buttons";
-import { Description } from "~/components/typography/Description";
+import { Description } from "~/components/typography";
 
 import { DescriptionGroup } from "../DescriptionGroup";
 import { Project, type ProjectProps } from "../Project";
@@ -15,13 +15,13 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
       <DescriptionGroup>
         <Description>
           ToolTrack application written using&nbsp;
-          <Link as="a" href="https://nextjs.org/">
+          <Link element="a" href="https://nextjs.org/">
             NextJS
           </Link>
           &nbsp; that allows users to monitor, manage and configure notifications and alerts that
           they will receive as it relates to inventory & price changes that occur for products
           offered by the woodworking hand tool manufacturer, &nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
+          <Link element="a" href="https://lie-nielsen.com/">
             Lie Nielsen
           </Link>
           .
@@ -53,7 +53,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
         <Description>
           Today, &nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
+          <Link element="a" href="https://lie-nielsen.com/">
             Lie Nielsen
           </Link>
           &nbsp; is considered by most to be the best manufacturer of North American-style hand
@@ -66,7 +66,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
       <DescriptionGroup>
         <Description>
           The problem that this application attempts to solve is that purchasing tools from&nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
+          <Link element="a" href="https://lie-nielsen.com/">
             Lie Nielsen
           </Link>
           &nbsp;can sometimes be difficult. The company itself - which is located in Maine, is very
@@ -79,7 +79,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
         <Description>
           The difficulty in getting your hands on some&nbsp;
-          <Link as="a" href="https://lie-nielsen.com/">
+          <Link element="a" href="https://lie-nielsen.com/">
             Lie Nielsen
           </Link>
           &nbsp;tools has warranted the need for an application like this - one that allows users to
@@ -93,19 +93,19 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         <Description>
           Like this website, this application does not rely on any third-party component library.
           Instead, it leverages an internal component library developed using frameworks like&nbsp;
-          <Link as="a" href="https://sass-lang.com/">
+          <Link element="a" href="https://sass-lang.com/">
             SASS
           </Link>
           &nbsp;and&nbsp;
-          <Link as="a" href="https://tailwindcss.com/">
+          <Link element="a" href="https://tailwindcss.com/">
             TailwindCSS
           </Link>
           ,&nbsp;along with tooling libraries such as&nbsp;
-          <Link as="a" href="https://floating-ui.com/">
+          <Link element="a" href="https://floating-ui.com/">
             Floating UI
           </Link>
           &nbsp;and&nbsp;
-          <Link as="a" href="https://www.framer.com/motion/">
+          <Link element="a" href="https://www.framer.com/motion/">
             Framer Motion
           </Link>
           .
@@ -116,7 +116,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
       <Description>
         This application was designed such that users can subscribe to various events that may occur
         as it relates to a specific product offered on&nbsp;
-        <Link as="a" href="https://lie-nielsen.com/">
+        <Link element="a" href="https://lie-nielsen.com/">
           Lie Nielsen
         </Link>
         &apos;s website. Currently, these events include subscribing to changes in price of a

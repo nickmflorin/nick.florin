@@ -3,7 +3,7 @@ import { useState, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { IconButton } from "~/components/buttons";
 
@@ -33,7 +33,7 @@ export const ActionsCell = ({
       {onEdit && (
         <IconButton.Transparent
           icon={{ name: "pen" }}
-          as="button"
+          element="button"
           className="text-blue-800 rounded-full hover:text-blue-900"
           disabledClassName="text-disabled"
           loadingClassName="text-gray-400"

@@ -2,8 +2,7 @@ import type { ReactNode } from "react";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Description } from "~/components/typography/Description";
-import { Label } from "~/components/typography/Label";
+import { Label, Description } from "~/components/typography";
 
 export interface TourContentProps extends ComponentProps {
   readonly label?: ReactNode;

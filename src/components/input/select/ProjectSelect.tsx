@@ -1,8 +1,8 @@
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { type BrandProject, ProjectSlugs } from "~/prisma/model";
 
 import type { IconProp, IconName } from "~/components/icons";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { Select, type SelectProps } from "./generic";
 

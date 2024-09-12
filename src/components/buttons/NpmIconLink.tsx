@@ -12,15 +12,14 @@ export type NpmIconLinkProps = Omit<
 };
 
 export const NpmIconLink = ({ npmPackageName, ...props }: NpmIconLinkProps): JSX.Element => (
-  <IconButton.Bare
+  <IconButton.Transparent
     size="24px"
     iconSize="24px"
     {...props}
-    as="a"
+    element="a"
     className={classNames("text-npm-red", props.className)}
     icon={{ name: "npm", iconStyle: "brands" }}
     href={getNpmPackageUrl(npmPackageName)}
-    target="_blank"
-    rel="noopener noreferrer"
+    openInNewTab
   />
 );

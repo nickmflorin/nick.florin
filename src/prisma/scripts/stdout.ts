@@ -42,22 +42,22 @@ type MessageOptions = {
 
 type Level = "info" | "error" | "complete" | "begin" | "warn" | "success";
 
-const LevelColors: { [key in Level]: string } = {
-  info: terminal.GRAY,
-  error: terminal.RED,
-  complete: terminal.GREEN,
-  begin: terminal.YELLOW,
-  warn: terminal.YELLOW,
-  success: terminal.GREEN,
+const LevelColors: { [key in Level]: (v: string) => string } = {
+  info: v => terminal.applyStyles(v, { foreground: "gray" }),
+  error: v => terminal.applyStyles(v, { foreground: "red" }),
+  complete: v => terminal.applyStyles(v, { foreground: "green" }),
+  begin: v => terminal.applyStyles(v, { foreground: "yellow" }),
+  warn: v => terminal.applyStyles(v, { foreground: "yellow" }),
+  success: v => terminal.applyStyles(v, { foreground: "green" }),
 };
 
-const IndentedLevelColors: { [key in Level]: string } = {
-  info: terminal.GRAY,
-  error: terminal.RED,
-  complete: terminal.CYAN,
-  begin: terminal.YELLOW,
-  warn: terminal.YELLOW,
-  success: terminal.GREEN,
+const IndentedLevelColors: { [key in Level]: (v: string) => string } = {
+  info: v => terminal.applyStyles(v, { foreground: "gray" }),
+  error: v => terminal.applyStyles(v, { foreground: "red" }),
+  complete: v => terminal.applyStyles(v, { foreground: "cyan" }),
+  begin: v => terminal.applyStyles(v, { foreground: "yellow" }),
+  warn: v => terminal.applyStyles(v, { foreground: "yellow" }),
+  success: v => terminal.applyStyles(v, { foreground: "green" }),
 };
 
 export class SeedStdout {
@@ -79,9 +79,9 @@ export class SeedStdout {
 
   private colorize(msg: string, level: Level): string {
     if (this.isNested) {
-      return IndentedLevelColors[level] + msg + terminal.RESET;
+      return IndentedLevelColors[level](msg);
     }
-    return LevelColors[level] + msg + terminal.RESET;
+    return LevelColors[level](msg);
   }
 
   private formatLineItem(

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import type { BrandResume } from "~/prisma/model";
 
 import { deleteResume, prioritizeResume } from "~/actions/mutations/resumes";
@@ -68,7 +68,7 @@ export const UploadResumeTileEllipsisMenu = ({
           icon: (
             <Icon
               key="0"
-              name="check"
+              icon="check"
               size="14px"
               className="text-green-700"
               iconStyle="solid"
@@ -114,7 +114,7 @@ export const UploadResumeTileEllipsisMenu = ({
         },
       ]}
     >
-      <IconButton.Bare
+      <IconButton.Transparent
         size="xsmall"
         icon={{ name: "ellipsis-h" }}
         className={classNames(

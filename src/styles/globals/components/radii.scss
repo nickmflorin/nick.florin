@@ -1,11 +1,7 @@
 @use "sass:map";
-@use "throw";
-
 @use "partials";
 
-$radius-sizes: ("none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "full");
-
-$radius: (
+$radii: (
   "none": theme("borderRadius.none"),
   "xs": theme("borderRadius.xs"),
   "sm": theme("borderRadius.sm"),
@@ -18,18 +14,18 @@ $radius: (
 );
 
 @function get-radius($size) {
-  @if not map.has-key($radius, $size) {
-    @return throw.error(
-      "The provided size #{$size} is invalid.",
-      $size: $size,
-      $source: "get-radius()"
-    );
+  @if not map.has-key($radii, $size) {
+    @error "The provided size #{$size} is invalid.";
   }
-  @return partials.mapget($radius, $size);
+  @return partials.mapget($radii, $size);
+}
+
+@mixin radius($size) {
+  @include partials.border-radius(partials.mapget($radii, $size));
 }
 
 @mixin with-radius() {
-  @each $size in $radius-sizes {
-    @content ($size, partials.mapget($radius, $size));
+  @each $size in map.keys($radii) {
+    @content ($size, partials.mapget($radii, $size));
   }
 }

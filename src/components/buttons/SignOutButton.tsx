@@ -8,8 +8,8 @@ export interface SignOutButtonProps
 
 export const SignOutButton = (props: SignOutButtonProps) => (
   <RootSignOutButton>
-    <Button.Secondary {...props} as="div">
+    <Button.Solid {...props} element="div" scheme="secondary">
       Log Out
-    </Button.Secondary>
+    </Button.Solid>
   </RootSignOutButton>
 );

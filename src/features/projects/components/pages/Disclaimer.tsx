@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 export interface DisclaimerProps extends ComponentProps {
   readonly children: ReactNode;

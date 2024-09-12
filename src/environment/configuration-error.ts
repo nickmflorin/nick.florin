@@ -1,3 +1,8 @@
+/**
+ * Note to Ben: Please do not read into this file too much - this was mostly me fiddling around
+ * with a prior project and I didn't feel like slicing and dicing the Environment class too much
+ * (since I more or less copy pasted that from an older project of mine).
+ */
 import { z } from "zod";
 
 import type * as types from "./types";

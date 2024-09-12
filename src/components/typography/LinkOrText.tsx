@@ -2,9 +2,13 @@
 
 import { Link } from "~/components/buttons";
 import { Tooltip, type TooltipProps } from "~/components/floating/Tooltip";
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { type TextFontSize, type FontWeight, type FontFamily } from "~/components/types/typography";
+import {
+  classNames,
+  type FontSize,
+  type ComponentProps,
+  type FontWeight,
+  type FontFamily,
+} from "~/components/types";
 
 import { Text } from "./Text";
 
@@ -13,7 +17,7 @@ export interface LinkOrTextProps extends ComponentProps {
   readonly children: string;
   readonly tooltip?: string;
   readonly tooltipPlacement?: TooltipProps["placement"];
-  readonly fontSize?: TextFontSize;
+  readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly textClassName?: ComponentProps["className"];
   readonly linkClassName?: ComponentProps["className"];
@@ -46,9 +50,8 @@ export const LinkOrText = ({
               fontSize={fontSize}
               fontFamily={fontFamily}
               fontWeight={fontWeight}
-              as="a"
-              target="_blank"
-              rel="noopener noreferrer"
+              element="a"
+              openInNewTab
             >
               {children}
             </Link>
@@ -64,9 +67,8 @@ export const LinkOrText = ({
         fontSize={fontSize}
         fontFamily={fontFamily}
         fontWeight={fontWeight}
-        as="a"
-        target="_blank"
-        rel="noopener noreferrer"
+        element="a"
+        openInNewTab
       >
         {children}
       </Link>

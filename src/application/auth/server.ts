@@ -1,7 +1,7 @@
 "use server";
 import { getAuth, auth } from "@clerk/nextjs/server";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { prisma } from "~/prisma/client";
 import { type User } from "~/prisma/model";
 

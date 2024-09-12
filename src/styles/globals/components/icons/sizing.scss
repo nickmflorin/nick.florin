@@ -11,70 +11,38 @@ $icon-sizes: (
   "md": 16px,
   "lg": 20px,
   "xl": 24px,
+  "xxl": 36px,
+  "xxxl": 44px,
   "fill": 100%,
 );
 
 @function get-icon-size($size: $default-icon-size) {
-  $size: partials.validate-value($size, $icon-size-names);
   @return partials.mapget($icon-sizes, $size);
 }
 
-@mixin with-icon-and-svg {
-  @content;
-  > svg {
-    @content;
-  }
-}
-
 @mixin icon-fit($fit: $default-icon-size-fit) {
-  $fit: partials.validate-value($fit, ("square", "fit"));
   @if $fit == "square" {
     // Do not set the aspect ratio on the underlying SVG - just the containing <i> tag.
     aspect-ratio: 1;
+  } @else if $fit != "fit" {
+    @error "Invalid fit #{$fit} provided!";
   }
 }
 
-@mixin icon-sizing($size: null, $dimension: $default-icon-size-dimension, $fit: null) {
-  $size-value: null;
-  // If the size is provided to the component as a literal size (e.g. "30px"), and not a discrete
-  // size string (e.g. "sm"), do not apply any specific sizing in either dimension to the Icon.
-  // The sizing will be applied in React via inline-styles based on the literal size prop value.
-  @if $size {
-    @if map.has-key($icon-sizes, $size) {
-      $size-value: partials.mapget($icon-sizes, $size);
-    } @else {
-      // Allow regular CSS sizes to be provided.
-      $size-value: $size;
-    }
-  }
-
-  $dimension: partials.validate-value($dimension, ("width", "height"));
+@mixin icon-sizing($size, $dimension: $default-icon-size-dimension, $fit: null) {
+  // The size can be provided as a numeric value (e.g. "30px") or a discrete size string (e.g. "sm").
+  $size-value: if(map.has-key($icon-sizes, $size), partials.mapget($icon-sizes, $size), $size);
 
   @if $dimension == "height" {
     width: auto;
-    // See comment above regarding a literal size value vs. discrete size string.
-    @if $size-value {
-      @layer {
-        height: partials.mapget($icon-sizes, $size);
-      }
-    }
-    > svg {
-      height: 100%;
-      width: auto;
-    }
-  } @else {
-    // See comment above regarding a literal size value vs. discrete size string.
-    @if $size-value {
-      @layer {
-        width: partials.mapget($icon-sizes, $size);
-      }
-    }
+    height: $size-value;
+    max-width: $size-value;
+  } @else if $dimension == "width" {
     height: auto;
-
-    > svg {
-      width: 100%;
-      height: auto;
-    }
+    width: $size-value;
+    max-height: $size-value;
+  } @else {
+    @error "Invalid dimension #{$dimension} provided!";
   }
   /* The fit should be applied regardless of whether or not the Icon's size is provided as one of
      the discrete size strings. */

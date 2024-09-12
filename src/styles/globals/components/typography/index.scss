@@ -1,6 +1,12 @@
-@forward "./util";
+@forward "./constants";
+@forward "./mixins";
 
-@use "./text";
+@use "./body";
 @use "./description";
-@use "./heading";
+@use "./mixins" as mixins;
+@use "./title";
 @use "./label";
+
+.typography-component {
+  @include mixins.with-typography-classes("body");
+}

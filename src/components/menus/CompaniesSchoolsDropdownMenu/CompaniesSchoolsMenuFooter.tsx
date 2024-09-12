@@ -19,8 +19,8 @@ export const CompaniesSchoolsMenuFooter = ({
       props.className,
     )}
   >
-    <Button.Primary className="w-full" onClick={() => onCreate()}>
+    <Button.Solid className="w-full" scheme="primary" onClick={() => onCreate()}>
       Create
-    </Button.Primary>
+    </Button.Solid>
   </MenuFooter>
 );

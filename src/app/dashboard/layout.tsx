@@ -68,10 +68,9 @@ export default async function DashboardPage({
                   actions={[
                     <Link
                       key="0"
-                      as="link"
+                      element="link"
                       href="/resume/experience"
                       fontSize="xs"
-                      flex
                       fontWeight="medium"
                     >
                       View All
@@ -106,8 +105,7 @@ export default async function DashboardPage({
                   actions={[
                     <Link
                       key="0"
-                      flex
-                      as="link"
+                      element="link"
                       href="/resume/education"
                       fontSize="xs"
                       fontWeight="medium"

@@ -27,7 +27,12 @@
   }
 
   > .model-image__fallback {
-    @include partials.flex-c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    justify-content: center;
     height: 100%;
     width: auto;
     aspect-ratio: 1;
@@ -42,7 +47,7 @@
     }
 
     > .text {
-      font-weight: typography.get-font-weight($weight: "medium");
+      font-weight: theme("fontWeight.medium");
       color: theme("colors.gray.300");
       font-size: inherit;
     }

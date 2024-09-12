@@ -8,7 +8,7 @@ import {
   layoutNavItemIsExternal,
   type IExternalLayoutNavItem,
   type IInternalLayoutNavItem,
-} from "~/components/layout/LayoutNav/types";
+} from "~/components/layout";
 import { classNames } from "~/components/types";
 import { useNavigatable } from "~/hooks";
 
@@ -37,13 +37,17 @@ export const InternalLayoutNavAnchor = forwardRef<
     item,
   });
   return (
-    <IconButton<"link">
+    <IconButton.Solid<"link">
       {...props}
+      activeClassName="bg-blue-800 outline-blue-800 text-white"
       isLoading={isPending}
       onClick={() => setActiveOptimistically()}
-      className={classNames("z-0", props.className)}
+      className={classNames(
+        "z-0 text-body outline-transparent bg-transparent",
+        { ["hover:bg-gray-300 hover:outline-gray-300"]: !isActive },
+        props.className,
+      )}
       ref={ref}
-      as="link"
       href={href}
       size="xlarge"
       iconSize="medium"
@@ -57,11 +61,15 @@ export const ExternalLayoutNavAnchor = forwardRef<
   types.PolymorphicButtonElement<"a">,
   ExternalLayoutNavAnchorProps
 >(({ item, ...props }: ExternalLayoutNavAnchorProps, ref: types.PolymorphicButtonRef<"link">) => (
-  <IconButton<"a">
+  <IconButton.Solid<"a">
     {...props}
-    className={classNames("z-0", props.className)}
+    className={classNames(
+      "z-0 text-body outline-transparent bg-transparent",
+      "hover:bg-gray-300 hover:outline-gray-300",
+      props.className,
+    )}
     ref={ref}
-    as="a"
+    element="a"
     href={item.href}
     size="xlarge"
     iconSize="medium"

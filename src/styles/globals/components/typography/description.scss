@@ -1,13 +1,33 @@
+@use "partials";
+
 @use "./base" as *;
+@use "./constants" as constants;
 @use "./mixins" as mixins;
 
-.description {
-  // Do not define defaults for the typography mixins.  This allows the typography properties
-  // to only be applied if the component is provided with the appropriate props, and allows us to
-  // override the properties in SASS elsewhere in cases where the component is not provided with
-  // those props.
-  @extend %typography-base;
+@mixin description-base() {
+  @include mixins.font("description", constants.get-default-size("description"));
+}
 
+.description {
+  @include typography-base();
   white-space: normal;
+}
+
+span.description,
+div.description.description--inherit,
+p.description.description--inherit {
+  @include mixins.inherit-font-properties();
+
+  @include mixins.with-font-weights();
+  @include mixins.with-font-transforms();
+  @include mixins.with-fonts("description");
+}
+
+div.description:not(.description--inherit),
+p.description:not(.description--inherit) {
+  @include description-base();
+
+  @include mixins.with-font-weights();
+  @include mixins.with-font-transforms();
   @include mixins.with-fonts("description");
 }

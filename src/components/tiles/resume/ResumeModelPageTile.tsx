@@ -3,7 +3,7 @@ import { type ResumeBrand } from "~/prisma/model";
 import { Skills } from "~/components/badges/collections/Skills";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Description } from "~/components/typography/Description";
+import { Description } from "~/components/typography";
 import { HumanizedCourses } from "~/components/typography/HumanizedCourses";
 
 import { ResumeModelTile } from "./ResumeModelTile";

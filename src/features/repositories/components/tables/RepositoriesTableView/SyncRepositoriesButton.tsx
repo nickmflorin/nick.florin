@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { syncRepositories } from "~/actions/mutations/repositories";
 
@@ -15,8 +15,9 @@ export const SyncRepositoriesButton = () => {
   const { refresh } = useRouter();
 
   return (
-    <Button.Secondary
+    <Button.Solid
       isLoading={isLoading}
+      scheme="secondary"
       onClick={async () => {
         setIsLoading(true);
         let success = true;
@@ -35,7 +36,7 @@ export const SyncRepositoriesButton = () => {
       }}
     >
       Sync
-    </Button.Secondary>
+    </Button.Solid>
   );
 };
 

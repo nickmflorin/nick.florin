@@ -10,7 +10,7 @@ $table-size-properties: (
     th: (
       padding: 8px 12px,
       font: (
-        type: "text",
+        type: "body",
         family: typography.$font-family-inter,
         size: "sm",
         weight: "semibold",
@@ -20,7 +20,7 @@ $table-size-properties: (
     td: (
       padding: 6px 4px,
       font: (
-        type: "text",
+        type: "body",
         size: "sm",
         weight: "regular",
         line-height: 16px,
@@ -31,7 +31,7 @@ $table-size-properties: (
     th: (
       padding: 8px 12px,
       font: (
-        type: "text",
+        type: "body",
         family: typography.$font-family-inter,
         size: "md",
         weight: "semibold",
@@ -41,7 +41,7 @@ $table-size-properties: (
     td: (
       padding: 8px 6px,
       font: (
-        type: "text",
+        type: "body",
         size: "md",
         weight: "regular",
         line-height: 16px,
@@ -52,7 +52,7 @@ $table-size-properties: (
     th: (
       padding: 10px 16px,
       font: (
-        type: "text",
+        type: "body",
         family: typography.$font-family-inter,
         size: "lg",
         weight: "semibold",
@@ -62,7 +62,7 @@ $table-size-properties: (
     td: (
       padding: 8px 6px,
       font: (
-        type: "text",
+        type: "body",
         size: "lg",
         weight: "regular",
         line-height: 16px,

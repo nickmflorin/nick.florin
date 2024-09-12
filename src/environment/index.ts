@@ -1,23 +1,32 @@
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { z } from "zod";
 
-import {
-  DEFAULT_PRETTY_LOGGING,
-  LogLevels,
-  DEFAULT_LOG_LEVELS,
-  PrismaLogLevelSchema,
-  type LogLevel,
-} from "./constants";
-import { Environment } from "./Environment";
-import {
-  environmentLookup,
-  STRICT_OMISSION,
-  StringBooleanFlagSchema,
-  testRestricted,
-} from "./util";
+import { getEnvironmentNameUnsafe, LogLevels, EnvironmentNames, type LogLevel } from "./constants";
+import { NextEnvironment } from "./next-environment";
+import { StringBooleanFlagSchema, createCommaSeparatedArraySchema } from "./util";
 
-export * from "./constants";
+const environmentName = getEnvironmentNameUnsafe({
+  nodeEnvironment: process.env.NODE_ENV,
+  vercelEnvironment: process.env.VERCEL_ENV,
+});
 
-export const environment = Environment.create(
+/* A schema that should be used in places where the value is a string that is required in
+   production/development environments, but cannot be defined in a test environment for purposes
+   of ensuring that behavior associated with the environment variable is not accidentally triggered
+   when tests are executing. */
+const TestRestricted = <T>(v: T) =>
+  environmentName === EnvironmentNames.TEST ? z.literal("").optional() : v;
+
+export const PrismaLogLevels = enumeratedLiterals(["info", "query", "warn", "error"] as const, {});
+export type PrismaLogLevel = EnumeratedLiteralsMember<typeof PrismaLogLevels>;
+
+const PrismaLogLevelSchema = createCommaSeparatedArraySchema({
+  options: PrismaLogLevels.members,
+  partTransformer: v => v.toLowerCase(),
+});
+
+export const environment = NextEnvironment.create(
+  environmentName,
   {
     runtime: {
       /* ---------------------------- Server Environment Variables ---------------------------- */
@@ -51,24 +60,20 @@ export const environment = Environment.create(
       NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: process.env.NEXT_PUBLIC_GITHUB_PROFILE_PREFIX,
     },
     validators: {
-      NEXT_PUBLIC_PRETTY_LOGGING: StringBooleanFlagSchema.default(
-        environmentLookup(DEFAULT_PRETTY_LOGGING),
-      ),
-      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
-        process.env.NODE_ENV === "test" ? z.literal("") : z.string(),
-      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
-      NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
+      NEXT_PUBLIC_PRETTY_LOGGING: StringBooleanFlagSchema.optional(),
       NEXT_PUBLIC_LOG_LEVEL: z
         .union([
           z.literal(LogLevels.DEBUG),
           z.literal(LogLevels.ERROR),
-          z.literal(LogLevels.FATAL),
           z.literal(LogLevels.INFO),
           z.literal(LogLevels.SILENT),
-          z.literal(LogLevels.TRACE),
           z.literal(LogLevels.WARN),
         ] as [z.ZodLiteral<LogLevel>, z.ZodLiteral<LogLevel>, ...z.ZodLiteral<LogLevel>[]])
-        .default(environmentLookup(DEFAULT_LOG_LEVELS)),
+        .optional(),
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+        process.env.NODE_ENV === "test" ? z.literal("") : z.string(),
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string(),
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
       NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA: z.string().optional(),
       NEXT_PUBLIC_GITHUB_PROFILE_PREFIX: z.string().url(),
       GITHUB_USERNAME: z.string(),
@@ -78,52 +83,47 @@ export const environment = Environment.create(
       BLOB_READ_WRITE_TOKEN: z.string(),
       SITE_URL: z.string().url(),
       ANALYZE_BUNDLE: StringBooleanFlagSchema.optional(),
-      CLERK_SECRET_KEY: environmentLookup<z.ZodString | z.ZodOptional<z.ZodLiteral<"">>>({
-        test: STRICT_OMISSION,
+      CLERK_SECRET_KEY: {
+        test: z.literal("").optional(),
         development: z.string().startsWith("sk_test"),
         local: z.string().startsWith("sk_test"),
         preview: z.string().startsWith("sk_test"),
         production: z.string().startsWith("sk_live"),
-      }),
-      PERSONAL_CLERK_USER_ID: environmentLookup<z.ZodString | z.ZodOptional<z.ZodLiteral<"">>>({
-        test: STRICT_OMISSION,
-        preview: z.string().startsWith("user_"),
-        local: z.string().startsWith("user_"),
+      }[environmentName],
+      PERSONAL_CLERK_USER_ID: {
+        test: z.literal("").optional(),
         development: z.string().startsWith("user_"),
+        local: z.string().startsWith("user_"),
+        preview: z.string().startsWith("user_"),
         production: z.string().startsWith("user_"),
-      }),
+      }[environmentName],
       FONT_AWESOME_KIT_TOKEN: z.string(),
-      LOGFLARE_SOURCE_TOKEN: environmentLookup<
-        z.ZodString | z.ZodOptional<z.ZodLiteral<"">> | z.ZodOptional<z.ZodString>
-      >({
-        test: STRICT_OMISSION,
+      LOGFLARE_SOURCE_TOKEN: {
+        test: z.literal("").optional(),
         development: z.string(),
         local: z.string().optional(),
         preview: z.string(),
         production: z.string(),
-      }),
-      LOGFLARE_API_KEY: environmentLookup<
-        z.ZodString | z.ZodOptional<z.ZodLiteral<"">> | z.ZodOptional<z.ZodString>
-      >({
-        test: STRICT_OMISSION,
+      }[environmentName],
+      LOGFLARE_API_KEY: {
+        test: z.literal("").optional(),
         development: z.string(),
         local: z.string().optional(),
         preview: z.string(),
         production: z.string(),
-      }),
+      }[environmentName],
       /* ~~~~~~~~~~~~~~~~~~~~~~~~~ Database Configuration ~~~~~~~~~~~~~~~~~~~~~~~~~ */
-      POSTGRES_URL: testRestricted(z.string().url().optional()),
-      POSTGRES_PRISMA_URL: testRestricted(z.string().url().optional()),
-      POSTGRES_URL_NON_POOLING: testRestricted(z.string().url().optional()),
-      POSTGRES_DATABASE: testRestricted(z.string().optional()),
-      POSTGRES_PASSWORD: testRestricted(z.string().optional()),
-      POSTGRES_USER: testRestricted(z.string().optional()),
-      POSTGRES_HOST: testRestricted(z.string().optional()),
+      POSTGRES_URL: TestRestricted(z.string().url().optional()),
+      POSTGRES_PRISMA_URL: TestRestricted(z.string().url().optional()),
+      POSTGRES_URL_NON_POOLING: TestRestricted(z.string().url().optional()),
+      POSTGRES_DATABASE: TestRestricted(z.string().optional()),
+      POSTGRES_PASSWORD: TestRestricted(z.string().optional()),
+      POSTGRES_USER: TestRestricted(z.string().optional()),
+      POSTGRES_HOST: TestRestricted(z.string().optional()),
       DATABASE_LOG_LEVEL: PrismaLogLevelSchema.optional(),
     },
   },
   {
-    validationMethod: "instantiation",
     errorMessage: {
       title: `Environment Configuration Error: VERCEL_ENV='${process.env.VERCEL_ENV}' NODE_ENV='${process.env.NODE_ENV}'`,
     },

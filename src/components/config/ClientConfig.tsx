@@ -12,6 +12,9 @@ const TourProvider = dynamic(() => import("./TourProvider"), { ssr: false });
 const GlobalNavigatableProvider = dynamic(() => import("./GlobalNavigatableProvider"), {
   ssr: false,
 });
+const NavMenuProvider = dynamic(() => import("./NavMenuProvider"), {
+  ssr: false,
+});
 
 export interface ClientConfigProps {
   readonly children: ReactNode;
@@ -22,9 +25,11 @@ function ClientConfig(props: ClientConfigProps) {
     <SWRConfig>
       <MantineProvider>
         <GlobalNavigatableProvider>
-          <DrawersProvider>
-            <TourProvider>{props.children}</TourProvider>
-          </DrawersProvider>
+          <NavMenuProvider>
+            <DrawersProvider>
+              <TourProvider>{props.children}</TourProvider>
+            </DrawersProvider>
+          </NavMenuProvider>
         </GlobalNavigatableProvider>
       </MantineProvider>
     </SWRConfig>

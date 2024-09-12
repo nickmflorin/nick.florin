@@ -1,0 +1,262 @@
+@use "sass:map";
+@use "sass:meta";
+@use "sass:list";
+
+@use "partials";
+
+$font-family-inter: var(--font-inter);
+
+$text-transforms: ("uppercase", "lowercase", "capitalize", "underline");
+
+/* -------------------------------------- Font Families ----------------------------------------- */
+$font-families: (
+  "title": theme("fontFamily.title"),
+  "body": theme("fontFamily.body"),
+  "label": theme("fontFamily.label"),
+  "description": theme("fontFamily.body"),
+);
+
+@function get-font-family($type) {
+  @return partials.mapget($font-families, $type);
+}
+
+/* --------------------------------------- Font Weights ----------------------------------------- */
+$font-weights: (
+  "light": theme("fontWeight.light"),
+  "regular": theme("fontWeight.regular"),
+  "medium": theme("fontWeight.medium"),
+  "semibold": theme("fontWeight.semibold"),
+  "bold": theme("fontWeight.bold"),
+);
+
+/* ------------------------------------- Typography Sizes --------------------------------------- */
+$typography-size-properties: (
+  "body": (
+    "xxxs": (
+      font-size: theme("fontSize.xxxs.0"),
+      line-height: theme("fontSize.xxxs.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+    "xxs": (
+      font-size: theme("fontSize.xxs.0"),
+      line-height: theme("fontSize.xxs.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+    "xs": (
+      font-size: theme("fontSize.xs.0"),
+      line-height: theme("fontSize.xs.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+    "sm": (
+      font-size: theme("fontSize.sm.0"),
+      line-height: theme("fontSize.sm.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+    "smplus": (
+      font-size: theme("fontSize.smplus.0"),
+      line-height: theme("fontSize.smplus.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+    "md": (
+      font-size: theme("fontSize.md.0"),
+      line-height: theme("fontSize.md.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+    "lg": (
+      font-size: theme("fontSize.lg.0"),
+      line-height: theme("fontSize.lg.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+    "xl": (
+      font-size: theme("fontSize.xl.0"),
+      line-height: theme("fontSize.xl.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.body"),
+    ),
+  ),
+  "title": (
+    "xxxs": (
+      font-size: theme("fontSize.title-xxxs.0"),
+      line-height: theme("fontSize.title-xxxs.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.title"),
+    ),
+    "xxs": (
+      font-size: theme("fontSize.title-xxs.0"),
+      line-height: theme("fontSize.title-xxs.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.title"),
+    ),
+    "xs": (
+      font-size: theme("fontSize.title-xs.0"),
+      line-height: theme("fontSize.title-xs.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.title"),
+    ),
+    "sm": (
+      font-size: theme("fontSize.title-sm.0"),
+      line-height: theme("fontSize.title-sm.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.title"),
+    ),
+    "smplus": (
+      font-size: theme("fontSize.title-smplus.0"),
+      line-height: theme("fontSize.title-smplus.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.title"),
+    ),
+    "md": (
+      font-size: theme("fontSize.title-md.0"),
+      line-height: theme("fontSize.title-md.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.title"),
+    ),
+    "lg": (
+      font-size: theme("fontSize.title-lg.0"),
+      line-height: theme("fontSize.title-lg.1.lineHeight"),
+      font-weight: theme("fontWeight.semibold"),
+      color: theme("colors.title"),
+    ),
+    "xl": (
+      font-size: theme("fontSize.title-xl.0"),
+      line-height: theme("fontSize.title-xl.1.lineHeight"),
+      font-weight: theme("fontWeight.semibold"),
+      color: theme("colors.title"),
+    ),
+  ),
+  "label": (
+    "xxxs": (
+      font-size: theme("fontSize.xxxs.0"),
+      line-height: theme("fontSize.xxxs.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.label"),
+    ),
+    "xxs": (
+      font-size: theme("fontSize.xxs.0"),
+      line-height: theme("fontSize.xxs.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.label"),
+    ),
+    "xs": (
+      font-size: theme("fontSize.xs.0"),
+      line-height: theme("fontSize.xs.1.lineHeight"),
+      font-weight: theme("fontWeight.regular"),
+      color: theme("colors.label"),
+    ),
+    "sm": (
+      font-size: theme("fontSize.sm.0"),
+      line-height: theme("fontSize.sm.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.label"),
+    ),
+    "smplus": (
+      font-size: theme("fontSize.smplus.0"),
+      line-height: theme("fontSize.smplus.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.label"),
+    ),
+    "md": (
+      font-size: theme("fontSize.md.0"),
+      line-height: theme("fontSize.md.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.label"),
+    ),
+    "lg": (
+      font-size: theme("fontSize.lg.0"),
+      line-height: theme("fontSize.lg.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.label"),
+    ),
+    "xl": (
+      font-size: theme("fontSize.xl.0"),
+      line-height: theme("fontSize.xl.1.lineHeight"),
+      font-weight: theme("fontWeight.medium"),
+      color: theme("colors.label"),
+    ),
+  ),
+);
+
+/* Add description-related properties to the map.  Description properties are identical to the
+   body properties, with the only exception being the text color. */
+$body-properties: map.get($typography-size-properties, "body");
+$description-properties: ();
+
+@each $size-key in map.keys($body-properties) {
+  $size-properties: map.get($body-properties, $size-key);
+  $size-properties: map.set($size-properties, color, theme("colors.description"));
+  $description-properties: map.set($description-properties, $size-key, $size-properties);
+}
+$typography-size-properties: map.set(
+  $typography-size-properties,
+  "description",
+  $description-properties
+);
+
+$typography-default-sizes: (
+  "body": "sm",
+  "title": "md",
+  "label": "sm",
+  "description": "sm",
+);
+
+@function get-font-size-class($size) {
+  @return "f-size-#{$size}";
+}
+
+@function get-default-size($type) {
+  @return partials.mapget($typography-default-sizes, $type);
+}
+
+@function get-font-size($type, $size) {
+  @return partials.mapget($typography-size-properties, $type, $size, font-size);
+}
+
+@function get-font-weight($type, $size) {
+  @return partials.mapget($typography-size-properties, $type, $size, font-weight);
+}
+
+@function get-line-height($type, $size) {
+  @return partials.mapget($typography-size-properties, $type, $size, line-height);
+}
+
+/* --------------------------------------- Font Colors ------------------------------------------ */
+$typography-default-colors: (
+  "title": theme("colors.title"),
+  "body": theme("colors.body"),
+  "label": theme("colors.label"),
+  "description": theme("colors.description"),
+);
+
+@function get-default-font-color($type) {
+  @return partials.mapget($typography-default-colors, $type);
+}
+
+@function get-font-color($type, $size) {
+  @return partials.mapget($typography-size-properties, $type, $size, color);
+}
+
+@function get-font(
+  $type,
+  $size,
+  $weight: null,
+  $family: null,
+  $color: null,
+  $line-height: null,
+  $font-size: null
+) {
+  $properties: (
+    font-family: if($family, $family, get-font-family($type)),
+    font-weight: if($weight, partials.mapget($font-weights, $weight), get-font-weight($type, $size)),
+    color: if($color, $color, get-font-color($type, $size)),
+    line-height: if($line-height, $line-height, get-line-height($type, $size)),
+    font-size: if($font-size, $font-size, get-font-size($type, $size)),
+  );
+  @return $properties;
+}

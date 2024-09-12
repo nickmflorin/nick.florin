@@ -1,58 +1,101 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, type ForwardedRef } from "react";
 
-import { type ComponentProps, type HTMLElementProps, classNames } from "~/components/types";
+import { isFragment } from "react-is";
+
 import {
+  type ComponentProps,
+  type HTMLElementProps,
   type TypographyCharacteristics,
   getTypographyClassName,
-} from "~/components/types/typography";
+  classNames,
+} from "~/components/types";
 
-export type DescriptionComponent = "div" | "p";
+export type DescriptionComponent = "span" | "div" | "p";
 
-export interface DescriptionNodeProps extends TypographyCharacteristics, ComponentProps {
-  readonly children: React.ReactNode;
-  readonly as?: DescriptionComponent;
-}
-
-type DescriptionComponentProps<T extends DescriptionComponent> = Omit<
+type PolymorphicDescriptionProps<T extends DescriptionComponent> = Omit<
   HTMLElementProps<T>,
-  keyof ComponentProps
-> &
-  ComponentProps;
+  keyof ComponentProps | "ref"
+>;
 
-const Div = forwardRef<HTMLDivElement, DescriptionComponentProps<"div">>(
-  (props, ref): JSX.Element => <div {...props} ref={ref} className={classNames(props.className)} />,
-);
+type PolymorphicDescriptionRef<T extends DescriptionComponent> = {
+  div: ForwardedRef<HTMLDivElement>;
+  p: ForwardedRef<HTMLParagraphElement>;
+  span: ForwardedRef<HTMLSpanElement>;
+}[T];
 
-const P = forwardRef<HTMLDivElement, DescriptionComponentProps<"p">>(
-  (props, ref): JSX.Element => <p {...props} ref={ref} className={classNames(props.className)} />,
-);
+export type DescriptionNodeProps<C extends DescriptionComponent> = TypographyCharacteristics &
+  ComponentProps &
+  PolymorphicDescriptionProps<C> & {
+    readonly component?: DescriptionComponent;
+    readonly inherit?: boolean;
+  };
 
-const Components = {
-  p: P,
-  div: Div,
-} as const;
-
-/* I do not understand why HTMLDivElement works as a ref regardless of the component type prop, but
-   it does - likely because it is the most restrictive. */
-export const DescriptionNode = forwardRef<HTMLDivElement, DescriptionNodeProps>(
-  ({ children, style, as = "div", ...props }: DescriptionNodeProps, ref): JSX.Element => {
-    const Component = Components[as];
-    return (
-      <Component
-        style={style}
-        ref={ref}
-        className={classNames(
-          "description",
-          getTypographyClassName(props),
-          {
-            [classNames("text-sm", props.className)]: props.fontSize === undefined,
-            [classNames("max-sm:text-xs", props.className)]: props.fontSize === undefined,
-          },
-          props.className,
-        )}
-      >
-        {children}
-      </Component>
-    );
+export const DescriptionNode = forwardRef<
+  HTMLDivElement,
+  DescriptionNodeProps<DescriptionComponent>
+>(
+  <C extends DescriptionComponent>(
+    {
+      component = "div",
+      inherit = false,
+      fontSize,
+      fontWeight,
+      transform,
+      fontFamily,
+      lineClamp,
+      truncate,
+      align,
+      ...props
+    }: DescriptionNodeProps<C>,
+    ref: PolymorphicDescriptionRef<C>,
+  ): JSX.Element => {
+    if (
+      isFragment(props.children) ||
+      props.children === undefined ||
+      props.children === null ||
+      typeof props.children === "boolean" ||
+      (typeof props.children === "string" && props.children.trim() === "")
+    ) {
+      return <></>;
+    }
+    const ps = {
+      ...props,
+      className: classNames(
+        "description",
+        { "description--inherit": inherit },
+        getTypographyClassName({
+          fontSize,
+          fontWeight,
+          transform,
+          fontFamily,
+          lineClamp,
+          truncate,
+          align,
+        }),
+        {
+          [classNames("text-sm", props.className)]: fontSize === undefined,
+          [classNames("max-sm:text-xs", props.className)]: fontSize === undefined,
+        },
+        props.className,
+      ),
+    };
+    switch (component) {
+      case "span": {
+        const p = ps as HTMLElementProps<"span">;
+        return <span {...p} ref={ref as PolymorphicDescriptionRef<"span">} />;
+      }
+      case "div": {
+        const p = ps as HTMLElementProps<"div">;
+        return <div {...p} ref={ref as PolymorphicDescriptionRef<"div">} />;
+      }
+      case "p": {
+        const p = ps as HTMLElementProps<"p">;
+        return <p {...p} ref={ref as PolymorphicDescriptionRef<"p">} />;
+      }
+    }
   },
-);
+) as {
+  <C extends DescriptionComponent>(
+    props: DescriptionNodeProps<C> & { readonly ref?: PolymorphicDescriptionRef<C> },
+  ): JSX.Element;
+};

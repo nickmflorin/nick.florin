@@ -24,10 +24,10 @@ export const PopoverVariantClassNames: {
   [key in PopoverVariant]: (cs?: ComponentProps["className"]) => string;
 } = {
   [PopoverVariants.PRIMARY]: cs => classNames("text-white", "bg-blue-500", "shadow-md", cs),
-  [PopoverVariants.LIGHT]: cs => classNames("text-text", "bg-gray-50", "shadow-md", cs),
+  [PopoverVariants.LIGHT]: cs => classNames("text-body", "bg-gray-50", "shadow-md", cs),
   [PopoverVariants.SECONDARY]: cs =>
     classNames("text-heading", "bg-gradient-to-r from-gray-50 to-gray-200", "shadow-md", cs),
-  [PopoverVariants.WHITE]: cs => classNames("text-text", "bg-white", "shadow-md", cs),
+  [PopoverVariants.WHITE]: cs => classNames("text-body", "bg-white", "shadow-md", cs),
   [PopoverVariants.NONE]: cs => classNames(cs),
 };
 

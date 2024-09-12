@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 
 import { classNames } from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { PopoverContent, type FloatingContentProps } from "./PopoverContent";
 import * as types from "./types";

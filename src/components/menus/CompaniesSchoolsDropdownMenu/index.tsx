@@ -11,14 +11,15 @@ import { type ModelType } from "./types";
 const CompaniesSchoolsFloating = dynamic(() => import("./CompaniesSchoolsFloating"), {
   ssr: false,
   loading: () => (
-    <Button.Secondary
+    <Button.Solid
       isDisabled={true}
+      scheme="secondary"
       icon={{
-        right: <Icon name="angle-up" size="16px" dimension="height" fit="square" />,
+        right: <Icon icon="angle-up" size="16px" dimension="height" fit="square" />,
       }}
     >
       ...
-    </Button.Secondary>
+    </Button.Solid>
   ),
 });
 

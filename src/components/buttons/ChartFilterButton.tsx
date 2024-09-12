@@ -3,16 +3,17 @@ import { forwardRef } from "react";
 import { IconButton, type IconButtonProps } from "./generic";
 
 export interface ChartFilterButtonProps
-  extends Omit<IconButtonProps<"button">, "options" | "icon"> {}
+  extends Omit<IconButtonProps<"button">, "options" | "icon" | "element"> {}
 
 export const ChartFilterButton = forwardRef<HTMLButtonElement, ChartFilterButtonProps>(
   (props: ChartFilterButtonProps, ref): JSX.Element => (
-    <IconButton.Secondary
+    <IconButton.Solid
       size="medium"
+      scheme="secondary"
       {...props}
       ref={ref}
       icon={{ name: "sliders" }}
-      as="button"
+      element="button"
     />
   ),
 );

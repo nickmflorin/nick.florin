@@ -3,8 +3,7 @@ import type { ResumeModelSize } from "./types";
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { type FontWeight } from "~/components/types/typography";
+import { type ComponentProps, type FontWeight } from "~/components/types";
 import { LinkOrText } from "~/components/typography/LinkOrText";
 
 const LinkFontWeights: { [key in ResumeModelSize]: FontWeight } = {
@@ -42,6 +41,7 @@ export const ResumeModelSubTitle = <M extends BrandModel<T>, T extends ResumeBra
         medium: "text-smplus",
         large: "text-smplus max-sm:text-sm",
       }[size],
+      props.className,
     )}
     fontWeight={
       fontWeight !== undefined ? fontWeight : size !== undefined ? LinkFontWeights[size] : "medium"

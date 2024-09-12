@@ -1,38 +1,25 @@
 @use "partials";
 
 @use "./base" as *;
+@use "./constants" as constants;
 @use "./mixins" as mixins;
 
+@mixin label-base() {
+  @include typography-base();
+  @include mixins.font-family("label");
+  @include mixins.font("label", constants.get-default-size("label"));
+}
+
+label {
+  @include label-base();
+}
+
 .label {
-  // Do not define defaults for the typography mixins.  This allows the typography properties to only be applied if
-  // the component is provided with the appropriate props, and allows us to override the properties in SASS elsewhere
-  // in cases where the component is not provided with those props.
-  @extend %typography-base;
-
-  @include mixins.font($type: "label");
-
-  @include mixins.with-fonts("label") using ($data) {
-    $font-size: partials.mapget($data, font-size);
-    $line-height: partials.mapget($data, line-height);
-
-    > .icon {
-      height: $font-size;
-      margin-right: 6px;
-      width: auto;
-    }
-  }
-
+  @include label-base();
   display: flex;
 
-  &--dark {
-    color: theme("colors.labelDark");
-  }
-
-  &--transform-underline {
-    text-decoration: underline;
-  }
-
-  &--transform-caps {
-    text-transform: uppercase;
-  }
+  @include mixins.with-font-weights();
+  @include mixins.with-font-transforms();
+  @include mixins.with-font-families();
+  @include mixins.with-font-sizes("label");
 }

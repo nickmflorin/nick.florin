@@ -4,8 +4,14 @@ import { type ReactNode } from "react";
 
 import type * as types from "../types";
 
-import { type ComponentProps, type HTMLElementProps, classNames } from "~/components/types";
-import { sizeToString, sizeToNumber, type QuantitativeSize } from "~/components/types/sizes";
+import {
+  type ComponentProps,
+  type HTMLElementProps,
+  classNames,
+  sizeToString,
+  sizeToNumber,
+  type QuantitativeSize,
+} from "~/components/types";
 import { ShowHide } from "~/components/util";
 
 import { MenuItemIcon } from "./MenuItemIcon";

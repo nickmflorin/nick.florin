@@ -12,14 +12,14 @@ $input-variant-properties: (
   "primary": (
     background-color: theme("colors.white"),
     outline-color: theme("colors.border"),
-    color: theme("colors.text"),
-    caret-color: theme("colors.text"),
+    color: theme("colors.body"),
+    caret-color: theme("colors.body"),
     // TODO: Add to Tailwind Config instead.
     placeholder-color: color.change(#606873, $alpha: 0.6),
     disabled: (
       color: theme("colors.disabled"),
       placeholder-color: theme("colors.disabled"),
-      outline-color: theme("colors.disabledBorder"),
+      outline-color: theme("colors.disabled-border"),
     ),
     focused: (
       outline-color: theme("colors.blue.800"),
@@ -31,8 +31,8 @@ $input-variant-properties: (
   "bare": (
     background-color: theme("colors.gray.100"),
     outline-color: theme("colors.transparent"),
-    color: theme("colors.text"),
-    caret-color: theme("colors.text"),
+    color: theme("colors.body"),
+    caret-color: theme("colors.body"),
     // TODO: Add to Tailwind Config instead.
     placeholder-color: color.change(#606873, $alpha: 0.6),
     disabled: (

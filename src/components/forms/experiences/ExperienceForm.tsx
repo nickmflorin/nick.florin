@@ -10,7 +10,7 @@ import { ClientCompanySelect } from "~/components/input/select/ClientCompanySele
 import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 import { CheckboxField } from "../fields/CheckboxField";
 import { Form, type FormProps } from "../generic/Form";

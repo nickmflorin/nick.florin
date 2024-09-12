@@ -1,7 +1,7 @@
 import { type ApiEducation } from "~/prisma/model";
 
 import type { MenuOptions } from "~/components/menus";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { Select, type SelectProps } from "./generic";
 

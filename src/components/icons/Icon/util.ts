@@ -1,8 +1,5 @@
 import { type IconName } from "@fortawesome/fontawesome-svg-core";
 
-import { classNames } from "~/components/types";
-import { type Style } from "~/components/types";
-
 import {
   type IconFamily,
   type IconStyle,
@@ -11,22 +8,22 @@ import {
   DEFAULT_ICON_FAMILY,
   DEFAULT_ICON_STYLE,
   IconDiscreteSizes,
-  type IconProp,
   type IconProps,
   IconDimensions,
   IconFits,
   type ChildrenIconProps,
   type FontAwesomeIconProp,
   type BasicIconProps,
-} from "../types";
+} from "~/components/icons";
+import { type Style, classNames } from "~/components/types";
 
 const getIconNameClassName = (name: IconName) => `fa-${name}`;
 
 const getIconFamilyClassName = (family: IconFamily = DEFAULT_ICON_FAMILY) =>
   IconFamilyClassNameMap[family];
 
-const getIconStyleClassName = (iconStyle: IconStyle = DEFAULT_ICON_STYLE) =>
-  IconStyleClassNameMap[iconStyle];
+const getIconStyleClassName = (style: IconStyle = DEFAULT_ICON_STYLE) =>
+  IconStyleClassNameMap[style];
 
 /**
  * Returns the appropriate Font Awesome native class names for the <i> element that is rendered by
@@ -61,11 +58,22 @@ export const getNativeIconStyle = ({
   fit = IconFits.FIT,
 }: Pick<IconProps, "size" | "dimension" | "fit">): Style => {
   if (size === undefined || IconDiscreteSizes.contains(size)) {
+    // In this case, the sizing is handled by SASS via class names on the <i> element.
     return {};
   } else if (dimension === IconDimensions.HEIGHT) {
-    return { height: size, width: "auto", aspectRatio: fit === IconFits.SQUARE ? 1 : undefined };
+    return {
+      height: size,
+      width: "auto",
+      maxWidth: size,
+      aspectRatio: fit === IconFits.SQUARE ? 1 : undefined,
+    };
   } else {
-    return { width: size, height: "auto", aspectRatio: fit === IconFits.SQUARE ? 1 : undefined };
+    return {
+      width: size,
+      height: "auto",
+      maxHeight: size,
+      aspectRatio: fit === IconFits.SQUARE ? 1 : undefined,
+    };
   }
 };
 
@@ -102,14 +110,12 @@ const getDynamicIconClassName = (props: Pick<IconProps, DynamicIconClassNameProp
 export const getInternalIconClassName = ({
   className,
   ...props
-}: Pick<
-  BasicIconProps<IconProp> | ChildrenIconProps,
-  "className" | DynamicIconClassNamePropName
->): string => classNames("icon", getDynamicIconClassName(props), className);
+}: Pick<BasicIconProps | ChildrenIconProps, "className" | DynamicIconClassNamePropName>): string =>
+  classNames("icon", getDynamicIconClassName(props), className);
 
 export const getIconClassName = ({
   icon,
   ...rest
-}: Pick<BasicIconProps<IconProp>, "className" | DynamicIconClassNamePropName> & {
+}: Pick<BasicIconProps, "className" | DynamicIconClassNamePropName> & {
   icon: FontAwesomeIconProp;
 }): string => classNames(getNativeIconClassName(icon), getInternalIconClassName(rest));

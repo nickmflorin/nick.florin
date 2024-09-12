@@ -1,6 +1,6 @@
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 export interface FormFieldErrorProps extends ComponentProps {
   readonly children: string;

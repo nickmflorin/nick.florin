@@ -33,9 +33,14 @@ export const ColumnSelect = <T extends TableModel>() => {
       onChange={v => setVisibleColumns(v)}
     >
       {({ ref, params, isOpen }) => (
-        <Button.Secondary {...params} ref={ref} icon={{ right: <CaretIcon open={isOpen} /> }}>
+        <Button.Solid
+          {...params}
+          scheme="secondary"
+          ref={ref}
+          icon={{ right: <CaretIcon open={isOpen} /> }}
+        >
           Columns
-        </Button.Secondary>
+        </Button.Solid>
       )}
     </Select>
   );

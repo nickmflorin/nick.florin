@@ -3,7 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { prisma, type Transaction } from "~/prisma/client";
 import { type BrandResume } from "~/prisma/model";
 

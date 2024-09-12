@@ -3,7 +3,7 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { slugify } from "~/lib/formatters";
 import { prisma, type Transaction } from "~/prisma/client";
 import { type Detail, type User, type NestedDetail, type BrandProject } from "~/prisma/model";

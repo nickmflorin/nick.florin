@@ -5,14 +5,14 @@ import { classNames } from "~/components/types";
 import { IconButton, type IconButtonProps } from "./generic";
 
 export interface ClearButtonProps
-  extends Omit<IconButtonProps<"button">, "icon" | "options" | "iconSize" | "size"> {}
+  extends Omit<IconButtonProps<"button">, "icon" | "options" | "iconSize" | "size" | "element"> {}
 
 export const ClearButton = forwardRef<HTMLButtonElement, ClearButtonProps>(
   (props: ClearButtonProps, ref): JSX.Element => (
     <IconButton.Transparent
       {...props}
       ref={ref}
-      as="button"
+      element="button"
       size="xsmall"
       iconSize="16px"
       icon={{ name: "circle-xmark", iconStyle: "solid" }}

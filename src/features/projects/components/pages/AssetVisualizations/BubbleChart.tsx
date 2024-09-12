@@ -1,4 +1,4 @@
-import { Description } from "~/components/typography/Description";
+import { Description } from "~/components/typography";
 
 import { ProjectImage } from "../ProjectImage";
 import { Section } from "../Section";

@@ -3,12 +3,14 @@ import { useTransition, useState, useCallback, useEffect, useMemo } from "react"
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
 
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
 
 import { IconButton } from "~/components/buttons";
+import { Icon } from "~/components/icons/Icon";
+import { classNames } from "~/components/types";
 
 export interface DetailVisibilityButtonProps<D extends ApiDetail<[]> | NestedApiDetail<[]>> {
   readonly detail: D;
@@ -68,12 +70,22 @@ export const DetailVisibilityButton = <D extends ApiDetail<[]> | NestedApiDetail
   }, [detail.visible]);
 
   return (
-    <IconButton.Bare
+    <IconButton.Transparent
       className="text-gray-600 hover:text-gray-700"
-      icon={[
-        { icon: { name: "eye-slash", iconStyle: "solid" }, visible: !optimisticIsVisible },
-        { icon: { name: "eye", iconStyle: "solid" }, visible: optimisticIsVisible },
-      ]}
+      icon={
+        <>
+          <Icon
+            icon="eye-slash"
+            iconStyle="solid"
+            className={classNames({ hidden: optimisticIsVisible })}
+          />
+          <Icon
+            icon="eye"
+            iconStyle="solid"
+            className={classNames({ hidden: !optimisticIsVisible })}
+          />
+        </>
+      }
       size="xsmall"
       isLoading={isLoading || isPending}
       onClick={() => onVisibilityChange()}

@@ -1,0 +1,586 @@
+@use "sass:map";
+@use "sass:meta";
+@use "sass:list";
+
+@use "partials";
+
+@use "./mixins" as mixins;
+@use "./constants" as constants;
+
+$button-solid-colors: (
+  "primary": (
+    background-color: theme("colors.blue.800"),
+    color: theme("colors.white"),
+    outline-color: theme("colors.blue.800"),
+    hovered: (
+      background-color: theme("colors.blue.900"),
+      outline-color: theme("colors.blue.900"),
+    ),
+    focused: (
+      background-color: theme("colors.blue.900"),
+      outline-color: theme("colors.blue.900"),
+    ),
+    disabled: (
+      background-color: theme("colors.disabled-background"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+    active: (
+      background-color: theme("colors.blue.900"),
+      outline-color: theme("colors.blue.900"),
+    ),
+  ),
+  "secondary": (
+    background-color: theme("colors.gray.200"),
+    color: theme("colors.gray.700"),
+    outline-color: theme("colors.gray.200"),
+    hovered: (
+      background-color: theme("colors.gray.300"),
+      outline-color: theme("colors.gray.300"),
+      active: (
+        background-color: theme("colors.gray.400"),
+        outline-color: theme("colors.gray.400"),
+      ),
+    ),
+    focused: (
+      background-color: theme("colors.gray.300"),
+      outline-color: theme("colors.gray.300"),
+      active: (
+        background-color: theme("colors.gray.400"),
+        outline-color: theme("colors.gray.400"),
+      ),
+    ),
+    active: (
+      background-color: theme("colors.gray.400"),
+      outline-color: theme("colors.gray.400"),
+    ),
+    disabled: (
+      background-color: theme("colors.disabled-background"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+  ),
+  "success": (
+    background-color: theme("colors.green.500"),
+    color: theme("colors.white"),
+    outline-color: theme("colors.green.500"),
+    hovered: (
+      background-color: theme("colors.green.600"),
+      outline-color: theme("colors.green.600"),
+    ),
+    focused: (
+      background-color: theme("colors.green.600"),
+      outline-color: theme("colors.green.600"),
+    ),
+    disabled: (
+      background-color: theme("colors.disabled-background"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+  ),
+  "danger": (
+    background-color: theme("colors.red.500"),
+    color: theme("colors.white"),
+    outline-color: theme("colors.red.500"),
+    hovered: (
+      background-color: theme("colors.red.600"),
+      outline-color: theme("colors.red.600"),
+    ),
+    focused: (
+      background-color: theme("colors.red.600"),
+      outline-color: theme("colors.red.600"),
+    ),
+    disabled: (
+      background-color: theme("colors.red.200"),
+      outline-color: theme("colors.red.200"),
+    ),
+  ),
+  "light": (
+    background-color: theme("colors.gray.600"),
+    color: theme("colors.white"),
+    outline-color: theme("colors.gray.600"),
+    hovered: (
+      background-color: theme("colors.gray.700"),
+      outline-color: theme("colors.gray.700"),
+    ),
+    focused: (
+      background-color: theme("colors.gray.700"),
+      outline-color: theme("colors.gray.700"),
+    ),
+    disabled: (
+      background-color: theme("colors.disabled-background"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+  ),
+);
+
+$button-outlined-colors: (
+  "primary": (
+    outline-color: theme("colors.blue.800"),
+    background-color: theme("colors.white"),
+    color: theme("colors.blue.800"),
+    hovered: (
+      color: theme("colors.blue.900"),
+      background-color: theme("colors.gray.50"),
+      outline-color: theme("colors.blue.900"),
+    ),
+    focused: (
+      color: theme("colors.blue.900"),
+      background-color: theme("colors.gray.50"),
+      outline-color: theme("colors.blue.900"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+  ),
+  "secondary": (
+    outline-color: theme("colors.gray.700"),
+    background-color: theme("colors.white"),
+    color: theme("colors.gray.700"),
+    hovered: (
+      color: theme("colors.gray.800"),
+      background-color: theme("colors.gray.50"),
+      outline-color: theme("colors.gray.800"),
+    ),
+    focused: (
+      color: theme("colors.gray.800"),
+      background-color: theme("colors.gray.50"),
+      outline-color: theme("colors.gray.800"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+  ),
+  "danger": (
+    outline-color: theme("colors.red.500"),
+    background-color: theme("colors.transparent"),
+    color: theme("colors.red.500"),
+    hovered: (
+      outline-color: theme("colors.red.600"),
+      color: theme("colors.red.600"),
+      background-color: theme("colors.gray.50"),
+    ),
+    focused: (
+      outline-color: theme("colors.red.600"),
+      color: theme("colors.red.600"),
+      background-color: theme("colors.gray.50"),
+    ),
+    disabled: (
+      color: theme("colors.red.200"),
+      outline-color: theme("colors.red.200"),
+    ),
+  ),
+  "success": (
+    outline-color: theme("colors.green.500"),
+    background-color: theme("colors.white"),
+    color: theme("colors.green.500"),
+    hovered: (
+      outline-color: theme("colors.green.600"),
+      color: theme("colors.green.600"),
+    ),
+    focused: (
+      outline-color: theme("colors.green.600"),
+      color: theme("colors.green.600"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+  ),
+  "light": (
+    background-color: theme("colors.white"),
+    color: theme("colors.gray.600"),
+    outline-color: theme("colors.gray.600"),
+    hovered: (
+      outline-color: theme("colors.gray.700"),
+      color: theme("colors.gray.700"),
+    ),
+    focused: (
+      outline-color: theme("colors.gray.700"),
+      color: theme("colors.gray.700"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+      outline-color: theme("colors.disabled-border"),
+    ),
+  ),
+);
+
+$button-transparent-colors: (
+  "primary": (
+    outline-color: theme("colors.transparent"),
+    background-color: theme("colors.transparent"),
+    color: theme("colors.blue.700"),
+    hovered: (
+      color: theme("colors.blue.800"),
+      background-color: theme("colors.gray.50"),
+    ),
+    focused: (
+      color: theme("colors.blue.800"),
+      background-color: theme("colors.gray.50"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+  "secondary": (
+    outline-color: theme("colors.transparent"),
+    background-color: theme("colors.transparent"),
+    color: theme("colors.gray.700"),
+    hovered: (
+      color: theme("colors.gray.800"),
+      background-color: theme("colors.gray.50"),
+    ),
+    focused: (
+      color: theme("colors.gray.800"),
+      background-color: theme("colors.gray.50"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+  "danger": (
+    outline-color: theme("colors.transparent"),
+    background-color: theme("colors.transparent"),
+    color: theme("colors.red.500"),
+    hovered: (
+      color: theme("colors.red.600"),
+      background-color: theme("colors.gray.50"),
+    ),
+    focused: (
+      color: theme("colors.red.600"),
+      background-color: theme("colors.gray.50"),
+    ),
+    disabled: (
+      color: theme("colors.red.200"),
+    ),
+  ),
+  "success": (
+    outline-color: theme("colors.transparent"),
+    background-color: theme("colors.transparent"),
+    color: theme("colors.green.500"),
+    hovered: (
+      color: theme("colors.green.600"),
+      background-color: theme("colors.gray.50"),
+    ),
+    focused: (
+      color: theme("colors.green.600"),
+      background-color: theme("colors.gray.50"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+  "light": (
+    color: theme("colors.gray.600"),
+    outline-color: theme("colors.transparent"),
+    background-color: theme("colors.transparent"),
+    hovered: (
+      color: theme("colors.gray.700"),
+      background-color: theme("colors.gray.50"),
+    ),
+    focused: (
+      color: theme("colors.gray.700"),
+      background-color: theme("colors.gray.50"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+);
+
+$link-colors: (
+  "primary": (
+    background-color: theme("colors.transparent"),
+    color: theme("colors.blue.800"),
+    hovered: (
+      color: theme("colors.blue.900"),
+    ),
+    focused: (
+      color: theme("colors.blue.900"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+  "secondary": (
+    background-color: theme("colors.transparent"),
+    color: theme("colors.gray.700"),
+    hovered: (
+      color: theme("colors.gray.800"),
+    ),
+    focused: (
+      color: theme("colors.gray.800"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+  "light": (
+    background-color: theme("colors.transparent"),
+    color: theme("colors.gray.600"),
+    hovered: (
+      color: theme("colors.gray.700"),
+    ),
+    focused: (
+      color: theme("colors.gray.700"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+  "danger": (
+    background-color: theme("colors.transparent"),
+    color: theme("colors.red.700"),
+    hovered: (
+      color: theme("colors.red.800"),
+    ),
+    focused: (
+      color: theme("colors.red.800"),
+    ),
+    disabled: (
+      color: theme("colors.red.200"),
+    ),
+  ),
+  "success": (
+    background-color: theme("colors.transparent"),
+    color: theme("colors.green.700"),
+    hovered: (
+      color: theme("colors.green.800"),
+    ),
+    focused: (
+      color: theme("colors.green.800"),
+    ),
+    disabled: (
+      color: theme("colors.disabled"),
+    ),
+  ),
+);
+
+$button-color-properties: (
+  "button": (
+    "solid": $button-solid-colors,
+    "outlined": $button-outlined-colors,
+    "transparent": $button-transparent-colors,
+  ),
+  "icon-button": (
+    "solid": $button-solid-colors,
+    "outlined": $button-outlined-colors,
+    "transparent": $button-transparent-colors,
+  ),
+  "link": $link-colors,
+  "inline-link": $link-colors,
+);
+
+$fallbacks: (
+  "hovered": (
+    "focused",
+  ),
+  "focused": (
+    "hovered",
+  ),
+  "active": (
+    "focused",
+    "hovered",
+  ),
+);
+
+@function get-state-properties($attributes, $state-name) {
+  @if map.has-key($attributes, $state-name) {
+    @return map.get($attributes, $state-name);
+  }
+  $fallback-states: map.get($fallbacks, $state-name);
+  @if $fallback-states {
+    @each $fallback-state in $fallback-states {
+      @if map.has-key($attributes, $fallback-state) {
+        @return map.get($attributes, $fallback-state);
+      }
+    }
+  }
+  @return null;
+}
+
+@function parse-core-attributes($attrs) {
+  $attributes: (background-color, outline-color, color);
+  $parsed: ();
+  @each $a in $attributes {
+    $v: map.get($attrs, $a);
+    @if $v {
+      $parsed: map.set($parsed, $a, $v);
+    }
+  }
+  @return $parsed;
+}
+
+@function get-button-color-properties(
+  $identifiers: null,
+  $scheme: null,
+  $color: null,
+  $background-color: null,
+  $outline-color: null,
+  $outline: null,
+  $state: null
+) {
+  @if $identifiers {
+    $variant: map.get($identifiers, "variant");
+    $type: partials.mapget($identifiers, "type");
+    $scheme: partials.mapget($identifiers, "scheme");
+
+    @if $type == "button" or $type == "icon-button" {
+      @if not $variant {
+        @error "The variant must be provided for buttons and icon buttons.";
+      }
+    }
+
+    /* Standardize the optional "state" argument to an array of valid state names.  The state
+       can be provided as array if there are multiple nested states for which the properties should
+       be applied.  For instance, ("focused", "active") would refer to the case where the button is
+       focused but also active. */
+    $states: ();
+    @if $state {
+      @if meta.type-of($state) == list {
+        $states: $state;
+      } @else {
+        $states: ($state);
+      }
+    }
+    /* The base attributes for the button type and variant include state keys, which are used to
+       index nested mappings of properties that should take precedence when the button is in the
+       corresponding state. */
+    $base-attributes: ();
+    @if $type == "button" or $type == "icon-button" {
+      $base-attributes: partials.mapget($button-color-properties, $type, $variant, $scheme);
+    } @else {
+      $base-attributes: partials.mapget($button-color-properties, $type, $scheme);
+    }
+    /* Establish a new mapping that consists of the properties defined in the base attributes map
+       without the nested state keys.  These properties will be used to directly define the CSS
+       properties, so they must only be valid CSS properties, and not state keys. */
+    $core-attributes: parse-core-attributes($base-attributes);
+
+    @each $state in $states {
+      /* The base attributes will be null if the current level of the mapping has no more state
+         keys. */
+      @if $base-attributes {
+        /* With each state key, we are looking 1 level deeper in the set of base attributes, where
+           each level corresponds to a different state key. */
+        $base-attributes: get-state-properties($base-attributes, $state);
+        @if $base-attributes {
+          /* If, at the current level of the base attributes, there are CSS properties that
+             correspond to the specific state we are looking for at that level, they should be
+             merged with the former base attributes, overriding the former properties in cases
+             where the property is defined for the current state.
+
+             For instance, in the below structure:
+
+             (
+              background-color: theme("colors.blue.600"),
+              outline-color: theme("colors.blue.800"),
+              "hovered": (  ----------------> The level we are currently looking at in the loop.
+                background-color: theme("colors.blue.800"), -> Overrides former background-color.
+                "active": (
+                  ...
+                )
+              ),
+             )
+
+             The background-color for the "hovered" state would replace the background-color for
+             the properties defined one level above that state key. */
+          $state-attributes: parse-core-attributes($base-attributes);
+          $core-attributes: map.merge($core-attributes, $state-attributes);
+        }
+      }
+    }
+    @return get-button-color-properties($core-attributes...);
+  }
+  @return (
+    background-color: if($background-color, $background-color, theme("colors.transparent")),
+    outline-color: $outline-color,
+    outline:
+      if(
+        $outline,
+        $outline,
+        if($outline-color, constants.$button-outline-width solid $outline-color, null)
+      ),
+    color: $color
+  );
+}
+
+@mixin button-color-properties($identifiers, $state: null) {
+  $attrs: get-button-color-properties(
+    $identifiers: $identifiers,
+    $state: $state,
+  );
+  @include partials.mapped-properties($attrs);
+}
+
+@mixin button-color($identifiers) {
+  @include button-color-properties($identifiers);
+
+  @include mixins.button-hovered {
+    @include button-color-properties($identifiers, $state: "hovered");
+    @include mixins.button-active() {
+      @include button-color-properties($identifiers, $state: ("focused", "active"));
+    }
+  }
+
+  @include mixins.button-focused {
+    @include button-color-properties($identifiers, $state: "focused");
+    @include mixins.button-active() {
+      @include button-color-properties($identifiers, $state: ("focused", "active"));
+    }
+  }
+
+  @include partials.disabled {
+    @include button-color-properties($identifiers, $state: "disabled");
+  }
+
+  @include mixins.button-active() {
+    @include button-color-properties($identifiers, $state: "active");
+  }
+}
+
+@mixin button-colors($type) {
+  @if $type == "icon-button" or $type == "button" {
+    $default-variant: partials.mapget(constants.$button-default-variants, $type);
+    @include button-color(
+      (
+        type: $type,
+        scheme: constants.$button-default-scheme,
+        variant: $default-variant,
+      )
+    );
+    @each $variant in constants.$button-variants {
+      &.button--variant-#{$variant} {
+        @include button-color(
+          (
+            type: $type,
+            scheme: constants.$button-default-scheme,
+            variant: $variant,
+          )
+        );
+        @each $scheme in constants.$button-schemes {
+          &.button--scheme-#{$scheme} {
+            @include button-color(
+              (
+                type: $type,
+                variant: $variant,
+                scheme: $scheme,
+              )
+            );
+          }
+        }
+      }
+    }
+  } @else {
+    @each $scheme in constants.$button-schemes {
+      &.button--scheme-#{$scheme} {
+        @include button-color(
+          (
+            type: $type,
+            scheme: $scheme,
+          )
+        );
+      }
+    }
+  }
+}

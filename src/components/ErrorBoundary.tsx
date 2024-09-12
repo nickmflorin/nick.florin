@@ -1,7 +1,7 @@
 "use client";
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { ErrorView } from "./views/ErrorView";
 

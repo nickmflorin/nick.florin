@@ -1,5 +1,5 @@
 import { Link } from "~/components/buttons";
-import { Description } from "~/components/typography/Description";
+import { Description } from "~/components/typography";
 
 import { CaptionDescription } from "../CaptionDescription";
 import { DescriptionGroup } from "../DescriptionGroup";
@@ -16,7 +16,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     description={
       <Description>
         A CMS-powered, interactive and dynamic personal portfolio/website written using&nbsp;
-        <Link as="a" href="https://nextjs.org/">
+        <Link element="a" href="https://nextjs.org/">
           NextJS
         </Link>
         .
@@ -29,19 +29,19 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         <Description>
           The application does not rely on any third-party component library. Instead, it leverages
           an internal component library developed using frameworks like&nbsp;
-          <Link as="a" href="https://sass-lang.com/">
+          <Link element="a" href="https://sass-lang.com/">
             SASS
           </Link>
           &nbsp;and&nbsp;
-          <Link as="a" href="https://tailwindcss.com/">
+          <Link element="a" href="https://tailwindcss.com/">
             TailwindCSS
           </Link>
           ,&nbsp;along with tooling libraries such as&nbsp;
-          <Link as="a" href="https://floating-ui.com/">
+          <Link element="a" href="https://floating-ui.com/">
             Floating UI
           </Link>
           &nbsp;and&nbsp;
-          <Link as="a" href="https://www.framer.com/motion/">
+          <Link element="a" href="https://www.framer.com/motion/">
             Framer Motion
           </Link>
           .
@@ -49,18 +49,18 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         <Description>
           This choice was made primarily as an experiment - to gauge the difficulty, feasibility,
           limitations and benefits of avoiding a third-party component library like&nbsp;
-          <Link as="a" href="https://mantine.dev/">
+          <Link element="a" href="https://mantine.dev/">
             Mantine
           </Link>
           &nbsp;or&nbsp;
-          <Link as="a" href="https://chakra-ui.com/">
+          <Link element="a" href="https://chakra-ui.com/">
             Chakra UI
           </Link>
           .
         </Description>
         <Description className="italic">
           Disclosure:&nbsp;
-          <Link as="a" href="https://mantine.dev/">
+          <Link element="a" href="https://mantine.dev/">
             Mantine
           </Link>
           &nbsp;was used to a minimal extent in a couple of places where it did not make any sense
@@ -75,7 +75,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
           core. A&nbsp;
           <Emphasize>Skill</Emphasize>&nbsp;represents a particular ability or expertise learned
           throughout an academic and/or professional career, such as&nbsp;
-          <Link as="a" href="https://nextjs.org/">
+          <Link element="a" href="https://nextjs.org/">
             NextJS
           </Link>
           .
@@ -122,11 +122,11 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         All of the content of the application can be dynamically modified directly via the
         admin-only CMS. This includes the ability to modify, create, delete and update the
         experience history viewable on the&nbsp;
-        <Link as="link" href="/">
+        <Link element="link" href="/">
           Dashboard
         </Link>
         &nbsp;or&nbsp;
-        <Link as="link" href="/resume/experience">
+        <Link element="link" href="/resume/experience">
           Resume
         </Link>
         &nbsp;pages.
@@ -142,11 +142,11 @@ export const Website = (props: WebsiteProps): JSX.Element => (
       <DescriptionGroup>
         <Description>
           The application integrates directly with APIs from sources such as&nbsp;
-          <Link as="a" href="https://linkedin.com/">
+          <Link element="a" href="https://linkedin.com/">
             LinkedIn
           </Link>
           &nbsp;and&nbsp;
-          <Link as="a" href="https://github.com/">
+          <Link element="a" href="https://github.com/">
             GitHub
           </Link>
           ,&nbsp;allowing relevant data to be prepopulated or imported directly from these sources,

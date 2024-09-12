@@ -5,14 +5,14 @@ import { useState, useTransition, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useDebouncedCallback } from "use-debounce";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { isRecordType } from "~/lib/typeguards";
 
 import { Button } from "~/components/buttons/generic";
 import { TextInput } from "~/components/input/TextInput";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 import { useMutableParams } from "~/hooks";
 
 export interface TableSearchInputProps extends ComponentProps {
@@ -79,7 +79,7 @@ export const TableSearchInput = ({ onCreate, initialValue, ...props }: TableSear
           ? {
               right: [
                 <div key="0" className="flex flex-row gap-[2px] items-center">
-                  <Button.Bare
+                  <Button.Transparent
                     className={classNames(
                       "px-[8px] py-[2px] bg-gray-200 hover:bg-gray-300 min-h-[26px] h-[26px]",
                     )}
@@ -88,7 +88,7 @@ export const TableSearchInput = ({ onCreate, initialValue, ...props }: TableSear
                     onClick={async () => create()}
                   >
                     Add
-                  </Button.Bare>
+                  </Button.Transparent>
                   (
                   <Text
                     fontSize="xxs"

@@ -15,7 +15,7 @@ export const UploadResumeTile = ({ upload, ...props }: UploadResumeTileProps) =>
     upload={upload}
     actions={[
       types.isUploadOfState(upload, ["uploaded", "existing"]) && upload.model.primary === true ? (
-        <Icon key="0" name="check" size="14px" className="text-green-700" iconStyle="solid" />
+        <Icon key="0" icon="check" size="14px" className="text-green-700" iconStyle="solid" />
       ) : null,
       types.isUploadOfState(upload, ["uploaded", "existing"]) ? (
         <UploadResumeTileEllipsisMenu key="2" resume={upload.model} manager={props.manager} />

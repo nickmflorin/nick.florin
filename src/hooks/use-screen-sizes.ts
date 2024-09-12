@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-import { type ScreenSize, ScreenSizes, getMediaQuery } from "~/components/types/breakpoints";
+import { type ScreenSize, ScreenSizes, getMediaQuery } from "~/components/types";
 
 import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
 

@@ -1,46 +1,58 @@
-$button-border-width: 1px;
+$button-outline-width: 1px;
+$button-outline-offset: -$button-outline-width;
 
 $button-state-names: ("hovered", "focused", "disabled", "active");
 
-$button-font-family: theme("fontFamily.sans");
-$button-border-radius: theme("borderRadius.md");
+$button-default-font-family: theme("fontFamily.body");
+$button-default-border-radius: theme("borderRadius.sm");
+$button-default-font-weight: theme("fontWeight.medium");
 
-$button-types: ("button", "link", "icon-button");
-$button-default-type: "button";
+$button-schemes: ("primary", "light", "danger", "success", "secondary");
+$button-variants: ("solid", "outlined", "transparent");
 
-$button-variants: (
-  "button": (
-    "primary",
-    "secondary",
-    "bare",
-    "danger",
-  ),
-  "icon-button": (
-    "primary",
-    "secondary",
-    "transparent",
-    "bare",
-    "danger",
-    "light",
-  ),
-  "link": (
-    "primary",
-    "secondary",
-    "danger",
-  ),
+$button-default-scheme: "primary";
+
+$button-default-variants: (
+  "icon-button": "transparent",
+  "button": "solid",
 );
 
-$button-default-variant: (
-  "button": "primary",
-  "icon-button": "primary",
-  "link": "primary",
+$button-padding: (
+  "xsmall": 6px 14px,
+  "small": 8px 16px,
+  "medium": 10px 20px,
+  "large": 10px 26px,
+  "xlarge": 12px 30px,
 );
 
-$button-size-names: ("xsmall", "small", "medium", "large", "xlarge");
-
-// The button's icon size will be sized based on the button's primary 'size', unless the 'icon-size'
-// is explicitly included as a class name as well
-// (e.g. button--size-small button--icon-size-xlarge).
-$button-icon-size-names: ("xsmall", "small", "medium", "large", "xlarge", "full");
+// Note: These size variations are standardized between smaller elements, such as Inputs & Buttons.
+$button-sizes: (
+  "xsmall": 28px,
+  "small": 32px,
+  "medium": 36px,
+  "large": 40px,
+  "xlarge": 44px,
+);
 
 $button-default-size: "medium";
+$link-default-font-size: "sm";
+
+/* These are sizes that are applied to just the <Button /> component, as defaults, depending on the
+  'size' prop provided to the <Button />.  If the 'fontSize' prop is provided to the <Button />,
+  that value will override these.
+
+  Note that this is not applicable for the <Link />, <InlineLink /> or <IconButton /> components.
+  */
+$button-font-sizes: (
+  "xsmall": 12px,
+  "small": 13px,
+  "medium": 14px,
+  "large": 16px,
+  "xlarge": 18px,
+);
+
+$button-font-weights: (
+  "button": theme("fontWeight.medium"),
+  "link": theme("fontWeight.medium"),
+  "inline-link": inherit,
+);

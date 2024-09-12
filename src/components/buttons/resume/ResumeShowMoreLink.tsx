@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, type LinkProps } from "~/components/buttons";
-import { type TypographyVisibilityState } from "~/components/types/typography";
+import { type TypographyVisibilityState } from "~/components/types";
 
 export interface ResumeShowMoreLinkProps
   extends Omit<LinkProps<"button">, "options" | "flex" | "children"> {
@@ -14,7 +14,7 @@ const LinkText: { [key in TypographyVisibilityState]: string } = {
 };
 
 export const ResumeShowMoreLink = ({ state, ...props }: ResumeShowMoreLinkProps) => (
-  <Link.Primary fontSize="xs" fontWeight="regular" {...props} as="button" flex>
+  <Link.Primary fontSize="xs" fontWeight="regular" {...props} element="button" flex>
     {LinkText[state]}
   </Link.Primary>
 );

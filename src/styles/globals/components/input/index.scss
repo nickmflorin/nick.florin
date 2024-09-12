@@ -21,13 +21,8 @@
   @each $size in sizing.$input-sizes {
     &.input--size-#{$size} {
       @include sizing.input-size($size, $type);
-
       // Allow the font size to be overridden with a prop for each input size.
-      @include typography.with-font-sizes("text") using ($size, $data) {
-        &.f-size-#{$size} {
-          font-size: partials.mapget($data, font-size);
-        }
-      }
+      @include typography.with-font-sizes("body");
     }
   }
 }
@@ -54,13 +49,8 @@
   @include typography.with-font-families();
   // Allow the font-weight to be overridden for each size.
   @include typography.with-font-weights();
-
   // Allow the font size to be specified independently of the input's size.
-  @include typography.with-font-sizes("text") using ($size, $data) {
-    &.f-size-#{$size} {
-      font-size: partials.mapget($data, font-size);
-    }
-  }
+  @include typography.with-font-sizes("body");
 
   > .input__content {
     flex-grow: 100;

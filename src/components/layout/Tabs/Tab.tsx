@@ -17,7 +17,7 @@ export const Tab = ({ item }: TabProps) => {
     <TabButton
       href={href}
       className="max-sm:w-full"
-      as="link"
+      element="link"
       icon={item.icon}
       isPending={isPending}
       isActive={isActive}

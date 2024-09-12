@@ -17,7 +17,7 @@ export const ResumesAdminTab = () => {
       {({ isLoading }) => (
         <>
           <TabButton
-            as="button"
+            element="button"
             icon={{ name: "list-check" }}
             isActive={isOpen}
             isLoading={isLoading}

@@ -52,15 +52,16 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
         maxHeight={600}
       >
         {({ ref, params, isOpen }) => (
-          <Button.Secondary
+          <Button.Solid
             ref={ref}
             {...params}
+            scheme="secondary"
             icon={{
               right: <CaretIcon open={isOpen} />,
             }}
           >
             {ButtonContent[modelType]}
-          </Button.Secondary>
+          </Button.Solid>
         )}
       </Popover>
       <ShowHide show={drawerVisible && modelType === "company"}>

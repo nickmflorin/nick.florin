@@ -28,7 +28,7 @@ export const ResumeModelTags = <M extends BrandModel<T>, T extends ResumeBrand>(
           : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
       }
     />
-    <Icon name="pipe" className="h-[14px] text-text" />
+    <Icon icon="pipe" className="h-[14px] text-text" />
     <LocationTag
       className="h-full text-xs max-sm:text-xxs"
       iconClassName="h-[16px]"

@@ -30,7 +30,10 @@ export const Details = ({ details, size, isNested, ...props }: DetailsProps): JS
       {...props}
       className={classNames(
         "flex flex-col",
-        { "gap-[10px] max-md:gap-[8px]": isNested !== true, "gap-[6px] pl-[12px]": isNested },
+        {
+          "gap-[10px] max-md:gap-[8px]": isNested !== true,
+          "gap-[6px] pl-[12px] max-sm:pl-[4px]": isNested,
+        },
         props.className,
       )}
     >

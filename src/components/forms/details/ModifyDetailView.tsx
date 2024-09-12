@@ -23,7 +23,7 @@ export const ModifyDetailView = ({ detail, onDeleted, onExpand }: ModifyDetailVi
         isExpanded={false}
         onExpand={() => onExpand(detail)}
         actions={[
-          <IconButton.Bare
+          <IconButton.Transparent
             key="0"
             className="text-blue-800 hover:text-blue-900"
             icon={{ name: "plus-circle" }}

@@ -3,13 +3,14 @@ import React from "react";
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { classNames } from "~/components/types";
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 import {
-  TextFontSizes,
+  type ComponentProps,
+  type HTMLElementProps,
+  FontSizes,
   FontWeights,
   getTypographyClassName,
   type TypographyCharacteristics,
-} from "~/components/types/typography";
+} from "~/components/types";
 
 export interface BadgeProps
   extends ComponentProps,
@@ -23,7 +24,7 @@ export interface BadgeProps
 export const Badge = ({
   children,
   fontWeight = FontWeights.MEDIUM,
-  fontSize = TextFontSizes.SM,
+  fontSize = FontSizes.SM,
   icon,
   transform,
   fontFamily,

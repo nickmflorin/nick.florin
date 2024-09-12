@@ -2,7 +2,7 @@
 import { Circle } from "~/components/icons/svgs";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
 export interface LegendItemProps extends ComponentProps {

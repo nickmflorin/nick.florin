@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 export const toDateTime = (v: Date | DateTime | string | null): DateTime | null => {
   if (v instanceof Date) {

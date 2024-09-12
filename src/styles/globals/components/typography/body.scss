@@ -1,0 +1,53 @@
+@use "partials";
+
+@use "./base" as *;
+@use "./constants" as constants;
+@use "./mixins" as mixins;
+
+@mixin body-base() {
+  @include mixins.font("body", constants.get-default-size("body"));
+}
+
+html,
+body {
+  @include typography-base();
+  @include body-base();
+}
+
+p {
+  @include typography-base();
+
+  em,
+  b {
+    font-family: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+  }
+}
+
+p:not(.body-inherit) {
+  @include body-base();
+}
+
+.body {
+  @include typography-base();
+}
+
+span.body,
+div.body.body--inherit,
+p.body.body--inherit {
+  @include mixins.inherit-font-properties();
+
+  @include mixins.with-font-weights();
+  @include mixins.with-font-transforms();
+  @include mixins.with-fonts("body");
+}
+
+div.body:not(.body--inherit),
+p.body:not(.body--inherit) {
+  @include body-base();
+
+  @include mixins.with-font-weights();
+  @include mixins.with-font-transforms();
+  @include mixins.with-fonts("body");
+}

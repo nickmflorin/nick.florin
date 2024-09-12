@@ -1,14 +1,14 @@
 import { motion } from "framer-motion";
-import { type Required } from "utility-types";
+
+import { type IInternalGroupedLayoutNavItem } from "../types";
 
 import * as constants from "./constants";
 import { LayoutNavItem } from "./LayoutNavItem";
 import { LayoutNavItemChild } from "./LayoutNavItemChild";
-import { type IInternalLayoutNavItem } from "./types";
 
 export interface LayoutNavGroupProps {
   readonly isOpen: boolean;
-  readonly item: Required<IInternalLayoutNavItem, "children">;
+  readonly item: IInternalGroupedLayoutNavItem;
   readonly onOpen: () => void;
 }
 

@@ -5,7 +5,7 @@ import { type ApiDetail, type NestedApiDetail, type DetailEntityType } from "~/p
 
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { ModifyDetailsTimeline } from "./ModifyDetailsTimeline";
 

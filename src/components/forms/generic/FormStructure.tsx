@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 import { Loading } from "~/components/feedback/Loading";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Title } from "~/components/typography/Title";
+import { Title } from "~/components/typography";
 
 import { FormErrors } from "./FormErrors";
 import { type FormInstance, type BaseFormValues } from "./types";
@@ -30,7 +30,7 @@ export type FormStructureProps<I extends BaseFormValues> = {
 const Header = <I extends BaseFormValues>({ title }: Pick<FormStructureProps<I>, "title">) => (
   <>
     {typeof title === "string" ? (
-      <Title order={4} className="mb-4">
+      <Title component="h4" className="mb-4">
         {title}
       </Title>
     ) : title ? (

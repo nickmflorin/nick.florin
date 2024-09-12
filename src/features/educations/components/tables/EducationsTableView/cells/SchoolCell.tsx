@@ -4,7 +4,7 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { type ApiEducation } from "~/prisma/model";
 
 import { updateEducation } from "~/actions/mutations/educations";

@@ -7,11 +7,10 @@ import { type Action, mergeActions } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { DateTimeDisplay } from "~/components/typography/DateTimeDisplay";
+import { Label, Text } from "~/components/typography";
+import { DateTimeText } from "~/components/typography/DateTimeText";
 import { FileSize } from "~/components/typography/FileSize";
-import { Label } from "~/components/typography/Label";
 import { PipedText } from "~/components/typography/PipedText";
-import { Text } from "~/components/typography/Text";
 
 import * as types from "./types";
 
@@ -24,7 +23,7 @@ const UploadTileError = ({ error }: { error: string | string[] | FileError | Fil
     </div>
   ) : (
     <div className="flex flex-row items-center gap-[4px]">
-      <Icon name="circle-exclamation" size="14px" className="text-red-400" />
+      <Icon icon="circle-exclamation" size="14px" className="text-red-400" />
       <Text fontSize="xs" className="text-description">
         {typeof error === "string" ? error : error.message}
       </Text>
@@ -59,14 +58,13 @@ export const UploadTile = <M extends types.BaseUploadModel>({
     <div className="flex flex-col gap-[4px]">
       <div className="flex flex-row w-full justify-between items-center">
         <div className="flex flex-row gap-[8px] items-center">
-          <Icon name="file-pdf" size="14px" className="text-gray-600" />
+          <Icon icon="file-pdf" size="14px" className="text-gray-600" />
           {types.isUploadOfState(upload, ["existing", "uploaded"]) ? (
             <Link
-              as="a"
+              element="a"
               className="leading-[18px]"
               fontSize="xs"
-              target="_blank"
-              rel="noopener noreferrer"
+              openInNewTab
               href={upload.model.url}
             >
               {upload.model.filename}
@@ -80,7 +78,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
         <Actions
           actions={mergeActions(actions, [
             types.isUploadOfState(upload, ["failed"]) ? (
-              <IconButton.Bare
+              <IconButton.Transparent
                 size="xsmall"
                 icon={{ name: "xmark" }}
                 className={classNames(
@@ -94,7 +92,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
               />
             ) : null,
             types.isUploadOfState(upload, ["rejected"]) ? (
-              <IconButton.Bare
+              <IconButton.Transparent
                 size="xsmall"
                 icon={{ name: "xmark" }}
                 className={classNames(
@@ -127,7 +125,10 @@ export const UploadTile = <M extends types.BaseUploadModel>({
               </Text>
             </div>
           ) : types.isUploadOfState(upload, ["existing", "uploaded"]) ? (
-            <DateTimeDisplay prefix="Uploaded" date={upload.model.createdAt} />
+            <Text fontSize="sm">
+              Uploaded&nbsp;
+              <DateTimeText inherit value={upload.model.createdAt} />
+            </Text>
           ) : null}
         </PipedText>
         {types.isUploadOfState(upload, ["failed", "rejected"]) && (

@@ -1,11 +1,16 @@
-import { type ReactElement, type JSXElementConstructor, isValidElement } from "react";
-
+import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
-import { isFragment } from "react-is";
 
-import { classNames } from "~/components/types";
+import { classNames } from "./classes";
 
-import tailwindConfig from "~/tailwind.config";
+export const FontSizes = enumeratedLiterals(
+  ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
+  {},
+);
+export type FontSize = EnumeratedLiteralsMember<typeof FontSizes>;
+
+export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
+export type TitleComponent = `h${TitleOrder}`;
 
 export const TextAligns = enumeratedLiterals(
   ["left", "center", "right", "justify", "start", "end"] as const,
@@ -22,41 +27,22 @@ export const TextAlignClassNames: { [key in TextAlign]: `text-${key}` } = {
   end: "text-end",
 };
 
-export const TextFontSizes = enumeratedLiterals(
-  ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
-  {},
-);
-
-export type TextFontSize = EnumeratedLiteralsMember<typeof TextFontSizes>;
-
-export const LabelFontSizes = TextFontSizes;
-export type LabelFontSize = TextFontSize;
-
-export const DescriptionFontSizes = TextFontSizes;
-export type DescriptionFontSize = TextFontSize;
-
-export const TitleFontSizes = TextFontSizes;
-export type TitleFontSize = TextFontSize;
-
 export const FontWeights = enumeratedLiterals(
   ["light", "regular", "medium", "semibold", "bold"] as const,
   {},
 );
-
 export type FontWeight = EnumeratedLiteralsMember<typeof FontWeights>;
 
-export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
-
-export const TitleFontSizeOrderMap: { [key in TitleFontSize]: TitleOrder } = {
-  xxxs: 6,
-  xxs: 6,
-  xs: 5,
-  sm: 4,
-  smplus: 4,
-  md: 3,
-  lg: 2,
-  xl: 1,
-};
+export const TitleFontSizeOrderMap = {
+  xxxs: "h6",
+  xxs: "h6",
+  xs: "h6",
+  sm: "h5",
+  smplus: "h4",
+  md: "h3",
+  lg: "h2",
+  xl: "h1",
+} as const satisfies { [key in FontSize]: TitleComponent };
 
 export const TextTransforms = enumeratedLiterals(
   ["uppercase", "lowercase", "capitalize", "underline"] as const,
@@ -83,10 +69,8 @@ export const lineClampClassName = (clamp: LineClamp = 0) => {
   });
 };
 
-export interface TypographyCharacteristics<
-  F extends TextFontSize | TitleFontSize | LabelFontSize | DescriptionFontSize = TextFontSize,
-> {
-  readonly fontSize?: F;
+export interface TypographyCharacteristics {
+  readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
   readonly transform?: TextTransform;
@@ -96,7 +80,7 @@ export interface TypographyCharacteristics<
 }
 
 export const getTypographyClassName = (props: TypographyCharacteristics): string =>
-  classNames(
+  clsx(
     /* Note: The 'fontSize' class name cannot be called 'font-size-<size>' because it can conflict
        with Tailwind class names and confuses the TWMerge package:
        https://github.com/dcastil/tailwind-merge/blob/v2.4.0/docs/limitations.md  */
@@ -109,35 +93,4 @@ export const getTypographyClassName = (props: TypographyCharacteristics): string
     { truncate: props.truncate },
   );
 
-export type SingleTextNode =
-  | string
-  | number
-  | false
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  | ReactElement<any, string | JSXElementConstructor<any>>
-  | null
-  | undefined;
-
-export type RenderableSingleTextNode =
-  | string
-  | number
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  | ReactElement<any, string | JSXElementConstructor<any>>;
-
-export type TextNode = SingleTextNode | Iterable<TextNode>;
-export type RenderableTextNode = TextNode | Iterable<RenderableTextNode>;
-
-export const singleTextNodeCanRender = (node: SingleTextNode): node is RenderableSingleTextNode => {
-  if (node === null || node === undefined || typeof node === "boolean") {
-    return false;
-  }
-  return (
-    (isValidElement(node) || typeof node === "string" || typeof node === "number") &&
-    !isFragment(node)
-  );
-};
-
 export type TypographyVisibilityState = "expanded" | "collapsed";
-
-export const isTailwindFontSizeValue = (value: string) =>
-  Object.keys(tailwindConfig.theme.fontSize).includes(value);

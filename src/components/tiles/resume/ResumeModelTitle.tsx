@@ -5,8 +5,7 @@ import { type BrandModel, type ResumeBrand, getDegree } from "~/prisma/model";
 import { ExpandResumeModelButton } from "~/components/buttons/resume";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography/Text";
-import { Title } from "~/components/typography/Title";
+import { Text, Title } from "~/components/typography";
 import { ShowHide } from "~/components/util";
 
 const Titles: {
@@ -22,17 +21,17 @@ const Titles: {
     </Text>
   ),
   medium: ({ children }) => (
-    <Title order={3} className="leading-[22px] max-sm:text-title_sm max-sm:leading-[22px]">
+    <Title component="h3" className="leading-[22px] max-sm:text-title-sm max-sm:leading-[22px]">
       {children}
     </Title>
   ),
   large: ({ children }) => (
     <Title
-      order={2}
+      component="h2"
       className={classNames(
-        "leading-[22px] text-title_md",
-        "max-md:leading-[22px] max-md:text-title_smplus",
-        "max-sm:text-title_sm max-sm:leading-[22px]",
+        "leading-[22px] text-title-md",
+        "max-md:leading-[22px] max-md:text-title-smplus",
+        "max-sm:text-title-sm max-sm:leading-[22px]",
       )}
     >
       {children}

@@ -1,7 +1,7 @@
 @use "./constants" as constants;
 
 .layout {
-  background-color: theme("colors.appBackground");
+  background-color: theme("colors.app-background");
   display: flex;
   flex-direction: column;
   width: 100vw;

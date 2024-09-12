@@ -6,8 +6,7 @@ import { Skills } from "~/components/badges/collections/Skills";
 import { Link } from "~/components/buttons";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Description } from "~/components/typography/Description";
-import { Label } from "~/components/typography/Label";
+import { Label, Description } from "~/components/typography";
 
 import { Details } from "./Details";
 
@@ -39,7 +38,7 @@ export const Detail = <
           <Label className="w-[8px] text-sm max-sm:text-xs">{`${index}.`}</Label>
           {detail.project ? (
             <Link
-              as="link"
+              element="link"
               href={`/projects/${detail.project.slug}`}
               className="text-sm max-sm:text-xs"
             >
@@ -52,7 +51,7 @@ export const Detail = <
       ) : detail.project ? (
         <div className="flex flex-row items-center gap-[4px]">
           <Link
-            as="link"
+            element="link"
             href={`/projects/${detail.project.slug}`}
             gap="4px"
             flex

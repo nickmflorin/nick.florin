@@ -44,7 +44,7 @@ export const OrganizationsMenuItemGroup = (props: OrganizationsMenuItemGroupProp
         >
           <div className="w-[16px] h-[16px] flex flex-col items-center justify-center">
             {organization && organization.id === mem.organization.id ? (
-              <Icon name="check" size="14px" iconStyle="solid" className="text-green-600" />
+              <Icon icon="check" size="14px" iconStyle="solid" className="text-green-600" />
             ) : mem.organization.id === changingToOrg ? (
               <Spinner size="14px" className="text-description" isLoading={true} />
             ) : (

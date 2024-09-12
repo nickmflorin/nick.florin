@@ -15,6 +15,12 @@
   outline-width: $w;
 }
 
+@mixin fully-constrained-dimension($dimension, $value) {
+  #{$dimension}: $value;
+  min-#{$dimension}: $value;
+  max-#{$dimension}: $value;
+}
+
 @mixin transition($value) {
   /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-transition: $value;

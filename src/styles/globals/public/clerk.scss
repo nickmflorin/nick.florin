@@ -48,13 +48,30 @@ h6.cl-headerTitle {
 }
 
 button.cl-formButtonPrimary {
-  @include buttons.button("button", $variant: "primary", $size: "small");
+  @include buttons.button-base();
+  @include buttons.button-size("button", "small");
+  @include buttons.button-color(
+    (
+      type: "button",
+      variant: "solid",
+      scheme: "primary",
+    )
+  );
+
   outline: none !important;
   box-shadow: none !important;
 }
 
 button.cl-socialButtonsBlockButton__google {
-  @include buttons.button("button", $variant: "secondary", $size: "medium");
+  @include buttons.button-base();
+  @include buttons.button-size("button", "medium");
+  @include buttons.button-color(
+    (
+      type: "button",
+      variant: "solid",
+      scheme: "secondary",
+    )
+  );
   outline: none !important;
   border: none !important;
   box-shadow: none !important;

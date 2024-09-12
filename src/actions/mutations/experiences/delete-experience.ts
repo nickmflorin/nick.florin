@@ -1,6 +1,6 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { prisma } from "~/prisma/client";
 import { DetailEntityType, calculateSkillsExperience } from "~/prisma/model";
 

@@ -5,7 +5,7 @@ import { useRef, forwardRef } from "react";
 import { Radio as RootRadio, type RadioProps as RootRadioProps } from "@mantine/core";
 
 import { classNames } from "~/components/types";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 import { type ComponentProps } from "../types";
 

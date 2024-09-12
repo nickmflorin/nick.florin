@@ -9,6 +9,6 @@ export interface CaretIconProps {
 
 export const CaretIcon = ({ open }: CaretIconProps) => (
   <motion.div key="0" initial={{ rotate: 0 }} animate={{ rotate: open ? 180 : 0 }}>
-    <Icon name="angle-up" size="16px" dimension="height" fit="square" />
+    <Icon icon="angle-up" size="16px" dimension="height" fit="square" />
   </motion.div>
 );

@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   line-height: unset !important;
+  color: inherit;
 
   @include partials.disabled {
     color: theme("colors.disabled");
@@ -153,7 +154,7 @@
 
 .spinner {
   // The default color, unless overridden via Tailwind classes or elsewhere in the SASS files.
-  color: theme("colors.blue.800");
+  color: theme("colors.blue.700");
   -webkit-animation: spin 1s infinite linear;
   animation: spin 1s infinite linear;
   z-index: 100;

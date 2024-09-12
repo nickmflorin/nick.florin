@@ -8,8 +8,8 @@ export interface SignInButtonProps
 
 export const SignInButton = (props: SignInButtonProps) => (
   <RootSignInButton>
-    <Button.Primary {...props} as="div">
+    <Button.Solid {...props} scheme="primary" element="div">
       Sign In
-    </Button.Primary>
+    </Button.Solid>
   </RootSignInButton>
 );

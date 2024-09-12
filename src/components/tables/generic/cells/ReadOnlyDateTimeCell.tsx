@@ -1,4 +1,4 @@
-import { PartitionedDateTimeDisplay } from "~/components/typography/PartitionedDateTimeDisplay";
+import { DateTimeText } from "~/components/typography/DateTimeText";
 
 export type ReadOnlyDateTimeCellProps = {
   readonly date: Date;
@@ -6,7 +6,7 @@ export type ReadOnlyDateTimeCellProps = {
 
 export const ReadOnlyDateTimeCell = ({ date }: ReadOnlyDateTimeCellProps): JSX.Element => (
   <div className="flex flex-row items-center justify-center">
-    <PartitionedDateTimeDisplay date={date} fontWeight="regular" />
+    <DateTimeText formatSeparately value={date} fontWeight="regular" />
   </div>
 );
 

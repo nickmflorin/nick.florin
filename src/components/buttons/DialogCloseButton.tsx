@@ -12,7 +12,7 @@ export const DialogCloseButton = forwardRef<HTMLButtonElement, DialogCloseButton
     <IconButton.Transparent
       {...props}
       ref={ref}
-      as="button"
+      element="button"
       size="xsmall"
       iconSize="large"
       icon={{ name: "xmark", iconStyle: "solid" }}

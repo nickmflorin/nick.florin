@@ -5,7 +5,7 @@ import { useState, useEffect, useTransition, useCallback } from "react";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { type ApiSkill } from "~/prisma/model";
 
 import { updateSkill } from "~/actions/mutations/skills";
@@ -13,7 +13,7 @@ import { updateSkill } from "~/actions/mutations/skills";
 import { Checkbox } from "~/components/input/Checkbox";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import type * as types from "~/components/tables/types";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 interface ExperienceCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;

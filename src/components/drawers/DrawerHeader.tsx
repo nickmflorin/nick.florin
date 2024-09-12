@@ -1,6 +1,6 @@
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Title } from "~/components/typography/Title";
+import { Title } from "~/components/typography";
 
 export interface DrawerHeaderProps extends ComponentProps {
   readonly children?: string | JSX.Element;
@@ -9,7 +9,7 @@ export interface DrawerHeaderProps extends ComponentProps {
 const _DrawerHeader = ({ children, ...props }: DrawerHeaderProps) =>
   children ? (
     <div {...props} className={classNames("drawer__header", props.className)}>
-      {typeof children === "string" ? <Title order={4}>{children}</Title> : children}
+      {typeof children === "string" ? <Title component="h4">{children}</Title> : children}
     </div>
   ) : (
     <></>

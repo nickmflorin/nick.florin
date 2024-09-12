@@ -3,7 +3,7 @@ import { type Reducer } from "react";
 import { isEqual } from "lodash-es";
 
 import { UnreachableCaseError } from "~/application/errors";
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { getModelId, getModelLabel } from "~/components/menus";
 

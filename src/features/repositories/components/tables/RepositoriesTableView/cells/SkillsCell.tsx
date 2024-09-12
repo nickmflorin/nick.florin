@@ -3,7 +3,7 @@ import { useEffect, useState, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { type ApiRepository } from "~/prisma/model";
 
 import { updateRepository } from "~/actions/mutations/repositories";

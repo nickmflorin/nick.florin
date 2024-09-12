@@ -2,7 +2,7 @@ import { type ReactNode, useMemo, useCallback, useRef, useEffect } from "react";
 
 import { type PopoverContentProps } from "@reactour/tour";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
 
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

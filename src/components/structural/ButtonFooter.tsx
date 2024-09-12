@@ -65,7 +65,7 @@ export const ButtonFooter = ({
 
   const visibility = buttonVisibility({ submitButtonType, onSubmit, onCancel, ...props });
   if (!(visibility.submit || visibility.cancel)) {
-    import("~/application/logger").then(({ logger }) => {
+    import("~/internal/logger").then(({ logger }) => {
       logger.error("The button footer is not configured to show a submit or cancel button.");
     });
     return <></>;
@@ -87,8 +87,9 @@ export const ButtonFooter = ({
       )}
     >
       <ShowHide show={visibility.cancel}>
-        <Button.Secondary
-          as="button"
+        <Button.Solid
+          scheme="secondary"
+          element="button"
           className="button-footer__button"
           size={buttonSize}
           onClick={e => onCancel?.(e)}
@@ -96,20 +97,20 @@ export const ButtonFooter = ({
           isDisabled={isDisabled || cancelIsDisabled}
         >
           {cancelText}
-        </Button.Secondary>
+        </Button.Solid>
       </ShowHide>
       <ShowHide show={visibility.submit}>
-        <Button.Primary
+        <Button.Solid
           className="button-footer__button"
           size={buttonSize}
-          as="button"
+          element="button"
           type={submitButtonType}
           isLoading={submitting}
           onClick={e => onSubmit?.(e)}
           isDisabled={isDisabled || submitIsDisabled}
         >
           {submitText}
-        </Button.Primary>
+        </Button.Solid>
       </ShowHide>
     </div>
   );

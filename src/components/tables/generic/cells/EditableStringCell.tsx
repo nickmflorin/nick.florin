@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import type { ApiClientErrorJson } from "~/api";
 import { isApiClientErrorJson } from "~/api";

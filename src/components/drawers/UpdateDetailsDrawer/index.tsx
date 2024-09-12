@@ -10,7 +10,7 @@ import {
 
 import { IconButton } from "~/components/buttons";
 import { Loading } from "~/components/feedback/Loading";
-import { Title } from "~/components/typography/Title";
+import { Title } from "~/components/typography";
 
 import { Drawer } from "../Drawer";
 import { DrawerContent } from "../DrawerContent";
@@ -43,11 +43,12 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
         <>
           <DrawerHeader>
             <div className="flex flex-row items-center gap-[8px]">
-              <IconButton.Light
+              <IconButton.Transparent
+                scheme="light"
                 icon={{ name: "arrow-left" }}
                 onClick={() => setExpandedDetail(null)}
               />
-              <Title order={4}>{expandedDetail.label}</Title>
+              <Title component="h4">{expandedDetail.label}</Title>
             </div>
           </DrawerHeader>
           <DrawerContent>

@@ -3,9 +3,12 @@ import React from "react";
 import type * as types from "../types";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { type Size, sizeToString } from "~/components/types/sizes";
-import { type TypographyCharacteristics } from "~/components/types/typography";
+import {
+  type ComponentProps,
+  type Size,
+  sizeToString,
+  type TypographyCharacteristics,
+} from "~/components/types";
 
 import { ErrorContent } from "./ErrorContent";
 import { ErrorTitle } from "./ErrorTitle";
@@ -26,7 +29,7 @@ export const ErrorDetail = ({
   className,
   gap = 12,
   title = "Error",
-  titleClassName = "text-text",
+  titleClassName = "text-body",
   titleFontFamily,
   titleFontWeight = "medium",
   titleFontSize = "lg",

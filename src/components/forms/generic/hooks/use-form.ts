@@ -13,7 +13,7 @@ import {
   type SubmitErrorHandler,
 } from "react-hook-form";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
 
 import {

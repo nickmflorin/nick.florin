@@ -1,5 +1,11 @@
 @use "./buttons" as buttons;
 
+$paginator-button-identifiers: (
+  type: "button",
+  variant: "solid",
+  scheme: "secondary",
+);
+
 .paginator {
   width: 100%;
 
@@ -10,12 +16,13 @@
     width: 100%;
 
     > button {
-      @include buttons.button(
-        "button",
-        $size: "small",
-        $variant: "secondary",
-        $active-selector: '[data-active="true"]'
-      );
+      @include buttons.button-base();
+      @include buttons.button-size("button", "small");
+      @include buttons.button-color($paginator-button-identifiers);
+
+      &[data-active="true"] {
+        @include buttons.button-color-properties($paginator-button-identifiers, $state: "active");
+      }
     }
 
     > button:first-child {

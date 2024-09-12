@@ -8,7 +8,7 @@ import { SignInButton } from "~/components/buttons/SignInButton";
 import { SignOutButton } from "~/components/buttons/SignOutButton";
 import { Icon } from "~/components/icons/Icon";
 import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { DropdownMenu } from "../generic/DropdownMenu";
 import { Menu } from "../generic/Menu";
@@ -41,12 +41,13 @@ export const ClientSiteDropdownMenu = ({ resume, ...props }: ClientSiteDropdownM
                   window.open(resume.url, "_blank");
                 }}
               >
-                <Icon name="file-user" size="14px" iconStyle="solid" className="text-inherit" />
+                <Icon icon="file-user" size="14px" iconStyle="solid" className="text-inherit" />
                 <Text fontSize="xs" className="grow text-inherit">
                   Resume
                 </Text>
-                <IconButton.Secondary
-                  as="button"
+                <IconButton.Solid
+                  element="button"
+                  scheme="secondary"
                   icon={{ name: "cloud-arrow-down" }}
                   onClick={e => {
                     e.stopPropagation();
@@ -67,7 +68,13 @@ export const ClientSiteDropdownMenu = ({ resume, ...props }: ClientSiteDropdownM
         </div>
       }
     >
-      <IconButton.Secondary as="button" icon={{ name: "bars" }} id="site-dropdown-menu-button" />
+      <IconButton.Solid
+        element="button"
+        scheme="secondary"
+        icon={{ name: "bars" }}
+        id="site-dropdown-menu-button"
+        className="max-xs:hidden"
+      />
     </DropdownMenu>
   );
 };

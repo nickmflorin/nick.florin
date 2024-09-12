@@ -3,9 +3,8 @@ import React, { useMemo } from "react";
 import { isHttpError, ApiClientError } from "~/api";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { type TypographyCharacteristics } from "~/components/types/typography";
-import { Text } from "~/components/typography/Text";
+import { type ComponentProps, type TypographyCharacteristics } from "~/components/types";
+import { Text } from "~/components/typography";
 
 import { type ErrorType } from "../types";
 
@@ -17,7 +16,7 @@ export interface ErrorTitleProps extends TypographyCharacteristics, ComponentPro
 export const ErrorTitle = ({
   children,
   error,
-  className = "text-text",
+  className = "text-body",
   fontWeight = "medium",
   fontSize = "lg",
   ...props

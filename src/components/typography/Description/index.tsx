@@ -1,27 +1,19 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 
 import { type QuantitativeSize, sizeToString } from "~/components/types/sizes";
-import {
-  type SingleTextNode,
-  type RenderableSingleTextNode,
-  singleTextNodeCanRender,
-} from "~/components/types/typography";
 import { useControlledTypographyVisibility } from "~/components/typography/hooks";
 
-import { DescriptionNode, type DescriptionNodeProps } from "./DescriptionNode";
+import {
+  DescriptionNode,
+  type DescriptionNodeProps,
+  type DescriptionComponent,
+} from "./DescriptionNode";
 import { WithShowMore } from "./WithShowMore";
-
-const descriptionNodeCanRender = (node: SingleTextNode): node is RenderableSingleTextNode => {
-  if (typeof node === "string") {
-    return node.trim().length !== 0;
-  }
-  return singleTextNodeCanRender(node);
-};
 
 const splitChildNodeString = (child: string, options: { lineBreakHeight?: QuantitativeSize }) => {
   if (child.includes("\n")) {
-    const filtered = child.split("\n").filter(p => descriptionNodeCanRender(p));
+    const filtered = child.split("\n").filter(p => Boolean(p));
     return filtered.flatMap((c, index) =>
       index !== filtered.length - 1
         ? [
@@ -38,45 +30,44 @@ const splitChildNodeString = (child: string, options: { lineBreakHeight?: Quanti
   return [child];
 };
 
-export interface DescriptionProps extends DescriptionNodeProps {
+export type DescriptionProps<C extends DescriptionComponent> = DescriptionNodeProps<C> & {
   readonly lineBreakHeight?: QuantitativeSize;
   readonly includeShowMoreLink?: boolean;
-}
+};
 
-export const Description = ({
+export const Description = <C extends DescriptionComponent>({
   children,
   lineBreakHeight = 6,
   includeShowMoreLink = false,
   ...props
-}: DescriptionProps): JSX.Element => {
+}: DescriptionProps<C>): JSX.Element => {
   const { ref, state, isTruncated, toggle } = useControlledTypographyVisibility({});
 
   const nodes = useMemo(
     () =>
       (Array.isArray(children) ? children : [children]).reduce(
-        (acc: RenderableSingleTextNode[], child): RenderableSingleTextNode[] => {
+        (acc: ReactNode[], child): ReactNode[] => {
           if (Array.isArray(child)) {
             return [
               ...acc,
               ...child
-                .filter((c): c is RenderableSingleTextNode => descriptionNodeCanRender(c))
+                .filter((c): c is ReactNode => Boolean(c))
                 .reduce(
-                  (acc: RenderableSingleTextNode[], c) => [
+                  (acc: ReactNode[], c) => [
                     ...acc,
                     ...(typeof c === "string" ? splitChildNodeString(c, { lineBreakHeight }) : [c]),
                   ],
                   [],
                 ),
             ];
-          } else if (descriptionNodeCanRender(child)) {
-            if (typeof child === "string") {
-              return [...acc, ...splitChildNodeString(child, { lineBreakHeight })];
-            }
+          } else if (typeof child === "string") {
+            return [...acc, ...splitChildNodeString(child, { lineBreakHeight })];
+          } else if (child) {
             return [...acc, child];
           }
           return acc;
         },
-        [] as RenderableSingleTextNode[],
+        [] as ReactNode[],
       ),
     [children, lineBreakHeight],
   );

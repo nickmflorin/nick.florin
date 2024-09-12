@@ -7,9 +7,8 @@ import type * as types from "./types";
 
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 
-import type { ComponentProps } from "~/components/types";
+import type { ComponentProps, ScreenSize } from "~/components/types";
 import { classNames } from "~/components/types";
-import { type ScreenSize } from "~/components/types/breakpoints";
 import { ShowHide } from "~/components/util";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
@@ -81,12 +80,18 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
               expandable={titleIsExpandable}
               pushOnExpand={pushOnExpandTitle}
             />
-            <ResumeModelSubTitle model={model} size={size} />
+            <ResumeModelSubTitle model={model} size={size} className="max-xxs:hidden" />
           </div>
           <ShowHide show={showTags}>
-            <ResumeModelTags model={model} />
+            <ResumeModelTags model={model} className="max-xxs:hidden" />
           </ShowHide>
         </div>
+      </div>
+      <div className="hidden max-xxs:flex max-xxs:flex-col max-xxs:gap-[2px]">
+        <ResumeModelSubTitle model={model} size={size} />
+        <ShowHide show={showTags}>
+          <ResumeModelTags model={model} />
+        </ShowHide>
       </div>
       <ShowHide show={Boolean(children) && !isFragment(children)}>
         <div

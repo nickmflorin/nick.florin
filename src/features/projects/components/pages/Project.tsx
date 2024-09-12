@@ -5,7 +5,7 @@ import { Skills } from "~/components/badges/collections/Skills";
 import { RepositoryTile } from "~/components/tiles/RepositoryTile";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Title } from "~/components/typography/Title";
+import { Title } from "~/components/typography";
 
 import { Disclaimer } from "./Disclaimer";
 
@@ -44,7 +44,7 @@ export const Project = ({
           "max-sm:flex-col max-sm:items-start max-sm:gap-2",
         )}
       >
-        <Title order={3} className="max-md:text-title_sm max-w-fit">
+        <Title component="h3" className="max-md:text-title-sm max-w-fit">
           {title}
         </Title>
         {underConstruction && (

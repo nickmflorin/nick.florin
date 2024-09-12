@@ -9,7 +9,7 @@ import { getSchools } from "~/actions/fetches/schools";
 
 import { DrawerIds, type DrawerIdPropsPair } from "~/components/drawers";
 import { Loading } from "~/components/feedback/Loading";
-import { Text } from "~/components/typography/Text";
+import { Text } from "~/components/typography";
 
 import { DeleteCompanySchoolButton } from "./DeleteCompanySchoolButton";
 import { type ModelType, type Model } from "./types";

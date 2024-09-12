@@ -1,4 +1,4 @@
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";

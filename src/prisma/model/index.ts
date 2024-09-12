@@ -31,7 +31,7 @@ const formatEndDate = (end: Date | null, postPoned?: boolean): string => {
 };
 
 export const stringifyTimePeriod = ({ startDate, endDate, postPoned }: ModelTimePeriod): string =>
-  `${`${DateTime.fromJSDate(startDate).monthLong} ${
+  `${`${DateTime.fromJSDate(startDate).monthShort} ${
     DateTime.fromJSDate(startDate).year
   }`} - ${formatEndDate(endDate, postPoned)}`;
 

@@ -1,7 +1,6 @@
 import { Icon } from "~/components/icons/Icon";
 import { Circle } from "~/components/icons/svgs";
-import { Label } from "~/components/typography/Label";
-import { Text } from "~/components/typography/Text";
+import { Label, Text } from "~/components/typography";
 
 import { type SkillsBarChartDatum } from "./types";
 
@@ -21,7 +20,7 @@ export const SkillsBarChartTooltip = (props: { color: string; data: SkillsBarCha
       >{`${props.data.experience} years`}</Text>
     </div>
     <div className="flex flex-row gap-[4px] items-flex-start w-[200px]">
-      <Icon name="info-circle" size="sm" className="text-blue-800" />
+      <Icon icon="info-circle" size="sm" className="text-blue-800" />
       <Text fontSize="xs" className="text-description leading-[14px]">
         Click the bar for more info.
       </Text>

@@ -1,4 +1,5 @@
-@use "./buttons";
-
 @forward "./base";
-@forward "./variants";
+@forward "./colors";
+@forward "./sizing";
+
+@use "./buttons";

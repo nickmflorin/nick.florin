@@ -1,67 +1,102 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, type ForwardedRef } from "react";
 
-import { classNames } from "~/components/types";
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { isFragment } from "react-is";
+
 import {
+  type ComponentProps,
+  type HTMLElementProps,
   type TypographyCharacteristics,
   getTypographyClassName,
-} from "~/components/types/typography";
+  classNames,
+} from "~/components/types";
 
 export type TextComponent = "span" | "div" | "p";
 
-export interface TextProps extends TypographyCharacteristics, ComponentProps {
-  readonly children: React.ReactNode;
-  readonly as?: TextComponent;
-  readonly flex?: boolean;
-  readonly inherit?: boolean;
-}
+type PolymorphicTextProps<T extends TextComponent> = Omit<
+  HTMLElementProps<T>,
+  keyof ComponentProps | "ref"
+>;
 
-type TextComponentProps<T extends TextComponent> = Omit<HTMLElementProps<T>, keyof ComponentProps> &
-  ComponentProps;
+type PolymorphicTextRef<T extends TextComponent> = {
+  div: ForwardedRef<HTMLDivElement>;
+  p: ForwardedRef<HTMLParagraphElement>;
+  span: ForwardedRef<HTMLSpanElement>;
+}[T];
 
-const Span = forwardRef<HTMLDivElement, TextComponentProps<"span">>(
-  (props, ref): JSX.Element => (
-    <span {...props} ref={ref} className={classNames(props.className)} />
-  ),
-);
+export type TextProps<C extends TextComponent> = TypographyCharacteristics &
+  ComponentProps &
+  PolymorphicTextProps<C> & {
+    readonly component?: TextComponent;
+    readonly flex?: boolean;
+    readonly inherit?: boolean;
+    readonly isDisabled?: boolean;
+  };
 
-const Div = forwardRef<HTMLDivElement, TextComponentProps<"div">>(
-  (props, ref): JSX.Element => <div {...props} ref={ref} className={classNames(props.className)} />,
-);
-
-const P = forwardRef<HTMLDivElement, TextComponentProps<"p">>(
-  (props, ref): JSX.Element => <p {...props} ref={ref} className={classNames(props.className)} />,
-);
-
-const Components = {
-  p: P,
-  span: Span,
-  div: Div,
-} as const;
-
-/* I do not understand why HTMLDivElement works as a ref regardless of the component type prop, but
-   it does - likely because it is the most restrictive. */
-export const Text = forwardRef<HTMLDivElement, TextProps>(
-  (
-    { children, style, as = "div", flex = false, inherit = false, ...props }: TextProps,
-    ref,
+export const Text = forwardRef<HTMLDivElement, TextProps<TextComponent>>(
+  <C extends TextComponent>(
+    {
+      component = "div",
+      flex = false,
+      inherit = false,
+      isDisabled = false,
+      fontSize,
+      fontWeight,
+      transform,
+      fontFamily,
+      lineClamp,
+      truncate,
+      align,
+      ...props
+    }: TextProps<C>,
+    ref: PolymorphicTextRef<C>,
   ): JSX.Element => {
-    const Component = Components[as];
-    return (
-      <Component
-        style={style}
-        ref={ref}
-        className={classNames(
-          "text",
-          { "text--inherit": inherit },
-          { span: as === "span" },
-          { ["flex flex-row items-center"]: flex },
-          getTypographyClassName(props),
-          props.className,
-        )}
-      >
-        {children}
-      </Component>
-    );
+    if (
+      isFragment(props.children) ||
+      props.children === undefined ||
+      props.children === null ||
+      typeof props.children === "boolean" ||
+      (typeof props.children === "string" && props.children === "")
+    ) {
+      return <></>;
+    }
+    const ps = {
+      ...props,
+      className: classNames(
+        "body",
+        {
+          "body--inherit": inherit,
+          ["flex flex-row items-center"]: flex,
+          "text-disabled": isDisabled,
+        },
+        getTypographyClassName({
+          fontSize,
+          fontWeight,
+          transform,
+          fontFamily,
+          lineClamp,
+          truncate,
+          align,
+        }),
+        props.className,
+      ),
+    };
+    switch (component) {
+      case "span": {
+        const p = ps as HTMLElementProps<"span">;
+        return <span {...p} ref={ref as PolymorphicTextRef<"span">} />;
+      }
+      case "div": {
+        const p = ps as HTMLElementProps<"div">;
+        return <div {...p} ref={ref as PolymorphicTextRef<"div">} />;
+      }
+      case "p": {
+        const p = ps as HTMLElementProps<"p">;
+        return <p {...p} ref={ref as PolymorphicTextRef<"p">} />;
+      }
+    }
   },
-);
+) as {
+  <C extends TextComponent>(
+    props: TextProps<C> & { readonly ref?: PolymorphicTextRef<C> },
+  ): JSX.Element;
+};

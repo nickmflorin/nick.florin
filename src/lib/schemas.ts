@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { isRecordType } from "~/lib/typeguards";
 import { type Prettify } from "~/lib/types";
 

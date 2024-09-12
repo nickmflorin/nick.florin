@@ -4,12 +4,7 @@ import { arrow, size, offset as offsetMiddleware, type OffsetOptions } from "@fl
 
 import type * as types from "../types";
 
-import {
-  type QuantitativeSize,
-  type Size,
-  sizeToNumber,
-  sizeToString,
-} from "~/components/types/sizes";
+import { type QuantitativeSize, type Size, sizeToNumber, sizeToString } from "~/components/types";
 
 import { useFloating, type UseFloatingConfig } from "./use-floating";
 

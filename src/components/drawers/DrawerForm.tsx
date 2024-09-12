@@ -4,7 +4,7 @@ import { type PickByValueExact } from "utility-types";
 
 import type { BaseFormValues, FormInstance, FieldName } from "~/components/forms/generic";
 import { classNames } from "~/components/types";
-import { Title } from "~/components/typography/Title";
+import { Title } from "~/components/typography";
 
 import { Drawer } from "./Drawer";
 import { DrawerContent } from "./DrawerContent";
@@ -33,13 +33,13 @@ export const DrawerForm = <I extends BaseFormValues>({
       <DrawerHeader>
         {titleValue.trim().length === 0 && (eagerTitle || titlePlaceholder) ? (
           <Title
-            order={4}
+            component="h4"
             className={classNames({ "text-gray-300": titlePlaceholder !== undefined })}
           >
             {titlePlaceholder ?? eagerTitle}
           </Title>
         ) : (
-          <Title order={4}>{titleValue}</Title>
+          <Title component="h4">{titleValue}</Title>
         )}
       </DrawerHeader>
       <DrawerContent className="overflow-y-hidden">{children}</DrawerContent>

@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import { sortBy } from "lodash-es";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { prisma } from "~/prisma/client";
 import type { Project, ProjectSlug } from "~/prisma/model";
 import { ProjectSlugs } from "~/prisma/model";

@@ -3,7 +3,7 @@ import { forwardRef, useId, useLayoutEffect } from "react";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Title } from "~/components/typography/Title";
+import { Title } from "~/components/typography";
 
 import { useDialogContext } from "../../hooks/use-dialog-context";
 
@@ -27,7 +27,7 @@ export const DialogTitle = forwardRef<HTMLDivElement, DialogTitleProps>(
 
     return (
       <div {...props} ref={ref} className={classNames("dialog__title", props.className)}>
-        {typeof children === "string" ? <Title order={3}>{children}</Title> : children}
+        {typeof children === "string" ? <Title component="h3">{children}</Title> : children}
       </div>
     );
   },

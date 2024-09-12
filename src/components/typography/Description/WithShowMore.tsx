@@ -1,5 +1,5 @@
 import { ResumeShowMoreLink } from "~/components/buttons/resume";
-import { type TypographyVisibilityState } from "~/components/types/typography";
+import { type TypographyVisibilityState } from "~/components/types";
 
 export const WithShowMore = ({
   includeShowMoreLink = false,

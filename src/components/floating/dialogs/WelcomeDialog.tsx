@@ -27,21 +27,27 @@ export const WelcomeDialog = ({ isOpen, waitingForTour, onStart, onClose }: Welc
         </Dialog.Content>
         <Dialog.Footer>
           <div className="flex flex-row items-center gap-[8px]">
-            <Button.Secondary
+            <Button.Solid
               className="flex-1"
+              scheme="secondary"
               onClick={() => {
                 cookies.set("nick.florin:suppress-tour", "true");
                 onClose();
               }}
             >
               Skip and don&apos;t ask again
-            </Button.Secondary>
-            <Button.Secondary className="flex-1" onClick={onClose}>
+            </Button.Solid>
+            <Button.Solid className="flex-1" onClick={onClose} scheme="secondary">
               Skip for now
-            </Button.Secondary>
-            <Button.Primary className="flex-1" onClick={() => onStart()} isLoading={waitingForTour}>
+            </Button.Solid>
+            <Button.Solid
+              className="flex-1"
+              scheme="primary"
+              onClick={() => onStart()}
+              isLoading={waitingForTour}
+            >
               Next
-            </Button.Primary>
+            </Button.Solid>
           </div>
         </Dialog.Footer>
       </Dialog>

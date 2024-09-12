@@ -1,7 +1,6 @@
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Description } from "~/components/typography/Description";
-import { Title } from "~/components/typography/Title";
+import { Title, Description } from "~/components/typography";
 
 import { DrawerContent } from "../DrawerContent";
 
@@ -22,7 +21,7 @@ export const DetailDrawerContent = ({
   <DrawerContent {...props} className={classNames("gap-[14px] overflow-y-hidden", props.className)}>
     <div className="flex flex-col gap-[8px]">
       <div className="flex flex-col gap-[6px]">
-        <Title order={2} className="text-gray-700 max-w-fit">
+        <Title component="h2" className="text-gray-700 max-w-fit">
           {title}
         </Title>
         {badge}

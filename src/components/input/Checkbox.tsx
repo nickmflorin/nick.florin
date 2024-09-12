@@ -5,7 +5,7 @@ import { Checkbox as RootCheckbox, type CheckboxProps as RootCheckboxProps } fro
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 export interface CheckboxProps
   extends Pick<RootCheckboxProps, "readOnly" | "onChange">,

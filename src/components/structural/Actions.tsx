@@ -7,8 +7,7 @@ import type * as types from "./types";
 import { isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { type QuantitativeSize, sizeToString } from "~/components/types/sizes";
+import { type ComponentProps, type QuantitativeSize, sizeToString } from "~/components/types";
 
 export type ActionsChildrenProps = ComponentProps & {
   readonly children: JSX.Element | JSX.Element[];

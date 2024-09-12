@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 
 import { LayoutNavAnchor } from "~/components/buttons/LayoutNavAnchor";
 
+import { type IExternalLayoutNavItem, type IInternalLayoutNavItem } from "../types";
+
 import * as constants from "./constants";
-import { type IExternalLayoutNavItem, type IInternalLayoutNavItem } from "./types";
 
 const itemVariants = {
   open: () => ({

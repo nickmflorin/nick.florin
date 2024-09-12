@@ -2,7 +2,7 @@ import React from "react";
 
 import { classNames } from "~/components/types";
 
-import Icon from "./Icon";
+import { Icon } from "./Icon";
 import { CircleNotch } from "./svgs/CircleNotch";
 import { type SpinnerProps } from "./types";
 

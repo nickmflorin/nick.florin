@@ -119,13 +119,13 @@ export const GenericUpdateDetailForm = <
                   </Form.Field>
                   <div className="flex flex-row gap-[6px] items-center">
                     <Actions actions={actions ?? null} />
-                    <IconButton.Bare
+                    <IconButton.Transparent
                       key={actions ? actions.length : "0"}
                       size="xsmall"
                       onClick={() => setIsOpen(curr => !curr)}
                     >
                       <CaretIcon open={isOpen} />
-                    </IconButton.Bare>
+                    </IconButton.Transparent>
                   </div>
                 </div>
                 <ShowHide show={isOpen === true}>

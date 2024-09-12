@@ -1,13 +1,13 @@
 import React from "react";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
 import {
+  type ComponentProps,
   type TypographyCharacteristics,
   FontWeights,
-  TextFontSizes,
+  FontSizes,
   getTypographyClassName,
-} from "~/components/types/typography";
+} from "~/components/types";
 
 export interface BadgeCollectionChildrenProps
   extends ComponentProps,
@@ -31,7 +31,7 @@ export const BadgeCollection = <M,>({
   data,
   children,
   fontWeight = FontWeights.MEDIUM,
-  fontSize = TextFontSizes.SM,
+  fontSize = FontSizes.SM,
   transform,
   fontFamily,
   ...props

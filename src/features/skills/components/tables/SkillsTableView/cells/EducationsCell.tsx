@@ -4,7 +4,7 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 import { type ApiSkill } from "~/prisma/model";
 
 import { updateSkill } from "~/actions/mutations/skills";

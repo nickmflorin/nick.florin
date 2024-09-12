@@ -1,3 +1,4 @@
+@use "partials";
 @use "./constants" as constants;
 
 @mixin drawer-container {
@@ -8,19 +9,32 @@
 
 .drawer-wrapper {
   @include drawer-container();
+  @include partials.fully-constrained-dimension(width, constants.$drawer-width);
   position: relative;
-  min-width: constants.$drawer-width;
-  max-width: constants.$drawer-width;
-  width: constants.$drawer-width;
   background-color: theme("colors.white");
   border-left: 1px solid theme("colors.border");
 
-  @media (max-width: theme("screens.md")) {
-    min-width: calc(100% - constants.$layout-nav-width);
-    max-width: calc(100% - constants.$layout-nav-width);
-    width: calc(100% - constants.$layout-nav-width);
+  @media (max-width: theme("screens.lg")) and (min-width: theme("screens.sm")) {
+    @include partials.fully-constrained-dimension(width, constants.$drawer-width);
+    position: absolute;
+    right: 0;
+  }
+
+  @media (max-width: theme("screens.sm")) and (min-width: theme("screens.xs")) {
+    @include partials.fully-constrained-dimension(width, calc(100% - constants.$layout-nav-width));
     position: absolute;
     left: constants.$layout-nav-width;
+    /* The left border is removed when the drawer is opened on mobile because the drawer extends to
+       the side nav bar, which already has a border to its right.  Including the additional border
+       here would make the overall border appear thicker, since it would be the combination of two
+       distinctly different borders. */
+    border-left: none !important;
+  }
+
+  @media (max-width: theme("screens.xs")) {
+    @include partials.fully-constrained-dimension(width, 100%);
+    left: 0;
+    position: absolute;
     /* The left border is removed when the drawer is opened on mobile because the drawer extends to
        the side nav bar, which already has a border to its right.  Including the additional border
        here would make the overall border appear thicker, since it would be the combination of two

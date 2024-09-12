@@ -6,7 +6,12 @@ interface ResumeLayoutProps {
 
 export default async function ResumeLayout({ children }: ResumeLayoutProps) {
   return (
-    <div className="flex flex-col grow relative max-h-full min-h-full overflow-y-auto w-full">
+    <div
+      className={classNames(
+        "flex flex-col grow relative max-h-full min-h-full",
+        "overflow-y-auto w-full pr-[16px]",
+      )}
+    >
       <div
         className={classNames(
           "flex flex-col max-h-full my-0",

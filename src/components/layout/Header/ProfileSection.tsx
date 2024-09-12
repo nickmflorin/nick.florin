@@ -7,7 +7,7 @@ import { LinkedInButton } from "~/components/buttons/LinkedInButton";
 import { ModelImage } from "~/components/images/ModelImage";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Title } from "~/components/typography/Title";
+import { Title } from "~/components/typography";
 
 export interface ProfileSectionProps extends ComponentProps {}
 
@@ -31,13 +31,13 @@ export const ProfileSection = async (props: ProfileSectionProps): Promise<JSX.El
       </Link>
       <div className="flex flex-col">
         <div className="flex flex-row gap-[8px]">
-          <Title order={4} fontWeight="semibold">
+          <Title component="h4" fontWeight="semibold">
             {profile ? `${profile.firstName} ${profile.lastName}` : ""}
           </Title>
           <LinkedInButton />
           <GithubButton />
         </div>
-        <Title order={5}>{profile ? profile.displayName : ""}</Title>
+        <Title component="h5">{profile ? profile.displayName : ""}</Title>
       </div>
     </div>
   );

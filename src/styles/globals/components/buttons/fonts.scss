@@ -5,104 +5,84 @@
 @use "partials";
 @use "../typography" as typography;
 
-@use "./constants" as *;
+@use "./constants" as constants;
 @use "./sizing" as sizing;
 
-$button-font-sizes: (
-  "button": (
-    "xsmall": 12px,
-    "small": 13px,
-    "medium": 14px,
-    "large": 16px,
-    "xlarge": 18px,
-  ),
-);
+@mixin button-font-base($type) {
+  font-family: constants.$button-default-font-family;
 
-@function get-button-font-size($type, $size: null) {
-  @if $type != "button" {
-    @return throw.error(
-      "The font size can only be retrieved for a button type of 'button'.",
-      $source: "get-button-font-size()"
-    );
-  }
-  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
-  @return partials.mapget($button-font-sizes, $type, $size);
-}
+  // Allow the font families to be defined with a class name.
+  @include typography.with-font-families();
 
-$button-font-weights: (
-  "button":
-    typography.get-font-weight(
-      $weight: "semibold",
-    ),
-  "link":
-    typography.get-font-weight(
-      $weight: "medium",
-    ),
-  "a":
-    typography.get-font-weight(
-      $weight: "regular",
-    ),
-);
+  // Allow the text transformations to be defined with a class name.
+  @include typography.with-font-transforms();
 
-@function get-button-font-weight($type, $size: null) {
-  $type: partials.validate-value($type, $button-types);
-  $size: partials.validate-value(if($size, $size, $button-default-size), $button-size-names);
-  @return partials.mapget($button-font-sizes, $type, $size);
-}
+  font-weight: partials.mapget(constants.$button-font-weights, $type);
 
-@mixin button-font-weights($type) {
-  font-weight: map.get($button-font-weights, $type);
-  // Allow the font-weight to be overridden.
+  // Allow the font-weight to be overridden if the class name is present.
   @include typography.with-font-weights();
 }
 
-@mixin button-font($type, $size: null) {
-  $type: partials.validate-value($type, ("button", "link"));
-  font-family: $button-font-family;
+@mixin btn-size-fonts($size) {
+  $padding: partials.mapget(constants.$button-padding, $size);
+  $height: partials.mapget(constants.$button-sizes, $size);
+  font-size: partials.mapget(constants.$button-font-sizes, $size);
+  line-height: $height - 2 * list.nth($padding, 1);
 
-  @if $type == "button" {
-    @if not $size {
-      @include throw.error(
-        "The size must be provided for a button type of 'button'.",
-        $source: "button-font()"
-      );
+  // Allow the font size to be overridden for a Button independently of the Button's size.
+  @include typography.use-fonts("body") using ($font-size, $data) {
+    &.#{typography.get-font-size-class($font-size)} {
+      font-size: partials.mapget($data, font-size);
     }
-    $padding: sizing.get-button-padding($type, $size);
-    $height: sizing.get-button-size($type, $size: $size);
-    font-size: get-button-font-size("button", $size: $size);
-    line-height: $height - 2 * list.nth($padding, 1);
-  } @else {
-    font-size: inherit;
-    line-height: inherit;
+  }
+}
+
+@mixin btn-fonts() {
+  @include button-font-base("button");
+
+  @include btn-size-fonts(constants.$button-default-size);
+  @each $size in map.keys(constants.$button-sizes) {
+    &.button--size-#{$size} {
+      @include btn-size-fonts($size);
+    }
+  }
+}
+
+@mixin link-fonts() {
+  @include button-font-base("link");
+
+  $properties: typography.get-font("body", constants.$link-default-font-size);
+  font-size: partials.mapget($properties, font-size);
+  line-height: partials.mapget($properties, line-height);
+
+  @include typography.use-fonts("body") using ($size, $data) {
+    &.#{typography.get-font-size-class($size)} {
+      font-size: partials.mapget($data, font-size);
+      line-height: partials.mapget($data, line-height);
+    }
+  }
+}
+
+@mixin inline-link-fonts() {
+  @include button-font-base("inline-link");
+
+  font-size: inherit;
+  line-height: inherit;
+
+  @include typography.use-fonts("body") using ($size, $data) {
+    &.#{typography.get-font-size-class($size)} {
+      font-size: partials.mapget($data, font-size);
+      line-height: partials.mapget($data, line-height);
+    }
   }
 }
 
 @mixin button-fonts($type) {
-  $type: partials.validate-value($type, ("button", "link"));
-
-  @include typography.with-font-families();
-  @include typography.with-text-transforms();
-  @include button-font-weights($type);
-
   @if $type == "button" {
-    @each $size in $button-size-names {
-      &.button--size-#{$size} {
-        @include button-font($type, $size);
-        // Allow the font size to be overridden for a Button independently of the Button's size.
-        @each $font-size in $button-size-names {
-          &.f-size-#{$font-size} {
-            @include button-font($type, $font-size);
-          }
-        }
-      }
-    }
-  } @else {
-    @include button-font("link");
-    @include typography.with-font-sizes("text") using ($size, $data) {
-      &.f-size-#{$size} {
-        font-size: partials.mapget($data, font-size);
-        line-height: partials.mapget($data, line-height);
-      }
-    }
+    @include btn-fonts();
+  } @else if $type == "link" {
+    @include link-fonts();
+  } @else if $type == "inline-link" {
+    @include inline-link-fonts();
   }
 }

@@ -1,6 +1,6 @@
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
-import { Label } from "~/components/typography/Label";
+import { Label } from "~/components/typography";
 
 export interface ResumeModelSectionProps extends ComponentProps {
   readonly children: JSX.Element;

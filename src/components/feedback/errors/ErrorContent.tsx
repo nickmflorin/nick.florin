@@ -3,9 +3,8 @@ import React from "react";
 import { isHttpError } from "~/api";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { type TypographyCharacteristics } from "~/components/types/typography";
-import { Text } from "~/components/typography/Text";
+import { type ComponentProps, type TypographyCharacteristics } from "~/components/types";
+import { Text } from "~/components/typography";
 
 import * as types from "../types";
 

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 import type * as types from "../types";
 
-import { logger } from "~/application/logger";
+import { logger } from "~/internal/logger";
 
 import { type ApiClientErrorJson, isApiClientErrorJson } from "~/api";
 
@@ -26,7 +26,8 @@ export const DeleteManyButton = <T extends types.TableModel>({
 
   if (isCheckable) {
     return (
-      <IconButton.Danger
+      <IconButton.Solid
+        scheme="danger"
         icon={{ name: "trash-alt" }}
         isDisabled={checked.length === 0}
         isLoading={isDeleting}
