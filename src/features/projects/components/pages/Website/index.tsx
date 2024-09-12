@@ -1,4 +1,4 @@
-import { Link } from "~/components/buttons";
+import { InlineLink } from "~/components/buttons";
 import { Description } from "~/components/typography";
 
 import { CaptionDescription } from "../CaptionDescription";
@@ -6,7 +6,7 @@ import { DescriptionGroup } from "../DescriptionGroup";
 import { Emphasize } from "../Emphasize";
 import { Project, type ProjectProps } from "../Project";
 import { ProjectImage } from "../ProjectImage";
-import { Section } from "../Section";
+import { Section, SectionTitle } from "../Section";
 
 export interface WebsiteProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
 
@@ -16,9 +16,9 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     description={
       <Description>
         A CMS-powered, interactive and dynamic personal portfolio/website written using&nbsp;
-        <Link element="a" href="https://nextjs.org/">
+        <InlineLink element="a" href="https://nextjs.org/">
           NextJS
-        </Link>
+        </InlineLink>
         .
       </Description>
     }
@@ -29,55 +29,55 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         <Description>
           The application does not rely on any third-party component library. Instead, it leverages
           an internal component library developed using frameworks like&nbsp;
-          <Link element="a" href="https://sass-lang.com/">
+          <InlineLink element="a" href="https://sass-lang.com/">
             SASS
-          </Link>
+          </InlineLink>
           &nbsp;and&nbsp;
-          <Link element="a" href="https://tailwindcss.com/">
+          <InlineLink element="a" href="https://tailwindcss.com/">
             TailwindCSS
-          </Link>
+          </InlineLink>
           ,&nbsp;along with tooling libraries such as&nbsp;
-          <Link element="a" href="https://floating-ui.com/">
+          <InlineLink element="a" href="https://floating-ui.com/">
             Floating UI
-          </Link>
+          </InlineLink>
           &nbsp;and&nbsp;
-          <Link element="a" href="https://www.framer.com/motion/">
+          <InlineLink element="a" href="https://www.framer.com/motion/">
             Framer Motion
-          </Link>
+          </InlineLink>
           .
         </Description>
         <Description>
           This choice was made primarily as an experiment - to gauge the difficulty, feasibility,
           limitations and benefits of avoiding a third-party component library like&nbsp;
-          <Link element="a" href="https://mantine.dev/">
+          <InlineLink element="a" href="https://mantine.dev/">
             Mantine
-          </Link>
+          </InlineLink>
           &nbsp;or&nbsp;
-          <Link element="a" href="https://chakra-ui.com/">
+          <InlineLink element="a" href="https://chakra-ui.com/">
             Chakra UI
-          </Link>
+          </InlineLink>
           .
         </Description>
         <Description className="italic">
           Disclosure:&nbsp;
-          <Link element="a" href="https://mantine.dev/">
+          <InlineLink element="a" href="https://mantine.dev/">
             Mantine
-          </Link>
+          </InlineLink>
           &nbsp;was used to a minimal extent in a couple of places where it did not make any sense
           to develop the component internally.
         </Description>
       </DescriptionGroup>
     </Section>
-    <Section title="<Emphasize>Skill</Emphasize>-Centric Design" marginBottom={false}>
+    <Section title={<SectionTitle>Skill-Centric Design</SectionTitle>} marginBottom={false}>
       <DescriptionGroup>
         <Description>
           The application was designed with the concept of a <Emphasize>Skill</Emphasize> at its
           core. A&nbsp;
           <Emphasize>Skill</Emphasize>&nbsp;represents a particular ability or expertise learned
           throughout an academic and/or professional career, such as&nbsp;
-          <Link element="a" href="https://nextjs.org/">
+          <InlineLink element="a" href="https://nextjs.org/">
             NextJS
-          </Link>
+          </InlineLink>
           .
         </Description>
         <Description>
@@ -122,13 +122,13 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         All of the content of the application can be dynamically modified directly via the
         admin-only CMS. This includes the ability to modify, create, delete and update the
         experience history viewable on the&nbsp;
-        <Link element="link" href="/">
+        <InlineLink element="link" href="/">
           Dashboard
-        </Link>
+        </InlineLink>
         &nbsp;or&nbsp;
-        <Link element="link" href="/resume/experience">
+        <InlineLink element="link" href="/resume/experience">
           Resume
-        </Link>
+        </InlineLink>
         &nbsp;pages.
       </Description>
       <ProjectImage
@@ -142,13 +142,13 @@ export const Website = (props: WebsiteProps): JSX.Element => (
       <DescriptionGroup>
         <Description>
           The application integrates directly with APIs from sources such as&nbsp;
-          <Link element="a" href="https://linkedin.com/">
+          <InlineLink element="a" href="https://linkedin.com/">
             LinkedIn
-          </Link>
+          </InlineLink>
           &nbsp;and&nbsp;
-          <Link element="a" href="https://github.com/">
+          <InlineLink element="a" href="https://github.com/">
             GitHub
-          </Link>
+          </InlineLink>
           ,&nbsp;allowing relevant data to be prepopulated or imported directly from these sources,
           and then reconciled with internal data.
         </Description>

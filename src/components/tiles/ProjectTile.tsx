@@ -37,9 +37,7 @@ export const ProjectTile = ({ project, ...props }: ProjectTileProps) => {
       <Icon className="text-gray-600" icon={icon} size={20} />
       <div className={classNames("flex flex-col gap-[4px] max-w-[calc(100%-40px)]")}>
         <ProjectLink project={project} className="truncate" />
-        <Description className="text-description" fontSize="xs">
-          {project.description}
-        </Description>
+        <Description fontSize="xs">{project.description}</Description>
       </div>
     </div>
   );

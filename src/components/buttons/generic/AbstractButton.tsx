@@ -62,12 +62,12 @@ const NativeButton = forwardRef<HTMLButtonElement, HTMLElementProps<"button"> & 
 
 const NativeAnchor = forwardRef<
   HTMLAnchorElement,
-  Omit<HTMLElementProps<"a">, "href"> & { readonly href: url.UrlObject | string } & ComponentProps
+  Omit<HTMLElementProps<"a">, "href"> & { readonly href?: url.UrlObject | string } & ComponentProps
 >(({ href, className, ...props }, ref) => (
   <a
     {...props}
     ref={ref}
-    href={typeof href === "string" ? href : url.format(href)}
+    href={typeof href === "string" ? href : href !== undefined ? url.format(href) : undefined}
     className={classNames(className)}
   />
 ));

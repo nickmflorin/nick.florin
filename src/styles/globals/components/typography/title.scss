@@ -51,16 +51,16 @@ h3 {
 }
 
 h4 {
-  @include mixins.font("title", $size: "smplus");
-  @include title-base();
-}
-
-h5 {
   @include mixins.font("title", $size: "sm");
   @include title-base();
 }
 
-h6 {
+h5 {
   @include mixins.font("title", $size: "xs");
+  @include title-base();
+}
+
+h6 {
+  @include mixins.font("title", $size: "xxs");
   @include title-base();
 }

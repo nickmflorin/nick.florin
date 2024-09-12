@@ -12,12 +12,6 @@ const LinkFontWeights: { [key in ResumeModelSize]: FontWeight } = {
   large: "medium",
 };
 
-const TextClassNames: { [key in ResumeModelSize]: string } = {
-  small: "text-description",
-  medium: "text-description",
-  large: "",
-};
-
 export interface ResumeModelSubTitleProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends ComponentProps {
   readonly model: M;
@@ -46,9 +40,7 @@ export const ResumeModelSubTitle = <M extends BrandModel<T>, T extends ResumeBra
     fontWeight={
       fontWeight !== undefined ? fontWeight : size !== undefined ? LinkFontWeights[size] : "medium"
     }
-    textClassName={
-      textClassName !== undefined ? textClassName : size !== undefined ? TextClassNames[size] : ""
-    }
+    textClassName={textClassName}
     url={model.$kind === "experience" ? model.company.websiteUrl : model.school.websiteUrl}
   >
     {model.$kind === "experience" ? model.company.name : model.school.name}

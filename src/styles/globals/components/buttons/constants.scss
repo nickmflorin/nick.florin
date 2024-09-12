@@ -54,5 +54,5 @@ $button-font-sizes: (
 $button-font-weights: (
   "button": theme("fontWeight.medium"),
   "link": theme("fontWeight.medium"),
-  "inline-link": inherit,
+  "inline-link": theme("fontWeight.medium"),
 );

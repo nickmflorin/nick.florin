@@ -3,8 +3,8 @@ import clsx from "clsx";
 
 import { Button, type ButtonProps } from "./generic";
 
-export type TabButtonProps = Omit<
-  ButtonProps<"a">,
+export type TabButtonProps<E extends "button" | "link"> = Omit<
+  ButtonProps<E>,
   "size" | "fontWeight" | "isLoading" | "children" | "isLocked" | "variant"
 > & {
   readonly isPending?: boolean;
@@ -12,15 +12,15 @@ export type TabButtonProps = Omit<
   readonly isLoading?: boolean;
 };
 
-export const TabButton = ({
+export const TabButton = <E extends "button" | "link">({
   isActive,
   isPending,
   isLoading,
   children,
   ...props
-}: TabButtonProps) => (
-  <Button.Transparent
-    {...(props as ButtonProps<"a">)}
+}: TabButtonProps<E>) => (
+  <Button.Transparent<E>
+    {...(props as ButtonProps<E>)}
     className={clsx(
       "rounded-none rounded-t-md relative top-[2px]",
       "border-b-[2px] text-gray-800",

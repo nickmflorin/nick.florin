@@ -109,7 +109,7 @@ export type AbstractButtonProps = Pick<HTMLElementProps<"button">, ButtonCommonP
 export type AbstractDivProps = Pick<HTMLElementProps<"div">, ButtonCommonProp>;
 
 export type AbstractAnchorProps = Pick<HTMLElementProps<"a">, ButtonCommonProp> & {
-  readonly href: UrlObject | string;
+  readonly href?: UrlObject | string;
   readonly target?: string;
   readonly rel?: string;
 };
@@ -164,23 +164,23 @@ export const parseButtonIcons = <T extends IconProp | IconName | JSX.Element>(
   prop: ButtonIconProp<T>,
 ): [T | null, T | null] => [parseButtonIcon(prop, "left"), parseButtonIcon(prop, "right")];
 
-/* type IfNotIconButton<V, T extends ButtonType, R = never> = T extends
-     | "button"
-     | "link"
-     | "inline-link"
-     ? V
-     : R; */
+type IfNotIconButton<V, T extends ButtonType, R = never> = T extends
+  | "button"
+  | "link"
+  | "inline-link"
+  ? V
+  : R;
 
-// type IfButtonOrLink<V, T extends ButtonType, R = never> = T extends "button" | "link" ? V : R;
+type IfButtonOrLink<V, T extends ButtonType, R = never> = T extends "button" | "link" ? V : R;
 
-/* type IfNotInlineLink<V, T extends ButtonType, R = never> = T extends
-     | "button"
-     | "link"
-     | "icon-button"
-     ? V
-     : R; */
+type IfNotInlineLink<V, T extends ButtonType, R = never> = T extends
+  | "button"
+  | "link"
+  | "icon-button"
+  ? V
+  : R;
 
-// type IfAnchorElement<E extends ButtonElement> = E extends "a" ? boolean : never;
+type IfAnchorElement<E extends ButtonElement> = E extends "a" ? boolean : never;
 
 export type AbstractInternalProps<
   T extends ButtonType,
@@ -190,15 +190,11 @@ export type AbstractInternalProps<
   readonly element?: E;
   readonly scheme?: ButtonColorScheme;
   readonly variant?: ButtonVariant<T>;
-  //readonly openInNewTab?: IfAnchorElement<E>;
-  readonly openInNewTab?: boolean;
-  readonly fontFamily?: TypographyCharacteristics["fontFamily"];
-  readonly fontWeight?: TypographyCharacteristics["fontWeight"];
-  readonly transform?: TypographyCharacteristics["transform"];
+  readonly openInNewTab?: IfAnchorElement<E>;
   readonly fontSize?: ButtonFontSize<T>;
-  /* readonly fontFamily?: IfNotIconButton<TypographyCharacteristics["fontFamily"], T, never>;
-     readonly fontWeight?: IfNotIconButton<TypographyCharacteristics["fontWeight"], T, never>;
-     readonly transform?: IfNotIconButton<TypographyCharacteristics["transform"], T, never>; */
+  readonly fontFamily?: IfNotIconButton<TypographyCharacteristics["fontFamily"], T, never>;
+  readonly fontWeight?: IfNotIconButton<TypographyCharacteristics["fontWeight"], T, never>;
+  readonly transform?: IfNotIconButton<TypographyCharacteristics["transform"], T, never>;
   /**
    * Sets the element in a "locked" state, which is a state in which the non-visual characteristics
    * of the "disabled" state will be used, but the element will not appear as if it is "disabled".
@@ -212,8 +208,7 @@ export type AbstractInternalProps<
    * disabled - but we do not want to allow click events.
    */
   readonly isLocked?: boolean;
-  // readonly isLoading?: IfNotInlineLink<boolean, T>;
-  readonly isLoading?: boolean;
+  readonly isLoading?: IfNotInlineLink<boolean, T>;
   readonly isDisabled?: boolean;
   readonly isActive?: boolean;
   readonly size?: ButtonSize<T>;
@@ -222,27 +217,16 @@ export type AbstractInternalProps<
   readonly loadingClassName?: ComponentProps["className"];
   readonly activeClassName?: ComponentProps["className"];
   readonly radius?: BorderRadius;
-  readonly iconClassName?: ComponentProps["className"];
-  readonly spinnerClassName?: ComponentProps["className"];
-  readonly icon?: ButtonIconProp;
-  /* readonly icon?: IfNotInlineLink<
-       IfButtonOrLink<ButtonIconProp, T, IconName | IconProp | JSX.Element>,
-       T
-     >; */
-  /* readonly iconClassName?: IfButtonOrLink<ComponentProps["className"], T>;
-     readonly spinnerClassName?: IfNotInlineLink<ComponentProps["className"], T>; */
-  /* readonly icon?: IfNotInlineLink<
-       IfButtonOrLink<ButtonIconProp, T, IconName | IconProp | JSX.Element>,
-       T
-     >; */
-  // readonly gap?: IfButtonOrLink<Size, T>;
-  readonly gap?: Size;
-  readonly iconSize?: ButtonIconSize;
-  readonly spinnerSize?: QuantitativeSize<"px">;
-  /* readonly iconSize?: IfNotInlineLink<ButtonIconSize, T>;
-     readonly spinnerSize?: IfNotInlineLink<QuantitativeSize<"px">, T>;
-     readonly loadingLocation?: IfButtonOrLink<ButtonLoadingLocation, T>; */
-  readonly loadingLocation?: ButtonLoadingLocation;
+  readonly icon?: IfNotInlineLink<
+    IfButtonOrLink<ButtonIconProp, T, IconName | IconProp | JSX.Element>,
+    T
+  >;
+  readonly iconClassName?: IfButtonOrLink<ComponentProps["className"], T>;
+  readonly spinnerClassName?: IfNotInlineLink<ComponentProps["className"], T>;
+  readonly gap?: IfButtonOrLink<Size, T>;
+  readonly iconSize?: IfNotInlineLink<ButtonIconSize, T>;
+  readonly spinnerSize?: IfNotInlineLink<QuantitativeSize<"px">, T>;
+  readonly loadingLocation?: IfButtonOrLink<ButtonLoadingLocation, T>;
   readonly tourId?: string;
 };
 

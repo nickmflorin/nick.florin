@@ -7,7 +7,7 @@ export interface EmphasizeProps extends ComponentProps {
 }
 
 const LocalEmphasize = ({ children, ...props }: EmphasizeProps): JSX.Element => (
-  <span {...props} className={classNames("font-medium text-text", props.className)}>
+  <span {...props} className={classNames("font-medium text-body", props.className)}>
     {children}
   </span>
 );

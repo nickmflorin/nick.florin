@@ -1,7 +1,20 @@
+@use "sass:list";
+
 @use "partials";
 @use "./typography" as typography;
 
-$badge-vertical-padding: 2px;
+$badge-padding: 2px 6px;
+
+$badge-sizes: (
+  xxxs: 18px,
+  xxs: 18px,
+  xs: 20px,
+  sm: 22px,
+  smplus: 22px,
+  md: 24px,
+  lg: 26px,
+  xl: 28px,
+);
 
 @mixin inherit-font-properties {
   line-height: inherit;
@@ -49,10 +62,7 @@ $badge-vertical-padding: 2px;
   @include badge-tag();
   color: theme("colors.body");
   @include partials.border-radius(theme("borderRadius.md"));
-  padding-right: 6px;
-  padding-left: 6px;
-  padding-top: $badge-vertical-padding;
-  padding-bottom: $badge-vertical-padding;
+  padding: $badge-padding;
   font-family: typography.get-font-family("body");
   background-color: theme("colors.gray.200");
   letter-spacing: 0.0156em;
@@ -68,17 +78,16 @@ $badge-vertical-padding: 2px;
 
   @include typography.use-fonts("body") using ($size, $data) {
     &.badge--size-#{$size} {
-      // $height: $line-height + 2 * $badge-vertical-padding;
       font-size: partials.mapget($data, font-size);
       line-height: partials.mapget($data, line-height);
       font-weight: partials.mapget($data, font-weight);
-      // height: $height;
+      height: partials.mapget($badge-sizes, $size);
 
       // Allow the font-weight to be overridden for each size.
       @include typography.with-font-weights();
       > .badge__content {
         > .badge__icon {
-          // height: $line-height - 4px;
+          height: 100%;
           width: auto;
         }
       }
@@ -119,8 +128,7 @@ $badge-vertical-padding: 2px;
 
   @include typography.use-fonts("body") using ($size, $data) {
     &.badge-collection--size-#{$size} {
-      // $line-height: partials.mapget($data, line-height);
-      // $height: $line-height + 2 * $badge-vertical-padding;
+      $height: partials.mapget($badge-sizes, $size);
       font-weight: partials.mapget($data, font-weight);
 
       // Allow the font-weight to be overridden for each size.
@@ -129,11 +137,11 @@ $badge-vertical-padding: 2px;
       > .badge {
         font-size: partials.mapget($data, font-size);
         line-height: partials.mapget($data, line-height);
-        // height: $height;
+        height: $height;
 
         > .badge__content {
           > .badge__icon {
-            // height: $line-height - 4px;
+            height: 100%;
             width: auto;
           }
         }

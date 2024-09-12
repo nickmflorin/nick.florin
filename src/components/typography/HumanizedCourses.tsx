@@ -5,7 +5,7 @@ import { isEqual } from "lodash-es";
 
 import type { BrandCourse } from "~/prisma/model";
 
-import { Link } from "~/components/buttons";
+import { InlineLink } from "~/components/buttons";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { Text } from "~/components/typography";
 
@@ -16,13 +16,13 @@ interface CourseLinkProps {
 const CourseLink = ({ course }: CourseLinkProps) => {
   const { open, ids } = useDrawers();
   return (
-    <Link
-      element="button"
+    <InlineLink
+      element="a"
       fontWeight="regular"
       onClick={() => open(ids.VIEW_COURSE, { courseId: course.id })}
     >
       {course.name}
-    </Link>
+    </InlineLink>
   );
 };
 

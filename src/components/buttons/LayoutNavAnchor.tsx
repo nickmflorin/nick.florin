@@ -16,14 +16,14 @@ import { IconButton, type IconButtonProps } from "./generic";
 
 export type InternalLayoutNavAnchorProps = Omit<
   IconButtonProps<"link">,
-  "options" | "isActive" | "icon" | "href"
+  "options" | "isActive" | "icon" | "href" | "element"
 > & {
   readonly item: Omit<IInternalLayoutNavItem, "children">;
 };
 
 export type ExternalLayoutNavAnchorProps = Omit<
   IconButtonProps<"a">,
-  "options" | "isActive" | "icon" | "href"
+  "options" | "isActive" | "icon" | "href" | "element"
 > & {
   readonly item: IExternalLayoutNavItem;
 };
@@ -39,6 +39,7 @@ export const InternalLayoutNavAnchor = forwardRef<
   return (
     <IconButton.Solid<"link">
       {...props}
+      element="link"
       activeClassName="bg-blue-800 outline-blue-800 text-white"
       isLoading={isPending}
       onClick={() => setActiveOptimistically()}

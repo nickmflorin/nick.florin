@@ -1,4 +1,4 @@
-import { Link } from "~/components/buttons";
+import { InlineLink } from "~/components/buttons";
 import { Description } from "~/components/typography";
 
 import { Project as ProjectComponent, type ProjectProps } from "../Project";
@@ -16,9 +16,9 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
     description={
       <Description>
         A JavaScript charting library written in&nbsp;
-        <Link element="a" href="https://d3js.org">
+        <InlineLink element="a" href="https://d3js.org">
           d3.js
-        </Link>
+        </InlineLink>
         &nbsp;that can be used to visualize data in either 4 or 5 dimensions (depending on the chart
         type), including time.
       </Description>

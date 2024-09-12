@@ -121,13 +121,13 @@ $typography-size-properties: (
     "lg": (
       font-size: theme("fontSize.title-lg.0"),
       line-height: theme("fontSize.title-lg.1.lineHeight"),
-      font-weight: theme("fontWeight.semibold"),
+      font-weight: theme("fontWeight.medium"),
       color: theme("colors.title"),
     ),
     "xl": (
       font-size: theme("fontSize.title-xl.0"),
       line-height: theme("fontSize.title-xl.1.lineHeight"),
-      font-weight: theme("fontWeight.semibold"),
+      font-weight: theme("fontWeight.medium"),
       color: theme("colors.title"),
     ),
   ),
