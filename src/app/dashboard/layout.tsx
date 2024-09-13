@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
 import type { LinkComponent } from "~/components/buttons";
+import { Content } from "~/components/layout/Content";
 import { Module } from "~/components/modules/generic";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
@@ -20,7 +21,7 @@ const Column = ({ children, ...props }: ColumnProps): JSX.Element => (
   <div
     {...props}
     className={classNames(
-      "flex flex-col gap-[15px] lg:min-w-[320px]",
+      "flex flex-col gap-[12px] lg:min-w-[320px]",
       "max-xl:w-[50%] max-xl:max-w-[50%]",
       "max-md:w-full max-md:max-w-full",
       props.className,
@@ -48,20 +49,20 @@ export default async function DashboardPage({
   return (
     <>
       <Tour />
-      <div className={classNames("max-h-full", "overflow-y-auto pr-[16px]")}>
-        <div className={classNames("flex gap-[15px]", "xl:flex-row", "max-xl:flex-col")}>
-          {/* The 655px comes from 2(320px for each column) + 15px for gap = 655px. */}
+      <Content scrollable outerClassName="pb-[16px] max-md:pb-[12px] max-sm:pb-[8px]">
+        <div className={classNames("flex gap-[12px]", "xl:flex-row", "max-xl:flex-col")}>
+          {/* The 652px comes from 2(320px for each column) + 12px for gap = 652px. */}
           <Module
             className={classNames(
-              "md:max-lg:min-w-[655px] xl:max-w-[1000px] lg:min-w-[320px] min-h-[200px]",
+              "md:max-lg:min-w-[652px] xl:max-w-[1000px] lg:min-w-[320px] min-h-[200px]",
             )}
           >
             {chart}
           </Module>
-          <div className={classNames("flex gap-[15px]", "md:flex-row md:grow", "max-md:flex-col")}>
+          <div className={classNames("flex gap-[12px]", "md:flex-row md:grow", "max-md:flex-col")}>
             <Column className="md:flex-1">
               <Module
-                className="xl:overflow-y-hidden grow min-h-[200px]"
+                className="xl:overflow-y-hidden grow min-h-[550px]"
                 data-attr-tour-id="recent-experience"
               >
                 <Module.Header
@@ -81,7 +82,7 @@ export default async function DashboardPage({
                 </Module.Header>
                 <Module.Content
                   className={classNames(
-                    "flex flex-col gap-[12px]",
+                    "flex flex-col gap-[12px] max-md:gap-[8px]",
                     "xl:overflow-y-auto xl:pr-[16px]",
                   )}
                 >
@@ -92,7 +93,9 @@ export default async function DashboardPage({
                 <Module.Header>Projects</Module.Header>
                 <Module.Content
                   className={classNames(
-                    "flex flex-col gap-[12px] xl:overflow-y-auto xl:grow xl:pr-[16px]",
+                    "flex flex-col gap-[12px]",
+                    "max-md:gap-[8px]",
+                    "xl:overflow-y-auto xl:grow xl:pr-[16px]",
                   )}
                 >
                   {projects}
@@ -120,6 +123,7 @@ export default async function DashboardPage({
                   className={classNames(
                     "flex flex-col gap-[12px]",
                     "xl:overflow-y-auto xl:grow xl:pr-[16px]",
+                    "max-md:gap-[8px]",
                   )}
                 >
                   {educations}
@@ -127,14 +131,18 @@ export default async function DashboardPage({
               </Module>
               <Module className="xl:overflow-y-hidden grow min-h-[200px]">
                 <Module.Header>Repositories</Module.Header>
-                <Module.Content className={classNames("xl:overflow-y-auto xl:grow xl:pr-[16px]")}>
+                <Module.Content
+                  className={classNames(
+                    "flex flex-col max-md:gap-[8px] xl:overflow-y-auto xl:grow xl:pr-[16px]",
+                  )}
+                >
                   {repositories}
                 </Module.Content>
               </Module>
             </Column>
           </div>
         </div>
-      </div>
+      </Content>
     </>
   );
 }

@@ -5,8 +5,7 @@ import { ProjectSlugs } from "~/prisma/model";
 
 import { getProjects } from "~/actions/fetches/projects";
 
-import { Tabs } from "~/components/layout/Tabs";
-import { classNames } from "~/components/types";
+import { TabbedContent } from "~/components/layout/TabbedContent";
 
 interface AdminLayoutProps {
   readonly children: React.ReactNode;
@@ -61,16 +60,5 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
     [] as LabeledNavItem[],
   );
 
-  return (
-    <div className="flex flex-col gap-[24px] w-full h-full overflow-hidden max-sm:overflow-y-auto">
-      <Tabs items={items} />
-      <div
-        className={classNames(
-          "grow max-h-full h-full overflow-y-auto flex flex-col max-sm:overflow-y-visible",
-        )}
-      >
-        {children}
-      </div>
-    </div>
-  );
+  return <TabbedContent items={items}>{children}</TabbedContent>;
 }

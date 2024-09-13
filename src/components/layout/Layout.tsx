@@ -5,8 +5,8 @@ import { Suspense } from "react";
 import { Header } from "./Header";
 import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
 
-const LayoutDrawer = dynamic(() => import("./LayoutDrawer"), { ssr: false });
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
+const LayoutDrawer = dynamic(() => import("./LayoutDrawer"), { ssr: false });
 
 export interface LayoutProps {
   readonly children: ReactNode;
@@ -22,7 +22,7 @@ export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Elemen
     </header>
     <div className="layout__content">
       <LayoutNav items={nav} />
-      <main className="content">
+      <main className="content-container">
         {children}
         <ToastContainer />
       </main>

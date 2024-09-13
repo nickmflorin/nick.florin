@@ -30,13 +30,14 @@ export const Project = ({
   <div
     {...props}
     className={classNames(
-      "w-full max-w-[900px] flex flex-col gap-[12px] mx-auto max-md:gap-[8px] px-[16px]",
+      "w-full max-w-[900px] flex flex-col gap-[12px] mx-auto px-[16px]",
+      "max-md:gap-[8px]",
       props.className,
     )}
   >
     <div
       {...props}
-      className={classNames("w-full flex flex-col gap-[16px] max-sm:gap-[12px]", props.className)}
+      className={classNames("w-full flex flex-col gap-[12px] max-md:gap-[8px]", props.className)}
     >
       <div
         className={classNames(

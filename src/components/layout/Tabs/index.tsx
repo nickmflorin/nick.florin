@@ -1,11 +1,9 @@
-import dynamic from "next/dynamic";
-
 import { type LabeledNavItem } from "~/application/pages";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
-const Tab = dynamic(() => import("./Tab"));
+import { Tab } from "./Tab";
 
 export interface TabsProps extends ComponentProps {
   readonly items: LabeledNavItem[];
@@ -19,8 +17,8 @@ export const Tabs = ({ items, children, ...props }: TabsProps) => (
       /* The bottom padding of 2px is to make sure that the border on the bottom is not cutoff by
          overflow.  On the other hand, the bottom padding of 8px is for the scrollbar, in the case
          that the tabs overflow the container in mobile views. */
-      "flex flex-row items-center overflow-y-hidden w-full min-w-full max-w-full pb-[2px]",
-      "max-sm:pb-0 max-sm:overflow-y-visible",
+      "flex flex-row items-center w-full min-w-full max-w-full pb-[2px]",
+      "max-sm:pb-0",
       props.className,
     )}
   >
@@ -33,6 +31,7 @@ export const Tabs = ({ items, children, ...props }: TabsProps) => (
       <div
         className={classNames(
           "flex flex-row items-center max-sm:flex-col max-sm:justify-center max-sm:w-full",
+          "max-[700px]:w-full max-[700px]:justify-between",
         )}
       >
         {items.map((item, index) => (
