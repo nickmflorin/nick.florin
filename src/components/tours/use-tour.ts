@@ -14,7 +14,7 @@ export const useTour = () => {
   const { setIsOpen: _setTourIsOpen } = useRootTour();
   const observer = useRef<MutationObserver | null>(null);
   const [waitingForTour, setWaitingForTour] = useState(false);
-  const { isLessThanOrEqualTo } = useScreenSizes({ defaultSize: "xs" });
+  const { isLessThanOrEqualTo } = useScreenSizes();
 
   const removeMutationObserver = useCallback(() => {
     observer.current?.disconnect();

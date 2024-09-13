@@ -17,10 +17,12 @@ import { ResumeModelSubTitle } from "./ResumeModelSubTitle";
 import { ResumeModelTags } from "./ResumeModelTags";
 import { ResumeModelTitle } from "./ResumeModelTitle";
 
-export const ImageSizes: { [key in types.ResumeModelSize]: { [key in Breakpoint]: number } } = {
-  small: { xxs: 42, xs: 42, sm: 42, md: 42, lg: 42, xl: 42, "2xl": 42 },
-  medium: { xxs: 42, xs: 44, sm: 44, md: 44, lg: 44, xl: 44, "2xl": 44 },
-  large: { xxs: 42, xs: 44, sm: 48, md: 72, lg: 72, xl: 72, "2xl": 72 },
+export const ImageSizes: {
+  [key in types.ResumeModelSize]: { [key in Breakpoint | "smallest"]: number };
+} = {
+  small: { smallest: 42, xxs: 42, xs: 42, sm: 42, md: 42, lg: 42, xl: 42, "2xl": 42 },
+  medium: { smallest: 42, xxs: 42, xs: 44, sm: 44, md: 44, lg: 44, xl: 44, "2xl": 44 },
+  large: { smallest: 42, xxs: 42, xs: 44, sm: 48, md: 72, lg: 72, xl: 72, "2xl": 72 },
 };
 
 export interface ResumeModelHeaderProps<M extends BrandModel<T>, T extends ResumeBrand>
@@ -34,11 +36,12 @@ export interface ResumeModelHeaderProps<M extends BrandModel<T>, T extends Resum
   readonly titleProps?: ComponentProps;
 }
 
-const ImageGaps: { [key in types.ResumeModelSize]: { [key in Breakpoint]: number } } = {
-  small: { xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-  medium: { xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-  large: { xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-};
+const ImageGaps: { [key in types.ResumeModelSize]: { [key in Breakpoint | "smallest"]: number } } =
+  {
+    small: { smallest: 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
+    medium: { smallest: 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
+    large: { smallest: 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
+  };
 
 export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
@@ -50,7 +53,7 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
   showTags = true,
   ...props
 }: ResumeModelHeaderProps<M, T>) => {
-  const { breakpoint, isLessThan } = useScreenSizes({ defaultSize: "lg" });
+  const { breakpoint, isLessThan } = useScreenSizes();
   const imageSize = ImageSizes[size][breakpoint];
   const imageGap = ImageGaps[size][breakpoint];
 

@@ -54,7 +54,7 @@ export default async function DashboardPage({
           {/* The 652px comes from 2(320px for each column) + 12px for gap = 652px. */}
           <Module
             className={classNames(
-              "md:max-lg:min-w-[652px] xl:max-w-[1000px] lg:min-w-[320px] min-h-[200px]",
+              "md:max-lg:min-w-[652px] xl:max-w-[1000px] lg:min-w-[320px] min-h-[610px]",
             )}
           >
             {chart}

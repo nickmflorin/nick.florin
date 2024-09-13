@@ -22,7 +22,7 @@ export interface LayoutNavigationProps {
 }
 
 export const LayoutNavigation = ({ nav }: LayoutNavigationProps) => {
-  const { isLessThanOrEqualTo } = useScreenSizes({});
+  const { isLessThanOrEqualTo } = useScreenSizes();
   if (isLessThanOrEqualTo("450px")) {
     return (
       <LayoutMenuWrapper>

@@ -33,7 +33,7 @@ export const SkillsFilterDropdownMenu = ({
   filters,
   onChange,
 }: SkillsFilterDropdownMenuProps): JSX.Element => {
-  const { isLessThan } = useScreenSizes({});
+  const { isLessThan } = useScreenSizes();
   const { set } = useMutableParams();
 
   const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({

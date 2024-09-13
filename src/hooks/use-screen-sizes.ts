@@ -10,25 +10,7 @@ import {
 
 import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
 
-type UseScreenSizeConfig = {
-  readonly defaultSize?: Breakpoint;
-};
-
-type UseScreenSizeReturn<C extends UseScreenSizeConfig> = C extends { defaultSize: Breakpoint }
-  ? {
-      breakpoint: Breakpoint;
-      size: number;
-      isLessThan: (size: Exclude<ScreenSize, "xs">) => boolean;
-      isLessThanOrEqualTo: (size: ScreenSize) => boolean;
-    }
-  : {
-      breakpoint: Breakpoint | null;
-      size: number;
-      isLessThan: (size: Exclude<ScreenSize, "xs">) => boolean;
-      isLessThanOrEqualTo: (size: ScreenSize) => boolean;
-    };
-
-const getBreakpoint = (w: Window): Breakpoint => {
+const getBreakpoint = (w: Window): Breakpoint | "smallest" => {
   let breakpoint: Breakpoint | null = null;
   for (let i = 0; i < Breakpoints.members.length; i++) {
     let mediaQuery: string;
@@ -48,25 +30,17 @@ const getBreakpoint = (w: Window): Breakpoint => {
     }
   }
   if (!breakpoint) {
-    throw new Error(
-      "No screen size corresponds to the current window width. " +
-        "This indicates there is something wrong with the logic that determines the screen size.",
-    );
+    return "smallest";
   }
   return breakpoint;
 };
 
-export const useScreenSizes = <C extends UseScreenSizeConfig>({
-  defaultSize,
-}: C): UseScreenSizeReturn<C> => {
+export const useScreenSizes = () => {
   const [size, setSize] = useState<number>(window.innerWidth);
 
-  const [breakpoint, setBreakpoint] = useState<Breakpoint | null>(() => {
-    if (defaultSize) {
-      return defaultSize;
-    }
-    return getBreakpoint(window);
-  });
+  const [breakpoint, setBreakpoint] = useState<Breakpoint | "smallest">(() =>
+    getBreakpoint(window),
+  );
 
   const handleResize = useCallback(() => {
     const bk = getBreakpoint(window);
@@ -91,7 +65,12 @@ export const useScreenSizes = <C extends UseScreenSizeConfig>({
     (sz: ScreenSize) => {
       if (breakpoint !== null) {
         if (Breakpoints.contains(sz)) {
-          return Breakpoints.members.indexOf(sz) >= Breakpoints.members.indexOf(breakpoint);
+          if (Breakpoints.contains(breakpoint)) {
+            return Breakpoints.members.indexOf(sz) >= Breakpoints.members.indexOf(breakpoint);
+          }
+          /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
+             breakpoint. */
+          return true;
         }
         return sizeToNumber(sz) >= size;
       }
@@ -104,7 +83,12 @@ export const useScreenSizes = <C extends UseScreenSizeConfig>({
     (sz: ScreenSize) => {
       if (breakpoint !== null) {
         if (Breakpoints.contains(sz)) {
-          return Breakpoints.members.indexOf(sz) > Breakpoints.members.indexOf(breakpoint);
+          if (Breakpoints.contains(breakpoint)) {
+            return Breakpoints.members.indexOf(sz) > Breakpoints.members.indexOf(breakpoint);
+          }
+          /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
+             breakpoint. */
+          return true;
         }
         return sizeToNumber(sz) > size;
       }
@@ -113,5 +97,5 @@ export const useScreenSizes = <C extends UseScreenSizeConfig>({
     [breakpoint, size],
   );
 
-  return { breakpoint, size, isLessThanOrEqualTo, isLessThan } as UseScreenSizeReturn<C>;
+  return { breakpoint, size, isLessThanOrEqualTo, isLessThan };
 };

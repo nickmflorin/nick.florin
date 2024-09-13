@@ -9,13 +9,16 @@
 
 .layout-menu-wrapper {
   @include layout-menu-container();
-  @include partials.fully-constrained-dimension(width, 100%);
+  width: 100%;
+  max-width: 320px;
 
   position: absolute;
   right: 0;
   z-index: 1;
-  background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
-    theme("colors.gray.50");
+  // background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
+  //   theme("colors.gray.50");
+  background-color: theme("colors.white");
+  border-left: 1px solid theme("colors.border");
 
   > .layout-menu-container {
     @include layout-menu-container();
@@ -30,6 +33,7 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      padding: 8px;
     }
   }
 }

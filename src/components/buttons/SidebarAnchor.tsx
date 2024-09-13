@@ -75,8 +75,7 @@ export const ExternalSidebarAnchor = forwardRef<
     size="xlarge"
     iconSize="medium"
     icon={item.icon}
-    target="_blank"
-    rel="noopener noreferrer"
+    openInNewTab
   />
 ));
 
