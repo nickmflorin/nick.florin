@@ -24,8 +24,8 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  public async componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error("Uncaught Error:", error, errorInfo);
+  public async componentDidCatch(error: Error) {
+    logger.error(error, "Uncaught Error");
   }
 
   public render() {
