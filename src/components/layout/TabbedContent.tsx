@@ -28,7 +28,8 @@ export const TabbedContent = ({
       <div
         {...props}
         className={classNames(
-          "grow min-h-0 max-h-full h-full overflow-y-auto flex flex-col max-sm:overflow-y-visible",
+          "relative grow min-h-0 max-h-full h-full overflow-y-auto",
+          "flex flex-col max-sm:overflow-y-visible",
           props.className,
         )}
       >
