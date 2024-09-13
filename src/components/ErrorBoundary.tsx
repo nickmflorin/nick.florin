@@ -1,5 +1,5 @@
 "use client";
-import React, { Component, type ErrorInfo, type ReactNode } from "react";
+import React, { Component, type ReactNode } from "react";
 
 import { logger } from "~/internal/logger";
 
