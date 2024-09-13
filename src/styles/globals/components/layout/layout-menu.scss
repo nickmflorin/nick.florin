@@ -1,0 +1,35 @@
+@use "partials";
+@use "./constants" as constants;
+
+@mixin layout-menu-container {
+  max-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.layout-menu-wrapper {
+  @include layout-menu-container();
+  @include partials.fully-constrained-dimension(width, 100%);
+
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
+    theme("colors.gray.50");
+
+  > .layout-menu-container {
+    @include layout-menu-container();
+    @include partials.fully-constrained-dimension(width, 100%);
+    position: relative;
+
+    > .layout-menu {
+      @include layout-menu-container();
+      @include partials.fully-constrained-dimension(width, 100%);
+      z-index: 100;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+  }
+}

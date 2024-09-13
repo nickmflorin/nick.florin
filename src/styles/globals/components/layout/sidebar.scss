@@ -1,16 +1,11 @@
 @use "./constants" as constants;
 
-.layout-nav {
+.sidebar {
   border-right: 1px solid theme("colors.border");
-  width: constants.$layout-nav-width;
+  width: constants.$sidebar-width;
   display: flex;
   flex-direction: column;
   padding: 6px;
   background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
     theme("colors.gray.50");
-
-  // TODO: Uncomment me once we build the separate nav.
-  // @media (max-width: theme("screens.xs")) {
-  //   display: none;
-  // }
 }

@@ -6,16 +6,14 @@ import { motion } from "framer-motion";
 import { classNames } from "~/components/types";
 
 import {
-  type ILayoutNavItem,
-  layoutNavItemHasChildren,
-  layoutNavItemIsExternal,
-  type IInternalGroupedLayoutNavItem,
+  type ISidebarItem,
+  sidebarItemHasChildren,
+  sidebarItemIsExternal,
+  type IInternalGroupedSidebarItem,
 } from "../types";
 
-import { LayoutNavGroup } from "./LayoutNavGroup";
-import { LayoutNavItem } from "./LayoutNavItem";
-
-export { type ILayoutNavItem } from "../types";
+import { SidebarItem } from "./SidebarItem";
+import { SidebarItemGroup } from "./SidebarItemGroup";
 
 const ItemVariants = {
   offset: ({ offset }: { offset: number }) => ({
@@ -28,14 +26,14 @@ const getPreviousOpenedGroup = ({
   previousItems,
   groupOpenIndex,
 }: {
-  previousItems: ILayoutNavItem[];
+  previousItems: ISidebarItem[];
   groupOpenIndex: number | null;
 }) => {
   const previousOpenedGroup = previousItems
     .map((it, ind) => ({ ind, item: it }))
     .filter(
-      (d): d is { item: IInternalGroupedLayoutNavItem; ind: number } =>
-        layoutNavItemHasChildren(d.item) && d.ind === groupOpenIndex,
+      (d): d is { item: IInternalGroupedSidebarItem; ind: number } =>
+        sidebarItemHasChildren(d.item) && d.ind === groupOpenIndex,
     );
   if (previousOpenedGroup.length === 0) {
     return null;
@@ -47,7 +45,7 @@ const getAnimatedOffset = ({
   previousItems,
   groupOpenIndex,
 }: {
-  previousItems: ILayoutNavItem[];
+  previousItems: ISidebarItem[];
   groupOpenIndex: number | null;
 }) => {
   const previousOpenedGroup = getPreviousOpenedGroup({ previousItems, groupOpenIndex });
@@ -58,19 +56,19 @@ const getAnimatedOffset = ({
 };
 
 export interface LayoutNavProps {
-  readonly items: ILayoutNavItem[];
+  readonly items: ISidebarItem[];
 }
 
-export const LayoutNav = ({ items }: LayoutNavProps) => {
+export const Sidebar = ({ items }: LayoutNavProps) => {
   const [groupOpenIndex, setGroupOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="layout-nav" onMouseLeave={() => setGroupOpenIndex(null)}>
+    <div className="sidebar" onMouseLeave={() => setGroupOpenIndex(null)}>
       <div className="flex flex-col gap-[8px] items-center">
         {items
           .filter(item => item.visible !== false)
           .map((item, i) => {
-            if (!layoutNavItemIsExternal(item) && layoutNavItemHasChildren(item)) {
+            if (!sidebarItemIsExternal(item) && sidebarItemHasChildren(item)) {
               const offset = getAnimatedOffset({
                 previousItems: items.filter(item => item.visible !== false).slice(0, i),
                 groupOpenIndex,
@@ -88,7 +86,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
                     }}
                     className="w-full max-md:hidden"
                   >
-                    <LayoutNavGroup
+                    <SidebarItemGroup
                       item={item}
                       isOpen={groupOpenIndex === i}
                       onOpen={() => setGroupOpenIndex(i)}
@@ -102,7 +100,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
                   >
                     {item.children.map((child, index) => (
                       <div key={index} className="w-full h-[48px] aspect-square">
-                        <LayoutNavItem item={child} />
+                        <SidebarItem item={child} />
                       </div>
                     ))}
                   </div>
@@ -124,7 +122,7 @@ export const LayoutNav = ({ items }: LayoutNavProps) => {
                 }}
                 className="w-full h-[48px] aspect-square"
               >
-                <LayoutNavItem item={item} />
+                <SidebarItem item={item} />
               </motion.div>
             );
           })}

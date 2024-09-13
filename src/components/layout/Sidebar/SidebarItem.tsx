@@ -1,10 +1,10 @@
-import { LayoutNavAnchor } from "~/components/buttons/LayoutNavAnchor";
+import { SidebarAnchor } from "~/components/buttons/SidebarAnchor";
 import { classNames } from "~/components/types";
 
-import { type ILayoutNavItem, type LayoutNavItemHasChildren } from "../types";
+import { type ISidebarItem, type SidebarItemHasChildren } from "../types";
 
-export type LayoutNavItemParentProps<I extends ILayoutNavItem> =
-  LayoutNavItemHasChildren<I> extends true
+export type SidebarItemProps<I extends ISidebarItem> =
+  SidebarItemHasChildren<I> extends true
     ? {
         readonly item: I;
         readonly isOpen: boolean;
@@ -16,12 +16,12 @@ export type LayoutNavItemParentProps<I extends ILayoutNavItem> =
         readonly onOpen?: never;
       };
 
-export const LayoutNavItem = <I extends ILayoutNavItem>({
+export const SidebarItem = <I extends ISidebarItem>({
   onOpen,
   isOpen,
   item,
-}: LayoutNavItemParentProps<I>) => (
-  <LayoutNavAnchor
+}: SidebarItemProps<I>) => (
+  <SidebarAnchor
     item={item}
     className={classNames({
       "z-10":

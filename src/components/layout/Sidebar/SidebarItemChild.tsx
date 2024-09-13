@@ -1,10 +1,9 @@
 "use client";
-
 import { motion } from "framer-motion";
 
-import { LayoutNavAnchor } from "~/components/buttons/LayoutNavAnchor";
+import { SidebarAnchor } from "~/components/buttons/SidebarAnchor";
 
-import { type IExternalLayoutNavItem, type IInternalLayoutNavItem } from "../types";
+import { type IExternalSidebarItem, type IInternalSidebarItem } from "../types";
 
 import * as constants from "./constants";
 
@@ -20,17 +19,17 @@ const itemVariants = {
   }),
 };
 
-export interface LayoutNavItemChildProps {
+export interface SidebarItemChildProps {
   readonly index: number;
-  readonly item: Omit<IInternalLayoutNavItem, "children"> | IExternalLayoutNavItem;
+  readonly item: Omit<IInternalSidebarItem, "children"> | IExternalSidebarItem;
 }
 
-export const LayoutNavItemChild = ({ index, item }: LayoutNavItemChildProps) => (
+export const SidebarItemChild = ({ index, item }: SidebarItemChildProps) => (
   <motion.div
     variants={itemVariants}
     custom={{ index }}
     className="w-full h-[48px] aspect-square z-0 mb-[4px] last:mb-0"
   >
-    <LayoutNavAnchor item={item} />
+    <SidebarAnchor item={item} />
   </motion.div>
 );

@@ -1,61 +1,56 @@
 import { type Required } from "utility-types";
 
-import { type NavItem } from "~/application/pages";
+import { type LabeledNavItem } from "~/application/pages";
 
-export interface IInternalGroupedLayoutNavItem extends Required<NavItem, "icon"> {
-  readonly tooltipLabel: string;
+export interface IInternalGroupedSidebarItem extends Required<LabeledNavItem, "icon"> {
   readonly visible?: boolean;
   readonly href?: never;
-  readonly children: [IInternalLayoutNavItem, ...IInternalLayoutNavItem[]];
+  readonly children: [IInternalSidebarItem, ...IInternalSidebarItem[]];
 }
 
-export interface IInternalLayoutNavItem extends Required<NavItem, "icon"> {
-  readonly tooltipLabel: string;
+export interface IInternalSidebarItem extends Required<LabeledNavItem, "icon"> {
   readonly visible?: boolean;
   readonly href?: never;
   readonly children?: never;
 }
 
-export interface IExternalLayoutNavItem extends Required<Pick<NavItem, "icon">, "icon"> {
+export interface IExternalSidebarItem
+  extends Required<Pick<LabeledNavItem, "icon" | "label">, "icon"> {
   readonly children?: never;
-  readonly tooltipLabel: string;
   readonly visible?: boolean;
   readonly href: string;
   readonly path?: never;
   readonly active?: never;
 }
 
-export type ILayoutNavItem =
-  | IInternalLayoutNavItem
-  | IExternalLayoutNavItem
-  | IInternalGroupedLayoutNavItem;
+export type ISidebarItem =
+  | IInternalSidebarItem
+  | IExternalSidebarItem
+  | IInternalGroupedSidebarItem;
 
-export const layoutNavItemIsExternal = (
-  navItem: ILayoutNavItem,
-): navItem is IExternalLayoutNavItem => (navItem as IExternalLayoutNavItem).href !== undefined;
+export const sidebarItemIsExternal = (navItem: ISidebarItem): navItem is IExternalSidebarItem =>
+  (navItem as IExternalSidebarItem).href !== undefined;
 
-export type LayoutNavItemHasChildren<I extends ILayoutNavItem> = I extends {
-  children: [IInternalLayoutNavItem, ...IInternalLayoutNavItem[]];
+export type SidebarItemHasChildren<I extends ISidebarItem> = I extends {
+  children: [IInternalSidebarItem, ...IInternalSidebarItem[]];
 }
   ? true
   : false;
 
-export const layoutNavItemHasChildren = (
-  item: ILayoutNavItem,
-): item is IInternalGroupedLayoutNavItem =>
-  (item as IInternalGroupedLayoutNavItem).children !== undefined &&
-  (item as IInternalGroupedLayoutNavItem).children.filter(child => child.visible !== false)
-    .length !== 0;
+export const sidebarItemHasChildren = (item: ISidebarItem): item is IInternalGroupedSidebarItem =>
+  (item as IInternalGroupedSidebarItem).children !== undefined &&
+  (item as IInternalGroupedSidebarItem).children.filter(child => child.visible !== false).length !==
+    0;
 
-export const flattenLayoutNavItems = (
-  items: ILayoutNavItem[],
-): Exclude<ILayoutNavItem, IInternalGroupedLayoutNavItem>[] =>
+export const flattenSidebarItems = (
+  items: ISidebarItem[],
+): Exclude<ISidebarItem, IInternalGroupedSidebarItem>[] =>
   items.reduce(
     (acc, item) => {
-      if (layoutNavItemHasChildren(item)) {
+      if (sidebarItemHasChildren(item)) {
         return [...acc, ...item.children];
       }
       return [...acc, item];
     },
-    [] as Exclude<ILayoutNavItem, IInternalGroupedLayoutNavItem>[],
+    [] as Exclude<ISidebarItem, IInternalGroupedSidebarItem>[],
   );

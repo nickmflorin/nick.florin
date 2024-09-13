@@ -1,48 +1,52 @@
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import resolveConfig from "tailwindcss/resolveConfig";
 
-export const ScreenSizes = enumeratedLiterals(
+import { sizeToNumber, sizeToString, type QuantitativeSize } from "~/components/types/sizes";
+
+import TailwindConfig from "../../tailwind.config";
+
+const Theme = resolveConfig(TailwindConfig);
+
+export const Breakpoints = enumeratedLiterals(
   ["xxs", "xs", "sm", "md", "lg", "xl", "2xl"] as const,
   {},
 );
-export type ScreenSize = EnumeratedLiteralsMember<typeof ScreenSizes>;
+export type Breakpoint = EnumeratedLiteralsMember<typeof Breakpoints>;
 
-export const ScreenSizeWidths: { [key in ScreenSize]: number } = {
-  xxs: 321,
-  xs: 450,
-  sm: 640,
-  md: 769,
-  lg: 1024,
-  xl: 1280,
-  "2xl": 1536,
+export const ScreenSizeWidths: { [key in Breakpoint]: number } = {
+  xxs: sizeToNumber(Theme.theme.screens.xxs),
+  xs: sizeToNumber(Theme.theme.screens.xs),
+  sm: sizeToNumber(Theme.theme.screens.sm),
+  md: sizeToNumber(Theme.theme.screens.md),
+  lg: sizeToNumber(Theme.theme.screens.lg),
+  xl: sizeToNumber(Theme.theme.screens.xl),
+  "2xl": sizeToNumber(Theme.theme.screens["2xl"]),
 };
 
+export type ScreenSize = Breakpoint | QuantitativeSize<"px">;
+
 type GetMediaQueryParams =
-  | { min: ScreenSize; max: Exclude<ScreenSize, "xs"> }
+  | { min: ScreenSize; max: Exclude<ScreenSize, "xxs"> }
   | { min: ScreenSize; max?: never }
-  | { min?: never; max: Exclude<ScreenSize, "xs"> };
+  | { min?: never; max: Exclude<ScreenSize, "xxs"> };
+
+const mediaQueryString = (constraint: "min" | "max", size: ScreenSize): string => {
+  const sizeValue = Breakpoints.contains(size)
+    ? sizeToString(constraint === "min" ? ScreenSizeWidths[size] : ScreenSizeWidths[size] + 1, "px")
+    : sizeToString(size, "px");
+  return `(${constraint}-width: ${sizeValue})`;
+};
 
 export const getMediaQuery = ({ min, max }: GetMediaQueryParams) => {
   if (min && max) {
-    return `(min-width: ${ScreenSizeWidths[min]}px) and (max-width: ${
-      ScreenSizeWidths[max] - 1
-    }px)`;
+    if (min === max) {
+      throw new Error("Invalid Function Implementation: The min and max value cannot be the same.");
+    }
+    return `${mediaQueryString("min", min)} and ${mediaQueryString("max", max)}`;
   } else if (min) {
-    return `(min-width: ${ScreenSizeWidths[min]}px)`;
+    return mediaQueryString("min", min);
   } else if (max) {
-    return `(max-width: ${ScreenSizeWidths[max] - 1}px)`;
+    return mediaQueryString("max", max);
   }
   throw new Error("Invalid Function Implementation: The min or max value must be provided.");
 };
-
-export type Breakpoint<B extends ScreenSize = ScreenSize> = B | `max-${B}`;
-
-export type BreakPointClassName<
-  T extends string,
-  B extends ScreenSize = ScreenSize,
-> = B extends ScreenSize ? T | `${ScreenSize}:${T}` | `max-${ScreenSize}:${T}` : never;
-
-const TailwindScreenSizeModifierRegex =
-  /^((xs|sm|md|lg|xl|2xl):max-(xs|sm|md|lg|xl|2xl)|(max-(xs|sm|md|lg|xl|2xl)))$/;
-
-export const isTailwindScreenSizeModifier = (modifier: string) =>
-  TailwindScreenSizeModifierRegex.test(modifier);

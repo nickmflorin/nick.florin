@@ -47,13 +47,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Layout
             nav={[
               {
-                tooltipLabel: "Dashboard",
+                label: "Dashboard",
                 icon: { name: "grid" },
                 path: "/dashboard",
                 activePaths: [{ leadingPath: "/dashboard" }],
               },
               {
-                tooltipLabel: "Resume",
+                label: "Resume",
                 icon: { name: "list-check" },
                 path: "/resume",
                 activePaths: [
@@ -62,13 +62,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 ],
                 children: [
                   {
-                    tooltipLabel: "Experience",
+                    label: "Experience",
                     icon: { name: "briefcase" },
                     path: "/resume/experience",
                     activePaths: [{ leadingPath: "/resume/experience" }],
                   },
                   {
-                    tooltipLabel: "Education",
+                    label: "Education",
                     icon: { name: "building-columns" },
                     path: "/resume/education",
                     activePaths: [{ leadingPath: "/resume/education" }],
@@ -76,18 +76,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 ],
               },
               {
-                tooltipLabel: "Projects",
+                label: "Projects",
                 icon: { name: "hammer" },
                 path: "/projects",
                 activePaths: [{ leadingPath: "/projects", endPath: false }],
               },
               {
-                tooltipLabel: "Blog",
+                label: "Blog",
                 icon: { name: "medium", iconStyle: "brands" },
                 href: "https://medium.com/@nickmflorin",
               },
               {
-                tooltipLabel: "Admin CMS",
+                label: "Admin CMS",
                 icon: { name: "gear" },
                 path: "/admin/skills",
                 activePaths: [

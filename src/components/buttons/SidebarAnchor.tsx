@@ -5,33 +5,33 @@ import type * as types from "./types";
 
 import { Tooltip } from "~/components/floating/Tooltip";
 import {
-  layoutNavItemIsExternal,
-  type IExternalLayoutNavItem,
-  type IInternalLayoutNavItem,
+  sidebarItemIsExternal,
+  type IExternalSidebarItem,
+  type IInternalSidebarItem,
 } from "~/components/layout";
 import { classNames } from "~/components/types";
 import { useNavigatable } from "~/hooks";
 
 import { IconButton, type IconButtonProps } from "./generic";
 
-export type InternalLayoutNavAnchorProps = Omit<
+export type InternalSidebarAnchorProps = Omit<
   IconButtonProps<"link">,
   "options" | "isActive" | "icon" | "href" | "element"
 > & {
-  readonly item: Omit<IInternalLayoutNavItem, "children">;
+  readonly item: Omit<IInternalSidebarItem, "children">;
 };
 
-export type ExternalLayoutNavAnchorProps = Omit<
+export type ExternalSidebarAnchorProps = Omit<
   IconButtonProps<"a">,
   "options" | "isActive" | "icon" | "href" | "element"
 > & {
-  readonly item: IExternalLayoutNavItem;
+  readonly item: IExternalSidebarItem;
 };
 
-export const InternalLayoutNavAnchor = forwardRef<
+export const InternalSidebarAnchor = forwardRef<
   types.PolymorphicButtonElement<"link">,
-  InternalLayoutNavAnchorProps
->(({ item, ...props }: InternalLayoutNavAnchorProps, ref: types.PolymorphicButtonRef<"link">) => {
+  InternalSidebarAnchorProps
+>(({ item, ...props }: InternalSidebarAnchorProps, ref: types.PolymorphicButtonRef<"link">) => {
   const { isActive, href, isPending, setActiveOptimistically } = useNavigatable({
     id: item.path,
     item,
@@ -58,10 +58,10 @@ export const InternalLayoutNavAnchor = forwardRef<
   );
 });
 
-export const ExternalLayoutNavAnchor = forwardRef<
+export const ExternalSidebarAnchor = forwardRef<
   types.PolymorphicButtonElement<"a">,
-  ExternalLayoutNavAnchorProps
->(({ item, ...props }: ExternalLayoutNavAnchorProps, ref: types.PolymorphicButtonRef<"link">) => (
+  ExternalSidebarAnchorProps
+>(({ item, ...props }: ExternalSidebarAnchorProps, ref: types.PolymorphicButtonRef<"link">) => (
   <IconButton.Solid<"a">
     {...props}
     className={classNames(
@@ -80,20 +80,20 @@ export const ExternalLayoutNavAnchor = forwardRef<
   />
 ));
 
-export type LayoutNavAnchorProps<
-  I extends Omit<IInternalLayoutNavItem, "children"> | IExternalLayoutNavItem =
-    | Omit<IInternalLayoutNavItem, "children">
-    | IExternalLayoutNavItem,
+export type SidebarAnchorProps<
+  I extends Omit<IInternalSidebarItem, "children"> | IExternalSidebarItem =
+    | Omit<IInternalSidebarItem, "children">
+    | IExternalSidebarItem,
 > = Omit<IconButtonProps<"link" | "a">, "options" | "isActive" | "icon" | "href"> & {
   readonly item: I;
 };
 
-export const LayoutNavAnchor = forwardRef<
+export const SidebarAnchor = forwardRef<
   types.PolymorphicButtonElement<"a"> | types.PolymorphicButtonElement<"link">,
-  LayoutNavAnchorProps
+  SidebarAnchorProps
 >(
-  <I extends Omit<IInternalLayoutNavItem, "children"> | IExternalLayoutNavItem>(
-    { item, ...props }: LayoutNavAnchorProps<I>,
+  <I extends Omit<IInternalSidebarItem, "children"> | IExternalSidebarItem>(
+    { item, ...props }: SidebarAnchorProps<I>,
     forwardedRef: types.PolymorphicButtonRef<"link"> | types.PolymorphicButtonRef<"a">,
   ) => (
     /* Using a Portal here prevents glitches associated with the tooltip from shifting around to
@@ -101,12 +101,12 @@ export const LayoutNavAnchor = forwardRef<
        parent sidebar item with children.  It also prevents a bug related to the opacity of the
        tooltip changing so that it looks semi-transparent - althought the reason a portal fixes
        that problem is less clear. */
-    <Tooltip content={item.tooltipLabel} placement="right" variant="secondary" inPortal>
+    <Tooltip content={item.label} placement="right" variant="secondary" inPortal>
       {({ ref, params }) => {
-        if (layoutNavItemIsExternal(item)) {
+        if (sidebarItemIsExternal(item)) {
           return (
-            <ExternalLayoutNavAnchor
-              {...(props as ExternalLayoutNavAnchorProps)}
+            <ExternalSidebarAnchor
+              {...(props as ExternalSidebarAnchorProps)}
               {...params}
               item={item}
               ref={instance => {
@@ -121,8 +121,8 @@ export const LayoutNavAnchor = forwardRef<
           );
         }
         return (
-          <InternalLayoutNavAnchor
-            {...(props as InternalLayoutNavAnchorProps)}
+          <InternalSidebarAnchor
+            {...(props as InternalSidebarAnchorProps)}
             {...params}
             item={item}
             ref={instance => {

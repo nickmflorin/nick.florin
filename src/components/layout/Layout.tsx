@@ -3,15 +3,15 @@ import { type ReactNode } from "react";
 import { Suspense } from "react";
 
 import { Header } from "./Header";
-import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
+import { LayoutNavigation } from "./LayoutNavigation";
+import { type ISidebarItem } from "./types";
 
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
 const LayoutDrawer = dynamic(() => import("./LayoutDrawer"), { ssr: false });
-const LayoutMenu = dynamic(() => import("./LayoutMenu"), { ssr: false });
 
 export interface LayoutProps {
   readonly children: ReactNode;
-  readonly nav: ILayoutNavItem[];
+  readonly nav: ISidebarItem[];
 }
 
 export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Element> => (
@@ -22,7 +22,7 @@ export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Elemen
       </Suspense>
     </header>
     <div className="layout__content">
-      <LayoutNav items={nav} />
+      <LayoutNavigation nav={nav} />
       <main className="content-container">
         {children}
         <ToastContainer />

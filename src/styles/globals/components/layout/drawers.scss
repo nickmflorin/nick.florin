@@ -21,9 +21,9 @@
   }
 
   @media (max-width: theme("screens.sm")) and (min-width: theme("screens.xs")) {
-    @include partials.fully-constrained-dimension(width, calc(100% - constants.$layout-nav-width));
+    @include partials.fully-constrained-dimension(width, calc(100% - constants.$sidebar-width));
     position: absolute;
-    left: constants.$layout-nav-width;
+    left: constants.$sidebar-width;
     /* The left border is removed when the drawer is opened on mobile because the drawer extends to
        the side nav bar, which already has a border to its right.  Including the additional border
        here would make the overall border appear thicker, since it would be the combination of two

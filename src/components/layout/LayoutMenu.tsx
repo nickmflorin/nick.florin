@@ -1,26 +1,15 @@
-"use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { type ISidebarItem, flattenSidebarItems } from "./types";
 
-import { useNavMenu } from "~/hooks";
+export interface LayoutMenuProps {
+  readonly nav: ISidebarItem[];
+}
 
-export const LayoutMenu = () => {
-  const { isOpen } = useNavMenu();
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          transition={{ type: "spring", bounce: 0 }}
-          className="drawer-wrapper"
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
-        >
-          <div>Test</div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-export default LayoutMenu;
+export const LayoutMenu = ({ nav }: LayoutMenuProps) => (
+  <div className="layout-menu">
+    <div className="flex flex-col gap-[8px] items-center">
+      {flattenSidebarItems(nav).map((item, index) => (
+        <div key={index}>{item.label}</div>
+      ))}
+    </div>
+  </div>
+);
