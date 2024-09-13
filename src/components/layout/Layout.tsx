@@ -7,6 +7,7 @@ import { LayoutNav, type ILayoutNavItem } from "./LayoutNav";
 
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
 const LayoutDrawer = dynamic(() => import("./LayoutDrawer"), { ssr: false });
+const LayoutMenu = dynamic(() => import("./LayoutMenu"), { ssr: false });
 
 export interface LayoutProps {
   readonly children: ReactNode;

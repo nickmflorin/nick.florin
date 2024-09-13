@@ -1,12 +1,16 @@
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 
-export const ScreenSizes = enumeratedLiterals(["xs", "sm", "md", "lg", "xl", "2xl"] as const, {});
+export const ScreenSizes = enumeratedLiterals(
+  ["xxs", "xs", "sm", "md", "lg", "xl", "2xl"] as const,
+  {},
+);
 export type ScreenSize = EnumeratedLiteralsMember<typeof ScreenSizes>;
 
 export const ScreenSizeWidths: { [key in ScreenSize]: number } = {
-  xs: 0,
+  xxs: 321,
+  xs: 450,
   sm: 640,
-  md: 768,
+  md: 769,
   lg: 1024,
   xl: 1280,
   "2xl": 1536,
