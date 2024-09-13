@@ -1,7 +1,11 @@
 import pino, { type LoggerOptions, type DestinationStream } from "pino";
 import { v4 as uuid } from "uuid";
 
-import { type VercelEnvironmentName, type EnvironmentName, LogLevel } from "~/environment/constants";
+import {
+  type VercelEnvironmentName,
+  type EnvironmentName,
+  type LogLevel,
+} from "~/environment/constants";
 
 import { DEFAULT_LOG_LEVELS } from "./constants";
 import { type AbstractLoggerConfig } from "./types";
@@ -138,7 +142,7 @@ export abstract class AbstractLogger {
     message: string | object | undefined,
     context?: object,
   ): void {
-    const ctx = typeof message === "string" ? (context ?? {}) : message;
+    const ctx = typeof message === "string" ? context ?? {} : message;
     const msg = typeof message === "string" ? message : undefined;
     this.pino[method](ctx, msg);
   }
