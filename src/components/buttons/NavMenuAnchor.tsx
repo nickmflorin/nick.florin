@@ -43,7 +43,7 @@ export const InternalNavMenuAnchor = forwardRef<
       isLoading={isPending}
       onClick={() => setActiveOptimistically()}
       className={classNames(
-        "z-0 text-body outline-transparent bg-transparent w-full h-full",
+        "z-0 text-body outline-gray-50 bg-gray-50 w-full h-full",
         { ["hover:bg-gray-300 hover:outline-gray-300"]: !isActive },
         props.className,
       )}
@@ -51,6 +51,7 @@ export const InternalNavMenuAnchor = forwardRef<
       href={href}
       size="xlarge"
       iconSize="medium"
+      fontSize="md"
       icon={item.icon}
       isActive={isActive}
     >
@@ -66,7 +67,7 @@ export const ExternalNavMenuAnchor = forwardRef<
   <Button.Solid<"a">
     {...props}
     className={classNames(
-      "z-0 text-body outline-transparent bg-transparent w-full h-full",
+      "z-0 text-body outline-gray-50 bg-gray-50 w-full h-full",
       "hover:bg-gray-300 hover:outline-gray-300",
       props.className,
     )}
@@ -75,6 +76,7 @@ export const ExternalNavMenuAnchor = forwardRef<
     href={item.href}
     size="xlarge"
     iconSize="medium"
+    fontSize="md"
     icon={item.icon}
     openInNewTab
   >
