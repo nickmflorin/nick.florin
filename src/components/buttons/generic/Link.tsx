@@ -3,46 +3,73 @@ import { forwardRef, type ReactNode } from "react";
 import { capitalize } from "~/lib/formatters";
 
 import * as types from "~/components/buttons";
+import {
+  type TypographyCharacteristics,
+  type ComponentProps,
+  type Size,
+  type QuantitativeSize,
+  classNames,
+  getTypographyClassName,
+} from "~/components/types";
 
 import { AbstractButton } from "./AbstractButton";
 import { ButtonContent } from "./ButtonContent";
 
-export type LinkProps<E extends types.ButtonElement> = Omit<
-  types.AbstractProps<"link", E>,
-  "buttonType"
-> & {
-  readonly children?: ReactNode;
-};
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const Base = AbstractButton as React.FC<types.AbstractProps<"link", any>>;
+export type LinkProps<E extends types.ButtonElement> = Omit<types.AbstractProps<E>, "buttonType"> &
+  Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
+    readonly children?: ReactNode;
+    readonly icon?: types.ButtonIconProp;
+    readonly iconClassName?: ComponentProps["className"];
+    readonly iconSize?: types.ButtonIconSize;
+    readonly spinnerSize?: QuantitativeSize<"px">;
+    readonly spinnerClassName?: ComponentProps["className"];
+    readonly gap?: Size;
+    readonly loadingLocation?: types.ButtonLoadingLocation;
+  };
 
 const LocalLink = forwardRef(
   <E extends types.ButtonElement>(
-    { children, icon, gap, iconClassName, loadingLocation, ...props }: LinkProps<E>,
+    {
+      children,
+      icon,
+      gap,
+      iconClassName,
+      spinnerClassName,
+      loadingLocation,
+      iconSize,
+      spinnerSize,
+      fontSize,
+      fontFamily,
+      fontWeight,
+      transform,
+      ...props
+    }: LinkProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ) => {
-    const ps = { ...props, buttonType: "link", ref } as types.AbstractProps<
-      "link",
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      any
-    > & {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      readonly ref?: types.PolymorphicButtonRef<any>;
+    const ps = { ...props, buttonType: "link", ref } as types.AbstractProps<E> & {
+      readonly ref?: types.PolymorphicButtonRef<E>;
     };
     return (
-      <Base {...ps}>
+      <AbstractButton
+        {...ps}
+        className={classNames(
+          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform }),
+          props.className,
+        )}
+      >
         <ButtonContent
           gap={gap}
-          iconSize={props.iconSize}
+          iconSize={iconSize}
           iconClassName={iconClassName}
           isLoading={props.isLoading}
           icon={icon}
           loadingLocation={loadingLocation}
+          spinnerClassName={spinnerClassName}
+          spinnerSize={spinnerSize}
         >
           {children}
         </ButtonContent>
-      </Base>
+      </AbstractButton>
     );
   },
 ) as {

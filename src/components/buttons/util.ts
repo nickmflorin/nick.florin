@@ -1,9 +1,4 @@
-import { pick } from "lodash-es";
-
-import { UnreachableCaseError } from "~/application/errors";
-
 import { classNames, sizeToString, type QuantitativeSizeString } from "~/components/types";
-import { getTypographyClassName } from "~/components/types";
 
 import * as types from "./types";
 
@@ -18,79 +13,39 @@ export const toIconSize = (
     : undefined;
 
 type ButtonClassNamePropName =
-  | "variant"
   | "scheme"
   | "isLocked"
   | "isActive"
   | "isLoading"
   | "isDisabled"
   | "className"
-  | "size"
-  | "iconSize"
-  | "fontWeight"
   | "radius"
-  | "fontSize"
-  | "fontFamily"
-  | "transform"
   | "buttonType"
   | "lockedClassName"
   | "disabledClassName"
   | "loadingClassName"
   | "activeClassName";
 
-export type ButtonClassNameProps<T extends types.ButtonType, E extends types.ButtonElement> = Pick<
-  types.AbstractProps<T, E>,
+export type ButtonClassNameProps<E extends types.ButtonElement> = Pick<
+  types.AbstractProps<E>,
   ButtonClassNamePropName
 >;
 
-const buttonSizeClassName = <T extends types.ButtonType, E extends types.ButtonElement>({
-  size = "small",
-  buttonType,
-}: Pick<types.AbstractProps<T, E>, "size" | "buttonType">): string => {
-  switch (buttonType) {
-    case types.ButtonTypes.BUTTON:
-      return types.ButtonDiscreteSizes.contains(size) ? `button--size-${size}` : "";
-    case types.ButtonTypes.ICON_BUTTON:
-      return types.ButtonDiscreteSizes.contains(size) ? `button--size-${size}` : "";
-    case types.ButtonTypes.LINK:
-      /* The size of the Link component is determined entirely from the line-height of the text
-         it contains. */
-      return "";
-    case types.ButtonTypes.INLINE_LINK:
-      /* The size of the Link component is determined entirely from the line-height of the text
-         it contains. */
-      return "";
-    default:
-      throw new UnreachableCaseError();
-  }
-};
+export const buttonSizeClassName = (size: types.ButtonSize = "small"): string =>
+  types.ButtonDiscreteSizes.contains(size) ? `button--size-${size}` : "";
 
-export const getButtonClassName = <T extends types.ButtonType, E extends types.ButtonElement>(
-  props: ButtonClassNameProps<T, E>,
-) =>
+export const buttonIconSizeClassName = (iconSize?: types.ButtonIconSize): string =>
+  // Only include the icon size class name if the icon size is discrete.
+  iconSize && types.ButtonDiscreteIconSizes.contains(iconSize)
+    ? `button--icon-size-${iconSize}`
+    : "";
+
+export const getButtonClassName = <E extends types.ButtonElement>(props: ButtonClassNameProps<E>) =>
   classNames(
     "button",
-    props.buttonType === "button"
-      ? `button--variant-${props.variant ?? "solid"}`
-      : props.buttonType === "icon-button"
-        ? `button--variant-${props.variant ?? "transparent"}`
-        : "",
     `button--scheme-${props.scheme ?? "primary"}`,
     `button--type-${props.buttonType}`,
-    // This will only include the class name if the size is a discrete size, ButtonDiscreteSize.
-    buttonSizeClassName<T, E>(props),
-    props.buttonType === "button" && props.fontSize ? `font-size-${props.fontSize}` : "",
     props.radius ? `button--radius-${props.radius}` : "",
-    // Only include the icon size class name if the icon size is discrete.
-    props.iconSize && types.ButtonDiscreteIconSizes.contains(props.iconSize)
-      ? `button--icon-size-${props.iconSize}`
-      : "",
-    // Font size is not applicable for the IconButton.
-    props.buttonType !== types.ButtonTypes.ICON_BUTTON
-      ? getTypographyClassName(
-          pick(props, ["fontFamily", "fontWeight", "transform", "fontSize"] as const),
-        )
-      : "",
     props.className,
     /* These class names should override any class name that may already exist in the props if the
        button is in the given state - so they should come after 'props.className'. */
@@ -102,16 +57,12 @@ export const getButtonClassName = <T extends types.ButtonType, E extends types.B
     },
   );
 
-type ButtonStylePropName = "style" | "size";
+export type ButtonSizeStyleProps = {
+  readonly style?: React.CSSProperties;
+  readonly size?: types.ButtonSize;
+};
 
-export type ButtonStyleProps<T extends types.ButtonType, E extends types.ButtonElement> = Pick<
-  types.AbstractProps<T, E>,
-  ButtonStylePropName
->;
-
-export const getButtonStyle = <T extends types.ButtonType, E extends types.ButtonElement>(
-  props: ButtonStyleProps<T, E>,
-) =>
+export const getButtonSizeStyle = (props: ButtonSizeStyleProps) =>
   !types.ButtonDiscreteIconSizes.contains(props.size) && props.size !== undefined
     ? {
         ...props.style,
@@ -119,8 +70,3 @@ export const getButtonStyle = <T extends types.ButtonType, E extends types.Butto
         minHeight: sizeToString(props.size, "px"),
       }
     : props.style;
-
-export type ButtonClassNameStyleProps<
-  T extends types.ButtonType,
-  E extends types.ButtonElement,
-> = Pick<types.AbstractProps<T, E>, ButtonStylePropName | ButtonClassNamePropName>;

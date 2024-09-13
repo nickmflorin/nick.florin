@@ -17,7 +17,7 @@ export type ButtonFooterProps = ComponentProps & {
   readonly isDisabled?: boolean;
   readonly submitIsDisabled?: boolean;
   readonly cancelIsDisabled?: boolean;
-  readonly buttonSize?: ButtonSize<"button">;
+  readonly buttonSize?: ButtonSize;
   readonly onSubmit?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   readonly onCancel?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };

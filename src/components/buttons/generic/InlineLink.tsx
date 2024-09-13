@@ -3,33 +3,38 @@ import { forwardRef, type ReactNode } from "react";
 import { capitalize } from "~/lib/formatters";
 
 import * as types from "~/components/buttons/types";
+import { type TypographyCharacteristics } from "~/components/types";
+import { classNames, getTypographyClassName } from "~/components/types";
 
 import { AbstractButton } from "./AbstractButton";
 
 export type InlineLinkProps<E extends types.ButtonElement> = Omit<
-  types.AbstractProps<"inline-link", E>,
-  "buttonType"
-> & {
-  readonly children?: ReactNode;
-};
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const Base = AbstractButton as React.FC<types.AbstractProps<"inline-link", any>>;
+  types.AbstractProps<E>,
+  "buttonType" | "isLoading"
+> &
+  Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
+    readonly children?: ReactNode;
+  };
 
 const LocalInlineLink = forwardRef(
   <E extends types.ButtonElement>(
-    { children, ...props }: InlineLinkProps<E>,
+    { fontSize, fontWeight, transform, fontFamily, children, ...props }: InlineLinkProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ) => {
-    const ps = { ...props, buttonType: "inline-link", ref } as types.AbstractProps<
-      "inline-link",
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      any
-    > & {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      readonly ref?: types.PolymorphicButtonRef<any>;
+    const ps = { ...props, buttonType: "inline-link", ref } as types.AbstractProps<E> & {
+      readonly ref?: types.PolymorphicButtonRef<E>;
     };
-    return <Base {...ps}>{children}</Base>;
+    return (
+      <AbstractButton
+        {...ps}
+        className={classNames(
+          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform }),
+          props.className,
+        )}
+      >
+        {children}
+      </AbstractButton>
+    );
   },
 ) as {
   <E extends types.ButtonElement>(

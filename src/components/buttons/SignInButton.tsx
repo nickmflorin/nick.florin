@@ -1,10 +1,9 @@
 import { SignInButton as RootSignInButton } from "@clerk/nextjs";
 
 import { Button } from "~/components/buttons";
-import { type ButtonClassNameStyleProps } from "~/components/buttons/util";
+import { type ComponentProps } from "~/components/types";
 
-export interface SignInButtonProps
-  extends Omit<ButtonClassNameStyleProps<"button", "button">, "variant" | "buttonType"> {}
+export interface SignInButtonProps extends ComponentProps {}
 
 export const SignInButton = (props: SignInButtonProps) => (
   <RootSignInButton>

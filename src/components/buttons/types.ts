@@ -12,7 +12,6 @@ import {
   type HTMLElementProps,
   type QuantitativeSize,
   type Size,
-  type TypographyCharacteristics,
 } from "~/components/types";
 
 export const ButtonLoadingLocations = enumeratedLiterals(["left", "over", "right"] as const, {});
@@ -42,13 +41,6 @@ export const IconButtonVariants = enumeratedLiterals(
 );
 export type IconButtonVariant = EnumeratedLiteralsMember<typeof IconButtonVariants>;
 
-export type ButtonVariant<T extends ButtonType = ButtonType> = {
-  button: ButtonButtonVariant;
-  "icon-button": IconButtonVariant;
-  link: never;
-  "inline-link": never;
-}[T];
-
 export const ButtonVariants = {
   button: ButtonButtonVariants,
   "icon-button": IconButtonVariants,
@@ -60,12 +52,7 @@ export const ButtonDiscreteSizes = enumeratedLiterals(
 );
 export type ButtonDiscreteSize = EnumeratedLiteralsMember<typeof ButtonDiscreteSizes>;
 
-export type ButtonSize<T extends ButtonType = ButtonType> = {
-  button: ButtonDiscreteSize | Size;
-  "icon-button": ButtonDiscreteSize | Size;
-  link: never;
-  "inline-link": never;
-}[T];
+export type ButtonSize = ButtonDiscreteSize | Size;
 
 export const ButtonDiscreteIconSizes = enumeratedLiterals(
   ["xsmall", "small", "medium", "large", "xlarge", "full"] as const,
@@ -78,13 +65,6 @@ export type ButtonIconSize = ButtonDiscreteIconSize | QuantitativeSize<"px">;
 
 export const ButtonElements = enumeratedLiterals(["button", "a", "div", "link"] as const, {});
 export type ButtonElement = EnumeratedLiteralsMember<typeof ButtonElements>;
-
-type ButtonFontSize<T extends ButtonType> = {
-  button: TypographyCharacteristics["fontSize"];
-  "icon-button": never;
-  link: TypographyCharacteristics["fontSize"];
-  "inline-link": TypographyCharacteristics["fontSize"];
-}[T];
 
 export const ButtonEventPropNames = [
   "onMouseEnter",
@@ -164,37 +144,13 @@ export const parseButtonIcons = <T extends IconProp | IconName | JSX.Element>(
   prop: ButtonIconProp<T>,
 ): [T | null, T | null] => [parseButtonIcon(prop, "left"), parseButtonIcon(prop, "right")];
 
-type IfNotIconButton<V, T extends ButtonType, R = never> = T extends
-  | "button"
-  | "link"
-  | "inline-link"
-  ? V
-  : R;
-
-type IfButtonOrLink<V, T extends ButtonType, R = never> = T extends "button" | "link" ? V : R;
-
-type IfNotInlineLink<V, T extends ButtonType, R = never> = T extends
-  | "button"
-  | "link"
-  | "icon-button"
-  ? V
-  : R;
-
 type IfAnchorElement<E extends ButtonElement> = E extends "a" ? boolean : never;
 
-export type AbstractInternalProps<
-  T extends ButtonType,
-  E extends ButtonElement,
-> = ComponentProps & {
-  readonly buttonType: T;
+export type AbstractInternalProps<E extends ButtonElement> = ComponentProps & {
+  readonly buttonType: ButtonType;
   readonly element?: E;
   readonly scheme?: ButtonColorScheme;
-  readonly variant?: ButtonVariant<T>;
   readonly openInNewTab?: IfAnchorElement<E>;
-  readonly fontSize?: ButtonFontSize<T>;
-  readonly fontFamily?: IfNotIconButton<TypographyCharacteristics["fontFamily"], T, never>;
-  readonly fontWeight?: IfNotIconButton<TypographyCharacteristics["fontWeight"], T, never>;
-  readonly transform?: IfNotIconButton<TypographyCharacteristics["transform"], T, never>;
   /**
    * Sets the element in a "locked" state, which is a state in which the non-visual characteristics
    * of the "disabled" state will be used, but the element will not appear as if it is "disabled".
@@ -208,30 +164,16 @@ export type AbstractInternalProps<
    * disabled - but we do not want to allow click events.
    */
   readonly isLocked?: boolean;
-  readonly isLoading?: IfNotInlineLink<boolean, T>;
+  readonly isLoading?: boolean;
   readonly isDisabled?: boolean;
   readonly isActive?: boolean;
-  readonly size?: ButtonSize<T>;
   readonly disabledClassName?: ComponentProps["className"];
   readonly lockedClassName?: ComponentProps["className"];
   readonly loadingClassName?: ComponentProps["className"];
   readonly activeClassName?: ComponentProps["className"];
   readonly radius?: BorderRadius;
-  readonly icon?: IfNotInlineLink<
-    IfButtonOrLink<ButtonIconProp, T, IconName | IconProp | JSX.Element>,
-    T
-  >;
-  readonly iconClassName?: IfButtonOrLink<ComponentProps["className"], T>;
-  readonly spinnerClassName?: IfNotInlineLink<ComponentProps["className"], T>;
-  readonly gap?: IfButtonOrLink<Size, T>;
-  readonly iconSize?: IfNotInlineLink<ButtonIconSize, T>;
-  readonly spinnerSize?: IfNotInlineLink<QuantitativeSize<"px">, T>;
-  readonly loadingLocation?: IfButtonOrLink<ButtonLoadingLocation, T>;
   readonly tourId?: string;
 };
 
-export type AbstractProps<T extends ButtonType, E extends ButtonElement> = AbstractInternalProps<
-  T,
-  E
-> &
+export type AbstractProps<E extends ButtonElement> = AbstractInternalProps<E> &
   Omit<PolymorphicAbstractButtonProps<E>, "disabled">;

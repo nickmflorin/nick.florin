@@ -6,38 +6,25 @@ import React, { forwardRef } from "react";
 import { omit } from "lodash-es";
 
 import type * as types from "~/components/buttons";
-import { getButtonClassName, getButtonStyle } from "~/components/buttons/util";
+import { getButtonClassName } from "~/components/buttons/util";
 import { classNames } from "~/components/types";
 import { type ComponentProps, type HTMLElementProps } from "~/components/types";
 
-type InternalPropName = keyof types.AbstractInternalProps<types.ButtonType, types.ButtonElement>;
+type InternalPropName = keyof types.AbstractInternalProps<types.ButtonElement>;
 
 /* We use a map here for extra type safety, because it ensures that all of the internal props are
    accounted for in the map. */
 const INTERNAL_BUTTON_PROPS = {
   className: true,
   style: true,
-  size: true,
-  icon: true,
-  iconClassName: true,
-  spinnerClassName: true,
-  gap: true,
-  spinnerSize: true,
-  loadingLocation: true,
   element: true,
-  variant: true,
   scheme: true,
   radius: true,
   isLocked: true,
   isActive: true,
   isDisabled: true,
   isLoading: true,
-  iconSize: true,
-  fontWeight: true,
   buttonType: true,
-  fontSize: true,
-  transform: true,
-  fontFamily: true,
   lockedClassName: true,
   loadingClassName: true,
   activeClassName: true,
@@ -46,8 +33,8 @@ const INTERNAL_BUTTON_PROPS = {
   tourId: true,
 } as const satisfies { [key in InternalPropName]: true };
 
-const toNativeButtonProps = <T extends types.ButtonType, E extends types.ButtonElement>(
-  props: types.AbstractProps<T, E>,
+const toNativeButtonProps = <E extends types.ButtonElement>(
+  props: types.AbstractProps<E>,
 ): types.PolymorphicAbstractButtonProps<E> => {
   const keys = Object.keys(INTERNAL_BUTTON_PROPS) as InternalPropName[];
   /* It is really annoying that we have to do the type coercion like this - but I cannot seem to
@@ -83,12 +70,11 @@ const NativeDiv = forwardRef<HTMLDivElement, HTMLElementProps<"div"> & Component
 );
 
 export const AbstractButton = forwardRef(
-  <T extends types.ButtonType, E extends types.ButtonElement>(
-    props: types.AbstractProps<T, E>,
+  <E extends types.ButtonElement>(
+    props: types.AbstractProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ): JSX.Element => {
     const className = getButtonClassName(props);
-    const style = getButtonStyle(props);
     const nativeProps = toNativeButtonProps(props);
 
     switch (props.element) {
@@ -99,7 +85,6 @@ export const AbstractButton = forwardRef(
             {...(nativeProps as types.ButtonComponentProps<"a">)}
             data-attr-tour-id={props.tourId}
             className={className}
-            style={style}
             target={
               openInNewTab ? "_blank" : (nativeProps as types.ButtonComponentProps<"a">).target
             }
@@ -118,7 +103,6 @@ export const AbstractButton = forwardRef(
             {...(nativeProps as types.ButtonComponentProps<"link">)}
             data-attr-tour-id={props.tourId}
             className={className}
-            style={style}
             ref={ref as types.PolymorphicButtonRef<"a">}
           />
         );
@@ -128,7 +112,6 @@ export const AbstractButton = forwardRef(
           <NativeDiv
             {...(nativeProps as types.ButtonComponentProps<"div">)}
             className={className}
-            style={style}
             data-attr-tour-id={props.tourId}
             ref={ref as types.PolymorphicButtonRef<"div">}
           />
@@ -141,7 +124,6 @@ export const AbstractButton = forwardRef(
             {...(nativeProps as types.ButtonComponentProps<"button">)}
             className={className}
             disabled={props.isDisabled}
-            style={style}
             data-attr-tour-id={props.tourId}
             ref={ref as types.PolymorphicButtonRef<"button">}
           />
@@ -150,7 +132,7 @@ export const AbstractButton = forwardRef(
     }
   },
 ) as {
-  <T extends types.ButtonType, E extends types.ButtonElement>(
-    props: types.AbstractProps<T, E> & { readonly ref?: types.PolymorphicButtonRef<E> },
+  <E extends types.ButtonElement>(
+    props: types.AbstractProps<E> & { readonly ref?: types.PolymorphicButtonRef<E> },
   ): JSX.Element;
 };

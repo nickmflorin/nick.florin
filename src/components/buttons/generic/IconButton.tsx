@@ -3,8 +3,13 @@ import { forwardRef, type ReactNode } from "react";
 import { capitalize } from "~/lib/formatters";
 
 import * as types from "~/components/buttons";
-import { toIconSize } from "~/components/buttons/util";
-import { isIconProp } from "~/components/icons";
+import {
+  buttonSizeClassName,
+  buttonIconSizeClassName,
+  toIconSize,
+  getButtonSizeStyle,
+} from "~/components/buttons/util";
+import { type IconName, type IconProp, isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import Spinner from "~/components/icons/Spinner";
 import {
@@ -12,20 +17,25 @@ import {
   type ClassName,
   sizeToString,
   type QuantitativeSize,
+  type ComponentProps,
 } from "~/components/types";
 
 import { AbstractButton } from "./AbstractButton";
 
 export type IconButtonProps<E extends types.ButtonElement> = Omit<
-  types.AbstractProps<"icon-button", E>,
+  types.AbstractProps<E>,
   "buttonType"
 > & {
   readonly tight?: boolean;
   readonly children?: ReactNode;
+  readonly icon?: IconName | IconProp | JSX.Element;
+  readonly spinnerClassName?: ComponentProps["className"];
+  readonly iconClassName?: ComponentProps["className"];
+  readonly iconSize?: types.ButtonIconSize;
+  readonly spinnerSize?: QuantitativeSize<"px">;
+  readonly size?: types.ButtonSize;
+  readonly variant?: types.IconButtonVariant;
 };
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const Base = AbstractButton as React.FC<types.AbstractProps<"icon-button", any>>;
 
 interface WithLoadingProps {
   readonly children: ReactNode;
@@ -64,26 +74,34 @@ const LocalIconButton = forwardRef(
       iconClassName,
       spinnerSize,
       spinnerClassName,
+      iconSize,
       tight = false,
+      size,
+      variant,
       ...props
     }: IconButtonProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ) => {
-    const ps = { ...props, buttonType: "icon-button", ref } as types.AbstractProps<
-      "icon-button",
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      any
-    > & {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      readonly ref?: types.PolymorphicButtonRef<any>;
+    const ps = { ...props, buttonType: "icon-button", ref } as types.AbstractProps<E> & {
+      readonly ref?: types.PolymorphicButtonRef<E>;
     };
     return (
-      <Base {...ps} className={classNames({ "button--tight": tight }, ps.className)}>
+      <AbstractButton
+        {...ps}
+        className={classNames(
+          `button--variant-${variant ?? "transparent"}`,
+          buttonSizeClassName(size),
+          buttonIconSizeClassName(iconSize),
+          { "button--tight": tight },
+          ps.className,
+        )}
+        style={getButtonSizeStyle({ size, style: props.style })}
+      >
         <div className="button__content">
           {children ? (
             <WithLoading
               isLoading={props.isLoading}
-              iconSize={props.iconSize}
+              iconSize={iconSize}
               spinnerSize={spinnerSize}
               iconClassName={iconClassName}
               spinnerClassName={spinnerClassName}
@@ -100,16 +118,15 @@ const LocalIconButton = forwardRef(
               dimension="height"
               spinnerSize={spinnerSize}
               size={
-                props.iconSize !== undefined &&
-                !types.ButtonDiscreteIconSizes.contains(props.iconSize)
-                  ? sizeToString(props.iconSize, "px")
+                iconSize !== undefined && !types.ButtonDiscreteIconSizes.contains(iconSize)
+                  ? sizeToString(iconSize, "px")
                   : undefined
               }
             />
           ) : (
             <WithLoading
               isLoading={props.isLoading}
-              iconSize={props.iconSize}
+              iconSize={iconSize}
               iconClassName={iconClassName}
               spinnerSize={spinnerSize}
               spinnerClassName={spinnerClassName}
@@ -118,7 +135,7 @@ const LocalIconButton = forwardRef(
             </WithLoading>
           )}
         </div>
-      </Base>
+      </AbstractButton>
     );
   },
 ) as {
@@ -135,7 +152,7 @@ type VariantPartial = {
   ): JSX.Element;
 };
 
-type WithVariants = { [key in Capitalize<types.ButtonVariant<"icon-button">>]: VariantPartial };
+type WithVariants = { [key in Capitalize<types.IconButtonVariant>]: VariantPartial };
 
 const withVariants = types.ButtonVariants["icon-button"].members.reduce<WithVariants>(
   (acc, variant) => ({
