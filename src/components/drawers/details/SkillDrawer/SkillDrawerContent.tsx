@@ -38,32 +38,40 @@ export const SkillDrawerContent = ({
     description={description}
     title={label}
   >
-    <div className="flex flex-col gap-[8px]">
-      <ShowHide show={categories.length !== 0}>
-        <div className="flex flex-col gap-[8px]">
-          <Label fontSize="sm" fontWeight="medium">
-            Categories
-          </Label>
-          <SkillCategories categories={categories} />
-        </div>
-      </ShowHide>
-      <ShowHide show={programmingLanguages.length !== 0}>
-        <div className="flex flex-col gap-[8px]">
-          <Label fontSize="sm" fontWeight="medium">
-            Languages
-          </Label>
-          <ProgrammingLanguages languages={programmingLanguages} />
-        </div>
-      </ShowHide>
-      <ShowHide show={programmingDomains.length !== 0}>
-        <div className="flex flex-col gap-[8px]">
-          <Label fontSize="sm" fontWeight="medium">
-            Development
-          </Label>
-          <ProgrammingDomains domains={programmingDomains} />
-        </div>
-      </ShowHide>
-    </div>
+    <ShowHide
+      show={
+        categories.length !== 0 ||
+        programmingLanguages.length !== 0 ||
+        programmingDomains.length !== 0
+      }
+    >
+      <div className="flex flex-col gap-[8px]">
+        <ShowHide show={categories.length !== 0}>
+          <div className="flex flex-col gap-[8px]">
+            <Label fontSize="sm" fontWeight="medium">
+              Categories
+            </Label>
+            <SkillCategories categories={categories} />
+          </div>
+        </ShowHide>
+        <ShowHide show={programmingLanguages.length !== 0}>
+          <div className="flex flex-col gap-[8px]">
+            <Label fontSize="sm" fontWeight="medium">
+              Languages
+            </Label>
+            <ProgrammingLanguages languages={programmingLanguages} />
+          </div>
+        </ShowHide>
+        <ShowHide show={programmingDomains.length !== 0}>
+          <div className="flex flex-col gap-[8px]">
+            <Label fontSize="sm" fontWeight="medium">
+              Development
+            </Label>
+            <ProgrammingDomains domains={programmingDomains} />
+          </div>
+        </ShowHide>
+      </div>
+    </ShowHide>
     <DetailDrawerSection label="Repositories">
       {repositories.map((repo, index) => (
         <RepositoryTile key={index} repository={repo} />

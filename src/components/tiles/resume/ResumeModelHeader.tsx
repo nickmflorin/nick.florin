@@ -83,25 +83,24 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
               expandable={titleIsExpandable}
               pushOnExpand={pushOnExpandTitle}
             />
-            <ResumeModelSubTitle model={model} size={size} className="max-xxs:hidden" />
+            <ResumeModelSubTitle model={model} size={size} />
           </div>
           <ShowHide show={showTags}>
-            <ResumeModelTags model={model} className="max-xxs:hidden" />
+            <ResumeModelTags model={model} className="max-[365px]:hidden" />
           </ShowHide>
         </div>
       </div>
-      <div className="hidden max-xxs:flex max-xxs:flex-col max-xxs:gap-[2px]">
-        <ResumeModelSubTitle model={model} size={size} />
-        <ShowHide show={showTags}>
-          <ResumeModelTags model={model} />
-        </ShowHide>
-      </div>
+      <ShowHide show={showTags}>
+        <ResumeModelTags model={model} className="hidden max-[365px]:flex max-[365px]:gap-[2px]" />
+      </ShowHide>
       <ShowHide show={Boolean(children) && !isFragment(children)}>
         <div
           style={
-            !isLessThan("md") || size !== "large"
+            size === "large" && !isLessThan("md")
               ? { paddingLeft: `${imageSize + imageGap}px` }
-              : {}
+              : isLessThan("md")
+                ? {}
+                : { paddingLeft: `${imageSize + imageGap}px` }
           }
         >
           {children}
