@@ -8,9 +8,9 @@ import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { Loading } from "~/components/feedback/Loading";
 import { TextInput } from "~/components/input/TextInput";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
-import { NewButton } from "~/components/tables/generic/NewButton";
-import { TableSearchBar } from "~/components/tables/generic/TableSearchBar";
-import { TableView as RootTableView } from "~/components/tables/generic/TableView";
+import { NewButton } from "~/components/tables/NewButton";
+import { TableSearchBar } from "~/components/tables/TableSearchBar";
+import { TableView as RootTableView } from "~/components/tables/TableView";
 
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";
@@ -20,7 +20,7 @@ const TableViewProvider = dynamic(() => import("./Provider"), {
   loading: () => <Loading isLoading={true} />,
 });
 
-const SearchInput = dynamic(() => import("~/components/tables/generic/TableSearchInput"), {
+const SearchInput = dynamic(() => import("~/components/tables/TableSearchInput"), {
   loading: () => <TextInput isLoading={true} />,
 });
 

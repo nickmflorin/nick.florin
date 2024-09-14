@@ -26,14 +26,12 @@ export enum TestModule {
   unit = "unit",
   prettier = "prettier",
   eslint = "eslint",
-  stylelint = "stylelint",
 }
 
 const TestModuleDisplayNames: { [key in TestModule]: string } = {
   [TestModule.unit]: "unit-tests",
   [TestModule.eslint]: "eslint-tests",
   [TestModule.prettier]: "prettier-tests",
-  [TestModule.stylelint]: "stylelint-tests",
 };
 
 /**

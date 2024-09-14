@@ -32,9 +32,10 @@
       > .content {
         overflow-y: hidden;
         position: relative;
-        max-height: 100%;
         display: flex;
         flex-direction: column;
+        @include partials.fully-constrained-dimension(height, 100%);
+        @include partials.fully-constrained-dimension(width, 100%);
 
         > .content__scroll-viewport {
           @include partials.fully-constrained-dimension(height, 100%);

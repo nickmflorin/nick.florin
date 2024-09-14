@@ -6,27 +6,25 @@ import { type ApiSkill, type BrandSkill } from "~/prisma/model";
 import { deleteSkill, updateSkill } from "~/actions/mutations/skills";
 
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import type * as cells from "~/components/tables/generic/cells";
-import { type SlugCellComponent } from "~/components/tables/generic/cells/SlugCell";
+import type * as cells from "~/components/tables/cells";
+import { type SlugCellComponent } from "~/components/tables/cells/SlugCell";
 import {
   TableViewProvider as RootTableViewProvider,
   type TableViewConfig as RootTableViewConfig,
-} from "~/components/tables/generic/Provider";
+} from "~/components/tables/Provider";
 
 const VisibleCell = dynamic(
-  () => import("~/components/tables/generic/cells/VisibleCell"),
+  () => import("~/components/tables/cells/VisibleCell"),
 ) as cells.VisibleCellComponent;
 
 const EditableStringCell = dynamic(
-  () => import("~/components/tables/generic/cells/EditableStringCell"),
+  () => import("~/components/tables/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
-const SlugCell = dynamic(
-  () => import("~/components/tables/generic/cells/SlugCell"),
-) as SlugCellComponent;
+const SlugCell = dynamic(() => import("~/components/tables/cells/SlugCell")) as SlugCellComponent;
 
 const ReadOnlyDateTimeCell = dynamic(
-  () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
+  () => import("~/components/tables/cells/ReadOnlyDateTimeCell"),
 );
 
 const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"));

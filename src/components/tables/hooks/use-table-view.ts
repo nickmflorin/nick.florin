@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { TableViewContext } from "../generic/Context";
+import { TableViewContext } from "../Context";
 import { type TableModel, type TableView } from "../types";
 
 export const useTableView = <T extends TableModel>() => {

@@ -1,0 +1,21 @@
+import { type ApiEducation } from "~/prisma/model";
+
+import { Drawer } from "~/components/drawers/Drawer";
+import { ResumeModelDrawerTile } from "~/components/tiles/resume/ResumeModelDrawerTile";
+
+export interface EducationDrawerContentProps {
+  readonly education: ApiEducation<["courses", "skills", "details"]>;
+}
+
+export const EducationDrawerContent = ({ education }: EducationDrawerContentProps) => (
+  <Drawer.Content>
+    <ResumeModelDrawerTile
+      model={education}
+      titleProps={{
+        className: "pr-[30px]",
+      }}
+    />
+  </Drawer.Content>
+);
+
+export default EducationDrawerContent;

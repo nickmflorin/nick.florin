@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
-import { ContextTableControlBar } from "~/components/tables/generic/ContextTableControlBar";
-import { DeleteManyButtonPlaceholder } from "~/components/tables/generic/DeleteManyButtonPlaceholder";
+import { ContextTableControlBar } from "~/components/tables/ContextTableControlBar";
+import { DeleteManyButtonPlaceholder } from "~/components/tables/DeleteManyButtonPlaceholder";
 
 import { TableFilters } from "./TableFilters";
 import { type Filters } from "./types";

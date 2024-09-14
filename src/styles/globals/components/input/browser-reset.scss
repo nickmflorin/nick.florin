@@ -14,8 +14,6 @@ that masks (covers) the styling that those browsers apply on auto-fill.
   // The actual value of the box-shadow spread (1000px) doesn't matter outside of the fact that it
   // must be large enough to cover the inside of the element.
   $box-shadow-mask: 0 0 0px 1000px if($bg-color, $bg-color, constants.$input-bg-color) inset;
-
-  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-box-shadow: $box-shadow-mask !important;
   box-shadow: $box-shadow-mask !important;
 }

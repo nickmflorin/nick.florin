@@ -526,17 +526,14 @@ $ pnpm build-local
 
 **Note**: [NextJS][nextjs] will also automatically perform linting checks during the `build`
 process - any linting errors will result in the build failing automatically but linting warnings
-will not. This includes linting performed by [ESLint][eslint], [Stylelint][stylelint] and
-[Prettier][prettier].
+will not. This includes linting performed by [ESLint][eslint] and [Prettier][prettier].
 
 ### 2.4 Linting
 
-This project uses [ESLint][eslint] to lint files that are not CSS or SCSS based,
-[Stylelint][stylelint] to lint files that are CSS or SCSS based, and [Prettier][prettier] inside of
-the [ESLint][eslint] configuration which is responsible for formatting files of all types. Both
-[ESLint][eslint] and [Stylelint][stylelint] are configured to automatically format the file when the
-file is saved (a configuration that is defined in `./vscode/settings.json`). If that is not
-desirable, you can easily turn that setting off in yoru local [VSCode][vscode] settings.
+This project uses [ESLint][eslint] and [Prettier][prettier] inside of the [ESLint][eslint]
+configuration. [ESLint][eslint] is configured to automatically format the file when the file is
+saved (a configuration that is defined in `./vscode/settings.json`). If that is not desirable, you
+can easily turn that setting off in your local [VSCode][vscode] settings.
 
 #### 2.4.a Formatting & Code Style
 
@@ -559,13 +556,12 @@ following command:
 $ pnpm lint
 ```
 
-This will run [ESLint][eslint], [Stylelint][stylelint] and [Prettier][prettier] (via
-[ESLint][eslint]) on the project.
+This will run [ESLint][eslint] and [Prettier][prettier] (via [ESLint][eslint]) on the project.
 
 With that being said, the project's [Jest][jest] testing suite is configured to perform linting and
-formatting checks via [ESLint][eslint], [Stylelint][stylelint] and [Prettier][prettier] as well.
-This is the recommended way to perform the checks, because the output is much, much more suitable
-for debugging and the hot reloading feature of [Jest][jest] will save you a lot of time.
+formatting checks via [ESLint][eslint] and [Prettier][prettier] as well. This is the recommended way
+to perform the checks, because the output is much, much more suitable for debugging and the hot
+reloading feature of [Jest][jest] will save you a lot of time.
 
 This can be done simply as:
 
@@ -658,24 +654,21 @@ The [Jest][jest] testing suite is broken down into 5
    `src/components`.
 3. **Prettier**: Prettier checks that are performed against relevant files in the project.
 4. **ESLint**: ESLint checks that are performed against non `.scss` files in the project.
-5. **Stylelint**: Stylelint checks that are performed against `scss` files in the project.
 
 The following table describes the various aspects of each individual
 [Jest](https://jestjs.io/docs/getting-started) project in the application:
 
-|        Project        |              Config File              |       Files Tested        |       Test Files Located        |
-| :-------------------: | :-----------------------------------: | :-----------------------: | :-----------------------------: |
-| Functional Unit Tests |    `src/tests/unit/jest.config.ts`    |           `.ts`           |        `!src/components`        |
-|    Component Tests    | `src/tests/components/jest.config.ts` |          `.tsx`           |        `src/components`         |
-|       Prettier        |       `jest.config.prettier.ts`       |       All Relevant        |               N/A               |
-|        ESLint         |        `jest.config.eslint.ts`        | All Relevant, non `.scss` |               N/A               |
-|       Stylelint       |      `jest.config.stylelint.ts`       |          `.scss`          | `src/styles` & `src/components` |
+|        Project        |              Config File              |       Files Tested        | Test Files Located |
+| :-------------------: | :-----------------------------------: | :-----------------------: | :----------------: |
+| Functional Unit Tests |    `src/tests/unit/jest.config.ts`    |           `.ts`           | `!src/components`  |
+|    Component Tests    | `src/tests/components/jest.config.ts` |          `.tsx`           |  `src/components`  |
+|       Prettier        |       `jest.config.prettier.ts`       |       All Relevant        |        N/A         |
+|        ESLint         |        `jest.config.eslint.ts`        | All Relevant, non `.scss` |        N/A         |
 
 #### 2.6.b Linting
 
-Linting checks from [ESLint](https://eslint.org/), [Stylelint](https://stylelint.io/), and
-[Prettier](https://prettier.io/) can be performed both via the `npm run lint` command or simply the
-command that runs the test suite:
+Linting checks from [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) can be
+performed both via the `pnpm lint` command or simply the command that runs the test suite:
 
 ```bash
 $ pnpm test
@@ -850,7 +843,6 @@ $ git push origin master
 [nextjs]: https://nextjs.org/
 [prettier]: https://prettier.io/
 [vscode]: https://code.visualstudio.com/
-[stylelint]: https://stylelint.io/
 [eslint]: https://eslint.org/
 [jest]: https://jestjs.io/docs/getting-started
 [sass]: https://sass-lang.com/

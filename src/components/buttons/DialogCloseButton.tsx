@@ -13,6 +13,7 @@ export const DialogCloseButton = forwardRef<HTMLButtonElement, DialogCloseButton
       {...props}
       ref={ref}
       element="button"
+      scheme="light"
       size="xsmall"
       iconSize="large"
       icon={{ name: "xmark", iconStyle: "solid" }}

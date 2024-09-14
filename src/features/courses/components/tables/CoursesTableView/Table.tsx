@@ -6,7 +6,7 @@ import { getCourses, type GetCoursesFilters } from "~/actions/fetches/courses";
 import { Loading } from "~/components/feedback/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
 
-const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTable"), {
+const ContextTable = dynamic(() => import("~/components/tables/ContextTable"), {
   loading: () => <Loading isLoading={true} />,
 }) as ContextTableComponent;
 

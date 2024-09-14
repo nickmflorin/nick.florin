@@ -2,7 +2,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import withBundleAnalyzer from "@next/bundle-analyzer";
-// import StylelintPlugin from "stylelint-webpack-plugin";
 
 /* Avoids the error: "ReferenceError: __dirname is not defined in ES module scope", which occurs if
    you refer to the __dirname global variable in an ES (ECMAScript) module.
@@ -24,11 +23,6 @@ const config = {
     optimizePackageImports: ["@mantine/core", "zod", "@mantine/dropzone", "@mantine/dates"],
   },
   transpilePackages: ["@mantine/core"],
-  // webpack: config => {
-  //   /* The StylelintPlugin requires the addition to the package.json: "postcss": "^8.4.18". */
-  //   config.plugins.push(new StylelintPlugin());
-  //   return config;
-  // },
   sassOptions: {
     includePaths: [path.join(__dirname, "src/styles")],
   },

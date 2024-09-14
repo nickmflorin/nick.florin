@@ -13,7 +13,7 @@ export default async function ResumeLayout({ children }: ResumeLayoutProps) {
     >
       <div
         className={classNames(
-          "flex flex-col max-h-full my-0",
+          "flex flex-col max-h-full min-h-full my-0",
           "sm:w-full sm:max-w-full sm:mx-auto",
           "md:min-w-[680px] md:max-w-[820px]",
         )}

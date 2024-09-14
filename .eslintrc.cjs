@@ -1,10 +1,40 @@
 const ModuleGroups = [
   ["application", "lib", "server", "prisma", "internal"],
-  ["app", "actions", "api", "integrations", "environment", "events"],
+  ["app", "actions", "api", "integrations", "environment"],
   ["components", "features", "hooks", "styles"],
 ];
 
 const toAbsoluteImports = v => [`~/${v}`, `~/${v}/**`];
+
+const toRelativeImports = (v, level) => {
+  if (level && level < 1) {
+    throw new Error("The 'level' must be larger than 1.");
+  } else if (!level) {
+    return Array.from({ length: 5 }).reduce(
+      (prev, _, index) => [...prev, ...toRelativeImports(v, index + 1)],
+      [],
+    );
+  }
+  const pathPrefix = "../".repeat(level);
+  return [`${pathPrefix}${v}`, `${pathPrefix}${v}/*`];
+};
+
+const RestrictedImportPatterns = [
+  {
+    group: ModuleGroups.reduce(
+      (prev, group) => [
+        ...prev,
+        ...group.reduce((acc, module) => [...acc, ...toRelativeImports(module)], []),
+      ],
+      [],
+    ),
+    message: "Please use absolute imports instead.",
+  },
+  {
+    group: ["@prisma/client/*", "@prisma/client"],
+    message: "Please import from '~/database/model` instead.",
+  },
+];
 
 /* Rules that apply to all files in the project, regardless of file type. */
 /** @type {import("eslint").Linter.Config["rules"]} */
@@ -91,21 +121,7 @@ const BASE_RULES = {
   "prefer-const": "error",
   quotes: [1, "double"],
   semi: [1, "always"],
-  "no-restricted-imports": [
-    "error",
-    {
-      patterns: [
-        {
-          group: ["@prisma/client/*", "@prisma/client"],
-          message: "Please import from '~/prisma/model` instead.",
-        },
-        {
-          group: ["~/database/model/generated"],
-          message: "Please import directly from '~/prisma/model` instead.",
-        },
-      ],
-    },
-  ],
+  "no-restricted-imports": ["error", { patterns: RestrictedImportPatterns }],
 };
 
 /* Rules that apply to '.ts' or '.tsx' files. */

@@ -2,7 +2,7 @@ import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title, Description } from "~/components/typography";
 
-import { DrawerContent } from "../DrawerContent";
+import { Drawer } from "../Drawer";
 
 export interface DetailDrawerContentProps extends ComponentProps {
   readonly badge?: JSX.Element;
@@ -18,7 +18,10 @@ export const DetailDrawerContent = ({
   description,
   ...props
 }: DetailDrawerContentProps) => (
-  <DrawerContent {...props} className={classNames("gap-[14px] overflow-y-hidden", props.className)}>
+  <Drawer.Content
+    {...props}
+    className={classNames("gap-[14px] overflow-y-hidden", props.className)}
+  >
     <div className="flex flex-col gap-[8px]">
       <div className="flex flex-col gap-[6px]">
         <Title component="h2" className="text-gray-700 max-w-fit">
@@ -29,5 +32,5 @@ export const DetailDrawerContent = ({
       <Description>{description}</Description>
     </div>
     <div className="flex flex-col gap-[14px] overflow-y-auto">{children}</div>
-  </DrawerContent>
+  </Drawer.Content>
 );

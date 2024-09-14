@@ -1,24 +1,17 @@
 "use client";
-import dynamic from "next/dynamic";
-import { useState } from "react";
+import { UnreachableCaseError } from "~/application/errors";
 
 import { Button } from "~/components/buttons";
 import { DrawerIds } from "~/components/drawers";
-import { Loading } from "~/components/feedback/Loading";
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { Popover } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-import { ShowHide } from "~/components/util";
 
 import { MenuContainer } from "../generic/MenuContainer";
 
 import { CompaniesSchoolsMenuFooter } from "./CompaniesSchoolsMenuFooter";
 import { type ModelType } from "./types";
-
-const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
-  loading: () => <Loading isLoading={true} />,
-  ssr: false,
-});
 
 const ButtonContent: { [key in ModelType]: string } = {
   company: "Companies",
@@ -31,46 +24,48 @@ export interface CompaniesSchoolsFloatingProps {
 }
 
 export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchoolsFloatingProps) => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const { open } = useDrawers();
   return (
-    <>
-      <Popover
-        content={content}
-        withArrow={false}
-        outerContent={({ children }) => (
-          <PopoverContent className="p-[0px] rounded-md overflow-hidden" variant="white">
-            <MenuContainer className="box-shadow-none">
-              {children}
-              <CompaniesSchoolsMenuFooter onCreate={() => setDrawerVisible(true)} />
-            </MenuContainer>
-          </PopoverContent>
-        )}
-        placement="bottom-end"
-        triggers={["click"]}
-        offset={{ mainAxis: 4 }}
-        width={400}
-        maxHeight={600}
-      >
-        {({ ref, params, isOpen }) => (
-          <Button.Solid
-            ref={ref}
-            {...params}
-            scheme="secondary"
-            icon={{
-              right: <CaretIcon open={isOpen} />,
-            }}
-          >
-            {ButtonContent[modelType]}
-          </Button.Solid>
-        )}
-      </Popover>
-      <ShowHide show={drawerVisible && modelType === "company"}>
-        <ClientDrawer id={DrawerIds.CREATE_COMPANY} props={{}} />
-      </ShowHide>
-      <ShowHide show={drawerVisible && modelType === "school"}>
-        <ClientDrawer id={DrawerIds.CREATE_SCHOOL} props={{}} />
-      </ShowHide>
-    </>
+    <Popover
+      content={content}
+      withArrow={false}
+      outerContent={({ children }) => (
+        <PopoverContent className="p-[0px] rounded-md overflow-hidden" variant="white">
+          <MenuContainer className="box-shadow-none">
+            {children}
+            <CompaniesSchoolsMenuFooter
+              onCreate={() => {
+                if (modelType === "company") {
+                  open(DrawerIds.CREATE_COMPANY, {});
+                } else if (modelType === "school") {
+                  open(DrawerIds.CREATE_SCHOOL, {});
+                } else {
+                  throw new UnreachableCaseError();
+                }
+              }}
+            />
+          </MenuContainer>
+        </PopoverContent>
+      )}
+      placement="bottom-end"
+      triggers={["click"]}
+      offset={{ mainAxis: 4 }}
+      width={400}
+      maxHeight={600}
+    >
+      {({ ref, params, isOpen }) => (
+        <Button.Solid
+          ref={ref}
+          {...params}
+          scheme="secondary"
+          icon={{
+            right: <CaretIcon open={isOpen} />,
+          }}
+        >
+          {ButtonContent[modelType]}
+        </Button.Solid>
+      )}
+    </Popover>
   );
 };
 

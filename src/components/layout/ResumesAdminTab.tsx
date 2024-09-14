@@ -1,33 +1,18 @@
 "use client";
-import dynamic from "next/dynamic";
-
 import { TabButton } from "~/components/buttons/TabButton";
 import { DrawerIds } from "~/components/drawers";
-import { useDrawerState } from "~/components/drawers/hooks/use-drawer-state";
-import { DynamicLoading, DynamicLoader } from "~/components/feedback/dynamic-loading";
-
-const ClientDrawer = dynamic(() => import("~/components/drawers/ClientDrawer"), {
-  loading: () => <DynamicLoader />,
-});
+import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 
 export const ResumesAdminTab = () => {
-  const { isOpen, open } = useDrawerState({ drawerId: DrawerIds.VIEW_RESUMES, props: {} });
+  const { open, drawerId } = useDrawers();
   return (
-    <DynamicLoading>
-      {({ isLoading }) => (
-        <>
-          <TabButton
-            element="button"
-            icon={{ name: "list-check" }}
-            isActive={isOpen}
-            isLoading={isLoading}
-            onClick={() => open()}
-          >
-            Resumes
-          </TabButton>
-          {isOpen && <ClientDrawer id={DrawerIds.VIEW_RESUMES} props={{}} />}
-        </>
-      )}
-    </DynamicLoading>
+    <TabButton
+      element="button"
+      icon={{ name: "list-check" }}
+      isActive={drawerId === DrawerIds.VIEW_RESUMES}
+      onClick={() => open(DrawerIds.VIEW_RESUMES, {})}
+    >
+      Resumes
+    </TabButton>
   );
 };

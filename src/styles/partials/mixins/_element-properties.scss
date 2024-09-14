@@ -22,11 +22,8 @@
 }
 
 @mixin transition($value) {
-  /* stylelint-disable-next-line property-no-vendor-prefix */
   -webkit-transition: $value;
-  /* stylelint-disable-next-line property-no-vendor-prefix */
   -moz-transition: $value;
-  /* stylelint-disable-next-line property-no-vendor-prefix */
   -o-transition: $value;
   transition: $value;
 }

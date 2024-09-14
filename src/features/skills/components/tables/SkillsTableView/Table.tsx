@@ -8,7 +8,7 @@ import { type ContextTableComponent } from "~/components/tables/types";
 
 import { type Filters } from "./types";
 
-const ContextTable = dynamic(() => import("~/components/tables/generic/ContextTable"), {
+const ContextTable = dynamic(() => import("~/components/tables/ContextTable"), {
   loading: () => <Loading isLoading={true} />,
 }) as ContextTableComponent;
 

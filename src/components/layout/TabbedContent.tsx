@@ -22,7 +22,7 @@ export const TabbedContent = ({
   children,
   ...props
 }: TabbedContentProps): JSX.Element => (
-  <Content outerClassName="max-sm:overflow-y-auto">
+  <Content outerClassName="max-sm:overflow-y-auto min-h-full">
     <div className="flex flex-col gap-[16px] max-md:gap-[12px] max-h-full">
       <Tabs items={items}>{extra}</Tabs>
       <div

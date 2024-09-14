@@ -8,26 +8,26 @@ import { deleteRepository, updateRepository } from "~/actions/mutations/reposito
 import { NpmLink } from "~/components/buttons/NpmLink";
 import { RepositoryLink } from "~/components/buttons/RepositoryLink";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import type * as cells from "~/components/tables/generic/cells";
+import type * as cells from "~/components/tables/cells";
 import {
   TableViewProvider as RootTableViewProvider,
   type TableViewConfig as RootTableViewConfig,
-} from "~/components/tables/generic/Provider";
+} from "~/components/tables/Provider";
 
 const EditableStringCell = dynamic(
-  () => import("~/components/tables/generic/cells/EditableStringCell"),
+  () => import("~/components/tables/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
 const VisibleCell = dynamic(
-  () => import("~/components/tables/generic/cells/VisibleCell"),
+  () => import("~/components/tables/cells/VisibleCell"),
 ) as cells.VisibleCellComponent;
 
 const HighlightedCell = dynamic(
-  () => import("~/components/tables/generic/cells/HighlightedCell"),
+  () => import("~/components/tables/cells/HighlightedCell"),
 ) as cells.HighlightedCellComponent;
 
 const ReadOnlyDateTimeCell = dynamic(
-  () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
+  () => import("~/components/tables/cells/ReadOnlyDateTimeCell"),
 );
 
 const SkillsCell = dynamic(() => import("./cells/SkillsCell"));

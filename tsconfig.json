@@ -14,6 +14,7 @@
     "incremental": true,
     "pretty": true,
     "resolveJsonModule": true,
+    "sourceMap": true,
     "typeRoots": ["node_modules/@types"],
     "plugins": [
       {
@@ -31,6 +32,6 @@
     },
     "require": ["tsconfig-paths/register"]
   },
-  "exclude": ["node_modules", "**/.*/"],
+  "exclude": ["node_modules"],
   "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"]
 }

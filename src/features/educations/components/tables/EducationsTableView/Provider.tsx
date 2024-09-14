@@ -6,28 +6,28 @@ import { type ApiEducation } from "~/prisma/model";
 import { deleteEducation, updateEducation } from "~/actions/mutations/educations";
 
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import type * as cells from "~/components/tables/generic/cells";
+import type * as cells from "~/components/tables/cells";
 import {
   TableViewProvider as RootTableViewProvider,
   type TableViewConfig as RootTableViewConfig,
-} from "~/components/tables/generic/Provider";
+} from "~/components/tables/Provider";
 
 const VisibleCell = dynamic(
-  () => import("~/components/tables/generic/cells/VisibleCell"),
+  () => import("~/components/tables/cells/VisibleCell"),
 ) as cells.VisibleCellComponent;
 
 const EditableStringCell = dynamic(
-  () => import("~/components/tables/generic/cells/EditableStringCell"),
+  () => import("~/components/tables/cells/EditableStringCell"),
 ) as cells.EditableStringCellComponent;
 
 const HighlightedCell = dynamic(
-  () => import("~/components/tables/generic/cells/HighlightedCell"),
+  () => import("~/components/tables/cells/HighlightedCell"),
 ) as cells.HighlightedCellComponent;
 
-const DetailsCell = dynamic(() => import("~/components/tables/generic/cells/DetailsCell"));
+const DetailsCell = dynamic(() => import("~/components/tables/cells/DetailsCell"));
 
 const ReadOnlyDateTimeCell = dynamic(
-  () => import("~/components/tables/generic/cells/ReadOnlyDateTimeCell"),
+  () => import("~/components/tables/cells/ReadOnlyDateTimeCell"),
 );
 
 const SchoolCell = dynamic(() => import("./cells/SchoolCell"));

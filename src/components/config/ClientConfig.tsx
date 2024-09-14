@@ -4,7 +4,7 @@ import React, { type ReactNode } from "react";
 
 import { SWRConfig } from "./SWRConfig";
 
-const DrawersProvider = dynamic(() => import("~/components/drawers/provider/DrawersProvider"), {
+const DrawersProvider = dynamic(() => import("~/components/drawers/DrawersProvider"), {
   ssr: false,
 });
 const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });

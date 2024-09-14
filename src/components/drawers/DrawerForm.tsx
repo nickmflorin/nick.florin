@@ -7,8 +7,6 @@ import { classNames } from "~/components/types";
 import { Title } from "~/components/typography";
 
 import { Drawer } from "./Drawer";
-import { DrawerContent } from "./DrawerContent";
-import { DrawerHeader } from "./DrawerHeader";
 
 interface DrawerFormProps<I extends BaseFormValues> {
   readonly form: FormInstance<I>;
@@ -30,7 +28,7 @@ export const DrawerForm = <I extends BaseFormValues>({
 
   return (
     <Drawer>
-      <DrawerHeader>
+      <Drawer.Header>
         {titleValue.trim().length === 0 && (eagerTitle || titlePlaceholder) ? (
           <Title
             component="h4"
@@ -41,8 +39,8 @@ export const DrawerForm = <I extends BaseFormValues>({
         ) : (
           <Title component="h4">{titleValue}</Title>
         )}
-      </DrawerHeader>
-      <DrawerContent className="overflow-y-hidden">{children}</DrawerContent>
+      </Drawer.Header>
+      <Drawer.Content className="overflow-y-hidden">{children}</Drawer.Content>
     </Drawer>
   );
 };

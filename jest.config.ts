@@ -11,5 +11,4 @@ export default withApplicationConfig(__dirname, [
   "<rootDir>/src/__tests__/unit/jest.config.ts",
   "<rootDir>/jest.config.eslint.ts",
   "<rootDir>/jest.config.prettier.ts",
-  // "<rootDir>/jest.config.stylelint.ts",
 ]);

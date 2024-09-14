@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 import { useTour } from "./use-tour";
 
-const WelcomeDialog = dynamic(() => import("~/components/floating/dialogs/WelcomeDialog"), {
+const WelcomeDialog = dynamic(() => import("~/components/dialogs/WelcomeDialog"), {
   ssr: false,
 });
 

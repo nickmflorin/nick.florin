@@ -8,7 +8,7 @@ import { Navigating } from "./Navigating";
 import { type ISidebarItem } from "./types";
 
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
-const LayoutDrawer = dynamic(() => import("./LayoutDrawer"), { ssr: false });
+const LayoutDrawer = dynamic(() => import("~/components/drawers/LayoutDrawer"), { ssr: false });
 const LayoutMenuOverlay = dynamic(
   () => import("./LayoutMenuOverlay").then(mod => mod.LayoutMenuOverlay),
   { ssr: false },
