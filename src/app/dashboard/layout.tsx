@@ -49,8 +49,15 @@ export default async function DashboardPage({
   return (
     <>
       <Tour />
-      <Content scrollable outerClassName="pb-[16px] max-md:pb-[12px] max-sm:pb-[8px]">
-        <div className={classNames("flex gap-[12px]", "xl:flex-row", "max-xl:flex-col")}>
+      <Content scrollable>
+        <div
+          className={classNames(
+            "flex gap-[12px]",
+            "xl:flex-row",
+            "max-xl:flex-col",
+            "pb-[16px] max-md:pb-[12px] max-sm:pb-[8px]",
+          )}
+        >
           {/* The 652px comes from 2(320px for each column) + 12px for gap = 652px. */}
           <Module
             className={classNames(
