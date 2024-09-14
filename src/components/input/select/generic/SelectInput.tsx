@@ -54,8 +54,8 @@ export const SelectInput = forwardRef<HTMLDivElement, types.SelectInputProps<any
         }
         return types.isSelectValueModel(model)
           ? model.label
-          : types.getSelectModelValueLabel(model as M, options) ??
-              getModelLabel(model as M, options);
+          : (types.getSelectModelValueLabel(model as M, options) ??
+              getModelLabel(model as M, options));
       }
     }, [valueRenderer, valueModelRenderer, models, options, maximumValuesToRender, dynamicHeight]);
 

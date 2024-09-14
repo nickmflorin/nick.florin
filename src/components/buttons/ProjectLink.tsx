@@ -22,6 +22,6 @@ export const ProjectLink = ({
     className={classNames("text-blue-900", props.className)}
     href={`/projects/${project.slug}`}
   >
-    {useAbbreviatedName ? project.shortName ?? project.name : project.name}
+    {useAbbreviatedName ? (project.shortName ?? project.name) : project.name}
   </Link>
 );

@@ -9,7 +9,7 @@ const globalOptions = {
   getModelValue: (m: ApiEducation) => m.id,
   getModelLabel: (m: ApiEducation) => m.major,
   getModelValueLabel: <E extends ApiEducation>(m: E, options: MenuOptions<E>) =>
-    options.isMulti ? m.shortMajor ?? m.major : m.major,
+    options.isMulti ? (m.shortMajor ?? m.major) : m.major,
 } as const;
 
 type Opts<O extends { isMulti?: boolean; isClearable?: boolean; isDeselectable?: boolean }> =
@@ -46,7 +46,7 @@ export const EducationSelect = <
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium">
-          {useAbbreviatedOptionLabels ? m.shortMajor ?? m.major : m.major}
+          {useAbbreviatedOptionLabels ? (m.shortMajor ?? m.major) : m.major}
         </Text>
         <Text fontSize="xs" className="text-description">
           {m.school.name}

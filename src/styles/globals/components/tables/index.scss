@@ -92,13 +92,19 @@ $table-size-properties: (
   height: 2 * $line-height + 2 * $vertical-padding;
 }
 
-@mixin table-th {
+@mixin table-head {
   table {
     thead {
-      tr {
-        th {
-          @content;
-        }
+      @content;
+    }
+  }
+}
+
+@mixin table-th {
+  @include table-head() {
+    tr {
+      th {
+        @content;
       }
     }
   }
@@ -141,6 +147,12 @@ $table-size-properties: (
   max-height: 100%;
   position: relative;
   border: 1px solid theme("colors.border");
+
+  @include table-head {
+    // The z-index must be less than the z-index of the layout menu to prevent the table header
+    // from appearing above the layout menu.
+    z-index: 1;
+  }
 
   @include table-td {
     &.loading-cell {

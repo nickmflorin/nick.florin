@@ -9,6 +9,10 @@ import { type ISidebarItem } from "./types";
 
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
 const LayoutDrawer = dynamic(() => import("./LayoutDrawer"), { ssr: false });
+const LayoutMenuOverlay = dynamic(
+  () => import("./LayoutMenuOverlay").then(mod => mod.LayoutMenuOverlay),
+  { ssr: false },
+);
 
 export interface LayoutProps {
   readonly children: ReactNode;
@@ -26,6 +30,7 @@ export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Elemen
       <LayoutNavigation nav={nav} />
       <main className="content-container">
         <Navigating>{children}</Navigating>
+        <LayoutMenuOverlay />
         <ToastContainer />
       </main>
       <LayoutDrawer />

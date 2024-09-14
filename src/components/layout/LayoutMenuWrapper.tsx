@@ -1,7 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
 
-import { useClickOutside } from "@mantine/hooks";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useNavMenu } from "~/hooks";
@@ -11,14 +10,13 @@ export interface LayoutMenuWrapperProps {
 }
 
 export const LayoutMenuWrapper = ({ children }: LayoutMenuWrapperProps) => {
-  const { isOpen, close } = useNavMenu();
-  const ref = useClickOutside(() => close());
+  const { isOpen } = useNavMenu();
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          ref={ref}
+          // ref={ref}
           transition={{ type: "spring", bounce: 0 }}
           className="layout-menu-wrapper"
           initial={{ x: "100%" }}

@@ -2,11 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -18,18 +14,14 @@
     "incremental": true,
     "pretty": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "~/*": [
-        "./src/*"
-      ]
+      "~/*": ["./src/*"]
     },
     "isolatedModules": true
   },
@@ -37,18 +29,8 @@
     "compilerOptions": {
       "module": "commonjs"
     },
-    "require": [
-      "tsconfig-paths/register"
-    ]
+    "require": ["tsconfig-paths/register"]
   },
-  "exclude": [
-    "node_modules",
-    "**/.*/"
-  ],
-  "include": [
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ]
+  "exclude": ["node_modules", "**/.*/"],
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"]
 }

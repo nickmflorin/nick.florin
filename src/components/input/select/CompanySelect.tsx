@@ -33,7 +33,7 @@ export const CompanySelect = <O extends { isMulti?: boolean; isClearable?: boole
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium">
-          {useAbbreviatedOptionLabels ? m.shortName ?? m.name : m.name}
+          {useAbbreviatedOptionLabels ? (m.shortName ?? m.name) : m.name}
         </Text>
         <Text fontSize="xs" className="text-description">
           {stringifyLocation({ city: m.city, state: m.state })}

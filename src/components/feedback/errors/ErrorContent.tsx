@@ -27,7 +27,7 @@ export const ErrorContent = ({
       ? children
       : isHttpError(error)
         ? error.message
-        : error ?? types.DEFAULT_ERROR_MESSAGE;
+        : (error ?? types.DEFAULT_ERROR_MESSAGE);
 
   if (Array.isArray(message)) {
     for (const m of message) {

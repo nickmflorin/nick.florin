@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
+import { MobileNavigationCutoff } from "~/components/constants";
 import { Loading } from "~/components/feedback/Loading";
 import { type ISidebarItem } from "~/components/layout/types";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
@@ -23,7 +24,7 @@ export interface LayoutNavigationProps {
 
 export const LayoutNavigation = ({ nav }: LayoutNavigationProps) => {
   const { isLessThanOrEqualTo } = useScreenSizes();
-  if (isLessThanOrEqualTo("450px")) {
+  if (isLessThanOrEqualTo(MobileNavigationCutoff)) {
     return (
       <LayoutMenuWrapper>
         <LayoutMenu nav={nav} />

@@ -42,7 +42,7 @@ export const ExperienceSelect = <
     itemRenderer={m => (
       <div className="flex flex-col gap-[4px]">
         <Text fontSize="sm" fontWeight="medium">
-          {useAbbreviatedOptionLabels ? m.shortTitle ?? m.title : m.title}
+          {useAbbreviatedOptionLabels ? (m.shortTitle ?? m.title) : m.title}
         </Text>
         <Text fontSize="xs" className="text-description">
           {m.company.name}

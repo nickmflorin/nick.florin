@@ -142,7 +142,7 @@ export abstract class AbstractLogger {
     message: string | object | undefined,
     context?: object,
   ): void {
-    const ctx = typeof message === "string" ? context ?? {} : message;
+    const ctx = typeof message === "string" ? (context ?? {}) : message;
     const msg = typeof message === "string" ? message : undefined;
     this.pino[method](ctx, msg);
   }

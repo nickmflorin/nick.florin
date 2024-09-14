@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 
+import { MobileNavigationCutoff } from "~/components/constants";
 import {
   type Breakpoint,
   Breakpoints,
@@ -9,6 +10,7 @@ import {
 } from "~/components/types";
 
 import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
+import { useNavMenu } from "./use-nav-menu";
 
 const getBreakpoint = (w: Window): Breakpoint | "smallest" => {
   let breakpoint: Breakpoint | null = null;
@@ -37,6 +39,7 @@ const getBreakpoint = (w: Window): Breakpoint | "smallest" => {
 
 export const useScreenSizes = () => {
   const [size, setSize] = useState<number>(window.innerWidth);
+  const { close } = useNavMenu();
 
   const [breakpoint, setBreakpoint] = useState<Breakpoint | "smallest">(() =>
     getBreakpoint(window),
@@ -46,7 +49,11 @@ export const useScreenSizes = () => {
     const bk = getBreakpoint(window);
     setBreakpoint(bk);
     setSize(window.innerWidth);
-  }, []);
+
+    if (window.innerWidth > MobileNavigationCutoff) {
+      close();
+    }
+  }, [close]);
 
   useIsomorphicLayoutEffect(() => {
     handleResize();

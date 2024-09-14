@@ -28,7 +28,7 @@ export abstract class BaseError<C extends BaseErrorConfig = BaseErrorConfig> ext
     }
     return typeof this.defaultInternalMessage === "function"
       ? this.defaultInternalMessage(this._config)
-      : this.defaultInternalMessage ?? this.message;
+      : (this.defaultInternalMessage ?? this.message);
   }
 
   /**
