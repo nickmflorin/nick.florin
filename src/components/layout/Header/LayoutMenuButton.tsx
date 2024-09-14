@@ -3,7 +3,7 @@ import { IconButton } from "~/components/buttons";
 import { useNavMenu } from "~/hooks";
 
 export const LayoutMenuButton = () => {
-  const { isOpen, setIsOpen } = useNavMenu();
+  const { isOpen, toggle } = useNavMenu();
   return (
     <IconButton.Solid
       scheme="secondary"
@@ -11,7 +11,7 @@ export const LayoutMenuButton = () => {
       icon={{ name: "bars" }}
       className="hidden max-[450px]:flex"
       isActive={isOpen}
-      onClick={() => setIsOpen(!isOpen)}
+      onClick={() => toggle()}
     />
   );
 };

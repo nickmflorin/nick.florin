@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 import { Header } from "./Header";
 import { LayoutNavigation } from "./LayoutNavigation";
+import { Navigating } from "./Navigating";
 import { type ISidebarItem } from "./types";
 
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
@@ -24,7 +25,7 @@ export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Elemen
     <div className="layout__content">
       <LayoutNavigation nav={nav} />
       <main className="content-container">
-        {children}
+        <Navigating>{children}</Navigating>
         <ToastContainer />
       </main>
       <LayoutDrawer />

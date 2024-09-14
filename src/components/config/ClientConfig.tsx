@@ -9,7 +9,7 @@ const DrawersProvider = dynamic(() => import("~/components/drawers/provider/Draw
 });
 const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });
 const TourProvider = dynamic(() => import("./TourProvider"), { ssr: false });
-const GlobalNavigatableProvider = dynamic(() => import("./GlobalNavigatableProvider"), {
+const NavigationProvider = dynamic(() => import("./NavigationProvider"), {
   ssr: false,
 });
 const NavMenuProvider = dynamic(() => import("./NavMenuProvider"), {
@@ -24,13 +24,13 @@ function ClientConfig(props: ClientConfigProps) {
   return (
     <SWRConfig>
       <MantineProvider>
-        <GlobalNavigatableProvider>
+        <NavigationProvider>
           <NavMenuProvider>
             <DrawersProvider>
               <TourProvider>{props.children}</TourProvider>
             </DrawersProvider>
           </NavMenuProvider>
-        </GlobalNavigatableProvider>
+        </NavigationProvider>
       </MantineProvider>
     </SWRConfig>
   );

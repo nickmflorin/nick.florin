@@ -1,16 +1,20 @@
 import { createContext } from "react";
 
-import { type INavMenuContext, type GlobalNavigatableContext } from "./types";
+import { type INavMenuContext, type INavigationContext } from "./types";
 
-export const GlobalNavigatingContext = createContext<GlobalNavigatableContext>({
+export const NavigationContext = createContext<INavigationContext>({
   isInScope: false,
-  optimisticallyActiveNavigation: null,
-  isOptimisticallyActive: () => false,
-  setOptimisticActiveNavigation: () => {},
+  pendingItem: null,
+  isPending: () => false,
+  isActive: () => false,
+  setNavigating: () => {},
 });
 
 export const NavMenuContext = createContext<INavMenuContext>({
   isInScope: false,
   isOpen: false,
+  open: () => {},
+  close: () => {},
+  toggle: () => {},
   setIsOpen: () => {},
 });

@@ -10,7 +10,7 @@ import {
   type IInternalSidebarItem,
 } from "~/components/layout";
 import { classNames } from "~/components/types";
-import { useNavigatable } from "~/hooks";
+import { useNavigationItem } from "~/hooks";
 
 import { IconButton, type IconButtonProps } from "./generic";
 
@@ -32,17 +32,14 @@ export const InternalSidebarAnchor = forwardRef<
   types.PolymorphicButtonElement<"link">,
   InternalSidebarAnchorProps
 >(({ item, ...props }: InternalSidebarAnchorProps, ref: types.PolymorphicButtonRef<"link">) => {
-  const { isActive, href, isPending, setActiveOptimistically } = useNavigatable({
-    id: item.path,
-    item,
-  });
+  const { isActive, href, isPending, setNavigating } = useNavigationItem(item);
   return (
     <IconButton.Solid<"link">
       {...props}
       element="link"
       activeClassName="bg-blue-800 outline-blue-800 text-white"
       isLoading={isPending}
-      onClick={() => setActiveOptimistically()}
+      onClick={() => setNavigating()}
       className={classNames(
         "z-0 text-body outline-transparent bg-transparent w-full h-full",
         { ["hover:bg-gray-300 hover:outline-gray-300"]: !isActive },

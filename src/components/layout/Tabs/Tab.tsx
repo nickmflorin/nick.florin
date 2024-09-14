@@ -2,17 +2,14 @@
 import { type LabeledNavItem } from "~/application/pages";
 
 import { TabButton } from "~/components/buttons/TabButton";
-import { useNavigatable } from "~/hooks";
+import { useNavigationItem } from "~/hooks";
 
 export interface TabProps {
   readonly item: LabeledNavItem;
 }
 
 export const Tab = ({ item }: TabProps) => {
-  const { isActive, isPending, setActiveOptimistically, href } = useNavigatable({
-    id: item.path,
-    item,
-  });
+  const { isActive, isPending, setNavigating, href } = useNavigationItem(item);
   return (
     <TabButton
       href={href}
@@ -21,7 +18,7 @@ export const Tab = ({ item }: TabProps) => {
       icon={item.icon}
       isPending={isPending}
       isActive={isActive}
-      onClick={() => setActiveOptimistically()}
+      onClick={() => setNavigating()}
     >
       {item.label}
     </TabButton>

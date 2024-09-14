@@ -9,7 +9,7 @@ import {
   type IInternalSidebarItem,
 } from "~/components/layout";
 import { classNames } from "~/components/types";
-import { useNavigatable } from "~/hooks";
+import { useNavMenu, useNavigationItem } from "~/hooks";
 
 import { Button, type ButtonProps } from "./generic";
 
@@ -31,17 +31,17 @@ export const InternalNavMenuAnchor = forwardRef<
   types.PolymorphicButtonElement<"link">,
   InternalNavMenuAnchorProps
 >(({ item, ...props }: InternalNavMenuAnchorProps, ref: types.PolymorphicButtonRef<"link">) => {
-  const { isActive, href, isPending, setActiveOptimistically } = useNavigatable({
-    id: item.path,
-    item,
-  });
+  const { isActive, href, setNavigating } = useNavigationItem(item);
+  const { close } = useNavMenu();
   return (
     <Button.Solid<"link">
       {...props}
       element="link"
       activeClassName="bg-blue-800 outline-blue-800 text-white"
-      isLoading={isPending}
-      onClick={() => setActiveOptimistically()}
+      onClick={() => {
+        setNavigating();
+        close();
+      }}
       className={classNames(
         "z-0 text-body outline-gray-50 bg-gray-50 w-full h-full",
         { ["hover:bg-gray-300 hover:outline-gray-300"]: !isActive },

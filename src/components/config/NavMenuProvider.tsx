@@ -7,7 +7,16 @@ export const NavMenuProvider = ({ children }: { readonly children: ReactNode }) 
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <NavMenuContext.Provider value={{ isOpen, setIsOpen, isInScope: true }}>
+    <NavMenuContext.Provider
+      value={{
+        isOpen,
+        isInScope: true,
+        close: () => setIsOpen(false),
+        open: () => setIsOpen(true),
+        toggle: () => setIsOpen(v => !v),
+        setIsOpen,
+      }}
+    >
       {children}
     </NavMenuContext.Provider>
   );

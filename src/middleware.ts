@@ -16,7 +16,7 @@ export default clerkMiddleware((auth, req) => {
       /* If there is a signed in user, but the user does not have explicit access to the CMS,
          redirect them to a 404 page.
 
-         Note: Redirecting back to the dashboard can cause issues with the 'useNavigatable' hook
+         Note: Redirecting back to the dashboard can cause issues with the 'useNavigationItem' hook
          and loading indicators on the navigation button, because if the navigation button is
          clicked while on the dashboard, and we redirect to the dashboard, this redirect will
          happen server side, and the page change will not be detected by the hook and the
