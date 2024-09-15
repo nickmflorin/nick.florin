@@ -3,6 +3,7 @@ import { type ResumeBrand } from "~/prisma/model";
 
 import { IconButton } from "~/components/buttons";
 import { type DrawerId, DrawerIds } from "~/components/drawers";
+import { type DrawerIdPropsPair } from "~/components/drawers/drawers";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { classNames } from "~/components/types";
 
