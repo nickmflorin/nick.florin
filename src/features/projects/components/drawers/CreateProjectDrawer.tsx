@@ -1,7 +1,7 @@
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { CreateProjectForm } from "~/components/forms/projects/CreateProjectForm";
-import { useProjectForm } from "~/components/forms/projects/hooks";
+import { CreateProjectForm } from "~/features/projects/components/forms/CreateProjectForm";
+import { useProjectForm } from "~/features/projects/components/forms/hooks";
 
 interface CreateCourseDrawerProps extends ExtendingDrawerProps {}
 

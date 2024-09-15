@@ -1,7 +1,7 @@
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { CreateCompanyForm } from "~/components/forms/companies/CreateCompanyForm";
-import { useCompanyForm } from "~/components/forms/companies/hooks";
+import { CreateCompanyForm } from "~/features/companies/components/forms/CreateCompanyForm";
+import { useCompanyForm } from "~/features/companies/components/forms/hooks";
 
 interface CreateCompanyDrawerProps extends ExtendingDrawerProps {}
 

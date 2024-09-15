@@ -4,8 +4,8 @@ import type { BrandRepository } from "~/prisma/model";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { useRepositoryForm } from "~/components/forms/repositories/hooks";
-import { UpdateRepositoryForm } from "~/components/forms/repositories/UpdateRepositoryForm";
+import { useRepositoryForm } from "~/features/repositories/components/forms/hooks";
+import { UpdateRepositoryForm } from "~/features/repositories/components/forms/UpdateRepositoryForm";
 import { useRepository } from "~/hooks";
 
 interface UpdateRepositoryDrawerProps extends ExtendingDrawerProps {

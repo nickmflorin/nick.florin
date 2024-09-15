@@ -1,7 +1,7 @@
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { CreateExperienceForm } from "~/components/forms/experiences/CreateExperienceForm";
-import { useExperienceForm } from "~/components/forms/experiences/hooks";
+import { CreateExperienceForm } from "~/features/experiences/components/forms/CreateExperienceForm";
+import { useExperienceForm } from "~/features/experiences/components/forms/hooks";
 
 interface CreateExperienceDrawerProps extends ExtendingDrawerProps {}
 

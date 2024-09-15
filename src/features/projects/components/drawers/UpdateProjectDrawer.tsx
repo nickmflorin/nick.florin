@@ -4,8 +4,8 @@ import type { BrandProject } from "~/prisma/model";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { useProjectForm } from "~/components/forms/projects/hooks";
-import UpdateProjectForm from "~/components/forms/projects/UpdateProjectForm";
+import { useProjectForm } from "~/features/projects/components/forms/hooks";
+import UpdateProjectForm from "~/features/projects/components/forms/UpdateProjectForm";
 import { useProject } from "~/hooks";
 
 interface UpdateProjectDrawerProps extends ExtendingDrawerProps {

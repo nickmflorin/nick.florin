@@ -9,12 +9,12 @@ import {
   type ChartFilterButtonProps,
 } from "~/components/buttons/ChartFilterButton";
 import { PopoverContent } from "~/components/floating/PopoverContent";
-import { useForm } from "~/components/forms/generic/hooks/use-form";
+import { useForm } from "~/components/forms/hooks/use-form";
 import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
-} from "~/components/forms/skills/SkillsChartFilterForm";
+} from "~/features/skills/components/forms/SkillsChartFilterForm";
 import { useMutableParams } from "~/hooks";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 

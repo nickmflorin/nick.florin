@@ -4,8 +4,8 @@ import type { BrandCourse } from "~/prisma/model";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { useCourseForm } from "~/components/forms/courses/hooks";
-import { UpdateCourseForm } from "~/components/forms/courses/UpdateCourseF";
+import { useCourseForm } from "~/features/courses/components/forms/hooks";
+import { UpdateCourseForm } from "~/features/courses/components/forms/UpdateCourseF";
 import { useCourse } from "~/hooks";
 
 interface UpdateCourseDrawerProps extends ExtendingDrawerProps {

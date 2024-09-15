@@ -1,7 +1,7 @@
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { CreateRepositoryForm } from "~/components/forms/repositories/CreateRepositoryForm";
-import { useRepositoryForm } from "~/components/forms/repositories/hooks";
+import { CreateRepositoryForm } from "~/features/repositories/components/forms/CreateRepositoryForm";
+import { useRepositoryForm } from "~/features/repositories/components/forms/hooks";
 
 interface CreateRepositoryDrawerProps extends ExtendingDrawerProps {}
 

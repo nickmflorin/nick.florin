@@ -2,7 +2,7 @@ import { type DetailEntityType, type NestedApiDetail, type ApiDetail } from "~/p
 
 import { Drawer } from "~/components/drawers/Drawer";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { ModifyDetailsView } from "~/components/forms/details/ModifyDetailsView";
+import { ModifyDetailsView } from "~/features/resume/components/forms/ModifyDetailsView";
 import { useDetails } from "~/hooks";
 
 export interface UpdateDetailsCollapsedDrawerProps<T extends DetailEntityType> {

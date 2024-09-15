@@ -2,7 +2,7 @@
 import { useWatch } from "react-hook-form";
 import { type PickByValueExact } from "utility-types";
 
-import type { BaseFormValues, FormInstance, FieldName } from "~/components/forms/generic";
+import type { BaseFormValues, FormInstance, FieldName } from "~/components/forms";
 import { classNames } from "~/components/types";
 import { Title } from "~/components/typography";
 

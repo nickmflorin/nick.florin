@@ -4,8 +4,8 @@ import type { BrandCompany } from "~/prisma/model";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
-import { useCompanyForm } from "~/components/forms/companies/hooks";
-import { UpdateCompanyForm } from "~/components/forms/companies/UpdateCompanyForm";
+import { useCompanyForm } from "~/features/companies/components/forms/hooks";
+import { UpdateCompanyForm } from "~/features/companies/components/forms/UpdateCompanyForm";
 import { useCompany } from "~/hooks";
 
 interface UpdateCompanyDrawerProps extends ExtendingDrawerProps {
