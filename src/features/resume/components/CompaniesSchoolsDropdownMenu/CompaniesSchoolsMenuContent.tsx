@@ -1,7 +1,5 @@
 import dynamic from "next/dynamic";
 
-import type * as types from "../types";
-
 import { stringifyLocation } from "~/prisma/model";
 
 import { getCompanies } from "~/actions/fetches/companies";
@@ -9,12 +7,13 @@ import { getSchools } from "~/actions/fetches/schools";
 
 import { DrawerIds, type DrawerId, type DrawerIdPropsPair } from "~/components/drawers";
 import { Loading } from "~/components/feedback/Loading";
+import type * as types from "~/components/menus/types";
 import { Text } from "~/components/typography";
 
 import { DeleteCompanySchoolButton } from "./DeleteCompanySchoolButton";
 import { type ModelType, type Model } from "./types";
 
-const MenuContent = dynamic(() => import("~/components/menus/generic/MenuContent"), {
+const MenuContent = dynamic(() => import("~/components/menus/MenuContent"), {
   loading: () => <Loading isLoading={true} />,
 }) as types.MenuContentComponent;
 

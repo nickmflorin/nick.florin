@@ -5,10 +5,9 @@ import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 
 import { Icon } from "~/components/icons/Icon";
 import Spinner from "~/components/icons/Spinner";
+import { MenuItem } from "~/components/menus/MenuItem";
+import { MenuItemGroup } from "~/components/menus/MenuItemGroup";
 import type { MenuItemGroupComponentProps } from "~/components/menus/types";
-
-import { MenuItem } from "../generic/MenuItem";
-import { MenuItemGroup } from "../generic/MenuItemGroup";
 
 export interface OrganizationsMenuItemGroupProps
   extends Omit<

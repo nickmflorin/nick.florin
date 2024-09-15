@@ -10,12 +10,12 @@ import { DynamicLoader, DynamicLoading } from "~/components/feedback/dynamic-loa
 import { type SelectBaseProps } from "~/components/input/select";
 import { SelectBase } from "~/components/input/select/SelectBase";
 import type { MenuContentComponent } from "~/components/menus";
-import { MenuContainer } from "~/components/menus/generic/MenuContainer";
-import { MenuContentWrapper } from "~/components/menus/generic/MenuContentWrapper";
-import { MenuHeader } from "~/components/menus/generic/MenuHeader";
+import { MenuContainer } from "~/components/menus/MenuContainer";
+import { MenuContentWrapper } from "~/components/menus/MenuContentWrapper";
+import { MenuHeader } from "~/components/menus/MenuHeader";
 import { useSkills } from "~/hooks";
 
-const MenuContent = dynamic(() => import("~/components/menus/generic/MenuContent"), {
+const MenuContent = dynamic(() => import("~/components/menus/MenuContent"), {
   loading: () => <DynamicLoader />,
 }) as MenuContentComponent;
 

@@ -2,7 +2,7 @@
 import { useRef, createRef, type RefObject } from "react";
 
 import * as types from "~/components/menus";
-import { MenuItemModelRenderer } from "~/components/menus/generic/MenuItemModelRenderer";
+import { MenuItemModelRenderer } from "~/components/menus/MenuItemModelRenderer";
 import { classNames } from "~/components/types";
 
 type MenuItemRefs = { [key in types.MenuItemKey]: RefObject<types.MenuItemInstance> };

@@ -3,9 +3,8 @@ import { forwardRef, type ForwardedRef, useState, useImperativeHandle, useMemo }
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { classNames } from "~/components/types";
 
-import * as types from "../types";
-
 import { MenuItem } from "./MenuItem";
+import * as types from "./types";
 
 export const MenuItemModelRenderer = forwardRef(
   <M extends types.MenuModel, O extends types.MenuOptions<M>>(

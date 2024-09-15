@@ -1,6 +1,6 @@
 import { preloadProfile } from "~/actions/fetches/get-profile";
 
-import { SiteDropdownMenu } from "~/components/menus/SiteDropdownMenu";
+import { SiteDropdownMenu } from "~/features/site/components/SiteDropdownMenu";
 
 import { LayoutMenuButton } from "./LayoutMenuButton";
 import { ProfileSection } from "./ProfileSection";

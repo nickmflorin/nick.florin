@@ -7,11 +7,11 @@ import { DrawerIds } from "~/components/drawers";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { Loading } from "~/components/feedback/Loading";
 import { TextInput } from "~/components/input/TextInput";
-import { CompaniesSchoolsDropdownMenu } from "~/components/menus/CompaniesSchoolsDropdownMenu";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { NewButton } from "~/components/tables/NewButton";
 import { TableSearchBar } from "~/components/tables/TableSearchBar";
 import { TableView as RootTableView } from "~/components/tables/TableView";
+import { CompaniesSchoolsDropdownMenu } from "~/features/resume/components/CompaniesSchoolsDropdownMenu";
 
 import { ControlBar } from "./ControlBar";
 import { Paginator } from "./Paginator";

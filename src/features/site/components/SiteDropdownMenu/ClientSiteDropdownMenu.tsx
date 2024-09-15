@@ -7,12 +7,11 @@ import { IconButton } from "~/components/buttons";
 import { SignInButton } from "~/components/buttons/SignInButton";
 import { SignOutButton } from "~/components/buttons/SignOutButton";
 import { Icon } from "~/components/icons/Icon";
+import { DropdownMenu } from "~/components/menus/DropdownMenu";
+import { Menu } from "~/components/menus/Menu";
+import { MenuItem } from "~/components/menus/MenuItem";
 import { type ComponentProps } from "~/components/types";
 import { Text } from "~/components/typography";
-
-import { DropdownMenu } from "../generic/DropdownMenu";
-import { Menu } from "../generic/Menu";
-import { MenuItem } from "../generic/MenuItem";
 
 import { OrganizationsMenuItemGroup } from "./OrganizationsMenuItemGroup";
 

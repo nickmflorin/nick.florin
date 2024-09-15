@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
 import { Loading } from "~/components/feedback/Loading";
 import { Popover, type PopoverProps } from "~/components/floating/Popover";
@@ -9,7 +9,7 @@ import { PopoverContent } from "~/components/floating/PopoverContent";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 
-const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
+const Menu = dynamic(() => import("~/components/menus/Menu"), {
   loading: () => <Loading isLoading={true} className="h-[80px]" />,
 }) as types.MenuComponent;
 

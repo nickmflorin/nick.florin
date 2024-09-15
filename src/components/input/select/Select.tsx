@@ -9,7 +9,7 @@ import { type MenuComponent, type MenuDataProps, type MenuItemInstance } from "~
 
 import { SelectBase } from "./SelectBase";
 
-const Menu = dynamic(() => import("~/components/menus/generic/Menu"), {
+const Menu = dynamic(() => import("~/components/menus/Menu"), {
   loading: () => <Loading isLoading={true} spinnerSize="16px" />,
 }) as MenuComponent;
 

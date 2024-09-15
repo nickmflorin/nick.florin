@@ -1,8 +1,7 @@
 import { Button } from "~/components/buttons";
+import { MenuFooter } from "~/components/menus/MenuFooter";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-
-import { MenuFooter } from "../generic/MenuFooter";
 
 export interface CompaniesSchoolsMenuFooterProps extends ComponentProps {
   readonly onCreate: () => void;

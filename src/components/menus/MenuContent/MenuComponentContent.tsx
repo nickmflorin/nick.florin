@@ -2,7 +2,7 @@ import React, { cloneElement, useCallback } from "react";
 
 import { isFragment } from "react-is";
 
-import type * as types from "../../types";
+import type * as types from "../types";
 
 import { classNames } from "~/components/types";
 

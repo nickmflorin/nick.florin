@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
 import { isIconProp } from "~/components/icons";
 import { classNames } from "~/components/types";

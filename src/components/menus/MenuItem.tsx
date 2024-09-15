@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import React, { type ReactNode } from "react";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
 import {
   type ComponentProps,

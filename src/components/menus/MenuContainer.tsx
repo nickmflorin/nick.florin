@@ -1,6 +1,6 @@
 import { forwardRef, type ForwardedRef } from "react";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
 import { classNames } from "~/components/types";
 

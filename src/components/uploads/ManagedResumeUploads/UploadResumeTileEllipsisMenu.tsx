@@ -10,7 +10,7 @@ import { isApiClientGlobalErrorJson } from "~/api";
 
 import { IconButton } from "~/components/buttons";
 import { Icon } from "~/components/icons/Icon";
-import { DropdownMenu } from "~/components/menus/generic/DropdownMenu";
+import { DropdownMenu } from "~/components/menus/DropdownMenu";
 import { classNames } from "~/components/types";
 import type { UploadsManager } from "~/components/uploads";
 

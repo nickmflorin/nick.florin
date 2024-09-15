@@ -3,7 +3,7 @@ import type { BrandResume } from "~/prisma/model";
 
 import { Button } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-import { DropdownMenu } from "~/components/menus/generic/DropdownMenu";
+import { DropdownMenu } from "~/components/menus/DropdownMenu";
 
 export interface UploadResumeTileEllipsisMenuProps {
   readonly resume: BrandResume;

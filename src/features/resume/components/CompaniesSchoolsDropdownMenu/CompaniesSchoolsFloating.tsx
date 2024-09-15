@@ -7,8 +7,7 @@ import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { Popover } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-
-import { MenuContainer } from "../generic/MenuContainer";
+import { MenuContainer } from "~/components/menus/MenuContainer";
 
 import { CompaniesSchoolsMenuFooter } from "./CompaniesSchoolsMenuFooter";
 import { type ModelType } from "./types";
