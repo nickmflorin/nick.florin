@@ -1,6 +1,6 @@
 import { getProjects } from "~/actions/fetches/projects";
 
-import { ProjectTile } from "~/components/tiles/ProjectTile";
+import { ProjectTile } from "~/features/projects/components/ProjectTile";
 
 export default async function ProjectsPage() {
   const projects = await getProjects({

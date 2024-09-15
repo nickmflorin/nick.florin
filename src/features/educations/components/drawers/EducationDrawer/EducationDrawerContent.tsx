@@ -1,7 +1,7 @@
 import { type ApiEducation } from "~/prisma/model";
 
 import { Drawer } from "~/components/drawers/Drawer";
-import { ResumeModelDrawerTile } from "~/components/tiles/resume/ResumeModelDrawerTile";
+import { ResumeModelDrawerTile } from "~/features/resume/components/tiles/ResumeModelDrawerTile";
 
 export interface EducationDrawerContentProps {
   readonly education: ApiEducation<["courses", "skills", "details"]>;

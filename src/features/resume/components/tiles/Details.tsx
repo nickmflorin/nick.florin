@@ -2,9 +2,9 @@ import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
+import { type ResumeModelSize } from "~/features/resume/types";
 
 import { Detail } from "./Detail";
-import { type ResumeModelSize } from "./types";
 
 export interface TopDetailsProps extends ComponentProps {
   readonly details: ApiDetail<["skills", "nestedDetails"]>[];

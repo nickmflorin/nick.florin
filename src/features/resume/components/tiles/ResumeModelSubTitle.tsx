@@ -1,10 +1,9 @@
-import type { ResumeModelSize } from "./types";
-
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps, type FontWeight } from "~/components/types";
 import { LinkOrText } from "~/components/typography/LinkOrText";
+import type { ResumeModelSize } from "~/features/resume/types";
 
 const LinkFontWeights: { [key in ResumeModelSize]: FontWeight } = {
   small: "regular",

@@ -1,6 +1,6 @@
 import { getEducations } from "~/actions/fetches/educations";
 
-import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelCondensedTile";
+import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
 
 export default async function EducationsPage() {
   const educations = await getEducations({

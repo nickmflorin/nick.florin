@@ -1,6 +1,6 @@
 import { getRepositories } from "~/actions/fetches/repositories";
 
-import { RepositoryTile } from "~/components/tiles/RepositoryTile";
+import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
 
 export default async function RepositoriesPage() {
   const repositories = await getRepositories({

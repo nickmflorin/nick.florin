@@ -1,6 +1,6 @@
 import { type ApiRepository } from "~/prisma/model";
 
-import { RepositoryTile } from "~/components/tiles/RepositoryTile";
+import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
 
 import { Select, type SelectProps } from "./generic";
 

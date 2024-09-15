@@ -3,13 +3,12 @@ import { type ReactNode } from "react";
 
 import { isFragment } from "react-is";
 
-import type * as types from "./types";
-
 import { type BrandModel, type ResumeBrand } from "~/prisma/model";
 
 import type { ComponentProps, Breakpoint } from "~/components/types";
 import { classNames } from "~/components/types";
 import { ShowHide } from "~/components/util";
+import type * as types from "~/features/resume/types";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
 import { ResumeModelImage } from "./ResumeModelImage";

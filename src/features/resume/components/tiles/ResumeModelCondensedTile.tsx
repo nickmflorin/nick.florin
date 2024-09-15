@@ -3,9 +3,9 @@ import { type ResumeBrand, type BrandModel } from "~/prisma/model";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
+import * as types from "~/features/resume/types";
 
 import { ResumeModelTile } from "./ResumeModelTile";
-import * as types from "./types";
 
 export interface ResumeModelCondensedTileProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends ComponentProps {

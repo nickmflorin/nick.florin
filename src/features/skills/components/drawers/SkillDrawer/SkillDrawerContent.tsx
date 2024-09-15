@@ -7,11 +7,11 @@ import { SkillCategories } from "~/components/badges/collections/SkillCategories
 import { SkillExperienceBadge } from "~/components/badges/SkillExperienceBadge";
 import { DetailDrawerContent } from "~/components/drawers/details/DetailDrawerContent";
 import { DetailDrawerSection } from "~/components/drawers/details/DetailDrawerSection";
-import { ProjectTile } from "~/components/tiles/ProjectTile";
-import { RepositoryTile } from "~/components/tiles/RepositoryTile";
-import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelCondensedTile";
 import { Label } from "~/components/typography";
 import { ShowHide } from "~/components/util";
+import { ProjectTile } from "~/features/projects/components/ProjectTile";
+import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
+import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
 
 export interface SkillDrawerContentProps {
   readonly skill: ApiSkill<["educations", "experiences", "projects", "repositories" | "courses"]>;

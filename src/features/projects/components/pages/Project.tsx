@@ -2,10 +2,10 @@ import { type ApiProject } from "~/prisma/model";
 
 import Badge from "~/components/badges/Badge";
 import { Skills } from "~/components/badges/collections/Skills";
-import { RepositoryTile } from "~/components/tiles/RepositoryTile";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography";
+import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
 
 import { Disclaimer } from "./Disclaimer";
 

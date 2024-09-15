@@ -1,5 +1,3 @@
-import type { ResumeModelSize } from "./types";
-
 import { type BrandModel, type ResumeBrand, getDegree } from "~/prisma/model";
 
 import { ExpandResumeModelButton } from "~/components/buttons/resume";
@@ -7,6 +5,7 @@ import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Text, Title } from "~/components/typography";
 import { ShowHide } from "~/components/util";
+import type { ResumeModelSize } from "~/features/resume/types";
 
 const Titles: {
   [key in ResumeModelSize]: ({ children }: { children: string }) => JSX.Element;

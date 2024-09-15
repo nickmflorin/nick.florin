@@ -1,6 +1,6 @@
 import { getExperiences } from "~/actions/fetches/experiences";
 
-import { ResumeModelCondensedTile } from "~/components/tiles/resume/ResumeModelCondensedTile";
+import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
 
 export default async function ExperiencesPage() {
   const experiences = await getExperiences({

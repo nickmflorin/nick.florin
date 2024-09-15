@@ -1,7 +1,7 @@
 import { type ApiExperience } from "~/prisma/model";
 
 import { Drawer } from "~/components/drawers/Drawer";
-import { ResumeModelDrawerTile } from "~/components/tiles/resume/ResumeModelDrawerTile";
+import { ResumeModelDrawerTile } from "~/features/resume/components/tiles/ResumeModelDrawerTile";
 
 export interface ExperienceDrawerContentProps {
   readonly experience: ApiExperience<["skills", "details"]>;

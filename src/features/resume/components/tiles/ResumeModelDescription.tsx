@@ -1,8 +1,7 @@
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
 
 import { Description, type DescriptionProps } from "~/components/typography/Description";
-
-import * as types from "./types";
+import * as types from "~/features/resume/types";
 
 export interface ResumeModelDescriptionProps<M extends BrandModel<T>, T extends ResumeBrand>
   extends Omit<DescriptionProps<"div">, "children" | "component"> {

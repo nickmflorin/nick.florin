@@ -5,9 +5,9 @@ import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography";
 import { HumanizedCourses } from "~/components/typography/HumanizedCourses";
+import * as types from "~/features/resume/types";
 
 import { ResumeModelTile } from "./ResumeModelTile";
-import * as types from "./types";
 
 export interface ResumeModelPageTileProps<M extends types.ApiModel<T>, T extends ResumeBrand>
   extends ComponentProps {
