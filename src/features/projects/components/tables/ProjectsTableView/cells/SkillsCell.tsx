@@ -9,7 +9,10 @@ import { type ApiProject } from "~/prisma/model";
 import { updateProject } from "~/actions/mutations/projects";
 import { isApiClientErrorJson } from "~/api";
 
-import { SkillsSelect, type SkillSelectValueModel } from "~/components/input/select/SkillsSelect";
+import {
+  SkillsSelect,
+  type SkillSelectValueModel,
+} from "~/features/skills/components/input/SkillsSelect";
 
 interface SkillsCellProps {
   readonly project: ApiProject<["skills"]>;

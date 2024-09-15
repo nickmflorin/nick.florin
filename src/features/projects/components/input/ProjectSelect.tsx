@@ -2,9 +2,8 @@ import { logger } from "~/internal/logger";
 import { type BrandProject, ProjectSlugs } from "~/prisma/model";
 
 import type { IconProp, IconName } from "~/components/icons";
+import { Select, type SelectProps } from "~/components/input/select";
 import { Text } from "~/components/typography";
-
-import { Select, type SelectProps } from "./generic";
 
 type Proj = Omit<BrandProject, "icon"> & { readonly icon: IconProp };
 

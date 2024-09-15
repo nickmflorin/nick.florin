@@ -3,8 +3,8 @@ import { type ApiSkill, type BrandSkill } from "~/prisma/model";
 
 import { updateSkill } from "~/actions/mutations/skills";
 
-import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
 import { SelectCell } from "~/components/tables/cells/SelectCell";
+import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
 
 interface CategoriesCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;

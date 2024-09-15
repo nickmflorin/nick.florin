@@ -1,9 +1,8 @@
 import { type ApiEducation } from "~/prisma/model";
 
+import { Select, type SelectProps } from "~/components/input/select";
 import type { MenuOptions } from "~/components/menus";
 import { Text } from "~/components/typography";
-
-import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
   getModelValue: (m: ApiEducation) => m.id,

@@ -1,8 +1,7 @@
 import { type Experience, type Company } from "~/prisma/model";
 
+import { Select, type SelectProps } from "~/components/input/select";
 import { Text } from "~/components/typography";
-
-import { Select, type SelectProps } from "./generic";
 
 type Exp = Pick<Experience, "title" | "id" | "shortTitle"> & {
   readonly company: Pick<Company, "id" | "name">;

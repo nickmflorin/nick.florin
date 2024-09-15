@@ -10,7 +10,7 @@ import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
 
-import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
+import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
 
 interface EducationsCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;

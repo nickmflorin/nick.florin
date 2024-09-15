@@ -1,10 +1,10 @@
 "use client";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { DateSelect } from "~/components/input/dates/DateSelect";
-import { ClientRepositorySelect } from "~/components/input/select/ClientRepositorySelect";
-import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
+import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
+import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type ProjectFormValues } from "./schema";
 

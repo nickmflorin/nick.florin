@@ -1,8 +1,7 @@
 import { type ApiRepository } from "~/prisma/model";
 
+import { Select, type SelectProps } from "~/components/input/select";
 import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
-
-import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
   isDeselectable: true,

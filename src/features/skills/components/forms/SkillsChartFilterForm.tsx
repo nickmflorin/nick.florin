@@ -4,11 +4,11 @@ import { ShowTopSkillsSchema, SkillsFiltersSchema, type ShowTopSkillsString } fr
 
 import { Form, type FormProps } from "~/components/forms/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
-import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
-import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
-import { ProgrammingDomainSelect } from "~/components/input/select/ProgrammingDomainSelect";
-import { ProgrammingLanguageSelect } from "~/components/input/select/ProgrammingLanguageSelect";
-import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
+import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
+import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
+import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
+import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
+import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
 
 const SHOW_TOP_SKILLS = [5, 8, 12, "all"] as const;
 

@@ -6,7 +6,7 @@ import { type HttpError } from "~/api";
 import {
   RepositorySelect,
   type RepositorySelectProps,
-} from "~/components/input/select/RepositorySelect";
+} from "~/features/repositories/components/input/RepositorySelect";
 import { useRepositories } from "~/hooks";
 
 export interface ClientRepositorySelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>

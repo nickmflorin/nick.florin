@@ -2,10 +2,10 @@
 import { Checkboxes } from "~/components/forms/fields/Checkboxes";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
-import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
-import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
+import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
+import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type RepositoryFormValues } from "./schema";
 

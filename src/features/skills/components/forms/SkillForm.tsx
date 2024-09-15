@@ -10,16 +10,16 @@ import { SkillSchema } from "~/api/schemas";
 
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
-import { ClientCourseSelect } from "~/components/input/select/ClientCourseSelect";
-import { ClientEducationSelect } from "~/components/input/select/ClientEducationSelect";
-import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
-import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
-import { ClientRepositorySelect } from "~/components/input/select/ClientRepositorySelect";
-import { ProgrammingDomainSelect } from "~/components/input/select/ProgrammingDomainSelect";
-import { ProgrammingLanguageSelect } from "~/components/input/select/ProgrammingLanguageSelect";
-import { SkillCategorySelect } from "~/components/input/select/SkillCategorySelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
+import { ClientCourseSelect } from "~/features/courses/components/input/ClientCourseSelect";
+import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
+import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
+import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
+import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
+import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
+import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
+import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
 
 export const SkillFormSchema = SkillSchema.required();
 

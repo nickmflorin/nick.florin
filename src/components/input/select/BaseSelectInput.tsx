@@ -4,7 +4,7 @@ import type * as types from "./types";
 
 import { classNames } from "~/components/types";
 
-import { Input } from "../../generic";
+import { Input } from "../generic";
 
 export const BaseSelectInput = forwardRef<HTMLDivElement, types.BaseSelectInputProps>(
   (

@@ -12,8 +12,6 @@ import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { useForm } from "~/components/forms/hooks";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-import { ClientProjectSelect } from "~/components/input/select/ClientProjectSelect";
-import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { type Action } from "~/components/structural";
@@ -21,6 +19,8 @@ import { Actions } from "~/components/structural/Actions";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { classNames } from "~/components/types";
 import { ShowHide } from "~/components/util";
+import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
+import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
 

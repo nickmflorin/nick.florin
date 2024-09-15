@@ -1,6 +1,6 @@
 import { type SkillCategory, getSkillCategory, SkillCategories } from "~/prisma/model";
 
-import { Select, type SelectProps } from "./generic";
+import { Select, type SelectProps } from "~/components/input/select";
 
 type M = {
   readonly value: SkillCategory;

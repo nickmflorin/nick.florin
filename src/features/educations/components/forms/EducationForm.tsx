@@ -8,11 +8,11 @@ import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
-import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
-import { DegreeSelect } from "~/components/input/select/DegreeSelect";
-import { SkillsSelect } from "~/components/input/select/SkillsSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
+import { DegreeSelect } from "~/features/educations/components/input/DegreeSelect";
+import { ClientSchoolSelect } from "~/features/schools/components/input/ClientSchoolSelect";
+import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type EducationFormValues } from "./schema";
 

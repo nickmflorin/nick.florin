@@ -7,8 +7,8 @@ import { type HttpError } from "~/api";
 
 import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { DynamicLoader, DynamicLoading } from "~/components/feedback/dynamic-loading";
-import { type SelectBaseProps } from "~/components/input/select/generic";
-import { SelectBase } from "~/components/input/select/generic/SelectBase";
+import { type SelectBaseProps } from "~/components/input/select";
+import { SelectBase } from "~/components/input/select/SelectBase";
 import type { MenuContentComponent } from "~/components/menus";
 import { MenuContainer } from "~/components/menus/generic/MenuContainer";
 import { MenuContentWrapper } from "~/components/menus/generic/MenuContentWrapper";

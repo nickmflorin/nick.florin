@@ -1,6 +1,6 @@
 import { type ApiCourse } from "~/prisma/model";
 
-import { Select, type SelectProps } from "./generic";
+import { Select, type SelectProps } from "~/components/input/select";
 
 const globalOptions = {
   isDeselectable: true,

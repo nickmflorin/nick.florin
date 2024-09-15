@@ -10,8 +10,8 @@ import { type ApiSkill } from "~/prisma/model";
 import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
 
-import { ClientExperienceSelect } from "~/components/input/select/ClientExperienceSelect";
 import type * as types from "~/components/tables/types";
+import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
 
 interface ExperiencesCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;

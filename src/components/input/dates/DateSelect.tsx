@@ -6,14 +6,14 @@ import { useRef, forwardRef, type ForwardedRef, useState } from "react";
 import { DateTime } from "luxon";
 import { type Optional } from "utility-types";
 
-import type * as types from "../select/generic/types";
+import type * as types from "../select/types";
 
 import { Loading } from "~/components/feedback/Loading";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { type ComponentProps } from "~/components/types";
 
-import { BaseSelectInput } from "../select/generic/BaseSelectInput";
-import { SelectPopover } from "../select/generic/SelectPopover";
+import { BaseSelectInput } from "../select/BaseSelectInput";
+import { SelectPopover } from "../select/SelectPopover";
 
 import { toDateTime } from "./util";
 

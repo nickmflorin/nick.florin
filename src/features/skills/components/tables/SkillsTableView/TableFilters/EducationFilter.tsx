@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { isRecordType, isUuid } from "~/lib/typeguards";
 import { type ApiEducation } from "~/prisma/model";
 
-import { EducationSelect } from "~/components/input/select/EducationSelect";
+import { EducationSelect } from "~/features/educations/components/input/EducationSelect";
 import { useMutableParams } from "~/hooks";
 
 import { type Filters } from "../types";

@@ -10,8 +10,8 @@ import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
 
-import { ClientSchoolSelect } from "~/components/input/select/ClientSchoolSelect";
 import type * as types from "~/components/tables/types";
+import { ClientSchoolSelect } from "~/features/schools/components/input/ClientSchoolSelect";
 
 interface SchoolCellProps {
   readonly education: ApiEducation<["details", "skills"]>;

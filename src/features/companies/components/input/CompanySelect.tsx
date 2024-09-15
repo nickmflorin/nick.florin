@@ -1,9 +1,8 @@
 import { type Company } from "~/prisma/model";
 import { stringifyLocation } from "~/prisma/model";
 
+import { Select, type SelectProps } from "~/components/input/select";
 import { Text } from "~/components/typography";
-
-import { Select, type SelectProps } from "./generic";
 
 const globalOptions = {
   getModelValue: (m: Company) => m.id,

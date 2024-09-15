@@ -6,7 +6,7 @@ import {
   type ProgrammingLanguage,
 } from "~/prisma/model";
 
-import { Select, type SelectProps, type SelectModel } from "./generic";
+import { Select, type SelectProps, type SelectModel } from "~/components/input/select";
 
 type M = Required<
   Pick<SelectModel<ProgrammingLanguage>, "value" | "label" | "icon">,

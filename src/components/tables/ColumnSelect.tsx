@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-import { Select } from "~/components/input/select/generic";
+import { Select } from "~/components/input/select";
 
 import { useTableView } from "./hooks";
 import { getColId, type Column, type TableModel } from "./types";

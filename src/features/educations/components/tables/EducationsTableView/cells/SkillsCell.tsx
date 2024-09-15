@@ -9,7 +9,10 @@ import { type ApiEducation } from "~/prisma/model";
 import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
 
-import { SkillsSelect, type SkillSelectValueModel } from "~/components/input/select/SkillsSelect";
+import {
+  SkillsSelect,
+  type SkillSelectValueModel,
+} from "~/features/skills/components/input/SkillsSelect";
 
 interface SkillsCellProps {
   readonly education: ApiEducation<["skills"]>;
