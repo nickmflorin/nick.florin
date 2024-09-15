@@ -1,7 +1,7 @@
 "use client";
 import { type ApiSkill } from "~/prisma/model";
 
-import { Badge, type BadgeProps } from "./Badge";
+import { Badge, type BadgeProps } from "~/components/badges/Badge";
 
 export interface SkillExperienceBadgeProps
   extends Omit<BadgeProps, "children" | "icon" | "iconClassName"> {

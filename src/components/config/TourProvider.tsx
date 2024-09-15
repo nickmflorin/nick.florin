@@ -6,11 +6,11 @@ import { useCookies } from "next-client-cookies";
 
 import { logger } from "~/internal/logger";
 
-import { SkillBadge } from "~/components/badges/SkillBadge";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { TourContent } from "~/components/tours/TourContent";
 import { TourPopoverContainer } from "~/components/tours/TourPopoverContainer";
 import { Text, Description } from "~/components/typography";
+import { SkillBadge } from "~/features/skills/components/badges";
 
 export interface TourProviderProps {
   readonly children: ReactNode;

@@ -1,8 +1,7 @@
 import { type SkillCategory, getSkillCategory } from "~/prisma/model";
 
+import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";
-
-import { Badge, type BadgeProps } from "./Badge";
 
 export interface SkillCategoryBadgeProps extends Omit<BadgeProps, "children"> {
   readonly category: SkillCategory;

@@ -1,6 +1,5 @@
 import { type ResumeBrand, type BrandModel } from "~/prisma/model";
 
-import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
 import * as types from "~/features/resume/types";

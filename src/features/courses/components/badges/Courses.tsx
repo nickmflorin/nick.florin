@@ -1,12 +1,11 @@
 "use client";
 import { type BrandCourse } from "~/prisma/model";
 
+import { BadgeCollection } from "~/components/badges/BadgeCollection";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { type ComponentProps } from "~/components/types";
 
-import { CourseBadge } from "../CourseBadge";
-
-import { BadgeCollection } from "./BadgeCollection";
+import { CourseBadge } from "./CourseBadge";
 
 export interface CoursesProps extends ComponentProps {
   readonly courses: BrandCourse[];

@@ -50,7 +50,7 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
   showTags = true,
   ...props
 }: ResumeModelHeaderProps<M, T>) => {
-  const { breakpoint, isLessThan, isLessThanOrEqualTo } = useScreenSizes();
+  const { breakpoint, isLessThanOrEqualTo } = useScreenSizes();
   const imageSize = ImageSizes[size][breakpoint];
   const imageGap = ImageGaps[size][breakpoint];
 

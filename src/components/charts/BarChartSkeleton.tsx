@@ -34,6 +34,10 @@ const generateHeights = ({
   return heights.reverse().map((height): `${number}%` => `${height}%`);
 };
 
+/**
+ * @deprecated
+ * We may use this again so we're leaving it around just in case.
+ */
 export const BarChartSkeleton = ({
   numBars = 10,
   maxBarHeight,

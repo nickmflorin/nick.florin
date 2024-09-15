@@ -5,9 +5,9 @@ import { decodeQueryParams } from "~/lib/urls";
 
 import { SkillsFiltersSchema, ShowTopSkillsSchema } from "~/api/schemas";
 
-import { SkillsBarChartView } from "~/components/charts/SkillsBarChartView";
 import { SkillsFilterDropdownMenu } from "~/components/menus/SkillsFilterDropdownMenu";
 import { Module } from "~/components/modules/generic";
+import { SkillsBarChartView } from "~/features/skills/components/charts/SkillsBarChartView";
 
 interface ChartPageProps {
   readonly searchParams: Record<string, string>;

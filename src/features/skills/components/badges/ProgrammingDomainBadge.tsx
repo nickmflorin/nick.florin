@@ -1,8 +1,7 @@
 import { type ProgrammingDomain, getProgrammingDomain } from "~/prisma/model";
 
+import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";
-
-import { Badge, type BadgeProps } from "./Badge";
 
 export interface ProgrammingDomainBadgeProps extends Omit<BadgeProps, "children"> {
   readonly domain: ProgrammingDomain;

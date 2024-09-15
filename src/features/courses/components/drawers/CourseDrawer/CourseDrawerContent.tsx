@@ -1,9 +1,9 @@
 import { type ApiCourse } from "~/prisma/model";
 
-import { Skills } from "~/components/badges/collections/Skills";
 import { DetailDrawerContent } from "~/components/drawers/details/DetailDrawerContent";
 import { DetailDrawerSection } from "~/components/drawers/details/DetailDrawerSection";
 import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
+import { Skills } from "~/features/skills/components/badges";
 
 export interface CourseDrawerContentProps {
   readonly course: ApiCourse<["skills", "education"]>;

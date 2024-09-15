@@ -1,8 +1,7 @@
 import { type ProgrammingLanguage, getProgrammingLanguage } from "~/prisma/model";
 
+import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";
-
-import { Badge, type BadgeProps } from "./Badge";
 
 export interface ProgrammingLanguageBadgeProps extends Omit<BadgeProps, "children"> {
   readonly language: ProgrammingLanguage;

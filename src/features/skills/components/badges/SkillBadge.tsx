@@ -1,8 +1,7 @@
 import { type Skill } from "~/prisma/model";
 
+import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";
-
-import { Badge, type BadgeProps } from "./Badge";
 
 export interface SkillBadgeProps extends Omit<BadgeProps, "children" | "icon" | "iconClassName"> {
   readonly skill: Pick<Skill, "label" | "id">;

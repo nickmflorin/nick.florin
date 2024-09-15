@@ -1,11 +1,11 @@
 import { type ResumeBrand } from "~/prisma/model";
 
-import { Skills } from "~/components/badges/collections/Skills";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Description } from "~/components/typography";
-import { HumanizedCourses } from "~/components/typography/HumanizedCourses";
+import { HumanizedCourses } from "~/features/courses/components/HumanizedCourses";
 import * as types from "~/features/resume/types";
+import { Skills } from "~/features/skills/components/badges";
 
 import { ResumeModelTile } from "./ResumeModelTile";
 

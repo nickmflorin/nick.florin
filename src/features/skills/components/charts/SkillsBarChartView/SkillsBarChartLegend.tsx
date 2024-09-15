@@ -1,10 +1,9 @@
 import { generateChartColors } from "~/lib/charts";
 import type { ApiSkill } from "~/prisma/model";
 
+import { Legend } from "~/components/charts/Legend";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-
-import { Legend } from "../Legend";
 
 export interface SkillsBarChartLegendProps extends ComponentProps {
   readonly skills: ApiSkill[];

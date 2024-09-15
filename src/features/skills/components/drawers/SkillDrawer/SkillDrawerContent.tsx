@@ -1,17 +1,19 @@
 import { type ApiSkill } from "~/prisma/model";
 
-import { Courses } from "~/components/badges/collections/Courses";
-import { ProgrammingDomains } from "~/components/badges/collections/ProgrammingDomains";
-import { ProgrammingLanguages } from "~/components/badges/collections/ProgrammingLanguages";
-import { SkillCategories } from "~/components/badges/collections/SkillCategories";
-import { SkillExperienceBadge } from "~/components/badges/SkillExperienceBadge";
 import { DetailDrawerContent } from "~/components/drawers/details/DetailDrawerContent";
 import { DetailDrawerSection } from "~/components/drawers/details/DetailDrawerSection";
 import { Label } from "~/components/typography";
 import { ShowHide } from "~/components/util";
+import { Courses } from "~/features/courses/components/badges";
 import { ProjectTile } from "~/features/projects/components/ProjectTile";
 import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
 import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
+import {
+  SkillCategories,
+  ProgrammingLanguages,
+  ProgrammingDomains,
+  SkillExperienceBadge,
+} from "~/features/skills/components/badges";
 
 export interface SkillDrawerContentProps {
   readonly skill: ApiSkill<["educations", "experiences", "projects", "repositories" | "courses"]>;
