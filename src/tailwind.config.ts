@@ -1,3 +1,4 @@
+import ContainerQueriesPlugin from "@tailwindcss/container-queries";
 import { type Config } from "tailwindcss";
 
 const config = {
@@ -6,12 +7,26 @@ const config = {
     "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  plugins: [],
+  plugins: [ContainerQueriesPlugin],
   presets: [],
   darkMode: "media", // or 'class'
   important: true,
   theme: {
-    extend: {},
+    extend: {
+      containers: {
+        xs: "320px",
+        sm: "348px",
+        md: "448px",
+        lg: "512px",
+        xl: "576px",
+        "2xl": "672px",
+        "3xl": "768px",
+        "4xl": "896px",
+        "5xl": "1024px",
+        "6xl": "1152px",
+        "7xl": "1280px",
+      },
+    },
     accentColor: ({ theme }) => ({
       ...theme("colors"),
       auto: "auto",

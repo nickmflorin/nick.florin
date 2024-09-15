@@ -50,12 +50,18 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
   showTags = true,
   ...props
 }: ResumeModelHeaderProps<M, T>) => {
-  const { breakpoint, isLessThan } = useScreenSizes();
+  const { breakpoint, isLessThan, isLessThanOrEqualTo } = useScreenSizes();
   const imageSize = ImageSizes[size][breakpoint];
   const imageGap = ImageGaps[size][breakpoint];
 
   return (
-    <div {...props} className={classNames("flex flex-col", props.className)}>
+    <div
+      {...props}
+      className={classNames(
+        "flex flex-col gap-[8px] @sm/resume-model-tile:gap-[6px]",
+        props.className,
+      )}
+    >
       <div
         className={classNames("flex flex-row max-w-full w-full overflow-x-hidden")}
         style={{ gap: `${imageGap}px` }}
@@ -82,22 +88,29 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
             <ResumeModelSubTitle model={model} size={size} />
           </div>
           <ShowHide show={showTags}>
-            <ResumeModelTags model={model} className="max-[365px]:hidden" />
+            <ResumeModelTags
+              model={model}
+              className="hidden @sm/resume-model-tile:flex @sm/resume-model-tile::gap-[2px]"
+            />
           </ShowHide>
         </div>
       </div>
       <ShowHide show={showTags}>
-        <ResumeModelTags model={model} className="hidden max-[365px]:flex max-[365px]:gap-[2px]" />
+        <ResumeModelTags model={model} className="flex @sm/resume-model-tile:hidden" />
       </ShowHide>
       <ShowHide show={Boolean(children) && !isFragment(children)}>
         <div
-          style={
-            size === "large" && !isLessThan("md")
-              ? { paddingLeft: `${imageSize + imageGap}px` }
-              : isLessThan("md")
-                ? {}
-                : { paddingLeft: `${imageSize + imageGap}px` }
-          }
+          className={classNames({
+            "@sm/resume-model-tile:pl-[50px]":
+              size === "small" ||
+              (size === "medium" && isLessThanOrEqualTo("xxs")) ||
+              (size === "large" && isLessThanOrEqualTo("xxs")),
+            "@sm/resume-model-tile:pl-[52px]":
+              (size === "medium" && !isLessThanOrEqualTo("xxs")) ||
+              (size === "large" && breakpoint === "xs"),
+            "@sm/resume-model-tile:pl-[56px]": size === "large" && breakpoint === "sm",
+            "@sm/resume-model-tile:pl-[80px]": size === "large" && !isLessThanOrEqualTo("sm"),
+          })}
         >
           {children}
         </div>

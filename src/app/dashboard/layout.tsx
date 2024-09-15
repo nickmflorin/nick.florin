@@ -66,10 +66,7 @@ export default async function DashboardPage({
           </Module>
           <div className={classNames("flex gap-[12px]", "md:flex-row md:grow", "max-md:flex-col")}>
             <Column className="md:flex-1">
-              <Module
-                className="xl:overflow-y-hidden grow min-h-[550px]"
-                data-attr-tour-id="recent-experience"
-              >
+              <Module className="xl:overflow-y-hidden grow" data-attr-tour-id="recent-experience">
                 <Module.Header
                   actions={[
                     <Link

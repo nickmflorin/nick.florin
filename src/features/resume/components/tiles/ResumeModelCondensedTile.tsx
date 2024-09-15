@@ -30,7 +30,6 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
       model={model}
       showTags={showTags}
       titleIsExpandable={titleIsExpandable}
-      className={classNames("gap-[4px] max-md:gap-[6px]")}
     >
       <ShowHide show={types.hasDescription(model) && includeDescription}>
         <ResumeModelTile.ModelDescription

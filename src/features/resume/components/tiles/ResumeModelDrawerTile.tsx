@@ -21,12 +21,7 @@ export const ResumeModelDrawerTile = <M extends types.ApiModel<T>, T extends Res
   ...props
 }: ResumeModelDrawerTileProps<M, T>) => (
   <ResumeModelTile {...props} className={classNames("gap-[10px]", props.className)}>
-    <ResumeModelTile.Header
-      size="medium"
-      model={model}
-      titleProps={titleProps}
-      className={classNames("gap-[8px]")}
-    />
+    <ResumeModelTile.Header size="medium" model={model} titleProps={titleProps} />
     <div className="flex flex-col gap-[12px] overflow-y-auto">
       {(types.hasDescription(model) || model.details.length !== 0) && (
         <div className="flex flex-col gap-[10px] max-w-[700px]">
