@@ -23,7 +23,7 @@ import {
 import { AbstractButton } from "./AbstractButton";
 
 export type IconButtonProps<E extends types.ButtonElement> = Omit<
-  types.AbstractProps<E>,
+  types.AbstractButtonProps<E>,
   "buttonType"
 > & {
   readonly tight?: boolean;
@@ -82,7 +82,7 @@ const LocalIconButton = forwardRef(
     }: IconButtonProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ) => {
-    const ps = { ...props, buttonType: "icon-button", ref } as types.AbstractProps<E> & {
+    const ps = { ...props, buttonType: "icon-button", ref } as types.AbstractButtonProps<E> & {
       readonly ref?: types.PolymorphicButtonRef<E>;
     };
     return (

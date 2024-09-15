@@ -1,12 +1,11 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { type ReactNode } from "react";
+import React, { type ReactNode } from "react";
 
 import type * as types from "../types";
 
 import {
   type ComponentProps,
-  type HTMLElementProps,
   classNames,
   sizeToString,
   sizeToNumber,
@@ -22,7 +21,7 @@ const Actions = dynamic(() => import("~/components/structural/Actions"));
 
 interface LocalMenuItemProps
   extends ComponentProps,
-    HTMLElementProps<"div">,
+    Omit<React.ComponentProps<"div">, keyof ComponentProps>,
     Pick<
       types.MenuModel,
       | "iconClassName"

@@ -3,7 +3,6 @@ import { forwardRef, type ForwardedRef } from "react";
 import { classNames } from "~/components/types";
 import {
   type ComponentProps,
-  type HTMLElementProps,
   type TypographyCharacteristics,
   getTypographyClassName,
 } from "~/components/types";
@@ -18,7 +17,7 @@ type WrapperElement<C extends WrapperComponentName> = {
 }[C];
 
 export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
-  HTMLElementProps<C> &
+  Omit<React.ComponentProps<C>, keyof ComponentProps> &
   Omit<TypographyCharacteristics, "transform"> & {
     readonly component: C;
     readonly size?: InputSize;
@@ -73,13 +72,13 @@ export const InputWrapper = forwardRef(
     };
     switch (component) {
       case "div":
-        return <div {...(ps as HTMLElementProps<"div">)} />;
+        return <div {...(ps as React.ComponentProps<"div">)} />;
       case "textarea": {
         const className = classNames("text-area", ps.className);
         return (
           <textarea
             disabled={isDisabled}
-            {...(ps as HTMLElementProps<"textarea">)}
+            {...(ps as React.ComponentProps<"textarea">)}
             className={className}
           />
         );

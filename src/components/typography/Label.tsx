@@ -2,7 +2,6 @@ import { forwardRef, type ReactNode } from "react";
 
 import {
   type ComponentProps,
-  type HTMLElementProps,
   classNames,
   type TypographyCharacteristics,
   getTypographyClassName,
@@ -11,7 +10,7 @@ import {
 export interface LabelProps
   extends TypographyCharacteristics,
     ComponentProps,
-    Omit<HTMLElementProps<"label">, keyof ComponentProps> {
+    Omit<React.ComponentProps<"label">, keyof ComponentProps> {
   readonly children: ReactNode;
 }
 

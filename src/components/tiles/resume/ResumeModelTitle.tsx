@@ -43,7 +43,6 @@ export interface ResumeModelTitleProps<M extends BrandModel<T>, T extends Resume
   extends ComponentProps {
   readonly model: M;
   readonly expandable?: boolean;
-  readonly pushOnExpand?: boolean;
   readonly size: ResumeModelSize;
 }
 
@@ -51,7 +50,6 @@ export const ResumeModelTitle = <M extends BrandModel<T>, T extends ResumeBrand>
   model,
   size,
   expandable = false,
-  pushOnExpand = false,
   ...props
 }: ResumeModelTitleProps<M, T>) => {
   const TitleComponent = Titles[size];
@@ -73,7 +71,6 @@ export const ResumeModelTitle = <M extends BrandModel<T>, T extends ResumeBrand>
           tourId="expand-button"
           modelType={model.$kind}
           modelId={model.id}
-          push={pushOnExpand}
         />
       </ShowHide>
     </div>

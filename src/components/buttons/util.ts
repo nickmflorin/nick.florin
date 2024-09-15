@@ -27,7 +27,7 @@ type ButtonClassNamePropName =
   | "activeClassName";
 
 export type ButtonClassNameProps<E extends types.ButtonElement> = Pick<
-  types.AbstractProps<E>,
+  types.AbstractButtonProps<E>,
   ButtonClassNamePropName
 >;
 

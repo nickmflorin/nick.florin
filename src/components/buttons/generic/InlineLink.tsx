@@ -9,7 +9,7 @@ import { classNames, getTypographyClassName } from "~/components/types";
 import { AbstractButton } from "./AbstractButton";
 
 export type InlineLinkProps<E extends types.ButtonElement> = Omit<
-  types.AbstractProps<E>,
+  types.AbstractButtonProps<E>,
   "buttonType" | "isLoading"
 > &
   Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
@@ -21,7 +21,7 @@ const LocalInlineLink = forwardRef(
     { fontSize, fontWeight, transform, fontFamily, children, ...props }: InlineLinkProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ) => {
-    const ps = { ...props, buttonType: "inline-link", ref } as types.AbstractProps<E> & {
+    const ps = { ...props, buttonType: "inline-link", ref } as types.AbstractButtonProps<E> & {
       readonly ref?: types.PolymorphicButtonRef<E>;
     };
     return (

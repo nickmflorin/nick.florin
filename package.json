@@ -24,7 +24,7 @@
     "prettier-fix": "npx prettier . --write",
     "test": "pnpm validate-node-version && jest --watchAll  --silent=false",
     "test:ci": "pnpm validate-node-version && jest --ci",
-    "tsc": "pnpm validate-node-version && export NODE_OPTIONS=--max-old-space-size=2400 && tsc --project ./tsconfig.json",
+    "tsc": "pnpm validate-node-version && tsc --project ./tsconfig.json",
     "tsc:watch": "pnpm validate-node-version && tsc -w",
     "create-migrations": "pnpm validate-node-version && pnpm manual-dev-env-setup -- prisma migrate dev --create-only",
     "migrate-dev": "pnpm validate-node-version && pnpm manual-dev-env-setup -- prisma migrate dev",

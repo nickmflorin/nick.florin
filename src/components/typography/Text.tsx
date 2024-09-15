@@ -4,7 +4,6 @@ import { isFragment } from "react-is";
 
 import {
   type ComponentProps,
-  type HTMLElementProps,
   type TypographyCharacteristics,
   getTypographyClassName,
   classNames,
@@ -13,7 +12,7 @@ import {
 export type TextComponent = "span" | "div" | "p";
 
 type PolymorphicTextProps<T extends TextComponent> = Omit<
-  HTMLElementProps<T>,
+  React.ComponentProps<T>,
   keyof ComponentProps | "ref"
 >;
 
@@ -82,15 +81,15 @@ export const Text = forwardRef<HTMLDivElement, TextProps<TextComponent>>(
     };
     switch (component) {
       case "span": {
-        const p = ps as HTMLElementProps<"span">;
+        const p = ps as React.ComponentProps<"span">;
         return <span {...p} ref={ref as PolymorphicTextRef<"span">} />;
       }
       case "div": {
-        const p = ps as HTMLElementProps<"div">;
+        const p = ps as React.ComponentProps<"div">;
         return <div {...p} ref={ref as PolymorphicTextRef<"div">} />;
       }
       case "p": {
-        const p = ps as HTMLElementProps<"p">;
+        const p = ps as React.ComponentProps<"p">;
         return <p {...p} ref={ref as PolymorphicTextRef<"p">} />;
       }
     }

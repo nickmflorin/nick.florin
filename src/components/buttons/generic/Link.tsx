@@ -15,7 +15,10 @@ import {
 import { AbstractButton } from "./AbstractButton";
 import { ButtonContent } from "./ButtonContent";
 
-export type LinkProps<E extends types.ButtonElement> = Omit<types.AbstractProps<E>, "buttonType"> &
+export type LinkProps<E extends types.ButtonElement> = Omit<
+  types.AbstractButtonProps<E>,
+  "buttonType"
+> &
   Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
     readonly children?: ReactNode;
     readonly icon?: types.ButtonIconProp;
@@ -46,7 +49,7 @@ const LocalLink = forwardRef(
     }: LinkProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ) => {
-    const ps = { ...props, buttonType: "link", ref } as types.AbstractProps<E> & {
+    const ps = { ...props, buttonType: "link", ref } as types.AbstractButtonProps<E> & {
       readonly ref?: types.PolymorphicButtonRef<E>;
     };
     return (

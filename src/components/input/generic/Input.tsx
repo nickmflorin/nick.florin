@@ -1,12 +1,12 @@
 import dynamic from "next/dynamic";
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { Spinner } from "~/components/icons/Spinner";
 import { type ActionsType, mergeActions } from "~/components/structural";
 import { Actions } from "~/components/structural/Actions";
 import { classNames } from "~/components/types";
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
 
 import { InputWrapper, type InputWrapperProps } from "./InputWrapper";
 
@@ -16,7 +16,7 @@ export interface InputProps
   extends Omit<InputWrapperProps<"div">, "component" | "onChange">,
     ComponentProps,
     Pick<
-      HTMLElementProps<"div">,
+      React.ComponentProps<"div">,
       | "onFocus"
       | "onBlur"
       | "onPointerDown"

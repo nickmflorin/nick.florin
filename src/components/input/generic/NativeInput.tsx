@@ -1,10 +1,10 @@
-import { forwardRef } from "react";
+import React, { forwardRef } from "react";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
 
 export interface NativeInputProps
-  extends Omit<HTMLElementProps<"input">, "disabled">,
+  extends Omit<React.ComponentProps<"input">, "disabled" | keyof ComponentProps>,
     ComponentProps {
   readonly isDisabled?: boolean;
 }

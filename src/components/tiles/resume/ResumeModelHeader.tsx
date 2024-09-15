@@ -31,7 +31,6 @@ export interface ResumeModelHeaderProps<M extends BrandModel<T>, T extends Resum
   readonly size: types.ResumeModelSize;
   readonly showTags?: boolean;
   readonly titleIsExpandable?: boolean;
-  readonly pushOnExpandTitle?: boolean;
   readonly children?: ReactNode;
   readonly titleProps?: ComponentProps;
 }
@@ -49,7 +48,6 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
   children,
   titleProps,
   titleIsExpandable = false,
-  pushOnExpandTitle = false,
   showTags = true,
   ...props
 }: ResumeModelHeaderProps<M, T>) => {
@@ -81,7 +79,6 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
               model={model}
               size={size}
               expandable={titleIsExpandable}
-              pushOnExpand={pushOnExpandTitle}
             />
             <ResumeModelSubTitle model={model} size={size} />
           </div>

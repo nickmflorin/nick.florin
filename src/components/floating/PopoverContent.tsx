@@ -1,16 +1,13 @@
-import { type ReactNode, forwardRef } from "react";
+import React, { type ReactNode, forwardRef } from "react";
 
-import {
-  type HTMLElementProps,
-  type ComponentProps,
-  type Size,
-  sizeToString,
-} from "~/components/types";
+import { type ComponentProps, type Size, sizeToString } from "~/components/types";
 import { classNames } from "~/components/types";
 
 import * as types from "./types";
 
-export interface FloatingContentProps extends ComponentProps, HTMLElementProps<"div"> {
+export interface FloatingContentProps
+  extends ComponentProps,
+    Omit<React.ComponentProps<"div">, keyof ComponentProps> {
   readonly children: ReactNode;
   readonly variant?: types.PopoverVariant;
   readonly maxHeight?: Size | null;

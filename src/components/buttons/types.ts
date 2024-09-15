@@ -1,6 +1,7 @@
 import { type UrlObject } from "url";
 
 import { type LinkProps as NextLinkProps } from "next/link";
+import type React from "react";
 import { type ForwardedRef } from "react";
 
 import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
@@ -9,7 +10,6 @@ import { type IconProp, type IconName } from "~/components/icons";
 import {
   type BorderRadius,
   type ComponentProps,
-  type HTMLElementProps,
   type QuantitativeSize,
   type Size,
 } from "~/components/types";
@@ -66,42 +66,15 @@ export type ButtonIconSize = ButtonDiscreteIconSize | QuantitativeSize<"px">;
 export const ButtonElements = enumeratedLiterals(["button", "a", "div", "link"] as const, {});
 export type ButtonElement = EnumeratedLiteralsMember<typeof ButtonElements>;
 
-export const ButtonEventPropNames = [
-  "onMouseEnter",
-  "onMouseLeave",
-  "onFocus",
-  "onBlur",
-  "onPointerDown",
-  "onPointerEnter",
-  "onMouseMove",
-  "onClick",
-] as const;
-
-export type ButtonEventPropName = (typeof ButtonEventPropNames)[number];
-
-type ButtonCommonProp = "id" | "children" | ButtonEventPropName;
-
-export type AbstractButtonProps = Pick<HTMLElementProps<"button">, ButtonCommonProp> & {
-  readonly type?: "submit" | "button";
-  readonly disabled?: boolean;
-};
-
-export type AbstractDivProps = Pick<HTMLElementProps<"div">, ButtonCommonProp>;
-
-export type AbstractAnchorProps = Pick<HTMLElementProps<"a">, ButtonCommonProp> & {
-  readonly href?: UrlObject | string;
-  readonly target?: string;
-  readonly rel?: string;
-};
-
-export type AbstractLinkProps = NextLinkProps;
-
-export type PolymorphicAbstractButtonProps<E extends ButtonElement> = {
-  button: AbstractButtonProps;
-  a: AbstractAnchorProps;
-  div: AbstractDivProps;
-  link: AbstractLinkProps;
-}[E];
+export type NativeButtonProps<E extends ButtonElement> = E extends "button"
+  ? React.ComponentProps<"button">
+  : E extends "a"
+    ? React.ComponentProps<"a">
+    : E extends "div"
+      ? React.ComponentProps<"div">
+      : E extends "link"
+        ? NextLinkProps
+        : never;
 
 export type PolymorphicButtonElement<E extends ButtonElement> = {
   a: HTMLAnchorElement;
@@ -116,13 +89,6 @@ export type PolymorphicButtonRef<E extends ButtonElement> = {
   div: ForwardedRef<HTMLDivElement>;
   link: ForwardedRef<HTMLAnchorElement>;
 }[E];
-
-export type ButtonComponentProps<E extends ButtonElement> = E extends ButtonElement
-  ? PolymorphicAbstractButtonProps<E> & {
-      readonly className?: string;
-      readonly style?: React.CSSProperties;
-    }
-  : never;
 
 export type ButtonIconProp<
   T extends IconProp | IconName | JSX.Element = IconProp | IconName | JSX.Element,
@@ -146,7 +112,49 @@ export const parseButtonIcons = <T extends IconProp | IconName | JSX.Element>(
 
 type IfAnchorElement<E extends ButtonElement> = E extends "a" ? boolean : never;
 
-export type AbstractInternalProps<E extends ButtonElement> = ComponentProps & {
+export type MouseEventHandler<E extends ButtonElement> = E extends "button"
+  ? React.MouseEventHandler<HTMLButtonElement>
+  : E extends "div"
+    ? React.MouseEventHandler<HTMLDivElement>
+    : E extends "a"
+      ? React.MouseEventHandler<HTMLAnchorElement>
+      : E extends "link"
+        ? React.MouseEventHandler<HTMLAnchorElement>
+        : never;
+
+export type FocusEventHandler<E extends ButtonElement> = E extends "button"
+  ? React.FocusEventHandler<HTMLButtonElement>
+  : E extends "div"
+    ? React.FocusEventHandler<HTMLDivElement>
+    : E extends "a"
+      ? React.FocusEventHandler<HTMLAnchorElement>
+      : E extends "link"
+        ? React.FocusEventHandler<HTMLAnchorElement>
+        : never;
+
+export type PointerEventHandler<E extends ButtonElement> = E extends "button"
+  ? React.PointerEventHandler<HTMLButtonElement>
+  : E extends "div"
+    ? React.PointerEventHandler<HTMLDivElement>
+    : E extends "a"
+      ? React.PointerEventHandler<HTMLAnchorElement>
+      : E extends "link"
+        ? React.PointerEventHandler<HTMLAnchorElement>
+        : never;
+
+export type ButtonSubmitType<E extends ButtonElement> = E extends "button"
+  ? "button" | "submit"
+  : never;
+
+export type ButtonHref<E extends ButtonElement> = E extends "a" | "link"
+  ? UrlObject | string
+  : never;
+
+export type ButtonRel<E extends ButtonElement> = E extends "a" ? string : never;
+
+export type ButtonTarget<E extends ButtonElement> = E extends "a" ? string : never;
+
+export interface AbstractInternalButtonProps<E extends ButtonElement> extends ComponentProps {
   readonly buttonType: ButtonType;
   readonly element?: E;
   readonly scheme?: ButtonColorScheme;
@@ -173,7 +181,22 @@ export type AbstractInternalProps<E extends ButtonElement> = ComponentProps & {
   readonly activeClassName?: ComponentProps["className"];
   readonly radius?: BorderRadius;
   readonly tourId?: string;
-};
+}
 
-export type AbstractProps<E extends ButtonElement> = AbstractInternalProps<E> &
-  Omit<PolymorphicAbstractButtonProps<E>, "disabled">;
+export interface AbstractButtonProps<E extends ButtonElement>
+  extends AbstractInternalButtonProps<E> {
+  readonly id?: string;
+  readonly children?: React.ReactNode;
+  readonly type?: ButtonSubmitType<E>;
+  readonly href?: ButtonHref<E>;
+  readonly target?: ButtonTarget<E>;
+  readonly rel?: ButtonRel<E>;
+  readonly onClick?: MouseEventHandler<E>;
+  readonly onMouseEnter?: MouseEventHandler<E>;
+  readonly onMouseMove?: MouseEventHandler<E>;
+  readonly onMouseLeave?: MouseEventHandler<E>;
+  readonly onBlur?: FocusEventHandler<E>;
+  readonly onFocus?: FocusEventHandler<E>;
+  readonly onPointerDown?: PointerEventHandler<E>;
+  readonly onPointerEnter?: PointerEventHandler<E>;
+}

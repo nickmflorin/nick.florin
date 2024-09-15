@@ -82,7 +82,6 @@ export const SkillDrawerContent = ({
           key={index}
           model={experience}
           titleIsExpandable
-          pushOnExpandTitle
           showTags={false}
         />
       ))}
@@ -93,7 +92,6 @@ export const SkillDrawerContent = ({
           key={index}
           model={education}
           titleIsExpandable
-          pushOnExpandTitle
           showTags={false}
         />
       ))}

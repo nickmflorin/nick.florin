@@ -8,9 +8,9 @@ import { omit } from "lodash-es";
 import type * as types from "~/components/buttons";
 import { getButtonClassName } from "~/components/buttons/util";
 import { classNames } from "~/components/types";
-import { type ComponentProps, type HTMLElementProps } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
 
-type InternalPropName = keyof types.AbstractInternalProps<types.ButtonElement>;
+type InternalPropName = keyof types.AbstractInternalButtonProps<types.ButtonElement>;
 
 /* We use a map here for extra type safety, because it ensures that all of the internal props are
    accounted for in the map. */
@@ -34,22 +34,24 @@ const INTERNAL_BUTTON_PROPS = {
 } as const satisfies { [key in InternalPropName]: true };
 
 const toNativeButtonProps = <E extends types.ButtonElement>(
-  props: types.AbstractProps<E>,
-): types.PolymorphicAbstractButtonProps<E> => {
+  props: types.AbstractButtonProps<E>,
+): types.NativeButtonProps<E> => {
   const keys = Object.keys(INTERNAL_BUTTON_PROPS) as InternalPropName[];
   /* It is really annoying that we have to do the type coercion like this - but I cannot seem to
      find another way around it.  Something to look into in the future, but it is not a super
      risky coercion because of the type safety around the definition of 'INTERNAL_BUTTON_PROPS'. */
-  return omit(props, keys) as unknown as types.PolymorphicAbstractButtonProps<E>;
+  return omit(props, keys) as unknown as types.NativeButtonProps<E>;
 };
 
-const NativeButton = forwardRef<HTMLButtonElement, HTMLElementProps<"button"> & ComponentProps>(
+const NativeButton = forwardRef<HTMLButtonElement, React.ComponentProps<"button"> & ComponentProps>(
   (props, ref) => <button {...props} ref={ref} className={classNames(props.className)} />,
 );
 
 const NativeAnchor = forwardRef<
   HTMLAnchorElement,
-  Omit<HTMLElementProps<"a">, "href"> & { readonly href?: url.UrlObject | string } & ComponentProps
+  Omit<React.ComponentProps<"a">, "href"> & {
+    readonly href?: url.UrlObject | string;
+  } & ComponentProps
 >(({ href, className, ...props }, ref) => (
   <a
     {...props}
@@ -65,13 +67,13 @@ const NativeLink = forwardRef<HTMLAnchorElement, NextLinkProps & ComponentProps>
   ),
 );
 
-const NativeDiv = forwardRef<HTMLDivElement, HTMLElementProps<"div"> & ComponentProps>(
+const NativeDiv = forwardRef<HTMLDivElement, React.ComponentProps<"div"> & ComponentProps>(
   (props, ref) => <div {...props} ref={ref} className={classNames(props.className)} />,
 );
 
 export const AbstractButton = forwardRef(
   <E extends types.ButtonElement>(
-    props: types.AbstractProps<E>,
+    props: types.AbstractButtonProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ): JSX.Element => {
     const className = getButtonClassName(props);
@@ -82,16 +84,14 @@ export const AbstractButton = forwardRef(
         const openInNewTab = props.openInNewTab ?? false;
         return (
           <NativeAnchor
-            {...(nativeProps as types.ButtonComponentProps<"a">)}
+            {...(nativeProps as types.NativeButtonProps<"a">)}
             data-attr-tour-id={props.tourId}
             className={className}
-            target={
-              openInNewTab ? "_blank" : (nativeProps as types.ButtonComponentProps<"a">).target
-            }
+            target={openInNewTab ? "_blank" : (nativeProps as types.NativeButtonProps<"a">).target}
             rel={
               openInNewTab
                 ? "noopener noreferrer"
-                : (nativeProps as types.ButtonComponentProps<"a">).rel
+                : (nativeProps as types.NativeButtonProps<"a">).rel
             }
             ref={ref as types.PolymorphicButtonRef<"a">}
           />
@@ -100,7 +100,7 @@ export const AbstractButton = forwardRef(
       case "link": {
         return (
           <NativeLink
-            {...(nativeProps as types.ButtonComponentProps<"link">)}
+            {...(nativeProps as types.NativeButtonProps<"link">)}
             data-attr-tour-id={props.tourId}
             className={className}
             ref={ref as types.PolymorphicButtonRef<"a">}
@@ -110,7 +110,7 @@ export const AbstractButton = forwardRef(
       case "div": {
         return (
           <NativeDiv
-            {...(nativeProps as types.ButtonComponentProps<"div">)}
+            {...(nativeProps as types.NativeButtonProps<"div">)}
             className={className}
             data-attr-tour-id={props.tourId}
             ref={ref as types.PolymorphicButtonRef<"div">}
@@ -121,7 +121,7 @@ export const AbstractButton = forwardRef(
         return (
           <NativeButton
             type="button"
-            {...(nativeProps as types.ButtonComponentProps<"button">)}
+            {...(nativeProps as types.NativeButtonProps<"button">)}
             className={className}
             disabled={props.isDisabled}
             data-attr-tour-id={props.tourId}
@@ -133,6 +133,6 @@ export const AbstractButton = forwardRef(
   },
 ) as {
   <E extends types.ButtonElement>(
-    props: types.AbstractProps<E> & { readonly ref?: types.PolymorphicButtonRef<E> },
+    props: types.AbstractButtonProps<E> & { readonly ref?: types.PolymorphicButtonRef<E> },
   ): JSX.Element;
 };

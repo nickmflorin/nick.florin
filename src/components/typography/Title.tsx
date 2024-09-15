@@ -4,7 +4,6 @@ import { isFragment } from "react-is";
 
 import {
   type ComponentProps,
-  type HTMLElementProps,
   classNames,
   type TypographyCharacteristics,
   getTypographyClassName,
@@ -14,7 +13,7 @@ import {
 } from "~/components/types";
 
 type PolymorphicTitleProps<C extends TitleComponent> = Omit<
-  HTMLElementProps<C>,
+  React.ComponentProps<C>,
   keyof ComponentProps
 >;
 

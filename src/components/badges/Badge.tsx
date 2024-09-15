@@ -5,7 +5,6 @@ import { Icon } from "~/components/icons/Icon";
 import { classNames } from "~/components/types";
 import {
   type ComponentProps,
-  type HTMLElementProps,
   FontSizes,
   FontWeights,
   getTypographyClassName,
@@ -15,7 +14,7 @@ import {
 export interface BadgeProps
   extends ComponentProps,
     TypographyCharacteristics,
-    Pick<HTMLElementProps<"div">, "onClick"> {
+    Pick<React.ComponentProps<"div">, "onClick"> {
   readonly children: string;
   readonly icon?: IconProp | null;
   readonly iconClassName?: ComponentProps["className"];

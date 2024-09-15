@@ -13,14 +13,12 @@ export interface ResumeModelCondensedTileProps<M extends BrandModel<T>, T extend
   readonly showTags?: boolean;
   readonly titleIsExpandable?: boolean;
   readonly includeDescription?: boolean;
-  readonly pushOnExpandTitle?: boolean;
   readonly includeDescriptionShowMoreLink?: boolean;
 }
 
 export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
   titleIsExpandable,
-  pushOnExpandTitle = false,
   showTags = true,
   includeDescription = true,
   includeDescriptionShowMoreLink = true,
@@ -32,7 +30,6 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
       model={model}
       showTags={showTags}
       titleIsExpandable={titleIsExpandable}
-      pushOnExpandTitle={pushOnExpandTitle}
       className={classNames("gap-[4px] max-md:gap-[6px]")}
     >
       <ShowHide show={types.hasDescription(model) && includeDescription}>

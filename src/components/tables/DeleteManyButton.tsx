@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { toast } from "react-toastify";
 
-import type * as types from "../types";
+import type * as types from "./types";
 
 import { logger } from "~/internal/logger";
 

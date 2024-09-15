@@ -15,7 +15,7 @@ export const CourseDrawerContent = ({
   <DetailDrawerContent description={description} title={name}>
     <Skills skills={skills} />
     <DetailDrawerSection label="Education">
-      <ResumeModelCondensedTile model={education} pushOnExpandTitle />
+      <ResumeModelCondensedTile model={education} />
     </DetailDrawerSection>
   </DetailDrawerContent>
 );

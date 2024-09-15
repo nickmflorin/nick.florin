@@ -21,7 +21,7 @@ import { AbstractButton } from "./AbstractButton";
 import { ButtonContent } from "./ButtonContent";
 
 export type ButtonProps<E extends types.ButtonElement> = Omit<
-  types.AbstractProps<E>,
+  types.AbstractButtonProps<E>,
   "buttonType"
 > &
   Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
@@ -45,7 +45,7 @@ type LocalButtonType = {
 };
 
 // /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-// const Base = AbstractButton as React.FC<types.AbstractProps<types.ButtonElement>>;
+// const Base = AbstractButton as React.FC<types.AbstractButtonProps<types.ButtonElement>>;
 
 const LocalButton = forwardRef(
   <E extends types.ButtonElement>(
@@ -68,7 +68,7 @@ const LocalButton = forwardRef(
     }: ButtonProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ): JSX.Element => {
-    const ps = { ...props, buttonType: "button", ref } as types.AbstractProps<E> & {
+    const ps = { ...props, buttonType: "button", ref } as types.AbstractButtonProps<E> & {
       readonly ref?: types.PolymorphicButtonRef<E>;
     };
     return (
