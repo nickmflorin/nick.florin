@@ -100,7 +100,8 @@ export const Input = forwardRef<HTMLDivElement, InputProps>(
               radius="full"
               isDisabled={isClearDisabled}
               element="button"
-              className="text-gray-400 h-full aspect-square w-auto p-[4px] hover:text-gray-500"
+              size="xsmall"
+              className="text-gray-400 aspect-square p-[4px] hover:text-gray-500"
               onClick={e => {
                 e.stopPropagation();
                 onClear();

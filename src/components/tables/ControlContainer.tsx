@@ -40,11 +40,11 @@ export const ControlContainer = memo(({ children, control, ...props }: ControlCo
         "flex flex-row items-center relative [&>*]:h-fill [&>*]:max-h-fill",
         props.className,
       )}
-      style={{
-        ...props.style,
-        height: `${ControlHeights[control]}px`,
-        maxHeight: `${ControlHeights[control]}px`,
-      }}
+      /* style={{
+           ...props.style,
+           height: `${ControlHeights[control]}px`,
+           maxHeight: `${ControlHeights[control]}px`,
+         }} */
     >
       {children}
     </div>

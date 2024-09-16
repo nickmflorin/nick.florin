@@ -55,33 +55,34 @@ export const SkillsFilterDropdownMenu = ({
     return <></>;
   }
 
-  return (
-    <Popover
-      placement="bottom-end"
-      triggers={["click"]}
-      offset={{ mainAxis: 4 }}
-      width={400}
-      withArrow={false}
-      inPortal
-      isDisabled={isDisabled}
-      middleware={[flip({})]}
-      content={
-        <PopoverContent className="p-[20px] rounded-md overflow-y-auto">
-          <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable={false} />
-        </PopoverContent>
-      }
-    >
-      {({ ref, params }) => (
-        <ChartFilterButton
-          {...params}
-          size={isLessThan("md") ? "xsmall" : "small"}
-          {...buttonProps}
-          ref={ref}
-          isDisabled={isDisabled}
-        />
-      )}
-    </Popover>
-  );
+  /* return (
+       <Popover
+         placement="bottom-end"
+         triggers={["click"]}
+         offset={{ mainAxis: 4 }}
+         width={400}
+         withArrow={false}
+         inPortal
+         isDisabled={isDisabled}
+         middleware={[flip({})]}
+         content={
+           <PopoverContent className="p-[20px] rounded-md overflow-y-auto">
+             <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable={false} />
+           </PopoverContent>
+         }
+       >
+         {({ ref, params }) => (
+           <ChartFilterButton
+             {...params}
+             size={isLessThan("md") ? "xsmall" : "small"}
+             {...buttonProps}
+             ref={ref}
+             isDisabled={isDisabled}
+           />
+         )}
+       </Popover>
+     ); */
+  return <></>;
 };
 
 export default SkillsFilterDropdownMenu;

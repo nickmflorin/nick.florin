@@ -23,9 +23,7 @@ export const TableView = memo(
       >
         <ControlContainer control="searchBar">{searchBar}</ControlContainer>
         <ControlContainer control="controlBar">{controlBar}</ControlContainer>
-        <div className="flex flex-grow flex-col relative" style={{ height: h, maxHeight: h }}>
-          {children}
-        </div>
+        <div className="flex flex-grow flex-col relative min-h-0">{children}</div>
         <ControlContainer control="paginator">{paginator}</ControlContainer>
       </div>
     );
