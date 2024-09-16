@@ -1,146 +1,308 @@
+"use client";
 import dynamic from "next/dynamic";
-import Link from "next/link";
-import React, { type ReactNode } from "react";
+import { useRef, useState, useMemo } from "react";
+import { type ReactNode, useImperativeHandle, forwardRef } from "react";
 
-import type * as types from "./types";
+import { isFragment } from "react-is";
 
-import {
-  type ComponentProps,
-  classNames,
-  sizeToString,
-  sizeToNumber,
-  type QuantitativeSize,
-} from "~/components/types";
+import { type SpinnerProps, type IconProp, type IconName, isIconProp } from "~/components/icons";
+import { Spinner } from "~/components/icons/Spinner";
+import { LoadingText } from "~/components/loading/LoadingText";
+import * as types from "~/components/menus";
+import { type Action } from "~/components/structural/Actions";
+import { classNames } from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { sizeToString, sizeToNumber, type QuantitativeSize } from "~/components/types/sizes";
+import { Description } from "~/components/typography";
 import { ShowHide } from "~/components/util";
 
 import { MenuItemIcon } from "./MenuItemIcon";
 
-const Spinner = dynamic(() => import("~/components/icons/Spinner"));
-const Checkbox = dynamic(() => import("~/components/input/Checkbox"));
-const Actions = dynamic(() => import("~/components/structural/Actions"));
+const Checkbox = dynamic(() => import("~/components/input/Checkbox").then(mod => mod.Checkbox));
+const Actions = dynamic(() => import("~/components/structural/Actions").then(mod => mod.Actions));
 
-interface LocalMenuItemProps
+type MenuItemRenderCallback<V> = V | ((params: types.MenuItemRenderProps) => V);
+
+export interface MenuItemProps
   extends ComponentProps,
-    Omit<React.ComponentProps<"div">, keyof ComponentProps>,
-    Pick<
-      types.MenuModel,
-      | "iconClassName"
-      | "spinnerClassName"
-      | "icon"
-      | "iconSize"
-      | "isDisabled"
-      | "isLoading"
-      | "isLocked"
-      | "isVisible"
-      | "actions"
-    > {
-  readonly height?: QuantitativeSize<"px">;
+    Omit<React.ComponentProps<"div">, "children" | "onClick" | "ref" | keyof ComponentProps> {
+  readonly icon?: MenuItemRenderCallback<IconProp | IconName | JSX.Element | undefined>;
+  readonly description?: MenuItemRenderCallback<ReactNode>;
+  readonly iconClassName?: ComponentProps["className"];
+  readonly iconProps?: types.MenuItemIconProps;
+  readonly spinnerProps?: Omit<SpinnerProps, "size" | "className" | "isLoading">;
+  readonly iconSize?: QuantitativeSize<"px">;
+  readonly spinnerClassName?: ComponentProps["className"];
+  readonly isLocked?: boolean;
+  readonly isLoading?: boolean;
   readonly isSelected?: boolean;
+  readonly isDisabled?: boolean;
+  readonly isCurrentNavigation?: boolean;
+  readonly highlightOnHover?: boolean;
+  readonly isVisible?: boolean;
+  readonly loadingText?: string;
+  readonly actions?: Action[];
+  readonly height?: QuantitativeSize<"px">;
   readonly contentClassName?: ComponentProps["className"];
   readonly selectedClassName?: ComponentProps["className"];
+  readonly navigatedClassName?: ComponentProps["className"];
   readonly disabledClassName?: ComponentProps["className"];
   readonly lockedClassName?: ComponentProps["className"];
   readonly loadingClassName?: ComponentProps["className"];
-  readonly children: ReactNode;
-  readonly isMulti?: boolean;
   readonly selectionIndicator?: types.MenuItemSelectionIndicator;
+  readonly children: ReactNode | ((params: types.MenuItemRenderProps) => ReactNode);
+  readonly onClick?: (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    instance: types.MenuItemInstance,
+  ) => void;
 }
 
-const LocalMenuItem = ({
-  height,
-  actions,
-  isSelected = false,
-  isMulti = false,
-  selectedClassName,
-  loadingClassName,
-  lockedClassName,
-  disabledClassName,
-  spinnerClassName,
-  contentClassName,
-  children,
-  isDisabled = false,
-  isLocked = false,
-  isVisible = true,
-  icon,
-  iconClassName,
-  iconSize = "16px",
-  isLoading = false,
-  selectionIndicator = "checkbox",
-  ...props
-}: LocalMenuItemProps): JSX.Element => (
-  <ShowHide show={isVisible}>
-    <div
-      {...props}
-      onClick={e => {
-        if (!isDisabled && !isLocked && !isLoading) {
-          props.onClick?.(e);
-        }
-      }}
-      className={classNames(
-        "menu__item",
-        { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
-        {
-          [classNames("menu__item--selected", selectedClassName)]: isSelected,
-          [classNames("menu__item--loading", loadingClassName)]: isLoading,
-          [classNames("disabled", disabledClassName)]: isDisabled,
-          [classNames("menu__item--locked", lockedClassName)]: isLocked,
-        },
-        props.className,
-      )}
-      style={
-        height !== undefined
-          ? {
-              ...props.style,
-              height: sizeToString(height, "px"),
-              lineHeight: `${sizeToNumber(height) - 2 * 6}px`,
-            }
-          : props.style
-      }
-    >
-      <ShowHide show={isMulti && selectionIndicator === "checkbox"}>
-        <Checkbox readOnly value={isSelected} isDisabled={isDisabled} isLocked={isLocked} />
-      </ShowHide>
-      <MenuItemIcon
-        icon={icon}
-        iconSize={iconSize}
-        iconClassName={iconClassName}
-        isLoading={isLoading}
-        spinnerClassName={spinnerClassName}
-      />
-      <div className={classNames("menu__item__content", contentClassName)}>{children}</div>
-      {/* Only show the spinner to the right (instead of over the icon) if the icon is not
-          defined. */}
-      {icon === undefined && (
-        <Spinner
-          className={classNames("text-gray-600", iconClassName, spinnerClassName)}
-          isLoading={isLoading}
-          size="18px"
-          dimension="height"
-        />
-      )}
-      <Actions actions={actions ?? null} />
-    </div>
-  </ShowHide>
-);
-
-export interface MenuItemProps extends LocalMenuItemProps {
-  readonly href?: string | { url: string; target?: string; rel?: string };
+interface MenuItemInnerProps
+  extends Pick<
+    MenuItemProps,
+    | "icon"
+    | "iconProps"
+    | "iconSize"
+    | "iconClassName"
+    | "spinnerClassName"
+    | "spinnerProps"
+    | "children"
+    | "actions"
+    | "loadingText"
+  > {
+  readonly isLoading: boolean;
+  readonly isDisabled: boolean;
+  readonly isLocked: boolean;
 }
 
-export const MenuItem = ({ href, ...props }: MenuItemProps): JSX.Element => {
-  if (href) {
-    if (typeof href === "string") {
+const MenuItemInner = ({
+  isLocked,
+  isLoading,
+  isDisabled,
+  icon: _icon,
+  children: _children,
+  actions = [],
+  loadingText,
+  ...rest
+}: MenuItemInnerProps) => {
+  const icon = useMemo(() => {
+    const ic = typeof _icon === "function" ? _icon({ isLocked, isLoading, isDisabled }) : _icon;
+    if (typeof ic === "string" || isIconProp(ic)) {
       return (
-        <Link href={href}>
-          <LocalMenuItem {...props} />
-        </Link>
+        <MenuItemIcon
+          {...rest}
+          icon={ic as IconProp | IconName | undefined}
+          isLoading={isLoading}
+        />
       );
     }
+    return ic;
+  }, [_icon, rest, isLoading, isLocked, isDisabled]);
+
+  const leftIcon = useMemo(() => {
+    if (icon === undefined || isLoading) {
+      return (
+        <Spinner
+          {...rest.spinnerProps}
+          className={classNames("text-gray-600", rest.iconClassName, rest.spinnerClassName)}
+          isLoading={isLoading}
+          size={rest.iconSize ?? "16px"}
+        />
+      );
+    }
+    return icon;
+  }, [icon, isLoading, rest]);
+
+  const children = useMemo(() => {
+    if (typeof _children === "function") {
+      return _children({ isLocked, isLoading, isDisabled });
+    }
+    return _children;
+  }, [_children, isLocked, isLoading, isDisabled]);
+
+  return (
+    <>
+      {leftIcon}
+      {children !== null && children !== undefined && !isFragment(children) && (
+        <div className="menu__item__inner-content">
+          {isLoading && loadingText ? <LoadingText>{loadingText}</LoadingText> : children}
+        </div>
+      )}
+      <Actions actions={actions} />
+    </>
+  );
+};
+
+interface MenuItemContentProps
+  extends Pick<
+      MenuItemProps,
+      "description" | "contentClassName" | "isSelected" | "selectionIndicator"
+    >,
+    MenuItemInnerProps {}
+
+const MenuItemContent = ({
+  contentClassName,
+  description: _description,
+  isSelected,
+  selectionIndicator,
+  ...rest
+}: MenuItemContentProps) => {
+  const description = useMemo(
+    () =>
+      typeof _description === "function"
+        ? _description({
+            isLocked: rest.isLocked,
+            isLoading: rest.isLoading,
+            isDisabled: rest.isDisabled,
+          })
+        : _description,
+    [_description, rest.isLocked, rest.isLoading, rest.isDisabled],
+  );
+
+  if (description) {
     return (
-      <Link href={href.url} rel={href.rel} target={href.target}>
-        <LocalMenuItem {...props} />
-      </Link>
+      <div className={classNames("menu__item__content-wrapper", contentClassName)}>
+        <div className="menu__item__content">
+          <ShowHide show={types.menuItemHasSelectionIndicator(selectionIndicator, "checkbox")}>
+            <Checkbox
+              readOnly
+              value={isSelected}
+              isDisabled={rest.isDisabled}
+              isLocked={rest.isLocked}
+            />
+          </ShowHide>
+          <MenuItemInner {...rest} />
+        </div>
+        <Description component="div" className="menu__item__description">
+          {description}
+        </Description>
+      </div>
     );
   }
-  return <LocalMenuItem {...props} />;
+  return (
+    <div className={classNames("menu__item__content", contentClassName)}>
+      <ShowHide show={types.menuItemHasSelectionIndicator(selectionIndicator, "checkbox")}>
+        <Checkbox
+          readOnly
+          value={isSelected}
+          isDisabled={rest.isDisabled}
+          isLocked={rest.isLocked}
+        />
+      </ShowHide>
+      <MenuItemInner {...rest} />
+    </div>
+  );
 };
+
+export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
+  (
+    {
+      height,
+      actions = [],
+      isSelected = false,
+      selectedClassName,
+      loadingClassName,
+      lockedClassName,
+      disabledClassName,
+      spinnerClassName,
+      spinnerProps,
+      contentClassName,
+      children,
+      isVisible = true,
+      isCurrentNavigation = false,
+      description,
+      icon,
+      iconClassName,
+      navigatedClassName,
+      iconSize,
+      iconProps,
+      isLoading: propIsLoading,
+      isLocked: propIsLocked,
+      isDisabled: propIsDisabled,
+      selectionIndicator,
+      loadingText,
+      highlightOnHover = true,
+      ...props
+    }: MenuItemProps,
+    ref,
+  ): JSX.Element => {
+    const localRef = useRef<HTMLDivElement | null>(null);
+
+    const [_isLoading, setLoading] = useState(false);
+    const [_isDisabled, setDisabled] = useState(false);
+    const [_isLocked, setLocked] = useState(false);
+
+    const isLocked = propIsLocked || _isLocked;
+    const isLoading = propIsLoading || _isLoading;
+    const isDisabled = propIsDisabled || _isDisabled;
+
+    useImperativeHandle(ref, () => ({
+      setLoading,
+      setDisabled,
+      setLocked,
+    }));
+
+    return (
+      <ShowHide show={isVisible}>
+        <div
+          {...props}
+          ref={localRef}
+          onClick={e => {
+            if (!isDisabled && !isLocked && !isLoading) {
+              props.onClick?.(e, {
+                ...(localRef.current as HTMLDivElement),
+                setLoading,
+                setDisabled,
+                setLocked,
+              });
+            }
+          }}
+          className={classNames(
+            "menu__item",
+            { "menu__item--highlight-on-hover": highlightOnHover },
+            { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
+            {
+              "menu__item--selected":
+                isSelected && types.menuItemHasSelectionIndicator(selectionIndicator, "highlight"),
+              [classNames("menu__item--navigated", navigatedClassName)]: isCurrentNavigation,
+              [classNames(selectedClassName)]: isSelected,
+              [classNames("menu__item--loading", loadingClassName)]: isLoading,
+              [classNames("disabled", disabledClassName)]: isDisabled,
+              [classNames("menu__item--locked", lockedClassName)]: isLocked,
+            },
+            props.className,
+          )}
+          style={
+            height !== undefined
+              ? {
+                  ...props.style,
+                  height: sizeToString(height, "px"),
+                  lineHeight: `${sizeToNumber(height) - 2 * 6}px`,
+                }
+              : props.style
+          }
+        >
+          <MenuItemContent
+            actions={actions}
+            spinnerClassName={spinnerClassName}
+            spinnerProps={spinnerProps}
+            icon={icon}
+            description={description}
+            iconClassName={iconClassName}
+            iconProps={iconProps}
+            iconSize={iconSize}
+            contentClassName={contentClassName}
+            isLoading={isLoading}
+            isDisabled={isDisabled}
+            isLocked={isLocked}
+            selectionIndicator={selectionIndicator}
+            isSelected={isSelected}
+            loadingText={loadingText}
+          >
+            {children}
+          </MenuItemContent>
+        </div>
+      </ShowHide>
+    );
+  },
+);

@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 

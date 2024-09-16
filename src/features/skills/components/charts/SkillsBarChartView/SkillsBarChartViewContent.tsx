@@ -4,7 +4,7 @@ import { memo } from "react";
 import { getSkills } from "~/actions/fetches/skills";
 import type { SkillsFilters } from "~/api/schemas";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { classNames } from "~/components/types";
 
 import { SkillsBarChartLegend } from "./SkillsBarChartLegend";

@@ -76,30 +76,28 @@ export const TableSearchInput = ({ onCreate, initialValue, ...props }: TableSear
       }}
       actions={
         value.trim().length >= 3 && onCreate
-          ? {
-              right: [
-                <div key="0" className="flex flex-row gap-[2px] items-center">
-                  <Button.Transparent
-                    className={classNames(
-                      "px-[8px] py-[2px] bg-gray-200 hover:bg-gray-300 min-h-[26px] h-[26px]",
-                    )}
-                    size="xsmall"
-                    isLoading={isCreating}
-                    onClick={async () => create()}
-                  >
-                    Add
-                  </Button.Transparent>
-                  (
-                  <Text
-                    fontSize="xxs"
-                    className="font-mono bg-gray-100 font-sm px-[5px] py-[3px] rounded-sm"
-                  >
-                    Enter
-                  </Text>
-                  )
-                </div>,
-              ],
-            }
+          ? [
+              <div key="0" className="flex flex-row gap-[2px] items-center">
+                <Button.Transparent
+                  className={classNames(
+                    "px-[8px] py-[2px] bg-gray-200 hover:bg-gray-300 min-h-[26px] h-[26px]",
+                  )}
+                  size="xsmall"
+                  isLoading={isCreating}
+                  onClick={async () => create()}
+                >
+                  Add
+                </Button.Transparent>
+                (
+                <Text
+                  fontSize="xxs"
+                  className="font-mono bg-gray-100 font-sm px-[5px] py-[3px] rounded-sm"
+                >
+                  Enter
+                </Text>
+                )
+              </div>,
+            ]
           : []
       }
     />

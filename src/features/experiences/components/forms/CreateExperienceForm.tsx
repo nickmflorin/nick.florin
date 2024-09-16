@@ -30,7 +30,7 @@ export const CreateExperienceForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createExperience({ ...data, skills: data.skills.map(sk => sk.id) });
+        const response = await createExperience(data);
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

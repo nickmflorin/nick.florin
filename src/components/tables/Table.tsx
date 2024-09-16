@@ -4,7 +4,7 @@ import { memo, useMemo } from "react";
 
 import { type DataTableProps } from "mantine-datatable";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { classNames } from "~/components/types";
 
 import { type TableProps, TableSizes, type TableModel } from "./types";
@@ -38,7 +38,7 @@ export const Table = memo(
           highlightOnHover: false,
           height: "100%",
           className: classNames("data-table", `data-table--size-${size}`, className),
-          customLoader: <Loading overlay={true} isLoading={true} />,
+          customLoader: <Loading isLoading={true} />,
           // TODO: Revisit this later.
           emptyState: <></>,
           ...props,

@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 
 import { DrawerButtons } from "~/components/buttons/DrawerButtons";
-import { ErrorBoundary } from "~/components/ErrorBoundary";
+import { ErrorBoundary } from "~/components/errors/ErrorBoundary";
 import { type ComponentProps, classNames } from "~/components/types";
 
 import { DrawerContent } from "./DrawerContent";

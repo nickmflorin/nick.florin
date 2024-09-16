@@ -97,7 +97,7 @@ export const SidebarAnchor = forwardRef<
        parent sidebar item with children.  It also prevents a bug related to the opacity of the
        tooltip changing so that it looks semi-transparent - althought the reason a portal fixes
        that problem is less clear. */
-    <Tooltip content={item.label} placement="right" variant="secondary" inPortal>
+    <Tooltip content={item.label} placement="right" inPortal>
       {({ ref, params }) => {
         if (sidebarItemIsExternal(item)) {
           return (

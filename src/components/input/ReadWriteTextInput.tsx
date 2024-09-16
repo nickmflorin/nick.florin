@@ -13,7 +13,6 @@ import React, {
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { pick, omit } from "lodash-es";
 
-import { mergeActions } from "~/components/structural";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { useReferentialCallback } from "~/hooks";
@@ -67,7 +66,7 @@ const isEnterEvent = (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "En
 
 const isEscapeEvent = (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Escape";
 
-const INPUT_PROPS = ["className", "style", "variant", "size"] as const;
+const INPUT_PROPS = ["className", "style", "variant", "size", "placeholder"] as const;
 
 export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWriteTextInputProps>(
   function _ReadWriteTextInput(
@@ -209,28 +208,27 @@ export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWri
 
     const actions = useMemo(() => {
       if (withCancelButton || withPersistButton) {
-        return mergeActions(_actions, {
-          right: [
-            withPersistButton ? (
-              <SaveAction
-                key="save"
-                id={saveId}
-                onClick={() => persist()}
-                isDisabled={!changeExists}
-                isVisible={state === ReadWriteTextInputStates.WRITING}
-              />
-            ) : null,
-            withCancelButton ? (
-              <CancelAction
-                id={cancelId}
-                key="cancel"
-                onClick={() => cancel()}
-                isDisabled={!changeExists}
-                isVisible={state === ReadWriteTextInputStates.WRITING}
-              />
-            ) : null,
-          ],
-        });
+        return [
+          ...(_actions ?? []),
+          withPersistButton ? (
+            <SaveAction
+              key="save"
+              id={saveId}
+              onClick={() => persist()}
+              isDisabled={!changeExists}
+              isVisible={state === ReadWriteTextInputStates.WRITING}
+            />
+          ) : null,
+          withCancelButton ? (
+            <CancelAction
+              id={cancelId}
+              key="cancel"
+              onClick={() => cancel()}
+              isDisabled={!changeExists}
+              isVisible={state === ReadWriteTextInputStates.WRITING}
+            />
+          ) : null,
+        ];
       }
       return _actions;
     }, [

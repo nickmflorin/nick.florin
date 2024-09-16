@@ -1,22 +1,14 @@
-"use client";
-import dynamic from "next/dynamic";
-
-import type * as types from "./types";
-
-import { Loading } from "~/components/feedback/Loading";
+import { type FloatingContentRenderProps } from "~/components/floating";
 import { Popover, type PopoverProps } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 
-const Menu = dynamic(() => import("~/components/menus/Menu"), {
-  loading: () => <Loading isLoading={true} className="h-[80px]" />,
-}) as types.MenuComponent;
-
-type WithDropdownMenuProps<T> = Omit<T, "children"> &
-  Pick<
+export interface DropdownMenuProps
+  extends Pick<
     PopoverProps,
     | "placement"
+    | "allowedPlacements"
     | "inPortal"
     | "autoUpdate"
     | "middleware"
@@ -27,68 +19,39 @@ type WithDropdownMenuProps<T> = Omit<T, "children"> &
     | "maxHeight"
     | "triggers"
     | "children"
-  >;
-
-export interface DropdownMenuContentlessProps extends WithDropdownMenuProps<ComponentProps> {
-  readonly content?: never;
+  > {
+  readonly contentClassName?: ComponentProps["className"];
+  readonly contentStyle?: ComponentProps["style"];
+  readonly content:
+    | JSX.Element
+    | ((params: Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">) => JSX.Element);
 }
 
-export interface DropdownMenuComponentProps
-  extends WithDropdownMenuProps<types.MenuComponentProps> {
-  readonly content?: JSX.Element;
-}
-
-export interface DropdownMenuDataProps<M extends types.MenuModel, O extends types.MenuOptions<M>>
-  extends WithDropdownMenuProps<types.MenuDataProps<M, O>> {
-  readonly content?: JSX.Element;
-}
-
-export type DropdownMenuProps<M extends types.MenuModel, O extends types.MenuOptions<M>> =
-  | DropdownMenuComponentProps
-  | DropdownMenuContentlessProps
-  | DropdownMenuDataProps<M, O>;
-
-export const DropdownMenu = <M extends types.MenuModel, O extends types.MenuOptions<M>>({
-  placement = "bottom",
-  inPortal = false,
-  autoUpdate = false,
-  middleware,
-  offset = { mainAxis: 4 },
-  width,
-  withArrow = false,
-  isDisabled = false,
-  maxHeight,
+export const DropdownMenu = ({
   children,
-  triggers = ["click"],
-  className,
-  style,
+  contentClassName,
+  contentStyle,
   content,
+  placement = "bottom",
+  offset = { mainAxis: 4 },
+  triggers = ["click"],
   ...props
-}: DropdownMenuProps<M, O>) => (
+}: DropdownMenuProps) => (
   <Popover
-    isDisabled={isDisabled}
-    middleware={middleware}
+    {...props}
     placement={placement}
-    triggers={triggers}
-    width={width}
-    withArrow={withArrow}
     offset={offset}
-    autoUpdate={autoUpdate}
-    maxHeight={maxHeight}
-    inPortal={inPortal}
-    content={
+    triggers={triggers}
+    content={({ ref, params, styles, isOpen, setIsOpen }) => (
       <PopoverContent
-        style={style}
-        className={classNames("p-[0px] rounded-md overflow-hidden", className)}
-        variant="white"
+        ref={ref}
+        {...params}
+        style={{ ...contentStyle, ...styles }}
+        className={classNames("p-[0px] rounded-md overflow-hidden", contentClassName)}
       >
-        {content ? (
-          content
-        ) : (
-          <Menu {...(props as types.MenuDataProps<M, O> | types.MenuComponentProps)} />
-        )}
+        {typeof content === "function" ? content({ isOpen, setIsOpen }) : content}
       </PopoverContent>
-    }
+    )}
   >
     {children}
   </Popover>

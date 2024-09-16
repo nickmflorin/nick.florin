@@ -1,88 +1,38 @@
-import dynamic from "next/dynamic";
 import React, { type ForwardedRef, forwardRef, useMemo } from "react";
 
-import { isFragment } from "react-is";
+import type * as types from "~/components/input/select/types";
 
-import { getModelLabel } from "~/components/menus";
+import { BasicSelectInput, type BasicSelectInputProps } from "./BasicSelectInput";
 
-import { BaseSelectInput } from "./BaseSelectInput";
-import * as types from "./types";
+export interface SelectInputProps<
+  V extends types.AllowedSelectValue,
+  B extends types.SelectBehaviorType,
+> extends Omit<BasicSelectInputProps, "showPlaceholder" | "onClear"> {
+  readonly value: types.SelectValue<V, B>;
+  readonly onClear?: types.IfDeselectable<B, () => void>;
+}
 
-const MultiValueRenderer = dynamic(
-  () => import("./MultiValueRenderer"),
-) as types.MultiValueRendererCompoenent;
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const SelectInput = forwardRef<HTMLDivElement, types.SelectInputProps<any, any, any>>(
-  <
-    V extends types.UnsafeSelectValueForm<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
-  >(
-    {
-      isReady = true,
-      dynamicHeight = true,
-      options,
-      maximumValuesToRender,
-      models,
-      valueRenderer,
-      valueModelRenderer,
-      ...props
-    }: types.SelectInputProps<V, M, O>,
+export const SelectInput = forwardRef<
+  HTMLDivElement,
+  SelectInputProps<types.AllowedSelectValue, types.SelectBehaviorType>
+>(
+  <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
+    { value, children, ...props }: SelectInputProps<V, B>,
     ref: ForwardedRef<HTMLDivElement>,
   ) => {
-    const renderedValue = useMemo(() => {
-      if (models.length === 0) {
-        return <></>;
-      } else if (options.isMulti) {
-        if (valueRenderer) {
-          return valueRenderer();
-        }
-        return (
-          <MultiValueRenderer
-            models={models}
-            dynamicHeight={dynamicHeight}
-            options={options}
-            maximumValuesToRender={maximumValuesToRender}
-            valueModelRenderer={valueModelRenderer}
-          />
-        );
-      } else {
-        const model = models[0];
-        if (valueModelRenderer) {
-          return valueModelRenderer(model);
-        }
-        return types.isSelectValueModel(model)
-          ? model.label
-          : (types.getSelectModelValueLabel(model as M, options) ??
-              getModelLabel(model as M, options));
-      }
-    }, [valueRenderer, valueModelRenderer, models, options, maximumValuesToRender, dynamicHeight]);
+    const showPlaceholder = useMemo(
+      () => (Array.isArray(value) && value.length === 0) || value === null,
+      [value],
+    );
 
     return (
-      <BaseSelectInput
-        {...props}
-        dynamicHeight={dynamicHeight}
-        ref={ref}
-        isLocked={props.isLocked || !isReady}
-        showPlaceholder={
-          renderedValue === null ||
-          renderedValue === undefined ||
-          typeof renderedValue === "boolean" ||
-          (typeof renderedValue === "string" && renderedValue.length === 0) ||
-          isFragment(renderedValue)
-        }
-      >
-        <>{renderedValue}</>
-      </BaseSelectInput>
+      <BasicSelectInput {...props} ref={ref} showPlaceholder={showPlaceholder}>
+        {children}
+      </BasicSelectInput>
     );
   },
 ) as {
-  <
-    V extends types.UnsafeSelectValueForm<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
-  >(
-    props: types.SelectInputProps<V, M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
+  <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
+    props: SelectInputProps<V, B> & { readonly ref?: ForwardedRef<HTMLDivElement> },
   ): JSX.Element;
 };

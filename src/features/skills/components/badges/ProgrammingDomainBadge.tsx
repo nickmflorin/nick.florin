@@ -1,4 +1,4 @@
-import { type ProgrammingDomain, getProgrammingDomain } from "~/prisma/model";
+import { type ProgrammingDomain, ProgrammingDomains } from "~/prisma/model";
 
 import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";
@@ -12,6 +12,6 @@ export const ProgrammingDomainBadge = ({
   ...props
 }: ProgrammingDomainBadgeProps): JSX.Element => (
   <Badge {...props} className={classNames("bg-yellow-100 text-yellow-800", props.className)}>
-    {getProgrammingDomain(domain).label}
+    {ProgrammingDomains.getModel(domain).label}
   </Badge>
 );

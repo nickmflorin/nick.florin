@@ -14,12 +14,12 @@ import { useForm } from "~/components/forms/hooks";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { type Action } from "~/components/structural";
+import { type Action } from "~/components/structural/Actions";
 import { Actions } from "~/components/structural/Actions";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { classNames } from "~/components/types";
 import { ShowHide } from "~/components/util";
-import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
+import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
@@ -72,7 +72,7 @@ export const GenericUpdateDetailForm = <
       shortDescription: detail.shortDescription ?? "",
       project: detail.project?.id ?? null,
       visible: detail.visible,
-      skills: detail.skills.map(sk => ({ id: sk.id, value: sk.id, label: sk.label })),
+      skills: detail.skills.map(sk => sk.id),
     });
   }, [detail, setValues]);
 
@@ -84,7 +84,7 @@ export const GenericUpdateDetailForm = <
       action={async data => {
         const response = await updateDetailWithId({
           ...data,
-          skills: data.skills.map(sk => sk.id),
+          skills: data.skills,
         });
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
@@ -118,7 +118,7 @@ export const GenericUpdateDetailForm = <
                     />
                   </Form.Field>
                   <div className="flex flex-row gap-[6px] items-center">
-                    <Actions actions={actions ?? null} />
+                    <Actions actions={actions ?? []} />
                     <IconButton.Transparent
                       key={actions ? actions.length : "0"}
                       size="xsmall"
@@ -204,6 +204,7 @@ export const GenericUpdateDetailForm = <
       >
         {({ value, onChange }) => (
           <SkillsSelect
+            behavior="multi"
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
@@ -221,11 +222,12 @@ export const GenericUpdateDetailForm = <
         helpText="The project that the detail is associated with, if applicable."
       >
         {({ value, onChange }) => (
-          <ClientProjectSelect
+          <ProjectSelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
-            options={{ isMulti: false, isClearable: true, isDeselectable: true }}
+            behavior="single-nullable"
+            isClearable
             onChange={onChange}
             inPortal
             onError={() => form.setErrors("project", "There was an error loading the data.")}

@@ -1,52 +1,55 @@
-import { type Experience, type Company } from "~/prisma/model";
+import { forwardRef, type ForwardedRef } from "react";
 
-import { Select, type SelectProps } from "~/components/input/select";
-import { Text } from "~/components/typography";
+import { type ApiExperience } from "~/prisma/model";
 
-type Exp = Pick<Experience, "title" | "id" | "shortTitle"> & {
-  readonly company: Pick<Company, "id" | "name">;
-};
+import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/select";
+import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
+import { Text, Description } from "~/components/typography";
 
-const globalOptions = {
-  isDeselectable: true,
-  getModelValue: (m: Exp) => m.id,
-  getModelLabel: (m: Exp) => m.title,
-  getModelValueLabel: (m: Exp) => m.shortTitle ?? m.title,
-} as const;
+const getItemValue = (m: ApiExperience) => m.id;
 
-type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
-  isMulti: O["isMulti"];
-  isClearable: O["isClearable"];
-};
+export type ExperienceSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
+  ApiExperience,
+  { behavior: B; getItemValue: typeof getItemValue }
+>;
 
-export interface ExperienceSelectProps<
-  O extends { isMulti?: boolean; isClearable?: boolean },
-  E extends Exp,
-> extends Omit<SelectProps<string, E, Opts<O>>, "options" | "itemRenderer"> {
-  readonly options: O;
+export interface ExperienceSelectProps<B extends SelectBehaviorType>
+  extends Omit<
+    DataSelectProps<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>,
+    "options" | "itemIsDisabled"
+  > {
+  readonly behavior: B;
   readonly useAbbreviatedOptionLabels?: boolean;
 }
 
-export const ExperienceSelect = <
-  O extends { isMulti?: boolean; isClearable?: boolean },
-  E extends Exp,
->({
-  useAbbreviatedOptionLabels = true,
-  options,
-  ...props
-}: ExperienceSelectProps<O, E>): JSX.Element => (
-  <Select<string, E, Opts<O>>
-    {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
-    itemRenderer={m => (
-      <div className="flex flex-col gap-[4px]">
-        <Text fontSize="sm" fontWeight="medium">
-          {useAbbreviatedOptionLabels ? (m.shortTitle ?? m.title) : m.title}
-        </Text>
-        <Text fontSize="xs" className="text-description">
-          {m.company.name}
-        </Text>
-      </div>
-    )}
-  />
-);
+export const ExperienceSelect = forwardRef(
+  <B extends SelectBehaviorType>(
+    { behavior, useAbbreviatedOptionLabels, ...props }: ExperienceSelectProps<B>,
+    ref: ForwardedRef<
+      DataSelectInstance<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
+    >,
+  ): JSX.Element => (
+    <DataSelect<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
+      {...props}
+      ref={ref}
+      options={{ behavior, getItemValue }}
+      getItemValueLabel={m => m.shortTitle ?? m.title}
+      itemRenderer={m => (
+        <div className="flex flex-col gap-[4px]">
+          <Text fontSize="sm" fontWeight="medium">
+            {useAbbreviatedOptionLabels ? (m.shortTitle ?? m.title) : m.shortTitle}
+          </Text>
+          <Description fontSize="xs">{m.company.name}</Description>
+        </div>
+      )}
+    />
+  ),
+) as {
+  <B extends SelectBehaviorType>(
+    props: ExperienceSelectProps<B> & {
+      readonly ref?: ForwardedRef<
+        DataSelectInstance<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
+      >;
+    },
+  ): JSX.Element;
+};

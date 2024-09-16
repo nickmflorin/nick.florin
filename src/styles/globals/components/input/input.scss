@@ -1,0 +1,120 @@
+@use "sass:map";
+
+@use "partials";
+
+@use "./base" as base;
+@use "./constants" as constants;
+@use "./structure" as structure;
+@use "./variants" as variants;
+@use "./mixins" as mixins;
+
+@mixin input-sizes($type) {
+  @include structure.input-structure(
+    structure.$input-default-size,
+    $type,
+    structure.$input-default-border-radii
+  );
+
+  @each $size in structure.$input-sizes {
+    &.input--size-#{$size} {
+      @include structure.input-structure($size, $type, structure.$input-default-border-radii);
+      @include partials.with-radius() using ($radii, $value) {
+        &.input--radius-#{$radii} {
+          @include structure.input-structure($size, $type, $radii);
+        }
+      }
+      // Allow the font size to be overridden with a prop for each input size.
+      @include typography.with-font-sizes("body");
+    }
+  }
+}
+
+.input {
+  @include base.input-base;
+  @include variants.input-variants();
+  @include mixins.input-locked-or-loading();
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: theme("spacing.2");
+  outline-offset: -1px;
+  overflow: hidden;
+
+  @include mixins.input-read-only();
+  @include partials.disabled() {
+    pointer-events: none !important;
+  }
+
+  // Allow the font weight to be overridden with a prop.
+  @include typography.with-font-families();
+  // Allow the font-weight to be overridden for each size.
+  @include typography.with-font-weights();
+  // Allow the font size to be specified independently of the input's size.
+  @include typography.with-font-sizes("body");
+
+  > .input__content {
+    flex-grow: 100;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  > .icon {
+    height: calc(100% - 8px);
+    width: auto;
+    aspect-ratio: 1;
+  }
+
+  &.text-input {
+    @include input-sizes("text-input");
+
+    > .input__content {
+      > .native-input {
+        pointer-events: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        padding: 0;
+        width: 100%;
+        background-color: inherit;
+
+        &:disabled {
+          // This overrides a disabled background applied by the browser.  We want the background to
+          // be applied to the outer .input class, not the inner input element.
+          background-color: inherit;
+        }
+      }
+    }
+  }
+
+  &.select {
+    @include input-sizes("select");
+    cursor: pointer;
+
+    > .input__content {
+      > .native-input {
+        pointer-events: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        padding: 0;
+        width: 100%;
+        background-color: inherit;
+
+        &:disabled {
+          // This overrides a disabled background applied by the browser.  We want the background to
+          // be applied to the outer .input class, not the inner input element.
+          background-color: inherit;
+        }
+      }
+    }
+  }
+
+  &.text-area {
+    overflow-y: auto;
+    @include input-sizes("text-area");
+  }
+}

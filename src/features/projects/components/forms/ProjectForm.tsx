@@ -3,7 +3,7 @@ import { Form, type FormProps } from "~/components/forms/Form";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
+import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type ProjectFormValues } from "./schema";
@@ -37,9 +37,10 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
       helpText="Any repositories that are associated with the project."
     >
       {({ value, onChange }) => (
-        <ClientRepositorySelect
+        <RepositorySelect
           inputClassName="w-full"
-          options={{ isMulti: true, isClearable: true }}
+          behavior="multi"
+          isClearable
           value={value}
           onChange={onChange}
         />
@@ -47,7 +48,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
     </Form.ControlledField>
     <Form.ControlledField name="skills" label="Skills" form={props.form}>
       {({ value, onChange }) => (
-        <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
+        <SkillsSelect behavior="multi" inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
     <Form.ControlledField

@@ -9,35 +9,33 @@ import { type ApiExperience } from "~/prisma/model";
 import { updateExperience } from "~/actions/mutations/experiences";
 import { isApiClientErrorJson } from "~/api";
 
-import {
-  SkillsSelect,
-  type SkillSelectValueModel,
-} from "~/features/skills/components/input/SkillsSelect";
+import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 interface SkillsCellProps {
   readonly experience: ApiExperience<["skills"]>;
 }
 
 export const SkillsCell = ({ experience }: SkillsCellProps) => {
-  const [optimisticValue, setOptimisticValue] = useState<SkillSelectValueModel[]>(
-    experience.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
+  const [optimisticValue, setOptimisticValue] = useState<string[]>(
+    experience.skills.map(s => s.id),
   );
   const [_, transition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
-    setOptimisticValue(experience.skills.map(s => ({ id: s.id, label: s.label, value: s.id })));
+    setOptimisticValue(experience.skills.map(s => s.id));
   }, [experience.skills]);
 
   return (
     <SkillsSelect
+      behavior="multi"
       value={optimisticValue}
       onChange={async (v, { item }) => {
         setOptimisticValue(v);
-        item.setLoading(true);
+        item?.setLoading(true);
         let response: Awaited<ReturnType<typeof updateExperience>> | null = null;
         try {
-          response = await updateExperience(experience.id, { skills: v.map(sk => sk.id) });
+          response = await updateExperience(experience.id, { skills: v });
         } catch (e) {
           logger.error(
             "There was a server error updating the skills for the experience with " +
@@ -50,7 +48,7 @@ export const SkillsCell = ({ experience }: SkillsCellProps) => {
           );
           toast.error("There was an error updating the experience.");
         } finally {
-          item.setLoading(false);
+          item?.setLoading(false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(

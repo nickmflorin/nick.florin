@@ -1,3 +1,4 @@
+import { enumeratedLiterals } from "enumerated-literals";
 import { omit, uniqBy } from "lodash-es";
 import { DateTime } from "luxon";
 
@@ -11,79 +12,86 @@ import { DetailEntityType } from "~/prisma/model";
 import { type getEducations } from "~/actions/fetches/educations";
 import { type getExperiences } from "~/actions/fetches/experiences";
 
-import { type IconProp } from "~/components/icons";
-
 import { type ApiCourse } from "./course";
 import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "./generated";
 import { type ConditionallyInclude } from "./inclusion";
 
-export const ProgrammingLanguages = {
-  [ProgrammingLanguage.BASH]: { label: "Bash", icon: "/programming-languages/bash.svg" },
-  [ProgrammingLanguage.CPLUSPLUS]: { label: "C++", icon: "/programming-languages/cplusplus.svg" },
-  [ProgrammingLanguage.CSS]: { label: "CSS", icon: "/programming-languages/css.svg" },
-  [ProgrammingLanguage.PYTHON]: {
-    label: "Python",
-    icon: "/programming-languages/python.svg",
-  },
-  [ProgrammingLanguage.SCSS]: { label: "SASS/SCSS", icon: "/programming-languages/sass.svg" },
-  [ProgrammingLanguage.JAVASCRIPT]: {
-    label: "JavaScript",
-    icon: "/programming-languages/javascript.svg",
-  },
-  [ProgrammingLanguage.TYPESCRIPT]: {
-    label: "TypeScript",
-    icon: "/programming-languages/typescript.svg",
-  },
-  [ProgrammingLanguage.JQUERY]: { label: "jQuery", icon: "/programming-languages/jquery.svg" },
-  [ProgrammingLanguage.SWIFT]: { label: "Swift", icon: "/programming-languages/swift.svg" },
-  [ProgrammingLanguage.MATLAB]: { label: "Matlab", icon: "/programming-languages/matlab.svg" },
-  [ProgrammingLanguage.HTML]: { label: "HTML", icon: "/programming-languages/html.svg" },
-  [ProgrammingLanguage.R]: { label: "R", icon: "/programming-languages/r.svg" },
-} satisfies {
-  [key in ProgrammingLanguage]: {
+export const ProgrammingLanguages = enumeratedLiterals(
+  [
+    { value: ProgrammingLanguage.BASH, label: "Bash", icon: "/programming-languages/bash.svg" },
+    {
+      value: ProgrammingLanguage.CPLUSPLUS,
+      label: "C++",
+      icon: "/programming-languages/cplusplus.svg",
+    },
+    { value: ProgrammingLanguage.CSS, label: "CSS", icon: "/programming-languages/css.svg" },
+    {
+      value: ProgrammingLanguage.PYTHON,
+      label: "Python",
+      icon: "/programming-languages/python.svg",
+    },
+    {
+      value: ProgrammingLanguage.SCSS,
+      label: "SASS/SCSS",
+      icon: "/programming-languages/sass.svg",
+    },
+    {
+      value: ProgrammingLanguage.JAVASCRIPT,
+      label: "JavaScript",
+      icon: "/programming-languages/javascript.svg",
+    },
+    {
+      value: ProgrammingLanguage.TYPESCRIPT,
+      label: "TypeScript",
+      icon: "/programming-languages/typescript.svg",
+    },
+    {
+      value: ProgrammingLanguage.JQUERY,
+      label: "jQuery",
+      icon: "/programming-languages/jquery.svg",
+    },
+    { value: ProgrammingLanguage.SWIFT, label: "Swift", icon: "/programming-languages/swift.svg" },
+    {
+      value: ProgrammingLanguage.MATLAB,
+      label: "Matlab",
+      icon: "/programming-languages/matlab.svg",
+    },
+    { value: ProgrammingLanguage.HTML, label: "HTML", icon: "/programming-languages/html.svg" },
+    { value: ProgrammingLanguage.R, label: "R", icon: "/programming-languages/r.svg" },
+  ] as const satisfies {
+    value: ProgrammingLanguage;
     label: string;
-    icon: IconProp | `/programming-languages/${string}.svg` | null;
-  };
-};
+    icon: `/programming-languages/${string}.svg` | null;
+  }[],
+  {},
+);
 
-export const getProgrammingLanguage = <L extends ProgrammingLanguage>(
-  language: L,
-): (typeof ProgrammingLanguages)[L] & { value: L } => ({
-  ...ProgrammingLanguages[language],
-  value: language,
-});
+export const SkillCategories = enumeratedLiterals(
+  [
+    { value: SkillCategory.API_DEVELOPMENT, label: "API Development" },
+    { value: SkillCategory.DATABASE, label: "Database" },
+    { value: SkillCategory.DEVOPS, label: "Dev Ops" },
+    { value: SkillCategory.FRAMEWORK, label: "Framework" },
+    { value: SkillCategory.ORM, label: "ORM" },
+    { value: SkillCategory.PACKAGE, label: "Package" },
+    { value: SkillCategory.PACKAGE_MANAGER, label: "Package Manager" },
+    { value: SkillCategory.PROGRAMMING_LANGUAGE, label: "Programming Language" },
+    { value: SkillCategory.TESTING, label: "Testing" },
+    { value: SkillCategory.VERSION_MANAGER, label: "Version Manager" },
+    { value: SkillCategory.WORKFLOW, label: "Workflow" },
+  ] as const satisfies { value: SkillCategory; label: string }[],
+  {},
+);
 
-export const SkillCategories = {
-  [SkillCategory.API_DEVELOPMENT]: { label: "API Development" } as const,
-  [SkillCategory.DATABASE]: { label: "Database" } as const,
-  [SkillCategory.DEVOPS]: { label: "Dev Ops" } as const,
-  [SkillCategory.FRAMEWORK]: { label: "Framework" } as const,
-  [SkillCategory.ORM]: { label: "ORM" } as const,
-  [SkillCategory.PACKAGE]: { label: "Package" } as const,
-  [SkillCategory.PACKAGE_MANAGER]: { label: "Package Manager" } as const,
-  [SkillCategory.PROGRAMMING_LANGUAGE]: { label: "Programming Language" } as const,
-  [SkillCategory.TESTING]: { label: "Testing" } as const,
-  [SkillCategory.VERSION_MANAGER]: { label: "Version Manager" } as const,
-  [SkillCategory.WORKFLOW]: { label: "Workflow" } as const,
-} satisfies { [key in SkillCategory]: { label: string } };
-
-export const getSkillCategory = <C extends SkillCategory>(
-  cat: C,
-): (typeof SkillCategories)[C] & { value: C } => ({ ...SkillCategories[cat], value: cat });
-
-export const ProgrammingDomains = {
-  [ProgrammingDomain.BACKEND]: { label: "Backend" },
-  [ProgrammingDomain.FRONTEND]: { label: "Frontend" },
-  [ProgrammingDomain.FULL_STACK]: { label: "Full Stack" },
-  [ProgrammingDomain.MOBILE]: { label: "Mobile" },
-} satisfies { [key in ProgrammingDomain]: { label: string } };
-
-export const getProgrammingDomain = <D extends ProgrammingDomain>(
-  domain: D,
-): (typeof ProgrammingDomains)[D] & { value: D } => ({
-  ...ProgrammingDomains[domain],
-  value: domain,
-});
+export const ProgrammingDomains = enumeratedLiterals(
+  [
+    { value: ProgrammingDomain.BACKEND, label: "Backend" },
+    { value: ProgrammingDomain.FRONTEND, label: "Frontend" },
+    { value: ProgrammingDomain.FULL_STACK, label: "Full Stack" },
+    { value: ProgrammingDomain.MOBILE, label: "Mobile" },
+  ] as const satisfies { value: ProgrammingDomain; label: string }[],
+  {},
+);
 
 // Note: Use Github gist to generate.
 export type SkillIncludes =

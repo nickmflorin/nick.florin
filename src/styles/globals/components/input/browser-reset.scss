@@ -49,7 +49,7 @@ that masks (covers) the styling that those browsers apply on auto-fill.
   }
 }
 
-@include reset-browser-autofill(("input", "textarea", "select"));
+@include reset-browser-autofill(("input", "textarea"));
 
 input:focus-visible {
   outline: none !important;

@@ -4,7 +4,7 @@ import type * as types from "./types";
 
 import { type HttpError } from "~/api";
 
-import { ApiResponseState } from "~/components/feedback/ApiResponseState";
+import { ApiResponseState } from "~/components/ApiResponseState";
 import { useManagedUploads } from "~/components/uploads/hooks";
 
 import {

@@ -1,9 +1,9 @@
 import { isUuid } from "~/lib/typeguards";
 import type { BrandSchool } from "~/prisma/model";
 
+import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { ApiResponseState } from "~/components/feedback/ApiResponseState";
 import { useSchoolForm } from "~/features/schools/components/forms/hooks";
 import UpdateSchoolForm from "~/features/schools/components/forms/UpdateSchoolForm";
 import { useSchool } from "~/hooks";

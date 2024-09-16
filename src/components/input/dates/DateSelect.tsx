@@ -8,8 +8,8 @@ import { type Optional } from "utility-types";
 
 import type * as types from "../select/types";
 
-import { Loading } from "~/components/feedback/Loading";
 import { PopoverContent } from "~/components/floating/PopoverContent";
+import { Loading } from "~/components/loading/Loading";
 import { type ComponentProps } from "~/components/types";
 
 import { BaseSelectInput } from "../select/BaseSelectInput";

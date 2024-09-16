@@ -5,7 +5,7 @@ import { Dropzone } from "@mantine/dropzone";
 
 import type * as types from "../types";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { classNames } from "~/components/types";
 
 import { UploadDropzoneContent } from "./UploadDropzoneContent";

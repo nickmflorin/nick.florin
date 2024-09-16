@@ -2,7 +2,7 @@ import { MIME_TYPES } from "@mantine/dropzone";
 
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { Drawer } from "~/components/drawers/Drawer";
-import { ManagedResumeUploads } from "~/components/uploads/ManagedResumeUploads";
+import { ManagedResumeUploads } from "~/features/resume/components/ManagedResumeUploads";
 import { useResumes } from "~/hooks";
 
 export interface ResumeDrawerProps extends ExtendingDrawerProps {}

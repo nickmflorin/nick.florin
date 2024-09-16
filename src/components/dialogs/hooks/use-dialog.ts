@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 
-import type * as types from "../../floating/types";
+import type * as types from "../types";
 
-import { useFloating, type UseFloatingConfig } from "../../floating/hooks/use-floating";
+import { useFloating, type UseFloatingConfig } from "~/components/floating/hooks/use-floating";
 
 export interface DialogConfig
   extends Omit<UseFloatingConfig, "triggers" | "autoUpdate" | "placement" | "middleware"> {}

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-import { Select } from "~/components/input/select";
+import { DataSelect } from "~/components/input/select/DataSelect";
 
 import { useTableView } from "./hooks";
 import { getColId, type Column, type TableModel } from "./types";
@@ -17,12 +17,9 @@ export const ColumnSelect = <T extends TableModel>() => {
   }
 
   return (
-    <Select
-      options={{
-        isMulti: true,
-        getModelLabel: (m: Column<T>) => m.title,
-        getModelValue: (m: Column<T>) => getColId(m),
-      }}
+    <DataSelect
+      options={{ getItemValue: (m: Column<T>) => getColId(m), behavior: "multi" }}
+      getItemValueLabel={(m: Column<T>) => m.title}
       value={visibleColumnIds}
       data={columns.filter(c => c.isHideable !== false)}
       inputClassName="w-[240px]"
@@ -42,6 +39,6 @@ export const ColumnSelect = <T extends TableModel>() => {
           Columns
         </Button.Solid>
       )}
-    </Select>
+    </DataSelect>
   );
 };

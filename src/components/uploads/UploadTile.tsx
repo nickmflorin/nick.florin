@@ -3,11 +3,11 @@ import type { FileError } from "react-dropzone-esm";
 import { Link, IconButton } from "~/components/buttons";
 import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
-import { type Action, mergeActions } from "~/components/structural";
+import { type Action } from "~/components/structural/Actions";
 import { Actions } from "~/components/structural/Actions";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Label, Text } from "~/components/typography";
+import { Label, Text, Description } from "~/components/typography";
 import { DateTimeText } from "~/components/typography/DateTimeText";
 import { FileSize } from "~/components/typography/FileSize";
 import { PipedText } from "~/components/typography/PipedText";
@@ -24,9 +24,7 @@ const UploadTileError = ({ error }: { error: string | string[] | FileError | Fil
   ) : (
     <div className="flex flex-row items-center gap-[4px]">
       <Icon icon="circle-exclamation" size="14px" className="text-red-400" />
-      <Text fontSize="xs" className="text-description">
-        {typeof error === "string" ? error : error.message}
-      </Text>
+      <Description fontSize="xs">{typeof error === "string" ? error : error.message}</Description>
     </div>
   );
 
@@ -76,7 +74,8 @@ export const UploadTile = <M extends types.BaseUploadModel>({
           )}
         </div>
         <Actions
-          actions={mergeActions(actions, [
+          actions={[
+            ...(actions ?? []),
             types.isUploadOfState(upload, ["failed"]) ? (
               <IconButton.Transparent
                 size="xsmall"
@@ -105,7 +104,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
                 }}
               />
             ) : null,
-          ])}
+          ]}
         />
       </div>
       <div className="flex flex-col gap-[6px] pl-[22px]">
@@ -120,9 +119,7 @@ export const UploadTile = <M extends types.BaseUploadModel>({
           {types.isUploadOfState(upload, ["uploading"]) ? (
             <div className="flex flex-row gap-[4px] items-center">
               <Spinner className="text-gray-500" />
-              <Text fontSize="xs" className="text-description">
-                Uploading...
-              </Text>
+              <Description fontSize="xs">Uploading...</Description>
             </div>
           ) : types.isUploadOfState(upload, ["existing", "uploaded"]) ? (
             <Text fontSize="sm">

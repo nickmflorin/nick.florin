@@ -11,7 +11,7 @@ import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
 
 import type * as types from "~/components/tables/types";
-import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
+import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
 
 interface RepositoriesCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
@@ -30,19 +30,16 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
   }, [skill.repositories]);
 
   return (
-    <ClientRepositorySelect
-      options={{ isMulti: true, isClearable: true }}
+    <RepositorySelect
+      behavior="multi"
+      isClearable
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
-      onChange={async (v, { item }) => {
+      onChange={async v => {
         // Optimistically update the value.
         setValue(v);
-        if (item) {
-          item.setLoading(true);
-        } else {
-          table.setRowLoading(skill.id, true);
-        }
+        table.setRowLoading(skill.id, true);
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
           response = await updateSkill(skill.id, { repositories: v });
@@ -57,11 +54,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
           );
           toast.error("There was an error updating the skill.");
         } finally {
-          if (item) {
-            item.setLoading(false);
-          } else {
-            table.setRowLoading(skill.id, false);
-          }
+          table.setRowLoading(skill.id, false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(

@@ -1,13 +1,14 @@
 "use client";
 import { cloneElement, useMemo } from "react";
 
+import type * as types from "./types";
+
 import { usePopover, type UsePopoverConfig } from "./hooks/use-popover";
 import { PopoverContentWrapper, type PopoverContentWrapperProps } from "./PopoverContentWrapper";
-import * as types from "./types";
 
 export interface PopoverProps
   extends UsePopoverConfig,
-    Omit<PopoverContentWrapperProps, "context"> {
+    Omit<PopoverContentWrapperProps, "context" | "children"> {
   /**
    * The element that should trigger the floating content to apper and/or disappear, depending on
    * its interactions state - such as hovered, clicked, etc.  Can be provided either as a render
@@ -31,17 +32,17 @@ export interface PopoverProps
    * usage.
    */
   readonly children: JSX.Element | ((params: types.PopoverRenderProps) => JSX.Element);
+  readonly content: types.PopoverContent;
 }
 
 export const Popover = ({
   children: _children,
   content,
-  outerContent,
   inPortal,
   isDisabled,
   withArrow = true,
   arrowClassName,
-  variant = types.PopoverVariants.SECONDARY,
+  outerContent,
   ...config
 }: PopoverProps) => {
   const { refs, referenceProps, isOpen, ...rest } = usePopover(config);
@@ -61,14 +62,14 @@ export const Popover = ({
       {children}
       <PopoverContentWrapper
         context={{ refs, referenceProps, isOpen, ...rest }}
-        content={content}
         outerContent={outerContent}
         arrowClassName={arrowClassName}
         withArrow={withArrow}
         inPortal={inPortal}
-        variant={variant}
         isDisabled={isDisabled}
-      />
+      >
+        {content}
+      </PopoverContentWrapper>
     </>
   );
 };

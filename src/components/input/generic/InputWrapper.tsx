@@ -1,13 +1,21 @@
-import { forwardRef, type ForwardedRef } from "react";
+import React, { forwardRef, type ForwardedRef } from "react";
 
-import { classNames } from "~/components/types";
+import { UnreachableCaseError } from "~/application/errors";
+
 import {
-  type ComponentProps,
+  type InputSize,
+  InputSizes,
+  InputVariants,
+  type InputVariant,
+} from "~/components/input/types";
+import {
+  classNames,
   type TypographyCharacteristics,
+  type ComponentProps,
+  BorderRadii,
+  type BorderRadius,
   getTypographyClassName,
 } from "~/components/types";
-
-import { type InputSize, InputSizes, InputVariants, type InputVariant } from "./types";
 
 type WrapperComponentName = "div" | "textarea";
 
@@ -18,7 +26,7 @@ type WrapperElement<C extends WrapperComponentName> = {
 
 export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
   Omit<React.ComponentProps<C>, keyof ComponentProps> &
-  Omit<TypographyCharacteristics, "transform"> & {
+  Omit<TypographyCharacteristics, "transform" | "align" | "truncate" | "lineClamp"> & {
     readonly component: C;
     readonly size?: InputSize;
     readonly variant?: InputVariant;
@@ -28,6 +36,7 @@ export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
     readonly isLoading?: boolean;
     readonly isReadOnly?: boolean;
     readonly dynamicHeight?: boolean;
+    readonly radius?: BorderRadius;
   };
 
 export const InputWrapper = forwardRef(
@@ -38,18 +47,19 @@ export const InputWrapper = forwardRef(
       isDisabled = false,
       isActive = false,
       dynamicHeight = false,
-      size = InputSizes.MEDIUM,
+      size = InputSizes.LARGE,
+      radius = BorderRadii.SM,
       isLoading = false,
       isLocked = false,
       isReadOnly = false,
-      variant = InputVariants.PRIMARY,
       fontSize,
-      fontWeight,
       fontFamily,
+      fontWeight,
+      variant = InputVariants.PRIMARY,
       ...props
     }: InputWrapperProps<C>,
     ref: ForwardedRef<WrapperElement<C>>,
-  ) => {
+  ): JSX.Element => {
     const ps = {
       ...props,
       ref,
@@ -58,6 +68,7 @@ export const InputWrapper = forwardRef(
         "input",
         `input--size-${size}`,
         `input--variant-${variant}`,
+        `input--radius-${radius}`,
         {
           disabled: isDisabled,
           "input--dynamic-height": dynamicHeight,
@@ -66,7 +77,7 @@ export const InputWrapper = forwardRef(
           "input--active": isActive,
           "input--read-only": isReadOnly,
         },
-        getTypographyClassName({ fontSize, fontWeight, fontFamily }),
+        getTypographyClassName({ fontSize, fontFamily, fontWeight }),
         props.className,
       ),
     };
@@ -83,6 +94,8 @@ export const InputWrapper = forwardRef(
           />
         );
       }
+      default:
+        throw new UnreachableCaseError(`Invalid 'component' provided: ${component}!`);
     }
   },
 ) as {

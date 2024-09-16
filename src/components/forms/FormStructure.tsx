@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Title } from "~/components/typography";

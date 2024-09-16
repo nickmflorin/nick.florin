@@ -15,7 +15,7 @@ export * from "./api-client-field-errors";
 export type ApiError = NetworkError | ServerError | ApiClientGlobalError | ApiClientFormError;
 export type HttpError = ApiError | ClientError;
 
-export const isApiError = (e: unknown): e is HttpError =>
+export const isApiError = (e: unknown): e is ApiError =>
   isError(e) &&
   (e instanceof ApiClientGlobalError ||
     e instanceof ApiClientFormError ||

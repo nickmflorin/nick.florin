@@ -1,14 +1,39 @@
 "use client";
 import React from "react";
-import { useState, forwardRef, type ForwardedRef, useImperativeHandle, useMemo } from "react";
+import { useState, forwardRef, type ForwardedRef, useImperativeHandle } from "react";
 
 import { autoPlacement } from "@floating-ui/react";
 
-import type * as types from "./types";
+import { Popover, type PopoverProps } from "~/components/floating/Popover";
+import { type PopoverRenderProps } from "~/components/floating/types";
+import type * as types from "~/components/input/select/types";
 
-import { Popover } from "~/components/floating/Popover";
+export interface SelectPopoverProps
+  extends Pick<PopoverProps, "inPortal" | "content" | "maxHeight"> {
+  readonly menuPlacement?: PopoverProps["placement"];
+  readonly menuOffset?: PopoverProps["offset"];
+  readonly menuWidth?: PopoverProps["width"];
+  readonly isLoading?: boolean;
+  readonly isReady?: boolean;
+  readonly onOpen?: (
+    e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
+  ) => void;
+  readonly onClose?: (
+    e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
+  ) => void;
+  readonly onOpenChange?: (
+    e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
+    isOpen: boolean,
+  ) => void;
+  readonly children: (
+    params: PopoverRenderProps & { readonly isOpen: boolean; readonly isLoading: boolean },
+  ) => JSX.Element;
+}
 
-export const SelectPopover = forwardRef<types.SelectInstance, types.SelectPopoverProps>(
+export const SelectPopover = forwardRef<
+  Omit<types.BasicSelectInstance, "focusInput">,
+  SelectPopoverProps
+>(
   (
     {
       content,
@@ -22,23 +47,18 @@ export const SelectPopover = forwardRef<types.SelectInstance, types.SelectPopove
       onClose,
       onOpenChange,
       ...props
-    }: types.SelectPopoverProps,
-    ref: ForwardedRef<types.SelectInstance>,
+    }: SelectPopoverProps,
+    ref: ForwardedRef<Omit<types.BasicSelectInstance, "focusInput">>,
   ): JSX.Element => {
     const [_isLoading, setLoading] = useState(false);
     const [isOpen, setOpen] = useState(false);
 
     const isLoading = _propIsLoading || _isLoading;
 
-    const select: types.SelectInstance = useMemo(
-      () => ({
-        setOpen,
-        setLoading,
-      }),
-      [setOpen, setLoading],
-    );
-
-    useImperativeHandle(ref, () => select);
+    useImperativeHandle(ref, () => ({
+      setOpen,
+      setLoading,
+    }));
 
     return (
       <Popover
@@ -63,11 +83,11 @@ export const SelectPopover = forwardRef<types.SelectInstance, types.SelectPopove
         offset={menuOffset}
         isOpen={isOpen}
         isDisabled={isReady === false}
-        onOpen={e => onOpen?.(e, { select })}
-        onClose={e => onClose?.(e, { select })}
+        onOpen={e => onOpen?.(e)}
+        onClose={e => onClose?.(e)}
         onOpenChange={(isOpen, evt) => {
           setOpen(isOpen);
-          onOpenChange?.(evt, isOpen, { select });
+          onOpenChange?.(evt, isOpen);
         }}
         content={content}
       >

@@ -29,7 +29,7 @@ import "@mantine/dates/styles.css";
 
 import "~/styles/globals/index.scss"; // Import this last.
 
-import { ScreenLoading } from "~/components/views/ScreenLoading";
+import { Loading } from "~/components/loading/Loading";
 import { CookiesProvider } from "./CookiesProvider";
 import ClientConfig from "./ClientConfig";
 
@@ -40,7 +40,7 @@ export interface AppConfigProps {
 export const AppConfig = ({ children }: AppConfigProps): JSX.Element => (
   <ClerkProvider>
     <ClerkLoading>
-      <ScreenLoading />
+      <Loading fillScreen isLoading />
     </ClerkLoading>
     <ClerkLoaded>
       <CookiesProvider>

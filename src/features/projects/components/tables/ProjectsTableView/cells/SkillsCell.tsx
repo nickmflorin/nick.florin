@@ -9,35 +9,31 @@ import { type ApiProject } from "~/prisma/model";
 import { updateProject } from "~/actions/mutations/projects";
 import { isApiClientErrorJson } from "~/api";
 
-import {
-  SkillsSelect,
-  type SkillSelectValueModel,
-} from "~/features/skills/components/input/SkillsSelect";
+import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 interface SkillsCellProps {
   readonly project: ApiProject<["skills"]>;
 }
 
 export const SkillsCell = ({ project }: SkillsCellProps) => {
-  const [optimisticValue, setOptimisticValue] = useState<SkillSelectValueModel[]>(
-    project.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
-  );
+  const [optimisticValue, setOptimisticValue] = useState<string[]>(project.skills.map(s => s.id));
   const [_, transition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
-    setOptimisticValue(project.skills.map(s => ({ id: s.id, label: s.label, value: s.id })));
+    setOptimisticValue(project.skills.map(s => s.id));
   }, [project.skills]);
 
   return (
     <SkillsSelect
       value={optimisticValue}
+      behavior="multi"
       onChange={async (v, { item }) => {
         setOptimisticValue(v);
-        item.setLoading(true);
+        item?.setLoading(true);
         let response: Awaited<ReturnType<typeof updateProject>> | null = null;
         try {
-          response = await updateProject(project.id, { skills: v.map(sk => sk.id) });
+          response = await updateProject(project.id, { skills: v });
         } catch (e) {
           logger.error(
             "There was a server error updating the skills for the project with " +
@@ -50,7 +46,7 @@ export const SkillsCell = ({ project }: SkillsCellProps) => {
           );
           toast.error("There was an error updating the project.");
         } finally {
-          item.setLoading(false);
+          item?.setLoading(false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(

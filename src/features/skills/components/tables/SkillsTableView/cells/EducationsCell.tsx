@@ -30,12 +30,13 @@ export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {
       visibility="admin"
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
-      options={{ isMulti: true }}
+      behavior="multi"
+      isClearable
       value={value}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);
-        item.setLoading(true);
+        item?.setLoading(true);
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
           response = await updateSkill(skill.id, { educations: v });
@@ -50,7 +51,7 @@ export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {
           );
           toast.error("There was an error updating the skill.");
         } finally {
-          item.setLoading(false);
+          item?.setLoading(false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(

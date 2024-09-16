@@ -1,41 +1,31 @@
-import { type SkillCategory, getSkillCategory, SkillCategories } from "~/prisma/model";
+import type { EnumeratedLiteralsModel } from "enumerated-literals";
 
-import { Select, type SelectProps } from "~/components/input/select";
+import { SkillCategories } from "~/prisma/model";
 
-type M = {
-  readonly value: SkillCategory;
-  readonly label: string;
-};
+import type { SelectBehaviorType } from "~/components/input/select";
+import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 
-const globalOptions = {
-  isDeselectable: true,
-  getModelValue: (m: M) => m.value,
-  getModelLabel: (m: M) => m.label,
-} as const;
+type M = EnumeratedLiteralsModel<typeof SkillCategories>;
 
-type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
-  isMulti: O["isMulti"];
-  isClearable: O["isClearable"];
-};
+const getItemValue = (m: M) => m.value;
 
-export interface SkillCategorySelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
-  extends Omit<SelectProps<SkillCategory, M, Opts<O>>, "options" | "data"> {
-  readonly options: O;
+export interface SkillCategorySelectProps<B extends SelectBehaviorType>
+  extends Omit<
+    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
+    "options" | "data"
+  > {
+  readonly behavior: B;
 }
 
-export const SkillCategorySelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
-  options,
+export const SkillCategorySelect = <B extends SelectBehaviorType>({
+  behavior,
   ...props
-}: SkillCategorySelectProps<O>): JSX.Element => (
-  <Select<SkillCategory, M, Opts<O>>
-    maxHeight={240}
+}: SkillCategorySelectProps<B>): JSX.Element => (
+  <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
     {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
-    data={Object.keys(SkillCategories).map(
-      (key): M => ({
-        label: getSkillCategory(key as SkillCategory).label,
-        value: key as SkillCategory,
-      }),
-    )}
+    options={{ behavior, getItemValue }}
+    getItemValueLabel={m => m.label}
+    data={[...SkillCategories.models]}
+    itemRenderer={m => m.label}
   />
 );

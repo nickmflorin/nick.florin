@@ -11,7 +11,7 @@ import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
 
 import type * as types from "~/components/tables/types";
-import { ClientSchoolSelect } from "~/features/schools/components/input/ClientSchoolSelect";
+import { SchoolSelect } from "~/features/schools/components/input/SchoolSelect";
 
 interface SchoolCellProps {
   readonly education: ApiEducation<["details", "skills"]>;
@@ -28,9 +28,10 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
   }, [education.schoolId]);
 
   return (
-    <ClientSchoolSelect
+    <SchoolSelect
       inputClassName="w-full"
-      options={{ isClearable: true, isMulti: false }}
+      behavior="single"
+      isClearable
       menuClassName="max-h-[260px]"
       value={value}
       onChange={async v => {

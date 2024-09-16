@@ -1,114 +1,132 @@
 "use client";
-import dynamic from "next/dynamic";
-import React, { forwardRef, type ForwardedRef } from "react";
+import React, { useMemo, useRef, forwardRef, type ForwardedRef, useImperativeHandle } from "react";
 
-import type * as types from "./types";
+import { useSelectValue } from "~/components/input/select/hooks";
+import * as types from "~/components/input/select/types";
+import { type ComponentProps } from "~/components/types";
 
-import { Loading } from "~/components/feedback/Loading";
-import { type MenuComponent, type MenuDataProps, type MenuItemInstance } from "~/components/menus";
+import { BasicSelect, type BasicSelectProps } from "./BasicSelect";
+import { SelectInput } from "./SelectInput";
 
-import { SelectBase } from "./SelectBase";
+export interface SelectProps<V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>
+  extends Omit<BasicSelectProps, "content" | "onClear" | "renderedValue" | "showPlaceholder"> {
+  readonly behavior: B;
+  readonly value?: types.SelectValue<V, B>;
+  readonly initialValue?: types.SelectValue<V, B>;
+  readonly menuClassName?: ComponentProps["className"];
+  readonly inputClassName?: ComponentProps["className"];
+  readonly closeMenuOnSelect?: boolean;
+  readonly isClearable?: boolean;
+  readonly onClear?: types.IfDeselectable<B, () => void>;
+  readonly valueRenderer?: types.SelectValueRenderer<V, B>;
+  readonly onChange?: types.SelectChangeHandler<V, B>;
+  readonly content: types.SelectManagedCallback<JSX.Element, V, B>;
+}
 
-const Menu = dynamic(() => import("~/components/menus/Menu"), {
-  loading: () => <Loading isLoading={true} spinnerSize="16px" />,
-}) as MenuComponent;
-
-const LocalSelect = forwardRef<
-  types.SelectInstance,
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  types.SelectProps<any, types.SelectModel<any>, types.SelectOptions<any>>
-  /* eslint-enable @typescript-eslint/no-explicit-any */
->(
-  <
-    V extends types.UnsafeSelectValueForm<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
-  >(
+const LocalSelect = forwardRef(
+  <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
     {
-      children,
+      behavior,
       menuOffset = { mainAxis: 2 },
       menuPlacement,
+      closeMenuOnSelect,
       menuWidth = "target",
-      isLocked,
       isLoading,
-      size,
-      value,
       inPortal,
-      isDisabled,
       menuClassName,
       inputClassName,
-      actions,
-      placeholder,
-      maximumValuesToRender,
-      maxHeight = 240,
+      maxHeight,
       initialValue,
-      isReady = true,
-      closeMenuOnSelect,
-      onChange,
+      value: _propValue,
+      isReady,
+      isClearable,
+      onClear: _onClear,
       valueRenderer,
-      itemRenderer,
-      valueModelRenderer,
+      children,
+      content,
+      onChange,
       onOpen,
       onClose,
       onOpenChange,
       ...props
-    }: types.SelectProps<V, M, O>,
-    ref: ForwardedRef<types.SelectInstance>,
-  ): JSX.Element => (
-    <SelectBase<V, M, O>
-      ref={ref}
-      initialValue={initialValue}
-      value={value}
-      maxHeight={maxHeight}
-      isReady={isReady}
-      isLoading={isLoading}
-      menuPlacement={menuPlacement}
-      menuWidth={menuWidth}
-      inPortal={inPortal}
-      menuOffset={menuOffset}
-      isLocked={isLocked}
-      isDisabled={isDisabled}
-      menuClassName={menuClassName}
-      inputClassName={inputClassName}
-      maximumValuesToRender={maximumValuesToRender}
-      size={size}
-      actions={actions}
-      placeholder={placeholder}
-      data={props.data}
-      options={props.options}
-      closeMenuOnSelect={closeMenuOnSelect}
-      valueRenderer={valueRenderer}
-      onOpen={onOpen}
-      onChange={onChange}
-      onClose={onClose}
-      valueModelRenderer={valueModelRenderer}
-      onOpenChange={onOpenChange}
-      content={({ onSelect, isSelected }) => (
-        <Menu
-          {...(props as MenuDataProps<M, O>)}
-          isLocked={!isReady}
-          className="z-50"
-          itemIsSelected={(m: M) => isSelected(m as types.SelectArg<M, O>)}
-          onItemClick={(model: M, instance: MenuItemInstance) => {
-            onSelect(model as types.SelectArg<M, O>, instance);
-            props.onItemClick?.(model, instance);
-          }}
-        >
-          {itemRenderer ? (m: M) => itemRenderer(m) : undefined}
-        </Menu>
-      )}
-    >
-      {children}
-    </SelectBase>
-  ),
+    }: SelectProps<V, B>,
+    ref: ForwardedRef<types.SelectInstance<V, B>>,
+  ): JSX.Element => {
+    const internalInstance = useRef<types.BasicSelectInstance | null>(null);
+
+    const { value, clear, ...managed } = useSelectValue<V, B>({
+      initialValue,
+      __private_controlled_value__: _propValue,
+      behavior,
+      onChange: v => onChange?.(v),
+      onSelect: () => {
+        if (
+          closeMenuOnSelect ||
+          (closeMenuOnSelect === undefined && behavior !== types.SelectBehaviorTypes.MULTI)
+        ) {
+          internalInstance.current?.setOpen(false);
+        }
+      },
+    });
+
+    const onClear = useMemo(() => {
+      if (_onClear || isClearable) {
+        return () => {
+          _onClear?.();
+          clear();
+        };
+      }
+      return undefined;
+    }, [_onClear, isClearable, clear]);
+
+    useImperativeHandle(ref, () => ({
+      clear,
+      setValue: v => managed.set(v),
+      focusInput: () => internalInstance.current?.focusInput(),
+      setOpen: v => internalInstance.current?.setOpen(v),
+      setLoading: v => internalInstance.current?.setLoading(v),
+    }));
+
+    return (
+      <BasicSelect
+        ref={internalInstance}
+        maxHeight={maxHeight}
+        isReady={isReady}
+        isLoading={isLoading}
+        menuPlacement={menuPlacement}
+        menuClassName={menuClassName}
+        menuWidth={menuWidth}
+        inPortal={inPortal}
+        menuOffset={menuOffset}
+        onOpen={onOpen}
+        onClose={onClose}
+        onOpenChange={onOpenChange}
+        content={content(value, { ...managed, clear })}
+      >
+        {children ??
+          (({ ref, params, isOpen, isLoading }) => (
+            <SelectInput
+              {...params}
+              {...props}
+              value={value}
+              isOpen={isOpen}
+              isLoading={isLoading}
+              ref={ref}
+              onClear={onClear as types.IfDeselectable<B, () => void>}
+              className={inputClassName}
+            >
+              {valueRenderer?.(value, { ...managed, clear })}
+            </SelectInput>
+          ))}
+      </BasicSelect>
+    );
+  },
 );
 
 export const Select = LocalSelect as {
-  <
-    V extends types.UnsafeSelectValueForm<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
-  >(
-    props: types.SelectProps<V, M, O> & { readonly ref?: ForwardedRef<types.SelectInstance> },
+  <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
+    props: SelectProps<V, B> & {
+      readonly ref?: ForwardedRef<types.SelectInstance<V, B>>;
+    },
   ): JSX.Element;
 };

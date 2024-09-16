@@ -11,7 +11,7 @@ import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { DegreeSelect } from "~/features/educations/components/input/DegreeSelect";
-import { ClientSchoolSelect } from "~/features/schools/components/input/ClientSchoolSelect";
+import { SchoolSelect } from "~/features/schools/components/input/SchoolSelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type EducationFormValues } from "./schema";
@@ -53,10 +53,10 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
     >
       <Form.ControlledField name="school" label="School" form={props.form} condition="required">
         {({ value, onChange }) => (
-          <ClientSchoolSelect
+          <SchoolSelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: false, isClearable: true }}
+            behavior="single"
             value={value}
             onChange={onChange}
             inPortal
@@ -84,7 +84,8 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
-            options={{ isMulti: false, isClearable: true }}
+            behavior="single"
+            isClearable
             onChange={onChange}
           />
         )}
@@ -100,7 +101,12 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
       </Form.Field>
       <Form.ControlledField name="skills" label="Skills" form={props.form}>
         {({ value, onChange }) => (
-          <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
+          <SkillsSelect
+            behavior="multi"
+            inputClassName="w-full"
+            value={value}
+            onChange={onChange}
+          />
         )}
       </Form.ControlledField>
       <Form.ControlledField name="startDate" label="Start Date" form={props.form}>

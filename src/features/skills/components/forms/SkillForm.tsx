@@ -12,11 +12,11 @@ import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { ClientCourseSelect } from "~/features/courses/components/input/ClientCourseSelect";
+import { CourseSelect } from "~/features/courses/components/input/CourseSelect";
 import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
-import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
+import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
+import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
 import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
 import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
 import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
@@ -66,7 +66,8 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             visibility="admin"
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             value={value}
             onChange={onChange}
             inPortal
@@ -82,7 +83,8 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             visibility="admin"
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             value={value}
             onChange={onChange}
             inPortal
@@ -94,10 +96,11 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       </Form.ControlledField>
       <Form.ControlledField name="projects" label="Projects" form={props.form}>
         {({ value, onChange }) => (
-          <ClientProjectSelect
+          <ProjectSelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             value={value}
             onChange={onChange}
             inPortal
@@ -107,10 +110,11 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       </Form.ControlledField>
       <Form.ControlledField name="repositories" label="Repositories" form={props.form}>
         {({ value, onChange }) => (
-          <ClientRepositorySelect
+          <RepositorySelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             value={value}
             onChange={onChange}
             inPortal
@@ -122,10 +126,11 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       </Form.ControlledField>
       <Form.ControlledField name="courses" label="Courses" form={props.form}>
         {({ value, onChange }) => (
-          <ClientCourseSelect
+          <CourseSelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             value={value}
             onChange={onChange}
             inPortal
@@ -143,7 +148,8 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             menuPlacement="top"
             onChange={onChange}
           />
@@ -155,7 +161,8 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             menuPlacement="top"
             onChange={onChange}
           />
@@ -167,7 +174,8 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             value={value}
-            options={{ isMulti: true, isClearable: true }}
+            behavior="multi"
+            isClearable
             menuPlacement="top"
             onChange={onChange}
           />

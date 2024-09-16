@@ -11,7 +11,7 @@ import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { Label } from "~/components/typography";
-import { ClientCompanySelect } from "~/features/companies/components/input/ClientCompanySelect";
+import { CompanySelect } from "~/features/companies/components/input/CompanySelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type ExperienceFormValues } from "./schema";
@@ -42,10 +42,11 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
     >
       <Form.ControlledField name="company" label="Company" form={props.form} condition="required">
         {({ value, onChange }) => (
-          <ClientCompanySelect
+          <CompanySelect
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
-            options={{ isMulti: false, isClearable: true }}
+            isClearable
+            behavior="single"
             value={value}
             onChange={onChange}
             inPortal
@@ -72,7 +73,12 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
       </Form.Field>
       <Form.ControlledField name="skills" label="Skills" form={props.form}>
         {({ value, onChange }) => (
-          <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
+          <SkillsSelect
+            behavior="multi"
+            inputClassName="w-full"
+            value={value}
+            onChange={onChange}
+          />
         )}
       </Form.ControlledField>
       <Form.ControlledField name="startDate" label="Start Date" form={props.form}>

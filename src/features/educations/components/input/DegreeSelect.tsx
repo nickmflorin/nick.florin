@@ -1,42 +1,31 @@
-import { getDegree, Degrees, type Degree } from "~/prisma/model";
+import type { EnumeratedLiteralsModel } from "enumerated-literals";
 
-import { Select, type SelectProps } from "~/components/input/select";
+import { Degrees } from "~/prisma/model";
 
-type M = {
-  readonly value: Degree;
-  readonly label: string;
-  readonly shortLabel: string;
-};
+import type { SelectBehaviorType } from "~/components/input/select";
+import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 
-const globalOptions = {
-  getModelValue: (m: M) => m.value,
-  getModelLabel: (m: M) => m.label,
-  getModelValueLabel: (m: M) => m.shortLabel,
-} as const;
+type M = EnumeratedLiteralsModel<typeof Degrees>;
 
-type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
-  isMulti: O["isMulti"];
-  isClearable: O["isClearable"];
-};
+const getItemValue = (m: M) => m.value;
 
-export interface DegreeSelectProps<O extends { isMulti?: boolean; isClearable?: boolean }>
-  extends Omit<SelectProps<Degree, M, Opts<O>>, "options" | "data"> {
-  readonly options: O;
+export interface DegreeSelectProps<B extends SelectBehaviorType>
+  extends Omit<
+    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
+    "options" | "data"
+  > {
+  readonly behavior: B;
 }
 
-export const DegreeSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
-  options,
+export const DegreeSelect = <B extends SelectBehaviorType>({
+  behavior,
   ...props
-}: DegreeSelectProps<O>): JSX.Element => (
-  <Select<Degree, M, Opts<O>>
+}: DegreeSelectProps<B>): JSX.Element => (
+  <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
     {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
-    data={Object.keys(Degrees).map(
-      (key): M => ({
-        label: getDegree(key as Degree).label,
-        value: key as Degree,
-        shortLabel: getDegree(key as Degree).shortLabel,
-      }),
-    )}
+    options={{ behavior, getItemValue }}
+    getItemValueLabel={m => m.shortLabel}
+    data={[...Degrees.models]}
+    itemRenderer={m => m.label}
   />
 );

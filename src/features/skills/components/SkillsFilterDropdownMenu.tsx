@@ -66,7 +66,7 @@ export const SkillsFilterDropdownMenu = ({
       isDisabled={isDisabled}
       middleware={[flip({})]}
       content={
-        <PopoverContent className="p-[20px] rounded-md overflow-y-auto" variant="white">
+        <PopoverContent className="p-[20px] rounded-md overflow-y-auto">
           <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable={false} />
         </PopoverContent>
       }

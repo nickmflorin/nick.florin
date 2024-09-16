@@ -12,7 +12,7 @@ import {
   type Middleware,
 } from "@floating-ui/react";
 
-import * as types from "../types";
+import * as types from "~/components/floating/types";
 
 export interface UseFloatingConfig {
   readonly isOpen?: boolean;
@@ -22,11 +22,15 @@ export interface UseFloatingConfig {
   readonly triggers?: types.FloatingTrigger[];
   readonly placement?: Placement;
   readonly middleware?: Array<Middleware | null | undefined | false>;
-  readonly onOpen?: (e: Event | React.MouseEvent<HTMLButtonElement>) => void;
-  readonly onClose?: (e: Event | React.MouseEvent<HTMLButtonElement>) => void;
+  readonly onOpen?: (
+    e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => void;
+  readonly onClose?: (
+    e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => void;
   readonly onOpenChange?: (
     value: boolean,
-    evt: Event | React.MouseEvent<HTMLButtonElement>,
+    evt: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => void;
 }
 
@@ -49,7 +53,13 @@ export const useFloating = ({
   const isOpen = propIsOpen === undefined ? _isOpen : propIsOpen;
 
   const setIsOpen = useCallback(
-    (v: boolean, evt: Event | React.MouseEvent<HTMLButtonElement>) => {
+    (
+      v: boolean,
+      evt:
+        | Event
+        | React.MouseEvent<HTMLButtonElement>
+        | React.MouseEvent<HTMLDivElement, MouseEvent>,
+    ) => {
       _setIsOpen(v);
       onOpenChange?.(v, evt);
       if (v === true) {
@@ -64,7 +74,13 @@ export const useFloating = ({
   const { refs, floatingStyles, context } = rootUseFloating({
     open: isOpen,
     whileElementsMounted: autoUpdate ? autoUpdater : undefined,
-    onOpenChange: (value: boolean, evt: Event) => setIsOpen(value, evt),
+    onOpenChange: (value: boolean, evt: Event) => {
+      /* TODO: We may have to expose this as a prop somehow - it may not be desirable behavior
+         for all use cases. */
+      if ((evt as KeyboardEvent).key !== "Enter") {
+        setIsOpen(value, evt);
+      }
+    },
     placement,
     middleware,
   });

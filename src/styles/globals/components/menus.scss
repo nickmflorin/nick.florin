@@ -1,24 +1,232 @@
+@use "sass:list";
+
 @use "partials";
 @use "./typography" as typography;
 
-.floating-content {
-  > .menu {
-    max-height: inherit !important;
+$menu-item-padding: 6px 10px;
+
+@mixin content-locked() {
+  pointer-events: none;
+  > .menu__item {
+    pointer-events: none;
   }
 }
 
-@mixin menu-content-wrapper() {
+@mixin content-loading() {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+@mixin content-disabled() {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+@mixin menu-item-hovered() {
+  @include partials.hovered {
+    &.menu__item--highlight-on-hover {
+      &:not(.disabled, .menu__item--locked) {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin menu-item-focused() {
+  @include partials.focused {
+    &:not(.disabled, .menu__item--locked) {
+      @content;
+    }
+  }
+}
+
+.menu__content {
   display: flex;
   flex-direction: column;
-  overflow-y: hidden;
-  flex-grow: 100;
+  overflow-x: hidden;
   position: relative;
-  min-height: 100px;
-  @content;
 
-  > .menu__content {
-    max-height: 100%;
-    height: 100%;
+  .menu__item-group {
+    display: flex;
+    flex-direction: column;
+
+    > .menu__item-group__label-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 12px list.nth($menu-item-padding, 2);
+
+      > .menu__item-group__label {
+        @include typography.font(
+          $type: "label",
+          $size: "xs",
+          $weight: "medium",
+          $color: theme("colors.gray.600")
+        );
+      }
+    }
+  }
+
+  @mixin menu-item-content() {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: theme("spacing.3");
+
+    > .checkbox {
+      padding: 0;
+    }
+
+    .menu__item__inner-content {
+      text-align: left;
+      line-height: inherit;
+      flex-grow: 100;
+      color: inherit;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: theme("spacing.2");
+      @include typography.truncate();
+    }
+  }
+
+  // Note: Sometimes a menu__item element is wrapped in an anchor tag if it represents a link.
+  .menu__item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: $menu-item-padding;
+    gap: theme("spacing.2");
+    color: theme("colors.body");
+    transition-property: background-color, background, border-color, color, fill, stroke, opacity,
+      box-shadow, transform;
+    transition-duration: 100ms;
+
+    // The line height may be overridden in the component if the height is specified as a prop.
+    @include typography.font($type: "body", $line-height: 28px, $size: "xs");
+
+    @include partials.disabled {
+      color: theme("colors.disabled");
+    }
+
+    &.menu__item--locked,
+    &.menu__item--loading {
+      pointer-events: none;
+    }
+
+    @include menu-item-hovered {
+      &:not(.menu__item--selected) {
+        background-color: theme("colors.gray.50");
+      }
+    }
+
+    @include menu-item-focused {
+      &:not(.menu__item--selected) {
+        background-color: theme("colors.gray.50");
+      }
+    }
+
+    &.menu__item--navigated:not(.disabled) {
+      &:not(.menu__item--selected, .disabled, .menu__item--locked) {
+        background-color: theme("colors.gray.50");
+      }
+      &.menu__item--selected {
+        background-color: theme("colors.gray.200");
+      }
+    }
+
+    &.menu__item--selected:not(.disabled) {
+      background-color: theme("colors.gray.100");
+      @include menu-item-hovered {
+        background-color: theme("colors.gray.200");
+      }
+      @include menu-item-focused {
+        background-color: theme("colors.gray.200");
+      }
+    }
+
+    > .menu__item__content {
+      @include menu-item-content();
+    }
+
+    > .menu__item__content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: theme("spacing.1");
+
+      > .menu__item__content {
+        @include menu-item-content();
+      }
+
+      > .menu__item__description {
+        @include typography.font($type: "description", $size: "xs");
+        padding-left: 24px;
+      }
+    }
+  }
+
+  &--bordered {
+    .menu__item {
+      &:not(:last-of-type) {
+        border-bottom: 1px solid theme("colors.border");
+      }
+    }
+    .menu__item-group:not(:last-of-type) {
+      > .menu__item-group__content {
+        > .menu__item {
+          &:last-of-type {
+            border-bottom: 1px solid theme("colors.border");
+          }
+        }
+      }
+    }
+  }
+
+  &--bordered-groups:not(.menu__item--bordered) {
+    .menu__item-group {
+      &:not(:first-of-type) {
+        border-top: 1px solid theme("colors.border");
+      }
+    }
+  }
+
+  &--locked {
+    @include content-locked();
+  }
+
+  &--loading {
+    @include content-loading();
+  }
+
+  &--disabled {
+    @include content-disabled();
+  }
+
+  .menu__item-group {
+    > .menu__item-group__content {
+      @include content-locked();
+
+      &--loading {
+        @include content-loading();
+      }
+
+      &--disabled {
+        @include content-disabled();
+      }
+
+      &--bordered {
+        .menu__item {
+          &:not(:last-of-type) {
+            border-bottom: 1px solid theme("colors.border");
+          }
+        }
+      }
+
+      > .menu__item {
+        padding: list.nth($menu-item-padding, 1) list.nth($menu-item-padding, 2) + 2px;
+      }
+    }
   }
 }
 
@@ -28,6 +236,10 @@
   gap: theme("spacing.1");
   overflow: hidden;
   max-height: 100%;
+
+  &:focus {
+    outline: none !important;
+  }
 
   > .menu__header {
     display: flex;
@@ -39,116 +251,5 @@
   > .menu__content {
     overflow-y: auto;
     flex-grow: 100;
-  }
-
-  // The wrapping component is used to reserve space for the menu content so that loading indicators
-  // or errors can be shown in the interim, before the content is either dynamically loaded or the
-  // data is populated.;
-  > .menu__content-wrapper {
-    @include menu-content-wrapper() {
-      > .menu__content {
-        overflow-y: auto;
-      }
-    }
-  }
-}
-
-.menu__item-group {
-  display: flex;
-  flex-direction: column;
-
-  > .menu__item-group__label {
-    padding: 10px 10px;
-  }
-
-  > .menu__content-wrapper {
-    @include menu-content-wrapper();
-  }
-}
-
-@mixin bordered-menu-item() {
-  > .menu__item {
-    &:not(:last-of-type) {
-      border-bottom: 1px solid theme("colors.border");
-    }
-  }
-}
-
-.menu__content {
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  position: relative;
-
-  &--bordered {
-    @include bordered-menu-item();
-    > a {
-      @include bordered-menu-item();
-    }
-  }
-
-  // Note: Sometimes a menu__item element is wrapped in an anchor tag if it represents a link.
-  .menu__item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 6px 10px;
-    gap: 10px;
-    color: theme("colors.body");
-    transition-property: background-color, background, border-color, color, fill, stroke, opacity,
-      box-shadow, transform;
-    transition-duration: 100ms;
-
-    // The line height may be overridden in the component if the height is specified as a prop.
-    @include typography.font($type: "body", $size: "xs", $line-height: 28px);
-
-    @include partials.disabled {
-      color: theme("colors.disabled");
-    }
-
-    &.menu__item--locked,
-    &.menu__item--loading {
-      pointer-events: none;
-    }
-
-    @include partials.hovered {
-      &:not(.menu__item--selected, .disabled, .menu__item--locked) {
-        background-color: theme("colors.gray.50");
-        color: theme("colors.body-hover");
-      }
-    }
-
-    @include partials.focused {
-      &:not(.menu__item--selected, .disabled, .menu__item--locked) {
-        background-color: theme("colors.gray.50");
-      }
-    }
-
-    &.menu__item--selected:not(.disabled) {
-      background-color: theme("colors.blue.50");
-      @include partials.hovered {
-        &:not(.disabled, .menu__item--locked) {
-          background-color: theme("colors.blue.100");
-        }
-      }
-      @include partials.focused {
-        &:not(.disabled, .menu__item--locked) {
-          background-color: theme("colors.blue.100");
-        }
-      }
-    }
-
-    > .menu__item__content {
-      height: 100%;
-      text-align: left;
-      line-height: inherit;
-      flex-grow: 100;
-      color: inherit;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 10px;
-      @include typography.truncate();
-    }
   }
 }

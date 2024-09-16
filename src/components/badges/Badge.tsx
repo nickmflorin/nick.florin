@@ -1,49 +1,83 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 
-import { type IconProp } from "~/components/icons";
+import { IconButton } from "~/components/buttons";
+import { type IconProp, type IconName, isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import { classNames } from "~/components/types";
 import {
   type ComponentProps,
-  FontSizes,
   FontWeights,
   getTypographyClassName,
   type TypographyCharacteristics,
+  type BorderRadius,
+  classNames,
 } from "~/components/types";
+
+import { type BadgeSize, BadgeSizes } from "./types";
 
 export interface BadgeProps
   extends ComponentProps,
-    TypographyCharacteristics,
+    Omit<TypographyCharacteristics, "lineClamp">,
     Pick<React.ComponentProps<"div">, "onClick"> {
-  readonly children: string;
-  readonly icon?: IconProp | null;
+  readonly children: ReactNode;
   readonly iconClassName?: ComponentProps["className"];
+  readonly icon?: IconProp | IconName | JSX.Element | null;
+  readonly radius?: BorderRadius;
+  readonly size?: BadgeSize;
+  readonly onClose?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export const Badge = ({
   children,
   fontWeight = FontWeights.MEDIUM,
-  fontSize = FontSizes.SM,
+  fontSize,
+  size = BadgeSizes.SM,
   icon,
   transform,
   fontFamily,
   iconClassName,
+  radius,
+  align,
+  truncate,
+  onClose,
   ...props
 }: BadgeProps): JSX.Element => (
   <div
     {...props}
     className={classNames(
       "badge",
-      `badge--size-${fontSize}`,
+      `badge--size-${size}`,
+      radius ? `badge--radius-${radius}` : "",
       { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
-      // Omit the font size prop because it is handled by the badge size.
-      getTypographyClassName({ fontWeight, transform, fontFamily }),
+      getTypographyClassName({
+        fontWeight,
+        transform,
+        fontFamily,
+        fontSize,
+        align,
+        truncate,
+      }),
       props.className,
     )}
   >
     <div className="badge__content">
-      {icon && <Icon className={classNames("badge__icon", iconClassName)} icon={icon} />}
+      {typeof icon === "string" || isIconProp(icon) ? (
+        <Icon className={classNames("badge__icon", iconClassName)} icon={icon} />
+      ) : (
+        icon
+      )}
       <div className="badge__text">{children}</div>
+      {onClose && (
+        <IconButton.Transparent
+          className="badge__close-button hover:bg-transparent"
+          scheme="light"
+          icon="xmark"
+          element="button"
+          onClick={e => {
+            e.stopPropagation();
+            onClose(e);
+          }}
+        />
+      )}
     </div>
   </div>
 );

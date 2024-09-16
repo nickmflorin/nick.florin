@@ -11,7 +11,7 @@ import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
 
 import type * as types from "~/components/tables/types";
-import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
+import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
 
 interface ProjectsCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
@@ -30,11 +30,12 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
   }, [skill.projects]);
 
   return (
-    <ClientProjectSelect
-      options={{ isMulti: true, isClearable: true }}
+    <ProjectSelect
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
+      behavior="multi"
+      isClearable
       onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);

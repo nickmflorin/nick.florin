@@ -6,9 +6,9 @@ import { getCompanies } from "~/actions/fetches/companies";
 import { getSchools } from "~/actions/fetches/schools";
 
 import { DrawerIds, type DrawerId, type DrawerIdPropsPair } from "~/components/drawers";
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import type * as types from "~/components/menus/types";
-import { Text } from "~/components/typography";
+import { Text, Description } from "~/components/typography";
 
 import { DeleteCompanySchoolButton } from "./DeleteCompanySchoolButton";
 import { type ModelType, type Model } from "./types";
@@ -74,9 +74,9 @@ export const CompaniesSchoolsMenuContent = async <M extends ModelType>({
             <Text fontSize="sm" fontWeight="medium">
               {model.name}
             </Text>
-            <Text fontSize="xs" className="text-description">
+            <Description fontSize="xs">
               {stringifyLocation({ city: model.city, state: model.state })}
-            </Text>
+            </Description>
           </div>
         ),
       }))}

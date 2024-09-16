@@ -40,7 +40,7 @@ const valueIsEmpty = (value: Exclude<HTMLTextAreaElement["value"], undefined>) =
   Array.isArray(value) ? value.length === 0 : value.trim() === "";
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ autoSize, resize, autoSizeIfEmpty = false, ...props }: TextAreaProps, ref) => {
+  ({ autoSize, resize, autoSizeIfEmpty = true, ...props }: TextAreaProps, ref) => {
     const internalRef = useRef<HTMLTextAreaElement | null>(null);
     const firstRendered = useRef(false);
 
@@ -112,6 +112,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           if (
             internalRef.current &&
             shouldAutoSizeOn("change", autoSize) &&
+            props.value === undefined &&
             (!valueIsEmpty(e.target.value) || autoSizeIfEmpty)
           ) {
             autoSizeTextArea(internalRef.current);

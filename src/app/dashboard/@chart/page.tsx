@@ -5,7 +5,7 @@ import { decodeQueryParams } from "~/lib/urls";
 
 import { SkillsFiltersSchema, ShowTopSkillsSchema } from "~/api/schemas";
 
-import { Module } from "~/components/modules/generic";
+import { Module } from "~/components/structural/Module";
 import { SkillsBarChartView } from "~/features/skills/components/charts/SkillsBarChartView";
 import { SkillsFilterDropdownMenu } from "~/features/skills/components/SkillsFilterDropdownMenu";
 

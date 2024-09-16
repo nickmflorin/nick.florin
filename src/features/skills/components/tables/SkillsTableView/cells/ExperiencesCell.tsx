@@ -35,15 +35,12 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
       inputClassName="w-full"
       menuClassName="max-h-[260px]"
       value={value}
-      options={{ isMulti: true, isClearable: true }}
-      onChange={async (v, { item }) => {
+      behavior="multi"
+      isClearable
+      onChange={async v => {
         // Optimistically update the value.
         setValue(v);
-        if (item) {
-          item.setLoading(true);
-        } else {
-          table.setRowLoading(skill.id, true);
-        }
+        table.setRowLoading(skill.id, true);
 
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
@@ -59,11 +56,7 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
           );
           toast.error("There was an error updating the skill.");
         } finally {
-          if (item) {
-            item.setLoading(false);
-          } else {
-            table.setRowLoading(skill.id, false);
-          }
+          table.setRowLoading(skill.id, false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(

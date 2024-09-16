@@ -4,7 +4,7 @@ import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
+import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type RepositoryFormValues } from "./schema";
@@ -27,8 +27,9 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
     </Form.Field>
     <Form.ControlledField name="projects" label="Projects" form={props.form}>
       {({ value, onChange }) => (
-        <ClientProjectSelect
-          options={{ isMulti: true, isClearable: true }}
+        <ProjectSelect
+          behavior="multi"
+          isClearable
           inputClassName="w-full"
           value={value}
           onChange={onChange}
@@ -37,7 +38,7 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
     </Form.ControlledField>
     <Form.ControlledField name="skills" label="Skills" form={props.form}>
       {({ value, onChange }) => (
-        <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
+        <SkillsSelect behavior="multi" inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
     <Form.Field

@@ -3,7 +3,7 @@ import { memo } from "react";
 
 import { getSkills } from "~/actions/fetches/skills";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
 
 import { type Filters } from "./types";

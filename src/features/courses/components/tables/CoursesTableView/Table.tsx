@@ -3,7 +3,7 @@ import { memo } from "react";
 
 import { getCourses, type GetCoursesFilters } from "~/actions/fetches/courses";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { type ContextTableComponent } from "~/components/tables/types";
 
 const ContextTable = dynamic(() => import("~/components/tables/ContextTable"), {

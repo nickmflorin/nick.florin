@@ -1,5 +1,5 @@
 "use client";
-import { ErrorView } from "~/components/views/ErrorView";
+import { ErrorView } from "~/components/errors/ErrorView";
 
 export default function Error() {
   return (

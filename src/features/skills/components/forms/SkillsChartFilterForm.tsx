@@ -65,7 +65,8 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           menuClassName="max-h-[260px]"
           value={value}
           onChange={onChange}
-          options={{ isMulti: true, isClearable: true }}
+          behavior="multi"
+          isClearable
           menuPlacement="bottom"
           useAbbreviatedOptionLabels={false}
           inPortal
@@ -84,7 +85,8 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           visibility="public"
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
-          options={{ isMulti: true, isClearable: true }}
+          behavior="multi"
+          isClearable
           useAbbreviatedOptionLabels={false}
           value={value}
           onChange={onChange}
@@ -105,7 +107,8 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          options={{ isMulti: true, isClearable: true }}
+          behavior="multi"
+          isClearable
           menuPlacement="bottom"
           inPortal
           onChange={onChange}
@@ -123,7 +126,8 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          options={{ isMulti: true, isClearable: true }}
+          behavior="multi"
+          isClearable
           menuPlacement="bottom"
           inPortal
           onChange={onChange}
@@ -141,7 +145,8 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           inputClassName="w-full"
           menuClassName="max-h-[260px]"
           value={value}
-          options={{ isMulti: true, isClearable: true }}
+          behavior="multi"
+          isClearable
           menuPlacement="bottom"
           inPortal
           onChange={onChange}

@@ -8,25 +8,29 @@ import { logger } from "~/internal/logger";
 import type { ApiClientErrorJson } from "~/api";
 import { isApiClientErrorJson } from "~/api";
 
-import { type MenuItemInstance } from "~/components/menus";
+import type {
+  AllowedSelectValue,
+  DataSelectChangeHandler,
+  SelectBehaviorType,
+} from "~/components/input/select";
 import { type TableModel } from "~/components/tables/types";
 
-type AttributeValue<M extends TableModel, N extends keyof M> = M[N];
+type AttributeValue<M extends TableModel, N extends keyof M> = M[N] & AllowedSelectValue;
 
-interface BaseSelectProps<
-  O extends { isMulti?: boolean },
-  M extends TableModel,
-  N extends keyof M,
-> {
+interface BaseSelectProps<B extends SelectBehaviorType, M extends TableModel, N extends keyof M> {
+  readonly isClearable?: boolean;
   readonly menuClassName: string;
   readonly inputClassName: string;
-  readonly value: M[N];
-  readonly options: O;
-  readonly onChange: (value: NonNullable<M[N]>, params: { item: MenuItemInstance }) => void;
+  readonly value: M[N] & AllowedSelectValue;
+  readonly behavior: B;
+  readonly onChange: DataSelectChangeHandler<
+    M,
+    { behavior: B; getItemValue: (m: M) => AttributeValue<M, N> }
+  >;
 }
 
 interface SelectCellProps<
-  O extends { isMulti?: boolean },
+  B extends SelectBehaviorType,
   M extends TableModel,
   N extends keyof M,
   T,
@@ -34,32 +38,37 @@ interface SelectCellProps<
   readonly inputClassName?: string;
   readonly errorMessage: string;
   readonly model: M;
-  readonly options: O;
-  readonly component: React.ComponentType<BaseSelectProps<O, M, N>>;
+  readonly behavior: B;
+  readonly component: React.ComponentType<BaseSelectProps<B, M, N>>;
   readonly attribute: N;
-  readonly action: (value: NonNullable<M[N]>) => Promise<T | ApiClientErrorJson>;
+  readonly action: (value: M[N] & AllowedSelectValue) => Promise<T | ApiClientErrorJson>;
 }
 
 export const SelectCell = <
-  O extends { isMulti?: boolean },
+  B extends SelectBehaviorType,
   M extends TableModel,
   N extends keyof M,
   T,
 >({
   model,
+  behavior,
   action,
   errorMessage,
-  options,
   attribute,
   inputClassName = "w-full",
   component: Component,
-}: SelectCellProps<O, M, N, T>): JSX.Element => {
-  const [value, setValue] = useState<AttributeValue<M, N>>(model[attribute]);
+}: SelectCellProps<B, M, N, T>): JSX.Element => {
+  const [value, setValue] = useState<AttributeValue<M, N> & AllowedSelectValue>(
+    model[attribute] as M[N] & AllowedSelectValue,
+  );
   const router = useRouter();
   const [_, transition] = useTransition();
 
   useEffect(() => {
-    setValue(model[attribute]);
+    /* The type coercion around this is not ideal - and this was only done to make this work with
+       the newly created selects.  We should backtrack on this component itself, and rather use
+       a more explicit/less abstract approach. */
+    setValue(model[attribute] as M[N] & AllowedSelectValue);
   }, [model, attribute]);
 
   return (
@@ -67,15 +76,16 @@ export const SelectCell = <
       inputClassName={inputClassName}
       menuClassName="max-h-[260px]"
       value={value}
-      options={{ ...options, isClearable: true }}
+      isClearable
+      behavior={behavior}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
-        setValue(v);
-        item.setLoading(true);
+        setValue(v as M[N] & AllowedSelectValue);
+        item?.setLoading(true);
 
         let response: T | ApiClientErrorJson | undefined = undefined;
         try {
-          response = await action(v);
+          response = await action(v as M[N] & AllowedSelectValue);
         } catch (e) {
           logger.error(
             `There was an error updating the ${String(attribute)} of the ${model.id}:\n${e}`,
@@ -86,7 +96,7 @@ export const SelectCell = <
           );
           toast.error(errorMessage);
         } finally {
-          item.setLoading(false);
+          item?.setLoading(false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(`There was an error updating the ${String(attribute)} of the ${model.id}.`, {

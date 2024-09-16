@@ -4,9 +4,9 @@ import { Suspense } from "react";
 import { type GetEducationsFilters } from "~/actions/fetches/educations";
 
 import { DrawerIds } from "~/components/drawers";
-import { ErrorBoundary } from "~/components/ErrorBoundary";
-import { Loading } from "~/components/feedback/Loading";
+import { ErrorBoundary } from "~/components/errors/ErrorBoundary";
 import { TextInput } from "~/components/input/TextInput";
+import { Loading } from "~/components/loading/Loading";
 import { PaginatorPlaceholder } from "~/components/pagination/PaginatorPlaceholder";
 import { NewButton } from "~/components/tables/NewButton";
 import { TableSearchBar } from "~/components/tables/TableSearchBar";

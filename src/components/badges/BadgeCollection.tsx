@@ -1,25 +1,27 @@
 import React from "react";
 
+import type { BadgeSize } from "./types";
+
 import { classNames } from "~/components/types";
 import {
   type ComponentProps,
   type TypographyCharacteristics,
-  FontWeights,
-  FontSizes,
   getTypographyClassName,
 } from "~/components/types";
 
 export interface BadgeCollectionChildrenProps
   extends ComponentProps,
-    Omit<TypographyCharacteristics, "align" | "truncate"> {
+    Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> {
   readonly children: JSX.Element[];
+  readonly size?: BadgeSize;
   readonly data?: never;
 }
 
 export interface BadgeCollectionCallbackProps<M>
   extends ComponentProps,
-    Omit<TypographyCharacteristics, "align" | "truncate"> {
+    Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> {
   readonly data: M[];
+  readonly size?: BadgeSize;
   readonly children: (model: M) => JSX.Element;
 }
 
@@ -30,10 +32,11 @@ export type BadgeCollectionProps<M> =
 export const BadgeCollection = <M,>({
   data,
   children,
-  fontWeight = FontWeights.MEDIUM,
-  fontSize = FontSizes.SM,
+  fontWeight,
+  fontSize,
   transform,
   fontFamily,
+  size,
   ...props
 }: BadgeCollectionProps<M>): JSX.Element => {
   if (data !== undefined) {
@@ -57,9 +60,8 @@ export const BadgeCollection = <M,>({
       {...props}
       className={classNames(
         "badge-collection",
-        `badge-collection--size-${fontSize}`,
-        // Omit the font size prop because it is handled by the badge size.
-        getTypographyClassName({ fontWeight, transform, fontFamily }),
+        `badge-collection--size-${size}`,
+        getTypographyClassName({ fontSize, fontWeight, transform, fontFamily }),
         props.className,
       )}
     >

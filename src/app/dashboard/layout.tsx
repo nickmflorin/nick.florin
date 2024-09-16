@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import type { LinkComponent } from "~/components/buttons";
 import { Content } from "~/components/layout/Content";
-import { Module } from "~/components/modules/generic";
+import { Module } from "~/components/structural/Module";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 

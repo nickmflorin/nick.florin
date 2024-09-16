@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { type TimelineProps } from "~/components/timelines/generic";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";

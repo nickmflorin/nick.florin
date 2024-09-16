@@ -38,7 +38,8 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
           menuClassName="max-h-[260px]"
           value={value}
           visibility="admin"
-          options={{ isMulti: false, isClearable: true }}
+          behavior="single"
+          isClearable
           useAbbreviatedOptionLabels={false}
           onChange={onChange}
           inPortal
@@ -48,7 +49,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
     </Form.ControlledField>
     <Form.ControlledField name="skills" label="Skills" form={props.form}>
       {({ value, onChange }) => (
-        <SkillsSelect inputClassName="w-full" value={value} onChange={onChange} />
+        <SkillsSelect behavior="multi" inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
     <CheckboxField name="visible" form={props.form} label="Visible" />

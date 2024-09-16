@@ -1,47 +1,47 @@
-import dynamic from "next/dynamic";
+import type { SpinnerProps, IconProp, IconName } from "~/components/icons";
+import { Icon } from "~/components/icons/Icon";
+import { Spinner } from "~/components/icons/Spinner";
+import type * as types from "~/components/menus";
+import { classNames, type ComponentProps, type QuantitativeSize } from "~/components/types";
 
-import type * as types from "./types";
-
-import { isIconProp } from "~/components/icons";
-import { classNames } from "~/components/types";
-
-const Icon = dynamic(() => import("~/components/icons/Icon"));
-const Spinner = dynamic(() => import("~/components/icons/Spinner"));
-
-export interface MenuItemIconProps
-  extends Pick<
-    types.MenuModel,
-    "iconClassName" | "spinnerClassName" | "icon" | "iconSize" | "isLoading"
-  > {}
+export interface MenuItemIconProps {
+  readonly icon?: IconProp | IconName;
+  readonly iconProps?: types.MenuItemIconProps;
+  readonly iconSize?: QuantitativeSize<"px">;
+  readonly spinnerProps?: Omit<SpinnerProps, "isLoading" | "size" | "className">;
+  readonly isLoading?: boolean;
+  readonly iconClassName?: ComponentProps["className"];
+  readonly spinnerClassName?: ComponentProps["className"];
+}
 
 export const MenuItemIcon = ({
   icon,
   iconClassName,
-  iconSize = "18px",
   isLoading = false,
   spinnerClassName,
+  spinnerProps,
+  iconSize = "18px",
+  iconProps,
 }: MenuItemIconProps) => {
   if (icon) {
-    if (isIconProp(icon)) {
-      return (
-        <Icon
-          icon={icon}
-          className={classNames("text-gray-600", iconClassName)}
-          size={iconSize}
-          isLoading={isLoading}
-        />
-      );
-    } else if (isLoading) {
+    if (isLoading) {
       return (
         <Spinner
+          {...spinnerProps}
           className={classNames("text-gray-600", iconClassName, spinnerClassName)}
           isLoading={isLoading}
           size={iconSize}
-          dimension="height"
         />
       );
     }
-    return icon;
+    return (
+      <Icon
+        {...iconProps}
+        icon={icon}
+        className={classNames("text-gray-600", iconClassName)}
+        size={iconSize}
+      />
+    );
   }
   return <></>;
 };

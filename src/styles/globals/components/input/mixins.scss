@@ -19,6 +19,14 @@ $input-loading-class: ".input--loading";
   }
 }
 
+@mixin input-hovered {
+  @include partials.hovered {
+    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
+      @content;
+    }
+  }
+}
+
 @mixin input-active {
   @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
     &.input--active:not(:disabled) {

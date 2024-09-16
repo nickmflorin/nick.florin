@@ -10,7 +10,6 @@ import { deleteDetail, deleteNestedDetail } from "~/actions/mutations/details";
 
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
-import { mergeActions } from "~/components/structural";
 
 import {
   GenericUpdateDetailForm,
@@ -46,7 +45,8 @@ export const CollapsedUpdateDetailForm = <
   return (
     <GenericUpdateDetailForm
       {...props}
-      actions={mergeActions(props.actions, [
+      actions={[
+        ...(props.actions ?? []),
         <IconButton.Transparent
           className="text-gray-600 hover:text-gray-700"
           key="0"
@@ -84,7 +84,7 @@ export const CollapsedUpdateDetailForm = <
             }
           }}
         />,
-      ])}
+      ]}
       isScrollable={false}
       footerClassName="mt-0"
     />

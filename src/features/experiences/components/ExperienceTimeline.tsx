@@ -4,8 +4,8 @@ import { removeRedundantTopLevelSkills } from "~/prisma/model";
 
 import { getExperiences } from "~/actions/fetches/experiences";
 
-import { Loading } from "~/components/feedback/Loading";
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
+import { Loading } from "~/components/loading/Loading";
 import { CommitTimeline } from "~/components/timelines/CommitTimeline";
 import { type ComponentProps } from "~/components/types";
 import { ResumeModelPageTile } from "~/features/resume/components/tiles/ResumeModelPageTile";

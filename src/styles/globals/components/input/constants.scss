@@ -1,8 +1,4 @@
-@use "sass:color";
-
 @use "../typography" as typography;
-
-$input-types: ("text-input", "text-area", "select");
 
 // These colors are the default values for the input component.  The specific colors may change
 // depending on the variant.
@@ -10,11 +6,7 @@ $input-bg-color: theme("colors.white");
 $input-color: theme("colors.body");
 $input-caret-color: theme("colors.body");
 
-// TODO: Add to Tailwind Config instead.
-$input-placeholder-color: color.change(#606873, $alpha: 0.6);
-$input-border-radius: 2px;
+$input-placeholder-color: theme("colors.placeholder");
 
-$input-font-weight: theme("fontWeight.regular");
-$input-font-family: typography.get-font-family(
-  $type: "body",
-);
+$input-font-weight: 400;
+$input-font-family: typography.get-font-family("body");

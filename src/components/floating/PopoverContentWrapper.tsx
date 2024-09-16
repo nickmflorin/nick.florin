@@ -1,39 +1,34 @@
 "use client";
 import { cloneElement, useMemo, useCallback } from "react";
 
+import type * as types from "./types";
+
 import { type ComponentProps } from "~/components/types";
 
 import { Arrow } from "./Arrow";
 import { ConditionalPortal } from "./ConditionalPortal";
-import * as types from "./types";
-
-export type PopoverContentRenderFn = (props: types.FloatingContentRenderProps) => JSX.Element;
-
-export type PopoverContent = JSX.Element | PopoverContentRenderFn;
 
 export interface PopoverContentWrapperProps {
   /**
    * The content that appears inside of the floating element.
    */
-  readonly content: PopoverContent;
-  readonly outerContent?: (params: { children: JSX.Element }) => JSX.Element;
+  readonly children: types.PopoverContent;
   readonly inPortal?: boolean;
   readonly isDisabled?: boolean;
   readonly withArrow?: boolean;
   readonly arrowClassName?: ComponentProps["className"];
-  readonly variant?: types.PopoverVariant;
   readonly context: types.PopoverContext;
+  readonly outerContent?: (params: { children: JSX.Element }) => JSX.Element;
 }
 
 export const PopoverContentWrapper = ({
-  content: _content,
+  children: _children,
   outerContent,
   inPortal,
   isDisabled,
   withArrow = true,
   arrowClassName,
-  variant = types.PopoverVariants.SECONDARY,
-  context: { floatingProps, floatingStyles, refs, arrowRef, context, isOpen },
+  context: { floatingProps, floatingStyles, refs, arrowRef, context, isOpen, setIsOpen },
 }: PopoverContentWrapperProps) => {
   const cloneAndRender = useCallback(
     (element: JSX.Element) => {
@@ -48,14 +43,13 @@ export const PopoverContentWrapper = ({
         <>
           {ele.props.children}
           {context && withArrow && (
-            <Arrow ref={arrowRef} variant={variant} context={context} className={arrowClassName} />
+            <Arrow ref={arrowRef} context={context} className={arrowClassName} />
           )}
         </>,
       );
     },
     [
       arrowRef,
-      variant,
       context,
       withArrow,
       floatingProps,
@@ -66,22 +60,33 @@ export const PopoverContentWrapper = ({
     ],
   );
 
-  const content = useMemo(() => {
+  const children = useMemo(() => {
     if (isOpen && !isDisabled) {
-      if (typeof _content === "function") {
-        return _content({
+      if (typeof _children === "function") {
+        return _children({
           ref: refs.setFloating,
+          isOpen,
+          setIsOpen,
           params: floatingProps,
           styles: floatingStyles,
         });
       }
-      return cloneAndRender(_content);
+      return cloneAndRender(_children);
     }
     return <></>;
-  }, [_content, isOpen, isDisabled, floatingProps, floatingStyles, refs, cloneAndRender]);
+  }, [
+    _children,
+    isOpen,
+    isDisabled,
+    floatingProps,
+    floatingStyles,
+    refs,
+    setIsOpen,
+    cloneAndRender,
+  ]);
 
   if (isOpen && !isDisabled) {
-    return <ConditionalPortal inPortal={inPortal}>{content}</ConditionalPortal>;
+    return <ConditionalPortal inPortal={inPortal}>{children}</ConditionalPortal>;
   }
   return <></>;
 };

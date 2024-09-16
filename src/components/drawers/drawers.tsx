@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import React from "react";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { type QuantitativeSize } from "~/components/types";
 
 import { DrawerIds, type DrawerId } from "./types";

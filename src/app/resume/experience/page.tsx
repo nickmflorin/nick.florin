@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { ExperienceTimeline } from "~/features/experiences/components/ExperienceTimeline";
 
 export default function ExperiencePage() {

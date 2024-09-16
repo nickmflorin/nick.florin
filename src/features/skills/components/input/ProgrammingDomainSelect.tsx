@@ -1,41 +1,31 @@
-import { getProgrammingDomain, ProgrammingDomains, type ProgrammingDomain } from "~/prisma/model";
+import type { EnumeratedLiteralsModel } from "enumerated-literals";
 
-import { Select, type SelectProps } from "~/components/input/select";
+import { ProgrammingDomains } from "~/prisma/model";
 
-type M = {
-  readonly value: ProgrammingDomain;
-  readonly label: string;
-};
+import type { SelectBehaviorType } from "~/components/input/select";
+import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 
-const globalOptions = {
-  isDeselectable: true,
-  getModelValue: (m: M) => m.value,
-  getModelLabel: (m: M) => m.label,
-} as const;
+type M = EnumeratedLiteralsModel<typeof ProgrammingDomains>;
 
-type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
-  isMulti: O["isMulti"];
-  isClearable: O["isClearable"];
-};
+const getItemValue = (m: M) => m.value;
 
-export interface ProgrammingDomainSelectProps<
-  O extends { isMulti?: boolean; isClearable?: boolean },
-> extends Omit<SelectProps<ProgrammingDomain, M, Opts<O>>, "options" | "data"> {
-  readonly options: O;
+export interface ProgrammingDomainSelectProps<B extends SelectBehaviorType>
+  extends Omit<
+    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
+    "options" | "data"
+  > {
+  readonly behavior: B;
 }
 
-export const ProgrammingDomainSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
-  options,
+export const ProgrammingDomainSelect = <B extends SelectBehaviorType>({
+  behavior,
   ...props
-}: ProgrammingDomainSelectProps<O>): JSX.Element => (
-  <Select<ProgrammingDomain, M, Opts<O>>
+}: ProgrammingDomainSelectProps<B>): JSX.Element => (
+  <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
     {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
-    data={Object.keys(ProgrammingDomains).map(
-      (key): M => ({
-        label: getProgrammingDomain(key as ProgrammingDomain).label,
-        value: key as ProgrammingDomain,
-      }),
-    )}
+    options={{ behavior, getItemValue }}
+    getItemValueLabel={m => m.label}
+    data={[...ProgrammingDomains.models]}
+    itemRenderer={m => m.label}
   />
 );

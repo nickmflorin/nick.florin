@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 
 import type * as types from "../types";
 
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 
 import { type DrawerDynamicProps } from "../drawers";
 

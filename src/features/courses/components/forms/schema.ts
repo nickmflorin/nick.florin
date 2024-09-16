@@ -1,17 +1,7 @@
-import { z } from "zod";
+import { type z } from "zod";
 
 import { CourseSchema } from "~/api/schemas";
 
-export const CourseFormSchema = CourseSchema.required()
-  .omit({ skills: true })
-  .extend({
-    skills: z.array(
-      z.object({
-        id: z.string(),
-        value: z.string(),
-        label: z.string(),
-      }),
-    ),
-  });
+export const CourseFormSchema = CourseSchema.required();
 
 export type CourseFormValues = z.infer<typeof CourseFormSchema>;

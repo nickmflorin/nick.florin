@@ -2,10 +2,11 @@
 @use "sass:map";
 
 @use "partials";
-@use "throw";
+
+@use "./constants" as constants;
 @use "./mixins" as mixins;
 
-$input-variants: ("primary", "bare");
+$input-variants: ("primary");
 $input-default-variant: "primary";
 
 $input-variant-properties: (
@@ -14,18 +15,26 @@ $input-variant-properties: (
     outline-color: theme("colors.border"),
     color: theme("colors.body"),
     caret-color: theme("colors.body"),
-    // TODO: Add to Tailwind Config instead.
-    placeholder-color: color.change(#606873, $alpha: 0.6),
+    placeholder-color: theme("colors.placeholder"),
+    outline-thickness: 1px,
+    icon-color: theme("colors.body"),
+    hovered: (
+      outline-color: theme("colors.primary"),
+    ),
     disabled: (
       color: theme("colors.disabled"),
       placeholder-color: theme("colors.disabled"),
       outline-color: theme("colors.disabled-border"),
     ),
     focused: (
-      outline-color: theme("colors.blue.800"),
+      outline-color: theme("colors.primary"),
+      outline-thickness: 2px,
+      icon-color: theme("colors.primary"),
     ),
     active: (
-      outline-color: theme("colors.blue.800"),
+      outline-color: theme("colors.primary"),
+      icon-color: theme("colors.primary"),
+      outline-thickness: 2px,
     ),
   ),
   "bare": (
@@ -33,11 +42,13 @@ $input-variant-properties: (
     outline-color: theme("colors.transparent"),
     color: theme("colors.body"),
     caret-color: theme("colors.body"),
-    // TODO: Add to Tailwind Config instead.
-    placeholder-color: color.change(#606873, $alpha: 0.6),
+    placeholder-color: theme("colors.placeholder"),
+    outline-thickness: 1px,
+    icon-color: theme("colors.body"),
     disabled: (
       color: theme("colors.disabled"),
       placeholder-color: theme("colors.disabled"),
+      outline-color: theme("colors.disabled-border"),
     ),
     focused: (
       background-color: theme("colors.gray.200"),
@@ -48,39 +59,74 @@ $input-variant-properties: (
   ),
 );
 
-@function get-input-property($variant, $property, $state: null) {
-  $variant: partials.validate-value($variant, $input-variants);
-  $state: if($state, partials.validate-value($state, ("focused", "disabled", "active")), $state);
-  $properties: partials.mapget($input-variant-properties, $variant);
+@function get-input-property($variant, $property, $state: null, $fallback: null) {
+  $properties: map.get($input-variant-properties, $variant);
 
-  @if $property == "disabled" or $property == "focused" or $property == "active" {
-    @return throw.error("The property cannot be a state.");
+  @if $property ==
+    "disabled" or
+    $property ==
+    "focused" or
+    $property ==
+    "active" or
+    $property ==
+    "hovered"
+  {
+    @error "The property cannot be a state.";
   }
 
-  $stateless: partials.mapget($properties, $property);
+  $value: map.get($properties, $property);
   @if not $state {
-    @return $stateless;
+    @return if($value, $value, $fallback);
   }
-  @return if(
-    map.has-key($properties, $state) and
-      map.has-key(partials.mapget($properties, $state), $property),
-    partials.mapget($properties, $state, $property),
-    $stateless
+  $value: if(
+    map.has-key($properties, $state) and map.has-key(map.get($properties, $state), $property),
+    map.get($properties, $state, $property),
+    $value
   );
+  @return if($value, $value, $fallback);
 }
 
 @mixin input-variant-state($variant, $state: null) {
-  background-color: get-input-property($variant, background-color, $state: $state);
-  color: get-input-property($variant, color, $state: $state);
-  caret-color: get-input-property($variant, caret-color, $state: $state);
-  outline: 1px solid get-input-property($variant, outline-color, $state: $state);
+  $color: get-input-property($variant, color, $state: $state);
+  @if not $color {
+    @error "The 'color' field must be defined in the variant map.";
+  }
+
+  background-color: get-input-property(
+    $variant,
+    background-color,
+    $state: $state,
+    $fallback: theme("colors.white")
+  );
+  color: $color;
+  caret-color: get-input-property($variant, caret-color, $state: $state, $fallback: $color);
+
+  $outline-thickness: get-input-property(
+    $variant,
+    outline-thickness,
+    $state: $state,
+    $fallback: 1px
+  );
+  outline-offset: -$outline-thickness;
+
+  $outline-color: get-input-property($variant, outline-color, $state: $state);
+  @if $outline-color {
+    outline: $outline-thickness solid $outline-color;
+  }
 
   &::placeholder {
-    color: get-input-property($variant, placeholder-color, $state: $state);
+    color: get-input-property($variant, placeholder-color, $state: $state, $fallback: $color);
   }
 
   .placeholder {
     color: get-input-property($variant, placeholder-color, $state: $state);
+  }
+
+  $icon-color: get-input-property($variant, icon-color, $state: $state, $fallback: $color);
+  @if $icon-color {
+    > .icon {
+      color: $icon-color;
+    }
   }
 }
 
@@ -89,6 +135,10 @@ $input-variant-properties: (
 
   @include partials.disabled {
     @include input-variant-state($variant, $state: "disabled");
+  }
+
+  @include mixins.input-hovered {
+    @include input-variant-state($variant, $state: "hovered");
   }
 
   @include mixins.input-focused {

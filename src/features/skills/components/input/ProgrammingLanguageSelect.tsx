@@ -1,49 +1,32 @@
-import { type Required } from "utility-types";
+import type { EnumeratedLiteralsModel } from "enumerated-literals";
 
-import {
-  getProgrammingLanguage,
-  ProgrammingLanguages,
-  type ProgrammingLanguage,
-} from "~/prisma/model";
+import { ProgrammingLanguages } from "~/prisma/model";
 
-import { Select, type SelectProps, type SelectModel } from "~/components/input/select";
+import type { SelectBehaviorType } from "~/components/input/select";
+import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 
-type M = Required<
-  Pick<SelectModel<ProgrammingLanguage>, "value" | "label" | "icon">,
-  "value" | "label" | "icon"
->;
+type M = EnumeratedLiteralsModel<typeof ProgrammingLanguages>;
 
-const globalOptions = {
-  isDeselectable: true,
-  getModelValue: (m: M) => m.value,
-  getModelLabel: (m: M) => m.label,
-} as const;
+const getItemValue = (m: M) => m.value;
 
-type Opts<O extends { isMulti?: boolean; isClearable?: boolean }> = typeof globalOptions & {
-  isMulti: O["isMulti"];
-  isClearable: O["isClearable"];
-};
-
-export interface ProgrammingLanguageSelectProps<
-  O extends { isMulti?: boolean; isClearable?: boolean },
-> extends Omit<SelectProps<ProgrammingLanguage, M, Opts<O>>, "options" | "data"> {
-  readonly options: O;
+export interface ProgrammingLanguageSelectProps<B extends SelectBehaviorType>
+  extends Omit<
+    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
+    "options" | "data"
+  > {
+  readonly behavior: B;
 }
 
-export const ProgrammingLanguageSelect = <O extends { isMulti?: boolean; isClearable?: boolean }>({
-  options,
+export const ProgrammingLanguageSelect = <B extends SelectBehaviorType>({
+  behavior,
   ...props
-}: ProgrammingLanguageSelectProps<O>): JSX.Element => (
-  <Select<ProgrammingLanguage, M, Opts<O>>
-    maxHeight={240}
+}: ProgrammingLanguageSelectProps<B>): JSX.Element => (
+  <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
     {...props}
-    options={{ ...globalOptions, isMulti: options.isMulti, isClearable: options.isClearable }}
-    data={Object.keys(ProgrammingLanguages).map(
-      (key): M => ({
-        label: getProgrammingLanguage(key as ProgrammingLanguage).label,
-        value: key as ProgrammingLanguage,
-        icon: getProgrammingLanguage(key as ProgrammingLanguage).icon,
-      }),
-    )}
+    options={{ behavior, getItemValue }}
+    getItemValueLabel={m => m.label}
+    getItemIcon={m => m.icon}
+    data={[...ProgrammingLanguages.models]}
+    itemRenderer={m => m.label}
   />
 );

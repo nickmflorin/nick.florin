@@ -2,7 +2,7 @@
 import type { ReactNode } from "react";
 
 import { MobileNavigationCutoff } from "~/components/constants";
-import { Loading } from "~/components/feedback/Loading";
+import { Loading } from "~/components/loading/Loading";
 import { useNavigation } from "~/hooks";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 

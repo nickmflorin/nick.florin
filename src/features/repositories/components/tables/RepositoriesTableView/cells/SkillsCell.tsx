@@ -9,35 +9,33 @@ import { type ApiRepository } from "~/prisma/model";
 import { updateRepository } from "~/actions/mutations/repositories";
 import { isApiClientErrorJson } from "~/api";
 
-import {
-  SkillsSelect,
-  type SkillSelectValueModel,
-} from "~/features/skills/components/input/SkillsSelect";
+import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 interface SkillsCellProps {
   readonly repository: ApiRepository<["skills"]>;
 }
 
 export const SkillsCell = ({ repository }: SkillsCellProps) => {
-  const [optimisticValue, setOptimisticValue] = useState<SkillSelectValueModel[]>(
-    repository.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
+  const [optimisticValue, setOptimisticValue] = useState<string[]>(
+    repository.skills.map(s => s.id),
   );
   const [_, transition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
-    setOptimisticValue(repository.skills.map(s => ({ id: s.id, label: s.label, value: s.id })));
+    setOptimisticValue(repository.skills.map(s => s.id));
   }, [repository.skills]);
 
   return (
     <SkillsSelect
+      behavior="multi"
       value={optimisticValue}
       onChange={async (v, { item }) => {
         setOptimisticValue(v);
-        item.setLoading(true);
+        item?.setLoading(true);
         let response: Awaited<ReturnType<typeof updateRepository>> | null = null;
         try {
-          response = await updateRepository(repository.id, { skills: v.map(sk => sk.id) });
+          response = await updateRepository(repository.id, { skills: v });
         } catch (e) {
           logger.error(
             "There was a server error updating the skills for the repository with " +
@@ -50,7 +48,7 @@ export const SkillsCell = ({ repository }: SkillsCellProps) => {
           );
           toast.error("There was an error updating the repository.");
         } finally {
-          item.setLoading(false);
+          item?.setLoading(false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(

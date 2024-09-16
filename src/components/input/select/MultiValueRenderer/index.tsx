@@ -1,73 +1,138 @@
 import React, { useMemo, memo, type ReactNode } from "react";
 
-import { Badge } from "~/components/badges/Badge";
-import { getModelLabel, getModelId, getMenuItemKey } from "~/components/menus";
-
-import * as types from "../types";
+import { Badge, type BadgeProps } from "~/components/badges/Badge";
+import { type IconProp, type IconName } from "~/components/icons";
 
 import { MultiValueRendererContainer } from "./MultiValueRendererContainer";
 import { TruncatedMultiValueRenderer } from "./TruncatedMultiValueRenderer";
 
+type MultiValueRendererChild = string | number | JSX.Element;
+
+type MultiValueRendererModel = {
+  readonly id?: string | number;
+  readonly icon?: IconProp | IconName | JSX.Element;
+  readonly label?: ReactNode;
+  readonly content?: ReactNode;
+  [key: string]: unknown;
+};
+
+interface MultiValueRendererBaseProps {
+  readonly maximumValuesToRender?: number;
+  readonly dynamicHeight?: boolean;
+}
+
+export interface MultiValueRendererCallbackProps<T extends MultiValueRendererModel>
+  extends MultiValueRendererBaseProps {
+  readonly data: T[];
+  readonly children?: never;
+  readonly chipClassName?: BadgeProps["className"];
+  readonly chipSize?: BadgeProps["size"];
+  readonly badgeProps?: Omit<BadgeProps, "children" | "icon" | "size" | "onClose">;
+  readonly onBadgeClose?: (m: T) => void;
+  readonly getBadgeLabel?: (m: T) => ReactNode;
+  readonly getBadgeIcon?: (m: T) => IconProp | IconName | JSX.Element | undefined;
+  readonly getBadgeProps?: (
+    m: T,
+  ) => Partial<Omit<BadgeProps, "children" | "icon" | "onClose">> | undefined;
+  readonly renderer?: (m: T) => JSX.Element;
+}
+
+export interface MultiValueRendererChildrenProps extends MultiValueRendererBaseProps {
+  readonly chipClassName?: never;
+  readonly chipSize?: never;
+  readonly badgeProps?: never;
+  readonly children: MultiValueRendererChild | MultiValueRendererChild[];
+  readonly data?: never;
+  readonly getBadgeLabel?: never;
+  readonly getBadgeIcon?: never;
+  readonly renderer?: never;
+  readonly onBadgeClose?: never;
+  readonly getBadgeProps?: never;
+}
+
+export type MultiValueRendererProps<T extends MultiValueRendererModel> =
+  | MultiValueRendererChildrenProps
+  | MultiValueRendererCallbackProps<T>;
+
 export const MultiValueRenderer = memo(
-  <
-    V extends types.UnsafeSelectValueForm<M, O>,
-    M extends types.SelectModel,
-    O extends types.SelectOptions<M>,
-  >({
+  <T extends MultiValueRendererModel>({
     maximumValuesToRender,
-    models,
     dynamicHeight = true,
-    options,
-    valueModelRenderer,
-  }: types.MultiValueRendererProps<V, M, O>) => {
-    // Sort models by key for consistent ordering.
-    const sorted = useMemo(
-      () =>
-        models
-          .map((m, i) => ({ model: m, index: i }))
-          .sort((a, b) => {
-            const aKey = types.isSelectValueModel(a.model)
-              ? getMenuItemKey({ id: a.model.id, index: a.index })
-              : getMenuItemKey({ id: getModelId(a.model as M, options), index: a.index });
-            const bKey = types.isSelectValueModel(b.model)
-              ? getMenuItemKey({ id: b.model.id, index: b.index })
-              : getMenuItemKey({ id: getModelId(b.model as M, options), index: b.index });
-            return aKey > bKey ? 1 : -1;
-          })
-          .map((m): types.SelectDataModel<V, M, O> => m.model),
-      [options, models],
-    );
+    data,
+    children,
+    chipSize = "sm",
+    chipClassName,
+    badgeProps,
+    onBadgeClose,
+    renderer,
+    getBadgeLabel,
+    getBadgeIcon,
+    getBadgeProps,
+  }: MultiValueRendererProps<T>) => {
+    const content = useMemo<MultiValueRendererChild[]>(() => {
+      if (children) {
+        return Array.isArray(children) ? children : [children];
+      } else if (data) {
+        return data.map((model, i) => {
+          if (renderer) {
+            return renderer(model);
+          }
+          let label: ReactNode | undefined = undefined;
+          if (getBadgeLabel) {
+            label = getBadgeLabel(model);
+          } else if ("valueLabel" in model && model.label !== undefined) {
+            label = model.label;
+          }
+          let icon: IconProp | IconName | JSX.Element | undefined = undefined;
+          if (getBadgeIcon) {
+            icon = getBadgeIcon(model);
+          }
+          if (!icon && "icon" in model && model.icon !== undefined) {
+            icon = model.icon;
+          }
+          return (
+            <Badge
+              {...badgeProps}
+              size={chipSize}
+              className={chipClassName}
+              {...getBadgeProps?.(model)}
+              key={i}
+              icon={icon}
+              onClose={onBadgeClose ? () => onBadgeClose(model) : undefined}
+            >
+              {label}
+            </Badge>
+          );
+        });
+      }
+      return [];
+    }, [
+      data,
+      children,
+      badgeProps,
+      chipClassName,
+      chipSize,
+      onBadgeClose,
+      getBadgeIcon,
+      getBadgeLabel,
+      getBadgeProps,
+      renderer,
+    ]);
 
     return (
-      <TruncatedMultiValueRenderer models={sorted} maximumValuesToRender={maximumValuesToRender}>
-        {({ models: _models }) => (
+      <TruncatedMultiValueRenderer content={content} maximumValuesToRender={maximumValuesToRender}>
+        {({ children: _children }) => (
           <MultiValueRendererContainer dynamicHeight={dynamicHeight}>
-            {_models.map((model, i) => {
-              if (valueModelRenderer) {
-                return <React.Fragment key={i}>{valueModelRenderer(model)}</React.Fragment>;
-              }
-              let label: ReactNode;
-              if (types.isSelectValueModel(model)) {
-                label = model.label;
-              } else {
-                label =
-                  types.getSelectModelValueLabel(model as M, options) ??
-                  getModelLabel(model as M, options);
-              }
-              if (typeof label === "string") {
-                return (
-                  <Badge fontSize="xxs" key={i}>
-                    {label}
-                  </Badge>
-                );
-              }
-              return label;
-            })}
+            {_children.map((child, i) => (
+              <React.Fragment key={i}>{child}</React.Fragment>
+            ))}
           </MultiValueRendererContainer>
         )}
       </TruncatedMultiValueRenderer>
     );
   },
-);
+) as {
+  <T extends MultiValueRendererModel>(props: MultiValueRendererProps<T>): JSX.Element;
+};
 
 export default MultiValueRenderer;

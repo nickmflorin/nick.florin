@@ -2,8 +2,8 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 import { Button } from "~/components/buttons";
-import { Loading } from "~/components/feedback/Loading";
 import { Icon } from "~/components/icons/Icon";
+import { Loading } from "~/components/loading/Loading";
 
 import { CompaniesSchoolsMenuContent } from "./CompaniesSchoolsMenuContent";
 import { type ModelType } from "./types";

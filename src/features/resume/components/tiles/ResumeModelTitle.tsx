@@ -1,4 +1,4 @@
-import { type BrandModel, type ResumeBrand, getDegree } from "~/prisma/model";
+import { type BrandModel, type ResumeBrand, Degrees } from "~/prisma/model";
 
 import { ExpandResumeModelButton } from "~/components/buttons/resume";
 import { classNames } from "~/components/types";
@@ -63,7 +63,7 @@ export const ResumeModelTitle = <M extends BrandModel<T>, T extends ResumeBrand>
       <TitleComponent>
         {model.$kind === "experience"
           ? model.title
-          : `${getDegree(model.degree).shortLabel} in ${model.major}`}
+          : `${Degrees.getModel(model.degree).shortLabel} in ${model.major}`}
       </TitleComponent>
       <ShowHide show={expandable}>
         <ExpandResumeModelButton

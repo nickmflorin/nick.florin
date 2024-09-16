@@ -6,8 +6,8 @@ import { type ApiSkill } from "~/prisma/model";
 
 import { BarChart } from "~/components/charts/BarChart";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import { Loading } from "~/components/feedback/Loading";
 import { TooltipContent } from "~/components/floating/TooltipContent";
+import { Loading } from "~/components/loading/Loading";
 import { classNames } from "~/components/types";
 
 import { type SkillsBarChartDatum } from "./types";

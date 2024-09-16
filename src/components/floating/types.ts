@@ -1,4 +1,4 @@
-import { type CSSProperties, type Dispatch, type RefObject, type SetStateAction } from "react";
+import { type CSSProperties, type RefObject } from "react";
 
 import {
   type ReferenceType,
@@ -10,58 +10,6 @@ import {
   type ExtendedRefs,
   type FloatingContext as RootFloatingContext,
 } from "@floating-ui/react";
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
-
-import { classNames, type ComponentProps, type ClassName } from "~/components/types";
-
-export const PopoverVariants = enumeratedLiterals(
-  ["primary", "secondary", "light", "white", "none"] as const,
-  {},
-);
-export type PopoverVariant = EnumeratedLiteralsMember<typeof PopoverVariants>;
-
-export const PopoverVariantClassNames: {
-  [key in PopoverVariant]: (cs?: ComponentProps["className"]) => string;
-} = {
-  [PopoverVariants.PRIMARY]: cs => classNames("text-white", "bg-blue-500", "shadow-md", cs),
-  [PopoverVariants.LIGHT]: cs => classNames("text-body", "bg-gray-50", "shadow-md", cs),
-  [PopoverVariants.SECONDARY]: cs =>
-    classNames("text-heading", "bg-gradient-to-r from-gray-50 to-gray-200", "shadow-md", cs),
-  [PopoverVariants.WHITE]: cs => classNames("text-body", "bg-white", "shadow-md", cs),
-  [PopoverVariants.NONE]: cs => classNames(cs),
-};
-
-export const PopoverVariantArrowClassNames: { [key in PopoverVariant]: string } = {
-  [PopoverVariants.PRIMARY]: classNames(
-    "fill-blue-500",
-    "[&>path:first-of-type]:stroke-blue-500",
-    "[&>path:last-of-type]:stroke-blue-500",
-  ),
-  [PopoverVariants.LIGHT]: classNames(
-    "fill-gray-50",
-    "[&>path:first-of-type]:stroke-gray-50",
-    "[&>path:last-of-type]:stroke-gray-50",
-  ),
-  [PopoverVariants.SECONDARY]: classNames(
-    "fill-gray-200",
-    "[&>path:first-of-type]:stroke-gray-200",
-    "[&>path:last-of-type]:stroke-gray-200",
-  ),
-  [PopoverVariants.WHITE]: classNames(
-    "fill-white",
-    "[&>path:first-of-type]:stroke-white",
-    "[&>path:last-of-type]:stroke-white",
-  ),
-  [PopoverVariants.NONE]: "",
-};
-
-export const getPopoverVariantClassName = (
-  variant: PopoverVariant,
-  className?: ClassName,
-): string => PopoverVariantClassNames[variant](className);
-
-export const getPopoverArrowVariantClassName = (variant: PopoverVariant): string =>
-  PopoverVariantArrowClassNames[variant];
 
 export type PopoverRenderProps = {
   readonly isOpen: boolean;
@@ -70,8 +18,13 @@ export type PopoverRenderProps = {
 };
 
 export type FloatingContentRenderProps = {
+  readonly isOpen: boolean;
   readonly params: Record<string, unknown>;
   readonly styles: CSSProperties;
+  readonly setIsOpen: (
+    v: boolean,
+    evt: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
+  ) => void;
   readonly ref: (node: HTMLElement | null) => void;
 };
 
@@ -118,16 +71,16 @@ export interface FloatingContext {
   readonly floatingStyles: React.CSSProperties;
   readonly context: RootFloatingContext;
   readonly refs: ExtendedRefs<ReferenceType>;
-  readonly setIsOpen: (v: boolean, evt: Event | React.MouseEvent<HTMLButtonElement>) => void;
+  readonly setIsOpen: (
+    v: boolean,
+    evt: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
+  ) => void;
 }
 
 export interface PopoverContext extends FloatingContext {
   readonly arrowRef: RefObject<SVGSVGElement>;
 }
 
-export interface DialogContext extends FloatingContext {
-  readonly titleId: string | undefined;
-  readonly contentId: string | undefined;
-  readonly setTitleId: Dispatch<SetStateAction<string | undefined>>;
-  readonly setContentId: Dispatch<SetStateAction<string | undefined>>;
-}
+export type PopoverContentRenderFn = (props: FloatingContentRenderProps) => JSX.Element;
+
+export type PopoverContent = JSX.Element | PopoverContentRenderFn;

@@ -1,4 +1,4 @@
-import { type ProgrammingLanguage, getProgrammingLanguage } from "~/prisma/model";
+import { type ProgrammingLanguage, ProgrammingLanguages } from "~/prisma/model";
 
 import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";
@@ -11,7 +11,7 @@ export const ProgrammingLanguageBadge = ({
   language,
   ...props
 }: ProgrammingLanguageBadgeProps): JSX.Element => {
-  const config = getProgrammingLanguage(language);
+  const config = ProgrammingLanguages.getModel(language);
   return (
     <Badge
       {...props}
