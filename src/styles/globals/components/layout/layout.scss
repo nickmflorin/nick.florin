@@ -2,8 +2,8 @@
 @use "./constants" as constants;
 
 .layout {
-  @include partials.fully-constrained-dimension(height, 100vh);
-  @include partials.fully-constrained-dimension(width, 100vw);
+  @include partials.fully-constrained-dimension(height, 100dvh);
+  @include partials.fully-constrained-dimension(width, 100dvw);
 
   background-color: theme("colors.app-background");
   display: flex;
