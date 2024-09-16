@@ -1,4 +1,3 @@
-"use client";
 import { getCompanies } from "~/actions/fetches/companies";
 import { getSchools } from "~/actions/fetches/schools";
 

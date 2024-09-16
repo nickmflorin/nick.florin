@@ -12,6 +12,7 @@ import { Avatar } from "~/components/images/Avatar";
 import { type ISidebarItem, flattenSidebarItems } from "~/components/layout/types";
 import { Menu } from "~/components/menus/Menu";
 import { Label, Text } from "~/components/typography";
+import { useUserProfile } from "~/hooks";
 
 const OrganizationsMenuItemGroup = dynamic(() =>
   import("./OrganizationsMenuItemGroup").then(mod => mod.OrganizationsMenuItemGroup),
@@ -20,14 +21,14 @@ const OrganizationsMenuItemGroup = dynamic(() =>
 export interface SiteMenuProps {
   readonly nav?: ISidebarItem[];
   readonly resume: BrandResume | null;
-  readonly onOpenDialog: () => void;
   readonly onClose: (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
   ) => void;
 }
 
-export const SiteMenu = ({ nav, resume, onClose, onOpenDialog }: SiteMenuProps) => {
+export const SiteMenu = ({ nav, resume, onClose }: SiteMenuProps) => {
   const { isSignedIn, user } = useUser();
+  const { open } = useUserProfile();
 
   return (
     <Menu className="site-menu">
@@ -93,10 +94,8 @@ export const SiteMenu = ({ nav, resume, onClose, onOpenDialog }: SiteMenuProps) 
                 size="medium"
                 element="button"
                 onClick={e => {
-                  onOpenDialog();
-                  setTimeout(() => {
-                    onClose(e);
-                  });
+                  open();
+                  onClose(e);
                 }}
                 className="w-full"
               >

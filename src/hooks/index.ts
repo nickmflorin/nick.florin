@@ -9,3 +9,4 @@ export * from "./use-unmount";
 export * from "./use-navigation-item";
 export * from "./use-nav-menu";
 export * from "./use-navigation";
+export * from "./use-user-profile";

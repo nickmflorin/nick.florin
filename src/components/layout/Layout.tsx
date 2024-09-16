@@ -16,6 +16,10 @@ const SiteNavMenuOverlay = dynamic(
   () => import("~/features/site/components/SiteNavMenuOverlay").then(mod => mod.SiteNavMenuOverlay),
   { ssr: false },
 );
+const UserProfile = dynamic(
+  () => import("~/features/site/components/UserProfile").then(mod => mod.UserProfile),
+  { ssr: false },
+);
 
 export interface LayoutProps {
   readonly children: ReactNode;
@@ -39,6 +43,7 @@ export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Elemen
         <Navigating>{children}</Navigating>
         <SiteNavMenuOverlay />
         <ToastContainer />
+        <UserProfile />
       </main>
       <LayoutDrawer />
     </div>

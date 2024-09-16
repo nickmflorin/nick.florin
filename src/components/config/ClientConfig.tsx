@@ -15,6 +15,9 @@ const NavigationProvider = dynamic(() => import("./NavigationProvider"), {
 const NavMenuProvider = dynamic(() => import("./NavMenuProvider"), {
   ssr: false,
 });
+const UserProfileProvider = dynamic(() => import("./UserProfileProvider"), {
+  ssr: false,
+});
 
 export interface ClientConfigProps {
   readonly children: ReactNode;
@@ -26,9 +29,11 @@ function ClientConfig(props: ClientConfigProps) {
       <MantineProvider>
         <NavigationProvider>
           <NavMenuProvider>
-            <DrawersProvider>
-              <TourProvider>{props.children}</TourProvider>
-            </DrawersProvider>
+            <UserProfileProvider>
+              <DrawersProvider>
+                <TourProvider>{props.children}</TourProvider>
+              </DrawersProvider>
+            </UserProfileProvider>
           </NavMenuProvider>
         </NavigationProvider>
       </MantineProvider>

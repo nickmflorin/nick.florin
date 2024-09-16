@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import { type INavMenuContext, type INavigationContext } from "./types";
+import { type INavMenuContext, type INavigationContext, type IUserProfileContext } from "./types";
 
 export const NavigationContext = createContext<INavigationContext>({
   isInScope: false,
@@ -17,4 +17,11 @@ export const NavMenuContext = createContext<INavMenuContext>({
   close: () => {},
   toggle: () => {},
   setIsOpen: () => {},
+});
+
+export const UserProfileContext = createContext<IUserProfileContext>({
+  isInScope: false,
+  isOpen: false,
+  open: () => {},
+  close: () => {},
 });
