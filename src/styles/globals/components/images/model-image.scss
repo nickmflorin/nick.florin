@@ -1,6 +1,6 @@
 @use "partials";
-@use "./radii" as radii;
-@use "./typography" as typography;
+@use "../radii" as radii;
+@use "../typography" as typography;
 
 .model-image {
   display: flex;

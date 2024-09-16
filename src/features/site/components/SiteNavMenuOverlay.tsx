@@ -5,7 +5,7 @@ import { MobileNavigationCutoff } from "~/components/constants";
 import { useNavMenu } from "~/hooks";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
-export const LayoutMenuOverlay = () => {
+export const SiteNavMenuOverlay = () => {
   const { isLessThanOrEqualTo } = useScreenSizes();
   const { isOpen, close } = useNavMenu();
 

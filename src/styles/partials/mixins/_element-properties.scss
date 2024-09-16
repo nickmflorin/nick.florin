@@ -21,6 +21,13 @@
   max-#{$dimension}: $value;
 }
 
+@mixin clip-path-radius($value) {
+  -o-clip-path: inset(0px round $value);
+  -moz-clip-path: inset(0px round $value);
+  -webkit-clip-path: inset(0px round $value);
+  clip-path: inset(0px round $value);
+}
+
 @mixin transition($value) {
   -webkit-transition: $value;
   -moz-transition: $value;

@@ -7,7 +7,7 @@ import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import { Popover } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-import { MenuContainer } from "~/components/menus/MenuContainer";
+import { Menu } from "~/components/menus/Menu";
 
 import { CompaniesSchoolsMenuFooter } from "./CompaniesSchoolsMenuFooter";
 import { type ModelType } from "./types";
@@ -29,8 +29,8 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
       content={content}
       withArrow={false}
       outerContent={({ children }) => (
-        <PopoverContent className="p-[0px] rounded-md overflow-hidden" variant="white">
-          <MenuContainer className="box-shadow-none">
+        <PopoverContent className="p-[0px] rounded-md overflow-hidden">
+          <Menu className="box-shadow-none">
             {children}
             <CompaniesSchoolsMenuFooter
               onCreate={() => {
@@ -43,7 +43,7 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
                 }
               }}
             />
-          </MenuContainer>
+          </Menu>
         </PopoverContent>
       )}
       placement="bottom-end"

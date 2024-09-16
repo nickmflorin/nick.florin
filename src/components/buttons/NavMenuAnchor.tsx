@@ -49,9 +49,9 @@ export const InternalNavMenuAnchor = forwardRef<
       )}
       ref={ref}
       href={href}
-      size="xlarge"
+      size="medium"
       iconSize="medium"
-      fontSize="md"
+      fontSize="sm"
       icon={item.icon}
       isActive={isActive}
     >
@@ -74,9 +74,9 @@ export const ExternalNavMenuAnchor = forwardRef<
     ref={ref}
     element="a"
     href={item.href}
-    size="xlarge"
+    size="medium"
     iconSize="medium"
-    fontSize="md"
+    fontSize="sm"
     icon={item.icon}
     openInNewTab
   >

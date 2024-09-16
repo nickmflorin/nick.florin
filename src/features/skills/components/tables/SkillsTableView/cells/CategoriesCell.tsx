@@ -1,5 +1,12 @@
 "use client";
-import { type ApiSkill, type BrandSkill } from "~/prisma/model";
+import type { EnumeratedLiteralsModel } from "enumerated-literals";
+
+import {
+  type ApiSkill,
+  type BrandSkill,
+  type SkillCategory,
+  type SkillCategories,
+} from "~/prisma/model";
 
 import { updateSkill } from "~/actions/mutations/skills";
 
@@ -11,16 +18,12 @@ interface CategoriesCellProps {
 }
 
 export const CategoriesCell = ({ skill }: CategoriesCellProps): JSX.Element => (
-  <SelectCell<
-    { isMulti: true },
-    ApiSkill<["experiences", "educations", "projects", "repositories"]>,
-    "categories",
-    BrandSkill
-  >
+  <SelectCell<"multi", EnumeratedLiteralsModel<typeof SkillCategories>, SkillCategory, BrandSkill>
     component={SkillCategorySelect}
-    attribute="categories"
+    value={skill.categories}
     model={skill}
-    options={{ isMulti: true }}
+    behavior="multi"
+    attribute="categories"
     action={async v => await updateSkill(skill.id, { categories: v })}
     errorMessage="There was an error updating the skill."
   />

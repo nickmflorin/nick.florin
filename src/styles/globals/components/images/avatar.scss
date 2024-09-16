@@ -1,0 +1,63 @@
+@use "partials";
+@use "../radii" as radii;
+
+@mixin avatar-radius($value) {
+  @include partials.border-radius($value);
+  // The reasoning is unclear, but it appears that the border-radius property must be applied
+  // to work on Safari or iOS devices, whereas the clip-path property must be defined to
+  // work on Chrome.
+  @include partials.clip-path-radius($value);
+}
+
+.avatar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  user-select: none;
+  font-size: theme("fontSize.sm.0");
+  font-weight: theme("fontWeight.medium");
+  color: theme("colors.body");
+
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+
+  > .avatar__image {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  @include radii.with-radius using ($size, $value) {
+    &--radius-#{$size} {
+      @include avatar-radius($value);
+      > .avatar__image {
+        @include avatar-radius($value);
+      }
+    }
+  }
+
+  &.avatar--without-image {
+    background-color: theme("colors.gray.200");
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 6px;
+
+    @include radii.with-radius using ($size, $value) {
+      @include avatar-radius($value);
+      &.avatar--radius-#{$size} {
+        @include avatar-radius($value);
+      }
+    }
+
+    > .icon {
+      color: inherit;
+    }
+  }
+}

@@ -15,6 +15,7 @@ export const useTour = () => {
   const observer = useRef<MutationObserver | null>(null);
   const [waitingForTour, setWaitingForTour] = useState(false);
   const { isLessThanOrEqualTo } = useScreenSizes();
+  const [error, setError] = useState<string | null>(null);
 
   const removeMutationObserver = useCallback(() => {
     observer.current?.disconnect();
@@ -32,6 +33,9 @@ export const useTour = () => {
             "Could not find button with ID 'site-dropdown-menu-button' in DOM.  Tour " +
               "cannot be started.",
           );
+          setError(
+            "There was an error initializing the tour.  Do not worry - we are working on a fix!",
+          );
           return _setTourIsOpen(false);
         }
 
@@ -41,9 +45,11 @@ export const useTour = () => {
           if (divElement) {
             observer.current?.disconnect();
             observer.current = null;
-            _setTourIsOpen(true);
-            _setModalIsOpen(false);
-            setWaitingForTour(false);
+            setTimeout(() => {
+              _setTourIsOpen(true);
+              _setModalIsOpen(false);
+              setWaitingForTour(false);
+            }, 1000);
           }
         });
         const node = document.getElementsByClassName("header__right")[0];
@@ -57,6 +63,9 @@ export const useTour = () => {
           logger.error(
             "Could not find 'header__right' element in DOM - the drawer cannot be observed and " +
               "the tour must be ended.",
+          );
+          setError(
+            "There was an error initializing the tour.  Do not worry - we are working on a fix!",
           );
         }
       }
@@ -92,5 +101,5 @@ export const useTour = () => {
     };
   }, [cookies, setModalIsOpen, isLessThanOrEqualTo]);
 
-  return { modalIsOpen, waitingForTour, setTourIsOpen, setModalIsOpen };
+  return { error, modalIsOpen, waitingForTour, setTourIsOpen, setModalIsOpen };
 };

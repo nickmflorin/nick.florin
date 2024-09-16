@@ -18,7 +18,7 @@ export const useExperienceForm = ({ experience }: UseExperienceFormConfig) =>
       isRemote: experience?.isRemote ?? false,
       startDate: experience?.startDate ?? new Date(),
       endDate: experience?.endDate ?? null,
-      skills: experience?.skills ?? [],
+      skills: experience?.skills.map(sk => sk.id) ?? [],
       visible: experience?.visible ?? true,
       highlighted: experience?.highlighted ?? false,
     },

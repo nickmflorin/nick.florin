@@ -33,6 +33,11 @@ const config = {
         hostname: "images.clerk.dev",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+        port: "",
+      },
     ],
   },
   redirects: async () => [

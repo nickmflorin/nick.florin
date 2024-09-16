@@ -50,7 +50,6 @@ export const DeleteCompanySchoolButton = <M extends ModelType>({
 
   return (
     <Tooltip
-      variant="light"
       content={<Text fontSize="sm">{TooltipMessages[modelType](relatedCount)}</Text>}
       isDisabled={relatedCount === 0}
       inPortal

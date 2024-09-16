@@ -1,0 +1,20 @@
+.dialog__overlay {
+  .dialog.user-profile-dialog {
+    padding: 0px;
+
+    > .dialog__content {
+      > .cl-userProfile-root {
+        > .cl-cardBox {
+          box-shadow: none;
+          border-radius: 0px;
+          border: none;
+
+          > .cl-scrollBox {
+            box-shadow: none;
+            border-radius: 0px;
+          }
+        }
+      }
+    }
+  }
+}

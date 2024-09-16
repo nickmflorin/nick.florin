@@ -32,7 +32,7 @@ export const UpdateRepositoryForm = ({
       ...repository,
       slug: repository.slug,
       projects: repository.projects.map(p => p.id),
-      skills: repository.skills.map(sk => ({ id: sk.id, label: sk.label, value: sk.id })),
+      skills: repository.skills.map(sk => sk.id),
     });
   }, [repository, props.form.setValues]);
 
@@ -42,10 +42,7 @@ export const UpdateRepositoryForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateRepositoryWithId({
-          ...data,
-          skills: data.skills.map(sk => sk.id),
-        });
+        const response = await updateRepositoryWithId(data);
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

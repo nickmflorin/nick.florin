@@ -35,7 +35,7 @@ export const UpdateCourseForm = ({
       name: course.name,
       slug: course.slug,
       education: course.education.id,
-      skills: course.skills.map(s => ({ id: s.id, label: s.label, value: s.id })),
+      skills: course.skills.map(s => s.id),
     });
   }, [course, form.setValues]);
 
@@ -46,10 +46,7 @@ export const UpdateCourseForm = ({
       isLoading={pending}
       form={form}
       action={async (data, form) => {
-        const response = await updateCourseWithId({
-          ...data,
-          skills: data.skills.map(sk => sk.id),
-        });
+        const response = await updateCourseWithId(data);
         if (isApiClientErrorJson(response)) {
           form.handleApiError(response);
         } else {

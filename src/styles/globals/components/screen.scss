@@ -1,0 +1,36 @@
+@mixin screen-w() {
+  width: 100vw;
+  max-width: 100vw;
+  min-width: 100vw;
+
+  @supports (max-width: 100dvw) {
+    max-width: 100dvw;
+  }
+  @supports (min-width: 100dvw) {
+    min-width: 100dvw;
+  }
+  @supports (width: 100dvw) {
+    width: 100dvw;
+  }
+}
+
+@mixin screen-h() {
+  height: 100vh;
+  max-height: 100vh;
+  min-height: 100vh;
+
+  @supports (max-height: 100dvh) {
+    max-height: 100dvh;
+  }
+  @supports (min-height: 100dvh) {
+    min-height: 100dvh;
+  }
+  @supports (height: 100dvh) {
+    height: 100dvh;
+  }
+}
+
+@mixin screen() {
+  @include screen-w();
+  @include screen-h();
+}

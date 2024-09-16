@@ -56,6 +56,7 @@ const getImageVar = <K extends keyof ImageProp>(
   return props[k] as ImageProp[K];
 };
 
+/** @deprecated */
 export const ModelImage = ({
   fallbackIcon = { name: "image" },
   alt = "",

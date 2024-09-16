@@ -6,13 +6,12 @@ import { useOrganization, useOrganizationList } from "@clerk/nextjs";
 import { Icon } from "~/components/icons/Icon";
 import Spinner from "~/components/icons/Spinner";
 import { MenuItem } from "~/components/menus/MenuItem";
-import { MenuItemGroup } from "~/components/menus/MenuItemGroup";
-import type { MenuItemGroupComponentProps } from "~/components/menus/types";
+import { MenuItemGroup, type MenuItemGroupProps } from "~/components/menus/MenuItemGroup";
 
 export interface OrganizationsMenuItemGroupProps
   extends Omit<
-    MenuItemGroupComponentProps,
-    "label" | "contentIsLoading" | "labelContainerClassName" | "children"
+    MenuItemGroupProps,
+    "label" | "isLoading" | "labelContainerClassName" | "children"
   > {}
 
 export const OrganizationsMenuItemGroup = (props: OrganizationsMenuItemGroupProps) => {
@@ -28,8 +27,8 @@ export const OrganizationsMenuItemGroup = (props: OrganizationsMenuItemGroupProp
     <MenuItemGroup
       {...props}
       label="Organizations"
-      contentIsLoading={!isLoaded || !orgIsLoaded}
-      labelContainerClassName="px-[18px] py-[6px]"
+      isLoading={!isLoaded || !orgIsLoaded}
+      labelContainerClassName="px-[6px] py-[4px]"
     >
       {(userMemberships.data ?? [])?.map(mem => (
         <MenuItem

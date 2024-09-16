@@ -5,25 +5,24 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { useNavMenu } from "~/hooks";
 
-export interface LayoutMenuWrapperProps {
+export interface SiteMenuWrapperProps {
   readonly children: ReactNode;
 }
 
-export const LayoutMenuWrapper = ({ children }: LayoutMenuWrapperProps) => {
+export const SiteNavMenuWrapper = ({ children }: SiteMenuWrapperProps) => {
   const { isOpen } = useNavMenu();
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          // ref={ref}
           transition={{ type: "spring", bounce: 0 }}
-          className="layout-menu-wrapper"
+          className="site-nav-menu-wrapper"
           initial={{ x: "100%" }}
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
         >
-          <div className="layout-menu-container">{children}</div>
+          <div className="site-nav-menu-container">{children}</div>
         </motion.div>
       )}
     </AnimatePresence>

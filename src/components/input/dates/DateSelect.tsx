@@ -12,8 +12,8 @@ import { PopoverContent } from "~/components/floating/PopoverContent";
 import { Loading } from "~/components/loading/Loading";
 import { type ComponentProps } from "~/components/types";
 
-import { BaseSelectInput } from "../select/BaseSelectInput";
-import { SelectPopover } from "../select/SelectPopover";
+import { BasicSelectInput, type BasicSelectInputProps } from "../select/BasicSelectInput";
+import { SelectPopover, type SelectPopoverProps } from "../select/SelectPopover";
 
 import { toDateTime } from "./util";
 
@@ -22,8 +22,8 @@ const DatePicker = dynamic(() => import("./DatePicker"), {
 });
 
 export interface DateSelectProps
-  extends Optional<Omit<types.SelectPopoverProps, "content" | "isReady">, "children">,
-    Omit<types.BaseSelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
+  extends Optional<Omit<SelectPopoverProps, "content" | "isReady">, "children">,
+    Omit<BasicSelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
   readonly value: Date | string | null;
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
@@ -31,7 +31,7 @@ export interface DateSelectProps
   readonly onChange?: (v: Date | null) => void;
 }
 
-export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
+export const DateSelect = forwardRef(
   (
     {
       children,
@@ -47,9 +47,9 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
       onChange,
       ...props
     }: DateSelectProps,
-    ref: ForwardedRef<types.SelectInstance>,
+    ref: ForwardedRef<Omit<types.BasicSelectInstance, "focusInput"> | null>,
   ): JSX.Element => {
-    const internalInstance = useRef<types.SelectInstance | null>(null);
+    const internalInstance = useRef<Omit<types.BasicSelectInstance, "focusInput"> | null>(null);
 
     const [v, setV] = useState<Date | null>(toDateTime(value)?.toJSDate() ?? null);
 
@@ -73,7 +73,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
           }
         }}
         content={
-          <PopoverContent variant="white" className="select__dates-content min-h-[100px]">
+          <PopoverContent className="select__dates-content min-h-[100px]">
             <DatePicker
               value={value}
               onChange={dt => {
@@ -89,7 +89,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
       >
         {children ||
           (({ ref, params, isOpen, isLoading }) => (
-            <BaseSelectInput
+            <BasicSelectInput
               {...params}
               dynamicHeight={false}
               ref={ref}
@@ -103,7 +103,7 @@ export const DateSelect = forwardRef<types.SelectInstance, DateSelectProps>(
               className={inputClassName}
             >
               {v ? DateTime.fromJSDate(v).toFormat(formatString) : ""}
-            </BaseSelectInput>
+            </BasicSelectInput>
           ))}
       </SelectPopover>
     );

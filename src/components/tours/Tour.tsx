@@ -8,12 +8,13 @@ const WelcomeDialog = dynamic(() => import("~/components/dialogs/WelcomeDialog")
 });
 
 export const Tour = () => {
-  const { modalIsOpen, waitingForTour, setTourIsOpen, setModalIsOpen } = useTour();
+  const { error, modalIsOpen, waitingForTour, setTourIsOpen, setModalIsOpen } = useTour();
 
   if (modalIsOpen) {
     return (
       <WelcomeDialog
         isOpen={true}
+        error={error}
         waitingForTour={waitingForTour}
         onStart={() => setTourIsOpen(true)}
         onClose={() => setModalIsOpen(false)}

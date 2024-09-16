@@ -1,0 +1,17 @@
+.popover-content {
+  z-index: 50;
+  border-radius: theme("borderRadius.sm");
+  border: 1px solid theme("colors.border");
+  box-shadow: theme("boxShadow.md");
+  padding: 10px 12px;
+  background-color: theme("colors.white");
+  overflow: hidden;
+
+  &:focus {
+    outline: none !important;
+  }
+
+  > .menu {
+    max-height: inherit;
+  }
+}

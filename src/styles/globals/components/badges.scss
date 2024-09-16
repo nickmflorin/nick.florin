@@ -1,6 +1,8 @@
 @use "sass:map";
 
 @use "partials";
+
+@use "./radii" as radii;
 @use "./typography" as typography;
 
 $badge-vertical-padding: 2px;
@@ -102,7 +104,7 @@ $badge-default-size: "sm";
   outline: 0.0625rem solid transparent;
 
   > .badge__content {
-    @include badge-tag-content("badge");
+    @include badge-and-tag-content("badge");
     gap: 6px;
 
     > .badge__close-button {
@@ -112,7 +114,7 @@ $badge-default-size: "sm";
   }
 
   @include partials.border-radius($badge-default-radius);
-  @include partials.with-radius() using ($radii, $value) {
+  @include radii.with-radius() using ($radii, $value) {
     &.badge--radius-#{$radii} {
       @include partials.border-radius($value);
     }

@@ -12,64 +12,62 @@ import type {
   AllowedSelectValue,
   DataSelectChangeHandler,
   SelectBehaviorType,
+  SelectValue,
+  DataSelectModel,
 } from "~/components/input/select";
 import { type TableModel } from "~/components/tables/types";
 
-type AttributeValue<M extends TableModel, N extends keyof M> = M[N] & AllowedSelectValue;
-
-interface BaseSelectProps<B extends SelectBehaviorType, M extends TableModel, N extends keyof M> {
+interface BaseSelectProps<
+  B extends SelectBehaviorType,
+  M extends DataSelectModel<V>,
+  V extends AllowedSelectValue,
+> {
   readonly isClearable?: boolean;
   readonly menuClassName: string;
   readonly inputClassName: string;
-  readonly value: M[N] & AllowedSelectValue;
+  readonly value: SelectValue<V, B>;
   readonly behavior: B;
-  readonly onChange: DataSelectChangeHandler<
-    M,
-    { behavior: B; getItemValue: (m: M) => AttributeValue<M, N> }
-  >;
+  readonly onChange: DataSelectChangeHandler<M, { behavior: B; getItemValue: (m: M) => V }>;
 }
 
 interface SelectCellProps<
   B extends SelectBehaviorType,
-  M extends TableModel,
-  N extends keyof M,
+  M extends DataSelectModel<V>,
+  V extends AllowedSelectValue,
   T,
 > {
   readonly inputClassName?: string;
   readonly errorMessage: string;
-  readonly model: M;
+  readonly model: TableModel;
   readonly behavior: B;
-  readonly component: React.ComponentType<BaseSelectProps<B, M, N>>;
-  readonly attribute: N;
-  readonly action: (value: M[N] & AllowedSelectValue) => Promise<T | ApiClientErrorJson>;
+  readonly attribute: string;
+  readonly value: SelectValue<V, B>;
+  readonly component: React.ComponentType<BaseSelectProps<B, M, V>>;
+  readonly action: (value: SelectValue<V, B>) => Promise<T | ApiClientErrorJson>;
 }
 
 export const SelectCell = <
   B extends SelectBehaviorType,
-  M extends TableModel,
-  N extends keyof M,
+  M extends DataSelectModel<V>,
+  V extends AllowedSelectValue,
   T,
 >({
   model,
   behavior,
-  action,
-  errorMessage,
   attribute,
+  action,
+  value: _value,
+  errorMessage,
   inputClassName = "w-full",
   component: Component,
-}: SelectCellProps<B, M, N, T>): JSX.Element => {
-  const [value, setValue] = useState<AttributeValue<M, N> & AllowedSelectValue>(
-    model[attribute] as M[N] & AllowedSelectValue,
-  );
+}: SelectCellProps<B, M, V, T>): JSX.Element => {
+  const [value, setValue] = useState<SelectValue<V, B>>(_value);
   const router = useRouter();
   const [_, transition] = useTransition();
 
   useEffect(() => {
-    /* The type coercion around this is not ideal - and this was only done to make this work with
-       the newly created selects.  We should backtrack on this component itself, and rather use
-       a more explicit/less abstract approach. */
-    setValue(model[attribute] as M[N] & AllowedSelectValue);
-  }, [model, attribute]);
+    setValue(_value);
+  }, [_value]);
 
   return (
     <Component
@@ -80,12 +78,12 @@ export const SelectCell = <
       behavior={behavior}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
-        setValue(v as M[N] & AllowedSelectValue);
+        setValue(v);
         item?.setLoading(true);
 
         let response: T | ApiClientErrorJson | undefined = undefined;
         try {
-          response = await action(v as M[N] & AllowedSelectValue);
+          response = await action(v);
         } catch (e) {
           logger.error(
             `There was an error updating the ${String(attribute)} of the ${model.id}:\n${e}`,

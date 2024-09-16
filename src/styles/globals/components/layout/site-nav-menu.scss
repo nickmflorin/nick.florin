@@ -1,39 +1,39 @@
 @use "partials";
 @use "./constants" as constants;
 
-@mixin layout-menu-container {
+@mixin site-nav-menu-container {
   max-height: 100%;
   height: 100%;
-  overflow: hidden;
 }
 
-.layout-menu-wrapper {
-  @include layout-menu-container();
+.site-nav-menu-wrapper {
+  @include site-nav-menu-container();
   width: 100%;
   max-width: 320px;
 
   position: absolute;
   right: 0;
   z-index: 50;
-  // background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
-  //   theme("colors.gray.50");
   background-color: theme("colors.white");
   border-left: 1px solid theme("colors.border");
+  overflow-y: auto;
 
-  > .layout-menu-container {
-    @include layout-menu-container();
+  > .site-nav-menu-container {
+    @include site-nav-menu-container();
     @include partials.fully-constrained-dimension(width, 100%);
     position: relative;
+    overflow: hidden;
 
-    > .layout-menu {
-      @include layout-menu-container();
+    > .site-menu {
+      @include site-nav-menu-container();
       @include partials.fully-constrained-dimension(width, 100%);
+      padding: 8px;
+      overflow: hidden;
       z-index: 100;
       position: relative;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
-      padding: 8px;
     }
   }
 }

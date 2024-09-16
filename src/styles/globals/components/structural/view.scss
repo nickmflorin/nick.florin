@@ -1,0 +1,10 @@
+@use "../screen" as screen;
+
+.view {
+  &.view--screen-w {
+    @include screen.screen-w();
+  }
+  &.view--screen-h {
+    @include screen.screen-h();
+  }
+}

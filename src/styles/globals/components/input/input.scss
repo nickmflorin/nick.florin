@@ -2,6 +2,9 @@
 
 @use "partials";
 
+@use "../radii" as radii;
+@use "../typography" as typography;
+
 @use "./base" as base;
 @use "./constants" as constants;
 @use "./structure" as structure;
@@ -18,7 +21,7 @@
   @each $size in structure.$input-sizes {
     &.input--size-#{$size} {
       @include structure.input-structure($size, $type, structure.$input-default-border-radii);
-      @include partials.with-radius() using ($radii, $value) {
+      @include radii.with-radius() using ($radii, $value) {
         &.input--radius-#{$radii} {
           @include structure.input-structure($size, $type, $radii);
         }

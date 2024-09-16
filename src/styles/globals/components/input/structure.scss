@@ -3,6 +3,7 @@
 
 @use "partials";
 
+@use "../radii" as radii;
 @use "./constants" as constants;
 
 $input-sizes: ("xsmall", "small", "medium", "large", "xlarge");
@@ -101,7 +102,7 @@ $input-size-properties: (
     padding: list.nth($padding, 1) list.nth($padding, 2) + 4px;
   }
 
-  @include partials.radius($radii);
+  @include radii.radius($radii);
 
   $line-height: partials.mapget($properties, line-height, $type);
   line-height: $line-height;
