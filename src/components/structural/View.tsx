@@ -301,12 +301,13 @@ export const View = ({ children, component = DivViewComponent, ...props }: ViewP
     <Component
       style={getViewStyle(props)}
       className={classNames(
+        "view",
         _position,
         parseOverflow(props),
         parseFlex(props),
         {
-          "w-[100vw]": _fill === "screen" || props.width === "screen",
-          "h-[100vh]": _fill === "screen" || props.height === "screen",
+          "view--screen-w": _fill === "screen" || props.width === "screen",
+          "view--screen-h": _fill === "screen" || props.height === "screen",
           "h-full": _fill === "parent" || props.height === "parent",
           "w-full": _fill === "parent" || props.width === "parent",
           "max-w-full": props.maxWidth === "parent",
