@@ -59,7 +59,7 @@
       flex-grow: 100;
       // This padding prevents the right side of italic text from being cut off.
       padding-right: 1px;
-      @include typography.truncate();
+      // @include typography.truncate();
       @include inherit-properties();
     }
   }
