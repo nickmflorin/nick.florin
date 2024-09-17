@@ -38,7 +38,11 @@ export const ProjectImage = ({
       >
         <div className="project-image-wrapper">
           <ShowHide show={isLoading}>
-            <Skeleton height={400} width="100%" />
+            <Skeleton
+              height={400}
+              width="100%"
+              className="max-md:max-h-[200px] max-xs:max-h-[130px]"
+            />
           </ShowHide>
           <motion.div
             initial={{ opacity: 0 }}

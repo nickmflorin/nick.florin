@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import React, { type ReactNode } from "react";
 
 import { Skeleton } from "@mantine/core";
 
@@ -36,7 +36,7 @@ export const Caption = ({ children, centered, isLoading, ...props }: CaptionProp
               {c}
             </CaptionDescription>
           ) : (
-            <>{c}</>
+            <React.Fragment key={index}>{c}</React.Fragment>
           ),
         )}
       </ShowHide>
