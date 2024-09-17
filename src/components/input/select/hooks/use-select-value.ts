@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 
 import { isEqual } from "lodash-es";
 
@@ -14,6 +14,8 @@ import {
   type ManagedSelectValue,
   type SelectEvent,
   type SelectEventParams,
+  NOTSET,
+  type NotSet,
 } from "~/components/input/select/types";
 import type { MenuItemInstance } from "~/components/menus";
 
@@ -24,6 +26,7 @@ export interface UseSelectValueParams<V extends AllowedSelectValue, B extends Se
      provided to this hook directly when it is used outside of the Select or DataSelect's
      internals. */
   readonly __private_controlled_value__?: SelectValue<V, B>;
+  readonly isReady?: boolean;
   readonly onChange?: (value: SelectValue<V, B>, item?: MenuItemInstance) => void;
   readonly onSelect?: (value: SelectValue<V, B>, params: SelectEventParams<"select", V>) => void;
   readonly onDeselect?: (
@@ -59,7 +62,8 @@ const getInitialValue = <V extends AllowedSelectValue, B extends SelectBehaviorT
         return [] as V[] as SelectValue<V, B>;
       }
       throw new Error(
-        "For a single, non-nullable select with, the 'initialValue' prop must be defined!",
+        "For a single, non-nullable select, without a controlled value, the 'initialValue' " +
+          "prop must be defined!",
       );
     }
     return initialValue;
@@ -81,19 +85,20 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
   initialValue,
   behavior,
   __private_controlled_value__,
+  isReady = true,
   onEvent,
   onSelect,
   onClear,
   onDeselect,
   onChange,
 }: UseSelectValueParams<V, B>): ManagedSelectValue<V, B> => {
-  const [_value, __setValue] = useState<SelectValue<V, B> | Controlled>(() =>
-    getInitialValue({ behavior, initialValue, __private_controlled_value__ }),
+  const [_value, __setValue] = useState<SelectValue<V, B> | Controlled | NotSet>(() =>
+    isReady ? getInitialValue({ behavior, initialValue, __private_controlled_value__ }) : NOTSET,
   );
 
   const _setValue = useCallback(
     (
-      v: SelectValue<V, B> | ((curr: SelectValue<V, B>) => SelectValue<V, B>),
+      v: SelectValue<V, B> | ((curr: SelectValue<V, B> | NotSet) => SelectValue<V, B>),
       options?: { __private_ignore_controlled_state__: boolean },
     ) => {
       __setValue(curr => {
@@ -149,23 +154,33 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
       params: SelectEventParams<E, V>,
       item?: MenuItemInstance,
     ) => {
-      let updated: SelectValue<V, B>;
-      if (typeof v === "function") {
-        updated = v(value);
-      } else {
-        updated = v;
-      }
-      /* If the Select is being used in a controlled fashion, do not update the value maintained
+      if (value !== NOTSET) {
+        let updated: SelectValue<V, B>;
+        if (typeof v === "function") {
+          updated = v(value);
+        } else {
+          updated = v;
+        }
+        /* If the Select is being used in a controlled fashion, do not update the value maintained
          internally in state.  It is important that the internal value be a constant value of
          type Controlled if the Select is being used in a controlled fashion. */
-      if (!isControlled) {
-        _setValue(updated);
+        if (!isControlled) {
+          _setValue(updated);
+        }
+        onChange?.(updated, item);
+        return onAction(event, updated, params);
       }
-      onChange?.(updated, item);
-      return onAction(event, updated, params);
+      throw new Error("Cannot set the value of a select until the 'isReady' flag is 'true'.");
     },
     [value, isControlled, _setValue, onAction, onChange],
   );
+
+  useEffect(() => {
+    if (isReady && __private_controlled_value__ !== undefined) {
+      __setValue(__private_controlled_value__);
+    }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [__private_controlled_value__, isReady]);
 
   const _isSelected = useCallback(
     (v: V, val: SelectValue<V, B>): boolean | Indeterminate => {
@@ -228,131 +243,140 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
 
   const isSelected = useCallback(
     (v: V): boolean => {
-      const selected = _isSelected(v, value);
-      /* If the selected state is indeterminate, it means there is corrupted state.  In this case,
-         we have to assume that the value is not selected.  This may lead to buggy behavior, but
-         it is better than allowing the inconsistent state to result in a hard error. */
-      return selected === INDETERMINATE ? false : selected;
+      if (value !== NOTSET) {
+        const selected = _isSelected(v, value);
+        /* If the selected state is indeterminate, it means there is corrupted state.  In this case,
+           we have to assume that the value is not selected.  This may lead to buggy behavior, but
+           it is better than allowing the inconsistent state to result in a hard error. */
+        return selected === INDETERMINATE ? false : selected;
+      }
+      return false;
     },
     [value, _isSelected],
   );
 
   const select = useCallback(
     (v: V, item?: MenuItemInstance) => {
-      switch (behavior) {
-        case SelectBehaviorTypes.MULTI: {
-          const selected = _isSelected(v, value);
-          /* If the selected state is corrupted, simply return just the current value being
+      if (value !== NOTSET) {
+        switch (behavior) {
+          case SelectBehaviorTypes.MULTI: {
+            const selected = _isSelected(v, value);
+            /* If the selected state is corrupted, simply return just the current value being
              selected as a fallback. */
-          if (selected === INDETERMINATE) {
-            return setValue([v] as SelectValue<V, B>, "select", { selected: v }, item);
-          } else if (selected) {
-            logger.warn(
-              "Inconsistent State: Cannot select an already-selected value!  This either " +
-                "indicates that there are duplicate values for the same item in the select or " +
-                "that the select is being performed for an already selected item.",
-            );
-            return;
-          }
-          /* This type coercion is safe, because if the previous value were not an array, the
+            if (selected === INDETERMINATE) {
+              return setValue([v] as SelectValue<V, B>, "select", { selected: v }, item);
+            } else if (selected) {
+              logger.warn(
+                "Inconsistent State: Cannot select an already-selected value!  This either " +
+                  "indicates that there are duplicate values for the same item in the select or " +
+                  "that the select is being performed for an already selected item.",
+              );
+              return;
+            }
+            /* This type coercion is safe, because if the previous value were not an array, the
              '_isSelected' method would have returned 'INDETERMINATE'. */
-          return setValue(
-            [...(value as V[]), v] as SelectValue<V, B>,
-            "select",
-            { selected: v },
-            item,
-          );
-        }
-        case SelectBehaviorTypes.SINGLE: {
-          const selected = _isSelected(v, value);
-          /* If the selected state is corrupted, simply return just the current value being
-             selected as a fallback. */
-          if (selected === INDETERMINATE) {
-            return setValue(v as SelectValue<V, B>, "select", { selected: v }, item);
-          } else if (selected) {
-            logger.warn(
-              "Inconsistent State: Cannot select an already-selected value!  This either " +
-                "indicates that there are duplicate values for the same item in the select or " +
-                "that the select is being performed for an already selected item.",
+            return setValue(
+              [...(value as V[]), v] as SelectValue<V, B>,
+              "select",
+              { selected: v },
+              item,
             );
-            return;
           }
-          return setValue(v as SelectValue<V, B>, "select", { selected: v }, item);
-        }
-        case SelectBehaviorTypes.SINGLE_NULLABLE: {
-          const selected = _isSelected(v, value);
-          /* If the selected state is corrupted, simply return just the current value being
+          case SelectBehaviorTypes.SINGLE: {
+            const selected = _isSelected(v, value);
+            /* If the selected state is corrupted, simply return just the current value being
              selected as a fallback. */
-          if (selected === INDETERMINATE) {
+            if (selected === INDETERMINATE) {
+              return setValue(v as SelectValue<V, B>, "select", { selected: v }, item);
+            } else if (selected) {
+              logger.warn(
+                "Inconsistent State: Cannot select an already-selected value!  This either " +
+                  "indicates that there are duplicate values for the same item in the select or " +
+                  "that the select is being performed for an already selected item.",
+              );
+              return;
+            }
             return setValue(v as SelectValue<V, B>, "select", { selected: v }, item);
-          } else if (selected) {
-            logger.warn(
-              "Inconsistent State: Cannot select an already-selected value!  This either " +
-                "indicates that there are duplicate values for the same item in the select or " +
-                "that the select is being performed for an already selected item.",
-            );
-            return;
           }
-          return setValue(v as SelectValue<V, B>, "select", { selected: v }, item);
+          case SelectBehaviorTypes.SINGLE_NULLABLE: {
+            const selected = _isSelected(v, value);
+            /* If the selected state is corrupted, simply return just the current value being
+             selected as a fallback. */
+            if (selected === INDETERMINATE) {
+              return setValue(v as SelectValue<V, B>, "select", { selected: v }, item);
+            } else if (selected) {
+              logger.warn(
+                "Inconsistent State: Cannot select an already-selected value!  This either " +
+                  "indicates that there are duplicate values for the same item in the select or " +
+                  "that the select is being performed for an already selected item.",
+              );
+              return;
+            }
+            return setValue(v as SelectValue<V, B>, "select", { selected: v }, item);
+          }
         }
       }
+      throw new Error("Cannot select a value until the 'isReady' flag is 'true'.");
     },
     [behavior, value, _isSelected, setValue],
   );
 
   const deselect = useCallback(
     (v: V, item?: MenuItemInstance) => {
-      switch (behavior) {
-        case SelectBehaviorTypes.MULTI:
-          return setValue(
-            (prev): SelectValue<V, B> => {
-              const selected = _isSelected(v, prev);
-              /* If the selected state is corrupted, simply return just an empty value as a
+      if (value !== NOTSET) {
+        switch (behavior) {
+          case SelectBehaviorTypes.MULTI:
+            return setValue(
+              (prev): SelectValue<V, B> => {
+                const selected = _isSelected(v, prev);
+                /* If the selected state is corrupted, simply return just an empty value as a
                  fallback. */
-              if (selected === INDETERMINATE) {
-                return [] as V[] as SelectValue<V, B>;
-              } else if (!selected) {
-                logger.warn(
-                  "Inconsistent State: Cannot deselect an unselected value!  This either " +
-                    "indicates that there are duplicate values for the same item in the select " +
-                    "or that the deselect is being performed for an unselected item.",
-                );
-                return prev;
-              }
-              /* This type coercion is safe, because if the previous value were not an array, the
+                if (selected === INDETERMINATE) {
+                  return [] as V[] as SelectValue<V, B>;
+                } else if (!selected) {
+                  logger.warn(
+                    "Inconsistent State: Cannot deselect an unselected value!  This either " +
+                      "indicates that there are duplicate values for the same item in the select " +
+                      "or that the deselect is being performed for an unselected item.",
+                  );
+                  return prev;
+                }
+                /* This type coercion is safe, because if the previous value were not an array, the
                '_isSelected' method would have returned 'INDETERMINATE'. */
-              return (prev as V[]).filter(vi => !isEqual(vi, v)) as SelectValue<V, B>;
-            },
-            "deselect",
-            { deselected: v },
-            item,
-          );
-        case SelectBehaviorTypes.SINGLE:
-          return logger.warn("Cannot deselect an item in a single non-nullable select!");
-        case SelectBehaviorTypes.SINGLE_NULLABLE:
-          return setValue(
-            (prev): SelectValue<V, B> => {
-              const selected = _isSelected(v, prev);
-              /* If the selected state is corrupted, simply return null as a fallback. */
-              if (selected === INDETERMINATE) {
+                return (prev as V[]).filter(vi => !isEqual(vi, v)) as SelectValue<V, B>;
+              },
+              "deselect",
+              { deselected: v },
+              item,
+            );
+          case SelectBehaviorTypes.SINGLE:
+            return logger.warn("Cannot deselect an item in a single non-nullable select!");
+          case SelectBehaviorTypes.SINGLE_NULLABLE:
+            return setValue(
+              (prev): SelectValue<V, B> => {
+                const selected = _isSelected(v, prev);
+                /* If the selected state is corrupted, simply return null as a fallback. */
+                if (selected === INDETERMINATE) {
+                  return null as SelectValue<V, B>;
+                } else if (!selected) {
+                  logger.warn(
+                    "Inconsistent State: Cannot deselect an unselected value!  This either " +
+                      "indicates that there are duplicate values for the same item in the select " +
+                      "or that the deselect is being performed for an unselected item.",
+                  );
+                  return prev;
+                }
                 return null as SelectValue<V, B>;
-              } else if (!selected) {
-                logger.warn(
-                  "Inconsistent State: Cannot deselect an unselected value!  This either " +
-                    "indicates that there are duplicate values for the same item in the select " +
-                    "or that the deselect is being performed for an unselected item.",
-                );
-                return prev;
-              }
-              return null as SelectValue<V, B>;
-            },
-            "deselect",
-            { deselected: v },
-            item,
-          );
+              },
+              "deselect",
+              { deselected: v },
+              item,
+            );
+        }
       }
+      throw new Error("Cannot deselect a value until the 'isReady' flag is 'true'.");
     },
-    [behavior, _isSelected, setValue],
+    [behavior, value, _isSelected, setValue],
   );
 
   const toggle = useCallback(

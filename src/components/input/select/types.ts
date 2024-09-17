@@ -131,7 +131,7 @@ export const NOTSET = "__NOTSET__" as const;
 export type NotSet = typeof NOTSET;
 
 export interface ManagedSelectValue<V extends AllowedSelectValue, B extends SelectBehaviorType> {
-  readonly value: SelectValue<V, B>;
+  readonly value: SelectValue<V, B> | NotSet;
   readonly set: (
     value: SelectValue<V, B>,
     options?: { __private_ignore_controlled_state__: boolean },

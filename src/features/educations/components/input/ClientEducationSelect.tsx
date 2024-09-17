@@ -36,7 +36,7 @@ export const ClientEducationSelect = forwardRef(
       <EducationSelect
         {...props}
         ref={ref}
-        isReady={data !== undefined}
+        isReady={data !== undefined && props.isReady}
         data={data ?? []}
         isDisabled={error !== undefined}
         isLocked={isLoading}

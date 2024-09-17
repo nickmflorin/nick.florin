@@ -39,7 +39,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
           value={value}
           visibility="admin"
           behavior="single"
-          isClearable
+          isReady={value !== undefined}
           useAbbreviatedOptionLabels={false}
           onChange={onChange}
           inPortal

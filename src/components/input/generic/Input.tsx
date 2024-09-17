@@ -112,7 +112,7 @@ export const Input = forwardRef<HTMLDivElement, InputProps>(
             <CaretIcon
               key={actions.length + 2}
               open={isCaretOpen}
-              className="text-gray-700 h-full aspect-square w-auto p-[6px]"
+              className="text-gray-700 aspect-square w-auto h-[22px] p-[4px]"
               size="14px"
               /* We have to pass these props to the CaretIcon component such that the CaretIcon's
                  outer <div /> also picks up click events in cases where the Input is being used for

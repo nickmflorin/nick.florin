@@ -29,30 +29,19 @@ const getInitialModelValue = <
   O extends types.DataSelectOptions<M>,
 >({
   options,
-  initialValue,
+  value,
   getModel,
-}: Pick<UseSelectModelValueParams<M, O>, "options" | "initialValue"> & {
+}: Pick<UseSelectModelValueParams<M, O>, "options"> & {
+  readonly value: types.DataSelectValue<M, O>;
   readonly getModel: (v: types.InferredDataSelectV<M, O>) => M | null;
 }): types.DataSelectModelValue<M, O> => {
-  const initial = initialValue as
-    | types.InferredDataSelectV<M, O>
-    | null
-    | types.InferredDataSelectV<M, O>[]
-    | undefined;
-  if (initial === undefined) {
-    if (options.behavior === types.SelectBehaviorTypes.SINGLE_NULLABLE) {
-      return null as types.DataSelectModelValue<M, O>;
-    } else if (options.behavior === types.SelectBehaviorTypes.MULTI) {
-      return [] as M[] as types.DataSelectModelValue<M, O>;
+  const v = value as types.InferredDataSelectV<M, O> | null | types.InferredDataSelectV<M, O>[];
+  if (Array.isArray(v)) {
+    if (options.behavior !== types.SelectBehaviorTypes.MULTI) {
+      throw new Error("Encountered an iterable value for a single select!");
     }
-    /* Note: This error will also likely be thrown in the 'use-select-value' hook that this
-       hook wraps. */
-    throw new Error(
-      "For a single, non-nullable select with, the 'initialValue' prop must be defined!",
-    );
-  } else if (Array.isArray(initial)) {
-    return initial.reduce((prev, v) => {
-      const m = getModel(v);
+    return v.reduce((prev, vi) => {
+      const m = getModel(vi);
       if (m !== null) {
         return [...prev, m];
       }
@@ -60,20 +49,26 @@ const getInitialModelValue = <
          which can happen if the 'isReady' flag is not initially set to 'false' for asynchronously
          loaded data. */
       logger.error(
-        `Could not find a model associated with select's initial value '${v}' in the data. ` +
+        `Could not find a model associated with select's initial value '${vi}' in the data. ` +
           "This may lead to buggy behavior.",
       );
       return prev;
     }, [] as M[]) as types.DataSelectModelValue<M, O>;
-  } else if (initial !== null) {
-    const m = getModel(initial);
+  } else if (v !== null) {
+    if (
+      options.behavior !== types.SelectBehaviorTypes.SINGLE &&
+      options.behavior !== types.SelectBehaviorTypes.SINGLE_NULLABLE
+    ) {
+      throw new Error("Encountered a non-iterable value for a multi-select!");
+    }
+    const m = getModel(v);
     if (m === null) {
       /* This can occur if there is no model associated with the value in the Select's data -
          which can happen if the 'isReady' flag is not initially set to 'false' for asynchronously
          loaded data. */
       if (options.behavior === types.SelectBehaviorTypes.SINGLE_NULLABLE) {
         logger.error(
-          `Could not find a model associated with select's initial value '${initial}' ` +
+          `Could not find a model associated with select's initial value '${value}' ` +
             "in the data. This may lead to buggy behavior.",
         );
         return null as types.DataSelectModelValue<M, O>;
@@ -83,6 +78,9 @@ const getInitialModelValue = <
       throw new Error("");
       // return types.NOTSET;
     }
+    return m as types.DataSelectModelValue<M, O>;
+  } else if (options.behavior !== types.SelectBehaviorTypes.SINGLE_NULLABLE) {
+    throw new Error("");
   }
   return null as types.DataSelectModelValue<M, O>;
 };
@@ -487,22 +485,6 @@ export const useSelectModelValue = <
     [options],
   );
 
-  const getInitializedModelValue = useCallback(
-    () =>
-      getInitialModelValue({
-        options,
-        getModel: v => getModel(v, { data, strictValueLookup, getItemValue }),
-        ...params,
-      }),
-    [data, strictValueLookup, options, params, getItemValue],
-  );
-
-  /* Manage the Select's model value in state in parallel to the Select's value.  See docstring
-     on hook for more information. */
-  const [modelValue, setModelValue] = useState<types.DataSelectModelValue<M, O> | types.NotSet>(
-    () => (isReady ? getInitializedModelValue() : types.NOTSET),
-  );
-
   const {
     isSelected,
     toggle,
@@ -513,6 +495,7 @@ export const useSelectModelValue = <
     ...rest
   } = useSelectValue<types.InferredDataSelectV<M, O>, O["behavior"]>({
     ...params,
+    isReady,
     behavior: options.behavior,
     onChange: (v, item) => {
       if (modelValue === types.NOTSET) {
@@ -543,12 +526,28 @@ export const useSelectModelValue = <
     onDeselect,
   });
 
+  const getInitializedModelValue = useCallback(
+    (v: types.SelectValue<types.InferredDataSelectV<M, O>, O["behavior"]>) =>
+      getInitialModelValue({
+        options,
+        value: v,
+        getModel: v => getModel(v, { data, strictValueLookup, getItemValue }),
+      }),
+    [data, strictValueLookup, options, getItemValue],
+  );
+
+  /* Manage the Select's model value in state in parallel to the Select's value.  See docstring
+     on hook for more information. */
+  const [modelValue, setModelValue] = useState<types.DataSelectModelValue<M, O> | types.NotSet>(
+    () => (isReady && value !== types.NOTSET ? getInitializedModelValue(value) : types.NOTSET),
+  );
+
   const set = useCallback(
     (v: types.DataSelectValue<M, O>) => {
       /* If the 'modelValue' has not yet been set/initialized, then we need to initialize it before
          we can apply the reducer to the value. */
       const mv: types.DataSelectModelValue<M, O> =
-        modelValue === types.NOTSET ? getInitializedModelValue() : modelValue;
+        modelValue === types.NOTSET ? getInitializedModelValue(v) : modelValue;
 
       const { autocorrect, value, noop } = reduceModelValue(mv, v, {
         strictValueLookup,
@@ -566,11 +565,11 @@ export const useSelectModelValue = <
         setModelValue(value);
       }
     },
-    [modelValue, data, options, strictValueLookup, _set, getItemValue, getInitializedModelValue],
+    [modelValue, data, options, strictValueLookup, getInitializedModelValue, _set, getItemValue],
   );
 
   useEffect(() => {
-    if (isReady) {
+    if (isReady && value !== types.NOTSET) {
       set(value);
     }
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
