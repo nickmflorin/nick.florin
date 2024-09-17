@@ -7,6 +7,11 @@
 
 @import "~normalize.css/normalize.css";
 
+// This is temporary - or at least until we incorporate dark mode.
+:root {
+  color-scheme: only light;
+}
+
 html {
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: auto;
@@ -24,4 +29,9 @@ body {
   overflow: hidden;
   touch-action: none;
   min-height: -webkit-fill-available;
+  background-color: theme("colors.app-background");
+
+  @media (prefers-color-scheme: dark) {
+    background-color: theme("colors.app-background");
+  }
 }

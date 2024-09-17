@@ -101,7 +101,7 @@ const LocalSelect = forwardRef(
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
-        content={content(value, { ...managed, clear })}
+        content={value !== types.NOTSET ? content(value, { ...managed, clear }) : <></>}
       >
         {children ??
           (({ ref, params, isOpen, isLoading }) => (
@@ -115,7 +115,7 @@ const LocalSelect = forwardRef(
               onClear={onClear as types.IfDeselectable<B, () => void>}
               className={inputClassName}
             >
-              {valueRenderer?.(value, { ...managed, clear })}
+              {value !== types.NOTSET ? valueRenderer?.(value, { ...managed, clear }) : undefined}
             </SelectInput>
           ))}
       </BasicSelect>

@@ -154,10 +154,16 @@ const LocalDataSelectBase = forwardRef<
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
-        content={content(value, { ...managed, clear } as Omit<
-          types.ManagedSelectModelValue<M, O>,
-          "value"
-        >)}
+        content={
+          value !== types.NOTSET ? (
+            content(value, { ...managed, clear } as Omit<
+              types.ManagedSelectModelValue<M, O>,
+              "value"
+            >)
+          ) : (
+            <></>
+          )
+        }
       >
         {children ??
           (({ ref, params, isOpen, isLoading: _isLoading }) => (

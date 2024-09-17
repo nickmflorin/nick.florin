@@ -58,15 +58,13 @@ export const getButtonClassName = <E extends types.ButtonElement>(props: ButtonC
   );
 
 export type ButtonSizeStyleProps = {
-  readonly style?: React.CSSProperties;
   readonly size?: types.ButtonSize;
 };
 
 export const getButtonSizeStyle = (props: ButtonSizeStyleProps) =>
   !types.ButtonDiscreteIconSizes.contains(props.size) && props.size !== undefined
     ? {
-        ...props.style,
         height: sizeToString(props.size, "px"),
         minHeight: sizeToString(props.size, "px"),
       }
-    : props.style;
+    : {};

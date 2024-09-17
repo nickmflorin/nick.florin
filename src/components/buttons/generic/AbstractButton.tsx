@@ -85,6 +85,7 @@ export const AbstractButton = forwardRef(
         return (
           <NativeAnchor
             {...(nativeProps as types.NativeButtonProps<"a">)}
+            style={props.style}
             data-attr-tour-id={props.tourId}
             className={className}
             target={openInNewTab ? "_blank" : (nativeProps as types.NativeButtonProps<"a">).target}
@@ -101,6 +102,7 @@ export const AbstractButton = forwardRef(
         return (
           <NativeLink
             {...(nativeProps as types.NativeButtonProps<"link">)}
+            style={props.style}
             data-attr-tour-id={props.tourId}
             className={className}
             ref={ref as types.PolymorphicButtonRef<"a">}
@@ -111,6 +113,7 @@ export const AbstractButton = forwardRef(
         return (
           <NativeDiv
             {...(nativeProps as types.NativeButtonProps<"div">)}
+            style={props.style}
             className={className}
             data-attr-tour-id={props.tourId}
             ref={ref as types.PolymorphicButtonRef<"div">}
@@ -122,6 +125,7 @@ export const AbstractButton = forwardRef(
           <NativeButton
             type="button"
             {...(nativeProps as types.NativeButtonProps<"button">)}
+            style={props.style}
             className={className}
             disabled={props.isDisabled}
             data-attr-tour-id={props.tourId}

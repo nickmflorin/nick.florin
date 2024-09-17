@@ -95,7 +95,7 @@ const LocalIconButton = forwardRef(
           { "button--tight": tight },
           ps.className,
         )}
-        style={getButtonSizeStyle({ size, style: props.style })}
+        style={{ ...props.style, ...getButtonSizeStyle({ size }) }}
       >
         <div className="button__content">
           {children ? (

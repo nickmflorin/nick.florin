@@ -19,7 +19,7 @@ export interface DataSelectInputProps<
       | "getBadgeProps"
       | "maximumValuesToRender"
     > {
-  readonly value: types.DataSelectValue<M, O>;
+  readonly value: types.DataSelectValue<M, O> | types.NotSet;
   readonly modelValue: types.DataSelectModelValue<M, O> | types.NotSet;
   readonly options: O;
   readonly itemValueRenderer?: (m: M) => JSX.Element;
@@ -87,11 +87,11 @@ export const DataSelectInput = forwardRef(
         if (id !== undefined) {
           return id;
         }
-        const value = options.getItemValue?.(m);
-        if (typeof value === "string" || typeof value === "number") {
-          return String(value);
+        const v = options.getItemValue?.(m);
+        if (typeof v === "string" || typeof v === "number") {
+          return String(v);
         } else if ("value" in m && (typeof m.value === "string" || typeof m.value === "number")) {
-          return String(m.value);
+          return String(m.v);
         }
         const label = getItemLabel(m);
         if (typeof label === "string" || typeof label === "number") {
@@ -103,7 +103,7 @@ export const DataSelectInput = forwardRef(
     );
 
     const renderedValue = useMemo(() => {
-      if (showPlaceholder || modelValue === types.NOTSET) {
+      if (showPlaceholder || modelValue === types.NOTSET || value === types.NOTSET) {
         // This value will be hidden in favor of the placeholder anyways.
         return <></>;
       } else if (Array.isArray(modelValue)) {

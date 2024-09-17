@@ -8,7 +8,7 @@ export interface SelectInputProps<
   V extends types.AllowedSelectValue,
   B extends types.SelectBehaviorType,
 > extends Omit<BasicSelectInputProps, "showPlaceholder" | "onClear"> {
-  readonly value: types.SelectValue<V, B>;
+  readonly value: types.SelectValue<V, B> | types.NotSet;
   readonly onClear?: types.IfDeselectable<B, () => void>;
 }
 

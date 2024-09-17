@@ -81,7 +81,7 @@ const LocalButton = forwardRef(
           getTypographyClassName({ fontSize, fontFamily, fontWeight, transform }),
           props.className,
         )}
-        style={getButtonSizeStyle({ size, style: props.style })}
+        style={{ ...props.style, ...getButtonSizeStyle({ size }) }}
       >
         <ButtonContent
           isLoading={props.isLoading}
