@@ -41,7 +41,7 @@ export const SchoolSelect = forwardRef(
       <DataSelect<School, { behavior: B; getItemValue: typeof getItemValue }>
         {...props}
         ref={ref}
-        isReady={data !== undefined}
+        isReady={data !== undefined && props.isReady !== false}
         data={data ?? []}
         isDisabled={error !== undefined}
         isLocked={isLoading}

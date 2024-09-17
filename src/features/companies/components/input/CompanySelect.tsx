@@ -42,7 +42,7 @@ export const CompanySelect = forwardRef(
       <DataSelect<Company, { behavior: B; getItemValue: typeof getItemValue }>
         {...props}
         ref={ref}
-        isReady={data !== undefined}
+        isReady={data !== undefined && props.isReady !== false}
         data={data ?? []}
         isDisabled={error !== undefined}
         isLocked={isLoading}

@@ -43,6 +43,7 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
       <Form.ControlledField name="company" label="Company" form={props.form} condition="required">
         {({ value, onChange }) => (
           <CompanySelect
+            isReady={value !== undefined}
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             isClearable

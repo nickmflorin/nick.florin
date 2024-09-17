@@ -47,6 +47,7 @@ export const SkillsSelect = forwardRef(
         {...props}
         ref={ref}
         search={search}
+        summarizeValueAfter={2}
         isReady={data !== undefined}
         data={data ?? []}
         isDisabled={error !== undefined}

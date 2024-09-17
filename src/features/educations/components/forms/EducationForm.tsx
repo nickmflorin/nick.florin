@@ -57,6 +57,7 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
             inputClassName="w-full"
             menuClassName="max-h-[260px]"
             behavior="single"
+            isReady={value !== undefined}
             value={value}
             onChange={onChange}
             inPortal
