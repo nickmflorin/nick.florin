@@ -1,4 +1,4 @@
-export type SizeUnit = "px" | "rem";
+export type SizeUnit = "px" | "rem" | "%";
 
 export type QualitativeSize = "fit-content";
 
@@ -12,7 +12,7 @@ export type SizeString<U extends SizeUnit = SizeUnit> = QuantitativeSizeString<U
 
 export type Size<U extends SizeUnit = SizeUnit> = QuantitativeSize<U> | QualitativeSize;
 
-const QuantitativeSizeRegex = /^([0-9]*)(px|rem)$/;
+const QuantitativeSizeRegex = /^([0-9]*)(px|rem|%)$/;
 
 type SizeToStringRT<
   T extends QuantitativeSizeString | QualitativeSize | number,

@@ -1,3 +1,4 @@
+import AspectRatioPlugin from "@tailwindcss/aspect-ratio";
 import ContainerQueriesPlugin from "@tailwindcss/container-queries";
 import { type Config } from "tailwindcss";
 
@@ -7,8 +8,11 @@ const config = {
     "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  plugins: [ContainerQueriesPlugin],
+  plugins: [ContainerQueriesPlugin, AspectRatioPlugin],
   presets: [],
+  corePlugins: {
+    aspectRatio: false,
+  },
   darkMode: "media", // or 'class'
   important: true,
   theme: {
@@ -55,6 +59,22 @@ const config = {
       auto: "auto",
       square: "1 / 1",
       video: "16 / 9",
+      1: "1",
+      2: "2",
+      3: "3",
+      4: "4",
+      5: "5",
+      6: "6",
+      7: "7",
+      8: "8",
+      9: "9",
+      10: "10",
+      11: "11",
+      12: "12",
+      13: "13",
+      14: "14",
+      15: "15",
+      16: "16",
     },
     backdropBlur: ({ theme }) => theme("blur"),
     backdropBrightness: ({ theme }) => theme("brightness"),

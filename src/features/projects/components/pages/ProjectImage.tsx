@@ -3,9 +3,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { type ReactNode } from "react";
 
-import { Skeleton } from "@mantine/core";
 import { motion } from "framer-motion";
 
+import { Skeleton } from "~/components/loading/Skeleton";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";
@@ -37,7 +37,8 @@ export const ProjectImage = ({
         )}
       >
         <div className="project-image-wrapper">
-          <ShowHide show={isLoading}>
+          <Skeleton className="w-full aspect-w-16 aspect-h-9" />
+          {/* <ShowHide show={isLoading}>
             <Skeleton
               height={400}
               width="100%"
@@ -61,7 +62,7 @@ export const ProjectImage = ({
               })}
               onLoad={() => setIsLoading(false)}
             />
-          </motion.div>
+          </motion.div> */}
         </div>
         <Caption isLoading={isLoading} centered={captionCentered}>
           {caption}

@@ -48,17 +48,15 @@ export const Detail = <
           )}
         </div>
       ) : detail.project ? (
-        <div className="flex flex-row items-center gap-[4px]">
-          <Link
-            element="link"
-            href={`/projects/${detail.project.slug}`}
-            gap="4px"
-            icon={{ right: { name: "link" } }}
-            className="text-sm max-sm:text-xs"
-          >
-            {detail.label}
-          </Link>
-        </div>
+        <Link
+          element="link"
+          href={`/projects/${detail.project.slug}`}
+          gap="4px"
+          icon={{ right: { name: "link" } }}
+          className="text-sm max-sm:text-xs"
+        >
+          {detail.label}
+        </Link>
       ) : (
         <Label className="text-sm max-sm:text-xs">{detail.label}</Label>
       )}

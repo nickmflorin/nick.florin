@@ -1,7 +1,6 @@
 import React, { type ReactNode } from "react";
 
-import { Skeleton } from "@mantine/core";
-
+import { Skeleton } from "~/components/loading/Skeleton";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { ShowHide } from "~/components/util";

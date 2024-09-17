@@ -20,12 +20,11 @@
       max-width: 100%;
       max-height: 100%;
       flex-grow: 100;
-      border: 1px solid theme("colors.border");
       overflow: hidden;
 
-      -webkit-box-shadow: theme("boxShadow.md");
-      -moz-box-shadow: theme("boxShadow.md");
-      box-shadow: theme("boxShadow.md");
+      -webkit-box-shadow: theme("boxShadow.sm");
+      -moz-box-shadow: theme("boxShadow.sm");
+      box-shadow: theme("boxShadow.sm");
 
       > .project-image-image {
         overflow: hidden;

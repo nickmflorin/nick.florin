@@ -1,11 +1,8 @@
-import dynamic from "next/dynamic";
-
 import { clamp } from "lodash-es";
 
+import { Skeleton } from "~/components/loading/Skeleton";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-
-const Skeleton = dynamic(() => import("@nextui-org/skeleton").then(mod => mod.Skeleton));
 
 export interface BarChartSkeletonProps extends ComponentProps {
   readonly gap?: number;
@@ -52,11 +49,7 @@ export const BarChartSkeleton = ({
     style={{ ...props.style, gap }}
   >
     {generateHeights({ numBars, minBarHeight, maxBarHeight, heightStep }).map((height, i) => (
-      <Skeleton
-        key={i}
-        className="rounded-sm bg-gray-300 animate-pulse"
-        style={{ height, flex: 1 }}
-      />
+      <Skeleton key={i} className="flex-1 rounded-sm bg-gray-300 animate-pulse" height={height} />
     ))}
   </div>
 );
