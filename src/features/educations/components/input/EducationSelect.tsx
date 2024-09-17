@@ -35,11 +35,13 @@ export const EducationSelect = forwardRef(
       options={{ behavior, getItemValue }}
       getItemValueLabel={m => m.shortMajor ?? m.major}
       itemRenderer={m => (
-        <div className="flex flex-col gap-[4px]">
-          <Text fontSize="sm" fontWeight="medium">
+        <div className="flex flex-col gap-[4px] max-w-full">
+          <Text fontSize="sm" fontWeight="medium" whiteSpace="normal">
             {useAbbreviatedOptionLabels ? (m.shortMajor ?? m.major) : m.major}
           </Text>
-          <Description fontSize="xs">{m.school.name}</Description>
+          <Description fontSize="xs" truncate>
+            {m.school.name}
+          </Description>
         </div>
       )}
     />

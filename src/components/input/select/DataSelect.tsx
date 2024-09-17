@@ -33,6 +33,7 @@ export interface DataSelectProps<
       | "selectionIndicator"
       | "getItemIcon"
       | "onItemClick"
+      | "includeDescriptions"
       | (`group${string}` & keyof DataMenuProps<M>)
       | Exclude<`item${string}` & keyof DataMenuProps<M>, "itemIsSelected">
     > {
@@ -54,6 +55,7 @@ export const DataSelect = forwardRef(
       itemLockedClassName,
       itemSelectedClassName,
       selectionIndicator: _selectionIndicator,
+      includeDescriptions,
       header,
       footer,
       hideEmptyGroups,
@@ -115,6 +117,7 @@ export const DataSelect = forwardRef(
         {...props}
         content={(_, { toggle, isSelected }) => (
           <DataMenu<M>
+            includeDescriptions={includeDescriptions}
             hideEmptyGroups={hideEmptyGroups}
             hideGrouplessItems={hideGrouplessItems}
             groups={groups}

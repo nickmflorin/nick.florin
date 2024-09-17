@@ -88,7 +88,7 @@ export const getSkills = cache(
     visibility,
     includes,
     limit,
-    orderBy = [{ calculatedExperience: "desc" }],
+    orderBy = [{ label: "asc" }],
   }: GetSkillsParams<I>): Promise<ApiSkill<I>[]> => {
     await getClerkAuthedUser({ strict: visibility === "admin" });
 

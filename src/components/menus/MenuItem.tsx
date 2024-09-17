@@ -43,6 +43,7 @@ export interface MenuItemProps
   readonly loadingText?: string;
   readonly actions?: Action[];
   readonly height?: QuantitativeSize<"px">;
+  readonly includeDescription?: boolean;
   readonly contentClassName?: ComponentProps["className"];
   readonly selectedClassName?: ComponentProps["className"];
   readonly navigatedClassName?: ComponentProps["className"];
@@ -136,7 +137,11 @@ const MenuItemInner = ({
 interface MenuItemContentProps
   extends Pick<
       MenuItemProps,
-      "description" | "contentClassName" | "isSelected" | "selectionIndicator"
+      | "description"
+      | "contentClassName"
+      | "isSelected"
+      | "selectionIndicator"
+      | "includeDescription"
     >,
     MenuItemInnerProps {}
 
@@ -145,6 +150,7 @@ const MenuItemContent = ({
   description: _description,
   isSelected,
   selectionIndicator,
+  includeDescription = true,
   ...rest
 }: MenuItemContentProps) => {
   const description = useMemo(
@@ -173,9 +179,11 @@ const MenuItemContent = ({
           </ShowHide>
           <MenuItemInner {...rest} />
         </div>
-        <Description component="div" className="menu__item__description">
-          {description}
-        </Description>
+        {includeDescription && (
+          <Description component="div" className="menu__item__description">
+            {description}
+          </Description>
+        )}
       </div>
     );
   }
@@ -211,6 +219,7 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
       isVisible = true,
       isCurrentNavigation = false,
       description,
+      includeDescription,
       icon,
       iconClassName,
       navigatedClassName,
@@ -288,6 +297,7 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
             spinnerProps={spinnerProps}
             icon={icon}
             description={description}
+            includeDescription={includeDescription}
             iconClassName={iconClassName}
             iconProps={iconProps}
             iconSize={iconSize}

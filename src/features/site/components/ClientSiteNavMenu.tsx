@@ -11,7 +11,7 @@ export interface ClientSiteNavMenuProps {
   readonly resume: BrandResume | null;
 }
 
-export const ClientSiteNavMenu = async ({ nav, resume }: ClientSiteNavMenuProps) => {
+export const ClientSiteNavMenu = ({ nav, resume }: ClientSiteNavMenuProps) => {
   const { close } = useNavMenu();
   return <SiteMenu resume={resume} nav={nav} onClose={() => close()} />;
 };

@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import { omit } from "lodash-es";
 
 import { classNames } from "./classes";
 
@@ -25,6 +26,14 @@ export const TextAlignClassNames: { [key in TextAlign]: `text-${key}` } = {
   justify: "text-justify",
   start: "text-start",
   end: "text-end",
+};
+
+export const WhiteSpaces = enumeratedLiterals(["normal", "nowrap"] as const, {});
+export type WhiteSpace = EnumeratedLiteralsMember<typeof WhiteSpaces>;
+
+export const WhiteSpaceClassNames: { [key in WhiteSpace]: `whitespace-${key}` } = {
+  nowrap: "whitespace-nowrap",
+  normal: "whitespace-normal",
 };
 
 export const FontWeights = enumeratedLiterals(
@@ -77,7 +86,24 @@ export interface TypographyCharacteristics {
   readonly lineClamp?: LineClamp;
   readonly truncate?: boolean;
   readonly align?: TextAlign;
+  readonly whiteSpace?: WhiteSpace;
 }
+
+const TypographyPropNames: { [key in keyof TypographyCharacteristics]: true } = {
+  fontSize: true,
+  fontWeight: true,
+  fontFamily: true,
+  transform: true,
+  lineClamp: true,
+  truncate: true,
+  align: true,
+  whiteSpace: true,
+};
+
+export const omitTypographyProps = <T extends Record<string, unknown>>(
+  props: T,
+): Omit<T, keyof TypographyCharacteristics> =>
+  omit(props, Object.keys(TypographyPropNames) as (keyof TypographyCharacteristics)[]);
 
 export const getTypographyClassName = (props: TypographyCharacteristics): string =>
   clsx(
@@ -89,6 +115,7 @@ export const getTypographyClassName = (props: TypographyCharacteristics): string
     props.transform && `f-transform-${props.transform}`,
     props.fontWeight && `f-weight-${props.fontWeight}`,
     props.align && TextAlignClassNames[props.align],
+    props.whiteSpace && WhiteSpaceClassNames[props.whiteSpace],
     props.lineClamp !== undefined ? lineClampClassName(props.lineClamp) : "",
     { truncate: props.truncate },
   );

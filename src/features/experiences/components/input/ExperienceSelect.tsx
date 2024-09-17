@@ -24,13 +24,19 @@ export interface ExperienceSelectProps<B extends SelectBehaviorType>
 
 export const ExperienceSelect = forwardRef(
   <B extends SelectBehaviorType>(
-    { behavior, useAbbreviatedOptionLabels, ...props }: ExperienceSelectProps<B>,
+    {
+      behavior,
+      useAbbreviatedOptionLabels,
+      includeDescriptions = true,
+      ...props
+    }: ExperienceSelectProps<B>,
     ref: ForwardedRef<
       DataSelectInstance<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
     >,
   ): JSX.Element => (
     <DataSelect<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
       {...props}
+      includeDescriptions={false}
       ref={ref}
       options={{ behavior, getItemValue }}
       getItemValueLabel={m => m.shortTitle ?? m.title}
@@ -39,7 +45,7 @@ export const ExperienceSelect = forwardRef(
           <Text fontSize="sm" fontWeight="medium">
             {useAbbreviatedOptionLabels ? (m.shortTitle ?? m.title) : m.shortTitle}
           </Text>
-          <Description fontSize="xs">{m.company.name}</Description>
+          {includeDescriptions && <Description fontSize="xs">{m.company.name}</Description>}
         </div>
       )}
     />

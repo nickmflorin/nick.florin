@@ -8,6 +8,7 @@ import {
   getTypographyClassName,
   classNames,
 } from "~/components/types";
+import { omitTypographyProps } from "~/components/types";
 
 export type DescriptionComponent = "span" | "div" | "p";
 
@@ -34,18 +35,7 @@ export const DescriptionNode = forwardRef<
   DescriptionNodeProps<DescriptionComponent>
 >(
   <C extends DescriptionComponent>(
-    {
-      component = "div",
-      inherit = false,
-      fontSize,
-      fontWeight,
-      transform,
-      fontFamily,
-      lineClamp,
-      truncate,
-      align,
-      ...props
-    }: DescriptionNodeProps<C>,
+    { component = "div", inherit = false, ...props }: DescriptionNodeProps<C>,
     ref: PolymorphicDescriptionRef<C>,
   ): JSX.Element => {
     if (
@@ -58,22 +48,14 @@ export const DescriptionNode = forwardRef<
       return <></>;
     }
     const ps = {
-      ...props,
+      ...omitTypographyProps(props),
       className: classNames(
         "description",
         { "description--inherit": inherit },
-        getTypographyClassName({
-          fontSize,
-          fontWeight,
-          transform,
-          fontFamily,
-          lineClamp,
-          truncate,
-          align,
-        }),
+        getTypographyClassName(props),
         {
-          [classNames("text-sm", props.className)]: fontSize === undefined,
-          [classNames("max-sm:text-xs", props.className)]: fontSize === undefined,
+          [classNames("text-sm", props.className)]: props.fontSize === undefined,
+          [classNames("max-sm:text-xs", props.className)]: props.fontSize === undefined,
         },
         props.className,
       ),

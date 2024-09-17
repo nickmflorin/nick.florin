@@ -33,7 +33,6 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
     <ClientExperienceSelect
       visibility="admin"
       inputClassName="w-full"
-      menuClassName="max-h-[260px]"
       value={value}
       behavior="multi"
       isClearable

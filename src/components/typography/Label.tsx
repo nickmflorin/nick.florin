@@ -6,6 +6,7 @@ import {
   type TypographyCharacteristics,
   getTypographyClassName,
 } from "~/components/types";
+import { omitTypographyProps } from "~/components/types";
 
 export interface LabelProps
   extends TypographyCharacteristics,
@@ -15,36 +16,11 @@ export interface LabelProps
 }
 
 export const Label = forwardRef<HTMLLabelElement, LabelProps>(
-  (
-    {
-      children,
-      fontSize,
-      fontWeight,
-      transform,
-      fontFamily,
-      lineClamp,
-      truncate,
-      align,
-      ...props
-    }: LabelProps,
-    ref,
-  ): JSX.Element => (
+  ({ children, ...props }: LabelProps, ref): JSX.Element => (
     <label
-      {...props}
+      {...omitTypographyProps(props)}
       ref={ref}
-      className={classNames(
-        "label",
-        getTypographyClassName({
-          fontSize,
-          fontWeight,
-          transform,
-          fontFamily,
-          lineClamp,
-          truncate,
-          align,
-        }),
-        props.className,
-      )}
+      className={classNames("label", getTypographyClassName(props), props.className)}
     >
       {children}
     </label>

@@ -8,6 +8,7 @@ import {
   getTypographyClassName,
   classNames,
 } from "~/components/types";
+import { omitTypographyProps } from "~/components/types";
 
 export type TextComponent = "span" | "div" | "p";
 
@@ -38,13 +39,6 @@ export const Text = forwardRef<HTMLDivElement, TextProps<TextComponent>>(
       flex = false,
       inherit = false,
       isDisabled = false,
-      fontSize,
-      fontWeight,
-      transform,
-      fontFamily,
-      lineClamp,
-      truncate,
-      align,
       ...props
     }: TextProps<C>,
     ref: PolymorphicTextRef<C>,
@@ -59,7 +53,7 @@ export const Text = forwardRef<HTMLDivElement, TextProps<TextComponent>>(
       return <></>;
     }
     const ps = {
-      ...props,
+      ...omitTypographyProps(props),
       className: classNames(
         "body",
         {
@@ -67,15 +61,7 @@ export const Text = forwardRef<HTMLDivElement, TextProps<TextComponent>>(
           ["flex flex-row items-center"]: flex,
           "text-disabled": isDisabled,
         },
-        getTypographyClassName({
-          fontSize,
-          fontWeight,
-          transform,
-          fontFamily,
-          lineClamp,
-          truncate,
-          align,
-        }),
+        getTypographyClassName(props),
         props.className,
       ),
     };

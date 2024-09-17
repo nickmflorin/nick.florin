@@ -8,6 +8,7 @@ import { classNames, type QuantitativeSize } from "~/components/types";
 export type DataMenuItemProps<M extends types.DataMenuModel> = types.MenuItemFlagProps<M> & {
   readonly datum: M;
   readonly id: string | number;
+  readonly includeDescription?: boolean;
   readonly isCurrentNavigation?: boolean;
   readonly itemClassName?: types.DataMenuItemClassName<M>;
   readonly itemHeight?: QuantitativeSize<"px">;
@@ -50,6 +51,7 @@ export const DataMenuItem = forwardRef(
       selectionIndicator,
       itemHeight,
       itemNavigatedClassName,
+      includeDescription,
       itemIsDisabled,
       itemIsSelected,
       itemIsLoading,
@@ -92,6 +94,7 @@ export const DataMenuItem = forwardRef(
         height={itemHeight}
         icon={icon}
         description={description}
+        includeDescription={includeDescription}
         iconSize={datum.iconSize ?? itemIconSize}
         selectionIndicator={selectionIndicator}
         iconProps={{ ...itemIconProps, ...datum.iconProps }}

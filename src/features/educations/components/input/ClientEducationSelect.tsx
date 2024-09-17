@@ -32,7 +32,6 @@ export const ClientEducationSelect = forwardRef(
         onError?.(e);
       },
     });
-
     return (
       <EducationSelect
         {...props}

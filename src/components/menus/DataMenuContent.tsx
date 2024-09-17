@@ -42,6 +42,7 @@ export interface DataMenuContentProps<M extends types.DataMenuModel>
       | "children"
     > {
   readonly data: M[];
+  readonly includeDescriptions?: boolean;
   readonly groups?: types.DataMenuGroup<M>[];
   readonly hideEmptyGroups?: boolean;
   readonly hideGrouplessItems?: boolean;
@@ -99,6 +100,7 @@ export const DataMenuContent = forwardRef<
       groupLabelContainerClassName,
       groupLabelProps,
       groupsAreBordered,
+      includeDescriptions,
       children,
       onItemClick,
       getItemId,
@@ -186,6 +188,7 @@ export const DataMenuContent = forwardRef<
             ref={itemRef}
             id={id}
             datum={model}
+            includeDescription={includeDescriptions}
             isCurrentNavigation={enableKeyboardInteractions && navigatedIndex === index}
             onClick={(e, instance) => onItemClick?.(e, model, instance)}
           >
@@ -193,7 +196,15 @@ export const DataMenuContent = forwardRef<
           </DataMenuItem>
         );
       },
-      [props, enableKeyboardInteractions, navigatedIndex, onItemClick, children, getItemId],
+      [
+        props,
+        includeDescriptions,
+        enableKeyboardInteractions,
+        navigatedIndex,
+        onItemClick,
+        children,
+        getItemId,
+      ],
     );
     return (
       <MenuContent

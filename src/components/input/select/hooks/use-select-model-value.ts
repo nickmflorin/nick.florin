@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { isEqual, uniqBy } from "lodash-es";
 
@@ -472,11 +472,6 @@ export const useSelectModelValue = <
   O,
   types.DataSelectModelValue<M, O> | types.NotSet
 > => {
-  /* Keep track of whether or not the Select's model value has been initially set yet, based on
-     the readiness of the Select's potentially asynchronously loaded data. */
-  const wasInitialized = useRef(isReady);
-  const setQueueValue = useRef<types.DataSelectValue<M, O> | types.NotSet>(types.NOTSET);
-
   const getItemValue = useCallback(
     (m: M) => {
       if (options.getItemValue !== undefined) {
@@ -550,22 +545,10 @@ export const useSelectModelValue = <
 
   const set = useCallback(
     (v: types.DataSelectValue<M, O>) => {
-      /* If the Select is not in a "ready" state, it means that the model in the data associated
-         with the provided value 'v' may not be present yet.  In this case, the 'set' method
-         is being called too early.  As such, we have to store the value that should be set
-         on the Select after it is initialized (once it becomes in a "ready" state) so it can
-         be applied later, once the Select is in a "ready" state.  If we do not do this, we will
-         get an error in the 'getInitializedModelValue' method - since the model in the data
-         associated with teh value 'v' may not exist yet. */
-      if (!isReady) {
-        setQueueValue.current = v;
-        return;
-      }
       /* If the 'modelValue' has not yet been set/initialized, then we need to initialize it before
          we can apply the reducer to the value. */
       const mv: types.DataSelectModelValue<M, O> =
         modelValue === types.NOTSET ? getInitializedModelValue() : modelValue;
-      wasInitialized.current = true;
 
       const { autocorrect, value, noop } = reduceModelValue(mv, v, {
         strictValueLookup,
@@ -583,50 +566,15 @@ export const useSelectModelValue = <
         setModelValue(value);
       }
     },
-    [
-      modelValue,
-      data,
-      isReady,
-      options,
-      strictValueLookup,
-      _set,
-      getItemValue,
-      getInitializedModelValue,
-    ],
+    [modelValue, data, options, strictValueLookup, _set, getItemValue, getInitializedModelValue],
   );
 
-  const initializeModelValue = useCallback(() => {
-    if (!wasInitialized.current) {
-      const initial = getInitializedModelValue();
-      wasInitialized.current = true;
-      setModelValue(initial);
-      if (setQueueValue.current !== types.NOTSET) {
-        set(setQueueValue.current);
-      }
-    }
-  }, [getInitializedModelValue, set]);
-
   useEffect(() => {
-    /* If the Select's model value has not yet been initialized, do not update it.  The effect
-       should wait until the Select's model value has been initialized, which occurs when it is
-       set in a "ready" state. */
-    if (wasInitialized.current) {
+    if (isReady) {
       set(value);
     }
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [value]);
-
-  useEffect(() => {
-    /* If the Select is not yet in a "ready" state, it means the data is still loading
-       asynchronously.  Since the value of the Select will be present before the asynchronously
-       loaded data is, and we need the asynchronously loaded data to determine the model value, we
-       have to consider the Select's model value as being in an "unset" or indeterminate state.
-       Once the data finishes asynchronously loading, the Select's model value can be determined. */
-    if (isReady) {
-      initializeModelValue();
-    }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [isReady]);
+  }, [value, isReady]);
 
   return {
     ...rest,
