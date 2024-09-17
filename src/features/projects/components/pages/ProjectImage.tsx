@@ -37,13 +37,8 @@ export const ProjectImage = ({
         )}
       >
         <div className="project-image-wrapper">
-          <Skeleton className="w-full aspect-w-16 aspect-h-9" />
-          {/* <ShowHide show={isLoading}>
-            <Skeleton
-              height={400}
-              width="100%"
-              className="max-md:max-h-[200px] max-xs:max-h-[130px]"
-            />
+          <ShowHide show={isLoading}>
+            <Skeleton className="w-full aspect-w-16 aspect-h-9" />
           </ShowHide>
           <motion.div
             initial={{ opacity: 0 }}
@@ -62,7 +57,7 @@ export const ProjectImage = ({
               })}
               onLoad={() => setIsLoading(false)}
             />
-          </motion.div> */}
+          </motion.div>
         </div>
         <Caption isLoading={isLoading} centered={captionCentered}>
           {caption}
