@@ -1,5 +1,13 @@
-import { Loading as LoadingComponent } from "~/components/loading/Loading";
+import { Loading } from "~/components/loading/Loading";
+import { Module } from "~/components/structural/Module";
 
-const Loading = () => <LoadingComponent isLoading={true} />;
+const LoadingPage = () => (
+  <>
+    <Module.Header className="!pr-[0px]">Skills Overview</Module.Header>
+    <Module.Content className="xl:overflow-y-auto xl:pr-[16px]">
+      <Loading isLoading={true} />
+    </Module.Content>
+  </>
+);
 
-export default Loading;
+export default LoadingPage;

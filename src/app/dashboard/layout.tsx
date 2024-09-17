@@ -123,9 +123,10 @@ export default async function DashboardPage({
                 </Module.Header>
                 <Module.Content
                   className={classNames(
+                    /* Leave the 12px gap even for max-md cases.  An 8px gap between the education
+                       items looks a little "squished". */
                     "flex flex-col gap-[12px]",
                     "xl:overflow-y-auto xl:grow xl:pr-[16px]",
-                    "max-md:gap-[8px]",
                   )}
                 >
                   {educations}

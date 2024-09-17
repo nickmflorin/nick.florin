@@ -1,21 +1,22 @@
-import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+import type { ApiSkill } from "~/prisma/model";
 
 import { Loading } from "~/components/loading/Loading";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 
-import {
-  SkillsBarChartViewContent,
-  type SkillsBarChartViewContentProps,
-} from "./SkillsBarChartViewContent";
+import { SkillsBarChartLegend } from "./SkillsBarChartLegend";
 
-export interface SkillsBarChartViewProps extends SkillsBarChartViewContentProps, ComponentProps {}
+const Chart = dynamic(() => import("./ClientSkillsBarChart"), {
+  loading: () => <Loading isLoading={true} />,
+});
 
-export const SkillsBarChartView = async ({
-  filters,
-  limit,
-  ...props
-}: SkillsBarChartViewProps): Promise<JSX.Element> => (
+export interface SkillsBarChartViewProps extends ComponentProps {
+  readonly skills: ApiSkill<[]>[];
+}
+
+export const SkillsBarChartView = ({ skills, ...props }: SkillsBarChartViewProps): JSX.Element => (
   <div
     {...props}
     className={classNames(
@@ -24,12 +25,12 @@ export const SkillsBarChartView = async ({
       props.className,
     )}
   >
-    <Suspense
-      fallback={<Loading isLoading={true} />}
-      key={JSON.stringify(filters) + "_" + JSON.stringify(limit)}
+    <div
+      className={classNames("relative", "max-md:h-[340px]", "md:max-lg:h-[500px]", "lg:h-[600px]")}
     >
-      <SkillsBarChartViewContent filters={filters} limit={limit} />
-    </Suspense>
+      <Chart skills={skills} />
+    </div>
+    <SkillsBarChartLegend skills={skills} />
   </div>
 );
 

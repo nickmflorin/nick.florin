@@ -6,6 +6,8 @@ import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 
 export const LayoutDrawer = () => {
   const { drawer, close } = useDrawers();
+  /* See note in MenuItem.tsx regarding the event propogation of touch start and mouse down events
+     causing drawers to close for Select's that render their popover content in a portal. */
   const ref = useClickOutside(() => close());
 
   return (

@@ -17,6 +17,16 @@ export const Drawer = <D extends DrawerId, C extends React.ComponentType<any>>(
   width,
 });
 
+const SkillsFilterDrawer = dynamic(
+  () =>
+    import("~/features/skills/components/drawers/SkillsFilterDrawer").then(
+      mod => mod.SkillsFilterDrawer,
+    ),
+  {
+    loading: () => <Loading isLoading={true} />,
+  },
+);
+
 const UpdateEducationDrawer = dynamic(
   () => import("~/features/educations/components/drawers/UpdateEducationDrawer"),
   {
@@ -199,6 +209,7 @@ export const Drawers = {
   [DrawerIds.VIEW_RESUMES]: Drawer(DrawerIds.VIEW_RESUMES, ResumeDrawer),
   [DrawerIds.UPDATE_REPOSITORY]: Drawer(DrawerIds.UPDATE_REPOSITORY, UpdateRepositoryDrawer),
   [DrawerIds.CREATE_REPOSITORY]: Drawer(DrawerIds.CREATE_REPOSITORY, CreateRepositoryDrawer),
+  [DrawerIds.SKILLS_FILTERS]: Drawer(DrawerIds.SKILLS_FILTERS, SkillsFilterDrawer),
 } as const satisfies {
   [key in DrawerId]: {
     id: key;

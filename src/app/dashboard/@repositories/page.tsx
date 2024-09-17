@@ -9,7 +9,7 @@ export default async function RepositoriesPage() {
     filters: { highlighted: true },
   });
   return (
-    <div className="flex flex-col gap-[12px]">
+    <div className="flex flex-col gap-[8px]">
       {repositories.map(repository => (
         <RepositoryTile repository={repository} key={repository.id} />
       ))}

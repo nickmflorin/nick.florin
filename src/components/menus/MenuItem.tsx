@@ -256,7 +256,16 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
         <div
           {...props}
           ref={localRef}
+          /* This is not an ideal/great solution, but short of a stop-gap hack.  The problem is that
+             when we have a drawer that has Select's that render their popover's in a portal, the
+             mouse down and touch start events on the menu items in the popover's portal cause the
+             drawer to close (due to the 'useClickOutside' hook from "@mantine/hooks" which is
+             applied to the drawer).  To prevent this, we simply stop the propogation of those
+             events so the drawer does not close. */
+          onMouseDown={e => e.stopPropagation()}
+          onTouchStart={e => e.stopPropagation()}
           onClick={e => {
+            e.stopPropagation();
             if (!isDisabled && !isLocked && !isLoading) {
               props.onClick?.(e, {
                 ...(localRef.current as HTMLDivElement),

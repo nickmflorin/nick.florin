@@ -25,6 +25,9 @@ export interface MultiValueRendererCallbackProps<T extends MultiValueRendererMod
   extends MultiValueRendererBaseProps {
   readonly data: T[];
   readonly children?: never;
+  readonly summarizeValueAfter?: number;
+  readonly summarizeValue?: boolean;
+  readonly valueSummary?: ReactNode | ((params: { count: number }) => ReactNode);
   readonly chipClassName?: BadgeProps["className"];
   readonly chipSize?: BadgeProps["size"];
   readonly badgeProps?: Omit<BadgeProps, "children" | "icon" | "size" | "onClose">;
@@ -41,6 +44,9 @@ export interface MultiValueRendererChildrenProps extends MultiValueRendererBaseP
   readonly chipClassName?: never;
   readonly chipSize?: never;
   readonly badgeProps?: never;
+  readonly summarizeValueAfter?: number;
+  readonly summarizeValue?: boolean;
+  readonly valueSummary?: ReactNode | ((params: { count: number }) => ReactNode);
   readonly children: MultiValueRendererChild | MultiValueRendererChild[];
   readonly data?: never;
   readonly getBadgeLabel?: never;
@@ -68,6 +74,7 @@ export const MultiValueRenderer = memo(
     getBadgeLabel,
     getBadgeIcon,
     getBadgeProps,
+    ...props
   }: MultiValueRendererProps<T>) => {
     const content = useMemo<MultiValueRendererChild[]>(() => {
       if (children) {
@@ -120,7 +127,11 @@ export const MultiValueRenderer = memo(
     ]);
 
     return (
-      <TruncatedMultiValueRenderer content={content} maximumValuesToRender={maximumValuesToRender}>
+      <TruncatedMultiValueRenderer
+        {...props}
+        content={content}
+        maximumValuesToRender={maximumValuesToRender}
+      >
         {({ children: _children }) => (
           <MultiValueRendererContainer dynamicHeight={dynamicHeight}>
             {_children.map((child, i) => (

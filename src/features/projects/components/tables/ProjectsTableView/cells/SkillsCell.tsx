@@ -27,6 +27,7 @@ export const SkillsCell = ({ project }: SkillsCellProps) => {
   return (
     <SkillsSelect
       value={optimisticValue}
+      summarizeValueAfter={2}
       behavior="multi"
       onChange={async (v, { item }) => {
         setOptimisticValue(v);

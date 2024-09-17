@@ -37,6 +37,10 @@ export interface DataSelectBaseProps<
       | "getBadgeIcon"
       | "getBadgeProps"
       | "maximumValuesToRender"
+      | "maximumValuesToRender"
+      | "summarizeValueAfter"
+      | "summarizeValue"
+      | "valueSummary"
     > {
   readonly options: O;
   readonly value?: types.DataSelectValue<M, O>;

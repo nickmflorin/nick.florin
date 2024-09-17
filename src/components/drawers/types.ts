@@ -27,6 +27,7 @@ export const DrawerIds = enumeratedLiterals(
     "create-repository",
     "view-education",
     "view-experience",
+    "skills-filters",
   ] as const,
   {},
 );

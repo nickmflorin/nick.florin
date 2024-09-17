@@ -5,10 +5,8 @@ import { ProjectSlugs } from "~/prisma/model";
 import { type BrandProject } from "~/prisma/model";
 
 import { ProjectLink } from "~/components/buttons/ProjectLink";
-import { Icon } from "~/components/icons/Icon";
-import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { Description } from "~/components/typography";
+import { ResumeSimpleTile } from "~/features/resume/components/tiles/ResumeSimpleTile";
 
 export interface ProjectTileProps extends ComponentProps {
   readonly project: BrandProject;
@@ -30,15 +28,21 @@ export const ProjectTile = ({ project, ...props }: ProjectTileProps) => {
     icon = ProjectSlugs.getModel(slug).icon;
   }
   return (
-    <div
-      {...props}
-      className={classNames("flex flex-row gap-[12px] max-w-full w-full", props.className)}
-    >
-      <Icon className="text-gray-600" icon={icon} size={20} />
-      <div className={classNames("flex flex-col gap-[4px] max-w-[calc(100%-40px)]")}>
-        <ProjectLink project={project} className="truncate" />
-        <Description fontSize="xs">{project.description}</Description>
-      </div>
-    </div>
+    <ResumeSimpleTile {...props} icon={icon} description={project.description}>
+      <ProjectLink project={project} className="truncate" />
+    </ResumeSimpleTile>
   );
+
+  /* return (
+       <div
+         {...props}
+         className={classNames("flex flex-row gap-[12px] max-w-full w-full", props.className)}
+       >
+         <Icon className="text-gray-600" icon={icon} size={20} />
+         <div className={classNames("flex flex-col gap-[4px] max-w-[calc(100%-40px)]")}>
+           <ProjectLink project={project} className="truncate" />
+           <Description>{project.description}</Description>
+         </div>
+       </div>
+     ); */
 };

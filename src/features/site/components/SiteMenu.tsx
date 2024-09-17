@@ -12,6 +12,7 @@ import { Avatar } from "~/components/images/Avatar";
 import { type ISidebarItem, flattenSidebarItems } from "~/components/layout/types";
 import { Menu } from "~/components/menus/Menu";
 import { Label, Text } from "~/components/typography";
+import { ShowHide } from "~/components/util";
 import { useUserProfile } from "~/hooks";
 
 const OrganizationsMenuItemGroup = dynamic(() =>
@@ -33,31 +34,39 @@ export const SiteMenu = ({ nav, resume, onClose }: SiteMenuProps) => {
   return (
     <Menu className="site-menu">
       <Menu.Content className="flex flex-col justify-between gap-[8px]">
-        <div className="flex flex-col gap-[8px]">
-          {isSignedIn && user ? (
-            <Menu.Item highlightOnHover={false} className="px-[6px] py-[6px]">
-              <Avatar src={user.imageUrl} size="40px" />
-              <div className="flex flex-col gap-1">
-                <Label fontSize="sm">{user.fullName}</Label>
-                <Text fontSize="xs">{user.emailAddresses[0]?.emailAddress}</Text>
+        <ShowHide
+          show={
+            (isSignedIn && user !== null && user !== undefined) ||
+            isSignedIn ||
+            (nav !== undefined && nav.length !== 0)
+          }
+        >
+          <div className="flex flex-col gap-[8px]">
+            {isSignedIn && user ? (
+              <Menu.Item highlightOnHover={false} className="px-[6px] py-[6px]">
+                <Avatar src={user.imageUrl} size="40px" />
+                <div className="flex flex-col gap-1">
+                  <Label fontSize="sm">{user.fullName}</Label>
+                  <Text fontSize="xs">{user.emailAddresses[0]?.emailAddress}</Text>
+                </div>
+              </Menu.Item>
+            ) : (
+              <></>
+            )}
+            {isSignedIn ? <OrganizationsMenuItemGroup /> : <></>}
+            {nav && nav.length !== 0 ? (
+              <div className="flex flex-col gap-[4px]">
+                {flattenSidebarItems(nav).map((item, index) => (
+                  <Menu.Item key={index} highlightOnHover={false} className="p-0">
+                    <NavMenuAnchor item={item} />
+                  </Menu.Item>
+                ))}
               </div>
-            </Menu.Item>
-          ) : (
-            <></>
-          )}
-          {isSignedIn ? <OrganizationsMenuItemGroup /> : <></>}
-          {nav && nav.length !== 0 ? (
-            <div className="flex flex-col gap-[4px]">
-              {flattenSidebarItems(nav).map((item, index) => (
-                <Menu.Item key={index} highlightOnHover={false} className="p-0">
-                  <NavMenuAnchor item={item} />
-                </Menu.Item>
-              ))}
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        </ShowHide>
         <div className="flex flex-col gap-[8px]">
           {resume ? (
             <Menu.Item

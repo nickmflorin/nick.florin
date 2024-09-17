@@ -18,6 +18,9 @@ export interface DataSelectInputProps<
       | "getBadgeIcon"
       | "getBadgeProps"
       | "maximumValuesToRender"
+      | "summarizeValueAfter"
+      | "summarizeValue"
+      | "valueSummary"
     > {
   readonly value: types.DataSelectValue<M, O> | types.NotSet;
   readonly modelValue: types.DataSelectModelValue<M, O> | types.NotSet;
@@ -39,6 +42,9 @@ export const DataSelectInput = forwardRef(
       chipClassName,
       chipSize,
       badgeProps,
+      summarizeValue,
+      summarizeValueAfter,
+      valueSummary,
       onBadgeClose,
       valueRenderer,
       itemValueRenderer,
@@ -123,6 +129,9 @@ export const DataSelectInput = forwardRef(
         return (
           <MultiValueRenderer<M>
             data={sorted}
+            valueSummary={valueSummary}
+            summarizeValue={summarizeValue}
+            summarizeValueAfter={summarizeValueAfter}
             dynamicHeight={dynamicHeight}
             maximumValuesToRender={maximumValuesToRender}
             badgeProps={badgeProps}
@@ -144,6 +153,9 @@ export const DataSelectInput = forwardRef(
       dynamicHeight,
       showPlaceholder,
       chipClassName,
+      summarizeValue,
+      valueSummary,
+      summarizeValueAfter,
       badgeProps,
       chipSize,
       getBadgeProps,

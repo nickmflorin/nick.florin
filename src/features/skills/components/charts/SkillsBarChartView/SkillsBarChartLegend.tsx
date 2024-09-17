@@ -9,10 +9,10 @@ export interface SkillsBarChartLegendProps extends ComponentProps {
   readonly skills: ApiSkill[];
 }
 
-export const SkillsBarChartLegend = async ({
+export const SkillsBarChartLegend = ({
   skills,
   ...props
-}: SkillsBarChartLegendProps): Promise<JSX.Element> => {
+}: SkillsBarChartLegendProps): JSX.Element => {
   if (skills.length === 0) {
     return <></>;
   }

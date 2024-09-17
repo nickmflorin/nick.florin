@@ -1,4 +1,3 @@
-"use client";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 
@@ -15,7 +14,6 @@ import {
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
 } from "~/features/skills/components/forms/SkillsChartFilterForm";
-import { useMutableParams } from "~/hooks";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
 const Popover = dynamic(() => import("~/components/floating/Popover"));
@@ -24,7 +22,7 @@ export interface SkillsFilterPopoverProps {
   readonly isDisabled?: boolean;
   readonly buttonProps?: Omit<ChartFilterButtonProps, "isDisabled">;
   readonly filters: SkillsChartFilterFormValues;
-  readonly onChange?: (values: SkillsChartFilterFormValues) => void;
+  readonly onChange: (values: SkillsChartFilterFormValues) => void;
 }
 
 export const SkillsFilterPopover = ({
@@ -34,13 +32,11 @@ export const SkillsFilterPopover = ({
   onChange,
 }: SkillsFilterPopoverProps): JSX.Element => {
   const { isLessThan } = useScreenSizes();
-  const { set } = useMutableParams();
 
   const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({
     schema: SkillsChartFilterFormSchema,
     defaultValues: { showTopSkills: "all" },
     onChange: ({ values }) => {
-      set({ filters: values });
       onChange?.(values);
     },
   });
@@ -48,12 +44,6 @@ export const SkillsFilterPopover = ({
   useEffect(() => {
     setValues(filters);
   }, [filters, setValues]);
-
-  /* We do not want to show the chart filters on mobile devices until we figure out how to more
-     cleanly integrate them into the mobile experience with a drawer instead of a popover. */
-  if (isLessThan("md")) {
-    return <></>;
-  }
 
   return (
     <Popover
