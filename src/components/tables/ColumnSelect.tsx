@@ -28,6 +28,7 @@ export const ColumnSelect = <T extends TableModel>() => {
       menuWidth="available"
       maxHeight={260}
       onChange={v => setVisibleColumns(v)}
+      itemRenderer={m => m.title}
     >
       {({ ref, params, isOpen }) => (
         <Button.Solid
