@@ -10,11 +10,12 @@ import { ResumeSimpleTile } from "~/features/resume/components/tiles/ResumeSimpl
 
 export interface ProjectTileProps extends ComponentProps {
   readonly project: BrandProject;
+  readonly includeDescription?: boolean;
 }
 
 /* TODO: We eventually may want to solidify types related to the available IconName(s) so we can
    use it for schema validation of data coming from the database. */
-export const ProjectTile = ({ project, ...props }: ProjectTileProps) => {
+export const ProjectTile = ({ project, includeDescription = true, ...props }: ProjectTileProps) => {
   let icon: IconName;
   const slug = project.slug;
   if (!ProjectSlugs.contains(slug)) {
@@ -28,21 +29,12 @@ export const ProjectTile = ({ project, ...props }: ProjectTileProps) => {
     icon = ProjectSlugs.getModel(slug).icon;
   }
   return (
-    <ResumeSimpleTile {...props} icon={icon} description={project.description}>
+    <ResumeSimpleTile
+      {...props}
+      icon={icon}
+      description={includeDescription ? project.description : null}
+    >
       <ProjectLink project={project} className="truncate" />
     </ResumeSimpleTile>
   );
-
-  /* return (
-       <div
-         {...props}
-         className={classNames("flex flex-row gap-[12px] max-w-full w-full", props.className)}
-       >
-         <Icon className="text-gray-600" icon={icon} size={20} />
-         <div className={classNames("flex flex-col gap-[4px] max-w-[calc(100%-40px)]")}>
-           <ProjectLink project={project} className="truncate" />
-           <Description>{project.description}</Description>
-         </div>
-       </div>
-     ); */
 };

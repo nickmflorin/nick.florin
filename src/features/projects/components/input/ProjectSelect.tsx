@@ -62,6 +62,7 @@ export const ProjectSelect = forwardRef(
         isLoading={isLoading}
         options={{ behavior, getItemValue }}
         getItemValueLabel={m => m.shortName ?? m.name}
+        includeDescriptions={false}
         itemRenderer={m => (
           <div className="flex flex-col gap-[4px]">
             <Text fontSize="sm" fontWeight="medium" truncate>

@@ -49,7 +49,12 @@ export const RepositorySelect = forwardRef(
         getItemValueLabel={m => m.slug}
         includeDescriptions={false}
         itemRenderer={m => (
-          <RepositoryTile repository={m} className="items-center" includeLink={false} />
+          <RepositoryTile
+            repository={m}
+            className="items-center"
+            includeLink={false}
+            includeDescription={false}
+          />
         )}
       />
     );

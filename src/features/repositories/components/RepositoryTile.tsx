@@ -9,18 +9,20 @@ import { ResumeSimpleTile } from "~/features/resume/components/tiles/ResumeSimpl
 export interface RepositoryTileProps extends ComponentProps {
   readonly repository: BrandRepository;
   readonly includeLink?: boolean;
+  readonly includeDescription?: boolean;
 }
 
 export const RepositoryTile = ({
   repository,
   includeLink = true,
+  includeDescription = true,
   ...props
 }: RepositoryTileProps) => (
   <ResumeSimpleTile
     {...props}
     icon={{ name: "github", iconStyle: "brands" }}
     iconClassName="text-github-black"
-    description={repository.description}
+    description={includeDescription ? repository.description : null}
     iconSize={28}
   >
     {includeLink ? (
