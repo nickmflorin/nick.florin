@@ -31,8 +31,9 @@ export type ButtonClassNameProps<E extends types.ButtonElement> = Pick<
   ButtonClassNamePropName
 >;
 
-export const buttonSizeClassName = (size: types.ButtonSize = "small"): string =>
-  types.ButtonDiscreteSizes.contains(size) ? `button--size-${size}` : "";
+export const buttonSizeClassName = (
+  size: types.ButtonSize = types.ButtonDiscreteSizes.SMALL,
+): string => (types.ButtonDiscreteSizes.contains(size) ? `button--size-${size}` : "");
 
 export const buttonIconSizeClassName = (iconSize?: types.ButtonIconSize): string =>
   // Only include the icon size class name if the icon size is discrete.
