@@ -394,7 +394,11 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => (
             view because when a row is reordered, we needed to ensure that just that row is updated
             in the database (and not every row after it as well). To accomplish this, we had to
             develop a&nbsp;
-            <InlineLink href="https://github.com/nickmflorin/happybudget-api/blob/develop/src/happybudget/app/tabling/utils.py">
+            <InlineLink
+              openInNewTab
+              element="a"
+              href="https://github.com/nickmflorin/happybudget-api/blob/develop/src/happybudget/app/tabling/utils.py"
+            >
               lexographical sorting algorithm
             </InlineLink>
             &nbsp; that would allow us to perform a reorder by just performing one database write,
