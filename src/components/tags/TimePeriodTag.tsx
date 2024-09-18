@@ -1,4 +1,4 @@
-import { type ModelTimePeriod, stringifyTimePeriod } from "~/prisma/model";
+import { type ModelTimePeriod, stringifyTimePeriod } from "~/database/model";
 
 import { Tag, type TagProps } from "./Tag";
 

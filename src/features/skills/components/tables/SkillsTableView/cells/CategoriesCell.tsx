@@ -6,7 +6,7 @@ import {
   type BrandSkill,
   type SkillCategory,
   type SkillCategories,
-} from "~/prisma/model";
+} from "~/database/model";
 
 import { updateSkill } from "~/actions/mutations/skills";
 

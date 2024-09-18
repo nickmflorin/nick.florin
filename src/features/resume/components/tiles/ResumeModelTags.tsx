@@ -1,4 +1,4 @@
-import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+import { type BrandModel, type ResumeBrand } from "~/database/model";
 
 import { Icon } from "~/components/icons/Icon";
 import { LocationTag } from "~/components/tags/LocationTag";

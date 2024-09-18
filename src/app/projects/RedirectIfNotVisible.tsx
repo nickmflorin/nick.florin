@@ -4,9 +4,9 @@ import { type ReactNode } from "react";
 import { sortBy } from "lodash-es";
 
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import type { Project, ProjectSlug } from "~/prisma/model";
-import { ProjectSlugs } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import type { Project, ProjectSlug } from "~/database/model";
+import { ProjectSlugs } from "~/database/model";
 
 export interface RedirectIfNotVisibleProps {
   readonly children: ReactNode;

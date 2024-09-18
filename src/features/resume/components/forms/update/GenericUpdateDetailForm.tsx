@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition, useMemo, useEffect } from "react";
 
-import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
+import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/database/model";
 
 import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
 import { isApiClientErrorJson } from "~/api";

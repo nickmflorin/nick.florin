@@ -3,8 +3,8 @@ import "server-only";
 import { cache } from "react";
 
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import { type Profile } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { type Profile } from "~/database/model";
 
 import { convertToPlainObject } from "~/api/serialization";
 

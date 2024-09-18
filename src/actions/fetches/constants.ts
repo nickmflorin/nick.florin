@@ -1,5 +1,5 @@
-import type { Brand, BrandModel } from "~/prisma/model";
-import { constructOrSearch } from "~/prisma/util";
+import type { Brand, BrandModel } from "~/database/model";
+import { constructOrSearch } from "~/database/util";
 
 type TabledBrand = Extract<
   Brand,

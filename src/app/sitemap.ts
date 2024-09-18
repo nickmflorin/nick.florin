@@ -1,6 +1,6 @@
 import { type MetadataRoute } from "next";
 
-import { prisma } from "~/prisma/client";
+import { prisma } from "~/database/prisma";
 
 import { environment } from "~/environment";
 

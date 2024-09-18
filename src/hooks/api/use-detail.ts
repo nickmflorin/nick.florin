@@ -3,7 +3,7 @@ import {
   type DetailIncludes,
   type NestedApiDetail,
   type ToSkillIncludes,
-} from "~/prisma/model";
+} from "~/database/model";
 
 import { type GetDetailParams } from "~/actions/fetches/details";
 

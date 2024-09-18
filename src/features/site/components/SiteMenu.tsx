@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 
 import { useUser } from "@clerk/nextjs";
 
-import { type BrandResume } from "~/prisma/model";
+import { type BrandResume } from "~/database/model";
 
 import { Button, IconButton } from "~/components/buttons";
 import { NavMenuAnchor } from "~/components/buttons/NavMenuAnchor";

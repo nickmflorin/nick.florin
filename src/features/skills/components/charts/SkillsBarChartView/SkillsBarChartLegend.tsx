@@ -1,5 +1,5 @@
+import type { ApiSkill } from "~/database/model";
 import { generateChartColors } from "~/lib/charts";
-import type { ApiSkill } from "~/prisma/model";
 
 import { Legend } from "~/components/charts/Legend";
 import { classNames } from "~/components/types";

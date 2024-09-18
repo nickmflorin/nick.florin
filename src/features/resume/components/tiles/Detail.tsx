@@ -1,4 +1,4 @@
-import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/prisma/model";
+import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/database/model";
 
 import { Link } from "~/components/buttons";
 import { classNames } from "~/components/types";

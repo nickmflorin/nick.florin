@@ -1,4 +1,4 @@
-import { type ApiRepository, type RepositoryIncludes } from "~/prisma/model";
+import { type ApiRepository, type RepositoryIncludes } from "~/database/model";
 
 import { type GetRepositoriesParams } from "~/actions/fetches/repositories";
 

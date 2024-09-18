@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import type { BrandResume } from "~/prisma/model";
+import type { BrandResume } from "~/database/model";
 
 import { IconButton } from "~/components/buttons";
 import { Loading } from "~/components/loading/Loading";

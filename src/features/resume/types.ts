@@ -3,7 +3,7 @@ import {
   type ApiExperience,
   type ResumeBrand,
   type BrandModel,
-} from "~/prisma/model";
+} from "~/database/model";
 
 export type ResumeModelSize = "small" | "medium" | "large";
 

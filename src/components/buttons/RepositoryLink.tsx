@@ -1,5 +1,5 @@
-import type { BrandRepository } from "~/prisma/model";
-import { getRepositoryGithubUrl } from "~/prisma/model/repository";
+import type { BrandRepository } from "~/database/model";
+import { getRepositoryGithubUrl } from "~/database/model";
 
 import { classNames } from "~/components/types";
 

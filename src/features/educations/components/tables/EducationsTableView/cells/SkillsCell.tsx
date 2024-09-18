@@ -3,8 +3,8 @@ import { useEffect, useState, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
+import { type ApiEducation } from "~/database/model";
 import { logger } from "~/internal/logger";
-import { type ApiEducation } from "~/prisma/model";
 
 import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";

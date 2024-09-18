@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type ApiCourse } from "~/prisma/model";
+import { type ApiCourse } from "~/database/model";
 
 import { updateCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";

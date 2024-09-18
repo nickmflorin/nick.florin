@@ -1,7 +1,7 @@
 "use client";
 import { forwardRef, type ForwardedRef, useState } from "react";
 
-import { type ApiSkill } from "~/prisma/model";
+import { type ApiSkill } from "~/database/model";
 
 import { type HttpError } from "~/api";
 

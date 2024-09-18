@@ -1,7 +1,7 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import { type School, type Education } from "~/prisma/model";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/database/prisma";
+import { type School, type Education } from "~/database/model";
 
 import { ApiClientGlobalError } from "~/api";
 

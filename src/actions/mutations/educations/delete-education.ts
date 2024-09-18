@@ -1,8 +1,8 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import { DetailEntityType, calculateSkillsExperience } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { DetailEntityType, calculateSkillsExperience } from "~/database/model";
 
 import { ApiClientGlobalError } from "~/api";
 

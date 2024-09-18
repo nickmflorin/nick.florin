@@ -9,7 +9,7 @@ import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 
 export interface TableControlBarPlaceholderProps extends ComponentProps {
-  readonly children: ReactNode;
+  readonly children?: ReactNode;
   readonly canDeleteRows?: boolean;
   readonly targetId?: string;
 }

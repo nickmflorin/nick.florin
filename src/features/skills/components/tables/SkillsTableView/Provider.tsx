@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiSkill, type BrandSkill } from "~/prisma/model";
+import { type ApiSkill, type BrandSkill } from "~/database/model";
 
 import { deleteSkill, updateSkill } from "~/actions/mutations/skills";
 

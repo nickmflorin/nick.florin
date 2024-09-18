@@ -2,16 +2,16 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
+import { type DetailEntityType, type Project, type ApiDetail } from "~/database/model";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma } from "~/database/prisma";
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import { type DetailEntityType, type Project, type ApiDetail } from "~/prisma/model";
-import { calculateSkillsExperience } from "~/prisma/model";
 
 import { getEntity } from "~/actions/fetches/get-entity";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
+import { DetailSchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors } from "~/api";
 import { ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
-import { DetailSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createDetail = async (

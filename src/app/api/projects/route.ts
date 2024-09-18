@@ -1,4 +1,4 @@
-import { type ProjectIncludes } from "~/prisma/model";
+import { type ProjectIncludes } from "~/database/model";
 
 import { getProjects } from "~/actions/fetches/projects";
 import { ClientResponse } from "~/api";

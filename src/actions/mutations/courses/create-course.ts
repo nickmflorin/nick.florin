@@ -2,14 +2,14 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
+import { type BrandEducation } from "~/database/model";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { slugify } from "~/lib/formatters";
-import { prisma } from "~/prisma/client";
-import { type BrandEducation } from "~/prisma/model";
-import { calculateSkillsExperience } from "~/prisma/model";
 
+import { CourseSchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors } from "~/api";
-import { CourseSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";

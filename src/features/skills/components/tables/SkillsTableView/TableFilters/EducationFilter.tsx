@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useMemo, useCallback } from "react";
 
+import { type ApiEducation } from "~/database/model";
 import { isRecordType, isUuid } from "~/lib/typeguards";
-import { type ApiEducation } from "~/prisma/model";
 
 import { EducationSelect } from "~/features/educations/components/input/EducationSelect";
 import { useMutableParams } from "~/hooks";

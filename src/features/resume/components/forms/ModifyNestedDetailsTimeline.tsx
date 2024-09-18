@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Timeline } from "@mantine/core";
 
-import { type NestedApiDetail } from "~/prisma/model";
+import { type NestedApiDetail } from "~/database/model";
 
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { classNames } from "~/components/types";

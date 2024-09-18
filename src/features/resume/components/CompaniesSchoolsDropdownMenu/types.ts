@@ -1,4 +1,4 @@
-import { type ApiSchool, type ApiCompany } from "~/prisma/model";
+import { type ApiSchool, type ApiCompany } from "~/database/model";
 
 export type ModelType = "company" | "school";
 

@@ -1,5 +1,5 @@
-import { prisma } from "~/prisma/client";
-import { DetailEntityType, type DetailIncludes } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { DetailEntityType, type DetailIncludes } from "~/database/model";
 
 import { getEntityDetails } from "~/actions/fetches/details";
 import { ApiClientGlobalError, ClientResponse } from "~/api";

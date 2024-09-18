@@ -115,3 +115,20 @@ export const convertConfigsToColumns = <
 export type DataTableOptions<D extends DataTableDatum> = {
   readonly getRowId?: (datum: D) => string | number;
 };
+
+/* export interface DataTableInstance<D extends DataTableDatum> {
+     readonly isCheckable: boolean;
+     readonly canToggleColumnVisibility: boolean;
+     readonly selectedRows: D["id"][];
+     readonly columns: Column<T>[];
+     readonly visibleColumns: Column<T>[];
+     readonly visibleColumnIds: string[];
+     readonly rowIsLoading: (id: D["id"]) => boolean;
+     readonly rowIsLocked: (id: D["id"]) => boolean;
+     readonly setRowLoading: (id: D["id"], loading: boolean, opts?: { locked?: boolean }) => void;
+     readonly hideColumn: (id: string) => void;
+     readonly showColumn: (id: string) => void;
+     readonly selectRow: (m: D) => void;
+     readonly deselectRow: (m: D["id"]) => void;
+     readonly setVisibleColumns: (m: string[]) => void;
+   } */

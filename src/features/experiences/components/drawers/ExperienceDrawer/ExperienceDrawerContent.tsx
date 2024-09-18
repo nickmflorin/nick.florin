@@ -1,4 +1,4 @@
-import { type ApiExperience } from "~/prisma/model";
+import { type ApiExperience } from "~/database/model";
 
 import { Drawer } from "~/components/drawers/Drawer";
 import { ResumeModelDrawerTile } from "~/features/resume/components/tiles/ResumeModelDrawerTile";

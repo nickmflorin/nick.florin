@@ -3,14 +3,14 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
+import { type Detail, type User, type NestedDetail, type BrandProject } from "~/database/model";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma, type Transaction } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { slugify } from "~/lib/formatters";
-import { prisma, type Transaction } from "~/prisma/client";
-import { type Detail, type User, type NestedDetail, type BrandProject } from "~/prisma/model";
-import { calculateSkillsExperience } from "~/prisma/model";
 
+import { ProjectSchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
-import { ProjectSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";

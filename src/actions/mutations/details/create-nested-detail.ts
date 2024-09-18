@@ -2,20 +2,20 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
+import { type NestedApiDetail, type Project } from "~/database/model";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma } from "~/database/prisma";
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import { type NestedApiDetail, type Project } from "~/prisma/model";
-import { calculateSkillsExperience } from "~/prisma/model";
 
 import { getDetail } from "~/actions/fetches/details";
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
+import { DetailSchema } from "~/actions-v2/schemas";
 import {
   ApiClientFieldErrors,
   ApiClientGlobalError,
   ApiClientFieldErrorCodes,
   type ApiClientErrorJson,
 } from "~/api";
-import { DetailSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createNestedDetail = async (

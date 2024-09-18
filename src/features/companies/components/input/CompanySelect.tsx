@@ -1,8 +1,8 @@
 import { forwardRef, type ForwardedRef } from "react";
 
+import { type Company } from "~/database/model";
+import { stringifyLocation } from "~/database/model";
 import { logger } from "~/internal/logger";
-import { type Company } from "~/prisma/model";
-import { stringifyLocation } from "~/prisma/model";
 
 import { type HttpError } from "~/api";
 

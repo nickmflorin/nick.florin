@@ -4,8 +4,8 @@ import { useState, useEffect, useTransition } from "react";
 
 import { toast } from "react-toastify";
 
+import { type ApiSkill } from "~/database/model";
 import { logger } from "~/internal/logger";
-import { type ApiSkill } from "~/prisma/model";
 
 import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";

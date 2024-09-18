@@ -1,25 +1,25 @@
 "use server";
 import { getAuth, auth } from "@clerk/nextjs/server";
 
+import { type User } from "~/database/model";
+import { prisma } from "~/database/prisma";
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import { type User } from "~/prisma/model";
 
 import { ApiClientGlobalError } from "~/api";
 
 import { CMS_USER_ORG_SLUG, CMS_USER_ORG_ROLE, USER_ADMIN_ROLE } from "./constants";
 
-type StrictClerkUserPayload = Readonly<{ clerkUserId: string; hasCMSAccess: boolean }>;
-type NullClerkUserPayload = Readonly<{ clerkUserId: null; hasCMSAccess: false }>;
+type StrictClerkUserPayload = Readonly<{ clerkUserId: string; isAdmin: boolean }>;
+type NullClerkUserPayload = Readonly<{ clerkUserId: null; isAdmin: false }>;
 
-const NULL_CLERK_USER_PAYLOAD: NullClerkUserPayload = { clerkUserId: null, hasCMSAccess: false };
+const NULL_CLERK_USER_PAYLOAD: NullClerkUserPayload = { clerkUserId: null, isAdmin: false };
 
 type ClerkUserPayload = StrictClerkUserPayload | NullClerkUserPayload;
 
-type StrictUserPayload = Readonly<{ user: User; clerkUserId: string; hasCMSAccess: boolean }>;
-type NullUserPayload = Readonly<{ user: null; clerkUserId: null; hasCMSAccess: false }>;
+type StrictUserPayload = Readonly<{ user: User; clerkUserId: string; isAdmin: boolean }>;
+type NullUserPayload = Readonly<{ user: null; clerkUserId: null; isAdmin: false }>;
 
-const NULL_USER_PAYLOAD: NullUserPayload = { user: null, clerkUserId: null, hasCMSAccess: false };
+const NULL_USER_PAYLOAD: NullUserPayload = { user: null, clerkUserId: null, isAdmin: false };
 
 type UserPayload = StrictUserPayload | NullUserPayload;
 
@@ -35,7 +35,7 @@ export async function getClerkUser(req?: Parameters<typeof getAuth>[0]): Promise
   if (userId) {
     return {
       clerkUserId: userId,
-      hasCMSAccess:
+      isAdmin:
         orgSlug === CMS_USER_ORG_SLUG &&
         [CMS_USER_ORG_ROLE, USER_ADMIN_ROLE].includes(orgRole as string),
     };
@@ -55,19 +55,19 @@ type GetClerkAuthedUserRT<O extends GetAuthedUserOpts> = O extends { strict: fal
 export const getClerkAuthedUser = async <O extends GetAuthedUserOpts>(
   opts?: O,
 ): Promise<GetClerkAuthedUserRT<O>> => {
-  const { clerkUserId, hasCMSAccess } = await getClerkUser(opts?.request);
+  const { clerkUserId, isAdmin } = await getClerkUser(opts?.request);
   if (!clerkUserId) {
     if (opts?.strict === false) {
       return NULL_CLERK_USER_PAYLOAD as GetAuthedUserRT<O>;
     }
     throw ApiClientGlobalError.NotAuthenticated();
-  } else if (!hasCMSAccess) {
+  } else if (!isAdmin) {
     if (opts?.strict === false) {
       return NULL_CLERK_USER_PAYLOAD as GetAuthedUserRT<O>;
     }
     throw ApiClientGlobalError.Forbidden();
   }
-  return { clerkUserId, hasCMSAccess } as GetAuthedUserRT<O>;
+  return { clerkUserId, isAdmin } as GetAuthedUserRT<O>;
 };
 
 type GetAuthedUserRT<O extends GetAuthedUserOpts> = O extends { strict: false }
@@ -77,13 +77,13 @@ type GetAuthedUserRT<O extends GetAuthedUserOpts> = O extends { strict: false }
 export const getAuthedUser = async <O extends GetAuthedUserOpts>(
   opts?: O,
 ): Promise<GetAuthedUserRT<O>> => {
-  const { clerkUserId, hasCMSAccess } = await getClerkUser(opts?.request);
+  const { clerkUserId, isAdmin } = await getClerkUser(opts?.request);
   if (!clerkUserId) {
     if (opts?.strict === false) {
       return NULL_USER_PAYLOAD as GetAuthedUserRT<O>;
     }
     throw ApiClientGlobalError.NotAuthenticated();
-  } else if (!hasCMSAccess) {
+  } else if (!isAdmin) {
     if (opts?.strict === false) {
       return NULL_USER_PAYLOAD as GetAuthedUserRT<O>;
     }
@@ -99,5 +99,5 @@ export const getAuthedUser = async <O extends GetAuthedUserOpts>(
     }
     throw ApiClientGlobalError.NotAuthenticated();
   }
-  return { user, clerkUserId, hasCMSAccess } as GetAuthedUserRT<O>;
+  return { user, clerkUserId, isAdmin } as GetAuthedUserRT<O>;
 };

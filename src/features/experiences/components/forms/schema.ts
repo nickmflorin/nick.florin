@@ -1,6 +1,6 @@
 import { type z } from "zod";
 
-import { ExperienceSchema } from "~/api/schemas";
+import { ExperienceSchema } from "~/actions-v2/schemas";
 
 export const ExperienceFormSchema = ExperienceSchema.required();
 

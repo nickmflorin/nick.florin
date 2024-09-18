@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { type DetailEntityType, type ApiDetail } from "~/prisma/model";
+import { type DetailEntityType, type ApiDetail } from "~/database/model";
 
 import { createDetail } from "~/actions/mutations/details";
 

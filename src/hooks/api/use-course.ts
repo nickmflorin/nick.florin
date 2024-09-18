@@ -1,5 +1,5 @@
+import { type ApiCourse, type CourseIncludes } from "~/database/model";
 import { isUuid } from "~/lib/typeguards";
-import { type ApiCourse, type CourseIncludes } from "~/prisma/model";
 
 import { type GetCourseParams } from "~/actions/fetches/courses";
 

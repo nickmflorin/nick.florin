@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useMemo, useCallback } from "react";
 
+import { type ApiExperience } from "~/database/model";
 import { isRecordType, isUuid } from "~/lib/typeguards";
-import { type ApiExperience } from "~/prisma/model";
 
 import { ExperienceSelect } from "~/features/experiences/components/input/ExperienceSelect";
 import { useMutableParams } from "~/hooks";

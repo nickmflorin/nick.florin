@@ -4,7 +4,7 @@ import {
   type DetailIncludes,
   type BrandExperience,
   type BrandEducation,
-} from "~/prisma/model";
+} from "~/database/model";
 
 import { type GetDetailsParams } from "~/actions/fetches/details";
 

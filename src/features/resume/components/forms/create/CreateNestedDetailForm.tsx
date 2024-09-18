@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { type NestedApiDetail } from "~/prisma/model";
+import { type NestedApiDetail } from "~/database/model";
 
 import { createNestedDetail } from "~/actions/mutations/details";
 

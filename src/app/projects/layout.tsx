@@ -1,7 +1,7 @@
 import type { LabeledNavItem } from "~/application/pages";
+import { ProjectSlugs } from "~/database/model";
 import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
-import { ProjectSlugs } from "~/prisma/model";
 
 import { getProjects } from "~/actions/fetches/projects";
 

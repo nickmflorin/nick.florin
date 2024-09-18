@@ -2,12 +2,12 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/prisma/client";
-import { type BrandRepository, type BrandSkill } from "~/prisma/model";
-import { calculateSkillsExperience } from "~/prisma/model";
+import { type BrandRepository, type BrandSkill } from "~/database/model";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma } from "~/database/prisma";
 
+import { RepositorySchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
-import { RepositorySchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 import { queryM2MsDynamically } from "../m2ms";

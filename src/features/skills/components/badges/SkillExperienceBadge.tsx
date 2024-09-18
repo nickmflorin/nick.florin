@@ -1,5 +1,5 @@
 "use client";
-import { type ApiSkill } from "~/prisma/model";
+import { type ApiSkill } from "~/database/model";
 
 import { Badge, type BadgeProps } from "~/components/badges/Badge";
 

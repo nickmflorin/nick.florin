@@ -1,4 +1,4 @@
-import { type SchoolIncludes } from "~/prisma/model";
+import { type SchoolIncludes } from "~/database/model";
 
 import { getSchools } from "~/actions/fetches/schools";
 import { ClientResponse } from "~/api";

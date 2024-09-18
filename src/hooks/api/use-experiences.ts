@@ -1,4 +1,4 @@
-import { type ApiExperience, type ExperienceIncludes } from "~/prisma/model";
+import { type ApiExperience, type ExperienceIncludes } from "~/database/model";
 
 import { type GetExperiencesParams } from "~/actions/fetches/experiences";
 

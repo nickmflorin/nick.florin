@@ -1,5 +1,5 @@
+import { type SkillIncludes, type ApiSkill } from "~/database/model";
 import { isUuid } from "~/lib/typeguards";
-import { type SkillIncludes, type ApiSkill } from "~/prisma/model";
 
 import type { GetSkillParams } from "~/actions/fetches/skills";
 

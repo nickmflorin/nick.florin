@@ -1,13 +1,14 @@
 import { DateTimeText } from "~/components/typography/DateTimeText";
+import { HorizontallyCentered } from "~/components/util";
 
 export type ReadOnlyDateTimeCellProps = {
   readonly date: Date;
 };
 
 export const ReadOnlyDateTimeCell = ({ date }: ReadOnlyDateTimeCellProps): JSX.Element => (
-  <div className="flex flex-row items-center justify-center">
+  <HorizontallyCentered>
     <DateTimeText formatSeparately value={date} fontWeight="regular" />
-  </div>
+  </HorizontallyCentered>
 );
 
 export default ReadOnlyDateTimeCell;

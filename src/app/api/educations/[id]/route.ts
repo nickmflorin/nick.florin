@@ -1,5 +1,5 @@
-import { prisma } from "~/prisma/client";
-import { type EducationIncludes } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { type EducationIncludes } from "~/database/model";
 
 import { getEducation } from "~/actions/fetches/educations";
 import { ClientResponse, ApiClientGlobalError } from "~/api";

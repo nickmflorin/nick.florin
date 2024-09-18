@@ -1,4 +1,4 @@
-import { DetailEntityType } from "~/prisma/model";
+import { DetailEntityType } from "~/database/model";
 
 import {
   type UpdateDetailsDrawerProps,

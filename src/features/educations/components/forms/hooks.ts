@@ -1,4 +1,4 @@
-import type { ApiEducation } from "~/prisma/model";
+import type { ApiEducation } from "~/database/model";
 
 import { useForm } from "~/components/forms/hooks/use-form";
 

@@ -1,5 +1,5 @@
-import { prisma } from "~/prisma/client";
-import { type BrandResume } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { type BrandResume } from "~/database/model";
 
 import { convertToPlainObject } from "~/api/serialization";
 

@@ -1,3 +1,32 @@
+import { isEqual } from "lodash-es";
+
+export const uniq = <T>(a: T[], equality?: (a: T, b: T) => boolean): T[] => {
+  const eq = equality ?? isEqual;
+  return a.reduce((prev: T[], curr: T) => {
+    if (!prev.some(v => eq(v, curr))) {
+      return [...prev, curr];
+    }
+    return prev;
+  }, [] as T[]);
+};
+
+export const arraysHaveSameElements = <T>(
+  a: T[],
+  b: T[],
+  equality?: (a: T, b: T) => boolean,
+): boolean => {
+  const eq = equality ?? isEqual;
+
+  const uniques: [T[], T[]] = [uniq(a, eq), uniq(b, eq)];
+  if (uniques[0].length !== a.length || uniques[1].length !== b.length) {
+    throw new Error("The provided arrays must contain only unique elements.");
+  }
+  return (
+    uniques[0].length === uniques[1].length &&
+    uniques[0].every(v => uniques[1].some(vi => eq(v, vi)))
+  );
+};
+
 type StrictArrayLookupOptions = {
   readonly strict?: boolean;
 };

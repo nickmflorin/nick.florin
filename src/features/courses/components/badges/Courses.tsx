@@ -1,5 +1,5 @@
 "use client";
-import { type BrandCourse } from "~/prisma/model";
+import { type BrandCourse } from "~/database/model";
 
 import { BadgeCollection } from "~/components/badges/BadgeCollection";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

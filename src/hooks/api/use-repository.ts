@@ -1,5 +1,5 @@
+import { type ApiRepository, type RepositoryIncludes } from "~/database/model";
 import { isUuid } from "~/lib/typeguards";
-import { type ApiRepository, type RepositoryIncludes } from "~/prisma/model";
 
 import { type GetRepositoryParams } from "~/actions/fetches/repositories";
 

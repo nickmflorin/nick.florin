@@ -1,5 +1,5 @@
 "use client";
-import { type BrandSkill } from "~/prisma/model";
+import { type BrandSkill } from "~/database/model";
 
 import { BadgeCollection } from "~/components/badges/BadgeCollection";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

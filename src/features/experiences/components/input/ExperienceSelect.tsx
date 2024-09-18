@@ -1,6 +1,6 @@
 import { forwardRef, type ForwardedRef } from "react";
 
-import { type ApiExperience } from "~/prisma/model";
+import { type ApiExperience } from "~/database/model";
 
 import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/select";
 import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";

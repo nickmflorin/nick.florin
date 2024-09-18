@@ -3,8 +3,8 @@ import { put, del, type PutBlobResult } from "@vercel/blob";
 
 import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import type { BrandResume } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import type { BrandResume } from "~/database/model";
 
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 import { convertToPlainObject } from "~/api/serialization";

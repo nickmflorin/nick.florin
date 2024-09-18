@@ -5,7 +5,7 @@ import {
   type BrandSkill,
   type ProgrammingLanguages,
   type ProgrammingLanguage,
-} from "~/prisma/model";
+} from "~/database/model";
 
 import { updateSkill } from "~/actions/mutations/skills";
 

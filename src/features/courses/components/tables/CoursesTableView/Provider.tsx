@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiCourse, type BrandCourse } from "~/prisma/model";
+import { type ApiCourse, type BrandCourse } from "~/database/model";
 
 import { deleteCourse, updateCourse } from "~/actions/mutations/courses";
 

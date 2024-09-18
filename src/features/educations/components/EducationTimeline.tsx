@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 
 import { uniqBy } from "lodash-es";
 
-import { removeRedundantTopLevelSkills } from "~/prisma/model";
+import { removeRedundantTopLevelSkills } from "~/database/model";
 
 import { getEducations } from "~/actions/fetches/educations";
 

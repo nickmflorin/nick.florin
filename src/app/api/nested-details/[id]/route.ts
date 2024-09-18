@@ -1,5 +1,5 @@
-import { prisma } from "~/prisma/client";
-import { type NestedDetailIncludes } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { type NestedDetailIncludes } from "~/database/model";
 
 import { getNestedDetail } from "~/actions/fetches/details";
 import { ClientResponse, ApiClientGlobalError } from "~/api";

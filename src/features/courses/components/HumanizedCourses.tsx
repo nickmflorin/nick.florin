@@ -3,7 +3,7 @@ import React, { memo, useMemo, type ReactNode } from "react";
 
 import { isEqual } from "lodash-es";
 
-import type { BrandCourse } from "~/prisma/model";
+import type { BrandCourse } from "~/database/model";
 
 import { InlineLink } from "~/components/buttons";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

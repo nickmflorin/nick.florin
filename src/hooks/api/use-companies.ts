@@ -1,4 +1,4 @@
-import { type CompanyIncludes, type Company } from "~/prisma/model";
+import { type CompanyIncludes, type Company } from "~/database/model";
 
 import { type GetCompaniesParams } from "~/actions/fetches/companies";
 

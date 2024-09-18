@@ -6,7 +6,7 @@ import {
   type NestedApiDetail,
   type ApiDetail,
   isNestedDetail,
-} from "~/prisma/model";
+} from "~/database/model";
 
 import { IconButton } from "~/components/buttons";
 import { type ExtendingDrawerProps } from "~/components/drawers";

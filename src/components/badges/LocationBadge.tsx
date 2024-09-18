@@ -1,4 +1,4 @@
-import { type ModelLocation, stringifyLocation } from "~/prisma/model";
+import { type ModelLocation, stringifyLocation } from "~/database/model";
 
 import { Badge, type BadgeProps } from "./Badge";
 

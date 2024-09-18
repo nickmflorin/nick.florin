@@ -1,4 +1,4 @@
-import { type ProgrammingDomain, ProgrammingDomains } from "~/prisma/model";
+import { type ProgrammingDomain, ProgrammingDomains } from "~/database/model";
 
 import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";

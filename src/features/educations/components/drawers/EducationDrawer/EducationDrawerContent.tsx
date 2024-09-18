@@ -1,4 +1,4 @@
-import { type ApiEducation } from "~/prisma/model";
+import { type ApiEducation } from "~/database/model";
 
 import { Drawer } from "~/components/drawers/Drawer";
 import { ResumeModelDrawerTile } from "~/features/resume/components/tiles/ResumeModelDrawerTile";

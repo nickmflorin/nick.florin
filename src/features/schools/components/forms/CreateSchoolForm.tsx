@@ -4,7 +4,7 @@ import { useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { type School } from "~/prisma/model";
+import { type School } from "~/database/model";
 
 import { createSchool } from "~/actions/mutations/schools";
 import { isApiClientErrorJson } from "~/api";

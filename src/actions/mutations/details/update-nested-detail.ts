@@ -2,18 +2,18 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/prisma/client";
-import { type Project } from "~/prisma/model";
-import { calculateSkillsExperience } from "~/prisma/model";
+import { type Project } from "~/database/model";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma } from "~/database/prisma";
 
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
+import { DetailSchema } from "~/actions-v2/schemas";
 import {
   ApiClientFieldErrors,
   ApiClientFormError,
   ApiClientFieldErrorCodes,
   ApiClientGlobalError,
 } from "~/api";
-import { DetailSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 const UpdateDetailSchema = DetailSchema.partial();

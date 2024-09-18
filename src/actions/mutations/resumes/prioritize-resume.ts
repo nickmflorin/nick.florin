@@ -1,7 +1,7 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/prisma/client";
-import type { BrandResume } from "~/prisma/model";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/database/prisma";
+import type { BrandResume } from "~/database/model";
 
 import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";

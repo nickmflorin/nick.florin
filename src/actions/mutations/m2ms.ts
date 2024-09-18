@@ -2,8 +2,8 @@
 import { uniq } from "lodash-es";
 
 import { UnreachableCaseError } from "~/application/errors";
-import { type Transaction } from "~/prisma/client";
-import { type Brand, type BrandModel, type PluralBrand } from "~/prisma/model";
+import { type Transaction } from "~/database/prisma";
+import { type Brand, type BrandModel, type PluralBrand } from "~/database/model";
 
 import { ApiClientFieldErrors } from "~/api";
 

@@ -3,9 +3,9 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/prisma/client";
-import { type ApiRepository, type RepositoryIncludes, fieldIsIncluded } from "~/prisma/model";
-import { conditionalAndClause } from "~/prisma/util";
+import { type ApiRepository, type RepositoryIncludes, fieldIsIncluded } from "~/database/model";
+import { prisma } from "~/database/prisma";
+import { conditionalAndClause } from "~/database/util";
 
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";

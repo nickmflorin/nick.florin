@@ -1,5 +1,4 @@
-"use client";
-import clsx from "clsx";
+import { classNames } from "~/components/types";
 
 import { Button, type ButtonProps } from "./generic";
 
@@ -21,7 +20,7 @@ export const TabButton = <E extends "button" | "link">({
 }: TabButtonProps<E>) => (
   <Button.Transparent<E>
     {...(props as ButtonProps<E>)}
-    className={clsx(
+    className={classNames(
       "rounded-none rounded-t-md relative top-[2px]",
       "border-b-[2px] text-gray-800",
       "hover:bg-neutral-100",

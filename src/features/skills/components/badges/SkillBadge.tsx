@@ -1,4 +1,4 @@
-import { type Skill } from "~/prisma/model";
+import { type Skill } from "~/database/model";
 
 import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { classNames } from "~/components/types";

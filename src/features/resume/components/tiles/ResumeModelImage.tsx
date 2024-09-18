@@ -1,4 +1,4 @@
-import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+import { type BrandModel, type ResumeBrand } from "~/database/model";
 
 import { ModelImage, type ModelImageSpreadProps } from "~/components/images/ModelImage";
 

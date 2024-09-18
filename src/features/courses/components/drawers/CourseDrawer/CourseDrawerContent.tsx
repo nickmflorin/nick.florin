@@ -1,4 +1,4 @@
-import { type ApiCourse } from "~/prisma/model";
+import { type ApiCourse } from "~/database/model";
 
 import { DetailDrawerContent } from "~/components/drawers/details/DetailDrawerContent";
 import { DetailDrawerSection } from "~/components/drawers/details/DetailDrawerSection";

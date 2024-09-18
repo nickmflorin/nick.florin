@@ -1,9 +1,9 @@
-import { type SkillIncludes } from "~/prisma/model";
+import { type SkillIncludes } from "~/database/model";
 
 import { getSkills } from "~/actions/fetches/skills";
+import { SkillsFiltersSchema, type SkillsFilters } from "~/actions-v2/schemas";
 import { ClientResponse, ApiClientFieldErrors } from "~/api";
 import { apiRoute } from "~/api/route";
-import { SkillsFiltersSchema, type SkillsFilters } from "~/api/schemas/filters";
 
 export const GET = apiRoute(async (request, params, query) => {
   let filters: Partial<SkillsFilters> | undefined = undefined;

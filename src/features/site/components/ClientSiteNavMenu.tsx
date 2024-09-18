@@ -1,5 +1,5 @@
 "use client";
-import { type BrandResume } from "~/prisma/model";
+import { type BrandResume } from "~/database/model";
 
 import { type ISidebarItem } from "~/components/layout";
 import { useNavMenu } from "~/hooks";

@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { removeRedundantTopLevelSkills } from "~/prisma/model";
+import { removeRedundantTopLevelSkills } from "~/database/model";
 
 import { getExperiences } from "~/actions/fetches/experiences";
 

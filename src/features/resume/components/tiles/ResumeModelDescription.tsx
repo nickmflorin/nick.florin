@@ -1,4 +1,4 @@
-import { type ResumeBrand, type BrandModel } from "~/prisma/model";
+import { type ResumeBrand, type BrandModel } from "~/database/model";
 
 import { Description, type DescriptionProps } from "~/components/typography/Description";
 import * as types from "~/features/resume/types";

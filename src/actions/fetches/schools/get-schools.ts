@@ -3,8 +3,8 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/prisma/client";
-import { type SchoolIncludes, type ApiSchool, fieldIsIncluded } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { type SchoolIncludes, type ApiSchool, fieldIsIncluded } from "~/database/model";
 
 import type { Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";

@@ -1,7 +1,7 @@
 import { type NextRequest, type NextResponse } from "next/server";
 
 import { getAuthedUser } from "~/application/auth/server";
-import type { User } from "~/prisma/model";
+import type { User } from "~/database/model";
 
 import { ApiClientGlobalError } from "./errors";
 import { parseApiQuery, type ApiParsedQuery } from "./query";
@@ -24,10 +24,10 @@ type Result<R> = (
 export function apiRoute<R>(target: Target<R>): Result<R> {
   return async function GET(request: NextRequest, params) {
     const parsed = parseApiQuery(request.nextUrl.searchParams);
-    const { clerkUserId, user, hasCMSAccess } = await getAuthedUser({ request, strict: false });
+    const { clerkUserId, user, isAdmin } = await getAuthedUser({ request, strict: false });
     if (!clerkUserId && parsed.visibility === "admin") {
       return ApiClientGlobalError.NotAuthenticated().response;
-    } else if (clerkUserId && !hasCMSAccess && parsed.visibility === "admin") {
+    } else if (clerkUserId && !isAdmin && parsed.visibility === "admin") {
       return ApiClientGlobalError.Forbidden().response;
     }
     return target(request, params, parsed, user);

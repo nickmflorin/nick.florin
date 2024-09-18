@@ -1,6 +1,6 @@
 import type { EnumeratedLiteralsModel } from "enumerated-literals";
 
-import { SkillCategories } from "~/prisma/model";
+import { SkillCategories } from "~/database/model";
 
 import type { SelectBehaviorType } from "~/components/input/select";
 import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";

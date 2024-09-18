@@ -1,8 +1,8 @@
 import type { IconName } from "@fortawesome/fontawesome-svg-core";
 
+import { ProjectSlugs } from "~/database/model";
+import { type BrandProject } from "~/database/model";
 import { logger } from "~/internal/logger";
-import { ProjectSlugs } from "~/prisma/model";
-import { type BrandProject } from "~/prisma/model";
 
 import { ProjectLink } from "~/components/buttons/ProjectLink";
 import { type ComponentProps } from "~/components/types";

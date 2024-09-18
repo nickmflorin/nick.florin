@@ -1,0 +1,117 @@
+{
+  "repositories": [
+    {
+      "slug": "sportbook",
+      "description": "Pick Up & Social Sports League Management",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": [
+        "typescript",
+        "prismajs",
+        "unit-testing",
+        "scss-css-modules",
+        "react",
+        "nextjs",
+        "html",
+        "sass",
+        "css",
+        "javascript",
+        "postgresql",
+        "ssr",
+        "clerk",
+        "jest",
+        "relational-databases"
+      ]
+    },
+    {
+      "slug": "portfolio-frontend",
+      "description": "React Application for Personal Portfolio (Old)",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["react", "javascript"]
+    },
+    {
+      "slug": "nick.florin",
+      "description": "Personal Website, Resume & Portfolio",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": [
+        "typescript",
+        "tailwindcss",
+        "prismajs",
+        "unit-testing",
+        "scss-css-modules",
+        "react",
+        "nextjs",
+        "html",
+        "sass",
+        "css",
+        "javascript",
+        "vercel",
+        "ci-cd",
+        "postgresql",
+        "ssr",
+        "floating-ui",
+        "clerk",
+        "jest",
+        "relational-databases"
+      ]
+    },
+    {
+      "slug": "django-polymorphic-bulk-create",
+      "description": "Experimental Code for Bulk Create Behavior with Polymorphic Models",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["python", "django-rest-framework", "django"]
+    },
+    {
+      "slug": "pebl",
+      "description": "iOS Dating Application Based on Event/Date Based Matching",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["swift"]
+    },
+    {
+      "slug": "portfolio-drf",
+      "description": "Personal Portfolio API w Django REST Framework (Old)",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": ["python", "django-rest-framework", "django"]
+    },
+    {
+      "slug": "happybudget-api",
+      "description": "Backend API for Happy Budget Application & Framework",
+      "createdAt": "2024-04-16T23:24:19.097Z",
+      "updatedAt": "2024-04-16T23:24:19.097Z",
+      "visible": true,
+      "skills": [
+        "python",
+        "django-rest-framework",
+        "pytest",
+        "mock",
+        "tox",
+        "django",
+        "circleci",
+        "jwt-authentication",
+        "aws",
+        "aws-ec2",
+        "aws-s3-storage",
+        "ci-cd",
+        "postgresql",
+        "flake8",
+        "pylint",
+        "authentication-protocols",
+        "sentry",
+        "rest-api-design",
+        "relational-databases",
+        "django-admin"
+      ]
+    }
+  ]
+}

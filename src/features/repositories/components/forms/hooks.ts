@@ -1,4 +1,4 @@
-import { type ApiRepository } from "~/prisma/model";
+import { type ApiRepository } from "~/database/model";
 
 import { useForm } from "~/components/forms/hooks/use-form";
 

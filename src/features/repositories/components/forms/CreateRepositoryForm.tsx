@@ -4,7 +4,7 @@ import { useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { type Repository } from "~/prisma/model";
+import { type Repository } from "~/database/model";
 
 import { createRepository } from "~/actions/mutations/repositories";
 import { isApiClientErrorJson } from "~/api";

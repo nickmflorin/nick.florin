@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiProject, type BrandProject } from "~/prisma/model";
+import { type ApiProject, type BrandProject } from "~/database/model";
 
 import { deleteProject, updateProject } from "~/actions/mutations/projects";
 

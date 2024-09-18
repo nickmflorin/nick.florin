@@ -4,7 +4,7 @@ import { useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { type Course } from "~/prisma/model";
+import { type Course } from "~/database/model";
 
 import { createCourse } from "~/actions/mutations/courses";
 import { isApiClientErrorJson } from "~/api";

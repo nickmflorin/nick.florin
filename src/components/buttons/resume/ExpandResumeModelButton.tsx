@@ -1,5 +1,5 @@
 "use client";
-import { type ResumeBrand } from "~/prisma/model";
+import { type ResumeBrand } from "~/database/model";
 
 import { IconButton } from "~/components/buttons";
 import { type DrawerId, DrawerIds, type DrawerIdPropsPair } from "~/components/drawers";

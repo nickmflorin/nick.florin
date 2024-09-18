@@ -1,6 +1,6 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/prisma/client";
+import { prisma } from "~/database/prisma";
 
 import { githubClient } from "~/integrations/github";
 

@@ -1,4 +1,4 @@
-import { type BrandModel, type ResumeBrand, Degrees } from "~/prisma/model";
+import { type BrandModel, type ResumeBrand, Degrees } from "~/database/model";
 
 import { ExpandResumeModelButton } from "~/components/buttons/resume";
 import { classNames } from "~/components/types";

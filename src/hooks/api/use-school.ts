@@ -1,5 +1,5 @@
+import { type SchoolIncludes, type ApiSchool } from "~/database/model";
 import { isUuid } from "~/lib/typeguards";
-import { type SchoolIncludes, type ApiSchool } from "~/prisma/model";
 
 import { type GetSchoolParams } from "~/actions/fetches/schools";
 

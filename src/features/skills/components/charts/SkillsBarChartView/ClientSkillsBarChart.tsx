@@ -1,8 +1,8 @@
 "use client";
 import dynamic from "next/dynamic";
 
+import { type ApiSkill } from "~/database/model";
 import { generateChartColors } from "~/lib/charts";
-import { type ApiSkill } from "~/prisma/model";
 
 import { BarChart } from "~/components/charts/BarChart";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiEducation } from "~/prisma/model";
+import { type ApiEducation } from "~/database/model";
 
 import { deleteEducation, updateEducation } from "~/actions/mutations/educations";
 

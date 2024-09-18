@@ -1,4 +1,4 @@
-import type { BrandResume } from "~/prisma/model";
+import type { BrandResume } from "~/database/model";
 
 import { Icon } from "~/components/icons/Icon";
 import * as types from "~/components/uploads/types";

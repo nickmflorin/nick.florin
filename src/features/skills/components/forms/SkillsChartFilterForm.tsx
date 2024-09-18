@@ -1,6 +1,10 @@
 import { type z } from "zod";
 
-import { ShowTopSkillsSchema, SkillsFiltersSchema, type ShowTopSkillsString } from "~/api/schemas";
+import {
+  ShowTopSkillsSchema,
+  SkillsFiltersSchema,
+  type ShowTopSkillsString,
+} from "~/actions-v2/schemas";
 
 import { Form, type FormProps } from "~/components/forms/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";

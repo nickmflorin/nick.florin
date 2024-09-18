@@ -2,8 +2,8 @@ import "server-only";
 
 import { cache } from "react";
 
-import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
-import { type DetailEntity, DetailEntityType } from "~/prisma/model";
+import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/database/prisma";
+import { type DetailEntity, DetailEntityType } from "~/database/model";
 
 import { convertToPlainObject } from "~/api/serialization";
 

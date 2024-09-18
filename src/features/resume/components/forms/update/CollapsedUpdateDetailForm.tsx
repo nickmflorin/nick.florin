@@ -3,8 +3,8 @@ import { useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
+import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/database/model";
 import { logger } from "~/internal/logger";
-import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/prisma/model";
 
 import { deleteDetail, deleteNestedDetail } from "~/actions/mutations/details";
 

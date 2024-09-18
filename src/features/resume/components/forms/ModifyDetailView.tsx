@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { type ApiDetail, type NestedApiDetail } from "~/prisma/model";
+import { type ApiDetail, type NestedApiDetail } from "~/database/model";
 
 import { IconButton } from "~/components/buttons";
 

@@ -2,13 +2,13 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma } from "~/database/prisma";
 import { logger } from "~/internal/logger";
-import { prisma } from "~/prisma/client";
-import { calculateSkillsExperience } from "~/prisma/model";
 
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
+import { EducationSchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors } from "~/api";
-import { EducationSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createEducation = async (req: z.infer<typeof EducationSchema>) => {

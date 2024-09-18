@@ -1,4 +1,4 @@
-import { type BrandRepository } from "~/prisma/model";
+import { type BrandRepository } from "~/database/model";
 
 import { NpmIconLink } from "~/components/buttons/NpmIconLink";
 import { RepositoryLink } from "~/components/buttons/RepositoryLink";

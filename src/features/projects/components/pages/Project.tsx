@@ -1,4 +1,4 @@
-import { type ApiProject } from "~/prisma/model";
+import { type ApiProject } from "~/database/model";
 
 import Badge from "~/components/badges/Badge";
 import { classNames } from "~/components/types";

@@ -1,5 +1,5 @@
-import { prisma } from "~/prisma/client";
-import { type RepositoryIncludes } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { type RepositoryIncludes } from "~/database/model";
 
 import { getRepository } from "~/actions/fetches/repositories";
 import { ClientResponse, ApiClientGlobalError } from "~/api";

@@ -3,8 +3,8 @@ import { getAuthedUser } from "~/application/auth/server";
 import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/prisma/client";
-import { DetailEntityType, calculateSkillsExperience } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { DetailEntityType, calculateSkillsExperience } from "~/database/model";
 
 import { ApiClientGlobalError } from "~/api";
 

@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiRepository } from "~/prisma/model";
+import { type ApiRepository } from "~/database/model";
 
 import { deleteRepository, updateRepository } from "~/actions/mutations/repositories";
 

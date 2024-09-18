@@ -22,7 +22,7 @@ interface TableControlBarDeleteConfirmationRenderProps<T> {
 const DefaultDeleteConfirmationModal = () => <></>;
 
 export interface TableControlBarProps<T> extends ComponentProps {
-  readonly children: ReactNode;
+  readonly children?: ReactNode;
   readonly tooltipsInPortal?: boolean;
   readonly allRowsAreSelected?: boolean;
   readonly isDisabled?: boolean;

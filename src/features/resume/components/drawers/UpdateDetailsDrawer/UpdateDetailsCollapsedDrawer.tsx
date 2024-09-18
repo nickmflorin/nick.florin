@@ -1,4 +1,4 @@
-import { type DetailEntityType, type NestedApiDetail, type ApiDetail } from "~/prisma/model";
+import { type DetailEntityType, type NestedApiDetail, type ApiDetail } from "~/database/model";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { Drawer } from "~/components/drawers/Drawer";

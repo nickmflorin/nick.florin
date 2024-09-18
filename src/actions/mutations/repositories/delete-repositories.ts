@@ -2,8 +2,8 @@
 import { getAuthedUser } from "~/application/auth/server";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/prisma/client";
-import { calculateSkillsExperience } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { calculateSkillsExperience } from "~/database/model";
 
 import { ApiClientGlobalError } from "~/api";
 

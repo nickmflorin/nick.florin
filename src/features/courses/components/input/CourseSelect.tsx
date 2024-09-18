@@ -1,7 +1,7 @@
 import { forwardRef, type ForwardedRef } from "react";
 
+import { type Course } from "~/database/model";
 import { logger } from "~/internal/logger";
-import { type Course } from "~/prisma/model";
 
 import { type HttpError } from "~/api";
 

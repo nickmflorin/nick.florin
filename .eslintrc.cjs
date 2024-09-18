@@ -1,6 +1,6 @@
 const ModuleGroups = [
-  ["application", "lib", "server", "prisma", "internal"],
-  ["app", "actions", "api", "integrations", "environment"],
+  ["application", "lib", "server", "database", "internal", "scripts"],
+  ["app", "actions", "actions-v2", "api", "api-v2", "integrations", "environment"],
   ["components", "features", "hooks", "styles"],
 ];
 
@@ -31,8 +31,16 @@ const RestrictedImportPatterns = [
     message: "Please use absolute imports instead.",
   },
   {
+    group: ["clsx"],
+    message: "Please import 'classNames' from '~/components/types' instead.",
+  },
+  {
     group: ["@prisma/client/*", "@prisma/client"],
     message: "Please import from '~/database/model` instead.",
+  },
+  {
+    group: ["~/database/model/generated"],
+    message: "Please import directly from '~/database/model` instead.",
   },
 ];
 

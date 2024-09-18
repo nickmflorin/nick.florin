@@ -1,4 +1,4 @@
-import { type ApiEducation, type ApiExperience } from "~/prisma/model";
+import { type ApiEducation, type ApiExperience } from "~/database/model";
 
 import { Link } from "~/components/buttons";
 import { DrawerIds } from "~/components/drawers";

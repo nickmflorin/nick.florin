@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { type ApiExperience } from "~/prisma/model";
+import { type ApiExperience } from "~/database/model";
 
 import { deleteExperience, updateExperience } from "~/actions/mutations/experiences";
 

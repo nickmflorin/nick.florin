@@ -1,5 +1,5 @@
+import type { BrandSchool } from "~/database/model";
 import { isUuid } from "~/lib/typeguards";
-import type { BrandSchool } from "~/prisma/model";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";

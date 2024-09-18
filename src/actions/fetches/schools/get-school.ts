@@ -5,8 +5,8 @@ import { cache } from "react";
 import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/prisma/client";
-import { fieldIsIncluded, type ApiSchool, type SchoolIncludes } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { fieldIsIncluded, type ApiSchool, type SchoolIncludes } from "~/database/model";
 
 import type { ApiStandardDetailQuery, Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";

@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import type { ApiSkill } from "~/prisma/model";
+import type { ApiSkill } from "~/database/model";
 
 import { Loading } from "~/components/loading/Loading";
 import type { ComponentProps } from "~/components/types";

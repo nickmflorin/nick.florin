@@ -1,4 +1,4 @@
-import { type ApiSkill, type SkillIncludes } from "~/prisma/model";
+import { type ApiSkill, type SkillIncludes } from "~/database/model";
 
 import type { GetSkillsParams } from "~/actions/fetches/skills";
 

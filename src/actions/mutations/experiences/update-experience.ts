@@ -2,13 +2,13 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/prisma/client";
-import { type Experience, type Company } from "~/prisma/model";
-import { calculateSkillsExperience } from "~/prisma/model";
+import { type Experience, type Company } from "~/database/model";
+import { calculateSkillsExperience } from "~/database/model";
+import { prisma } from "~/database/prisma";
 
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
+import { ExperienceSchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
-import { ExperienceSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 const UpdateExperienceSchema = ExperienceSchema.partial();

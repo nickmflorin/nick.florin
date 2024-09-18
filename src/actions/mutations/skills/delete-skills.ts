@@ -1,8 +1,8 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
+import { prisma } from "~/database/prisma";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/prisma/client";
 
 import { ApiClientGlobalError } from "~/api";
 

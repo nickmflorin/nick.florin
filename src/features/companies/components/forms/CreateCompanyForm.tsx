@@ -4,7 +4,7 @@ import { useTransition } from "react";
 
 import { toast } from "react-toastify";
 
-import { type Company } from "~/prisma/model";
+import { type Company } from "~/database/model";
 
 import { createCompany } from "~/actions/mutations/companies";
 import { isApiClientErrorJson } from "~/api";

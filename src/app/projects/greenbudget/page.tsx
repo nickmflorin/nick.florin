@@ -1,4 +1,4 @@
-import { prisma } from "~/prisma/client";
+import { prisma } from "~/database/prisma";
 
 import { convertToPlainObject } from "~/api/serialization";
 

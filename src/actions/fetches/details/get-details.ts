@@ -6,14 +6,14 @@ import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/prisma/client";
+import { prisma } from "~/database/prisma";
 import {
   type DetailEntityType,
   type DetailEntity,
   type ApiDetail,
   type DetailIncludes,
   fieldIsIncluded,
-} from "~/prisma/model";
+} from "~/database/model";
 
 import { type ApiStandardDetailQuery, type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";

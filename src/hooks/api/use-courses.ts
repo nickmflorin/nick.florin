@@ -1,4 +1,4 @@
-import { type ApiCourse, type CourseIncludes } from "~/prisma/model";
+import { type ApiCourse, type CourseIncludes } from "~/database/model";
 
 import { type GetCoursesParams } from "~/actions/fetches/courses";
 

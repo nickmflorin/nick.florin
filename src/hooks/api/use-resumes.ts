@@ -1,4 +1,4 @@
-import { type BrandResume } from "~/prisma/model";
+import { type BrandResume } from "~/database/model";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 

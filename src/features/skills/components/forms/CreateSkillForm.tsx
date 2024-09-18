@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type Skill } from "~/prisma/model";
+import { type Skill } from "~/database/model";
 
 import { createSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";

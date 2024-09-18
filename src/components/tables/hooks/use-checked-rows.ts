@@ -37,11 +37,9 @@ const parseCheckedRowsFromQuery = ({
 };
 
 export const useCheckedRows = <T extends types.TableModel>({
-  // data,
   useQueryParams = false,
   enabled = true,
 }: {
-  // readonly data: T[];
   readonly enabled?: boolean;
   readonly useQueryParams?: boolean;
 }): [T["id"][], { check: (m: T | T["id"]) => void; uncheck: (m: T["id"]) => void }] => {

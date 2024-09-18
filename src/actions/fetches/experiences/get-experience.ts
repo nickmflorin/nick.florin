@@ -5,14 +5,14 @@ import { cache } from "react";
 import { getClerkAuthedUser } from "~/application/auth/server";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/prisma/client";
+import { prisma } from "~/database/prisma";
 import {
   type ApiExperience,
   DetailEntityType,
   type ExperienceIncludes,
   fieldIsIncluded,
   type ExperienceToDetailIncludes,
-} from "~/prisma/model";
+} from "~/database/model";
 
 import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";

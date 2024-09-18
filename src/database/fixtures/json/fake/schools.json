@@ -1,0 +1,346 @@
+{
+  "schools": [
+    {
+      "createdAt": "2024-04-16T23:25:00.483Z",
+      "updatedAt": "2024-04-16T23:25:00.483Z",
+      "name": "The Johns Hopkins University",
+      "shortName": "JHU",
+      "description": null,
+      "logoImageUrl": "/education/jhu.svg",
+      "websiteUrl": null,
+      "city": "Baltimore",
+      "state": "MD",
+      "educations": [
+        {
+          "createdAt": "2024-04-16T23:25:00.483Z",
+          "updatedAt": "2024-04-16T23:25:00.483Z",
+          "startDate": "2014-08-01T00:00:00.000Z",
+          "endDate": "2016-01-01T00:00:00.000Z",
+          "note": null,
+          "degree": "MASTERS_OF_SCIENCE_IN_ENGINEERING",
+          "description": null,
+          "major": "Financial Mathematics",
+          "shortMajor": "Fin. Math",
+          "minor": null,
+          "concentration": null,
+          "postPoned": false,
+          "visible": true,
+          "skills": [
+            "python",
+            "matlab",
+            "django",
+            "r",
+            "pandas",
+            "scikit-learn",
+            "scipy",
+            "numpy",
+            "numerical-computation"
+          ],
+          "courses": [
+            {
+              "name": "Advanced Equity Derivatives",
+              "shortName": null,
+              "slug": "advanced-equity-derivatives",
+              "createdAt": "2024-04-16T23:25:01.376Z",
+              "updatedAt": "2024-04-16T23:25:01.376Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Monte Carlo Methods",
+              "shortName": null,
+              "slug": "monte-carlo-methods",
+              "createdAt": "2024-04-16T23:25:01.632Z",
+              "updatedAt": "2024-04-16T23:25:01.632Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Stochastic Processes",
+              "shortName": null,
+              "slug": "stochastic-processes",
+              "createdAt": "2024-04-16T23:25:01.883Z",
+              "updatedAt": "2024-04-16T23:25:01.883Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Stochastic Calculus",
+              "shortName": null,
+              "slug": "stochastic-calculus",
+              "createdAt": "2024-04-16T23:25:02.133Z",
+              "updatedAt": "2024-04-16T23:25:02.133Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Financial Derivatives",
+              "shortName": null,
+              "slug": "financial-derivatives",
+              "createdAt": "2024-04-16T23:25:02.386Z",
+              "updatedAt": "2024-04-16T23:25:02.386Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Structured Products",
+              "shortName": null,
+              "slug": "structured-products",
+              "createdAt": "2024-04-16T23:25:02.628Z",
+              "updatedAt": "2024-04-16T23:25:02.628Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Time Series Analysis",
+              "shortName": null,
+              "slug": "time-series-analysis",
+              "createdAt": "2024-04-16T23:25:02.871Z",
+              "updatedAt": "2024-04-16T23:25:02.871Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Credit Default Risk Modeling",
+              "shortName": "Credit Default Risk",
+              "slug": "credit-default-risk-modeling",
+              "createdAt": "2024-04-16T23:25:03.115Z",
+              "updatedAt": "2024-04-16T23:25:03.115Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Machine Learning",
+              "shortName": null,
+              "slug": "machine-learning",
+              "createdAt": "2024-04-16T23:25:03.360Z",
+              "updatedAt": "2024-04-16T23:25:03.360Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            }
+          ],
+          "details": []
+        },
+        {
+          "createdAt": "2024-04-16T23:25:00.483Z",
+          "updatedAt": "2024-04-16T23:25:00.483Z",
+          "startDate": "2016-01-02T00:00:00.000Z",
+          "endDate": null,
+          "note": "Ongoing coursework temporarily post-poned after completing approximately 50% of coursework.",
+          "degree": "MASTERS_OF_SCIENCE",
+          "description": null,
+          "major": "Computational Mathematics",
+          "shortMajor": "Comp. Math",
+          "minor": null,
+          "concentration": null,
+          "postPoned": false,
+          "visible": true,
+          "skills": [
+            "python",
+            "matlab",
+            "django",
+            "pandas",
+            "scikit-learn",
+            "scipy",
+            "numpy",
+            "numerical-computation"
+          ],
+          "courses": [
+            {
+              "name": "Neural Networks",
+              "shortName": null,
+              "slug": "neural-networks",
+              "createdAt": "2024-04-16T23:25:03.621Z",
+              "updatedAt": "2024-04-16T23:25:03.621Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Data Mining",
+              "shortName": null,
+              "slug": "data-mining",
+              "createdAt": "2024-04-16T23:25:03.869Z",
+              "updatedAt": "2024-04-16T23:25:03.869Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Queueing Theory and its Applications in Computer Science",
+              "shortName": "Queueing Theory",
+              "slug": "queueing-theory-and-its-applications-in-computer-science",
+              "createdAt": "2024-04-16T23:25:04.113Z",
+              "updatedAt": "2024-04-16T23:25:04.113Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Probabalistic Models in Computer Science",
+              "shortName": "Probabalistic Models",
+              "slug": "probabilistic-models-in-computer-science",
+              "createdAt": "2024-04-16T23:25:04.376Z",
+              "updatedAt": "2024-04-16T23:25:04.376Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            }
+          ],
+          "details": []
+        }
+      ]
+    },
+    {
+      "createdAt": "2024-04-16T23:25:04.647Z",
+      "updatedAt": "2024-04-16T23:25:04.647Z",
+      "name": "Rensselaer Polytechnic Institute",
+      "shortName": "RPI",
+      "description": null,
+      "logoImageUrl": "/education/rpi.svg",
+      "websiteUrl": null,
+      "city": "Troy",
+      "state": "NY",
+      "educations": [
+        {
+          "createdAt": "2024-04-16T23:25:04.647Z",
+          "updatedAt": "2024-04-16T23:25:04.647Z",
+          "startDate": "2010-08-01T00:00:00.000Z",
+          "endDate": "2014-05-01T00:00:00.000Z",
+          "note": null,
+          "degree": "BACHELORS_OF_SCIENCE",
+          "description": null,
+          "major": "Electrical Engineering",
+          "shortMajor": "EE",
+          "minor": "Economics",
+          "concentration": "Robotics & Control Systems",
+          "postPoned": false,
+          "visible": true,
+          "skills": ["c-plus-plus", "python", "matlab", "numerical-computation"],
+          "courses": [
+            {
+              "name": "Computer Science",
+              "shortName": null,
+              "slug": "computer-science",
+              "createdAt": "2024-04-16T23:25:05.347Z",
+              "updatedAt": "2024-04-16T23:25:05.347Z",
+              "visible": true,
+              "description": null,
+              "skills": ["c-plus-plus"]
+            },
+            {
+              "name": "Embedded Control",
+              "shortName": null,
+              "slug": "embedded-control",
+              "createdAt": "2024-04-16T23:25:05.789Z",
+              "updatedAt": "2024-04-16T23:25:05.789Z",
+              "visible": true,
+              "description": null,
+              "skills": ["c-plus-plus"]
+            },
+            {
+              "name": "Robotics",
+              "shortName": null,
+              "slug": "robotics",
+              "createdAt": "2024-04-16T23:25:06.198Z",
+              "updatedAt": "2024-04-16T23:25:06.198Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Signals & Systems",
+              "shortName": null,
+              "slug": "signals-systems",
+              "createdAt": "2024-04-16T23:25:06.460Z",
+              "updatedAt": "2024-04-16T23:25:06.460Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Fields & Waves",
+              "shortName": null,
+              "slug": "fields-waves",
+              "createdAt": "2024-04-16T23:25:06.709Z",
+              "updatedAt": "2024-04-16T23:25:06.709Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Electrical Power Systems",
+              "shortName": null,
+              "slug": "electrical-power-systems",
+              "createdAt": "2024-04-16T23:25:06.952Z",
+              "updatedAt": "2024-04-16T23:25:06.952Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Electrical Engineering Design",
+              "shortName": null,
+              "slug": "electrical-engineering-design",
+              "createdAt": "2024-04-16T23:25:07.190Z",
+              "updatedAt": "2024-04-16T23:25:07.190Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Digital Components & Operations",
+              "shortName": null,
+              "slug": "digital-components-operations",
+              "createdAt": "2024-04-16T23:25:07.457Z",
+              "updatedAt": "2024-04-16T23:25:07.457Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Economics",
+              "shortName": null,
+              "slug": "economics",
+              "createdAt": "2024-04-16T23:25:07.704Z",
+              "updatedAt": "2024-04-16T23:25:07.704Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Managerial Economics",
+              "shortName": null,
+              "slug": "managerial-economics",
+              "createdAt": "2024-04-16T23:25:07.964Z",
+              "updatedAt": "2024-04-16T23:25:07.964Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Probability Theory",
+              "shortName": null,
+              "slug": "probability-theory",
+              "createdAt": "2024-04-16T23:25:08.222Z",
+              "updatedAt": "2024-04-16T23:25:08.222Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            }
+          ],
+          "details": []
+        }
+      ]
+    }
+  ]
+}

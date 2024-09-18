@@ -1,7 +1,7 @@
 import { type NextRequest } from "next/server";
 
-import { prisma } from "~/prisma/client";
-import { type SkillIncludes } from "~/prisma/model";
+import { prisma } from "~/database/prisma";
+import { type SkillIncludes } from "~/database/model";
 
 import { getSkill } from "~/actions/fetches/skills";
 import { ClientResponse, ApiClientGlobalError } from "~/api";

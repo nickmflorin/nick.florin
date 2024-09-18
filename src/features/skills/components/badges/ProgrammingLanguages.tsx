@@ -1,4 +1,4 @@
-import { type ProgrammingLanguage } from "~/prisma/model";
+import { type ProgrammingLanguage } from "~/database/model";
 
 import { BadgeCollection } from "~/components/badges/BadgeCollection";
 import { type ComponentProps } from "~/components/types";

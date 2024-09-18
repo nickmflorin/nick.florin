@@ -2,11 +2,11 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/prisma/client";
-import { type School } from "~/prisma/model";
+import { type School } from "~/database/model";
+import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/database/prisma";
 
+import { SchoolSchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
-import { SchoolSchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 const UpdateSchoolSchema = SchoolSchema.partial();

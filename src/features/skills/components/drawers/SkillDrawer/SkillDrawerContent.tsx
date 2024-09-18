@@ -1,4 +1,4 @@
-import { type ApiSkill } from "~/prisma/model";
+import { type ApiSkill } from "~/database/model";
 
 import { DetailDrawerContent } from "~/components/drawers/details/DetailDrawerContent";
 import { DetailDrawerSection } from "~/components/drawers/details/DetailDrawerSection";

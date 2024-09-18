@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { DetailSchema } from "~/api/schemas";
+import { DetailSchema } from "~/actions-v2/schemas";
 
 export const DetailFormSchema = DetailSchema.omit({ visible: true }).required().extend({
   visible: z.boolean().optional(),

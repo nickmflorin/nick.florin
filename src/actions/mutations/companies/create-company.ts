@@ -2,10 +2,10 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/prisma/client";
+import { prisma } from "~/database/prisma";
 
+import { CompanySchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors } from "~/api";
-import { CompanySchema } from "~/api/schemas";
 import { convertToPlainObject } from "~/api/serialization";
 
 export const createCompany = async (req: z.infer<typeof CompanySchema>) => {

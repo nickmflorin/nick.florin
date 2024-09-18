@@ -1,4 +1,4 @@
-import { getNpmPackageUrl } from "~/prisma/model/repository";
+import { getNpmPackageUrl } from "~/database/model";
 
 import { classNames } from "~/components/types";
 

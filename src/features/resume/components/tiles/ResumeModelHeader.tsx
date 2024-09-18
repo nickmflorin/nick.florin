@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import { isFragment } from "react-is";
 
-import { type BrandModel, type ResumeBrand } from "~/prisma/model";
+import { type BrandModel, type ResumeBrand } from "~/database/model";
 
 import type { ComponentProps, Breakpoint } from "~/components/types";
 import { classNames } from "~/components/types";

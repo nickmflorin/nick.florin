@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { stringifyLocation } from "~/prisma/model";
+import { stringifyLocation } from "~/database/model";
 
 import { DrawerIds, type DrawerId, type DrawerIdPropsPair } from "~/components/drawers";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

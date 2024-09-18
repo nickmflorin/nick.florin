@@ -1,4 +1,4 @@
-import type { BrandProject } from "~/prisma/model";
+import type { BrandProject } from "~/database/model";
 
 import { classNames } from "~/components/types";
 

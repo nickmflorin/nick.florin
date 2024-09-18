@@ -2,8 +2,8 @@ import { useState } from "react";
 
 import { toast } from "react-toastify";
 
+import type { BrandResume } from "~/database/model";
 import { logger } from "~/internal/logger";
-import type { BrandResume } from "~/prisma/model";
 
 import { deleteResume, prioritizeResume } from "~/actions/mutations/resumes";
 import { isApiClientGlobalErrorJson } from "~/api";

@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type Experience } from "~/prisma/model";
+import { type Experience } from "~/database/model";
 
 import { createExperience } from "~/actions/mutations/experiences";
 import { isApiClientErrorJson } from "~/api";
