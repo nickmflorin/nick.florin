@@ -1,5 +1,5 @@
-import { isUuid } from "~/lib/typeguards";
 import { type ApiProject, type ProjectIncludes } from "~/database/model";
+import { isUuid } from "~/lib/typeguards";
 
 import { type GetProjectParams } from "~/actions/fetches/projects";
 

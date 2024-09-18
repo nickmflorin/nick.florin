@@ -1,5 +1,5 @@
-import { type Transaction } from "~/database/prisma";
 import type { User } from "~/database/model";
+import { type Transaction } from "~/database/prisma";
 
 import { environment } from "~/environment";
 
