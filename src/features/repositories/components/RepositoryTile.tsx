@@ -3,13 +3,19 @@ import { type BrandRepository } from "~/database/model";
 import { NpmIconLink } from "~/components/buttons/NpmIconLink";
 import { RepositoryLink } from "~/components/buttons/RepositoryLink";
 import { type ComponentProps } from "~/components/types";
+import { RepositoryText } from "~/features/repositories/components/RepositoryText";
 import { ResumeSimpleTile } from "~/features/resume/components/tiles/ResumeSimpleTile";
 
 export interface RepositoryTileProps extends ComponentProps {
   readonly repository: BrandRepository;
+  readonly includeLink?: boolean;
 }
 
-export const RepositoryTile = ({ repository, ...props }: RepositoryTileProps) => (
+export const RepositoryTile = ({
+  repository,
+  includeLink = true,
+  ...props
+}: RepositoryTileProps) => (
   <ResumeSimpleTile
     {...props}
     icon={{ name: "github", iconStyle: "brands" }}
@@ -17,7 +23,11 @@ export const RepositoryTile = ({ repository, ...props }: RepositoryTileProps) =>
     description={repository.description}
     iconSize={28}
   >
-    <RepositoryLink className="leading-[24px]" repository={repository} />
+    {includeLink ? (
+      <RepositoryLink className="leading-[24px]" repository={repository} />
+    ) : (
+      <RepositoryText className="leading-[24px]" repository={repository} />
+    )}
     {repository.npmPackageName && (
       <NpmIconLink size="24px" iconSize="24px" npmPackageName={repository.npmPackageName} />
     )}

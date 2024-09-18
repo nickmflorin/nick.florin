@@ -33,6 +33,7 @@ export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {
       behavior="multi"
       isClearable
       value={value}
+      summarizeValueAfter={2}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);

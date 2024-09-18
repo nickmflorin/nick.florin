@@ -47,7 +47,10 @@ export const RepositorySelect = forwardRef(
         isLoading={isLoading}
         options={{ behavior, getItemValue }}
         getItemValueLabel={m => m.slug}
-        itemRenderer={m => <RepositoryTile repository={m} className="items-center" />}
+        includeDescriptions={false}
+        itemRenderer={m => (
+          <RepositoryTile repository={m} className="items-center" includeLink={false} />
+        )}
       />
     );
   },
