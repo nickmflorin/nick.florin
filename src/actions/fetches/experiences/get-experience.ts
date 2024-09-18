@@ -9,6 +9,7 @@ import {
   type ExperienceIncludes,
   fieldIsIncluded,
   type ExperienceToDetailIncludes,
+  removeRedundantTopLevelSkills,
 } from "~/database/model";
 import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
@@ -60,7 +61,9 @@ export const getExperience = cache(
           ? ["nestedDetails", "skills"]
           : ["nestedDetails"]) as ExperienceToDetailIncludes<I>,
       });
-      return convertToPlainObject({ ...experience, details }) as ApiExperience<I>;
+      return convertToPlainObject(
+        removeRedundantTopLevelSkills({ ...experience, details }),
+      ) as ApiExperience<I>;
     }
     return convertToPlainObject(experience) as ApiExperience<I>;
   },

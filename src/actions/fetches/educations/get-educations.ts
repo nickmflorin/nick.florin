@@ -9,6 +9,7 @@ import {
   type EducationIncludes,
   fieldIsIncluded,
   type EducationToDetailIncludes,
+  removeRedundantTopLevelSkills,
 } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalAndClause } from "~/database/util";
@@ -119,10 +120,12 @@ export const getEducations = cache(
       );
       return educations.map(
         (edu): ApiEducation<I> =>
-          convertToPlainObject({
-            ...edu,
-            details: details.filter(d => d.entityId === edu.id),
-          }) as ApiEducation<I>,
+          convertToPlainObject(
+            removeRedundantTopLevelSkills({
+              ...edu,
+              details: details.filter(d => d.entityId === edu.id),
+            }),
+          ) as ApiEducation<I>,
       );
     }
     return educations.map(convertToPlainObject) as ApiEducation<I>[];
