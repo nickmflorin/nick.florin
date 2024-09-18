@@ -15,11 +15,13 @@ import { RepositoryForm, type RepositoryFormProps } from "./RepositoryForm";
 export interface UpdateRepositoryFormProps extends Omit<RepositoryFormProps, "action"> {
   readonly repository: ApiRepository<["projects", "skills"]>;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateRepositoryForm = ({
   repository,
   onCancel,
+  onSuccess,
   ...props
 }: UpdateRepositoryFormProps): JSX.Element => {
   const updateRepositoryWithId = updateRepository.bind(null, repository.id);
@@ -48,6 +50,7 @@ export const UpdateRepositoryForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}

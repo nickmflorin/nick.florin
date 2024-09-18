@@ -16,6 +16,7 @@ interface UpdateRepositoryDrawerProps extends ExtendingDrawerProps {
 export const UpdateRepositoryDrawer = ({
   repositoryId,
   eager,
+  onClose,
 }: UpdateRepositoryDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useRepository(
     isUuid(repositoryId) ? repositoryId : null,
@@ -29,7 +30,14 @@ export const UpdateRepositoryDrawer = ({
   return (
     <DrawerForm form={form} titleField="slug" eagerTitle={eager.slug}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {repository => <UpdateRepositoryForm form={form} repository={repository} />}
+        {repository => (
+          <UpdateRepositoryForm
+            form={form}
+            repository={repository}
+            onSuccess={() => onClose()}
+            onCancel={() => onClose()}
+          />
+        )}
       </ApiResponseState>
     </DrawerForm>
   );

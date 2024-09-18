@@ -15,11 +15,13 @@ import { CourseForm, type CourseFormProps } from "./CourseForm";
 export interface UpdateCourseFormProps extends Omit<CourseFormProps, "action"> {
   readonly course: ApiCourse<["education", "skills"]>;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateCourseForm = ({
   course,
   onCancel,
+  onSuccess,
   form,
   ...props
 }: UpdateCourseFormProps): JSX.Element => {
@@ -52,6 +54,7 @@ export const UpdateCourseForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}

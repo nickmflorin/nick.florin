@@ -16,6 +16,7 @@ interface UpdateExperienceDrawerProps extends ExtendingDrawerProps {
 export const UpdateExperienceDrawer = ({
   experienceId,
   eager,
+  onClose,
 }: UpdateExperienceDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useExperience(
     isUuid(experienceId) ? experienceId : null,
@@ -26,7 +27,14 @@ export const UpdateExperienceDrawer = ({
   return (
     <DrawerForm form={form} titleField="title" eagerTitle={eager.title}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {experience => <UpdateExperienceForm form={form} experience={experience} />}
+        {experience => (
+          <UpdateExperienceForm
+            form={form}
+            experience={experience}
+            onCancel={() => onClose()}
+            onSuccess={() => onClose()}
+          />
+        )}
       </ApiResponseState>
     </DrawerForm>
   );

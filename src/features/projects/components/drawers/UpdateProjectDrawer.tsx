@@ -16,6 +16,7 @@ interface UpdateProjectDrawerProps extends ExtendingDrawerProps {
 export const UpdateProjectDrawer = ({
   projectId,
   eager,
+  onClose,
 }: UpdateProjectDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useProject(
     isUuid(projectId) ? projectId : null,
@@ -36,7 +37,14 @@ export const UpdateProjectDrawer = ({
   return (
     <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {project => <UpdateProjectForm form={form} project={project} />}
+        {project => (
+          <UpdateProjectForm
+            form={form}
+            project={project}
+            onSuccess={() => onClose()}
+            onCancel={() => onClose()}
+          />
+        )}
       </ApiResponseState>
     </DrawerForm>
   );

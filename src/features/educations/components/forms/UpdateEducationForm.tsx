@@ -15,11 +15,13 @@ import { EducationForm, type EducationFormProps } from "./EducationForm";
 export interface UpdateEducationFormProps extends Omit<EducationFormProps, "action"> {
   readonly education: ApiEducation<["skills"]>;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateEducationForm = ({
   education,
   onCancel,
+  onSuccess,
   ...props
 }: UpdateEducationFormProps): JSX.Element => {
   const updateEducationWithId = updateEducation.bind(null, education.id);
@@ -51,6 +53,7 @@ export const UpdateEducationForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}

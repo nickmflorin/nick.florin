@@ -27,7 +27,14 @@ export const UpdateCompanyDrawer = ({
   return (
     <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {company => <UpdateCompanyForm form={form} company={company} onCancel={() => onClose()} />}
+        {company => (
+          <UpdateCompanyForm
+            form={form}
+            company={company}
+            onCancel={() => onClose()}
+            onSuccess={() => onClose()}
+          />
+        )}
       </ApiResponseState>
     </DrawerForm>
   );

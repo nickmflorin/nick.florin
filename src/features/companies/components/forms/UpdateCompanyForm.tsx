@@ -15,11 +15,13 @@ import { CompanyForm, type CompanyFormProps } from "./CompanyForm";
 export interface UpdateCompanyFormProps extends Omit<CompanyFormProps, "action"> {
   readonly company: Company;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateCompanyForm = ({
   company,
   onCancel,
+  onSuccess,
   ...props
 }: UpdateCompanyFormProps): JSX.Element => {
   const updateCompanyWithId = updateCompany.bind(null, company.id);
@@ -49,6 +51,7 @@ export const UpdateCompanyForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}

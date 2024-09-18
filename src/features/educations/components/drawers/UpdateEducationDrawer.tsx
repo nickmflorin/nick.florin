@@ -16,6 +16,7 @@ interface UpdateEducationDrawerProps extends ExtendingDrawerProps {
 export const UpdateEducationDrawer = ({
   educationId,
   eager,
+  onClose,
 }: UpdateEducationDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useEducation(
     isUuid(educationId) ? educationId : null,
@@ -26,7 +27,14 @@ export const UpdateEducationDrawer = ({
   return (
     <DrawerForm form={form} titleField="major" eagerTitle={eager.major}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
-        {education => <UpdateEducationForm form={form} education={education} />}
+        {education => (
+          <UpdateEducationForm
+            form={form}
+            education={education}
+            onSuccess={() => onClose()}
+            onCancel={() => onClose()}
+          />
+        )}
       </ApiResponseState>
     </DrawerForm>
   );

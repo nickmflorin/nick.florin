@@ -15,11 +15,13 @@ import { SkillForm, type SkillFormProps } from "./SkillForm";
 export interface UpdateSkillFormProps extends Omit<SkillFormProps, "action"> {
   readonly skill: ApiSkill<["educations", "experiences", "projects", "repositories", "courses"]>;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateSkillForm = ({
   skill,
   onCancel,
+  onSuccess,
   ...props
 }: UpdateSkillFormProps): JSX.Element => {
   const updateSkillWithId = updateSkill.bind(null, skill.id);
@@ -51,6 +53,7 @@ export const UpdateSkillForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}

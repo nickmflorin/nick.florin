@@ -15,11 +15,13 @@ import { ExperienceForm, type ExperienceFormProps } from "./ExperienceForm";
 export interface UpdateExperienceFormProps extends Omit<ExperienceFormProps, "action"> {
   readonly experience: ApiExperience<["skills"]>;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateExperienceForm = ({
   experience,
   onCancel,
+  onSuccess,
   ...props
 }: UpdateExperienceFormProps): JSX.Element => {
   const updateExperienceWithId = updateExperience.bind(null, experience.id);
@@ -48,6 +50,7 @@ export const UpdateExperienceForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}

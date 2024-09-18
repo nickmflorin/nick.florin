@@ -15,11 +15,13 @@ import { SchoolForm, type SchoolFormProps } from "./SchoolForm";
 export interface UpdateSchoolFormProps extends Omit<SchoolFormProps, "action"> {
   readonly school: School;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateSchoolForm = ({
   school,
   onCancel,
+  onSuccess,
   ...props
 }: UpdateSchoolFormProps): JSX.Element => {
   const updateSchoolWithId = updateSchool.bind(null, school.id);
@@ -49,6 +51,7 @@ export const UpdateSchoolForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}

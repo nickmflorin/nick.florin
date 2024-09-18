@@ -15,11 +15,13 @@ import { ProjectForm, type ProjectFormProps } from "./ProjectForm";
 export interface UpdateProjectFormProps extends Omit<ProjectFormProps, "action"> {
   readonly project: ApiProject<["skills", "repositories", "nestedDetails", "details"]>;
   readonly onCancel?: () => void;
+  readonly onSuccess?: () => void;
 }
 
 export const UpdateProjectForm = ({
   project,
   onCancel,
+  onSuccess,
   ...props
 }: UpdateProjectFormProps): JSX.Element => {
   const updateProjectWithId = updateProject.bind(null, project.id);
@@ -50,6 +52,7 @@ export const UpdateProjectForm = ({
         } else {
           transition(() => {
             refresh();
+            onSuccess?.();
           });
         }
       }}
