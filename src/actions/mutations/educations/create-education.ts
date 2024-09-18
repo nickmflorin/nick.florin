@@ -3,7 +3,7 @@ import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
@@ -22,7 +22,7 @@ export const createEducation = async (req: z.infer<typeof EducationSchema>) => {
   const { school: schoolId, skills: _skills, ...data } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
        we do not need to worry about checking isPrismaInvalidIdError here. */
     const school = await tx.school.findUniqueOrThrow({ where: { id: schoolId } });

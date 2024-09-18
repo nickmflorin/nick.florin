@@ -10,7 +10,7 @@ import {
   fieldIsIncluded,
   type ExperienceToDetailIncludes,
 } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { conditionalAndClause } from "~/database/util";
 
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
@@ -53,7 +53,7 @@ export const getExperiencesCount = cache(
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
     await getClerkAuthedUser({ strict: visibility === "admin" });
-    return await prisma.experience.count({
+    return await db.experience.count({
       where: whereClause({ filters, visibility }),
     });
   },
@@ -84,7 +84,7 @@ export const getExperiences = cache(
     if (pagination !== null && limit !== undefined) {
       throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
     }
-    const experiences = await prisma.experience.findMany({
+    const experiences = await db.experience.findMany({
       where: whereClause({ filters, visibility }),
       include: {
         company: true,

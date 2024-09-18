@@ -38,4 +38,4 @@ yarn-error.log*
 /analyze
 
 # Fixtures
-/src/prisma/scripts/fixtures/json/fake/
+/src/database/fixtures/json/fake/

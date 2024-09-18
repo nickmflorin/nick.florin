@@ -4,7 +4,7 @@ import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
 import { type ApiRepository, type RepositoryIncludes, fieldIsIncluded } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { conditionalAndClause } from "~/database/util";
 
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
@@ -44,7 +44,7 @@ export const getRepositoriesCount = cache(
     visibility,
   }: Pick<GetRepositoriesParams<RepositoryIncludes>, "filters" | "visibility">) => {
     await getClerkAuthedUser({ strict: visibility === "admin" });
-    return await prisma.repository.count({
+    return await db.repository.count({
       where: whereClause({ filters, visibility }),
     });
   },
@@ -71,7 +71,7 @@ export const getRepositories = cache(
       getCount: async () => await getRepositoriesCount({ filters, visibility }),
     });
 
-    const repositories = await prisma.repository.findMany({
+    const repositories = await db.repository.findMany({
       where: whereClause({ filters, visibility }),
       include: {
         projects: fieldIsIncluded("projects", includes),

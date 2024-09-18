@@ -3,7 +3,7 @@ import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
 import { RepositorySchema } from "~/actions-v2/schemas";
@@ -23,7 +23,7 @@ export const createRepository = async (req: z.infer<typeof RepositorySchema>) =>
 
   const fieldErrors = new ApiClientFieldErrors();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     if (await tx.repository.count({ where: { slug: data.slug } })) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }

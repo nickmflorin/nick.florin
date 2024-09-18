@@ -1,9 +1,9 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
+import { calculateSkillsExperience } from "~/database/model";
+import { db } from "~/database/prisma";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { calculateSkillsExperience } from "~/database/model";
 
 import { ApiClientGlobalError } from "~/api";
 
@@ -20,7 +20,7 @@ export const deleteRepositories = async (ids: string[]): Promise<void> => {
       { invalid },
     );
   }
-  await prisma.$transaction(async tx => {
+  await db.$transaction(async tx => {
     const repositories = await tx.repository.findMany({
       include: { skills: true },
       where: { id: { in: ids } },

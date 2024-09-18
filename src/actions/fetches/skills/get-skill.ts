@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { type ApiSkill, type SkillIncludes, fieldIsIncluded } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { type ApiSkill, type SkillIncludes, fieldIsIncluded } from "~/database/model";
 
 import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -32,7 +32,7 @@ export const getSkill = cache(
       return null;
     }
 
-    const skill = await prisma.skill.findUnique({
+    const skill = await db.skill.findUnique({
       where: { id, visible: visibility === "public" ? true : undefined },
       include: {
         courses: fieldIsIncluded("courses", includes)

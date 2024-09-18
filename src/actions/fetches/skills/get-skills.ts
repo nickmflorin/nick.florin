@@ -4,7 +4,7 @@ import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
 import { type ApiSkill, type SkillIncludes, type Prisma, fieldIsIncluded } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
 import { type SkillsFilters } from "~/actions-v2/schemas";
@@ -69,7 +69,7 @@ export const getSkillsCount = cache(
     visibility,
   }: Omit<GetSkillsParams<I>, "page" | "includes">) => {
     await getClerkAuthedUser({ strict: visibility === "admin" });
-    return await prisma.skill.count({
+    return await db.skill.count({
       where: whereClause({ filters, visibility }),
     });
   },
@@ -102,7 +102,7 @@ export const getSkills = cache(
       throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
     }
 
-    const skills = (await prisma.skill.findMany({
+    const skills = (await db.skill.findMany({
       where: whereClause({ filters, visibility }),
       orderBy,
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,

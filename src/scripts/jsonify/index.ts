@@ -10,7 +10,7 @@ import {
   type JsonifiableModel,
 } from "~/database/fixtures";
 import { pluralizeBrandModel } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 type ParsedArgs = { [key in string]: string | boolean | number };
 
@@ -44,7 +44,7 @@ const parseParameterizedArgs = (args: string[]) =>
 async function main() {
   const args = parseParameterizedArgs(process.argv);
 
-  prisma.$transaction(async tx => {
+  await db.$transaction(async tx => {
     let key: JsonifiableModel;
     for (key in Jsonifiers) {
       const jsonifier = Jsonifiers[key] as Jsonifier<typeof key>;
@@ -79,11 +79,11 @@ async function main() {
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   })
   .catch(async e => {
     /* eslint-disable-next-line no-console */
     console.error(e);
-    await prisma.$disconnect();
+    await db.$disconnect();
     process.exit(1);
   });

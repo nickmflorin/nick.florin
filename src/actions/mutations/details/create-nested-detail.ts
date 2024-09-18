@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type NestedApiDetail, type Project } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
 import { getDetail } from "~/actions/fetches/details";
@@ -37,7 +37,7 @@ export const createNestedDetail = async (
   const fieldErrors = new ApiClientFieldErrors();
   const { label, project: _project, skills: _skills, ...data } = parsed.data;
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     let project: Project | null = null;
     if (_project) {
       project = await tx.project.findUniqueOrThrow({ where: { id: _project } });

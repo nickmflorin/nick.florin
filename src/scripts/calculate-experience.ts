@@ -1,11 +1,11 @@
 import { stdout } from "~/application/support";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { getScriptContext } from "./context";
 
 async function main() {
-  await prisma.$transaction(
+  await db.$transaction(
     async tx => {
       const { user } = await getScriptContext(tx, { upsertUser: false });
       const skills = await tx.skill.findMany();
@@ -50,11 +50,11 @@ async function main() {
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   })
   .catch(async e => {
     /* eslint-disable-next-line no-console */
     console.error(e);
-    await prisma.$disconnect();
+    await db.$disconnect();
     process.exit(1);
   });

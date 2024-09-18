@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { fieldIsIncluded, type ApiCompany, type CompanyIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { fieldIsIncluded, type ApiCompany, type CompanyIncludes } from "~/database/model";
 
 import type { ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -33,7 +33,7 @@ export const getCompany = cache(
       });
       return null;
     }
-    const company = await prisma.company.findUnique({
+    const company = await db.company.findUnique({
       where: { id },
       include: {
         experiences: fieldIsIncluded("experiences", includes)

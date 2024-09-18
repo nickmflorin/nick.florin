@@ -1,14 +1,14 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/database/prisma";
 import { type School, type Education } from "~/database/model";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, db } from "~/database/prisma";
 
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteSchool = async (id: string) => {
   await getAuthedUser({ strict: true });
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     let school: School & { readonly educations: Education[] };
     try {
       school = await tx.school.findUniqueOrThrow({

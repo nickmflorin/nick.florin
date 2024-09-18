@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type BrandSkill } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { slugify } from "~/lib/formatters";
 
 import { SkillSchema } from "~/actions-v2/schemas";
@@ -18,7 +18,7 @@ const UpdateSkillSchema = SkillSchema.partial();
 export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSchema>) => {
   const { user } = await getAuthedUser({ strict: true });
 
-  return await prisma.$transaction(async (tx): Promise<BrandSkill | ApiClientErrorJson> => {
+  return await db.$transaction(async (tx): Promise<BrandSkill | ApiClientErrorJson> => {
     const skill = await tx.skill.findUnique({ where: { id } });
     if (!skill) {
       throw ApiClientGlobalError.NotFound();
@@ -44,13 +44,13 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
     const label = _label !== undefined ? _label : skill.label;
 
     if (_label !== undefined && _label.trim() !== skill.label.trim()) {
-      if (await prisma.skill.count({ where: { label: _label, id: { notIn: [skill.id] } } })) {
+      if (await db.skill.count({ where: { label: _label, id: { notIn: [skill.id] } } })) {
         fieldErrors.addUnique("label", "The label must be unique.");
         /* If the slug is being cleared, we have to make sure that the slugified version of the new
            label is still unique. */
       } else if (
         _slug === null &&
-        (await prisma.skill.count({
+        (await db.skill.count({
           where: { slug: slugify(_label), id: { notIn: [skill.id] } },
         }))
       ) {
@@ -59,7 +59,7 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
       }
     } else if (
       _slug === null &&
-      (await prisma.skill.count({
+      (await db.skill.count({
         where: { slug: slugify(label), id: { notIn: [skill.id] } },
       }))
     ) {
@@ -73,7 +73,7 @@ export const updateSkill = async (id: string, req: z.infer<typeof UpdateSkillSch
     } else if (
       _slug !== null &&
       _slug !== undefined &&
-      (await prisma.skill.count({ where: { slug: _slug, id: { notIn: [skill.id] } } }))
+      (await db.skill.count({ where: { slug: _slug, id: { notIn: [skill.id] } } }))
     ) {
       fieldErrors.addUnique("slug", "The slug must be unique.");
     }

@@ -1,5 +1,5 @@
-import { prisma } from "~/database/prisma";
 import { type BrandResume } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -13,7 +13,7 @@ export interface SiteNavMenuProps {
 
 export const SiteNavMenu = async ({ nav }: SiteNavMenuProps) => {
   let resume: BrandResume | null = null;
-  const resumes = await prisma.resume.findMany({
+  const resumes = await db.resume.findMany({
     where: { primary: true },
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
   });

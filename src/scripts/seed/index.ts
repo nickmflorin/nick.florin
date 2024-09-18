@@ -1,4 +1,4 @@
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { getScriptContext } from "~/scripts/context";
 
 import { calculateSkillExperiences } from "./calculate-skill-experiences";
@@ -11,7 +11,7 @@ import { seedSchools } from "./seed-schools";
 import { seedSkills } from "./seed-skills";
 
 async function main() {
-  await prisma.$transaction(
+  await db.$transaction(
     async tx => {
       const ctx = await getScriptContext(tx, { upsertUser: true });
 
@@ -31,11 +31,11 @@ async function main() {
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   })
   .catch(async e => {
     /* eslint-disable-next-line no-console */
     console.error(e);
-    await prisma.$disconnect();
+    await db.$disconnect();
     process.exit(1);
   });

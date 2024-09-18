@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type BrandCourse, type Education } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { slugify } from "~/lib/formatters";
 
 import { CourseSchema } from "~/actions-v2/schemas";
@@ -26,7 +26,7 @@ export const updateCourse = async (
     return ApiClientFieldErrors.fromZodError(parsed.error, UpdateCourseSchema).json;
   }
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     const course = await tx.course.findUnique({ where: { id }, include: { skills: true } });
     if (!course) {
       throw ApiClientGlobalError.NotFound();

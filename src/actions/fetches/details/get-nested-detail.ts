@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { type NestedApiDetail, type NestedDetailIncludes, fieldIsIncluded } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { type NestedApiDetail, type NestedDetailIncludes, fieldIsIncluded } from "~/database/model";
 
 import { type Visibility, type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -27,7 +27,7 @@ export const getNestedDetail = cache(
       return null;
     }
 
-    const detail = await prisma.nestedDetail.findUnique({
+    const detail = await db.nestedDetail.findUnique({
       where: {
         id,
         visible: visibility === "public" ? true : undefined,

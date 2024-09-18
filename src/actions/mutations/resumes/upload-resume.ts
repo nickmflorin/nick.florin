@@ -2,9 +2,9 @@
 import { put, del, type PutBlobResult } from "@vercel/blob";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { logger } from "~/internal/logger";
-import { prisma } from "~/database/prisma";
 import type { BrandResume } from "~/database/model";
+import { db } from "~/database/prisma";
+import { logger } from "~/internal/logger";
 
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
 import { convertToPlainObject } from "~/api/serialization";
@@ -18,7 +18,7 @@ export const uploadResume = async (
 
   const resumeFile = formData.get("file") as File;
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     let blob: PutBlobResult;
     try {
       blob = await put(resumeFilePath(resumeFile.name), resumeFile, {

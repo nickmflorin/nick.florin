@@ -1,15 +1,15 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
 import { calculateSkillsExperience } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteProject = async (id: string): Promise<void> => {
   const { user } = await getAuthedUser({ strict: true });
 
-  await prisma.$transaction(async tx => {
-    const project = await prisma.project.findUnique({ where: { id }, include: { skills: true } });
+  await db.$transaction(async tx => {
+    const project = await db.project.findUnique({ where: { id }, include: { skills: true } });
     if (!project) {
       throw ApiClientGlobalError.NotFound();
     }

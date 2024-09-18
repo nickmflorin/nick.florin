@@ -3,8 +3,8 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
 import { type ApiCourse, type CourseIncludes, fieldIsIncluded } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -45,7 +45,7 @@ export const getCoursesCount = cache(
     visibility,
   }: Pick<GetCoursesParams<CourseIncludes>, "filters" | "visibility">) => {
     await getClerkAuthedUser({ strict: visibility === "admin" });
-    return await prisma.course.count({
+    return await db.course.count({
       where: whereClause({ filters, visibility }),
     });
   },
@@ -70,7 +70,7 @@ export const getCourses = cache(
       getCount: async () => await getCoursesCount({ filters, visibility }),
     });
 
-    const courses = await prisma.course.findMany({
+    const courses = await db.course.findMany({
       where: whereClause({ filters, visibility }),
       include: {
         /* Note: If the education is not visible and we are in the public context, we still return

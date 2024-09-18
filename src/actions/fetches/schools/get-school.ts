@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { fieldIsIncluded, type ApiSchool, type SchoolIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { fieldIsIncluded, type ApiSchool, type SchoolIncludes } from "~/database/model";
 
 import type { ApiStandardDetailQuery, Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -33,7 +33,7 @@ export const getSchool = cache(
       });
       return null;
     }
-    const school = await prisma.school.findUnique({
+    const school = await db.school.findUnique({
       where: { id },
       include: {
         educations: fieldIsIncluded("educations", includes)

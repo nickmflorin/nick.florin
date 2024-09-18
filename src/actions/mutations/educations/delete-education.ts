@@ -1,15 +1,15 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { logger } from "~/internal/logger";
-import { prisma } from "~/database/prisma";
 import { DetailEntityType, calculateSkillsExperience } from "~/database/model";
+import { db } from "~/database/prisma";
+import { logger } from "~/internal/logger";
 
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteEducation = async (id: string): Promise<void> => {
   const { user } = await getAuthedUser({ strict: true });
 
-  await prisma.$transaction(async tx => {
+  await db.$transaction(async tx => {
     const education = await tx.education.findUnique({
       where: { id },
       include: { skills: true },

@@ -4,7 +4,7 @@ import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
 import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { conditionalAndClause } from "~/database/util";
 
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
@@ -46,7 +46,7 @@ export const getProjectsCount = cache(
     visibility,
   }: Pick<GetProjectsParams<ProjectIncludes>, "filters" | "visibility">) => {
     await getClerkAuthedUser({ strict: visibility === "admin" });
-    return await prisma.project.count({
+    return await db.project.count({
       where: whereClause({ filters, visibility }),
     });
   },
@@ -71,7 +71,7 @@ export const getProjects = cache(
       getCount: async () => await getProjectsCount({ filters, visibility }),
     });
 
-    let projects = (await prisma.project.findMany({
+    let projects = (await db.project.findMany({
       where: whereClause({ filters, visibility }),
       include: {
         repositories: fieldIsIncluded("repositories", includes)
@@ -87,7 +87,7 @@ export const getProjects = cache(
     })) as ApiProject<I>[];
 
     if (fieldIsIncluded("details", includes)) {
-      const details = await prisma.detail.findMany({
+      const details = await db.detail.findMany({
         where: { projectId: { in: projects.map(p => p.id) } },
       });
       projects = projects.map(proj => ({
@@ -97,7 +97,7 @@ export const getProjects = cache(
     }
 
     if (fieldIsIncluded("nestedDetails", includes)) {
-      const nestedDetails = await prisma.nestedDetail.findMany({
+      const nestedDetails = await db.nestedDetail.findMany({
         where: { projectId: { in: projects.map(p => p.id) } },
       });
       projects = projects.map(proj => ({

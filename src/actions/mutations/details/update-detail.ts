@@ -3,7 +3,7 @@ import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
 import { calculateSkillsExperience, type Project } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { DetailSchema } from "~/actions-v2/schemas";
@@ -23,7 +23,7 @@ export const updateDetail = async (id: string, req: z.infer<typeof UpdateDetailS
   const { label, project: _project, skills: _skills, ...data } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     const detail = await tx.detail.findUnique({
       where: { id },
       include: { skills: true },

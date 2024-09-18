@@ -1,5 +1,5 @@
 /node_modules/**
 /public/**
 /build/**
-src/prisma/model/generated/**
-src/prisma/migrations/**
+src/database/model/generated/**
+src/database/prisma/migrations/**

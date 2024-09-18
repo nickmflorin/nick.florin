@@ -1,12 +1,12 @@
-import { prisma } from "~/database/prisma";
 import { type ProjectIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getProject } from "~/actions/fetches/projects";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const projects = await prisma.project.findMany();
+  const projects = await db.project.findMany();
   return projects.map(p => ({
     id: p.id,
   }));

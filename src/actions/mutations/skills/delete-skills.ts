@@ -1,6 +1,6 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { humanizeList } from "~/lib/formatters";
 import { isUuid } from "~/lib/typeguards";
 
@@ -19,7 +19,7 @@ export const deleteSkills = async (ids: string[]): Promise<void> => {
       { invalid },
     );
   }
-  await prisma.$transaction(async tx => {
+  await db.$transaction(async tx => {
     const skills = await tx.skill.findMany({
       where: { id: { in: ids } },
       include: { experiences: true, educations: true },

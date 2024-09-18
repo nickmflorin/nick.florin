@@ -2,7 +2,7 @@
 import { getAuth, auth } from "@clerk/nextjs/server";
 
 import { type User } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
 import { ApiClientGlobalError } from "~/api";
@@ -89,7 +89,7 @@ export const getAuthedUser = async <O extends GetAuthedUserOpts>(
     }
     throw ApiClientGlobalError.Forbidden();
   }
-  const user = await prisma.user.findUnique({ where: { clerkId: clerkUserId } });
+  const user = await db.user.findUnique({ where: { clerkId: clerkUserId } });
   if (!user) {
     logger.error("The user exists in Clerk but does not have an associated user in the database.", {
       clerkUserId,

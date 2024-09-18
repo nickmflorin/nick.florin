@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { fieldIsIncluded, type ApiRepository, type RepositoryIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { fieldIsIncluded, type ApiRepository, type RepositoryIncludes } from "~/database/model";
 
 import type { ApiStandardDetailQuery, Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -34,7 +34,7 @@ export const getRepository = cache(
       return null;
     }
 
-    const repository = await prisma.repository.findUnique({
+    const repository = await db.repository.findUnique({
       where: { id },
       include: {
         skills: fieldIsIncluded("skills", includes)

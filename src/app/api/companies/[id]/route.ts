@@ -1,12 +1,12 @@
-import { prisma } from "~/database/prisma";
 import { type CompanyIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getCompany } from "~/actions/fetches/companies";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const companies = await prisma.company.findMany();
+  const companies = await db.company.findMany();
   return companies.map(c => ({
     id: c.id,
   }));

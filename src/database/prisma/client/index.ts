@@ -39,21 +39,21 @@ export const initializePrismaClient = () => {
 
 export type PrismaClient = ReturnType<typeof initializePrismaClient>;
 
-export let prisma: PrismaClient;
+export let db: PrismaClient;
 
-const globalPrisma = globalThis as unknown as { prisma: PrismaClient };
+const globalDb = globalThis as unknown as { db: PrismaClient };
 
 if (typeof window === "undefined") {
   if (process.env.NODE_ENV === "production") {
-    prisma = initializePrismaClient();
+    db = initializePrismaClient();
   } else {
-    if (!globalPrisma.prisma) {
-      prisma = initializePrismaClient();
+    if (!globalDb.db) {
+      db = initializePrismaClient();
       /* eslint-disable-next-line no-console -- The logger is not in context for seeding. */
       console.info("Storing Globally Instantiated Prisma Client");
-      globalPrisma.prisma = prisma;
+      globalDb.db = db;
     } else {
-      prisma = globalPrisma.prisma;
+      db = globalDb.db;
     }
   }
 }

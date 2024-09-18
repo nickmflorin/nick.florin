@@ -3,10 +3,6 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { logger } from "~/internal/logger";
-import { humanizeList } from "~/lib/formatters";
-import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
 import {
   type DetailEntityType,
   type DetailEntity,
@@ -14,6 +10,10 @@ import {
   type DetailIncludes,
   fieldIsIncluded,
 } from "~/database/model";
+import { db } from "~/database/prisma";
+import { logger } from "~/internal/logger";
+import { humanizeList } from "~/lib/formatters";
+import { isUuid } from "~/lib/typeguards";
 
 import { type ApiStandardDetailQuery, type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -61,7 +61,7 @@ export const getDetails = cache(
         { invalid },
       );
     }
-    const details = await prisma.detail.findMany({
+    const details = await db.detail.findMany({
       where: {
         entityId: { in: ids.filter(isUuid) },
         entityType: entityType,

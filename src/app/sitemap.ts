@@ -1,6 +1,6 @@
 import { type MetadataRoute } from "next";
 
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { environment } from "~/environment";
 
@@ -13,7 +13,7 @@ const toSiteUrl = (path: `/${string}` = "/"): string => {
 };
 
 const getLastUpdatedEducation = async () => {
-  const educations = await prisma.education.findMany({ orderBy: { updatedAt: "desc" } });
+  const educations = await db.education.findMany({ orderBy: { updatedAt: "desc" } });
   if (educations.length > 0) {
     return educations[0].updatedAt;
   }
@@ -21,7 +21,7 @@ const getLastUpdatedEducation = async () => {
 };
 
 const getLastUpdatedExperience = async () => {
-  const educations = await prisma.experience.findMany({ orderBy: { updatedAt: "desc" } });
+  const educations = await db.experience.findMany({ orderBy: { updatedAt: "desc" } });
   if (educations.length > 0) {
     return educations[0].updatedAt;
   }
@@ -59,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ] as const;
 
-  const projects = await prisma.project.findMany({ orderBy: { updatedAt: "desc" } });
+  const projects = await db.project.findMany({ orderBy: { updatedAt: "desc" } });
   return [
     ...baseUrls,
     ...projects.map(({ slug, updatedAt }) => ({

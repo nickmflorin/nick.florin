@@ -9124,7 +9124,7 @@ ${n}
 
 | Name            | Version            |
 |-----------------|--------------------|
-| Node            | ${(A = b.version) == null ? void 0 : A.padEnd(19)}| 
+| Node            | ${(A = b.version) == null ? void 0 : A.padEnd(19)}|
 | OS              | ${t == null ? void 0 : t.padEnd(19)}|
 | Prisma Client   | ${e == null ? void 0 : e.padEnd(19)}|
 | Query Engine    | ${o == null ? void 0 : o.padEnd(19)}|
@@ -9161,7 +9161,7 @@ ${Rn(y)}
 
 If you want the Prisma team to look into it, please open the link above \u{1F64F}
 To increase the chance of success, please post your schema and a snippet of
-how you used Prisma Client in the issue. 
+how you used Prisma Client in the issue.
 `;
 }
 g();
@@ -11950,7 +11950,7 @@ function Yi(e, t, r, n) {
 Using the example below you can still execute your query with Prisma, but please note that it is vulnerable to SQL injection attacks and requires you to take care of input sanitization.
 
 Example:
-  await prisma.$executeRawUnsafe(\`ALTER USER prisma WITH PASSWORD '\${password}'\`)
+  await db.$executeRawUnsafe(\`ALTER USER prisma WITH PASSWORD '\${password}'\`)
 
 More Information: https://pris.ly/d/execute-raw
 `);
@@ -12885,7 +12885,7 @@ function Kl(e) {
           );
         }
         throw new ve(
-          "`$executeRaw` is a tag function, please use it like the following:\n```\nconst result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`\n```\n\nOr read our docs at https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access#executeraw\n",
+          "`$executeRaw` is a tag function, please use it like the following:\n```\nconst result = await db.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`\n```\n\nOr read our docs at https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access#executeraw\n",
           { clientVersion: this._clientVersion },
         );
       });
@@ -12936,7 +12936,7 @@ function Kl(e) {
         if (n.raw !== void 0 || n.sql !== void 0)
           return this.$queryRawInternal(i, "$queryRaw", ...ql(n, o));
         throw new ve(
-          "`$queryRaw` is a tag function, please use it like the following:\n```\nconst result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`\n```\n\nOr read our docs at https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access#queryraw\n",
+          "`$queryRaw` is a tag function, please use it like the following:\n```\nconst result = await db.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`\n```\n\nOr read our docs at https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access#queryraw\n",
           { clientVersion: this._clientVersion },
         );
       });

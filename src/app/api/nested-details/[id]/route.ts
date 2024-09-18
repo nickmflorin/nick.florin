@@ -1,12 +1,12 @@
-import { prisma } from "~/database/prisma";
 import { type NestedDetailIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getNestedDetail } from "~/actions/fetches/details";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const details = await prisma.detail.findMany();
+  const details = await db.detail.findMany();
   return details.map(c => ({
     id: c.id,
   }));

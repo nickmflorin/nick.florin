@@ -1,7 +1,7 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/database/prisma";
 import type { BrandResume } from "~/database/model";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, db } from "~/database/prisma";
 
 import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
@@ -12,7 +12,7 @@ export const prioritizeResume = async (
 ): Promise<{ resume: BrandResume; resumes: BrandResume[] } | ApiClientGlobalErrorJson> => {
   const { user } = await getAuthedUser({ strict: true });
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     let resume: BrandResume;
     try {
       resume = await tx.resume.findUniqueOrThrow({

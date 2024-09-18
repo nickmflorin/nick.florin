@@ -2,7 +2,7 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { CompanySchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors } from "~/api";
@@ -20,16 +20,16 @@ export const createCompany = async (req: z.infer<typeof CompanySchema>) => {
 
   const { name, shortName, ...data } = parsed.data;
 
-  if (await prisma.company.count({ where: { name } })) {
+  if (await db.company.count({ where: { name } })) {
     fieldErrors.addUnique("name", "The 'name' must be unique for a given company.");
   }
-  if (await prisma.company.count({ where: { shortName } })) {
+  if (await db.company.count({ where: { shortName } })) {
     fieldErrors.addUnique("shortName", "The 'shortName' must be unique for a given company.");
   }
   if (fieldErrors.hasErrors) {
     return fieldErrors.json;
   }
-  const company = await prisma.company.create({
+  const company = await db.company.create({
     data: {
       ...data,
       name,

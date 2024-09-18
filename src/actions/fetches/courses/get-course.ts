@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { fieldIsIncluded, type ApiCourse, type CourseIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { fieldIsIncluded, type ApiCourse, type CourseIncludes } from "~/database/model";
 
 import type { ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -33,7 +33,7 @@ export const getCourse = cache(
       });
       return null;
     }
-    const course = await prisma.course.findUnique({
+    const course = await db.course.findUnique({
       where: { id, visible: visibility === "public" ? true : undefined },
       include: {
         /* Note: If the education is not visible and we are in the public context, we still return

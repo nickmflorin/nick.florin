@@ -3,9 +3,9 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { logger } from "~/internal/logger";
-import { prisma, type Transaction } from "~/database/prisma";
 import { type BrandResume } from "~/database/model";
+import { db, type Transaction } from "~/database/prisma";
+import { logger } from "~/internal/logger";
 
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -16,7 +16,7 @@ export const preloadResumes = () => {
 export const getResumes = cache(async (tx?: Transaction): Promise<BrandResume[]> => {
   await getClerkAuthedUser({ strict: true });
 
-  const trans = tx ?? prisma;
+  const trans = tx ?? db;
 
   const resumes = await trans.resume.findMany({
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],

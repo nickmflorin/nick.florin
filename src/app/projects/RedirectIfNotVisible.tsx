@@ -3,10 +3,10 @@ import { type ReactNode } from "react";
 
 import { sortBy } from "lodash-es";
 
-import { logger } from "~/internal/logger";
-import { prisma } from "~/database/prisma";
 import type { Project, ProjectSlug } from "~/database/model";
 import { ProjectSlugs } from "~/database/model";
+import { db } from "~/database/prisma";
+import { logger } from "~/internal/logger";
 
 export interface RedirectIfNotVisibleProps {
   readonly children: ReactNode;
@@ -16,7 +16,7 @@ export interface RedirectIfNotVisibleProps {
 export const RedirectIfNotVisible = async ({ project, children }: RedirectIfNotVisibleProps) => {
   if (!project.visible) {
     // If the project is not visible, we want to dynamically redirect to a visible project.
-    const otherProjects = await prisma.project.findMany({
+    const otherProjects = await db.project.findMany({
       where: { id: { notIn: [project.id] }, visible: true },
     });
 

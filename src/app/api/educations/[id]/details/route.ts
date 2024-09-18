@@ -1,12 +1,12 @@
-import { prisma } from "~/database/prisma";
 import { DetailEntityType, type DetailIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getEntityDetails } from "~/actions/fetches/details";
 import { ApiClientGlobalError, ClientResponse } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const educations = await prisma.education.findMany();
+  const educations = await db.education.findMany();
   return educations.map(e => ({
     id: e.id,
   }));

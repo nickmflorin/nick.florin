@@ -2,8 +2,8 @@ import "server-only";
 
 import { cache } from "react";
 
-import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/database/prisma";
 import { type DetailEntity, DetailEntityType } from "~/database/model";
+import { db, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/database/prisma";
 
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -16,7 +16,7 @@ export const getEntity = cache(
       case DetailEntityType.EDUCATION:
         try {
           return convertToPlainObject(
-            await prisma.education.findUniqueOrThrow({
+            await db.education.findUniqueOrThrow({
               where: { id },
             }),
           ) as DetailEntity<T>;
@@ -29,7 +29,7 @@ export const getEntity = cache(
       case DetailEntityType.EXPERIENCE:
         try {
           return convertToPlainObject(
-            await prisma.experience.findUniqueOrThrow({
+            await db.experience.findUniqueOrThrow({
               where: { id },
             }),
           ) as DetailEntity<T>;

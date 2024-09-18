@@ -3,5 +3,5 @@ node_modules
 next-env.d.ts
 pnpm-lock.yaml
 package.json
-src/prisma/model/generated/**
-src/prisma/migrations/**
+src/database/model/generated/**
+src/database/prisma/migrations/**

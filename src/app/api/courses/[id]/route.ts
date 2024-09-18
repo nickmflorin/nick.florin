@@ -1,12 +1,12 @@
-import { prisma } from "~/database/prisma";
 import { type CourseIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getCourse } from "~/actions/fetches/courses";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const courses = await prisma.course.findMany();
+  const courses = await db.course.findMany();
   return courses.map(c => ({
     id: c.id,
   }));

@@ -18,6 +18,7 @@ type Set = {
   (params: Record<string, QueryParamValue>, opts?: SetOpts): void;
 };
 
+/** @deprecated */
 export const useMutableParams = (
   config?: UseMutableParamsConfig,
 ): {

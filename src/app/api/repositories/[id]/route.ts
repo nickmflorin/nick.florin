@@ -1,12 +1,12 @@
-import { prisma } from "~/database/prisma";
 import { type RepositoryIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getRepository } from "~/actions/fetches/repositories";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const repositories = await prisma.repository.findMany();
+  const repositories = await db.repository.findMany();
   return repositories.map(r => ({
     id: r.id,
   }));

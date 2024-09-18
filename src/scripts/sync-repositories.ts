@@ -1,11 +1,11 @@
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { githubClient } from "~/integrations/github";
 
 import { getScriptContext } from "./context";
 
 async function main() {
-  await prisma.$transaction(
+  await db.$transaction(
     async tx => {
       const ctx = await getScriptContext(tx, { upsertUser: true });
       await githubClient.syncRepositories({ tx, user: ctx.user });
@@ -16,11 +16,11 @@ async function main() {
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   })
   .catch(async e => {
     /* eslint-disable-next-line no-console */
     console.error(e);
-    await prisma.$disconnect();
+    await db.$disconnect();
     process.exit(1);
   });

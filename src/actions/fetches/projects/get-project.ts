@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { type ApiProject, type ProjectIncludes, fieldIsIncluded } from "~/database/model";
 
 import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -33,7 +33,7 @@ export const getProject = cache(
       });
       return null;
     }
-    let project = (await prisma.project.findUnique({
+    let project = (await db.project.findUnique({
       where: { id },
       include: {
         repositories: fieldIsIncluded("repositories", includes)
@@ -48,7 +48,7 @@ export const getProject = cache(
     if (fieldIsIncluded("details", includes)) {
       project = {
         ...project,
-        details: await prisma.detail.findMany({
+        details: await db.detail.findMany({
           where: { projectId: project.id },
         }),
       };
@@ -57,7 +57,7 @@ export const getProject = cache(
     if (fieldIsIncluded("nestedDetails", includes)) {
       project = {
         ...project,
-        nestedDetails: await prisma.nestedDetail.findMany({
+        nestedDetails: await db.nestedDetail.findMany({
           where: { projectId: project.id },
         }),
       };

@@ -3,9 +3,6 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { logger } from "~/internal/logger";
-import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
 import {
   type ApiEducation,
   DetailEntityType,
@@ -13,6 +10,9 @@ import {
   fieldIsIncluded,
   type EducationToDetailIncludes,
 } from "~/database/model";
+import { db } from "~/database/prisma";
+import { logger } from "~/internal/logger";
+import { isUuid } from "~/lib/typeguards";
 
 import { type ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -41,7 +41,7 @@ export const getEducation = cache(
       });
       return null;
     }
-    const education = await prisma.education.findUnique({
+    const education = await db.education.findUnique({
       where: { id, visible: visibility === "public" ? true : undefined },
       include: {
         school: true,

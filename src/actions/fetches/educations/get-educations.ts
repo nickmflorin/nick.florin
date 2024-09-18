@@ -10,7 +10,7 @@ import {
   fieldIsIncluded,
   type EducationToDetailIncludes,
 } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { conditionalAndClause } from "~/database/util";
 
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
@@ -53,7 +53,7 @@ export const getEducationsCount = cache(
     /* TODO: We have to figure out how to get this to render an API response, instead of throwing
        a hard error, in the case that this is being called from the context of a route handler. */
     await getClerkAuthedUser({ strict: visibility === "admin" });
-    return await prisma.education.count({
+    return await db.education.count({
       where: whereClause({ filters, visibility }),
     });
   },
@@ -83,7 +83,7 @@ export const getEducations = cache(
       throw new Error("The method cannot be used with both pagination and a 'limit' parameter!");
     }
 
-    const educations = await prisma.education.findMany({
+    const educations = await db.education.findMany({
       where: whereClause({ filters, visibility }),
       include: {
         school: true,

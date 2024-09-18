@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type School } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { EducationSchema } from "~/actions-v2/schemas";
@@ -24,7 +24,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
   const { school: schoolId, major, skills: _skills, ...data } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     const education = await tx.education.findUniqueOrThrow({
       where: { id },
       include: { school: true, skills: true },
@@ -44,7 +44,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
     }
     if (
       major &&
-      (await prisma.education.count({
+      (await db.education.count({
         where: { schoolId: school.id, major, id: { notIn: [education.id] } },
       }))
     ) {
@@ -52,7 +52,7 @@ export const updateEducation = async (id: string, req: z.infer<typeof UpdateEduc
     }
     if (
       data.shortMajor &&
-      (await prisma.education.count({
+      (await db.education.count({
         where: { schoolId: school.id, shortMajor: data.shortMajor, id: { notIn: [education.id] } },
       }))
     ) {

@@ -1,14 +1,14 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
 import { calculateSkillsExperience } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteDetail = async (id: string) => {
   const { user } = await getAuthedUser();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     const detail = await tx.detail.findUnique({
       where: { id },
       include: { skills: true, nestedDetails: { include: { skills: true } } },

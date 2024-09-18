@@ -3,8 +3,8 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
 import { type CompanyIncludes, type ApiCompany, fieldIsIncluded } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import type { ApiStandardDetailQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -22,7 +22,7 @@ export const getCompanies = cache(
   }: GetCompaniesParams<I>): Promise<ApiCompany<I>[]> => {
     await getClerkAuthedUser({ strict: visibility !== "public" });
     return (
-      await prisma.company.findMany({
+      await db.company.findMany({
         include: {
           experiences: fieldIsIncluded("experiences", includes)
             ? { where: { visible: visibility === "public" ? true : undefined } }

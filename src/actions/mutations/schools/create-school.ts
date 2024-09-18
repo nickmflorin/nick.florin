@@ -2,7 +2,7 @@
 import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { SchoolSchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors } from "~/api";
@@ -19,16 +19,16 @@ export const createSchool = async (req: z.infer<typeof SchoolSchema>) => {
   const { name, shortName, ...data } = parsed.data;
 
   const fieldErrors = new ApiClientFieldErrors();
-  if (await prisma.school.count({ where: { name } })) {
+  if (await db.school.count({ where: { name } })) {
     fieldErrors.addUnique("name", "The 'name' must be unique for a given school.");
   }
-  if (await prisma.school.count({ where: { shortName } })) {
+  if (await db.school.count({ where: { shortName } })) {
     fieldErrors.addUnique("shortName", "The 'shortName' must be unique for a given school.");
   }
   if (fieldErrors.hasErrors) {
     return fieldErrors.json;
   }
-  const school = await prisma.school.create({
+  const school = await db.school.create({
     data: {
       ...data,
       name,

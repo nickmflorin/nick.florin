@@ -3,8 +3,8 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
-import { prisma } from "~/database/prisma";
 import { type SchoolIncludes, type ApiSchool, fieldIsIncluded } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import type { Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -28,7 +28,7 @@ export const getSchools = cache(
   }: GetSchoolsParams<I>): Promise<ApiSchool<I>[]> => {
     await getClerkAuthedUser({ strict: visibility !== "public" });
     return (
-      await prisma.school.findMany({
+      await db.school.findMany({
         include: {
           educations: fieldIsIncluded("educations", includes)
             ? { where: { visible: visibility === "public" ? true : undefined } }

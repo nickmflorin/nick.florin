@@ -2,9 +2,9 @@ import "server-only";
 
 import { cache } from "react";
 
-import { logger } from "~/internal/logger";
-import { prisma } from "~/database/prisma";
 import { type Profile } from "~/database/model";
+import { db } from "~/database/prisma";
+import { logger } from "~/internal/logger";
 
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -13,7 +13,7 @@ export const preloadProfile = () => {
 };
 
 export const getProfile = cache(async (): Promise<Profile | null> => {
-  const profiles = await prisma.profile.findMany({ orderBy: { createdAt: "desc" }, take: 1 });
+  const profiles = await db.profile.findMany({ orderBy: { createdAt: "desc" }, take: 1 });
   if (profiles.length === 0) {
     logger.error(
       "No profile found!  The layout will not include the social buttons in the header.",

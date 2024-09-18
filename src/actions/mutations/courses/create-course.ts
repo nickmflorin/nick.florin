@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type BrandEducation } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { slugify } from "~/lib/formatters";
 
@@ -27,7 +27,7 @@ export const createCourse = async (req: z.infer<typeof CourseSchema>) => {
 
   const fieldErrors = new ApiClientFieldErrors();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     if (await tx.course.count({ where: { name: data.name } })) {
       fieldErrors.addUnique("name", "The name must be unique.");
       /* If the slug is not explicitly provided and the name does not violate the unique

@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type Experience, type Company } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { queryM2MsDynamically } from "~/actions/mutations/m2ms";
 import { ExperienceSchema } from "~/actions-v2/schemas";
@@ -27,7 +27,7 @@ export const updateExperience = async (
   const { company: companyId, title, skills: _skills, ...data } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     const experience = await tx.experience.findUnique({
       where: { id },
       include: { company: true, skills: true },
@@ -47,7 +47,7 @@ export const updateExperience = async (
     }
     if (
       title &&
-      (await prisma.experience.count({
+      (await db.experience.count({
         where: { companyId: company.id, title, id: { notIn: [experience.id] } },
       }))
     ) {
@@ -55,7 +55,7 @@ export const updateExperience = async (
     }
     if (
       data.shortTitle &&
-      (await prisma.experience.count({
+      (await db.experience.count({
         where: {
           companyId: company.id,
           shortTitle: data.shortTitle,

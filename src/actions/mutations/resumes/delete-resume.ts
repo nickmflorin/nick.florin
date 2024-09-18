@@ -2,8 +2,8 @@
 import { del } from "@vercel/blob";
 
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/database/prisma";
 import { type BrandResume } from "~/database/model";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, db } from "~/database/prisma";
 
 import { getResumes } from "~/actions/fetches/resumes";
 import { ApiClientGlobalError } from "~/api";
@@ -11,7 +11,7 @@ import { ApiClientGlobalError } from "~/api";
 export const deleteResume = async (id: string): Promise<BrandResume[]> => {
   await getAuthedUser({ strict: true });
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     let resume: BrandResume;
     try {
       resume = await tx.resume.findUniqueOrThrow({ where: { id } });

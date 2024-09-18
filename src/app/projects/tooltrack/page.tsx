@@ -1,4 +1,4 @@
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { convertToPlainObject } from "~/api/serialization";
 
@@ -8,7 +8,7 @@ import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
 
 export default async function ToolTrackPage() {
   const project = convertToPlainObject(
-    await prisma.project.findUniqueOrThrow({
+    await db.project.findUniqueOrThrow({
       where: { slug: "tooltrack" },
       include: { repositories: true, skills: true },
     }),

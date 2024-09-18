@@ -5,7 +5,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type Detail, type User, type NestedDetail, type BrandProject } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma, type Transaction } from "~/database/prisma";
+import { db, type Transaction } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { slugify } from "~/lib/formatters";
 
@@ -115,7 +115,7 @@ export const updateProject = async (
 ): Promise<ApiClientErrorJson<keyof (typeof UpdateProjectSchema)["shape"]> | BrandProject> => {
   const { user } = await getAuthedUser();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     const project = await tx.project.findUnique({ where: { id }, include: { skills: true } });
     if (!project) {
       throw ApiClientGlobalError.NotFound();

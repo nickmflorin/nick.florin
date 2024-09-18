@@ -1,12 +1,12 @@
-import { prisma } from "~/database/prisma";
 import { type ExperienceIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getExperience } from "~/actions/fetches/experiences";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const experiences = await prisma.experience.findMany();
+  const experiences = await db.experience.findMany();
   return experiences.map(e => ({
     id: e.id,
   }));

@@ -4,7 +4,7 @@ import { type z } from "zod";
 import { getAuthedUser } from "~/application/auth/server";
 import { type BrandRepository, type BrandSkill } from "~/database/model";
 import { calculateSkillsExperience } from "~/database/model";
-import { prisma } from "~/database/prisma";
+import { db } from "~/database/prisma";
 
 import { RepositorySchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors, ApiClientGlobalError, type ApiClientErrorJson } from "~/api";
@@ -27,7 +27,7 @@ export const updateRepository = async (
     return ApiClientFieldErrors.fromZodError(parsed.error, UpdateRepositorySchema).json;
   }
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     const repository: (BrandRepository & { readonly skills: BrandSkill[] }) | null =
       await tx.repository.findUnique({
         where: { id },

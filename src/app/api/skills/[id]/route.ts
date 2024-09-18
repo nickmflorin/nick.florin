@@ -1,14 +1,14 @@
 import { type NextRequest } from "next/server";
 
-import { prisma } from "~/database/prisma";
 import { type SkillIncludes } from "~/database/model";
+import { db } from "~/database/prisma";
 
 import { getSkill } from "~/actions/fetches/skills";
 import { ClientResponse, ApiClientGlobalError } from "~/api";
 import { apiRoute } from "~/api/route";
 
 export async function generateStaticParams() {
-  const skills = await prisma.skill.findMany();
+  const skills = await db.skill.findMany();
   return skills.map(c => ({
     id: c.id,
   }));

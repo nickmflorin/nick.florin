@@ -3,7 +3,7 @@ import { type z } from "zod";
 
 import { getAuthedUser } from "~/application/auth/server";
 import { type Company } from "~/database/model";
-import { prisma, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/database/prisma";
+import { db, isPrismaDoesNotExistError, isPrismaInvalidIdError } from "~/database/prisma";
 
 import { CompanySchema } from "~/actions-v2/schemas";
 import { ApiClientFieldErrors, ApiClientGlobalError } from "~/api";
@@ -17,7 +17,7 @@ export const updateCompany = async (id: string, req: z.infer<typeof CompanySchem
   if (!parsed.success) {
     return ApiClientFieldErrors.fromZodError(parsed.error, UpdateCompanySchema).json;
   }
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     let co: Company;
     try {
       co = await tx.company.findUniqueOrThrow({
@@ -33,18 +33,18 @@ export const updateCompany = async (id: string, req: z.infer<typeof CompanySchem
 
     const fieldErrors = new ApiClientFieldErrors();
 
-    if (name && (await prisma.company.count({ where: { name, id: { notIn: [co.id] } } }))) {
+    if (name && (await db.company.count({ where: { name, id: { notIn: [co.id] } } }))) {
       fieldErrors.addUnique(name, "The 'name' must be unique for a given company.");
     } else if (
       shortName &&
-      (await prisma.company.count({ where: { shortName, id: { notIn: [co.id] } } }))
+      (await db.company.count({ where: { shortName, id: { notIn: [co.id] } } }))
     ) {
       fieldErrors.addUnique(shortName, "The 'shortName' must be unique for a given company.");
     }
     if (fieldErrors.hasErrors) {
       return fieldErrors.json;
     }
-    const updated = await prisma.company.update({
+    const updated = await db.company.update({
       where: { id },
       data: {
         ...data,

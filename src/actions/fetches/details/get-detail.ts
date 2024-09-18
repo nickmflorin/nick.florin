@@ -3,10 +3,10 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { type ApiDetail, type DetailIncludes, fieldIsIncluded } from "~/database/model";
+import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 import { isUuid } from "~/lib/typeguards";
-import { prisma } from "~/database/prisma";
-import { type ApiDetail, type DetailIncludes, fieldIsIncluded } from "~/database/model";
 
 import { type ApiStandardDetailQuery, type Visibility } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
@@ -27,7 +27,7 @@ export const getDetail = cache(
       return null;
     }
 
-    const detail = await prisma.detail.findUnique({
+    const detail = await db.detail.findUnique({
       where: {
         id,
         visible: visibility === "public" ? true : undefined,

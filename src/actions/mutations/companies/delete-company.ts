@@ -1,14 +1,14 @@
 "use server";
 import { getAuthedUser } from "~/application/auth/server";
-import { isPrismaDoesNotExistError, isPrismaInvalidIdError, prisma } from "~/database/prisma";
 import { type Company, type Experience } from "~/database/model";
+import { isPrismaDoesNotExistError, isPrismaInvalidIdError, db } from "~/database/prisma";
 
 import { ApiClientGlobalError } from "~/api";
 
 export const deleteCompany = async (id: string) => {
   await getAuthedUser();
 
-  return await prisma.$transaction(async tx => {
+  return await db.$transaction(async tx => {
     let company: Company & { readonly experiences: Experience[] };
     try {
       company = await tx.company.findUniqueOrThrow({
