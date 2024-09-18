@@ -1,0 +1,212 @@
+@use "partials";
+
+@use "../typography" as typography;
+@use "./constants" as constants;
+
+@mixin table-head() {
+  > thead.table__head {
+    @content;
+  }
+}
+
+@mixin table-header-row($direct: false) {
+  @if $direct {
+    > tr.table__header-row {
+      @content;
+    }
+  } @else {
+    @include table-head() {
+      > tr.table__header-row {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin table-body() {
+  > tbody.table__body {
+    @content;
+  }
+}
+
+@mixin table-body-row($direct: false) {
+  @if $direct {
+    > tr.table__body-row {
+      @content;
+    }
+  } @else {
+    @include table-body() {
+      > tr.table__body-row {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin table-header-cell($direct: false) {
+  @if $direct {
+    > th.table__header-cell {
+      @content;
+    }
+  } @else {
+    @include table-header-row($direct: false) {
+      > th.table__header-cell {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin table-body-cell-borders($bordered: false, $last-row: false) {
+  @if $bordered {
+    // These important flags are only to work around MUI's default application of bottom
+    // borders.
+    @if not $last-row {
+      border-bottom: constants.$table-border !important;
+    }
+  }
+}
+
+@mixin table-body-cell($direct: false, $bordered: false, $last-row: false) {
+  @if $direct {
+    > td.table__body-cell {
+      @content;
+      @include table-body-cell-borders($bordered, $last-row: $last-row);
+    }
+  } @else {
+    @include table-body-row($direct: false) {
+      > td.table__body-cell {
+        @content;
+        @include table-body-cell-borders($bordered, $last-row: $last-row);
+      }
+    }
+  }
+}
+
+@mixin table-size($size) {
+  $td: partials.mapget(constants.$table-size-properties, $size, "td");
+  @include table-body-cell() {
+    @include partials.mapped-properties($td);
+  }
+  $th: partials.mapget(constants.$table-size-properties, $size, "th");
+  @include table-header-cell() {
+    @include partials.mapped-properties($th);
+  }
+}
+
+.table-v2 {
+  height: 100%;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  @include table-size(constants.$table-default-size);
+  @each $size in constants.$table-sizes {
+    &.table--#{$size} {
+      @include table-size($size);
+    }
+  }
+
+  @include table-head {
+    color: constants.$table-color;
+    display: table-header-group;
+
+    @include table-header-row($direct: true) {
+      color: inherit;
+      display: table-row;
+      vertical-align: middle;
+      outline: 0;
+
+      @include table-header-cell($direct: true) {
+        @include typography.font("body", $size: "xs", $weight: "medium");
+        display: table-cell;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        text-align: left;
+        border-bottom: none;
+        background-color: constants.$table-header-bg-color;
+
+        &:not(.table__header-cell--ordered) {
+          .table__header-cell__sort-icon {
+            opacity: 0;
+          }
+
+          @include partials.hovered {
+            .table__header-cell__sort-icon {
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @include table-body {
+    color: constants.$table-color;
+    background-color: constants.$table-body-bg-color;
+    position: relative;
+
+    @include table-body-row($direct: true) {
+      color: inherit;
+      display: table-row;
+      vertical-align: middle;
+      outline: 0;
+
+      @include table-body-cell($direct: true) {
+        @include typography.font("body", $size: "xs", $weight: "regular");
+        color: inherit;
+        font-size: 14px;
+        border-bottom: none;
+        display: table-cell;
+        text-align: left;
+      }
+
+      &--highlighted {
+        &:not(.tr--loading, .tr--feedback) {
+          background-color: constants.$table-row-highlighted-color;
+        }
+      }
+
+      &--loading {
+        opacity: 0.4;
+      }
+
+      &--bordered {
+        &:not(:last-child) {
+          @include table-body-cell($direct: true, $bordered: true);
+        }
+        &:last-child {
+          @include table-body-cell($direct: true, $bordered: true, $last-row: true);
+        }
+      }
+    }
+
+    &.table__body--loading {
+      @include table-body-row($direct: true) {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  &--higlighted-rows-on-hover {
+    @include table-body-row($direct: false) {
+      &:hover {
+        &:not(.tr--loading, .tr--feedback) {
+          background-color: constants.$table-row-highlighted-color;
+        }
+      }
+    }
+  }
+
+  &--bordered {
+    @include table-body-row($direct: true) {
+      &:not(:last-child) {
+        @include table-body-cell($direct: true, $bordered: true);
+      }
+      &:last-child {
+        @include table-body-cell($direct: true, $bordered: true, $last-row: true);
+      }
+    }
+  }
+}

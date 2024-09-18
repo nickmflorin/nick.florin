@@ -1,0 +1,36 @@
+$table-header-bg-color: theme("colors.gray.50");
+$table-row-highlighted-color: theme("colors.gray.50");
+$table-border-color: theme("colors.gray.50");
+$table-border: 1px solid $table-border-color;
+$table-color: theme("colors.body");
+$table-body-bg-color: theme("colors.white");
+
+$table-sizes: ("small", "medium", "large");
+$table-default-size: "medium";
+
+$table-size-properties: (
+  "small": (
+    "td": (
+      padding: 10px 12px,
+    ),
+    "th": (
+      padding: 10px 12px,
+    ),
+  ),
+  "medium": (
+    "td": (
+      padding: 10px 12px,
+    ),
+    "th": (
+      padding: 10px 12px,
+    ),
+  ),
+  "large": (
+    "td": (
+      padding: 10px 12px,
+    ),
+    "th": (
+      padding: 10px 12px,
+    ),
+  ),
+);
