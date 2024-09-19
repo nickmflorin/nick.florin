@@ -66,7 +66,6 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
         <ClientExperienceSelect
           visibility="public"
           inputClassName="w-full"
-          menuClassName="max-h-[260px]"
           value={value}
           onChange={onChange}
           behavior="multi"
@@ -88,7 +87,6 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
         <ClientEducationSelect
           visibility="public"
           inputClassName="w-full"
-          menuClassName="max-h-[260px]"
           behavior="multi"
           isClearable
           useAbbreviatedOptionLabels={false}
@@ -109,7 +107,6 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       {({ value, onChange }) => (
         <ProgrammingDomainSelect
           inputClassName="w-full"
-          menuClassName="max-h-[260px]"
           value={value}
           behavior="multi"
           isClearable
@@ -128,7 +125,6 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       {({ value, onChange }) => (
         <ProgrammingLanguageSelect
           inputClassName="w-full"
-          menuClassName="max-h-[260px]"
           value={value}
           behavior="multi"
           isClearable
@@ -147,7 +143,6 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       {({ value, onChange }) => (
         <SkillCategorySelect
           inputClassName="w-full"
-          menuClassName="max-h-[260px]"
           value={value}
           behavior="multi"
           isClearable

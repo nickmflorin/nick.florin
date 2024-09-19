@@ -35,7 +35,6 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
       {({ value, onChange }) => (
         <ClientEducationSelect
           inputClassName="w-full"
-          menuClassName="max-h-[260px]"
           value={value}
           visibility="admin"
           behavior="single"

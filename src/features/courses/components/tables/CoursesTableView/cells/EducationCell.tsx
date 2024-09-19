@@ -31,7 +31,6 @@ export const EducationCell = ({ course, table }: EducationCellProps): JSX.Elemen
     <ClientEducationSelect
       visibility="admin"
       inputClassName="w-full"
-      menuClassName="max-h-[260px]"
       behavior="single"
       useAbbreviatedOptionLabels={false}
       value={value}

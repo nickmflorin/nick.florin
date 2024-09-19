@@ -30,7 +30,6 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
   return (
     <CompanySelect
       inputClassName="w-full"
-      menuClassName="max-h-[260px]"
       isClearable
       behavior="single"
       value={value}

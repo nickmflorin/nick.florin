@@ -45,7 +45,6 @@ export const ExperienceFilter = ({ filters, experiences }: ExperienceFilterProps
   return (
     <ExperienceSelect
       inputClassName="w-[320px]"
-      menuClassName="max-h-[260px]"
       placeholder="Experiences"
       data={experiences}
       value={value}

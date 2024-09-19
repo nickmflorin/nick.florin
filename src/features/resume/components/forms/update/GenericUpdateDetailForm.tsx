@@ -206,7 +206,6 @@ export const GenericUpdateDetailForm = <
           <SkillsSelect
             behavior="multi"
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             value={value}
             onChange={onChange}
             inPortal
@@ -224,7 +223,6 @@ export const GenericUpdateDetailForm = <
         {({ value, onChange }) => (
           <ProjectSelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             value={value}
             behavior="single-nullable"
             isClearable

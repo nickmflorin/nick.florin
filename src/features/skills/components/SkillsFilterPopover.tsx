@@ -65,7 +65,7 @@ export const SkillsFilterPopover = ({
       }
     >
       {({ ref, params, isOpen }) => (
-        <Tooltip content="Filters" inPortal isDisabled={isOpen}>
+        <Tooltip content="Filters" inPortal isDisabled={isOpen} offset={{ mainAxis: 4 }}>
           {({ ref: _ref, params: _params }) => (
             <ChartFilterButton
               {...mergeFloatingEventHandlers(params, _params)}

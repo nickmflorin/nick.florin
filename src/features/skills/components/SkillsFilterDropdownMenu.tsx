@@ -40,7 +40,7 @@ export const SkillsFilterDropdownMenu = ({
   if (isLessThan("md")) {
     return (
       <>
-        <Tooltip content="Filters" inPortal>
+        <Tooltip content="Filters" inPortal offset={{ mainAxis: 4 }}>
           {({ ref, params }) => (
             <ChartFilterButton
               {...params}

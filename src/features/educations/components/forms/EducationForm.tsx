@@ -55,7 +55,6 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <SchoolSelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             behavior="single"
             isReady={value !== undefined}
             value={value}
@@ -83,7 +82,6 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <DegreeSelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             value={value}
             behavior="single"
             isClearable

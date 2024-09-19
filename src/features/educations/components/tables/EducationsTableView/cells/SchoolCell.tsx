@@ -32,7 +32,6 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
       inputClassName="w-full"
       behavior="single"
       isClearable
-      menuClassName="max-h-[260px]"
       value={value}
       onChange={async v => {
         // Optimistically update the value.

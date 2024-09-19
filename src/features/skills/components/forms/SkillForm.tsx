@@ -65,7 +65,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
           <ClientExperienceSelect
             visibility="admin"
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             behavior="multi"
             isClearable
             value={value}
@@ -82,7 +81,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
           <ClientEducationSelect
             visibility="admin"
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             behavior="multi"
             isClearable
             value={value}
@@ -98,7 +96,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <ProjectSelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             behavior="multi"
             isClearable
             value={value}
@@ -112,7 +109,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <RepositorySelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             behavior="multi"
             isClearable
             value={value}
@@ -128,7 +124,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <CourseSelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             behavior="multi"
             isClearable
             value={value}
@@ -146,7 +141,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <ProgrammingDomainSelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             value={value}
             behavior="multi"
             isClearable
@@ -159,7 +153,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <ProgrammingLanguageSelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             value={value}
             behavior="multi"
             isClearable
@@ -172,7 +165,6 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <SkillCategorySelect
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             value={value}
             behavior="multi"
             isClearable

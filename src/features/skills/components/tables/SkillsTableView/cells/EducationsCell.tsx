@@ -29,7 +29,6 @@ export const EducationsCell = ({ skill }: EducationsCellProps): JSX.Element => {
     <ClientEducationSelect
       visibility="admin"
       inputClassName="w-full"
-      menuClassName="max-h-[260px]"
       behavior="multi"
       isClearable
       value={value}

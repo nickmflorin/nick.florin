@@ -94,7 +94,6 @@ export const SkillsTableFilterBar = ({
         <ExperienceSelect
           ref={refs.experiences}
           inputClassName="max-w-[320px]"
-          menuClassName="max-h-[260px]"
           placeholder="Experiences"
           data={experiences}
           behavior="multi"
@@ -109,7 +108,6 @@ export const SkillsTableFilterBar = ({
       <ShowHide show={!excludeFilters.includes("educations")}>
         <EducationSelect
           ref={refs.educations}
-          menuClassName="max-h-[260px]"
           placeholder="Educations"
           data={educations}
           behavior="multi"

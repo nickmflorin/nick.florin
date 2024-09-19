@@ -45,7 +45,6 @@ export const EducationFilter = ({ filters, educations }: EducationFilterProps) =
   return (
     <EducationSelect
       inputClassName="w-[320px]"
-      menuClassName="max-h-[260px]"
       placeholder="Educations"
       data={educations}
       behavior="multi"

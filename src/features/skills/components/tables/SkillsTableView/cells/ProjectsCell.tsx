@@ -32,7 +32,6 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
   return (
     <ProjectSelect
       inputClassName="w-full"
-      menuClassName="max-h-[260px]"
       value={value}
       behavior="multi"
       isClearable

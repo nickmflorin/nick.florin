@@ -34,7 +34,6 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
       behavior="multi"
       isClearable
       inputClassName="w-full"
-      menuClassName="max-h-[260px]"
       value={value}
       onChange={async v => {
         // Optimistically update the value.

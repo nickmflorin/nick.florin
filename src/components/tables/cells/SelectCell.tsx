@@ -72,7 +72,6 @@ export const SelectCell = <
   return (
     <Component
       inputClassName={inputClassName}
-      menuClassName="max-h-[260px]"
       value={value}
       isClearable
       behavior={behavior}

@@ -45,7 +45,6 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
           <CompanySelect
             isReady={value !== undefined}
             inputClassName="w-full"
-            menuClassName="max-h-[260px]"
             isClearable
             behavior="single"
             value={value}
