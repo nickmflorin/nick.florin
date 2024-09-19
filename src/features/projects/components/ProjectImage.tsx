@@ -16,6 +16,7 @@ export interface ProjectImageProps extends ComponentProps {
   readonly src: string;
   readonly caption: ReactNode;
   readonly alt: string;
+  readonly wrapperClassName?: ComponentProps["className"];
   readonly captionCentered?: boolean;
 }
 
@@ -24,23 +25,19 @@ export const ProjectImage = ({
   caption,
   alt,
   captionCentered = false,
+  wrapperClassName,
   ...props
 }: ProjectImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   return (
     <div {...props} className={classNames("project-image-container", props.className)}>
-      <div
-        {...props}
-        className={classNames(
-          "project-image md:mx-auto max-md:gap-[8px] max-w-full",
-          props.className,
-        )}
-      >
-        <div className="project-image-wrapper">
+      <div className={classNames("project-image md:mx-auto max-md:gap-[8px] max-w-full")}>
+        <div className={classNames("project-image-wrapper", wrapperClassName)}>
           <ShowHide show={isLoading}>
             <Skeleton className="w-full aspect-w-16 aspect-h-9" />
           </ShowHide>
           <motion.div
+            className="max-h-full h-full"
             initial={{ opacity: 0 }}
             animate={isLoading ? { opacity: 0 } : { opacity: 1 }}
             exit={{ opacity: 0 }}

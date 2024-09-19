@@ -61,7 +61,6 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
   return (
     <Project
       title={props.project.name}
-      underConstruction
       disclaimer={
         isLessThanOrEqualTo("sm") ? (
           <div className="flex flex-col gap-[4px]">
@@ -621,17 +620,20 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
         </Section>
         <Section title="Mobile" marginBottom={false} subSection>
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            It is important for producers to be able to access their budgets on the go. As such,
+            <Emphasize>Greenbudget</Emphasize> emphasized its tablet and mobile experiences,
+            allowing users to view, manage and update their budgets on the go.
           </Description>
           <ProjectImage
+            wrapperClassName="max-h-[500px] mx-auto"
             src="/projects/greenbudget/mobile-analysis.png"
             alt="GreenBudget Mobile"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
+            caption={
+              <CaptionDescription centered>
+                An example of a user viewing overall budget metrics on a mobile device in&nbsp;
+                <Emphasize.Caption>Greenbudget</Emphasize.Caption>.
+              </CaptionDescription>
+            }
           />
         </Section>
       </Section>
