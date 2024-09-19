@@ -521,70 +521,102 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
         </Section>
         <Section title="Intelligent Autocomplete" marginBottom={false} subSection>
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            <Emphasize>Greenbudget</Emphasize> incorporated an intelligent system of deterministic
+            algorithms for making education guesses about what the values of newly created rows
+            might be based on patterns that it detects in previously created rows.
           </Description>
           <ProjectImage
             src="/projects/greenbudget/autocomplete.gif"
             alt="GreenBudget Autocomplete"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
+            caption={
+              <CaptionDescription>
+                An example of <Emphasize.Caption>Greenbudget</Emphasize.Caption>&spos;s autocomplete
+                algorithms at work. When the user double-clicks&nbsp;
+                <Emphasize.Caption>Enter</Emphasize.Caption> while at the bottom of the table,&nbsp;
+                <Emphasize.Caption>Greenbudget</Emphasize.Caption> automatically creates a new row
+                and makes education guesses as to what certain values in the new row should be.
+              </CaptionDescription>
+            }
           />
         </Section>
         <Section title="Attachments" marginBottom={false} subSection>
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            <Emphasize>Greenbudget</Emphasize> allowed users to upload files and associate those
+            files with individual rows of both the budget and the actuals tables. This was a very
+            popular feature, as it allowed users to keep a record of receipts, invoices and
+            contracts directly in the budget itself.
           </Description>
           <ProjectImage
             src="/projects/greenbudget/attachments.gif"
             alt="GreenBudget Attachments"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
+            caption={
+              <DescriptionGroup>
+                <CaptionDescription>
+                  An example of user uploading an attachment for a row in the &nbsp;
+                  <Emphasize>Sub Account</Emphasize>(s) table view inside of a budget.
+                </CaptionDescription>
+                <CaptionDescription>
+                  Just like all other cells, attachment cells could be copy/pasted and copied over a
+                  range of cells with a simple drag and drop.
+                </CaptionDescription>
+              </DescriptionGroup>
+            }
           />
         </Section>
         <Section title="Exporting" marginBottom={false} subSection>
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            <Emphasize>Greenbudget</Emphasize> supported comprehensive export features, which
+            allowed a user to export a budget in the application in a variety of different forms.
+            The most valued export feature was the ability to export a budget, or portions of a
+            budget, as a customizable PDF document.
           </Description>
           <ProjectImage
             src="/projects/greenbudget/exporting.png"
-            alt="GreenBudget Attachments"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
+            alt="GreenBudget Exports"
+            caption={
+              <DescriptionGroup>
+                <CaptionDescription>
+                  An example of user exporting a PDF budget in&nbsp;
+                  <Emphasize.Caption>Greenbudget</Emphasize.Caption>. The PDF document allowed for
+                  flexible customization, including the ability to add cover images, custom headers,
+                  and selectively choose which portions of the budget to include in the export.
+                </CaptionDescription>
+                <CaptionDescription>
+                  The export feature included a &apos;Live Preview&apos; sub-feature, which allowed
+                  the user to see what the exported PDF would like like before it was actually
+                  exported.
+                </CaptionDescription>
+              </DescriptionGroup>
+            }
           />
           <ProjectImage
             src="/projects/greenbudget/exporting-top-sheet.png"
             alt="GreenBudget Exporting"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
+            caption={
+              <CaptionDescription>
+                An example of the &apos;Live Preview&apos; feature showing the user what the
+                budget&apos; <Emphasize.Caption>Top Sheet</Emphasize.Caption> would look like when
+                the budget is exported.
+              </CaptionDescription>
+            }
           />
         </Section>
         <Section title="Sharing" marginBottom={false} subSection>
           <Description>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            While <Emphasize>Greenbudget</Emphasize> supported access control policies and
+            multi-user collaboration on budgets, it also included the ability to create read-only
+            versions of a budget that could be shared with a shareable link.
           </Description>
           <ProjectImage
             src="/projects/greenbudget/share-view.png"
             alt="GreenBudget Share View"
-            caption={[
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
-                "incididunt ut labore et dolore magna aliqua.",
-            ]}
+            caption={
+              <CaptionDescription>
+                An example of a user creating a private, shareable link for the budget. When other
+                users (who have been given the link) visit it, they are presented with a read-only
+                version of the budget, with certain data hidden in a configurable fashion.
+              </CaptionDescription>
+            }
           />
         </Section>
         <Section title="Mobile" marginBottom={false} subSection>

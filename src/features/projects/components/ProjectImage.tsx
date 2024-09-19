@@ -48,7 +48,7 @@ export const ProjectImage = ({
             <Image
               height={420}
               width={760}
-              layout="responsive"
+              // layout="responsive"
               priority={true}
               src={src}
               alt={alt}
