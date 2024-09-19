@@ -8,6 +8,8 @@ import {
   type ChartFilterButtonProps,
 } from "~/components/buttons/ChartFilterButton";
 import { PopoverContent } from "~/components/floating/PopoverContent";
+import Tooltip from "~/components/floating/Tooltip";
+import { mergeFloatingEventHandlers } from "~/components/floating/util";
 import { useForm } from "~/components/forms/hooks/use-form";
 import {
   SkillsChartFilterForm,
@@ -62,14 +64,21 @@ export const SkillsFilterPopover = ({
         </PopoverContent>
       }
     >
-      {({ ref, params }) => (
-        <ChartFilterButton
-          {...params}
-          size={isLessThan("md") ? "xsmall" : "small"}
-          {...buttonProps}
-          ref={ref}
-          isDisabled={isDisabled}
-        />
+      {({ ref, params, isOpen }) => (
+        <Tooltip content="Filters" inPortal isDisabled={isOpen}>
+          {({ ref: _ref, params: _params }) => (
+            <ChartFilterButton
+              {...mergeFloatingEventHandlers(params, _params)}
+              size={isLessThan("md") ? "xsmall" : "small"}
+              {...buttonProps}
+              ref={instance => {
+                _ref?.(instance);
+                ref(instance);
+              }}
+              isDisabled={isDisabled}
+            />
+          )}
+        </Tooltip>
       )}
     </Popover>
   );

@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 import { ErrorView } from "~/components/errors/ErrorView";
+import { Tooltip } from "~/components/floating/Tooltip";
 import { Loading } from "~/components/loading/Loading";
 import { Module } from "~/components/structural/Module";
 import { useSkills } from "~/hooks";
@@ -44,8 +45,8 @@ export const SkillsChartModule = () => {
         className="!pr-[0px]"
         actions={[
           <SkillsFilterDropdownMenu
-            key="0"
             filters={filters}
+            key="0"
             onChange={f => setFilters(f)}
             isLoading={isLoading}
           />,

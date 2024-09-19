@@ -45,7 +45,7 @@ export const Popover = ({
   outerContent,
   ...config
 }: PopoverProps) => {
-  const { refs, referenceProps, isOpen, ...rest } = usePopover(config);
+  const { refs, referenceProps, isOpen, ...rest } = usePopover({ ...config, autoUpdate: true });
 
   const children = useMemo(() => {
     if (typeof _children === "function") {

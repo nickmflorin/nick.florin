@@ -5,6 +5,7 @@ import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
 import { DrawerIds } from "~/components/drawers";
 // TODO: Dynamically load me, set loading indicator in filter button when loading.
 import { PortalDrawerWrapper } from "~/components/drawers/PortalDrawerWrapper";
+import { Tooltip } from "~/components/floating/Tooltip";
 import { Loading } from "~/components/loading/Loading";
 import { type SkillsChartFilterFormValues } from "~/features/skills/components/forms/SkillsChartFilterForm";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
@@ -39,10 +40,16 @@ export const SkillsFilterDropdownMenu = ({
   if (isLessThan("md")) {
     return (
       <>
-        <ChartFilterButton
-          size={isLessThan("md") ? "xsmall" : "small"}
-          onClick={() => setDrawerIsOpen(true)}
-        />
+        <Tooltip content="Filters" inPortal>
+          {({ ref, params }) => (
+            <ChartFilterButton
+              {...params}
+              ref={ref}
+              size={isLessThan("md") ? "xsmall" : "small"}
+              onClick={() => setDrawerIsOpen(true)}
+            />
+          )}
+        </Tooltip>
         {drawerIsOpen && (
           <PortalDrawerWrapper
             drawerId={DrawerIds.SKILLS_FILTERS}
