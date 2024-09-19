@@ -28,9 +28,11 @@ export const ResumeModelPageTile = <M extends types.ApiModel<T>, T extends Resum
           </div>
         )}
         {model.$kind === "education" && model.courses.length !== 0 && (
-          <Description className="max-w-[800px]">
-            <HumanizedCourses courses={model.courses} />
-          </Description>
+          <ResumeModelTile.Section label="Coursework" className="gap-[6px]">
+            <Description className="max-w-[800px]">
+              <HumanizedCourses courses={model.courses} />
+            </Description>
+          </ResumeModelTile.Section>
         )}
         {model.skills.length !== 0 ? (
           model.$kind === "experience" ? (
@@ -38,7 +40,9 @@ export const ResumeModelPageTile = <M extends types.ApiModel<T>, T extends Resum
               <Skills skills={model.skills} className="max-w-[800px]" />
             </ResumeModelTile.Section>
           ) : (
-            <Skills skills={model.skills} className="max-w-[800px]" />
+            <ResumeModelTile.Section label="Skills">
+              <Skills skills={model.skills} className="max-w-[800px]" />
+            </ResumeModelTile.Section>
           )
         ) : (
           <></>

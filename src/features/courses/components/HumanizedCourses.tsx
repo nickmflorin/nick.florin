@@ -67,10 +67,5 @@ export const HumanizedCourses = memo(({ courses }: HumanizedCoursesProps) => {
   if (humanized.length === 0) {
     return <></>;
   }
-  return (
-    <>
-      Coursework included&nbsp;
-      <>{humanized}</>
-    </>
-  );
+  return <>{humanized}</>;
 }, isEqual);
