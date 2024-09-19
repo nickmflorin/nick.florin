@@ -11,7 +11,10 @@ import { Navigating } from "./Navigating";
 import { type ISidebarItem } from "./types";
 
 const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
-const LayoutDrawer = dynamic(() => import("~/components/drawers/LayoutDrawer"), { ssr: false });
+const ContextDrawerWrapper = dynamic(
+  () => import("~/components/drawers/ContextDrawerWrapper").then(mod => mod.ContextDrawerWrapper),
+  { ssr: false },
+);
 const SiteNavMenuOverlay = dynamic(
   () => import("~/features/site/components/SiteNavMenuOverlay").then(mod => mod.SiteNavMenuOverlay),
   { ssr: false },
@@ -45,7 +48,8 @@ export const Layout = async ({ children, nav }: LayoutProps): Promise<JSX.Elemen
         <ToastContainer />
         <UserProfile />
       </main>
-      <LayoutDrawer />
+      <ContextDrawerWrapper />
+      <div id="drawer-target" />
     </div>
   </div>
 );

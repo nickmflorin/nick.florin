@@ -1,6 +1,6 @@
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
-import { Drawer } from "~/components/drawers/Drawer";
+import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { useExperience } from "~/hooks";
 
 import { ExperienceDrawerContent } from "./ExperienceDrawerContent";
@@ -18,11 +18,11 @@ export const ExperienceDrawer = ({ experienceId }: SkillDrawerProps): JSX.Elemen
     keepPreviousData: true,
   });
   return (
-    <Drawer>
+    <ContextDrawer>
       <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {experience => <ExperienceDrawerContent experience={experience} />}
       </ApiResponseState>
-    </Drawer>
+    </ContextDrawer>
   );
 };
 

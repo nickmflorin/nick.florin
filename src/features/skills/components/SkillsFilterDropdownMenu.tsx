@@ -1,8 +1,11 @@
 import dynamic from "next/dynamic";
+import { useState } from "react";
 
 import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
 import { DrawerIds } from "~/components/drawers";
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
+// TODO: Dynamically load me, set loading indicator in filter button when loading.
+import { PortalDrawerWrapper } from "~/components/drawers/PortalDrawerWrapper";
+import { Loading } from "~/components/loading/Loading";
 import { type SkillsChartFilterFormValues } from "~/features/skills/components/forms/SkillsChartFilterForm";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
@@ -11,26 +14,49 @@ const SkillsFilterPopover = dynamic(
   { ssr: false },
 );
 
+const SkillsFilterDrawer = dynamic(
+  () => import("./drawers/SkillsFilterDrawer").then(mod => mod.SkillsFilterDrawer),
+  { ssr: false, loading: () => <Loading isLoading /> },
+);
+
 export interface SkillsFilterDropdownMenuProps {
+  readonly isLoading: boolean;
   readonly filters: SkillsChartFilterFormValues;
   readonly onChange: (values: SkillsChartFilterFormValues) => void;
 }
 
 export const SkillsFilterDropdownMenu = ({
   filters,
+  isLoading,
   onChange,
 }: SkillsFilterDropdownMenuProps): JSX.Element => {
-  const { open } = useDrawers();
+  const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+
   const { isLessThan } = useScreenSizes();
 
   /* We do not want to show the chart filters on mobile devices until we figure out how to more
      cleanly integrate them into the mobile experience with a drawer instead of a popover. */
   if (isLessThan("md")) {
     return (
-      <ChartFilterButton
-        size={isLessThan("md") ? "xsmall" : "small"}
-        onClick={() => open(DrawerIds.SKILLS_FILTERS, { filters, onChange })}
-      />
+      <>
+        <ChartFilterButton
+          size={isLessThan("md") ? "xsmall" : "small"}
+          onClick={() => setDrawerIsOpen(true)}
+        />
+        {drawerIsOpen && (
+          <PortalDrawerWrapper
+            drawerId={DrawerIds.SKILLS_FILTERS}
+            onClose={() => setDrawerIsOpen(false)}
+          >
+            <SkillsFilterDrawer
+              filters={filters}
+              onChange={onChange}
+              isLoading={isLoading}
+              onClose={() => setDrawerIsOpen(false)}
+            />
+          </PortalDrawerWrapper>
+        )}
+      </>
     );
   }
   return <SkillsFilterPopover filters={filters} onChange={onChange} />;

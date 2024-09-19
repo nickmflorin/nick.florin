@@ -52,6 +52,7 @@ export const SkillsFilterPopover = ({
       offset={{ mainAxis: 4 }}
       width={400}
       withArrow={false}
+      autoUpdate
       inPortal
       isDisabled={isDisabled}
       middleware={[flip({})]}

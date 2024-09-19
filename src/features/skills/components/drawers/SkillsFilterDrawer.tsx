@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { Drawer } from "~/components/drawers/Drawer";
 import { useForm } from "~/components/forms/hooks";
+import { Loading } from "~/components/loading/Loading";
 import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
@@ -10,11 +11,17 @@ import {
 } from "~/features/skills/components/forms/SkillsChartFilterForm";
 
 export interface SkillsFilterDrawerProps extends ExtendingDrawerProps {
+  readonly isLoading?: boolean;
   readonly filters: SkillsChartFilterFormValues;
   readonly onChange: (filters: SkillsChartFilterFormValues) => void;
 }
 
-export const SkillsFilterDrawer = ({ filters, onChange }: SkillsFilterDrawerProps): JSX.Element => {
+export const SkillsFilterDrawer = ({
+  filters,
+  isLoading,
+  onClose,
+  onChange,
+}: SkillsFilterDrawerProps): JSX.Element => {
   const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({
     schema: SkillsChartFilterFormSchema,
     defaultValues: { showTopSkills: "all" },
@@ -26,10 +33,12 @@ export const SkillsFilterDrawer = ({ filters, onChange }: SkillsFilterDrawerProp
   }, [filters, setValues]);
 
   return (
-    <Drawer>
+    <Drawer onClose={onClose}>
       <Drawer.Header>Filters</Drawer.Header>
       <Drawer.Content className="overflow-y-auto">
-        <SkillsChartFilterForm form={{ ...form, setValues }} />
+        <Loading isLoading={isLoading} className="z-auto">
+          <SkillsChartFilterForm form={{ ...form, setValues }} />
+        </Loading>
       </Drawer.Content>
     </Drawer>
   );

@@ -1,6 +1,6 @@
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
-import { Drawer } from "~/components/drawers/Drawer";
+import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { useEducation } from "~/hooks";
 
 import { EducationDrawerContent } from "./EducationDrawerContent";
@@ -18,11 +18,11 @@ export const EducationDrawer = ({ educationId }: SkillDrawerProps): JSX.Element 
     keepPreviousData: true,
   });
   return (
-    <Drawer>
+    <ContextDrawer>
       <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {education => <EducationDrawerContent education={education} />}
       </ApiResponseState>
-    </Drawer>
+    </ContextDrawer>
   );
 };
 

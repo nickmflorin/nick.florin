@@ -1,6 +1,6 @@
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
-import { Drawer } from "~/components/drawers/Drawer";
+import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { useCourse } from "~/hooks";
 
 import { CourseDrawerContent } from "./CourseDrawerContent";
@@ -16,11 +16,11 @@ export const CourseDrawer = ({ courseId }: CourseDrawerProps): JSX.Element => {
   });
 
   return (
-    <Drawer>
+    <ContextDrawer>
       <ApiResponseState error={error} isLoading={isLoading} data={data}>
         {course => <CourseDrawerContent course={course} />}
       </ApiResponseState>
-    </Drawer>
+    </ContextDrawer>
   );
 };
 

@@ -9,18 +9,20 @@
 
 .drawer-wrapper {
   @include drawer-container();
+  // This width may be overridden by props provided to the DrawerWrapper component.
   @include partials.fully-constrained-dimension(width, constants.$drawer-width);
   position: relative;
   background-color: theme("colors.white");
   border-left: 1px solid theme("colors.border");
+  z-index: 100;
 
   @media (max-width: theme("screens.lg")) and (min-width: theme("screens.sm")) {
-    @include partials.fully-constrained-dimension(width, constants.$drawer-width);
     position: absolute;
     right: 0;
   }
 
   @media (max-width: theme("screens.sm")) and (min-width: theme("screens.xs")) {
+    // This width will not be overridden by props provided to the DrawerWrapper component.
     @include partials.fully-constrained-dimension(width, calc(100% - constants.$sidebar-width));
     position: absolute;
     left: constants.$sidebar-width;
@@ -32,6 +34,7 @@
   }
 
   @media (max-width: theme("screens.xs")) {
+    // This width will not be overridden by props provided to the DrawerWrapper component.
     @include partials.fully-constrained-dimension(width, 100%);
     left: 0;
     position: absolute;

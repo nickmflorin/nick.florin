@@ -43,7 +43,10 @@ export interface DrawersManager {
   readonly drawerId: DrawerId | null;
   readonly drawer: JSX.Element | null;
   readonly close: () => void;
-  readonly open: <D extends DrawerId>(id: D, props: DrawerDynamicProps<D>) => void;
+  readonly open: <D extends DrawerId>(
+    id: D,
+    props: DrawerDynamicProps<D>
+  ) => void;
 }
 
 export interface ExtendingDrawerProps {

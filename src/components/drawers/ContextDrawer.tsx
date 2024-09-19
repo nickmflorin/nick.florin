@@ -3,25 +3,24 @@ import { type ReactNode } from "react";
 import { ErrorBoundary } from "~/components/errors/ErrorBoundary";
 import { type ComponentProps, classNames } from "~/components/types";
 
-import { DrawerButtons } from "./DrawerButtons";
+import { ContextDrawerButtons } from "./ContextDrawerButtons";
 import { DrawerContent } from "./DrawerContent";
 import { DrawerFooter } from "./DrawerFooter";
 import { DrawerHeader } from "./DrawerHeader";
 
 export interface DrawerProps extends ComponentProps {
   readonly children: ReactNode;
-  readonly onClose: () => void;
 }
 
-const LocalDrawer = ({ children, onClose, ...props }: DrawerProps): JSX.Element => (
+const LocalContextDrawer = ({ children, ...props }: DrawerProps): JSX.Element => (
   <div {...props} className={classNames("drawer", props.className)}>
     <ErrorBoundary>{children}</ErrorBoundary>
-    <DrawerButtons onClose={onClose} />
+    <ContextDrawerButtons />
   </div>
 );
 
-export const Drawer = Object.assign(LocalDrawer, {
-  displayName: "Drawer",
+export const ContextDrawer = Object.assign(LocalContextDrawer, {
+  displayName: "ContextDrawer",
   Content: DrawerContent,
   Header: DrawerHeader,
   Footer: DrawerFooter,

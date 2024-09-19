@@ -1,15 +1,11 @@
-import dynamic from "next/dynamic";
 import React, { useState, useCallback } from "react";
 
 import type * as types from "../types";
 
-import { Loading } from "~/components/loading/Loading";
+import { DrawerContainer } from "~/components/drawers/DrawerContainer";
 
+import { getDrawerComponent } from "../drawers";
 import { type DrawerDynamicProps } from "../drawers";
-
-const DrawerRenderer = dynamic(() => import("../DrawerRenderer"), {
-  loading: () => <Loading isLoading={true} />,
-});
 
 export const useDrawersManager = (): Omit<types.DrawersManager, "isInScope"> => {
   const [drawer, setDrawer] = useState<JSX.Element | null>(null);
@@ -17,12 +13,20 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isInScope"> => 
 
   const close = useCallback(() => {
     setDrawer(null);
+    setDrawerId(null);
   }, []);
 
   const open = useCallback(
     <D extends types.DrawerId>(id: D, props: DrawerDynamicProps<D>) => {
-      const newDrawer = <DrawerRenderer id={id} props={props} onClose={() => close()} />;
-      setDrawer(newDrawer);
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const Drawer = getDrawerComponent(id) as React.ComponentType<any>;
+      const ps = { ...props, onClose: () => close() } as React.ComponentProps<typeof Drawer>;
+
+      setDrawer(
+        <DrawerContainer>
+          <Drawer {...ps} />
+        </DrawerContainer>,
+      );
       setDrawerId(id);
     },
     [close],

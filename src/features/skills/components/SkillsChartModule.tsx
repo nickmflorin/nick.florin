@@ -43,7 +43,12 @@ export const SkillsChartModule = () => {
       <Module.Header
         className="!pr-[0px]"
         actions={[
-          <SkillsFilterDropdownMenu key="0" filters={filters} onChange={f => setFilters(f)} />,
+          <SkillsFilterDropdownMenu
+            key="0"
+            filters={filters}
+            onChange={f => setFilters(f)}
+            isLoading={isLoading}
+          />,
         ]}
       >
         Skills Overview

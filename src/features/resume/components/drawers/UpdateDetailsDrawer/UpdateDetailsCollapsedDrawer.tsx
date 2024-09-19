@@ -1,7 +1,7 @@
 import { type DetailEntityType, type NestedApiDetail, type ApiDetail } from "~/database/model";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
-import { Drawer } from "~/components/drawers/Drawer";
+import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { ModifyDetailsView } from "~/features/resume/components/forms/ModifyDetailsView";
 import { useDetails } from "~/hooks";
 
@@ -24,10 +24,10 @@ export const UpdateDetailsCollapsedDrawer = <T extends DetailEntityType>(
         const title = obj.entity.$kind === "education" ? obj.entity.major : obj.entity.title;
         return (
           <>
-            <Drawer.Header>{title}</Drawer.Header>
-            <Drawer.Content className="pr-[18px]">
+            <ContextDrawer.Header>{title}</ContextDrawer.Header>
+            <ContextDrawer.Content className="pr-[18px]">
               <ModifyDetailsView {...props} details={obj.details} />
-            </Drawer.Content>
+            </ContextDrawer.Content>
           </>
         );
       }}

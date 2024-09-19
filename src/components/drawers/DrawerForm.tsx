@@ -6,7 +6,7 @@ import type { BaseFormValues, FormInstance, FieldName } from "~/components/forms
 import { classNames } from "~/components/types";
 import { Title } from "~/components/typography";
 
-import { Drawer } from "./Drawer";
+import { ContextDrawer } from "./ContextDrawer";
 
 interface DrawerFormProps<I extends BaseFormValues> {
   readonly form: FormInstance<I>;
@@ -27,8 +27,8 @@ export const DrawerForm = <I extends BaseFormValues>({
   const titleValue = typeof _titleValue === "string" ? _titleValue : "";
 
   return (
-    <Drawer>
-      <Drawer.Header>
+    <ContextDrawer>
+      <ContextDrawer.Header>
         {titleValue.trim().length === 0 && (eagerTitle || titlePlaceholder) ? (
           <Title
             component="h4"
@@ -39,9 +39,9 @@ export const DrawerForm = <I extends BaseFormValues>({
         ) : (
           <Title component="h4">{titleValue}</Title>
         )}
-      </Drawer.Header>
-      <Drawer.Content className="overflow-y-hidden">{children}</Drawer.Content>
-    </Drawer>
+      </ContextDrawer.Header>
+      <ContextDrawer.Content className="overflow-y-hidden">{children}</ContextDrawer.Content>
+    </ContextDrawer>
   );
 };
 

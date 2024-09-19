@@ -1,6 +1,6 @@
 import { type ApiEducation } from "~/database/model";
 
-import { Drawer } from "~/components/drawers/Drawer";
+import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { ResumeModelDrawerTile } from "~/features/resume/components/tiles/ResumeModelDrawerTile";
 
 export interface EducationDrawerContentProps {
@@ -8,14 +8,14 @@ export interface EducationDrawerContentProps {
 }
 
 export const EducationDrawerContent = ({ education }: EducationDrawerContentProps) => (
-  <Drawer.Content>
+  <ContextDrawer.Content>
     <ResumeModelDrawerTile
       model={education}
       titleProps={{
         className: "pr-[30px]",
       }}
     />
-  </Drawer.Content>
+  </ContextDrawer.Content>
 );
 
 export default EducationDrawerContent;

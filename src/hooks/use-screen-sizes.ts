@@ -37,6 +37,15 @@ const getBreakpoint = (w: Window): Breakpoint | "smallest" => {
   return breakpoint;
 };
 
+type Comparison = "lessThan" | "lessThanOrEqualTo" | "greaterThanOrEqualTo" | "greaterThan";
+
+const Comparators: { [key in Comparison]: (actual: number, compare: number) => boolean } = {
+  lessThan: (actual, compare) => actual < compare,
+  lessThanOrEqualTo: (actual, compare) => actual <= compare,
+  greaterThanOrEqualTo: (actual, compare) => actual >= compare,
+  greaterThan: (actual, compare) => actual > compare,
+};
+
 export const useScreenSizes = () => {
   const [size, setSize] = useState<number>(window.innerWidth);
   const { close } = useNavMenu();
@@ -68,41 +77,47 @@ export const useScreenSizes = () => {
     };
   }, []);
 
+  const compare = useCallback(
+    (sz: ScreenSize, comparison: Comparison) => {
+      if (breakpoint !== null) {
+        if (Breakpoints.contains(sz)) {
+          if (Breakpoints.contains(breakpoint)) {
+            return Comparators[comparison](
+              Breakpoints.members.indexOf(breakpoint),
+              Breakpoints.members.indexOf(sz),
+            );
+          }
+          /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
+             breakpoint. */
+          return true;
+        }
+        return Comparators[comparison](size, sizeToNumber(sz));
+      }
+      return false;
+    },
+    [breakpoint, size],
+  );
+
   const isLessThanOrEqualTo = useCallback(
-    (sz: ScreenSize) => {
-      if (breakpoint !== null) {
-        if (Breakpoints.contains(sz)) {
-          if (Breakpoints.contains(breakpoint)) {
-            return Breakpoints.members.indexOf(sz) >= Breakpoints.members.indexOf(breakpoint);
-          }
-          /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
-             breakpoint. */
-          return true;
-        }
-        return sizeToNumber(sz) >= size;
-      }
-      return false;
-    },
-    [breakpoint, size],
+    (sz: ScreenSize) => compare(sz, "lessThanOrEqualTo"),
+    [compare],
   );
 
-  const isLessThan = useCallback(
-    (sz: ScreenSize) => {
-      if (breakpoint !== null) {
-        if (Breakpoints.contains(sz)) {
-          if (Breakpoints.contains(breakpoint)) {
-            return Breakpoints.members.indexOf(sz) > Breakpoints.members.indexOf(breakpoint);
-          }
-          /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
-             breakpoint. */
-          return true;
-        }
-        return sizeToNumber(sz) > size;
-      }
-      return false;
-    },
-    [breakpoint, size],
+  const isGreaterThanOrEqualTo = useCallback(
+    (sz: ScreenSize) => compare(sz, "greaterThanOrEqualTo"),
+    [compare],
   );
 
-  return { breakpoint, size, isLessThanOrEqualTo, isLessThan };
+  const isLessThan = useCallback((sz: ScreenSize) => compare(sz, "lessThan"), [compare]);
+
+  const isGreaterThan = useCallback((sz: ScreenSize) => compare(sz, "greaterThan"), [compare]);
+
+  return {
+    breakpoint,
+    size,
+    isLessThanOrEqualTo,
+    isLessThan,
+    isGreaterThan,
+    isGreaterThanOrEqualTo,
+  };
 };

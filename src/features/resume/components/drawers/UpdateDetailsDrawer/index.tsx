@@ -10,7 +10,7 @@ import {
 
 import { IconButton } from "~/components/buttons";
 import { type ExtendingDrawerProps } from "~/components/drawers";
-import { Drawer } from "~/components/drawers/Drawer";
+import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { Loading } from "~/components/loading/Loading";
 import { Title } from "~/components/typography";
 
@@ -35,10 +35,10 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
     null,
   );
   return (
-    <Drawer>
+    <ContextDrawer>
       {expandedDetail ? (
         <>
-          <Drawer.Header>
+          <ContextDrawer.Header>
             <div className="flex flex-row items-center gap-[8px]">
               <IconButton.Transparent
                 scheme="light"
@@ -47,13 +47,13 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
               />
               <Title component="h4">{expandedDetail.label}</Title>
             </div>
-          </Drawer.Header>
-          <Drawer.Content>
+          </ContextDrawer.Header>
+          <ContextDrawer.Content>
             <UpdateDetailsExpandedDrawer
               detailId={expandedDetail.id}
               isNested={isNestedDetail(expandedDetail)}
             />
-          </Drawer.Content>
+          </ContextDrawer.Content>
         </>
       ) : (
         <UpdateDetailsCollapsedDrawer
@@ -62,7 +62,7 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
           onExpand={detail => setExpandedDetail(detail)}
         />
       )}
-    </Drawer>
+    </ContextDrawer>
   );
 };
 
