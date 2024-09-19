@@ -1,5 +1,8 @@
 "use client";
 import dynamic from "next/dynamic";
+import React from "react";
+
+import { type BarTooltipProps } from "@nivo/bar";
 
 import { type ApiSkill } from "~/database/model";
 import { generateChartColors } from "~/lib/charts";
@@ -21,8 +24,15 @@ interface SkillsBarChartProps {
   readonly skills: ApiSkill[];
 }
 
+/* This is a best estimated guess for the average tooltip size.  It may need some fine
+   tuning later on, but seems to work for now. */
+const TooltipWidth = 260;
+
+const TooltipPaddingAdjustment = 10;
+
 export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => {
   const { open, ids } = useDrawers();
+
   return (
     <BarChart<SkillsBarChartDatum>
       data={skills.map(skill => ({
@@ -50,15 +60,42 @@ export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => 
         truncateTickAt: 0,
       }}
       onClick={datum => open(ids.VIEW_SKILL, { skillId: datum.data.id })}
-      tooltip={props => (
-        <TooltipContent
-          className={classNames(
-            "flex flex-col relative min-h-[40px] gap-[10px] px-[8px] py-[10px]",
-          )}
-        >
-          <SkillsBarChartTooltip {...props} />
-        </TooltipContent>
-      )}
+      tooltip={props => {
+        /* We want to apply left and right adjustments to the tooltip depending on the coordinates
+           of the bar to prevent the tooltip from going off screen (or getting cutoff by the
+           overflow). */
+        const barX = (props as BarTooltipProps<SkillsBarChartDatum> & { absX: number | undefined })
+          .absX;
+        const barW = (props as BarTooltipProps<SkillsBarChartDatum> & { width: number | undefined })
+          .width;
+
+        const element = document.getElementById("skills-bar-chart-element");
+
+        let style: React.CSSProperties = {};
+        if (barX !== undefined && element && barW !== undefined) {
+          const barMidpoint = barX + barW / 2;
+
+          if (barMidpoint + TooltipWidth / 2 > element.clientWidth - TooltipPaddingAdjustment) {
+            style = {
+              ...style,
+              right: element.clientWidth - barMidpoint + TooltipPaddingAdjustment,
+            };
+          } else if (barMidpoint - TooltipWidth / 2 < TooltipPaddingAdjustment) {
+            style = { ...style, left: barMidpoint + TooltipPaddingAdjustment };
+          }
+        }
+
+        return (
+          <TooltipContent
+            className={classNames(
+              "flex flex-col relative min-h-[40px] gap-[10px] px-[8px] py-[10px]",
+            )}
+            style={style}
+          >
+            <SkillsBarChartTooltip {...props} />
+          </TooltipContent>
+        );
+      }}
     />
   );
 };

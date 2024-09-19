@@ -26,6 +26,7 @@ export const SkillsBarChartView = ({ skills, ...props }: SkillsBarChartViewProps
     )}
   >
     <div
+      id="skills-bar-chart-element"
       className={classNames("relative", "max-md:h-[340px]", "md:max-lg:h-[500px]", "lg:h-[600px]")}
     >
       <Chart skills={skills} />

@@ -1,4 +1,6 @@
-export const THEME = {
+import { type Theme } from "@nivo/core";
+
+export const THEME: Theme = {
   background: "transparent",
   text: {
     fontSize: 11,
@@ -98,6 +100,7 @@ export const THEME = {
     container: {
       background: "#ffffff",
       fontSize: 12,
+      zIndex: 1000,
     },
     basic: {},
     chip: {},
