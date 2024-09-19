@@ -1,4 +1,4 @@
-import { ResumeShowMoreLink } from "~/components/buttons/resume";
+import { ShowMoreLink } from "~/components/buttons/ShowMoreLink";
 import { type TypographyVisibilityState } from "~/components/types";
 
 export const WithShowMore = ({
@@ -17,7 +17,7 @@ export const WithShowMore = ({
   includeShowMoreLink && isTruncated ? (
     <div className="flex flex-col gap-[2px]">
       {children}
-      <ResumeShowMoreLink state={state} onClick={onToggle} />
+      <ShowMoreLink state={state} onClick={onToggle} />
     </div>
   ) : (
     children

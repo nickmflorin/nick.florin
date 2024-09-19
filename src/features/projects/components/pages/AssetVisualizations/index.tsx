@@ -1,8 +1,10 @@
 import { InlineLink } from "~/components/buttons";
 import { Description } from "~/components/typography";
-
-import { Project as ProjectComponent, type ProjectProps } from "../Project";
-import { ProjectImage } from "../ProjectImage";
+import {
+  Project as ProjectComponent,
+  type ProjectProps,
+} from "~/features/projects/components/Project";
+import { ProjectImage } from "~/features/projects/components/ProjectImage";
 
 import { BarChart } from "./BarChart";
 import { BubbleChart } from "./BubbleChart";

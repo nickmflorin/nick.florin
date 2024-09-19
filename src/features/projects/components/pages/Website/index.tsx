@@ -1,12 +1,11 @@
 import { InlineLink } from "~/components/buttons";
 import { Description } from "~/components/typography";
-
-import { CaptionDescription } from "../CaptionDescription";
-import { DescriptionGroup } from "../DescriptionGroup";
-import { Emphasize } from "../Emphasize";
-import { Project, type ProjectProps } from "../Project";
-import { ProjectImage } from "../ProjectImage";
-import { Section, SectionTitle } from "../Section";
+import { CaptionDescription } from "~/features/projects/components/CaptionDescription";
+import { DescriptionGroup } from "~/features/projects/components/DescriptionGroup";
+import { Emphasize } from "~/features/projects/components/Emphasize";
+import { Project, type ProjectProps } from "~/features/projects/components/Project";
+import { ProjectImage } from "~/features/projects/components/ProjectImage";
+import { Section, SectionTitle } from "~/features/projects/components/Section";
 
 export interface WebsiteProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
 

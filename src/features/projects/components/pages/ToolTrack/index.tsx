@@ -1,10 +1,9 @@
 import { InlineLink } from "~/components/buttons";
 import { Description } from "~/components/typography";
-
-import { DescriptionGroup } from "../DescriptionGroup";
-import { Project, type ProjectProps } from "../Project";
-import { ProjectImage } from "../ProjectImage";
-import { Section } from "../Section";
+import { DescriptionGroup } from "~/features/projects/components/DescriptionGroup";
+import { Project, type ProjectProps } from "~/features/projects/components/Project";
+import { ProjectImage } from "~/features/projects/components/ProjectImage";
+import { Section } from "~/features/projects/components/Section";
 
 export interface ToolTrackProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
 

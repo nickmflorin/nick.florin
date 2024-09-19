@@ -1,9 +1,8 @@
 import { Description } from "~/components/typography";
-
-import { ProjectImage } from "../ProjectImage";
-import { Section } from "../Section";
-import { Series } from "../Series";
-import { SeriesItem } from "../SeriesItem";
+import { ProjectImage } from "~/features/projects/components/ProjectImage";
+import { Section } from "~/features/projects/components/Section";
+import { Series } from "~/features/projects/components/Series";
+import { SeriesItem } from "~/features/projects/components/SeriesItem";
 
 export const BarChart = () => (
   <Section

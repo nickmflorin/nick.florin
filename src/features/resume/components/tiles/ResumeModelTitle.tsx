@@ -1,6 +1,6 @@
 import { type BrandModel, type ResumeBrand, Degrees } from "~/database/model";
 
-import { ExpandResumeModelButton } from "~/components/buttons/resume";
+import { ExpandResumeModelButton } from "~/components/buttons/ExpandResumeModelButton";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Text, Title } from "~/components/typography";
