@@ -34,7 +34,6 @@
 
 .input {
   @include base.input-base;
-  @include variants.input-variants();
   @include mixins.input-locked-or-loading();
 
   display: flex;
@@ -74,6 +73,7 @@
   }
 
   &.text-input {
+    @include variants.input-variants("text-input");
     @include input-sizes("text-input");
 
     > .input__content {
@@ -95,6 +95,7 @@
   }
 
   &.select {
+    @include variants.input-variants("select");
     @include input-sizes("select");
     cursor: pointer;
 
@@ -117,6 +118,7 @@
   }
 
   &.text-area {
+    @include variants.input-variants("text-area");
     overflow-y: auto;
     @include input-sizes("text-area");
   }

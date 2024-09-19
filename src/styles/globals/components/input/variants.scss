@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "sass:map";
+@use "sass:meta";
 
 @use "partials";
 
@@ -13,7 +14,11 @@ $input-variant-properties: (
   "primary": (
     background-color: theme("colors.white"),
     outline-color: theme("colors.border"),
-    color: theme("colors.body"),
+    color: (
+      "text-area": theme("colors.description"),
+      "text-input": theme("colors.body"),
+      "select": theme("colors.body"),
+    ),
     caret-color: theme("colors.body"),
     placeholder-color: theme("colors.placeholder"),
     outline-thickness: 1px,
@@ -40,7 +45,11 @@ $input-variant-properties: (
   "bare": (
     background-color: theme("colors.gray.100"),
     outline-color: theme("colors.transparent"),
-    color: theme("colors.body"),
+    color: (
+      "text-area": theme("colors.description"),
+      "text-input": theme("colors.body"),
+      "select": theme("colors.body"),
+    ),
     caret-color: theme("colors.body"),
     placeholder-color: theme("colors.placeholder"),
     outline-thickness: 1px,
@@ -59,7 +68,7 @@ $input-variant-properties: (
   ),
 );
 
-@function get-input-property($variant, $property, $state: null, $fallback: null) {
+@function get-input-property($variant, $type, $property, $state: null, $fallback: null) {
   $properties: map.get($input-variant-properties, $variant);
 
   @if $property ==
@@ -76,6 +85,13 @@ $input-variant-properties: (
 
   $value: map.get($properties, $property);
   @if not $state {
+    @if meta.type-of($value) == map {
+      @if map.has-key($value, $type) {
+        $value: map.get($value, $type);
+      } @else {
+        @error "The type #{$type} does not exist in the map for property #{$property}!";
+      }
+    }
     @return if($value, $value, $fallback);
   }
   $value: if(
@@ -83,46 +99,61 @@ $input-variant-properties: (
     map.get($properties, $state, $property),
     $value
   );
+  @if meta.type-of($value) == map {
+    @if map.has-key($value, $type) {
+      $value: map.get($value, $type);
+    } @else {
+      @error "The type #{$type} does not exist in the map for property #{$property}!";
+    }
+  }
   @return if($value, $value, $fallback);
 }
 
-@mixin input-variant-state($variant, $state: null) {
-  $color: get-input-property($variant, color, $state: $state);
+@mixin input-variant-state($variant, $type, $state: null) {
+  $color: get-input-property($variant, $type, color, $state: $state);
   @if not $color {
     @error "The 'color' field must be defined in the variant map.";
   }
 
   background-color: get-input-property(
     $variant,
+    $type,
     background-color,
     $state: $state,
     $fallback: theme("colors.white")
   );
   color: $color;
-  caret-color: get-input-property($variant, caret-color, $state: $state, $fallback: $color);
+  caret-color: get-input-property($variant, $type, caret-color, $state: $state, $fallback: $color);
 
   $outline-thickness: get-input-property(
     $variant,
+    $type,
     outline-thickness,
     $state: $state,
     $fallback: 1px
   );
   outline-offset: -$outline-thickness;
 
-  $outline-color: get-input-property($variant, outline-color, $state: $state);
+  $outline-color: get-input-property($variant, $type, outline-color, $state: $state);
   @if $outline-color {
     outline: $outline-thickness solid $outline-color;
   }
 
   &::placeholder {
-    color: get-input-property($variant, placeholder-color, $state: $state, $fallback: $color);
+    color: get-input-property(
+      $variant,
+      $type,
+      placeholder-color,
+      $state: $state,
+      $fallback: $color
+    );
   }
 
   .placeholder {
-    color: get-input-property($variant, placeholder-color, $state: $state);
+    color: get-input-property($variant, $type, placeholder-color, $state: $state);
   }
 
-  $icon-color: get-input-property($variant, icon-color, $state: $state, $fallback: $color);
+  $icon-color: get-input-property($variant, $type, icon-color, $state: $state, $fallback: $color);
   @if $icon-color {
     > .icon {
       color: $icon-color;
@@ -130,36 +161,36 @@ $input-variant-properties: (
   }
 }
 
-@mixin input-variant($variant) {
-  @include input-variant-state($variant);
+@mixin input-variant($variant, $type) {
+  @include input-variant-state($variant, $type);
 
   @include partials.disabled {
-    @include input-variant-state($variant, $state: "disabled");
+    @include input-variant-state($variant, $type, $state: "disabled");
   }
 
   @include mixins.input-hovered {
-    @include input-variant-state($variant, $state: "hovered");
+    @include input-variant-state($variant, $type, $state: "hovered");
   }
 
   @include mixins.input-focused {
-    @include input-variant-state($variant, $state: "focused");
+    @include input-variant-state($variant, $type, $state: "focused");
   }
 
   @include mixins.input-focused-within {
-    @include input-variant-state($variant, $state: "focused");
+    @include input-variant-state($variant, $type, $state: "focused");
   }
 
   @include mixins.input-active {
-    @include input-variant-state($variant, $state: "active");
+    @include input-variant-state($variant, $type, $state: "active");
   }
 }
 
-@mixin input-variants() {
-  @include input-variant($input-default-variant);
+@mixin input-variants($type) {
+  @include input-variant($input-default-variant, $type);
 
   @each $variant in $input-variants {
     &--variant-#{$variant} {
-      @include input-variant($variant);
+      @include input-variant($variant, $type);
     }
   }
 }
