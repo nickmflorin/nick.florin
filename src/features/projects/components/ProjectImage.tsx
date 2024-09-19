@@ -18,6 +18,7 @@ export interface ProjectImageProps extends ComponentProps {
   readonly alt: string;
   readonly wrapperClassName?: ComponentProps["className"];
   readonly captionCentered?: boolean;
+  readonly unoptimized?: boolean;
 }
 
 export const ProjectImage = ({
@@ -26,6 +27,7 @@ export const ProjectImage = ({
   alt,
   captionCentered = false,
   wrapperClassName,
+  unoptimized,
   ...props
 }: ProjectImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -46,6 +48,7 @@ export const ProjectImage = ({
               height={420}
               width={760}
               // layout="responsive"
+              unoptimized={unoptimized}
               priority={true}
               src={src}
               alt={alt}

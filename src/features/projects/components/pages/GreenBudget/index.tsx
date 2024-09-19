@@ -250,6 +250,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/expanding.gif"
             alt="GreenBudget Top Sheet"
+            unoptimized
             caption={
               <CaptionDescription>
                 An example of a user expanding 3 layers deep in a budget, to the second layer
@@ -301,6 +302,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/actualization.gif"
             alt="GreenBudget Actualization"
+            unoptimized
             caption={
               <CaptionDescription>
                 An example of a user creating a new <Emphasize.Caption>Actual</Emphasize.Caption>,
@@ -325,6 +327,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/fringes.gif"
             alt="GreenBudget Fringes"
+            unoptimized
             caption={[
               <CaptionDescription key="0">
                 An example of a user creating a new <Emphasize.Caption>Fringe</Emphasize.Caption>,
@@ -379,6 +382,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/grouping.gif"
             alt="GreenBudget Grouping"
+            unoptimized
             caption={[
               <CaptionDescription key="0">
                 An example of a user creating a new <Emphasize.Caption>Group</Emphasize.Caption>
@@ -412,6 +416,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/grouping-from-checkboxes.gif"
             alt="GreenBudget Checkbox Grouping"
+            unoptimized
             caption={
               <CaptionDescription centered>
                 An example of a user creating a new <Emphasize.Caption>Group</Emphasize.Caption>
@@ -427,6 +432,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/removing-from-group.gif"
             alt="GreenBudget Removing From Group"
+            unoptimized
             caption={
               <CaptionDescription>
                 An example of a user removing a row from the&nbsp;
@@ -471,6 +477,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/reordering.gif"
             alt="GreenBudget Reordering"
+            unoptimized
             caption={
               <CaptionDescription>
                 An example of a user moving a row in a given table view inside of a&nbsp;
@@ -507,6 +514,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/markup.gif"
             alt="GreenBudget Markup"
+            unoptimized
             caption={
               <CaptionDescription>
                 An example of a user creating a <Emphasize.Caption>Markup</Emphasize.Caption> and
@@ -527,6 +535,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/autocomplete.gif"
             alt="GreenBudget Autocomplete"
+            unoptimized
             caption={
               <CaptionDescription>
                 An example of <Emphasize.Caption>Greenbudget</Emphasize.Caption>&spos;s autocomplete
@@ -548,6 +557,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
           <ProjectImage
             src="/projects/greenbudget/attachments.gif"
             alt="GreenBudget Attachments"
+            unoptimized
             caption={
               <DescriptionGroup>
                 <CaptionDescription>
