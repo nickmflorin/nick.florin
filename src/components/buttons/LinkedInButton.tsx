@@ -10,6 +10,7 @@ export const LinkedInButton = async (): Promise<JSX.Element> => {
       icon={{ name: "linkedin", iconStyle: "brands" }}
       href={profile?.linkedinUrl ?? "#"}
       className="hover:text-[#0a66c2]"
+      openInNewTab
     />
   );
 };

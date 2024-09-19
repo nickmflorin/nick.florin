@@ -10,6 +10,7 @@ export const GithubButton = async (): Promise<JSX.Element> => {
       icon={{ name: "github", iconStyle: "brands" }}
       href={profile?.githubUrl ?? "#"}
       className="hover:text-github-black"
+      openInNewTab
     />
   );
 };
