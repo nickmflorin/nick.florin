@@ -31,25 +31,21 @@ const generateHeights = ({
   return heights.reverse().map((height): `${number}%` => `${height}%`);
 };
 
-/**
- * @deprecated
- * We may use this again so we're leaving it around just in case.
- */
 export const BarChartSkeleton = ({
   numBars = 10,
   maxBarHeight,
   minBarHeight,
   heightStep,
-  gap = 12,
+  gap = 4,
   ...props
 }: BarChartSkeletonProps) => (
   <div
     {...props}
-    className={classNames("flex flex-row h-full w-full items-end", props.className)}
+    className={classNames("flex flex-row h-full w-full items-end px-4", props.className)}
     style={{ ...props.style, gap }}
   >
     {generateHeights({ numBars, minBarHeight, maxBarHeight, heightStep }).map((height, i) => (
-      <Skeleton key={i} className="flex-1 rounded-sm bg-gray-300 animate-pulse" height={height} />
+      <Skeleton key={i} className="flex-1" height={height} />
     ))}
   </div>
 );

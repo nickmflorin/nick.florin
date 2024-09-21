@@ -9,7 +9,7 @@ export interface SkeletonProps extends ComponentProps {
 export const Skeleton = ({ height, width, ...props }: SkeletonProps) => (
   <div
     {...props}
-    className={classNames("skeleton", props.className)}
+    className={classNames("rounded-sm bg-gray-200 animate-pulse", props.className)}
     style={{
       ...props.style,
       height: height ?? props.style?.height,

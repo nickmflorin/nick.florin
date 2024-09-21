@@ -20,7 +20,7 @@ const SkillsBarChartTooltip = dynamic(() => import("./SkillsBarChartTooltip"), {
   loading: () => <Loading isLoading={true} spinnerSize="sm" />,
 });
 
-interface SkillsBarChartProps {
+interface ClientSkillsBarChartProps {
   readonly skills: ApiSkill[];
 }
 
@@ -30,7 +30,7 @@ const TooltipWidth = 260;
 
 const TooltipPaddingAdjustment = 10;
 
-export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => {
+export const ClientSkillsBarChart = ({ skills }: ClientSkillsBarChartProps): JSX.Element => {
   const { open, ids } = useDrawers();
 
   return (
@@ -99,5 +99,3 @@ export const SkillsBarChart = ({ skills }: SkillsBarChartProps): JSX.Element => 
     />
   );
 };
-
-export default SkillsBarChart;

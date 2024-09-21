@@ -1,16 +1,10 @@
-import dynamic from "next/dynamic";
-
 import type { ApiSkill } from "~/database/model";
 
-import { Loading } from "~/components/loading/Loading";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 
+import { ClientSkillsBarChart } from "./ClientSkillsBarChart";
 import { SkillsBarChartLegend } from "./SkillsBarChartLegend";
-
-const Chart = dynamic(() => import("./ClientSkillsBarChart"), {
-  loading: () => <Loading isLoading={true} />,
-});
 
 export interface SkillsBarChartViewProps extends ComponentProps {
   readonly skills: ApiSkill<[]>[];
@@ -29,7 +23,7 @@ export const SkillsBarChartView = ({ skills, ...props }: SkillsBarChartViewProps
       id="skills-bar-chart-element"
       className={classNames("relative", "max-md:h-[340px]", "md:max-lg:h-[500px]", "lg:h-[600px]")}
     >
-      <Chart skills={skills} />
+      <ClientSkillsBarChart skills={skills} />
     </div>
     <SkillsBarChartLegend skills={skills} />
   </div>

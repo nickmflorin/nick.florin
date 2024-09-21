@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 
 import { ErrorView } from "~/components/errors/ErrorView";
+import { DynamicLoader, DynamicLoading } from "~/components/loading/dynamic-loading";
 import { Loading } from "~/components/loading/Loading";
 import { Module } from "~/components/structural/Module";
 import { useSkills } from "~/hooks";
@@ -11,7 +12,7 @@ import { type SkillsChartFilterFormValues } from "./forms/SkillsChartFilterForm"
 import { SkillsFilterDropdownMenu } from "./SkillsFilterDropdownMenu";
 
 const SkillsBarChartView = dynamic(() => import("./charts/SkillsBarChartView"), {
-  loading: () => <Loading isLoading={true} />,
+  loading: () => <DynamicLoader />,
 });
 
 export const SkillsChartModule = () => {
@@ -29,6 +30,7 @@ export const SkillsChartModule = () => {
     isLoading,
     error,
   } = useSkills({
+    keepPreviousData: true,
     query: {
       includes: [],
       visibility: "public",
@@ -54,9 +56,13 @@ export const SkillsChartModule = () => {
         Skills Overview
       </Module.Header>
       <Module.Content className="xl:overflow-y-auto xl:pr-[16px]">
-        <Loading isLoading={isLoading}>
-          {error ? <ErrorView error={error} /> : <SkillsBarChartView skills={skills ?? []} />}
-        </Loading>
+        <DynamicLoading>
+          {({ isLoading: isLazyLoadingComponent }) => (
+            <Loading isLoading={isLoading || isLazyLoadingComponent}>
+              {error ? <ErrorView error={error} /> : <SkillsBarChartView skills={skills ?? []} />}
+            </Loading>
+          )}
+        </DynamicLoading>
       </Module.Content>
     </>
   );
