@@ -4,9 +4,12 @@ import { TableBodyCell } from "~/components/tables-v2/generic/TableBodyCell";
 import type * as types from "~/components/tables-v2/types";
 import { classNames } from "~/components/types";
 
-export interface DataTableBodyCellProps<D extends types.DataTableDatum, I extends string = string> {
+export interface DataTableBodyCellProps<
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+> {
   readonly datum: D;
-  readonly column: types.DataTableColumn<D, I>;
+  readonly column: types.DataTableColumn<D, C>;
 }
 
 const CellAccessorContent = <D extends types.DataTableDatum>({
@@ -23,10 +26,13 @@ const CellAccessorContent = <D extends types.DataTableDatum>({
   return <></>;
 };
 
-export const DataTableBodyCell = <D extends types.DataTableDatum, I extends string>({
+export const DataTableBodyCell = <
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+>({
   column,
   datum,
-}: DataTableBodyCellProps<D, I>): JSX.Element => (
+}: DataTableBodyCellProps<D, C>): JSX.Element => (
   <TableBodyCell
     {...column.cellProps}
     align={column.config.align}

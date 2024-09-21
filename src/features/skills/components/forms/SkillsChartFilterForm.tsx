@@ -4,7 +4,7 @@ import {
   ShowTopSkillsSchema,
   SkillsFiltersSchema,
   type ShowTopSkillsString,
-} from "~/actions-v2/schemas";
+} from "~/actions-v2/types";
 
 import { Form, type FormProps } from "~/components/forms/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";

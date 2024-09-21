@@ -1,42 +1,38 @@
 import { useMemo } from "react";
 
-// import { updateSkill } from "~/actions/mutations/skills";
+import { updateSkill } from "~/actions/mutations/skills";
 import type { ActionVisibility } from "~/actions-v2";
 
-/* import { EditableStringCell } from "~/components/tables/cells/EditableStringCell";
-   import { ReadOnlyDateTimeCell } from "~/components/tables/cells/ReadOnlyDateTimeCell";
-   import { SlugCell } from "~/components/tables/cells/SlugCell";
-   import { VisibleCell } from "~/components/tables/cells/VisibleCell"; */
+import { EditableStringCell } from "~/components/tables/cells/EditableStringCell";
+import { ReadOnlyDateTimeCell } from "~/components/tables/cells/ReadOnlyDateTimeCell";
+import { SlugCell } from "~/components/tables/cells/SlugCell";
+import { VisibleCell } from "~/components/tables/cells/VisibleCell";
 import { type DataTableColumnProperties } from "~/components/tables-v2";
-import { type SkillsTableModel, type SkillsTableColumnId } from "~/features/skills";
+import { useDataTable } from "~/components/tables-v2/hooks";
+import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills";
 
-export interface UseSkillsTableColumnPropertiesParams {
-  readonly visibility: ActionVisibility;
-}
-
-export const useSkillsTableColumnProperties = ({
-  visibility,
-}: UseSkillsTableColumnPropertiesParams): DataTableColumnProperties<
+export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
   SkillsTableModel,
-  SkillsTableColumnId
-> =>
-  useMemo(
+  SkillsTableColumn
+> => {
+  const { setRowLoading } = useDataTable<SkillsTableModel, SkillsTableColumn>();
+  return useMemo(
     () => ({
       visible: {
         cellRenderer(datum) {
-          return <></>;
-          /* return (
-               <VisibleCell
-                 model={datum}
-                 table={table}
-                 action={async (id, data) => {
-                   await updateSkill(id, data);
-                 }}
-                 errorMessage="There was an error updating the skill."
-               />
-             ); */
+          return (
+            <VisibleCell
+              model={datum}
+              table={{ setRowLoading }}
+              action={async (id, data) => {
+                await updateSkill(id, data);
+              }}
+              errorMessage="There was an error updating the skill."
+            />
+          );
         },
       },
     }),
-    [visibility],
+    [setRowLoading],
   );
+};

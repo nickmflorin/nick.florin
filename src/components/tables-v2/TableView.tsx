@@ -17,7 +17,7 @@ export interface TableViewProps extends ComponentProps {
   readonly footer?: JSX.Element;
   readonly footerProps?: ComponentProps;
   readonly header?: JSX.Element;
-  readonly controlBarTargetId?: string;
+  readonly controlBarTargetId?: string | null;
 }
 
 const LocalTableView = ({

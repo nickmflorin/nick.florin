@@ -1,6 +1,18 @@
 import { z } from "zod";
 
-import { type SkillIncludes, SkillIncludesFields, type SkillIncludesField } from "~/database/model";
+import {
+  type SkillIncludes,
+  SkillIncludesFields,
+  type SkillIncludesField,
+  SkillCategories,
+} from "~/database/model";
+import {
+  ProgrammingDomain,
+  ProgrammingLanguage,
+  SkillCategory,
+  ProgrammingDomains,
+  ProgrammingLanguages,
+} from "~/database/model";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -30,11 +42,27 @@ export const SkillsOrderingMap = {
   calculatedExperience: order => [{ calculatedExperience: order }] as const,
 } as const satisfies { [key in SkillOrderableField]: (order: Order) => unknown[] };
 
-export interface SkillsFilters {
-  readonly educations: string[];
-  readonly experiences: string[];
-  readonly search: string;
-}
+export const SkillsFiltersSchema = z.object({
+  includeInTopSkills: z.boolean(),
+  experiences: z.array(z.string().uuid()),
+  educations: z.array(z.string().uuid()),
+  programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)),
+  programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)),
+  categories: z.array(z.nativeEnum(SkillCategory)),
+  search: z.string(),
+});
+
+export type SkillsFilters = z.infer<typeof SkillsFiltersSchema>;
+
+export const ShowTopSkillsSchema = z.union([
+  z.literal(5),
+  z.literal(8),
+  z.literal(12),
+  z.literal("all"),
+]);
+export type ShowTopSkills = z.infer<typeof ShowTopSkillsSchema>;
+
+export type ShowTopSkillsString = `${ShowTopSkills}`;
 
 export interface SkillsControls<I extends SkillIncludes = SkillIncludes> {
   readonly filters: Partial<SkillsFilters>;
@@ -46,7 +74,47 @@ export interface SkillsControls<I extends SkillIncludes = SkillIncludes> {
 }
 
 export const SkillsFiltersObj = Filters({
+  includeInTopSkills: { schema: z.coerce.boolean(), defaultValue: false },
   search: { schema: z.string(), defaultValue: "", excludeWhen: (v: string) => v.length === 0 },
+  categories: {
+    defaultValue: [] as SkillCategory[],
+    excludeWhen: v => v.length === 0,
+    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
+      if (typeof value === "string") {
+        return SkillCategories.contains(value) ? [value] : [];
+      }
+      return value.reduce(
+        (prev, curr) => (SkillCategories.contains(curr) ? [...prev, curr] : prev),
+        [] as SkillCategory[],
+      );
+    }),
+  },
+  programmingDomains: {
+    defaultValue: [] as ProgrammingDomain[],
+    excludeWhen: v => v.length === 0,
+    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
+      if (typeof value === "string") {
+        return ProgrammingDomains.contains(value) ? [value] : [];
+      }
+      return value.reduce(
+        (prev, curr) => (ProgrammingDomains.contains(curr) ? [...prev, curr] : prev),
+        [] as ProgrammingDomain[],
+      );
+    }),
+  },
+  programmingLanguages: {
+    defaultValue: [] as ProgrammingLanguage[],
+    excludeWhen: v => v.length === 0,
+    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
+      if (typeof value === "string") {
+        return ProgrammingLanguages.contains(value) ? [value] : [];
+      }
+      return value.reduce(
+        (prev, curr) => (ProgrammingLanguages.contains(curr) ? [...prev, curr] : prev),
+        [] as ProgrammingLanguage[],
+      );
+    }),
+  },
   experiences: {
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,

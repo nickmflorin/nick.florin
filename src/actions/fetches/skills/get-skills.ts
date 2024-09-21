@@ -7,7 +7,7 @@ import { type ApiSkill, type SkillIncludes, type Prisma, fieldIsIncluded } from 
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
-import { type SkillsFilters } from "~/actions-v2/schemas";
+import { type SkillsFilters } from "~/actions-v2/types";
 import { parsePagination, type ApiStandardListQuery } from "~/api/query";
 import { convertToPlainObject } from "~/api/serialization";
 

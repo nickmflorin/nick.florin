@@ -95,7 +95,7 @@ export const TableFeedbackState = ({
 }: TableFeedbackStateProps) =>
   as === "tbody" ? (
     <TableBody {...(props as TableBodyProps)}>
-      <TableBodyRow className="tr--feedback">
+      <TableBodyRow className="table__body-row--feedback">
         <TableFeedbackStateInner
           {...props}
           stateType={stateType}
@@ -110,7 +110,7 @@ export const TableFeedbackState = ({
   ) : (
     <TableBodyRow
       {...(props as TableBodyRowProps)}
-      className={classNames("tr--feedback", props.className)}
+      className={classNames("table__body-row--feedback", props.className)}
     >
       <TableFeedbackStateInner
         stateType={stateType}

@@ -1,7 +1,7 @@
 import { type SkillIncludes } from "~/database/model";
 
 import { getSkills } from "~/actions/fetches/skills";
-import { SkillsFiltersSchema, type SkillsFilters } from "~/actions-v2/schemas";
+import { SkillsFiltersSchema, type SkillsFilters } from "~/actions-v2/types";
 import { ClientResponse, ApiClientFieldErrors } from "~/api";
 import { apiRoute } from "~/api/route";
 

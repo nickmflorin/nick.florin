@@ -12,11 +12,10 @@ const DeleteManyButton = dynamic(() => import("./DeleteManyButton"), {
 
 interface ControlBarProps {
   readonly filters: Filters;
-  readonly page: number;
 }
 
-export const ControlBar = ({ filters, page }: ControlBarProps) => (
+export const ControlBar = ({ filters }: ControlBarProps) => (
   <ContextTableControlBar deleteButton={<DeleteManyButton />}>
-    <TableFilters filters={filters} page={page} />
+    <TableFilters filters={filters} />
   </ContextTableControlBar>
 );

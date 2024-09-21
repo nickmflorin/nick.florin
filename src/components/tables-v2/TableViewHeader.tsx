@@ -3,7 +3,7 @@ import { classNames } from "~/components/types";
 
 export interface TableViewHeaderProps extends ComponentProps {
   readonly children?: JSX.Element;
-  readonly controlBarTargetId?: string;
+  readonly controlBarTargetId?: string | null;
 }
 
 export const TableViewHeader = ({

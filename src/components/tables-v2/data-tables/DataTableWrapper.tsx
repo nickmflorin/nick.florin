@@ -7,19 +7,26 @@ import { type QuantitativeSize } from "~/components/types";
 
 import { DataTableHeaderRow, type DataTableHeaderRowProps } from "./DataTableHeaderRow";
 
-export type DataTableWrapperProps<D extends types.DataTableDatum, I extends string = string> = Omit<
-  TableProps,
-  "children"
-> &
+export type DataTableWrapperProps<
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+> = Omit<TableProps, "children"> &
   Pick<
-    DataTableHeaderRowProps<D, I>,
-    "rowsHaveActions" | "rowsAreSelectable" | "onSort" | "columns" | "ordering" | "excludeColumns"
+    DataTableHeaderRowProps<D, C>,
+    "rowsHaveActions" | "rowsAreSelectable" | "columns" | "ordering" | "excludeColumns"
   > & {
     readonly headerHeight?: QuantitativeSize<"px">;
     readonly children: ReactNode;
+    readonly onSort?: (
+      event: React.MouseEvent<unknown>,
+      col: types.OrderableTableColumn<C>,
+    ) => void;
   };
 
-export const DataTableWrapper = <D extends types.DataTableDatum, I extends string>({
+export const DataTableWrapper = <
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+>({
   ordering,
   headerHeight,
   children,
@@ -29,10 +36,10 @@ export const DataTableWrapper = <D extends types.DataTableDatum, I extends strin
   excludeColumns,
   onSort,
   ...props
-}: DataTableWrapperProps<D, I>): JSX.Element => (
+}: DataTableWrapperProps<D, C>): JSX.Element => (
   <Table {...props}>
     <TableHead>
-      <DataTableHeaderRow<D, I>
+      <DataTableHeaderRow<D, C>
         columns={columns}
         ordering={ordering}
         height={headerHeight}
@@ -41,7 +48,7 @@ export const DataTableWrapper = <D extends types.DataTableDatum, I extends strin
         rowsAreSelectable={rowsAreSelectable}
         onSort={(e, col) => {
           if (col.isOrderable) {
-            onSort?.(e, col);
+            onSort?.(e, col as types.OrderableTableColumn<C>);
           }
         }}
       />

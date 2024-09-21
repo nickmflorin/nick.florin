@@ -163,8 +163,14 @@
       }
 
       &--highlighted {
-        &:not(.tr--loading, .tr--feedback) {
+        &:not(.table__body-row--loading, .table__body-row--feedback, .table__body-row--locked) {
           background-color: constants.$table-row-highlighted-color;
+        }
+      }
+
+      &--locked {
+        td:not(.loading-cell):not(.select-cell) {
+          pointer-events: none;
         }
       }
 
@@ -192,7 +198,7 @@
   &--higlighted-rows-on-hover {
     @include table-body-row($direct: false) {
       &:hover {
-        &:not(.tr--loading, .tr--feedback) {
+        &:not(.table__body-row--loading, .table__body-row--feedback) {
           background-color: constants.$table-row-highlighted-color;
         }
       }

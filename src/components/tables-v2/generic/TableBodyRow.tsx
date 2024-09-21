@@ -12,6 +12,7 @@ export interface TableBodyRowProps extends AbstractTableRowProps {
   readonly isLoading?: boolean;
   readonly highlightOnHover?: boolean;
   readonly bordered?: boolean;
+  readonly isLocked?: boolean;
 }
 
 export const TableBodyRow = ({
@@ -20,6 +21,7 @@ export const TableBodyRow = ({
   bordered = true,
   highlightOnHover: _highlightOnHover,
   isLoading = false,
+  isLocked = false,
   ...props
 }: TableBodyRowProps) => {
   const [_isHovered, setIsHovered] = useState(false);
@@ -33,6 +35,7 @@ export const TableBodyRow = ({
       className={classNames(
         "table__body-row",
         { ["table__body-row--loading"]: isLoading },
+        { ["table__body-row--locked"]: isLocked },
         { ["table__body-row--bordered"]: bordered },
         { ["table__body-row--highlighted"]: isHovered && highlightOnHover },
         { ["cursor-pointer"]: props.onClick },

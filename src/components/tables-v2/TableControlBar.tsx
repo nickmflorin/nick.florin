@@ -1,12 +1,11 @@
 "use client";
-import { type ReactNode, useEffect, useState } from "react";
-
-import { Portal } from "@mui/base/Portal";
+import { type ReactNode, useState } from "react";
 
 import { DeleteButton } from "~/components/buttons/DeleteButton";
 import { Tooltip } from "~/components/floating/Tooltip";
 import { Checkbox } from "~/components/input/Checkbox";
 import { Actions, type Action } from "~/components/structural/Actions";
+import { TableControlBarPortal } from "~/components/tables-v2/TableControlBarPortal";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 import { Text } from "~/components/typography";
@@ -27,8 +26,8 @@ export interface TableControlBarProps<T> extends ComponentProps {
   readonly allRowsAreSelected?: boolean;
   readonly isDisabled?: boolean;
   readonly selectedRows: T[];
-  readonly targetId: string;
-  readonly canDeleteRows?: boolean;
+  readonly rowsAreDeletable?: boolean;
+  readonly targetId: string | null;
   readonly actions?: Action[];
   readonly deleteTooltipContent?: string | ((numRows: number) => string);
   readonly onSelectAllRows?: (v: boolean) => void;
@@ -39,30 +38,25 @@ export interface TableControlBarProps<T> extends ComponentProps {
 
 export const TableControlBar = <T,>({
   children,
-  targetId,
   actions,
   allRowsAreSelected = false,
   tooltipsInPortal = false,
   selectedRows,
+  targetId,
   isDisabled = false,
-  canDeleteRows = false,
+  rowsAreDeletable = false,
   confirmationModal = DefaultDeleteConfirmationModal,
   deleteTooltipContent = (numRows: number) => `Delete ${numRows} selected rows.`,
   onSelectAllRows,
   ...props
 }: TableControlBarProps<T>): JSX.Element => {
   const [confirmationModalIsOpen, setConfirmationModelIsOpen] = useState(false);
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setContainer(document.getElementById(targetId));
-  }, [targetId]);
 
   const ConfirmationModal = confirmationModal;
 
   return (
     <>
-      <Portal container={container}>
+      <TableControlBarPortal targetId={targetId}>
         <div {...props} className={classNames("table-view__control-bar", props.className)}>
           <div className="table-view__control-bar__left">
             <div className="table-view__control-bar__checkbox-wrapper">
@@ -74,7 +68,7 @@ export const TableControlBar = <T,>({
               />
             </div>
             <div className="table-view__control-bar-actions">
-              {canDeleteRows && (
+              {rowsAreDeletable && (
                 <Tooltip
                   placement="top-start"
                   inPortal={tooltipsInPortal}
@@ -108,7 +102,7 @@ export const TableControlBar = <T,>({
           </div>
           <Actions className="table-view__control-bar__right">{actions}</Actions>
         </div>
-      </Portal>
+      </TableControlBarPortal>
       {confirmationModalIsOpen && selectedRows.length !== 0 && (
         <ConfirmationModal
           isOpen

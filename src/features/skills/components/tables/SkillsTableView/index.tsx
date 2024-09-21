@@ -39,7 +39,7 @@ export const SkillsTableView = ({ filters, page }: SkillsTableViewProps) => (
           <NewButton drawerId={DrawerIds.CREATE_SKILL} />
         </TableSearchBar>
       }
-      controlBar={<ControlBar filters={filters} page={page} />}
+      controlBar={<ControlBar filters={filters} />}
       paginator={
         <Suspense fallback={<PaginatorPlaceholder />}>
           <Paginator filters={filters} />

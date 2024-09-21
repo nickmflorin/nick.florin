@@ -8,20 +8,22 @@ import { TableHeaderCell } from "../generic/TableHeaderCell";
 
 import { DataTableHeaderCell } from "./DataTableHeaderCell";
 
-export interface DataTableHeaderRowProps<D extends types.DataTableDatum, I extends string = string>
-  extends Omit<TableHeaderRowProps, "children"> {
-  readonly columns: types.DataTableColumnConfig<D, I>[];
-  readonly excludeColumns?: I[];
-  readonly ordering?: Ordering<I> | null;
+export interface DataTableHeaderRowProps<
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+> extends Omit<TableHeaderRowProps, "children"> {
+  readonly columns: C[];
+  readonly excludeColumns?: types.TableColumnId<C>[];
+  readonly ordering?: Ordering<types.OrderableTableColumnId<C>> | null;
   readonly rowsHaveActions?: boolean;
   readonly rowsAreSelectable?: boolean;
-  readonly onSort?: (
-    event: React.MouseEvent<unknown>,
-    col: types.DataTableColumnConfig<D, I>,
-  ) => void;
+  readonly onSort?: (event: React.MouseEvent<unknown>, col: C) => void;
 }
 
-export const DataTableHeaderRow = <D extends types.DataTableDatum, I extends string>({
+export const DataTableHeaderRow = <
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+>({
   columns,
   ordering,
   rowsHaveActions,
@@ -29,13 +31,13 @@ export const DataTableHeaderRow = <D extends types.DataTableDatum, I extends str
   excludeColumns = [],
   onSort,
   ...props
-}: DataTableHeaderRowProps<D, I>): JSX.Element => (
+}: DataTableHeaderRowProps<D, C>): JSX.Element => (
   <TableHeaderRow {...props}>
     {rowsAreSelectable && <TableHeaderCell align="center" width={40} maxWidth={40} minWidth={40} />}
     {columns
       .filter(col => !excludeColumns.includes(col.id))
       .map(column => (
-        <DataTableHeaderCell<D, I>
+        <DataTableHeaderCell<D, C>
           key={column.id}
           column={column}
           isOrdered={ordering?.orderBy === column.id}
