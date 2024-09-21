@@ -46,7 +46,7 @@ const ModelDrawerProps: {
   }),
 };
 
-export const ClientCompaniesSchoolsMenuContent = async <M extends ModelType>({
+export const ClientCompaniesSchoolsMenuContent = <M extends ModelType>({
   data,
   modelType,
 }: ClientCompaniesSchoolsMenuContentProps<M>) => {
