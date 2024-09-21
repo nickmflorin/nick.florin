@@ -28,6 +28,7 @@ export const SkillsCell = ({ education }: SkillsCellProps) => {
     <SkillsSelect
       behavior="multi"
       value={optimisticValue}
+      summarizeValueAfter={2}
       onChange={async (v, { item }) => {
         setOptimisticValue(v);
         item?.setLoading(true);

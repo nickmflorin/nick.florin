@@ -30,6 +30,8 @@ export const SkillsCell = ({ experience }: SkillsCellProps) => {
     <SkillsSelect
       behavior="multi"
       value={optimisticValue}
+      inPortal
+      summarizeValueAfter={2}
       onChange={async (v, { item }) => {
         setOptimisticValue(v);
         item?.setLoading(true);

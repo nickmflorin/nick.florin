@@ -35,6 +35,7 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
       value={value}
       behavior="multi"
       isClearable
+      summarizeValueAfter={2}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);
