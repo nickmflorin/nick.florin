@@ -32,12 +32,11 @@ export const ClientExperienceSelect = forwardRef(
         onError?.(e);
       },
     });
-
     return (
       <ExperienceSelect
         {...props}
         ref={ref}
-        isReady={data !== undefined}
+        isReady={data !== undefined && props.isReady !== false}
         data={data ?? []}
         isDisabled={error !== undefined}
         isLocked={isLoading}
