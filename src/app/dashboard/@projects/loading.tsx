@@ -1,5 +1,11 @@
-import { Loading as LoadingComponent } from "~/components/loading/Loading";
+import { ProjectTileSkeleton } from "~/features/projects/components/ProjectTileSkeleton";
 
-const Loading = () => <LoadingComponent isLoading={true} />;
-
-export default Loading;
+export default function Loading() {
+  return (
+    <>
+      {Array.from({ length: 4 }).map((_, i) => (
+        <ProjectTileSkeleton key={i} />
+      ))}
+    </>
+  );
+}

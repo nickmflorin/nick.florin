@@ -17,7 +17,7 @@ export const SkillJsonSchema = MetaSchema.extend({
   slug: NullableStringField({}).optional(),
   description: NullableStringField({}),
   visible: z.boolean().optional(),
-  experience: z.number().int().positive().nullable().optional(),
+  experience: z.number().int().nonnegative().nullable().optional(),
   categories: z.array(z.nativeEnum(SkillCategory)).optional(),
   programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)).optional(),
   programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)).optional(),

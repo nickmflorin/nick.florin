@@ -628,7 +628,7 @@ export const calculateSkillsExperience = async <
     const sk = readyToProcess[i];
     /* If the Skill has an explicitly overridden experience, that value should be used.  Instead,
        the Skill's experience should be calculated. */
-    if (sk.experience) {
+    if (sk.experience !== null && sk.experience > 0) {
       mapped = { ...mapped, [sk.id]: sk.experience };
       updated = [
         ...updated,

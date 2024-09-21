@@ -16,6 +16,7 @@ const InterFont = Inter({
   style: ["normal"],
   display: "swap",
   subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {

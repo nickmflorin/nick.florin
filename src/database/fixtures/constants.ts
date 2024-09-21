@@ -3,7 +3,7 @@ import type { JsonifiableModel } from "./types";
 import type { PluralBrand } from "~/database/model";
 import { pluralizeBrandModel } from "~/database/model";
 
-export const JSON_FIXTURE_DIR = "./src/prisma/scripts/fixtures/json" as const;
+export const JSON_FIXTURE_DIR = "./src/database/fixtures/json" as const;
 
 type JsonFixtureFilePathOpts = {
   readonly live?: boolean;

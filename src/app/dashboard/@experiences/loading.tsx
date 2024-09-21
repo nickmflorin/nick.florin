@@ -1,5 +1,11 @@
-import { Loading as LoadingComponent } from "~/components/loading/Loading";
+import { ResumeModelCondensedTileSkeleton } from "~/features/resume/components/tiles/ResumeModelCondensedTileSkeleton";
 
-const Loading = () => <LoadingComponent isLoading={true} />;
-
-export default Loading;
+export default function Loading() {
+  return (
+    <>
+      {Array.from({ length: 4 }).map((_, i) => (
+        <ResumeModelCondensedTileSkeleton key={i} showTags={false} numDescriptionLines={3} />
+      ))}
+    </>
+  );
+}

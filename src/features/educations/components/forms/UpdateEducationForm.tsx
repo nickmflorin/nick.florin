@@ -39,7 +39,8 @@ export const UpdateEducationForm = ({
       minor: education.minor ?? "",
       note: education.note ?? "",
     });
-  }, [education, props.form.setValues]);
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [education]);
 
   return (
     <EducationForm

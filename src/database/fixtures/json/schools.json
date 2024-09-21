@@ -25,6 +25,7 @@
           "concentration": "Robotics & Control Systems",
           "postPoned": false,
           "visible": true,
+          "highlighted": true,
           "skills": ["python", "c-plus-plus", "matlab", "numerical-computation"],
           "courses": [
             {
@@ -48,26 +49,6 @@
               "skills": ["c-plus-plus"]
             },
             {
-              "name": "Robotics",
-              "shortName": null,
-              "slug": "robotics",
-              "createdAt": "2024-04-16T23:25:06.198Z",
-              "updatedAt": "2024-04-16T23:25:06.198Z",
-              "visible": true,
-              "description": null,
-              "skills": []
-            },
-            {
-              "name": "Signals & Systems",
-              "shortName": null,
-              "slug": "signals-systems",
-              "createdAt": "2024-04-16T23:25:06.460Z",
-              "updatedAt": "2024-04-16T23:25:06.460Z",
-              "visible": true,
-              "description": null,
-              "skills": []
-            },
-            {
               "name": "Fields & Waves",
               "shortName": null,
               "slug": "fields-waves",
@@ -83,16 +64,6 @@
               "slug": "electrical-power-systems",
               "createdAt": "2024-04-16T23:25:06.952Z",
               "updatedAt": "2024-04-16T23:25:06.952Z",
-              "visible": true,
-              "description": null,
-              "skills": []
-            },
-            {
-              "name": "Electrical Engineering Design",
-              "shortName": null,
-              "slug": "electrical-engineering-design",
-              "createdAt": "2024-04-16T23:25:07.190Z",
-              "updatedAt": "2024-04-16T23:25:07.190Z",
               "visible": true,
               "description": null,
               "skills": []
@@ -136,6 +107,36 @@
               "visible": true,
               "description": null,
               "skills": []
+            },
+            {
+              "name": "Electrical Engineering Design",
+              "shortName": null,
+              "slug": "electrical-engineering-design",
+              "createdAt": "2024-04-16T23:25:07.190Z",
+              "updatedAt": "2024-09-21T16:31:43.390Z",
+              "visible": true,
+              "description": null,
+              "skills": ["html", "django", "python", "jinja", "html-templating"]
+            },
+            {
+              "name": "Signals & Systems",
+              "shortName": null,
+              "slug": "signals-systems",
+              "createdAt": "2024-04-16T23:25:06.460Z",
+              "updatedAt": "2024-09-21T16:32:02.052Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Robotics",
+              "shortName": null,
+              "slug": "robotics",
+              "createdAt": "2024-04-16T23:25:06.198Z",
+              "updatedAt": "2024-09-21T16:34:37.259Z",
+              "visible": true,
+              "description": null,
+              "skills": ["python", "matlab", "numerical-computation"]
             }
           ],
           "details": []
@@ -155,7 +156,84 @@
       "educations": [
         {
           "createdAt": "2024-04-16T23:25:00.483Z",
-          "updatedAt": "2024-04-16T23:25:00.483Z",
+          "updatedAt": "2024-09-21T16:34:07.715Z",
+          "startDate": "2016-01-02T00:00:00.000Z",
+          "endDate": null,
+          "note": "Ongoing coursework temporarily post-poned after completing approximately 50% of coursework.",
+          "degree": "MASTERS_OF_SCIENCE",
+          "description": null,
+          "major": "Computational Mathematics",
+          "shortMajor": "Comp. Math",
+          "minor": null,
+          "concentration": null,
+          "postPoned": false,
+          "visible": true,
+          "highlighted": true,
+          "skills": [
+            "data-visualizations",
+            "django",
+            "python",
+            "matlab",
+            "numerical-computation",
+            "scipy",
+            "pandas",
+            "numpy",
+            "scikit-learn"
+          ],
+          "courses": [
+            {
+              "name": "Probabalistic Models in Computer Science",
+              "shortName": "Probabalistic Models",
+              "slug": "probabilistic-models-in-computer-science",
+              "createdAt": "2024-04-16T23:25:04.376Z",
+              "updatedAt": "2024-04-16T23:25:04.376Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Queueing Theory and its Applications in Computer Science",
+              "shortName": "Queueing Theory",
+              "slug": "queueing-theory-and-its-applications-in-computer-science",
+              "createdAt": "2024-04-16T23:25:04.113Z",
+              "updatedAt": "2024-09-21T16:35:26.371Z",
+              "visible": true,
+              "description": null,
+              "skills": ["numerical-computation"]
+            },
+            {
+              "name": "Data Mining",
+              "shortName": null,
+              "slug": "data-mining",
+              "createdAt": "2024-04-16T23:25:03.869Z",
+              "updatedAt": "2024-09-21T16:35:59.591Z",
+              "visible": true,
+              "description": null,
+              "skills": [
+                "data-scraping",
+                "data-visualizations",
+                "python",
+                "scipy",
+                "numpy",
+                "scikit-learn"
+              ]
+            },
+            {
+              "name": "Neural Networks",
+              "shortName": null,
+              "slug": "neural-networks",
+              "createdAt": "2024-04-16T23:25:03.621Z",
+              "updatedAt": "2024-09-21T16:32:30.875Z",
+              "visible": true,
+              "description": null,
+              "skills": ["data-visualizations", "python"]
+            }
+          ],
+          "details": []
+        },
+        {
+          "createdAt": "2024-04-16T23:25:00.483Z",
+          "updatedAt": "2024-09-21T16:34:11.620Z",
           "startDate": "2014-08-01T00:00:00.000Z",
           "endDate": "2016-01-01T00:00:00.000Z",
           "note": null,
@@ -167,16 +245,18 @@
           "concentration": null,
           "postPoned": false,
           "visible": true,
+          "highlighted": true,
           "skills": [
+            "data-visualizations",
+            "django",
             "python",
             "matlab",
             "r",
-            "django",
-            "pandas",
-            "scikit-learn",
+            "numerical-computation",
             "scipy",
+            "pandas",
             "numpy",
-            "numerical-computation"
+            "scikit-learn"
           ],
           "courses": [
             {
@@ -185,16 +265,6 @@
               "slug": "advanced-equity-derivatives",
               "createdAt": "2024-04-16T23:25:01.376Z",
               "updatedAt": "2024-04-16T23:25:01.376Z",
-              "visible": true,
-              "description": null,
-              "skills": []
-            },
-            {
-              "name": "Monte Carlo Methods",
-              "shortName": null,
-              "slug": "monte-carlo-methods",
-              "createdAt": "2024-04-16T23:25:01.632Z",
-              "updatedAt": "2024-04-16T23:25:01.632Z",
               "visible": true,
               "description": null,
               "skills": []
@@ -240,16 +310,6 @@
               "skills": []
             },
             {
-              "name": "Time Series Analysis",
-              "shortName": null,
-              "slug": "time-series-analysis",
-              "createdAt": "2024-04-16T23:25:02.871Z",
-              "updatedAt": "2024-04-16T23:25:02.871Z",
-              "visible": true,
-              "description": null,
-              "skills": []
-            },
-            {
               "name": "Credit Default Risk Modeling",
               "shortName": "Credit Default Risk",
               "slug": "credit-default-risk-modeling",
@@ -264,78 +324,30 @@
               "shortName": null,
               "slug": "machine-learning",
               "createdAt": "2024-04-16T23:25:03.360Z",
-              "updatedAt": "2024-04-16T23:25:03.360Z",
+              "updatedAt": "2024-09-21T16:32:53.650Z",
               "visible": true,
               "description": null,
-              "skills": []
-            }
-          ],
-          "details": []
-        },
-        {
-          "createdAt": "2024-04-16T23:25:00.483Z",
-          "updatedAt": "2024-04-16T23:25:00.483Z",
-          "startDate": "2016-01-02T00:00:00.000Z",
-          "endDate": null,
-          "note": "Ongoing coursework temporarily post-poned after completing approximately 50% of coursework.",
-          "degree": "MASTERS_OF_SCIENCE",
-          "description": null,
-          "major": "Computational Mathematics",
-          "shortMajor": "Comp. Math",
-          "minor": null,
-          "concentration": null,
-          "postPoned": false,
-          "visible": true,
-          "skills": [
-            "python",
-            "matlab",
-            "django",
-            "pandas",
-            "scikit-learn",
-            "scipy",
-            "numpy",
-            "numerical-computation"
-          ],
-          "courses": [
+              "skills": ["python"]
+            },
             {
-              "name": "Neural Networks",
+              "name": "Time Series Analysis",
               "shortName": null,
-              "slug": "neural-networks",
-              "createdAt": "2024-04-16T23:25:03.621Z",
-              "updatedAt": "2024-04-16T23:25:03.621Z",
+              "slug": "time-series-analysis",
+              "createdAt": "2024-04-16T23:25:02.871Z",
+              "updatedAt": "2024-09-21T16:33:07.827Z",
               "visible": true,
               "description": null,
-              "skills": []
+              "skills": ["data-visualizations"]
             },
             {
-              "name": "Data Mining",
+              "name": "Monte Carlo Methods",
               "shortName": null,
-              "slug": "data-mining",
-              "createdAt": "2024-04-16T23:25:03.869Z",
-              "updatedAt": "2024-04-16T23:25:03.869Z",
+              "slug": "monte-carlo-methods",
+              "createdAt": "2024-04-16T23:25:01.632Z",
+              "updatedAt": "2024-09-21T16:34:54.975Z",
               "visible": true,
               "description": null,
-              "skills": []
-            },
-            {
-              "name": "Queueing Theory and its Applications in Computer Science",
-              "shortName": "Queueing Theory",
-              "slug": "queueing-theory-and-its-applications-in-computer-science",
-              "createdAt": "2024-04-16T23:25:04.113Z",
-              "updatedAt": "2024-04-16T23:25:04.113Z",
-              "visible": true,
-              "description": null,
-              "skills": []
-            },
-            {
-              "name": "Probabalistic Models in Computer Science",
-              "shortName": "Probabalistic Models",
-              "slug": "probabilistic-models-in-computer-science",
-              "createdAt": "2024-04-16T23:25:04.376Z",
-              "updatedAt": "2024-04-16T23:25:04.376Z",
-              "visible": true,
-              "description": null,
-              "skills": []
+              "skills": ["python", "matlab", "numerical-computation"]
             }
           ],
           "details": []

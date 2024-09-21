@@ -176,5 +176,3 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
     </Form>
   );
 };
-
-export default EducationForm;

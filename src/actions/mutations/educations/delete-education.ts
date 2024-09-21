@@ -58,6 +58,11 @@ export const deleteEducation = async (id: string): Promise<void> => {
       );
     }
 
+    const { count } = await tx.course.deleteMany({ where: { educationId: education.id } });
+    logger.info(`Deletd ${count} course(s) associated with the education being deleted.`, {
+      educationId: education.id,
+    });
+
     const skillIds = [
       ...education.skills.map(s => s.id),
       ...details.flatMap(d => d.skills.map(s => s.id)),

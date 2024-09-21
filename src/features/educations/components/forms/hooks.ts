@@ -1,4 +1,4 @@
-import type { ApiEducation } from "~/database/model";
+import { Degree, type ApiEducation } from "~/database/model";
 
 import { useForm } from "~/components/forms/hooks/use-form";
 
@@ -13,6 +13,7 @@ export const useEducationForm = ({ education }: UseEducationFormConfig) =>
     schema: EducationFormSchema,
     defaultValues: {
       major: education?.major ?? "",
+      degree: Degree.BACHELORS_OF_SCIENCE,
       concentration: education?.concentration ?? "",
       note: education?.note ?? "",
       minor: education?.minor ?? "",

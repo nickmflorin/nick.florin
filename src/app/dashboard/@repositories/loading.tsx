@@ -1,5 +1,11 @@
-import { Loading as LoadingComponent } from "~/components/loading/Loading";
+import { RepositoryTileSkeleton } from "~/features/repositories/components/RepositoryTileSkeleton";
 
-const Loading = () => <LoadingComponent isLoading={true} />;
+const Loading = () => (
+  <div className="flex flex-col gap-[8px]">
+    {Array.from({ length: 7 }).map((_, i) => (
+      <RepositoryTileSkeleton key={i} />
+    ))}
+  </div>
+);
 
 export default Loading;
