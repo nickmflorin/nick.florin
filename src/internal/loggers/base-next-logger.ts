@@ -1,6 +1,7 @@
 import { pick } from "lodash-es";
 
 import { isApiClientGlobalErrorJson, isHttpError } from "~/api";
+import { isApiClientGlobalErrorJson as isApiClientGlobalErrorJsonV2 } from "~/api-v2";
 import { environment } from "~/environment";
 import { type EnvironmentName } from "~/environment/constants";
 import {
@@ -9,6 +10,7 @@ import {
   LogLevels,
   getEnvironmentName,
 } from "~/environment/constants";
+import { isHttpError as isHttpErrorV2 } from "~/integrations/http-v2";
 
 import { AbstractLogger } from "./abstract-logger";
 import { createBrowserWriter } from "./browser-writer";
@@ -62,6 +64,15 @@ const includeErrorContext = (parsed: ParsedArgs, error: types.LoggerError): Pars
          object, and can be used with 'Sentry.captureException'. */
       error,
     };
+  } else if (isHttpErrorV2(error)) {
+    return {
+      ...parsed,
+      message: parsed.message ?? error.message,
+      context: { ...parsed.context, ...error.logData },
+      /* Here, it is okay to include the 'error' property because the HttpError is an actual Error
+         object, and can be used with 'Sentry.captureException'. */
+      error,
+    };
   } else if (error instanceof Error) {
     return {
       ...parsed,
@@ -71,6 +82,12 @@ const includeErrorContext = (parsed: ParsedArgs, error: types.LoggerError): Pars
         ...parsed.context,
         message: error.message,
       },
+    };
+  } else if (isApiClientGlobalErrorJsonV2(error)) {
+    return {
+      ...parsed,
+      message: parsed.message ?? error.message,
+      context: { ...parsed.context, ...error },
     };
   } else if (isApiClientGlobalErrorJson(error)) {
     return {

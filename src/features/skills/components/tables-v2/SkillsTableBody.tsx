@@ -7,6 +7,7 @@ import {
 import { type SkillsTableColumn, type SkillsTableModel } from "~/features/skills";
 
 import { useSkillsTableColumnProperties } from "./hooks/use-column-properties";
+import { useSkillsTableRowActions } from "./hooks/use-row-actions";
 
 export interface SkillsTableBodyProps<M extends SkillsTableModel>
   extends Omit<
@@ -21,6 +22,8 @@ export const SkillsTableBody = <M extends SkillsTableModel>({
   ...props
 }: SkillsTableBodyProps<M>): JSX.Element => {
   const columnProperties = useSkillsTableColumnProperties();
+  const rowActions = useSkillsTableRowActions();
+
   return (
     <>
       <ConnectedTableControlBar
@@ -33,6 +36,9 @@ export const SkillsTableBody = <M extends SkillsTableModel>({
         noResultsContent="No skills found for search criteria."
         {...props}
         columnProperties={columnProperties}
+        getRowActions={(skill, { setIsOpen }) =>
+          rowActions(skill, { close: e => setIsOpen(false, e) })
+        }
       />
     </>
   );

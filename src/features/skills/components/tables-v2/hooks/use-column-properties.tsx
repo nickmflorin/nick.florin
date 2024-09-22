@@ -1,10 +1,7 @@
 import { useMemo } from "react";
 
 import { updateSkill } from "~/actions/mutations/skills";
-import type { ActionVisibility } from "~/actions-v2";
 
-import { EditableStringCell } from "~/components/tables/cells/EditableStringCell";
-import { SlugCell } from "~/components/tables/cells/SlugCell";
 import { VisibleCell } from "~/components/tables/cells/VisibleCell";
 import { type DataTableColumnProperties } from "~/components/tables-v2";
 import { ReadOnlyDateTimeCell } from "~/components/tables-v2/cells/ReadOnlyDateTimeCell";
