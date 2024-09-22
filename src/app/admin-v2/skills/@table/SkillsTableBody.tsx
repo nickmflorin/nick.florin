@@ -27,7 +27,7 @@ export const SkillsTableBody = async ({
       filters,
       ordering,
       page,
-      visibility: "public",
+      visibility: "admin",
     },
     { strict: true },
   );

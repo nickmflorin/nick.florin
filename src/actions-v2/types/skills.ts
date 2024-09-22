@@ -43,7 +43,7 @@ export const SkillsOrderingMap = {
 } as const satisfies { [key in SkillOrderableField]: (order: Order) => unknown[] };
 
 export const SkillsFiltersSchema = z.object({
-  includeInTopSkills: z.boolean(),
+  includeInTopSkills: z.boolean().nullable(),
   experiences: z.array(z.string().uuid()),
   educations: z.array(z.string().uuid()),
   programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)),
@@ -74,7 +74,11 @@ export interface SkillsControls<I extends SkillIncludes = SkillIncludes> {
 }
 
 export const SkillsFiltersObj = Filters({
-  includeInTopSkills: { schema: z.coerce.boolean(), defaultValue: false },
+  includeInTopSkills: {
+    schema: z.union([z.coerce.boolean(), z.null()]),
+    defaultValue: null,
+    excludeWhen: v => v === null,
+  },
   search: { schema: z.string(), defaultValue: "", excludeWhen: (v: string) => v.length === 0 },
   categories: {
     defaultValue: [] as SkillCategory[],

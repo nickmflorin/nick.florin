@@ -66,15 +66,15 @@ export const SkillsTableColumns = [
   {
     id: "createdAt",
     label: "Created",
-    align: "center",
-    width: 170,
+    align: "right",
+    maxWidth: 200,
     isOrderable: true,
   },
   {
     id: "updatedAt",
     label: "Updated",
-    align: "center",
-    width: 170,
+    align: "right",
+    maxWidth: 200,
     isOrderable: true,
   },
   {

@@ -9,7 +9,7 @@ interface SkillsLayoutProps {
 
 export default function SkillsLayout({ table, title }: SkillsLayoutProps) {
   return (
-    <div className="flex flex-col gap-[16px]">
+    <div className="flex flex-col gap-[16px] max-h-full h-full">
       <TableTitle count={title}>Skills</TableTitle>
       <div className="flex flex-row items-center grow min-h-[0px] overflow-auto">{table}</div>
     </div>

@@ -157,9 +157,18 @@
         @include typography.font("body", $size: "xs", $weight: "regular");
         color: inherit;
         font-size: 14px;
+        line-height: 18px;
         border-bottom: none;
         display: table-cell;
         text-align: left;
+
+        > .table__body-cell__inner {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          font-size: inherit;
+          color: inherit;
+        }
       }
 
       &--highlighted {

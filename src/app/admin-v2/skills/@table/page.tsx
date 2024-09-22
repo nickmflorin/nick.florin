@@ -43,7 +43,6 @@ export default function SkillsTablePage({ searchParams }: SkillsTablePageProps) 
     defaultOrdering: SkillsDefaultOrdering,
     fields: SkillsTableColumns.filter(c => columnIsOrderable(c)).map(c => c.id),
   });
-
   return (
     <DataTableProvider
       columns={SkillsTableColumns}

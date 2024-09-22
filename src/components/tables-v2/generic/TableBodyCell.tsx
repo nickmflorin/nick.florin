@@ -2,27 +2,29 @@ import { type ReactNode } from "react";
 
 import {
   classNames,
-  type TextAlign,
+  type HorizontalFlexAlign,
   type ComponentProps,
-  TextAlignClassNames,
+  HorizontalFlexAlignClassNames,
 } from "~/components/types";
 
 export interface TableBodyCellProps
   extends ComponentProps,
     Omit<React.ComponentProps<"td">, keyof ComponentProps> {
   readonly children?: ReactNode;
-  readonly align?: Extract<TextAlign, "left" | "center" | "right">;
+  readonly align?: HorizontalFlexAlign;
 }
 
 export const TableBodyCell = ({ align, ...props }: TableBodyCellProps) => (
-  <td
-    {...props}
-    className={classNames(
-      "table__cell table__body-cell",
-      align ? TextAlignClassNames[align] : "",
-      props.className,
-    )}
-  />
+  <td {...props} className={classNames("table__cell table__body-cell", props.className)}>
+    <div
+      className={classNames(
+        "table__body-cell__inner",
+        align ? HorizontalFlexAlignClassNames[align] : "",
+      )}
+    >
+      {props.children}
+    </div>
+  </td>
 );
 
 export default TableBodyCell;

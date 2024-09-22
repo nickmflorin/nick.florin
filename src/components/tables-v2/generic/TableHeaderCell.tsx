@@ -10,15 +10,15 @@ import {
   classNames,
   sizeToString,
   type ComponentProps,
-  TextAlignClassNames,
-  type TextAlign,
+  HorizontalFlexAlignClassNames,
+  type HorizontalFlexAlign,
 } from "~/components/types";
 
 export interface TableHeaderCellProps extends ComponentProps {
   readonly icon?: IconProp | IconName;
   readonly isOrderable?: boolean;
   readonly order?: Order | null;
-  readonly align?: Extract<TextAlign, "left" | "center" | "right">;
+  readonly align?: HorizontalFlexAlign;
   readonly width?: QuantitativeSize<"px">;
   readonly minWidth?: QuantitativeSize<"px">;
   readonly maxWidth?: QuantitativeSize<"px">;
@@ -51,7 +51,7 @@ export const TableHeaderCell = ({
         "pointer-events-auto cursor-pointer":
           onClick !== undefined || (isOrderable && order !== undefined),
       },
-      align ? TextAlignClassNames[align] : "",
+      align ? HorizontalFlexAlignClassNames[align] : "",
       props.className,
     )}
     onClick={e => {
@@ -66,17 +66,43 @@ export const TableHeaderCell = ({
     }}
   >
     {isOrderable && order !== undefined ? (
-      <div className="flex flex-row items-center gap-3">
-        {children}
-        <SortIcon
-          order={order ?? "asc"}
-          icon={icon}
-          className="table__header-cell__sort-icon"
-          size="14px"
-        />
+      <div
+        className={classNames(
+          "flex flex-row items-center gap-3",
+          align ? HorizontalFlexAlignClassNames[align] : "",
+        )}
+      >
+        {align === "right" ? (
+          <>
+            <SortIcon
+              order={order ?? "asc"}
+              icon={icon}
+              className="table__header-cell__sort-icon"
+              size="14px"
+            />
+            {children}
+          </>
+        ) : (
+          <>
+            {children}
+            <SortIcon
+              order={order ?? "asc"}
+              icon={icon}
+              className="table__header-cell__sort-icon"
+              size="14px"
+            />
+          </>
+        )}
       </div>
     ) : (
-      children
+      <div
+        className={classNames(
+          "flex flex-row items-center",
+          align ? HorizontalFlexAlignClassNames[align] : "",
+        )}
+      >
+        {children}
+      </div>
     )}
   </th>
 );

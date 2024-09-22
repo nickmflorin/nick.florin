@@ -29,6 +29,16 @@ export const TextAlignClassNames: { [key in TextAlign]: `text-${key}` } = {
   end: "text-end",
 };
 
+export const HorizontalFlexAligns = enumeratedLiterals(["left", "center", "right"] as const, {});
+export type HorizontalFlexAlign = EnumeratedLiteralsMember<typeof HorizontalFlexAligns>;
+
+export const HorizontalFlexAlignClassNames: { [key in HorizontalFlexAlign]: `justify-${string}` } =
+  {
+    left: "justify-start",
+    center: "justify-center",
+    right: "justify-end",
+  };
+
 export const WhiteSpaces = enumeratedLiterals(["normal", "nowrap"] as const, {});
 export type WhiteSpace = EnumeratedLiteralsMember<typeof WhiteSpaces>;
 

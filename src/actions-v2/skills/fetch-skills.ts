@@ -24,7 +24,7 @@ const filtersClause = ({ filters }: Pick<SkillsControls, "filters">) =>
     filters.experiences && filters.experiences.length !== 0
       ? { experiences: { some: { id: { in: filters.experiences } } } }
       : undefined,
-    filters.includeInTopSkills !== undefined
+    filters.includeInTopSkills !== undefined && filters.includeInTopSkills !== null
       ? { includeInTopSkills: filters.includeInTopSkills }
       : undefined,
     filters.programmingDomains && filters.programmingDomains.length !== 0
@@ -49,7 +49,7 @@ const whereClause = ({
     }
     return { AND: [...clause] };
   }
-  return { visible: true };
+  return visibility === "public" ? { visible: true } : {};
 };
 
 export const fetchSkillsCount = standardFetchAction(
