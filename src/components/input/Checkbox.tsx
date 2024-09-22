@@ -29,6 +29,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           {...props}
           ref={ref}
           checked={value === undefined ? isChecked : value}
+          onClick={e => e.stopPropagation()}
           onChange={e => {
             setIsChecked(e.target.checked);
             props.onChange?.(e);

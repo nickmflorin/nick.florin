@@ -16,12 +16,13 @@ export const ConnectedDataTableBodyRow = <
 ): JSX.Element => {
   const { rowIsLoading, rowIsLocked, rowIsSelected, changeRowSelection, columnIsVisible } =
     useDataTable();
+
   return (
     <DataTableBodyRow
       {...props}
       isLoading={rowIsLoading(props.datum.id)}
       isLocked={rowIsLocked(props.datum.id)}
-      rowIsSelected={rowIsSelected}
+      isSelected={rowIsSelected(props.datum.id)}
       onRowSelected={(datum, isSelected) => changeRowSelection(datum, isSelected)}
       columns={props.columns.filter(col => columnIsVisible(col.id))}
     />

@@ -39,7 +39,7 @@ export type DataTableRowAction = {
 };
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export interface DataTableColumnConfig<D extends DataTableDatum = any, I extends string = string> {
+export type DataTableColumnConfig<D extends DataTableDatum = any, I extends string = string> = {
   readonly id: I;
   readonly icon?: IconProp | IconName;
   readonly label?: string;
@@ -59,7 +59,7 @@ export interface DataTableColumnConfig<D extends DataTableDatum = any, I extends
   readonly minWidth?: QuantitativeSize<"px">;
   readonly maxWidth?: QuantitativeSize<"px">;
   readonly skeleton?: ReactNode;
-}
+};
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export interface DataTableColumn<D extends DataTableDatum, C extends DataTableColumnConfig<D>> {
@@ -115,102 +115,6 @@ export type DataTableColumns<
   I extends string = string,
 > = DataTableColumnConfig<D, I>[];
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-// type _TableColumnId<C extends DataTableColumns<any>> = C[number]["id"];
-
-// /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-// type _TableColumn<C extends DataTableColumns<any>, I extends string = string> = Extract<
-//   C[number],
-//   { id: I }
-// >;
-
-export type ConfiguredOrderableTableColumn<
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  C extends DataTableColumns<any>,
-  I extends string = string,
-> = Extract<C[number], { isOrderable: true; id: I }>;
-
-// export type ConfiguredTableColumn<
-//   C /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ extends
-//     | DataTableColumnsConfiguration<any, any>
-//     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-//     | SelectedDataTableColumnsConfiguration<any, any, any>,
-// > = C["columns"][number];
-
-// export type ConfiguredTableColumnId<
-//   C /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ extends
-//     | DataTableColumnsConfiguration<any, any>
-//     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-//     | SelectedDataTableColumnsConfiguration<any, any, any>,
-// > = _TableColumnId<C["columns"]>;
-
-// export type ConfiguredOrderableTableColumnId<
-//   C /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ extends
-//     | DataTableColumnsConfiguration<any, any>
-//     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-//     | SelectedDataTableColumnsConfiguration<any, any, any>,
-// > = ConfiguredOrderableTableColumn<C["columns"]>["id"];
-
-/* export interface SelectedDataTableColumnsConfiguration<
-     I extends C[number]["id"],
-     D extends DataTableDatum,
-     C extends DataTableColumns<D>,
-   > {
-     readonly columns: _TableColumn<C, I>[];
-     readonly orderableColumns: ConfiguredOrderableTableColumn<C, I>[];
-     readonly isOrderableColumnId: (id: string) => id is ConfiguredOrderableTableColumn<C, I>["id"];
-   } */
-
-/* export interface DataTableColumnsConfiguration<
-     D extends DataTableDatum,
-     C extends DataTableColumns<D>,
-   > {
-     readonly columns: C;
-     readonly orderableColumns: ConfiguredOrderableTableColumn<C>[];
-     readonly isOrderableColumnId: (id: string) => id is ConfiguredOrderableTableColumn<C>["id"];
-     readonly select: <I extends _TableColumnId<C>>(
-       ids: I[],
-     ) => SelectedDataTableColumnsConfiguration<I, D, C>;
-   } */
-
-/* export const ColumnsConfiguration = <D extends DataTableDatum, C extends DataTableColumns<D>>(
-     columns: C,
-   ): DataTableColumnsConfiguration<D, C> => ({
-     columns,
-     orderableColumns: columns.filter(
-       col => col.isOrderable === true,
-     ) as ConfiguredOrderableTableColumn<C>[],
-     isOrderableColumnId(this, id: string): id is ConfiguredOrderableTableColumn<C>["id"] {
-       return this.columns.some(col => col.id === id && col.isOrderable);
-     },
-     select: <I extends _TableColumnId<C>>(
-       ids: I[],
-     ): SelectedDataTableColumnsConfiguration<I, D, C> => ({
-       columns: ids.map((id): _TableColumn<C, I> => {
-         const c = columns.find(col => col.id === id);
-         if (c === undefined) {
-           throw new Error(`Column with id ${id} not found!`);
-         }
-         return c as _TableColumn<C, I>;
-       }),
-       orderableColumns: ids.reduce(
-         (prev, id) => {
-           const c = columns.find(col => col.id === id);
-           if (c === undefined) {
-             throw new Error(`Column with id ${id} not found!`);
-           } else if (c.isOrderable) {
-             return [...prev, c as ConfiguredOrderableTableColumn<C, I>];
-           }
-           return prev;
-         },
-         [] as ConfiguredOrderableTableColumn<C, I>[],
-       ),
-       isOrderableColumnId(this, id: string): id is ConfiguredOrderableTableColumn<C, I>["id"] {
-         return this.columns.some(col => col.id === id && col.isOrderable);
-       },
-     }),
-   }); */
-
 export type RowLoadingState<D extends DataTableDatum> = {
   readonly id: D["id"];
   readonly locked?: boolean;
@@ -227,18 +131,19 @@ export interface DataTableInstance<D extends DataTableDatum, C extends DataTable
   readonly hideableColumns: HideableTableColumn<C>[];
   readonly visibleColumns: C[];
   readonly controlBarTargetId: string | null;
+  readonly canToggleColumnVisibility: boolean;
   readonly columnIsHideable: (id: string) => id is HideableTableColumn<C>["id"];
   readonly columnIsVisible: (id: string) => boolean;
   readonly columnIsHidden: (id: string) => boolean;
-  readonly rowIsLoading: (id: D["id"]) => boolean;
-  readonly rowIsLocked: (id: D["id"]) => boolean;
+  readonly rowIsLoading: (id: D | D["id"]) => boolean;
+  readonly rowIsLocked: (id: D | D["id"]) => boolean;
   readonly syncSelectedRows: (data: D[]) => void;
   readonly setSelectedRows: (selected: D[]) => void;
   readonly selectRows: (rows: D[] | D) => void;
   readonly deselectRows: (rows: D[] | D | D["id"] | D["id"][]) => void;
   readonly changeRowSelection: (row: D, isSelected: boolean) => void;
   readonly toggleRowSelection: (row: D) => void;
-  readonly rowIsSelected: (row: D) => boolean;
+  readonly rowIsSelected: (row: D | D["id"]) => boolean;
   readonly setRowLoading: (id: D["id"], loading: boolean, opts?: { locked?: boolean }) => void;
   readonly hideColumn: (id: string) => void;
   readonly showColumn: (id: string) => void;

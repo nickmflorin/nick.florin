@@ -1,14 +1,18 @@
 "use client";
 import { type ReactNode, useState } from "react";
 
+import type * as types from "./types";
+
 import { DeleteButton } from "~/components/buttons/DeleteButton";
 import { Tooltip } from "~/components/floating/Tooltip";
 import { Checkbox } from "~/components/input/Checkbox";
 import { Actions, type Action } from "~/components/structural/Actions";
-import { TableControlBarPortal } from "~/components/tables-v2/TableControlBarPortal";
+import { ColumnSelect } from "~/components/tables-v2/ColumnSelect";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 import { Text } from "~/components/typography";
+
+import { TableControlBarPortal } from "./TableControlBarPortal";
 
 interface TableControlBarDeleteConfirmationRenderProps<T> {
   readonly isOpen: boolean;
@@ -20,23 +24,33 @@ interface TableControlBarDeleteConfirmationRenderProps<T> {
 
 const DefaultDeleteConfirmationModal = () => <></>;
 
-export interface TableControlBarProps<T> extends ComponentProps {
+export interface TableControlBarProps<
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+> extends ComponentProps {
   readonly children?: ReactNode;
   readonly tooltipsInPortal?: boolean;
   readonly allRowsAreSelected?: boolean;
   readonly isDisabled?: boolean;
-  readonly selectedRows: T[];
+  readonly selectedRows: D[];
   readonly rowsAreDeletable?: boolean;
   readonly targetId: string | null;
   readonly actions?: Action[];
   readonly deleteTooltipContent?: string | ((numRows: number) => string);
+  readonly columnsSelect?: JSX.Element;
+  readonly columns?: C[];
+  readonly visibleColumns?: C["id"][];
   readonly onSelectAllRows?: (v: boolean) => void;
+  readonly onVisibleColumnsChange?: (v: C["id"][]) => void;
   readonly confirmationModal?:
-    | React.ComponentType<TableControlBarDeleteConfirmationRenderProps<T>>
-    | ((props: TableControlBarDeleteConfirmationRenderProps<T>) => JSX.Element);
+    | React.ComponentType<TableControlBarDeleteConfirmationRenderProps<D>>
+    | ((props: TableControlBarDeleteConfirmationRenderProps<D>) => JSX.Element);
 }
 
-export const TableControlBar = <T,>({
+export const TableControlBar = <
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+>({
   children,
   actions,
   allRowsAreSelected = false,
@@ -46,10 +60,14 @@ export const TableControlBar = <T,>({
   isDisabled = false,
   rowsAreDeletable = false,
   confirmationModal = DefaultDeleteConfirmationModal,
+  columns,
+  visibleColumns,
+  columnsSelect,
+  onVisibleColumnsChange,
   deleteTooltipContent = (numRows: number) => `Delete ${numRows} selected rows.`,
   onSelectAllRows,
   ...props
-}: TableControlBarProps<T>): JSX.Element => {
+}: TableControlBarProps<D, C>): JSX.Element => {
   const [confirmationModalIsOpen, setConfirmationModelIsOpen] = useState(false);
 
   const ConfirmationModal = confirmationModal;
@@ -100,7 +118,20 @@ export const TableControlBar = <T,>({
               )}
             </div>
           </div>
-          <Actions className="table-view__control-bar__right">{actions}</Actions>
+          <div className="table-view__control-bar__right">
+            {columnsSelect ? (
+              columnsSelect
+            ) : columns !== undefined ? (
+              <ColumnSelect<D, C>
+                columns={columns}
+                value={visibleColumns}
+                onChange={onVisibleColumnsChange}
+              />
+            ) : (
+              <></>
+            )}
+            <Actions>{actions}</Actions>
+          </div>
         </div>
       </TableControlBarPortal>
       {confirmationModalIsOpen && selectedRows.length !== 0 && (

@@ -99,7 +99,7 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
       }
       return (await db.skill.findMany({
         where: whereClause({ filters, visibility }),
-        orderBy: [{ [ordering.orderBy]: ordering.order }],
+        orderBy: ordering ? [{ [ordering.orderBy]: ordering.order }] : undefined,
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination
           ? pagination.pageSize

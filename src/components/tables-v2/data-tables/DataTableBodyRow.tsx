@@ -18,7 +18,8 @@ export interface DataTableBodyRowProps<
   readonly columns: types.DataTableColumn<D, C>[];
   readonly actionMenuWidth?: ActionsCellProps["menuWidth"];
   readonly excludeColumns?: types.TableColumnId<C>[];
-  readonly rowIsSelected?: (datum: D) => boolean;
+  readonly isSelected?: boolean;
+  readonly performSelectionWhenClicked?: boolean;
   readonly onRowSelected?: (datum: D, isSelected: boolean) => void;
   readonly getRowActions?: (
     datum: D,
@@ -34,27 +35,37 @@ export const DataTableBodyRow = <
   columns,
   actionMenuWidth,
   excludeColumns = [],
+  isSelected,
+  performSelectionWhenClicked = false,
   onRowSelected,
-  rowIsSelected,
   getRowActions,
   ...props
 }: DataTableBodyRowProps<D, C>): JSX.Element => (
-  <TableBodyRow {...props}>
-    {!rowIsSelected && (
+  <TableBodyRow
+    {...props}
+    onClick={e => {
+      e.stopPropagation();
+      if (performSelectionWhenClicked) {
+        onRowSelected?.(datum, !isSelected);
+      }
+      props.onClick?.(e);
+    }}
+  >
+    {isSelected === undefined && (
       <TableBodyCell align="center" className="loading-cell p-0">
         <div className="flex flex-col h-full w-full justify-center items-center">
           <Spinner isLoading={props.isLoading} size="18px" />
         </div>
       </TableBodyCell>
     )}
-    {rowIsSelected && (
+    {isSelected !== undefined && (
       <TableBodyCell align="center" className="loading-cell select-cell p-0">
         <div className="flex flex-col h-full w-full justify-center items-center">
           {props.isLoading ? (
             <Spinner isLoading={props.isLoading} size="18px" />
           ) : (
             <SelectCell
-              isSelected={rowIsSelected(datum)}
+              isSelected={isSelected}
               onSelect={checked => onRowSelected?.(datum, checked)}
             />
           )}

@@ -53,6 +53,7 @@ export const DataTableProvider = <
         columns,
         rowsAreDeletable,
         visibleColumns,
+        canToggleColumnVisibility: columns.some(c => c.isHideable !== false),
         orderableColumns: [...columns].filter(
           (col): col is types.OrderableTableColumn<C> => col.isOrderable === true,
         ),
@@ -86,7 +87,8 @@ export const DataTableProvider = <
         setSelectedRows,
         setVisibleColumns: useCallback((ids: string[]) => setVisibleColumnIds(ids), []),
         syncSelectedRows: useCallback((data: D[]) => {
-          setSelectedRows(curr => data.filter(d => curr.map(r => r.id).includes(d.id)));
+          const ids = data.map(d => d.id);
+          setSelectedRows(curr => curr.filter(d => ids.includes(d.id)));
         }, []),
         selectRows: useCallback(
           (rows: D[] | D) =>
@@ -118,19 +120,21 @@ export const DataTableProvider = <
           [],
         ),
         rowIsSelected: useCallback(
-          (id: D["id"]) => selectedRows.map(r => r.id).includes(id),
+          (id: D | D["id"]) =>
+            selectedRows.map(r => r.id).includes(typeof id === "string" ? id : id.id),
           [selectedRows],
         ),
         rowIsLoading: useCallback(
-          (id: D["id"]) => rowStates.map(st => st.id).includes(id),
+          (id: D | D["id"]) =>
+            rowStates.map(st => st.id).includes(typeof id === "string" ? id : id.id),
           [rowStates],
         ),
         rowIsLocked: useCallback(
-          (id: D["id"]) =>
+          (id: D | D["id"]) =>
             rowStates
               .filter(st => st.locked === true)
               .map(st => st.id)
-              .includes(id),
+              .includes(typeof id === "string" ? id : id.id),
           [rowStates],
         ),
         setRowLoading: useCallback((id: D["id"], value: boolean, opts?: { locked?: boolean }) => {

@@ -68,7 +68,7 @@ export const TableHeaderCell = ({
     {isOrderable && order !== undefined ? (
       <div
         className={classNames(
-          "flex flex-row items-center gap-3",
+          "table__header-cell__inner gap-3",
           align ? HorizontalFlexAlignClassNames[align] : "",
         )}
       >
@@ -97,7 +97,7 @@ export const TableHeaderCell = ({
     ) : (
       <div
         className={classNames(
-          "flex flex-row items-center",
+          "table__header-cell__inner",
           align ? HorizontalFlexAlignClassNames[align] : "",
         )}
       >

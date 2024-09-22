@@ -8,7 +8,8 @@ interface AdminLayoutProps {
 export default async function AdminLayout({ children }: AdminLayoutProps): Promise<JSX.Element> {
   return (
     <TabbedContent
-      className="pb-[16px]"
+      padding={8}
+      className="pb-[8px]"
       items={[
         {
           label: "Skills",

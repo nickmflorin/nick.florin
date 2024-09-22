@@ -1,4 +1,7 @@
 "use client";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
 import { ConnectedTableControlBar } from "~/components//tables-v2/ConnectedTableControlBar";
 import {
   type ConnectedDataTableBodyProps,
@@ -8,6 +11,12 @@ import { type SkillsTableColumn, type SkillsTableModel } from "~/features/skills
 
 import { useSkillsTableColumnProperties } from "./hooks/use-column-properties";
 import { useSkillsTableRowActions } from "./hooks/use-row-actions";
+
+const DeleteSkillsConfirmationDialog = dynamic(() =>
+  import("../dialogs/DeleteSkillsConfirmationDialog").then(
+    mod => mod.DeleteSkillsConfirmationDialog,
+  ),
+);
 
 export interface SkillsTableBodyProps<M extends SkillsTableModel>
   extends Omit<
@@ -26,12 +35,16 @@ export const SkillsTableBody = <M extends SkillsTableModel>({
 
   return (
     <>
-      <ConnectedTableControlBar
-        data={props.data}
-        isDisabled={props.isEmpty}
-        tooltipsInPortal={controlBarTooltipsInPortal}
-      />
+      <Suspense key="control-bar">
+        <ConnectedTableControlBar
+          data={props.data}
+          isDisabled={props.isEmpty}
+          tooltipsInPortal={controlBarTooltipsInPortal}
+          confirmationModal={DeleteSkillsConfirmationDialog}
+        />
+      </Suspense>
       <ConnectedDataTableBody<M, SkillsTableColumn>
+        performSelectionWhenClicked
         emptyContent="There are no skills."
         noResultsContent="No skills found for search criteria."
         {...props}

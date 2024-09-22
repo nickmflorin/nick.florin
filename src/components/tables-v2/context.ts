@@ -16,6 +16,7 @@ export const DataTableContext = createContext<DataTableInstance<any, any>>({
   hideableColumns: [],
   visibleColumns: [],
   controlBarTargetId: null,
+  canToggleColumnVisibility: false,
   setVisibleColumns: () => {},
   hideColumn: () => {},
   showColumn: () => {},

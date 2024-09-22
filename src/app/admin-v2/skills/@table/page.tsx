@@ -9,6 +9,7 @@ import { SkillsDefaultOrdering, SkillsFiltersObj } from "~/actions-v2";
 
 import { Loading } from "~/components/loading/Loading";
 import { columnIsOrderable } from "~/components/tables-v2";
+import { ConnectedTableControlPlaceholderBar } from "~/components/tables-v2/ConnectedTableControlBarPlaceholder";
 import { SkillsTableColumns } from "~/features/skills";
 import { SkillsTablePaginator } from "~/features/skills/components/tables-v2/SkillsTablePaginator";
 
@@ -61,7 +62,12 @@ export default function SkillsTablePage({ searchParams }: SkillsTablePageProps) 
       >
         <Suspense
           key={JSON.stringify(filters) + JSON.stringify(ordering) + String(page)}
-          fallback={<Loading isLoading component="tbody" />}
+          fallback={
+            <>
+              <ConnectedTableControlPlaceholderBar />
+              <Loading isLoading component="tbody" />
+            </>
+          }
         >
           <SkillsTableBody filters={filters} page={page} ordering={ordering} />
         </Suspense>

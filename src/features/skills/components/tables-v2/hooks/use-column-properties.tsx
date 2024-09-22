@@ -2,9 +2,9 @@ import { useMemo } from "react";
 
 import { updateSkill } from "~/actions/mutations/skills";
 
-import { VisibleCell } from "~/components/tables/cells/VisibleCell";
 import { type DataTableColumnProperties } from "~/components/tables-v2";
 import { ReadOnlyDateTimeCell } from "~/components/tables-v2/cells/ReadOnlyDateTimeCell";
+import { VisibleCell } from "~/components/tables-v2/cells/VisibleCell";
 import { useDataTable } from "~/components/tables-v2/hooks";
 import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills";
 

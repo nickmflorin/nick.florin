@@ -66,7 +66,7 @@ export type ShowTopSkillsString = `${ShowTopSkills}`;
 
 export interface SkillsControls<I extends SkillIncludes = SkillIncludes> {
   readonly filters: Partial<SkillsFilters>;
-  readonly ordering: Ordering<SkillOrderableField>;
+  readonly ordering?: Ordering<SkillOrderableField>;
   readonly page?: number;
   readonly includes: I;
   readonly limit?: number;

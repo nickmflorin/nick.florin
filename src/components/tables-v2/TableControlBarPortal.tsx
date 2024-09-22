@@ -5,7 +5,7 @@ import { Portal } from "@mui/base/Portal";
 
 export interface TableControlBarPortalProps {
   readonly children?: ReactNode;
-  readonly targetId: string | null;
+  readonly targetId?: string | null;
 }
 
 export const TableControlBarPortal = ({
