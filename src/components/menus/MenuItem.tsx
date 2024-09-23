@@ -6,7 +6,6 @@ import { type ReactNode, useImperativeHandle, forwardRef } from "react";
 import { isFragment } from "react-is";
 
 import { type SpinnerProps, type IconProp, type IconName, isIconProp } from "~/components/icons";
-import { Spinner } from "~/components/icons/Spinner";
 import { LoadingText } from "~/components/loading/LoadingText";
 import * as types from "~/components/menus";
 import { type Action } from "~/components/structural/Actions";
@@ -16,9 +15,10 @@ import { sizeToString, sizeToNumber, type QuantitativeSize } from "~/components/
 import { Description } from "~/components/typography";
 import { ShowHide } from "~/components/util";
 
+import { MenuItemCheckbox } from "./MenuItemCheckbox";
 import { MenuItemIcon } from "./MenuItemIcon";
+import { MenuItemSpinner } from "./MenuItemSpinner";
 
-const Checkbox = dynamic(() => import("~/components/input/Checkbox").then(mod => mod.Checkbox));
 const Actions = dynamic(() => import("~/components/structural/Actions").then(mod => mod.Actions));
 
 type MenuItemRenderCallback<V> = V | ((params: types.MenuItemRenderProps) => V);
@@ -70,6 +70,7 @@ interface MenuItemInnerProps
     | "children"
     | "actions"
     | "loadingText"
+    | "selectionIndicator"
   > {
   readonly isLoading: boolean;
   readonly isDisabled: boolean;
@@ -84,35 +85,40 @@ const MenuItemInner = ({
   children: _children,
   actions = [],
   loadingText,
+  selectionIndicator,
   ...rest
 }: MenuItemInnerProps) => {
   const icon = useMemo(() => {
     const ic = typeof _icon === "function" ? _icon({ isLocked, isLoading, isDisabled }) : _icon;
     if (typeof ic === "string" || isIconProp(ic)) {
-      return (
-        <MenuItemIcon
-          {...rest}
-          icon={ic as IconProp | IconName | undefined}
-          isLoading={isLoading}
-        />
-      );
+      return <MenuItemIcon {...rest} icon={ic} isLoading={isLoading} />;
     }
     return ic;
   }, [_icon, rest, isLoading, isLocked, isDisabled]);
 
   const leftIcon = useMemo(() => {
-    if (icon === undefined || isLoading) {
+    /* If there is no icon, we only want to show the loading indicator (i.e. Spinner) if the
+       MenuItem is not using a Checkbox as a selection indicator.  If the MenuItem is using a
+       Checkbox as a loading indicator, we want to show the Spinner over the Checkbox in the case
+       that the MenuItem is loading, to prevent the text from shifting around which would happen
+       if we conditionally showed the Spinner to the left of the MenuItem's inner text content
+       as we do below. */
+    if (
+      (icon === undefined || isLoading) &&
+      !types.menuItemHasSelectionIndicator(selectionIndicator, "checkbox")
+    ) {
       return (
-        <Spinner
-          {...rest.spinnerProps}
-          className={classNames("text-gray-600", rest.iconClassName, rest.spinnerClassName)}
+        <MenuItemSpinner
+          spinnerProps={rest.spinnerProps}
+          spinnerClassName={rest.spinnerClassName}
+          iconClassName={rest.iconClassName}
           isLoading={isLoading}
-          size={rest.iconSize ?? "16px"}
+          iconSize={rest.iconSize}
         />
       );
     }
     return icon;
-  }, [icon, isLoading, rest]);
+  }, [icon, isLoading, rest, selectionIndicator]);
 
   const children = useMemo(() => {
     if (typeof _children === "function") {
@@ -169,15 +175,13 @@ const MenuItemContent = ({
     return (
       <div className={classNames("menu__item__content-wrapper", contentClassName)}>
         <div className="menu__item__content">
-          <ShowHide show={types.menuItemHasSelectionIndicator(selectionIndicator, "checkbox")}>
-            <Checkbox
-              readOnly
-              value={isSelected}
-              isDisabled={rest.isDisabled}
-              isLocked={rest.isLocked}
-            />
-          </ShowHide>
-          <MenuItemInner {...rest} />
+          <MenuItemCheckbox
+            {...rest}
+            hasIcon={rest.icon !== undefined}
+            selectionIndicator={selectionIndicator}
+            isSelected={isSelected}
+          />
+          <MenuItemInner {...rest} selectionIndicator={selectionIndicator} />
         </div>
         {includeDescription && (
           <Description component="div" className="menu__item__description">
@@ -189,15 +193,13 @@ const MenuItemContent = ({
   }
   return (
     <div className={classNames("menu__item__content", contentClassName)}>
-      <ShowHide show={types.menuItemHasSelectionIndicator(selectionIndicator, "checkbox")}>
-        <Checkbox
-          readOnly
-          value={isSelected}
-          isDisabled={rest.isDisabled}
-          isLocked={rest.isLocked}
-        />
-      </ShowHide>
-      <MenuItemInner {...rest} />
+      <MenuItemCheckbox
+        {...rest}
+        hasIcon={rest.icon !== undefined}
+        selectionIndicator={selectionIndicator}
+        isSelected={isSelected}
+      />
+      <MenuItemInner {...rest} selectionIndicator={selectionIndicator} />
     </div>
   );
 };

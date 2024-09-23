@@ -21,10 +21,14 @@ import { SelectPopover, type SelectPopoverProps } from "./SelectPopover";
 import { SelectPopoverContent } from "./SelectPopoverContent";
 
 export interface BasicSelectProps
-  extends Optional<Omit<SelectPopoverProps, "content" | keyof ComponentProps>, "children">,
+  extends Optional<
+      Omit<SelectPopoverProps, "autoUpdate" | "content" | keyof ComponentProps>,
+      "children"
+    >,
     Omit<BasicSelectInputProps, keyof ComponentProps | "isOpen" | "children" | "value"> {
   readonly menuClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
+  readonly autoUpdatePopover?: boolean;
   readonly content: JSX.Element;
   readonly renderedValue?: ReactNode;
 }
@@ -42,6 +46,7 @@ export const BasicSelect = forwardRef<types.BasicSelectInstance, BasicSelectProp
       maxHeight = 240,
       isReady = true,
       dynamicHeight = true,
+      autoUpdatePopover = false,
       content,
       renderedValue,
       children,
@@ -71,10 +76,15 @@ export const BasicSelect = forwardRef<types.BasicSelectInstance, BasicSelectProp
         menuWidth={menuWidth}
         inPortal={inPortal}
         menuOffset={menuOffset}
+        autoUpdate={autoUpdatePopover}
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
-        content={<SelectPopoverContent className={menuClassName}>{content}</SelectPopoverContent>}
+        content={
+          <SelectPopoverContent className={menuClassName} inPortal={inPortal}>
+            {content}
+          </SelectPopoverContent>
+        }
       >
         {children ??
           (({ ref: _ref, params, isOpen, isLoading }) => (

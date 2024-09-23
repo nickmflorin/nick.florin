@@ -120,7 +120,10 @@ export type RowLoadingState<D extends DataTableDatum> = {
   readonly locked?: boolean;
 };
 
-export interface DataTableInstance<D extends DataTableDatum, C extends DataTableColumnConfig<D>> {
+export interface DataTableInstance<
+  D extends DataTableDatum,
+  C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
+> {
   readonly isInScope: boolean;
   readonly selectedRows: D[];
   readonly rowsHaveActions: boolean;
@@ -151,5 +154,7 @@ export interface DataTableInstance<D extends DataTableDatum, C extends DataTable
   readonly toggleColumnVisibility: (id: string) => void;
 }
 
-export interface CellDataTableInstance<D extends DataTableDatum, C extends DataTableColumnConfig<D>>
-  extends Pick<DataTableInstance<D, C>, "setRowLoading"> {}
+export interface CellDataTableInstance<
+  D extends DataTableDatum,
+  C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
+> extends Pick<DataTableInstance<D, C>, "setRowLoading"> {}

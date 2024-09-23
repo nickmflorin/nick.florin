@@ -102,7 +102,7 @@
 
   @include table-size(constants.$table-default-size);
   @each $size in constants.$table-sizes {
-    &.table--#{$size} {
+    &.table-v2--#{$size} {
       @include table-size($size);
     }
   }
@@ -122,7 +122,9 @@
         display: table-cell;
         position: sticky;
         top: 0;
-        z-index: 2;
+        // Must be larger than popover content z-index of 50.  If popover is 'inPortal', the
+        // z-index of the popover content must be > 51.
+        z-index: 51;
         text-align: left;
         border-bottom: none;
         background-color: constants.$table-header-bg-color;
@@ -176,6 +178,10 @@
           align-items: center;
           font-size: inherit;
           color: inherit;
+
+          > .popover-content {
+            opacity: 1 !important;
+          }
         }
       }
 
@@ -193,6 +199,14 @@
 
       &--loading {
         opacity: 0.4;
+
+        @include table-body-cell($direct: true) {
+          > .table__body-cell__inner {
+            > .popover-content {
+              opacity: 1;
+            }
+          }
+        }
       }
 
       &--bordered {
@@ -208,6 +222,14 @@
     &.table__body--loading {
       @include table-body-row($direct: true) {
         opacity: 0.4;
+
+        @include table-body-cell($direct: true) {
+          > .table__body-cell__inner {
+            > .popover-content {
+              opacity: 1;
+            }
+          }
+        }
       }
     }
   }

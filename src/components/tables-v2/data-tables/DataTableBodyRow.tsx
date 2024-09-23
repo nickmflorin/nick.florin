@@ -5,7 +5,7 @@ import { TableBodyRow } from "~/components/tables-v2/generic/TableBodyRow";
 import type * as types from "~/components/tables-v2/types";
 
 import { ActionsCell, type ActionsCellProps } from "../cells/ActionsCell";
-import { SelectCell } from "../cells/SelectCell";
+import { RowSelectCell } from "../cells/RowSelectCell";
 import { TableBodyCell } from "../generic/TableBodyCell";
 
 import { DataTableBodyCell } from "./DataTableBodyCell";
@@ -64,7 +64,7 @@ export const DataTableBodyRow = <
           {props.isLoading ? (
             <Spinner isLoading={props.isLoading} size="18px" />
           ) : (
-            <SelectCell
+            <RowSelectCell
               isSelected={isSelected}
               onSelect={checked => onRowSelected?.(datum, checked)}
             />

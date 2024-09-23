@@ -9,7 +9,7 @@ import { type PopoverRenderProps } from "~/components/floating/types";
 import type * as types from "~/components/input/select/types";
 
 export interface SelectPopoverProps
-  extends Pick<PopoverProps, "inPortal" | "content" | "maxHeight"> {
+  extends Pick<PopoverProps, "inPortal" | "content" | "maxHeight" | "autoUpdate"> {
   readonly menuPlacement?: PopoverProps["placement"];
   readonly menuOffset?: PopoverProps["offset"];
   readonly menuWidth?: PopoverProps["width"];

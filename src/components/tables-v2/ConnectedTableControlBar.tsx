@@ -1,4 +1,5 @@
-"use client";
+import type { ReactNode } from "react";
+
 import type * as types from "./types";
 
 import { arraysHaveSameElements } from "~/lib";
@@ -20,8 +21,10 @@ export interface ConnectedTableControlBarProps<
     | "columns"
     | "onVisibleColumnsChange"
     | "visibleColumns"
+    | "children"
   > {
   readonly data: D[];
+  readonly children?: ReactNode | ((props: { readonly selectedRows: D[] }) => ReactNode);
 }
 
 export const ConnectedTableControlBar = <
@@ -29,6 +32,7 @@ export const ConnectedTableControlBar = <
   C extends types.DataTableColumnConfig<D>,
 >({
   data,
+  children,
   ...props
 }: ConnectedTableControlBarProps<D, C>): JSX.Element => {
   const { controlBarTargetId, selectedRows, rowsAreDeletable, setSelectedRows } = useDataTable<D>();
@@ -48,7 +52,9 @@ export const ConnectedTableControlBar = <
           data.map(datum => datum.id),
         )
       }
-    />
+    >
+      {typeof children === "function" ? children({ selectedRows }) : children}
+    </TableControlBar>
   );
 };
 

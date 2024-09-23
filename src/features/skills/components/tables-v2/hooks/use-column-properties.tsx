@@ -8,6 +8,14 @@ import { VisibleCell } from "~/components/tables-v2/cells/VisibleCell";
 import { useDataTable } from "~/components/tables-v2/hooks";
 import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills";
 
+import { CategoriesCell } from "../cells/CategoriesCell";
+import { EducationsCell } from "../cells/EducationsCell";
+import { ExperiencesCell } from "../cells/ExperiencesCell";
+import { ProgrammingLanguagesCell } from "../cells/ProgrammingLanguagesCell";
+import { ProjectsCell } from "../cells/ProjectsCell";
+import { RepositoriesCell } from "../cells/RepositoriesCell";
+import { ShowInTopSkillsCell } from "../cells/ShowInTopSkillsCell";
+
 export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
   SkillsTableModel,
   SkillsTableColumn
@@ -25,6 +33,36 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
           return datum.slug;
         },
       },
+      categories: {
+        cellRenderer(datum) {
+          return <CategoriesCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      programmingLanguages: {
+        cellRenderer(datum) {
+          return <ProgrammingLanguagesCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      projects: {
+        cellRenderer(datum) {
+          return <ProjectsCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      repositories: {
+        cellRenderer(datum) {
+          return <RepositoriesCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      experiences: {
+        cellRenderer(datum) {
+          return <ExperiencesCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      educations: {
+        cellRenderer(datum) {
+          return <EducationsCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
       updatedAt: {
         cellRenderer(datum) {
           return <ReadOnlyDateTimeCell date={datum.updatedAt} />;
@@ -33,6 +71,11 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
       createdAt: {
         cellRenderer(datum) {
           return <ReadOnlyDateTimeCell date={datum.createdAt} />;
+        },
+      },
+      includeInTopSkills: {
+        cellRenderer(datum) {
+          return <ShowInTopSkillsCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       visible: {

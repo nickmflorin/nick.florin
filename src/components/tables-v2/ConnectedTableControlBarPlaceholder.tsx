@@ -6,11 +6,11 @@ import {
   type TableControlBarPlaceholderProps,
 } from "./TableControlBarPlaceholder";
 
-export interface ConnectedTableControlPlaceholderBarProps
+export interface ConnectedTableControlBarPlaceholderProps
   extends Omit<TableControlBarPlaceholderProps, "canDeleteRows" | "targetId"> {}
 
-export const ConnectedTableControlPlaceholderBar = (
-  props: ConnectedTableControlPlaceholderBarProps,
+export const ConnectedTableControlBarPlaceholder = (
+  props: ConnectedTableControlBarPlaceholderProps,
 ): JSX.Element => {
   const { controlBarTargetId, rowsAreDeletable } = useDataTable();
 

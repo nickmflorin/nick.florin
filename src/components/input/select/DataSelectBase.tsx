@@ -89,6 +89,7 @@ const LocalDataSelectBase = forwardRef<
       chipsCanDeselect: _chipsCanDeselect,
       showIconsInChips = true,
       strictValueLookup = true,
+      autoUpdatePopover,
       getItemValueLabel,
       children,
       content,
@@ -155,6 +156,7 @@ const LocalDataSelectBase = forwardRef<
         menuClassName={menuClassName}
         inPortal={inPortal}
         menuOffset={menuOffset}
+        autoUpdatePopover={autoUpdatePopover}
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}

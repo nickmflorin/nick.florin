@@ -5,7 +5,7 @@ export type ReadOnlyDateTimeCellProps = {
 };
 
 export const ReadOnlyDateTimeCell = ({ date }: ReadOnlyDateTimeCellProps): JSX.Element => (
-  <DateTimeText formatSeparately value={date} fontWeight="regular" />
+  <DateTimeText formatSeparately value={date} fontWeight="regular" component="text" />
 );
 
 export default ReadOnlyDateTimeCell;

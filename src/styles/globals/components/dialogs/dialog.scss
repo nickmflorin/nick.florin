@@ -4,7 +4,7 @@
   background: rgba(0, 0, 0, 0.05);
   display: grid;
   place-items: center;
-  z-index: 2;
+  z-index: 200; // Must be larger than popover content and table-header-cell.
 
   .dialog {
     display: flex;

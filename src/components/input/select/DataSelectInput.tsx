@@ -170,6 +170,10 @@ export const DataSelectInput = forwardRef(
     return (
       <BasicSelectInput
         {...props}
+        onClick={e => {
+          e.stopPropagation();
+          props.onClick?.(e);
+        }}
         dynamicHeight={dynamicHeight}
         ref={ref}
         showPlaceholder={showPlaceholder}

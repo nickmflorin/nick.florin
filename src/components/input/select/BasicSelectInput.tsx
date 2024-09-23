@@ -10,6 +10,7 @@ import React, {
 
 import { Input, type InputProps } from "~/components/input/generic";
 import { NativeInput } from "~/components/input/generic/NativeInput";
+import { type InputEventName } from "~/components/input/types";
 import { classNames } from "~/components/types";
 
 export interface BasicSelectInputInstance {
@@ -33,9 +34,8 @@ export interface BasicSelectInputProps
     | "placeholder"
     | "showPlaceholder"
     | "children"
-    | "onFocus"
-    | "onBlur"
     | "id"
+    | InputEventName
   > {
   readonly isOpen: boolean;
   readonly search?: string;

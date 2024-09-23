@@ -1,8 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
-
-import { ConnectedTableControlBar } from "~/components//tables-v2/ConnectedTableControlBar";
 import {
   type ConnectedDataTableBodyProps,
   ConnectedDataTableBody,
@@ -11,39 +7,31 @@ import { type SkillsTableColumn, type SkillsTableModel } from "~/features/skills
 
 import { useSkillsTableColumnProperties } from "./hooks/use-column-properties";
 import { useSkillsTableRowActions } from "./hooks/use-row-actions";
+import { SkillsTableControlBar } from "./SkillsTableControlBar";
 
-const DeleteSkillsConfirmationDialog = dynamic(() =>
-  import("../dialogs/DeleteSkillsConfirmationDialog").then(
-    mod => mod.DeleteSkillsConfirmationDialog,
-  ),
-);
-
-export interface SkillsTableBodyProps<M extends SkillsTableModel>
+export interface SkillsTableBodyProps
   extends Omit<
-    ConnectedDataTableBodyProps<M, SkillsTableColumn>,
+    ConnectedDataTableBodyProps<SkillsTableModel, SkillsTableColumn>,
     "rowIsSelected" | "onRowSelected" | "getRowActions" | "columns" | "columnProperties"
   > {
   readonly controlBarTooltipsInPortal?: boolean;
 }
 
-export const SkillsTableBody = <M extends SkillsTableModel>({
+export const SkillsTableBody = ({
   controlBarTooltipsInPortal,
   ...props
-}: SkillsTableBodyProps<M>): JSX.Element => {
+}: SkillsTableBodyProps): JSX.Element => {
   const columnProperties = useSkillsTableColumnProperties();
   const rowActions = useSkillsTableRowActions();
 
   return (
     <>
-      <Suspense key="control-bar">
-        <ConnectedTableControlBar
-          data={props.data}
-          isDisabled={props.isEmpty}
-          tooltipsInPortal={controlBarTooltipsInPortal}
-          confirmationModal={DeleteSkillsConfirmationDialog}
-        />
-      </Suspense>
-      <ConnectedDataTableBody<M, SkillsTableColumn>
+      <SkillsTableControlBar
+        data={props.data}
+        isDisabled={props.isEmpty}
+        tooltipsInPortal={controlBarTooltipsInPortal}
+      />
+      <ConnectedDataTableBody<SkillsTableModel, SkillsTableColumn>
         performSelectionWhenClicked
         emptyContent="There are no skills."
         noResultsContent="No skills found for search criteria."
@@ -56,5 +44,3 @@ export const SkillsTableBody = <M extends SkillsTableModel>({
     </>
   );
 };
-
-export default SkillsTableBody;

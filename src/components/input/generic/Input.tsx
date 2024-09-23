@@ -5,6 +5,7 @@ import { type IconProp, type IconName } from "~/components/icons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
+import { type InputEventName } from "~/components/input/types";
 import { Actions, type Action } from "~/components/structural/Actions";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
@@ -14,17 +15,7 @@ import { InputWrapper, type InputWrapperProps } from "./InputWrapper";
 export interface InputProps
   extends Omit<InputWrapperProps<"div">, "component" | "onChange" | "placeholder">,
     ComponentProps,
-    Pick<
-      React.ComponentProps<"div">,
-      | "onFocus"
-      | "onBlur"
-      | "onPointerDown"
-      | "onMouseDown"
-      | "onClick"
-      | "onKeyDown"
-      | "onKeyUp"
-      | "onFocusCapture"
-    > {
+    Pick<React.ComponentProps<"div">, InputEventName> {
   readonly id?: string;
   readonly actions?: Action[];
   readonly icon?: IconProp | IconName;

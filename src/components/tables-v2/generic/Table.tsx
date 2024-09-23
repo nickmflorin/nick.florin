@@ -1,4 +1,4 @@
-import { type TableSize } from "~/components/tables-v2/types";
+import { type TableSize, TableSizes } from "~/components/tables-v2/types";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 
@@ -14,17 +14,17 @@ export const Table = ({
   children,
   highlightRowsOnHover = true,
   bordered = true,
-  size = "medium",
+  size = TableSizes.SMALL,
   ...props
 }: TableProps) => (
   <table
     {...props}
     className={classNames(
       "table-v2",
-      `table--size-${size}`,
+      `table-v2--size-${size}`,
       {
-        "table--higlighted-rows-on-hover": highlightRowsOnHover,
-        "table--bordered": bordered,
+        "table-v2--higlighted-rows-on-hover": highlightRowsOnHover,
+        "table-v2--bordered": bordered,
       },
       props.className,
     )}

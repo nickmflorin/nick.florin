@@ -1,8 +1,9 @@
 import type { SpinnerProps, IconProp, IconName } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import { Spinner } from "~/components/icons/Spinner";
 import type * as types from "~/components/menus";
 import { classNames, type ComponentProps, type QuantitativeSize } from "~/components/types";
+
+import { MenuItemSpinner } from "./MenuItemSpinner";
 
 export interface MenuItemIconProps {
   readonly icon?: IconProp | IconName;
@@ -26,11 +27,12 @@ export const MenuItemIcon = ({
   if (icon) {
     if (isLoading) {
       return (
-        <Spinner
-          {...spinnerProps}
-          className={classNames("text-gray-600", iconClassName, spinnerClassName)}
+        <MenuItemSpinner
+          spinnerProps={spinnerProps}
+          spinnerClassName={spinnerClassName}
+          iconClassName={iconClassName}
           isLoading={isLoading}
-          size={iconSize}
+          iconSize={iconSize}
         />
       );
     }

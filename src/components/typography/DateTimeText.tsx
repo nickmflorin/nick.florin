@@ -19,6 +19,7 @@ type BaseDateTimeTextProps<C extends TextComponent> = Omit<TextProps<C>, "childr
 
 type BaseSeparatedDateTimeTextProps = ComponentProps &
   TypographyCharacteristics & {
+    readonly component?: "div" | "text";
     readonly dateProps?: Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> &
       ComponentProps;
     readonly timeProps?: Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> &
@@ -124,6 +125,7 @@ export const DateTimeText = <C extends TextComponent>({
   style,
   timeProps,
   dateProps,
+  component = "div",
   ...props
 }: DateTimeProps<C>): JSX.Element => {
   if (!formatSeparately) {
@@ -149,9 +151,38 @@ export const DateTimeText = <C extends TextComponent>({
   }
   const obj = parser(value ?? children, { strict });
   if (obj) {
+    if (component === "text") {
+      return (
+        <Text {...props} style={style} className={className} lineClamp={1}>
+          <Text
+            {...dateProps}
+            component="span"
+            className={classNames("text-body", dateProps?.className)}
+          >
+            {typeof dateFormat === "string"
+              ? obj.toFormat(dateFormat)
+              : obj.toLocaleString(dateFormat)}
+          </Text>{" "}
+          <Text
+            {...timeProps}
+            component="span"
+            className={classNames("text-description", timeProps?.className)}
+          >
+            {typeof timeFormat === "string"
+              ? obj.toFormat(timeFormat)
+              : obj.toLocaleString(timeFormat)}
+          </Text>
+        </Text>
+      );
+    }
     return (
       <div style={style} className={classNames("flex flex-row gap-1", className)}>
-        <Text {...props} {...dateProps} className={classNames("text-body", dateProps?.className)}>
+        <Text
+          {...props}
+          {...dateProps}
+          className={classNames("text-body", dateProps?.className)}
+          lineClamp={1}
+        >
           {typeof dateFormat === "string"
             ? obj.toFormat(dateFormat)
             : obj.toLocaleString(dateFormat)}
@@ -160,6 +191,7 @@ export const DateTimeText = <C extends TextComponent>({
           {...props}
           {...timeProps}
           className={classNames("text-description", timeProps?.className)}
+          lineClamp={1}
         >
           {typeof timeFormat === "string"
             ? obj.toFormat(timeFormat)

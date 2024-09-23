@@ -6,12 +6,12 @@ $table-color: theme("colors.body");
 $table-body-bg-color: theme("colors.white");
 
 $table-sizes: ("small", "medium", "large");
-$table-default-size: "medium";
+$table-default-size: "small";
 
 $table-size-properties: (
   "small": (
     "td": (
-      padding: 10px 12px,
+      padding: 6px 8px,
     ),
     "th": (
       padding: 10px 12px,
@@ -19,7 +19,7 @@ $table-size-properties: (
   ),
   "medium": (
     "td": (
-      padding: 10px 12px,
+      padding: 8px 10px,
     ),
     "th": (
       padding: 10px 12px,

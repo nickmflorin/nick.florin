@@ -6,7 +6,10 @@ import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
 import { Loading } from "~/components/loading/Loading";
 
 const ClientSkillsTableBody = dynamic(
-  () => import("~/features/skills/components/tables-v2/SkillsTableBody"),
+  () =>
+    import("~/features/skills/components/tables-v2/SkillsTableBody").then(
+      mod => mod.SkillsTableBody,
+    ),
   { loading: () => <Loading isLoading component="tbody" /> },
 );
 

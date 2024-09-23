@@ -6,13 +6,6 @@ import type {
   TableColumnId,
 } from "~/components/tables-v2";
 
-/* import type {
-     ConfiguredTableColumnId,
-     ConfiguredOrderableTableColumnId,
-     ConfiguredTableColumn,
-   } from "~/components/tables-v2";
-   import { ColumnsConfiguration } from "~/components/tables-v2"; */
-
 export type SkillsTableModel = ApiSkill<["experiences", "educations", "projects", "repositories"]>;
 
 export const SkillsTableColumns = [
@@ -31,18 +24,30 @@ export const SkillsTableColumns = [
   {
     id: "experiences",
     label: "Experiences",
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
   },
   {
     id: "educations",
     label: "Educations",
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
   },
   {
     id: "projects",
     label: "Projects",
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
   },
   {
     id: "repositories",
     label: "Repositories",
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
   },
   {
     id: "calculatedExperience",
@@ -54,69 +59,55 @@ export const SkillsTableColumns = [
   {
     id: "categories",
     label: "Categories",
-    width: 220,
     isHiddenByDefault: true,
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
   },
   {
     id: "programmingLanguages",
     label: "Prog. Languages",
-    width: 220,
     isHiddenByDefault: true,
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
   },
   {
     id: "createdAt",
     label: "Created",
     align: "right",
-    maxWidth: 200,
+    width: 200,
+    minWidth: 200,
     isOrderable: true,
   },
   {
     id: "updatedAt",
     label: "Updated",
     align: "right",
-    maxWidth: 200,
+    width: 200,
+    minWidth: 200,
     isOrderable: true,
   },
   {
     id: "includeInTopSkills",
     label: "Top Skill",
     align: "center",
-    width: 100,
+    width: 105,
+    maxWidth: 105,
+    minWidth: 105,
   },
   {
     id: "visible",
     label: "Visible",
     width: 80,
+    maxWidth: 80,
+    minWidth: 80,
     align: "center",
   },
 ] as const satisfies DataTableColumnConfig<SkillsTableModel>[];
 
-/* export const SkillsTableColumns = SkillsTableColumnConfigurations.select([
-     "label",
-     "slug",
-     "experiences",
-     "educations",
-     "projects",
-     "repositories",
-     "calculatedExperience",
-     "categories",
-     "programmingLanguages",
-     "createdAt",
-     "updatedAt",
-     "includeInTopSkills",
-     "visible",
-   ]); */
-
-// export type SkillsTableColumn = ConfiguredTableColumn<typeof SkillsTableColumns>;
-
 export type SkillsTableColumn = (typeof SkillsTableColumns)[number];
 
-// export type SkillsTableColumnId = ConfiguredTableColumnId<typeof SkillsTableColumns>;
-
 export type SkillsTableColumnId = TableColumnId<SkillsTableColumn>;
-
-/* export type SkillsTableOrderableColumnId = ConfiguredOrderableTableColumnId<
-     typeof SkillsTableColumns
-   >; */
 
 export type SkillsTableOrderableColumnId = OrderableTableColumnId<SkillsTableColumn>;

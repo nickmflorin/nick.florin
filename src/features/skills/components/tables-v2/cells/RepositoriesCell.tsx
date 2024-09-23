@@ -6,8 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { updateSkill } from "~/actions/mutations/skills";
-import { isApiClientErrorJson } from "~/api";
+import { updateSkill } from "~/actions-v2/skills/update-skill";
 
 import type * as types from "~/components/tables-v2/types";
 import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
@@ -29,47 +28,56 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
 
   return (
     <RepositorySelect
+      inPortal
       behavior="multi"
+      summarizeValueAfter={2}
       isClearable
       inputClassName="w-full"
       value={value}
-      onChange={async v => {
+      onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);
+        item?.setLoading(true);
         table.setRowLoading(skill.id, true);
+
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
           response = await updateSkill(skill.id, { repositories: v });
         } catch (e) {
-          logger.error(
+          logger.errorUnsafe(
+            e,
             `There was an error updating the repositories for the skill with ID '${skill.id}':\n${e}`,
             {
-              error: e,
               skill: skill.id,
               experiences: v,
             },
           );
-          toast.error("There was an error updating the skill.");
-        } finally {
+          item?.setLoading(false);
           table.setRowLoading(skill.id, false);
+          return toast.error("There was an error updating the skill.");
         }
-        if (isApiClientErrorJson(response)) {
+        const { error } = response;
+        if (error) {
           logger.error(
+            error,
             "There was a client error updating the repositories for the skill with ID " +
-              `'${skill.id}': ${response.code}`,
+              `'${skill.id}': ${error.code}`,
             {
-              response,
               skill: skill.id,
               experiences: v,
             },
           );
-          toast.error("There was an error updating the skill.");
+          item?.setLoading(false);
+          table.setRowLoading(skill.id, false);
+          return toast.error("There was an error updating the skill.");
         }
         /* Refresh the state from the server regardless of whether or not the request succeeded.
            In the case the request failed, this is required to revert the changes back to their
            original state. */
         transition(() => {
           router.refresh();
+          item?.setLoading(false);
+          table.setRowLoading(skill.id, false);
         });
       }}
     />
