@@ -13,6 +13,7 @@ import type {
 
 import { SkillsFiltersObj, type SkillsFilters } from "~/actions-v2";
 
+import { DrawerIds } from "~/components/drawers";
 import type { SelectInstance } from "~/components/input/select";
 import { TableView } from "~/components/tables-v2/TableView";
 import { type ComponentProps } from "~/components/types";
@@ -108,6 +109,7 @@ export const SkillsTableFilterBar = ({
       searchInputRef={searchInputRef}
       searchPlaceholder="Search skills..."
       onSearch={v => updateFilters({ search: v })}
+      newDrawerId={DrawerIds.CREATE_SKILL}
       search={filters.search}
       onClear={() => {
         clear();

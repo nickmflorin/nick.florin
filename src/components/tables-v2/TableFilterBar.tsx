@@ -2,10 +2,13 @@
 import { type ReactNode, useRef, type MutableRefObject } from "react";
 
 import { IconButton } from "~/components/buttons";
+import type { DrawerId } from "~/components/drawers";
 import { TextInput } from "~/components/input/TextInput";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 import { useDebounceCallback } from "~/hooks";
+
+import { NewButton } from "./NewButton";
 
 export interface TableFilterBarProps extends ComponentProps {
   readonly children?: ReactNode;
@@ -15,6 +18,7 @@ export interface TableFilterBarProps extends ComponentProps {
   readonly search?: string;
   readonly isControlled?: boolean;
   readonly searchInputRef?: MutableRefObject<HTMLInputElement | null>;
+  readonly newDrawerId?: DrawerId;
   readonly onSearch?: (search: string) => void;
   readonly onClear?: () => void;
 }
@@ -27,6 +31,7 @@ export const TableFilterBar = ({
   search = "",
   isControlled = false,
   searchInputRef,
+  newDrawerId,
   onSearch: _onSearch,
   onClear,
   ...props
@@ -70,6 +75,7 @@ export const TableFilterBar = ({
           onClear?.();
         }}
       />
+      {newDrawerId && <NewButton drawerId={newDrawerId} />}
     </div>
   );
 };

@@ -158,3 +158,9 @@ export interface CellDataTableInstance<
   D extends DataTableDatum,
   C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
 > extends Pick<DataTableInstance<D, C>, "setRowLoading"> {}
+
+export type TableFilter = {
+  readonly id: string;
+  readonly label: string;
+  readonly renderer: () => ReactNode;
+};
