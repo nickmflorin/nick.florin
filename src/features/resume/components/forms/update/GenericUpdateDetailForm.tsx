@@ -19,7 +19,7 @@ import { Actions } from "~/components/structural/Actions";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { classNames } from "~/components/types";
 import { ShowHide } from "~/components/util";
-import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
+import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
@@ -221,7 +221,7 @@ export const GenericUpdateDetailForm = <
         helpText="The project that the detail is associated with, if applicable."
       >
         {({ value, onChange }) => (
-          <ProjectSelect
+          <ClientProjectSelect
             inputClassName="w-full"
             value={value}
             behavior="single-nullable"

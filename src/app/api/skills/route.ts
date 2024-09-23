@@ -1,26 +1,47 @@
-import { type SkillIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
 
-import { getSkills } from "~/actions/fetches/skills";
-import { SkillsFiltersSchema, type SkillsFilters } from "~/actions-v2/types";
-import { ClientResponse, ApiClientFieldErrors } from "~/api";
-import { apiRoute } from "~/api/route";
+import { z } from "zod";
 
-export const GET = apiRoute(async (request, params, query) => {
-  let filters: Partial<SkillsFilters> | undefined = undefined;
+import type { SkillIncludes } from "~/database/model";
+import { parseOrdering } from "~/lib/ordering";
 
-  if (query.filters) {
-    const parsedQuery = SkillsFiltersSchema.partial().safeParse(query.filters);
-    if (!parsedQuery.success) {
-      return ApiClientFieldErrors.fromZodError(parsedQuery.error, SkillsFiltersSchema).response;
-    }
-    filters = parsedQuery.data;
+import {
+  SkillsFiltersObj,
+  SkillsDefaultOrdering,
+  SkillOrderableFields,
+  SkillIncludesSchema,
+} from "~/actions-v2";
+import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http-v2";
+
+export const GET = async (request: NextRequest) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = SkillIncludesSchema.safeParse(query.includes);
+
+  const limit = z.coerce.number().int().positive().safeParse(query.limit).data;
+
+  let includes: SkillIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  /* This API request is currently only used in the public realm, so admin visibility is not
-     applicable at this point in time. */
-  const skills = await getSkills({
-    ...query,
-    filters,
-    includes: query.includes as SkillIncludes,
+
+  const filters = SkillsFiltersObj.parse(query);
+
+  const ordering = parseOrdering(query, {
+    defaultOrdering: SkillsDefaultOrdering,
+    fields: [...SkillOrderableFields],
   });
-  return ClientResponse.OK(skills).response;
-});
+
+  const fetcher = fetchSkills(includes);
+  const { error, data } = await fetcher(
+    { filters, ordering, limit, visibility: "public" },
+    { scope: "api" },
+  );
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

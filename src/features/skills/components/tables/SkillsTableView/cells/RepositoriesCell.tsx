@@ -11,7 +11,7 @@ import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
 
 import type * as types from "~/components/tables/types";
-import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
+import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
 
 interface RepositoriesCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
@@ -30,7 +30,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
   }, [skill.repositories]);
 
   return (
-    <RepositorySelect
+    <ClientRepositorySelect
       behavior="multi"
       isClearable
       inputClassName="w-full"

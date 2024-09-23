@@ -9,7 +9,7 @@ import { logger } from "~/internal/logger";
 import { updateSkill } from "~/actions-v2/skills/update-skill";
 
 import type * as types from "~/components/tables-v2/types";
-import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
+import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
 import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills/types";
 
 interface RepositoriesCellProps {
@@ -27,7 +27,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
   }, [skill.repositories]);
 
   return (
-    <RepositorySelect
+    <ClientRepositorySelect
       inPortal
       behavior="multi"
       summarizeValueAfter={2}

@@ -6,7 +6,7 @@ import { ErrorView } from "~/components/errors/ErrorView";
 import { DynamicLoader, DynamicLoading } from "~/components/loading/dynamic-loading";
 import { Loading } from "~/components/loading/Loading";
 import { Module } from "~/components/structural/Module";
-import { useSkills } from "~/hooks";
+import { useSkills } from "~/hooks/api-v2";
 
 import { type SkillsChartFilterFormValues } from "./forms/SkillsChartFilterForm";
 import { SkillsFilterDropdownMenu } from "./SkillsFilterDropdownMenu";
@@ -32,10 +32,12 @@ export const SkillsChartModule = () => {
   } = useSkills({
     keepPreviousData: true,
     query: {
+      ...filters,
       includes: [],
       visibility: "public",
-      filters: { ...filters, includeInTopSkills: true },
-      orderBy: [{ calculatedExperience: "desc" }],
+      includeInTopSkills: true,
+      order: "desc",
+      orderBy: "calculatedExperience",
       limit: filters.showTopSkills === "all" ? undefined : filters.showTopSkills,
     },
   });

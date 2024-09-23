@@ -15,8 +15,8 @@ import { TextInput } from "~/components/input/TextInput";
 import { CourseSelect } from "~/features/courses/components/input/CourseSelect";
 import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
-import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
-import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
+import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
+import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
 import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
 import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
 import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
@@ -94,7 +94,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       </Form.ControlledField>
       <Form.ControlledField name="projects" label="Projects" form={props.form}>
         {({ value, onChange }) => (
-          <ProjectSelect
+          <ClientProjectSelect
             inputClassName="w-full"
             behavior="multi"
             isClearable
@@ -107,7 +107,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       </Form.ControlledField>
       <Form.ControlledField name="repositories" label="Repositories" form={props.form}>
         {({ value, onChange }) => (
-          <RepositorySelect
+          <ClientRepositorySelect
             inputClassName="w-full"
             behavior="multi"
             isClearable

@@ -26,7 +26,7 @@ export interface BasicSelectProps
       "children"
     >,
     Omit<BasicSelectInputProps, keyof ComponentProps | "isOpen" | "children" | "value"> {
-  readonly menuClassName?: ComponentProps["className"];
+  readonly popoverClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly autoUpdatePopover?: boolean;
   readonly content: JSX.Element;
@@ -41,7 +41,7 @@ export const BasicSelect = forwardRef<types.BasicSelectInstance, BasicSelectProp
       menuWidth = "target",
       isLoading,
       inPortal,
-      menuClassName,
+      popoverClassName,
       inputClassName,
       maxHeight = 240,
       isReady = true,
@@ -81,7 +81,7 @@ export const BasicSelect = forwardRef<types.BasicSelectInstance, BasicSelectProp
         onClose={onClose}
         onOpenChange={onOpenChange}
         content={
-          <SelectPopoverContent className={menuClassName} inPortal={inPortal}>
+          <SelectPopoverContent className={popoverClassName} inPortal={inPortal}>
             {content}
           </SelectPopoverContent>
         }

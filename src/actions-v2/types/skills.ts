@@ -5,11 +5,9 @@ import {
   SkillIncludesFields,
   type SkillIncludesField,
   SkillCategories,
-} from "~/database/model";
-import {
-  ProgrammingDomain,
-  ProgrammingLanguage,
-  SkillCategory,
+  type ProgrammingDomain,
+  type ProgrammingLanguage,
+  type SkillCategory,
   ProgrammingDomains,
   ProgrammingLanguages,
 } from "~/database/model";
@@ -42,27 +40,17 @@ export const SkillsOrderingMap = {
   calculatedExperience: order => [{ calculatedExperience: order }] as const,
 } as const satisfies { [key in SkillOrderableField]: (order: Order) => unknown[] };
 
-export const SkillsFiltersSchema = z.object({
-  includeInTopSkills: z.boolean().nullable(),
-  experiences: z.array(z.string().uuid()),
-  educations: z.array(z.string().uuid()),
-  programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)),
-  programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)),
-  categories: z.array(z.nativeEnum(SkillCategory)),
-  search: z.string(),
-});
-
-export type SkillsFilters = z.infer<typeof SkillsFiltersSchema>;
-
-export const ShowTopSkillsSchema = z.union([
-  z.literal(5),
-  z.literal(8),
-  z.literal(12),
-  z.literal("all"),
-]);
-export type ShowTopSkills = z.infer<typeof ShowTopSkillsSchema>;
-
-export type ShowTopSkillsString = `${ShowTopSkills}`;
+export interface SkillsFilters {
+  readonly includeInTopSkills: boolean | null;
+  readonly experiences: string[];
+  readonly educations: string[];
+  readonly programmingDomains: ProgrammingDomain[];
+  readonly programmingLanguages: ProgrammingLanguage[];
+  readonly search: string;
+  readonly categories: SkillCategory[];
+  readonly projects: string[];
+  readonly repositories: string[];
+}
 
 export interface SkillsControls<I extends SkillIncludes = SkillIncludes> {
   readonly filters: Partial<SkillsFilters>;
@@ -72,6 +60,14 @@ export interface SkillsControls<I extends SkillIncludes = SkillIncludes> {
   readonly limit?: number;
   readonly visibility: ActionVisibility;
 }
+
+export type FlattenedSkillsControls<I extends SkillIncludes = SkillIncludes> = SkillsFilters &
+  Ordering<SkillOrderableField> & {
+    readonly page?: number;
+    readonly includes: I;
+    readonly limit?: number;
+    readonly visibility: ActionVisibility;
+  };
 
 export const SkillsFiltersObj = Filters({
   includeInTopSkills: {
@@ -129,6 +125,26 @@ export const SkillsFiltersObj = Filters({
       return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
     }),
   },
+  projects: {
+    defaultValue: [] as string[],
+    excludeWhen: v => v.length === 0,
+    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
+      if (typeof value === "string") {
+        return isUuid(value) ? [value] : [];
+      }
+      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
+    }),
+  },
+  repositories: {
+    defaultValue: [] as string[],
+    excludeWhen: v => v.length === 0,
+    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
+      if (typeof value === "string") {
+        return isUuid(value) ? [value] : [];
+      }
+      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
+    }),
+  },
   educations: {
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,
@@ -144,7 +160,9 @@ export const SkillsFiltersObj = Filters({
 // Used for API Routes
 export const SkillIncludesSchema = z.union([z.string(), z.array(z.string())]).transform(value => {
   if (typeof value === "string") {
-    return (SkillIncludesFields.contains(value) ? [value] : []) as SkillIncludesField[];
+    return (SkillIncludesFields.contains(value)
+      ? [value]
+      : []) as SkillIncludesField[] as SkillIncludes;
   }
   return value.reduce(
     (prev, curr) => (SkillIncludesFields.contains(curr) ? [...prev, curr] : prev),

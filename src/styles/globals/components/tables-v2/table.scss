@@ -122,9 +122,9 @@
         display: table-cell;
         position: sticky;
         top: 0;
-        // Must be larger than popover content z-index of 50.  If popover is 'inPortal', the
-        // z-index of the popover content must be > 51.
-        z-index: 51;
+        // Must be larger than popover content z-index of 10.  If popover is 'inPortal', the
+        // z-index of the popover content must be > 11.
+        z-index: 11;
         text-align: left;
         border-bottom: none;
         background-color: constants.$table-header-bg-color;

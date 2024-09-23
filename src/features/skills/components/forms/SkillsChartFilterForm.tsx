@@ -1,10 +1,6 @@
-import { type z } from "zod";
+import { z } from "zod";
 
-import {
-  ShowTopSkillsSchema,
-  SkillsFiltersSchema,
-  type ShowTopSkillsString,
-} from "~/actions-v2/types";
+import { ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/database/model";
 
 import { Form, type FormProps } from "~/components/forms/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
@@ -16,11 +12,24 @@ import { SkillCategorySelect } from "~/features/skills/components/input/SkillCat
 
 const SHOW_TOP_SKILLS = [5, 8, 12, "all"] as const;
 
-export const SkillsChartFilterFormSchema = SkillsFiltersSchema.required()
-  .omit({ includeInTopSkills: true, search: true })
-  .extend({
-    showTopSkills: ShowTopSkillsSchema,
-  });
+export const ShowTopSkillsSchema = z.union([
+  z.literal(5),
+  z.literal(8),
+  z.literal(12),
+  z.literal("all"),
+]);
+export type ShowTopSkills = z.infer<typeof ShowTopSkillsSchema>;
+
+export type ShowTopSkillsString = `${ShowTopSkills}`;
+
+export const SkillsChartFilterFormSchema = z.object({
+  experiences: z.array(z.string().uuid()),
+  educations: z.array(z.string().uuid()),
+  programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)),
+  programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)),
+  categories: z.array(z.nativeEnum(SkillCategory)),
+  showTopSkills: ShowTopSkillsSchema,
+});
 
 export type SkillsChartFilterFormValues = z.infer<typeof SkillsChartFilterFormSchema>;
 

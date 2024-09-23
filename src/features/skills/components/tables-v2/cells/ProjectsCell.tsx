@@ -9,7 +9,7 @@ import { logger } from "~/internal/logger";
 import { updateSkill } from "~/actions-v2/skills/update-skill";
 
 import type * as types from "~/components/tables-v2/types";
-import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
+import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
 import { type SkillsTableColumn, type SkillsTableModel } from "~/features/skills/types";
 
 interface ProjectsCellProps {
@@ -27,7 +27,7 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
   }, [skill.projects]);
 
   return (
-    <ProjectSelect
+    <ClientProjectSelect
       inputClassName="w-full"
       value={value}
       summarizeValueAfter={2}

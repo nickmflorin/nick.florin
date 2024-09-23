@@ -24,6 +24,12 @@ const filtersClause = ({ filters }: Pick<SkillsControls, "filters">) =>
     filters.experiences && filters.experiences.length !== 0
       ? { experiences: { some: { id: { in: filters.experiences } } } }
       : undefined,
+    filters.repositories && filters.repositories.length !== 0
+      ? { repositories: { some: { id: { in: filters.repositories } } } }
+      : undefined,
+    filters.projects && filters.projects.length !== 0
+      ? { projects: { some: { id: { in: filters.projects } } } }
+      : undefined,
     filters.includeInTopSkills !== undefined && filters.includeInTopSkills !== null
       ? { includeInTopSkills: filters.includeInTopSkills }
       : undefined,

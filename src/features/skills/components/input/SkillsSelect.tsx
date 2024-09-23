@@ -2,12 +2,11 @@
 import { forwardRef, type ForwardedRef, useState } from "react";
 
 import { type ApiSkill } from "~/database/model";
-
-import { type HttpError } from "~/api";
+import { logger } from "~/internal/logger";
 
 import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/select";
 import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
-import { useSkills } from "~/hooks";
+import { useSkills, type SWRError } from "~/hooks/api-v2";
 
 const getItemValue = (m: ApiSkill) => m.id;
 
@@ -22,7 +21,7 @@ export interface SkillsSelectProps<B extends SelectBehaviorType>
     "options" | "itemIsDisabled" | "data"
   > {
   readonly behavior: B;
-  readonly onError?: (e: HttpError) => void;
+  readonly onError?: (e: SWRError) => void;
 }
 
 export const SkillsSelect = forwardRef(
@@ -37,9 +36,14 @@ export const SkillsSelect = forwardRef(
       isLoading: isLoading,
       error,
     } = useSkills({
-      query: { includes: [], visibility: "admin", orderBy: { label: "asc" }, filters: { search } },
+      query: { includes: [], visibility: "admin", orderBy: "label", order: "asc", search },
       keepPreviousData: true,
-      onError,
+      onError: e => {
+        logger.error(e, "There was an error loading the skills via the API.", {
+          search,
+        });
+        onError?.(e);
+      },
     });
 
     return (

@@ -11,7 +11,7 @@ import { updateSkill } from "~/actions/mutations/skills";
 import { isApiClientErrorJson } from "~/api";
 
 import type * as types from "~/components/tables/types";
-import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
+import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
 
 interface ProjectsCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
@@ -30,7 +30,7 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
   }, [skill.projects]);
 
   return (
-    <ProjectSelect
+    <ClientProjectSelect
       inputClassName="w-full"
       value={value}
       behavior="multi"

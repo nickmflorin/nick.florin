@@ -3,7 +3,7 @@ import { Form, type FormProps } from "~/components/forms/Form";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
+import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 
 import { type ProjectFormValues } from "./schema";
@@ -37,7 +37,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
       helpText="Any repositories that are associated with the project."
     >
       {({ value, onChange }) => (
-        <RepositorySelect
+        <ClientRepositorySelect
           inputClassName="w-full"
           behavior="multi"
           isClearable

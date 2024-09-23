@@ -22,7 +22,7 @@ interface BaseSelectProps<
   V extends AllowedSelectValue,
 > {
   readonly isClearable?: boolean;
-  readonly menuClassName?: string;
+  readonly popoverClassName?: string;
   readonly inputClassName: string;
   readonly summarizeValueAfter?: number;
   readonly inPortal?: boolean;

@@ -13,7 +13,7 @@ export interface SelectProps<V extends types.AllowedSelectValue, B extends types
   readonly behavior: B;
   readonly value?: types.SelectValue<V, B>;
   readonly initialValue?: types.SelectValue<V, B>;
-  readonly menuClassName?: ComponentProps["className"];
+  readonly popoverClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
   readonly isClearable?: boolean;
@@ -33,7 +33,7 @@ const LocalSelect = forwardRef(
       menuWidth = "target",
       isLoading,
       inPortal,
-      menuClassName,
+      popoverClassName,
       inputClassName,
       maxHeight,
       initialValue,
@@ -94,7 +94,7 @@ const LocalSelect = forwardRef(
         isReady={isReady}
         isLoading={isLoading}
         menuPlacement={menuPlacement}
-        menuClassName={menuClassName}
+        popoverClassName={popoverClassName}
         menuWidth={menuWidth}
         inPortal={inPortal}
         menuOffset={menuOffset}

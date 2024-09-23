@@ -10,7 +10,7 @@ import {
   type MenuItemRenderProps,
 } from "~/components/menus";
 import { type DataMenuComponent, type DataMenuProps } from "~/components/menus/DataMenu";
-import { classNames } from "~/components/types";
+import { type ComponentProps, classNames } from "~/components/types";
 
 import { DataSelectBase, type DataSelectBaseProps } from "./DataSelectBase";
 
@@ -37,14 +37,15 @@ export interface DataSelectProps<
       | (`group${string}` & keyof DataMenuProps<M>)
       | Exclude<`item${string}` & keyof DataMenuProps<M>, "itemIsSelected">
     > {
+  readonly menuClassName?: ComponentProps["className"];
   readonly itemRenderer?: (model: M, params: MenuItemRenderProps) => ReactNode;
 }
 
 export const DataSelect = forwardRef(
   <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     {
-      menuClassName,
       itemClassName,
+      menuClassName,
       itemHeight,
       itemSpinnerClassName,
       itemIconClassName,
@@ -103,7 +104,6 @@ export const DataSelect = forwardRef(
         : (["highlight"] as MenuItemSelectionIndicator);
 
     const selectionIndicator = _selectionIndicator ?? defaultSelectionIndicator;
-
     return (
       <DataSelectBase<M, O>
         ref={instance => {

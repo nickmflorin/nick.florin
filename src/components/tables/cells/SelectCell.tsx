@@ -23,7 +23,6 @@ interface BaseSelectProps<
   V extends AllowedSelectValue,
 > {
   readonly isClearable?: boolean;
-  readonly menuClassName?: string;
   readonly inputClassName: string;
   readonly value: SelectValue<V, B>;
   readonly behavior: B;

@@ -18,7 +18,7 @@ export const SelectPopoverContent = forwardRef<HTMLDivElement, SelectPopoverCont
     <PopoverContent
       {...props}
       ref={ref}
-      style={{ zIndex: inPortal ? 100 : 50, ...props.style }}
+      style={{ zIndex: inPortal ? 12 : 10, ...props.style }}
       className={classNames("p-0 border-none overflow-hidden", props.className)}
     >
       {children}

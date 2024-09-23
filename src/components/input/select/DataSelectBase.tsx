@@ -46,7 +46,7 @@ export interface DataSelectBaseProps<
   readonly value?: types.DataSelectValue<M, O>;
   readonly strictValueLookup?: boolean;
   readonly initialValue?: types.DataSelectValue<M, O>;
-  readonly menuClassName?: ComponentProps["className"];
+  readonly popoverClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
   readonly data: M[];
@@ -77,7 +77,7 @@ const LocalDataSelectBase = forwardRef<
       menuWidth = "target",
       isLoading,
       inPortal,
-      menuClassName,
+      popoverClassName,
       inputClassName,
       maxHeight = 240,
       initialValue,
@@ -153,7 +153,7 @@ const LocalDataSelectBase = forwardRef<
         isLoading={isLoading}
         menuPlacement={menuPlacement}
         menuWidth={menuWidth}
-        menuClassName={menuClassName}
+        popoverClassName={popoverClassName}
         inPortal={inPortal}
         menuOffset={menuOffset}
         autoUpdatePopover={autoUpdatePopover}
