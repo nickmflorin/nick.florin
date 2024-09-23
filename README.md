@@ -373,7 +373,6 @@ application to run. The following parameters must be in the environment for [Pri
 properly connect to the database, both in local development and in production:
 
 ```bash
-POSTGRES_URL="postgresql://..."
 POSTGRES_PRISMA_URL="postgresql://..."
 POSTGRES_URL_NON_POOLING="postgresql://..."
 POSTGRES_USER="..."

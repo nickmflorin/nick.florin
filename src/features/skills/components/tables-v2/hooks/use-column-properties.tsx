@@ -11,10 +11,10 @@ import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills
 import { CategoriesCell } from "../cells/CategoriesCell";
 import { EducationsCell } from "../cells/EducationsCell";
 import { ExperiencesCell } from "../cells/ExperiencesCell";
+import { HighlightedCell } from "../cells/HighlightedCell";
 import { ProgrammingLanguagesCell } from "../cells/ProgrammingLanguagesCell";
 import { ProjectsCell } from "../cells/ProjectsCell";
 import { RepositoriesCell } from "../cells/RepositoriesCell";
-import { ShowInTopSkillsCell } from "../cells/ShowInTopSkillsCell";
 
 export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
   SkillsTableModel,
@@ -73,9 +73,9 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
           return <ReadOnlyDateTimeCell date={datum.createdAt} />;
         },
       },
-      includeInTopSkills: {
+      highlighted: {
         cellRenderer(datum) {
-          return <ShowInTopSkillsCell skill={datum} table={{ setRowLoading }} />;
+          return <HighlightedCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       visible: {

@@ -17,7 +17,7 @@ export const useSkillForm = () =>
       repositories: [],
       programmingDomains: [],
       programmingLanguages: [],
-      includeInTopSkills: false,
+      highlighted: false,
       experience: null,
       visible: true,
     },

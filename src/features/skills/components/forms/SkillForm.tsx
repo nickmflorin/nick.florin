@@ -135,7 +135,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       </Form.ControlledField>
       <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
         <CheckboxField name="visible" form={props.form} label="Visible" />
-        <CheckboxField name="includeInTopSkills" form={props.form} label="Top Skill" />
+        <CheckboxField name="highlighted" form={props.form} label="Top Skill" />
       </div>
       <Form.ControlledField name="programmingDomains" label="Domains" form={props.form}>
         {({ value, onChange }) => (

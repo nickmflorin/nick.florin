@@ -8,9 +8,9 @@ import { toast } from "react-toastify";
 import { logger } from "~/internal/logger";
 
 import { hideSkills } from "~/actions-v2/skills/hide-skills";
-import { includeSkillsInTop } from "~/actions-v2/skills/include-skills-in-top";
-import { removeSkillsFromTop } from "~/actions-v2/skills/remove-skills-from-top";
+import { highlightSkills } from "~/actions-v2/skills/highlight-skills";
 import { showSkills } from "~/actions-v2/skills/show-skills";
+import { unhighlightSkills } from "~/actions-v2/skills/unhighlight-skills";
 
 import { AddToTopSkillsButton } from "~/components/buttons/AddToTopSkillsButton";
 import { HideButton } from "~/components/buttons/HideButton";
@@ -54,8 +54,8 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
       {({ selectedRows }) => {
         const numVisible = selectedRows.filter(row => row.visible).length;
         const numHidden = selectedRows.filter(row => !row.visible).length;
-        const numTopSkills = selectedRows.filter(row => row.includeInTopSkills).length;
-        const numNotTopSkills = selectedRows.filter(row => !row.includeInTopSkills).length;
+        const numHighlighted = selectedRows.filter(row => row.highlighted).length;
+        const numNotHighlighted = selectedRows.filter(row => !row.highlighted).length;
         return (
           <>
             <Tooltip
@@ -144,22 +144,22 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               placement="top-start"
               inPortal={props.tooltipsInPortal}
               offset={{ mainAxis: 6 }}
-              content={`Add ${numNotTopSkills} selected skill${numNotTopSkills <= 1 ? "" : "s"} to "Top Skills".`}
+              content={`Highlight ${numNotHighlighted} selected skill${numNotHighlighted <= 1 ? "" : "s"}.`}
               className="text-sm"
-              isDisabled={numNotTopSkills === 0 || props.isDisabled === true}
+              isDisabled={numNotHighlighted === 0 || props.isDisabled === true}
             >
               <AddToTopSkillsButton
-                isDisabled={numNotTopSkills === 0 || props.isDisabled}
+                isDisabled={numNotHighlighted === 0 || props.isDisabled}
                 isLoading={isIncluding}
                 onClick={async () => {
-                  let response: Awaited<ReturnType<typeof includeSkillsInTop>> | null = null;
+                  let response: Awaited<ReturnType<typeof highlightSkills>> | null = null;
                   setIsIncluding(true);
                   try {
-                    response = await includeSkillsInTop(
-                      selectedRows.filter(row => !row.includeInTopSkills).map(row => row.id),
+                    response = await highlightSkills(
+                      selectedRows.filter(row => !row.highlighted).map(row => row.id),
                     );
                   } catch (e) {
-                    logger.errorUnsafe(e, "There was an error adding the skills to top skills.", {
+                    logger.errorUnsafe(e, "There was an error highlighting the skills.", {
                       subscriptions: selectedRows.map(row => row.id),
                     });
                     setIsIncluding(false);
@@ -167,7 +167,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                   }
                   const { error } = response;
                   if (error) {
-                    logger.error(error, "There was an error adding the skills to top skills.", {
+                    logger.error(error, "There was an error highlighting the skills.", {
                       subscriptions: selectedRows.map(row => row.id),
                     });
                     setIsIncluding(false);
@@ -176,8 +176,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                   transition(() => {
                     refresh();
                     setIsIncluding(false);
-                    /* eslint-disable-next-line quotes */
-                    toast.success('The skills have been moved to "Top Skills".');
+                    toast.success("The skills have been highlighted.");
                   });
                 }}
               />
@@ -186,32 +185,30 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               placement="top-start"
               inPortal={props.tooltipsInPortal}
               offset={{ mainAxis: 6 }}
-              content={`Remove ${numTopSkills} selected skill${numTopSkills <= 1 ? "" : "s"} from "Top Skills".`}
+              content={`Unhighlight ${numHighlighted} selected skill${numHighlighted <= 1 ? "" : "s"}.`}
               className="text-sm"
-              isDisabled={numTopSkills === 0 || props.isDisabled === true}
+              isDisabled={numHighlighted === 0 || props.isDisabled === true}
             >
               <RemoveFromTopSkillsButton
-                isDisabled={numTopSkills === 0 || props.isDisabled}
+                isDisabled={numHighlighted === 0 || props.isDisabled}
                 isLoading={isExcluding}
                 onClick={async () => {
-                  let response: Awaited<ReturnType<typeof removeSkillsFromTop>> | null = null;
+                  let response: Awaited<ReturnType<typeof unhighlightSkills>> | null = null;
                   setIsExcluding(true);
                   try {
-                    response = await removeSkillsFromTop(
-                      selectedRows.filter(row => row.includeInTopSkills).map(row => row.id),
+                    response = await unhighlightSkills(
+                      selectedRows.filter(row => row.highlighted).map(row => row.id),
                     );
                   } catch (e) {
-                    logger.errorUnsafe(
-                      e,
-                      "There was an error removing the skills from top skills.",
-                      { subscriptions: selectedRows.map(row => row.id) },
-                    );
+                    logger.errorUnsafe(e, "There was an error unhighlighting the skills.", {
+                      subscriptions: selectedRows.map(row => row.id),
+                    });
                     setIsExcluding(false);
                     return toast.error("There was an error updating the skills.");
                   }
                   const { error } = response;
                   if (error) {
-                    logger.error(error, "There was an error removing the skills from top skills.", {
+                    logger.error(error, "There was an error unhighlighting the skills.", {
                       subscriptions: selectedRows.map(row => row.id),
                     });
                     setIsExcluding(false);
@@ -220,8 +217,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                   transition(() => {
                     refresh();
                     setIsExcluding(false);
-                    /* eslint-disable-next-line quotes */
-                    toast.success('The skills have been removed from "Top Skills".');
+                    toast.success("The skills have been unhighlighted.");
                   });
                 }}
               />

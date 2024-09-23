@@ -22,7 +22,6 @@ export const SkillSchema = z.object({
   projects: z.array(z.string().uuid()).optional(),
   repositories: z.array(z.string().uuid()).optional(),
   courses: z.array(z.string().uuid()).optional(),
-  includeInTopSkills: z.boolean().optional(),
   experience: z.coerce
     .number({ invalid_type_error: "The experience must be provided as a number." })
     .int()
@@ -30,6 +29,7 @@ export const SkillSchema = z.object({
     .nullable()
     .optional(),
   visible: z.boolean().optional(),
+  highlighted: z.boolean().optional(),
   programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)).optional(),
   programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)).optional(),
   categories: z.array(z.nativeEnum(SkillCategory)).optional(),

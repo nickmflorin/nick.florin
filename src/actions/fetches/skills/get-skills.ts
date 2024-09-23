@@ -28,8 +28,8 @@ const filtersClause = (filters: Partial<SkillsFilters>) =>
     filters.experiences && filters.experiences.length !== 0
       ? { experiences: { some: { id: { in: filters.experiences } } } }
       : undefined,
-    filters.includeInTopSkills !== undefined && filters.includeInTopSkills !== null
-      ? { includeInTopSkills: filters.includeInTopSkills }
+    filters.highlighted !== undefined && filters.highlighted !== null
+      ? { highlighted: filters.highlighted }
       : undefined,
     filters.programmingDomains && filters.programmingDomains.length !== 0
       ? { programmingDomains: { hasSome: filters.programmingDomains } }

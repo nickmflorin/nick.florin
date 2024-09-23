@@ -49,7 +49,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       form={form}
       name="showTopSkills"
       label="Show Skills"
-      helpText="The number of top skills that should be shown in the chart."
+      helpText="The number of skills that should be shown in the chart."
       helpTextClassName="!mt-[10px]"
     >
       {({ value, onChange: _onChange }) => (

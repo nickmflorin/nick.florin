@@ -21,7 +21,7 @@ export const SkillJsonSchema = MetaSchema.extend({
   categories: z.array(z.nativeEnum(SkillCategory)).optional(),
   programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)).optional(),
   programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)).optional(),
-  includeInTopSkills: z.boolean().optional(),
+  highlighted: z.boolean().optional(),
 });
 
 export type JsonSkill = z.infer<typeof SkillJsonSchema>;

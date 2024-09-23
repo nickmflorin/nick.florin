@@ -190,7 +190,7 @@ exports.Prisma.SkillScalarFieldEnum = {
   programmingDomains: 'programmingDomains',
   experience: 'experience',
   calculatedExperience: 'calculatedExperience',
-  includeInTopSkills: 'includeInTopSkills'
+  highlighted: 'highlighted'
 };
 
 exports.Prisma.CourseScalarFieldEnum = {

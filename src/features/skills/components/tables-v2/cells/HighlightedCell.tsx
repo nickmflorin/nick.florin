@@ -12,19 +12,19 @@ import { Checkbox } from "~/components/input/Checkbox";
 import type * as types from "~/components/tables-v2/types";
 import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills/types";
 
-interface ShowInTopSkillsCellProps {
+interface HighlightedCellProps {
   readonly skill: SkillsTableModel;
   readonly table: types.CellDataTableInstance<SkillsTableModel, SkillsTableColumn>;
 }
 
-export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps): JSX.Element => {
+export const HighlightedCell = ({ skill, table }: HighlightedCellProps): JSX.Element => {
   const router = useRouter();
   const [_, transition] = useTransition();
-  const [checked, setChecked] = useState(skill.includeInTopSkills);
+  const [checked, setChecked] = useState(skill.highlighted);
 
   useEffect(() => {
-    setChecked(skill.includeInTopSkills);
-  }, [skill.includeInTopSkills]);
+    setChecked(skill.highlighted);
+  }, [skill.highlighted]);
 
   return (
     <Checkbox
@@ -36,11 +36,11 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
 
         let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
         try {
-          response = await updateSkill(skill.id, { includeInTopSkills: e.target.checked });
+          response = await updateSkill(skill.id, { highlighted: e.target.checked });
         } catch (e) {
           logger.errorUnsafe(
             e,
-            `There was an error updating the top skills flag for the skill with ID '${skill.id}':\n${e}`,
+            `There was an error changing the highlighted state of the skill with ID '${skill.id}':\n${e}`,
             { skill: skill.id },
           );
           table.setRowLoading(skill.id, false);
@@ -50,7 +50,7 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
         if (error) {
           logger.error(
             error,
-            `There was an error updating the top skills flag for the skill with ID '${skill.id}'.`,
+            `There was an error changing the highlighted state of the skill with ID '${skill.id}'.`,
             { skill: skill.id },
           );
           table.setRowLoading(skill.id, false);
@@ -67,5 +67,3 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
     />
   );
 };
-
-export default ShowInTopSkillsCell;

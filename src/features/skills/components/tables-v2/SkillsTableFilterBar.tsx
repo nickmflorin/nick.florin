@@ -26,7 +26,7 @@ import { ProgrammingLanguageSelect } from "~/features/skills/components/input/Pr
 import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
 import { useFilters } from "~/hooks/use-filters";
 
-type SelectFilterField = Exclude<keyof SkillsFilters, "search" | "includeInTopSkills">;
+type SelectFilterField = Exclude<keyof SkillsFilters, "search" | "highlighted">;
 
 export interface SkillsTableFilterBarProps extends ComponentProps {
   readonly isSearchable?: boolean;

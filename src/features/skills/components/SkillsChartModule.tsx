@@ -35,7 +35,7 @@ export const SkillsChartModule = () => {
       ...filters,
       includes: [],
       visibility: "public",
-      includeInTopSkills: true,
+      highlighted: true,
       order: "desc",
       orderBy: "calculatedExperience",
       limit: filters.showTopSkills === "all" ? undefined : filters.showTopSkills,

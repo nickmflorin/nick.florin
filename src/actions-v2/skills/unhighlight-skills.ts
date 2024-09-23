@@ -10,7 +10,7 @@ import { isUuid } from "~/lib/typeguards";
 import { type MutationActionResponse } from "~/actions-v2";
 import { ApiClientGlobalError } from "~/api-v2";
 
-export const includeSkillsInTop = async (
+export const unhighlightSkills = async (
   _ids: string[],
 ): Promise<MutationActionResponse<{ message: string }>> => {
   const { error, user, isAdmin } = await getAuthedUser();
@@ -44,7 +44,7 @@ export const includeSkillsInTop = async (
   );
   if (invalidIds.length !== 0) {
     const humanized = humanizeList(invalidIds, { conjunction: "and", formatter: v => `'${v}'` });
-    logger.error(`Encountered invalid skill ID(s) when including skills in top: ${humanized}.`, {
+    logger.error(`Encountered invalid skill ID(s) when unhighlighting skills: ${humanized}.`, {
       ids,
       invalidIds,
     });
@@ -53,21 +53,21 @@ export const includeSkillsInTop = async (
     });
     return { error: err.json };
   }
-  if (skills.some(sk => sk.includeInTopSkills)) {
+  if (skills.some(sk => !sk.highlighted)) {
     const humanized = humanizeList(
-      skills.filter(sk => sk.includeInTopSkills).map(sk => sk.id),
+      skills.filter(sk => !sk.highlighted).map(sk => sk.id),
       { conjunction: "and", formatter: v => `'${v}'` },
     );
     logger.warn(
-      `A request to show skills in top included skill ID(s) ${humanized} associated with skills that ` +
-        "are already mark as a top skill.",
-      { ids: skills.filter(sk => sk.includeInTopSkills).map(sk => sk.id) },
+      `A request to unhighlight skills contained skill ID(s) ${humanized} associated with ` +
+        "skills that are already unhighlighted.",
+      { ids: skills.filter(sk => !sk.highlighted).map(sk => sk.id) },
     );
   }
 
   await db.skill.updateMany({
     where: { id: { in: ids } },
-    data: { includeInTopSkills: true, updatedById: user.id },
+    data: { highlighted: false, updatedById: user.id },
   });
   return { data: { message: "Success" } };
 };

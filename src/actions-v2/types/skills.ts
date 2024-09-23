@@ -41,7 +41,7 @@ export const SkillsOrderingMap = {
 } as const satisfies { [key in SkillOrderableField]: (order: Order) => unknown[] };
 
 export interface SkillsFilters {
-  readonly includeInTopSkills: boolean | null;
+  readonly highlighted: boolean | null;
   readonly experiences: string[];
   readonly educations: string[];
   readonly programmingDomains: ProgrammingDomain[];
@@ -70,7 +70,7 @@ export type FlattenedSkillsControls<I extends SkillIncludes = SkillIncludes> = S
   };
 
 export const SkillsFiltersObj = Filters({
-  includeInTopSkills: {
+  highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
     excludeWhen: v => v === null,

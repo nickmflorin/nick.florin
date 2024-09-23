@@ -90,8 +90,8 @@ export const SkillsTableColumns = [
     isOrderable: true,
   },
   {
-    id: "includeInTopSkills",
-    label: "Top Skill",
+    id: "highlighted",
+    label: "Highlighted",
     align: "center",
     width: 105,
     maxWidth: 105,

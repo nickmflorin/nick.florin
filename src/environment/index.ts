@@ -31,7 +31,6 @@ export const environment = NextEnvironment.create(
     runtime: {
       /* ---------------------------- Server Environment Variables ---------------------------- */
       ANALYZE_BUNDLE: process.env.ANALYZE_BUNDLE,
-      POSTGRES_URL: process.env.POSTGRES_URL,
       POSTGRES_PRISMA_URL: process.env.POSTGRES_PRISMA_URL,
       POSTGRES_URL_NON_POOLING: process.env.POSTGRES_URL_NON_POOLING,
       POSTGRES_DATABASE: process.env.POSTGRES_DATABASE,
@@ -113,7 +112,6 @@ export const environment = NextEnvironment.create(
         production: z.string(),
       }[environmentName],
       /* ~~~~~~~~~~~~~~~~~~~~~~~~~ Database Configuration ~~~~~~~~~~~~~~~~~~~~~~~~~ */
-      POSTGRES_URL: TestRestricted(z.string().url().optional()),
       POSTGRES_PRISMA_URL: TestRestricted(z.string().url().optional()),
       POSTGRES_URL_NON_POOLING: TestRestricted(z.string().url().optional()),
       POSTGRES_DATABASE: TestRestricted(z.string().optional()),

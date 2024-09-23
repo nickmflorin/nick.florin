@@ -30,8 +30,8 @@ const filtersClause = ({ filters }: Pick<SkillsControls, "filters">) =>
     filters.projects && filters.projects.length !== 0
       ? { projects: { some: { id: { in: filters.projects } } } }
       : undefined,
-    filters.includeInTopSkills !== undefined && filters.includeInTopSkills !== null
-      ? { includeInTopSkills: filters.includeInTopSkills }
+    filters.highlighted !== undefined && filters.highlighted !== null
+      ? { highlighted: filters.highlighted }
       : undefined,
     filters.programmingDomains && filters.programmingDomains.length !== 0
       ? { programmingDomains: { hasSome: filters.programmingDomains } }

@@ -8440,7 +8440,7 @@ export namespace Prisma {
     description: string | null
     experience: number | null
     calculatedExperience: number | null
-    includeInTopSkills: boolean | null
+    highlighted: boolean | null
   }
 
   export type SkillMaxAggregateOutputType = {
@@ -8455,7 +8455,7 @@ export namespace Prisma {
     description: string | null
     experience: number | null
     calculatedExperience: number | null
-    includeInTopSkills: boolean | null
+    highlighted: boolean | null
   }
 
   export type SkillCountAggregateOutputType = {
@@ -8473,7 +8473,7 @@ export namespace Prisma {
     programmingDomains: number
     experience: number
     calculatedExperience: number
-    includeInTopSkills: number
+    highlighted: number
     _all: number
   }
 
@@ -8500,7 +8500,7 @@ export namespace Prisma {
     description?: true
     experience?: true
     calculatedExperience?: true
-    includeInTopSkills?: true
+    highlighted?: true
   }
 
   export type SkillMaxAggregateInputType = {
@@ -8515,7 +8515,7 @@ export namespace Prisma {
     description?: true
     experience?: true
     calculatedExperience?: true
-    includeInTopSkills?: true
+    highlighted?: true
   }
 
   export type SkillCountAggregateInputType = {
@@ -8533,7 +8533,7 @@ export namespace Prisma {
     programmingDomains?: true
     experience?: true
     calculatedExperience?: true
-    includeInTopSkills?: true
+    highlighted?: true
     _all?: true
   }
 
@@ -8638,7 +8638,7 @@ export namespace Prisma {
     programmingDomains: $Enums.ProgrammingDomain[]
     experience: number | null
     calculatedExperience: number
-    includeInTopSkills: boolean
+    highlighted: boolean
     _count: SkillCountAggregateOutputType | null
     _avg: SkillAvgAggregateOutputType | null
     _sum: SkillSumAggregateOutputType | null
@@ -8675,7 +8675,7 @@ export namespace Prisma {
     programmingDomains?: boolean
     experience?: boolean
     calculatedExperience?: boolean
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     experiences?: boolean | Skill$experiencesArgs<ExtArgs>
@@ -8703,7 +8703,7 @@ export namespace Prisma {
     programmingDomains?: boolean
     experience?: boolean
     calculatedExperience?: boolean
-    includeInTopSkills?: boolean
+    highlighted?: boolean
   }
 
   export type SkillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8748,7 +8748,7 @@ export namespace Prisma {
       programmingDomains: $Enums.ProgrammingDomain[]
       experience: number | null
       calculatedExperience: number
-      includeInTopSkills: boolean
+      highlighted: boolean
     }, ExtArgs["result"]["skill"]>
     composites: {}
   }
@@ -9174,7 +9174,7 @@ export namespace Prisma {
     readonly programmingDomains: FieldRef<"Skill", 'ProgrammingDomain[]'>
     readonly experience: FieldRef<"Skill", 'Int'>
     readonly calculatedExperience: FieldRef<"Skill", 'Int'>
-    readonly includeInTopSkills: FieldRef<"Skill", 'Boolean'>
+    readonly highlighted: FieldRef<"Skill", 'Boolean'>
   }
     
 
@@ -17169,7 +17169,7 @@ export namespace Prisma {
     programmingDomains: 'programmingDomains',
     experience: 'experience',
     calculatedExperience: 'calculatedExperience',
-    includeInTopSkills: 'includeInTopSkills'
+    highlighted: 'highlighted'
   };
 
   export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
@@ -18033,7 +18033,7 @@ export namespace Prisma {
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableFilter<"Skill"> | number | null
     calculatedExperience?: IntFilter<"Skill"> | number
-    includeInTopSkills?: BoolFilter<"Skill"> | boolean
+    highlighted?: BoolFilter<"Skill"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     experiences?: ExperienceListRelationFilter
@@ -18060,7 +18060,7 @@ export namespace Prisma {
     programmingDomains?: SortOrder
     experience?: SortOrderInput | SortOrder
     calculatedExperience?: SortOrder
-    includeInTopSkills?: SortOrder
+    highlighted?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     experiences?: ExperienceOrderByRelationAggregateInput
@@ -18090,7 +18090,7 @@ export namespace Prisma {
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableFilter<"Skill"> | number | null
     calculatedExperience?: IntFilter<"Skill"> | number
-    includeInTopSkills?: BoolFilter<"Skill"> | boolean
+    highlighted?: BoolFilter<"Skill"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     experiences?: ExperienceListRelationFilter
@@ -18117,7 +18117,7 @@ export namespace Prisma {
     programmingDomains?: SortOrder
     experience?: SortOrderInput | SortOrder
     calculatedExperience?: SortOrder
-    includeInTopSkills?: SortOrder
+    highlighted?: SortOrder
     _count?: SkillCountOrderByAggregateInput
     _avg?: SkillAvgOrderByAggregateInput
     _max?: SkillMaxOrderByAggregateInput
@@ -18143,7 +18143,7 @@ export namespace Prisma {
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableWithAggregatesFilter<"Skill"> | number | null
     calculatedExperience?: IntWithAggregatesFilter<"Skill"> | number
-    includeInTopSkills?: BoolWithAggregatesFilter<"Skill"> | boolean
+    highlighted?: BoolWithAggregatesFilter<"Skill"> | boolean
   }
 
   export type CourseWhereInput = {
@@ -19488,7 +19488,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -19515,7 +19515,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -19538,7 +19538,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -19565,7 +19565,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -19590,7 +19590,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
   }
 
   export type SkillUpdateManyMutationInput = {
@@ -19606,7 +19606,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillUncheckedUpdateManyInput = {
@@ -19624,7 +19624,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CourseCreateInput = {
@@ -21088,7 +21088,7 @@ export namespace Prisma {
     programmingDomains?: SortOrder
     experience?: SortOrder
     calculatedExperience?: SortOrder
-    includeInTopSkills?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type SkillAvgOrderByAggregateInput = {
@@ -21108,7 +21108,7 @@ export namespace Prisma {
     description?: SortOrder
     experience?: SortOrder
     calculatedExperience?: SortOrder
-    includeInTopSkills?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type SkillMinOrderByAggregateInput = {
@@ -21123,7 +21123,7 @@ export namespace Prisma {
     description?: SortOrder
     experience?: SortOrder
     calculatedExperience?: SortOrder
-    includeInTopSkills?: SortOrder
+    highlighted?: SortOrder
   }
 
   export type SkillSumOrderByAggregateInput = {
@@ -24279,7 +24279,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
     educations?: EducationCreateNestedManyWithoutSkillsInput
@@ -24304,7 +24304,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -24337,7 +24337,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
     educations?: EducationCreateNestedManyWithoutSkillsInput
@@ -24362,7 +24362,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -25344,7 +25344,7 @@ export namespace Prisma {
     programmingDomains?: EnumProgrammingDomainNullableListFilter<"Skill">
     experience?: IntNullableFilter<"Skill"> | number | null
     calculatedExperience?: IntFilter<"Skill"> | number
-    includeInTopSkills?: BoolFilter<"Skill"> | boolean
+    highlighted?: BoolFilter<"Skill"> | boolean
   }
 
   export type SkillUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -26158,7 +26158,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -26184,7 +26184,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -26700,7 +26700,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -26726,7 +26726,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -27440,7 +27440,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -27466,7 +27466,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -28602,7 +28602,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -28628,7 +28628,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     projects?: ProjectUncheckedCreateNestedManyWithoutSkillsInput
@@ -29030,7 +29030,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -29056,7 +29056,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -30304,7 +30304,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     educations?: EducationCreateNestedManyWithoutSkillsInput
@@ -30330,7 +30330,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
     projects?: ProjectUncheckedCreateNestedManyWithoutSkillsInput
@@ -30753,7 +30753,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -30779,7 +30779,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
     projects?: ProjectUncheckedCreateNestedManyWithoutSkillsInput
@@ -31415,7 +31415,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
   }
 
   export type SkillCreateManyCreatedByInput = {
@@ -31432,7 +31432,7 @@ export namespace Prisma {
     programmingDomains?: SkillCreateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: number | null
     calculatedExperience: number
-    includeInTopSkills?: boolean
+    highlighted?: boolean
   }
 
   export type CompanyCreateManyUpdatedByInput = {
@@ -31772,7 +31772,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
     educations?: EducationUpdateManyWithoutSkillsNestedInput
@@ -31797,7 +31797,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -31821,7 +31821,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillUpdateWithoutCreatedByInput = {
@@ -31837,7 +31837,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
     educations?: EducationUpdateManyWithoutSkillsNestedInput
@@ -31862,7 +31862,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -31886,7 +31886,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompanyUpdateWithoutUpdatedByInput = {
@@ -32934,7 +32934,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -32960,7 +32960,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -32984,7 +32984,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type NestedDetailCreateManyDetailInput = {
@@ -33054,7 +33054,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33080,7 +33080,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33104,7 +33104,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillUpdateWithoutRepositoriesInput = {
@@ -33120,7 +33120,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33146,7 +33146,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33170,7 +33170,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProjectUpdateWithoutRepositoriesInput = {
@@ -33579,7 +33579,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33605,7 +33605,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33629,7 +33629,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DetailCreateManyProjectInput = {
@@ -33672,7 +33672,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33698,7 +33698,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33722,7 +33722,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DetailUpdateWithoutProjectInput = {
@@ -34019,7 +34019,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     educations?: EducationUpdateManyWithoutSkillsNestedInput
@@ -34045,7 +34045,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutSkillsNestedInput
@@ -34069,7 +34069,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CourseCreateManyEducationInput = {
@@ -34098,7 +34098,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -34124,7 +34124,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutSkillsNestedInput
@@ -34148,7 +34148,7 @@ export namespace Prisma {
     programmingDomains?: SkillUpdateprogrammingDomainsInput | $Enums.ProgrammingDomain[]
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
-    includeInTopSkills?: BoolFieldUpdateOperationsInput | boolean
+    highlighted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CourseUpdateWithoutEducationInput = {

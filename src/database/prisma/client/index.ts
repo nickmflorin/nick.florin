@@ -29,7 +29,7 @@ export * from "./errors";
 
 export const initializePrismaClient = () => {
   /* eslint-disable-next-line no-console -- The logger is not in context for seeding. */
-  console.info("Initializing Prisma Client");
+  console.info(`Initializing Prisma Client at ${environment.get("POSTGRES_HOST")}.`);
   const prisma = new RootPrismaClient({
     log: environment.get("DATABASE_LOG_LEVEL"),
   });

@@ -30,7 +30,7 @@ const ReadOnlyDateTimeCell = dynamic(
 const ExperiencesCell = dynamic(() => import("./cells/ExperiencesCell"));
 const EducationsCell = dynamic(() => import("./cells/EducationsCell"));
 const ExperienceCell = dynamic(() => import("./cells/ExperienceCell"));
-const ShowInTopSkillsCell = dynamic(() => import("./cells/ShowInTopSkillsCell"));
+const HighlightedCell = dynamic(() => import("./cells/HighlightedCell"));
 const CategoriesCell = dynamic(() => import("./cells/CategoriesCell"));
 const ProgrammingLanguagesCell = dynamic(() => import("./cells/ProgrammingLanguagesCell"));
 const ProjectsCell = dynamic(() => import("./cells/ProjectsCell"));
@@ -146,11 +146,11 @@ export const TableViewProvider = ({ children }: TableViewConfig) => {
           render: ({ model }) => <ReadOnlyDateTimeCell date={model.updatedAt} />,
         },
         {
-          accessor: "includeInTopSkills",
-          title: "Top Skill",
+          accessor: "highlighted",
+          title: "Highlighted",
           textAlign: "center",
           width: 100,
-          render: ({ model, table }) => <ShowInTopSkillsCell skill={model} table={table} />,
+          render: ({ model, table }) => <HighlightedCell skill={model} table={table} />,
         },
         {
           accessor: "visible",

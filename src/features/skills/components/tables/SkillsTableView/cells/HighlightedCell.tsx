@@ -13,21 +13,21 @@ import { isApiClientErrorJson } from "~/api";
 import { Checkbox } from "~/components/input/Checkbox";
 import type * as types from "~/components/tables/types";
 
-interface ShowInTopSkillsCellProps {
+interface HighlightedCellProps {
   readonly skill: ApiSkill<["experiences", "educations", "projects", "repositories"]>;
   readonly table: types.CellTableInstance<
     ApiSkill<["experiences", "educations", "projects", "repositories"]>
   >;
 }
 
-export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps): JSX.Element => {
+export const HighlightedCell = ({ skill, table }: HighlightedCellProps): JSX.Element => {
   const router = useRouter();
   const [_, transition] = useTransition();
-  const [checked, setChecked] = useState(skill.includeInTopSkills);
+  const [checked, setChecked] = useState(skill.highlighted);
 
   useEffect(() => {
-    setChecked(skill.includeInTopSkills);
-  }, [skill.includeInTopSkills]);
+    setChecked(skill.highlighted);
+  }, [skill.highlighted]);
 
   return (
     <div className="flex flex-row items-center justify-center">
@@ -40,14 +40,12 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
 
           let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
           try {
-            response = await updateSkill(skill.id, { includeInTopSkills: e.target.checked });
+            response = await updateSkill(skill.id, { highlighted: e.target.checked });
           } catch (e) {
-            logger.error(
-              `There was an error updating the top skills flag for the skill with ID '${skill.id}':\n${e}`,
-              {
-                error: e,
-                skill: skill.id,
-              },
+            logger.errorUnsafe(
+              e,
+              `There was an error changing the highlighted state of the skill with ID '${skill.id}':\n${e}`,
+              { skill: skill.id },
             );
             toast.error("There was an error updating the skill.");
           } finally {
@@ -55,7 +53,7 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
           }
           if (isApiClientErrorJson(response)) {
             logger.error(
-              `There was an error updating the top skills flag for the skill with ID '${skill.id}'.`,
+              `There was an error changing the highlighted state of the skill with ID '${skill.id}'.`,
               {
                 response,
                 skill: skill.id,
@@ -75,4 +73,4 @@ export const ShowInTopSkillsCell = ({ skill, table }: ShowInTopSkillsCellProps):
   );
 };
 
-export default ShowInTopSkillsCell;
+export default HighlightedCell;
