@@ -90,6 +90,7 @@ export const ExperienceJsonSchema = MetaSchema.extend({
   skills: z.array(SkillReferenceJsonSchema).optional(),
   details: z.array(DetailJsonSchema).optional(),
   highlighted: z.boolean().optional(),
+  visible: z.boolean().optional(),
 });
 
 export const EducationJsonSchema = MetaSchema.extend({
@@ -108,6 +109,7 @@ export const EducationJsonSchema = MetaSchema.extend({
   details: z.array(DetailJsonSchema).optional(),
   courses: z.array(CourseJsonSchema).optional(),
   highlighted: z.boolean().optional(),
+  visible: z.boolean().optional(),
 });
 
 export const CompanyJsonSchema = MetaSchema.extend({
