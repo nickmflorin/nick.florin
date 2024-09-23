@@ -144,7 +144,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             value={value}
             behavior="multi"
             isClearable
-            menuPlacement="top"
+            popoverPlacement="top"
             onChange={onChange}
           />
         )}
@@ -156,7 +156,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             value={value}
             behavior="multi"
             isClearable
-            menuPlacement="top"
+            popoverPlacement="top"
             onChange={onChange}
           />
         )}
@@ -168,7 +168,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
             value={value}
             behavior="multi"
             isClearable
-            menuPlacement="top"
+            popoverPlacement="top"
             onChange={onChange}
           />
         )}

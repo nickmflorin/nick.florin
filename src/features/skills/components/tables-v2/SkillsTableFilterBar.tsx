@@ -17,7 +17,6 @@ import { DrawerIds } from "~/components/drawers";
 import type { SelectInstance } from "~/components/input/select";
 import { TableView } from "~/components/tables-v2/TableView";
 import { type ComponentProps } from "~/components/types";
-import { ShowHide } from "~/components/util";
 import { EducationSelect } from "~/features/educations/components/input/EducationSelect";
 import { ExperienceSelect } from "~/features/experiences/components/input/ExperienceSelect";
 import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
@@ -106,84 +105,179 @@ export const SkillsTableFilterBar = ({
   return (
     <TableView.FilterBar
       {...props}
+      excludeFilters={excludeFilters}
       searchInputRef={searchInputRef}
       searchPlaceholder="Search skills..."
       onSearch={v => updateFilters({ search: v })}
       newDrawerId={DrawerIds.CREATE_SKILL}
       search={filters.search}
+      filters={filters}
       onClear={() => {
         clear();
         /* TODO: Establish more of an Object-Oriented pattern for our "Filters" object, for each
            specific model, and expose an attribute on the object 'emptyFilters' that can be used
            to reset the value here. */
-        updateFilters({ experiences: [], educations: [], search: "" });
+        updateFilters({
+          experiences: [],
+          educations: [],
+          search: "",
+          programmingDomains: [],
+          programmingLanguages: [],
+          categories: [],
+          projects: [],
+          repositories: [],
+        });
       }}
-    >
-      <ShowHide show={!excludeFilters.includes("projects")}>
-        <ProjectSelect
-          ref={refs.projects}
-          popoverClassName="z-50"
-          inputClassName="max-w-[320px]"
-          placeholder="Projects"
-          data={projects}
-          behavior="multi"
-          isClearable
-          maximumValuesToRender={1}
-          initialValue={filters.projects}
-          onChange={(projects: string[]) => updateFilters({ projects })}
-          onClear={() => updateFilters({ projects: [] })}
-          menuPlacement="bottom"
-        />
-      </ShowHide>
-      <ShowHide show={!excludeFilters.includes("repositories")}>
-        <RepositorySelect
-          ref={refs.repositories}
-          popoverClassName="z-50"
-          inputClassName="max-w-[320px]"
-          placeholder="Repositories"
-          data={repositories}
-          behavior="multi"
-          isClearable
-          maximumValuesToRender={1}
-          initialValue={filters.repositories}
-          onChange={(repositories: string[]) => updateFilters({ repositories })}
-          onClear={() => updateFilters({ repositories: [] })}
-          menuPlacement="bottom"
-        />
-      </ShowHide>
-      <ShowHide show={!excludeFilters.includes("experiences")}>
-        <ExperienceSelect
-          ref={refs.experiences}
-          popoverClassName="z-50"
-          inputClassName="max-w-[320px]"
-          placeholder="Experiences"
-          data={experiences}
-          behavior="multi"
-          isClearable
-          maximumValuesToRender={1}
-          initialValue={filters.experiences}
-          onChange={(experiences: string[]) => updateFilters({ experiences })}
-          onClear={() => updateFilters({ experiences: [] })}
-          menuPlacement="bottom"
-        />
-      </ShowHide>
-      <ShowHide show={!excludeFilters.includes("educations")}>
-        <EducationSelect
-          ref={refs.educations}
-          popoverClassName="z-50"
-          placeholder="Educations"
-          data={educations}
-          behavior="multi"
-          isClearable
-          initialValue={filters.educations}
-          maximumValuesToRender={1}
-          dynamicHeight={false}
-          inputClassName="max-w-[320px]"
-          onChange={(educations: string[]) => updateFilters({ educations })}
-          onClear={() => updateFilters({ educations: [] })}
-          menuPlacement="bottom"
-        />
-      </ShowHide>
-    </TableView.FilterBar>
+      configuration={[
+        {
+          id: "projects",
+          label: "Projects",
+          renderer: v => (
+            <ProjectSelect
+              ref={refs.projects}
+              popoverClassName="z-50"
+              inputClassName="max-w-[320px]"
+              placeholder="Projects"
+              data={projects}
+              behavior="multi"
+              isClearable
+              maximumValuesToRender={1}
+              initialValue={v}
+              onChange={(projects: string[]) => updateFilters({ projects })}
+              onClear={() => updateFilters({ projects: [] })}
+              popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "repositories",
+          label: "Repositories",
+          renderer: v => (
+            <RepositorySelect
+              ref={refs.repositories}
+              popoverClassName="z-50"
+              inputClassName="max-w-[320px]"
+              placeholder="Repositories"
+              data={repositories}
+              behavior="multi"
+              isClearable
+              maximumValuesToRender={1}
+              initialValue={v}
+              onChange={(repositories: string[]) => updateFilters({ repositories })}
+              onClear={() => updateFilters({ repositories: [] })}
+              popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "experiences",
+          label: "Experiences",
+          renderer: v => (
+            <ExperienceSelect
+              ref={refs.experiences}
+              popoverClassName="z-50"
+              inputClassName="max-w-[320px]"
+              placeholder="Experiences"
+              data={experiences}
+              behavior="multi"
+              isClearable
+              maximumValuesToRender={1}
+              initialValue={v}
+              onChange={(experiences: string[]) => updateFilters({ experiences })}
+              onClear={() => updateFilters({ experiences: [] })}
+              popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "educations",
+          label: "Educations",
+          renderer: v => (
+            <EducationSelect
+              ref={refs.educations}
+              popoverClassName="z-50"
+              placeholder="Educations"
+              data={educations}
+              behavior="multi"
+              isClearable
+              initialValue={v}
+              maximumValuesToRender={1}
+              dynamicHeight={false}
+              inputClassName="max-w-[320px]"
+              onChange={(educations: string[]) => updateFilters({ educations })}
+              onClear={() => updateFilters({ educations: [] })}
+              popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "programmingLanguages",
+          label: "Programming Languages",
+          isHiddenByDefault: true,
+          renderer: v => (
+            <ProgrammingLanguageSelect
+              ref={refs.programmingLanguages}
+              popoverClassName="z-50"
+              placeholder="Prog. Languages"
+              behavior="multi"
+              isClearable
+              initialValue={v}
+              maximumValuesToRender={1}
+              dynamicHeight={false}
+              inputClassName="max-w-[320px]"
+              onChange={(programmingLanguages: ProgrammingLanguage[]) =>
+                updateFilters({ programmingLanguages })
+              }
+              onClear={() => updateFilters({ programmingLanguages: [] })}
+              popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "programmingDomains",
+          label: "Programming Languages",
+          isHiddenByDefault: true,
+          renderer: v => (
+            <ProgrammingDomainSelect
+              ref={refs.programmingDomains}
+              popoverClassName="z-50"
+              placeholder="Prog. Domains"
+              behavior="multi"
+              isClearable
+              initialValue={v}
+              maximumValuesToRender={1}
+              dynamicHeight={false}
+              inputClassName="max-w-[320px]"
+              onChange={(programmingDomains: ProgrammingDomain[]) =>
+                updateFilters({ programmingDomains })
+              }
+              onClear={() => updateFilters({ programmingDomains: [] })}
+              popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "categories",
+          label: "Categories",
+          isHiddenByDefault: true,
+          renderer: v => (
+            <SkillCategorySelect
+              ref={refs.categories}
+              popoverClassName="z-50"
+              placeholder="Categories"
+              behavior="multi"
+              isClearable
+              initialValue={v}
+              maximumValuesToRender={1}
+              dynamicHeight={false}
+              inputClassName="max-w-[320px]"
+              onChange={(categories: SkillCategory[]) => updateFilters({ categories })}
+              onClear={() => updateFilters({ categories: [] })}
+              popoverPlacement="bottom"
+            />
+          ),
+        },
+      ]}
+    />
   );
 };

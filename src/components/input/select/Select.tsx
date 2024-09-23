@@ -28,7 +28,7 @@ const LocalSelect = forwardRef(
     {
       behavior,
       menuOffset = { mainAxis: 2 },
-      menuPlacement,
+      popoverPlacement,
       closeMenuOnSelect,
       menuWidth = "target",
       isLoading,
@@ -93,7 +93,7 @@ const LocalSelect = forwardRef(
         maxHeight={maxHeight}
         isReady={isReady}
         isLoading={isLoading}
-        menuPlacement={menuPlacement}
+        popoverPlacement={popoverPlacement}
         popoverClassName={popoverClassName}
         menuWidth={menuWidth}
         inPortal={inPortal}

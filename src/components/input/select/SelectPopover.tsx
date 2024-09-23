@@ -10,7 +10,7 @@ import type * as types from "~/components/input/select/types";
 
 export interface SelectPopoverProps
   extends Pick<PopoverProps, "inPortal" | "content" | "maxHeight" | "autoUpdate"> {
-  readonly menuPlacement?: PopoverProps["placement"];
+  readonly popoverPlacement?: PopoverProps["placement"];
   readonly menuOffset?: PopoverProps["offset"];
   readonly menuWidth?: PopoverProps["width"];
   readonly isLoading?: boolean;
@@ -38,7 +38,7 @@ export const SelectPopover = forwardRef<
     {
       content,
       menuOffset = { mainAxis: 2 },
-      menuPlacement,
+      popoverPlacement,
       menuWidth = "target",
       isLoading: _propIsLoading,
       isReady,
@@ -75,7 +75,7 @@ export const SelectPopover = forwardRef<
            to not appropriately use the 'autoPlacement' behavior when inside of a Drawer during the
            first open of the Select's menu content. */
         //  autoUpdate
-        placement={menuPlacement}
+        placement={popoverPlacement}
         middleware={[autoPlacement({ allowedPlacements: ["bottom", "top"] })]}
         triggers={["click"]}
         width={menuWidth}

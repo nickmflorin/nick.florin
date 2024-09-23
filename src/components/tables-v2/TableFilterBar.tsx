@@ -1,29 +1,36 @@
 "use client";
-import { type ReactNode, useRef, type MutableRefObject } from "react";
+import React, { type ReactNode, useRef, type MutableRefObject, useState } from "react";
+
+import type * as types from "./types";
 
 import { IconButton } from "~/components/buttons";
 import type { DrawerId } from "~/components/drawers";
 import { TextInput } from "~/components/input/TextInput";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
+import { ShowHide } from "~/components/util";
 import { useDebounceCallback } from "~/hooks";
 
+import { FiltersSelect } from "./FiltersSelect";
 import { NewButton } from "./NewButton";
 
-export interface TableFilterBarProps extends ComponentProps {
+export interface TableFilterBarProps<F extends types.TableFilters> extends ComponentProps {
   readonly children?: ReactNode;
   readonly isSearchable?: boolean;
   readonly searchPlaceholder?: string;
   readonly searchDebounceInterval?: number;
   readonly search?: string;
   readonly isControlled?: boolean;
+  readonly excludeFilters?: (keyof F & string)[];
   readonly searchInputRef?: MutableRefObject<HTMLInputElement | null>;
   readonly newDrawerId?: DrawerId;
+  readonly filters?: F;
+  readonly configuration?: types.TableFiltersConfiguration<F>;
   readonly onSearch?: (search: string) => void;
   readonly onClear?: () => void;
 }
 
-export const TableFilterBar = ({
+export const TableFilterBar = <F extends types.TableFilters>({
   children,
   isSearchable = true,
   searchPlaceholder = "Search...",
@@ -32,13 +39,21 @@ export const TableFilterBar = ({
   isControlled = false,
   searchInputRef,
   newDrawerId,
+  configuration,
+  filters,
+  excludeFilters,
   onSearch: _onSearch,
   onClear,
   ...props
-}: TableFilterBarProps): JSX.Element => {
+}: TableFilterBarProps<F>): JSX.Element => {
   const _inputRef = useRef<HTMLInputElement | null>(null);
-
   const inputRef = searchInputRef ?? _inputRef;
+
+  const [visibleFilters, setVisibleFilters] = useState<(keyof F & string)[]>(
+    (configuration ?? [])
+      .filter(config => config.isHiddenByDefault !== true)
+      .map(config => config.id),
+  );
 
   const onSearch = useDebounceCallback((search: string) => {
     _onSearch?.(search);
@@ -63,6 +78,20 @@ export const TableFilterBar = ({
         />
       )}
       {children}
+      {filters && (
+        <>
+          {(configuration ?? []).map(filter => (
+            <ShowHide
+              key={filter.id}
+              show={
+                !(excludeFilters ?? []).includes(filter.id) && visibleFilters.includes(filter.id)
+              }
+            >
+              {filter.renderer(filters[filter.id])}
+            </ShowHide>
+          ))}
+        </>
+      )}
       <IconButton.Transparent
         icon="xmark"
         radius="full"
@@ -75,6 +104,14 @@ export const TableFilterBar = ({
           onClear?.();
         }}
       />
+      {configuration && (
+        <FiltersSelect
+          configuration={configuration}
+          excludeFilters={excludeFilters}
+          value={visibleFilters}
+          onChange={f => setVisibleFilters(f)}
+        />
+      )}
       {newDrawerId && <NewButton drawerId={newDrawerId} />}
     </div>
   );

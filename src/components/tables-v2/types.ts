@@ -159,8 +159,23 @@ export interface CellDataTableInstance<
   C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
 > extends Pick<DataTableInstance<D, C>, "setRowLoading"> {}
 
-export type TableFilter = {
-  readonly id: string;
+export type TableFilter<
+  F extends TableFilters = TableFilters,
+  I extends TableFilterId<F> = TableFilterId<F>,
+> = {
+  readonly id: I;
   readonly label: string;
-  readonly renderer: () => ReactNode;
+  readonly isHiddenByDefault?: boolean;
+  readonly renderer: (value: F[I]) => ReactNode;
 };
+
+type ExtractValues<T> = T[keyof T];
+
+export type TableFiltersConfiguration<F extends TableFilters> = ExtractValues<{
+  [key in TableFilterId<F>]: TableFilter<F, key>;
+}>[];
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export type TableFilters = { [key in string]: any };
+
+export type TableFilterId<F extends TableFilters> = keyof F & string;

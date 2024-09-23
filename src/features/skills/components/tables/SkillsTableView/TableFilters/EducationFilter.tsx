@@ -52,7 +52,7 @@ export const EducationFilter = ({ filters, educations }: EducationFilterProps) =
       value={value}
       maximumValuesToRender={1}
       onChange={v => setValue(v)}
-      menuPlacement="bottom"
+      popoverPlacement="bottom"
     />
   );
 };

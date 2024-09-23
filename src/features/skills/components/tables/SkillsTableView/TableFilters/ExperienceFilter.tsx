@@ -52,7 +52,7 @@ export const ExperienceFilter = ({ filters, experiences }: ExperienceFilterProps
       isClearable
       maximumValuesToRender={1}
       onChange={v => setValue(v)}
-      menuPlacement="bottom"
+      popoverPlacement="bottom"
     />
   );
 };

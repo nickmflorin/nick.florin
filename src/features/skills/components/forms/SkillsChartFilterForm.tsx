@@ -79,7 +79,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           onChange={onChange}
           behavior="multi"
           isClearable
-          menuPlacement="bottom"
+          popoverPlacement="bottom"
           useAbbreviatedOptionLabels={false}
           inPortal
           onError={() => form.setErrors("experiences", "There was an error loading the data.")}
@@ -101,7 +101,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           useAbbreviatedOptionLabels={false}
           value={value}
           onChange={onChange}
-          menuPlacement="bottom"
+          popoverPlacement="bottom"
           inPortal
           onError={() => form.setErrors("educations", "There was an error loading the data.")}
         />
@@ -119,7 +119,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           value={value}
           behavior="multi"
           isClearable
-          menuPlacement="bottom"
+          popoverPlacement="bottom"
           inPortal
           onChange={onChange}
         />
@@ -137,7 +137,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           value={value}
           behavior="multi"
           isClearable
-          menuPlacement="bottom"
+          popoverPlacement="bottom"
           inPortal
           onChange={onChange}
         />
@@ -155,7 +155,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           value={value}
           behavior="multi"
           isClearable
-          menuPlacement="bottom"
+          popoverPlacement="bottom"
           inPortal
           onChange={onChange}
         />

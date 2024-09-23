@@ -8,6 +8,7 @@ import type {
 
 export type SkillsTableModel = ApiSkill<["experiences", "educations", "projects", "repositories"]>;
 
+// TODO: Add courses and experience columns.
 export const SkillsTableColumns = [
   {
     id: "label",

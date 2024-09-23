@@ -72,7 +72,7 @@ const LocalDataSelectBase = forwardRef<
     {
       options,
       menuOffset = { mainAxis: 2 },
-      menuPlacement,
+      popoverPlacement,
       closeMenuOnSelect,
       menuWidth = "target",
       isLoading,
@@ -151,7 +151,7 @@ const LocalDataSelectBase = forwardRef<
         maxHeight={maxHeight}
         isReady={isReady}
         isLoading={isLoading}
-        menuPlacement={menuPlacement}
+        popoverPlacement={popoverPlacement}
         menuWidth={menuWidth}
         popoverClassName={popoverClassName}
         inPortal={inPortal}

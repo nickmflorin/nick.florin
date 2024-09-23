@@ -37,7 +37,7 @@ export const BasicSelect = forwardRef<types.BasicSelectInstance, BasicSelectProp
   (
     {
       menuOffset = { mainAxis: 2 },
-      menuPlacement,
+      popoverPlacement,
       menuWidth = "target",
       isLoading,
       inPortal,
@@ -72,7 +72,7 @@ export const BasicSelect = forwardRef<types.BasicSelectInstance, BasicSelectProp
         maxHeight={maxHeight}
         isReady={isReady}
         isLoading={isLoading}
-        menuPlacement={menuPlacement}
+        popoverPlacement={popoverPlacement}
         menuWidth={menuWidth}
         inPortal={inPortal}
         menuOffset={menuOffset}
