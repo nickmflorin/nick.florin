@@ -46,7 +46,7 @@ export const EducationsCell = ({ skill, table }: EducationsCellProps): JSX.Eleme
         } catch (e) {
           logger.errorUnsafe(
             e,
-            `There was a server error updating the educations for the skill with ID '${skill.id}':\n${e}`,
+            `There was a server error updating the educations for the skill with ID '${skill.id}'.`,
             {
               skill: skill.id,
               educations: v,

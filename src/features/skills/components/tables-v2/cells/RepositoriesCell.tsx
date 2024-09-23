@@ -46,7 +46,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
         } catch (e) {
           logger.errorUnsafe(
             e,
-            `There was an error updating the repositories for the skill with ID '${skill.id}':\n${e}`,
+            `There was an error updating the repositories for the skill with ID '${skill.id}'.`,
             {
               skill: skill.id,
               experiences: v,

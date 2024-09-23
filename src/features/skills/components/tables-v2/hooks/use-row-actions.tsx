@@ -47,7 +47,7 @@ export const useSkillsTableRowActions = () => {
         isVisible: !skill.visible,
         content: "Show",
         loadingText: "Showing",
-        icon: <Icon icon="volume-high" size="16px" className="text-gray-600" />,
+        icon: <Icon icon="eye" size="16px" className="text-gray-600" />,
         isLoading: enablePending,
         onClick: async (e, instance) => {
           instance.setLoading(true);
@@ -77,7 +77,7 @@ export const useSkillsTableRowActions = () => {
         isVisible: skill.visible,
         content: "Hide",
         loadingText: "Hiding",
-        icon: <Icon icon="volume-xmark" size="16px" className="text-gray-600" />,
+        icon: <Icon icon="eye-slash" size="16px" className="text-gray-600" />,
         isLoading: disablePending,
         onClick: async (e, instance) => {
           instance.setLoading(true);

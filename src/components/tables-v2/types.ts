@@ -115,8 +115,8 @@ export type DataTableColumns<
   I extends string = string,
 > = DataTableColumnConfig<D, I>[];
 
-export type RowLoadingState<D extends DataTableDatum> = {
-  readonly id: D["id"];
+export type RowLoadingState = {
+  readonly id: string;
   readonly locked?: boolean;
 };
 
@@ -138,16 +138,16 @@ export interface DataTableInstance<
   readonly columnIsHideable: (id: string) => id is HideableTableColumn<C>["id"];
   readonly columnIsVisible: (id: string) => boolean;
   readonly columnIsHidden: (id: string) => boolean;
-  readonly rowIsLoading: (id: D | D["id"]) => boolean;
-  readonly rowIsLocked: (id: D | D["id"]) => boolean;
+  readonly rowIsLoading: (id: D | string) => boolean;
+  readonly rowIsLocked: (id: D | string) => boolean;
   readonly syncSelectedRows: (data: D[]) => void;
   readonly setSelectedRows: (selected: D[]) => void;
   readonly selectRows: (rows: D[] | D) => void;
-  readonly deselectRows: (rows: D[] | D | D["id"] | D["id"][]) => void;
+  readonly deselectRows: (rows: D[] | D | string | string[]) => void;
   readonly changeRowSelection: (row: D, isSelected: boolean) => void;
   readonly toggleRowSelection: (row: D) => void;
-  readonly rowIsSelected: (row: D | D["id"]) => boolean;
-  readonly setRowLoading: (id: D["id"], loading: boolean, opts?: { locked?: boolean }) => void;
+  readonly rowIsSelected: (row: D | string) => boolean;
+  readonly setRowLoading: (id: string, loading: boolean, opts?: { locked?: boolean }) => void;
   readonly hideColumn: (id: string) => void;
   readonly showColumn: (id: string) => void;
   readonly setVisibleColumns: (m: string[]) => void;

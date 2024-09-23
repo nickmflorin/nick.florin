@@ -1,7 +1,9 @@
-import { AddToTopSkillsButton } from "~/components/buttons/AddToTopSkillsButton";
+import { DeprioritizeButton } from "~/components/buttons/DeprioritizeButton";
 import { HideButton } from "~/components/buttons/HideButton";
-import { RemoveFromTopSkillsButton } from "~/components/buttons/RemoveFromTopSkilsButton";
+import { HighlightButton } from "~/components/buttons/HighlightButton";
+import { PrioritizeButton } from "~/components/buttons/PrioritizeButton";
 import { ShowButton } from "~/components/buttons/ShowButton";
+import { UnhighlightButton } from "~/components/buttons/UnhighlightButton";
 import {
   ConnectedTableControlBarPlaceholder,
   type ConnectedTableControlBarPlaceholderProps,
@@ -18,7 +20,9 @@ export const SkillsTableControlBarPlaceholder = (
   <ConnectedTableControlBarPlaceholder {...props}>
     <ShowButton isDisabled={true} />
     <HideButton isDisabled={true} />
-    <AddToTopSkillsButton isDisabled={true} />
-    <RemoveFromTopSkillsButton isDisabled={true} />
+    <HighlightButton isDisabled={true} />
+    <UnhighlightButton isDisabled={true} />
+    <PrioritizeButton isDisabled={true} />
+    <DeprioritizeButton isDisabled={true} />
   </ConnectedTableControlBarPlaceholder>
 );

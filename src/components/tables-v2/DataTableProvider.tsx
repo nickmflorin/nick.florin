@@ -31,7 +31,7 @@ export const DataTableProvider = <
   rowsAreDeletable = false,
 }: DataTableProviderProps<D, C>): JSX.Element => {
   const [selectedRows, setSelectedRows] = useState<D[]>([]);
-  const [rowStates, setRowStates] = useState<types.RowLoadingState<D>[]>([]);
+  const [rowStates, setRowStates] = useState<types.RowLoadingState[]>([]);
 
   const [visibleColumnIds, setVisibleColumnIds] = useState<string[]>(
     columns.filter(c => c.isHiddenByDefault !== true && c.isHideable !== false).map(c => c.id),

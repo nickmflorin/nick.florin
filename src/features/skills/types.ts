@@ -49,6 +49,7 @@ export const SkillsTableColumns = [
     minWidth: 200,
     width: 260,
     maxWidth: 320,
+    isHiddenByDefault: true,
   },
   {
     id: "calculatedExperience",
@@ -91,7 +92,15 @@ export const SkillsTableColumns = [
   },
   {
     id: "highlighted",
-    label: "Highlighted",
+    label: "Highlight",
+    align: "center",
+    width: 105,
+    maxWidth: 105,
+    minWidth: 105,
+  },
+  {
+    id: "prioritized",
+    label: "Priority",
     align: "center",
     width: 105,
     maxWidth: 105,

@@ -61,7 +61,7 @@ export const VisibleCell = <
           try {
             response = await action(model.id, { visible: e.target.checked });
           } catch (e) {
-            logger.error(`There was a server error changing the visibility for the model:\n${e}`, {
+            logger.error(`There was a server error changing the visibility for the model.`, {
               error: e,
               model,
             });

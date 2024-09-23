@@ -7,15 +7,19 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
+import { deprioritizeSkills } from "~/actions-v2/skills/deprioritize-skills";
 import { hideSkills } from "~/actions-v2/skills/hide-skills";
 import { highlightSkills } from "~/actions-v2/skills/highlight-skills";
+import { prioritizeSkills } from "~/actions-v2/skills/prioritize-skills";
 import { showSkills } from "~/actions-v2/skills/show-skills";
 import { unhighlightSkills } from "~/actions-v2/skills/unhighlight-skills";
 
-import { AddToTopSkillsButton } from "~/components/buttons/AddToTopSkillsButton";
+import { DeprioritizeButton } from "~/components/buttons/DeprioritizeButton";
 import { HideButton } from "~/components/buttons/HideButton";
-import { RemoveFromTopSkillsButton } from "~/components/buttons/RemoveFromTopSkilsButton";
+import { HighlightButton } from "~/components/buttons/HighlightButton";
+import { PrioritizeButton } from "~/components/buttons/PrioritizeButton";
 import { ShowButton } from "~/components/buttons/ShowButton";
+import { UnhighlightButton } from "~/components/buttons/UnhighlightButton";
 import { Tooltip } from "~/components/floating/Tooltip";
 import {
   ConnectedTableControlBar,
@@ -40,8 +44,10 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
 
   const [isHiding, setIsHiding] = useState(false);
   const [isShowing, setIsShowing] = useState(false);
-  const [isIncluding, setIsIncluding] = useState(false);
-  const [isExcluding, setIsExcluding] = useState(false);
+  const [isHighlighting, setIsHighlighting] = useState(false);
+  const [isUnhighlighting, setIsUnhighlighting] = useState(false);
+  const [isPrioritizing, setIsPrioritizing] = useState(false);
+  const [isDeprioritizing, setIsDeprioritizing] = useState(false);
 
   const [_, transition] = useTransition();
 
@@ -56,6 +62,8 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
         const numHidden = selectedRows.filter(row => !row.visible).length;
         const numHighlighted = selectedRows.filter(row => row.highlighted).length;
         const numNotHighlighted = selectedRows.filter(row => !row.highlighted).length;
+        const numPrioritized = selectedRows.filter(row => row.prioritized).length;
+        const numNotPrioritized = selectedRows.filter(row => !row.prioritized).length;
         return (
           <>
             <Tooltip
@@ -78,7 +86,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                     );
                   } catch (e) {
                     logger.errorUnsafe(e, "There was an error showing the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => !row.visible).map(row => row.id),
                     });
                     setIsShowing(false);
                     return toast.error("There was an error updaitng the skills.");
@@ -86,7 +94,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                   const { error } = response;
                   if (error) {
                     logger.error(error, "There was an error showing the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => !row.visible).map(row => row.id),
                     });
                     setIsShowing(false);
                     return toast.error("There was an updating the skills.");
@@ -119,7 +127,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                     );
                   } catch (e) {
                     logger.errorUnsafe(e, "There was an error hiding the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => row.visible).map(row => row.id),
                     });
                     setIsHiding(false);
                     return toast.error("There was an updating the skills.");
@@ -127,7 +135,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                   const { error } = response;
                   if (error) {
                     logger.error(error, "There was an error hiding the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => row.visible).map(row => row.id),
                     });
                     setIsHiding(false);
                     return toast.error("There was an updating the skills.");
@@ -135,7 +143,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                   transition(() => {
                     refresh();
                     setIsHiding(false);
-                    toast.success("The subscriptions have been hidden.");
+                    toast.success("The skills have been hidden.");
                   });
                 }}
               />
@@ -148,34 +156,34 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               className="text-sm"
               isDisabled={numNotHighlighted === 0 || props.isDisabled === true}
             >
-              <AddToTopSkillsButton
+              <HighlightButton
                 isDisabled={numNotHighlighted === 0 || props.isDisabled}
-                isLoading={isIncluding}
+                isLoading={isHighlighting}
                 onClick={async () => {
                   let response: Awaited<ReturnType<typeof highlightSkills>> | null = null;
-                  setIsIncluding(true);
+                  setIsHighlighting(true);
                   try {
                     response = await highlightSkills(
                       selectedRows.filter(row => !row.highlighted).map(row => row.id),
                     );
                   } catch (e) {
                     logger.errorUnsafe(e, "There was an error highlighting the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => !row.highlighted).map(row => row.id),
                     });
-                    setIsIncluding(false);
+                    setIsHighlighting(false);
                     return toast.error("There was an error updating the skills.");
                   }
                   const { error } = response;
                   if (error) {
                     logger.error(error, "There was an error highlighting the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => !row.highlighted).map(row => row.id),
                     });
-                    setIsIncluding(false);
+                    setIsHighlighting(false);
                     return toast.error("There was an error updating the skills.");
                   }
                   transition(() => {
                     refresh();
-                    setIsIncluding(false);
+                    setIsHighlighting(false);
                     toast.success("The skills have been highlighted.");
                   });
                 }}
@@ -189,35 +197,117 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               className="text-sm"
               isDisabled={numHighlighted === 0 || props.isDisabled === true}
             >
-              <RemoveFromTopSkillsButton
+              <UnhighlightButton
                 isDisabled={numHighlighted === 0 || props.isDisabled}
-                isLoading={isExcluding}
+                isLoading={isUnhighlighting}
                 onClick={async () => {
                   let response: Awaited<ReturnType<typeof unhighlightSkills>> | null = null;
-                  setIsExcluding(true);
+                  setIsUnhighlighting(true);
                   try {
                     response = await unhighlightSkills(
                       selectedRows.filter(row => row.highlighted).map(row => row.id),
                     );
                   } catch (e) {
                     logger.errorUnsafe(e, "There was an error unhighlighting the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => row.highlighted).map(row => row.id),
                     });
-                    setIsExcluding(false);
+                    setIsUnhighlighting(false);
                     return toast.error("There was an error updating the skills.");
                   }
                   const { error } = response;
                   if (error) {
                     logger.error(error, "There was an error unhighlighting the skills.", {
-                      subscriptions: selectedRows.map(row => row.id),
+                      skills: selectedRows.filter(row => row.highlighted).map(row => row.id),
                     });
-                    setIsExcluding(false);
+                    setIsUnhighlighting(false);
                     return toast.error("There was an error updating the skills.");
                   }
                   transition(() => {
                     refresh();
-                    setIsExcluding(false);
+                    setIsUnhighlighting(false);
                     toast.success("The skills have been unhighlighted.");
+                  });
+                }}
+              />
+            </Tooltip>
+            <Tooltip
+              placement="top-start"
+              inPortal={props.tooltipsInPortal}
+              offset={{ mainAxis: 6 }}
+              content={`Prioritize ${numNotPrioritized} selected skill${numNotPrioritized <= 1 ? "" : "s"}.`}
+              className="text-sm"
+              isDisabled={numNotPrioritized === 0 || props.isDisabled === true}
+            >
+              <PrioritizeButton
+                isDisabled={numNotPrioritized === 0 || props.isDisabled}
+                isLoading={isPrioritizing}
+                onClick={async () => {
+                  let response: Awaited<ReturnType<typeof prioritizeSkills>> | null = null;
+                  setIsPrioritizing(true);
+                  try {
+                    response = await prioritizeSkills(
+                      selectedRows.filter(row => !row.prioritized).map(row => row.id),
+                    );
+                  } catch (e) {
+                    logger.errorUnsafe(e, "There was an error prioritizing the skills.", {
+                      skills: selectedRows.filter(row => !row.prioritized).map(row => row.id),
+                    });
+                    setIsPrioritizing(false);
+                    return toast.error("There was an error updating the skills.");
+                  }
+                  const { error } = response;
+                  if (error) {
+                    logger.error(error, "There was an error prioritizing the skills.", {
+                      skills: selectedRows.filter(row => !row.prioritized).map(row => row.id),
+                    });
+                    setIsPrioritizing(false);
+                    return toast.error("There was an error updating the skills.");
+                  }
+                  transition(() => {
+                    refresh();
+                    setIsPrioritizing(false);
+                    toast.success("The skills have been prioritized.");
+                  });
+                }}
+              />
+            </Tooltip>
+            <Tooltip
+              placement="top-start"
+              inPortal={props.tooltipsInPortal}
+              offset={{ mainAxis: 6 }}
+              content={`Deprioritize ${numPrioritized} selected skill${numPrioritized <= 1 ? "" : "s"}.`}
+              className="text-sm"
+              isDisabled={numPrioritized === 0 || props.isDisabled === true}
+            >
+              <DeprioritizeButton
+                isDisabled={numPrioritized === 0 || props.isDisabled}
+                isLoading={isDeprioritizing}
+                onClick={async () => {
+                  let response: Awaited<ReturnType<typeof deprioritizeSkills>> | null = null;
+                  setIsDeprioritizing(true);
+                  try {
+                    response = await deprioritizeSkills(
+                      selectedRows.filter(row => row.prioritized).map(row => row.id),
+                    );
+                  } catch (e) {
+                    logger.errorUnsafe(e, "There was an error deprioritizing the skills.", {
+                      skills: selectedRows.filter(row => row.prioritized).map(row => row.id),
+                    });
+                    setIsDeprioritizing(false);
+                    return toast.error("There was an error updating the skills.");
+                  }
+                  const { error } = response;
+                  if (error) {
+                    logger.error(error, "There was an error deprioritizing the skills.", {
+                      skills: selectedRows.filter(row => row.prioritized).map(row => row.id),
+                    });
+                    setIsDeprioritizing(false);
+                    return toast.error("There was an error updating the skills.");
+                  }
+                  transition(() => {
+                    refresh();
+                    setIsDeprioritizing(false);
+                    toast.success("The skills have been deprioritized.");
                   });
                 }}
               />

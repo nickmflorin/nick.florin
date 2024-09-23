@@ -46,7 +46,7 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
         } catch (e) {
           logger.errorUnsafe(
             e,
-            `There was an error updating the projects for the skill with ID '${skill.id}':\n${e}`,
+            `There was an error updating the projects for the skill with ID '${skill.id}'.`,
             {
               skill: skill.id,
               experiences: v,

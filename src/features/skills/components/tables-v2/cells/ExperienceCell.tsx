@@ -57,7 +57,7 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
                 await updateSkill(skill.id, { experience: null });
               } catch (e) {
                 logger.error(
-                  `There was an error updating the experience for the skill with ID '${skill.id}':\n${e}`,
+                  `There was an error updating the experience for the skill with ID '${skill.id}'.`,
                   {
                     error: e,
                     skill: skill.id,
@@ -92,7 +92,7 @@ export const ExperienceCell = ({ skill, table }: ExperienceCellProps): JSX.Eleme
               await updateSkill(skill.id, { experience: parseInt(ex) });
             } catch (e) {
               logger.error(
-                `There was an error updating the experience for the skill with ID '${skill.id}':\n${e}`,
+                `There was an error updating the experience for the skill with ID '${skill.id}'.`,
                 {
                   error: e,
                   skill: skill.id,

@@ -47,7 +47,7 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
         } catch (e) {
           logger.errorUnsafe(
             e,
-            `There was a server error updating the experiences for the skill with ID '${skill.id}':\n${e}`,
+            `There was a server error updating the experiences for the skill with ID '${skill.id}'.`,
             {
               skill: skill.id,
               experiences: v,

@@ -12,6 +12,7 @@ import { CategoriesCell } from "../cells/CategoriesCell";
 import { EducationsCell } from "../cells/EducationsCell";
 import { ExperiencesCell } from "../cells/ExperiencesCell";
 import { HighlightedCell } from "../cells/HighlightedCell";
+import { PrioritizedCell } from "../cells/PrioritizedCell";
 import { ProgrammingLanguagesCell } from "../cells/ProgrammingLanguagesCell";
 import { ProjectsCell } from "../cells/ProjectsCell";
 import { RepositoriesCell } from "../cells/RepositoriesCell";
@@ -76,6 +77,11 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
       highlighted: {
         cellRenderer(datum) {
           return <HighlightedCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      prioritized: {
+        cellRenderer(datum) {
+          return <PrioritizedCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       visible: {

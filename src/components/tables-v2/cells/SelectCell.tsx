@@ -95,7 +95,7 @@ export const SelectCell = <
         } catch (e) {
           logger.errorUnsafe(
             e,
-            `There was an error updating the ${String(attribute)} of the ${row.id}:\n${e}`,
+            `There was an error updating the ${String(attribute)} of the ${row.id}.`,
             { value: v },
           );
           table.setRowLoading(row.id, false);
