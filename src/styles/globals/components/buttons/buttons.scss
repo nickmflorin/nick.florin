@@ -29,6 +29,9 @@
   font-family: inherit;
   font-size: inherit;
   text-align: inherit;
+  text-overflow: inherit;
+  white-space: inherit;
+  overflow: inherit;
 }
 
 @mixin button-structure() {
@@ -36,6 +39,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  overflow: hidden;
 
   > .button__content {
     text-align: inherit;
@@ -47,7 +51,6 @@
     position: relative;
     width: 100%;
     vertical-align: middle;
-    overflow: hidden;
     max-width: 100%;
     flex-grow: 100;
     gap: 8px;
@@ -59,7 +62,7 @@
       flex-grow: 100;
       // This padding prevents the right side of italic text from being cut off.
       padding-right: 1px;
-      @include typography.truncate();
+      // @include typography.truncate();
       @include inherit-properties();
     }
   }

@@ -24,7 +24,10 @@ export type ButtonProps<E extends types.ButtonElement> = Omit<
   types.AbstractButtonProps<E>,
   "buttonType"
 > &
-  Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
+  Pick<
+    TypographyCharacteristics,
+    "fontSize" | "fontFamily" | "fontWeight" | "transform" | "truncate"
+  > & {
     readonly children?: ReactNode;
     readonly variant?: types.ButtonButtonVariant;
     readonly fontSize?: TypographyCharacteristics["fontSize"];
@@ -44,9 +47,6 @@ type LocalButtonType = {
   ): JSX.Element;
 };
 
-// /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-// const Base = AbstractButton as React.FC<types.AbstractButtonProps<types.ButtonElement>>;
-
 const LocalButton = forwardRef(
   <E extends types.ButtonElement>(
     {
@@ -64,6 +64,7 @@ const LocalButton = forwardRef(
       transform,
       variant,
       size,
+      truncate = true,
       ...props
     }: ButtonProps<E>,
     ref: types.PolymorphicButtonRef<E>,
@@ -78,7 +79,7 @@ const LocalButton = forwardRef(
           `button--variant-${variant ?? "solid"}`,
           buttonSizeClassName(size),
           buttonIconSizeClassName(iconSize),
-          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform }),
+          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform, truncate }),
           props.className,
         )}
         style={{ ...props.style, ...getButtonSizeStyle({ size }) }}

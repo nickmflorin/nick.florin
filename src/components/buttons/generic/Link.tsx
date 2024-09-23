@@ -19,7 +19,10 @@ export type LinkProps<E extends types.ButtonElement> = Omit<
   types.AbstractButtonProps<E>,
   "buttonType"
 > &
-  Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
+  Pick<
+    TypographyCharacteristics,
+    "fontSize" | "fontFamily" | "fontWeight" | "transform" | "truncate"
+  > & {
     readonly children?: ReactNode;
     readonly icon?: types.ButtonIconProp;
     readonly iconClassName?: ComponentProps["className"];
@@ -45,6 +48,7 @@ const LocalLink = forwardRef(
       fontFamily,
       fontWeight,
       transform,
+      truncate = false,
       ...props
     }: LinkProps<E>,
     ref: types.PolymorphicButtonRef<E>,
@@ -56,7 +60,7 @@ const LocalLink = forwardRef(
       <AbstractButton
         {...ps}
         className={classNames(
-          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform }),
+          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform, truncate }),
           props.className,
         )}
       >
