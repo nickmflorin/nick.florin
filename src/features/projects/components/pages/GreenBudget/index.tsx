@@ -286,7 +286,7 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
               In film production, an <Emphasize>Actual</Emphasize> is a term that is used to
               describe the <i>actual</i>, realized cost of a given line item in a budget. Sometimes
               (more often than not) the actual cost of a given line item differs from the line
-              item&spos;s original <Emphasize>estimated</Emphasize> value, and the difference is
+              item&apos;s original <Emphasize>estimated</Emphasize> value, and the difference is
               referred to as the&nbsp;
               <Emphasize>variance</Emphasize>.
             </Description>
@@ -397,14 +397,13 @@ export const GreenBudget = (props: GreenBudgetProps): JSX.Element => {
               <CaptionDescription key="1">
                 You can see this transition occur by focusing on the summarized, calculated values
                 associated with both the&nbsp;
-                <Emphasize.Caption>Miscellaneous</Emphasize.Caption>
-                <Emphasize.Caption>Group</Emphasize.Caption> and the newly created&nbsp;
+                <Emphasize.Caption>Miscellaneous Group</Emphasize.Caption>and the newly
+                created&nbsp;
                 <Emphasize.Caption>Group</Emphasize.Caption> in the above image. When the new&nbsp;
                 <Emphasize.Caption>Group</Emphasize.Caption> is created, the summarized values of
                 the&nbsp;
-                <Emphasize.Caption>Miscellaneous</Emphasize.Caption>&nbsp;
-                <Emphasize.Caption>Group</Emphasize.Caption>&nbsp;decrease by the same amount that
-                the summarized values of the new&nbsp;
+                <Emphasize.Caption>Miscellaneous Group</Emphasize.Caption>&nbsp;decrease by the same
+                amount that the summarized values of the new&nbsp;
                 <Emphasize.Caption>Group</Emphasize.Caption> total to.
               </CaptionDescription>,
             ]}
