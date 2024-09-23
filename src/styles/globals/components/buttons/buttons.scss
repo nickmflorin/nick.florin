@@ -68,6 +68,16 @@
   }
 }
 
+@mixin fit-content() {
+  max-width: fit-content;
+  > .button__content {
+    max-width: fit-content;
+    > .button__sub-content {
+      max-width: fit-content;
+    }
+  }
+}
+
 .button {
   @include button-base();
   @include mixins.button-locked-or-loading();
@@ -91,6 +101,7 @@
     @include button-properties("button");
     @include button-structure();
 
+    white-space: nowrap;
     min-width: fit-content;
     justify-content: center;
     text-align: center;
@@ -99,9 +110,10 @@
   &--type-link {
     @include button-properties("link");
     @include button-structure();
+    @include fit-content();
 
+    white-space: nowrap;
     text-decoration: none;
-    max-width: fit-content;
     vertical-align: middle;
   }
 
