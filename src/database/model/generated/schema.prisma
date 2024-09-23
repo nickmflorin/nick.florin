@@ -187,6 +187,7 @@ model Skill {
   experience           Int?
   calculatedExperience Int
   highlighted          Boolean               @default(false)
+  prioritized          Boolean               @default(false)
   courses              Course[]              @relation("courseSkills")
   projects             Project[]             @relation("projectSkills")
   details              Detail[]              @relation("detailSkills")

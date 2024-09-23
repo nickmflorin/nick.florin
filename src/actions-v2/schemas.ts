@@ -30,6 +30,7 @@ export const SkillSchema = z.object({
     .optional(),
   visible: z.boolean().optional(),
   highlighted: z.boolean().optional(),
+  prioritized: z.boolean().optional(),
   programmingDomains: z.array(z.nativeEnum(ProgrammingDomain)).optional(),
   programmingLanguages: z.array(z.nativeEnum(ProgrammingLanguage)).optional(),
   categories: z.array(z.nativeEnum(SkillCategory)).optional(),

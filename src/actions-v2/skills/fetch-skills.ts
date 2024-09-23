@@ -33,6 +33,9 @@ const filtersClause = ({ filters }: Pick<SkillsControls, "filters">) =>
     filters.highlighted !== undefined && filters.highlighted !== null
       ? { highlighted: filters.highlighted }
       : undefined,
+    filters.prioritized !== undefined && filters.prioritized !== null
+      ? { prioritized: filters.prioritized }
+      : undefined,
     filters.programmingDomains && filters.programmingDomains.length !== 0
       ? { programmingDomains: { hasSome: filters.programmingDomains } }
       : undefined,

@@ -8441,6 +8441,7 @@ export namespace Prisma {
     experience: number | null
     calculatedExperience: number | null
     highlighted: boolean | null
+    prioritized: boolean | null
   }
 
   export type SkillMaxAggregateOutputType = {
@@ -8456,6 +8457,7 @@ export namespace Prisma {
     experience: number | null
     calculatedExperience: number | null
     highlighted: boolean | null
+    prioritized: boolean | null
   }
 
   export type SkillCountAggregateOutputType = {
@@ -8474,6 +8476,7 @@ export namespace Prisma {
     experience: number
     calculatedExperience: number
     highlighted: number
+    prioritized: number
     _all: number
   }
 
@@ -8501,6 +8504,7 @@ export namespace Prisma {
     experience?: true
     calculatedExperience?: true
     highlighted?: true
+    prioritized?: true
   }
 
   export type SkillMaxAggregateInputType = {
@@ -8516,6 +8520,7 @@ export namespace Prisma {
     experience?: true
     calculatedExperience?: true
     highlighted?: true
+    prioritized?: true
   }
 
   export type SkillCountAggregateInputType = {
@@ -8534,6 +8539,7 @@ export namespace Prisma {
     experience?: true
     calculatedExperience?: true
     highlighted?: true
+    prioritized?: true
     _all?: true
   }
 
@@ -8639,6 +8645,7 @@ export namespace Prisma {
     experience: number | null
     calculatedExperience: number
     highlighted: boolean
+    prioritized: boolean
     _count: SkillCountAggregateOutputType | null
     _avg: SkillAvgAggregateOutputType | null
     _sum: SkillSumAggregateOutputType | null
@@ -8676,6 +8683,7 @@ export namespace Prisma {
     experience?: boolean
     calculatedExperience?: boolean
     highlighted?: boolean
+    prioritized?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     updatedBy?: boolean | UserDefaultArgs<ExtArgs>
     experiences?: boolean | Skill$experiencesArgs<ExtArgs>
@@ -8704,6 +8712,7 @@ export namespace Prisma {
     experience?: boolean
     calculatedExperience?: boolean
     highlighted?: boolean
+    prioritized?: boolean
   }
 
   export type SkillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8749,6 +8758,7 @@ export namespace Prisma {
       experience: number | null
       calculatedExperience: number
       highlighted: boolean
+      prioritized: boolean
     }, ExtArgs["result"]["skill"]>
     composites: {}
   }
@@ -9175,6 +9185,7 @@ export namespace Prisma {
     readonly experience: FieldRef<"Skill", 'Int'>
     readonly calculatedExperience: FieldRef<"Skill", 'Int'>
     readonly highlighted: FieldRef<"Skill", 'Boolean'>
+    readonly prioritized: FieldRef<"Skill", 'Boolean'>
   }
     
 
@@ -17169,7 +17180,8 @@ export namespace Prisma {
     programmingDomains: 'programmingDomains',
     experience: 'experience',
     calculatedExperience: 'calculatedExperience',
-    highlighted: 'highlighted'
+    highlighted: 'highlighted',
+    prioritized: 'prioritized'
   };
 
   export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
@@ -18034,6 +18046,7 @@ export namespace Prisma {
     experience?: IntNullableFilter<"Skill"> | number | null
     calculatedExperience?: IntFilter<"Skill"> | number
     highlighted?: BoolFilter<"Skill"> | boolean
+    prioritized?: BoolFilter<"Skill"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     experiences?: ExperienceListRelationFilter
@@ -18061,6 +18074,7 @@ export namespace Prisma {
     experience?: SortOrderInput | SortOrder
     calculatedExperience?: SortOrder
     highlighted?: SortOrder
+    prioritized?: SortOrder
     createdBy?: UserOrderByWithRelationInput
     updatedBy?: UserOrderByWithRelationInput
     experiences?: ExperienceOrderByRelationAggregateInput
@@ -18091,6 +18105,7 @@ export namespace Prisma {
     experience?: IntNullableFilter<"Skill"> | number | null
     calculatedExperience?: IntFilter<"Skill"> | number
     highlighted?: BoolFilter<"Skill"> | boolean
+    prioritized?: BoolFilter<"Skill"> | boolean
     createdBy?: XOR<UserRelationFilter, UserWhereInput>
     updatedBy?: XOR<UserRelationFilter, UserWhereInput>
     experiences?: ExperienceListRelationFilter
@@ -18118,6 +18133,7 @@ export namespace Prisma {
     experience?: SortOrderInput | SortOrder
     calculatedExperience?: SortOrder
     highlighted?: SortOrder
+    prioritized?: SortOrder
     _count?: SkillCountOrderByAggregateInput
     _avg?: SkillAvgOrderByAggregateInput
     _max?: SkillMaxOrderByAggregateInput
@@ -18144,6 +18160,7 @@ export namespace Prisma {
     experience?: IntNullableWithAggregatesFilter<"Skill"> | number | null
     calculatedExperience?: IntWithAggregatesFilter<"Skill"> | number
     highlighted?: BoolWithAggregatesFilter<"Skill"> | boolean
+    prioritized?: BoolWithAggregatesFilter<"Skill"> | boolean
   }
 
   export type CourseWhereInput = {
@@ -19489,6 +19506,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -19516,6 +19534,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -19539,6 +19558,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -19566,6 +19586,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -19591,6 +19612,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
   }
 
   export type SkillUpdateManyMutationInput = {
@@ -19607,6 +19629,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillUncheckedUpdateManyInput = {
@@ -19625,6 +19648,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CourseCreateInput = {
@@ -21089,6 +21113,7 @@ export namespace Prisma {
     experience?: SortOrder
     calculatedExperience?: SortOrder
     highlighted?: SortOrder
+    prioritized?: SortOrder
   }
 
   export type SkillAvgOrderByAggregateInput = {
@@ -21109,6 +21134,7 @@ export namespace Prisma {
     experience?: SortOrder
     calculatedExperience?: SortOrder
     highlighted?: SortOrder
+    prioritized?: SortOrder
   }
 
   export type SkillMinOrderByAggregateInput = {
@@ -21124,6 +21150,7 @@ export namespace Prisma {
     experience?: SortOrder
     calculatedExperience?: SortOrder
     highlighted?: SortOrder
+    prioritized?: SortOrder
   }
 
   export type SkillSumOrderByAggregateInput = {
@@ -24280,6 +24307,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
     educations?: EducationCreateNestedManyWithoutSkillsInput
@@ -24305,6 +24333,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -24338,6 +24367,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
     educations?: EducationCreateNestedManyWithoutSkillsInput
@@ -24363,6 +24393,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -25345,6 +25376,7 @@ export namespace Prisma {
     experience?: IntNullableFilter<"Skill"> | number | null
     calculatedExperience?: IntFilter<"Skill"> | number
     highlighted?: BoolFilter<"Skill"> | boolean
+    prioritized?: BoolFilter<"Skill"> | boolean
   }
 
   export type SkillUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -26159,6 +26191,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -26185,6 +26218,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -26701,6 +26735,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -26727,6 +26762,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -27441,6 +27477,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -27467,6 +27504,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -28603,6 +28641,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -28629,6 +28668,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     projects?: ProjectUncheckedCreateNestedManyWithoutSkillsInput
@@ -29031,6 +29071,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -29057,6 +29098,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
@@ -30305,6 +30347,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     educations?: EducationCreateNestedManyWithoutSkillsInput
@@ -30331,6 +30374,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     educations?: EducationUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
     projects?: ProjectUncheckedCreateNestedManyWithoutSkillsInput
@@ -30754,6 +30798,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     createdBy: UserCreateNestedOneWithoutCreatedSkillsInput
     updatedBy: UserCreateNestedOneWithoutUpdatedSkillsInput
     experiences?: ExperienceCreateNestedManyWithoutSkillsInput
@@ -30780,6 +30825,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
     experiences?: ExperienceUncheckedCreateNestedManyWithoutSkillsInput
     courses?: CourseUncheckedCreateNestedManyWithoutSkillsInput
     projects?: ProjectUncheckedCreateNestedManyWithoutSkillsInput
@@ -31416,6 +31462,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
   }
 
   export type SkillCreateManyCreatedByInput = {
@@ -31433,6 +31480,7 @@ export namespace Prisma {
     experience?: number | null
     calculatedExperience: number
     highlighted?: boolean
+    prioritized?: boolean
   }
 
   export type CompanyCreateManyUpdatedByInput = {
@@ -31773,6 +31821,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
     educations?: EducationUpdateManyWithoutSkillsNestedInput
@@ -31798,6 +31847,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -31822,6 +31872,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillUpdateWithoutCreatedByInput = {
@@ -31838,6 +31889,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
     educations?: EducationUpdateManyWithoutSkillsNestedInput
@@ -31863,6 +31915,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -31887,6 +31940,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompanyUpdateWithoutUpdatedByInput = {
@@ -32935,6 +32989,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -32961,6 +33016,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -32985,6 +33041,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type NestedDetailCreateManyDetailInput = {
@@ -33055,6 +33112,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33081,6 +33139,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33105,6 +33164,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillUpdateWithoutRepositoriesInput = {
@@ -33121,6 +33181,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33147,6 +33208,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33171,6 +33233,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProjectUpdateWithoutRepositoriesInput = {
@@ -33580,6 +33643,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33606,6 +33670,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33630,6 +33695,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DetailCreateManyProjectInput = {
@@ -33673,6 +33739,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -33699,6 +33766,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
@@ -33723,6 +33791,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DetailUpdateWithoutProjectInput = {
@@ -34020,6 +34089,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     educations?: EducationUpdateManyWithoutSkillsNestedInput
@@ -34046,6 +34116,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     educations?: EducationUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutSkillsNestedInput
@@ -34070,6 +34141,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CourseCreateManyEducationInput = {
@@ -34099,6 +34171,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     createdBy?: UserUpdateOneRequiredWithoutCreatedSkillsNestedInput
     updatedBy?: UserUpdateOneRequiredWithoutUpdatedSkillsNestedInput
     experiences?: ExperienceUpdateManyWithoutSkillsNestedInput
@@ -34125,6 +34198,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
     experiences?: ExperienceUncheckedUpdateManyWithoutSkillsNestedInput
     courses?: CourseUncheckedUpdateManyWithoutSkillsNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutSkillsNestedInput
@@ -34149,6 +34223,7 @@ export namespace Prisma {
     experience?: NullableIntFieldUpdateOperationsInput | number | null
     calculatedExperience?: IntFieldUpdateOperationsInput | number
     highlighted?: BoolFieldUpdateOperationsInput | boolean
+    prioritized?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CourseUpdateWithoutEducationInput = {
