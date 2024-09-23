@@ -23,7 +23,6 @@ export const ColumnSelect = <T extends TableModel>() => {
       value={visibleColumnIds}
       data={columns.filter(c => c.isHideable !== false)}
       inputClassName="w-[240px]"
-      // menuPlacement="bottom-end"
       menuOffset={{ mainAxis: 4, crossAxis: -50 }}
       menuWidth="available"
       maxHeight={260}

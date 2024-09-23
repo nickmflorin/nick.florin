@@ -3,7 +3,10 @@ import React, { useState } from "react";
 
 import { motion } from "framer-motion";
 
+import { type NavItem } from "~/application/pages";
+
 import { classNames } from "~/components/types";
+import { useNavigation } from "~/hooks";
 
 import {
   type ISidebarItem,
@@ -25,15 +28,19 @@ const ItemVariants = {
 const getPreviousOpenedGroup = ({
   previousItems,
   groupOpenIndex,
+  pendingItem,
 }: {
-  previousItems: ISidebarItem[];
-  groupOpenIndex: number | null;
+  readonly previousItems: ISidebarItem[];
+  readonly groupOpenIndex: number | null;
+  readonly pendingItem: Pick<NavItem, "path" | "activePaths"> | null;
 }) => {
   const previousOpenedGroup = previousItems
     .map((it, ind) => ({ ind, item: it }))
     .filter(
       (d): d is { item: IInternalGroupedSidebarItem; ind: number } =>
-        sidebarItemHasChildren(d.item) && d.ind === groupOpenIndex,
+        sidebarItemHasChildren(d.item) &&
+        (d.ind === groupOpenIndex ||
+          d.item.children.some(child => child.path === pendingItem?.path)),
     );
   if (previousOpenedGroup.length === 0) {
     return null;
@@ -41,14 +48,12 @@ const getPreviousOpenedGroup = ({
   return previousOpenedGroup[0];
 };
 
-const getAnimatedOffset = ({
-  previousItems,
-  groupOpenIndex,
-}: {
-  previousItems: ISidebarItem[];
-  groupOpenIndex: number | null;
+const getAnimatedOffset = (params: {
+  readonly previousItems: ISidebarItem[];
+  readonly groupOpenIndex: number | null;
+  readonly pendingItem: Pick<NavItem, "path" | "activePaths"> | null;
 }) => {
-  const previousOpenedGroup = getPreviousOpenedGroup({ previousItems, groupOpenIndex });
+  const previousOpenedGroup = getPreviousOpenedGroup(params);
   if (previousOpenedGroup) {
     return (previousOpenedGroup.item.children.filter(c => c.visible !== false).length - 1) * 48;
   }
@@ -61,6 +66,7 @@ export interface LayoutNavProps {
 
 export const Sidebar = ({ items }: LayoutNavProps) => {
   const [groupOpenIndex, setGroupOpenIndex] = useState<number | null>(null);
+  const { pendingItem } = useNavigation();
 
   return (
     <div className="sidebar" onMouseLeave={() => setGroupOpenIndex(null)}>
@@ -72,6 +78,7 @@ export const Sidebar = ({ items }: LayoutNavProps) => {
               const offset = getAnimatedOffset({
                 previousItems: items.filter(item => item.visible !== false).slice(0, i),
                 groupOpenIndex,
+                pendingItem,
               });
               /* For smaller screens, we want to render the children of the group outside of the
                  group - and hide the group nav item itself. */
@@ -88,7 +95,10 @@ export const Sidebar = ({ items }: LayoutNavProps) => {
                   >
                     <SidebarItemGroup
                       item={item}
-                      isOpen={groupOpenIndex === i}
+                      isOpen={
+                        groupOpenIndex === i ||
+                        item.children.some(child => child.path === pendingItem?.path)
+                      }
                       onOpen={() => setGroupOpenIndex(i)}
                     />
                   </motion.div>
@@ -110,6 +120,7 @@ export const Sidebar = ({ items }: LayoutNavProps) => {
             const offset = getAnimatedOffset({
               previousItems: items.filter(item => item.visible !== false).slice(0, i),
               groupOpenIndex,
+              pendingItem,
             });
             return (
               <motion.div

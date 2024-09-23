@@ -31,7 +31,7 @@ export const ColumnSelect = <
     getItemValueLabel={(m: C) => m.label ?? ""}
     data={columns.filter(c => c.isHideable !== false)}
     inputClassName="w-[240px]"
-    // menuPlacement="bottom-end"
+    popoverClassName="z-50"
     menuOffset={{ mainAxis: 4, crossAxis: -50 }}
     menuWidth="available"
     maxHeight={260}
