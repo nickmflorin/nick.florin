@@ -1,3 +1,6 @@
+@use "sass:list";
+@use "partials";
+
 $button-outline-width: 1px;
 $button-outline-offset: -$button-outline-width;
 
@@ -34,8 +37,46 @@ $button-sizes: (
   "xlarge": 44px,
 );
 
-$button-default-size: "medium";
+$button-default-size: "small";
 $link-default-font-size: "sm";
+
+$button-icon-sizes: (
+  "button": (
+    "xsmall": partials.mapget($button-sizes, "xsmall") - 2 *
+      list.nth(partials.mapget($button-padding, "xsmall"), 1),
+    "small": partials.mapget($button-sizes, "small") - 2 *
+      list.nth(partials.mapget($button-padding, "small"), 1),
+    "medium": partials.mapget($button-sizes, "medium") - 2 *
+      list.nth(partials.mapget($button-padding, "medium"), 1),
+    "large": partials.mapget($button-sizes, "large") - 2 *
+      list.nth(partials.mapget($button-padding, "large"), 1),
+    "xlarge": partials.mapget($button-sizes, "xlarge") - 2 *
+      list.nth(partials.mapget($button-padding, "xlarge"), 1),
+    "full": 100%,
+  ),
+  "link": (
+    "xsmall": 13px,
+    "small": 14px,
+    "medium": 16px,
+    "large": 18px,
+    "xlarge": 20px,
+    "full": 100%,
+  ),
+  "icon-button": (
+    "xsmall": 14px,
+    "small": 16px,
+    "medium": 18px,
+    "large": 18px,
+    "xlarge": 20px,
+    "full": 100%,
+  ),
+);
+
+/* For links, there is no "size" - their size is determined from the line-height of the text they
+   contain.  As such, the size of an icon in a link cannot be determined by the "size" of the link,
+   since there is no "size" prop.  Instead, we use a default size for the icon in a link, and then
+   size the icon based on a separate prop, "iconSize". */
+$link-default-icon-size: "small";
 
 /* These are sizes that are applied to just the <Button /> component, as defaults, depending on the
   'size' prop provided to the <Button />.  If the 'fontSize' prop is provided to the <Button />,
