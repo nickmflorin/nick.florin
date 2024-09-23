@@ -1,5 +1,7 @@
-import { DisableButton } from "~/components/buttons/DisableButton";
-import { EnableButton } from "~/components/buttons/EnableButton";
+import { AddToTopSkillsButton } from "~/components/buttons/AddToTopSkillsButton";
+import { HideButton } from "~/components/buttons/HideButton";
+import { RemoveFromTopSkillsButton } from "~/components/buttons/RemoveFromTopSkilsButton";
+import { ShowButton } from "~/components/buttons/ShowButton";
 import {
   ConnectedTableControlBarPlaceholder,
   type ConnectedTableControlBarPlaceholderProps,
@@ -14,9 +16,9 @@ export const SkillsTableControlBarPlaceholder = (
   props: SkillsTableControlBarPlaceholderProps,
 ): JSX.Element => (
   <ConnectedTableControlBarPlaceholder {...props}>
-    <EnableButton isDisabled={true} />
-    <DisableButton isDisabled={true} />
-    <EnableButton isDisabled={true} />
-    <DisableButton isDisabled={true} />
+    <ShowButton isDisabled={true} />
+    <HideButton isDisabled={true} />
+    <AddToTopSkillsButton isDisabled={true} />
+    <RemoveFromTopSkillsButton isDisabled={true} />
   </ConnectedTableControlBarPlaceholder>
 );

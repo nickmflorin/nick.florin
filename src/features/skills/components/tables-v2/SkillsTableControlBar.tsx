@@ -12,8 +12,10 @@ import { includeSkillsInTop } from "~/actions-v2/skills/include-skills-in-top";
 import { removeSkillsFromTop } from "~/actions-v2/skills/remove-skills-from-top";
 import { showSkills } from "~/actions-v2/skills/show-skills";
 
-import { DisableButton } from "~/components/buttons/DisableButton";
-import { EnableButton } from "~/components/buttons/EnableButton";
+import { AddToTopSkillsButton } from "~/components/buttons/AddToTopSkillsButton";
+import { HideButton } from "~/components/buttons/HideButton";
+import { RemoveFromTopSkillsButton } from "~/components/buttons/RemoveFromTopSkilsButton";
+import { ShowButton } from "~/components/buttons/ShowButton";
 import { Tooltip } from "~/components/floating/Tooltip";
 import {
   ConnectedTableControlBar,
@@ -64,7 +66,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               className="text-sm"
               isDisabled={numHidden === 0 || props.isDisabled === true}
             >
-              <EnableButton
+              <ShowButton
                 isDisabled={numHidden === 0 || props.isDisabled}
                 isLoading={isShowing}
                 onClick={async () => {
@@ -105,7 +107,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               className="text-sm"
               isDisabled={numVisible === 0 || props.isDisabled === true}
             >
-              <DisableButton
+              <HideButton
                 isDisabled={numVisible === 0 || props.isDisabled}
                 isLoading={isHiding}
                 onClick={async () => {
@@ -142,11 +144,11 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               placement="top-start"
               inPortal={props.tooltipsInPortal}
               offset={{ mainAxis: 6 }}
-              content={`Include ${numNotTopSkills} selected skill${numNotTopSkills <= 1 ? "" : "s"} in "Top Skills".`}
+              content={`Add ${numNotTopSkills} selected skill${numNotTopSkills <= 1 ? "" : "s"} to "Top Skills".`}
               className="text-sm"
               isDisabled={numNotTopSkills === 0 || props.isDisabled === true}
             >
-              <EnableButton
+              <AddToTopSkillsButton
                 isDisabled={numNotTopSkills === 0 || props.isDisabled}
                 isLoading={isIncluding}
                 onClick={async () => {
@@ -157,17 +159,15 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
                       selectedRows.filter(row => !row.includeInTopSkills).map(row => row.id),
                     );
                   } catch (e) {
-                    logger.errorUnsafe(
-                      e,
-                      "There was an error including the skills in top skills.",
-                      { subscriptions: selectedRows.map(row => row.id) },
-                    );
+                    logger.errorUnsafe(e, "There was an error adding the skills to top skills.", {
+                      subscriptions: selectedRows.map(row => row.id),
+                    });
                     setIsIncluding(false);
                     return toast.error("There was an error updating the skills.");
                   }
                   const { error } = response;
                   if (error) {
-                    logger.error(error, "There was an error including the skills in top skills.", {
+                    logger.error(error, "There was an error adding the skills to top skills.", {
                       subscriptions: selectedRows.map(row => row.id),
                     });
                     setIsIncluding(false);
@@ -190,7 +190,7 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
               className="text-sm"
               isDisabled={numTopSkills === 0 || props.isDisabled === true}
             >
-              <EnableButton
+              <RemoveFromTopSkillsButton
                 isDisabled={numTopSkills === 0 || props.isDisabled}
                 isLoading={isExcluding}
                 onClick={async () => {
