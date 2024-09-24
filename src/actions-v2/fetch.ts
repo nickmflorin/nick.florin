@@ -72,34 +72,53 @@ export const dataInFetchContext = <T, C extends FetchActionContext>(
 
 export type StandardFetchActionReturn<R> = Promise<R | ApiClientError>;
 
-export type FetchActionFn<P extends { visibility: ActionVisibility }, R> = (
-  params: P,
-  user: User,
-) => StandardFetchActionReturn<R>;
+type StandardFetchActionUser<O extends StandardFetchActionOptions> = O extends {
+  authenticated: true;
+}
+  ? User
+  : User | undefined;
+
+export type FetchActionFn<
+  P extends { visibility: ActionVisibility },
+  R,
+  O extends StandardFetchActionOptions,
+> = (params: P, user: StandardFetchActionUser<O>) => StandardFetchActionReturn<R>;
 
 interface StandardFetchActionOptions {
   readonly adminOnly?: boolean;
+  readonly authenticated?: boolean;
 }
 
 type StandardFetchAction<P extends { visibility: ActionVisibility }, R> = {
   <C extends FetchActionContext>(params: P, context: C): Promise<FetchActionResponse<R, C>>;
 };
 
-export const standardFetchAction = <P extends { visibility: ActionVisibility }, R>(
-  fn: FetchActionFn<P, R>,
-  opts?: StandardFetchActionOptions,
+export const standardFetchAction = <
+  P extends { visibility: ActionVisibility },
+  R,
+  O extends StandardFetchActionOptions,
+>(
+  fn: FetchActionFn<P, R, O>,
+  opts: O,
 ): StandardFetchAction<P, R> => {
   const wrapped = async <C extends FetchActionContext>(
     params: P,
     context: C,
   ): Promise<FetchActionResponse<R, C>> => {
+    const adminOnly = opts.adminOnly ?? false;
+    const authenticated = opts.authenticated ?? true;
+
     const { error, user, isAdmin } = await getAuthedUser();
     if (error) {
-      return errorInFetchContext(error, context);
-    } else if (
-      (opts?.adminOnly && !isAdmin) ||
-      (visibilityIsAdmin(params.visibility) && !isAdmin)
-    ) {
+      if (authenticated || adminOnly) {
+        return errorInFetchContext(error, context);
+      }
+      const result = await fn(params, user as StandardFetchActionUser<O>);
+      if (isApiClientError(result)) {
+        return errorInFetchContext(result, context);
+      }
+      return dataInFetchContext(result, context);
+    } else if (!isAdmin && (adminOnly || visibilityIsAdmin(params.visibility))) {
       const error = ApiClientGlobalError.Forbidden({
         message: "The user does not have permission to access this data.",
       });

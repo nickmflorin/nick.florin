@@ -72,6 +72,7 @@ export const fetchSkillsCount = standardFetchAction(
     const count = await db.skill.count({ where: whereClause({ filters, visibility }) });
     return { count };
   },
+  { authenticated: true, adminOnly: true },
 );
 
 export const fetchSkillsPagination = standardFetchAction(
@@ -88,6 +89,7 @@ export const fetchSkillsPagination = standardFetchAction(
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.skill });
   },
+  { authenticated: true, adminOnly: true },
 );
 
 export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
@@ -140,4 +142,5 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
         },
       })) as ApiSkill<I>[];
     },
+    { authenticated: false, adminOnly: false },
   );
