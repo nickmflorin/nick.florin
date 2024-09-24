@@ -33,7 +33,7 @@ export const LoadingView = ({
         /* If the spinner is being displayed, the view needs to have a higher z-index than it other
            wise would.  This is such that the spinner appears over the content.  This will prevent
            scroll behavior on the content, but only when the spinner is present. */
-        "z-50": isLoading,
+        "z-10": isLoading,
       },
       props.className,
     )}
