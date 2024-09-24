@@ -4,7 +4,7 @@ import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 import { type ProjectFormValues } from "./schema";
 
@@ -48,7 +48,13 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
     </Form.ControlledField>
     <Form.ControlledField name="skills" label="Skills" form={props.form}>
       {({ value, onChange }) => (
-        <SkillsSelect behavior="multi" inputClassName="w-full" value={value} onChange={onChange} />
+        <ClientSkillsSelect
+          behavior="multi"
+          visibility="admin"
+          inputClassName="w-full"
+          value={value}
+          onChange={onChange}
+        />
       )}
     </Form.ControlledField>
     <Form.ControlledField

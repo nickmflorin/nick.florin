@@ -9,7 +9,7 @@ import { logger } from "~/internal/logger";
 import { updateExperience } from "~/actions/mutations/experiences";
 import { isApiClientErrorJson } from "~/api";
 
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 interface SkillsCellProps {
   readonly experience: ApiExperience<["skills"]>;
@@ -27,8 +27,9 @@ export const SkillsCell = ({ experience }: SkillsCellProps) => {
   }, [experience.skills]);
 
   return (
-    <SkillsSelect
+    <ClientSkillsSelect
       behavior="multi"
+      visibility="admin"
       value={optimisticValue}
       inPortal
       summarizeValueAfter={2}

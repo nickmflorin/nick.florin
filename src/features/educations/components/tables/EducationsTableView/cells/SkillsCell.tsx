@@ -9,7 +9,7 @@ import { logger } from "~/internal/logger";
 import { updateEducation } from "~/actions/mutations/educations";
 import { isApiClientErrorJson } from "~/api";
 
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 interface SkillsCellProps {
   readonly education: ApiEducation<["skills"]>;
@@ -25,9 +25,10 @@ export const SkillsCell = ({ education }: SkillsCellProps) => {
   }, [education.skills]);
 
   return (
-    <SkillsSelect
+    <ClientSkillsSelect
       behavior="multi"
       value={optimisticValue}
+      visibility="admin"
       summarizeValueAfter={2}
       onChange={async (v, { item }) => {
         setOptimisticValue(v);

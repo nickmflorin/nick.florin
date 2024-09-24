@@ -20,7 +20,7 @@ import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { classNames } from "~/components/types";
 import { ShowHide } from "~/components/util";
 import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
 
@@ -203,8 +203,9 @@ export const GenericUpdateDetailForm = <
         helpText="Any skills that the detail is associated with, if applicable."
       >
         {({ value, onChange }) => (
-          <SkillsSelect
+          <ClientSkillsSelect
             behavior="multi"
+            visibility="admin"
             inputClassName="w-full"
             value={value}
             onChange={onChange}

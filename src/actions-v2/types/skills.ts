@@ -40,9 +40,29 @@ export const SkillsOrderingMap = {
   calculatedExperience: order => [{ calculatedExperience: order }] as const,
 } as const satisfies { [key in SkillOrderableField]: (order: Order) => unknown[] };
 
+type PrismaOrdering<F extends string> = F extends string ? { [key in F]: Order } : never;
+
+export const getSkillsOrdering = (
+  ordering?: Ordering<SkillOrderableField>,
+): PrismaOrdering<SkillOrderableField | "id">[] => {
+  if (ordering) {
+    return [
+      ...SkillsOrderingMap[ordering.orderBy](ordering.order),
+      ordering.orderBy !== "createdAt" ? { createdAt: "desc" } : undefined,
+      { id: "desc" },
+    ].filter((v): v is PrismaOrdering<SkillOrderableField | "id"> => v !== undefined);
+  }
+  return [
+    { [SkillsDefaultOrdering.orderBy]: SkillsDefaultOrdering.order },
+    { createdAt: "desc" },
+    { id: "desc" },
+  ] as const;
+};
+
 export interface SkillsFilters {
   readonly highlighted: boolean | null;
   readonly prioritized: boolean | null;
+  readonly visible: boolean | null;
   readonly experiences: string[];
   readonly educations: string[];
   readonly programmingDomains: ProgrammingDomain[];
@@ -77,6 +97,11 @@ export const SkillsFiltersObj = Filters({
     excludeWhen: v => v === null,
   },
   prioritized: {
+    schema: z.union([z.coerce.boolean(), z.null()]),
+    defaultValue: null,
+    excludeWhen: v => v === null,
+  },
+  visible: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
     excludeWhen: v => v === null,

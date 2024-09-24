@@ -2,7 +2,7 @@ import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { TextInput } from "~/components/input/TextInput";
 import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 import { type CourseFormValues } from "./schema";
 
@@ -48,7 +48,13 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
     </Form.ControlledField>
     <Form.ControlledField name="skills" label="Skills" form={props.form}>
       {({ value, onChange }) => (
-        <SkillsSelect behavior="multi" inputClassName="w-full" value={value} onChange={onChange} />
+        <ClientSkillsSelect
+          visibility="admin"
+          behavior="multi"
+          inputClassName="w-full"
+          value={value}
+          onChange={onChange}
+        />
       )}
     </Form.ControlledField>
     <CheckboxField name="visible" form={props.form} label="Visible" />

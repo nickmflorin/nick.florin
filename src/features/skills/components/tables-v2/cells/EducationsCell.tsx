@@ -83,5 +83,3 @@ export const EducationsCell = ({ skill, table }: EducationsCellProps): JSX.Eleme
     />
   );
 };
-
-export default EducationsCell;

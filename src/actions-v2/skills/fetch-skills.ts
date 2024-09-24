@@ -6,6 +6,9 @@ import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
 import {
+  visibilityIsAdmin,
+  getSkillsOrdering,
+  isVisible,
   constructTableSearchClause,
   PAGE_SIZES,
   type ServerSidePaginationParams,
@@ -14,8 +17,9 @@ import {
   standardFetchAction,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
+import { ApiClientGlobalError } from "~/api-v2";
 
-const filtersClause = ({ filters }: Pick<SkillsControls, "filters">) =>
+const filtersClause = ({ filters, visibility }: Pick<SkillsControls, "filters" | "visibility">) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("skill", filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
@@ -36,6 +40,9 @@ const filtersClause = ({ filters }: Pick<SkillsControls, "filters">) =>
     filters.prioritized !== undefined && filters.prioritized !== null
       ? { prioritized: filters.prioritized }
       : undefined,
+    filters.visible !== undefined && filters.visible !== null
+      ? { visible: filters.visible }
+      : undefined,
     filters.programmingDomains && filters.programmingDomains.length !== 0
       ? { programmingDomains: { hasSome: filters.programmingDomains } }
       : undefined,
@@ -45,30 +52,31 @@ const filtersClause = ({ filters }: Pick<SkillsControls, "filters">) =>
     filters.categories && filters.categories.length !== 0
       ? { categories: { hasSome: filters.categories } }
       : undefined,
+    { visible: isVisible(visibility, filters.visible) },
   ] as const);
 
-const whereClause = ({
-  filters,
-  visibility,
-}: Required<Pick<SkillsControls, "filters" | "visibility">, "visibility">) => {
-  const clause = filtersClause({ filters });
+const whereClause = ({ filters, visibility }: Pick<SkillsControls, "filters" | "visibility">) => {
+  const clause = filtersClause({ filters, visibility });
   if (clause.length !== 0) {
-    if (visibility === "public") {
-      return { AND: [...clause, { visible: true }] };
-    }
     return { AND: [...clause] };
   }
-  return visibility === "public" ? { visible: true } : {};
+  return {};
 };
 
 export const fetchSkillsCount = standardFetchAction(
   async ({
     filters,
     visibility,
-  }: Required<
-    Pick<SkillsControls, "filters" | "visibility">,
-    "visibility"
-  >): StandardFetchActionReturn<{ count: number }> => {
+  }: Pick<SkillsControls, "filters" | "visibility">): StandardFetchActionReturn<{
+    count: number;
+  }> => {
+    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
+       method - but we want to include this just in case. */
+    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
+      return ApiClientGlobalError.Forbidden({
+        message: "The user does not have permission to access this data.",
+      });
+    }
     const count = await db.skill.count({ where: whereClause({ filters, visibility }) });
     return { count };
   },
@@ -82,8 +90,15 @@ export const fetchSkillsPagination = standardFetchAction(
     visibility,
   }: Required<
     Pick<SkillsControls, "filters" | "visibility" | "page">,
-    "page" | "visibility"
+    "page"
   >): StandardFetchActionReturn<ServerSidePaginationParams> => {
+    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
+       method - but we want to include this just in case. */
+    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
+      return ApiClientGlobalError.Forbidden({
+        message: "The user does not have permission to access this data.",
+      });
+    }
     const count = await db.skill.count({
       where: whereClause({ filters, visibility }),
     });
@@ -101,6 +116,11 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
       limit,
       visibility,
     }: Omit<SkillsControls<I>, "includes">): StandardFetchActionReturn<ApiSkill<I>[]> => {
+      if (!visibilityIsAdmin(visibility) && filters.visible === false) {
+        return ApiClientGlobalError.Forbidden({
+          message: "The user does not have permission to access this data.",
+        });
+      }
       let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchSkillsPagination(
@@ -110,7 +130,7 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
       }
       return (await db.skill.findMany({
         where: whereClause({ filters, visibility }),
-        orderBy: ordering ? [{ [ordering.orderBy]: ordering.order }] : undefined,
+        orderBy: getSkillsOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination
           ? pagination.pageSize
@@ -119,22 +139,24 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
             : undefined,
         include: {
           courses: fieldIsIncluded("courses", includes)
-            ? { where: { visible: visibility === "public" ? true : undefined } }
+            ? { where: { visible: isVisible(visibility, filters.visible) } }
             : undefined,
           repositories: fieldIsIncluded("repositories", includes)
-            ? { where: { visible: visibility === "public" ? true : undefined } }
+            ? { where: { visible: isVisible(visibility, filters.visible) } }
             : undefined,
           projects: fieldIsIncluded("projects", includes),
           educations: fieldIsIncluded("educations", includes)
             ? {
-                where: { visible: visibility === "public" ? true : undefined },
+                where: {
+                  visible: isVisible(visibility, filters.visible),
+                },
                 include: { school: true },
                 orderBy: { startDate: "desc" },
               }
             : undefined,
           experiences: fieldIsIncluded("experiences", includes)
             ? {
-                where: { visible: visibility === "public" ? true : undefined },
+                where: { visible: isVisible(visibility, filters.visible) },
                 include: { company: true },
                 orderBy: { startDate: "desc" },
               }

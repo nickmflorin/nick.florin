@@ -9,7 +9,7 @@ import { logger } from "~/internal/logger";
 import { updateProject } from "~/actions/mutations/projects";
 import { isApiClientErrorJson } from "~/api";
 
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 interface SkillsCellProps {
   readonly project: ApiProject<["skills"]>;
@@ -25,8 +25,9 @@ export const SkillsCell = ({ project }: SkillsCellProps) => {
   }, [project.skills]);
 
   return (
-    <SkillsSelect
+    <ClientSkillsSelect
       value={optimisticValue}
+      visibility="admin"
       summarizeValueAfter={2}
       behavior="multi"
       onChange={async (v, { item }) => {

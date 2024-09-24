@@ -11,8 +11,8 @@ import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { Label } from "~/components/typography";
-import { CompanySelect } from "~/features/companies/components/input/CompanySelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientCompanySelect } from "~/features/companies/components/input/ClientCompanySelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 import { type ExperienceFormValues } from "./schema";
 
@@ -42,8 +42,9 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
     >
       <Form.ControlledField name="company" label="Company" form={props.form} condition="required">
         {({ value, onChange }) => (
-          <CompanySelect
+          <ClientCompanySelect
             isReady={value !== undefined}
+            visibility="admin"
             inputClassName="w-full"
             isClearable
             behavior="single"
@@ -73,7 +74,8 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
       </Form.Field>
       <Form.ControlledField name="skills" label="Skills" form={props.form}>
         {({ value, onChange }) => (
-          <SkillsSelect
+          <ClientSkillsSelect
+            visibility="admin"
             behavior="multi"
             inputClassName="w-full"
             value={value}

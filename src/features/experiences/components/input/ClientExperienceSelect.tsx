@@ -2,11 +2,10 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import { logger } from "~/internal/logger";
 
-import { type HttpError } from "~/api";
-import { type Visibility } from "~/api/query";
+import { type ActionVisibility } from "~/actions-v2";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useExperiences } from "~/hooks";
+import { useExperiences, type SWRError } from "~/hooks/api-v2";
 
 import {
   ExperienceSelect,
@@ -16,8 +15,8 @@ import {
 
 export interface ClientExperienceSelectProps<B extends SelectBehaviorType>
   extends Omit<ExperienceSelectProps<B>, "data"> {
-  readonly visibility: Visibility;
-  readonly onError?: (e: HttpError) => void;
+  readonly visibility: ActionVisibility;
+  readonly onError?: (e: SWRError) => void;
 }
 
 export const ClientExperienceSelect = forwardRef(

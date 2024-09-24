@@ -8,6 +8,6 @@ export default async function SkillsTitlePage({ searchParams }: SkillsTitlePageP
   const filters = SkillsFiltersObj.parse(searchParams);
   const {
     data: { count },
-  } = await fetchSkillsCount({ visibility: "public", filters }, { strict: true });
+  } = await fetchSkillsCount({ visibility: "admin", filters }, { strict: true });
   return <>{count}</>;
 }

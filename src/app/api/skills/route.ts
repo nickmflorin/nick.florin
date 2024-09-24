@@ -22,6 +22,11 @@ export const GET = async (request: NextRequest) => {
   const parsed = SkillIncludesSchema.safeParse(query.includes);
 
   const limit = z.coerce.number().int().positive().safeParse(query.limit).data;
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
 
   let includes: SkillIncludes = [];
   if (parsed.success) {
@@ -36,10 +41,7 @@ export const GET = async (request: NextRequest) => {
   });
 
   const fetcher = fetchSkills(includes);
-  const { error, data } = await fetcher(
-    { filters, ordering, limit, visibility: "public" },
-    { scope: "api" },
-  );
+  const { error, data } = await fetcher({ filters, ordering, limit, visibility }, { scope: "api" });
   if (error) {
     return error.response;
   }

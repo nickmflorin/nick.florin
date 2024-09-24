@@ -4,7 +4,7 @@ import { useTransition } from "react";
 
 import { type ApiSkill } from "~/database/model";
 
-import { updateSkill } from "~/actions/mutations/skills";
+import { updateSkill } from "~/actions-v2/skills/update-skill";
 import { isApiClientErrorJson } from "~/api";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";

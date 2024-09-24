@@ -83,5 +83,3 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
     />
   );
 };
-
-export default RepositoriesCell;

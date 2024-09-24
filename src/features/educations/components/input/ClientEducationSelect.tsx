@@ -2,8 +2,8 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import { logger } from "~/internal/logger";
 
+import { type ActionVisibility } from "~/actions-v2";
 import { type HttpError } from "~/api";
-import { type Visibility } from "~/api/query";
 
 import type { SelectBehaviorType } from "~/components/input/select";
 import { useEducations } from "~/hooks";
@@ -16,7 +16,7 @@ import {
 
 export interface ClientEducationSelectProps<B extends SelectBehaviorType>
   extends Omit<EducationSelectProps<B>, "data"> {
-  readonly visibility: Visibility;
+  readonly visibility: ActionVisibility;
   readonly onError?: (e: HttpError) => void;
 }
 

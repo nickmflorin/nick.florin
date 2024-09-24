@@ -48,10 +48,7 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
           logger.errorUnsafe(
             e,
             `There was a server error updating the experiences for the skill with ID '${skill.id}'.`,
-            {
-              skill: skill.id,
-              experiences: v,
-            },
+            { skill, experiences: v },
           );
           item?.setLoading(false);
           table.setRowLoading(skill.id, false);
@@ -63,11 +60,7 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
             error,
             "There was a client error updating the experiences for the skill with ID " +
               `'${skill.id}': ${error.code}`,
-            {
-              response,
-              skill: skill.id,
-              experiences: v,
-            },
+            { skill, experiences: v },
           );
           item?.setLoading(false);
           table.setRowLoading(skill.id, false);
@@ -85,5 +78,3 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
     />
   );
 };
-
-export default ExperiencesCell;

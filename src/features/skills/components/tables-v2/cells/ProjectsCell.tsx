@@ -80,5 +80,3 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
     />
   );
 };
-
-export default ProjectsCell;

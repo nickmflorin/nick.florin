@@ -1,9 +1,22 @@
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+
 import type { BrandNestedDetail, BrandDetail, BrandEducation, BrandExperience } from "./brand";
 
-import { type DetailEntityType } from "./generated";
+import { DetailEntityType } from "./generated";
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiProject } from "./project";
 import { type ApiSkill } from "./skills";
+
+export const DetailEntityTypes = enumeratedLiterals(
+  [
+    { value: DetailEntityType.EDUCATION, label: "Education" },
+    { value: DetailEntityType.EXPERIENCE, label: "Experience" },
+  ] as const satisfies {
+    value: DetailEntityType;
+    label: string;
+  }[],
+  {},
+);
 
 export type DetailEntity<T extends DetailEntityType> = {
   readonly [DetailEntityType.EXPERIENCE]: BrandExperience;
@@ -20,6 +33,9 @@ export type NestedApiDetail<I extends NestedDetailIncludes = []> = Conditionally
   ["skills"],
   I
 >;
+
+export const DetailIncludesFields = enumeratedLiterals(["skills", "nestedDetails"] as const, {});
+export type DetailIncludesField = EnumeratedLiteralsMember<typeof DetailIncludesFields>;
 
 export type DetailIncludes =
   | ["nestedDetails", "skills"]

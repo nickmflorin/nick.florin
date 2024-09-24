@@ -24,7 +24,9 @@ const HighlightedCell = dynamic(
   () => import("~/components/tables/cells/HighlightedCell"),
 ) as cells.HighlightedCellComponent;
 
-const DetailsCell = dynamic(() => import("~/components/tables/cells/DetailsCell"));
+const DetailsCell = dynamic(() =>
+  import("~/features/resume/components/tables/cells/DetailsCell").then(mod => mod.DetailsCell),
+);
 
 const ReadOnlyDateTimeCell = dynamic(
   () => import("~/components/tables/cells/ReadOnlyDateTimeCell"),

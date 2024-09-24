@@ -6,5 +6,5 @@ export interface UnhighlightButtonProps
   extends Omit<IconButtonProps<"button">, "icon" | "scheme" | "variant"> {}
 
 export const UnhighlightButton = forwardRef<HTMLButtonElement, UnhighlightButtonProps>(
-  (props, ref) => <IconButton.Transparent {...props} scheme="light" icon="star" ref={ref} />,
+  (props, ref) => <IconButton.Transparent {...props} scheme="light" icon="ban" ref={ref} />,
 );

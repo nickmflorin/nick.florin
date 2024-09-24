@@ -41,5 +41,3 @@ export const DetailsCell = ({ model }: DetailsCellProps) => {
     >{`${model.details.length} Details`}</Link.Primary>
   );
 };
-
-export default DetailsCell;

@@ -12,7 +12,7 @@ import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { DegreeSelect } from "~/features/educations/components/input/DegreeSelect";
 import { SchoolSelect } from "~/features/schools/components/input/SchoolSelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 import { type EducationFormValues } from "./schema";
 
@@ -100,8 +100,9 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
       </Form.Field>
       <Form.ControlledField name="skills" label="Skills" form={props.form}>
         {({ value, onChange }) => (
-          <SkillsSelect
+          <ClientSkillsSelect
             behavior="multi"
+            visibility="admin"
             inputClassName="w-full"
             value={value}
             onChange={onChange}

@@ -5,7 +5,7 @@ import { Form, type FormProps } from "~/components/forms/Form";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 import { type RepositoryFormValues } from "./schema";
 
@@ -38,7 +38,13 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
     </Form.ControlledField>
     <Form.ControlledField name="skills" label="Skills" form={props.form}>
       {({ value, onChange }) => (
-        <SkillsSelect behavior="multi" inputClassName="w-full" value={value} onChange={onChange} />
+        <ClientSkillsSelect
+          behavior="multi"
+          visibility="admin"
+          inputClassName="w-full"
+          value={value}
+          onChange={onChange}
+        />
       )}
     </Form.ControlledField>
     <Form.Field

@@ -11,7 +11,7 @@ import { updateExperience } from "~/actions/mutations/experiences";
 import { isApiClientErrorJson } from "~/api";
 
 import type * as types from "~/components/tables/types";
-import { CompanySelect } from "~/features/companies/components/input/CompanySelect";
+import { ClientCompanySelect } from "~/features/companies/components/input/ClientCompanySelect";
 
 interface CompanyCellProps {
   readonly experience: ApiExperience<["details", "skills"]>;
@@ -28,8 +28,9 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
   }, [experience.companyId]);
 
   return (
-    <CompanySelect
+    <ClientCompanySelect
       inputClassName="w-full"
+      visibility="admin"
       isClearable
       behavior="single"
       value={value}

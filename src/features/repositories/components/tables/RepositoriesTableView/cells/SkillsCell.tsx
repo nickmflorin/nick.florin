@@ -9,7 +9,7 @@ import { logger } from "~/internal/logger";
 import { updateRepository } from "~/actions/mutations/repositories";
 import { isApiClientErrorJson } from "~/api";
 
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
+import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 interface SkillsCellProps {
   readonly repository: ApiRepository<["skills"]>;
@@ -27,8 +27,9 @@ export const SkillsCell = ({ repository }: SkillsCellProps) => {
   }, [repository.skills]);
 
   return (
-    <SkillsSelect
+    <ClientSkillsSelect
       behavior="multi"
+      visibility="admin"
       value={optimisticValue}
       summarizeValueAfter={2}
       onChange={async (v, { item }) => {
