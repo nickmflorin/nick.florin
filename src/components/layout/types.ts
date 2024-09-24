@@ -1,17 +1,24 @@
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { type Required } from "utility-types";
 
+import { type UserResource, clerkUserIsAdmin } from "~/application/auth/roles";
 import { type LabeledNavItem } from "~/application/pages";
+
+export const SidebarItemAccessTypes = enumeratedLiterals(["admin"] as const, {});
+export type SidebarItemAccessType = EnumeratedLiteralsMember<typeof SidebarItemAccessTypes>;
 
 export interface IInternalGroupedSidebarItem extends Required<LabeledNavItem, "icon"> {
   readonly visible?: boolean;
   readonly href?: never;
   readonly children: [IInternalSidebarItem, ...IInternalSidebarItem[]];
+  readonly accessType?: SidebarItemAccessType;
 }
 
 export interface IInternalSidebarItem extends Required<LabeledNavItem, "icon"> {
   readonly visible?: boolean;
   readonly href?: never;
   readonly children?: never;
+  readonly accessType?: SidebarItemAccessType;
 }
 
 export interface IExternalSidebarItem
@@ -21,6 +28,7 @@ export interface IExternalSidebarItem
   readonly href: string;
   readonly path?: never;
   readonly active?: never;
+  readonly accessType?: never;
 }
 
 export type ISidebarItem =
@@ -54,3 +62,17 @@ export const flattenSidebarItems = (
     },
     [] as Exclude<ISidebarItem, IInternalGroupedSidebarItem>[],
   );
+
+export const sidebarItemIsVisible = (
+  item: ISidebarItem,
+  user: UserResource | null | undefined,
+): boolean => {
+  if (sidebarItemIsExternal(item)) {
+    return item.visible ?? true;
+  } else if (item.visible === false) {
+    return false;
+  } else if (item.accessType === SidebarItemAccessTypes.ADMIN) {
+    return user !== null && user !== undefined && clerkUserIsAdmin(user);
+  }
+  return true;
+};

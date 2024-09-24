@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { type ReactNode } from "react";
 
 import { type PopoverRenderProps } from "~/components/floating/types";
+import { classNames } from "~/components/types";
 
 import { type PopoverProps } from "./Popover";
 import { TooltipContent, type TooltipContentProps } from "./TooltipContent";
@@ -53,7 +54,9 @@ export const Tooltip = ({
       return (
         <Popover
           {...props}
-          content={<TooltipContent className={className}>{content}</TooltipContent>}
+          content={
+            <TooltipContent className={classNames("z-50", className)}>{content}</TooltipContent>
+          }
         >
           {children}
         </Popover>
@@ -64,14 +67,19 @@ export const Tooltip = ({
     return (
       <Popover
         {...props}
-        content={<TooltipContent className={className}>{content}</TooltipContent>}
+        content={
+          <TooltipContent className={classNames("z-50", className)}>{content}</TooltipContent>
+        }
       >
         {children}
       </Popover>
     );
   }
   return (
-    <Popover {...props} content={<TooltipContent className={className}>{content}</TooltipContent>}>
+    <Popover
+      {...props}
+      content={<TooltipContent className={classNames("z-50", className)}>{content}</TooltipContent>}
+    >
       {children}
     </Popover>
   );

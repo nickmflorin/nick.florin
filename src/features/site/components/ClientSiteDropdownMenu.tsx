@@ -21,6 +21,7 @@ export const ClientSiteDropdownMenu = ({ resume, ...props }: ClientSiteDropdownM
     {...props}
     placement="bottom-end"
     width={300}
+    contentClassName="z-50"
     content={({ setIsOpen }) => (
       <div className="flex flex-col relative min-h-[40px] p-[8px]">
         <SiteMenu resume={resume} onClose={e => setIsOpen(false, e)} />

@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
 
+import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 
+import { type UserResource } from "~/application/auth/roles";
 import { type NavItem } from "~/application/pages";
 
 import { classNames } from "~/components/types";
@@ -12,6 +14,7 @@ import {
   type ISidebarItem,
   sidebarItemHasChildren,
   sidebarItemIsExternal,
+  sidebarItemIsVisible,
   type IInternalGroupedSidebarItem,
 } from "../types";
 
@@ -49,13 +52,18 @@ const getPreviousOpenedGroup = ({
 };
 
 const getAnimatedOffset = (params: {
+  readonly user: UserResource | null | undefined;
   readonly previousItems: ISidebarItem[];
   readonly groupOpenIndex: number | null;
   readonly pendingItem: Pick<NavItem, "path" | "activePaths"> | null;
 }) => {
   const previousOpenedGroup = getPreviousOpenedGroup(params);
   if (previousOpenedGroup) {
-    return (previousOpenedGroup.item.children.filter(c => c.visible !== false).length - 1) * 48;
+    return (
+      (previousOpenedGroup.item.children.filter(c => sidebarItemIsVisible(c, params.user)).length -
+        1) *
+      48
+    );
   }
   return 0;
 };
@@ -67,15 +75,17 @@ export interface LayoutNavProps {
 export const Sidebar = ({ items }: LayoutNavProps) => {
   const [groupOpenIndex, setGroupOpenIndex] = useState<number | null>(null);
   const { pendingItem } = useNavigation();
+  const { user } = useUser();
 
   return (
     <div className="sidebar" onMouseLeave={() => setGroupOpenIndex(null)}>
       <div className="flex flex-col gap-[8px] items-center">
         {items
-          .filter(item => item.visible !== false)
+          .filter(item => sidebarItemIsVisible(item, user))
           .map((item, i) => {
             if (!sidebarItemIsExternal(item) && sidebarItemHasChildren(item)) {
               const offset = getAnimatedOffset({
+                user,
                 previousItems: items.filter(item => item.visible !== false).slice(0, i),
                 groupOpenIndex,
                 pendingItem,
@@ -118,7 +128,8 @@ export const Sidebar = ({ items }: LayoutNavProps) => {
               );
             }
             const offset = getAnimatedOffset({
-              previousItems: items.filter(item => item.visible !== false).slice(0, i),
+              user,
+              previousItems: items.filter(item => sidebarItemIsVisible(item, user)).slice(0, i),
               groupOpenIndex,
               pendingItem,
             });

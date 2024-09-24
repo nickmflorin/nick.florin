@@ -2,9 +2,9 @@ import { type useUser } from "@clerk/nextjs";
 
 import * as constants from "./constants";
 
-type UserResource = NonNullable<ReturnType<typeof useUser>["user"]>;
+export type UserResource = NonNullable<ReturnType<typeof useUser>["user"]>;
 
-export const clerkUserHasCmsAccess = (user: UserResource): boolean => {
+export const clerkUserIsAdmin = (user: UserResource): boolean => {
   const memberships = user.organizationMemberships.filter(
     membership =>
       membership.organization.slug === constants.CMS_USER_ORG_SLUG &&
