@@ -36,10 +36,10 @@ export const ClientProjectSelect = forwardRef(
         {...props}
         data={data ?? []}
         ref={ref}
-        isReady={data !== undefined}
-        isDisabled={error !== undefined}
-        isLocked={isLoading}
-        isLoading={isLoading}
+        isReady={data !== undefined && props.isReady !== false}
+        isDisabled={error !== undefined || props.isDisabled}
+        isLocked={isLoading || props.isLocked}
+        isLoading={isLoading || props.isLoading}
       />
     );
   },

@@ -16,7 +16,7 @@ export type ExperienceSelectInstance<B extends SelectBehaviorType> = DataSelectI
 export interface ExperienceSelectProps<B extends SelectBehaviorType>
   extends Omit<
     DataSelectProps<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled"
+    "options" | "itemIsDisabled" | "itemRenderer" | "getItemValueLabel"
   > {
   readonly behavior: B;
   readonly useAbbreviatedOptionLabels?: boolean;

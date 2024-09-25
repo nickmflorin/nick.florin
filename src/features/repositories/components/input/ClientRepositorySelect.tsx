@@ -35,11 +35,11 @@ export const ClientRepositorySelect = forwardRef(
       <RepositorySelect<B>
         {...props}
         ref={ref}
-        isReady={data !== undefined}
+        isReady={data !== undefined && props.isReady !== false}
         data={data ?? []}
-        isDisabled={error !== undefined}
-        isLocked={isLoading}
-        isLoading={isLoading}
+        isDisabled={error !== undefined || props.isDisabled}
+        isLocked={isLoading || props.isLocked}
+        isLoading={isLoading || props.isLoading}
       />
     );
   },

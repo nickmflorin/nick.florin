@@ -104,7 +104,7 @@ export const EducationJsonSchema = MetaSchema.extend({
   note: NullableStringField({}).optional(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().nullable().optional(),
-  postponed: z.boolean().optional(),
+  postPoned: z.boolean().optional(),
   degree: z.nativeEnum(Degree),
   skills: z.array(SkillReferenceJsonSchema).optional(),
   details: z.array(DetailJsonSchema).optional(),

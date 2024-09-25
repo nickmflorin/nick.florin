@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import { getClerkAuthedUser } from "~/application/auth/server";
+import { removeRedundantTopLevelSkills } from "~/database/model";
 import {
   type ApiEducation,
   DetailEntityType,
@@ -66,7 +67,9 @@ export const getEducation = cache(
           ? ["nestedDetails", "skills"]
           : ["nestedDetails"]) as EducationToDetailIncludes<I>,
       });
-      return convertToPlainObject({ ...education, details }) as ApiEducation<I>;
+      return convertToPlainObject(
+        removeRedundantTopLevelSkills({ ...education, details }),
+      ) as ApiEducation<I>;
     }
     return convertToPlainObject(education) as ApiEducation<I>;
   },

@@ -15,7 +15,7 @@ export type SkillsSelectInstance<B extends SelectBehaviorType> = DataSelectInsta
 export interface SkillsSelectProps<B extends SelectBehaviorType>
   extends Omit<
     DataSelectProps<ApiSkill, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled"
+    "options" | "itemIsDisabled" | "itemRenderer" | "getItemValueLabel"
   > {
   readonly behavior: B;
 }

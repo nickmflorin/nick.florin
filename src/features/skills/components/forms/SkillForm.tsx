@@ -12,7 +12,7 @@ import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
-import { CourseSelect } from "~/features/courses/components/input/CourseSelect";
+import { ClientCourseSelect } from "~/features/courses/components/input/ClientCourseSelect";
 import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
 import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
@@ -122,8 +122,9 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       </Form.ControlledField>
       <Form.ControlledField name="courses" label="Courses" form={props.form}>
         {({ value, onChange }) => (
-          <CourseSelect
+          <ClientCourseSelect
             inputClassName="w-full"
+            visibility="admin"
             behavior="multi"
             isClearable
             value={value}

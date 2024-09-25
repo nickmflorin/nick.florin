@@ -1,4 +1,4 @@
-import { enumeratedLiterals } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 
 import { type BrandModel } from "./brand";
 import { type ApiCourse } from "./course";
@@ -19,6 +19,12 @@ export const Degrees = enumeratedLiterals(
   ] as const satisfies { value: Degree; label: string; shortLabel: string }[],
   {},
 );
+
+export const EducationIncludesFields = enumeratedLiterals(
+  ["skills", "details", "courses"] as const,
+  {},
+);
+export type EducationIncludesField = EnumeratedLiteralsMember<typeof EducationIncludesFields>;
 
 export type EducationIncludes =
   | ["courses", "skills", "details"]

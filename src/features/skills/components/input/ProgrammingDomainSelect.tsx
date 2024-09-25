@@ -14,7 +14,7 @@ const getItemValue = (m: M) => m.value;
 export interface ProgrammingDomainSelectProps<B extends SelectBehaviorType>
   extends Omit<
     DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "data"
+    "options" | "data" | "itemRenderer" | "getItemValueLabel"
   > {
   readonly behavior: B;
 }

@@ -38,9 +38,9 @@ export const ClientEducationSelect = forwardRef(
         ref={ref}
         isReady={data !== undefined && props.isReady !== false}
         data={data ?? []}
-        isDisabled={error !== undefined}
-        isLocked={isLoading}
-        isLoading={isLoading}
+        isDisabled={error !== undefined || props.isDisabled}
+        isLocked={isLoading || props.isLocked}
+        isLoading={isLoading || props.isLoading}
       />
     );
   },

@@ -17,7 +17,7 @@ export type CompanySelectInstance<B extends SelectBehaviorType> = DataSelectInst
 export interface CompanySelectProps<B extends SelectBehaviorType>
   extends Omit<
     DataSelectProps<Company, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled"
+    "options" | "itemIsDisabled" | "itemRenderer" | "getItemValueLabel"
   > {
   readonly behavior: B;
   readonly useAbbreviatedOptionLabels?: boolean;

@@ -16,7 +16,7 @@ export type RepositorySelectInstance<B extends SelectBehaviorType> = DataSelectI
 export interface RepositorySelectProps<B extends SelectBehaviorType>
   extends Omit<
     DataSelectProps<ApiRepository, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled"
+    "options" | "itemIsDisabled" | "itemRenderer" | "includeDescriptions" | "getItemValueLabel"
   > {
   readonly behavior: B;
 }

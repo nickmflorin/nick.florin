@@ -22,7 +22,12 @@ export type ProjectSelectInstance<B extends SelectBehaviorType> = DataSelectInst
 export interface ProjectSelectProps<B extends SelectBehaviorType>
   extends Omit<
     DataSelectProps<ProjectSelectModel, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled" | "data"
+    | "options"
+    | "itemIsDisabled"
+    | "data"
+    | "itemRenderer"
+    | "includeDescriptions"
+    | "getItemValueLabel"
   > {
   readonly behavior: B;
   readonly data: BrandProject[];

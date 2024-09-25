@@ -232,7 +232,7 @@ export const SkillsTableFilterBar = ({
         },
         {
           id: "programmingDomains",
-          label: "Programming Languages",
+          label: "Programming Domains",
           isHiddenByDefault: true,
           renderer: v => (
             <ProgrammingDomainSelect

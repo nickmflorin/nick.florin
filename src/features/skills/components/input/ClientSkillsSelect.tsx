@@ -11,7 +11,7 @@ import { useSkills, type SWRError } from "~/hooks/api-v2";
 import { SkillsSelect, type SkillsSelectInstance, type SkillsSelectProps } from "./SkillsSelect";
 
 export interface ClientSkillsSelectProps<B extends SelectBehaviorType>
-  extends Omit<SkillsSelectProps<B>, "data"> {
+  extends Omit<SkillsSelectProps<B>, "data" | "onSearch" | "search"> {
   readonly visibility: ActionVisibility;
   readonly onError?: (e: SWRError) => void;
 }
@@ -40,15 +40,15 @@ export const ClientSkillsSelect = forwardRef(
 
     return (
       <SkillsSelect
+        summarizeValueAfter={2}
         {...props}
         ref={ref}
         search={search}
-        summarizeValueAfter={2}
-        isReady={data !== undefined}
+        isReady={data !== undefined && props.isReady !== false}
         data={data ?? []}
-        isDisabled={error !== undefined}
-        isLocked={isLoading}
-        isLoading={isLoading}
+        isDisabled={error !== undefined || props.isDisabled}
+        isLocked={isLoading || props.isLocked}
+        isLoading={isLoading || props.isLoading}
         onSearch={e => setSearch(e.target.value)}
       />
     );

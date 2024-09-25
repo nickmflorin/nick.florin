@@ -11,7 +11,7 @@ import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { DegreeSelect } from "~/features/educations/components/input/DegreeSelect";
-import { SchoolSelect } from "~/features/schools/components/input/SchoolSelect";
+import { ClientSchoolSelect } from "~/features/schools/components/input/ClientSchoolSelect";
 import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
 
 import { type EducationFormValues } from "./schema";
@@ -53,9 +53,10 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
     >
       <Form.ControlledField name="school" label="School" form={props.form} condition="required">
         {({ value, onChange }) => (
-          <SchoolSelect
+          <ClientSchoolSelect
             inputClassName="w-full"
             behavior="single"
+            visibility="admin"
             isReady={value !== undefined}
             value={value}
             onChange={onChange}

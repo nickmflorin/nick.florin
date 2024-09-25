@@ -16,7 +16,7 @@ export type EducationSelectInstance<B extends SelectBehaviorType> = DataSelectIn
 export interface EducationSelectProps<B extends SelectBehaviorType>
   extends Omit<
     DataSelectProps<ApiEducation, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled"
+    "options" | "itemIsDisabled" | "itemRendererer" | "getItemValueLabel"
   > {
   readonly behavior: B;
   readonly useAbbreviatedOptionLabels?: boolean;

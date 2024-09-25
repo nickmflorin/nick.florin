@@ -34,7 +34,6 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
       visibility="admin"
       inputClassName="w-full"
       behavior="single"
-      isClearable
       value={value}
       inPortal
       onChange={async (v, { item }) => {

@@ -21,7 +21,7 @@ export const SEARCH_FIELDS = {
   skill: ["slug", "label"],
   course: ["name", "shortName", "slug"],
   experience: ["title", "shortTitle"],
-  education: ["major", "concentration", "minor"],
+  education: ["major", "concentration", "minor", "shortMajor"],
   project: ["name", "shortName", "slug"],
   repository: ["slug", "npmPackageName"],
   detail: ["label", "description", "shortDescription"],
