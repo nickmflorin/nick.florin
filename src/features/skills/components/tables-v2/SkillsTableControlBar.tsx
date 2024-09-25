@@ -1,5 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -7,6 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
+import { deleteSkills } from "~/actions-v2/skills/delete-skills";
 import { deprioritizeSkills } from "~/actions-v2/skills/deprioritize-skills";
 import { hideSkills } from "~/actions-v2/skills/hide-skills";
 import { highlightSkills } from "~/actions-v2/skills/highlight-skills";
@@ -27,16 +27,10 @@ import {
 } from "~/components/tables-v2/ConnectedTableControlBar";
 import { type SkillsTableColumn, type SkillsTableModel } from "~/features/skills";
 
-const DeleteSkillsConfirmationDialog = dynamic(() =>
-  import("../dialogs/DeleteSkillsConfirmationDialog").then(
-    mod => mod.DeleteSkillsConfirmationDialog,
-  ),
-);
-
 export interface SkillsTableControlBarProps
   extends Omit<
     ConnectedTableControlBarProps<SkillsTableModel, SkillsTableColumn>,
-    "children" | "confirmationModal"
+    "children" | "confirmationModal" | "deleteAction" | "modelName"
   > {}
 
 export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.Element => {
@@ -55,7 +49,8 @@ export const SkillsTableControlBar = (props: SkillsTableControlBarProps): JSX.El
     <ConnectedTableControlBar
       {...props}
       data={props.data}
-      confirmationModal={DeleteSkillsConfirmationDialog}
+      modelName="skill"
+      deleteAction={deleteSkills}
     >
       {({ selectedRows }) => {
         const numVisible = selectedRows.filter(row => row.visible).length;

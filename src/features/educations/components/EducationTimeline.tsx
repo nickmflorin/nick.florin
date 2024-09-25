@@ -4,7 +4,7 @@ import { uniqBy } from "lodash-es";
 
 import { removeRedundantTopLevelSkills } from "~/database/model";
 
-import { getEducations } from "~/actions/fetches/educations";
+import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { Loading } from "~/components/loading/Loading";
@@ -19,20 +19,26 @@ const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.Timel
 export type EducationTimelineProps = ComponentProps;
 
 export const EducationTimeline = async (props: EducationTimelineProps): Promise<JSX.Element> => {
-  const _educations = await getEducations({
-    includes: ["skills", "details", "courses"],
-    visibility: "public",
-  });
+  const fetcher = fetchEducations(["skills", "details", "courses"]);
+  const { data: _educations } = await fetcher(
+    { visibility: "public", filters: {} },
+    { strict: true },
+  );
   /* Remove redundant top-level skills from each education that are also skills for details nested
      under the education.  Eventually, we may want to consider moving this logic to the BE to be
      more consistent with how skills are handled for details. */
-  const educations = _educations.map(removeRedundantTopLevelSkills).map(education => ({
-    ...education,
-    /* Include skills for each education that are skills for the courses nested underneath the
-       education.  Eventually, we may want to consider doing some of this logic in the BE to be
-       more consistent with how this skill handling is done with details. */
-    skills: uniqBy([...education.skills, ...education.courses.flatMap(c => c.skills)], sk => sk.id),
-  }));
+  const educations = _educations.map(education =>
+    removeRedundantTopLevelSkills({
+      ...education,
+      /* Include skills for each education that are skills for the courses nested underneath the
+         education.  Eventually, we may want to consider doing some of this logic in the BE to be
+         more consistent with how this skill handling is done with details. */
+      skills: uniqBy(
+        [...education.skills, ...education.courses.flatMap(c => c.skills)],
+        sk => sk.id,
+      ),
+    }),
+  );
 
   return (
     <CommitTimeline {...props}>

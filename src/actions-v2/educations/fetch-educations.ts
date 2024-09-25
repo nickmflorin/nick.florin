@@ -131,7 +131,14 @@ export const fetchEducations = <I extends EducationIncludes>(includes: I) =>
             ? { where: { visible: isVisible(visibility, filters.visible) } }
             : undefined,
           courses: fieldIsIncluded("courses", includes)
-            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            ? {
+                where: { visible: isVisible(visibility, filters.visible) },
+                include: {
+                  skills: fieldIsIncluded("skills", includes)
+                    ? { where: { visible: isVisible(visibility, filters.visible) } }
+                    : undefined,
+                },
+              }
             : undefined,
         },
         orderBy: ordering
@@ -154,7 +161,7 @@ export const fetchEducations = <I extends EducationIncludes>(includes: I) =>
         const { data: details, error } = await fetcher(
           {
             filters: {
-              visible: filters.visible,
+              visible: isVisible(visibility, filters.visible),
               entityIds: educations.map(e => e.id),
               entityTypes: [DetailEntityType.EDUCATION],
             },

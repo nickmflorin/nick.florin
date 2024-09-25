@@ -1,13 +1,49 @@
-import { type EducationIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
 
-import { getEducations } from "~/actions/fetches/educations";
-import { ClientResponse } from "~/api";
-import { apiRoute } from "~/api/route";
+import { z } from "zod";
 
-export const GET = apiRoute(async (request, params, query) => {
-  const educations = await getEducations({
-    includes: query.includes as EducationIncludes,
-    visibility: query.visibility,
+import type { EducationIncludes } from "~/database/model";
+import { parseOrdering } from "~/lib/ordering";
+
+import {
+  EducationsFiltersObj,
+  EducationsDefaultOrdering,
+  EducationOrderableFields,
+  EducationIncludesSchema,
+} from "~/actions-v2";
+import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http-v2";
+
+export const GET = async (request: NextRequest) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = EducationIncludesSchema.safeParse(query.includes);
+
+  const limit = z.coerce.number().int().positive().safeParse(query.limit).data;
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
+
+  let includes: EducationIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
+  }
+
+  const filters = EducationsFiltersObj.parse(query);
+
+  const ordering = parseOrdering(query, {
+    defaultOrdering: EducationsDefaultOrdering,
+    fields: [...EducationOrderableFields],
   });
-  return ClientResponse.OK(educations).response;
-});
+
+  const fetcher = fetchEducations(includes);
+  const { error, data } = await fetcher({ filters, ordering, limit, visibility }, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

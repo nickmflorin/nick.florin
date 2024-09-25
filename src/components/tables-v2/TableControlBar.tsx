@@ -1,7 +1,10 @@
 "use client";
+import dynamic from "next/dynamic";
 import { type ReactNode, useState } from "react";
 
 import type * as types from "./types";
+
+import { type MutationActionResponse } from "~/actions-v2";
 
 import { DeleteButton } from "~/components/buttons/DeleteButton";
 import { Tooltip } from "~/components/floating/Tooltip";
@@ -14,9 +17,13 @@ import { Text } from "~/components/typography";
 
 import { TableControlBarPortal } from "./TableControlBarPortal";
 
+const DeleteConfirmationDialog = dynamic(() =>
+  import("~/components/dialogs/DeleteConfirmationDialog").then(mod => mod.DeleteConfirmationDialog),
+);
+
 interface TableControlBarDeleteConfirmationRenderProps<T> {
   readonly isOpen: boolean;
-  readonly rows: T[];
+  readonly data: T[];
   readonly onClose: () => void;
   readonly onSuccess: () => void;
   readonly onCancel: () => void;
@@ -40,8 +47,11 @@ export interface TableControlBarProps<
   readonly columnsSelect?: JSX.Element;
   readonly columns?: C[];
   readonly visibleColumns?: C["id"][];
+  readonly modelName?: string;
   readonly onSelectAllRows?: (v: boolean) => void;
   readonly onVisibleColumnsChange?: (v: C["id"][]) => void;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  readonly deleteAction?: (ids: string[]) => Promise<MutationActionResponse<any>>;
   readonly confirmationModal?:
     | React.ComponentType<TableControlBarDeleteConfirmationRenderProps<D>>
     | ((props: TableControlBarDeleteConfirmationRenderProps<D>) => JSX.Element);
@@ -63,6 +73,8 @@ export const TableControlBar = <
   columns,
   visibleColumns,
   columnsSelect,
+  modelName,
+  deleteAction,
   onVisibleColumnsChange,
   deleteTooltipContent = (numRows: number) => `Delete ${numRows} selected rows.`,
   onSelectAllRows,
@@ -135,13 +147,27 @@ export const TableControlBar = <
         </div>
       </TableControlBarPortal>
       {confirmationModalIsOpen && selectedRows.length !== 0 && (
-        <ConfirmationModal
-          isOpen
-          rows={selectedRows}
-          onClose={() => setConfirmationModelIsOpen(false)}
-          onCancel={() => setConfirmationModelIsOpen(false)}
-          onSuccess={() => setConfirmationModelIsOpen(false)}
-        />
+        <>
+          {deleteAction ? (
+            <DeleteConfirmationDialog
+              isOpen
+              modelName={modelName}
+              action={deleteAction}
+              data={selectedRows}
+              onClose={() => setConfirmationModelIsOpen(false)}
+              onCancel={() => setConfirmationModelIsOpen(false)}
+              onSuccess={() => setConfirmationModelIsOpen(false)}
+            />
+          ) : (
+            <ConfirmationModal
+              isOpen
+              data={selectedRows}
+              onClose={() => setConfirmationModelIsOpen(false)}
+              onCancel={() => setConfirmationModelIsOpen(false)}
+              onSuccess={() => setConfirmationModelIsOpen(false)}
+            />
+          )}
+        </>
       )}
     </>
   );

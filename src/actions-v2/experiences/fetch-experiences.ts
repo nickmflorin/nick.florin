@@ -146,7 +146,7 @@ export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
         const { data: details, error } = await fetcher(
           {
             filters: {
-              visible: filters.visible,
+              visible: isVisible(visibility, filters.visible),
               entityIds: experiences.map(e => e.id),
               entityTypes: [DetailEntityType.EXPERIENCE],
             },

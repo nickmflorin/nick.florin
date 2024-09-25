@@ -5,39 +5,48 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteExperiences } from "~/actions-v2/experiences/delete-experiences";
+import type { MutationActionResponse } from "~/actions-v2";
 
 import { Dialog } from "~/components/dialogs/Dialog";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import type { ExperiencesTableModel } from "~/features/experiences";
+import type { DataTableDatum } from "~/components/tables-v2";
 
-export interface DeleteExperiencesConfirmationDialogProps {
+export interface DeleteConfirmationDialogProps<M extends DataTableDatum, T> {
   readonly isOpen: boolean;
-  readonly rows: ExperiencesTableModel[];
+  readonly data: M[];
+  readonly modelName?: string;
+  readonly action: (ids: string[]) => Promise<MutationActionResponse<T>>;
   readonly onClose: () => void;
   readonly onSuccess: () => void;
   readonly onCancel: () => void;
 }
 
-export const DeleteExperiencesConfirmationDialog = ({
+export const DeleteConfirmationDialog = <M extends DataTableDatum, T>({
   isOpen,
-  rows,
+  data,
+  modelName = "row",
+  action,
   onSuccess,
   onCancel,
   onClose,
-}: DeleteExperiencesConfirmationDialogProps) => {
+}: DeleteConfirmationDialogProps<M, T>) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, transition] = useTransition();
   const { refresh } = useRouter();
+
+  if (data.length === 0) {
+    return <></>;
+  }
+  const reference = `${modelName.toLowerCase()}${data.length === 1 ? "" : "s"}`;
 
   return (
     <Dialog.Provider isOpen={isOpen} onClose={onClose}>
       <Dialog className="w-[500px]">
         <Dialog.Close />
-        <Dialog.Title>Confirm</Dialog.Title>
+        <Dialog.Title>Confirmirmation</Dialog.Title>
         <Dialog.Content>
           <Dialog.Description>
-            {`You are about to delete ${rows.length} experiences. Would you like to continue?`}
+            {`You are about to delete ${data.length} ${reference}. Would you like to continue?`}
           </Dialog.Description>
         </Dialog.Content>
         <Dialog.Footer>
@@ -49,33 +58,24 @@ export const DeleteExperiencesConfirmationDialog = ({
             onCancel={onCancel}
             onSubmit={async () => {
               setIsDeleting(true);
-              let response: Awaited<ReturnType<typeof deleteExperiences>> | null = null;
+              let response: Awaited<ReturnType<typeof action>> | null = null;
               try {
-                response = await deleteExperiences(rows.map(sub => sub.id));
+                response = await action(data.map(d => d.id));
               } catch (e) {
-                logger.errorUnsafe(e, "There was an error deleting the experience(s)!", {
-                  experiences: rows.map(sub => sub.id),
+                logger.errorUnsafe(e, `There was an error deleting the ${reference}!`, {
+                  [reference]: data.map(sub => sub.id),
                 });
-                toast.error(
-                  `There was an error deleting the experience${rows.length === 1 ? "" : "s"}.`,
-                );
+                toast.error(`There was an error deleting the ${reference}.`);
               }
               if (response) {
                 const { error } = response;
                 if (error) {
-                  logger.error("There was an error deleting the experience(s)!", {
-                    experiences: rows.map(sub => sub.id),
-                    error,
+                  logger.error(error, `There was an error deleting the ${reference}!`, {
+                    [reference]: data.map(d => d.id),
                   });
-                  toast.error(
-                    `There was an error deleting the experience${rows.length === 1 ? "" : "s"}.`,
-                  );
+                  toast.error(`There was an error deleting the ${reference}.`);
                 } else {
-                  toast.success(
-                    rows.length === 1
-                      ? "Successfully deleted the experience."
-                      : "Successfully deleted the experiences.",
-                  );
+                  toast.success(`Successfully deleted the ${reference}.`);
                   transition(() => {
                     refresh();
                     onSuccess?.();
@@ -90,4 +90,4 @@ export const DeleteExperiencesConfirmationDialog = ({
   );
 };
 
-export default DeleteExperiencesConfirmationDialog;
+export default DeleteConfirmationDialog;

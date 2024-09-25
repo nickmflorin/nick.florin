@@ -25,7 +25,7 @@ export const ExperiencesTableBody = async ({
   ordering,
 }: ExperiencesTableBodyProps): Promise<JSX.Element> => {
   const fetcher = fetchExperiences(["skills", "details"]);
-  const { data: skills } = await fetcher(
+  const { data: experiences } = await fetcher(
     {
       filters,
       ordering,
@@ -34,5 +34,5 @@ export const ExperiencesTableBody = async ({
     },
     { strict: true },
   );
-  return <ClientExperiencesTableBody data={skills} />;
+  return <ClientExperiencesTableBody data={experiences} />;
 };

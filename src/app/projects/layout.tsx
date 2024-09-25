@@ -3,7 +3,7 @@ import { ProjectSlugs } from "~/database/model";
 import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
 
-import { getProjects } from "~/actions/fetches/projects";
+import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
 
 import { TabbedContent } from "~/components/layout/TabbedContent";
 
@@ -18,7 +18,8 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
      a log should be issued if a project is not in the database if the slug is hard-coded.  If
      the project is in the database, but is just not visible, we do not want to issue warnings if
      the slug does not exist in the returned set of projects. */
-  const projects = await getProjects({ visibility: "admin", includes: [] });
+  const fetcher = fetchProjects([]);
+  const { data: projects } = await fetcher({ visibility: "admin", filters: {} }, { strict: true });
 
   /* Issue a log warning if there are any projects that do not have a corresponding hard-coded slug
      in the code. */

@@ -31,6 +31,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
       inPortal
       behavior="multi"
       summarizeValueAfter={2}
+      visibility="admin"
       isClearable
       inputClassName="w-full"
       value={value}

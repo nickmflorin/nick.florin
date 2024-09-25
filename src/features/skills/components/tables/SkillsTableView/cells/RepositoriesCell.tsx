@@ -33,6 +33,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
     <ClientRepositorySelect
       behavior="multi"
       isClearable
+      visibility="admin"
       inputClassName="w-full"
       value={value}
       summarizeValueAfter={2}

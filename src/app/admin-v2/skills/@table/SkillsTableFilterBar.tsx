@@ -1,8 +1,8 @@
-import { getEducations } from "~/actions/fetches/educations";
-import { getProjects } from "~/actions/fetches/projects";
 import { getRepositories } from "~/actions/fetches/repositories";
 import { type SkillsFilters } from "~/actions-v2";
+import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
+import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
 
 import { SkillsTableFilterBar as ClientSkillsTableFilterBar } from "~/features/skills/components/tables-v2/SkillsTableFilterBar";
 
@@ -13,15 +13,24 @@ export interface SkillsTableFilterBarProps {
 export const SkillsTableFilterBar = async ({
   filters,
 }: SkillsTableFilterBarProps): Promise<JSX.Element> => {
-  const educations = await getEducations({ visibility: "admin", includes: [] });
-
-  const fetcher = fetchExperiences([]);
-  const { data: experiences } = await fetcher(
+  const eduFetcher = fetchEducations([]);
+  const { data: educations } = await eduFetcher(
     { visibility: "admin", filters: {} },
     { strict: true },
   );
 
-  const projects = await getProjects({ visibility: "admin", includes: [] });
+  const expFetcher = fetchExperiences([]);
+  const { data: experiences } = await expFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
+
+  const projFetcher = fetchProjects([]);
+  const { data: projects } = await projFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
+
   const repositories = await getRepositories({ visibility: "admin", includes: [] });
   return (
     <ClientSkillsTableFilterBar

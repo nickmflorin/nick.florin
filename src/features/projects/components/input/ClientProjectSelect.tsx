@@ -2,10 +2,10 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import { logger } from "~/internal/logger";
 
-import { type HttpError } from "~/api";
+import { type ActionVisibility } from "~/actions-v2";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useProjects } from "~/hooks";
+import { useProjects, type SWRError } from "~/hooks/api-v2";
 
 import {
   ProjectSelect,
@@ -15,16 +15,17 @@ import {
 
 export interface ClientProjectSelectProps<B extends SelectBehaviorType>
   extends Omit<ProjectSelectProps<B>, "data"> {
-  readonly onError?: (e: HttpError) => void;
+  readonly visibility: ActionVisibility;
+  readonly onError?: (e: SWRError) => void;
 }
 
 export const ClientProjectSelect = forwardRef(
   <B extends SelectBehaviorType>(
-    { onError, ...props }: ClientProjectSelectProps<B>,
+    { visibility, onError, ...props }: ClientProjectSelectProps<B>,
     ref: ForwardedRef<ProjectSelectInstance<B>>,
   ): JSX.Element => {
     const { data, isLoading, error } = useProjects({
-      query: { includes: [], visibility: "admin" },
+      query: { includes: [], visibility },
       onError: e => {
         logger.error(e, "There was an error loading the projects via the API.");
         onError?.(e);

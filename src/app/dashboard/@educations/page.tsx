@@ -1,13 +1,16 @@
-import { getEducations } from "~/actions/fetches/educations";
+import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 
 import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
 
 export default async function EducationsPage() {
-  const educations = await getEducations({
-    visibility: "public",
-    includes: [],
-    filters: { highlighted: true },
-  });
+  const fetcher = fetchEducations([]);
+  const { data: educations } = await fetcher(
+    {
+      visibility: "public",
+      filters: { highlighted: true },
+    },
+    { strict: true },
+  );
   return (
     <>
       {educations.map((education, index) => (

@@ -1,5 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -7,6 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
+import { deleteExperiences } from "~/actions-v2/experiences/delete-experiences";
 import { hideExperiences } from "~/actions-v2/experiences/hide-experiences";
 import { highlightExperiences } from "~/actions-v2/experiences/highlight-experiences";
 import { showExperiences } from "~/actions-v2/experiences/show-experiences";
@@ -23,16 +23,10 @@ import {
 } from "~/components/tables-v2/ConnectedTableControlBar";
 import { type ExperiencesTableColumn, type ExperiencesTableModel } from "~/features/experiences";
 
-const DeleteExperiencesConfirmationDialog = dynamic(() =>
-  import("../dialogs/DeleteExperiencesConfirmationDialog").then(
-    mod => mod.DeleteExperiencesConfirmationDialog,
-  ),
-);
-
 export interface ExperiencesTableControlBarProps
   extends Omit<
     ConnectedTableControlBarProps<ExperiencesTableModel, ExperiencesTableColumn>,
-    "children" | "confirmationModal"
+    "children" | "confirmationModal" | "deleteAction" | "modelName"
   > {}
 
 export const ExperiencesTableControlBar = (props: ExperiencesTableControlBarProps): JSX.Element => {
@@ -49,7 +43,8 @@ export const ExperiencesTableControlBar = (props: ExperiencesTableControlBarProp
     <ConnectedTableControlBar
       {...props}
       data={props.data}
-      confirmationModal={DeleteExperiencesConfirmationDialog}
+      deleteAction={deleteExperiences}
+      modelName="experience"
     >
       {({ selectedRows }) => {
         const numVisible = selectedRows.filter(row => row.visible).length;

@@ -40,9 +40,6 @@ const filtersClause = ({ filters, visibility }: Pick<SkillsControls, "filters" |
     filters.prioritized !== undefined && filters.prioritized !== null
       ? { prioritized: filters.prioritized }
       : undefined,
-    filters.visible !== undefined && filters.visible !== null
-      ? { visible: filters.visible }
-      : undefined,
     filters.programmingDomains && filters.programmingDomains.length !== 0
       ? { programmingDomains: { hasSome: filters.programmingDomains } }
       : undefined,

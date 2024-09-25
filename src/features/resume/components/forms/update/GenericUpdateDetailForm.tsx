@@ -223,6 +223,7 @@ export const GenericUpdateDetailForm = <
       >
         {({ value, onChange }) => (
           <ClientProjectSelect
+            visibility="admin"
             inputClassName="w-full"
             value={value}
             behavior="single-nullable"

@@ -38,6 +38,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => (
     >
       {({ value, onChange }) => (
         <ClientRepositorySelect
+          visibility="admin"
           inputClassName="w-full"
           behavior="multi"
           isClearable

@@ -2,6 +2,7 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import { logger } from "~/internal/logger";
 
+import type { ActionVisibility } from "~/actions-v2";
 import { type HttpError } from "~/api";
 
 import type { SelectBehaviorType } from "~/components/input/select";
@@ -15,16 +16,17 @@ import {
 
 export interface ClientRepositorySelectProps<B extends SelectBehaviorType>
   extends Omit<RepositorySelectProps<B>, "data"> {
+  readonly visibility: ActionVisibility;
   readonly onError?: (e: HttpError) => void;
 }
 
 export const ClientRepositorySelect = forwardRef(
   <B extends SelectBehaviorType>(
-    { onError, ...props }: ClientRepositorySelectProps<B>,
+    { visibility, onError, ...props }: ClientRepositorySelectProps<B>,
     ref: ForwardedRef<RepositorySelectInstance<B>>,
   ): JSX.Element => {
     const { data, isLoading, error } = useRepositories({
-      query: { includes: [], visibility: "admin" },
+      query: { includes: [], visibility },
       onError: e => {
         logger.error(e, "There was an error loading the repositories via the API.");
         onError?.(e);

@@ -31,6 +31,7 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
 
   return (
     <ClientProjectSelect
+      visibility="admin"
       inputClassName="w-full"
       value={value}
       behavior="multi"

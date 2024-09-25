@@ -1,5 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -7,6 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
+import { deleteEducations } from "~/actions-v2/educations/delete-educations";
 import { hideEducations } from "~/actions-v2/educations/hide-educations";
 import { highlightEducations } from "~/actions-v2/educations/highlight-educations";
 import { showEducations } from "~/actions-v2/educations/show-educations";
@@ -23,16 +23,10 @@ import {
 } from "~/components/tables-v2/ConnectedTableControlBar";
 import { type EducationsTableColumn, type EducationsTableModel } from "~/features/educations";
 
-const DeleteEducationsConfirmationDialog = dynamic(() =>
-  import("../dialogs/DeleteEducationsConfirmationDialog").then(
-    mod => mod.DeleteEducationsConfirmationDialog,
-  ),
-);
-
 export interface EducationsTableControlBarProps
   extends Omit<
     ConnectedTableControlBarProps<EducationsTableModel, EducationsTableColumn>,
-    "children" | "confirmationModal"
+    "children" | "confirmationModal" | "deleteAction" | "modelName"
   > {}
 
 export const EducationsTableControlBar = (props: EducationsTableControlBarProps): JSX.Element => {
@@ -49,7 +43,8 @@ export const EducationsTableControlBar = (props: EducationsTableControlBarProps)
     <ConnectedTableControlBar
       {...props}
       data={props.data}
-      confirmationModal={DeleteEducationsConfirmationDialog}
+      deleteAction={deleteEducations}
+      modelName="education"
     >
       {({ selectedRows }) => {
         const numVisible = selectedRows.filter(row => row.visible).length;

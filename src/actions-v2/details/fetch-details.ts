@@ -143,7 +143,7 @@ export const fetchDetails = <I extends DetailIncludes>(includes: I) =>
           project: {
             include: {
               skills: fieldIsIncluded("skills", includes)
-                ? { where: { visible: filters.visible ?? undefined } }
+                ? { where: { visible: isVisible(visibility, filters.visible) } }
                 : undefined,
             },
           },
@@ -158,12 +158,12 @@ export const fetchDetails = <I extends DetailIncludes>(includes: I) =>
                 where: { visible: isVisible(visibility, filters.visible) },
                 include: {
                   skills: fieldIsIncluded("skills", includes)
-                    ? { where: { visible: filters.visible ?? undefined } }
+                    ? { where: { visible: isVisible(visibility, filters.visible) } }
                     : undefined,
                   project: {
                     include: {
                       skills: fieldIsIncluded("skills", includes)
-                        ? { where: { visible: filters.visible ?? undefined } }
+                        ? { where: { visible: isVisible(visibility, filters.visible) } }
                         : undefined,
                     },
                   },

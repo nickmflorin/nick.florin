@@ -28,6 +28,7 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
     <Form.ControlledField name="projects" label="Projects" form={props.form}>
       {({ value, onChange }) => (
         <ClientProjectSelect
+          visibility="admin"
           behavior="multi"
           isClearable
           inputClassName="w-full"

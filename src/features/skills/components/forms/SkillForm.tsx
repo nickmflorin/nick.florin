@@ -96,6 +96,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <ClientProjectSelect
             inputClassName="w-full"
+            visibility="admin"
             behavior="multi"
             isClearable
             value={value}
@@ -108,6 +109,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
       <Form.ControlledField name="repositories" label="Repositories" form={props.form}>
         {({ value, onChange }) => (
           <ClientRepositorySelect
+            visibility="admin"
             inputClassName="w-full"
             behavior="multi"
             isClearable
