@@ -75,6 +75,14 @@ export const SkillsTableColumns = [
     maxWidth: 320,
   },
   {
+    id: "programmingDomains",
+    label: "Prog. Domains",
+    isHiddenByDefault: true,
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
+  },
+  {
     id: "createdAt",
     label: "Created",
     align: "right",

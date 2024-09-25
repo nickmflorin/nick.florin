@@ -10,6 +10,7 @@ import { EducationsCell } from "../cells/EducationsCell";
 import { ExperiencesCell } from "../cells/ExperiencesCell";
 import { HighlightedCell } from "../cells/HighlightedCell";
 import { PrioritizedCell } from "../cells/PrioritizedCell";
+import { ProgrammingDomainsCell } from "../cells/ProgrammingDomainsCell";
 import { ProgrammingLanguagesCell } from "../cells/ProgrammingLanguagesCell";
 import { ProjectsCell } from "../cells/ProjectsCell";
 import { RepositoriesCell } from "../cells/RepositoriesCell";
@@ -40,6 +41,11 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
       programmingLanguages: {
         cellRenderer(datum) {
           return <ProgrammingLanguagesCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      programmingDomains: {
+        cellRenderer(datum) {
+          return <ProgrammingDomainsCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       projects: {
