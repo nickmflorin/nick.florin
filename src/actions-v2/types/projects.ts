@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import {
   type ProjectIncludes,
-  ProjectIncludeFields,
+  ProjectIncludesFields,
   type ProjectIncludesField,
 } from "~/database/model";
 import { Filters } from "~/lib/filters";
@@ -118,12 +118,12 @@ export const ProjectsFiltersObj = Filters({
 // Used for API Routes
 export const ProjectIncludesSchema = z.union([z.string(), z.array(z.string())]).transform(value => {
   if (typeof value === "string") {
-    return (ProjectIncludeFields.contains(value)
+    return (ProjectIncludesFields.contains(value)
       ? [value]
       : []) as ProjectIncludesField[] as ProjectIncludes;
   }
   return value.reduce(
-    (prev, curr) => (ProjectIncludeFields.contains(curr) ? [...prev, curr] : prev),
+    (prev, curr) => (ProjectIncludesFields.contains(curr) ? [...prev, curr] : prev),
     [] as ProjectIncludesField[],
   ) as ProjectIncludes;
 });

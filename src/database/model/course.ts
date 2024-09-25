@@ -1,7 +1,12 @@
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+
 import type { BrandCourse, BrandEducation } from "./brand";
 
 import { type ConditionallyInclude } from "./inclusion";
 import { type ApiSkill } from "./skills";
+
+export const CourseIncludesFields = enumeratedLiterals(["skills", "education"] as const, {});
+export type CourseIncludesField = EnumeratedLiteralsMember<typeof CourseIncludesFields>;
 
 export type CourseIncludes =
   | ["education", "skills"]

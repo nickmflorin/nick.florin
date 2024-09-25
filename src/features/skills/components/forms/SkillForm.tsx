@@ -8,6 +8,7 @@ import { slugify } from "~/lib/formatters";
 
 import { SkillSchema } from "~/actions-v2/schemas";
 
+import { Checkboxes } from "~/components/forms/fields/Checkboxes";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
 import { TextArea } from "~/components/input/TextArea";
@@ -136,10 +137,11 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
           />
         )}
       </Form.ControlledField>
-      <div className="flex flex-row gap-[12px] items-center mt-[8px] mb-[8px]">
+      <Checkboxes className="mt-[8px] mb-[8px]">
         <CheckboxField name="visible" form={props.form} label="Visible" />
         <CheckboxField name="highlighted" form={props.form} label="Top Skill" />
-      </div>
+        <CheckboxField name="prioritized" form={props.form} label="Prioritized" />
+      </Checkboxes>
       <Form.ControlledField name="programmingDomains" label="Domains" form={props.form}>
         {({ value, onChange }) => (
           <ProgrammingDomainSelect

@@ -20,5 +20,6 @@ export const useSkillForm = () =>
       highlighted: false,
       experience: null,
       visible: true,
+      prioritized: false,
     },
   });

@@ -9,7 +9,7 @@ export const Orders = ["asc", "desc"] as const;
 export type Order = (typeof Orders)[number];
 
 // Right now, we are only supporting single field ordering.
-export type Ordering<I extends string> = { orderBy: I; order: Order };
+export type Ordering<I extends string = string, O extends Order = Order> = { orderBy: I; order: O };
 
 type ParseOrderingOptions<F extends string> = {
   readonly fields: F[];

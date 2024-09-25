@@ -24,11 +24,11 @@ export const ProjectSlugs = enumeratedLiterals(
 
 export type ProjectSlug = EnumeratedLiteralsMember<typeof ProjectSlugs>;
 
-export const ProjectIncludeFields = enumeratedLiterals(
+export const ProjectIncludesFields = enumeratedLiterals(
   ["skills", "repositories", "nestedDetails", "details"] as const,
   {},
 );
-export type ProjectIncludesField = EnumeratedLiteralsMember<typeof ProjectIncludeFields>;
+export type ProjectIncludesField = EnumeratedLiteralsMember<typeof ProjectIncludesFields>;
 
 export type ProjectIncludes =
   | ["skills", "repositories", "nestedDetails", "details"]

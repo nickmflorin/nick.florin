@@ -19,11 +19,15 @@ export const Checkboxes = ({
 }: CheckboxesProps) => (
   <div
     {...props}
-    className={classNames("flex", {
-      "flex-row": orientation === "horizontal",
-      "flex-col": orientation === "vertical",
-      "mt-[6px]": outer,
-    })}
+    className={classNames(
+      "flex",
+      {
+        "flex-row": orientation === "horizontal",
+        "flex-col": orientation === "vertical",
+        "mt-[6px]": outer,
+      },
+      props.className,
+    )}
     style={{ gap: sizeToString(gap, "px") }}
   >
     {children}
