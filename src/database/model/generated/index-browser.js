@@ -339,6 +339,7 @@ exports.SkillCategory = exports.$Enums.SkillCategory = {
   PACKAGE: 'PACKAGE',
   PACKAGE_MANAGER: 'PACKAGE_MANAGER',
   VERSION_MANAGER: 'VERSION_MANAGER',
+  ACADEMIC: 'ACADEMIC',
   ORM: 'ORM',
   WORKFLOW: 'WORKFLOW'
 };
@@ -355,14 +356,17 @@ exports.ProgrammingLanguage = exports.$Enums.ProgrammingLanguage = {
   JQUERY: 'JQUERY',
   HTML: 'HTML',
   MATLAB: 'MATLAB',
-  R: 'R'
+  R: 'R',
+  REACT: 'REACT',
+  VBA: 'VBA'
 };
 
 exports.ProgrammingDomain = exports.$Enums.ProgrammingDomain = {
   BACKEND: 'BACKEND',
   FRONTEND: 'FRONTEND',
   MOBILE: 'MOBILE',
-  FULL_STACK: 'FULL_STACK'
+  FULL_STACK: 'FULL_STACK',
+  INFRASTRUCTURE: 'INFRASTRUCTURE'
 };
 
 exports.Degree = exports.$Enums.Degree = {

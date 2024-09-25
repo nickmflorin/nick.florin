@@ -64,10 +64,16 @@ export const ProgrammingLanguages = enumeratedLiterals(
     },
     { value: ProgrammingLanguage.HTML, label: "HTML", icon: "/programming-languages/html.svg" },
     { value: ProgrammingLanguage.R, label: "R", icon: "/programming-languages/r.svg" },
+    { value: ProgrammingLanguage.VBA, label: "VBA", icon: "/programming-languages/vba.svg" },
+    { value: ProgrammingLanguage.REACT, label: "React", icon: "/programming-languages/react.svg" },
   ] as const satisfies {
     value: ProgrammingLanguage;
     label: string;
     icon: `/programming-languages/${string}.svg` | null;
+  }[] satisfies {
+    value: ProgrammingLanguage;
+    label: string;
+    icon: `/programming-languages/${string}.svg`;
   }[],
   {},
 );
@@ -85,6 +91,7 @@ export const SkillCategories = enumeratedLiterals(
     { value: SkillCategory.TESTING, label: "Testing" },
     { value: SkillCategory.VERSION_MANAGER, label: "Version Manager" },
     { value: SkillCategory.WORKFLOW, label: "Workflow" },
+    { value: SkillCategory.ACADEMIC, label: "Academic" },
   ] as const satisfies { value: SkillCategory; label: string }[],
   {},
 );
@@ -95,6 +102,7 @@ export const ProgrammingDomains = enumeratedLiterals(
     { value: ProgrammingDomain.FRONTEND, label: "Frontend" },
     { value: ProgrammingDomain.FULL_STACK, label: "Full Stack" },
     { value: ProgrammingDomain.MOBILE, label: "Mobile" },
+    { value: ProgrammingDomain.INFRASTRUCTURE, label: "Infrastructure" },
   ] as const satisfies { value: ProgrammingDomain; label: string }[],
   {},
 );

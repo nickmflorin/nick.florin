@@ -101,6 +101,7 @@ export const SkillCategory: {
   PACKAGE: 'PACKAGE',
   PACKAGE_MANAGER: 'PACKAGE_MANAGER',
   VERSION_MANAGER: 'VERSION_MANAGER',
+  ACADEMIC: 'ACADEMIC',
   ORM: 'ORM',
   WORKFLOW: 'WORKFLOW'
 };
@@ -120,7 +121,9 @@ export const ProgrammingLanguage: {
   JQUERY: 'JQUERY',
   HTML: 'HTML',
   MATLAB: 'MATLAB',
-  R: 'R'
+  R: 'R',
+  REACT: 'REACT',
+  VBA: 'VBA'
 };
 
 export type ProgrammingLanguage = (typeof ProgrammingLanguage)[keyof typeof ProgrammingLanguage]
@@ -130,7 +133,8 @@ export const ProgrammingDomain: {
   BACKEND: 'BACKEND',
   FRONTEND: 'FRONTEND',
   MOBILE: 'MOBILE',
-  FULL_STACK: 'FULL_STACK'
+  FULL_STACK: 'FULL_STACK',
+  INFRASTRUCTURE: 'INFRASTRUCTURE'
 };
 
 export type ProgrammingDomain = (typeof ProgrammingDomain)[keyof typeof ProgrammingDomain]

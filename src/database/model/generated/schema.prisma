@@ -103,6 +103,7 @@ enum SkillCategory {
   PACKAGE
   PACKAGE_MANAGER
   VERSION_MANAGER
+  ACADEMIC
   ORM
   WORKFLOW
 }
@@ -112,6 +113,7 @@ enum ProgrammingDomain {
   FRONTEND
   MOBILE
   FULL_STACK
+  INFRASTRUCTURE
 }
 
 enum ProgrammingLanguage {
@@ -127,6 +129,8 @@ enum ProgrammingLanguage {
   HTML
   MATLAB
   R
+  REACT
+  VBA
 }
 
 model Resume {
