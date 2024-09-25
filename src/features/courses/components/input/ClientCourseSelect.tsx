@@ -3,17 +3,17 @@ import { forwardRef, type ForwardedRef } from "react";
 import { logger } from "~/internal/logger";
 
 import type { ActionVisibility } from "~/actions-v2";
-import { type HttpError } from "~/api";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useCourses } from "~/hooks";
+import type { SWRError } from "~/hooks/api-v2";
+import { useCourses } from "~/hooks/api-v2";
 
 import { CourseSelect, type CourseSelectInstance, type CourseSelectProps } from "./CourseSelect";
 
 export interface ClientCourseSelectProps<B extends SelectBehaviorType>
   extends Omit<CourseSelectProps<B>, "data"> {
   readonly visibility: ActionVisibility;
-  readonly onError?: (e: HttpError) => void;
+  readonly onError?: (e: SWRError) => void;
 }
 
 export const ClientCourseSelect = forwardRef(

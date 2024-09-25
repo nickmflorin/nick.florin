@@ -1,13 +1,49 @@
-import { type CourseIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
 
-import { getCourses } from "~/actions/fetches/courses";
-import { ClientResponse } from "~/api";
-import { apiRoute } from "~/api/route";
+import { z } from "zod";
 
-export const GET = apiRoute(async (request, params, query) => {
-  const courses = await getCourses({
-    includes: query.includes as CourseIncludes,
-    visibility: query.visibility,
+import type { CourseIncludes } from "~/database/model";
+import { parseOrdering } from "~/lib/ordering";
+
+import {
+  CoursesFiltersObj,
+  CoursesDefaultOrdering,
+  CourseOrderableFields,
+  CourseIncludesSchema,
+} from "~/actions-v2";
+import { fetchCourses } from "~/actions-v2/courses/fetch-courses";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http-v2";
+
+export const GET = async (request: NextRequest) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = CourseIncludesSchema.safeParse(query.includes);
+
+  const limit = z.coerce.number().int().positive().safeParse(query.limit).data;
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
+
+  let includes: CourseIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
+  }
+
+  const filters = CoursesFiltersObj.parse(query);
+
+  const ordering = parseOrdering(query, {
+    defaultOrdering: CoursesDefaultOrdering,
+    fields: [...CourseOrderableFields],
   });
-  return ClientResponse.OK(courses).response;
-});
+
+  const fetcher = fetchCourses(includes);
+  const { error, data } = await fetcher({ filters, ordering, limit, visibility }, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

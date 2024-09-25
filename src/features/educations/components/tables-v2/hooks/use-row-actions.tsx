@@ -25,8 +25,8 @@ export const useEducationsTableRowActions = () => {
 
   const { refresh } = useRouter();
 
-  const [enablePending, enableTransition] = useTransition();
-  const [disablePending, disableTransition] = useTransition();
+  const [showPending, showTransition] = useTransition();
+  const [hidePending, hideTransition] = useTransition();
   const [deletePending, deleteTransition] = useTransition();
   const [editPending, editTransition] = useTransition();
 
@@ -51,7 +51,7 @@ export const useEducationsTableRowActions = () => {
         content: "Show",
         loadingText: "Showing",
         icon: <Icon icon="eye" size="16px" className="text-gray-600" />,
-        isLoading: enablePending,
+        isLoading: showPending,
         onClick: async (e, instance) => {
           instance.setLoading(true);
           let response: Awaited<ReturnType<typeof updateEducation>> | null = null;
@@ -67,12 +67,12 @@ export const useEducationsTableRowActions = () => {
           }
           const { error } = response;
           if (error) {
-            logger.error(error, `There was an error enabling education with ID '${education.id}'!`);
-            toast.error("There was an error enabling the education. Please try again later.");
+            logger.error(error, `There was an error showing education with ID '${education.id}'!`);
+            toast.error("There was an error showing the education. Please try again later.");
             instance.setLoading(false);
             return;
           }
-          return enableTransition(() => {
+          return showTransition(() => {
             refresh();
             instance.setLoading(false);
             close(e);
@@ -84,7 +84,7 @@ export const useEducationsTableRowActions = () => {
         content: "Hide",
         loadingText: "Hiding",
         icon: <Icon icon="eye-slash" size="16px" className="text-gray-600" />,
-        isLoading: disablePending,
+        isLoading: hidePending,
         onClick: async (e, instance) => {
           instance.setLoading(true);
           let response: Awaited<ReturnType<typeof updateEducation>> | null = null;
@@ -102,7 +102,7 @@ export const useEducationsTableRowActions = () => {
             instance.setLoading(false);
             return;
           }
-          return disableTransition(() => {
+          return hideTransition(() => {
             refresh();
             instance.setLoading(false);
             close(e);
@@ -145,6 +145,6 @@ export const useEducationsTableRowActions = () => {
         },
       },
     ],
-    [deletePending, disablePending, enablePending, editPending, open, refresh],
+    [deletePending, hidePending, showPending, editPending, open, refresh],
   );
 };

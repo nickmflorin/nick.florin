@@ -5,14 +5,14 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteProject } from "~/actions-v2/projects/delete-project";
-import { updateProject } from "~/actions-v2/projects/update-project";
+import { deleteCourse } from "~/actions-v2/courses/delete-course";
+import { updateCourse } from "~/actions-v2/courses/update-course";
 
 import { DrawerIds } from "~/components/drawers";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";
 import Icon from "~/components/icons/Icon";
 import { type DataTableRowAction } from "~/components/tables-v2";
-import { type ProjectsTableModel } from "~/features/projects";
+import { type CoursesTableModel } from "~/features/courses";
 
 interface CallbackParams {
   close: (
@@ -20,7 +20,7 @@ interface CallbackParams {
   ) => void;
 }
 
-export const useProjectsTableRowActions = () => {
+export const useCoursesTableRowActions = () => {
   const { open } = useDrawers();
 
   const { refresh } = useRouter();
@@ -31,41 +31,41 @@ export const useProjectsTableRowActions = () => {
   const [editPending, editTransition] = useTransition();
 
   return useCallback(
-    (project: ProjectsTableModel, { close }: CallbackParams): DataTableRowAction[] => [
+    (course: CoursesTableModel, { close }: CallbackParams): DataTableRowAction[] => [
       {
         content: "Edit",
         isLoading: editPending,
         icon: <Icon icon="pen-to-square" size="16px" className="text-blue-600" />,
         onClick: async e => {
           editTransition(() => {
-            open(DrawerIds.UPDATE_PROJECT, {
-              projectId: project.id,
-              eager: { name: project.name },
+            open(DrawerIds.UPDATE_COURSE, {
+              courseId: course.id,
+              eager: { name: course.name },
             });
             close(e);
           });
         },
       },
       {
-        isVisible: !project.visible,
+        isVisible: !course.visible,
         content: "Show",
         loadingText: "Showing",
         icon: <Icon icon="eye" size="16px" className="text-gray-600" />,
         isLoading: showPending,
         onClick: async (e, instance) => {
           instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateProject>> | null = null;
+          let response: Awaited<ReturnType<typeof updateCourse>> | null = null;
           try {
-            response = await updateProject(project.id, { visible: true });
+            response = await updateCourse(course.id, { visible: true });
           } catch (e) {
-            logger.errorUnsafe(e, `There was an error showing project with ID '${project.id}'!`);
-            toast.error("There was an error showing the project. Please try again later.");
+            logger.errorUnsafe(e, `There was an error showing course with ID '${course.id}'!`);
+            toast.error("There was an error showing the course. Please try again later.");
             return instance.setLoading(false);
           }
           const { error } = response;
           if (error) {
-            logger.error(error, `There was an error enabling project with ID '${project.id}'!`);
-            toast.error("There was an error enabling the project. Please try again later.");
+            logger.error(error, `There was an error enabling course with ID '${course.id}'!`);
+            toast.error("There was an error enabling the course. Please try again later.");
             instance.setLoading(false);
             return;
           }
@@ -77,25 +77,25 @@ export const useProjectsTableRowActions = () => {
         },
       },
       {
-        isVisible: project.visible,
+        isVisible: course.visible,
         content: "Hide",
         loadingText: "Hiding",
         icon: <Icon icon="eye-slash" size="16px" className="text-gray-600" />,
         isLoading: hidePending,
         onClick: async (e, instance) => {
           instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateProject>> | null = null;
+          let response: Awaited<ReturnType<typeof updateCourse>> | null = null;
           try {
-            response = await updateProject(project.id, { visible: false });
+            response = await updateCourse(course.id, { visible: false });
           } catch (e) {
-            logger.errorUnsafe(e, `There was an error hiding project with ID '${project.id}'!`);
-            toast.error("There was an error hiding the project. Please try again later.");
+            logger.errorUnsafe(e, `There was an error hiding course with ID '${course.id}'!`);
+            toast.error("There was an error hiding the course. Please try again later.");
             return instance.setLoading(false);
           }
           const { error } = response;
           if (error) {
-            logger.error(error, `There was an error hiding project with ID '${project.id}'!`);
-            toast.error("There was an error hiding the project. Please try again later.");
+            logger.error(error, `There was an error hiding course with ID '${course.id}'!`);
+            toast.error("There was an error hiding the course. Please try again later.");
             instance.setLoading(false);
             return;
           }
@@ -113,21 +113,18 @@ export const useProjectsTableRowActions = () => {
         icon: <Icon icon="trash-alt" size="16px" className="text-red-600" />,
         onClick: async (e, instance) => {
           instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof deleteProject>> | null = null;
+          let response: Awaited<ReturnType<typeof deleteCourse>> | null = null;
           try {
-            response = await deleteProject(project.id);
+            response = await deleteCourse(course.id);
           } catch (e) {
-            logger.errorUnsafe(
-              e,
-              `There was an error deleting the project with ID '${project.id}'!`,
-            );
-            toast.error("There was an error deleting the project. Please try again later.");
+            logger.errorUnsafe(e, `There was an error deleting the course with ID '${course.id}'!`);
+            toast.error("There was an error deleting the course. Please try again later.");
             return instance.setLoading(false);
           }
           const { error } = response;
           if (error) {
-            logger.error(error, `There was an error deleting the project with ID '${project.id}'!`);
-            toast.error("There was an error deleting the project. Please try again later.");
+            logger.error(error, `There was an error deleting the course with ID '${course.id}'!`);
+            toast.error("There was an error deleting the course. Please try again later.");
             instance.setLoading(false);
             return;
           }

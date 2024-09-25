@@ -25,8 +25,8 @@ export const useSkillsTableRowActions = () => {
 
   const { refresh } = useRouter();
 
-  const [enablePending, enableTransition] = useTransition();
-  const [disablePending, disableTransition] = useTransition();
+  const [showPending, showTransition] = useTransition();
+  const [hidePending, hideTransition] = useTransition();
   const [deletePending, deleteTransition] = useTransition();
   const [editPending, editTransition] = useTransition();
 
@@ -48,7 +48,7 @@ export const useSkillsTableRowActions = () => {
         content: "Show",
         loadingText: "Showing",
         icon: <Icon icon="eye" size="16px" className="text-gray-600" />,
-        isLoading: enablePending,
+        isLoading: showPending,
         onClick: async (e, instance) => {
           instance.setLoading(true);
           let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
@@ -66,7 +66,7 @@ export const useSkillsTableRowActions = () => {
             instance.setLoading(false);
             return;
           }
-          return enableTransition(() => {
+          return showTransition(() => {
             refresh();
             instance.setLoading(false);
             close(e);
@@ -78,7 +78,7 @@ export const useSkillsTableRowActions = () => {
         content: "Hide",
         loadingText: "Hiding",
         icon: <Icon icon="eye-slash" size="16px" className="text-gray-600" />,
-        isLoading: disablePending,
+        isLoading: hidePending,
         onClick: async (e, instance) => {
           instance.setLoading(true);
           let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
@@ -96,7 +96,7 @@ export const useSkillsTableRowActions = () => {
             instance.setLoading(false);
             return;
           }
-          return disableTransition(() => {
+          return hideTransition(() => {
             refresh();
             instance.setLoading(false);
             close(e);
@@ -133,6 +133,6 @@ export const useSkillsTableRowActions = () => {
         },
       },
     ],
-    [deletePending, disablePending, enablePending, editPending, open, refresh],
+    [deletePending, hidePending, showPending, editPending, open, refresh],
   );
 };
