@@ -1,6 +1,6 @@
-import { getCourses } from "~/actions/fetches/courses";
 import { getSchools } from "~/actions/fetches/schools";
 import { type EducationsFilters } from "~/actions-v2";
+import { fetchCourses } from "~/actions-v2/courses/fetch-courses";
 import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
 
 import { EducationsTableFilterBar as ClientEducationsTableFilterBar } from "~/features/educations/components/tables-v2/EducationsTableFilterBar";
@@ -12,10 +12,18 @@ export interface EducationsTableFilterBarProps {
 export const EducationsTableFilterBar = async ({
   filters,
 }: EducationsTableFilterBarProps): Promise<JSX.Element> => {
-  const fetcher = fetchSkills([]);
-  const { data: skills } = await fetcher({ visibility: "admin", filters: {} }, { strict: true });
+  const skillsFetcher = fetchSkills([]);
+  const { data: skills } = await skillsFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
   const schools = await getSchools({ visibility: "admin", includes: [] });
-  const courses = await getCourses({ visibility: "admin", includes: [] });
+
+  const coursesFetcher = await fetchCourses([]);
+  const { data: courses } = await coursesFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
 
   return (
     <ClientEducationsTableFilterBar
