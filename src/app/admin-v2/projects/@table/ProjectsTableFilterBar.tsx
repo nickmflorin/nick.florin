@@ -1,5 +1,5 @@
-import { getRepositories } from "~/actions/fetches/repositories";
 import { type ProjectsFilters } from "~/actions-v2";
+import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
 import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
 
 import { ProjectsTableFilterBar as ClientProjectsTableFilterBar } from "~/features/projects/components/tables-v2/ProjectsTableFilterBar";
@@ -11,9 +11,18 @@ export interface ProjectsTableFilterBarProps {
 export const ProjectsTableFilterBar = async ({
   filters,
 }: ProjectsTableFilterBarProps): Promise<JSX.Element> => {
-  const fetcher = fetchSkills([]);
-  const { data: skills } = await fetcher({ visibility: "admin", filters: {} }, { strict: true });
-  const repositories = await getRepositories({ visibility: "admin", includes: [] });
+  const skillsFetcher = fetchSkills([]);
+  const { data: skills } = await skillsFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
+
+  const repositoriesFetcher = fetchRepositories([]);
+  const { data: repositories } = await repositoriesFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
+
   return (
     <ClientProjectsTableFilterBar filters={filters} repositories={repositories} skills={skills} />
   );

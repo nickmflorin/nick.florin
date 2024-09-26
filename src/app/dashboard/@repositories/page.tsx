@@ -1,13 +1,16 @@
-import { getRepositories } from "~/actions/fetches/repositories";
+import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
 
 import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
 
 export default async function RepositoriesPage() {
-  const repositories = await getRepositories({
-    visibility: "public",
-    includes: [],
-    filters: { highlighted: true },
-  });
+  const fetcher = fetchRepositories([]);
+  const { data: repositories } = await fetcher(
+    {
+      visibility: "public",
+      filters: { highlighted: true },
+    },
+    { strict: true },
+  );
   return (
     <div className="flex flex-col gap-[8px]">
       {repositories.map(repository => (

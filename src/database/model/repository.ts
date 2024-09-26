@@ -1,3 +1,5 @@
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+
 import { environment } from "~/environment";
 
 import { type BrandProject, type BrandRepository } from "./brand";
@@ -14,6 +16,9 @@ export const getRepositoryGithubUrl = (repository: BrandRepository): string => {
 
 export const getNpmPackageUrl = (packageName: string): string =>
   `https://www.npmjs.com/package/${packageName}`;
+
+export const RepositoryIncludesFields = enumeratedLiterals(["skills", "projects"] as const, {});
+export type RepositoryIncludesField = EnumeratedLiteralsMember<typeof RepositoryIncludesFields>;
 
 export type RepositoryIncludes =
   | ["skills", "projects"]

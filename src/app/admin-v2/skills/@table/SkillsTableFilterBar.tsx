@@ -1,8 +1,8 @@
-import { getRepositories } from "~/actions/fetches/repositories";
 import { type SkillsFilters } from "~/actions-v2";
 import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
 import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
+import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
 
 import { SkillsTableFilterBar as ClientSkillsTableFilterBar } from "~/features/skills/components/tables-v2/SkillsTableFilterBar";
 
@@ -31,7 +31,12 @@ export const SkillsTableFilterBar = async ({
     { strict: true },
   );
 
-  const repositories = await getRepositories({ visibility: "admin", includes: [] });
+  const repositoriesFetcher = fetchRepositories([]);
+  const { data: repositories } = await repositoriesFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
+
   return (
     <ClientSkillsTableFilterBar
       filters={filters}
