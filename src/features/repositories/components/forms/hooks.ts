@@ -10,6 +10,7 @@ export const useRepositoryForm = (repository?: Partial<ApiRepository<["skills", 
     defaultValues: {
       highlighted: repository?.highlighted ?? false,
       visible: repository?.visible ?? false,
+      startDate: repository?.startDate ?? new Date(),
       slug: repository?.slug ?? "",
       npmPackageName: repository?.npmPackageName ?? "",
       description: repository?.description ?? "",

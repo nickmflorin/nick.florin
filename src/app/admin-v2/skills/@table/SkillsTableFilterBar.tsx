@@ -1,14 +1,9 @@
-import { type SkillsFilters } from "~/actions-v2";
 import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
 import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
 import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
 
 import { SkillsTableFilterBar as ClientSkillsTableFilterBar } from "~/features/skills/components/tables-v2/SkillsTableFilterBar";
-
-/* export interface SkillsTableFilterBarProps {
-     readonly filters: SkillsFilters;
-   } */
 
 export const SkillsTableFilterBar = async (): Promise<JSX.Element> => {
   const eduFetcher = fetchEducations([]);

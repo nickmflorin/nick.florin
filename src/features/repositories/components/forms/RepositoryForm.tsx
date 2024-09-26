@@ -2,6 +2,7 @@
 import { Checkboxes } from "~/components/forms/fields/Checkboxes";
 import { CheckboxField } from "~/components/forms/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms/Form";
+import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
@@ -46,6 +47,11 @@ export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
           value={value}
           onChange={onChange}
         />
+      )}
+    </Form.ControlledField>
+    <Form.ControlledField name="startDate" label="Start Date" form={props.form}>
+      {({ value, onChange }) => (
+        <DateSelect inputClassName="w-full" value={value} onChange={onChange} />
       )}
     </Form.ControlledField>
     <Form.Field
