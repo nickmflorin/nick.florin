@@ -10,7 +10,10 @@ import { updateRepository } from "~/actions-v2/repositories/update-repository";
 
 import type * as types from "~/components/tables-v2/types";
 import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { type RepositoriesTableColumn, type RepositoriesTableModel } from "~/features/repositories/types";
+import {
+  type RepositoriesTableColumn,
+  type RepositoriesTableModel,
+} from "~/features/repositories/types";
 
 interface ProjectsCellProps {
   readonly repository: RepositoriesTableModel;

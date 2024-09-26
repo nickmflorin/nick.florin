@@ -67,7 +67,10 @@ export const useRepositoriesTableRowActions = () => {
           }
           const { error } = response;
           if (error) {
-            logger.error(error, `There was an error showing repository with ID '${repository.id}'!`);
+            logger.error(
+              error,
+              `There was an error showing repository with ID '${repository.id}'!`,
+            );
             toast.error("There was an error showing the repository. Please try again later.");
             instance.setLoading(false);
             return;
@@ -91,7 +94,10 @@ export const useRepositoriesTableRowActions = () => {
           try {
             response = await updateRepository(repository.id, { visible: false });
           } catch (e) {
-            logger.errorUnsafe(e, `There was an error hiding repository with ID '${repository.id}'!`);
+            logger.errorUnsafe(
+              e,
+              `There was an error hiding repository with ID '${repository.id}'!`,
+            );
             toast.error("There was an error hiding the repository. Please try again later.");
             return instance.setLoading(false);
           }
