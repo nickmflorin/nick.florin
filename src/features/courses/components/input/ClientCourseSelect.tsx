@@ -3,9 +3,9 @@ import { forwardRef, type ForwardedRef } from "react";
 import { logger } from "~/internal/logger";
 
 import type { ActionVisibility } from "~/actions-v2";
+import { type ApiError } from "~/api-v2";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import type { SWRError } from "~/hooks/api-v2";
 import { useCourses } from "~/hooks/api-v2";
 
 import { CourseSelect, type CourseSelectInstance, type CourseSelectProps } from "./CourseSelect";
@@ -13,7 +13,7 @@ import { CourseSelect, type CourseSelectInstance, type CourseSelectProps } from 
 export interface ClientCourseSelectProps<B extends SelectBehaviorType>
   extends Omit<CourseSelectProps<B>, "data"> {
   readonly visibility: ActionVisibility;
-  readonly onError?: (e: SWRError) => void;
+  readonly onError?: (e: ApiError) => void;
 }
 
 export const ClientCourseSelect = forwardRef(

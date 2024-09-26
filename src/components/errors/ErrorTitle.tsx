@@ -3,6 +3,8 @@ import React, { useMemo } from "react";
 import type * as types from "./types";
 
 import { isHttpError, NetworkError } from "~/api";
+import { isApiError } from "~/api-v2";
+import { HttpNetworkError } from "~/integrations/http-v2";
 
 import { type ComponentProps, classNames } from "~/components/types";
 import { type TypographyCharacteristics } from "~/components/types/typography";
@@ -28,6 +30,8 @@ export const ErrorTitle = ({
       return children;
     } else if (isHttpError(error) && !(error instanceof NetworkError)) {
       return `${error.statusCode}`;
+    } else if (isApiError(error) && !(error instanceof HttpNetworkError)) {
+      return `${error.status}`;
     }
     return "Error";
   }, [children, error]);

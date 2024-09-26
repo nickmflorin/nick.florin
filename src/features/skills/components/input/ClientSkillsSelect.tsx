@@ -4,16 +4,17 @@ import { forwardRef, type ForwardedRef, useState } from "react";
 import { logger } from "~/internal/logger";
 
 import { type ActionVisibility } from "~/actions-v2";
+import { type ApiError } from "~/api-v2";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useSkills, type SWRError } from "~/hooks/api-v2";
+import { useSkills } from "~/hooks/api-v2";
 
 import { SkillsSelect, type SkillsSelectInstance, type SkillsSelectProps } from "./SkillsSelect";
 
 export interface ClientSkillsSelectProps<B extends SelectBehaviorType>
   extends Omit<SkillsSelectProps<B>, "data" | "onSearch" | "search"> {
   readonly visibility: ActionVisibility;
-  readonly onError?: (e: SWRError) => void;
+  readonly onError?: (e: ApiError) => void;
 }
 
 export const ClientSkillsSelect = forwardRef(

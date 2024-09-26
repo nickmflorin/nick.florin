@@ -35,10 +35,9 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
       {({ value, onChange }) => (
         <ClientEducationSelect
           inputClassName="w-full"
-          value={value}
+          value={value ?? null}
           visibility="admin"
           behavior="single"
-          isReady={value !== undefined}
           useAbbreviatedOptionLabels={false}
           onChange={onChange}
           inPortal

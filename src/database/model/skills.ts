@@ -70,10 +70,6 @@ export const ProgrammingLanguages = enumeratedLiterals(
     value: ProgrammingLanguage;
     label: string;
     icon: `/programming-languages/${string}.svg` | null;
-  }[] satisfies {
-    value: ProgrammingLanguage;
-    label: string;
-    icon: `/programming-languages/${string}.svg`;
   }[],
   {},
 );
@@ -92,6 +88,7 @@ export const SkillCategories = enumeratedLiterals(
     { value: SkillCategory.VERSION_MANAGER, label: "Version Manager" },
     { value: SkillCategory.WORKFLOW, label: "Workflow" },
     { value: SkillCategory.ACADEMIC, label: "Academic" },
+    { value: SkillCategory.LOGGING_ALERTING_MONITORING, label: "Logging, Monitoring & Alerting" },
   ] as const satisfies { value: SkillCategory; label: string }[],
   {},
 );

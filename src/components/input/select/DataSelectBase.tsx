@@ -59,7 +59,12 @@ export interface DataSelectBaseProps<
   readonly getItemId?: (m: M) => string | number | undefined;
   readonly getItemValueLabel?: (m: M) => ReactNode;
   readonly onChange?: types.DataSelectChangeHandler<M, O>;
-  readonly content: types.DataSelectManagedCallback<JSX.Element, M, O>;
+  readonly content: types.DataSelectManagedCallback<
+    JSX.Element,
+    M,
+    O,
+    types.DataSelectNullableValue<M, O>
+  >;
 }
 
 const LocalDataSelectBase = forwardRef<

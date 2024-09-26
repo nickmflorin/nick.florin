@@ -3,9 +3,10 @@ import { forwardRef, type ForwardedRef } from "react";
 import { logger } from "~/internal/logger";
 
 import type { ActionVisibility } from "~/actions-v2";
+import { type ApiError } from "~/api-v2";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useRepositories, type SWRError } from "~/hooks/api-v2";
+import { useRepositories } from "~/hooks/api-v2";
 
 import {
   RepositorySelect,
@@ -16,7 +17,7 @@ import {
 export interface ClientRepositorySelectProps<B extends SelectBehaviorType>
   extends Omit<RepositorySelectProps<B>, "data"> {
   readonly visibility: ActionVisibility;
-  readonly onError?: (e: SWRError) => void;
+  readonly onError?: (e: ApiError) => void;
 }
 
 export const ClientRepositorySelect = forwardRef(

@@ -20,7 +20,7 @@ export interface SelectProps<V extends types.AllowedSelectValue, B extends types
   readonly onClear?: types.IfDeselectable<B, () => void>;
   readonly valueRenderer?: types.SelectValueRenderer<V, B>;
   readonly onChange?: types.SelectChangeHandler<V, B>;
-  readonly content: types.SelectManagedCallback<JSX.Element, V, B>;
+  readonly content: types.SelectManagedCallback<JSX.Element, V, B, types.SelectNullableValue<V, B>>;
 }
 
 const LocalSelect = forwardRef(
@@ -115,7 +115,13 @@ const LocalSelect = forwardRef(
               onClear={onClear as types.IfDeselectable<B, () => void>}
               className={inputClassName}
             >
-              {value !== types.NOTSET ? valueRenderer?.(value, { ...managed, clear }) : undefined}
+              {value !== types.NOTSET &&
+              !(behavior === types.SelectBehaviorTypes.SINGLE && value === null)
+                ? // This type coercion is safe because SelectValue and SelectNullableValue are the
+                  /* same when the select's behavior is not single, non-nullable and the value is
+                     not null. */
+                  valueRenderer?.(value as types.SelectValue<V, B>, { ...managed, clear })
+                : undefined}
             </SelectInput>
           ))}
       </BasicSelect>

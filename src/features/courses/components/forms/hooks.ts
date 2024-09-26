@@ -7,7 +7,9 @@ export const useCourseForm = () =>
     schema: CourseFormSchema,
     defaultValues: {
       name: "",
-      shortName: "",
-      slug: "",
+      shortName: null,
+      slug: null,
+      skills: [],
+      visible: true,
     },
   });

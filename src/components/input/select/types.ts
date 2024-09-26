@@ -31,6 +31,14 @@ export const SelectBehavior = <T extends SelectBehaviorTypeParams>(
   return SelectBehaviorTypes.SINGLE as SelectBehaviorFromParams<T>;
 };
 
+export type SelectNullableValue<V, B extends SelectBehaviorType> = B extends "multi"
+  ? V[]
+  : B extends "single-nullable"
+    ? V | null
+    : B extends "single"
+      ? V | null
+      : never;
+
 export type SelectValue<V, B extends SelectBehaviorType> = B extends "multi"
   ? V[]
   : B extends "single-nullable"
@@ -108,6 +116,11 @@ export type DataSelectValue<
   O extends DataSelectOptions<M>,
 > = SelectValue<InferredDataSelectV<M, O>, O["behavior"]>;
 
+export type DataSelectNullableValue<
+  M extends DataSelectModel,
+  O extends DataSelectOptions<M>,
+> = SelectNullableValue<InferredDataSelectV<M, O>, O["behavior"]>;
+
 export type DataSelectModelValue<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
@@ -117,6 +130,17 @@ export type DataSelectModelValue<
     ? M | null
     : O extends { behavior: "single" }
       ? M
+      : never;
+
+export type DataSelectNullableModelValue<
+  M extends DataSelectModel,
+  O extends DataSelectOptions<M>,
+> = O extends { behavior: "multi" }
+  ? M[]
+  : O extends { behavior: "single-nullable" }
+    ? M | null
+    : O extends { behavior: "single" }
+      ? M | null
       : never;
 
 export type SelectEvent = "select" | "deselect" | "clear";
@@ -130,8 +154,11 @@ export type SelectEventParams<A extends SelectEvent, V extends AllowedSelectValu
 export const NOTSET = "__NOTSET__" as const;
 export type NotSet = typeof NOTSET;
 
+export const DONOTHING = "__DONOTHING__" as const;
+export type DoNothing = typeof DONOTHING;
+
 export interface ManagedSelectValue<V extends AllowedSelectValue, B extends SelectBehaviorType> {
-  readonly value: SelectValue<V, B> | NotSet;
+  readonly value: SelectNullableValue<V, B> | NotSet;
   readonly set: (
     value: SelectValue<V, B>,
     options?: { __private_ignore_controlled_state__: boolean },
@@ -146,7 +173,7 @@ export interface ManagedSelectValue<V extends AllowedSelectValue, B extends Sele
 export interface ManagedSelectModelValue<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-  MV extends DataSelectModelValue<M, O> | NotSet = DataSelectModelValue<M, O>,
+  MV extends DataSelectNullableModelValue<M, O> | NotSet = DataSelectNullableModelValue<M, O>,
 > extends ManagedSelectValue<InferredDataSelectV<M, O>, O["behavior"]> {
   readonly modelValue: MV;
   readonly isModelSelected: (m: M) => boolean;
@@ -164,10 +191,12 @@ export type SelectCallback<R, V extends AllowedSelectValue, B extends SelectBeha
   value: SelectValue<V, B>,
 ) => R;
 
-export type SelectManagedCallback<R, V extends AllowedSelectValue, B extends SelectBehaviorType> = (
-  value: SelectValue<V, B>,
-  params: Omit<ManagedSelectValue<V, B>, "value">,
-) => R;
+export type SelectManagedCallback<
+  R,
+  V extends AllowedSelectValue,
+  B extends SelectBehaviorType,
+  SV extends SelectValue<V, B> | SelectNullableValue<V, B> = SelectValue<V, B>,
+> = (value: SV, params: Omit<ManagedSelectValue<V, B>, "value">) => R;
 
 export type DataSelectCallback<R, M extends DataSelectModel, O extends DataSelectOptions<M>> = (
   value: DataSelectValue<M, O>,
@@ -178,7 +207,8 @@ export type DataSelectManagedCallback<
   R,
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-> = (value: DataSelectValue<M, O>, params: Omit<ManagedSelectModelValue<M, O>, "value">) => R;
+  V extends DataSelectValue<M, O> | DataSelectNullableValue<M, O> = DataSelectValue<M, O>,
+> = (value: V, params: Omit<ManagedSelectModelValue<M, O>, "value">) => R;
 
 export type SelectChangeHandler<
   V extends AllowedSelectValue,

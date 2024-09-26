@@ -3,9 +3,8 @@ import { useRef } from "react";
 import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
-import { apiClient, isApiClientError, type ApiClientError } from "~/api-v2";
+import { apiClient, isApiError, type ApiClientError, type ApiError } from "~/api-v2";
 import {
-  isHttpError,
   type HttpNetworkError,
   type HttpSerializationError,
   type QueryParamObj,
@@ -15,8 +14,6 @@ type ApiPath = `/api/${string}`;
 type Args = Exclude<Arguments, string> | ApiPath;
 export type Key = Args | (() => Args);
 
-export type SWRError = ApiClientError | HttpNetworkError | HttpSerializationError;
-
 export type SWRConfig<T, Q extends QueryParamObj = QueryParamObj> = Omit<
   SWRConfiguration<T, ApiClientError | HttpNetworkError | HttpSerializationError>,
   /* The 'shouldRetryOnError' configuration parameter is set globally in the <SWRConfig> component
@@ -24,11 +21,11 @@ export type SWRConfig<T, Q extends QueryParamObj = QueryParamObj> = Omit<
   "shouldRetryOnError" | "onError" | "onSuccess"
 > & {
   readonly query: Q;
-  readonly onError?: (e: SWRError) => void;
+  readonly onError?: (e: ApiError) => void;
   readonly onSuccess?: (data: T, query: Q) => void;
 };
 
-export type SWRResponse<T> = RootSWRResponse<T, SWRError> & {
+export type SWRResponse<T> = RootSWRResponse<T, ApiError> & {
   readonly initialResponseReceived: boolean;
   readonly isInitialLoading: boolean;
   readonly isRefetching: boolean;
@@ -46,7 +43,7 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
        configured `onError` configuration callback is *still* called beforehand. */
   const { onError } = useSWRConfig();
 
-  const { data, error, ...others } = useRootSWR<T, SWRError, [Key, Q] | null>(
+  const { data, error, ...others } = useRootSWR<T, ApiError, [Key, Q] | null>(
     shouldFetch(path) ? [path, query] : null,
     ([p, q]) => apiClient.get(p as string, q, { strict: true, processed: true }),
     {
@@ -64,7 +61,7 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
         /* If the error is not an expected ApiClientError or HttpError, it should have already been
            thrown by the global error handler above.  However, we still need to repeat that check
            for type safety here. */
-        if (isApiClientError(e) || isHttpError(e)) {
+        if (isApiError(e)) {
           return _onError?.(e);
         }
         /* This will force the useSWR call to throw the error, instead of embedding the error in the
@@ -74,7 +71,7 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
     },
   );
 
-  if (error && !isHttpError(error)) {
+  if (error && !isApiError(error)) {
     throw error;
   }
 

@@ -1,5 +1,7 @@
 import React, { type ForwardedRef, forwardRef, useMemo, type ReactNode, useCallback } from "react";
 
+import { logger } from "~/internal/logger";
+
 import * as types from "~/components/input/select/types";
 
 import { BasicSelectInput, type BasicSelectInputProps } from "./BasicSelectInput";
@@ -22,8 +24,8 @@ export interface DataSelectInputProps<
       | "summarizeValue"
       | "valueSummary"
     > {
-  readonly value: types.DataSelectValue<M, O> | types.NotSet;
-  readonly modelValue: types.DataSelectModelValue<M, O> | types.NotSet;
+  readonly value: types.DataSelectNullableValue<M, O> | types.NotSet;
+  readonly modelValue: types.DataSelectNullableModelValue<M, O> | types.NotSet;
   readonly options: O;
   readonly itemValueRenderer?: (m: M) => JSX.Element;
   readonly valueRenderer?: types.DataSelectValueRenderer<M, O>;
@@ -113,8 +115,22 @@ export const DataSelectInput = forwardRef(
         // This value will be hidden in favor of the placeholder anyways.
         return <></>;
       } else if (Array.isArray(modelValue)) {
-        if (valueRenderer) {
-          return valueRenderer(value, { modelValue });
+        if (!Array.isArray(value)) {
+          logger.error("Encountered a non-array select value when the mdoel value is an array!", {
+            modelValue,
+            value,
+          });
+          return <></>;
+        } else if (valueRenderer) {
+          /* These type coercions are safe because the difference between DataSelectValue and
+             DataSelectNullableValue (and consequently DataSelectModelValue and
+             DataSelectNullableModelValue) is only that the nullable forms can include a null value
+             when the Select's behavior is single, but non-nullable.  Since we are already checking
+             if the value and model values are arrays, we can safely coerce them to the non-nullable
+             value forms because we know they are non-null. */
+          return valueRenderer(value as types.DataSelectValue<M, O>, {
+            modelValue: modelValue as types.DataSelectModelValue<M, O>,
+          });
         }
         /* Make sure to sort the models based on a consistent key to prevent reordering of the
            badges in the MultiValueRenderer when rerenders occur. */
@@ -144,8 +160,12 @@ export const DataSelectInput = forwardRef(
             renderer={itemValueRenderer}
           />
         );
+      } else if (modelValue !== null) {
+        /* This type coercion is safe because we know the model value is non-null and not an array,
+           meaning the only other possibility is that it is a single model value (i.e. the
+           model). */
+        return getItemLabel(modelValue as M);
       }
-      return getItemLabel(modelValue as M);
     }, [
       value,
       modelValue,
