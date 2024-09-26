@@ -1,5 +1,4 @@
-// import { unstable_noStore } from "next/cache";
-import dynamic from "next/dynamic";
+import dynamicImporter from "next/dynamic";
 import { Suspense } from "react";
 
 import { z } from "zod";
@@ -11,13 +10,14 @@ import { SkillsDefaultOrdering, SkillsFiltersObj } from "~/actions-v2";
 import { Loading } from "~/components/loading/Loading";
 import { columnIsOrderable } from "~/components/tables-v2";
 import { SkillsTableColumns } from "~/features/skills";
-import { SkillsTableControlBarPlaceholder } from "~/features/skills/components/tables-v2/SkillsTableControlBarPlaceholder";
 import { SkillsTablePaginator } from "~/features/skills/components/tables-v2/SkillsTablePaginator";
 
 import { SkillsTableBody } from "./SkillsTableBody";
 import { SkillsTableFilterBar } from "./SkillsTableFilterBar";
 
-const SkillsTableView = dynamic(
+export const dynamic = "force-dynamic";
+
+const SkillsTableView = dynamicImporter(
   () =>
     import("~/features/skills/components/tables-v2/SkillsTableView").then(
       mod => mod.SkillsTableView,
@@ -25,7 +25,7 @@ const SkillsTableView = dynamic(
   { loading: () => <Loading isLoading /> },
 );
 
-const DataTableProvider = dynamic(
+const DataTableProvider = dynamicImporter(
   () => import("~/components/tables-v2/DataTableProvider").then(mod => mod.DataTableProvider),
   {
     loading: () => <Loading isLoading />,
@@ -37,7 +37,6 @@ export interface SkillsTablePageProps {
 }
 
 export default async function SkillsTablePage({ searchParams }: SkillsTablePageProps) {
-  // unstable_noStore();
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = SkillsFiltersObj.parse(searchParams);
@@ -46,12 +45,6 @@ export default async function SkillsTablePage({ searchParams }: SkillsTablePageP
     defaultOrdering: SkillsDefaultOrdering,
     fields: SkillsTableColumns.filter(c => columnIsOrderable(c)).map(c => c.id),
   });
-
-  /* const keys = [...Object.keys(filters), "orderBy", "order", "page"];
-     const searchKey = keys
-       .sort()
-       .map(k => searchParams[k] ?? "")
-       .join(","); */
 
   return (
     <DataTableProvider
@@ -63,20 +56,19 @@ export default async function SkillsTablePage({ searchParams }: SkillsTablePageP
     >
       <SkillsTableView
         filterBar={
-          <Suspense>
-            <SkillsTableFilterBar filters={filters} />
+          <Suspense fallback={<></>}>
+            <SkillsTableFilterBar />
           </Suspense>
         }
-        pagination={<SkillsTablePaginator filters={filters} page={page} />}
+        pagination={
+          <Suspense fallback={<></>}>
+            <SkillsTablePaginator filters={filters} page={page} />
+          </Suspense>
+        }
       >
         <Suspense
-          key={JSON.stringify(filters) + JSON.stringify(ordering) + String(page)}
-          fallback={
-            <>
-              <SkillsTableControlBarPlaceholder />
-              <Loading isLoading component="tbody" />
-            </>
-          }
+          key={JSON.stringify(filters.search) + JSON.stringify(ordering) + String(page)}
+          fallback={<Loading isLoading component="tbody" />}
         >
           <SkillsTableBody filters={filters} page={page} ordering={ordering} />
         </Suspense>

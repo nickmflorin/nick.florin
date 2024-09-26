@@ -19,6 +19,7 @@ export interface TableFilterBarProps<F extends types.TableFilters> extends Compo
   readonly isSearchable?: boolean;
   readonly searchPlaceholder?: string;
   readonly searchDebounceInterval?: number;
+  readonly searchPending?: boolean;
   readonly search?: string;
   readonly isControlled?: boolean;
   readonly excludeFilters?: (keyof F & string)[];
@@ -37,6 +38,7 @@ export const TableFilterBar = <F extends types.TableFilters>({
   searchDebounceInterval = 0,
   search = "",
   isControlled = false,
+  searchPending = false,
   searchInputRef,
   newDrawerId,
   configuration,
@@ -64,6 +66,7 @@ export const TableFilterBar = <F extends types.TableFilters>({
       {isSearchable && (
         <TextInput
           ref={inputRef}
+          isLoading={searchPending}
           defaultValue={!isControlled ? search : undefined}
           value={isControlled ? search : undefined}
           onChange={e => onSearch(e.target.value)}

@@ -107,6 +107,8 @@ export const SkillsFiltersObj = Filters({
     defaultValue: null,
     excludeWhen: v => v === null,
   },
+  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
+     present in query params for initial URL but then is cleared. */
   search: { schema: z.string(), defaultValue: "" },
   categories: {
     defaultValue: [] as SkillCategory[],

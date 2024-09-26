@@ -23,7 +23,7 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
   maintainExisting = true,
 }: UseFiltersOptions<C>) => {
   const searchParams = useSearchParams();
-  const { replace } = useRouter();
+  const { push } = useRouter();
   const pathname = usePathname();
 
   const [pendingFilters, setPendingFilters] = useState<Partial<ParsedFilters<C>>>({});
@@ -51,7 +51,6 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
       const f = field as keyof C;
       const v = value as ParsedFilters<C>[typeof f];
       [currentFilters, newValue] = filters.add(currentFilters, f, v);
-
       if (!filters.valuesAreEqual(f, previousFilters.current[f], newValue)) {
         changedFilters = { ...changedFilters, [f]: newValue };
       }
@@ -69,7 +68,7 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
     }
     setPendingFilters(changedFilters);
     transition(() => {
-      replace(`${pathname}?${stringifyQueryParams(pruned)}`);
+      push(`${pathname}?${stringifyQueryParams(pruned)}`);
     });
   });
 

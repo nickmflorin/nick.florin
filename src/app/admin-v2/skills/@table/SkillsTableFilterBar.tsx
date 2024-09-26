@@ -6,13 +6,11 @@ import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories"
 
 import { SkillsTableFilterBar as ClientSkillsTableFilterBar } from "~/features/skills/components/tables-v2/SkillsTableFilterBar";
 
-export interface SkillsTableFilterBarProps {
-  readonly filters: SkillsFilters;
-}
+/* export interface SkillsTableFilterBarProps {
+     readonly filters: SkillsFilters;
+   } */
 
-export const SkillsTableFilterBar = async ({
-  filters,
-}: SkillsTableFilterBarProps): Promise<JSX.Element> => {
+export const SkillsTableFilterBar = async (): Promise<JSX.Element> => {
   const eduFetcher = fetchEducations([]);
   const { data: educations } = await eduFetcher(
     { visibility: "admin", filters: {} },
@@ -39,7 +37,7 @@ export const SkillsTableFilterBar = async ({
 
   return (
     <ClientSkillsTableFilterBar
-      filters={filters}
+      // filters={filters}
       educations={educations}
       experiences={experiences}
       repositories={repositories}
