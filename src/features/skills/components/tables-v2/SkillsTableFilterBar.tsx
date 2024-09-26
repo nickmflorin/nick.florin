@@ -95,13 +95,14 @@ export const SkillsTableFilterBar = ({
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [, updateFilters] = useFilters({
+  const [, updateFilters, { isPending }] = useFilters({
     filters: SkillsFiltersObj,
   });
 
   return (
     <TableView.FilterBar
       {...props}
+      isPending={isPending}
       excludeFilters={excludeFilters}
       searchInputRef={searchInputRef}
       searchPlaceholder="Search skills..."

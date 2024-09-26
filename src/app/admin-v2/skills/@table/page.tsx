@@ -35,7 +35,7 @@ export interface SkillsTablePageProps {
   readonly searchParams: Record<string, string>;
 }
 
-export default function SkillsTablePage({ searchParams }: SkillsTablePageProps) {
+export default async function SkillsTablePage({ searchParams }: SkillsTablePageProps) {
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = SkillsFiltersObj.parse(searchParams);
@@ -44,6 +44,9 @@ export default function SkillsTablePage({ searchParams }: SkillsTablePageProps) 
     defaultOrdering: SkillsDefaultOrdering,
     fields: SkillsTableColumns.filter(c => columnIsOrderable(c)).map(c => c.id),
   });
+
+  // console.log({ filters, ordering, page });
+
   return (
     <DataTableProvider
       columns={SkillsTableColumns}
@@ -54,14 +57,14 @@ export default function SkillsTablePage({ searchParams }: SkillsTablePageProps) 
     >
       <SkillsTableView
         filterBar={
-          <Suspense>
-            <SkillsTableFilterBar filters={filters} />
-          </Suspense>
+          // <Suspense key={searchParams?.search}>
+          <SkillsTableFilterBar filters={filters} />
+          // </Suspense>
         }
         pagination={<SkillsTablePaginator filters={filters} page={page} />}
       >
         <Suspense
-          key={JSON.stringify(filters) + JSON.stringify(ordering) + String(page)}
+          key={JSON.stringify(searchParams?.search)}
           fallback={
             <>
               <SkillsTableControlBarPlaceholder />

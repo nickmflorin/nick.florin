@@ -24,6 +24,10 @@ export const SkillsTableBody = async ({
   page,
   ordering,
 }: SkillsTableBodyProps): Promise<JSX.Element> => {
+  /* const resolved = await new Promise<string>(resolve =>
+       setTimeout(() => resolve(filters.search), 1000),
+     ); */
+
   const fetcher = fetchSkills(["projects", "educations", "experiences", "repositories"]);
   const { data: skills } = await fetcher(
     {

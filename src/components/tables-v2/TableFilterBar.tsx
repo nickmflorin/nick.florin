@@ -5,6 +5,7 @@ import type * as types from "./types";
 
 import { IconButton } from "~/components/buttons";
 import type { DrawerId } from "~/components/drawers";
+import { Spinner } from "~/components/icons/Spinner";
 import { TextInput } from "~/components/input/TextInput";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
@@ -16,6 +17,7 @@ import { NewButton } from "./NewButton";
 
 export interface TableFilterBarProps<F extends types.TableFilters> extends ComponentProps {
   readonly children?: ReactNode;
+  readonly isPending?: boolean;
   readonly isSearchable?: boolean;
   readonly searchPlaceholder?: string;
   readonly searchDebounceInterval?: number;
@@ -32,6 +34,7 @@ export interface TableFilterBarProps<F extends types.TableFilters> extends Compo
 
 export const TableFilterBar = <F extends types.TableFilters>({
   children,
+  isPending,
   isSearchable = true,
   searchPlaceholder = "Search...",
   searchDebounceInterval = 0,
@@ -61,6 +64,7 @@ export const TableFilterBar = <F extends types.TableFilters>({
 
   return (
     <div {...props} className={classNames("flex flex-row items-center gap-2", props.className)}>
+      {isPending && <Spinner isLoading size="24px" />}
       {isSearchable && (
         <TextInput
           ref={inputRef}

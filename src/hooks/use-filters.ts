@@ -1,5 +1,5 @@
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useTransition } from "react";
 
 import {
   type BaseFiltersConfiguration,
@@ -23,9 +23,9 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
   maintainExisting = true,
 }: UseFiltersOptions<C>) => {
   const searchParams = useSearchParams();
-  const { replace } = useRouter();
+  const { push } = useRouter();
   const pathname = usePathname();
-
+  const [isPending, transition] = useTransition();
   const initialFilters = useMemo(() => filters.parse(searchParams), [filters, searchParams]);
 
   const setFilters = useReferentialCallback((update: FiltersUpdate<C>) => {
@@ -45,8 +45,10 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
         }
       }
     }
-    replace(`${pathname}?${stringifyQueryParams(pruned)}`);
+    transition(() => {
+      push(`${pathname}?${stringifyQueryParams(pruned)}`);
+    });
   });
 
-  return [initialFilters, setFilters] as const;
+  return [initialFilters, setFilters, { isPending }] as const;
 };
