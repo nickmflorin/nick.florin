@@ -50,7 +50,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
             `There was an error updating the repositories for the skill with ID '${skill.id}'.`,
             {
               skill: skill.id,
-              experiences: v,
+              repositories: v,
             },
           );
           item?.setLoading(false);
@@ -65,7 +65,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
               `'${skill.id}': ${error.code}`,
             {
               skill: skill.id,
-              experiences: v,
+              repositories: v,
             },
           );
           item?.setLoading(false);

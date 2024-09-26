@@ -41,12 +41,12 @@ export default async function AdminLayout({ children }: AdminLayoutProps): Promi
           icon: { name: "backpack" },
           activePaths: { leadingPath: "/admin-v2/courses" },
         },
-        /*  {
-                label: "Repositories",
-                path: "/admin-v2/repositories",
-                icon: { name: "github", iconStyle: "brands" },
-                activePaths: { leadingPath: "/admin-v2/repositories" },
-              }, */
+        {
+          label: "Repositories",
+          path: "/admin-v2/repositories",
+          icon: { name: "github", iconStyle: "brands" },
+          activePaths: { leadingPath: "/admin-v2/repositories" },
+        },
       ]}
       extra={<ResumesAdminTab />}
     >

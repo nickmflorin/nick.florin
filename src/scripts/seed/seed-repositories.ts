@@ -98,13 +98,12 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
           repository = await tx.repository.create({
             include: { skills: true },
             data: {
-              slug: existing.slug,
-              description: existing.description,
-              startDate: existing.startDate,
+              visible: false,
+              highlighted: false,
+              ...existing,
+              startDate: existing.startDate as Date,
               createdBy: { connect: { id: ctx.user.id } },
               updatedBy: { connect: { id: ctx.user.id } },
-              visible: existing.visible ?? false,
-              highlighted: existing.highlighted ?? false,
               skills: { connect: existing.skills.map(skill => ({ slug: skill })) },
             },
           });
@@ -152,7 +151,6 @@ export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
         include: { skills: true },
         data: {
           ...repo,
-          description: repo.description,
           startDate: new Date(repo.startDate),
           createdBy: { connect: { id: ctx.user.id } },
           updatedBy: { connect: { id: ctx.user.id } },

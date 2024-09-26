@@ -23,29 +23,6 @@
       "skills": ["django", "python", "django-rest-framework"]
     },
     {
-      "slug": "enumerated-literals",
-      "description": "A utility for managing enumerated, string literal constants in TypeScript",
-      "createdAt": "2024-09-23T23:14:33.428Z",
-      "updatedAt": "2024-09-23T23:14:33.428Z",
-      "visible": true,
-      "highlighted": true,
-      "startDate": "2024-05-31T18:03:51.000Z",
-      "npmPackageName": null,
-      "skills": [
-        "eslint",
-        "prettier",
-        "ci-cd",
-        "typescript",
-        "nvm",
-        "npm",
-        "unit-testing",
-        "codecov",
-        "package-dependency-management",
-        "jest",
-        "package-development"
-      ]
-    },
-    {
       "slug": "git-blame-project",
       "description": "Tool for Performing Blame & Contribution Analysis per Line on Entire Project",
       "createdAt": "2024-09-23T23:14:33.428Z",
@@ -67,6 +44,7 @@
       "npmPackageName": null,
       "skills": [
         "eslint",
+        "npm",
         "client-side-rendering",
         "logging-monitoring-infrastructure",
         "prettier",
@@ -76,7 +54,6 @@
         "component-development",
         "ui-ux",
         "error-monitoring-alerting",
-        "npm",
         "security-practices"
       ]
     },
@@ -94,9 +71,9 @@
         "python",
         "aws-elastic-beanstalk",
         "logging-monitoring-infrastructure",
-        "ci-cd",
         "pytest",
         "error-handling",
+        "ci-cd",
         "jwt-authentication",
         "application-security",
         "django-rest-framework",
@@ -104,13 +81,13 @@
         "aws-ec2",
         "postgresql",
         "error-monitoring-alerting",
-        "unit-testing",
         "pyenv",
         "unittest",
         "pip",
         "poetry",
         "authentication-protocols",
         "security-practices",
+        "unit-testing",
         "circleci",
         "mock",
         "tox",
@@ -167,15 +144,16 @@
       "npmPackageName": null,
       "skills": [
         "eslint",
+        "npm",
         "zod",
         "client-side-rendering",
         "pino",
         "logging-monitoring-infrastructure",
         "framer-motion",
         "prettier",
-        "ci-cd",
         "floating-ui",
         "error-handling",
+        "ci-cd",
         "nextjs-app-router",
         "javascript",
         "css",
@@ -190,21 +168,20 @@
         "react",
         "ui-ux",
         "responsive-design",
-        "nvm",
         "error-monitoring-alerting",
-        "npm",
+        "nvm",
         "tailwindcss",
-        "unit-testing",
         "scss-css-modules",
         "security-practices",
+        "unit-testing",
         "nextjs",
         "ssr",
         "vercel",
         "clerk",
         "rest-api-design",
-        "jest",
         "relational-databases",
-        "swr"
+        "swr",
+        "jest"
       ]
     },
     {
@@ -269,7 +246,7 @@
       "highlighted": false,
       "startDate": "2024-04-16T23:24:19.097Z",
       "npmPackageName": null,
-      "skills": ["client-side-rendering", "javascript", "css", "react", "npm", "security-practices"]
+      "skills": ["npm", "client-side-rendering", "javascript", "css", "react", "security-practices"]
     },
     {
       "slug": "sportbook",
@@ -282,6 +259,7 @@
       "npmPackageName": null,
       "skills": [
         "eslint",
+        "npm",
         "zod",
         "client-side-rendering",
         "pino",
@@ -305,18 +283,17 @@
         "ui-ux",
         "responsive-design",
         "nvm",
-        "npm",
         "tailwindcss",
-        "unit-testing",
         "scss-css-modules",
         "security-practices",
+        "unit-testing",
         "nextjs",
         "ssr",
         "clerk",
         "rest-api-design",
-        "jest",
         "relational-databases",
-        "swr"
+        "swr",
+        "jest"
       ]
     },
     {
@@ -341,15 +318,16 @@
       "npmPackageName": null,
       "skills": [
         "eslint",
+        "npm",
         "zod",
         "client-side-rendering",
         "pino",
         "logging-monitoring-infrastructure",
         "framer-motion",
         "prettier",
-        "ci-cd",
         "floating-ui",
         "error-handling",
+        "ci-cd",
         "nextjs-app-router",
         "data-scraping",
         "javascript",
@@ -365,19 +343,18 @@
         "react",
         "ui-ux",
         "responsive-design",
-        "nvm",
         "nodejs",
-        "npm",
+        "nvm",
         "tailwindcss",
-        "unit-testing",
         "security-practices",
+        "unit-testing",
         "nextjs",
         "ssr",
         "clerk",
         "rest-api-design",
-        "jest",
         "relational-databases",
-        "swr"
+        "swr",
+        "jest"
       ]
     },
     {
@@ -423,6 +400,29 @@
       "startDate": "2020-09-02T19:54:59.000Z",
       "npmPackageName": null,
       "skills": []
+    },
+    {
+      "slug": "enumerated-literals",
+      "description": "A utility for managing enumerated, string literal constants in TypeScript",
+      "createdAt": "2024-09-23T23:14:33.428Z",
+      "updatedAt": "2024-09-26T15:31:29.820Z",
+      "visible": true,
+      "highlighted": true,
+      "startDate": "2024-05-31T18:03:51.000Z",
+      "npmPackageName": "enumerated-literals",
+      "skills": [
+        "eslint",
+        "npm",
+        "prettier",
+        "ci-cd",
+        "typescript",
+        "nvm",
+        "unit-testing",
+        "codecov",
+        "package-development",
+        "package-dependency-management",
+        "jest"
+      ]
     }
   ]
 }

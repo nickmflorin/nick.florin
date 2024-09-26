@@ -6,25 +6,25 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { updateSkill } from "~/actions-v2/skills/update-skill";
+import { updateRepository } from "~/actions-v2/repositories/update-repository";
 
 import type * as types from "~/components/tables-v2/types";
 import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { type SkillsTableColumn, type SkillsTableModel } from "~/features/skills/types";
+import { type RepositoriesTableColumn, type RepositoriesTableModel } from "~/features/repositories/types";
 
 interface ProjectsCellProps {
-  readonly skill: SkillsTableModel;
-  readonly table: types.CellDataTableInstance<SkillsTableModel, SkillsTableColumn>;
+  readonly repository: RepositoriesTableModel;
+  readonly table: types.CellDataTableInstance<RepositoriesTableModel, RepositoriesTableColumn>;
 }
 
-export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element => {
-  const [value, setValue] = useState(skill.projects.map(p => p.id));
+export const ProjectsCell = ({ repository, table }: ProjectsCellProps): JSX.Element => {
+  const [value, setValue] = useState(repository.projects.map(p => p.id));
   const router = useRouter();
   const [_, transition] = useTransition();
 
   useEffect(() => {
-    setValue(skill.projects.map(p => p.id));
-  }, [skill.projects]);
+    setValue(repository.projects.map(p => p.id));
+  }, [repository.projects]);
 
   return (
     <ClientProjectSelect
@@ -39,35 +39,35 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);
-        table.setRowLoading(skill.id, true);
+        table.setRowLoading(repository.id, true);
 
-        let response: Awaited<ReturnType<typeof updateSkill>> | undefined = undefined;
+        let response: Awaited<ReturnType<typeof updateRepository>> | undefined = undefined;
         try {
-          response = await updateSkill(skill.id, { projects: v });
+          response = await updateRepository(repository.id, { projects: v });
         } catch (e) {
           logger.errorUnsafe(
             e,
-            `There was an error updating the projects for the skill with ID '${skill.id}'.`,
+            `There was an error updating the projects for the repository with ID '${repository.id}'.`,
             {
-              skill: skill.id,
+              repository: repository.id,
               projects: v,
             },
           );
           item?.setLoading(false);
-          table.setRowLoading(skill.id, false);
-          return toast.error("There was an error updating the skill.");
+          table.setRowLoading(repository.id, false);
+          return toast.error("There was an error updating the repository.");
         }
         const { error } = response;
         if (error) {
           logger.error(
             error,
-            "There was a client error updating the projects for the skill with ID " +
-              `'${skill.id}': ${error.code}`,
-            { skill: skill.id, projects: v },
+            "There was a client error updating the projects for the repository with ID " +
+              `'${repository.id}': ${error.code}`,
+            { repository: repository.id, projects: v },
           );
           item?.setLoading(false);
-          table.setRowLoading(skill.id, false);
-          return toast.error("There was an error updating the skill.");
+          table.setRowLoading(repository.id, false);
+          return toast.error("There was an error updating the repository.");
         }
         /* Refresh the state from the server regardless of whether or not the request succeeded.
            In the case the request failed, this is required to revert the changes back to their
@@ -75,7 +75,7 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
         transition(() => {
           router.refresh();
           item?.setLoading(false);
-          table.setRowLoading(skill.id, false);
+          table.setRowLoading(repository.id, false);
         });
       }}
     />
