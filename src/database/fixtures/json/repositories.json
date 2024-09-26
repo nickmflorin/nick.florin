@@ -32,14 +32,17 @@
       "startDate": "2024-05-31T18:03:51.000Z",
       "npmPackageName": null,
       "skills": [
+        "eslint",
+        "prettier",
         "ci-cd",
-        "npm",
         "typescript",
         "nvm",
+        "npm",
         "unit-testing",
         "codecov",
         "package-dependency-management",
-        "jest"
+        "jest",
+        "package-development"
       ]
     },
     {
@@ -63,15 +66,18 @@
       "startDate": "2022-05-11T15:25:55.000Z",
       "npmPackageName": null,
       "skills": [
+        "eslint",
+        "client-side-rendering",
+        "logging-monitoring-infrastructure",
+        "prettier",
         "error-handling",
         "css",
-        "npm",
         "application-security",
-        "error-monitoring-alerting",
         "component-development",
         "ui-ux",
-        "security-practices",
-        "logging-monitoring-infrastructure"
+        "error-monitoring-alerting",
+        "npm",
+        "security-practices"
       ]
     },
     {
@@ -87,16 +93,17 @@
         "django",
         "python",
         "aws-elastic-beanstalk",
+        "logging-monitoring-infrastructure",
         "ci-cd",
         "pytest",
         "error-handling",
         "jwt-authentication",
         "application-security",
         "django-rest-framework",
-        "error-monitoring-alerting",
         "aws",
         "aws-ec2",
         "postgresql",
+        "error-monitoring-alerting",
         "unit-testing",
         "pyenv",
         "unittest",
@@ -104,7 +111,6 @@
         "poetry",
         "authentication-protocols",
         "security-practices",
-        "logging-monitoring-infrastructure",
         "circleci",
         "mock",
         "tox",
@@ -112,9 +118,9 @@
         "flake8",
         "django-admin",
         "rest-api-design",
-        "sentry",
         "aws-s3-storage",
-        "relational-databases"
+        "relational-databases",
+        "sentry"
       ]
     },
     {
@@ -148,7 +154,7 @@
       "highlighted": false,
       "startDate": "2023-04-23T14:36:20.000Z",
       "npmPackageName": null,
-      "skills": []
+      "skills": ["eslint", "prettier"]
     },
     {
       "slug": "nick.florin",
@@ -160,20 +166,24 @@
       "startDate": "2024-01-09T17:01:19.000Z",
       "npmPackageName": null,
       "skills": [
+        "eslint",
+        "zod",
+        "client-side-rendering",
+        "pino",
+        "logging-monitoring-infrastructure",
         "framer-motion",
+        "prettier",
         "ci-cd",
         "floating-ui",
-        "nextjs-app-router",
         "error-handling",
+        "nextjs-app-router",
         "javascript",
         "css",
-        "npm",
         "sass",
         "application-security",
         "prismajs",
         "pnpm",
         "typescript",
-        "error-monitoring-alerting",
         "component-development",
         "html",
         "postgresql",
@@ -181,18 +191,20 @@
         "ui-ux",
         "responsive-design",
         "nvm",
+        "error-monitoring-alerting",
+        "npm",
         "tailwindcss",
         "unit-testing",
         "scss-css-modules",
-        "vercel",
         "security-practices",
-        "logging-monitoring-infrastructure",
         "nextjs",
         "ssr",
+        "vercel",
         "clerk",
         "rest-api-design",
         "jest",
-        "relational-databases"
+        "relational-databases",
+        "swr"
       ]
     },
     {
@@ -204,7 +216,7 @@
       "highlighted": true,
       "startDate": "2017-12-09T01:46:23.000Z",
       "npmPackageName": null,
-      "skills": ["ui-ux", "swift", "security-practices", "logging-monitoring-infrastructure"]
+      "skills": ["logging-monitoring-infrastructure", "ui-ux", "swift", "security-practices"]
     },
     {
       "slug": "pickyoptions",
@@ -257,7 +269,7 @@
       "highlighted": false,
       "startDate": "2024-04-16T23:24:19.097Z",
       "npmPackageName": null,
-      "skills": ["javascript", "css", "npm", "react", "security-practices"]
+      "skills": ["client-side-rendering", "javascript", "css", "react", "npm", "security-practices"]
     },
     {
       "slug": "sportbook",
@@ -269,13 +281,18 @@
       "startDate": "2023-06-30T21:46:54.000Z",
       "npmPackageName": null,
       "skills": [
+        "eslint",
+        "zod",
+        "client-side-rendering",
+        "pino",
+        "logging-monitoring-infrastructure",
         "framer-motion",
+        "prettier",
         "floating-ui",
-        "nextjs-app-router",
         "error-handling",
+        "nextjs-app-router",
         "javascript",
         "css",
-        "npm",
         "sass",
         "application-security",
         "prismajs",
@@ -288,17 +305,18 @@
         "ui-ux",
         "responsive-design",
         "nvm",
+        "npm",
         "tailwindcss",
         "unit-testing",
         "scss-css-modules",
         "security-practices",
-        "logging-monitoring-infrastructure",
         "nextjs",
         "ssr",
         "clerk",
         "rest-api-design",
         "jest",
-        "relational-databases"
+        "relational-databases",
+        "swr"
       ]
     },
     {
@@ -322,16 +340,20 @@
       "startDate": "2024-05-11T22:31:03.000Z",
       "npmPackageName": null,
       "skills": [
+        "eslint",
+        "zod",
+        "client-side-rendering",
+        "pino",
+        "logging-monitoring-infrastructure",
         "framer-motion",
+        "prettier",
         "ci-cd",
         "floating-ui",
-        "nextjs-app-router",
         "error-handling",
+        "nextjs-app-router",
         "data-scraping",
-        "nodejs",
         "javascript",
         "css",
-        "npm",
         "sass",
         "application-security",
         "prismajs",
@@ -344,16 +366,18 @@
         "ui-ux",
         "responsive-design",
         "nvm",
+        "nodejs",
+        "npm",
         "tailwindcss",
         "unit-testing",
         "security-practices",
-        "logging-monitoring-infrastructure",
         "nextjs",
         "ssr",
         "clerk",
         "rest-api-design",
         "jest",
-        "relational-databases"
+        "relational-databases",
+        "swr"
       ]
     },
     {
