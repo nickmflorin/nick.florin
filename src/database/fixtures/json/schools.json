@@ -13,83 +13,6 @@
       "educations": [
         {
           "createdAt": "2024-04-16T23:25:00.483Z",
-          "updatedAt": "2024-09-21T16:34:07.715Z",
-          "startDate": "2016-01-02T00:00:00.000Z",
-          "endDate": null,
-          "note": "Ongoing coursework temporarily post-poned after completing approximately 50% of coursework.",
-          "degree": "MASTERS_OF_SCIENCE",
-          "description": null,
-          "major": "Computational Mathematics",
-          "shortMajor": "Comp. Math",
-          "minor": null,
-          "concentration": null,
-          "postPoned": false,
-          "visible": true,
-          "highlighted": true,
-          "skills": [
-            "data-visualizations",
-            "django",
-            "python",
-            "matlab",
-            "numerical-computation",
-            "scipy",
-            "pandas",
-            "numpy",
-            "scikit-learn"
-          ],
-          "courses": [
-            {
-              "name": "Probabalistic Models in Computer Science",
-              "shortName": "Probabalistic Models",
-              "slug": "probabilistic-models-in-computer-science",
-              "createdAt": "2024-04-16T23:25:04.376Z",
-              "updatedAt": "2024-04-16T23:25:04.376Z",
-              "visible": true,
-              "description": null,
-              "skills": []
-            },
-            {
-              "name": "Queueing Theory and its Applications in Computer Science",
-              "shortName": "Queueing Theory",
-              "slug": "queueing-theory-and-its-applications-in-computer-science",
-              "createdAt": "2024-04-16T23:25:04.113Z",
-              "updatedAt": "2024-09-21T16:35:26.371Z",
-              "visible": true,
-              "description": null,
-              "skills": ["numerical-computation"]
-            },
-            {
-              "name": "Data Mining",
-              "shortName": null,
-              "slug": "data-mining",
-              "createdAt": "2024-04-16T23:25:03.869Z",
-              "updatedAt": "2024-09-21T16:35:59.591Z",
-              "visible": true,
-              "description": null,
-              "skills": [
-                "data-scraping",
-                "data-visualizations",
-                "python",
-                "scipy",
-                "numpy",
-                "scikit-learn"
-              ]
-            },
-            {
-              "name": "Neural Networks",
-              "shortName": null,
-              "slug": "neural-networks",
-              "createdAt": "2024-04-16T23:25:03.621Z",
-              "updatedAt": "2024-09-21T16:32:30.875Z",
-              "visible": true,
-              "description": null,
-              "skills": ["data-visualizations", "python"]
-            }
-          ],
-          "details": []
-        },
-        {
-          "createdAt": "2024-04-16T23:25:00.483Z",
           "updatedAt": "2024-09-21T16:34:11.620Z",
           "startDate": "2014-08-01T00:00:00.000Z",
           "endDate": "2016-01-01T00:00:00.000Z",
@@ -108,8 +31,10 @@
             "django",
             "python",
             "matlab",
-            "r",
+            "optimization-methods",
             "numerical-computation",
+            "vba",
+            "r",
             "scipy",
             "pandas",
             "numpy",
@@ -124,7 +49,7 @@
               "updatedAt": "2024-04-16T23:25:01.376Z",
               "visible": true,
               "description": null,
-              "skills": []
+              "skills": ["vba"]
             },
             {
               "name": "Stochastic Processes",
@@ -164,7 +89,7 @@
               "updatedAt": "2024-04-16T23:25:02.628Z",
               "visible": true,
               "description": null,
-              "skills": []
+              "skills": ["vba"]
             },
             {
               "name": "Credit Default Risk Modeling",
@@ -204,7 +129,85 @@
               "updatedAt": "2024-09-21T16:34:54.975Z",
               "visible": true,
               "description": null,
-              "skills": ["python", "matlab", "numerical-computation"]
+              "skills": ["python", "matlab", "optimization-methods", "numerical-computation"]
+            }
+          ],
+          "details": []
+        },
+        {
+          "createdAt": "2024-04-16T23:25:00.483Z",
+          "updatedAt": "2024-09-25T00:57:40.960Z",
+          "startDate": "2016-01-02T00:00:00.000Z",
+          "endDate": null,
+          "note": "Ongoing coursework temporarily post-poned after completing approximately 50% of coursework.",
+          "degree": "MASTERS_OF_SCIENCE",
+          "description": "",
+          "major": "Computational Mathematics",
+          "shortMajor": "Comp. Math",
+          "minor": "",
+          "concentration": "",
+          "postPoned": true,
+          "visible": true,
+          "highlighted": true,
+          "skills": [
+            "data-visualizations",
+            "django",
+            "python",
+            "matlab",
+            "optimization-methods",
+            "numerical-computation",
+            "scipy",
+            "pandas",
+            "numpy",
+            "scikit-learn"
+          ],
+          "courses": [
+            {
+              "name": "Probabalistic Models in Computer Science",
+              "shortName": "Probabalistic Models",
+              "slug": "probabilistic-models-in-computer-science",
+              "createdAt": "2024-04-16T23:25:04.376Z",
+              "updatedAt": "2024-04-16T23:25:04.376Z",
+              "visible": true,
+              "description": null,
+              "skills": []
+            },
+            {
+              "name": "Queueing Theory and its Applications in Computer Science",
+              "shortName": "Queueing Theory",
+              "slug": "queueing-theory-and-its-applications-in-computer-science",
+              "createdAt": "2024-04-16T23:25:04.113Z",
+              "updatedAt": "2024-09-21T16:35:26.371Z",
+              "visible": true,
+              "description": null,
+              "skills": ["numerical-computation"]
+            },
+            {
+              "name": "Data Mining",
+              "shortName": null,
+              "slug": "data-mining",
+              "createdAt": "2024-04-16T23:25:03.869Z",
+              "updatedAt": "2024-09-21T16:35:59.591Z",
+              "visible": true,
+              "description": null,
+              "skills": [
+                "data-visualizations",
+                "python",
+                "data-scraping",
+                "scipy",
+                "numpy",
+                "scikit-learn"
+              ]
+            },
+            {
+              "name": "Neural Networks",
+              "shortName": null,
+              "slug": "neural-networks",
+              "createdAt": "2024-04-16T23:25:03.621Z",
+              "updatedAt": "2024-09-21T16:32:30.875Z",
+              "visible": true,
+              "description": null,
+              "skills": ["data-visualizations", "python"]
             }
           ],
           "details": []
@@ -237,7 +240,7 @@
           "postPoned": false,
           "visible": true,
           "highlighted": true,
-          "skills": ["python", "c-plus-plus", "matlab", "numerical-computation"],
+          "skills": ["python", "matlab", "numerical-computation", "c-plus-plus"],
           "courses": [
             {
               "name": "Computer Science",
@@ -327,7 +330,7 @@
               "updatedAt": "2024-09-21T16:31:43.390Z",
               "visible": true,
               "description": null,
-              "skills": ["html", "django", "python", "jinja", "html-templating"]
+              "skills": ["django", "python", "html", "html-templating", "jinja"]
             },
             {
               "name": "Signals & Systems",
