@@ -1,4 +1,4 @@
-import { unstable_noStore } from "next/cache";
+// import { unstable_noStore } from "next/cache";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -37,7 +37,7 @@ export interface SkillsTablePageProps {
 }
 
 export default async function SkillsTablePage({ searchParams }: SkillsTablePageProps) {
-  unstable_noStore();
+  // unstable_noStore();
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = SkillsFiltersObj.parse(searchParams);
