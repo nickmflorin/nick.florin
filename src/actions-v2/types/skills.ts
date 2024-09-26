@@ -11,6 +11,7 @@ import {
   ProgrammingDomains,
   ProgrammingLanguages,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -106,9 +107,10 @@ export const SkillsFiltersObj = Filters({
     defaultValue: null,
     excludeWhen: v => v === null,
   },
-  search: { schema: z.string(), defaultValue: "", excludeWhen: (v: string) => v.length === 0 },
+  search: { schema: z.string(), defaultValue: "" },
   categories: {
     defaultValue: [] as SkillCategory[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -122,6 +124,7 @@ export const SkillsFiltersObj = Filters({
   },
   programmingDomains: {
     defaultValue: [] as ProgrammingDomain[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -135,6 +138,7 @@ export const SkillsFiltersObj = Filters({
   },
   programmingLanguages: {
     defaultValue: [] as ProgrammingLanguage[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -148,6 +152,7 @@ export const SkillsFiltersObj = Filters({
   },
   experiences: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -158,6 +163,7 @@ export const SkillsFiltersObj = Filters({
   },
   projects: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -168,6 +174,7 @@ export const SkillsFiltersObj = Filters({
   },
   repositories: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -178,6 +185,7 @@ export const SkillsFiltersObj = Filters({
   },
   educations: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

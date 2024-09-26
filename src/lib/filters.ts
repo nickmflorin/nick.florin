@@ -1,5 +1,6 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 
+import { isEqual } from "lodash-es";
 import { type z } from "zod";
 
 import { parseQueryParams } from "~/integrations/http";
@@ -8,6 +9,7 @@ type FilterConfig<S extends z.ZodType = z.ZodTypeAny> = S extends z.ZodType
   ? {
       readonly schema: S;
       readonly defaultValue: z.infer<S>;
+      readonly equals?: (v: z.infer<S>, o: z.infer<S>) => boolean;
       readonly excludeWhen?: (v: z.infer<S>) => boolean;
     }
   : never;
@@ -58,14 +60,23 @@ export class FiltersClass<C extends BaseFiltersConfiguration> {
     return pruned[f] !== undefined;
   }
 
-  public add<K extends keyof C>(f: ParsedFilters<C>, field: K, value: ParsedFilters<C>[K]) {
+  public add<F extends ParsedFilters<C>, K extends keyof C>(
+    f: F,
+    field: K,
+    value: F[K],
+  ): [F, F[K]] {
     const config = this.config[field];
     if (config.excludeWhen?.(value)) {
       f = { ...f, [field]: config.defaultValue };
-    } else {
-      f = { ...f, [field]: value };
+      return [f, config.defaultValue] as const;
     }
-    return f;
+    f = { ...f, [field]: value };
+    return [f, value] as const;
+  }
+
+  public valuesAreEqual<K extends keyof C, F extends ParsedFilters<C>>(field: K, f: F[K], o: F[K]) {
+    const eq = this.config[field].equals ?? isEqual;
+    return eq(f, o);
   }
 
   public prune<F extends Partial<ParsedFilters<C>>>(filters: F) {
@@ -107,7 +118,7 @@ export class FiltersClass<C extends BaseFiltersConfiguration> {
       if (parsed[field] !== undefined) {
         const parsedField = schema.safeParse(parsed[field]);
         if (parsedField.success) {
-          f = this.add(f, field, parsedField.data);
+          [f] = this.add(f, field, parsedField.data);
         } else {
           f = { ...f, [field]: config.defaultValue };
         }

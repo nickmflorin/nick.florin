@@ -1,5 +1,5 @@
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 import {
   type BaseFiltersConfiguration,
@@ -26,15 +26,37 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
   const { replace } = useRouter();
   const pathname = usePathname();
 
+  const [pendingFilters, setPendingFilters] = useState<Partial<ParsedFilters<C>>>({});
+  const [isPending, transition] = useTransition();
+
   const initialFilters = useMemo(() => filters.parse(searchParams), [filters, searchParams]);
+
+  const previousFilters = useRef<ParsedFilters<C>>(initialFilters);
+
+  useEffect(() => {
+    if (!isPending) {
+      setPendingFilters({});
+    }
+  }, [isPending]);
+
+  previousFilters.current = filters.parse(searchParams);
 
   const setFilters = useReferentialCallback((update: FiltersUpdate<C>) => {
     let currentFilters = filters.parse(searchParams);
+
+    let changedFilters: Partial<ParsedFilters<C>> = {};
     for (const [field, value] of Object.entries(update)) {
+      let newValue: ParsedFilters<C>[keyof C];
+
       const f = field as keyof C;
       const v = value as ParsedFilters<C>[typeof f];
-      currentFilters = filters.add(currentFilters, f, v);
+      [currentFilters, newValue] = filters.add(currentFilters, f, v);
+
+      if (!filters.valuesAreEqual(f, previousFilters.current[f], newValue)) {
+        changedFilters = { ...changedFilters, [f]: newValue };
+      }
     }
+    previousFilters.current = currentFilters;
     let pruned = filters.prune(currentFilters);
 
     if (maintainExisting) {
@@ -45,8 +67,15 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
         }
       }
     }
-    replace(`${pathname}?${stringifyQueryParams(pruned)}`);
+    setPendingFilters(changedFilters);
+    transition(() => {
+      replace(`${pathname}?${stringifyQueryParams(pruned)}`);
+    });
   });
 
-  return [initialFilters, setFilters] as const;
+  return [
+    initialFilters,
+    setFilters,
+    { isPending, pendingFilters: isPending ? pendingFilters : {} },
+  ] as const;
 };

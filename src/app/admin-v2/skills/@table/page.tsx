@@ -1,3 +1,4 @@
+import { unstable_noStore } from "next/cache";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -35,7 +36,8 @@ export interface SkillsTablePageProps {
   readonly searchParams: Record<string, string>;
 }
 
-export default function SkillsTablePage({ searchParams }: SkillsTablePageProps) {
+export default async function SkillsTablePage({ searchParams }: SkillsTablePageProps) {
+  unstable_noStore();
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = SkillsFiltersObj.parse(searchParams);
@@ -44,6 +46,13 @@ export default function SkillsTablePage({ searchParams }: SkillsTablePageProps) 
     defaultOrdering: SkillsDefaultOrdering,
     fields: SkillsTableColumns.filter(c => columnIsOrderable(c)).map(c => c.id),
   });
+
+  /* const keys = [...Object.keys(filters), "orderBy", "order", "page"];
+     const searchKey = keys
+       .sort()
+       .map(k => searchParams[k] ?? "")
+       .join(","); */
+
   return (
     <DataTableProvider
       columns={SkillsTableColumns}
