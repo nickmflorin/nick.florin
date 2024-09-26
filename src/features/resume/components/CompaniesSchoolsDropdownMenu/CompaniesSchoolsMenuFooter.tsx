@@ -4,7 +4,7 @@ import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
 export interface CompaniesSchoolsMenuFooterProps extends ComponentProps {
-  readonly onCreate: () => void;
+  readonly onCreate: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const CompaniesSchoolsMenuFooter = ({
@@ -18,7 +18,7 @@ export const CompaniesSchoolsMenuFooter = ({
       props.className,
     )}
   >
-    <Button.Solid className="w-full" scheme="primary" onClick={() => onCreate()}>
+    <Button.Solid className="w-full" scheme="primary" element="button" onClick={e => onCreate(e)}>
       Create
     </Button.Solid>
   </MenuFooter>

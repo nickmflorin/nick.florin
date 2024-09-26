@@ -84,3 +84,9 @@ export interface PopoverContext extends FloatingContext {
 export type PopoverContentRenderFn = (props: FloatingContentRenderProps) => JSX.Element;
 
 export type PopoverContent = JSX.Element | PopoverContentRenderFn;
+
+export type PopoverOuterContentRenderFn = (
+  props: FloatingContentRenderProps & { readonly children: JSX.Element },
+) => JSX.Element;
+
+export type PopoverOuterContent = PopoverOuterContentRenderFn;

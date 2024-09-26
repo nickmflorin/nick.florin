@@ -13,6 +13,8 @@ import { ProjectSelect } from "~/features/projects/components/input/ProjectSelec
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
 import { useFilters } from "~/hooks/use-filters";
 
+import { SyncRepositoriesButton } from "./SyncRepositoriesButton";
+
 type SelectFilterField = Exclude<keyof RepositoriesFilters, "search" | "highlighted" | "visible">;
 
 export interface RepositoriesTableFilterBarProps extends ComponentProps {
@@ -137,6 +139,8 @@ export const RepositoriesTableFilterBar = ({
           ),
         },
       ]}
-    />
+    >
+      <SyncRepositoriesButton />
+    </TableView.FilterBar>
   );
 };

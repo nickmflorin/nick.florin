@@ -28,16 +28,19 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
     <Popover
       content={content}
       withArrow={false}
-      outerContent={({ children }) => (
-        <PopoverContent className="p-[0px] rounded-md overflow-hidden">
+      maxHeight={400}
+      outerContent={({ children, setIsOpen }) => (
+        <PopoverContent className="p-[0px] rounded-md overflow-hidden z-50">
           <Menu className="box-shadow-none">
             {children}
             <CompaniesSchoolsMenuFooter
-              onCreate={() => {
+              onCreate={e => {
                 if (modelType === "company") {
                   open(DrawerIds.CREATE_COMPANY, {});
+                  setIsOpen(false, e);
                 } else if (modelType === "school") {
                   open(DrawerIds.CREATE_SCHOOL, {});
+                  setIsOpen(false, e);
                 } else {
                   throw new UnreachableCaseError();
                 }
@@ -50,7 +53,6 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
       triggers={["click"]}
       offset={{ mainAxis: 4 }}
       width={400}
-      maxHeight={600}
     >
       {({ ref, params, isOpen }) => (
         <Button.Solid

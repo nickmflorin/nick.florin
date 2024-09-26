@@ -77,7 +77,6 @@ export const TableFilterBar = <F extends types.TableFilters>({
           }}
         />
       )}
-      {children}
       {filters && (
         <>
           {(configuration ?? []).map(filter => (
@@ -113,6 +112,7 @@ export const TableFilterBar = <F extends types.TableFilters>({
         />
       )}
       {newDrawerId && <NewButton drawerId={newDrawerId} />}
+      {children}
     </div>
   );
 };

@@ -18,7 +18,7 @@ export interface PopoverContentWrapperProps {
   readonly withArrow?: boolean;
   readonly arrowClassName?: ComponentProps["className"];
   readonly context: types.PopoverContext;
-  readonly outerContent?: (params: { children: JSX.Element }) => JSX.Element;
+  readonly outerContent?: types.PopoverOuterContent;
 }
 
 export const PopoverContentWrapper = ({
@@ -32,7 +32,16 @@ export const PopoverContentWrapper = ({
 }: PopoverContentWrapperProps) => {
   const cloneAndRender = useCallback(
     (element: JSX.Element) => {
-      const ele = outerContent ? outerContent({ children: element }) : element;
+      const ele = outerContent
+        ? outerContent({
+            children: element,
+            ref: refs.setFloating,
+            isOpen,
+            setIsOpen,
+            params: floatingProps,
+            styles: floatingStyles,
+          })
+        : element;
       return cloneElement(
         ele,
         {
@@ -56,6 +65,8 @@ export const PopoverContentWrapper = ({
       refs,
       floatingStyles,
       arrowClassName,
+      isOpen,
+      setIsOpen,
       outerContent,
     ],
   );

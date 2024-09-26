@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useCallback } from "react";
+import { type ReactNode, useEffect, useRef, useCallback } from "react";
 
 import { type ApiSkill, type Degree, type ApiCourse, type ApiSchool } from "~/database/model";
 
@@ -21,6 +21,7 @@ type SelectFilterField = Exclude<
 >;
 
 export interface EducationsTableFilterBarProps extends ComponentProps {
+  readonly children?: ReactNode;
   readonly isSearchable?: boolean;
   readonly skills: ApiSkill<[]>[];
   readonly schools: ApiSchool<[]>[];
@@ -72,6 +73,7 @@ export const EducationsTableFilterBar = ({
   filters,
   schools,
   courses,
+  children,
   skills,
   ...props
 }: EducationsTableFilterBarProps): JSX.Element => {
@@ -187,6 +189,8 @@ export const EducationsTableFilterBar = ({
           ),
         },
       ]}
-    />
+    >
+      {children}
+    </TableView.FilterBar>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, type ReactNode } from "react";
 
 import type { ApiSkill, ApiCompany } from "~/database/model";
 
@@ -16,6 +16,7 @@ import { useFilters } from "~/hooks/use-filters";
 type SelectFilterField = Exclude<keyof ExperiencesFilters, "search" | "highlighted" | "visible">;
 
 export interface ExperiencesTableFilterBarProps extends ComponentProps {
+  readonly children?: ReactNode;
   readonly isSearchable?: boolean;
   readonly skills: ApiSkill<[]>[];
   readonly companies: ApiCompany<[]>[];
@@ -61,6 +62,7 @@ const useFilterRefs = ({ filters }: { filters: ExperiencesFilters }) => {
 
 export const ExperiencesTableFilterBar = ({
   excludeFilters = [],
+  children,
   filters,
   companies,
   skills,
@@ -137,6 +139,8 @@ export const ExperiencesTableFilterBar = ({
           ),
         },
       ]}
-    />
+    >
+      {children}
+    </TableView.FilterBar>
   );
 };
