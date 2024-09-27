@@ -23,7 +23,7 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
   maintainExisting = true,
 }: UseFiltersOptions<C>) => {
   const searchParams = useSearchParams();
-  const { push } = useRouter();
+  const { replace } = useRouter();
   const pathname = usePathname();
 
   const [pendingFilters, setPendingFilters] = useState<Partial<ParsedFilters<C>>>({});
@@ -68,7 +68,7 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
     }
     setPendingFilters(changedFilters);
     transition(() => {
-      push(`${pathname}?${stringifyQueryParams(pruned)}`);
+      replace(`${pathname}?${stringifyQueryParams(pruned)}`);
     });
   });
 

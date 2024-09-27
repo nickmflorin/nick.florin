@@ -1,11 +1,11 @@
 import React from "react";
 
-import { Loading } from "~/components/loading/Loading";
 import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
 
 import { TableControlBar } from "./TableControlBar";
 import { TableFilterBar } from "./TableFilterBar";
+import { TableViewContainer } from "./TableViewContainer";
+import { TableViewContent } from "./TableViewContent";
 import { TableViewFooter } from "./TableViewFooter";
 import { TableViewHeader } from "./TableViewHeader";
 
@@ -31,23 +31,20 @@ const LocalTableView = ({
   controlBarTargetId,
   ...props
 }: TableViewProps): JSX.Element => (
-  <div
-    {...props}
-    className={classNames("table-view", { "table-view--loading": isLoading }, props.className)}
-  >
+  <TableViewContainer {...props} isLoading={isLoading}>
     <TableViewHeader {...headerProps} controlBarTargetId={controlBarTargetId}>
       {header}
     </TableViewHeader>
-    <div className={classNames("table-view__content", contentClassName)}>
-      <Loading isLoading={isLoading}>
-        <div className="max-h-full h-full overflow-x-auto">{children}</div>
-      </Loading>
-    </div>
+    <TableViewContent className={contentClassName} isLoading={isLoading}>
+      {children}
+    </TableViewContent>
     <TableViewFooter {...footerProps}>{footer}</TableViewFooter>
-  </div>
+  </TableViewContainer>
 );
 
 export const TableView = Object.assign(React.memo(LocalTableView), {
   FilterBar: TableFilterBar,
   ControlBar: TableControlBar,
+  Content: TableViewContent,
+  Container: TableViewContainer,
 });

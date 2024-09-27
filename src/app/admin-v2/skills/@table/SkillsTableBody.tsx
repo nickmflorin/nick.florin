@@ -13,17 +13,15 @@ const ClientSkillsTableBody = dynamic(
   { loading: () => <Loading isLoading component="tbody" /> },
 );
 
-export interface SkillsTableBodyProps {
+const getSkills = async ({
+  page,
+  filters,
+  ordering,
+}: {
   readonly filters: SkillsFilters;
   readonly page: number;
   readonly ordering: SkillsControls["ordering"];
-}
-
-export const SkillsTableBody = async ({
-  filters,
-  page,
-  ordering,
-}: SkillsTableBodyProps): Promise<JSX.Element> => {
+}) => {
   const fetcher = fetchSkills(["projects", "educations", "experiences", "repositories"]);
   const { data: skills } = await fetcher(
     {
@@ -34,5 +32,16 @@ export const SkillsTableBody = async ({
     },
     { strict: true },
   );
+  return skills;
+};
+
+export interface SkillsTableBodyProps {
+  readonly filters: SkillsFilters;
+  readonly page: number;
+  readonly ordering: SkillsControls["ordering"];
+}
+
+export const SkillsTableBody = async ({ filters, page, ordering }: SkillsTableBodyProps) => {
+  const skills = await getSkills({ page, filters, ordering });
   return <ClientSkillsTableBody data={skills} />;
 };
