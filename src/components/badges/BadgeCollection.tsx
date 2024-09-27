@@ -3,15 +3,12 @@ import React from "react";
 import type { BadgeSize } from "./types";
 
 import { classNames } from "~/components/types";
-import {
-  type ComponentProps,
-  type TypographyCharacteristics,
-  getTypographyClassName,
-} from "~/components/types";
+import { type ComponentProps } from "~/components/types";
+import { BaseTypography, type BaseTypographyProps } from "~/components/typography/BaseTypography";
 
 export interface BadgeCollectionChildrenProps
   extends ComponentProps,
-    Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> {
+    Omit<BaseTypographyProps<"div">, "lineClamp" | "align" | "truncate" | "component"> {
   readonly children: JSX.Element[];
   readonly size?: BadgeSize;
   readonly data?: never;
@@ -19,7 +16,10 @@ export interface BadgeCollectionChildrenProps
 
 export interface BadgeCollectionCallbackProps<M>
   extends ComponentProps,
-    Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> {
+    Omit<
+      BaseTypographyProps<"div">,
+      "lineClamp" | "align" | "truncate" | "children" | "component"
+    > {
   readonly data: M[];
   readonly size?: BadgeSize;
   readonly children: (model: M) => JSX.Element;
@@ -32,10 +32,6 @@ export type BadgeCollectionProps<M> =
 export const BadgeCollection = <M,>({
   data,
   children,
-  fontWeight,
-  fontSize,
-  transform,
-  fontFamily,
   size,
   ...props
 }: BadgeCollectionProps<M>): JSX.Element => {
@@ -56,17 +52,13 @@ export const BadgeCollection = <M,>({
     throw new TypeError("Invalid function implementation!");
   }
   return children.length !== 0 ? (
-    <div
+    <BaseTypography
       {...props}
-      className={classNames(
-        "badge-collection",
-        `badge-collection--size-${size}`,
-        getTypographyClassName({ fontSize, fontWeight, transform, fontFamily }),
-        props.className,
-      )}
+      component="div"
+      className={classNames("badge-collection", `badge-collection--size-${size}`, props.className)}
     >
       {children}
-    </div>
+    </BaseTypography>
   ) : (
     <></>
   );

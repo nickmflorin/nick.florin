@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 
 import { classNames } from "~/components/types";
-import { type ComponentProps, sizeToString, type Size } from "~/components/types";
+import { type ComponentProps, sizeToString, type QuantitativeSize } from "~/components/types";
 
 export interface CheckboxesProps extends ComponentProps {
   readonly orientation?: "horizontal" | "vertical";
-  readonly gap?: Size;
+  readonly gap?: QuantitativeSize<"px">;
   readonly children: ReactNode;
   readonly outer?: boolean;
 }

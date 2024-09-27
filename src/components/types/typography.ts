@@ -1,26 +1,92 @@
+import type React from "react";
+import { type ForwardedRef } from "react";
+
 /* eslint-disable-next-line no-restricted-imports */
 import clsx from "clsx";
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { omit } from "lodash-es";
 
+import type { QuantitativeSize } from "~/components/types/sizes";
+import { sizeToString } from "~/components/types/sizes";
+
 import { classNames } from "./classes";
 
-export const FontSizes = enumeratedLiterals(
+export const DiscreteFontSizes = enumeratedLiterals(
   ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
   {},
 );
-export type FontSize = EnumeratedLiteralsMember<typeof FontSizes>;
+export type DiscreteFontSize = EnumeratedLiteralsMember<typeof DiscreteFontSizes>;
 
-export type TitleOrder = 1 | 2 | 3 | 4 | 5 | 6;
-export type TitleComponent = `h${TitleOrder}`;
+export type FontSize =
+  | DiscreteFontSize
+  | QuantitativeSize<"px">
+  | QuantitativeSize<"rem">
+  | "inherit";
 
-export const TextAligns = enumeratedLiterals(
+export const DiscreteLineHeights = enumeratedLiterals(
+  ["xxxs", "xxs", "xs", "sm", "smplus", "md", "lg", "xl"] as const,
+  {},
+);
+export type DiscreteLineHeight = EnumeratedLiteralsMember<typeof DiscreteLineHeights>;
+
+export const LineHeightClassNames: { [key in DiscreteLineHeight]: `leading-${key}` } = {
+  xxxs: "leading-xxxs",
+  xxs: "leading-xxs",
+  xs: "leading-xs",
+  sm: "leading-sm",
+  smplus: "leading-smplus",
+  md: "leading-md",
+  lg: "leading-lg",
+  xl: "leading-xl",
+};
+
+export type LineHeight =
+  | DiscreteLineHeight
+  | QuantitativeSize<"px">
+  | QuantitativeSize<"rem">
+  | "inherit";
+
+export const TypographyVariants = enumeratedLiterals(["text", "title", "label"] as const, {});
+export type TypographyVariant = EnumeratedLiteralsMember<typeof TypographyVariants>;
+
+export type TypographyComponent<T extends TypographyVariant = TypographyVariant> = {
+  text: "span" | "div" | "p";
+  title: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div";
+  label: "label" | "div";
+}[T];
+
+export type AnyTypographyComponent =
+  | "div"
+  | "span"
+  | "p"
+  | "h1"
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6"
+  | "label";
+
+export type TypographyRef<C extends AnyTypographyComponent> = {
+  div: ForwardedRef<HTMLDivElement>;
+  span: ForwardedRef<HTMLSpanElement>;
+  p: ForwardedRef<HTMLParagraphElement>;
+  h1: ForwardedRef<HTMLHeadingElement>;
+  h2: ForwardedRef<HTMLHeadingElement>;
+  h3: ForwardedRef<HTMLHeadingElement>;
+  h4: ForwardedRef<HTMLHeadingElement>;
+  h5: ForwardedRef<HTMLHeadingElement>;
+  h6: ForwardedRef<HTMLHeadingElement>;
+  label: ForwardedRef<HTMLLabelElement>;
+}[C];
+
+export const DiscreteTextAligns = enumeratedLiterals(
   ["left", "center", "right", "justify", "start", "end"] as const,
   {},
 );
-export type TextAlign = EnumeratedLiteralsMember<typeof TextAligns>;
+export type DiscreteTextAlign = EnumeratedLiteralsMember<typeof DiscreteTextAligns>;
 
-export const TextAlignClassNames: { [key in TextAlign]: `text-${key}` } = {
+export const TextAlignClassNames: { [key in DiscreteTextAlign]: `text-${key}` } = {
   left: "text-left",
   center: "text-center",
   right: "text-right",
@@ -28,6 +94,8 @@ export const TextAlignClassNames: { [key in TextAlign]: `text-${key}` } = {
   start: "text-start",
   end: "text-end",
 };
+
+export type TextAlign = DiscreteTextAlign | "inherit";
 
 export const HorizontalFlexAligns = enumeratedLiterals(["left", "center", "right"] as const, {});
 export type HorizontalFlexAlign = EnumeratedLiteralsMember<typeof HorizontalFlexAligns>;
@@ -47,11 +115,13 @@ export const WhiteSpaceClassNames: { [key in WhiteSpace]: `whitespace-${key}` } 
   normal: "whitespace-normal",
 };
 
-export const FontWeights = enumeratedLiterals(
+export const DiscreteFontWeights = enumeratedLiterals(
   ["light", "regular", "medium", "semibold", "bold"] as const,
   {},
 );
-export type FontWeight = EnumeratedLiteralsMember<typeof FontWeights>;
+export type DiscreteFontWeight = EnumeratedLiteralsMember<typeof DiscreteFontWeights>;
+
+export type FontWeight = DiscreteFontWeight | "inherit";
 
 export const TitleFontSizeOrderMap = {
   xxxs: "h6",
@@ -62,7 +132,7 @@ export const TitleFontSizeOrderMap = {
   md: "h3",
   lg: "h2",
   xl: "h1",
-} as const satisfies { [key in FontSize]: TitleComponent };
+} as const satisfies { [key in DiscreteFontSize]: TypographyComponent<"title"> };
 
 export const TextTransforms = enumeratedLiterals(
   ["uppercase", "lowercase", "capitalize", "underline"] as const,
@@ -89,7 +159,7 @@ export const lineClampClassName = (clamp: LineClamp = 0) => {
   });
 };
 
-export interface TypographyCharacteristics {
+export type TypographyCharacteristics = {
   readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
   readonly fontFamily?: FontFamily;
@@ -98,9 +168,10 @@ export interface TypographyCharacteristics {
   readonly truncate?: boolean;
   readonly align?: TextAlign;
   readonly whiteSpace?: WhiteSpace;
-}
+  readonly lineHeight?: LineHeight;
+};
 
-const TypographyPropNames: { [key in keyof TypographyCharacteristics]: true } = {
+const TypographyPropNames: { [key in keyof Required<TypographyCharacteristics>]: true } = {
   fontSize: true,
   fontWeight: true,
   fontFamily: true,
@@ -109,6 +180,7 @@ const TypographyPropNames: { [key in keyof TypographyCharacteristics]: true } = 
   truncate: true,
   align: true,
   whiteSpace: true,
+  lineHeight: true,
 };
 
 export const omitTypographyProps = <T extends Record<string, unknown>>(
@@ -121,14 +193,48 @@ export const getTypographyClassName = (props: TypographyCharacteristics): string
     /* Note: The 'fontSize' class name cannot be called 'font-size-<size>' because it can conflict
        with Tailwind class names and confuses the TWMerge package:
        https://github.com/dcastil/tailwind-merge/blob/v2.4.0/docs/limitations.md  */
-    props.fontSize ? `f-size-${props.fontSize}` : "",
+    props.fontSize && DiscreteFontSizes.contains(props.fontSize) ? `f-size-${props.fontSize}` : "",
+    props.lineHeight && DiscreteLineHeights.contains(props.lineHeight)
+      ? LineHeightClassNames[props.lineHeight]
+      : "",
     props.fontFamily && `f-family-${props.fontFamily}`,
     props.transform && `f-transform-${props.transform}`,
-    props.fontWeight && `f-weight-${props.fontWeight}`,
-    props.align && TextAlignClassNames[props.align],
+    props.fontWeight && DiscreteFontWeights.contains(props.fontWeight)
+      ? `f-weight-${props.fontWeight}`
+      : "",
+    props.align && DiscreteTextAligns.contains(props.align) ? TextAlignClassNames[props.align] : "",
     props.whiteSpace && WhiteSpaceClassNames[props.whiteSpace],
     props.lineClamp !== undefined ? lineClampClassName(props.lineClamp) : "",
     { truncate: props.truncate },
   );
+
+export const getTypographyStyle = (props: TypographyCharacteristics): React.CSSProperties => ({
+  fontSize:
+    props.fontSize && !DiscreteFontSizes.contains(props.fontSize)
+      ? props.fontSize === "inherit"
+        ? "inherit"
+        : typeof props.fontSize === "number"
+          ? sizeToString(props.fontSize, "px")
+          : sizeToString(props.fontSize)
+      : undefined,
+  lineHeight:
+    props.lineHeight && !DiscreteLineHeights.contains(props.lineHeight)
+      ? props.lineHeight === "inherit"
+        ? "inherit"
+        : typeof props.lineHeight === "number"
+          ? sizeToString(props.lineHeight, "px")
+          : sizeToString(props.lineHeight)
+      : undefined,
+  textAlign: props.align && !DiscreteTextAligns.contains(props.align) ? props.align : undefined,
+  fontWeight:
+    props.fontWeight && !DiscreteFontWeights.contains(props.fontWeight)
+      ? props.fontWeight
+      : undefined,
+});
+
+export const getTypographyComponentProps = (props: TypographyCharacteristics) => ({
+  className: getTypographyClassName(props),
+  style: getTypographyStyle(props),
+});
 
 export type TypographyVisibilityState = "expanded" | "collapsed";

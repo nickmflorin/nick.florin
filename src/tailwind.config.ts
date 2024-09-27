@@ -30,6 +30,16 @@ const config = {
         "6xl": "1152px",
         "7xl": "1280px",
       },
+      lineHeight: {
+        xxxs: "14px",
+        xxs: "14px",
+        xs: "16px",
+        sm: "18px",
+        smplus: "18px",
+        md: "20px",
+        lg: "22px",
+        xl: "24px",
+      },
     },
     accentColor: ({ theme }) => ({
       ...theme("colors"),

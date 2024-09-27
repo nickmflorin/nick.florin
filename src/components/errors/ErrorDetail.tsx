@@ -5,16 +5,16 @@ import type * as types from "./types";
 import {
   type ComponentProps,
   classNames,
-  type Size,
   sizeToString,
   type TypographyCharacteristics,
+  type QuantitativeSize,
 } from "~/components/types";
 
 import { ErrorContent } from "./ErrorContent";
 import { ErrorTitle } from "./ErrorTitle";
 
 export interface ErrorDetailProps extends ComponentProps {
-  readonly gap?: Size;
+  readonly gap?: QuantitativeSize<"px">;
   readonly title?: string;
   readonly children?: types.ErrorContentType;
   readonly error?: types.ErrorType;

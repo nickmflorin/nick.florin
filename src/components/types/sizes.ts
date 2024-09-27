@@ -4,33 +4,55 @@ export type QualitativeSize = "fit-content";
 
 export type QuantitativeSizeString<
   U extends SizeUnit = SizeUnit,
-  T extends number = number,
-> = `${T}${U}`;
+  N extends number = number,
+> = `${N}${U}`;
 
-export type QuantitativeSize<U extends SizeUnit = SizeUnit> = QuantitativeSizeString<U> | number;
-export type SizeString<U extends SizeUnit = SizeUnit> = QuantitativeSizeString<U> | QualitativeSize;
+export type QuantitativeSize<U extends SizeUnit = SizeUnit, N extends number = number> =
+  | QuantitativeSizeString<U, N>
+  | N;
 
-export type Size<U extends SizeUnit = SizeUnit> = QuantitativeSize<U> | QualitativeSize;
+export type SizeString<U extends SizeUnit = SizeUnit, N extends number = number> =
+  | QuantitativeSizeString<U, N>
+  | QualitativeSize;
+
+export type Size<U extends SizeUnit = SizeUnit, N extends number = number> =
+  | QuantitativeSize<U, N>
+  | QualitativeSize;
 
 const QuantitativeSizeRegex = /^([0-9]*)(px|rem|%)$/;
 
-type SizeToStringRT<
-  T extends QuantitativeSizeString | QualitativeSize | number,
-  U extends SizeUnit,
-> = T extends number ? `${T}${U}` : T;
+export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
+  size: Size<U, N>,
+  unit: U,
+): QuantitativeSizeString<U, N>;
 
-export function sizeToString<
-  T extends QuantitativeSizeString | QualitativeSize | number,
-  U extends SizeUnit,
->(size: T, unit: U): SizeToStringRT<T, U> {
+export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
+  size: QuantitativeSizeString<U, N>,
+  unit?: U,
+): QuantitativeSizeString<U, N>;
+
+export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
+  size: N,
+  unit: U,
+): QuantitativeSizeString<U, N>;
+
+export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
+  size: QuantitativeSize<U, N>,
+  unit: U,
+): QuantitativeSizeString<U, N>;
+
+export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
+  size: N | QuantitativeSizeString<U, N> | QuantitativeSize<U, N> | Size<U, N>,
+  unit?: U,
+) {
   if (typeof size === "string") {
-    return size as SizeToStringRT<T, U>;
+    return size;
   } else if (unit === undefined) {
     throw new TypeError(
       "Invalid Function Implementation: The unit must be provided for numeric values.",
     );
   }
-  return `${size}${unit}` as SizeToStringRT<T, U>;
+  return `${size}${unit}`;
 }
 
 type SizeToNumberRT<T extends QuantitativeSize> = T extends `${infer N extends number}${SizeUnit}`

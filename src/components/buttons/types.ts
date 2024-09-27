@@ -7,12 +7,7 @@ import { type ForwardedRef } from "react";
 import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
 
 import { type IconProp, type IconName } from "~/components/icons";
-import {
-  type BorderRadius,
-  type ComponentProps,
-  type QuantitativeSize,
-  type Size,
-} from "~/components/types";
+import { type BorderRadius, type ComponentProps, type QuantitativeSize } from "~/components/types";
 
 export const ButtonLoadingLocations = enumeratedLiterals(["left", "over", "right"] as const, {});
 export type ButtonLoadingLocation = EnumeratedLiteralsMember<typeof ButtonLoadingLocations>;
@@ -52,7 +47,7 @@ export const ButtonDiscreteSizes = enumeratedLiterals(
 );
 export type ButtonDiscreteSize = EnumeratedLiteralsMember<typeof ButtonDiscreteSizes>;
 
-export type ButtonSize = ButtonDiscreteSize | Size;
+export type ButtonSize = ButtonDiscreteSize | QuantitativeSize<"px">;
 
 export const ButtonDiscreteIconSizes = enumeratedLiterals(
   ["xsmall", "small", "medium", "large", "xlarge", "full"] as const,

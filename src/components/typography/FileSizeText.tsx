@@ -1,22 +1,24 @@
+import { type TypographyComponent } from "~/components/types";
+
 import {
   FileSize,
   type FileSizeSizeProps,
   type FileSizeFileProps,
   type FileSizeProps,
 } from "./FileSize";
-import { Text, type TextProps, type TextComponent } from "./Text";
+import { Text, type TextProps } from "./Text";
 
-type FileSizeTextSizeProps<C extends TextComponent> = Omit<TextProps<C>, "children"> &
+type FileSizeTextSizeProps<C extends TypographyComponent<"text">> = Omit<TextProps<C>, "children"> &
   FileSizeSizeProps;
 
-type FileSizeTextFileProps<C extends TextComponent> = Omit<TextProps<C>, "children"> &
+type FileSizeTextFileProps<C extends TypographyComponent<"text">> = Omit<TextProps<C>, "children"> &
   FileSizeFileProps;
 
-export type FileSizeTextProps<C extends TextComponent> =
+export type FileSizeTextProps<C extends TypographyComponent<"text">> =
   | FileSizeTextSizeProps<C>
   | FileSizeTextFileProps<C>;
 
-export const FileSizeText = <C extends TextComponent>({
+export const FileSizeText = <C extends TypographyComponent<"text">>({
   file,
   fileSize,
   fontSize = "sm",

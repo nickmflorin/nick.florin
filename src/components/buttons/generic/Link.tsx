@@ -6,10 +6,11 @@ import * as types from "~/components/buttons";
 import {
   type TypographyCharacteristics,
   type ComponentProps,
-  type Size,
   type QuantitativeSize,
   classNames,
   getTypographyClassName,
+  omitTypographyProps,
+  getTypographyStyle,
 } from "~/components/types";
 
 import { AbstractButton } from "./AbstractButton";
@@ -29,7 +30,7 @@ export type LinkProps<E extends types.ButtonElement> = Omit<
     readonly iconSize?: types.ButtonIconSize;
     readonly spinnerSize?: QuantitativeSize<"px">;
     readonly spinnerClassName?: ComponentProps["className"];
-    readonly gap?: Size;
+    readonly gap?: QuantitativeSize<"px">;
     readonly loadingLocation?: types.ButtonLoadingLocation;
   };
 
@@ -44,25 +45,22 @@ const LocalLink = forwardRef(
       loadingLocation,
       iconSize,
       spinnerSize,
-      fontSize,
-      fontFamily,
-      fontWeight,
-      transform,
-      truncate = false,
       ...props
     }: LinkProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ) => {
-    const ps = { ...props, buttonType: "link", ref } as types.AbstractButtonProps<E> & {
+    const ps = {
+      ...omitTypographyProps(props),
+      buttonType: "link",
+      ref,
+    } as types.AbstractButtonProps<E> & {
       readonly ref?: types.PolymorphicButtonRef<E>;
     };
     return (
       <AbstractButton
         {...ps}
-        className={classNames(
-          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform, truncate }),
-          props.className,
-        )}
+        className={classNames(getTypographyClassName(props), props.className)}
+        style={{ ...getTypographyStyle(props), ...props.style }}
       >
         <ButtonContent
           gap={gap}

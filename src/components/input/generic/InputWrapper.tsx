@@ -15,6 +15,8 @@ import {
   BorderRadii,
   type BorderRadius,
   getTypographyClassName,
+  getTypographyStyle,
+  omitTypographyProps,
 } from "~/components/types";
 
 type WrapperComponentName = "div" | "textarea";
@@ -52,18 +54,16 @@ export const InputWrapper = forwardRef(
       isLoading = false,
       isLocked = false,
       isReadOnly = false,
-      fontSize,
-      fontFamily,
-      fontWeight,
       variant = InputVariants.PRIMARY,
       ...props
     }: InputWrapperProps<C>,
     ref: ForwardedRef<WrapperElement<C>>,
   ): JSX.Element => {
     const ps = {
-      ...props,
+      ...omitTypographyProps(props),
       ref,
       children,
+      style: { ...getTypographyStyle(props), ...props.style },
       className: classNames(
         "input",
         `input--size-${size}`,
@@ -77,7 +77,7 @@ export const InputWrapper = forwardRef(
           "input--active": isActive,
           "input--read-only": isReadOnly,
         },
-        getTypographyClassName({ fontSize, fontFamily, fontWeight }),
+        getTypographyClassName(props),
         props.className,
       ),
     };

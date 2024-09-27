@@ -1,28 +1,31 @@
-import { forwardRef, type ReactNode } from "react";
+import { forwardRef, type ForwardedRef } from "react";
 
-import {
-  type ComponentProps,
-  classNames,
-  type TypographyCharacteristics,
-  getTypographyClassName,
-} from "~/components/types";
-import { omitTypographyProps } from "~/components/types";
+import { type TypographyRef, type TypographyComponent } from "~/components/types";
 
-export interface LabelProps
-  extends TypographyCharacteristics,
-    ComponentProps,
-    Omit<React.ComponentProps<"label">, keyof ComponentProps> {
-  readonly children: ReactNode;
-}
+import { Typography, type TypographyProps } from "./Typography";
 
-export const Label = forwardRef<HTMLLabelElement, LabelProps>(
-  ({ children, ...props }: LabelProps, ref): JSX.Element => (
-    <label
-      {...omitTypographyProps(props)}
-      ref={ref}
-      className={classNames("label", getTypographyClassName(props), props.className)}
-    >
-      {children}
-    </label>
-  ),
-);
+export type LabelProps<C extends TypographyComponent<"label">> = Omit<
+  TypographyProps<"label", C>,
+  "variant" | "component"
+> & {
+  readonly component?: C;
+};
+
+export const Label = forwardRef(
+  <C extends TypographyComponent<"label">>(
+    { component = "div" as C, ...props }: LabelProps<C>,
+    ref: ForwardedRef<TypographyRef<C>>,
+  ): JSX.Element => {
+    const ps = {
+      ...props,
+      component,
+      variant: "label",
+    } as TypographyProps<"label", C>;
+
+    return <Typography {...ps} ref={ref as TypographyRef<C>} />;
+  },
+) as {
+  <C extends TypographyComponent<"label">>(
+    props: LabelProps<C> & { readonly ref?: TypographyRef<C> },
+  ): JSX.Element;
+};

@@ -11,7 +11,7 @@ export interface MenuItemGroupProps extends MenuContentProps<"group"> {
   readonly label?: ReactNode;
   readonly contentClassName?: ComponentProps["className"];
   readonly labelContainerClassName?: ComponentProps["className"];
-  readonly labelProps?: Omit<LabelProps, "className" | "children" | "ref">;
+  readonly labelProps?: Omit<LabelProps<"label">, "className" | "children" | "ref">;
   readonly labelClassName?: ComponentProps["className"];
 }
 

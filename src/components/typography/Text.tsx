@@ -1,87 +1,31 @@
-import React, { forwardRef, type ForwardedRef } from "react";
+import { forwardRef, type ForwardedRef } from "react";
 
-import { isFragment } from "react-is";
+import { type TypographyRef, type TypographyComponent } from "~/components/types";
 
-import {
-  type ComponentProps,
-  type TypographyCharacteristics,
-  getTypographyClassName,
-  classNames,
-} from "~/components/types";
-import { omitTypographyProps } from "~/components/types";
+import { Typography, type TypographyProps } from "./Typography";
 
-export type TextComponent = "span" | "div" | "p";
+export type TextProps<C extends TypographyComponent<"text">> = Omit<
+  TypographyProps<"text", C>,
+  "variant" | "component"
+> & {
+  readonly component?: C;
+};
 
-type PolymorphicTextProps<T extends TextComponent> = Omit<
-  React.ComponentProps<T>,
-  keyof ComponentProps | "ref"
->;
-
-type PolymorphicTextRef<T extends TextComponent> = {
-  div: ForwardedRef<HTMLDivElement>;
-  p: ForwardedRef<HTMLParagraphElement>;
-  span: ForwardedRef<HTMLSpanElement>;
-}[T];
-
-export type TextProps<C extends TextComponent> = TypographyCharacteristics &
-  ComponentProps &
-  PolymorphicTextProps<C> & {
-    readonly component?: TextComponent;
-    readonly flex?: boolean;
-    readonly inherit?: boolean;
-    readonly isDisabled?: boolean;
-  };
-
-export const Text = forwardRef<HTMLDivElement, TextProps<TextComponent>>(
-  <C extends TextComponent>(
-    {
-      component = "div",
-      flex = false,
-      inherit = false,
-      isDisabled = false,
-      ...props
-    }: TextProps<C>,
-    ref: PolymorphicTextRef<C>,
+export const Text = forwardRef(
+  <C extends TypographyComponent<"text">>(
+    { component = "div" as C, ...props }: TextProps<C>,
+    ref: ForwardedRef<TypographyRef<C>>,
   ): JSX.Element => {
-    if (
-      isFragment(props.children) ||
-      props.children === undefined ||
-      props.children === null ||
-      typeof props.children === "boolean" ||
-      (typeof props.children === "string" && props.children === "")
-    ) {
-      return <></>;
-    }
     const ps = {
-      ...omitTypographyProps(props),
-      className: classNames(
-        "body",
-        {
-          "body--inherit": inherit,
-          ["flex flex-row items-center"]: flex,
-          "text-disabled": isDisabled,
-        },
-        getTypographyClassName(props),
-        props.className,
-      ),
-    };
-    switch (component) {
-      case "span": {
-        const p = ps as React.ComponentProps<"span">;
-        return <span {...p} ref={ref as PolymorphicTextRef<"span">} />;
-      }
-      case "div": {
-        const p = ps as React.ComponentProps<"div">;
-        return <div {...p} ref={ref as PolymorphicTextRef<"div">} />;
-      }
-      case "p": {
-        const p = ps as React.ComponentProps<"p">;
-        return <p {...p} ref={ref as PolymorphicTextRef<"p">} />;
-      }
-    }
+      ...props,
+      component,
+      variant: "text",
+    } as TypographyProps<"text", C>;
+
+    return <Typography {...ps} ref={ref as TypographyRef<C>} />;
   },
 ) as {
-  <C extends TextComponent>(
-    props: TextProps<C> & { readonly ref?: PolymorphicTextRef<C> },
+  <C extends TypographyComponent<"text">>(
+    props: TextProps<C> & { readonly ref?: TypographyRef<C> },
   ): JSX.Element;
 };

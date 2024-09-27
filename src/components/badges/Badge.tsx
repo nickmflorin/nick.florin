@@ -3,21 +3,12 @@ import React, { type ReactNode } from "react";
 import { IconButton } from "~/components/buttons";
 import { type IconProp, type IconName, isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import {
-  type ComponentProps,
-  FontWeights,
-  getTypographyClassName,
-  type TypographyCharacteristics,
-  type BorderRadius,
-  classNames,
-} from "~/components/types";
+import { type ComponentProps, type BorderRadius, classNames } from "~/components/types";
+import { BaseTypography, type BaseTypographyProps } from "~/components/typography/BaseTypography";
 
 import { type BadgeSize, BadgeSizes } from "./types";
 
-export interface BadgeProps
-  extends ComponentProps,
-    Omit<TypographyCharacteristics, "lineClamp">,
-    Pick<React.ComponentProps<"div">, "onClick"> {
+export interface BadgeProps extends Omit<BaseTypographyProps<"div">, "lineClamp" | "component"> {
   readonly children: ReactNode;
   readonly iconClassName?: ComponentProps["className"];
   readonly icon?: IconProp | IconName | JSX.Element | null;
@@ -28,34 +19,21 @@ export interface BadgeProps
 
 export const Badge = ({
   children,
-  fontWeight = FontWeights.MEDIUM,
-  fontSize,
   size = BadgeSizes.SM,
   icon,
-  transform,
-  fontFamily,
   iconClassName,
   radius,
-  align,
-  truncate,
   onClose,
   ...props
 }: BadgeProps): JSX.Element => (
-  <div
+  <BaseTypography<"div">
     {...props}
+    component="div"
     className={classNames(
       "badge",
       `badge--size-${size}`,
       radius ? `badge--radius-${radius}` : "",
       { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
-      getTypographyClassName({
-        fontWeight,
-        transform,
-        fontFamily,
-        fontSize,
-        align,
-        truncate,
-      }),
       props.className,
     )}
   >
@@ -79,7 +57,7 @@ export const Badge = ({
         />
       )}
     </div>
-  </div>
+  </BaseTypography>
 );
 
 export default Badge;

@@ -8,18 +8,13 @@ import { isIconProp, type IconProp, type IconName } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { Spinner } from "~/components/icons/Spinner";
 import { classNames } from "~/components/types";
-import {
-  type ComponentProps,
-  type Size,
-  sizeToString,
-  type QuantitativeSize,
-} from "~/components/types";
+import { type ComponentProps, sizeToString, type QuantitativeSize } from "~/components/types";
 
 export interface ButtonContentProps extends ComponentProps {
   readonly children?: ReactNode;
   readonly isLoading?: boolean;
   readonly icon?: types.ButtonIconProp;
-  readonly gap?: Size;
+  readonly gap?: QuantitativeSize<"px">;
   readonly iconSize?: types.ButtonIconSize;
   readonly spinnerSize?: QuantitativeSize<"px">;
   readonly iconClassName?: ComponentProps["className"];

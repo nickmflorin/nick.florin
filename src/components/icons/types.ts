@@ -9,7 +9,7 @@ import { z } from "zod";
 export type IconName = RootIconName;
 
 import { type ComponentProps } from "~/components/types";
-import { type Size } from "~/components/types/sizes";
+import { type QuantitativeSize } from "~/components/types/sizes";
 
 export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
 export type IconDimension = EnumeratedLiteralsMember<typeof IconDimensions>;
@@ -23,7 +23,7 @@ export const IconDiscreteSizes = enumeratedLiterals(
 );
 
 export type IconDiscreteSize = EnumeratedLiteralsMember<typeof IconDiscreteSizes>;
-export type IconSize = IconDiscreteSize | Size;
+export type IconSize = IconDiscreteSize | QuantitativeSize<"px">;
 
 export type IconFamily = Exclude<RootIconFamily, "duotone" | "sharp-duotone">;
 

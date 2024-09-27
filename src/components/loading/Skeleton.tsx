@@ -1,9 +1,9 @@
-import type { ComponentProps, Size } from "~/components/types";
+import type { ComponentProps, QuantitativeSize } from "~/components/types";
 import { classNames } from "~/components/types";
 
 export interface SkeletonProps extends ComponentProps {
-  readonly height?: Size;
-  readonly width?: Size;
+  readonly height?: QuantitativeSize<"px" | "%">;
+  readonly width?: QuantitativeSize<"px" | "%">;
 }
 
 export const Skeleton = ({ height, width, ...props }: SkeletonProps) => (

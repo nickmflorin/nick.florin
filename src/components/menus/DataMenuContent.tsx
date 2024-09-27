@@ -49,7 +49,7 @@ export interface DataMenuContentProps<M extends types.DataMenuModel>
   readonly enableKeyboardInteractions?: boolean;
   readonly groupContentClassName?: ComponentProps["className"];
   readonly groupLabelContainerClassName?: ComponentProps["className"];
-  readonly groupLabelProps?: Omit<LabelProps, "className" | "children">;
+  readonly groupLabelProps?: Omit<LabelProps<"label">, "className" | "children">;
   readonly groupLabelClassName?: ComponentProps["className"];
   readonly itemIsSelected: (datum: M) => boolean;
   readonly itemIsDisabled?: (datum: M) => boolean;

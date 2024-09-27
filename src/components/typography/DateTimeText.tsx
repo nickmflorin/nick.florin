@@ -2,12 +2,19 @@ import { DateTime, type DateTimeFormatOptions } from "luxon";
 
 import { logger } from "~/internal/logger";
 
-import { type ComponentProps, type TypographyCharacteristics } from "~/components/types";
+import {
+  type ComponentProps,
+  type TypographyCharacteristics,
+  type TypographyComponent,
+} from "~/components/types";
 import { classNames } from "~/components/types";
 
-import { Text, type TextComponent, type TextProps } from "./Text";
+import { Text, type TextProps } from "./Text";
 
-type BaseDateTimeTextProps<C extends TextComponent> = Omit<TextProps<C>, "children" | "ref"> & {
+type BaseDateTimeTextProps<C extends TypographyComponent<"text">> = Omit<
+  TextProps<C>,
+  "children" | "ref"
+> & {
   readonly format?: DateTimeFormatOptions | string;
   readonly strict?: boolean;
   readonly timeFormat?: never;
@@ -33,17 +40,17 @@ type BaseSeparatedDateTimeTextProps = ComponentProps &
 
 type DateTimeProp = DateTime | string | Date;
 
-type DateTimeValueProps<C extends TextComponent> = BaseDateTimeTextProps<C> & {
+type DateTimeValueProps<C extends TypographyComponent<"text">> = BaseDateTimeTextProps<C> & {
   readonly value: DateTimeProp;
   readonly children?: never;
 };
 
-type DateTimeChildrenProps<C extends TextComponent> = BaseDateTimeTextProps<C> & {
+type DateTimeChildrenProps<C extends TypographyComponent<"text">> = BaseDateTimeTextProps<C> & {
   readonly children: string;
   readonly value?: never;
 };
 
-type DateTimeRenderProps<C extends TextComponent> = BaseDateTimeTextProps<C> & {
+type DateTimeRenderProps<C extends TypographyComponent<"text">> = BaseDateTimeTextProps<C> & {
   readonly value: DateTimeProp;
   readonly children: (params: { value: DateTime; text: string }) => JSX.Element;
 };
@@ -58,14 +65,14 @@ type SeparatedDateTimeChildrenProp = BaseSeparatedDateTimeTextProps & {
   readonly value?: never;
 };
 
-export type DateTimeProps<C extends TextComponent> =
+export type DateTimeProps<C extends TypographyComponent<"text">> =
   | DateTimeChildrenProps<C>
   | DateTimeValueProps<C>
   | DateTimeRenderProps<C>
   | SeparatedDateTimeChildrenProp
   | SeparatedDateTimeValueProps;
 
-const parser = <C extends TextComponent>(
+const parser = <C extends TypographyComponent<"text">>(
   value: DateTimeProp,
   { strict }: Required<Pick<BaseDateTimeTextProps<C>, "strict">>,
 ): DateTime | null => {
@@ -113,7 +120,7 @@ const parser = <C extends TextComponent>(
   return dt;
 };
 
-export const DateTimeText = <C extends TextComponent>({
+export const DateTimeText = <C extends TypographyComponent<"text">>({
   value,
   children,
   format = DateTime.DATETIME_MED,

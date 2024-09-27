@@ -6,16 +6,16 @@ import {
   classNames,
   type TypographyCharacteristics,
 } from "~/components/types";
-import { type Size, sizeToString } from "~/components/types/sizes";
+import { type QuantitativeSize, sizeToString } from "~/components/types/sizes";
 
 import { Text } from "./Text";
 
 export interface PipedTextProps extends TypographyCharacteristics, ComponentProps {
   readonly children: (string | JSX.Element | null | undefined)[];
-  readonly gap?: Size;
+  readonly gap?: QuantitativeSize<"px">;
   readonly textClassName?: ComponentProps["className"];
   readonly pipeClassName?: ComponentProps["className"];
-  readonly pipeSize?: Size;
+  readonly pipeSize?: QuantitativeSize<"px">;
 }
 
 export const PipedText = ({

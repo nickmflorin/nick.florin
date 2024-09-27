@@ -47,7 +47,7 @@ type BaseAbstractFieldProps<T> = T &
     readonly description?: string;
     readonly helpText?: string;
     readonly helpTextClassName?: ComponentProps["className"];
-    readonly labelProps?: Omit<LabelProps, "children" | keyof ComponentProps>;
+    readonly labelProps?: Omit<LabelProps<"label">, "children" | keyof ComponentProps>;
     readonly labelClassName?: ComponentProps["className"];
   };
 

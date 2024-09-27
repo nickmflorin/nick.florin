@@ -10,14 +10,14 @@ import {
 } from "@floating-ui/react";
 
 import type * as types from "~/components/floating/types";
-import { type QuantitativeSize, type Size, sizeToNumber, sizeToString } from "~/components/types";
+import { type QuantitativeSize, sizeToNumber, sizeToString } from "~/components/types";
 
 import { useFloating, type UseFloatingConfig } from "./use-floating";
 
 export interface UsePopoverConfig extends Omit<UseFloatingConfig, "triggers" | "placement"> {
   readonly offset?: OffsetOptions;
   readonly width?: QuantitativeSize<"px"> | "target" | "available" | "fit-content";
-  readonly maxHeight?: Size<"px">;
+  readonly maxHeight?: QuantitativeSize<"px"> | "fit-content";
   readonly triggers?: ["click", "hover"] | ["click"] | ["hover"] | ["hover", "click"];
   readonly placement?: Placement | "auto";
   readonly allowedPlacements?: Placement[];
@@ -63,10 +63,10 @@ export const usePopover = ({
             Object.assign(elements.floating.style, {
               maxHeight: `${availableHeight - 10}px`,
             });
-            // flushSync(() => setMaxHeight(`${availableHeight - 10}px`));
           } else {
             Object.assign(elements.floating.style, {
-              maxHeight: maxHeight !== "fit-content" ? `${sizeToNumber(maxHeight)}px` : maxHeight,
+              maxHeight:
+                maxHeight !== "fit-content" ? `${sizeToNumber(maxHeight)}px` : "fit-content",
             });
           }
         },

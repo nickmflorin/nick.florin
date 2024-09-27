@@ -12,7 +12,6 @@ import {
   type TypographyCharacteristics,
   classNames,
   type ComponentProps,
-  type Size,
   type QuantitativeSize,
   getTypographyClassName,
 } from "~/components/types";
@@ -36,7 +35,7 @@ export type ButtonProps<E extends types.ButtonElement> = Omit<
     readonly iconSize?: types.ButtonIconSize;
     readonly spinnerSize?: QuantitativeSize<"px">;
     readonly spinnerClassName?: ComponentProps["className"];
-    readonly gap?: Size;
+    readonly gap?: QuantitativeSize<"px">;
     readonly size?: types.ButtonSize;
     readonly loadingLocation?: types.ButtonLoadingLocation;
   };
