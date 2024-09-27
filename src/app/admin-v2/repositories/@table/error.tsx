@@ -1,8 +1,15 @@
 "use client";
 import { ErrorView } from "~/components/errors/ErrorView";
+import { RepositoriesTableControlBarPlaceholder } from "~/features/repositories/components/tables-v2/RepositoriesTableControlBarPlaceholder";
 
-export default function Error() {
+export default function LoadingPage() {
   return (
-    <ErrorView>There was an error loading the repositories. Do not worry, we are on it.</ErrorView>
+    <>
+      <RepositoriesTableControlBarPlaceholder />
+      <ErrorView>
+        There was an error loading the repositories. Do not worry, we are on it.
+      </ErrorView>
+      ;
+    </>
   );
 }

@@ -25,20 +25,77 @@ export const EducationOrderableFields = [
 
 export type EducationOrderableField = (typeof EducationOrderableFields)[number];
 
-export const EducationsDefaultOrdering: Ordering<"startDate"> = {
+export const EducationsDefaultOrdering: Ordering<"startDate", "desc"> = {
   orderBy: "startDate",
   order: "desc",
-};
+} satisfies Ordering<EducationOrderableField>;
 
-export const EducationsOrderingMap = {
-  major: order => [{ major: order }] as const,
-  shortMajor: order => [{ shortMajor: order }] as const,
-  createdAt: order => [{ createdAt: order }] as const,
-  updatedAt: order => [{ updatedAt: order }] as const,
-  startDate: order => [{ startDate: order }] as const,
-  endDate: order => [{ endDate: order }] as const,
-  school: order => [{ school: { name: order } }] as const,
-} as const satisfies { [key in EducationOrderableField]: (order: Order) => unknown[] };
+type EducationsMappedPrismaOrdering<
+  F extends EducationOrderableField = EducationOrderableField,
+  O extends Order = Order,
+> = {
+  readonly major: { major: O };
+  readonly shortMajor: { shortMajor: O };
+  readonly startDate: { startDate: O };
+  readonly createdAt: { createdAt: O };
+  readonly updatedAt: { updatedAt: O };
+  readonly endDate: { endDate: O };
+  readonly school: { school: { name: O } };
+}[F];
+
+export const EducationsOrderingMap = <O extends Order>(order: O) =>
+  ({
+    major: { major: order } as const,
+    shortMajor: { shortMajor: order } as const,
+    createdAt: { createdAt: order } as const,
+    updatedAt: { updatedAt: order } as const,
+    startDate: { startDate: order } as const,
+    endDate: { endDate: order } as const,
+    school: { school: { name: order } } as const,
+  }) satisfies { [key in EducationOrderableField]: EducationsMappedPrismaOrdering<key, O> };
+
+type PrismaOrdering<F extends string, O extends Order = Order> = F extends string
+  ? { [key in F]: O }
+  : never;
+
+type OrderingToPrisma<O extends Ordering> =
+  O extends Ordering<infer F, infer Or> ? PrismaOrdering<F, Or> : never;
+
+export const getEducationsOrdering = <F extends EducationOrderableField, O extends Order>(
+  ordering?: Ordering<F, O>,
+): (
+  | EducationsMappedPrismaOrdering<F, O>
+  | PrismaOrdering<"id", "desc">
+  | PrismaOrdering<"createdAt", "desc">
+  | OrderingToPrisma<typeof EducationsDefaultOrdering>
+)[] => {
+  if (ordering) {
+    const map = EducationsOrderingMap(ordering.order)[ordering.orderBy];
+    const arr: (
+      | EducationsMappedPrismaOrdering<F, O>
+      | PrismaOrdering<"id", "desc">
+      | PrismaOrdering<"createdAt", "desc">
+      | undefined
+    )[] = [
+      map,
+      ordering.orderBy !== "createdAt" ? { createdAt: "desc" } : undefined,
+      { id: "desc" },
+    ];
+    return arr.filter(
+      (
+        v,
+      ): v is
+        | EducationsMappedPrismaOrdering<F, O>
+        | PrismaOrdering<"id", "desc">
+        | PrismaOrdering<"createdAt", "desc"> => v !== undefined,
+    );
+  }
+  return [
+    { [EducationsDefaultOrdering.orderBy]: EducationsDefaultOrdering.order },
+    { createdAt: "desc" },
+    { id: "desc" },
+  ] as const;
+};
 
 export interface EducationsFilters {
   readonly highlighted: boolean | null;
@@ -85,7 +142,9 @@ export const EducationsFiltersObj = Filters({
     defaultValue: null,
     excludeWhen: v => v === null,
   },
-  search: { schema: z.string(), defaultValue: "", excludeWhen: (v: string) => v.length === 0 },
+  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
+     present in query params for initial URL but then is cleared. */
+  search: { schema: z.string(), defaultValue: "" },
   courses: {
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,

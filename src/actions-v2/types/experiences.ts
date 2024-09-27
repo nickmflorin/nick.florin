@@ -23,20 +23,77 @@ export const ExperienceOrderableFields = [
 
 export type ExperienceOrderableField = (typeof ExperienceOrderableFields)[number];
 
-export const ExperiencesDefaultOrdering: Ordering<"startDate"> = {
+export const ExperiencesDefaultOrdering: Ordering<"startDate", "desc"> = {
   orderBy: "startDate",
   order: "desc",
-};
+} satisfies Ordering<ExperienceOrderableField>;
 
-export const ExperiencesOrderingMap = {
-  title: order => [{ title: order }] as const,
-  shortTitle: order => [{ shortTitle: order }] as const,
-  createdAt: order => [{ createdAt: order }] as const,
-  updatedAt: order => [{ updatedAt: order }] as const,
-  startDate: order => [{ startDate: order }] as const,
-  endDate: order => [{ endDate: order }] as const,
-  company: order => [{ company: { name: order } }] as const,
-} as const satisfies { [key in ExperienceOrderableField]: (order: Order) => unknown[] };
+type ExperiencesMappedPrismaOrdering<
+  F extends ExperienceOrderableField = ExperienceOrderableField,
+  O extends Order = Order,
+> = {
+  readonly title: { title: O };
+  readonly shortTitle: { shortTitle: O };
+  readonly startDate: { startDate: O };
+  readonly createdAt: { createdAt: O };
+  readonly updatedAt: { updatedAt: O };
+  readonly endDate: { endDate: O };
+  readonly company: { company: { name: O } };
+}[F];
+
+export const ExperiencesOrderingMap = <O extends Order>(order: O) =>
+  ({
+    title: { title: order } as const,
+    shortTitle: { shortTitle: order } as const,
+    createdAt: { createdAt: order } as const,
+    updatedAt: { updatedAt: order } as const,
+    startDate: { startDate: order } as const,
+    endDate: { endDate: order } as const,
+    company: { company: { name: order } } as const,
+  }) satisfies { [key in ExperienceOrderableField]: ExperiencesMappedPrismaOrdering<key, O> };
+
+type PrismaOrdering<F extends string, O extends Order = Order> = F extends string
+  ? { [key in F]: O }
+  : never;
+
+type OrderingToPrisma<O extends Ordering> =
+  O extends Ordering<infer F, infer Or> ? PrismaOrdering<F, Or> : never;
+
+export const getExperiencesOrdering = <F extends ExperienceOrderableField, O extends Order>(
+  ordering?: Ordering<F, O>,
+): (
+  | ExperiencesMappedPrismaOrdering<F, O>
+  | PrismaOrdering<"id", "desc">
+  | PrismaOrdering<"createdAt", "desc">
+  | OrderingToPrisma<typeof ExperiencesDefaultOrdering>
+)[] => {
+  if (ordering) {
+    const map = ExperiencesOrderingMap(ordering.order)[ordering.orderBy];
+    const arr: (
+      | ExperiencesMappedPrismaOrdering<F, O>
+      | PrismaOrdering<"id", "desc">
+      | PrismaOrdering<"createdAt", "desc">
+      | undefined
+    )[] = [
+      map,
+      ordering.orderBy !== "createdAt" ? { createdAt: "desc" } : undefined,
+      { id: "desc" },
+    ];
+    return arr.filter(
+      (
+        v,
+      ): v is
+        | ExperiencesMappedPrismaOrdering<F, O>
+        | PrismaOrdering<"id", "desc">
+        | PrismaOrdering<"createdAt", "desc"> => v !== undefined,
+    );
+  }
+  return [
+    { [ExperiencesDefaultOrdering.orderBy]: ExperiencesDefaultOrdering.order },
+    { createdAt: "desc" },
+    { id: "desc" },
+  ] as const;
+};
 
 export interface ExperiencesFilters {
   readonly highlighted: boolean | null;
@@ -75,7 +132,9 @@ export const ExperiencesFiltersObj = Filters({
     defaultValue: null,
     excludeWhen: v => v === null,
   },
-  search: { schema: z.string(), defaultValue: "", excludeWhen: (v: string) => v.length === 0 },
+  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
+     present in query params for initial URL but then is cleared. */
+  search: { schema: z.string(), defaultValue: "" },
   skills: {
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,

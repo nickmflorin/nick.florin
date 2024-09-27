@@ -28,30 +28,66 @@ export const SkillOrderableFields = [
 
 export type SkillOrderableField = (typeof SkillOrderableFields)[number];
 
-export const SkillsDefaultOrdering: Ordering<"label"> = {
+export const SkillsDefaultOrdering: Ordering<"label", "asc"> = {
   orderBy: "label",
   order: "asc",
-};
+} satisfies Ordering<SkillOrderableField>;
 
-export const SkillsOrderingMap = {
-  label: order => [{ label: order }] as const,
-  slug: order => [{ slug: order }] as const,
-  createdAt: order => [{ createdAt: order }] as const,
-  updatedAt: order => [{ updatedAt: order }] as const,
-  calculatedExperience: order => [{ calculatedExperience: order }] as const,
-} as const satisfies { [key in SkillOrderableField]: (order: Order) => unknown[] };
+type SkillsMappedPrismaOrdering<
+  F extends SkillOrderableField = SkillOrderableField,
+  O extends Order = Order,
+> = {
+  readonly slug: { slug: O };
+  readonly label: { label: O };
+  readonly createdAt: { createdAt: O };
+  readonly updatedAt: { updatedAt: O };
+  readonly calculatedExperience: { calculatedExperience: O };
+}[F];
 
-type PrismaOrdering<F extends string> = F extends string ? { [key in F]: Order } : never;
+export const SkillsOrderingMap = <O extends Order>(order: O) =>
+  ({
+    slug: { slug: order } as const,
+    label: { label: order } as const,
+    createdAt: { createdAt: order } as const,
+    updatedAt: { updatedAt: order } as const,
+    calculatedExperience: { calculatedExperience: order } as const,
+  }) satisfies { [key in SkillOrderableField]: SkillsMappedPrismaOrdering<key, O> };
 
-export const getSkillsOrdering = (
-  ordering?: Ordering<SkillOrderableField>,
-): PrismaOrdering<SkillOrderableField | "id">[] => {
+type PrismaOrdering<F extends string, O extends Order = Order> = F extends string
+  ? { [key in F]: O }
+  : never;
+
+type OrderingToPrisma<O extends Ordering> =
+  O extends Ordering<infer F, infer Or> ? PrismaOrdering<F, Or> : never;
+
+export const getSkillsOrdering = <F extends SkillOrderableField, O extends Order>(
+  ordering?: Ordering<F, O>,
+): (
+  | SkillsMappedPrismaOrdering<F, O>
+  | PrismaOrdering<"id", "desc">
+  | PrismaOrdering<"createdAt", "desc">
+  | OrderingToPrisma<typeof SkillsDefaultOrdering>
+)[] => {
   if (ordering) {
-    return [
-      ...SkillsOrderingMap[ordering.orderBy](ordering.order),
+    const map = SkillsOrderingMap(ordering.order)[ordering.orderBy];
+    const arr: (
+      | SkillsMappedPrismaOrdering<F, O>
+      | PrismaOrdering<"id", "desc">
+      | PrismaOrdering<"createdAt", "desc">
+      | undefined
+    )[] = [
+      map,
       ordering.orderBy !== "createdAt" ? { createdAt: "desc" } : undefined,
       { id: "desc" },
-    ].filter((v): v is PrismaOrdering<SkillOrderableField | "id"> => v !== undefined);
+    ];
+    return arr.filter(
+      (
+        v,
+      ): v is
+        | SkillsMappedPrismaOrdering<F, O>
+        | PrismaOrdering<"id", "desc">
+        | PrismaOrdering<"createdAt", "desc"> => v !== undefined,
+    );
   }
   return [
     { [SkillsDefaultOrdering.orderBy]: SkillsDefaultOrdering.order },

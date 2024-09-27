@@ -3,7 +3,8 @@ import { Suspense } from "react";
 
 import { DataTableProvider } from "~/components/tables-v2/DataTableProvider";
 import { SkillsTableColumns, type SkillsTableColumnId } from "~/features/skills";
-import { SkillsDataTableWrapper } from "~/features/skills/components/tables-v2/SkillsDataTableWrapper";
+
+import { SkillsDataTableWrapper } from "./SkillsDataTableWrapper";
 
 export interface SkillsTableWrapperProps {
   readonly children: ReactNode;

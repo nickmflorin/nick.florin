@@ -1,27 +1,35 @@
-import { type CoursesFilters } from "~/actions-v2";
+import { Suspense } from "react";
+
 import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
 
 import { CoursesTableFilterBar as ClientCoursesTableFilterBar } from "~/features/courses/components/tables-v2/CoursesTableFilterBar";
 
-export interface CoursesTableFilterBarProps {
-  readonly filters: CoursesFilters;
-}
-
-export const CoursesTableFilterBar = async ({
-  filters,
-}: CoursesTableFilterBarProps): Promise<JSX.Element> => {
-  const skillFetcher = fetchSkills([]);
-  const { data: skills } = await skillFetcher(
+const getSkills = async () => {
+  const skillsFetcher = fetchSkills([]);
+  const { data: skills } = await skillsFetcher(
     { visibility: "admin", filters: {} },
     { strict: true },
   );
 
+  return skills;
+};
+
+const getEducations = async () => {
   const educationFetcher = fetchEducations([]);
   const { data: educations } = await educationFetcher(
     { visibility: "admin", filters: {} },
     { strict: true },
   );
+  return educations;
+};
 
-  return <ClientCoursesTableFilterBar filters={filters} educations={educations} skills={skills} />;
+export const CoursesTableFilterBar = async (): Promise<JSX.Element> => {
+  const [skills, educations] = await Promise.all([getSkills(), getEducations()]);
+
+  return (
+    <Suspense>
+      <ClientCoursesTableFilterBar educations={educations} skills={skills} />
+    </Suspense>
+  );
 };

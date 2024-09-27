@@ -10,6 +10,7 @@ import { isUuid } from "~/lib/typeguards";
 
 import {
   constructTableSearchClause,
+  getDetailsOrdering,
   isVisible,
   PAGE_SIZES,
   type ServerSidePaginationParams,
@@ -17,7 +18,6 @@ import {
   type DetailsControls,
   standardFetchAction,
   type StandardFetchActionReturn,
-  DetailsOrderingMap,
 } from "~/actions-v2";
 import { visibilityIsAdmin } from "~/actions-v2";
 import { ApiClientGlobalError } from "~/api-v2";
@@ -130,13 +130,7 @@ export const fetchDetails = <I extends DetailIncludes>(includes: I) =>
 
       const details = await db.detail.findMany({
         where: whereClause({ filters, visibility }),
-        orderBy: ordering
-          ? [
-              ...DetailsOrderingMap[ordering.orderBy](ordering.order),
-              { createdAt: "desc" },
-              { id: "desc" },
-            ]
-          : [{ createdAt: "desc" }, { id: "desc" }],
+        orderBy: getDetailsOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination ? pagination.pageSize : limit,
         include: {

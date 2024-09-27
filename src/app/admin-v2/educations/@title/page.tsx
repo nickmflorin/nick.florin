@@ -1,5 +1,10 @@
+import { Suspense } from "react";
+
 import { EducationsFiltersObj } from "~/actions-v2";
-import { fetchEducationsCount } from "~/actions-v2/educations/fetch-educations";
+
+import { LoadingText } from "~/components/loading/LoadingText";
+
+import { EducationsTitle } from "./EducationsTitle";
 
 export interface EducationsTitlePageProps {
   readonly searchParams: Record<string, string>;
@@ -7,8 +12,9 @@ export interface EducationsTitlePageProps {
 
 export default async function EducationsTitlePage({ searchParams }: EducationsTitlePageProps) {
   const filters = EducationsFiltersObj.parse(searchParams);
-  const {
-    data: { count },
-  } = await fetchEducationsCount({ visibility: "admin", filters }, { strict: true });
-  return <>{count}</>;
+  return (
+    <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>
+      <EducationsTitle filters={filters} />
+    </Suspense>
+  );
 }

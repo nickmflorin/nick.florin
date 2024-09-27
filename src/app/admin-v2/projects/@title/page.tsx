@@ -1,5 +1,10 @@
+import { Suspense } from "react";
+
 import { ProjectsFiltersObj } from "~/actions-v2";
-import { fetchProjectsCount } from "~/actions-v2/projects/fetch-projects";
+
+import { LoadingText } from "~/components/loading/LoadingText";
+
+import { ProjectsTitle } from "./ProjectsTitle";
 
 export interface ProjectsTitlePageProps {
   readonly searchParams: Record<string, string>;
@@ -7,8 +12,9 @@ export interface ProjectsTitlePageProps {
 
 export default async function ProjectsTitlePage({ searchParams }: ProjectsTitlePageProps) {
   const filters = ProjectsFiltersObj.parse(searchParams);
-  const {
-    data: { count },
-  } = await fetchProjectsCount({ visibility: "admin", filters }, { strict: true });
-  return <>{count}</>;
+  return (
+    <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>
+      <ProjectsTitle filters={filters} />
+    </Suspense>
+  );
 }

@@ -9,8 +9,9 @@ import { DetailEntityType, fieldIsIncluded } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
-import { ExperiencesOrderingMap, visibilityIsAdmin } from "~/actions-v2";
+import { visibilityIsAdmin } from "~/actions-v2";
 import {
+  getExperiencesOrdering,
   constructTableSearchClause,
   PAGE_SIZES,
   type ServerSidePaginationParams,
@@ -126,13 +127,7 @@ export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
             ? { where: { visible: isVisible(visibility, filters.visible) } }
             : undefined,
         },
-        orderBy: ordering
-          ? [
-              ...ExperiencesOrderingMap[ordering.orderBy](ordering.order),
-              { createdAt: "desc" },
-              { id: "desc" },
-            ]
-          : [{ createdAt: "desc" }, { id: "desc" }],
+        orderBy: getExperiencesOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination ? pagination.pageSize : limit,
       });

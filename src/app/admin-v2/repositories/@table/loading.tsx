@@ -1,5 +1,11 @@
-import { Loading as LoadingComponent } from "~/components/loading/Loading";
+import { Loading } from "~/components/loading/Loading";
+import { RepositoriesTableControlBarPlaceholder } from "~/features/repositories/components/tables-v2/RepositoriesTableControlBarPlaceholder";
 
-const Loading = () => <LoadingComponent isLoading={true} />;
-
-export default Loading;
+export default function LoadingPage() {
+  return (
+    <>
+      <RepositoriesTableControlBarPlaceholder />
+      <Loading isLoading component="tbody" />
+    </>
+  );
+}

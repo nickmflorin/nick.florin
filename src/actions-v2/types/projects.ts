@@ -22,31 +22,68 @@ export const ProjectOrderableFields = [
 
 export type ProjectOrderableField = (typeof ProjectOrderableFields)[number];
 
-export const ProjectsDefaultOrdering: Ordering<"startDate"> = {
+export const ProjectsDefaultOrdering: Ordering<"startDate", "asc"> = {
   orderBy: "startDate",
   order: "asc",
-};
+} satisfies Ordering<ProjectOrderableField>;
 
-export const ProjectsOrderingMap = {
-  name: order => [{ name: order }] as const,
-  slug: order => [{ slug: order }] as const,
-  shortName: order => [{ shortName: order }] as const,
-  updatedAt: order => [{ updatedAt: order }] as const,
-  createdAt: order => [{ createdAt: order }] as const,
-  startDate: order => [{ startDate: order }] as const,
-} as const satisfies { [key in ProjectOrderableField]: (order: Order) => unknown[] };
+type ProjectsMappedPrismaOrdering<
+  F extends ProjectOrderableField = ProjectOrderableField,
+  O extends Order = Order,
+> = {
+  readonly name: { name: O };
+  readonly slug: { slug: O };
+  readonly shortName: { shortName: O };
+  readonly createdAt: { createdAt: O };
+  readonly updatedAt: { updatedAt: O };
+  readonly startDate: { startDate: O };
+}[F];
 
-type PrismaOrdering<F extends string> = F extends string ? { [key in F]: Order } : never;
+export const ProjectsOrderingMap = <O extends Order>(order: O) =>
+  ({
+    slug: { slug: order } as const,
+    name: { name: order } as const,
+    shortName: { shortName: order } as const,
+    createdAt: { createdAt: order } as const,
+    updatedAt: { updatedAt: order } as const,
+    startDate: { startDate: order } as const,
+  }) satisfies { [key in ProjectOrderableField]: ProjectsMappedPrismaOrdering<key, O> };
 
-export const getProjectsOrdering = (
-  ordering?: Ordering<ProjectOrderableField>,
-): PrismaOrdering<ProjectOrderableField | "id">[] => {
+type PrismaOrdering<F extends string, O extends Order = Order> = F extends string
+  ? { [key in F]: O }
+  : never;
+
+type OrderingToPrisma<O extends Ordering> =
+  O extends Ordering<infer F, infer Or> ? PrismaOrdering<F, Or> : never;
+
+export const getProjectsOrdering = <F extends ProjectOrderableField, O extends Order>(
+  ordering?: Ordering<F, O>,
+): (
+  | ProjectsMappedPrismaOrdering<F, O>
+  | PrismaOrdering<"id", "desc">
+  | PrismaOrdering<"createdAt", "desc">
+  | OrderingToPrisma<typeof ProjectsDefaultOrdering>
+)[] => {
   if (ordering) {
-    return [
-      ...ProjectsOrderingMap[ordering.orderBy](ordering.order),
+    const map = ProjectsOrderingMap(ordering.order)[ordering.orderBy];
+    const arr: (
+      | ProjectsMappedPrismaOrdering<F, O>
+      | PrismaOrdering<"id", "desc">
+      | PrismaOrdering<"createdAt", "desc">
+      | undefined
+    )[] = [
+      map,
       ordering.orderBy !== "createdAt" ? { createdAt: "desc" } : undefined,
       { id: "desc" },
-    ].filter((v): v is PrismaOrdering<ProjectOrderableField | "id"> => v !== undefined);
+    ];
+    return arr.filter(
+      (
+        v,
+      ): v is
+        | ProjectsMappedPrismaOrdering<F, O>
+        | PrismaOrdering<"id", "desc">
+        | PrismaOrdering<"createdAt", "desc"> => v !== undefined,
+    );
   }
   return [
     { [ProjectsDefaultOrdering.orderBy]: ProjectsDefaultOrdering.order },
@@ -92,7 +129,9 @@ export const ProjectsFiltersObj = Filters({
     defaultValue: null,
     excludeWhen: v => v === null,
   },
-  search: { schema: z.string(), defaultValue: "", excludeWhen: (v: string) => v.length === 0 },
+  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
+     present in query params for initial URL but then is cleared. */
+  search: { schema: z.string(), defaultValue: "" },
   skills: {
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,

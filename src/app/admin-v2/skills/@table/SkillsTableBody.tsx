@@ -4,13 +4,21 @@ import { type SkillsControls, type SkillsFilters } from "~/actions-v2";
 import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
 
 import { Loading } from "~/components/loading/Loading";
+import { SkillsTableControlBarPlaceholder } from "~/features/skills/components/tables-v2/SkillsTableControlBarPlaceholder";
 
 const ClientSkillsTableBody = dynamic(
   () =>
     import("~/features/skills/components/tables-v2/SkillsTableBody").then(
       mod => mod.SkillsTableBody,
     ),
-  { loading: () => <Loading isLoading component="tbody" /> },
+  {
+    loading: () => (
+      <>
+        <SkillsTableControlBarPlaceholder />
+        <Loading isLoading component="tbody" />
+      </>
+    ),
+  },
 );
 
 const getSkills = async ({

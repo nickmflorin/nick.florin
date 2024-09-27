@@ -1,5 +1,10 @@
+import { Suspense } from "react";
+
 import { ExperiencesFiltersObj } from "~/actions-v2";
-import { fetchExperiencesCount } from "~/actions-v2/experiences/fetch-experiences";
+
+import { LoadingText } from "~/components/loading/LoadingText";
+
+import { ExperiencesTitle } from "./ExperiencesTitle";
 
 export interface ExperiencesTitlePageProps {
   readonly searchParams: Record<string, string>;
@@ -7,8 +12,9 @@ export interface ExperiencesTitlePageProps {
 
 export default async function ExperiencesTitlePage({ searchParams }: ExperiencesTitlePageProps) {
   const filters = ExperiencesFiltersObj.parse(searchParams);
-  const {
-    data: { count },
-  } = await fetchExperiencesCount({ visibility: "admin", filters }, { strict: true });
-  return <>{count}</>;
+  return (
+    <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>
+      <ExperiencesTitle filters={filters} />
+    </Suspense>
+  );
 }

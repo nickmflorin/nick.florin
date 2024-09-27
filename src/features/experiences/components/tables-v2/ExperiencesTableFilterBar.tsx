@@ -21,7 +21,6 @@ export interface ExperiencesTableFilterBarProps extends ComponentProps {
   readonly skills: ApiSkill<[]>[];
   readonly companies: ApiCompany<[]>[];
   readonly excludeFilters?: SelectFilterField[];
-  readonly filters: ExperiencesFilters;
 }
 
 type FilterRefs = {
@@ -63,24 +62,23 @@ const useFilterRefs = ({ filters }: { filters: ExperiencesFilters }) => {
 export const ExperiencesTableFilterBar = ({
   excludeFilters = [],
   children,
-  filters,
   companies,
   skills,
   ...props
 }: ExperiencesTableFilterBarProps): JSX.Element => {
-  const { refs, clear } = useFilterRefs({ filters });
-
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [, updateFilters] = useFilters({
+  const [filters, updateFilters, { pendingFilters }] = useFilters({
     filters: ExperiencesFiltersObj,
   });
+  const { refs, clear } = useFilterRefs({ filters });
 
   return (
     <TableView.FilterBar
       {...props}
       excludeFilters={excludeFilters}
       searchInputRef={searchInputRef}
+      searchPending={Object.keys(pendingFilters).includes("search")}
       searchPlaceholder="Search experiences..."
       onSearch={v => updateFilters({ search: v })}
       newDrawerId={DrawerIds.CREATE_EXPERIENCE}
@@ -105,6 +103,7 @@ export const ExperiencesTableFilterBar = ({
             <SkillsSelect
               ref={refs.skills}
               popoverClassName="z-50"
+              isLoading={Object.keys(pendingFilters).includes("skills")}
               inputClassName="max-w-[320px]"
               placeholder="Skills"
               data={skills}
@@ -124,6 +123,7 @@ export const ExperiencesTableFilterBar = ({
           renderer: v => (
             <CompanySelect
               ref={refs.companies}
+              isLoading={Object.keys(pendingFilters).includes("companies")}
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Companies"

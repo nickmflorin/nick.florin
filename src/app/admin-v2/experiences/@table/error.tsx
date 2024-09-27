@@ -1,8 +1,13 @@
 "use client";
 import { ErrorView } from "~/components/errors/ErrorView";
+import { ExperiencesTableControlBarPlaceholder } from "~/features/experiences/components/tables-v2/ExperiencesTableControlBarPlaceholder";
 
-export default function Error() {
+export default function LoadingPage() {
   return (
-    <ErrorView>There was an error loading the experiences. Do not worry, we are on it.</ErrorView>
+    <>
+      <ExperiencesTableControlBarPlaceholder />
+      <ErrorView>There was an error loading the experiences. Do not worry, we are on it.</ErrorView>
+      ;
+    </>
   );
 }

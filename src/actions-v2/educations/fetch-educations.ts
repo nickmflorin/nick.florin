@@ -5,7 +5,7 @@ import { DetailEntityType, fieldIsIncluded } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
-import { EducationsOrderingMap, visibilityIsAdmin } from "~/actions-v2";
+import { visibilityIsAdmin } from "~/actions-v2";
 import {
   constructTableSearchClause,
   PAGE_SIZES,
@@ -13,6 +13,7 @@ import {
   isVisible,
   clampPagination,
   type EducationsControls,
+  getEducationsOrdering,
   standardFetchAction,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
@@ -141,13 +142,7 @@ export const fetchEducations = <I extends EducationIncludes>(includes: I) =>
               }
             : undefined,
         },
-        orderBy: ordering
-          ? [
-              ...EducationsOrderingMap[ordering.orderBy](ordering.order),
-              { createdAt: "desc" },
-              { id: "desc" },
-            ]
-          : [{ createdAt: "desc" }, { id: "desc" }],
+        orderBy: getEducationsOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination ? pagination.pageSize : limit,
       });

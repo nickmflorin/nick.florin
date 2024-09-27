@@ -22,7 +22,6 @@ export interface RepositoriesTableFilterBarProps extends ComponentProps {
   readonly skills: ApiSkill<[]>[];
   readonly projects: ApiProject<[]>[];
   readonly excludeFilters?: SelectFilterField[];
-  readonly filters: RepositoriesFilters;
 }
 
 type FilterRefs = {
@@ -63,23 +62,23 @@ const useFilterRefs = ({ filters }: { filters: RepositoriesFilters }) => {
 
 export const RepositoriesTableFilterBar = ({
   excludeFilters = [],
-  filters,
   projects,
   skills,
   ...props
 }: RepositoriesTableFilterBarProps): JSX.Element => {
-  const { refs, clear } = useFilterRefs({ filters });
-
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [, updateFilters] = useFilters({
+  const [filters, updateFilters, { pendingFilters }] = useFilters({
     filters: RepositoriesFiltersObj,
   });
+
+  const { refs, clear } = useFilterRefs({ filters });
 
   return (
     <TableView.FilterBar
       {...props}
       excludeFilters={excludeFilters}
+      searchPending={Object.keys(pendingFilters).includes("search")}
       searchInputRef={searchInputRef}
       searchPlaceholder="Search repositories..."
       onSearch={v => updateFilters({ search: v })}
@@ -107,6 +106,7 @@ export const RepositoriesTableFilterBar = ({
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Skills"
+              isLoading={Object.keys(pendingFilters).includes("skills")}
               data={skills}
               behavior="multi"
               isClearable
@@ -127,6 +127,7 @@ export const RepositoriesTableFilterBar = ({
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Projects"
+              isLoading={Object.keys(pendingFilters).includes("projects")}
               data={projects}
               behavior="multi"
               isClearable

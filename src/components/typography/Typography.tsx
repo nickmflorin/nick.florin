@@ -1,6 +1,5 @@
 import { forwardRef } from "react";
 
-import { isFragment } from "react-is";
 import { type Subtract } from "utility-types";
 
 import {
@@ -17,7 +16,6 @@ type Inherit<T extends TypographyVariant> = T extends "text" ? boolean : never;
 type TypographyPropsPartial<T extends TypographyVariant> = {
   readonly variant: T;
   readonly isDisabled?: boolean;
-  readonly flex?: boolean;
   readonly inherit?: Inherit<T>;
 };
 
@@ -34,16 +32,10 @@ const TypographyClassNames: { [key in TypographyVariant]: string } = {
 
 export const Typography = forwardRef(
   <T extends TypographyVariant, C extends TypographyComponent<T>>(
-    { variant, flex, inherit, isDisabled, ...props }: TypographyProps<T, C>,
+    { variant, inherit, isDisabled, ...props }: TypographyProps<T, C>,
     ref: TypographyRef<C>,
   ): JSX.Element => {
-    if (
-      isFragment(props.children) ||
-      props.children === undefined ||
-      props.children === null ||
-      typeof props.children === "boolean" ||
-      (typeof props.children === "string" && props.children.trim() === "")
-    ) {
+    if (!props.children || (typeof props.children === "string" && props.children.trim() === "")) {
       return <></>;
     }
     return (
@@ -56,7 +48,6 @@ export const Typography = forwardRef(
         className={classNames(
           TypographyClassNames[variant],
           {
-            ["flex flex-row items-center"]: flex,
             "text-disabled": isDisabled,
             [`${TypographyClassNames[variant]}--inherit`]: inherit,
           },

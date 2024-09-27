@@ -83,7 +83,6 @@ const useFilterRefs = ({ filters }: { filters: SkillsFilters }) => {
 
 export const SkillsTableFilterBar = ({
   excludeFilters = [],
-  // filters,
   experiences,
   educations,
   projects,

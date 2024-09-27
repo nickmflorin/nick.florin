@@ -4,14 +4,44 @@ import { type EducationsControls, type EducationsFilters } from "~/actions-v2";
 import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 
 import { Loading } from "~/components/loading/Loading";
+import { EducationsTableControlBarPlaceholder } from "~/features/educations/components/tables-v2/EducationsTableControlBarPlaceholder";
 
 const ClientEducationsTableBody = dynamic(
   () =>
     import("~/features/educations/components/tables-v2/EducationsTableBody").then(
       mod => mod.EducationsTableBody,
     ),
-  { loading: () => <Loading isLoading component="tbody" /> },
+  {
+    loading: () => (
+      <>
+        <EducationsTableControlBarPlaceholder />
+        <Loading isLoading component="tbody" />
+      </>
+    ),
+  },
 );
+
+const getEducations = async ({
+  page,
+  filters,
+  ordering,
+}: {
+  readonly filters: EducationsFilters;
+  readonly page: number;
+  readonly ordering: EducationsControls["ordering"];
+}) => {
+  const fetcher = fetchEducations(["skills", "details"]);
+  const { data: educations } = await fetcher(
+    {
+      filters,
+      ordering,
+      page,
+      visibility: "admin",
+    },
+    { strict: true },
+  );
+  return educations;
+};
 
 export interface EducationsTableBodyProps {
   readonly filters: EducationsFilters;
@@ -24,15 +54,6 @@ export const EducationsTableBody = async ({
   page,
   ordering,
 }: EducationsTableBodyProps): Promise<JSX.Element> => {
-  const fetcher = fetchEducations(["skills", "details"]);
-  const { data: educations } = await fetcher(
-    {
-      filters,
-      ordering,
-      page,
-      visibility: "admin",
-    },
-    { strict: true },
-  );
+  const educations = await getEducations({ page, filters, ordering });
   return <ClientEducationsTableBody data={educations} />;
 };

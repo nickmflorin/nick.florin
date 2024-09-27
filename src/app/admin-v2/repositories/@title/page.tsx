@@ -1,5 +1,10 @@
+import { Suspense } from "react";
+
 import { RepositoriesFiltersObj } from "~/actions-v2";
-import { fetchRepositoriesCount } from "~/actions-v2/repositories/fetch-repositories";
+
+import { LoadingText } from "~/components/loading/LoadingText";
+
+import { RepositoriesTitle } from "./RepositoriesTitle";
 
 export interface RepositoriesTitlePageProps {
   readonly searchParams: Record<string, string>;
@@ -7,8 +12,9 @@ export interface RepositoriesTitlePageProps {
 
 export default async function RepositoriesTitlePage({ searchParams }: RepositoriesTitlePageProps) {
   const filters = RepositoriesFiltersObj.parse(searchParams);
-  const {
-    data: { count },
-  } = await fetchRepositoriesCount({ visibility: "admin", filters }, { strict: true });
-  return <>{count}</>;
+  return (
+    <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>
+      <RepositoriesTitle filters={filters} />
+    </Suspense>
+  );
 }

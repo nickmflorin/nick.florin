@@ -27,7 +27,6 @@ export interface EducationsTableFilterBarProps extends ComponentProps {
   readonly schools: ApiSchool<[]>[];
   readonly courses: ApiCourse<[]>[];
   readonly excludeFilters?: SelectFilterField[];
-  readonly filters: EducationsFilters;
 }
 
 type FilterRefs = {
@@ -70,25 +69,24 @@ const useFilterRefs = ({ filters }: { filters: EducationsFilters }) => {
 
 export const EducationsTableFilterBar = ({
   excludeFilters = [],
-  filters,
   schools,
   courses,
   children,
   skills,
   ...props
 }: EducationsTableFilterBarProps): JSX.Element => {
-  const { refs, clear } = useFilterRefs({ filters });
-
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [, updateFilters] = useFilters({
+  const [filters, updateFilters, { pendingFilters }] = useFilters({
     filters: EducationsFiltersObj,
   });
+  const { refs, clear } = useFilterRefs({ filters });
 
   return (
     <TableView.FilterBar
       {...props}
       excludeFilters={excludeFilters}
+      searchPending={Object.keys(pendingFilters).includes("search")}
       searchInputRef={searchInputRef}
       searchPlaceholder="Search educations..."
       onSearch={v => updateFilters({ search: v })}
@@ -115,6 +113,7 @@ export const EducationsTableFilterBar = ({
           renderer: v => (
             <SkillsSelect
               ref={refs.skills}
+              isLoading={Object.keys(pendingFilters).includes("skills")}
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Skills"
@@ -135,6 +134,7 @@ export const EducationsTableFilterBar = ({
           renderer: v => (
             <SchoolSelect
               ref={refs.schools}
+              isLoading={Object.keys(pendingFilters).includes("schools")}
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Schools"

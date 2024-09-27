@@ -20,7 +20,6 @@ export const SectionTitle = ({
   <Text
     {...props}
     fontWeight="medium"
-    flex
     className={classNames(
       { "text-md max-sm:text-sm": !subSection, "text-sm max-sm:text-xs": subSection },
       props.className,
