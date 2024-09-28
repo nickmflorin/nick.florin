@@ -13,7 +13,7 @@ import {
   isVisible,
   clampPagination,
   type CoursesControls,
-  standardFetchAction,
+  standardListFetchAction,
   getCoursesOrdering,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
@@ -39,7 +39,7 @@ const whereClause = ({ filters, visibility }: Pick<CoursesControls, "filters" | 
   return {};
 };
 
-export const fetchCoursesCount = standardFetchAction(
+export const fetchCoursesCount = standardListFetchAction(
   async ({
     filters,
     visibility,
@@ -59,7 +59,7 @@ export const fetchCoursesCount = standardFetchAction(
   { authenticated: true, adminOnly: true },
 );
 
-export const fetchCoursesPagination = standardFetchAction(
+export const fetchCoursesPagination = standardListFetchAction(
   async ({
     filters,
     page,
@@ -84,7 +84,7 @@ export const fetchCoursesPagination = standardFetchAction(
 );
 
 export const fetchCourses = <I extends CourseIncludes>(includes: I) =>
-  standardFetchAction(
+  standardListFetchAction(
     async ({
       filters,
       ordering,

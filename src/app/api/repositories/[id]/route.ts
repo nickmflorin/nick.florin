@@ -1,9 +1,12 @@
-import { type RepositoryIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
+
+import type { RepositoryIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { getRepository } from "~/actions/fetches/repositories";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
-import { apiRoute } from "~/api/route";
+import { RepositoryIncludesSchema } from "~/actions-v2";
+import { fetchRepository } from "~/actions-v2/repositories/fetch-repository";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http-v2";
 
 export async function generateStaticParams() {
   const repositories = await db.repository.findMany();
@@ -12,13 +15,21 @@ export async function generateStaticParams() {
   }));
 }
 
-export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
-  const repository = await getRepository(params.id, {
-    includes: query.includes as RepositoryIncludes,
-    visibility: query.visibility,
-  });
-  if (!repository) {
-    return ApiClientGlobalError.NotFound().response;
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = RepositoryIncludesSchema.safeParse(query.includes);
+
+  let includes: RepositoryIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  return ClientResponse.OK(repository).response;
-});
+
+  const fetcher = fetchRepository(includes);
+  const { error, data } = await fetcher(params.id, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

@@ -3,6 +3,7 @@ import { cache } from "react";
 import { getAuthedUser } from "~/application/auth/server-v2";
 import { type User } from "~/database/model";
 import { logger } from "~/internal/logger";
+import { isUuid } from "~/lib/typeguards";
 
 import { convertToPlainObject, type ApiClientError, type ApiClientErrorJson } from "~/api-v2";
 import { isApiClientError, ApiClientGlobalError } from "~/api-v2";
@@ -29,10 +30,6 @@ export type FetchActionResponse<T, C extends FetchActionContext> = C extends {
 }
   ? { data: T; error?: never }
   : FetchActionResponseOrError<T, C>;
-
-export type MutationActionResponse<T> =
-  | { data: T; error?: never }
-  | { data?: never; error: ApiClientErrorJson };
 
 interface ErrorInFetchContextOptions {
   readonly logData?: Record<string, unknown>;
@@ -72,35 +69,35 @@ export const dataInFetchContext = <T, C extends FetchActionContext>(
 
 export type StandardFetchActionReturn<R> = Promise<R | ApiClientError>;
 
+interface StandardFetchActionOptions {
+  readonly adminOnly?: boolean;
+  readonly authenticated?: boolean;
+}
+
 type StandardFetchActionUser<O extends StandardFetchActionOptions> = O extends {
   authenticated: true;
 }
   ? User
   : User | undefined;
 
-export type FetchActionFn<
+type ListFetchActionFn<
   P extends { visibility: ActionVisibility },
   R,
   O extends StandardFetchActionOptions,
-> = (params: P, user: StandardFetchActionUser<O>) => StandardFetchActionReturn<R>;
+> = (params: P, user: StandardFetchActionUser<O>, isAdmin: boolean) => StandardFetchActionReturn<R>;
 
-interface StandardFetchActionOptions {
-  readonly adminOnly?: boolean;
-  readonly authenticated?: boolean;
-}
-
-type StandardFetchAction<P extends { visibility: ActionVisibility }, R> = {
+type StandardListFetchAction<P extends { visibility: ActionVisibility }, R> = {
   <C extends FetchActionContext>(params: P, context: C): Promise<FetchActionResponse<R, C>>;
 };
 
-export const standardFetchAction = <
+export const standardListFetchAction = <
   P extends { visibility: ActionVisibility },
   R,
   O extends StandardFetchActionOptions,
 >(
-  fn: FetchActionFn<P, R, O>,
+  fn: ListFetchActionFn<P, R, O>,
   opts: O,
-): StandardFetchAction<P, R> => {
+): StandardListFetchAction<P, R> => {
   const wrapped = async <C extends FetchActionContext>(
     params: P,
     context: C,
@@ -113,18 +110,88 @@ export const standardFetchAction = <
       if (authenticated || adminOnly) {
         return errorInFetchContext(error, context);
       }
-      const result = await fn(params, user as StandardFetchActionUser<O>);
+      const result = await fn(params, user as StandardFetchActionUser<O>, isAdmin ?? false);
       if (isApiClientError(result)) {
         return errorInFetchContext(result, context);
       }
       return dataInFetchContext(result, context);
     } else if (!isAdmin && (adminOnly || visibilityIsAdmin(params.visibility))) {
-      const error = ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-      return errorInFetchContext(error, context);
+      return errorInFetchContext(
+        ApiClientGlobalError.Forbidden({
+          message: "The user does not have permission to access this data.",
+        }),
+        context,
+      );
     }
-    const result = await fn(params, user);
+    const result = await fn(params, user, isAdmin ?? false);
+    if (isApiClientError(result)) {
+      return errorInFetchContext(result, context);
+    }
+    return dataInFetchContext(result, context);
+  };
+  return cache(wrapped) as typeof wrapped;
+};
+
+type DetailFetchActionFn<R, O extends StandardFetchActionOptions> = (
+  id: string,
+  user: StandardFetchActionUser<O>,
+  isAdmin: boolean,
+) => StandardFetchActionReturn<R>;
+
+type StandardDetailFetchAction<R> = {
+  <C extends FetchActionContext>(id: string, context: C): Promise<FetchActionResponse<R, C>>;
+};
+
+export const standardDetailFetchAction = <R, O extends StandardFetchActionOptions>(
+  fn: DetailFetchActionFn<R, O>,
+  opts: O,
+): StandardDetailFetchAction<R> => {
+  const wrapped = async <C extends FetchActionContext>(
+    id: string,
+    context: C,
+  ): Promise<FetchActionResponse<R, C>> => {
+    const adminOnly = opts.adminOnly ?? false;
+    const authenticated = opts.authenticated ?? true;
+
+    const { error, user, isAdmin } = await getAuthedUser();
+    if (error) {
+      if (authenticated || adminOnly) {
+        return errorInFetchContext(error, context);
+      } else if (!isUuid(id)) {
+        logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a detail.`, {
+          id,
+        });
+        return errorInFetchContext(
+          ApiClientGlobalError.NotFound({
+            message: "The requested resource was not found.",
+          }),
+          context,
+        );
+      }
+      const result = await fn(id, user as StandardFetchActionUser<O>, isAdmin ?? false);
+      if (isApiClientError(result)) {
+        return errorInFetchContext(result, context);
+      }
+      return dataInFetchContext(result, context);
+    } else if (!isAdmin && adminOnly) {
+      return errorInFetchContext(
+        ApiClientGlobalError.Forbidden({
+          message: "The user does not have permission to access this data.",
+        }),
+        context,
+      );
+    } else if (!isUuid(id)) {
+      logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a detail.`, {
+        id,
+      });
+      return errorInFetchContext(
+        ApiClientGlobalError.NotFound({
+          message: "The requested resource was not found.",
+        }),
+        context,
+      );
+    }
+    const result = await fn(id, user, isAdmin ?? false);
     if (isApiClientError(result)) {
       return errorInFetchContext(result, context);
     }

@@ -18,7 +18,7 @@ import {
   isVisible,
   clampPagination,
   type ExperiencesControls,
-  standardFetchAction,
+  standardListFetchAction,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
 import { fetchDetails } from "~/actions-v2/details/fetch-details";
@@ -53,7 +53,7 @@ const whereClause = ({
   return {};
 };
 
-export const fetchExperiencesCount = standardFetchAction(
+export const fetchExperiencesCount = standardListFetchAction(
   async ({
     filters,
     visibility,
@@ -73,7 +73,7 @@ export const fetchExperiencesCount = standardFetchAction(
   { authenticated: true, adminOnly: true },
 );
 
-export const fetchExperiencesPagination = standardFetchAction(
+export const fetchExperiencesPagination = standardListFetchAction(
   async ({
     filters,
     page,
@@ -98,7 +98,7 @@ export const fetchExperiencesPagination = standardFetchAction(
 );
 
 export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
-  standardFetchAction(
+  standardListFetchAction(
     async ({
       filters,
       ordering,

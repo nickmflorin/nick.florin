@@ -14,7 +14,7 @@ import {
   type ServerSidePaginationParams,
   clampPagination,
   type SkillsControls,
-  standardFetchAction,
+  standardListFetchAction,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
 import { ApiClientGlobalError } from "~/api-v2";
@@ -60,7 +60,7 @@ const whereClause = ({ filters, visibility }: Pick<SkillsControls, "filters" | "
   return {};
 };
 
-export const fetchSkillsCount = standardFetchAction(
+export const fetchSkillsCount = standardListFetchAction(
   async ({
     filters,
     visibility,
@@ -80,7 +80,7 @@ export const fetchSkillsCount = standardFetchAction(
   { authenticated: true, adminOnly: true },
 );
 
-export const fetchSkillsPagination = standardFetchAction(
+export const fetchSkillsPagination = standardListFetchAction(
   async ({
     filters,
     page,
@@ -105,7 +105,7 @@ export const fetchSkillsPagination = standardFetchAction(
 );
 
 export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
-  standardFetchAction(
+  standardListFetchAction(
     async ({
       filters,
       ordering,

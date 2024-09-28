@@ -1,13 +1,14 @@
 import { type ReactNode } from "react";
 
 import { type HttpError } from "~/api";
+import { type ApiError } from "~/api-v2";
 
 import { type SpinnerProps } from "~/components/icons";
 
 import { State } from "./State";
 
 export interface ApiResponseViewProps<T> {
-  readonly error?: string | null | HttpError;
+  readonly error?: string | null | HttpError | ApiError;
   readonly isLoading?: boolean;
   readonly isInitialLoading?: boolean;
   readonly data?: T;

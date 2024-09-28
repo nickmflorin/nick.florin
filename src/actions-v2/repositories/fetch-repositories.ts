@@ -13,7 +13,7 @@ import {
   isVisible,
   clampPagination,
   type RepositoriesControls,
-  standardFetchAction,
+  standardListFetchAction,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
 import { ApiClientGlobalError } from "~/api-v2";
@@ -47,7 +47,7 @@ const whereClause = ({
   return {};
 };
 
-export const fetchRepositoriesCount = standardFetchAction(
+export const fetchRepositoriesCount = standardListFetchAction(
   async ({
     filters,
     visibility,
@@ -67,7 +67,7 @@ export const fetchRepositoriesCount = standardFetchAction(
   { authenticated: true, adminOnly: true },
 );
 
-export const fetchRepositoriesPagination = standardFetchAction(
+export const fetchRepositoriesPagination = standardListFetchAction(
   async ({
     filters,
     page,
@@ -92,7 +92,7 @@ export const fetchRepositoriesPagination = standardFetchAction(
 );
 
 export const fetchRepositories = <I extends RepositoryIncludes>(includes: I) =>
-  standardFetchAction(
+  standardListFetchAction(
     async ({
       filters,
       ordering,
@@ -118,7 +118,9 @@ export const fetchRepositories = <I extends RepositoryIncludes>(includes: I) =>
       const repositories = await db.repository.findMany({
         where: whereClause({ filters, visibility }),
         include: {
-          projects: fieldIsIncluded("projects", includes),
+          projects: fieldIsIncluded("projects", includes)
+            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            : undefined,
           skills: fieldIsIncluded("skills", includes)
             ? { where: { visible: isVisible(visibility, filters.visible) } }
             : undefined,

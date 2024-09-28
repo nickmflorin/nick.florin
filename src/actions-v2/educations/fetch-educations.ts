@@ -14,7 +14,7 @@ import {
   clampPagination,
   type EducationsControls,
   getEducationsOrdering,
-  standardFetchAction,
+  standardListFetchAction,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
 import { fetchDetails } from "~/actions-v2/details/fetch-details";
@@ -58,7 +58,7 @@ const whereClause = ({
   return {};
 };
 
-export const fetchEducationsCount = standardFetchAction(
+export const fetchEducationsCount = standardListFetchAction(
   async ({
     filters,
     visibility,
@@ -78,7 +78,7 @@ export const fetchEducationsCount = standardFetchAction(
   { authenticated: true, adminOnly: true },
 );
 
-export const fetchEducationsPagination = standardFetchAction(
+export const fetchEducationsPagination = standardListFetchAction(
   async ({
     filters,
     page,
@@ -103,7 +103,7 @@ export const fetchEducationsPagination = standardFetchAction(
 );
 
 export const fetchEducations = <I extends EducationIncludes>(includes: I) =>
-  standardFetchAction(
+  standardListFetchAction(
     async ({
       filters,
       ordering,

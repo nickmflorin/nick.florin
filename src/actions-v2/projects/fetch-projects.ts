@@ -13,7 +13,7 @@ import {
   isVisible,
   clampPagination,
   type ProjectsControls,
-  standardFetchAction,
+  standardListFetchAction,
   getProjectsOrdering,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
@@ -42,7 +42,7 @@ const whereClause = ({ filters, visibility }: Pick<ProjectsControls, "filters" |
   return {};
 };
 
-export const fetchProjectsCount = standardFetchAction(
+export const fetchProjectsCount = standardListFetchAction(
   async ({
     filters,
     visibility,
@@ -62,7 +62,7 @@ export const fetchProjectsCount = standardFetchAction(
   { authenticated: true, adminOnly: true },
 );
 
-export const fetchProjectsPagination = standardFetchAction(
+export const fetchProjectsPagination = standardListFetchAction(
   async ({
     filters,
     page,
@@ -87,7 +87,7 @@ export const fetchProjectsPagination = standardFetchAction(
 );
 
 export const fetchProjects = <I extends ProjectIncludes>(includes: I) =>
-  standardFetchAction(
+  standardListFetchAction(
     async ({
       filters,
       ordering,

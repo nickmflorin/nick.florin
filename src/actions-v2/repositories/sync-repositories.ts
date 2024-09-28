@@ -2,7 +2,7 @@
 import { getAuthedUser } from "~/application/auth/server-v2";
 import { db } from "~/database/prisma";
 
-import { type MutationActionResponse } from "~/actions-v2/fetch";
+import { type MutationActionResponse } from "~/actions-v2";
 import { ApiClientGlobalError } from "~/api-v2";
 import { githubClient } from "~/integrations/github";
 

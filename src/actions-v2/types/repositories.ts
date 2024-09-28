@@ -118,6 +118,9 @@ export type FlattenedRepositoriesControls<I extends RepositoryIncludes = Reposit
       readonly visibility: ActionVisibility;
     };
 
+export interface RepositoryControls<I extends RepositoryIncludes = RepositoryIncludes>
+  extends Pick<RepositoriesControls<I>, "includes"> {}
+
 export const RepositoriesFiltersObj = Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),

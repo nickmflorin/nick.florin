@@ -16,7 +16,7 @@ import {
   type ServerSidePaginationParams,
   clampPagination,
   type DetailsControls,
-  standardFetchAction,
+  standardListFetchAction,
   type StandardFetchActionReturn,
 } from "~/actions-v2";
 import { visibilityIsAdmin } from "~/actions-v2";
@@ -61,7 +61,7 @@ const whereClause = ({ filters, visibility }: Pick<DetailsControls, "filters" | 
   return {};
 };
 
-export const fetchDetailsCount = standardFetchAction(
+export const fetchDetailsCount = standardListFetchAction(
   async ({
     filters,
     visibility,
@@ -81,7 +81,7 @@ export const fetchDetailsCount = standardFetchAction(
   { authenticated: true, adminOnly: true },
 );
 
-export const fetchDetailsPagination = standardFetchAction(
+export const fetchDetailsPagination = standardListFetchAction(
   async ({
     filters,
     page,
@@ -106,7 +106,7 @@ export const fetchDetailsPagination = standardFetchAction(
 );
 
 export const fetchDetails = <I extends DetailIncludes>(includes: I) =>
-  standardFetchAction(
+  standardListFetchAction(
     async ({
       filters,
       ordering,

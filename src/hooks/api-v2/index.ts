@@ -5,3 +5,4 @@ export * from "./use-educations";
 export * from "./use-projects";
 export * from "./use-courses";
 export * from "./use-repositories";
+export * from "./use-repository";
