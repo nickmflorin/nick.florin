@@ -7,6 +7,7 @@ import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills
 
 import { CategoriesCell } from "../cells/CategoriesCell";
 import { EducationsCell } from "../cells/EducationsCell";
+import { ExperienceCell } from "../cells/ExperienceCell";
 import { ExperiencesCell } from "../cells/ExperiencesCell";
 import { HighlightedCell } from "../cells/HighlightedCell";
 import { PrioritizedCell } from "../cells/PrioritizedCell";
@@ -31,6 +32,11 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
       slug: {
         cellRenderer(datum) {
           return datum.slug;
+        },
+      },
+      experience: {
+        cellRenderer(datum) {
+          return <ExperienceCell skill={datum} />;
         },
       },
       categories: {

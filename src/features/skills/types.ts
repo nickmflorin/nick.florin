@@ -23,6 +23,13 @@ export const SkillsTableColumns = [
     isOrderable: true,
   },
   {
+    id: "experience",
+    label: "Exp",
+    minWidth: 200,
+    width: 260,
+    maxWidth: 320,
+  },
+  {
     id: "experiences",
     label: "Experiences",
     minWidth: 200,
