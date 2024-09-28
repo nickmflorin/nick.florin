@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type ApiRepository } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { updateRepository } from "~/actions/mutations/repositories";
-import { isApiClientErrorJson } from "~/api";
+import { type ApiRepository } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { updateRepository } from "~/actions-v2/repositories/update-repository";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -44,15 +46,26 @@ export const UpdateRepositoryForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateRepositoryWithId(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          transition(() => {
-            refresh();
-            onSuccess?.();
-          });
+        let response: Awaited<ReturnType<typeof updateRepositoryWithId>> | null = null;
+        try {
+          response = await updateRepositoryWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(
+            e,
+            `There was an error updating the repository with ID '${repository.id}'.`,
+            { repository, data },
+          );
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the repository.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
     />
   );

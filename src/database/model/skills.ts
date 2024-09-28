@@ -9,9 +9,6 @@ import { DetailEntityType } from "~/database/model";
 import type { Transaction } from "~/database/prisma";
 import { strictArrayLookup, minDate } from "~/lib";
 
-import { type getEducations } from "~/actions/fetches/educations";
-import { type getExperiences } from "~/actions/fetches/experiences";
-
 import { type ApiCourse } from "./course";
 import { ProgrammingLanguage, SkillCategory, ProgrammingDomain } from "./generated";
 import { type ConditionallyInclude } from "./inclusion";
@@ -445,11 +442,9 @@ export type ApiSkill<I extends SkillIncludes = []> = ConditionallyInclude<
   I
 >;
 
-type ModelWithRedundantSkills = Awaited<
-  ReturnType<
-    typeof getExperiences<["skills", "details"]> | typeof getEducations<["skills", "details"]>
-  >
->[number];
+type ModelWithRedundantSkills =
+  | ApiExperience<["skills", "details"]>
+  | ApiEducation<["skills", "details"]>;
 
 /**
  * Performs manipulation of the {@link Skill} objects associated with an {@link Experience} or

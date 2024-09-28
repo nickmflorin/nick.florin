@@ -5,9 +5,9 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type Repository } from "~/database/model";
+import { logger } from "~/internal/logger";
 
-import { createRepository } from "~/actions/mutations/repositories";
-import { isApiClientErrorJson } from "~/api";
+import { createRepository } from "~/actions-v2/repositories/create-repository";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -32,17 +32,24 @@ export const CreateRepositoryForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createRepository(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          toast.success("The repository was successfully created.");
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createRepository>> | null = null;
+        try {
+          response = await createRepository(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the repository'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the repository.");
         }
+        const { error, data: repository } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.(repository);
+        });
       }}
     />
   );

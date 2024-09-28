@@ -101,16 +101,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   { leadingPath: "/admin/repositories" },
                 ],
               },
-              {
-                label: "Admin CMS V2",
-                icon: { name: "gears" },
-                path: "/admin-v2/skills",
-                accessType: SidebarItemAccessTypes.ADMIN,
-                activePaths: [
-                  { leadingPath: "/admin-v2/skills" },
-                  { leadingPath: "/admin-v2/experiences" },
-                ],
-              },
             ]}
           >
             {children}

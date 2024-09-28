@@ -1,6 +1,6 @@
 import { type ApiRepository } from "~/database/model";
 
-import { useForm } from "~/components/forms/hooks/use-form";
+import { useForm } from "~/components/forms-v2/hooks/use-form";
 
 import { RepositoryFormSchema } from "./schema";
 

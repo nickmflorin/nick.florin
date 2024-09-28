@@ -9,7 +9,7 @@ import type { MutationActionResponse } from "~/actions-v2";
 
 import { Dialog } from "~/components/dialogs/Dialog";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import type { DataTableDatum } from "~/components/tables-v2";
+import type { DataTableDatum } from "~/components/tables";
 
 export interface DeleteConfirmationDialogProps<M extends DataTableDatum, T> {
   readonly isOpen: boolean;

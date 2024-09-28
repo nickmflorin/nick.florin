@@ -1,77 +1,58 @@
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-
-import { toast } from "react-toastify";
-
-import { logger } from "~/internal/logger";
-
 import { IconButton } from "~/components/buttons";
+import { type FloatingContentRenderProps } from "~/components/floating";
+import { DropdownMenu } from "~/components/menus/DropdownMenu";
+import { Menu } from "~/components/menus/Menu";
+import { type DataTableRowAction } from "~/components/tables/types";
+import { classNames, type QuantitativeSize } from "~/components/types";
 
-interface ActionsCellProps {
-  readonly deleteIsDisabled?: boolean;
-  readonly deleteErrorMessage?: string;
-  readonly onEdit?: () => void;
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  readonly deleteAction?: () => Promise<any>;
+export interface ActionsCellProps {
+  readonly actions:
+    | DataTableRowAction[]
+    | ((params: Pick<FloatingContentRenderProps, "setIsOpen">) => DataTableRowAction[]);
+  readonly menuWidth?: QuantitativeSize<"px"> | "target" | "available";
 }
 
-export const ActionsCell = ({
-  deleteIsDisabled,
-  deleteErrorMessage = "There was an error deleting the row.",
-  onEdit,
-  deleteAction,
-}: ActionsCellProps): JSX.Element => {
-  const { refresh } = useRouter();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [__, transition] = useTransition();
-
-  if (!deleteAction && !onEdit) {
-    return <></>;
-  }
-  return (
-    <div className="flex flex-row justify-end gap-[4px]">
-      {onEdit && (
-        <IconButton.Transparent
-          icon={{ name: "pen" }}
-          element="button"
-          className="text-blue-800 rounded-full hover:text-blue-900"
-          disabledClassName="text-disabled"
-          loadingClassName="text-gray-400"
-          onClick={() => onEdit()}
-        />
+export const ActionsCell = ({ actions, menuWidth = 120 }: ActionsCellProps): JSX.Element => (
+  <div className="flex flex-row items-center justify-center">
+    <DropdownMenu
+      placement="bottom-end"
+      width={menuWidth}
+      inPortal
+      content={({ setIsOpen }) => (
+        <Menu>
+          <Menu.Content>
+            {(typeof actions === "function" ? actions({ setIsOpen }) : actions).map(
+              ({ content, ...rest }, i) => (
+                <Menu.Item key={i} {...rest} className={classNames("font-medium", rest.className)}>
+                  {content}
+                </Menu.Item>
+              ),
+            )}
+          </Menu.Content>
+        </Menu>
       )}
-      {deleteAction && (
+    >
+      {({ ref, params, isOpen }) => (
         <IconButton.Transparent
-          icon={{ name: "trash-alt" }}
-          className="text-red-500 rounded-full hover:text-red-600"
-          disabledClassName="text-disabled"
-          loadingClassName="text-gray-400"
-          isLoading={isDeleting}
-          isDisabled={deleteIsDisabled}
-          onClick={async () => {
-            let success = true;
-            setIsDeleting(true);
-            try {
-              await deleteAction();
-            } catch (e) {
-              success = false;
-              logger.error(deleteErrorMessage, {
-                error: e,
-              });
-              toast.error("There was an error deleting the experience.");
-            } finally {
-              setIsDeleting(false);
-            }
-            if (success) {
-              transition(() => {
-                refresh();
-              });
+          {...params}
+          ref={ref}
+          isActive={isOpen}
+          element="button"
+          icon="ellipsis-h"
+          className="text-gray-500 hover:bg-gray-100"
+          radius="full"
+          activeClassName="text-blue-700 bg-gray-100"
+          size="medium"
+          onClick={e => {
+            e.stopPropagation();
+            if ("onClick" in params && typeof params.onClick === "function") {
+              params.onClick?.(e);
             }
           }}
         />
       )}
-    </div>
-  );
-};
+    </DropdownMenu>
+  </div>
+);
 
 export default ActionsCell;

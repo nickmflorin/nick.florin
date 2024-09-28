@@ -57,11 +57,6 @@ const config = {
       permanent: false,
     },
     {
-      source: "/admin-v2",
-      destination: "/admin-v2/skills",
-      permanent: false,
-    },
-    {
       source: "/projects",
       destination: "/projects/greenbudget",
       permanent: false,

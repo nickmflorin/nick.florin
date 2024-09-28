@@ -8,6 +8,9 @@
              `@mantine/core` package and the `mantine-datatable` package
              (see ~/components/config/MantineProvider.tsx`).
 
+             Note: This comment may now be obselete because we removed mantine-datatable.  However,
+             we are leaving it around for the time being, for context - just in case.
+
              There seems to be a style collision between the two stylesheets, which causes the
              timeline line to disappear.  But, if we were to import the non-layer stylesheet from
              the '@mantine/core' package directly, it fixes the timeline issue, but introduces style

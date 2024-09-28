@@ -5,13 +5,48 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import type { ApiClientErrorJson } from "~/api";
-import { isApiClientErrorJson } from "~/api";
+import type { ApiClientErrorJson } from "~/api-v2";
+import { isApiClientErrorJson } from "~/api-v2";
 
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
+import type * as types from "~/components/tables/types";
 
-import { type EditableStringCellProps } from "./types";
+/**
+ * @deprecated
+ * Keeping this around just for reference, even though it is not used.
+ */
+export interface EditableStringCellProps<
+  M extends { id: string } & { [key in K]: string | null },
+  K extends keyof M,
+  P extends { [key in K]: string },
+  T,
+> {
+  readonly model: M;
+  readonly field: K;
+  readonly table: types.CellDataTableInstance<M>;
+  readonly errorMessage: string;
+  readonly action: (data: P) => Promise<T | ApiClientErrorJson>;
+}
 
+/**
+ * @deprecated
+ * Keeping this around just for reference, even though it is not used.
+ */
+export type EditableStringCellComponent = {
+  <
+    M extends { id: string } & { [key in K]: string | null },
+    K extends keyof M,
+    P extends { [key in K]: string },
+    T,
+  >(
+    props: EditableStringCellProps<M, K, P, T>,
+  ): JSX.Element;
+};
+
+/**
+ * @deprecated
+ * Keeping this around just for reference, even though it is not used.
+ */
 export const EditableStringCell = <
   M extends { id: string } & { [key in K]: string | null },
   K extends keyof M,

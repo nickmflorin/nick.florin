@@ -1,106 +1,181 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
-import { omit } from "lodash-es";
-import { type DataTableColumn, type DataTableRowExpansionProps } from "mantine-datatable";
+import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
 
-import { classNames } from "~/components/types";
-import { type ClassName, type ComponentProps } from "~/components/types";
+import { type IconProp, type IconName } from "~/components/icons";
+import { type MenuItemInstance } from "~/components/menus";
+import type { QuantitativeSize, ComponentProps } from "~/components/types";
 
-export type RootColumn<T extends TableModel> = Omit<DataTableColumn<T>, "id" | "accessor"> & {
-  readonly id?: string;
-  readonly accessor: string;
-};
+import { type TableBodyCellProps } from "./generic/TableBodyCell";
+import { type TableHeaderCellProps } from "./generic/TableHeaderCell";
 
-export type TableModel = {
-  readonly id: string;
-};
+export type TableLoadingIndicatorType = "spinner" | "fade-rows" | "skeleton";
+export type TableLoadingIndicator = TableLoadingIndicatorType | TableLoadingIndicatorType[];
 
-export type CellTableInstance<T extends TableModel> = Pick<TableView<T>, "setRowLoading">;
+export const tableHasLoadingIndicator = (
+  indicator: TableLoadingIndicator | undefined,
+  indicatorType: TableLoadingIndicatorType,
+) => (Array.isArray(indicator) ? indicator.includes(indicatorType) : indicator === indicatorType);
 
-export type CellRenderProps<T extends TableModel> = {
-  readonly model: T;
-  readonly index: number;
-  /* It is important that the table instance that is passed to the cells does not include the
-     columns, otherwise, it can lead to an infinite recursion as the cells are a part of the
-     columns. */
-  readonly table: CellTableInstance<T>;
-};
-
-export type CellRenderer<T extends TableModel> = (props: CellRenderProps<T>) => ReactNode;
-
-export type Column<T extends TableModel> = Omit<RootColumn<T>, "render"> & {
-  readonly defaultVisible?: boolean;
-  readonly isHideable?: boolean;
-  readonly render?: CellRenderer<T>;
-};
-
-export const getColId = <T extends TableModel>(col: Column<T>): string => col.id ?? col.accessor;
-
-export const toNativeColumn = <T extends TableModel>(
-  col: Column<T>,
-  table: CellTableInstance<T>,
-): RootColumn<T> => {
-  const { render } = col;
-  if (render !== undefined) {
-    return {
-      ...omit(col, ["id", "render", "defaultVisible", "isHideable"]),
-      render: (model: T, index: number) => render({ model, index, table }),
-    } as RootColumn<T>;
-  }
-  return col as RootColumn<T>;
-};
-
-export const TableSizes = enumeratedLiterals(["sm", "md", "lg"] as const, {});
+export const TableSizes = enumeratedLiterals(["small", "medium", "large"] as const, {});
 export type TableSize = EnumeratedLiteralsMember<typeof TableSizes>;
 
-export type RowClassNameFn<T extends TableModel> = (record: T, index: number) => ClassName;
-export type RowClassName<T extends TableModel> = ClassName | RowClassNameFn<T>;
-
-export interface TableProps<T extends TableModel> extends ComponentProps {
-  readonly data: T[];
-  readonly columns: RootColumn<T>[];
-  readonly size?: TableSize;
-  readonly isLoading?: boolean;
-  readonly rowClassName?: RowClassName<T>;
-  readonly rowExpansion?: DataTableRowExpansionProps<T>;
-  readonly noHeader?: boolean;
-}
-
-export interface ContextTableProps<T extends TableModel> extends Omit<TableProps<T>, "columns"> {
-  readonly columns: Column<T>[];
-}
-
-export const mergeRowClassNames =
-  <T extends TableModel>(...cs: (RowClassName<T> | undefined)[]): RowClassNameFn<T> =>
-  (record, index) =>
-    cs.reduce((prev: ClassName, curr: RowClassName<T>) => {
-      if (typeof curr === "function") {
-        return classNames(prev, curr(record, index));
-      } else {
-        return classNames(prev, curr);
-      }
-    }, "");
-
-export type TableView<T extends TableModel> = {
+export interface DataTableDatum {
   readonly id: string;
-  readonly isCheckable: boolean;
+  [key: string]: unknown;
+}
+
+export type DataTableRowAction = {
+  readonly isVisible?: boolean;
+  readonly content: ReactNode;
+  readonly loadingText?: string;
+  readonly className?: ComponentProps["className"];
+  readonly icon?: IconProp | IconName | JSX.Element;
+  readonly isLoading?: boolean;
+  readonly onClick: (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    instance: MenuItemInstance,
+  ) => void;
+};
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export type DataTableColumnConfig<D extends DataTableDatum = any, I extends string = string> = {
+  readonly id: I;
+  readonly icon?: IconProp | IconName;
+  readonly label?: string;
+  readonly isOrderable?: boolean;
+  readonly isHideable?: boolean;
+  readonly isHiddenByDefault?: boolean;
+  readonly columnCellClassName?: ComponentProps["className"];
+  readonly headerCellClassName?: ComponentProps["className"];
+  readonly bodyCellClassName?: ComponentProps["className"];
+  readonly props?: Omit<
+    TableHeaderCellProps,
+    "children" | "align" | "id" | "icon" | "isOrderable" | "className"
+  >;
+  readonly align?: TableHeaderCellProps["align"];
+  readonly accessor?: Exclude<keyof D, "id">;
+  readonly width?: QuantitativeSize<"px">;
+  readonly minWidth?: QuantitativeSize<"px">;
+  readonly maxWidth?: QuantitativeSize<"px">;
+  readonly skeleton?: ReactNode;
+};
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export interface DataTableColumn<D extends DataTableDatum, C extends DataTableColumnConfig<D>> {
+  readonly id: C["id"];
+  readonly config: C;
+  readonly cellProps?: (datum: D) => Omit<TableBodyCellProps, "children">;
+  readonly cellRenderer?: (datum: D) => ReactNode;
+}
+
+export type DataTableColumnProperties<
+  D extends DataTableDatum,
+  C extends DataTableColumnConfig<D>,
+> = Partial<{
+  [key in C["id"]]: Pick<DataTableColumn<D, C>, "cellProps" | "cellRenderer">;
+}>;
+
+export const convertConfigsToColumns = <
+  D extends DataTableDatum,
+  C extends DataTableColumnConfig<D>,
+>(
+  configs: C[],
+  properties: DataTableColumnProperties<D, C>,
+): DataTableColumn<D, C>[] =>
+  configs.map(
+    (config): DataTableColumn<D, C> => ({
+      id: config.id,
+      config: config,
+      cellProps: properties[config.id as C["id"]]?.cellProps,
+      cellRenderer: properties[config.id as C["id"]]?.cellRenderer,
+    }),
+  );
+
+export type TableColumnId<C extends DataTableColumnConfig> = C["id"];
+
+export type OrderableTableColumn<
+  C extends DataTableColumnConfig,
+  I extends string = string,
+> = Extract<C, { isOrderable: true; id: I }>;
+
+export const columnIsOrderable = <C extends DataTableColumnConfig>(
+  col: C,
+): col is OrderableTableColumn<C> => (col as OrderableTableColumn<C>).isOrderable === true;
+
+export type OrderableTableColumnId<C extends DataTableColumnConfig> = OrderableTableColumn<C>["id"];
+
+export type HideableTableColumn<
+  C extends DataTableColumnConfig,
+  I extends string = string,
+> = Extract<C, { isHideable?: true; id: I }>;
+
+export type DataTableColumns<
+  D extends DataTableDatum,
+  I extends string = string,
+> = DataTableColumnConfig<D, I>[];
+
+export type RowLoadingState = {
+  readonly id: string;
+  readonly locked?: boolean;
+};
+
+export interface DataTableInstance<
+  D extends DataTableDatum,
+  C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
+> {
+  readonly isInScope: boolean;
+  readonly selectedRows: D[];
+  readonly rowsHaveActions: boolean;
+  readonly rowsAreSelectable: boolean;
+  readonly rowsAreDeletable: boolean;
+  readonly columns: C[];
+  readonly orderableColumns: OrderableTableColumn<C>[];
+  readonly hideableColumns: HideableTableColumn<C>[];
+  readonly visibleColumns: C[];
+  readonly controlBarTargetId: string | null;
   readonly canToggleColumnVisibility: boolean;
-  readonly isReady: boolean;
-  readonly checked: T["id"][];
-  readonly columns: Column<T>[];
-  readonly visibleColumns: Column<T>[];
-  readonly visibleColumnIds: string[];
-  readonly rowIsLoading: (id: T["id"]) => boolean;
-  readonly rowIsLocked: (id: T["id"]) => boolean;
-  readonly setRowLoading: (id: T["id"], loading: boolean, opts?: { locked?: boolean }) => void;
+  readonly columnIsHideable: (id: string) => id is HideableTableColumn<C>["id"];
+  readonly columnIsVisible: (id: string) => boolean;
+  readonly columnIsHidden: (id: string) => boolean;
+  readonly rowIsLoading: (id: D | string) => boolean;
+  readonly rowIsLocked: (id: D | string) => boolean;
+  readonly syncSelectedRows: (data: D[]) => void;
+  readonly setSelectedRows: (selected: D[]) => void;
+  readonly selectRows: (rows: D[] | D) => void;
+  readonly deselectRows: (rows: D[] | D | string | string[]) => void;
+  readonly changeRowSelection: (row: D, isSelected: boolean) => void;
+  readonly toggleRowSelection: (row: D) => void;
+  readonly rowIsSelected: (row: D | string) => boolean;
+  readonly setRowLoading: (id: string, loading: boolean, opts?: { locked?: boolean }) => void;
   readonly hideColumn: (id: string) => void;
   readonly showColumn: (id: string) => void;
-  readonly check: (m: T | T["id"]) => void;
-  readonly uncheck: (m: T["id"]) => void;
   readonly setVisibleColumns: (m: string[]) => void;
+  readonly toggleColumnVisibility: (id: string) => void;
+}
+
+export interface CellDataTableInstance<
+  D extends DataTableDatum,
+  C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
+> extends Pick<DataTableInstance<D, C>, "setRowLoading"> {}
+
+export type TableFilter<
+  F extends TableFilters = TableFilters,
+  I extends TableFilterId<F> = TableFilterId<F>,
+> = {
+  readonly id: I;
+  readonly label: string;
+  readonly isHiddenByDefault?: boolean;
+  readonly renderer: (value: F[I]) => ReactNode;
 };
 
-export type ContextTableComponent = {
-  <T extends TableModel>(props: Omit<TableProps<T>, "columns">): JSX.Element;
-};
+type ExtractValues<T> = T[keyof T];
+
+export type TableFiltersConfiguration<F extends TableFilters> = ExtractValues<{
+  [key in TableFilterId<F>]: TableFilter<F, key>;
+}>[];
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export type TableFilters = { [key in string]: any };
+
+export type TableFilterId<F extends TableFilters> = keyof F & string;

@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 
 import { removeRedundantTopLevelSkills } from "~/database/model";
 
-import { getExperiences } from "~/actions/fetches/experiences";
+import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
 
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { Loading } from "~/components/loading/Loading";
@@ -17,10 +17,14 @@ const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.Timel
 export type ExperienceTimelineProps = ComponentProps;
 
 export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promise<JSX.Element> => {
-  const _experiences = await getExperiences({
-    includes: ["skills", "details"],
-    visibility: "public",
-  });
+  const fetcher = fetchExperiences(["skills", "details"]);
+  const { data: _experiences } = await fetcher(
+    {
+      visibility: "public",
+      filters: { highlighted: true },
+    },
+    { strict: true },
+  );
 
   const experiences = _experiences.map(removeRedundantTopLevelSkills);
 

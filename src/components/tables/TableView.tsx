@@ -1,32 +1,50 @@
-import { memo } from "react";
+import React from "react";
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import type { ComponentProps } from "~/components/types";
 
-import { ControlContainer } from "./ControlContainer";
+import { TableControlBar } from "./TableControlBar";
+import { TableFilterBar } from "./TableFilterBar";
+import { TableViewContainer } from "./TableViewContainer";
+import { TableViewContent } from "./TableViewContent";
+import { TableViewFooter } from "./TableViewFooter";
+import { TableViewHeader } from "./TableViewHeader";
 
 export interface TableViewProps extends ComponentProps {
-  readonly searchBar?: JSX.Element;
-  readonly controlBar?: JSX.Element;
-  readonly paginator?: JSX.Element;
   readonly children: JSX.Element;
+  readonly headerProps?: ComponentProps;
+  readonly isLoading?: boolean;
+  readonly contentClassName?: ComponentProps["className"];
+  readonly footer?: JSX.Element;
+  readonly footerProps?: ComponentProps;
+  readonly header?: JSX.Element;
+  readonly controlBarTargetId?: string | null;
 }
 
-export const TableView = memo(
-  ({ searchBar, paginator, controlBar, children, ...props }: TableViewProps) => (
-    <div
-      {...props}
-      className={classNames(
-        "flex flex-col h-full relative overflow-hidden gap-[16px]",
-        props.className,
-      )}
-    >
-      <ControlContainer>{searchBar}</ControlContainer>
-      <ControlContainer>{controlBar}</ControlContainer>
-      <div className="flex flex-grow flex-col relative min-h-0">{children}</div>
-      <ControlContainer>{paginator}</ControlContainer>
-    </div>
-  ),
+const LocalTableView = ({
+  children,
+  contentClassName,
+  isLoading = false,
+  footer,
+  headerProps,
+  footerProps,
+  header,
+  controlBarTargetId,
+  ...props
+}: TableViewProps): JSX.Element => (
+  <TableViewContainer {...props} isLoading={isLoading}>
+    <TableViewHeader {...headerProps} controlBarTargetId={controlBarTargetId}>
+      {header}
+    </TableViewHeader>
+    <TableViewContent className={contentClassName} isLoading={isLoading}>
+      {children}
+    </TableViewContent>
+    <TableViewFooter {...footerProps}>{footer}</TableViewFooter>
+  </TableViewContainer>
 );
 
-export default TableView;
+export const TableView = Object.assign(React.memo(LocalTableView), {
+  FilterBar: TableFilterBar,
+  ControlBar: TableControlBar,
+  Content: TableViewContent,
+  Container: TableViewContainer,
+});

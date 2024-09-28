@@ -5,8 +5,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import type { ApiClientErrorJson } from "~/api";
-import { isApiClientErrorJson } from "~/api";
+import { type MutationActionResponse } from "~/actions-v2";
 
 import type {
   AllowedSelectValue,
@@ -15,7 +14,7 @@ import type {
   SelectValue,
   DataSelectModel,
 } from "~/components/input/select";
-import { type TableModel } from "~/components/tables/types";
+import type * as types from "~/components/tables/types";
 
 interface BaseSelectProps<
   B extends SelectBehaviorType,
@@ -23,7 +22,10 @@ interface BaseSelectProps<
   V extends AllowedSelectValue,
 > {
   readonly isClearable?: boolean;
+  readonly popoverClassName?: string;
   readonly inputClassName: string;
+  readonly summarizeValueAfter?: number;
+  readonly inPortal?: boolean;
   readonly value: SelectValue<V, B>;
   readonly behavior: B;
   readonly onChange: DataSelectChangeHandler<M, { behavior: B; getItemValue: (m: M) => V }>;
@@ -32,34 +34,39 @@ interface BaseSelectProps<
 interface SelectCellProps<
   B extends SelectBehaviorType,
   M extends DataSelectModel<V>,
+  R extends types.DataTableDatum,
   V extends AllowedSelectValue,
   T,
 > {
   readonly inputClassName?: string;
   readonly errorMessage: string;
-  readonly model: TableModel;
+  readonly row: R;
   readonly behavior: B;
   readonly attribute: string;
   readonly value: SelectValue<V, B>;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  readonly table: types.CellDataTableInstance<R, any>;
   readonly component: React.ComponentType<BaseSelectProps<B, M, V>>;
-  readonly action: (value: SelectValue<V, B>) => Promise<T | ApiClientErrorJson>;
+  readonly action: (value: SelectValue<V, B>) => Promise<MutationActionResponse<T>>;
 }
 
 export const SelectCell = <
   B extends SelectBehaviorType,
   M extends DataSelectModel<V>,
+  R extends types.DataTableDatum,
   V extends AllowedSelectValue,
   T,
 >({
-  model,
+  row,
   behavior,
   attribute,
   action,
+  table,
   value: _value,
   errorMessage,
   inputClassName = "w-full",
   component: Component,
-}: SelectCellProps<B, M, V, T>): JSX.Element => {
+}: SelectCellProps<B, M, R, V, T>): JSX.Element => {
   const [value, setValue] = useState<SelectValue<V, B>>(_value);
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -72,40 +79,47 @@ export const SelectCell = <
     <Component
       inputClassName={inputClassName}
       value={value}
+      summarizeValueAfter={2}
       isClearable
+      inPortal
       behavior={behavior}
       onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);
+        table.setRowLoading(row.id, true);
         item?.setLoading(true);
 
-        let response: T | ApiClientErrorJson | undefined = undefined;
+        let response: MutationActionResponse<T> | undefined = undefined;
         try {
           response = await action(v);
         } catch (e) {
-          logger.error(
-            `There was an error updating the ${String(attribute)} of the ${model.id}:\n${e}`,
-            {
-              error: e,
-              value: v,
-            },
+          logger.errorUnsafe(
+            e,
+            `There was an error updating the ${String(attribute)} of the ${row.id}.`,
+            { value: v },
           );
-          toast.error(errorMessage);
-        } finally {
+          table.setRowLoading(row.id, false);
           item?.setLoading(false);
+          return toast.error(errorMessage);
         }
-        if (isApiClientErrorJson(response)) {
-          logger.error(`There was an error updating the ${String(attribute)} of the ${model.id}.`, {
-            response,
-            value: v,
-          });
-          toast.error(errorMessage);
+        const { error } = response;
+        if (error) {
+          logger.error(
+            error,
+            `There was an error updating the ${String(attribute)} of the ${row.id}.`,
+            { value: v },
+          );
+          table.setRowLoading(row.id, false);
+          item?.setLoading(false);
+          return toast.error(errorMessage);
         }
         /* Refresh the state from the server regardless of whether or not the request succeeded.
            In the case the request failed, this is required to revert the changes back to their
            original state. */
         transition(() => {
           router.refresh();
+          table.setRowLoading(row.id, false);
+          item?.setLoading(false);
         });
       }}
     />

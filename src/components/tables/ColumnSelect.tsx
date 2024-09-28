@@ -1,44 +1,51 @@
-"use client";
+import type * as types from "./types";
+
 import { Button } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
-import { DataSelect } from "~/components/input/select/DataSelect";
+import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 
-import { useTableView } from "./hooks";
-import { getColId, type Column, type TableModel } from "./types";
+const getItemValue = <D extends types.DataTableDatum, C extends types.DataTableColumnConfig<D>>(
+  m: C,
+): C["id"] => m.id;
 
-export interface ColumnSelectProps {}
+export interface ColumnSelectProps<
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+> extends Omit<
+    DataSelectProps<C, { behavior: "multi"; getItemValue: typeof getItemValue<D, C> }>,
+    "options" | "data"
+  > {
+  readonly columns: C[];
+}
 
-export const ColumnSelect = <T extends TableModel>() => {
-  const { columns, visibleColumnIds, canToggleColumnVisibility, setVisibleColumns } =
-    useTableView<T>();
-
-  if (!canToggleColumnVisibility) {
-    return null;
-  }
-
-  return (
-    <DataSelect
-      options={{ getItemValue: (m: Column<T>) => getColId(m), behavior: "multi" }}
-      getItemValueLabel={(m: Column<T>) => m.title}
-      value={visibleColumnIds}
-      data={columns.filter(c => c.isHideable !== false)}
-      inputClassName="w-[240px]"
-      menuOffset={{ mainAxis: 4, crossAxis: -50 }}
-      menuWidth="available"
-      maxHeight={260}
-      onChange={v => setVisibleColumns(v)}
-      itemRenderer={m => m.title}
-    >
-      {({ ref, params, isOpen }) => (
-        <Button.Solid
-          {...params}
-          scheme="secondary"
-          ref={ref}
-          icon={{ right: <CaretIcon open={isOpen} /> }}
-        >
-          Columns
-        </Button.Solid>
-      )}
-    </DataSelect>
-  );
-};
+export const ColumnSelect = <
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+>({
+  columns,
+  ...props
+}: ColumnSelectProps<D, C>) => (
+  <DataSelect<C, { behavior: "multi"; getItemValue: typeof getItemValue<D, C> }>
+    {...props}
+    options={{ getItemValue: getItemValue as typeof getItemValue<D, C>, behavior: "multi" }}
+    getItemValueLabel={(m: C) => m.label ?? ""}
+    data={columns.filter(c => c.isHideable !== false)}
+    inputClassName="w-[240px]"
+    popoverClassName="z-50"
+    menuOffset={{ mainAxis: 4, crossAxis: -50 }}
+    menuWidth="available"
+    maxHeight={260}
+    itemRenderer={m => m.label ?? ""}
+  >
+    {({ ref, params, isOpen }) => (
+      <Button.Solid
+        {...params}
+        scheme="secondary"
+        ref={ref}
+        icon={{ right: <CaretIcon open={isOpen} /> }}
+      >
+        Columns
+      </Button.Solid>
+    )}
+  </DataSelect>
+);

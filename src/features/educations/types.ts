@@ -4,7 +4,7 @@ import type {
   DataTableColumnConfig,
   OrderableTableColumnId,
   TableColumnId,
-} from "~/components/tables-v2";
+} from "~/components/tables";
 
 export type EducationsTableModel = ApiEducation<["details", "skills"]>;
 

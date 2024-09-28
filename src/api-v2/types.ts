@@ -41,11 +41,10 @@ export const isZodError = (
 export type ApiClientErrorBaseJson = {
   readonly code: ApiClientGlobalErrorCode;
   readonly status: number;
-};
-
-export type ApiClientGlobalErrorJson = ApiClientErrorBaseJson & {
   readonly message: string;
 };
+
+export type ApiClientGlobalErrorJson = ApiClientErrorBaseJson;
 
 const ApiClientGlobalErrorJsonSchema = z.object({
   code: z.union([
@@ -55,9 +54,7 @@ const ApiClientGlobalErrorJsonSchema = z.object({
     z.literal(ApiClientGlobalErrorCodes.NOT_FOUND),
   ]),
   status: z.number().int(),
-  internalMessage: z.string().optional(),
   message: z.string(),
-  extra: z.any().optional(),
 });
 
 export const isApiClientGlobalErrorJson = (
@@ -72,9 +69,9 @@ export type ApiClientFormErrorJson<E extends string = string> = ApiClientErrorBa
 const ApiClientFormErrorJsonSchema = z.object({
   code: z.literal(ApiClientGlobalErrorCodes.BAD_REQUEST),
   status: z.literal(400),
-  internalMessage: z.string(),
+  message: z.string(),
+  // TODO: We might want to make this more strict...
   errors: z.any(),
-  extra: z.any().optional(),
 });
 
 export type ApiClientErrorJson<E extends string = string> =

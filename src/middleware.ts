@@ -4,7 +4,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 import { CMS_USER_ORG_SLUG, CMS_USER_ORG_ROLE, USER_ADMIN_ROLE } from "~/application/auth";
 
-const isProtectedRoute = createRouteMatcher(["/admin(.*)", "/admin-v2(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware((auth, req) => {
   const { has, redirectToSignIn, userId, orgSlug } = auth();

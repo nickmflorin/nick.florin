@@ -1,13 +1,7 @@
-@use "./scrollbar" as scrollbar;
-
 .form {
   display: flex;
   flex-direction: column;
   width: 100%;
   position: relative;
   overflow: hidden;
-
-  > .form__content {
-    @include scrollbar.scrollbar();
-  }
 }

@@ -3,13 +3,14 @@ import { useWatch } from "react-hook-form";
 import { type PickByValueExact } from "utility-types";
 
 import type { BaseFormValues, FormInstance, FieldName } from "~/components/forms";
+import { type FormInstance as FormInstanceV2 } from "~/components/forms-v2";
 import { classNames } from "~/components/types";
 import { Title } from "~/components/typography";
 
 import { ContextDrawer } from "./ContextDrawer";
 
 interface DrawerFormProps<I extends BaseFormValues> {
-  readonly form: FormInstance<I>;
+  readonly form: FormInstance<I> | FormInstanceV2<I>;
   readonly titleField: keyof PickByValueExact<I, string> & FieldName<I>;
   readonly titlePlaceholder?: string;
   readonly eagerTitle?: string;
