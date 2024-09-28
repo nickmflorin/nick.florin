@@ -35,8 +35,10 @@ export const RepositorySelect = forwardRef(
       itemRenderer={m => (
         <RepositoryTile
           repository={m}
-          className="items-center"
+          includeNpmLink={false}
+          className="items-center gap-[8px]"
           includeLink={false}
+          iconSize={22}
           includeDescription={false}
         />
       )}
