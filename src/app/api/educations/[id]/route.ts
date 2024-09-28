@@ -1,24 +1,43 @@
-import { type EducationIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
+
+import { z } from "zod";
+
+import type { EducationIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { getEducation } from "~/actions/fetches/educations";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
-import { apiRoute } from "~/api/route";
+import { EducationIncludesSchema } from "~/actions-v2";
+import { fetchEducation } from "~/actions-v2/educations/fetch-education";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http-v2";
 
 export async function generateStaticParams() {
   const educations = await db.education.findMany();
-  return educations.map(e => ({
-    id: e.id,
+  return educations.map(r => ({
+    id: r.id,
   }));
 }
 
-export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
-  const education = await getEducation(params.id, {
-    includes: query.includes as EducationIncludes,
-    visibility: query.visibility,
-  });
-  if (!education) {
-    return ApiClientGlobalError.NotFound().response;
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = EducationIncludesSchema.safeParse(query.includes);
+
+  let includes: EducationIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  return ClientResponse.OK(education).response;
-});
+
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
+
+  const fetcher = fetchEducation(includes);
+  const { error, data } = await fetcher(params.id, { visibility }, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

@@ -1,5 +1,7 @@
 import { type NextRequest } from "next/server";
 
+import { z } from "zod";
+
 import type { ProjectIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
@@ -26,8 +28,14 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
     includes = parsed.data;
   }
 
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
+
   const fetcher = fetchProject(includes);
-  const { error, data } = await fetcher(params.id, { scope: "api" });
+  const { error, data } = await fetcher(params.id, { visibility }, { scope: "api" });
   if (error) {
     return error.response;
   }

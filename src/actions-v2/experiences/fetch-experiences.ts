@@ -1,33 +1,23 @@
-import { type Required } from "utility-types";
-
-import type {
-  ApiExperience,
-  ExperienceIncludes,
-  ExperienceToDetailIncludes,
-} from "~/database/model";
+import type { ApiExperience, ExperienceIncludes } from "~/database/model";
 import { DetailEntityType, fieldIsIncluded } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
-import { visibilityIsAdmin } from "~/actions-v2";
 import {
   getExperiencesOrdering,
   constructTableSearchClause,
   PAGE_SIZES,
   type ServerSidePaginationParams,
-  isVisible,
   clampPagination,
   type ExperiencesControls,
   standardListFetchAction,
   type StandardFetchActionReturn,
+  type ActionCountParams,
+  type ActionPaginationParams,
+  type ActionFilterParams,
 } from "~/actions-v2";
-import { fetchDetails } from "~/actions-v2/details/fetch-details";
-import { ApiClientGlobalError } from "~/api-v2";
 
-const filtersClause = ({
-  filters,
-  visibility,
-}: Pick<ExperiencesControls, "filters" | "visibility">) =>
+const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<ExperiencesControls>) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("experience", filters.search) : undefined,
     filters.companies && filters.companies.length !== 0
@@ -39,14 +29,11 @@ const filtersClause = ({
     filters.highlighted !== undefined && filters.highlighted !== null
       ? { highlighted: filters.highlighted }
       : undefined,
-    { visible: isVisible(visibility, filters.visible) },
+    { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({
-  filters,
-  visibility,
-}: Pick<ExperiencesControls, "filters" | "visibility">) => {
-  const clause = filtersClause({ filters, visibility });
+const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<ExperiencesControls>) => {
+  const clause = filtersClause({ filters, filterIsVisible });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -54,43 +41,25 @@ const whereClause = ({
 };
 
 export const fetchExperiencesCount = standardListFetchAction(
-  async ({
-    filters,
-    visibility,
-  }: Pick<ExperiencesControls, "filters" | "visibility">): StandardFetchActionReturn<{
+  async (
+    { filters }: ActionCountParams<ExperiencesControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
-    const count = await db.experience.count({ where: whereClause({ filters, visibility }) });
+    const count = await db.experience.count({ where: whereClause({ filters, filterIsVisible }) });
     return { count };
   },
   { authenticated: true, adminOnly: true },
 );
 
 export const fetchExperiencesPagination = standardListFetchAction(
-  async ({
-    filters,
-    page,
-    visibility,
-  }: Required<
-    Pick<ExperiencesControls, "filters" | "visibility" | "page">,
-    "page"
-  >): StandardFetchActionReturn<ServerSidePaginationParams> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
+  async (
+    { filters, page }: ActionPaginationParams<ExperiencesControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.experience.count({
-      where: whereClause({ filters, visibility }),
+      where: whereClause({ filters, filterIsVisible }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.experience });
   },
@@ -99,18 +68,10 @@ export const fetchExperiencesPagination = standardListFetchAction(
 
 export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
   standardListFetchAction(
-    async ({
-      filters,
-      ordering,
-      page,
-      limit,
-      visibility,
-    }: Omit<ExperiencesControls<I>, "includes">): StandardFetchActionReturn<ApiExperience<I>[]> => {
-      if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-        return ApiClientGlobalError.Forbidden({
-          message: "The user does not have permission to access this data.",
-        });
-      }
+    async (
+      { filters, ordering, page, limit, visibility }: Omit<ExperiencesControls<I>, "includes">,
+      { filterIsVisible },
+    ): StandardFetchActionReturn<ApiExperience<I>[]> => {
       let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchExperiencesPagination(
@@ -120,11 +81,11 @@ export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
       }
 
       const experiences = await db.experience.findMany({
-        where: whereClause({ filters, visibility }),
+        where: whereClause({ filters, filterIsVisible }),
         include: {
           company: true,
           skills: fieldIsIncluded("skills", includes)
-            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
         },
         orderBy: getExperiencesOrdering(ordering),
@@ -133,25 +94,43 @@ export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
       });
 
       if (fieldIsIncluded("details", includes)) {
-        const fetcher = fetchDetails(
-          (fieldIsIncluded("skills", includes)
-            ? ["nestedDetails", "skills"]
-            : ["nestedDetails"]) as ExperienceToDetailIncludes<I>,
-        );
-        const { data: details, error } = await fetcher(
-          {
-            filters: {
-              visible: isVisible(visibility, filters.visible),
-              entityIds: experiences.map(e => e.id),
-              entityTypes: [DetailEntityType.EXPERIENCE],
-            },
-            visibility,
+        const details = await db.detail.findMany({
+          where: {
+            entityType: DetailEntityType.EXPERIENCE,
+            entityId: { in: experiences.map(e => e.id) },
+            visible: filterIsVisible(filters.visible),
           },
-          { strict: false, scope: "api", serialized: false },
-        );
-        if (error) {
-          return error;
-        }
+          include: {
+            project: {
+              include: {
+                skills: fieldIsIncluded("skills", includes)
+                  ? { where: { visible: filterIsVisible(filters.visible) } }
+                  : undefined,
+              },
+            },
+            skills: fieldIsIncluded("skills", includes)
+              ? { where: { visible: filterIsVisible(filters.visible) } }
+              : undefined,
+            nestedDetails: {
+              orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+              where: {
+                visible: filterIsVisible(filters.visible),
+              },
+              include: {
+                skills: fieldIsIncluded("skills", includes)
+                  ? { where: { visible: filterIsVisible(filters.visible) } }
+                  : undefined,
+                project: {
+                  include: {
+                    skills: fieldIsIncluded("skills", includes)
+                      ? { where: { visible: filterIsVisible(filters.visible) } }
+                      : undefined,
+                  },
+                },
+              },
+            },
+          },
+        });
         return experiences.map(
           (edu): ApiExperience<I> =>
             ({ ...edu, details: details.filter(d => d.entityId === edu.id) }) as ApiExperience<I>,

@@ -121,6 +121,11 @@ export type FlattenedExperiencesControls<I extends ExperienceIncludes = Experien
       readonly visibility: ActionVisibility;
     };
 
+export type ExperienceControls<I extends ExperienceIncludes = ExperienceIncludes> = Pick<
+  ExperiencesControls<I>,
+  "includes" | "visibility"
+>;
+
 export const ExperiencesFiltersObj = Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),

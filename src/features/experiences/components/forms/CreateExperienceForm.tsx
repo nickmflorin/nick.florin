@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type Experience } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { createExperience } from "~/actions/mutations/experiences";
-import { isApiClientErrorJson } from "~/api";
+import { type Experience } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { createExperience } from "~/actions-v2/experiences/create-experience";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -30,16 +32,24 @@ export const CreateExperienceForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createExperience(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createExperience>> | null = null;
+        try {
+          response = await createExperience(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the experience'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the experience.");
         }
+        const { error, data: experience } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.(experience);
+        });
       }}
     />
   );

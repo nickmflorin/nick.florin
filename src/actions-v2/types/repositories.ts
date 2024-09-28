@@ -118,8 +118,10 @@ export type FlattenedRepositoriesControls<I extends RepositoryIncludes = Reposit
       readonly visibility: ActionVisibility;
     };
 
-export interface RepositoryControls<I extends RepositoryIncludes = RepositoryIncludes>
-  extends Pick<RepositoriesControls<I>, "includes"> {}
+export type RepositoryControls<I extends RepositoryIncludes = RepositoryIncludes> = Pick<
+  RepositoriesControls<I>,
+  "includes" | "visibility"
+>;
 
 export const RepositoriesFiltersObj = Filters({
   highlighted: {

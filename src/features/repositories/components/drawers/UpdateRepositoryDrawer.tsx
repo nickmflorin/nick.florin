@@ -18,7 +18,7 @@ export const UpdateRepositoryDrawer = ({
   onClose,
 }: UpdateRepositoryDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useRepository(repositoryId, {
-    query: { includes: ["projects", "skills"] },
+    query: { includes: ["projects", "skills"], visibility: "admin" },
     keepPreviousData: true,
   });
   const form = useRepositoryForm(eager);

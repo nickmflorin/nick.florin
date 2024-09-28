@@ -1,12 +1,11 @@
 import type { BrandSkill } from "~/database/model";
-import { isUuid } from "~/lib/typeguards";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useSkillForm } from "~/features/skills/components/forms/hooks";
 import UpdateSkillForm from "~/features/skills/components/forms/UpdateSkillForm";
-import { useSkill } from "~/hooks";
+import { useSkill } from "~/hooks/api-v2";
 
 interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
   readonly skillId: string;
@@ -18,7 +17,7 @@ export const UpdateCourseDrawer = ({
   eager,
   onClose,
 }: UpdateCourseDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useSkill(isUuid(skillId) ? skillId : null, {
+  const { data, isLoading, error, isValidating } = useSkill(skillId, {
     query: {
       includes: ["projects", "educations", "experiences", "repositories", "courses"],
       visibility: "admin",

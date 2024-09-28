@@ -1,14 +1,10 @@
-import { type Required } from "utility-types";
-
 import type { ApiSkill, SkillIncludes } from "~/database/model";
 import { fieldIsIncluded } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
 import {
-  visibilityIsAdmin,
   getSkillsOrdering,
-  isVisible,
   constructTableSearchClause,
   PAGE_SIZES,
   type ServerSidePaginationParams,
@@ -16,10 +12,12 @@ import {
   type SkillsControls,
   standardListFetchAction,
   type StandardFetchActionReturn,
+  type ActionCountParams,
+  type ActionPaginationParams,
+  type ActionFilterParams,
 } from "~/actions-v2";
-import { ApiClientGlobalError } from "~/api-v2";
 
-const filtersClause = ({ filters, visibility }: Pick<SkillsControls, "filters" | "visibility">) =>
+const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<SkillsControls>) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("skill", filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
@@ -49,11 +47,11 @@ const filtersClause = ({ filters, visibility }: Pick<SkillsControls, "filters" |
     filters.categories && filters.categories.length !== 0
       ? { categories: { hasSome: filters.categories } }
       : undefined,
-    { visible: isVisible(visibility, filters.visible) },
+    { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, visibility }: Pick<SkillsControls, "filters" | "visibility">) => {
-  const clause = filtersClause({ filters, visibility });
+const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<SkillsControls>) => {
+  const clause = filtersClause({ filters, filterIsVisible });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -61,43 +59,25 @@ const whereClause = ({ filters, visibility }: Pick<SkillsControls, "filters" | "
 };
 
 export const fetchSkillsCount = standardListFetchAction(
-  async ({
-    filters,
-    visibility,
-  }: Pick<SkillsControls, "filters" | "visibility">): StandardFetchActionReturn<{
+  async (
+    { filters }: ActionCountParams<SkillsControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
-    const count = await db.skill.count({ where: whereClause({ filters, visibility }) });
+    const count = await db.skill.count({ where: whereClause({ filters, filterIsVisible }) });
     return { count };
   },
   { authenticated: true, adminOnly: true },
 );
 
 export const fetchSkillsPagination = standardListFetchAction(
-  async ({
-    filters,
-    page,
-    visibility,
-  }: Required<
-    Pick<SkillsControls, "filters" | "visibility" | "page">,
-    "page"
-  >): StandardFetchActionReturn<ServerSidePaginationParams> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
+  async (
+    { filters, page }: ActionPaginationParams<SkillsControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.skill.count({
-      where: whereClause({ filters, visibility }),
+      where: whereClause({ filters, filterIsVisible }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.skill });
   },
@@ -106,18 +86,10 @@ export const fetchSkillsPagination = standardListFetchAction(
 
 export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
   standardListFetchAction(
-    async ({
-      filters,
-      ordering,
-      page,
-      limit,
-      visibility,
-    }: Omit<SkillsControls<I>, "includes">): StandardFetchActionReturn<ApiSkill<I>[]> => {
-      if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-        return ApiClientGlobalError.Forbidden({
-          message: "The user does not have permission to access this data.",
-        });
-      }
+    async (
+      { filters, ordering, page, limit, visibility }: Omit<SkillsControls<I>, "includes">,
+      { filterIsVisible },
+    ): StandardFetchActionReturn<ApiSkill<I>[]> => {
       let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchSkillsPagination(
@@ -126,7 +98,7 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
         ));
       }
       return (await db.skill.findMany({
-        where: whereClause({ filters, visibility }),
+        where: whereClause({ filters, filterIsVisible }),
         orderBy: getSkillsOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination
@@ -136,16 +108,16 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
             : undefined,
         include: {
           courses: fieldIsIncluded("courses", includes)
-            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
           repositories: fieldIsIncluded("repositories", includes)
-            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
           projects: fieldIsIncluded("projects", includes),
           educations: fieldIsIncluded("educations", includes)
             ? {
                 where: {
-                  visible: isVisible(visibility, filters.visible),
+                  visible: filterIsVisible(filters.visible),
                 },
                 include: { school: true },
                 orderBy: { startDate: "desc" },
@@ -153,7 +125,7 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
             : undefined,
           experiences: fieldIsIncluded("experiences", includes)
             ? {
-                where: { visible: isVisible(visibility, filters.visible) },
+                where: { visible: filterIsVisible(filters.visible) },
                 include: { company: true },
                 orderBy: { startDate: "desc" },
               }

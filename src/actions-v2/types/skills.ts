@@ -127,6 +127,11 @@ export type FlattenedSkillsControls<I extends SkillIncludes = SkillIncludes> = S
     readonly visibility: ActionVisibility;
   };
 
+export type SkillControls<I extends SkillIncludes = SkillIncludes> = Pick<
+  SkillsControls<I>,
+  "includes" | "visibility"
+>;
+
 export const SkillsFiltersObj = Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),

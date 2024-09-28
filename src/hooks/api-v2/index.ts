@@ -8,3 +8,6 @@ export * from "./use-repositories";
 export * from "./use-repository";
 export * from "./use-project";
 export * from "./use-course";
+export * from "./use-skill";
+export * from "./use-education";
+export * from "./use-experience";

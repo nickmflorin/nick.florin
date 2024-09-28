@@ -3,9 +3,9 @@ import { useState, useCallback, useEffect } from "react";
 
 import { useWatch } from "react-hook-form";
 
-import { Checkboxes } from "~/components/forms/fields/Checkboxes";
-import { CheckboxField } from "~/components/forms/fields/CheckboxField";
-import { Form, type FormProps } from "~/components/forms/Form";
+import { Checkboxes } from "~/components/forms-v2/fields/Checkboxes";
+import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
+import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { Checkbox } from "~/components/input/Checkbox";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";

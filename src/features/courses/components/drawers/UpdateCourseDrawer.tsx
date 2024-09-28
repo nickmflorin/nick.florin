@@ -18,7 +18,7 @@ export const UpdateCourseDrawer = ({
   onClose,
 }: UpdateCourseDrawerProps): JSX.Element => {
   const { data, isLoading, error, isValidating } = useCourse(courseId, {
-    query: { includes: ["education", "skills"] },
+    query: { includes: ["education", "skills"], visibility: "admin" },
     keepPreviousData: true,
   });
   const form = useCourseForm();

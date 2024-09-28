@@ -11,7 +11,7 @@ export interface CourseDrawerProps extends ExtendingDrawerProps {
 
 export const CourseDrawer = ({ courseId }: CourseDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useCourse(courseId, {
-    query: { includes: ["education", "skills"] },
+    query: { includes: ["education", "skills"], visibility: "public" },
     keepPreviousData: true,
   });
 

@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
+import { toast } from "react-toastify";
+
 import { type ApiSkill } from "~/database/model";
+import { logger } from "~/internal/logger";
 
 import { updateSkill } from "~/actions-v2/skills/update-skill";
-import { isApiClientErrorJson } from "~/api";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -47,15 +49,25 @@ export const UpdateSkillForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateSkillWithId(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          transition(() => {
-            refresh();
-            onSuccess?.();
+        let response: Awaited<ReturnType<typeof updateSkillWithId>> | null = null;
+        try {
+          response = await updateSkillWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(e, `There was an error updating the skill with ID '${skill.id}'.`, {
+            skill,
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the skill.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
     />
   );

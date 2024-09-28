@@ -1,25 +1,23 @@
-import { type Required } from "utility-types";
-
 import type { ApiCourse, CourseIncludes } from "~/database/model";
 import { fieldIsIncluded } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
-import { visibilityIsAdmin } from "~/actions-v2";
 import {
   constructTableSearchClause,
   PAGE_SIZES,
   type ServerSidePaginationParams,
-  isVisible,
   clampPagination,
   type CoursesControls,
   standardListFetchAction,
   getCoursesOrdering,
   type StandardFetchActionReturn,
+  type ActionPaginationParams,
+  type ActionCountParams,
+  type ActionFilterParams,
 } from "~/actions-v2";
-import { ApiClientGlobalError } from "~/api-v2";
 
-const filtersClause = ({ filters, visibility }: Pick<CoursesControls, "filters" | "visibility">) =>
+const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<CoursesControls>) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("course", filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
@@ -28,11 +26,11 @@ const filtersClause = ({ filters, visibility }: Pick<CoursesControls, "filters" 
     filters.skills && filters.skills.length !== 0
       ? { skills: { some: { id: { in: filters.skills } } } }
       : undefined,
-    { visible: isVisible(visibility, filters.visible) },
+    { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, visibility }: Pick<CoursesControls, "filters" | "visibility">) => {
-  const clause = filtersClause({ filters, visibility });
+const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<CoursesControls>) => {
+  const clause = filtersClause({ filters, filterIsVisible });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -40,43 +38,25 @@ const whereClause = ({ filters, visibility }: Pick<CoursesControls, "filters" | 
 };
 
 export const fetchCoursesCount = standardListFetchAction(
-  async ({
-    filters,
-    visibility,
-  }: Pick<CoursesControls, "filters" | "visibility">): StandardFetchActionReturn<{
+  async (
+    { filters }: ActionCountParams<CoursesControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
-    const count = await db.course.count({ where: whereClause({ filters, visibility }) });
+    const count = await db.course.count({ where: whereClause({ filters, filterIsVisible }) });
     return { count };
   },
   { authenticated: true, adminOnly: true },
 );
 
 export const fetchCoursesPagination = standardListFetchAction(
-  async ({
-    filters,
-    page,
-    visibility,
-  }: Required<
-    Pick<CoursesControls, "filters" | "visibility" | "page">,
-    "page"
-  >): StandardFetchActionReturn<ServerSidePaginationParams> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
+  async (
+    { filters, page }: ActionPaginationParams<CoursesControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.course.count({
-      where: whereClause({ filters, visibility }),
+      where: whereClause({ filters, filterIsVisible }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.course });
   },
@@ -85,18 +65,10 @@ export const fetchCoursesPagination = standardListFetchAction(
 
 export const fetchCourses = <I extends CourseIncludes>(includes: I) =>
   standardListFetchAction(
-    async ({
-      filters,
-      ordering,
-      page,
-      limit,
-      visibility,
-    }: Omit<CoursesControls<I>, "includes">): StandardFetchActionReturn<ApiCourse<I>[]> => {
-      if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-        return ApiClientGlobalError.Forbidden({
-          message: "The user does not have permission to access this data.",
-        });
-      }
+    async (
+      { filters, ordering, page, limit, visibility }: Omit<CoursesControls<I>, "includes">,
+      { filterIsVisible },
+    ): StandardFetchActionReturn<ApiCourse<I>[]> => {
       let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchCoursesPagination(
@@ -106,13 +78,13 @@ export const fetchCourses = <I extends CourseIncludes>(includes: I) =>
       }
 
       const courses = await db.course.findMany({
-        where: whereClause({ filters, visibility }),
+        where: whereClause({ filters, filterIsVisible }),
         include: {
           education: fieldIsIncluded("education", includes)
             ? { include: { school: true } }
             : undefined,
           skills: fieldIsIncluded("skills", includes)
-            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
         },
         orderBy: getCoursesOrdering(ordering),

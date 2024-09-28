@@ -116,8 +116,10 @@ export type FlattenedCoursesControls<I extends CourseIncludes = CourseIncludes> 
     readonly visibility: ActionVisibility;
   };
 
-export interface CourseControls<I extends CourseIncludes = CourseIncludes>
-  extends Pick<CoursesControls<I>, "includes"> {}
+export type CourseControls<I extends CourseIncludes = CourseIncludes> = Pick<
+  CoursesControls<I>,
+  "includes" | "visibility"
+>;
 
 export const CoursesFiltersObj = Filters({
   visible: {

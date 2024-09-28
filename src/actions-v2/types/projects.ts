@@ -119,7 +119,7 @@ export type FlattenedProjectsControls<I extends ProjectIncludes = ProjectInclude
     };
 
 export interface ProjectControls<I extends ProjectIncludes = ProjectIncludes>
-  extends Pick<ProjectsControls<I>, "includes"> {}
+  extends Pick<ProjectsControls<I>, "includes" | "visibility"> {}
 
 export const ProjectsFiltersObj = Filters({
   highlighted: {

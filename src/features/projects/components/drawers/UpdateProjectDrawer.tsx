@@ -25,6 +25,7 @@ export const UpdateProjectDrawer = ({
          Form data (not the Form inputs) so that they are not wiped everytime a project is
          updated. */
       includes: ["skills", "repositories", "details", "nestedDetails"],
+      visibility: "admin",
     },
   });
   const form = useProjectForm();

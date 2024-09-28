@@ -7,15 +7,15 @@ import { ApiClientGlobalError } from "~/api-v2";
 
 export const fetchProject = <I extends ProjectIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, _, isAdmin): StandardFetchActionReturn<ApiProject<I>> => {
+    async (id, { isVisible, isAdmin }): StandardFetchActionReturn<ApiProject<I>> => {
       let project = (await db.project.findUnique({
         where: { id },
         include: {
           skills: fieldIsIncluded("skills", includes)
-            ? { where: { visible: isAdmin ? undefined : true } }
+            ? { where: { visible: isVisible } }
             : undefined,
           repositories: fieldIsIncluded("repositories", includes)
-            ? { where: { visible: isAdmin ? undefined : true } }
+            ? { where: { visible: isVisible } }
             : undefined,
         },
       })) as ApiProject<I>;

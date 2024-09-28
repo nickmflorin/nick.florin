@@ -126,6 +126,11 @@ export type FlattenedEducationsControls<I extends EducationIncludes = EducationI
       readonly visibility: ActionVisibility;
     };
 
+export type EducationControls<I extends EducationIncludes = EducationIncludes> = Pick<
+  EducationsControls<I>,
+  "includes" | "visibility"
+>;
+
 export const EducationsFiltersObj = Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),

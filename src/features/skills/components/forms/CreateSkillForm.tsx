@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type Skill } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { createSkill } from "~/actions/mutations/skills";
-import { isApiClientErrorJson } from "~/api";
+import { type Skill } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { createSkill } from "~/actions-v2/skills/create-skill";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -30,16 +32,24 @@ export const CreateSkillForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createSkill(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createSkill>> | null = null;
+        try {
+          response = await createSkill(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the skill'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the skill.");
         }
+        const { error, data: skill } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.(skill);
+        });
       }}
     />
   );

@@ -1,12 +1,11 @@
 import type { BrandExperience } from "~/database/model";
-import { isUuid } from "~/lib/typeguards";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useExperienceForm } from "~/features/experiences/components/forms/hooks";
 import { UpdateExperienceForm } from "~/features/experiences/components/forms/UpdateExperienceForm";
-import { useExperience } from "~/hooks";
+import { useExperience } from "~/hooks/api-v2";
 
 interface UpdateExperienceDrawerProps extends ExtendingDrawerProps {
   readonly experienceId: string;
@@ -18,10 +17,10 @@ export const UpdateExperienceDrawer = ({
   eager,
   onClose,
 }: UpdateExperienceDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useExperience(
-    isUuid(experienceId) ? experienceId : null,
-    { keepPreviousData: true, query: { visibility: "admin", includes: ["skills"] } },
-  );
+  const { data, isLoading, error, isValidating } = useExperience(experienceId, {
+    keepPreviousData: true,
+    query: { visibility: "admin", includes: ["skills"] },
+  });
   const form = useExperienceForm({ experience: data });
 
   return (

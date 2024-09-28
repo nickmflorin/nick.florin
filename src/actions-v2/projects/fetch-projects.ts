@@ -1,25 +1,23 @@
-import { type Required } from "utility-types";
-
 import type { ApiProject, ProjectIncludes } from "~/database/model";
 import { fieldIsIncluded } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 
-import { visibilityIsAdmin } from "~/actions-v2";
 import {
   constructTableSearchClause,
   PAGE_SIZES,
   type ServerSidePaginationParams,
-  isVisible,
   clampPagination,
   type ProjectsControls,
   standardListFetchAction,
   getProjectsOrdering,
   type StandardFetchActionReturn,
+  type ActionPaginationParams,
+  type ActionCountParams,
+  type ActionFilterParams,
 } from "~/actions-v2";
-import { ApiClientGlobalError } from "~/api-v2";
 
-const filtersClause = ({ filters, visibility }: Pick<ProjectsControls, "filters" | "visibility">) =>
+const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<ProjectsControls>) =>
   conditionalFilters([
     filters.search ? constructTableSearchClause("project", filters.search) : undefined,
     filters.repositories && filters.repositories.length !== 0
@@ -31,11 +29,11 @@ const filtersClause = ({ filters, visibility }: Pick<ProjectsControls, "filters"
     filters.highlighted !== undefined && filters.highlighted !== null
       ? { highlighted: filters.highlighted }
       : undefined,
-    { visible: isVisible(visibility, filters.visible) },
+    { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, visibility }: Pick<ProjectsControls, "filters" | "visibility">) => {
-  const clause = filtersClause({ filters, visibility });
+const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<ProjectsControls>) => {
+  const clause = filtersClause({ filters, filterIsVisible });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -43,43 +41,25 @@ const whereClause = ({ filters, visibility }: Pick<ProjectsControls, "filters" |
 };
 
 export const fetchProjectsCount = standardListFetchAction(
-  async ({
-    filters,
-    visibility,
-  }: Pick<ProjectsControls, "filters" | "visibility">): StandardFetchActionReturn<{
+  async (
+    { filters }: ActionCountParams<ProjectsControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
-    const count = await db.project.count({ where: whereClause({ filters, visibility }) });
+    const count = await db.project.count({ where: whereClause({ filters, filterIsVisible }) });
     return { count };
   },
   { authenticated: true, adminOnly: true },
 );
 
 export const fetchProjectsPagination = standardListFetchAction(
-  async ({
-    filters,
-    page,
-    visibility,
-  }: Required<
-    Pick<ProjectsControls, "filters" | "visibility" | "page">,
-    "page"
-  >): StandardFetchActionReturn<ServerSidePaginationParams> => {
-    /* This check may be redundant, because of the 'adminOnly' flag in the standard fetch action
-       method - but we want to include this just in case. */
-    if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-      return ApiClientGlobalError.Forbidden({
-        message: "The user does not have permission to access this data.",
-      });
-    }
+  async (
+    { filters, page }: ActionPaginationParams<ProjectsControls>,
+    { filterIsVisible },
+  ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.project.count({
-      where: whereClause({ filters, visibility }),
+      where: whereClause({ filters, filterIsVisible }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.project });
   },
@@ -88,18 +68,10 @@ export const fetchProjectsPagination = standardListFetchAction(
 
 export const fetchProjects = <I extends ProjectIncludes>(includes: I) =>
   standardListFetchAction(
-    async ({
-      filters,
-      ordering,
-      page,
-      limit,
-      visibility,
-    }: Omit<ProjectsControls<I>, "includes">): StandardFetchActionReturn<ApiProject<I>[]> => {
-      if (!visibilityIsAdmin(visibility) && filters.visible === false) {
-        return ApiClientGlobalError.Forbidden({
-          message: "The user does not have permission to access this data.",
-        });
-      }
+    async (
+      { filters, ordering, page, limit, visibility }: Omit<ProjectsControls<I>, "includes">,
+      { filterIsVisible },
+    ): StandardFetchActionReturn<ApiProject<I>[]> => {
       let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchProjectsPagination(
@@ -109,13 +81,13 @@ export const fetchProjects = <I extends ProjectIncludes>(includes: I) =>
       }
 
       let projects = (await db.project.findMany({
-        where: whereClause({ filters, visibility }),
+        where: whereClause({ filters, filterIsVisible }),
         include: {
           skills: fieldIsIncluded("skills", includes)
-            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
           repositories: fieldIsIncluded("repositories", includes)
-            ? { where: { visible: isVisible(visibility, filters.visible) } }
+            ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
         },
         orderBy: getProjectsOrdering(ordering),

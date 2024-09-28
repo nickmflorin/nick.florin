@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type Education } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { createEducation } from "~/actions/mutations/educations";
-import { isApiClientErrorJson } from "~/api";
+import { type Education } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { createEducation } from "~/actions-v2/educations/create-education";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -30,16 +32,24 @@ export const CreateEducationForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createEducation(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createEducation>> | null = null;
+        try {
+          response = await createEducation(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the education'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the education.");
         }
+        const { error, data: education } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.(education);
+        });
       }}
     />
   );

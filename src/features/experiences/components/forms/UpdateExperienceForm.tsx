@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type ApiExperience } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { updateExperience } from "~/actions/mutations/experiences";
-import { isApiClientErrorJson } from "~/api";
+import { type ApiExperience } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { updateExperience } from "~/actions-v2/experiences/update-experience";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -44,15 +46,26 @@ export const UpdateExperienceForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateExperienceWithId(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          transition(() => {
-            refresh();
-            onSuccess?.();
-          });
+        let response: Awaited<ReturnType<typeof updateExperienceWithId>> | null = null;
+        try {
+          response = await updateExperienceWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(
+            e,
+            `There was an error updating the experience with ID '${experience.id}'.`,
+            { experience, data },
+          );
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the experience.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
     />
   );
