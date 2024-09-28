@@ -162,7 +162,7 @@ export const fetchEducations = <I extends EducationIncludes>(includes: I) =>
             },
             visibility,
           },
-          { strict: false, scope: "api" },
+          { strict: false, scope: "api", serialized: false },
         );
         if (error) {
           return error;

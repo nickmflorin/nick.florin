@@ -118,6 +118,9 @@ export type FlattenedProjectsControls<I extends ProjectIncludes = ProjectInclude
       readonly visibility: ActionVisibility;
     };
 
+export interface ProjectControls<I extends ProjectIncludes = ProjectIncludes>
+  extends Pick<ProjectsControls<I>, "includes"> {}
+
 export const ProjectsFiltersObj = Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),

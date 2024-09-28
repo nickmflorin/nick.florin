@@ -5,9 +5,9 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type Course } from "~/database/model";
+import { logger } from "~/internal/logger";
 
-import { createCourse } from "~/actions/mutations/courses";
-import { isApiClientErrorJson } from "~/api";
+import { createCourse } from "~/actions-v2/courses/create-course";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -34,17 +34,24 @@ export const CreateCourseForm = ({
       isLoading={pending}
       form={form}
       action={async (data, form) => {
-        const response = await createCourse(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          toast.success("The project was successfully created.");
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createCourse>> | null = null;
+        try {
+          response = await createCourse(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the course'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the course.");
         }
+        const { error, data: course } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.(course);
+        });
       }}
     />
   );

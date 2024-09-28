@@ -1,5 +1,5 @@
 "use client";
-import { Form, type FormProps } from "~/components/forms/Form";
+import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";

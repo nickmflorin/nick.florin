@@ -6,3 +6,5 @@ export * from "./use-projects";
 export * from "./use-courses";
 export * from "./use-repositories";
 export * from "./use-repository";
+export * from "./use-project";
+export * from "./use-course";

@@ -1,12 +1,11 @@
 import type { BrandCourse } from "~/database/model";
-import { isUuid } from "~/lib/typeguards";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useCourseForm } from "~/features/courses/components/forms/hooks";
 import { UpdateCourseForm } from "~/features/courses/components/forms/UpdateCourseF";
-import { useCourse } from "~/hooks";
+import { useCourse } from "~/hooks/api-v2";
 
 interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
   readonly courseId: string;
@@ -18,8 +17,8 @@ export const UpdateCourseDrawer = ({
   eager,
   onClose,
 }: UpdateCourseDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useCourse(isUuid(courseId) ? courseId : null, {
-    query: { includes: ["education", "skills"], visibility: "admin" },
+  const { data, isLoading, error, isValidating } = useCourse(courseId, {
+    query: { includes: ["education", "skills"] },
     keepPreviousData: true,
   });
   const form = useCourseForm();

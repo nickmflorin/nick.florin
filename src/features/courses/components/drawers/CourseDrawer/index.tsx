@@ -1,7 +1,7 @@
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { ContextDrawer } from "~/components/drawers/ContextDrawer";
-import { useCourse } from "~/hooks";
+import { useCourse } from "~/hooks/api-v2";
 
 import { CourseDrawerContent } from "./CourseDrawerContent";
 
@@ -11,7 +11,7 @@ export interface CourseDrawerProps extends ExtendingDrawerProps {
 
 export const CourseDrawer = ({ courseId }: CourseDrawerProps): JSX.Element => {
   const { data, isLoading, error } = useCourse(courseId, {
-    query: { includes: ["education", "skills"], visibility: "public" },
+    query: { includes: ["education", "skills"] },
     keepPreviousData: true,
   });
 

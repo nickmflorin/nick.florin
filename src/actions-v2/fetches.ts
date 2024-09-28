@@ -1,5 +1,7 @@
 import { cache } from "react";
 
+import superjson, { type SuperJSONResult } from "superjson";
+
 import { getAuthedUser } from "~/application/auth/server-v2";
 import { type User } from "~/database/model";
 import { logger } from "~/internal/logger";
@@ -15,6 +17,7 @@ export type FetchActionScope = "api" | "action";
 export type FetchActionContext = {
   readonly scope?: FetchActionScope;
   readonly strict?: boolean;
+  readonly serialized?: boolean;
 };
 
 export type FetchActionContextError<C extends FetchActionContext> = C extends { scope: "api" }
@@ -25,11 +28,24 @@ export type FetchActionResponseOrError<T, C extends FetchActionContext> =
   | { data: T; error?: never }
   | { data?: never; error: FetchActionContextError<C> };
 
+type IsSerialized<C extends FetchActionContext> = C extends { scope: "api"; serialized: false }
+  ? false
+  : C extends { scope: "api" }
+    ? true
+    : C extends { serialized: true }
+      ? true
+      : false;
+
+const shouldSerialize = <C extends FetchActionContext>(context: C): boolean =>
+  context.scope === "api" ? context.serialized !== false : context.serialized === true;
+
+type D<T, C extends FetchActionContext> = IsSerialized<C> extends true ? SuperJSONResult : T;
+
 export type FetchActionResponse<T, C extends FetchActionContext> = C extends {
   strict: true;
 }
-  ? { data: T; error?: never }
-  : FetchActionResponseOrError<T, C>;
+  ? { data: D<T, C>; error?: never }
+  : FetchActionResponseOrError<D<T, C>, C>;
 
 interface ErrorInFetchContextOptions {
   readonly logData?: Record<string, unknown>;
@@ -65,7 +81,10 @@ export const dataInFetchContext = <T, C extends FetchActionContext>(
   data: T,
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   context: C,
-): FetchActionResponse<T, C> => ({ data: convertToPlainObject(data) }) as FetchActionResponse<T, C>;
+): FetchActionResponse<T, C> =>
+  ({
+    data: shouldSerialize(context) ? superjson.serialize(data) : convertToPlainObject(data),
+  }) as FetchActionResponse<T, C>;
 
 export type StandardFetchActionReturn<R> = Promise<R | ApiClientError>;
 

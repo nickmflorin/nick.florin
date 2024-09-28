@@ -1,24 +1,35 @@
-import { type ProjectIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
+
+import type { ProjectIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { getProject } from "~/actions/fetches/projects";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
-import { apiRoute } from "~/api/route";
+import { ProjectIncludesSchema } from "~/actions-v2";
+import { fetchProject } from "~/actions-v2/projects/fetch-project";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http-v2";
 
 export async function generateStaticParams() {
   const projects = await db.project.findMany();
-  return projects.map(p => ({
-    id: p.id,
+  return projects.map(r => ({
+    id: r.id,
   }));
 }
 
-export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
-  const project = await getProject(params.id, {
-    includes: query.includes as ProjectIncludes,
-    visibility: query.visibility,
-  });
-  if (!project) {
-    return ApiClientGlobalError.NotFound().response;
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = ProjectIncludesSchema.safeParse(query.includes);
+
+  let includes: ProjectIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  return ClientResponse.OK(project).response;
-});
+
+  const fetcher = fetchProject(includes);
+  const { error, data } = await fetcher(params.id, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

@@ -1,24 +1,35 @@
-import { type CourseIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
+
+import type { CourseIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { getCourse } from "~/actions/fetches/courses";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
-import { apiRoute } from "~/api/route";
+import { CourseIncludesSchema } from "~/actions-v2";
+import { fetchCourse } from "~/actions-v2/courses/fetch-course";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http-v2";
 
 export async function generateStaticParams() {
   const courses = await db.course.findMany();
-  return courses.map(c => ({
-    id: c.id,
+  return courses.map(r => ({
+    id: r.id,
   }));
 }
 
-export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
-  const course = await getCourse(params.id, {
-    includes: query.includes as CourseIncludes,
-    visibility: query.visibility,
-  });
-  if (!course) {
-    return ApiClientGlobalError.NotFound().response;
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = CourseIncludesSchema.safeParse(query.includes);
+
+  let includes: CourseIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  return ClientResponse.OK(course).response;
-});
+
+  const fetcher = fetchCourse(includes);
+  const { error, data } = await fetcher(params.id, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

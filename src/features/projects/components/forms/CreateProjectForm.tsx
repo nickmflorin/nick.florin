@@ -5,9 +5,9 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type Project } from "~/database/model";
+import { logger } from "~/internal/logger";
 
-import { createProject } from "~/actions/mutations/projects";
-import { isApiClientErrorJson } from "~/api";
+import { createProject } from "~/actions-v2/projects/create-project";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -32,17 +32,24 @@ export const CreateProjectForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createProject(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          toast.success("The project was successfully created.");
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createProject>> | null = null;
+        try {
+          response = await createProject(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the project'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the project.");
         }
+        const { error, data: project } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.(project);
+        });
       }}
     />
   );

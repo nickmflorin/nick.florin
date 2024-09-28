@@ -1,5 +1,5 @@
-import { CheckboxField } from "~/components/forms/fields/CheckboxField";
-import { Form, type FormProps } from "~/components/forms/Form";
+import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
+import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { TextInput } from "~/components/input/TextInput";
 import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
 import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";

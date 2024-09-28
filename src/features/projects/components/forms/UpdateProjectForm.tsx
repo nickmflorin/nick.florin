@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type ApiProject } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { updateProject } from "~/actions/mutations/projects";
-import { isApiClientErrorJson } from "~/api";
+import { type ApiProject } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { updateProject } from "~/actions-v2/projects/update-project";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -46,15 +48,26 @@ export const UpdateProjectForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateProjectWithId(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          transition(() => {
-            refresh();
-            onSuccess?.();
-          });
+        let response: Awaited<ReturnType<typeof updateProjectWithId>> | null = null;
+        try {
+          response = await updateProjectWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(
+            e,
+            `There was an error updating the project with ID '${project.id}'.`,
+            { project, data },
+          );
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the project.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
     />
   );

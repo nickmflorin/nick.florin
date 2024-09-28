@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type ApiCourse } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { updateCourse } from "~/actions/mutations/courses";
-import { isApiClientErrorJson } from "~/api";
+import { type ApiCourse } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { updateCourse } from "~/actions-v2/courses/update-course";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -48,15 +50,25 @@ export const UpdateCourseForm = ({
       isLoading={pending}
       form={form}
       action={async (data, form) => {
-        const response = await updateCourseWithId(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          transition(() => {
-            refresh();
-            onSuccess?.();
+        let response: Awaited<ReturnType<typeof updateCourseWithId>> | null = null;
+        try {
+          response = await updateCourseWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(e, `There was an error updating the course with ID '${course.id}'.`, {
+            course,
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the course.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
     />
   );

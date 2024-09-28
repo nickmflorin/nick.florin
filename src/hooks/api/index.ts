@@ -6,6 +6,4 @@ export * from "./use-experience";
 export * from "./use-education";
 export * from "./use-company";
 export * from "./use-school";
-export * from "./use-project";
-export * from "./use-course";
 export * from "./use-resumes";

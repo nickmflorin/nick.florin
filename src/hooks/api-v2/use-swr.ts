@@ -1,9 +1,16 @@
 import { useRef } from "react";
 
+import superjson from "superjson";
 import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
-import { apiClient, isApiError, type ApiClientError, type ApiError } from "~/api-v2";
+import {
+  apiClient,
+  isApiError,
+  isSuperJsonResult,
+  type ApiClientError,
+  type ApiError,
+} from "~/api-v2";
 import {
   type HttpNetworkError,
   type HttpSerializationError,
@@ -76,7 +83,7 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
   }
 
   return {
-    data,
+    data: data && isSuperJsonResult(data) ? superjson.deserialize(data) : data,
     error,
     initialResponseReceived: initialResponseReceived.current,
     isRefetching: initialResponseReceived.current && others.isLoading,
