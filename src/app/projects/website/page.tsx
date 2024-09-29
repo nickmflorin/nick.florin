@@ -1,6 +1,6 @@
 import { db } from "~/database/prisma";
 
-import { convertToPlainObject } from "~/api/serialization";
+import { convertToPlainObject } from "~/api-v2/serialization";
 
 import { Website } from "~/features/projects/components/pages/Website";
 

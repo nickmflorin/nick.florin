@@ -1,21 +1,28 @@
 "use server";
 import { put, del, type PutBlobResult } from "@vercel/blob";
 
-import { getAuthedUser } from "~/application/auth/server";
+import { getAuthedUser } from "~/application/auth/server-v2";
 import type { BrandResume } from "~/database/model";
 import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
 import { type MutationActionResponse } from "~/actions-v2/mutations";
-import { convertToPlainObject } from "~/api/serialization";
 import { ApiClientGlobalError } from "~/api-v2";
+import { convertToPlainObject } from "~/api-v2/serialization";
 
 const resumeFilePath = (name: string) => `resumes/${name}`;
 
 export const uploadResume = async (
   formData: FormData,
 ): Promise<MutationActionResponse<BrandResume>> => {
-  const { user } = await getAuthedUser({ strict: true });
+  const { user, error, isAdmin } = await getAuthedUser();
+  if (error) {
+    return { error: error.json };
+  } else if (!isAdmin) {
+    return {
+      error: ApiClientGlobalError.Forbidden({}).json,
+    };
+  }
 
   const resumeFile = formData.get("file") as File;
 

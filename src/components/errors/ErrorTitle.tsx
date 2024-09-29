@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 
 import type * as types from "./types";
 
-import { isHttpError, NetworkError } from "~/api";
 import { isApiError } from "~/api-v2";
 import { HttpNetworkError } from "~/integrations/http";
 
@@ -28,8 +27,6 @@ export const ErrorTitle = ({
   const title = useMemo(() => {
     if (children) {
       return children;
-    } else if (isHttpError(error) && !(error instanceof NetworkError)) {
-      return `${error.statusCode}`;
     } else if (isApiError(error) && !(error instanceof HttpNetworkError)) {
       return `${error.status}`;
     }

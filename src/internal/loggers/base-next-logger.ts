@@ -1,7 +1,6 @@
-import { pick } from "lodash-es";
+import { UnreachableCaseError } from "~/application/errors";
 
-import { isApiClientGlobalErrorJson, isHttpError } from "~/api";
-import { isApiClientGlobalErrorJson as isApiClientGlobalErrorJsonV2 } from "~/api-v2";
+import { isApiClientGlobalErrorJson, isApiError } from "~/api-v2";
 import { environment } from "~/environment";
 import { type EnvironmentName } from "~/environment/constants";
 import {
@@ -10,7 +9,6 @@ import {
   LogLevels,
   getEnvironmentName,
 } from "~/environment/constants";
-import { isHttpError as isHttpErrorV2 } from "~/integrations/http";
 
 import { AbstractLogger } from "./abstract-logger";
 import { createBrowserWriter } from "./browser-writer";
@@ -52,19 +50,7 @@ type ParsedArgs = {
 };
 
 const includeErrorContext = (parsed: ParsedArgs, error: types.LoggerError): ParsedArgs => {
-  if (isHttpError(error)) {
-    return {
-      ...parsed,
-      message: parsed.message ?? error.message,
-      context: {
-        ...parsed.context,
-        ...pick(error, ["message", "statusCode", "internalMessage", "url", "code"]),
-      },
-      /* Here, it is okay to include the 'error' property because the HttpError is an actual Error
-         object, and can be used with 'Sentry.captureException'. */
-      error,
-    };
-  } else if (isHttpErrorV2(error)) {
+  if (isApiError(error)) {
     return {
       ...parsed,
       message: parsed.message ?? error.message,
@@ -83,24 +69,15 @@ const includeErrorContext = (parsed: ParsedArgs, error: types.LoggerError): Pars
         message: error.message,
       },
     };
-  } else if (isApiClientGlobalErrorJsonV2(error)) {
-    return {
-      ...parsed,
-      message: parsed.message ?? error.message,
-      context: { ...parsed.context, ...error },
-    };
   } else if (isApiClientGlobalErrorJson(error)) {
     return {
       ...parsed,
       message: parsed.message ?? error.message,
       context: { ...parsed.context, ...error },
     };
+  } else {
+    throw new UnreachableCaseError(`Invalid error object provided to logger: ${error}.`);
   }
-  return {
-    ...parsed,
-    message: parsed.message,
-    context: { ...parsed.context, ...error },
-  };
 };
 
 /**

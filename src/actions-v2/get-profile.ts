@@ -6,7 +6,7 @@ import { type Profile } from "~/database/model";
 import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
-import { convertToPlainObject } from "~/api/serialization";
+import { convertToPlainObject } from "~/api-v2/serialization";
 
 export const preloadProfile = () => {
   void getProfile();

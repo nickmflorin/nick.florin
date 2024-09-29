@@ -1,6 +1,5 @@
 import React from "react";
 
-import { isHttpError } from "~/api";
 import { isApiError } from "~/api-v2";
 
 import {
@@ -30,7 +29,7 @@ export const ErrorContent = ({
   const message =
     children !== undefined
       ? children
-      : error && (isHttpError(error) || isApiError(error))
+      : error && isApiError(error)
         ? error.message
         : (error ?? types.DEFAULT_ERROR_MESSAGE);
 

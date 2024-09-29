@@ -1,7 +1,7 @@
 import { type BrandResume } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { convertToPlainObject } from "~/api/serialization";
+import { convertToPlainObject } from "~/api-v2/serialization";
 
 import { type ComponentProps } from "~/components/types";
 
