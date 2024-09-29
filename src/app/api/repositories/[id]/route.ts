@@ -8,7 +8,7 @@ import { db } from "~/database/prisma";
 import { RepositoryIncludesSchema } from "~/actions-v2";
 import { fetchRepository } from "~/actions-v2/repositories/fetch-repository";
 import { ClientResponse } from "~/api-v2";
-import { parseQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const repositories = await db.repository.findMany();

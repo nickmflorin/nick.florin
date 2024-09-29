@@ -7,7 +7,7 @@ import {
   type ParsedFilters,
 } from "~/lib/filters";
 
-import { parseQueryParams, stringifyQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams, stringifyQueryParams } from "~/integrations/http";
 
 import { useReferentialCallback } from "~/hooks";
 

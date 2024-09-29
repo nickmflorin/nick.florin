@@ -13,7 +13,7 @@ import {
 } from "~/actions-v2";
 import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
 import { ClientResponse } from "~/api-v2";
-import { parseQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;

@@ -3,10 +3,10 @@ import { forwardRef, type ForwardedRef } from "react";
 import { logger } from "~/internal/logger";
 
 import { type ActionVisibility } from "~/actions-v2";
-import { type HttpError } from "~/api";
+import { type ApiError } from "~/api-v2";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useCompanies } from "~/hooks";
+import { useCompanies } from "~/hooks/api-v2";
 
 import {
   CompanySelect,
@@ -17,7 +17,7 @@ import {
 export interface ClientCompanySelectProps<B extends SelectBehaviorType>
   extends Omit<CompanySelectProps<B>, "data"> {
   readonly visibility: ActionVisibility;
-  readonly onError?: (e: HttpError) => void;
+  readonly onError?: (e: ApiError) => void;
 }
 
 export const ClientCompanySelect = forwardRef(

@@ -10,7 +10,7 @@ import {
   LogLevels,
   getEnvironmentName,
 } from "~/environment/constants";
-import { isHttpError as isHttpErrorV2 } from "~/integrations/http-v2";
+import { isHttpError as isHttpErrorV2 } from "~/integrations/http";
 
 import { AbstractLogger } from "./abstract-logger";
 import { createBrowserWriter } from "./browser-writer";

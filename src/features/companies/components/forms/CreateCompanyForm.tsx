@@ -5,9 +5,9 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type Company } from "~/database/model";
+import { logger } from "~/internal/logger";
 
-import { createCompany } from "~/actions/mutations/companies";
-import { isApiClientErrorJson } from "~/api";
+import { createCompany } from "~/actions-v2/companies/create-company";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -32,17 +32,24 @@ export const CreateCompanyForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createCompany(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          toast.success("Company successfully created.");
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createCompany>> | null = null;
+        try {
+          response = await createCompany(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the company'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the company.");
         }
+        const { error, data: company } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.(company);
+        });
       }}
     />
   );

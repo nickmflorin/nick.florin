@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type Company } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { updateCompany } from "~/actions/mutations/companies";
-import { isApiClientErrorJson } from "~/api";
+import { type Company } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { updateCompany } from "~/actions-v2/companies/update-company";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -45,15 +47,26 @@ export const UpdateCompanyForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateCompanyWithId(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          transition(() => {
-            refresh();
-            onSuccess?.();
-          });
+        let response: Awaited<ReturnType<typeof updateCompanyWithId>> | null = null;
+        try {
+          response = await updateCompanyWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(
+            e,
+            `There was an error updating the company with ID '${company.id}'.`,
+            { company, data },
+          );
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the company.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
     />
   );

@@ -8,7 +8,7 @@ import { db } from "~/database/prisma";
 import { ProjectIncludesSchema } from "~/actions-v2";
 import { fetchProject } from "~/actions-v2/projects/fetch-project";
 import { ClientResponse } from "~/api-v2";
-import { parseQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const projects = await db.project.findMany();

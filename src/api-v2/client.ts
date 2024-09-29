@@ -11,7 +11,7 @@ import {
   type ClientNotOkResponseProcessor,
   HttpSerializationError,
   HttpNetworkError,
-} from "~/integrations/http-v2";
+} from "~/integrations/http";
 
 import { type ApiClientError, ApiClientFormError, ApiClientGlobalError } from "./errors";
 

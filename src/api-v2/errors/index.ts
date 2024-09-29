@@ -1,6 +1,6 @@
 import { isError } from "~/application/errors";
 
-import { HttpSerializationError, HttpNetworkError } from "~/integrations/http-v2";
+import { HttpSerializationError, HttpNetworkError } from "~/integrations/http";
 
 import { ApiClientFormError } from "./api-client-form-error";
 import { ApiClientGlobalError } from "./api-client-global-error";

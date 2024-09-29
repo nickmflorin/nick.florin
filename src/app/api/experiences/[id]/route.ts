@@ -8,7 +8,7 @@ import { db } from "~/database/prisma";
 import { ExperienceIncludesSchema } from "~/actions-v2";
 import { fetchExperience } from "~/actions-v2/experiences/fetch-experience";
 import { ClientResponse } from "~/api-v2";
-import { parseQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const experiences = await db.experience.findMany();

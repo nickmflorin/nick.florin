@@ -7,7 +7,7 @@ import {
   type EnvironmentName,
   type LogLevel,
 } from "~/environment/constants";
-import { type HttpError as HttpErrorV2 } from "~/integrations/http-v2";
+import { type HttpError as HttpErrorV2 } from "~/integrations/http";
 
 export type NextLoggerTransport = "sentry" | "browser";
 

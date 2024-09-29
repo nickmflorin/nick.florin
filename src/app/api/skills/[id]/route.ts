@@ -8,7 +8,7 @@ import { db } from "~/database/prisma";
 import { SkillIncludesSchema } from "~/actions-v2";
 import { fetchSkill } from "~/actions-v2/skills/fetch-skill";
 import { ClientResponse } from "~/api-v2";
-import { parseQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const skills = await db.skill.findMany();

@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteCompany } from "~/actions/mutations/companies";
 import { deleteSchool } from "~/actions/mutations/schools";
+import { deleteCompany } from "~/actions-v2/companies/delete-company";
 
 import { IconButton } from "~/components/buttons";
 import { Tooltip } from "~/components/floating/Tooltip";
@@ -16,7 +16,9 @@ import { Text } from "~/components/typography";
 import { type ModelType, type Model } from "./types";
 
 const actions: { [key in ModelType]: (id: string) => Promise<void> } = {
-  company: deleteCompany,
+  company: async id => {
+    await deleteCompany(id);
+  },
   school: deleteSchool,
 };
 

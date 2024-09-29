@@ -8,7 +8,7 @@ import { db } from "~/database/prisma";
 import { EducationIncludesSchema } from "~/actions-v2";
 import { fetchEducation } from "~/actions-v2/educations/fetch-education";
 import { ClientResponse } from "~/api-v2";
-import { parseQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const educations = await db.education.findMany();

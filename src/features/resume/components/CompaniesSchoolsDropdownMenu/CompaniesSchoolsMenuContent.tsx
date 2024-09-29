@@ -1,5 +1,5 @@
-import { getCompanies } from "~/actions/fetches/companies";
 import { getSchools } from "~/actions/fetches/schools";
+import { fetchCompanies } from "~/actions-v2/companies/fetch-companies";
 
 import { ClientCompaniesSchoolsMenuContent } from "./ClientCompaniesSchoolsMenuContent";
 import { type ModelType, type Model } from "./types";
@@ -9,7 +9,14 @@ export interface CompaniesSchoolsMenuContentProps<M extends ModelType> {
 }
 
 const fetchers: { [key in ModelType]: () => Promise<Model<key>[]> } = {
-  company: async () => await getCompanies({ includes: ["experiences"], visibility: "admin" }),
+  company: async () => {
+    const fetcher = fetchCompanies(["experiences"]);
+    const { data: companies } = await fetcher(
+      { visibility: "admin", filters: {} },
+      { strict: true },
+    );
+    return companies;
+  },
   school: async () => await getSchools({ includes: ["educations"], visibility: "admin" }),
 };
 

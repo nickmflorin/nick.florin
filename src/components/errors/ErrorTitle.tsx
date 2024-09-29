@@ -4,7 +4,7 @@ import type * as types from "./types";
 
 import { isHttpError, NetworkError } from "~/api";
 import { isApiError } from "~/api-v2";
-import { HttpNetworkError } from "~/integrations/http-v2";
+import { HttpNetworkError } from "~/integrations/http";
 
 import { type ComponentProps, classNames } from "~/components/types";
 import { type TypographyCharacteristics } from "~/components/types/typography";

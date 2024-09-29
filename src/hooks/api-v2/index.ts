@@ -11,3 +11,5 @@ export * from "./use-course";
 export * from "./use-skill";
 export * from "./use-education";
 export * from "./use-experience";
+export * from "./use-companies";
+export * from "./use-company";

@@ -3,7 +3,7 @@ import { constructOrSearch } from "~/database/util";
 
 type TabledBrand = Extract<
   Brand,
-  "skill" | "course" | "experience" | "education" | "project" | "repository" | "detail"
+  "skill" | "course" | "experience" | "education" | "project" | "repository" | "detail" | "company"
 >;
 
 // Note: These may eventually have to be replaced with a dynamic page size query param.
@@ -15,6 +15,7 @@ export const PAGE_SIZES = {
   project: 8,
   repository: 8,
   detail: 8,
+  company: 8,
 } as const satisfies { [key in TabledBrand]: number };
 
 export const SEARCH_FIELDS = {
@@ -25,6 +26,7 @@ export const SEARCH_FIELDS = {
   project: ["name", "shortName", "slug"],
   repository: ["slug", "npmPackageName"],
   detail: ["label", "description", "shortDescription"],
+  company: ["name", "shortName", "description", "city", "state"],
 } as const satisfies {
   [key in TabledBrand]: (keyof BrandModel<key>)[];
 };

@@ -8,7 +8,7 @@ import { db } from "~/database/prisma";
 import { CourseIncludesSchema } from "~/actions-v2";
 import { fetchCourse } from "~/actions-v2/courses/fetch-course";
 import { ClientResponse } from "~/api-v2";
-import { parseQueryParams } from "~/integrations/http-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const courses = await db.course.findMany();

@@ -5,7 +5,7 @@ import { SWRConfig as RootSWRConfig } from "swr";
 
 import { isHttpError } from "~/api";
 import { isApiClientError } from "~/api-v2";
-import { isHttpError as isHttpErrorV2 } from "~/integrations/http-v2";
+import { isHttpError as isHttpErrorV2 } from "~/integrations/http";
 
 type SWRConfigProps = { readonly children: ReactNode };
 

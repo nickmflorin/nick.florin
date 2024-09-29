@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 
-import {
-  HttpClientError,
-  type HttpClientErrorConfig,
-  type JsonObject,
-} from "~/integrations/http-v2";
+import { HttpClientError, type HttpClientErrorConfig, type JsonObject } from "~/integrations/http";
 
 import { type ApiClientGlobalErrorCode } from "../codes";
 

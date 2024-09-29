@@ -1,12 +1,11 @@
 import type { BrandCompany } from "~/database/model";
-import { isUuid } from "~/lib/typeguards";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useCompanyForm } from "~/features/companies/components/forms/hooks";
 import { UpdateCompanyForm } from "~/features/companies/components/forms/UpdateCompanyForm";
-import { useCompany } from "~/hooks";
+import { useCompany } from "~/hooks/api-v2";
 
 interface UpdateCompanyDrawerProps extends ExtendingDrawerProps {
   readonly companyId: string;
@@ -20,10 +19,10 @@ export const UpdateCompanyDrawer = ({
 }: UpdateCompanyDrawerProps): JSX.Element => {
   const form = useCompanyForm();
 
-  const { data, isLoading, error, isValidating } = useCompany(
-    isUuid(companyId) ? companyId : null,
-    { keepPreviousData: true, query: { visibility: "admin", includes: [] } },
-  );
+  const { data, isLoading, error, isValidating } = useCompany(companyId, {
+    keepPreviousData: true,
+    query: { visibility: "admin", includes: [] },
+  });
   return (
     <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
       <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>

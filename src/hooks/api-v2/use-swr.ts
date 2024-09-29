@@ -15,7 +15,7 @@ import {
   type HttpNetworkError,
   type HttpSerializationError,
   type QueryParamObj,
-} from "~/integrations/http-v2";
+} from "~/integrations/http";
 
 type ApiPath = `/api/${string}`;
 type Args = Exclude<Arguments, string> | ApiPath;
@@ -44,15 +44,32 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
   path: Key,
   { onError: _onError, query, ...config }: SWRConfig<T, Q>,
 ): SWRResponse<T> => {
+  // const initialPathname = useRef<string | null>(null);
+
   const initialResponseReceived = useRef<boolean>(false);
+  // const pathname = usePathname();
+
+  /* if (!initialPathname.current) {
+       initialPathname.current = pathname;
+     } */
 
   /* If the `onError` configuration callback is provided, it is very important that the globally
        configured `onError` configuration callback is *still* called beforehand. */
   const { onError } = useSWRConfig();
 
+  // TODO: Investigate whether or not it is necessary to abort requests if the pathname changes.
+  const abortController = new AbortController();
+
+  const fetcher = ([p, q]: [Key, Q]) =>
+    apiClient.get(p as string, q, {
+      strict: true,
+      processed: true,
+      signal: abortController.signal,
+    });
+
   const { data, error, ...others } = useRootSWR<T, ApiError, [Key, Q] | null>(
     shouldFetch(path) ? [path, query] : null,
-    ([p, q]) => apiClient.get(p as string, q, { strict: true, processed: true }),
+    fetcher,
     {
       ...config,
       onSuccess: d => {
