@@ -12,7 +12,7 @@ import { ApiClientGlobalError } from "~/api-v2";
 
 export const fetchExperience = <I extends ExperienceIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, { isAdmin, isVisible }): StandardFetchActionReturn<ApiExperience<I>> => {
+    async (id, _, { isAdmin, isVisible }): StandardFetchActionReturn<ApiExperience<I>> => {
       let experience = (await db.experience.findUnique({
         where: { id },
         include: {

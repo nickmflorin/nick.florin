@@ -7,7 +7,7 @@ import { ApiClientGlobalError } from "~/api-v2";
 
 export const fetchCompany = <I extends CompanyIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, { isVisible }): StandardFetchActionReturn<ApiCompany<I>> => {
+    async (id, _, { isVisible }): StandardFetchActionReturn<ApiCompany<I>> => {
       const company = (await db.company.findUnique({
         where: { id },
         include: {

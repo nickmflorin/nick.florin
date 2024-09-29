@@ -13,6 +13,11 @@ import { isApiClientError, ApiClientGlobalError } from "~/api-v2";
 
 import { type ActionVisibility, visibilityIsAdmin } from "./visibility";
 
+type ActionVisibilityParams = {
+  readonly visibility: ActionVisibility;
+  readonly forceVisibility?: true;
+};
+
 export type FetchActionScope = "api" | "action";
 
 export type FetchActionContext = {
@@ -116,6 +121,7 @@ type ListFetchActionWrappedContext<O extends StandardFetchActionOptions> = {
   readonly user: StandardFetchActionUser<O>;
   readonly isAdmin: boolean;
   readonly isVisible: true | undefined;
+  readonly visibility: ActionVisibility;
   readonly filterIsVisible: FilterIsVisible;
 };
 
@@ -126,7 +132,7 @@ type ListFetchActionFn<P, R, O extends StandardFetchActionOptions> = (
 
 type StandardListFetchAction<P extends Record<string, unknown>, R> = {
   <C extends FetchActionContext>(
-    params: P & { visibility: ActionVisibility },
+    params: P & ActionVisibilityParams,
     context: C,
   ): Promise<FetchActionResponse<R, C>>;
 };
@@ -140,7 +146,7 @@ export const standardListFetchAction = <
   opts: O,
 ): StandardListFetchAction<P, R> => {
   const wrapped: StandardListFetchAction<P, R> = async <C extends FetchActionContext>(
-    params: P & { visibility: ActionVisibility },
+    params: P & ActionVisibilityParams,
     context: C,
   ): Promise<FetchActionResponse<R, C>> => {
     const adminOnly = opts.adminOnly ?? false;
@@ -151,11 +157,15 @@ export const standardListFetchAction = <
 
     const wrappedContext: ListFetchActionWrappedContext<O> = {
       isAdmin,
+      visibility: params.visibility,
       user: user as StandardFetchActionUser<O>,
-      isVisible: isAdmin && visibilityIsAdmin(params.visibility) ? undefined : true,
+      isVisible:
+        (isAdmin || params.forceVisibility) && visibilityIsAdmin(params.visibility)
+          ? undefined
+          : true,
       filterIsVisible: v => {
         if (visibilityIsAdmin(params.visibility)) {
-          if (!isAdmin) {
+          if (!isAdmin && !params.forceVisibility) {
             // This should never happen, because an error should have been previously thrown.
             throw new Error("Unexpectedly received visibility of 'admin' for a non-admin user.");
           }
@@ -168,7 +178,7 @@ export const standardListFetchAction = <
     if (error) {
       if (authenticated || adminOnly) {
         return errorInFetchContext(error, context);
-      } else if (!isAdmin && visibilityIsAdmin(params.visibility)) {
+      } else if (!isAdmin && !params.forceVisibility && visibilityIsAdmin(params.visibility)) {
         return errorInFetchContext(
           ApiClientGlobalError.Forbidden({
             message: "The user does not have permission to access this data.",
@@ -181,7 +191,10 @@ export const standardListFetchAction = <
         return errorInFetchContext(result, context);
       }
       return dataInFetchContext(result, context);
-    } else if (!isAdmin && (adminOnly || visibilityIsAdmin(params.visibility))) {
+    } else if (
+      (!isAdmin && adminOnly) ||
+      (!isAdmin && !params.forceVisibility && visibilityIsAdmin(params.visibility))
+    ) {
       return errorInFetchContext(
         ApiClientGlobalError.Forbidden({
           message: "The user does not have permission to access this data.",
@@ -198,15 +211,20 @@ export const standardListFetchAction = <
   return cache(wrapped) as typeof wrapped;
 };
 
-type DetailFetchActionFn<R, O extends StandardFetchActionOptions> = (
+type DetailFetchActionFn<
+  P extends Record<string, unknown>,
+  R,
+  O extends StandardFetchActionOptions,
+> = (
   id: string,
-  params: DetailFetchActionWrappedContext<O>,
+  params: P,
+  context: DetailFetchActionWrappedContext<O>,
 ) => StandardFetchActionReturn<R>;
 
-type StandardDetailFetchAction<R> = {
+type StandardDetailFetchAction<P extends Record<string, unknown>, R> = {
   <C extends FetchActionContext>(
     id: string,
-    params: { visibility: ActionVisibility },
+    params: P & ActionVisibilityParams,
     context: C,
   ): Promise<FetchActionResponse<R, C>>;
 };
@@ -215,15 +233,20 @@ type DetailFetchActionWrappedContext<O extends StandardFetchActionOptions> = {
   readonly user: StandardFetchActionUser<O>;
   readonly isAdmin: boolean;
   readonly isVisible: true | undefined;
+  readonly visibility: ActionVisibility;
 };
 
-export const standardDetailFetchAction = <R, O extends StandardFetchActionOptions>(
-  fn: DetailFetchActionFn<R, O>,
+export const standardDetailFetchAction = <
+  P extends Record<string, unknown>,
+  R,
+  O extends StandardFetchActionOptions,
+>(
+  fn: DetailFetchActionFn<P, R, O>,
   opts: O,
-): StandardDetailFetchAction<R> => {
+): StandardDetailFetchAction<P, R> => {
   const wrapped = async <C extends FetchActionContext>(
     id: string,
-    { visibility }: { visibility: ActionVisibility },
+    params: P & ActionVisibilityParams,
     context: C,
   ): Promise<FetchActionResponse<R, C>> => {
     const adminOnly = opts.adminOnly ?? false;
@@ -234,14 +257,15 @@ export const standardDetailFetchAction = <R, O extends StandardFetchActionOption
 
     const wrappedContext: DetailFetchActionWrappedContext<O> = {
       isAdmin,
+      visibility: params.visibility,
       user: user as StandardFetchActionUser<O>,
-      isVisible: isAdmin && visibilityIsAdmin(visibility) ? undefined : true,
+      isVisible: isAdmin && visibilityIsAdmin(params.visibility) ? undefined : true,
     };
 
     if (error) {
       if (authenticated || adminOnly) {
         return errorInFetchContext(error, context);
-      } else if (!isAdmin && visibilityIsAdmin(visibility)) {
+      } else if (!isAdmin && !params.forceVisibility && visibilityIsAdmin(params.visibility)) {
         return errorInFetchContext(
           ApiClientGlobalError.Forbidden({
             message: "The user does not have permission to access this data.",
@@ -259,12 +283,15 @@ export const standardDetailFetchAction = <R, O extends StandardFetchActionOption
           context,
         );
       }
-      const result = await fn(id, wrappedContext);
+      const result = await fn(id, params, wrappedContext);
       if (isApiClientError(result)) {
         return errorInFetchContext(result, context);
       }
       return dataInFetchContext(result, context);
-    } else if (!isAdmin && (adminOnly || visibilityIsAdmin(visibility))) {
+    } else if (
+      (!isAdmin && adminOnly) ||
+      (!isAdmin && !params.forceVisibility && visibilityIsAdmin(params.visibility))
+    ) {
       return errorInFetchContext(
         ApiClientGlobalError.Forbidden({
           message: "The user does not have permission to access this data.",
@@ -282,7 +309,7 @@ export const standardDetailFetchAction = <R, O extends StandardFetchActionOption
         context,
       );
     }
-    const result = await fn(id, wrappedContext);
+    const result = await fn(id, params, wrappedContext);
     if (isApiClientError(result)) {
       return errorInFetchContext(result, context);
     }

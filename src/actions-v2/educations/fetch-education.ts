@@ -12,7 +12,7 @@ import { ApiClientGlobalError } from "~/api-v2";
 
 export const fetchEducation = <I extends EducationIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, { isAdmin, isVisible }): StandardFetchActionReturn<ApiEducation<I>> => {
+    async (id, _, { isAdmin, isVisible }): StandardFetchActionReturn<ApiEducation<I>> => {
       const education = await db.education.findUnique({
         where: { id },
         include: {

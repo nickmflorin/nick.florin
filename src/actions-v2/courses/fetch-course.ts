@@ -7,7 +7,7 @@ import { ApiClientGlobalError } from "~/api-v2";
 
 export const fetchCourse = <I extends CourseIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, { isAdmin, isVisible }): StandardFetchActionReturn<ApiCourse<I>> => {
+    async (id, _, { isAdmin, isVisible }): StandardFetchActionReturn<ApiCourse<I>> => {
       const course = (await db.course.findUnique({
         where: { id },
         include: {

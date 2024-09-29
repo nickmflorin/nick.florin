@@ -19,8 +19,10 @@ export default async function ProjectsLayout({ children }: AdminLayoutProps): Pr
      the project is in the database, but is just not visible, we do not want to issue warnings if
      the slug does not exist in the returned set of projects. */
   const fetcher = fetchProjects([]);
-  const { data: projects } = await fetcher({ visibility: "admin", filters: {} }, { strict: true });
-
+  const { data: projects } = await fetcher(
+    { visibility: "admin", forceVisibility: true, filters: {} },
+    { strict: true },
+  );
   /* Issue a log warning if there are any projects that do not have a corresponding hard-coded slug
      in the code. */
   const missingProjs = projects.filter(project => !ProjectSlugs.contains(project.slug));

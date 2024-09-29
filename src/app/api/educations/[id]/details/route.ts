@@ -1,9 +1,20 @@
+import { type NextRequest } from "next/server";
+
+import { z } from "zod";
+
 import { DetailEntityType, type DetailIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
+import { parseOrdering } from "~/lib/ordering";
 
-import { getEntityDetails } from "~/actions/fetches/details";
-import { ApiClientGlobalError, ClientResponse } from "~/api";
-import { apiRoute } from "~/api/route";
+import {
+  DetailsFiltersObj,
+  DetailsDefaultOrdering,
+  DetailOrderableFields,
+  DetailIncludesSchema,
+} from "~/actions-v2";
+import { fetchEntityDetails } from "~/actions-v2/details/fetch-entity-details";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const educations = await db.education.findMany();
@@ -12,13 +23,40 @@ export async function generateStaticParams() {
   }));
 }
 
-export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
-  const detail = await getEntityDetails(params.id, DetailEntityType.EDUCATION, {
-    includes: query.includes as DetailIncludes,
-    visibility: query.visibility,
-  });
-  if (!detail) {
-    return ApiClientGlobalError.NotFound().response;
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = DetailIncludesSchema.safeParse(query.includes);
+
+  const limit = z.coerce.number().int().positive().optional().safeParse(query.limit).data;
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
+
+  let includes: DetailIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  return ClientResponse.OK(detail).response;
-});
+
+  const filters = DetailsFiltersObj.parse(query);
+
+  const ordering = parseOrdering(query, {
+    defaultOrdering: DetailsDefaultOrdering,
+    fields: [...DetailOrderableFields],
+  });
+
+  const fetcher = fetchEntityDetails(includes, DetailEntityType.EDUCATION);
+
+  const { error, data } = await fetcher(
+    params.id,
+    { filters, ordering, limit, visibility },
+    { scope: "api" },
+  );
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

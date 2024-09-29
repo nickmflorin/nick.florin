@@ -7,7 +7,7 @@ import { ApiClientGlobalError } from "~/api-v2";
 
 export const fetchSkill = <I extends SkillIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, { isVisible, isAdmin }): StandardFetchActionReturn<ApiSkill<I>> => {
+    async (id, _, { isVisible, isAdmin }): StandardFetchActionReturn<ApiSkill<I>> => {
       const skill = await db.skill.findUnique({
         where: { id },
         include: {

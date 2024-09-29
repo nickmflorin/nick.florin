@@ -88,28 +88,16 @@ export const getDetailsOrdering = <F extends DetailOrderableField, O extends Ord
   ] as const;
 };
 
-/* export const DetailsDefaultOrdering: Ordering<"createdAt"> = {
-     orderBy: "createdAt",
-     order: "desc",
-   }; */
-
-/* export const DetailsOrderingMap = {
-     label: order => [{ label: order }] as const,
-     createdAt: order => [{ createdAt: order }] as const,
-     updatedAt: order => [{ updatedAt: order }] as const,
-     project: order => [{ project: { name: order } }] as const,
-   } as const satisfies { [key in DetailOrderableField]: (order: Order) => unknown[] }; */
-
-export interface DetailsFilters {
+export type DetailsFilters = {
   readonly entityIds: string[];
   readonly visible: boolean | null;
   readonly skills: string[];
   readonly search: string;
   readonly entityTypes: DetailEntityType[];
-}
+};
 
-export interface DetailsControls<I extends DetailIncludes = DetailIncludes> {
-  readonly filters: Partial<DetailsFilters>;
+export interface DetailsControls<I extends DetailIncludes = DetailIncludes, F = DetailsFilters> {
+  readonly filters: Partial<F>;
   readonly ordering?: Ordering<DetailOrderableField>;
   readonly page?: number;
   readonly includes: I;
@@ -117,7 +105,10 @@ export interface DetailsControls<I extends DetailIncludes = DetailIncludes> {
   readonly visibility: ActionVisibility;
 }
 
-export type FlattenedDetailsControls<I extends DetailIncludes = DetailIncludes> = DetailsFilters &
+export type FlattenedDetailsControls<
+  I extends DetailIncludes = DetailIncludes,
+  F extends DetailsFilters = DetailsFilters,
+> = F &
   Ordering<DetailOrderableField> & {
     readonly page?: number;
     readonly includes: I;

@@ -7,7 +7,7 @@ import { ApiClientGlobalError } from "~/api-v2";
 
 export const fetchRepository = <I extends RepositoryIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, { isVisible, isAdmin }): StandardFetchActionReturn<ApiRepository<I>> => {
+    async (id, _, { isVisible, isAdmin }): StandardFetchActionReturn<ApiRepository<I>> => {
       const repo = await db.repository.findUnique({
         where: { id },
         include: {

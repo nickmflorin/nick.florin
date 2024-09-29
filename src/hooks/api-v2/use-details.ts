@@ -5,8 +5,9 @@ import {
   type BrandExperience,
   type BrandEducation,
 } from "~/database/model";
+import { isUuid } from "~/lib/typeguards";
 
-import { type GetDetailsParams } from "~/actions/fetches/details";
+import type { FlattenedDetailsControls } from "~/actions-v2";
 
 import { useSWR, type SWRConfig } from "./use-swr";
 
@@ -29,5 +30,12 @@ const PATHS: { [key in DetailEntityType]: (id: string) => `/api/${string}/${stri
 export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>(
   id: string | null,
   entityType: T,
-  config: SWRConfig<Response<I, T>, GetDetailsParams<I>>,
-) => useSWR<Response<I, T>, GetDetailsParams<I>>(id ? PATHS[entityType](id) : null, config);
+  config: SWRConfig<
+    Response<I, T>,
+    Partial<Omit<FlattenedDetailsControls<I>, "entityIds" | "entityTypes">>
+  >,
+) =>
+  useSWR<Response<I, T>, Partial<Omit<FlattenedDetailsControls<I>, "entityIds" | "entityTypes">>>(
+    id && isUuid(id) ? PATHS[entityType](id) : null,
+    config,
+  );
