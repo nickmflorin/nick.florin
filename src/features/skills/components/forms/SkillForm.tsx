@@ -6,7 +6,7 @@ import { type z } from "zod";
 
 import { slugify } from "~/lib/formatters";
 
-import { SkillSchema } from "~/actions-v2/schemas";
+import { SkillSchema } from "~/actions/schemas";
 
 import { Checkboxes } from "~/components/forms-v2/fields/Checkboxes";
 import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";

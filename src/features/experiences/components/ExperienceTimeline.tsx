@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 
 import { removeRedundantTopLevelSkills } from "~/database/model";
 
-import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
+import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
 
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { Loading } from "~/components/loading/Loading";

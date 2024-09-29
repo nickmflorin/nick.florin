@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { fetchCompanies } from "~/actions-v2/companies/fetch-companies";
-import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
+import { fetchCompanies } from "~/actions/companies/fetch-companies";
+import { fetchSkills } from "~/actions/skills/fetch-skills";
 
 import { ExperiencesTableFilterBar as ClientExperiencesTableFilterBar } from "~/features/experiences/components/tables/ExperiencesTableFilterBar";
 

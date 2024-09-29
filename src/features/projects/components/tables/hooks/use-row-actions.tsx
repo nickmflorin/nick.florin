@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteProject } from "~/actions-v2/projects/delete-project";
-import { updateProject } from "~/actions-v2/projects/update-project";
+import { deleteProject } from "~/actions/projects/delete-project";
+import { updateProject } from "~/actions/projects/update-project";
 
 import { DrawerIds } from "~/components/drawers";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

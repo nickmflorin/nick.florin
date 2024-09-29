@@ -3,7 +3,7 @@ import { ProjectSlugs } from "~/database/model";
 import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
 
-import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
+import { fetchProjects } from "~/actions/projects/fetch-projects";
 
 import { TabbedContent } from "~/components/layout/TabbedContent";
 

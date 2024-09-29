@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type Company } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { createCompany } from "~/actions-v2/companies/create-company";
+import { createCompany } from "~/actions/companies/create-company";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 

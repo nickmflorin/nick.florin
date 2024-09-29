@@ -5,9 +5,9 @@ import { z } from "zod";
 import type { NestedDetailIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { NestedDetailIncludesSchema } from "~/actions-v2";
-import { fetchNestedDetail } from "~/actions-v2/details/fetch-nested-detail";
-import { ClientResponse } from "~/api-v2";
+import { NestedDetailIncludesSchema } from "~/actions";
+import { fetchNestedDetail } from "~/actions/details/fetch-nested-detail";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {

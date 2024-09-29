@@ -1,7 +1,7 @@
 "use client";
 import { type z } from "zod";
 
-import { SchoolSchema } from "~/actions-v2/schemas";
+import { SchoolSchema } from "~/actions/schemas";
 
 import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { TextArea } from "~/components/input/TextArea";

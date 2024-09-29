@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { deleteDetail } from "~/actions-v2/details/delete-detail";
-import { deleteNestedDetail } from "~/actions-v2/details/delete-nested-detail";
+import { deleteDetail } from "~/actions/details/delete-detail";
+import { deleteNestedDetail } from "~/actions/details/delete-nested-detail";
 
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";

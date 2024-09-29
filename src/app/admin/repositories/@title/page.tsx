@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { RepositoriesFiltersObj } from "~/actions-v2";
+import { RepositoriesFiltersObj } from "~/actions";
 
 import { LoadingText } from "~/components/loading/LoadingText";
 

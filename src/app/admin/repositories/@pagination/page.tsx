@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { RepositoriesFiltersObj } from "~/actions-v2";
-import { fetchRepositoriesPagination } from "~/actions-v2/repositories/fetch-repositories";
+import { RepositoriesFiltersObj } from "~/actions";
+import { fetchRepositoriesPagination } from "~/actions/repositories/fetch-repositories";
 
 import { Paginator } from "~/components/pagination-v2/Paginator";
 

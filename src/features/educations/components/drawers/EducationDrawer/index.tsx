@@ -1,7 +1,7 @@
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { ContextDrawer } from "~/components/drawers/ContextDrawer";
-import { useEducation } from "~/hooks/api-v2";
+import { useEducation } from "~/hooks/api";
 
 import { EducationDrawerContent } from "./EducationDrawerContent";
 

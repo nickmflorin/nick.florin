@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 import { type z } from "zod";
 
-import { type ApiError, type ApiClientErrorJson } from "~/api-v2";
+import { type ApiError, type ApiClientErrorJson } from "~/api";
 
 export type BaseFormValues = FieldValues;
 

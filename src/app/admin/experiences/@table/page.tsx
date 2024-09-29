@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { parseOrdering } from "~/lib/ordering";
 
-import { ExperiencesDefaultOrdering, ExperiencesFiltersObj } from "~/actions-v2";
+import { ExperiencesDefaultOrdering, ExperiencesFiltersObj } from "~/actions";
 
 import { Loading } from "~/components/loading/Loading";
 import { columnIsOrderable } from "~/components/tables";

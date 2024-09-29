@@ -1,4 +1,4 @@
-import { SkillSchema } from "~/actions-v2/schemas";
+import { SkillSchema } from "~/actions/schemas";
 
 import { useForm } from "~/components/forms-v2/hooks/use-form";
 

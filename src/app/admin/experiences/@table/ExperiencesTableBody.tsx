@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
-import { type ExperiencesControls, type ExperiencesFilters } from "~/actions-v2";
-import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
+import { type ExperiencesControls, type ExperiencesFilters } from "~/actions";
+import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
 
 import { Loading } from "~/components/loading/Loading";
 import { ExperiencesTableControlBarPlaceholder } from "~/features/experiences/components/tables/ExperiencesTableControlBarPlaceholder";

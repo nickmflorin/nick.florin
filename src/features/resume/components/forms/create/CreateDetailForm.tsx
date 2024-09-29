@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { type DetailEntityType, type ApiDetail } from "~/database/model";
 
-import { createDetail } from "~/actions-v2/details/create-detail";
+import { createDetail } from "~/actions/details/create-detail";
 
 import {
   GenericCreateDetailForm,

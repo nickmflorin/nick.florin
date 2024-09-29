@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type School } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateSchool } from "~/actions-v2/schools/update-school";
+import { updateSchool } from "~/actions/schools/update-school";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

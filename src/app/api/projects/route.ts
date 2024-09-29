@@ -10,9 +10,9 @@ import {
   ProjectsDefaultOrdering,
   ProjectOrderableFields,
   ProjectIncludesSchema,
-} from "~/actions-v2";
-import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchProjects } from "~/actions/projects/fetch-projects";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

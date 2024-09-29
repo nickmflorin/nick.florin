@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import type * as types from "./types";
 
-import { type ApiError } from "~/api-v2";
+import { type ApiError } from "~/api";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { useManagedUploads } from "~/components/uploads/hooks";

@@ -10,9 +10,9 @@ import {
   SkillsDefaultOrdering,
   SkillOrderableFields,
   SkillIncludesSchema,
-} from "~/actions-v2";
-import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchSkills } from "~/actions/skills/fetch-skills";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

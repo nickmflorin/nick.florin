@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
-import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
+import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
+import { fetchSkills } from "~/actions/skills/fetch-skills";
 
 import { ProjectsTableFilterBar as ClientProjectsTableFilterBar } from "~/features/projects/components/tables/ProjectsTableFilterBar";
 

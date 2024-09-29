@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteProjects } from "~/actions-v2/projects/delete-projects";
-import { hideProjects } from "~/actions-v2/projects/hide-projects";
-import { highlightProjects } from "~/actions-v2/projects/highlight-projects";
-import { showProjects } from "~/actions-v2/projects/show-projects";
-import { unhighlightProjects } from "~/actions-v2/projects/unhighlight-projects";
+import { deleteProjects } from "~/actions/projects/delete-projects";
+import { hideProjects } from "~/actions/projects/hide-projects";
+import { highlightProjects } from "~/actions/projects/highlight-projects";
+import { showProjects } from "~/actions/projects/show-projects";
+import { unhighlightProjects } from "~/actions/projects/unhighlight-projects";
 
 import { HideButton } from "~/components/buttons/HideButton";
 import { HighlightButton } from "~/components/buttons/HighlightButton";

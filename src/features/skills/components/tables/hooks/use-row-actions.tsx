@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteSkill } from "~/actions-v2/skills/delete-skill";
-import { updateSkill } from "~/actions-v2/skills/update-skill";
+import { deleteSkill } from "~/actions/skills/delete-skill";
+import { updateSkill } from "~/actions/skills/update-skill";
 
 import { DrawerIds } from "~/components/drawers";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
-import { type RepositoriesControls, type RepositoriesFilters } from "~/actions-v2";
-import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
+import { type RepositoriesControls, type RepositoriesFilters } from "~/actions";
+import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
 
 import { Loading } from "~/components/loading/Loading";
 import { RepositoriesTableControlBarPlaceholder } from "~/features/repositories/components/tables/RepositoriesTableControlBarPlaceholder";

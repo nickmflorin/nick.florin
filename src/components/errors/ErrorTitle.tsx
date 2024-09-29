@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import type * as types from "./types";
 
-import { isApiError } from "~/api-v2";
+import { isApiError } from "~/api";
 import { HttpNetworkError } from "~/integrations/http";
 
 import { type ComponentProps, classNames } from "~/components/types";

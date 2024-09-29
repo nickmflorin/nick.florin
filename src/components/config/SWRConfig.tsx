@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import { SWRConfig as RootSWRConfig } from "swr";
 
-import { isApiError } from "~/api-v2";
+import { isApiError } from "~/api";
 
 type SWRConfigProps = { readonly children: ReactNode };
 

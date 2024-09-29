@@ -10,9 +10,9 @@ import {
   SchoolsDefaultOrdering,
   SchoolOrderableFields,
   SchoolIncludesSchema,
-} from "~/actions-v2";
-import { fetchSchools } from "~/actions-v2/schools/fetch-schools";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchSchools } from "~/actions/schools/fetch-schools";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

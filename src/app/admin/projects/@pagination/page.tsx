@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { ProjectsFiltersObj } from "~/actions-v2";
-import { fetchProjectsPagination } from "~/actions-v2/projects/fetch-projects";
+import { ProjectsFiltersObj } from "~/actions";
+import { fetchProjectsPagination } from "~/actions/projects/fetch-projects";
 
 import { Paginator } from "~/components/pagination-v2/Paginator";
 

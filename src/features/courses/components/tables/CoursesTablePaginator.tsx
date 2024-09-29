@@ -1,5 +1,5 @@
-import { type CoursesFilters } from "~/actions-v2";
-import { fetchCoursesPagination } from "~/actions-v2/courses/fetch-courses";
+import { type CoursesFilters } from "~/actions";
+import { fetchCoursesPagination } from "~/actions/courses/fetch-courses";
 
 import { Paginator } from "~/components/pagination-v2/Paginator";
 

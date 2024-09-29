@@ -5,9 +5,9 @@ import { z } from "zod";
 import type { SkillIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { SkillIncludesSchema } from "~/actions-v2";
-import { fetchSkill } from "~/actions-v2/skills/fetch-skill";
-import { ClientResponse } from "~/api-v2";
+import { SkillIncludesSchema } from "~/actions";
+import { fetchSkill } from "~/actions/skills/fetch-skill";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {

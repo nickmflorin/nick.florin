@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { syncRepositories } from "~/actions-v2/repositories/sync-repositories";
+import { syncRepositories } from "~/actions/repositories/sync-repositories";
 
 import { Button } from "~/components/buttons";
 

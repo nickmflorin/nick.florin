@@ -11,9 +11,9 @@ import {
   DetailsDefaultOrdering,
   DetailOrderableFields,
   DetailIncludesSchema,
-} from "~/actions-v2";
-import { fetchEntityDetails } from "~/actions-v2/details/fetch-entity-details";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchEntityDetails } from "~/actions/details/fetch-entity-details";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {

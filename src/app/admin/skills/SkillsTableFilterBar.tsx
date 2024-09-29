@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 
-import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
-import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
-import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
-import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
+import { fetchEducations } from "~/actions/educations/fetch-educations";
+import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
+import { fetchProjects } from "~/actions/projects/fetch-projects";
+import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
 
 import { SkillsTableFilterBar as ClientSkillsTableFilterBar } from "~/features/skills/components/tables/SkillsTableFilterBar";
 

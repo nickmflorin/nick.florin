@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { parseOrdering } from "~/lib/ordering";
 
-import { ProjectsDefaultOrdering, ProjectsFiltersObj } from "~/actions-v2";
+import { ProjectsDefaultOrdering, ProjectsFiltersObj } from "~/actions";
 
 import { Loading } from "~/components/loading/Loading";
 import { columnIsOrderable } from "~/components/tables";

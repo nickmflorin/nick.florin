@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type Degree } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateEducation } from "~/actions-v2/educations/update-education";
+import { updateEducation } from "~/actions/educations/update-education";
 
 import type * as types from "~/components/tables/types";
 import { DegreeSelect } from "~/features/educations/components/input/DegreeSelect";

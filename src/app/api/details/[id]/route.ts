@@ -5,9 +5,9 @@ import { z } from "zod";
 import type { DetailIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { DetailIncludesSchema } from "~/actions-v2";
-import { fetchDetail } from "~/actions-v2/details/fetch-detail";
-import { ClientResponse } from "~/api-v2";
+import { DetailIncludesSchema } from "~/actions";
+import { fetchDetail } from "~/actions/details/fetch-detail";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {

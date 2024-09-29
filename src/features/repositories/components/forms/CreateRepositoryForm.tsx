@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type Repository } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { createRepository } from "~/actions-v2/repositories/create-repository";
+import { createRepository } from "~/actions/repositories/create-repository";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 

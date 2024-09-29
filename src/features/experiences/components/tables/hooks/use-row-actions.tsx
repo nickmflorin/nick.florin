@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteExperience } from "~/actions-v2/experiences/delete-experience";
-import { updateExperience } from "~/actions-v2/experiences/update-experience";
+import { deleteExperience } from "~/actions/experiences/delete-experience";
+import { updateExperience } from "~/actions/experiences/update-experience";
 
 import { DrawerIds } from "~/components/drawers";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

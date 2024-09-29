@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { logger } from "~/internal/logger";
 
-import { updateSkill } from "~/actions-v2/skills/update-skill";
+import { updateSkill } from "~/actions/skills/update-skill";
 
 import { Checkbox } from "~/components/input/Checkbox";
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";

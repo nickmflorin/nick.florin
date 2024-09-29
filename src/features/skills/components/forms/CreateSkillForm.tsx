@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type Skill } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { createSkill } from "~/actions-v2/skills/create-skill";
+import { createSkill } from "~/actions/skills/create-skill";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 

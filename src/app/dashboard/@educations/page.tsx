@@ -1,4 +1,4 @@
-import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
+import { fetchEducations } from "~/actions/educations/fetch-educations";
 
 import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
 

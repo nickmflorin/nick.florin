@@ -1,4 +1,4 @@
-import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
+import { fetchProjects } from "~/actions/projects/fetch-projects";
 
 import { ProjectTile } from "~/features/projects/components/ProjectTile";
 

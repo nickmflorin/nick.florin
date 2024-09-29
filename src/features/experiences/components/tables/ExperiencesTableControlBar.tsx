@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteExperiences } from "~/actions-v2/experiences/delete-experiences";
-import { hideExperiences } from "~/actions-v2/experiences/hide-experiences";
-import { highlightExperiences } from "~/actions-v2/experiences/highlight-experiences";
-import { showExperiences } from "~/actions-v2/experiences/show-experiences";
-import { unhighlightExperiences } from "~/actions-v2/experiences/unhighlight-experiences";
+import { deleteExperiences } from "~/actions/experiences/delete-experiences";
+import { hideExperiences } from "~/actions/experiences/hide-experiences";
+import { highlightExperiences } from "~/actions/experiences/highlight-experiences";
+import { showExperiences } from "~/actions/experiences/show-experiences";
+import { unhighlightExperiences } from "~/actions/experiences/unhighlight-experiences";
 
 import { HideButton } from "~/components/buttons/HideButton";
 import { HighlightButton } from "~/components/buttons/HighlightButton";

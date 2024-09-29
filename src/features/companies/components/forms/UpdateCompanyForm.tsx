@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type Company } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateCompany } from "~/actions-v2/companies/update-company";
+import { updateCompany } from "~/actions/companies/update-company";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

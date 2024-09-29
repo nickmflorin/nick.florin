@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { type MutationActionResponse } from "~/actions-v2";
+import { type MutationActionResponse } from "~/actions";
 
 import { Link } from "~/components/buttons";
 import { FormFieldErrors } from "~/components/forms-v2/Field/FieldErrors";

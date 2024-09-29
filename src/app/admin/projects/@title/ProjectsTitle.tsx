@@ -1,5 +1,5 @@
-import { type ProjectsFilters } from "~/actions-v2";
-import { fetchProjectsCount } from "~/actions-v2/projects/fetch-projects";
+import { type ProjectsFilters } from "~/actions";
+import { fetchProjectsCount } from "~/actions/projects/fetch-projects";
 
 export interface ProjectsTitleProps {
   readonly filters: ProjectsFilters;

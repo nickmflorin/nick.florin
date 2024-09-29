@@ -1,6 +1,6 @@
 import type { BrandResume } from "~/database/model";
 
-import { uploadResume } from "~/actions-v2/resumes/upload-resume";
+import { uploadResume } from "~/actions/resumes/upload-resume";
 
 import { ManagedUploads, type ManagedUploadsProps } from "~/components/uploads/ManagedUploads";
 

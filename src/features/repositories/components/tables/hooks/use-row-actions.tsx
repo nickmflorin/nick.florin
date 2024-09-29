@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteRepository } from "~/actions-v2/repositories/delete-repository";
-import { updateRepository } from "~/actions-v2/repositories/update-repository";
+import { deleteRepository } from "~/actions/repositories/delete-repository";
+import { updateRepository } from "~/actions/repositories/update-repository";
 
 import { DrawerIds } from "~/components/drawers";
 import { useDrawers } from "~/components/drawers/hooks/use-drawers";

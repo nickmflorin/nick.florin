@@ -10,9 +10,9 @@ import {
   CoursesDefaultOrdering,
   CourseOrderableFields,
   CourseIncludesSchema,
-} from "~/actions-v2";
-import { fetchCourses } from "~/actions-v2/courses/fetch-courses";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchCourses } from "~/actions/courses/fetch-courses";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

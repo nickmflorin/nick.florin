@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type ApiRepository } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateRepository } from "~/actions-v2/repositories/update-repository";
+import { updateRepository } from "~/actions/repositories/update-repository";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

@@ -1,5 +1,5 @@
 "use client";
-import { updateCourse } from "~/actions-v2/courses/update-course";
+import { updateCourse } from "~/actions/courses/update-course";
 
 import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";
 import type * as types from "~/components/tables/types";

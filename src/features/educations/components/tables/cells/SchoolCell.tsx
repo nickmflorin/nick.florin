@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { updateEducation } from "~/actions-v2/educations/update-education";
+import { updateEducation } from "~/actions/educations/update-education";
 
 import type * as types from "~/components/tables/types";
 import { type EducationsTableModel, type EducationsTableColumn } from "~/features/educations/types";

@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type ApiProject } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateProject } from "~/actions-v2/projects/update-project";
+import { updateProject } from "~/actions/projects/update-project";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

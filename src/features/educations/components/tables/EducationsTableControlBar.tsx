@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteEducations } from "~/actions-v2/educations/delete-educations";
-import { hideEducations } from "~/actions-v2/educations/hide-educations";
-import { highlightEducations } from "~/actions-v2/educations/highlight-educations";
-import { showEducations } from "~/actions-v2/educations/show-educations";
-import { unhighlightEducations } from "~/actions-v2/educations/unhighlight-educations";
+import { deleteEducations } from "~/actions/educations/delete-educations";
+import { hideEducations } from "~/actions/educations/hide-educations";
+import { highlightEducations } from "~/actions/educations/highlight-educations";
+import { showEducations } from "~/actions/educations/show-educations";
+import { unhighlightEducations } from "~/actions/educations/unhighlight-educations";
 
 import { HideButton } from "~/components/buttons/HideButton";
 import { HighlightButton } from "~/components/buttons/HighlightButton";

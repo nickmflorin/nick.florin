@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import type { ApiClientErrorJson } from "~/api-v2";
-import { isApiClientErrorJson } from "~/api-v2";
+import type { ApiClientErrorJson } from "~/api";
+import { isApiClientErrorJson } from "~/api";
 
 import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
 import type * as types from "~/components/tables/types";

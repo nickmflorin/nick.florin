@@ -1,5 +1,5 @@
-import { type RepositoriesFilters } from "~/actions-v2";
-import { fetchRepositoriesCount } from "~/actions-v2/repositories/fetch-repositories";
+import { type RepositoriesFilters } from "~/actions";
+import { fetchRepositoriesCount } from "~/actions/repositories/fetch-repositories";
 
 export interface RepositoriesTitleProps {
   readonly filters: RepositoriesFilters;

@@ -1,5 +1,5 @@
-import { type CoursesFilters } from "~/actions-v2";
-import { fetchCoursesCount } from "~/actions-v2/courses/fetch-courses";
+import { type CoursesFilters } from "~/actions";
+import { fetchCoursesCount } from "~/actions/courses/fetch-courses";
 
 export interface CoursesTitleProps {
   readonly filters: CoursesFilters;

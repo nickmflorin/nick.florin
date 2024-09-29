@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type Experience } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { createExperience } from "~/actions-v2/experiences/create-experience";
+import { createExperience } from "~/actions/experiences/create-experience";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 

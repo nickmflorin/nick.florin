@@ -1,5 +1,5 @@
-import { type EducationsFilters } from "~/actions-v2";
-import { fetchEducationsCount } from "~/actions-v2/educations/fetch-educations";
+import { type EducationsFilters } from "~/actions";
+import { fetchEducationsCount } from "~/actions/educations/fetch-educations";
 
 export interface EducationsTitleProps {
   readonly filters: EducationsFilters;

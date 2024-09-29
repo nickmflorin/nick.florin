@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import type { MutationActionResponse } from "~/actions-v2";
+import type { MutationActionResponse } from "~/actions";
 
 import { Dialog } from "~/components/dialogs/Dialog";
 import { ButtonFooter } from "~/components/structural/ButtonFooter";

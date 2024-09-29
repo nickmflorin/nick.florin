@@ -1,5 +1,5 @@
-import { type SkillsFilters } from "~/actions-v2";
-import { fetchSkillsCount } from "~/actions-v2/skills/fetch-skills";
+import { type SkillsFilters } from "~/actions";
+import { fetchSkillsCount } from "~/actions/skills/fetch-skills";
 
 export interface SkillsTitleProps {
   readonly filters: SkillsFilters;

@@ -3,7 +3,7 @@ import { type ReactNode, useEffect, useRef, useCallback } from "react";
 
 import { type ApiSkill, type Degree, type ApiCourse, type ApiSchool } from "~/database/model";
 
-import { EducationsFiltersObj, type EducationsFilters } from "~/actions-v2";
+import { EducationsFiltersObj, type EducationsFilters } from "~/actions";
 
 import { DrawerIds } from "~/components/drawers";
 import type { SelectInstance } from "~/components/input/select";

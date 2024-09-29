@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 import type { BrandResume } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { deleteResume } from "~/actions-v2/resumes/delete-resume";
-import { updateResume } from "~/actions-v2/resumes/update-resume";
+import { deleteResume } from "~/actions/resumes/delete-resume";
+import { updateResume } from "~/actions/resumes/update-resume";
 
 import { Icon } from "~/components/icons/Icon";
 import { Menu } from "~/components/menus/Menu";

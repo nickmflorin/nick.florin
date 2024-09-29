@@ -6,13 +6,13 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteSkills } from "~/actions-v2/skills/delete-skills";
-import { deprioritizeSkills } from "~/actions-v2/skills/deprioritize-skills";
-import { hideSkills } from "~/actions-v2/skills/hide-skills";
-import { highlightSkills } from "~/actions-v2/skills/highlight-skills";
-import { prioritizeSkills } from "~/actions-v2/skills/prioritize-skills";
-import { showSkills } from "~/actions-v2/skills/show-skills";
-import { unhighlightSkills } from "~/actions-v2/skills/unhighlight-skills";
+import { deleteSkills } from "~/actions/skills/delete-skills";
+import { deprioritizeSkills } from "~/actions/skills/deprioritize-skills";
+import { hideSkills } from "~/actions/skills/hide-skills";
+import { highlightSkills } from "~/actions/skills/highlight-skills";
+import { prioritizeSkills } from "~/actions/skills/prioritize-skills";
+import { showSkills } from "~/actions/skills/show-skills";
+import { unhighlightSkills } from "~/actions/skills/unhighlight-skills";
 
 import { DeprioritizeButton } from "~/components/buttons/DeprioritizeButton";
 import { HideButton } from "~/components/buttons/HideButton";

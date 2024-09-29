@@ -1,5 +1,5 @@
-import { type ExperiencesFilters } from "~/actions-v2";
-import { fetchExperiencesCount } from "~/actions-v2/experiences/fetch-experiences";
+import { type ExperiencesFilters } from "~/actions";
+import { fetchExperiencesCount } from "~/actions/experiences/fetch-experiences";
 
 export interface ExperiencesTitleProps {
   readonly filters: ExperiencesFilters;

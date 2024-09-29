@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { SkillsFiltersObj } from "~/actions-v2";
+import { SkillsFiltersObj } from "~/actions";
 
 import { LoadingText } from "~/components/loading/LoadingText";
 

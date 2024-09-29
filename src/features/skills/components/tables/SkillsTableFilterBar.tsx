@@ -11,7 +11,7 @@ import type {
   ProgrammingLanguage,
 } from "~/database/model";
 
-import { SkillsFiltersObj, type SkillsFilters } from "~/actions-v2";
+import { SkillsFiltersObj, type SkillsFilters } from "~/actions";
 
 import { DrawerIds } from "~/components/drawers";
 import type { SelectInstance } from "~/components/input/select";

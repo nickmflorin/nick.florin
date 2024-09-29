@@ -3,11 +3,11 @@ import { forwardRef, type ForwardedRef, useState } from "react";
 
 import { logger } from "~/internal/logger";
 
-import { type ActionVisibility } from "~/actions-v2";
-import { type ApiError } from "~/api-v2";
+import { type ActionVisibility } from "~/actions";
+import { type ApiError } from "~/api";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useSkills } from "~/hooks/api-v2";
+import { useSkills } from "~/hooks/api";
 
 import { SkillsSelect, type SkillsSelectInstance, type SkillsSelectProps } from "./SkillsSelect";
 

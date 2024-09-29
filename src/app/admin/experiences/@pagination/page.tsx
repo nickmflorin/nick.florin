@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { ExperiencesFiltersObj } from "~/actions-v2";
-import { fetchExperiencesPagination } from "~/actions-v2/experiences/fetch-experiences";
+import { ExperiencesFiltersObj } from "~/actions";
+import { fetchExperiencesPagination } from "~/actions/experiences/fetch-experiences";
 
 import { Paginator } from "~/components/pagination-v2/Paginator";
 

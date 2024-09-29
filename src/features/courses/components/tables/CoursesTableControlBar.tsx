@@ -6,9 +6,9 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteCourses } from "~/actions-v2/courses/delete-courses";
-import { hideCourses } from "~/actions-v2/courses/hide-courses";
-import { showCourses } from "~/actions-v2/courses/show-courses";
+import { deleteCourses } from "~/actions/courses/delete-courses";
+import { hideCourses } from "~/actions/courses/hide-courses";
+import { showCourses } from "~/actions/courses/show-courses";
 
 import { HideButton } from "~/components/buttons/HideButton";
 import { ShowButton } from "~/components/buttons/ShowButton";

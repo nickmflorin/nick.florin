@@ -3,7 +3,7 @@ import { type DetailEntityType, type ApiNestedDetail, type ApiDetail } from "~/d
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { ModifyDetailsView } from "~/features/resume/components/forms/ModifyDetailsView";
-import { useDetails } from "~/hooks/api-v2";
+import { useDetails } from "~/hooks/api";
 
 export interface UpdateDetailsCollapsedDrawerProps<T extends DetailEntityType> {
   readonly entityType: T;

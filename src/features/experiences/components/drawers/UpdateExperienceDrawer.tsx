@@ -5,7 +5,7 @@ import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useExperienceForm } from "~/features/experiences/components/forms/hooks";
 import { UpdateExperienceForm } from "~/features/experiences/components/forms/UpdateExperienceForm";
-import { useExperience } from "~/hooks/api-v2";
+import { useExperience } from "~/hooks/api";
 
 interface UpdateExperienceDrawerProps extends ExtendingDrawerProps {
   readonly experienceId: string;

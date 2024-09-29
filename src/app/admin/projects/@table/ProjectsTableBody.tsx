@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
-import { type ProjectsControls, type ProjectsFilters } from "~/actions-v2";
-import { fetchProjects } from "~/actions-v2/projects/fetch-projects";
+import { type ProjectsControls, type ProjectsFilters } from "~/actions";
+import { fetchProjects } from "~/actions/projects/fetch-projects";
 
 import { Loading } from "~/components/loading/Loading";
 import { ProjectsTableControlBarPlaceholder } from "~/features/projects/components/tables/ProjectsTableControlBarPlaceholder";

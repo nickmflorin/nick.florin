@@ -1,4 +1,4 @@
-import { SchoolSchema } from "~/actions-v2/schemas";
+import { SchoolSchema } from "~/actions/schemas";
 
 import { useForm } from "~/components/forms-v2/hooks/use-form";
 

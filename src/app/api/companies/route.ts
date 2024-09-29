@@ -10,9 +10,9 @@ import {
   CompaniesDefaultOrdering,
   CompanyOrderableFields,
   CompanyIncludesSchema,
-} from "~/actions-v2";
-import { fetchCompanies } from "~/actions-v2/companies/fetch-companies";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchCompanies } from "~/actions/companies/fetch-companies";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

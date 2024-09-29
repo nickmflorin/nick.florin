@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 
-import { fetchCourses } from "~/actions-v2/courses/fetch-courses";
-import { fetchSchools } from "~/actions-v2/schools/fetch-schools";
-import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
+import { fetchCourses } from "~/actions/courses/fetch-courses";
+import { fetchSchools } from "~/actions/schools/fetch-schools";
+import { fetchSkills } from "~/actions/skills/fetch-skills";
 
 import { EducationsTableFilterBar as ClientEducationsTableFilterBar } from "~/features/educations/components/tables/EducationsTableFilterBar";
 

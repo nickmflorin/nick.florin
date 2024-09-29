@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteRepositories } from "~/actions-v2/repositories/delete-repositories";
-import { hideRepositories } from "~/actions-v2/repositories/hide-repositories";
-import { highlightRepositories } from "~/actions-v2/repositories/highlight-repositories";
-import { showRepositories } from "~/actions-v2/repositories/show-repositories";
-import { unhighlightRepositories } from "~/actions-v2/repositories/unhighlight-repositories";
+import { deleteRepositories } from "~/actions/repositories/delete-repositories";
+import { hideRepositories } from "~/actions/repositories/hide-repositories";
+import { highlightRepositories } from "~/actions/repositories/highlight-repositories";
+import { showRepositories } from "~/actions/repositories/show-repositories";
+import { unhighlightRepositories } from "~/actions/repositories/unhighlight-repositories";
 
 import { HideButton } from "~/components/buttons/HideButton";
 import { HighlightButton } from "~/components/buttons/HighlightButton";

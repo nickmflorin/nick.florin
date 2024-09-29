@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
-import { type EducationsControls, type EducationsFilters } from "~/actions-v2";
-import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
+import { type EducationsControls, type EducationsFilters } from "~/actions";
+import { fetchEducations } from "~/actions/educations/fetch-educations";
 
 import { Loading } from "~/components/loading/Loading";
 import { EducationsTableControlBarPlaceholder } from "~/features/educations/components/tables/EducationsTableControlBarPlaceholder";

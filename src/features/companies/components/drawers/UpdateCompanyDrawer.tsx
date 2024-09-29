@@ -5,7 +5,7 @@ import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useCompanyForm } from "~/features/companies/components/forms/hooks";
 import { UpdateCompanyForm } from "~/features/companies/components/forms/UpdateCompanyForm";
-import { useCompany } from "~/hooks/api-v2";
+import { useCompany } from "~/hooks/api";
 
 interface UpdateCompanyDrawerProps extends ExtendingDrawerProps {
   readonly companyId: string;

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { SkillsFiltersObj } from "~/actions-v2";
-import { fetchSkillsPagination } from "~/actions-v2/skills/fetch-skills";
+import { SkillsFiltersObj } from "~/actions";
+import { fetchSkillsPagination } from "~/actions/skills/fetch-skills";
 
 import { Paginator } from "~/components/pagination-v2/Paginator";
 

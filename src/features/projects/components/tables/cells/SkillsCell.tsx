@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { updateProject } from "~/actions-v2/projects/update-project";
+import { updateProject } from "~/actions/projects/update-project";
 
 import type * as types from "~/components/tables/types";
 import type { ProjectsTableColumn, ProjectsTableModel } from "~/features/projects/types";

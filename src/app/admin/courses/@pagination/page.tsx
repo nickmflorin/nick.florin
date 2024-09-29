@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { CoursesFiltersObj } from "~/actions-v2";
-import { fetchCoursesPagination } from "~/actions-v2/courses/fetch-courses";
+import { CoursesFiltersObj } from "~/actions";
+import { fetchCoursesPagination } from "~/actions/courses/fetch-courses";
 
 import { Paginator } from "~/components/pagination-v2/Paginator";
 

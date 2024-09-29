@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { EducationsFiltersObj } from "~/actions-v2";
-import { fetchEducationsPagination } from "~/actions-v2/educations/fetch-educations";
+import { EducationsFiltersObj } from "~/actions";
+import { fetchEducationsPagination } from "~/actions/educations/fetch-educations";
 
 import { Paginator } from "~/components/pagination-v2/Paginator";
 

@@ -3,7 +3,7 @@ import { useEffect, useRef, useCallback } from "react";
 
 import type { ApiSkill, ApiRepository } from "~/database/model";
 
-import { ProjectsFiltersObj, type ProjectsFilters } from "~/actions-v2";
+import { ProjectsFiltersObj, type ProjectsFilters } from "~/actions";
 
 import { DrawerIds } from "~/components/drawers";
 import type { SelectInstance } from "~/components/input/select";

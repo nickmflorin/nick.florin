@@ -5,7 +5,7 @@ import { type User } from "~/database/model";
 import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
-import { ApiClientGlobalError } from "~/api-v2";
+import { ApiClientGlobalError } from "~/api";
 
 import { CMS_USER_ORG_SLUG, CMS_USER_ORG_ROLE, USER_ADMIN_ROLE } from "./constants";
 

@@ -1,6 +1,6 @@
 import { isError } from "~/application/errors";
 
-import { isApiError, type ApiClientErrorJson, type ApiError, isApiClientErrorJson } from "~/api-v2";
+import { isApiError, type ApiClientErrorJson, type ApiError, isApiClientErrorJson } from "~/api";
 import {
   type VercelEnvironmentName,
   type EnvironmentName,

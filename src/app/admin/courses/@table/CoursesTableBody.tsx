@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
-import { type CoursesControls, type CoursesFilters } from "~/actions-v2";
-import { fetchCourses } from "~/actions-v2/courses/fetch-courses";
+import { type CoursesControls, type CoursesFilters } from "~/actions";
+import { fetchCourses } from "~/actions/courses/fetch-courses";
 
 import { Loading } from "~/components/loading/Loading";
 import { CoursesTableControlBarPlaceholder } from "~/features/courses/components/tables/CoursesTableControlBarPlaceholder";

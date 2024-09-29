@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateDetail } from "~/actions-v2/details/update-detail";
-import { updateNestedDetail } from "~/actions-v2/details/update-nested-detail";
+import { updateDetail } from "~/actions/details/update-detail";
+import { updateNestedDetail } from "~/actions/details/update-nested-detail";
 
 import { IconButton } from "~/components/buttons";
 import { FormFieldErrors } from "~/components/forms-v2/Field/FieldErrors";

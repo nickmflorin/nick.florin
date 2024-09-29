@@ -4,7 +4,7 @@ import { type ReactNode, useState } from "react";
 
 import type * as types from "./types";
 
-import { type MutationActionResponse } from "~/actions-v2";
+import { type MutationActionResponse } from "~/actions";
 
 import { DeleteButton } from "~/components/buttons/DeleteButton";
 import { Tooltip } from "~/components/floating/Tooltip";

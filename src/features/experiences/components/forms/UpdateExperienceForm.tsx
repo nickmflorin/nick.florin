@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type ApiExperience } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateExperience } from "~/actions-v2/experiences/update-experience";
+import { updateExperience } from "~/actions/experiences/update-experience";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

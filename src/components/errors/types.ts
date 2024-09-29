@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 
-import { type ApiError } from "~/api-v2";
+import { type ApiError } from "~/api";
 
 export type ErrorContentType = ReactNode | ReactNode[];
 export type ErrorType = string | string[] | null | Error | ApiError;

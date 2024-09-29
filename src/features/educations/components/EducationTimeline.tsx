@@ -4,7 +4,7 @@ import { uniqBy } from "lodash-es";
 
 import { removeRedundantTopLevelSkills } from "~/database/model";
 
-import { fetchEducations } from "~/actions-v2/educations/fetch-educations";
+import { fetchEducations } from "~/actions/educations/fetch-educations";
 
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { Loading } from "~/components/loading/Loading";

@@ -1,5 +1,5 @@
-import { fetchCompanies } from "~/actions-v2/companies/fetch-companies";
-import { fetchSchools } from "~/actions-v2/schools/fetch-schools";
+import { fetchCompanies } from "~/actions/companies/fetch-companies";
+import { fetchSchools } from "~/actions/schools/fetch-schools";
 
 import { ClientCompaniesSchoolsMenuContent } from "./ClientCompaniesSchoolsMenuContent";
 import { type ModelType, type Model } from "./types";

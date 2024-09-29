@@ -5,9 +5,9 @@ import { z } from "zod";
 import type { ExperienceIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { ExperienceIncludesSchema } from "~/actions-v2";
-import { fetchExperience } from "~/actions-v2/experiences/fetch-experience";
-import { ClientResponse } from "~/api-v2";
+import { ExperienceIncludesSchema } from "~/actions";
+import { fetchExperience } from "~/actions/experiences/fetch-experience";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {

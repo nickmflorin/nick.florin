@@ -5,9 +5,9 @@ import { z } from "zod";
 import type { RepositoryIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { RepositoryIncludesSchema } from "~/actions-v2";
-import { fetchRepository } from "~/actions-v2/repositories/fetch-repository";
-import { ClientResponse } from "~/api-v2";
+import { RepositoryIncludesSchema } from "~/actions";
+import { fetchRepository } from "~/actions/repositories/fetch-repository";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {

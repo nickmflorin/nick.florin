@@ -10,9 +10,9 @@ import {
   ExperiencesDefaultOrdering,
   ExperienceOrderableFields,
   ExperienceIncludesSchema,
-} from "~/actions-v2";
-import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

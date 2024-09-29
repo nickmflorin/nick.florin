@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type ApiEducation } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateEducation } from "~/actions-v2/educations/update-education";
+import { updateEducation } from "~/actions/educations/update-education";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

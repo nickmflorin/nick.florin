@@ -1,7 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
 
-import { CoursesDefaultOrdering } from "~/actions-v2";
+import { CoursesDefaultOrdering } from "~/actions";
 
 import { columnIsOrderable } from "~/components/tables";
 import { ConnectedDataTableWrapper } from "~/components/tables/data-tables/ConnectedDataTableWrapper";

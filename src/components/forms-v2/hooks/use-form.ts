@@ -18,14 +18,14 @@ import { logger } from "~/internal/logger";
 import { humanizeList } from "~/lib/formatters";
 import { flattenObjectPaths, type IterablePathObj } from "~/lib/objects";
 
-import { ApiClientFormError, isApiError } from "~/api-v2";
+import { ApiClientFormError, isApiError } from "~/api";
 import {
   type ApiError,
   type ApiClientErrorJson,
   type ApiClientFieldErrorsObj,
   ApiClientFieldErrorCodes,
   isApiClientFormErrorJson,
-} from "~/api-v2";
+} from "~/api";
 
 import {
   type FormInstance,

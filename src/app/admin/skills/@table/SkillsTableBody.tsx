@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 
-import { type SkillsControls, type SkillsFilters } from "~/actions-v2";
-import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
+import { type SkillsControls, type SkillsFilters } from "~/actions";
+import { fetchSkills } from "~/actions/skills/fetch-skills";
 
 import { Loading } from "~/components/loading/Loading";
 import { SkillsTableControlBarPlaceholder } from "~/features/skills/components/tables/SkillsTableControlBarPlaceholder";

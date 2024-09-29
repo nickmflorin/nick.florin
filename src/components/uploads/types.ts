@@ -1,7 +1,7 @@
 import { type DropzoneProps } from "@mantine/dropzone";
 import { type FileRejection, type FileError, type FileWithPath } from "react-dropzone-esm";
 
-import { type MutationActionResponse } from "~/actions-v2";
+import { type MutationActionResponse } from "~/actions";
 
 import { type ComponentProps } from "~/components/types";
 

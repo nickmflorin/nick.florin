@@ -1,6 +1,6 @@
 import { UnreachableCaseError } from "~/application/errors";
 
-import { isApiClientGlobalErrorJson, isApiError } from "~/api-v2";
+import { isApiClientGlobalErrorJson, isApiError } from "~/api";
 import { environment } from "~/environment";
 import { type EnvironmentName } from "~/environment/constants";
 import {

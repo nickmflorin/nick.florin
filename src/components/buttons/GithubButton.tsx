@@ -1,4 +1,4 @@
-import { getProfile } from "~/actions-v2/get-profile";
+import { getProfile } from "~/actions/get-profile";
 
 import { SocialButton } from "./SocialButton";
 

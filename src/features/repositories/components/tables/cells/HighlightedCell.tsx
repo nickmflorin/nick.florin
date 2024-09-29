@@ -1,5 +1,5 @@
 "use client";
-import { updateRepository } from "~/actions-v2/repositories/update-repository";
+import { updateRepository } from "~/actions/repositories/update-repository";
 
 import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";
 import type * as types from "~/components/tables/types";

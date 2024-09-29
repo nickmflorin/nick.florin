@@ -6,7 +6,7 @@ import { ErrorView } from "~/components/errors/ErrorView";
 import { DynamicLoader, DynamicLoading } from "~/components/loading/dynamic-loading";
 import { Loading } from "~/components/loading/Loading";
 import { Module } from "~/components/structural/Module";
-import { useSkills } from "~/hooks/api-v2";
+import { useSkills } from "~/hooks/api";
 
 import { type SkillsChartFilterFormValues } from "./forms/SkillsChartFilterForm";
 import { SkillsFilterDropdownMenu } from "./SkillsFilterDropdownMenu";

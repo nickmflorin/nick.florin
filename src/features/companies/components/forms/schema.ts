@@ -1,6 +1,6 @@
 import { type z } from "zod";
 
-import { CompanySchema } from "~/actions-v2/schemas";
+import { CompanySchema } from "~/actions/schemas";
 
 export const CompanyFormSchema = CompanySchema.required();
 

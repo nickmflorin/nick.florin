@@ -5,7 +5,7 @@ import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useProjectForm } from "~/features/projects/components/forms/hooks";
 import UpdateProjectForm from "~/features/projects/components/forms/UpdateProjectForm";
-import { useProject } from "~/hooks/api-v2";
+import { useProject } from "~/hooks/api";
 
 interface UpdateProjectDrawerProps extends ExtendingDrawerProps {
   readonly projectId: string;

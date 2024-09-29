@@ -5,9 +5,9 @@ import { z } from "zod";
 import type { EducationIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { EducationIncludesSchema } from "~/actions-v2";
-import { fetchEducation } from "~/actions-v2/educations/fetch-education";
-import { ClientResponse } from "~/api-v2";
+import { EducationIncludesSchema } from "~/actions";
+import { fetchEducation } from "~/actions/educations/fetch-education";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {

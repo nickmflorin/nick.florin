@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { updateRepository } from "~/actions-v2/repositories/update-repository";
+import { updateRepository } from "~/actions/repositories/update-repository";
 
 import type * as types from "~/components/tables/types";
 import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";

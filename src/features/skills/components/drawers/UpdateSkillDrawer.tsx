@@ -5,7 +5,7 @@ import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useSkillForm } from "~/features/skills/components/forms/hooks";
 import UpdateSkillForm from "~/features/skills/components/forms/UpdateSkillForm";
-import { useSkill } from "~/hooks/api-v2";
+import { useSkill } from "~/hooks/api";
 
 interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
   readonly skillId: string;

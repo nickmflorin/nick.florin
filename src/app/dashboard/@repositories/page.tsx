@@ -1,4 +1,4 @@
-import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
+import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
 
 import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
 

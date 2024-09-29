@@ -1,4 +1,4 @@
-import { fetchExperiences } from "~/actions-v2/experiences/fetch-experiences";
+import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
 
 import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
 

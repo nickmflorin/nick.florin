@@ -10,9 +10,9 @@ import {
   RepositoriesDefaultOrdering,
   RepositoryOrderableFields,
   RepositoryIncludesSchema,
-} from "~/actions-v2";
-import { fetchRepositories } from "~/actions-v2/repositories/fetch-repositories";
-import { ClientResponse } from "~/api-v2";
+} from "~/actions";
+import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

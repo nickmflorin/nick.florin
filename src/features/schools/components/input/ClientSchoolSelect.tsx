@@ -2,11 +2,11 @@ import { forwardRef, type ForwardedRef } from "react";
 
 import { logger } from "~/internal/logger";
 
-import type { ActionVisibility } from "~/actions-v2";
-import { type ApiError } from "~/api-v2";
+import type { ActionVisibility } from "~/actions";
+import { type ApiError } from "~/api";
 
 import type { SelectBehaviorType } from "~/components/input/select";
-import { useSchools } from "~/hooks/api-v2";
+import { useSchools } from "~/hooks/api";
 
 import { SchoolSelect, type SchoolSelectProps, type SchoolSelectInstance } from "./SchoolSelect";
 

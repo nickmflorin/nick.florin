@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type ApiSkill } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateSkill } from "~/actions-v2/skills/update-skill";
+import { updateSkill } from "~/actions/skills/update-skill";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";

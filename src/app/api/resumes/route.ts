@@ -4,9 +4,9 @@ import { z } from "zod";
 
 import { parseOrdering } from "~/lib/ordering";
 
-import { ResumesFiltersObj, ResumesDefaultOrdering, ResumeOrderableFields } from "~/actions-v2";
-import { fetchResumes } from "~/actions-v2/resumes/fetch-resumes";
-import { ClientResponse } from "~/api-v2";
+import { ResumesFiltersObj, ResumesDefaultOrdering, ResumeOrderableFields } from "~/actions";
+import { fetchResumes } from "~/actions/resumes/fetch-resumes";
+import { ClientResponse } from "~/api";
 import { parseQueryParams } from "~/integrations/http";
 
 export const GET = async (request: NextRequest) => {

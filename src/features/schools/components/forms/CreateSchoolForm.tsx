@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { type School } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { createSchool } from "~/actions-v2/schools/create-school";
+import { createSchool } from "~/actions/schools/create-school";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { isApiError } from "~/api-v2";
+import { isApiError } from "~/api";
 
 import {
   type ComponentProps,

@@ -1,5 +1,5 @@
 "use client";
-import { updateSkill } from "~/actions-v2/skills/update-skill";
+import { updateSkill } from "~/actions/skills/update-skill";
 
 import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";
 import type * as types from "~/components/tables/types";

@@ -6,7 +6,7 @@ import {
   type ProgrammingLanguage,
 } from "~/database/model";
 
-import { updateSkill } from "~/actions-v2/skills/update-skill";
+import { updateSkill } from "~/actions/skills/update-skill";
 
 import { SelectCell } from "~/components/tables/cells/SelectCell";
 import type * as types from "~/components/tables/types";

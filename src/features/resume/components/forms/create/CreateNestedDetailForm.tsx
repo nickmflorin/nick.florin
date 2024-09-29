@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { type ApiNestedDetail } from "~/database/model";
 
-import { createNestedDetail } from "~/actions-v2/details/create-nested-detail";
+import { createNestedDetail } from "~/actions/details/create-nested-detail";
 
 import {
   GenericCreateDetailForm,

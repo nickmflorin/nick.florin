@@ -1,5 +1,5 @@
 "use client";
-import { updateExperience } from "~/actions-v2/experiences/update-experience";
+import { updateExperience } from "~/actions/experiences/update-experience";
 
 import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";
 import type * as types from "~/components/tables/types";
