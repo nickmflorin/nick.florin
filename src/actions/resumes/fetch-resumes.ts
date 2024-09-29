@@ -1,7 +1,8 @@
-import { BrandResume } from "~/database/model";
+import { type BrandResume } from "~/database/model";
 import { db } from "~/database/prisma";
 import { conditionalFilters } from "~/database/util";
 import { logger } from "~/internal/logger";
+
 import {
   constructTableSearchClause,
   PAGE_SIZES,

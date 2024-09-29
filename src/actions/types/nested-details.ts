@@ -9,7 +9,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type Controls, type FlattenedControls } from "./controls";
 /*
 Note: Currently, the ordering and filtering aspects of data manipulation for NestedDetails are not
 used by the client (even though the fetch actions support them).  However, these are left here so
@@ -89,28 +89,15 @@ export type NestedDetailsFilters = {
   readonly search: string;
 };
 
-export interface NestedDetailsControls<
+export type NestedDetailsControls<
   I extends NestedDetailIncludes = NestedDetailIncludes,
-  F = NestedDetailsFilters,
-> {
-  readonly filters: Partial<F>;
-  readonly ordering?: Ordering<NestedDetailOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+  F extends NestedDetailsFilters = NestedDetailsFilters,
+> = Controls<I, F, NestedDetailOrderableField>;
 
 export type FlattenedNestedDetailsControls<
   I extends NestedDetailIncludes = NestedDetailIncludes,
   F extends NestedDetailsFilters = NestedDetailsFilters,
-> = F &
-  Ordering<NestedDetailOrderableField> & {
-    readonly page?: number;
-    readonly includes: I;
-    readonly limit?: number;
-    readonly visibility: ActionVisibility;
-  };
+> = FlattenedControls<I, F, NestedDetailOrderableField>;
 
 export type NestedDetailControls<I extends NestedDetailIncludes = NestedDetailIncludes> = Pick<
   NestedDetailsControls<I>,

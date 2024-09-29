@@ -9,8 +9,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
-
+import { type FlattenedControls, type Controls } from "./controls";
 /*
 Note: Currently, the ordering and filtering aspects of data manipulation for Schools are not used
 by the client (even though the fetch actions support them).  However, these are left here so we can
@@ -97,27 +96,22 @@ export const getSchoolsOrdering = <F extends SchoolOrderableField, O extends Ord
   ] as const;
 };
 
-export interface SchoolsFilters {
+export type SchoolsFilters = {
   readonly search: string;
   readonly educations: string[];
-}
+};
 
-export interface SchoolsControls<I extends SchoolIncludes = SchoolIncludes> {
-  readonly filters: Partial<SchoolsFilters>;
-  readonly ordering?: Ordering<SchoolOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type SchoolsControls<I extends SchoolIncludes = SchoolIncludes> = Controls<
+  I,
+  SchoolsFilters,
+  SchoolOrderableField
+>;
 
-export type FlattenedSchoolsControls<I extends SchoolIncludes = SchoolIncludes> = SchoolsFilters &
-  Ordering<SchoolOrderableField> & {
-    readonly page?: number;
-    readonly includes: I;
-    readonly limit?: number;
-    readonly visibility: ActionVisibility;
-  };
+export type FlattenedSchoolsControls<I extends SchoolIncludes = SchoolIncludes> = FlattenedControls<
+  I,
+  SchoolsFilters,
+  SchoolOrderableField
+>;
 
 export type SchoolControls<I extends SchoolIncludes = SchoolIncludes> = Pick<
   SchoolsControls<I>,

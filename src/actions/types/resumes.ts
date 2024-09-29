@@ -88,9 +88,9 @@ export const getResumesOrdering = <F extends ResumeOrderableField, O extends Ord
   ] as const;
 };
 
-export interface ResumesFilters {
+export type ResumesFilters = {
   readonly search: string;
-}
+};
 
 export type ResumesControls = {
   readonly filters: Partial<ResumesFilters>;
@@ -100,8 +100,8 @@ export type ResumesControls = {
   readonly visibility: ActionVisibility;
 };
 
-export type FlattenedResumesControls = ResumesFilters &
-  Ordering<ResumeOrderableField> & {
+export type FlattenedResumesControls = Partial<ResumesFilters> &
+  Partial<Ordering<ResumeOrderableField>> & {
     readonly page?: number;
     readonly limit?: number;
     readonly visibility: ActionVisibility;

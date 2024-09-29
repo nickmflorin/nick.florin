@@ -11,7 +11,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type FlattenedControls, type Controls } from "./controls";
 
 export const EducationOrderableFields = [
   "major",
@@ -97,7 +97,7 @@ export const getEducationsOrdering = <F extends EducationOrderableField, O exten
   ] as const;
 };
 
-export interface EducationsFilters {
+export type EducationsFilters = {
   readonly highlighted: boolean | null;
   readonly visible: boolean | null;
   readonly postPoned: boolean | null;
@@ -106,25 +106,16 @@ export interface EducationsFilters {
   readonly schools: string[];
   readonly courses: string[];
   readonly degrees: Degree[];
-}
+};
 
-export interface EducationsControls<I extends EducationIncludes = EducationIncludes> {
-  readonly filters: Partial<EducationsFilters>;
-  readonly ordering?: Ordering<EducationOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type EducationsControls<I extends EducationIncludes = EducationIncludes> = Controls<
+  I,
+  EducationsFilters,
+  EducationOrderableField
+>;
 
 export type FlattenedEducationsControls<I extends EducationIncludes = EducationIncludes> =
-  EducationsFilters &
-    Ordering<EducationOrderableField> & {
-      readonly page?: number;
-      readonly includes: I;
-      readonly limit?: number;
-      readonly visibility: ActionVisibility;
-    };
+  FlattenedControls<I, EducationsFilters, EducationOrderableField>;
 
 export type EducationControls<I extends EducationIncludes = EducationIncludes> = Pick<
   EducationsControls<I>,

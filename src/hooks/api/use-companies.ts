@@ -5,5 +5,5 @@ import { type FlattenedCompaniesControls } from "~/actions";
 import { useSWR, type SWRConfig } from "./use-swr";
 
 export const useCompanies = <I extends CompanyIncludes>(
-  config: SWRConfig<ApiCompany<I>[], Partial<FlattenedCompaniesControls<I>>>,
-) => useSWR<ApiCompany<I>[], Partial<FlattenedCompaniesControls<I>>>("/api/companies", config);
+  config: SWRConfig<ApiCompany<I>[], FlattenedCompaniesControls<I>>,
+) => useSWR<ApiCompany<I>[], FlattenedCompaniesControls<I>>("/api/companies", config);

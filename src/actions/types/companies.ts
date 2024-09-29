@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import type { FlattenedControls, Controls } from "./controls";
+
 import {
   type CompanyIncludes,
   CompanyIncludesFields,
@@ -8,8 +10,6 @@ import {
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
-
-import type { ActionVisibility } from "~/actions/visibility";
 
 /*
 Note: Currently, the ordering and filtering aspects of data manipulation for Companies are not used
@@ -97,28 +97,19 @@ export const getCompaniesOrdering = <F extends CompanyOrderableField, O extends 
   ] as const;
 };
 
-export interface CompaniesFilters {
+export type CompaniesFilters = {
   readonly search: string;
   readonly experiences: string[];
-}
+};
 
-export interface CompaniesControls<I extends CompanyIncludes = CompanyIncludes> {
-  readonly filters: Partial<CompaniesFilters>;
-  readonly ordering?: Ordering<CompanyOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type CompaniesControls<I extends CompanyIncludes = CompanyIncludes> = Controls<
+  I,
+  CompaniesFilters,
+  CompanyOrderableField
+>;
 
 export type FlattenedCompaniesControls<I extends CompanyIncludes = CompanyIncludes> =
-  CompaniesFilters &
-    Ordering<CompanyOrderableField> & {
-      readonly page?: number;
-      readonly includes: I;
-      readonly limit?: number;
-      readonly visibility: ActionVisibility;
-    };
+  FlattenedControls<I, CompaniesFilters, CompanyOrderableField>;
 
 export type CompanyControls<I extends CompanyIncludes = CompanyIncludes> = Pick<
   CompaniesControls<I>,

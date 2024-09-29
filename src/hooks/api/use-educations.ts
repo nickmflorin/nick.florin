@@ -5,5 +5,5 @@ import { type FlattenedEducationsControls } from "~/actions";
 import { useSWR, type SWRConfig } from "./use-swr";
 
 export const useEducations = <I extends EducationIncludes>(
-  config: SWRConfig<ApiEducation<I>[], Partial<FlattenedEducationsControls<I>>>,
-) => useSWR<ApiEducation<I>[], Partial<FlattenedEducationsControls<I>>>("/api/educations", config);
+  config: SWRConfig<ApiEducation<I>[], FlattenedEducationsControls<I>>,
+) => useSWR<ApiEducation<I>[], FlattenedEducationsControls<I>>("/api/educations", config);

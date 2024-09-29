@@ -16,7 +16,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type FlattenedControls, type Controls } from "./controls";
 
 export const SkillOrderableFields = [
   "label",
@@ -96,7 +96,7 @@ export const getSkillsOrdering = <F extends SkillOrderableField, O extends Order
   ] as const;
 };
 
-export interface SkillsFilters {
+export type SkillsFilters = {
   readonly highlighted: boolean | null;
   readonly prioritized: boolean | null;
   readonly visible: boolean | null;
@@ -108,24 +108,19 @@ export interface SkillsFilters {
   readonly categories: SkillCategory[];
   readonly projects: string[];
   readonly repositories: string[];
-}
+};
 
-export interface SkillsControls<I extends SkillIncludes = SkillIncludes> {
-  readonly filters: Partial<SkillsFilters>;
-  readonly ordering?: Ordering<SkillOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type SkillsControls<I extends SkillIncludes = SkillIncludes> = Controls<
+  I,
+  SkillsFilters,
+  SkillOrderableField
+>;
 
-export type FlattenedSkillsControls<I extends SkillIncludes = SkillIncludes> = SkillsFilters &
-  Ordering<SkillOrderableField> & {
-    readonly page?: number;
-    readonly includes: I;
-    readonly limit?: number;
-    readonly visibility: ActionVisibility;
-  };
+export type FlattenedSkillsControls<I extends SkillIncludes = SkillIncludes> = FlattenedControls<
+  I,
+  SkillsFilters,
+  SkillOrderableField
+>;
 
 export type SkillControls<I extends SkillIncludes = SkillIncludes> = Pick<
   SkillsControls<I>,

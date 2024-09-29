@@ -9,7 +9,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type FlattenedControls, type Controls } from "./controls";
 
 export const CourseOrderableFields = [
   "name",
@@ -92,29 +92,24 @@ export const getCoursesOrdering = <F extends CourseOrderableField, O extends Ord
   ] as const;
 };
 
-export interface CoursesFilters {
+export type CoursesFilters = {
   readonly visible: boolean | null;
   readonly skills: string[];
   readonly search: string;
   readonly educations: string[];
-}
+};
 
-export interface CoursesControls<I extends CourseIncludes = CourseIncludes> {
-  readonly filters: Partial<CoursesFilters>;
-  readonly ordering?: Ordering<CourseOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type CoursesControls<I extends CourseIncludes = CourseIncludes> = Controls<
+  I,
+  CoursesFilters,
+  CourseOrderableField
+>;
 
-export type FlattenedCoursesControls<I extends CourseIncludes = CourseIncludes> = CoursesFilters &
-  Ordering<CourseOrderableField> & {
-    readonly page?: number;
-    readonly includes: I;
-    readonly limit?: number;
-    readonly visibility: ActionVisibility;
-  };
+export type FlattenedCoursesControls<I extends CourseIncludes = CourseIncludes> = FlattenedControls<
+  I,
+  CoursesFilters,
+  CourseOrderableField
+>;
 
 export type CourseControls<I extends CourseIncludes = CourseIncludes> = Pick<
   CoursesControls<I>,

@@ -9,7 +9,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type Controls, type FlattenedControls } from "./controls";
 
 export const RepositoryOrderableFields = [
   "slug",
@@ -92,31 +92,22 @@ export const getRepositoriesOrdering = <F extends RepositoryOrderableField, O ex
   ] as const;
 };
 
-export interface RepositoriesFilters {
+export type RepositoriesFilters = {
   readonly highlighted: boolean | null;
   readonly visible: boolean | null;
   readonly search: string;
   readonly projects: string[];
   readonly skills: string[];
-}
+};
 
-export interface RepositoriesControls<I extends RepositoryIncludes = RepositoryIncludes> {
-  readonly filters: Partial<RepositoriesFilters>;
-  readonly ordering?: Ordering<RepositoryOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type RepositoriesControls<I extends RepositoryIncludes = RepositoryIncludes> = Controls<
+  I,
+  RepositoriesFilters,
+  RepositoryOrderableField
+>;
 
 export type FlattenedRepositoriesControls<I extends RepositoryIncludes = RepositoryIncludes> =
-  RepositoriesFilters &
-    Ordering<RepositoryOrderableField> & {
-      readonly page?: number;
-      readonly includes: I;
-      readonly limit?: number;
-      readonly visibility: ActionVisibility;
-    };
+  FlattenedControls<I, RepositoriesFilters, RepositoryOrderableField>;
 
 export type RepositoryControls<I extends RepositoryIncludes = RepositoryIncludes> = Pick<
   RepositoriesControls<I>,

@@ -9,7 +9,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type Controls, type FlattenedControls } from "./controls";
 
 export const ExperienceOrderableFields = [
   "title",
@@ -95,31 +95,22 @@ export const getExperiencesOrdering = <F extends ExperienceOrderableField, O ext
   ] as const;
 };
 
-export interface ExperiencesFilters {
+export type ExperiencesFilters = {
   readonly highlighted: boolean | null;
   readonly visible: boolean | null;
   readonly skills: string[];
   readonly search: string;
   readonly companies: string[];
-}
+};
 
-export interface ExperiencesControls<I extends ExperienceIncludes = ExperienceIncludes> {
-  readonly filters: Partial<ExperiencesFilters>;
-  readonly ordering?: Ordering<ExperienceOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type ExperiencesControls<I extends ExperienceIncludes = ExperienceIncludes> = Controls<
+  I,
+  ExperiencesFilters,
+  ExperienceOrderableField
+>;
 
 export type FlattenedExperiencesControls<I extends ExperienceIncludes = ExperienceIncludes> =
-  ExperiencesFilters &
-    Ordering<ExperienceOrderableField> & {
-      readonly page?: number;
-      readonly includes: I;
-      readonly limit?: number;
-      readonly visibility: ActionVisibility;
-    };
+  FlattenedControls<I, ExperiencesFilters, ExperienceOrderableField>;
 
 export type ExperienceControls<I extends ExperienceIncludes = ExperienceIncludes> = Pick<
   ExperiencesControls<I>,

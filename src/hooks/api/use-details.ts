@@ -30,12 +30,9 @@ const PATHS: { [key in DetailEntityType]: (id: string) => `/api/${string}/${stri
 export const useDetails = <I extends DetailIncludes, T extends DetailEntityType>(
   id: string | null,
   entityType: T,
-  config: SWRConfig<
-    Response<I, T>,
-    Partial<Omit<FlattenedDetailsControls<I>, "entityIds" | "entityTypes">>
-  >,
+  config: SWRConfig<Response<I, T>, Omit<FlattenedDetailsControls<I>, "entityIds" | "entityTypes">>,
 ) =>
-  useSWR<Response<I, T>, Partial<Omit<FlattenedDetailsControls<I>, "entityIds" | "entityTypes">>>(
+  useSWR<Response<I, T>, Omit<FlattenedDetailsControls<I>, "entityIds" | "entityTypes">>(
     id && isUuid(id) ? PATHS[entityType](id) : null,
     config,
   );

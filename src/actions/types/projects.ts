@@ -9,7 +9,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type Controls, type FlattenedControls } from "./controls";
 
 export const ProjectOrderableFields = [
   "name",
@@ -92,34 +92,27 @@ export const getProjectsOrdering = <F extends ProjectOrderableField, O extends O
   ] as const;
 };
 
-export interface ProjectsFilters {
+export type ProjectsFilters = {
   readonly highlighted: boolean | null;
   readonly visible: boolean | null;
   readonly search: string;
   readonly repositories: string[];
   readonly skills: string[];
-}
+};
 
-export interface ProjectsControls<I extends ProjectIncludes = ProjectIncludes> {
-  readonly filters: Partial<ProjectsFilters>;
-  readonly ordering?: Ordering<ProjectOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
+export type ProjectsControls<I extends ProjectIncludes = ProjectIncludes> = Controls<
+  I,
+  ProjectsFilters,
+  ProjectOrderableField
+>;
 
 export type FlattenedProjectsControls<I extends ProjectIncludes = ProjectIncludes> =
-  ProjectsFilters &
-    Ordering<ProjectOrderableField> & {
-      readonly page?: number;
-      readonly includes: I;
-      readonly limit?: number;
-      readonly visibility: ActionVisibility;
-    };
+  FlattenedControls<I, ProjectsFilters, ProjectOrderableField>;
 
-export interface ProjectControls<I extends ProjectIncludes = ProjectIncludes>
-  extends Pick<ProjectsControls<I>, "includes" | "visibility"> {}
+export type ProjectControls<I extends ProjectIncludes = ProjectIncludes> = Pick<
+  ProjectsControls<I>,
+  "includes" | "visibility"
+>;
 
 export const ProjectsFiltersObj = Filters({
   highlighted: {

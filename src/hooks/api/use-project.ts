@@ -7,9 +7,9 @@ import { useSWR, type SWRConfig } from "./use-swr";
 
 export const useProject = <I extends ProjectIncludes>(
   id: string,
-  config: SWRConfig<ApiProject<I>, Partial<ProjectControls<I>>>,
+  config: SWRConfig<ApiProject<I>, ProjectControls<I>>,
 ) =>
-  useSWR<ApiProject<I>, Partial<ProjectControls<I>>>(
+  useSWR<ApiProject<I>, ProjectControls<I>>(
     // TODO: Revisit the conditional here.
     isUuid(id) ? `/api/projects/${id}` : null,
     config,

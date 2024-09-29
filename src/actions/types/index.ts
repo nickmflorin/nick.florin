@@ -10,3 +10,4 @@ export * from "./nested-details";
 export * from "./schools";
 export * from "./search";
 export * from "./resumes";
+export * from "./controls";

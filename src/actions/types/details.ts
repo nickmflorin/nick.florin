@@ -11,8 +11,7 @@ import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
-import type { ActionVisibility } from "~/actions/visibility";
-
+import { type FlattenedControls, type Controls } from "./controls";
 /*
 Note: Currently, the ordering and filtering aspects of data manipulation for Details are not used
 by the client (even though the fetch actions support them).  However, these are left here so we can
@@ -96,25 +95,16 @@ export type DetailsFilters = {
   readonly entityTypes: DetailEntityType[];
 };
 
-export interface DetailsControls<I extends DetailIncludes = DetailIncludes, F = DetailsFilters> {
-  readonly filters: Partial<F>;
-  readonly ordering?: Ordering<DetailOrderableField>;
-  readonly page?: number;
-  readonly includes: I;
-  readonly limit?: number;
-  readonly visibility: ActionVisibility;
-}
-
-export type FlattenedDetailsControls<
+export type DetailsControls<
   I extends DetailIncludes = DetailIncludes,
-  F extends DetailsFilters = DetailsFilters,
-> = F &
-  Ordering<DetailOrderableField> & {
-    readonly page?: number;
-    readonly includes: I;
-    readonly limit?: number;
-    readonly visibility: ActionVisibility;
-  };
+  F extends Record<string, unknown> = DetailsFilters,
+> = Controls<I, F, DetailOrderableField>;
+
+export type FlattenedDetailsControls<I extends DetailIncludes = DetailIncludes> = FlattenedControls<
+  I,
+  DetailsFilters,
+  DetailOrderableField
+>;
 
 export type DetailControls<I extends DetailIncludes = DetailIncludes> = Pick<
   DetailsControls<I>,
