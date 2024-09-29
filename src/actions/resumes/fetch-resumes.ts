@@ -92,7 +92,7 @@ export const fetchResumes = standardListFetchAction(
       skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
       take: pagination ? pagination.pageSize : limit,
     });
-    return setResumesPrimaryFlag(resumes)
+    return setResumesPrimaryFlag(resumes);
   },
   { authenticated: false, adminOnly: false },
 );

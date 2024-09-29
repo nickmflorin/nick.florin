@@ -92,13 +92,13 @@ export interface ResumesFilters {
   readonly search: string;
 }
 
-export type ResumesControls =  {
+export type ResumesControls = {
   readonly filters: Partial<ResumesFilters>;
   readonly ordering?: Ordering<ResumeOrderableField>;
   readonly page?: number;
   readonly limit?: number;
   readonly visibility: ActionVisibility;
-}
+};
 
 export type FlattenedResumesControls = ResumesFilters &
   Ordering<ResumeOrderableField> & {
