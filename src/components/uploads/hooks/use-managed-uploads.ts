@@ -6,8 +6,6 @@ import type { FileWithPath, FileRejection, ErrorCode, FileError } from "react-dr
 
 import { logger } from "~/internal/logger";
 
-import { isApiClientGlobalErrorJson, type ApiClientGlobalErrorJson } from "~/api";
-
 import * as types from "../types";
 
 const createUploadId = (): types.UploadId => `upload-${uuid()}`;
@@ -184,28 +182,27 @@ export const useManagedUploads = <M extends types.BaseUploadModel>({
       const formData = new FormData();
       formData.append("file", file);
 
-      let response: M | ApiClientGlobalErrorJson;
+      let response: Awaited<ReturnType<typeof uploadAction>> | null = null;
       try {
         response = await uploadAction(formData, { sync });
       } catch (e) {
-        logger.error(`There was a server error while uploading file ${file.name}:\n${e}`, {
-          error: e,
+        logger.errorUnsafe(e, `There was a server error while uploading file ${file.name}.`, {
           file,
         });
         return modifyUpload(uploadId, { errors: ["There was an error uploading the file."] });
       }
-      if (isApiClientGlobalErrorJson(response)) {
-        logger.error(`There was a client error while uploading file ${file.name}.`, {
-          response,
+      const { error, data } = response;
+      if (error) {
+        logger.error(error, `There was a client error while uploading file ${file.name}.`, {
           file,
         });
-        return modifyUpload(uploadId, { errors: [response.message] });
+        return modifyUpload(uploadId, { errors: [error.message] });
       }
       logger.info(`File ${file.name} successfully uploaded, adding file to finished uploads...`, {
         file,
         uploadId,
       });
-      return modifyUpload(uploadId, { model: response });
+      return modifyUpload(uploadId, { model: data });
     },
     [uploadAction, modifyUpload, sync],
   );

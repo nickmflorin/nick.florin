@@ -1,6 +1,6 @@
 import { SchoolSchema } from "~/actions-v2/schemas";
 
-import { useForm } from "~/components/forms/hooks/use-form";
+import { useForm } from "~/components/forms-v2/hooks/use-form";
 
 export const useSchoolForm = () =>
   useForm({

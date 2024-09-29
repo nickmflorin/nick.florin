@@ -6,8 +6,9 @@ import { toast } from "react-toastify";
 
 import { logger } from "~/internal/logger";
 
-import { deleteSchool } from "~/actions/mutations/schools";
+import { type MutationActionResponse } from "~/actions-v2";
 import { deleteCompany } from "~/actions-v2/companies/delete-company";
+import { deleteSchool } from "~/actions-v2/schools/delete-school";
 
 import { IconButton } from "~/components/buttons";
 import { Tooltip } from "~/components/floating/Tooltip";
@@ -15,11 +16,11 @@ import { Text } from "~/components/typography";
 
 import { type ModelType, type Model } from "./types";
 
-const actions: { [key in ModelType]: (id: string) => Promise<void> } = {
-  company: async id => {
-    await deleteCompany(id);
-  },
-  school: deleteSchool,
+const actions: {
+  [key in ModelType]: (id: string) => Promise<MutationActionResponse<{ message: string }>>;
+} = {
+  company: async id => await deleteCompany(id),
+  school: async id => await deleteSchool(id),
 };
 
 const TooltipMessages: { [key in ModelType]: (count: number) => string } = {
@@ -64,20 +65,35 @@ export const DeleteCompanySchoolButton = <M extends ModelType>({
         loadingClassName="text-gray-400"
         isLoading={isLoading}
         isDisabled={relatedCount !== 0}
-        onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
-          e.stopPropagation();
+        onClick={async (evt: React.MouseEvent<HTMLButtonElement>) => {
+          evt.stopPropagation();
           setIsLoading(true);
+          let response: MutationActionResponse<{ message: string }> | null = null;
           try {
-            await actions[modelType](model.id);
+            response = await actions[modelType](model.id);
           } catch (e) {
-            logger.error(`There was an error deleting the ${modelType}:\n${e}`, {
-              id: model.id,
-              modelType,
-            });
-            toast.error(`There was an error deleting the ${modelType}.`);
-          } finally {
+            logger.errorUnsafe(
+              e,
+              `There was an error deleting the ${modelType} with ID '${model.id}'.`,
+              { model, modelType },
+            );
             setIsLoading(false);
+            return toast.error(`There was an error deleting the ${modelType}.`);
           }
+          const { error } = response;
+          if (error) {
+            logger.error(
+              error,
+              `There was an error deleting the ${modelType} with ID '${model.id}'.`,
+              {
+                model,
+                modelType,
+              },
+            );
+            setIsLoading(false);
+            return toast.error(`There was an error deleting the ${modelType}.`);
+          }
+          setIsLoading(false);
         }}
       />
     </Tooltip>

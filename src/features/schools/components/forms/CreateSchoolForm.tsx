@@ -5,9 +5,9 @@ import { useTransition } from "react";
 import { toast } from "react-toastify";
 
 import { type School } from "~/database/model";
+import { logger } from "~/internal/logger";
 
-import { createSchool } from "~/actions/mutations/schools";
-import { isApiClientErrorJson } from "~/api";
+import { createSchool } from "~/actions-v2/schools/create-school";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 
@@ -32,17 +32,25 @@ export const CreateSchoolForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await createSchool(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          toast.success("School successfully created.");
-          onSuccess?.(response);
-          transition(() => {
-            refresh();
+        let response: Awaited<ReturnType<typeof createSchool>> | null = null;
+        try {
+          response = await createSchool(data);
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the school'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error creating the school.");
         }
+        const { error, data: school } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          form.reset();
+          refresh();
+          onSuccess?.(school);
+        });
       }}
     />
   );

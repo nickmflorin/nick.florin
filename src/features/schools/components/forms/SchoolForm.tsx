@@ -3,7 +3,7 @@ import { type z } from "zod";
 
 import { SchoolSchema } from "~/actions-v2/schemas";
 
-import { Form, type FormProps } from "~/components/forms/Form";
+import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
 

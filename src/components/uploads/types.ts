@@ -1,7 +1,7 @@
 import { type DropzoneProps } from "@mantine/dropzone";
 import { type FileRejection, type FileError, type FileWithPath } from "react-dropzone-esm";
 
-import type { ApiClientGlobalErrorJson } from "~/api";
+import { type MutationActionResponse } from "~/actions-v2";
 
 import { type ComponentProps } from "~/components/types";
 
@@ -89,7 +89,7 @@ export type UploadsManager<M extends BaseUploadModel> = {
 export type UploadAction<M extends BaseUploadModel> = (
   formData: FormData,
   manager: Pick<UploadsManager<M>, "sync">,
-) => Promise<M | ApiClientGlobalErrorJson>;
+) => Promise<MutationActionResponse<M>>;
 
 export interface UploadDropzoneProps
   extends Pick<DropzoneProps, "onDrop" | "onReject" | "accept" | "multiple">,

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getProfile } from "~/actions/fetches/get-profile";
+import { getProfile } from "~/actions-v2/get-profile";
 
 import { GithubButton } from "~/components/buttons/GithubButton";
 import { LinkedInButton } from "~/components/buttons/LinkedInButton";

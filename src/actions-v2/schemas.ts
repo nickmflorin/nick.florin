@@ -240,3 +240,7 @@ export const SchoolSchema = z.object({
     requiredErrorMessage: "The state is a required field.",
   }),
 });
+
+export const ResumeSchema = z.object({
+  primary: z.boolean().optional(),
+});

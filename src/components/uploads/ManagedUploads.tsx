@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import type * as types from "./types";
 
-import { type HttpError } from "~/api";
+import { type ApiError } from "~/api-v2";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { useManagedUploads } from "~/components/uploads/hooks";
@@ -18,7 +18,7 @@ export interface ManagedUploadsProps<M extends types.BaseUploadModel>
     Pick<UploadsProps<M>, "children"> {
   readonly data: M[];
   readonly isLoading?: boolean;
-  readonly error?: string | HttpError | null;
+  readonly error?: string | ApiError | null;
   readonly uploadAction: types.UploadAction<M>;
 }
 

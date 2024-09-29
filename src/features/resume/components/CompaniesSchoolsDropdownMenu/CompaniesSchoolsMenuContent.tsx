@@ -1,5 +1,5 @@
-import { getSchools } from "~/actions/fetches/schools";
 import { fetchCompanies } from "~/actions-v2/companies/fetch-companies";
+import { fetchSchools } from "~/actions-v2/schools/fetch-schools";
 
 import { ClientCompaniesSchoolsMenuContent } from "./ClientCompaniesSchoolsMenuContent";
 import { type ModelType, type Model } from "./types";
@@ -17,7 +17,11 @@ const fetchers: { [key in ModelType]: () => Promise<Model<key>[]> } = {
     );
     return companies;
   },
-  school: async () => await getSchools({ includes: ["educations"], visibility: "admin" }),
+  school: async () => {
+    const fetcher = fetchSchools(["educations"]);
+    const { data: schools } = await fetcher({ visibility: "admin", filters: {} }, { strict: true });
+    return schools;
+  },
 };
 
 export const CompaniesSchoolsMenuContent = async <M extends ModelType>({

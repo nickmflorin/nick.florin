@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { getSchools as fetchSchools } from "~/actions/fetches/schools";
 import { fetchCourses } from "~/actions-v2/courses/fetch-courses";
+import { fetchSchools } from "~/actions-v2/schools/fetch-schools";
 import { fetchSkills } from "~/actions-v2/skills/fetch-skills";
 
 import { EducationsTableFilterBar as ClientEducationsTableFilterBar } from "~/features/educations/components/tables/EducationsTableFilterBar";
@@ -25,7 +25,14 @@ const getCourses = async () => {
   return courses;
 };
 
-const getSchools = async () => await fetchSchools({ includes: [], visibility: "admin" });
+const getSchools = async () => {
+  const schoolsFetcher = await fetchSchools([]);
+  const { data: schools } = await schoolsFetcher(
+    { visibility: "admin", filters: {} },
+    { strict: true },
+  );
+  return schools;
+};
 
 export const EducationsTableFilterBar = async (): Promise<JSX.Element> => {
   const [skills, courses, schools] = await Promise.all([getSkills(), getCourses(), getSchools()]);

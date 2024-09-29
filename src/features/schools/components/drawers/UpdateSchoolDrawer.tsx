@@ -1,12 +1,11 @@
 import type { BrandSchool } from "~/database/model";
-import { isUuid } from "~/lib/typeguards";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { useSchoolForm } from "~/features/schools/components/forms/hooks";
 import UpdateSchoolForm from "~/features/schools/components/forms/UpdateSchoolForm";
-import { useSchool } from "~/hooks";
+import { useSchool } from "~/hooks/api-v2";
 
 interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
   readonly schoolId: string;
@@ -18,7 +17,7 @@ export const UpdateCourseDrawer = ({
   eager,
   onClose,
 }: UpdateCourseDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useSchool(isUuid(schoolId) ? schoolId : null, {
+  const { data, isLoading, error, isValidating } = useSchool(schoolId, {
     keepPreviousData: true,
     query: { visibility: "admin", includes: [] },
   });

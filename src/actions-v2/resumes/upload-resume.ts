@@ -6,14 +6,15 @@ import type { BrandResume } from "~/database/model";
 import { db } from "~/database/prisma";
 import { logger } from "~/internal/logger";
 
-import { ApiClientGlobalError, type ApiClientGlobalErrorJson } from "~/api";
+import { type MutationActionResponse } from "~/actions-v2/mutations";
 import { convertToPlainObject } from "~/api/serialization";
+import { ApiClientGlobalError } from "~/api-v2";
 
 const resumeFilePath = (name: string) => `resumes/${name}`;
 
 export const uploadResume = async (
   formData: FormData,
-): Promise<BrandResume | ApiClientGlobalErrorJson> => {
+): Promise<MutationActionResponse<BrandResume>> => {
   const { user } = await getAuthedUser({ strict: true });
 
   const resumeFile = formData.get("file") as File;
@@ -23,15 +24,18 @@ export const uploadResume = async (
     try {
       blob = await put(resumeFilePath(resumeFile.name), resumeFile, {
         /* Note: Support for 'private' is planned in the future for Vercel Blob, and should be
-         switched once it is available. */
+           switched once it is available. */
         access: "public",
       });
     } catch (e) {
-      logger.error(`There was an error uploading resume ${resumeFile.name}:\n${e}`, {
+      logger.errorUnsafe(e, `There was an error uploading resume ${resumeFile.name}.`, {
         file: resumeFile,
-        error: e,
       });
-      return ApiClientGlobalError.BadRequest("There was an error uploading the resume.").json;
+      return {
+        error: ApiClientGlobalError.BadRequest({
+          message: "There was an error uploading the resume.",
+        }).json,
+      };
     }
     let resume: BrandResume;
     try {
@@ -47,27 +51,26 @@ export const uploadResume = async (
         },
       });
     } catch (e) {
-      logger.error(`There was an error creating the resume for the blob ${blob.url}:\n${e}`, {
+      logger.errorUnsafe(e, `There was an error creating the resume for the blob ${blob.url}.`, {
         blob,
-        error: e,
         file: resumeFile,
       });
       try {
         await del(blob.url);
       } catch (e) {
-        logger.error(
+        logger.errorUnsafe(
+          e,
           `There was an error deleting the blob ${blob.url} after the resume model failed to be ` +
-            `created.  There will be an erroneous blob in storage as a result:\n${e}`,
-          {
-            blob,
-            file: resumeFile,
-            error: e,
-          },
+            "created.  There will be an erroneous blob in storage as a result.",
+          { blob, file: resumeFile },
         );
       }
-      return ApiClientGlobalError.BadRequest("There was an error uploading the resume.").json;
+      return {
+        error: ApiClientGlobalError.BadRequest({
+          message: "There was an error uploading the resume.",
+        }).json,
+      };
     }
-
-    return convertToPlainObject(resume);
+    return { data: convertToPlainObject(resume) };
   });
 };

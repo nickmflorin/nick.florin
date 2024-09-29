@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/database/model";
 
-import { Form, type FormProps } from "~/components/forms/Form";
+import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
 import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";

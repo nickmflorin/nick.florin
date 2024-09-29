@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 import type { BrandResume } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { deleteResume, prioritizeResume } from "~/actions/mutations/resumes";
-import { isApiClientGlobalErrorJson } from "~/api";
+import { deleteResume } from "~/actions-v2/resumes/delete-resume";
+import { updateResume } from "~/actions-v2/resumes/update-resume";
 
 import { Icon } from "~/components/icons/Icon";
 import { Menu } from "~/components/menus/Menu";
@@ -52,27 +52,27 @@ export const UploadResumeMenu = ({ manager, resume, onClose }: UploadResumeMenuP
           }
           onClick={async e => {
             setIsUpdating(true);
-            let response: Awaited<ReturnType<typeof prioritizeResume>> | null = null;
+            let response: Awaited<ReturnType<typeof updateResume>> | null = null;
             try {
-              response = await prioritizeResume(resume.id);
+              response = await updateResume(resume.id, { primary: true });
             } catch (e) {
-              logger.error(`There was an error prioritizing the resume '${resume.id}':\n${e}`, {
-                error: e,
+              logger.errorUnsafe(e, `There was an error prioritizing the resume '${resume.id}'.}`, {
                 resume: resume.id,
               });
               setIsUpdating(false);
               return toast.error("There was an error prioritizing the resume.");
             }
             setIsUpdating(false);
-            if (isApiClientGlobalErrorJson(response)) {
-              logger.error(`There was an error prioritizing the resume '${resume.id}'.`, {
-                response,
+            const { error, data } = response;
+            if (error) {
+              logger.error(error, `There was an error prioritizing the resume '${resume.id}'.}`, {
                 resume: resume.id,
               });
+              setIsUpdating(false);
               return toast.error("There was an error prioritizing the resume.");
             }
             onClose(e);
-            return manager.sync(response.resumes);
+            return manager.sync(data.resumes);
           }}
         >
           Set as Primary
@@ -92,23 +92,33 @@ export const UploadResumeMenu = ({ manager, resume, onClose }: UploadResumeMenuP
           onClick={async e => {
             e.stopPropagation();
             setIsDeleting(true);
-            let response: BrandResume[] | null = null;
+            let response: Awaited<ReturnType<typeof deleteResume>> | null = null;
             try {
               response = await deleteResume(resume.id);
             } catch (e) {
-              logger.error(`There was an error deleting the resume '${resume.filename}':\n${e}`, {
+              logger.errorUnsafe(
+                e,
+                `There was an error deleting the resume '${resume.filename}'.`,
+                { id: resume.id, resume },
+              );
+              setIsDeleting(false);
+              return toast.error(`There was an error deleting the resume '${resume.filename}'.`);
+            }
+            setIsDeleting(false);
+
+            const { error, data } = response;
+            if (error) {
+              logger.error(error, `There was an error deleting the resume '${resume.filename}'.`, {
                 id: resume.id,
                 resume,
               });
               return toast.error(`There was an error deleting the resume '${resume.filename}'.`);
-            } finally {
-              setIsDeleting(false);
             }
             /* We need to sync the manager with the new set of resumes after the delete was
                performed because the delete may have changed the primary resume that is exposed
                for download. */
             onClose(e);
-            return manager.sync(response);
+            return manager.sync(data);
           }}
         >
           Delete

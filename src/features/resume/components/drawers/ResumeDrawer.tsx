@@ -3,13 +3,16 @@ import { MIME_TYPES } from "@mantine/dropzone";
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { ContextDrawer } from "~/components/drawers/ContextDrawer";
 import { ManagedResumeUploads } from "~/features/resume/components/ManagedResumeUploads";
-import { useResumes } from "~/hooks";
+import { useResumes } from "~/hooks/api-v2";
 
 export interface ResumeDrawerProps extends ExtendingDrawerProps {}
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export const ResumeDrawer = (props: ResumeDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useResumes({ keepPreviousData: true, query: {} });
+  const { data, isLoading, error } = useResumes({
+    keepPreviousData: true,
+    query: { visibility: "admin" },
+  });
 
   return (
     <ContextDrawer>

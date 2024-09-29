@@ -10,7 +10,7 @@ import {
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import Tooltip from "~/components/floating/Tooltip";
 import { mergeFloatingEventHandlers } from "~/components/floating/util";
-import { useForm } from "~/components/forms/hooks/use-form";
+import { useForm } from "~/components/forms-v2/hooks/use-form";
 import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,

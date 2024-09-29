@@ -104,7 +104,7 @@ export const dataInFetchContext = <T, C extends FetchActionContext>(
 
 export type StandardFetchActionReturn<R> = Promise<R | ApiClientError>;
 
-interface StandardFetchActionOptions {
+export interface StandardFetchActionOptions {
   readonly adminOnly?: boolean;
   readonly authenticated?: boolean;
 }

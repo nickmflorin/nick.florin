@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { type School } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { updateSchool } from "~/actions/mutations/schools";
-import { isApiClientErrorJson } from "~/api";
+import { type School } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { updateSchool } from "~/actions-v2/schools/update-school";
 
 import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { useDeepEqualEffect } from "~/hooks";
@@ -45,15 +47,25 @@ export const UpdateSchoolForm = ({
       footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
       isLoading={pending}
       action={async (data, form) => {
-        const response = await updateSchoolWithId(data);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          transition(() => {
-            refresh();
-            onSuccess?.();
+        let response: Awaited<ReturnType<typeof updateSchoolWithId>> | null = null;
+        try {
+          response = await updateSchoolWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(e, `There was an error updating the school with ID '${school.id}'.`, {
+            school,
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the school.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
     />
   );
