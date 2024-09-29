@@ -1,4 +1,4 @@
-import { type ApiDetail, type NestedApiDetail } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
 
 import {
   GenericUpdateDetailForm,
@@ -6,11 +6,11 @@ import {
 } from "./GenericUpdateDetailForm";
 
 export interface ExpandedUpdateDetailFormProps<
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 > extends Omit<GenericUpdateDetailFormProps<D>, "actions"> {}
 
 export const ExpandedUpdateDetailForm = <
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 >(
   props: ExpandedUpdateDetailFormProps<D>,
 ): JSX.Element => <GenericUpdateDetailForm {...props} isScrollable={true} />;

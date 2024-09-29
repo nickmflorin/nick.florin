@@ -2,7 +2,7 @@ import { isUuid } from "~/lib/typeguards";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { ExpandedUpdateDetailForm } from "~/features/resume/components/forms/update/ExpandedUpdateDetailForm";
-import { useDetail } from "~/hooks/api/use-detail";
+import { useDetail } from "~/hooks/api-v2";
 
 interface UpdateDetailExpandedDrawerProps {
   readonly detailId: string;

@@ -1,4 +1,4 @@
-import { type ApiDetail, type NestedApiDetail } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
@@ -13,7 +13,7 @@ export interface TopDetailsProps extends ComponentProps {
 }
 
 export interface NestedDetailsProps extends ComponentProps {
-  readonly details: NestedApiDetail<["skills"]>[];
+  readonly details: ApiNestedDetail<["skills"]>[];
   readonly isNested: true;
   readonly size: Exclude<ResumeModelSize, "small">;
 }

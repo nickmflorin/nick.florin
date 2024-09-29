@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
-import { type NestedApiDetail } from "~/database/model";
+import { type ApiNestedDetail } from "~/database/model";
 
-import { createNestedDetail } from "~/actions/mutations/details";
+import { createNestedDetail } from "~/actions-v2/details/create-nested-detail";
 
 import {
   GenericCreateDetailForm,
@@ -10,7 +10,7 @@ import {
 } from "./GenericCreateDetailForm";
 
 export interface CreateNestedDetailFormProps
-  extends Omit<GenericCreateDetailFormProps<NestedApiDetail<["skills"]>>, "action" | "actions"> {
+  extends Omit<GenericCreateDetailFormProps<ApiNestedDetail<["skills"]>>, "action" | "actions"> {
   readonly detailId: string;
 }
 
@@ -20,7 +20,7 @@ export const CreateNestedDetailForm = ({
 }: CreateNestedDetailFormProps): JSX.Element => {
   const createDetailForParent = useMemo(() => createNestedDetail.bind(null, detailId), [detailId]);
   return (
-    <GenericCreateDetailForm<NestedApiDetail<["skills"]>>
+    <GenericCreateDetailForm<ApiNestedDetail<["skills"]>>
       action={createDetailForParent}
       {...props}
     />

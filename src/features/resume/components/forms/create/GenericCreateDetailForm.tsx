@@ -1,20 +1,23 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
 
-import { type ApiDetail, type NestedApiDetail } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { type ApiClientErrorJson, isApiClientErrorJson } from "~/api";
+import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { type MutationActionResponse } from "~/actions-v2";
 
 import { Link } from "~/components/buttons";
-import { FormFieldErrors } from "~/components/forms/Field/FieldErrors";
-import { Form, type FormProps } from "~/components/forms/Form";
-import { useForm } from "~/components/forms/hooks/use-form";
+import { FormFieldErrors } from "~/components/forms-v2/Field/FieldErrors";
+import { Form, type FormProps } from "~/components/forms-v2/Form";
+import { useForm } from "~/components/forms-v2/hooks/use-form";
 import { TextInput } from "~/components/input/TextInput";
 
 import { type DetailFormValues, DetailFormSchema } from "../types";
 
 export interface GenericCreateDetailFormProps<
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 > extends Omit<
     FormProps<Pick<DetailFormValues, "label">>,
     "children" | "contentClassName" | "action" | "form"
@@ -23,11 +26,11 @@ export interface GenericCreateDetailFormProps<
   readonly onCancel: () => void;
   readonly action: (
     data: Pick<DetailFormValues, "label"> & { readonly visible: boolean },
-  ) => Promise<D | ApiClientErrorJson>;
+  ) => Promise<MutationActionResponse<D>>;
 }
 
 export const GenericCreateDetailForm = <
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 >({
   onCreated,
   onCancel,
@@ -49,21 +52,30 @@ export const GenericCreateDetailForm = <
     <Form
       {...props}
       form={form}
-      action={async data => {
+      action={async (data, form) => {
         setIsCreating(true);
-        /* By default, assume newly created details are visible.  If visibility needs to be turned
-           off, it can be done after the detail is created. */
-        const response = await action({ ...data, visible: true });
-        setIsCreating(false);
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          form.reset();
-          onCreated(response);
-          transition(() => {
-            refresh();
+        let response: MutationActionResponse<D> | null = null;
+        try {
+          response = await action({ ...data, visible: true });
+        } catch (e) {
+          logger.errorUnsafe(e, "There was an error creating the detail'.", {
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          setIsCreating(false);
+          return toast.error("There was an error creating the detail.");
         }
+        const { error, data: detail } = response;
+        if (error) {
+          setIsCreating(false);
+          return form.handleApiError(error);
+        }
+        form.reset();
+        transition(() => {
+          refresh();
+          setIsCreating(false);
+          onCreated(detail);
+        });
       }}
       contentClassName="gap-[12px]"
       structure={({ footer }) => (

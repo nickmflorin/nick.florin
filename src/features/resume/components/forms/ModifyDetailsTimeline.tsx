@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Timeline } from "@mantine/core";
 
-import { type ApiDetail, type NestedApiDetail } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
 
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { classNames } from "~/components/types";
@@ -18,7 +18,7 @@ export interface ModifyDetailsTimelineProps
     Pick<CreateDetailFormProps, "entityId" | "entityType" | "onCancel" | "onCreated" | "onCancel"> {
   readonly details: ApiDetail<["nestedDetails", "skills"]>[];
   readonly createFormVisible: boolean;
-  readonly onExpand: (detail: ApiDetail<[]> | NestedApiDetail<[]>) => void;
+  readonly onExpand: (detail: ApiDetail<[]> | ApiNestedDetail<[]>) => void;
 }
 
 export const ModifyDetailsTimeline = ({

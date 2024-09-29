@@ -1,4 +1,4 @@
-import { type DetailEntityType, type NestedApiDetail, type ApiDetail } from "~/database/model";
+import { type DetailEntityType, type ApiNestedDetail, type ApiDetail } from "~/database/model";
 
 import { ApiResponseState } from "~/components/ApiResponseState";
 import { ContextDrawer } from "~/components/drawers/ContextDrawer";
@@ -8,7 +8,7 @@ import { useDetails } from "~/hooks/api-v2";
 export interface UpdateDetailsCollapsedDrawerProps<T extends DetailEntityType> {
   readonly entityType: T;
   readonly entityId: string;
-  readonly onExpand: (detail: NestedApiDetail<[]> | ApiDetail<[]>) => void;
+  readonly onExpand: (detail: ApiNestedDetail<[]> | ApiDetail<[]>) => void;
 }
 
 export const UpdateDetailsCollapsedDrawer = <T extends DetailEntityType>(

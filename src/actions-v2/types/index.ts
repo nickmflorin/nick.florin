@@ -6,3 +6,4 @@ export * from "./projects";
 export * from "./courses";
 export * from "./repositories";
 export * from "./companies";
+export * from "./nested-details";

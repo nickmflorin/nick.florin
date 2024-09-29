@@ -14,3 +14,4 @@ export * from "./use-experience";
 export * from "./use-companies";
 export * from "./use-company";
 export * from "./use-details";
+export * from "./use-detail";

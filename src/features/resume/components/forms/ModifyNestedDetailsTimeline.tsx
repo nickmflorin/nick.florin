@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Timeline } from "@mantine/core";
 
-import { type NestedApiDetail } from "~/database/model";
+import { type ApiNestedDetail } from "~/database/model";
 
 import { TimelineIcon } from "~/components/icons/TimelineIcon";
 import { classNames } from "~/components/types";
@@ -16,9 +16,9 @@ import { CollapsedUpdateDetailForm } from "./update/CollapsedUpdateDetailForm";
 export interface ModifyNestedDetailsTimelineProps
   extends ComponentProps,
     Pick<CreateNestedDetailFormProps, "detailId" | "onCancel" | "onCreated"> {
-  readonly details: NestedApiDetail<["skills"]>[];
+  readonly details: ApiNestedDetail<["skills"]>[];
   readonly isCreating: boolean;
-  readonly onExpand: (detail: NestedApiDetail<["skills"]>) => void;
+  readonly onExpand: (detail: ApiNestedDetail<["skills"]>) => void;
 }
 
 export const ModifyNestedDetailsTimeline = ({
@@ -31,7 +31,7 @@ export const ModifyNestedDetailsTimeline = ({
   ...props
 }: ModifyNestedDetailsTimelineProps): JSX.Element => {
   const [optimisticDetails, setOptimisticDetails] =
-    useState<NestedApiDetail<["skills"]>[]>(details);
+    useState<ApiNestedDetail<["skills"]>[]>(details);
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);

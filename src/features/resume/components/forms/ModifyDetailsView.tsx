@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import { type ApiDetail, type NestedApiDetail, type DetailEntityType } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail, type DetailEntityType } from "~/database/model";
 
 import { Link } from "~/components/buttons";
 import { type ComponentProps } from "~/components/types";
@@ -13,7 +13,7 @@ export interface ModifyDetailsViewProps extends ComponentProps {
   readonly details: ApiDetail<["nestedDetails", "skills"]>[];
   readonly entityId: string;
   readonly entityType: DetailEntityType;
-  readonly onExpand: (detail: ApiDetail<[]> | NestedApiDetail<[]>) => void;
+  readonly onExpand: (detail: ApiDetail<[]> | ApiNestedDetail<[]>) => void;
 }
 
 export const ModifyDetailsView = (props: ModifyDetailsViewProps): JSX.Element => {

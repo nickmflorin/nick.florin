@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { type ApiDetail, type NestedApiDetail } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
 
 import { IconButton } from "~/components/buttons";
 
@@ -10,7 +10,7 @@ import { CollapsedUpdateDetailForm } from "./update/CollapsedUpdateDetailForm";
 export interface ModifyDetailViewProps {
   readonly detail: ApiDetail<["nestedDetails", "skills"]>;
   readonly onDeleted: () => void;
-  readonly onExpand: (detail: ApiDetail<["skills"]> | NestedApiDetail<["skills"]>) => void;
+  readonly onExpand: (detail: ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>) => void;
 }
 
 export const ModifyDetailView = ({ detail, onDeleted, onExpand }: ModifyDetailViewProps) => {

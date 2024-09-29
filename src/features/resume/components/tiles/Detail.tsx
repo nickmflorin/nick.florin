@@ -1,4 +1,4 @@
-import { isNestedDetail, type ApiDetail, type NestedApiDetail } from "~/database/model";
+import { isNestedDetail, type ApiDetail, type ApiNestedDetail } from "~/database/model";
 
 import { Link } from "~/components/buttons";
 import { classNames } from "~/components/types";
@@ -10,7 +10,7 @@ import { Skills } from "~/features/skills/components/badges";
 import { Details } from "./Details";
 
 export interface DetailProps<
-  D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills", "nestedDetails"]> | ApiNestedDetail<["skills"]>,
 > extends ComponentProps {
   readonly detail: D;
   readonly index?: number;
@@ -19,7 +19,7 @@ export interface DetailProps<
 }
 
 export const Detail = <
-  D extends ApiDetail<["skills", "nestedDetails"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills", "nestedDetails"]> | ApiNestedDetail<["skills"]>,
 >({
   detail,
   index,

@@ -1,24 +1,43 @@
-import { type DetailIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
+
+import { z } from "zod";
+
+import type { DetailIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { getDetail } from "~/actions/fetches/details";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
-import { apiRoute } from "~/api/route";
+import { DetailIncludesSchema } from "~/actions-v2";
+import { fetchDetail } from "~/actions-v2/details/fetch-detail";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
   const details = await db.detail.findMany();
-  return details.map(c => ({
-    id: c.id,
+  return details.map(r => ({
+    id: r.id,
   }));
 }
 
-export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
-  const detail = await getDetail(params.id, {
-    includes: query.includes as DetailIncludes,
-    visibility: query.visibility,
-  });
-  if (!detail) {
-    return ApiClientGlobalError.NotFound().response;
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = DetailIncludesSchema.safeParse(query.includes);
+
+  let includes: DetailIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  return ClientResponse.OK(detail).response;
-});
+
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
+
+  const fetcher = fetchDetail(includes);
+  const { error, data } = await fetcher(params.id, { visibility }, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

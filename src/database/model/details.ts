@@ -23,9 +23,12 @@ export type DetailEntity<T extends DetailEntityType> = {
   readonly [DetailEntityType.EDUCATION]: BrandEducation;
 }[T];
 
+export const NestedDetailIncludesFields = enumeratedLiterals(["skills"] as const, {});
+export type NestedDetailIncludesField = EnumeratedLiteralsMember<typeof NestedDetailIncludesFields>;
+
 export type NestedDetailIncludes = ["skills"] | [];
 
-export type NestedApiDetail<I extends NestedDetailIncludes = []> = ConditionallyInclude<
+export type ApiNestedDetail<I extends NestedDetailIncludes = []> = ConditionallyInclude<
   BrandNestedDetail & {
     readonly project: ApiProject<I> | null;
     readonly skills: ApiSkill[];
@@ -55,12 +58,12 @@ export type ApiDetail<I extends DetailIncludes = []> = ConditionallyInclude<
   BrandDetail & {
     readonly project: ApiProject<ToSkillIncludes<I>> | null;
     readonly skills: ApiSkill[];
-    readonly nestedDetails: NestedApiDetail<ToSkillIncludes<I>>[];
+    readonly nestedDetails: ApiNestedDetail<ToSkillIncludes<I>>[];
   },
   ["skills", "nestedDetails"],
   I
 >;
 
 export const isNestedDetail = <I extends DetailIncludes, N extends NestedDetailIncludes>(
-  detail: ApiDetail<I> | NestedApiDetail<N>,
-): detail is NestedApiDetail<N> => (detail as NestedApiDetail).detailId !== undefined;
+  detail: ApiDetail<I> | ApiNestedDetail<N>,
+): detail is ApiNestedDetail<N> => (detail as ApiNestedDetail).detailId !== undefined;

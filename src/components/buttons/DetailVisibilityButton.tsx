@@ -3,20 +3,21 @@ import { useTransition, useState, useCallback, useEffect, useMemo } from "react"
 
 import { toast } from "react-toastify";
 
-import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
+import { updateDetail } from "~/actions-v2/details/update-detail";
+import { updateNestedDetail } from "~/actions-v2/details/update-nested-detail";
 
 import { IconButton } from "~/components/buttons";
 import { Icon } from "~/components/icons/Icon";
 import { classNames } from "~/components/types";
 
-export interface DetailVisibilityButtonProps<D extends ApiDetail<[]> | NestedApiDetail<[]>> {
+export interface DetailVisibilityButtonProps<D extends ApiDetail<[]> | ApiNestedDetail<[]>> {
   readonly detail: D;
 }
 
-export const DetailVisibilityButton = <D extends ApiDetail<[]> | NestedApiDetail<[]>>({
+export const DetailVisibilityButton = <D extends ApiDetail<[]> | ApiNestedDetail<[]>>({
   detail,
 }: DetailVisibilityButtonProps<D>) => {
   /* We keep track of the visibility of the detail in state, separately from the visible attribute
@@ -46,24 +47,36 @@ export const DetailVisibilityButton = <D extends ApiDetail<[]> | NestedApiDetail
 
   const onVisibilityChange = useCallback(async () => {
     setIsLoading(true);
-    let success = false;
+    let response: Awaited<ReturnType<typeof updateDetailWithId>> | null = null;
     try {
-      await updateDetailWithId({ visible: !detail.visible });
-      success = true;
+      response = await updateDetailWithId({ visible: !detail.visible });
     } catch (e) {
-      logger.error("There was an error changing the detail's visibility.", {
-        error: e,
-        id: detail.id,
-      });
-      toast.error("There was an error changing the detail's visibility.");
-    } finally {
+      logger.errorUnsafe(
+        e,
+        `There was an error toggling the visibility state for the detail with ID '${detail.id}'.`,
+        { detail, visible: !detail.visible },
+      );
       setIsLoading(false);
+      // TODO: Consider using a global form error here instead.
+      return toast.error("There was an error updating the detail.");
     }
-    if (success) {
-      setOptimisticIsVisible(!detail.visible);
-      transition(() => refresh());
+    const { error } = response;
+    if (error) {
+      logger.error(
+        error,
+        `There was an error toggling the visibility state for the detail with ID '${detail.id}'.`,
+        { detail, visible: !detail.visible },
+      );
+      setIsLoading(false);
+      // TODO: Consider using a global form error here instead.
+      return toast.error("There was an error updating the detail.");
     }
-  }, [refresh, updateDetailWithId, detail.id, detail.visible]);
+    setOptimisticIsVisible(!detail.visible);
+    transition(() => {
+      refresh();
+      setIsLoading(false);
+    });
+  }, [refresh, updateDetailWithId, detail]);
 
   useEffect(() => {
     setOptimisticIsVisible(detail.visible);

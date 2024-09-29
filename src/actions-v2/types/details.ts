@@ -116,6 +116,11 @@ export type FlattenedDetailsControls<
     readonly visibility: ActionVisibility;
   };
 
+export type DetailControls<I extends DetailIncludes = DetailIncludes> = Pick<
+  DetailsControls<I>,
+  "includes" | "visibility"
+>;
+
 export const DetailsFiltersObj = Filters({
   visible: {
     schema: z.union([z.coerce.boolean(), z.null()]),

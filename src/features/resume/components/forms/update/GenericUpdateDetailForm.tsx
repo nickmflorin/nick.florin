@@ -1,16 +1,19 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition, useMemo, useEffect } from "react";
 
-import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/database/model";
+import { toast } from "react-toastify";
 
-import { updateDetail, updateNestedDetail } from "~/actions/mutations/details";
-import { isApiClientErrorJson } from "~/api";
+import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from "~/database/model";
+import { logger } from "~/internal/logger";
+
+import { updateDetail } from "~/actions-v2/details/update-detail";
+import { updateNestedDetail } from "~/actions-v2/details/update-nested-detail";
 
 import { IconButton } from "~/components/buttons";
-import { FormFieldErrors } from "~/components/forms/Field/FieldErrors";
-import { CheckboxField } from "~/components/forms/fields/CheckboxField";
-import { Form, type FormProps } from "~/components/forms/Form";
-import { useForm } from "~/components/forms/hooks";
+import { FormFieldErrors } from "~/components/forms-v2/Field/FieldErrors";
+import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
+import { Form, type FormProps } from "~/components/forms-v2/Form";
+import { useForm } from "~/components/forms-v2/hooks";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { TextArea } from "~/components/input/TextArea";
 import { TextInput } from "~/components/input/TextInput";
@@ -25,19 +28,21 @@ import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSki
 import { type DetailFormValues, DetailFormSchema } from "../types";
 
 export interface GenericUpdateDetailFormProps<
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 > extends Omit<FormProps<DetailFormValues>, "children" | "contentClassName" | "form" | "action"> {
   readonly actions?: Action[];
   readonly isExpanded: boolean;
   readonly detail: D;
+  readonly onSuccess?: () => void;
 }
 
 export const GenericUpdateDetailForm = <
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 >({
   actions,
   detail,
   isExpanded,
+  onSuccess,
   ...props
 }: GenericUpdateDetailFormProps<D>): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,20 +86,26 @@ export const GenericUpdateDetailForm = <
       {...props}
       footer={<ButtonFooter submitText="Save" buttonSize="xsmall" />}
       form={{ setValues, ...form }}
-      action={async data => {
-        const response = await updateDetailWithId({
-          ...data,
-          skills: data.skills,
-        });
-        if (isApiClientErrorJson(response)) {
-          form.handleApiError(response);
-        } else {
-          /* Note: We may not need this transition, since this is just updating a
-             detail and we only currently show the number of details in the table. */
-          transition(() => {
-            refresh();
+      action={async (data, form) => {
+        let response: Awaited<ReturnType<typeof updateDetailWithId>> | null = null;
+        try {
+          response = await updateDetailWithId(data);
+        } catch (e) {
+          logger.errorUnsafe(e, `There was an error updating the detail with ID '${detail.id}'.`, {
+            detail,
+            data,
           });
+          // TODO: Consider using a global form error here instead.
+          return toast.error("There was an error updating the detail.");
         }
+        const { error } = response;
+        if (error) {
+          return form.handleApiError(error);
+        }
+        transition(() => {
+          refresh();
+          onSuccess?.();
+        });
       }}
       contentClassName="gap-[12px]"
       structure={

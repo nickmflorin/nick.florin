@@ -27,6 +27,11 @@ export interface FormProps<I extends BaseFormValues>
   readonly onSubmit?: SubmitAction<I>;
   readonly action?: SubmitAction<I>;
   readonly onError?: SubmitErrorHandler<I>;
+  readonly structure?: (params: {
+    header: JSX.Element;
+    body?: JSX.Element;
+    footer: JSX.Element;
+  }) => JSX.Element;
 }
 
 export const Form = <I extends BaseFormValues>({
@@ -39,6 +44,7 @@ export const Form = <I extends BaseFormValues>({
   isScrollable,
   isDisabled,
   contentClassName,
+  structure,
   action,
   onSubmit,
   onError,
@@ -68,21 +74,47 @@ export const Form = <I extends BaseFormValues>({
           : undefined
       }
     >
-      <FormHeader title={title} />
-      <FormBody
-        isLoading={isLoading}
-        isScrollable={isScrollable}
-        contentClassName={contentClassName}
-        isDisabled={isDisabled}
-      >
-        {children}
-      </FormBody>
-      <FormFooter
-        footer={footer}
-        className={footerClassName}
-        isScrollable={isScrollable}
-        form={form}
-      />
+      {structure ? (
+        structure({
+          header: <FormHeader title={title} />,
+          body: children ? (
+            <FormBody
+              isLoading={isLoading}
+              isScrollable={isScrollable}
+              contentClassName={contentClassName}
+              isDisabled={isDisabled}
+            >
+              {children}
+            </FormBody>
+          ) : undefined,
+          footer: (
+            <FormFooter
+              footer={footer}
+              className={footerClassName}
+              isScrollable={isScrollable}
+              form={form}
+            />
+          ),
+        })
+      ) : (
+        <>
+          <FormHeader title={title} />
+          <FormBody
+            isLoading={isLoading}
+            isScrollable={isScrollable}
+            contentClassName={contentClassName}
+            isDisabled={isDisabled}
+          >
+            {children}
+          </FormBody>
+          <FormFooter
+            footer={footer}
+            className={footerClassName}
+            isScrollable={isScrollable}
+            form={form}
+          />
+        </>
+      )}
     </NativeForm>
   );
 };

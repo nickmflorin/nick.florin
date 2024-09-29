@@ -273,7 +273,7 @@ export const standardDetailFetchAction = <
           context,
         );
       } else if (!isUuid(id)) {
-        logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a detail.`, {
+        logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a detail route.`, {
           id,
         });
         return errorInFetchContext(
@@ -299,7 +299,7 @@ export const standardDetailFetchAction = <
         context,
       );
     } else if (!isUuid(id)) {
-      logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a detail.`, {
+      logger.error(`Unexpectedly received invalid ID, '${id}', when fetching a detail route.`, {
         id,
       });
       return errorInFetchContext(

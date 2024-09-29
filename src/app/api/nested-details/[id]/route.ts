@@ -1,24 +1,43 @@
-import { type NestedDetailIncludes } from "~/database/model";
+import { type NextRequest } from "next/server";
+
+import { z } from "zod";
+
+import type { NestedDetailIncludes } from "~/database/model";
 import { db } from "~/database/prisma";
 
-import { getNestedDetail } from "~/actions/fetches/details";
-import { ClientResponse, ApiClientGlobalError } from "~/api";
-import { apiRoute } from "~/api/route";
+import { NestedDetailIncludesSchema } from "~/actions-v2";
+import { fetchNestedDetail } from "~/actions-v2/details/fetch-nested-detail";
+import { ClientResponse } from "~/api-v2";
+import { parseQueryParams } from "~/integrations/http";
 
 export async function generateStaticParams() {
-  const details = await db.detail.findMany();
-  return details.map(c => ({
-    id: c.id,
+  const nestedDetails = await db.nestedDetail.findMany();
+  return nestedDetails.map(r => ({
+    id: r.id,
   }));
 }
 
-export const GET = apiRoute(async (request, { params }: { params: { id: string } }, query) => {
-  const detail = await getNestedDetail(params.id, {
-    includes: query.includes as NestedDetailIncludes,
-    visibility: query.visibility,
-  });
-  if (!detail) {
-    return ApiClientGlobalError.NotFound().response;
+export const GET = async (request: NextRequest, { params }: { params: { id: string } }) => {
+  const searchParams = request.nextUrl.searchParams;
+
+  const query = parseQueryParams(searchParams.toString());
+  const parsed = NestedDetailIncludesSchema.safeParse(query.includes);
+
+  let includes: NestedDetailIncludes = [];
+  if (parsed.success) {
+    includes = parsed.data;
   }
-  return ClientResponse.OK(detail).response;
-});
+
+  const visibility =
+    z
+      .union([z.literal("admin"), z.literal("public")])
+      .default("public")
+      .safeParse(query.visibility).data ?? "public";
+
+  const fetcher = fetchNestedDetail(includes);
+  const { error, data } = await fetcher(params.id, { visibility }, { scope: "api" });
+  if (error) {
+    return error.response;
+  }
+  return ClientResponse.OK(data).response;
+};

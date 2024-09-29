@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import {
   type DetailEntityType,
-  type NestedApiDetail,
+  type ApiNestedDetail,
   type ApiDetail,
   isNestedDetail,
 } from "~/database/model";
@@ -31,7 +31,7 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
   entityType,
   entityId,
 }: UpdateDetailsDrawerProps<T>): JSX.Element => {
-  const [expandedDetail, setExpandedDetail] = useState<NestedApiDetail<[]> | ApiDetail<[]> | null>(
+  const [expandedDetail, setExpandedDetail] = useState<ApiNestedDetail<[]> | ApiDetail<[]> | null>(
     null,
   );
   return (

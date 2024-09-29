@@ -3,10 +3,11 @@ import { useTransition, useMemo, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { type ApiDetail, type NestedApiDetail, isNestedDetail } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from "~/database/model";
 import { logger } from "~/internal/logger";
 
-import { deleteDetail, deleteNestedDetail } from "~/actions/mutations/details";
+import { deleteDetail } from "~/actions-v2/details/delete-detail";
+import { deleteNestedDetail } from "~/actions-v2/details/delete-nested-detail";
 
 import { IconButton } from "~/components/buttons";
 import { DetailVisibilityButton } from "~/components/buttons/DetailVisibilityButton";
@@ -17,14 +18,14 @@ import {
 } from "./GenericUpdateDetailForm";
 
 export interface CollapsedUpdateDetailFormProps<
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 > extends GenericUpdateDetailFormProps<D> {
   readonly onDeleted: () => void;
   readonly onExpand: () => void;
 }
 
 export const CollapsedUpdateDetailForm = <
-  D extends ApiDetail<["skills"]> | NestedApiDetail<["skills"]>,
+  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
 >({
   onDeleted,
   onExpand,
@@ -63,25 +64,34 @@ export const CollapsedUpdateDetailForm = <
           isLoading={isDeleting}
           onClick={async () => {
             setIsDeleting(true);
-            let success = false;
+            let response: Awaited<ReturnType<typeof deleteDetailWithId>> | null = null;
             try {
-              await deleteDetailWithId();
-              success = true;
+              response = await deleteDetailWithId();
             } catch (e) {
-              logger.error("There was an error deleting the detail.", {
-                error: e,
-                id: props.detail.id,
-              });
-              toast.error("There was an error deleting the detail.");
-            } finally {
+              logger.errorUnsafe(
+                e,
+                `There was an error deleting the detail with ID '${props.detail.id}'.`,
+                { detail: props.detail },
+              );
               setIsDeleting(false);
+              // TODO: Consider using a global form error here instead.
+              return toast.error("There was an error updating the detail.");
             }
-            if (success) {
+            const { error } = response;
+            if (error) {
+              logger.error(
+                error,
+                `There was an error deleting the detail with ID '${props.detail.id}'.`,
+                { detail: props.detail },
+              );
+              setIsDeleting(false);
+              return toast.error("There was an error deleting the detail.");
+            }
+            transition(() => {
+              refresh();
+              setIsDeleting(false);
               onDeleted();
-              transition(() => {
-                refresh();
-              });
-            }
+            });
           }}
         />,
       ]}
