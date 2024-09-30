@@ -66,6 +66,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
           <ClientExperienceSelect
             visibility="admin"
             inputClassName="w-full"
+            includes={[]}
             behavior="multi"
             isClearable
             value={value}
@@ -81,6 +82,7 @@ export const SkillForm = (props: SkillFormProps): JSX.Element => {
         {({ value, onChange }) => (
           <ClientEducationSelect
             visibility="admin"
+            includes={[]}
             inputClassName="w-full"
             behavior="multi"
             isClearable

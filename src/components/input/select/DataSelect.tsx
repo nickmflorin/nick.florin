@@ -6,10 +6,17 @@ import type * as types from "~/components//input/select/types";
 import { Loading } from "~/components/loading/Loading";
 import {
   type MenuItemSelectionIndicator,
-  type DataMenuContentInstance,
   type MenuItemRenderProps,
+  type DataMenuGroupProps,
+  type DataMenuItemCharacteristicsProps,
+  type MenuFeedbackProps,
 } from "~/components/menus";
-import { type DataMenuComponent, type DataMenuProps } from "~/components/menus/DataMenu";
+import {
+  type DataMenuComponent,
+  type DataMenuProps,
+  pickDataMenuProps,
+  omitDataMenuProps,
+} from "~/components/menus/DataMenu";
 import { type ComponentProps, classNames } from "~/components/types";
 
 import { DataSelectBase, type DataSelectBaseProps } from "./DataSelectBase";
@@ -24,17 +31,16 @@ export interface DataSelectProps<
 > extends Omit<DataSelectBaseProps<M, O>, "content">,
     Pick<
       DataMenuProps<M>,
-      | "groups"
+      | keyof DataMenuGroupProps<M>
+      | Exclude<keyof DataMenuItemCharacteristicsProps<M>, "itemIsSelected">
+      | keyof MenuFeedbackProps
       | "header"
       | "footer"
       | "enableKeyboardInteractions"
-      | "hideEmptyGroups"
-      | "hideGrouplessItems"
       | "selectionIndicator"
       | "getItemIcon"
       | "onItemClick"
       | "includeDescriptions"
-      | (`group${string}` & keyof DataMenuProps<M>)
       | Exclude<`item${string}` & keyof DataMenuProps<M>, "itemIsSelected">
     > {
   readonly menuClassName?: ComponentProps["className"];
@@ -44,35 +50,12 @@ export interface DataSelectProps<
 export const DataSelect = forwardRef(
   <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     {
-      itemClassName,
       menuClassName,
-      itemHeight,
-      itemSpinnerClassName,
-      itemIconClassName,
-      itemIconProps,
-      itemIconSize,
-      itemDisabledClassName,
-      itemLoadingClassName,
-      itemLockedClassName,
-      itemSelectedClassName,
       selectionIndicator: _selectionIndicator,
-      includeDescriptions,
-      header,
-      footer,
-      hideEmptyGroups,
-      hideGrouplessItems,
-      enableKeyboardInteractions = true,
-      groups,
-      groupContentClassName,
-      groupLabelClassName,
-      groupLabelContainerClassName,
-      groupLabelProps,
-      groupsAreBordered,
-      getItemIcon,
-      itemIsDisabled,
-      itemIsLoading,
-      itemIsLocked,
-      itemIsVisible,
+      data,
+      isDisabled,
+      isLocked,
+      isLoading,
       onItemClick,
       itemRenderer,
       children,
@@ -81,7 +64,7 @@ export const DataSelect = forwardRef(
     ref: ForwardedRef<types.DataSelectInstance<M, O>>,
   ): JSX.Element => {
     const innerRef = useRef<types.DataSelectInstance<M, O> | null>(null);
-    const menuContentRef = useRef<DataMenuContentInstance>(null);
+    // const menuContentRef = useRef<DataMenuContentInstance>(null);
 
     const getItemValue = useCallback(
       (m: M) => {
@@ -114,41 +97,21 @@ export const DataSelect = forwardRef(
             ref.current = instance;
           }
         }}
-        {...props}
+        {...omitDataMenuProps(props)}
+        isDisabled={isDisabled}
+        isLocked={isLocked}
+        isLoading={isLoading}
+        data={data}
         content={(_, { toggle, isSelected }) => (
           <DataMenu<M>
-            includeDescriptions={includeDescriptions}
-            hideEmptyGroups={hideEmptyGroups}
-            hideGrouplessItems={hideGrouplessItems}
-            groups={groups}
-            contentRef={menuContentRef}
-            className={classNames("h-full rounded-sm", menuClassName)}
-            data={props.data}
-            enableKeyboardInteractions={enableKeyboardInteractions}
-            itemClassName={itemClassName}
-            itemHeight={itemHeight}
-            itemSpinnerClassName={itemSpinnerClassName}
-            itemIconClassName={itemIconClassName}
-            itemIconProps={itemIconProps}
-            itemIconSize={itemIconSize}
-            itemDisabledClassName={itemDisabledClassName}
-            itemLoadingClassName={itemLoadingClassName}
-            itemLockedClassName={itemLockedClassName}
-            itemSelectedClassName={itemSelectedClassName}
+            {...pickDataMenuProps(props)}
+            isDisabled={isDisabled}
+            isLocked={isLocked}
+            isLoading={isLoading}
+            data={data}
             selectionIndicator={selectionIndicator}
-            header={header}
-            footer={footer}
-            groupContentClassName={groupContentClassName}
-            groupLabelClassName={groupLabelClassName}
-            groupLabelContainerClassName={groupLabelContainerClassName}
-            groupLabelProps={groupLabelProps}
-            groupsAreBordered={groupsAreBordered}
-            getItemIcon={getItemIcon}
-            getItemId={props.getItemId}
-            itemIsDisabled={itemIsDisabled}
-            itemIsLoading={itemIsLoading}
-            itemIsLocked={itemIsLocked}
-            itemIsVisible={itemIsVisible}
+            // contentRef={menuContentRef}
+            className={classNames("h-full rounded-sm", menuClassName)}
             itemIsSelected={m => {
               const fn = getItemValue as (m: M) => types.InferredDataSelectV<M, O>;
               return isSelected(fn(m));

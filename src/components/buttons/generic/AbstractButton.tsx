@@ -10,7 +10,7 @@ import { getButtonClassName } from "~/components/buttons/util";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 
-type InternalPropName = keyof types.AbstractInternalButtonProps<types.ButtonElement>;
+type InternalPropName = keyof Required<types.AbstractInternalButtonProps<types.ButtonElement>>;
 
 /* We use a map here for extra type safety, because it ensures that all of the internal props are
    accounted for in the map. */

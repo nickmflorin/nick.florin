@@ -1,57 +1,70 @@
 @use "partials";
 
-$input-locked-class: ".input--locked";
-$input-loading-class: ".input--loading";
+@mixin input-disabled {
+  &[data-attr-disabled="true"] {
+    pointer-events: none !important;
+    @content;
+  }
+}
+
+@mixin input-loading {
+  &[data-attr-loading="true"] {
+    pointer-events: none !important;
+    @content;
+  }
+}
+
+@mixin input-locked {
+  &[data-attr-locked="true"] {
+    pointer-events: none !important;
+    @content;
+  }
+}
+
+@mixin input-not-disabled-locked-loading() {
+  &:not([data-attr-disabed="true"]):not([data-attr-locked="true"]):not([data-attr-loading="true"]) {
+    @content;
+  }
+}
 
 @mixin input-hovered {
   @include partials.hovered {
-    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
-      @content;
+    @include input-not-disabled-locked-loading() {
+      &:not([data-attr-active="true"]) {
+        @content;
+      }
     }
   }
 }
 
 @mixin input-focused {
   @include partials.focused {
-    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
-      @content;
-    }
-  }
-}
-
-@mixin input-hovered {
-  @include partials.hovered {
-    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
+    @include input-not-disabled-locked-loading() {
       @content;
     }
   }
 }
 
 @mixin input-active {
-  @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
-    &.input--active:not(:disabled) {
+  &[data-attr-active="true"] {
+    @include input-not-disabled-locked-loading() {
       @content;
     }
   }
 }
 
 @mixin input-read-only {
-  &.input--read-only:not(:disabled) {
-    pointer-events: none;
-    @content;
-  }
-}
-
-@mixin input-focused-within {
-  @include partials.focused-within {
-    @include partials.without-selectors(($input-loading-class, $input-locked-class)) {
+  &[data-attr-readonly="true"] {
+    @include input-not-disabled-locked-loading() {
       @content;
     }
   }
 }
 
-@mixin input-locked-or-loading {
-  @include partials.with-selectors(($input-locked-class, $input-loading-class)) {
-    pointer-events: none;
+@mixin input-focused-within {
+  @include partials.focused-within {
+    @include input-not-disabled-locked-loading() {
+      @content;
+    }
   }
 }

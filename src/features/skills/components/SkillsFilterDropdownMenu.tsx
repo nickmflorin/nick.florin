@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 
+import { type ApiSkill } from "~/database/model";
+
 import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
 import { DrawerIds } from "~/components/drawers";
 // TODO: Dynamically load me, set loading indicator in filter button when loading.
@@ -23,12 +25,18 @@ const SkillsFilterDrawer = dynamic(
 export interface SkillsFilterDropdownMenuProps {
   readonly isLoading: boolean;
   readonly filters: SkillsChartFilterFormValues;
+  readonly filtersHaveChanged: boolean;
+  readonly skills: ApiSkill<[]>[];
+  readonly onClear: () => void;
   readonly onChange: (values: SkillsChartFilterFormValues) => void;
 }
 
 export const SkillsFilterDropdownMenu = ({
   filters,
   isLoading,
+  filtersHaveChanged,
+  skills,
+  onClear,
   onChange,
 }: SkillsFilterDropdownMenuProps): JSX.Element => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
@@ -59,14 +67,25 @@ export const SkillsFilterDropdownMenu = ({
               filters={filters}
               onChange={onChange}
               isLoading={isLoading}
+              filtersHaveChanged={filtersHaveChanged}
+              skills={skills}
               onClose={() => setDrawerIsOpen(false)}
+              onClear={onClear}
             />
           </PortalDrawerWrapper>
         )}
       </>
     );
   }
-  return <SkillsFilterPopover filters={filters} onChange={onChange} />;
+  return (
+    <SkillsFilterPopover
+      filters={filters}
+      skills={skills}
+      filtersHaveChanged={filtersHaveChanged}
+      onChange={onChange}
+      onClear={() => onClear()}
+    />
+  );
 };
 
 export default SkillsFilterDropdownMenu;

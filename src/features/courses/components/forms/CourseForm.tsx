@@ -34,6 +34,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
     >
       {({ value, onChange }) => (
         <ClientEducationSelect
+          includes={[]}
           inputClassName="w-full"
           value={value ?? null}
           visibility="admin"

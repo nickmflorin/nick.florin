@@ -31,6 +31,7 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
       visibility="admin"
       inputClassName="w-full"
       inPortal
+      includes={[]}
       value={value}
       behavior="multi"
       summarizeValueAfter={2}

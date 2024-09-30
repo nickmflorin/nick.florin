@@ -3,6 +3,8 @@ import { useEffect } from "react";
 
 import { flip } from "@floating-ui/react";
 
+import { type ApiSkill } from "~/database/model";
+
 import {
   ChartFilterButton,
   type ChartFilterButtonProps,
@@ -24,14 +26,20 @@ export interface SkillsFilterPopoverProps {
   readonly isDisabled?: boolean;
   readonly buttonProps?: Omit<ChartFilterButtonProps, "isDisabled">;
   readonly filters: SkillsChartFilterFormValues;
+  readonly skills: ApiSkill<[]>[];
+  readonly filtersHaveChanged: boolean;
+  readonly onClear: () => void;
   readonly onChange: (values: SkillsChartFilterFormValues) => void;
 }
 
 export const SkillsFilterPopover = ({
   isDisabled = false,
   buttonProps,
+  filtersHaveChanged,
+  skills,
   filters,
   onChange,
+  onClear,
 }: SkillsFilterPopoverProps): JSX.Element => {
   const { isLessThan } = useScreenSizes();
 
@@ -60,7 +68,13 @@ export const SkillsFilterPopover = ({
       middleware={[flip({})]}
       content={
         <PopoverContent className="p-[20px] rounded-md overflow-y-auto">
-          <SkillsChartFilterForm form={{ ...form, setValues }} isScrollable={false} />
+          <SkillsChartFilterForm
+            form={{ ...form, setValues }}
+            isClearDisabled={!filtersHaveChanged}
+            isScrollable={false}
+            skills={skills}
+            onClear={onClear}
+          />
         </PopoverContent>
       }
     >

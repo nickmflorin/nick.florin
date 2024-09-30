@@ -14,7 +14,7 @@ export interface TableBodyProps extends ComponentProps {
   readonly isLoading?: boolean;
   readonly isEmpty?: boolean;
   readonly isError?: boolean;
-  readonly isNoResults?: boolean;
+  readonly hasNoResults?: boolean;
   readonly emptyContent?: string | JSX.Element;
   readonly noResultsContent?: string | JSX.Element;
   readonly errorTitle?: string;
@@ -34,7 +34,7 @@ export const TableBody = ({
   isError,
   emptyContent,
   noResultsContent,
-  isNoResults,
+  hasNoResults,
   errorMessage,
   errorTitle,
   errorContent,
@@ -80,7 +80,7 @@ export const TableBody = ({
             errorTitle={errorTitle}
             errorMessage={errorMessage}
           />
-        ) : isNoResults ? (
+        ) : hasNoResults ? (
           <TableFeedbackState stateType="no-results" noResultsContent={noResultsContent} as="tr" />
         ) : isEmpty ? (
           <TableFeedbackState stateType="empty" emptyContent={emptyContent} as="tr" />

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback, type MutableRefObject } from "react";
+import { useRef, useState, useEffect, useCallback, type MutableRefObject, useMemo } from "react";
 
 import { clamp } from "lodash-es";
 
@@ -12,6 +12,8 @@ export interface UseKeyboardNavigationOptions<T> {
   readonly containerRef?: MutableRefObject<HTMLDivElement | null>;
   readonly navigatedClassName?: string;
   readonly scrollOptions?: ScrollIntoViewOptions;
+  readonly excludeItemFromNavigation?: (datum: T) => boolean;
+  readonly getItemAtNavigatedIndex?: (data: T[], index: number) => T | undefined;
   readonly onExit?: () => void;
   readonly onEnter?: (e: KeyboardEvent, index: number, datum: T) => void;
 }
@@ -22,11 +24,21 @@ export const useKeyboardNavigation = <T>({
   containerRef: propContainerRef,
   scrollOptions,
   navigatedClassName = ".menu__item--navigated",
+  excludeItemFromNavigation,
+  getItemAtNavigatedIndex: _getItemAtNavigatedIndex,
   onExit,
   onEnter,
 }: UseKeyboardNavigationOptions<T>) => {
   const _containerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = propContainerRef ?? _containerRef;
+
+  const navigatableData = useMemo(
+    () =>
+      excludeItemFromNavigation !== undefined
+        ? data.filter(datum => !excludeItemFromNavigation(datum))
+        : data,
+    [data, excludeItemFromNavigation],
+  );
 
   const [navigatedIndex, setNavigatedIndex] = useState<number | null>(null);
 
@@ -72,7 +84,7 @@ export const useKeyboardNavigation = <T>({
     [scrollOptions, containerRef, navigatedClassName],
   );
 
-  const numItems = data.length;
+  const numItems = navigatableData.length;
 
   useEffect(() => {
     setNavigatedIndex(curr => (curr ? clamp(curr, 0, numItems - 1) : null));
@@ -89,23 +101,24 @@ export const useKeyboardNavigation = <T>({
   }, [scrollIntoView]);
 
   useEffect(() => {
+    const getItemAtNavigatedIndex = _getItemAtNavigatedIndex ?? ((d, index) => d[index]);
     const onKeyDown = (e: KeyboardEvent) => {
-      if (
-        e.key === "ArrowUp" ||
-        e.key === "ArrowDown" ||
-        (e.key === "Enter" &&
-          onEnter !== undefined &&
-          navigatedIndex &&
-          data[navigatedIndex] !== undefined)
-      ) {
+      if (e.key === "ArrowUp") {
         e.preventDefault();
         e.stopPropagation();
-        if (e.key === "ArrowUp") {
-          decrementNavigatedIndex();
-        } else if (e.key === "ArrowDown") {
-          incrementNavigatedIndex();
-        } else {
-          onEnter?.(e, navigatedIndex as number, data[navigatedIndex as number]);
+        decrementNavigatedIndex();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        e.stopPropagation();
+        incrementNavigatedIndex();
+      } else if (e.key === "Enter") {
+        if (navigatedIndex && onEnter !== undefined) {
+          const datum = getItemAtNavigatedIndex(navigatableData, navigatedIndex);
+          if (datum !== undefined) {
+            e.preventDefault();
+            e.stopPropagation();
+            onEnter?.(e, navigatedIndex as number, datum);
+          }
         }
       } else {
         onExit?.();
@@ -120,8 +133,9 @@ export const useKeyboardNavigation = <T>({
   }, [
     enabled,
     navigatedIndex,
-    data,
+    navigatableData,
     onEnter,
+    _getItemAtNavigatedIndex,
     incrementNavigatedIndex,
     decrementNavigatedIndex,
     onExit,

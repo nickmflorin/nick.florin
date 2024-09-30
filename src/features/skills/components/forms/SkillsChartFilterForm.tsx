@@ -1,9 +1,15 @@
 import { z } from "zod";
 
-import { ProgrammingDomain, ProgrammingLanguage, SkillCategory } from "~/database/model";
+import {
+  ProgrammingDomain,
+  ProgrammingLanguage,
+  SkillCategory,
+  type ApiSkill,
+} from "~/database/model";
 
 import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { RadioGroup } from "~/components/input/RadioGroup";
+import { ButtonFooter } from "~/components/structural/ButtonFooter";
 import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
 import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
 import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
@@ -41,10 +47,34 @@ const ShowTopSkillsLabels: { [key in ShowTopSkillsString]: string } = {
 };
 
 export interface SkillsChartFilterFormProps
-  extends Omit<FormProps<SkillsChartFilterFormValues>, "children"> {}
+  extends Omit<FormProps<SkillsChartFilterFormValues>, "children"> {
+  /* Skills would be needed if we were disabling options in selects that did not make sense
+     (i.e. would result in no data).  We will revisit this later on. */
+  readonly skills: ApiSkill<[]>[];
+  readonly isClearDisabled?: boolean;
+  readonly onClear: () => void;
+}
 
-export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormProps) => (
-  <Form {...props} form={form}>
+export const SkillsChartFilterForm = ({
+  form,
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- See note above in props. */
+  skills,
+  isClearDisabled,
+  onClear,
+  ...props
+}: SkillsChartFilterFormProps) => (
+  <Form
+    {...props}
+    form={form}
+    footer={
+      <ButtonFooter
+        submitButtonType="button"
+        submitText="Clear Filters"
+        submitIsDisabled={isClearDisabled}
+        onSubmit={() => onClear()}
+      />
+    }
+  >
     <Form.ControlledField
       form={form}
       name="showTopSkills"
@@ -74,6 +104,7 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
       {({ value, onChange }) => (
         <ClientExperienceSelect
           visibility="public"
+          includes={[]}
           inputClassName="w-full"
           value={value}
           onChange={onChange}
@@ -102,7 +133,11 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
           value={value}
           onChange={onChange}
           popoverPlacement="bottom"
-          inPortal
+          // emptyContent="No options available for current search criteria."
+          includes={["skills"]}
+          /* itemIsVisible={education =>
+               skills.some(sk => education.skills.map(s => s.id).includes(sk.id))
+             } */
           onError={() => form.setErrors("educations", "There was an error loading the data.")}
         />
       )}
@@ -163,5 +198,3 @@ export const SkillsChartFilterForm = ({ form, ...props }: SkillsChartFilterFormP
     </Form.ControlledField>
   </Form>
 );
-
-export default SkillsChartFilterForm;

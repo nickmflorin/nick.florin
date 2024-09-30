@@ -29,6 +29,7 @@ export const EducationCell = ({ course, table }: EducationCellProps): JSX.Elemen
   return (
     <ClientEducationSelect
       visibility="admin"
+      includes={[]}
       inputClassName="w-full"
       behavior="single"
       value={value}

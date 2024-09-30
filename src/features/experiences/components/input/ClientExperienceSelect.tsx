@@ -1,5 +1,6 @@
 import { forwardRef, type ForwardedRef } from "react";
 
+import type { ExperienceIncludes } from "~/database/model";
 import { logger } from "~/internal/logger";
 
 import { type ActionVisibility } from "~/actions";
@@ -14,19 +15,22 @@ import {
   type ExperienceSelectProps,
 } from "./ExperienceSelect";
 
-export interface ClientExperienceSelectProps<B extends SelectBehaviorType>
-  extends Omit<ExperienceSelectProps<B>, "data"> {
+export interface ClientExperienceSelectProps<
+  B extends SelectBehaviorType,
+  I extends ExperienceIncludes,
+> extends Omit<ExperienceSelectProps<B, I>, "data"> {
   readonly visibility: ActionVisibility;
+  readonly includes: I;
   readonly onError?: (e: ApiError) => void;
 }
 
 export const ClientExperienceSelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { visibility, onError, ...props }: ClientExperienceSelectProps<B>,
-    ref: ForwardedRef<ExperienceSelectInstance<B>>,
+  <B extends SelectBehaviorType, I extends ExperienceIncludes>(
+    { visibility, onError, includes, ...props }: ClientExperienceSelectProps<B, I>,
+    ref: ForwardedRef<ExperienceSelectInstance<B, I>>,
   ): JSX.Element => {
     const { data, isLoading, error } = useExperiences({
-      query: { includes: [], visibility },
+      query: { includes, visibility },
       onError: e => {
         logger.error(e, "There was an error loading the experiences via the API.");
         onError?.(e);
@@ -45,9 +49,9 @@ export const ClientExperienceSelect = forwardRef(
     );
   },
 ) as {
-  <B extends SelectBehaviorType>(
-    props: ClientExperienceSelectProps<B> & {
-      readonly ref?: ForwardedRef<ExperienceSelectInstance<B>>;
+  <B extends SelectBehaviorType, I extends ExperienceIncludes>(
+    props: ClientExperienceSelectProps<B, I> & {
+      readonly ref?: ForwardedRef<ExperienceSelectInstance<B, I>>;
     },
   ): JSX.Element;
 };

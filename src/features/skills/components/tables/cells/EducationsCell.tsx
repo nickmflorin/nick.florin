@@ -32,6 +32,7 @@ export const EducationsCell = ({ skill, table }: EducationsCellProps): JSX.Eleme
       inputClassName="w-full"
       behavior="multi"
       isClearable
+      includes={[]}
       value={value}
       inPortal
       summarizeValueAfter={2}

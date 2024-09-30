@@ -41,6 +41,8 @@ export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
     readonly radius?: BorderRadius;
   };
 
+const dataAttributeValue = (v?: boolean) => (v === true ? true : undefined);
+
 export const InputWrapper = forwardRef(
   <C extends WrapperComponentName>(
     {
@@ -63,6 +65,11 @@ export const InputWrapper = forwardRef(
       ...omitTypographyProps(props),
       ref,
       children,
+      "data-attr-disabled": dataAttributeValue(isDisabled),
+      "data-attr-locked": dataAttributeValue(isLocked),
+      "data-attr-loading": dataAttributeValue(isLoading),
+      "data-attr-active": dataAttributeValue(isActive),
+      "data-attr-read-only": dataAttributeValue(isReadOnly),
       style: { ...getTypographyStyle(props), ...props.style },
       className: classNames(
         "input",
@@ -70,12 +77,7 @@ export const InputWrapper = forwardRef(
         `input--variant-${variant}`,
         `input--radius-${radius}`,
         {
-          disabled: isDisabled,
           "input--dynamic-height": dynamicHeight,
-          "input--locked": isLocked,
-          "input--loading": isLoading,
-          "input--active": isActive,
-          "input--read-only": isReadOnly,
         },
         getTypographyClassName(props),
         props.className,

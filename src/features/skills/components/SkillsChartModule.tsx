@@ -1,12 +1,17 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 
+import { arraysHaveSameElements } from "~/lib";
+
+import { Button } from "~/components/buttons";
 import { ErrorView } from "~/components/errors/ErrorView";
+import { CircleNumber } from "~/components/icons/CircleNumber";
 import { DynamicLoader, DynamicLoading } from "~/components/loading/dynamic-loading";
 import { Loading } from "~/components/loading/Loading";
 import { Module } from "~/components/structural/Module";
+import { useFilterState } from "~/hooks";
 import { useSkills } from "~/hooks/api";
+import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
 import { type SkillsChartFilterFormValues } from "./forms/SkillsChartFilterForm";
 import { SkillsFilterDropdownMenu } from "./SkillsFilterDropdownMenu";
@@ -16,14 +21,26 @@ const SkillsBarChartView = dynamic(() => import("./charts/SkillsBarChartView"), 
 });
 
 export const SkillsChartModule = () => {
-  const [filters, setFilters] = useState<SkillsChartFilterFormValues>({
-    showTopSkills: "all",
-    experiences: [],
-    educations: [],
-    categories: [],
-    programmingDomains: [],
-    programmingLanguages: [],
-  });
+  const { isLessThan } = useScreenSizes();
+
+  const [filters, setFilters, resetFilters, filtersHaveChanged, differingFilters] =
+    useFilterState<SkillsChartFilterFormValues>(
+      {
+        showTopSkills: "all",
+        experiences: [],
+        educations: [],
+        categories: [],
+        programmingDomains: [],
+        programmingLanguages: [],
+      },
+      {
+        experiences: arraysHaveSameElements,
+        educations: arraysHaveSameElements,
+        categories: arraysHaveSameElements,
+        programmingDomains: arraysHaveSameElements,
+        programmingLanguages: arraysHaveSameElements,
+      },
+    );
 
   const {
     data: skills,
@@ -49,10 +66,28 @@ export const SkillsChartModule = () => {
         actions={[
           <SkillsFilterDropdownMenu
             filters={filters}
+            skills={skills ?? []}
             key="0"
+            filtersHaveChanged={filtersHaveChanged}
             onChange={f => setFilters(f)}
             isLoading={isLoading}
+            onClear={() => resetFilters()}
           />,
+          <Button.Solid
+            key="1"
+            scheme="secondary"
+            className="py-[2px] px-[10px]"
+            size={isLessThan("md") ? "xsmall" : "small"}
+            isDisabled={!filtersHaveChanged}
+            onClick={() => resetFilters()}
+            icon={
+              <CircleNumber size="20px" isActive={differingFilters.length !== 0}>
+                {differingFilters.length}
+              </CircleNumber>
+            }
+          >
+            Clear
+          </Button.Solid>,
         ]}
       >
         Skills Overview

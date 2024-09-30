@@ -164,7 +164,7 @@ $input-variant-properties: (
 @mixin input-variant($variant, $type) {
   @include input-variant-state($variant, $type);
 
-  @include partials.disabled {
+  @include mixins.input-disabled {
     @include input-variant-state($variant, $type, $state: "disabled");
   }
 

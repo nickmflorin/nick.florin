@@ -1,38 +1,25 @@
 import { forwardRef, type ForwardedRef, type ReactNode, useMemo } from "react";
 
-import { type IconProp, type IconName } from "~/components/icons";
 import * as types from "~/components/menus";
 import { MenuItem } from "~/components/menus/MenuItem";
-import { classNames, type QuantitativeSize } from "~/components/types";
+import { classNames } from "~/components/types";
 
-export type DataMenuItemProps<M extends types.DataMenuModel> = types.MenuItemFlagProps<M> & {
-  readonly datum: M;
-  readonly id: string | number;
-  readonly includeDescription?: boolean;
-  readonly isCurrentNavigation?: boolean;
-  readonly itemClassName?: types.DataMenuItemClassName<M>;
-  readonly itemHeight?: QuantitativeSize<"px">;
-  readonly itemNavigatedClassName?: types.DataMenuItemClassName<M>;
-  readonly itemSpinnerClassName?: types.DataMenuItemClassName<M>;
-  readonly itemIconClassName?: types.DataMenuItemClassName<M>;
-  readonly itemIconProps?: types.MenuItemIconProps;
-  readonly itemIconSize?: QuantitativeSize<"px">;
-  readonly itemDisabledClassName?: types.DataMenuItemClassName<M>;
-  readonly itemLoadingClassName?: types.DataMenuItemClassName<M>;
-  readonly itemLockedClassName?: types.DataMenuItemClassName<M>;
-  readonly itemSelectedClassName?: types.DataMenuItemClassName<M>;
-  readonly selectionIndicator?: types.MenuItemSelectionIndicator;
-  readonly getItemIcon?: (
-    datum: M,
-    params: types.MenuItemRenderProps,
-  ) => IconProp | IconName | JSX.Element | undefined;
-  readonly getItemDescription?: (datum: M, params: types.MenuItemRenderProps) => ReactNode;
-  readonly onClick?: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    instance: types.MenuItemInstance,
-  ) => void;
-  readonly children?: (datum: M, params: types.MenuItemRenderProps) => ReactNode;
-};
+export type DataMenuItemProps<M extends types.DataMenuModel> = Omit<
+  types.MenuItemFlagProps<M>,
+  "itemIsVisible"
+> &
+  Omit<types.DataMenuItemCharacteristicsProps<M>, "getItemId" | "onItemClick"> & {
+    readonly datum: M;
+    readonly id: string | number;
+    readonly includeDescription?: boolean;
+    readonly isCurrentNavigation?: boolean;
+    readonly selectionIndicator?: types.MenuItemSelectionIndicator;
+    readonly onItemClick?: (
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      instance: types.MenuItemInstance,
+    ) => void;
+    readonly children?: (datum: M, params: types.MenuItemRenderProps) => ReactNode;
+  };
 
 export const DataMenuItem = forwardRef(
   <M extends types.DataMenuModel>(
@@ -56,8 +43,7 @@ export const DataMenuItem = forwardRef(
       itemIsSelected,
       itemIsLoading,
       itemIsLocked,
-      itemIsVisible,
-      onClick,
+      onItemClick,
       getItemIcon,
       getItemDescription,
       children,
@@ -142,17 +128,13 @@ export const DataMenuItem = forwardRef(
           datum.lockedClassName,
         )}
         isDisabled={types.evalMenuItemFlag("isDisabled", itemIsDisabled, datum) || datum.isDisabled}
-        isVisible={
-          types.evalMenuItemFlag("isVisible", itemIsVisible, datum) !== false &&
-          datum.isVisible !== false
-        }
         isLocked={types.evalMenuItemFlag("isLocked", itemIsLocked, datum) || datum.isLocked}
         isLoading={types.evalMenuItemFlag("isLoading", itemIsLoading, datum) || datum.isLoading}
         isSelected={Boolean(
           types.evalMenuItemFlag("isSelected", itemIsSelected, datum) || datum.isSelected,
         )}
         onClick={(e, instance) => {
-          onClick?.(e, instance);
+          onItemClick?.(e, instance);
           datum.onClick?.(e, instance);
         }}
       >

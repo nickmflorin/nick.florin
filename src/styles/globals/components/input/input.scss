@@ -34,7 +34,9 @@
 
 .input {
   @include base.input-base;
-  @include mixins.input-locked-or-loading();
+  @include mixins.input-locked();
+  @include mixins.input-locked();
+  @include mixins.input-disabled();
 
   display: flex;
   flex-direction: row;
@@ -42,11 +44,6 @@
   gap: theme("spacing.2");
   outline-offset: -1px;
   overflow: hidden;
-
-  @include mixins.input-read-only();
-  @include partials.disabled() {
-    pointer-events: none !important;
-  }
 
   // Allow the font weight to be overridden with a prop.
   @include typography.with-font-families();

@@ -12,9 +12,10 @@ import { Text, Description } from "~/components/typography";
 import { DeleteCompanySchoolButton } from "./DeleteCompanySchoolButton";
 import { type ModelType, type Model } from "./types";
 
-const MenuContent = dynamic(() => import("~/components/menus/MenuContent"), {
-  loading: () => <Loading isLoading={true} />,
-});
+const MenuContent = dynamic(
+  () => import("~/components/menus/MenuContent").then(mod => mod.MenuContent),
+  { loading: () => <Loading isLoading={true} /> },
+);
 
 export interface ClientCompaniesSchoolsMenuContentProps<M extends ModelType> {
   readonly modelType: M;

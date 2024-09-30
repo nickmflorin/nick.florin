@@ -1,6 +1,6 @@
 import { forwardRef, type ForwardedRef } from "react";
 
-import { type ApiExperience } from "~/database/model";
+import { type ApiExperience, type ExperienceIncludes } from "~/database/model";
 
 import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/select";
 import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
@@ -8,14 +8,14 @@ import { Text, Description } from "~/components/typography";
 
 const getItemValue = (m: ApiExperience) => m.id;
 
-export type ExperienceSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
-  ApiExperience,
-  { behavior: B; getItemValue: typeof getItemValue }
->;
+export type ExperienceSelectInstance<
+  B extends SelectBehaviorType,
+  I extends ExperienceIncludes,
+> = DataSelectInstance<ApiExperience<I>, { behavior: B; getItemValue: typeof getItemValue }>;
 
-export interface ExperienceSelectProps<B extends SelectBehaviorType>
+export interface ExperienceSelectProps<B extends SelectBehaviorType, I extends ExperienceIncludes>
   extends Omit<
-    DataSelectProps<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>,
+    DataSelectProps<ApiExperience<I>, { behavior: B; getItemValue: typeof getItemValue }>,
     "options" | "itemIsDisabled" | "itemRenderer" | "getItemValueLabel"
   > {
   readonly behavior: B;
@@ -23,18 +23,16 @@ export interface ExperienceSelectProps<B extends SelectBehaviorType>
 }
 
 export const ExperienceSelect = forwardRef(
-  <B extends SelectBehaviorType>(
+  <B extends SelectBehaviorType, I extends ExperienceIncludes>(
     {
       behavior,
       useAbbreviatedOptionLabels,
       includeDescriptions = true,
       ...props
-    }: ExperienceSelectProps<B>,
-    ref: ForwardedRef<
-      DataSelectInstance<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
-    >,
+    }: ExperienceSelectProps<B, I>,
+    ref: ForwardedRef<ExperienceSelectInstance<B, I>>,
   ): JSX.Element => (
-    <DataSelect<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<ApiExperience<I>, { behavior: B; getItemValue: typeof getItemValue }>
       {...props}
       includeDescriptions={false}
       ref={ref}
@@ -51,11 +49,9 @@ export const ExperienceSelect = forwardRef(
     />
   ),
 ) as {
-  <B extends SelectBehaviorType>(
-    props: ExperienceSelectProps<B> & {
-      readonly ref?: ForwardedRef<
-        DataSelectInstance<ApiExperience, { behavior: B; getItemValue: typeof getItemValue }>
-      >;
+  <B extends SelectBehaviorType, I extends ExperienceIncludes>(
+    props: ExperienceSelectProps<B, I> & {
+      readonly ref?: ForwardedRef<ExperienceSelectInstance<B, I>>;
     },
   ): JSX.Element;
 };
