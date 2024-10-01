@@ -12,7 +12,7 @@ import {
 
 import { Paper } from "./Paper";
 
-export type ViewPosition = "relative" | "absolute";
+export type ViewPosition = "relative" | "absolute" | "fixed";
 export type ViewOverflow = "scroll" | "auto" | "hidden" | "visible";
 export type ViewFill = "screen" | "parent";
 
@@ -58,6 +58,7 @@ export type ViewSizeProps = { [key in ViewSizePropName]?: QuantitativeSize<"px">
 export type ViewPositionProps = Partial<{
   readonly absolute: true;
   readonly relative: true;
+  readonly fixed: true;
   readonly position: ViewPosition;
 }>;
 
@@ -139,32 +140,42 @@ const parseFlex = ({
 const parsePosition = ({
   position,
   absolute,
+  fixed,
   relative,
   __default_position__,
 }: Pick<
   ViewProps,
-  "position" | "absolute" | "relative" | "__default_position__"
+  "position" | "absolute" | "relative" | "__default_position__" | "fixed"
 >): ViewPosition => {
   if (position !== undefined) {
-    if (absolute !== undefined || relative !== undefined) {
+    if (absolute !== undefined || relative !== undefined || fixed !== undefined) {
       logger.warn(
-        "The props 'absolute' and 'relative' should not be specified on a view when the " +
-          "'position' prop is explicitly defined.",
-        { absolute, relative, position },
+        "The props 'absolute', 'relative' and/or 'fixed' should not be specified on a view when " +
+          "the 'position' prop is explicitly defined.",
+        { absolute, relative, position, fixed },
       );
     }
     return position;
   } else if (absolute !== undefined) {
-    if (relative) {
+    if (relative || fixed) {
       logger.warn(
-        "The props 'absolute' and 'relative' should not both be specified on a view at the " +
-          "same time.  The 'absolute' prop will take precedence.",
+        "The prop 'absolute' should not be specified at the same time as the props " +
+          "'relative' or 'fixed'. The 'absolute' prop will take precedence.",
         { absolute, relative, position },
       );
     }
     return "absolute";
   } else if (relative !== undefined) {
+    if (fixed) {
+      logger.warn(
+        "The prop 'relative' should not be specified at the same time as the prop " +
+          "'fixed'. The 'relative' prop will take precedence.",
+        { absolute, relative, position, fixed },
+      );
+    }
     return "relative";
+  } else if (fixed !== undefined) {
+    return "fixed";
   }
   return __default_position__ ?? "relative";
 };

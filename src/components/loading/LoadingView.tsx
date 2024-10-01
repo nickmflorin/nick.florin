@@ -7,7 +7,7 @@ import { classNames } from "~/components/types";
 export interface LoadingViewProps
   extends Pick<
     ViewProps,
-    "fillScreen" | "fill" | "component" | "isDisabled" | "dim" | keyof ComponentProps
+    "fillScreen" | "fill" | "component" | "isDisabled" | "dim" | keyof ComponentProps | "position"
   > {
   readonly isLoading?: boolean;
   readonly spinnerSize?: SpinnerProps["size"];

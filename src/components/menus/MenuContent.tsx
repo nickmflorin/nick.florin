@@ -103,6 +103,7 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps<MenuConte
     ).filter((ch): ch is JSX.Element => ch !== null);
 
     const primaryClassName = PrimaryClassNames[__private_parent_prop__];
+
     if (validChildren.length !== 0 || hasFeedback({ isError, isEmpty, hasNoResults })) {
       return (
         <div
@@ -121,7 +122,7 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps<MenuConte
             props.className,
           )}
         >
-          <Loading isLoading={isLoading}>
+          <Loading isLoading={isLoading} position="fixed">
             <MenuFeedbackState
               isEmpty={isEmpty}
               isError={isError}

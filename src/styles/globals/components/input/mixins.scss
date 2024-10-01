@@ -21,6 +21,12 @@
   }
 }
 
+@mixin input-not-disabled-locked() {
+  &:not([data-attr-disabed="true"]):not([data-attr-locked="true"]) {
+    @content;
+  }
+}
+
 @mixin input-not-disabled-locked-loading() {
   &:not([data-attr-disabed="true"]):not([data-attr-locked="true"]):not([data-attr-loading="true"]) {
     @content;
@@ -29,7 +35,7 @@
 
 @mixin input-hovered {
   @include partials.hovered {
-    @include input-not-disabled-locked-loading() {
+    @include input-not-disabled-locked() {
       &:not([data-attr-active="true"]) {
         @content;
       }
@@ -39,7 +45,7 @@
 
 @mixin input-focused {
   @include partials.focused {
-    @include input-not-disabled-locked-loading() {
+    @include input-not-disabled-locked() {
       @content;
     }
   }
@@ -47,7 +53,7 @@
 
 @mixin input-active {
   &[data-attr-active="true"] {
-    @include input-not-disabled-locked-loading() {
+    @include input-not-disabled-locked() {
       @content;
     }
   }
@@ -55,7 +61,7 @@
 
 @mixin input-read-only {
   &[data-attr-readonly="true"] {
-    @include input-not-disabled-locked-loading() {
+    @include input-not-disabled-locked() {
       @content;
     }
   }
@@ -63,7 +69,7 @@
 
 @mixin input-focused-within {
   @include partials.focused-within {
-    @include input-not-disabled-locked-loading() {
+    @include input-not-disabled-locked() {
       @content;
     }
   }
