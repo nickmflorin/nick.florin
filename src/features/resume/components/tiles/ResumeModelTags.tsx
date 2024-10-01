@@ -24,7 +24,7 @@ export const ResumeModelTags = <M extends BrandModel<T>, T extends ResumeBrand>(
       iconClassName="h-[16px]"
       timePeriod={
         model.$kind === "experience"
-          ? { startDate: model.startDate, endDate: model.endDate }
+          ? { startDate: model.startDate, endDate: model.endDate, isCurrent: model.isCurrent }
           : { startDate: model.startDate, endDate: model.endDate, postPoned: model.postPoned }
       }
     />

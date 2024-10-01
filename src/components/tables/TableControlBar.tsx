@@ -15,6 +15,7 @@ import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 import { Text } from "~/components/typography";
 
+import { TableControlBarAction, type TableControlBarActionConfig } from "./TableControlBarAction";
 import { TableControlBarPortal } from "./TableControlBarPortal";
 
 const DeleteConfirmationDialog = dynamic(() =>
@@ -42,7 +43,8 @@ export interface TableControlBarProps<
   readonly selectedRows: D[];
   readonly rowsAreDeletable?: boolean;
   readonly targetId: string | null;
-  readonly actions?: Action[];
+  readonly actions?: TableControlBarActionConfig<D>[];
+  readonly extra?: Action[];
   readonly deleteTooltipContent?: string | ((numRows: number) => string);
   readonly columnsSelect?: JSX.Element;
   readonly columns?: C[];
@@ -63,6 +65,7 @@ export const TableControlBar = <
 >({
   children,
   actions,
+  extra,
   allRowsAreSelected = false,
   tooltipsInPortal = false,
   selectedRows,
@@ -117,7 +120,19 @@ export const TableControlBar = <
                   />
                 </Tooltip>
               )}
-              {children}
+              {actions !== undefined && actions.length !== 0 ? (
+                actions.map((action, i) => (
+                  <TableControlBarAction
+                    {...action}
+                    key={i}
+                    isDisabled={isDisabled}
+                    tooltipsInPortal={tooltipsInPortal}
+                    rows={selectedRows}
+                  />
+                ))
+              ) : (
+                <>{children}</>
+              )}
               {selectedRows.length !== 0 ? (
                 <Text fontWeight="medium">
                   {selectedRows.length}{" "}
@@ -142,7 +157,7 @@ export const TableControlBar = <
             ) : (
               <></>
             )}
-            <Actions>{actions}</Actions>
+            <Actions>{extra}</Actions>
           </div>
         </div>
       </TableControlBarPortal>

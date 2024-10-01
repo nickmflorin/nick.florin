@@ -92,6 +92,7 @@ export const ExperienceJsonSchema = MetaSchema.extend({
   details: z.array(DetailJsonSchema).optional(),
   highlighted: z.boolean().optional(),
   visible: z.boolean().optional(),
+  isCurrent: z.boolean().optional(),
 });
 
 export const EducationJsonSchema = MetaSchema.extend({

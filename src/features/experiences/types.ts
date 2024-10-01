@@ -77,6 +77,14 @@ export const ExperiencesTableColumns = [
     isOrderable: true,
   },
   {
+    id: "isCurrent",
+    label: "Current",
+    align: "center",
+    width: 105,
+    maxWidth: 105,
+    minWidth: 105,
+  },
+  {
     id: "isRemote",
     label: "Remote",
     align: "center",

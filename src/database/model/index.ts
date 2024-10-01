@@ -19,21 +19,35 @@ export type ModelTimePeriod = {
   readonly startDate: Date;
   readonly endDate: Date | null;
   readonly postPoned?: boolean;
+  readonly isCurrent?: boolean;
 };
 
-const formatEndDate = (end: Date | null, postPoned?: boolean): string => {
-  if (postPoned) {
+const formatEndDate = (
+  end: Date | null,
+  { postPoned, isCurrent }: Pick<ModelTimePeriod, "isCurrent" | "postPoned">,
+): string | null => {
+  if (end) {
+    return `${DateTime.fromJSDate(end).monthLong} ${DateTime.fromJSDate(end).year}`;
+  } else if (postPoned) {
+    if (isCurrent) {
+      throw new Error("A model's time period cannot be both postponed and current.");
+    }
     return "Postponed";
-  } else if (!end) {
+  } else if (isCurrent) {
     return "Current";
   }
-  return `${DateTime.fromJSDate(end).monthLong} ${DateTime.fromJSDate(end).year}`;
+  return null;
 };
 
-export const stringifyTimePeriod = ({ startDate, endDate, postPoned }: ModelTimePeriod): string =>
+export const stringifyTimePeriod = ({
+  startDate,
+  endDate,
+  postPoned,
+  isCurrent,
+}: ModelTimePeriod): string =>
   `${`${DateTime.fromJSDate(startDate).monthShort} ${
     DateTime.fromJSDate(startDate).year
-  }`} - ${formatEndDate(endDate, postPoned)}`;
+  }`} - ${formatEndDate(endDate, { postPoned, isCurrent })}`;
 
 export type ModelLocation = {
   readonly city: string;

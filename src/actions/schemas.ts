@@ -57,6 +57,7 @@ export const ExperienceSchema = z.object({
   visible: z.boolean().optional(),
   skills: z.array(z.string().uuid()).optional(),
   highlighted: z.boolean().optional(),
+  isCurrent: z.boolean().optional(),
 });
 
 export const EducationSchema = z.object({

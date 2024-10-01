@@ -13871,6 +13871,7 @@ export namespace Prisma {
     title: string | null
     shortTitle: string | null
     description: string | null
+    isCurrent: boolean | null
     isRemote: boolean | null
     visible: boolean | null
     highlighted: boolean | null
@@ -13888,6 +13889,7 @@ export namespace Prisma {
     title: string | null
     shortTitle: string | null
     description: string | null
+    isCurrent: boolean | null
     isRemote: boolean | null
     visible: boolean | null
     highlighted: boolean | null
@@ -13905,6 +13907,7 @@ export namespace Prisma {
     title: number
     shortTitle: number
     description: number
+    isCurrent: number
     isRemote: number
     visible: number
     highlighted: number
@@ -13924,6 +13927,7 @@ export namespace Prisma {
     title?: true
     shortTitle?: true
     description?: true
+    isCurrent?: true
     isRemote?: true
     visible?: true
     highlighted?: true
@@ -13941,6 +13945,7 @@ export namespace Prisma {
     title?: true
     shortTitle?: true
     description?: true
+    isCurrent?: true
     isRemote?: true
     visible?: true
     highlighted?: true
@@ -13958,6 +13963,7 @@ export namespace Prisma {
     title?: true
     shortTitle?: true
     description?: true
+    isCurrent?: true
     isRemote?: true
     visible?: true
     highlighted?: true
@@ -14048,6 +14054,7 @@ export namespace Prisma {
     title: string
     shortTitle: string | null
     description: string | null
+    isCurrent: boolean
     isRemote: boolean
     visible: boolean
     highlighted: boolean
@@ -14082,6 +14089,7 @@ export namespace Prisma {
     title?: boolean
     shortTitle?: boolean
     description?: boolean
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -14104,6 +14112,7 @@ export namespace Prisma {
     title?: boolean
     shortTitle?: boolean
     description?: boolean
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -14138,6 +14147,7 @@ export namespace Prisma {
       title: string
       shortTitle: string | null
       description: string | null
+      isCurrent: boolean
       isRemote: boolean
       visible: boolean
       highlighted: boolean
@@ -14553,6 +14563,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Experience", 'String'>
     readonly shortTitle: FieldRef<"Experience", 'String'>
     readonly description: FieldRef<"Experience", 'String'>
+    readonly isCurrent: FieldRef<"Experience", 'Boolean'>
     readonly isRemote: FieldRef<"Experience", 'Boolean'>
     readonly visible: FieldRef<"Experience", 'Boolean'>
     readonly highlighted: FieldRef<"Experience", 'Boolean'>
@@ -17275,6 +17286,7 @@ export namespace Prisma {
     title: 'title',
     shortTitle: 'shortTitle',
     description: 'description',
+    isCurrent: 'isCurrent',
     isRemote: 'isRemote',
     visible: 'visible',
     highlighted: 'highlighted'
@@ -18574,6 +18586,7 @@ export namespace Prisma {
     title?: StringFilter<"Experience"> | string
     shortTitle?: StringNullableFilter<"Experience"> | string | null
     description?: StringNullableFilter<"Experience"> | string | null
+    isCurrent?: BoolFilter<"Experience"> | boolean
     isRemote?: BoolFilter<"Experience"> | boolean
     visible?: BoolFilter<"Experience"> | boolean
     highlighted?: BoolFilter<"Experience"> | boolean
@@ -18595,6 +18608,7 @@ export namespace Prisma {
     title?: SortOrder
     shortTitle?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    isCurrent?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
     highlighted?: SortOrder
@@ -18620,6 +18634,7 @@ export namespace Prisma {
     title?: StringFilter<"Experience"> | string
     shortTitle?: StringNullableFilter<"Experience"> | string | null
     description?: StringNullableFilter<"Experience"> | string | null
+    isCurrent?: BoolFilter<"Experience"> | boolean
     isRemote?: BoolFilter<"Experience"> | boolean
     visible?: BoolFilter<"Experience"> | boolean
     highlighted?: BoolFilter<"Experience"> | boolean
@@ -18641,6 +18656,7 @@ export namespace Prisma {
     title?: SortOrder
     shortTitle?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    isCurrent?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
     highlighted?: SortOrder
@@ -18664,6 +18680,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Experience"> | string
     shortTitle?: StringNullableWithAggregatesFilter<"Experience"> | string | null
     description?: StringNullableWithAggregatesFilter<"Experience"> | string | null
+    isCurrent?: BoolWithAggregatesFilter<"Experience"> | boolean
     isRemote?: BoolWithAggregatesFilter<"Experience"> | boolean
     visible?: BoolWithAggregatesFilter<"Experience"> | boolean
     highlighted?: BoolWithAggregatesFilter<"Experience"> | boolean
@@ -20097,6 +20114,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -20118,6 +20136,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -20133,6 +20152,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -20154,6 +20174,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -20172,6 +20193,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -20186,6 +20208,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -20203,6 +20226,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -21410,6 +21434,7 @@ export namespace Prisma {
     title?: SortOrder
     shortTitle?: SortOrder
     description?: SortOrder
+    isCurrent?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
     highlighted?: SortOrder
@@ -21427,6 +21452,7 @@ export namespace Prisma {
     title?: SortOrder
     shortTitle?: SortOrder
     description?: SortOrder
+    isCurrent?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
     highlighted?: SortOrder
@@ -21444,6 +21470,7 @@ export namespace Prisma {
     title?: SortOrder
     shortTitle?: SortOrder
     description?: SortOrder
+    isCurrent?: SortOrder
     isRemote?: SortOrder
     visible?: SortOrder
     highlighted?: SortOrder
@@ -24507,6 +24534,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -24526,6 +24554,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -24551,6 +24580,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -24570,6 +24600,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -25481,6 +25512,7 @@ export namespace Prisma {
     title?: StringFilter<"Experience"> | string
     shortTitle?: StringNullableFilter<"Experience"> | string | null
     description?: StringNullableFilter<"Experience"> | string | null
+    isCurrent?: BoolFilter<"Experience"> | boolean
     isRemote?: BoolFilter<"Experience"> | boolean
     visible?: BoolFilter<"Experience"> | boolean
     highlighted?: BoolFilter<"Experience"> | boolean
@@ -27909,6 +27941,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -27929,6 +27962,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -29609,6 +29643,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -29628,6 +29663,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -31527,6 +31563,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -31543,6 +31580,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -32045,6 +32083,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -32064,6 +32103,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -32081,6 +32121,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -32095,6 +32136,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -32114,6 +32156,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -32131,6 +32174,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -33301,6 +33345,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -33321,6 +33366,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -33338,6 +33384,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -33941,6 +33988,7 @@ export namespace Prisma {
     title: string
     shortTitle?: string | null
     description?: string | null
+    isCurrent?: boolean
     isRemote?: boolean
     visible?: boolean
     highlighted?: boolean
@@ -33955,6 +34003,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -33974,6 +34023,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean
@@ -33991,6 +34041,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     shortTitle?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
     isRemote?: BoolFieldUpdateOperationsInput | boolean
     visible?: BoolFieldUpdateOperationsInput | boolean
     highlighted?: BoolFieldUpdateOperationsInput | boolean

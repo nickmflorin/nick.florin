@@ -7,6 +7,10 @@ import { ColumnSelect } from "~/components/tables/ColumnSelect";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
 
+import {
+  TableControlBarPlaceholderAction,
+  type TableControlBarPlaceholderActionConfig,
+} from "./TableControlBarPlaceholderAction";
 import { TableControlBarPortal } from "./TableControlBarPortal";
 
 export interface TableControlBarPlaceholderProps extends ComponentProps {
@@ -14,7 +18,8 @@ export interface TableControlBarPlaceholderProps extends ComponentProps {
   readonly rowsAreDeletable?: boolean;
   readonly columnsAreSelectable?: boolean;
   readonly targetId: string | null;
-  readonly actions?: Action[];
+  readonly actions?: TableControlBarPlaceholderActionConfig[];
+  readonly extra?: Action[];
   readonly columnsSelect?: JSX.Element;
 }
 
@@ -22,6 +27,7 @@ export const TableControlBarPlaceholder = ({
   children,
   actions,
   targetId,
+  extra,
   rowsAreDeletable = false,
   columnsAreSelectable = true,
   columnsSelect,
@@ -35,7 +41,11 @@ export const TableControlBarPlaceholder = ({
         </div>
         <div className="table-view__control-bar-actions">
           {rowsAreDeletable && <DeleteButton isDisabled={true} />}
-          {children}
+          {actions !== undefined && actions.length !== 0 ? (
+            actions.map((action, i) => <TableControlBarPlaceholderAction {...action} key={i} />)
+          ) : (
+            <>{children}</>
+          )}
         </div>
       </div>
       <div className="table-view__control-bar__right">
@@ -46,7 +56,7 @@ export const TableControlBarPlaceholder = ({
         ) : (
           <></>
         )}
-        <Actions>{actions}</Actions>
+        <Actions>{extra}</Actions>
       </div>
     </div>
   </TableControlBarPortal>

@@ -295,6 +295,7 @@ model Experience {
   title       String
   shortTitle  String?
   description String?
+  isCurrent   Boolean   @default(false)
   isRemote    Boolean   @default(false)
   visible     Boolean   @default(true)
   highlighted Boolean   @default(true)

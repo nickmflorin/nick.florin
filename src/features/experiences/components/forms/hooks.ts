@@ -21,5 +21,6 @@ export const useExperienceForm = ({ experience }: UseExperienceFormConfig) =>
       skills: experience?.skills.map(sk => sk.id) ?? [],
       visible: experience?.visible ?? true,
       highlighted: experience?.highlighted ?? false,
+      isCurrent: experience?.isCurrent ?? false,
     },
   });

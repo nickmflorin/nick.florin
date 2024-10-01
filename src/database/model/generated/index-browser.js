@@ -265,6 +265,7 @@ exports.Prisma.ExperienceScalarFieldEnum = {
   title: 'title',
   shortTitle: 'shortTitle',
   description: 'description',
+  isCurrent: 'isCurrent',
   isRemote: 'isRemote',
   visible: 'visible',
   highlighted: 'highlighted'

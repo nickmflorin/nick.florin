@@ -105,7 +105,10 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
         )}
       </Form.ControlledField>
       <Checkboxes orientation="horizontal" outer>
+        <CheckboxField name="isCurrent" form={props.form} label="Current" />
         <CheckboxField name="isRemote" form={props.form} label="Remote" />
+      </Checkboxes>
+      <Checkboxes orientation="horizontal" outer>
         <CheckboxField
           name="highlighted"
           form={props.form}

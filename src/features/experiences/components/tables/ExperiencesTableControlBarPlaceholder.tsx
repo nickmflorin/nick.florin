@@ -1,3 +1,4 @@
+"use client";
 import { HideButton } from "~/components/buttons/HideButton";
 import { HighlightButton } from "~/components/buttons/HighlightButton";
 import { ShowButton } from "~/components/buttons/ShowButton";
@@ -8,17 +9,18 @@ import {
 } from "~/components/tables/ConnectedTableControlBarPlaceholder";
 
 export interface ExperiencesTableControlBarPlaceholderProps
-  extends Omit<ConnectedTableControlBarPlaceholderProps, "children"> {
-  readonly controlBarTooltipsInPortal?: boolean;
-}
+  extends Omit<ConnectedTableControlBarPlaceholderProps, "children"> {}
 
 export const ExperiencesTableControlBarPlaceholder = (
   props: ExperiencesTableControlBarPlaceholderProps,
 ): JSX.Element => (
-  <ConnectedTableControlBarPlaceholder {...props}>
-    <ShowButton isDisabled={true} />
-    <HideButton isDisabled={true} />
-    <HighlightButton isDisabled={true} />
-    <UnhighlightButton isDisabled={true} />
-  </ConnectedTableControlBarPlaceholder>
+  <ConnectedTableControlBarPlaceholder
+    {...props}
+    actions={[
+      { button: ShowButton },
+      { button: HideButton },
+      { button: HighlightButton },
+      { button: UnhighlightButton },
+    ]}
+  />
 );

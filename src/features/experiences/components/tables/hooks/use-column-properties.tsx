@@ -7,6 +7,7 @@ import { type ExperiencesTableModel, type ExperiencesTableColumn } from "~/featu
 import { DetailsCell } from "~/features/resume/components/tables/cells/DetailsCell";
 
 import { CompanyCell } from "../cells/CompanyCell";
+import { CurrentCell } from "../cells/CurrentCell";
 import { HighlightedCell } from "../cells/HighlightedCell";
 import { RemoteCell } from "../cells/RemoteCell";
 import { SkillsCell } from "../cells/SkillsCell";
@@ -67,6 +68,11 @@ export const useExperiencesTableColumnProperties = (): DataTableColumnProperties
       isRemote: {
         cellRenderer(datum) {
           return <RemoteCell experience={datum} table={{ setRowLoading }} />;
+        },
+      },
+      isCurrent: {
+        cellRenderer(datum) {
+          return <CurrentCell experience={datum} table={{ setRowLoading }} />;
         },
       },
       highlighted: {
