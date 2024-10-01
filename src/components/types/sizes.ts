@@ -1,76 +1,143 @@
 export type SizeUnit = "px" | "rem" | "%";
 
+export const isSizeUnit = (value: unknown): value is SizeUnit =>
+  ["px", "rem", "%"].includes(value as string);
+
 export type QualitativeSize = "fit-content";
+
+export type StringUnitlessSize<T extends number = number> = `${T}`;
+
+export const isStringUnitlessSize = (value: unknown): value is StringUnitlessSize => {
+  if (typeof value === "string") {
+    const v = parseInt(value);
+    return !isNaN(v) && isFinite(v);
+  }
+  return false;
+};
+
+export type UnitlessSize<T extends number = number> = T | StringUnitlessSize<T>;
+
+export const isUnitlessSize = (value: unknown): value is UnitlessSize => {
+  if (typeof value === "string") {
+    return isStringUnitlessSize(value);
+  }
+  return typeof value === "number" && !isNaN(value) && isFinite(value);
+};
+
+export const isQualitativeSize = (value: unknown): value is QualitativeSize =>
+  ["fit-content"].includes(value as string);
 
 export type QuantitativeSizeString<
   U extends SizeUnit = SizeUnit,
-  N extends number = number,
-> = `${N}${U}`;
+  N extends UnitlessSize = UnitlessSize,
+> = U extends SizeUnit ? `${N}${U}` : never;
 
-export type QuantitativeSize<U extends SizeUnit = SizeUnit, N extends number = number> =
-  | QuantitativeSizeString<U, N>
-  | N;
-
-export type SizeString<U extends SizeUnit = SizeUnit, N extends number = number> =
-  | QuantitativeSizeString<U, N>
-  | QualitativeSize;
-
-export type Size<U extends SizeUnit = SizeUnit, N extends number = number> =
-  | QuantitativeSize<U, N>
-  | QualitativeSize;
+export type QuantitativeSize<
+  U extends SizeUnit = SizeUnit,
+  N extends UnitlessSize = UnitlessSize,
+> = U extends SizeUnit ? QuantitativeSizeString<U, N> | N : never;
 
 const QuantitativeSizeRegex = /^([0-9]*)(px|rem|%)$/;
 
-export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
-  size: Size<U, N>,
+const parseQuantitativeSizeString = (value: string): [number, SizeUnit] | [null, null] => {
+  const executed = QuantitativeSizeRegex.exec(value);
+  if (executed) {
+    const sz = executed[1];
+    const u = executed[2];
+    const integer = parseInt(sz);
+    if (isNaN(integer) || !isFinite(integer)) {
+      return [null, null];
+    } else if (typeof u !== "string") {
+      return [null, null];
+    } else if (!isSizeUnit(u)) {
+      return [null, null];
+    }
+    return [integer, u];
+  }
+  return [null, null];
+};
+type QuantitativeSizeTypeguardParams<U extends SizeUnit> = { readonly unit?: U };
+
+export const isQuantitativeSizeString = <
+  P extends QuantitativeSizeTypeguardParams<U>,
+  U extends SizeUnit,
+>(
+  value: unknown,
+  params: P,
+): value is P extends { unit: U } ? QuantitativeSize<U> : QuantitativeSize => {
+  if (typeof value === "string") {
+    const [sz, u] = parseQuantitativeSizeString(value);
+    if (sz !== null && u !== null) {
+      return params.unit !== undefined ? u === params.unit : true;
+    }
+  }
+  return false;
+};
+
+export const isQuantitativeSize = (value: unknown): value is QuantitativeSize =>
+  isQuantitativeSizeString(value, {}) || isStringUnitlessSize(value) || typeof value === "number";
+
+export const isQuantitativeSizeOfUnit = <U extends SizeUnit>(
+  value: unknown,
   unit: U,
-): QuantitativeSizeString<U, N>;
+): value is QuantitativeSize<U> =>
+  isQuantitativeSizeString(value, { unit }) ||
+  isStringUnitlessSize(value) ||
+  typeof value === "number";
 
-export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
-  size: QuantitativeSizeString<U, N>,
-  unit?: U,
-): QuantitativeSizeString<U, N>;
+export type InferQuantitativeSizeValue<T extends QuantitativeSize> =
+  T extends `${infer N extends number}${SizeUnit}`
+    ? N
+    : T extends `${infer N extends number}`
+      ? N
+      : T extends number
+        ? T
+        : never;
 
-export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
-  size: N,
-  unit: U,
-): QuantitativeSizeString<U, N>;
+export const inferQuantitativeSizeValue = <T extends QuantitativeSize>(
+  value: T,
+): InferQuantitativeSizeValue<T> => {
+  if (typeof value === "number") {
+    return value as InferQuantitativeSizeValue<T>;
+  } else if (isStringUnitlessSize(value)) {
+    const integer = parseInt(value);
+    /* This check is somewhat redundant, since the typeguard already performs this check.  But we
+       perform it again just in case. */
+    if (isNaN(integer) || !isFinite(integer)) {
+      throw new TypeError(`The provided size, '${value}', is invalid!`);
+    }
+    return integer as InferQuantitativeSizeValue<T>;
+  }
+  const [sz] = parseQuantitativeSizeString(value);
+  if (sz === null) {
+    throw new TypeError(`The provided size, '${value}', is invalid!`);
+  }
+  return sz as InferQuantitativeSizeValue<T>;
+};
 
-export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
-  size: QuantitativeSize<U, N>,
-  unit: U,
-): QuantitativeSizeString<U, N>;
+export type Size<U extends SizeUnit = SizeUnit, N extends UnitlessSize = UnitlessSize> =
+  | QuantitativeSize<U, N>
+  | QualitativeSize;
 
-export function sizeToString<U extends SizeUnit = SizeUnit, N extends number = number>(
-  size: N | QuantitativeSizeString<U, N> | QuantitativeSize<U, N> | Size<U, N>,
-  unit?: U,
-) {
-  if (typeof size === "string") {
-    return size;
+type SizeToStringRT<
+  T extends QuantitativeSize | UnitlessSize | QualitativeSize,
+  U extends SizeUnit,
+> = T extends UnitlessSize
+  ? QuantitativeSizeString<U, InferQuantitativeSizeValue<T>>
+  : T extends QuantitativeSizeString | QualitativeSize
+    ? T
+    : never;
+
+export function sizeToString<
+  T extends QuantitativeSize | UnitlessSize | QualitativeSize,
+  U extends SizeUnit,
+>(size: T, unit?: U): SizeToStringRT<T, U> {
+  if (isQualitativeSize(size) || isQuantitativeSizeString(size, {})) {
+    return size as SizeToStringRT<T, U>;
   } else if (unit === undefined) {
     throw new TypeError(
       "Invalid Function Implementation: The unit must be provided for numeric values.",
     );
   }
-  return `${size}${unit}`;
+  return `${size}${unit}` as SizeToStringRT<T, U>;
 }
-
-type SizeToNumberRT<T extends QuantitativeSize> = T extends `${infer N extends number}${SizeUnit}`
-  ? N
-  : T;
-
-export const sizeToNumber = <T extends QuantitativeSize>(size: T): SizeToNumberRT<T> => {
-  if (typeof size === "number") {
-    return size as SizeToNumberRT<T>;
-  }
-  const executed = QuantitativeSizeRegex.exec(size);
-  if (executed) {
-    const sz = executed[1];
-    const integer = parseInt(sz);
-    if (isNaN(integer) || !isFinite(integer)) {
-      throw new TypeError(`The provided size string, '${size}', is invalid!`);
-    }
-    return integer as SizeToNumberRT<T>;
-  }
-  throw new TypeError(`The provided size string, '${size}', is invalid!`);
-};

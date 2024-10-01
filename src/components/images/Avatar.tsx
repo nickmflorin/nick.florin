@@ -10,7 +10,7 @@ import {
   type QuantitativeSize,
   classNames,
   sizeToString,
-  sizeToNumber,
+  inferQuantitativeSizeValue,
   type BorderRadius,
 } from "~/components/types";
 
@@ -69,8 +69,8 @@ export const Avatar = ({
           /* The image is constrained to expand to fill the container in SASS - so the numbers here
              are mostly to satisfy NetJS for image optimization - but won't actually be used in
              practice. */
-          height={size ? sizeToNumber(size) : 24}
-          width={size ? sizeToNumber(size) : 24}
+          height={size ? inferQuantitativeSizeValue(size) : 24}
+          width={size ? inferQuantitativeSizeValue(size) : 24}
           src={src}
           alt={alt ?? ""}
           priority={priority}

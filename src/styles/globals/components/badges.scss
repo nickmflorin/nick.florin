@@ -163,14 +163,20 @@ $badge-default-size: "sm";
 .badge-collection {
   font-family: typography.get-font-family("body");
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  flex-direction: column;
+  gap: 6px;
 
   @include typography.with-font-families();
 
-  > .badge {
-    font-weight: inherit;
-    font-family: inherit;
+  > .badge-collection__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    > .badge {
+      font-weight: inherit;
+      font-family: inherit;
+    }
   }
 
   @include typography.use-fonts("body") using ($size, $data) {
@@ -181,8 +187,10 @@ $badge-default-size: "sm";
       // Allow the font-weight to be overridden for each size.
       @include typography.with-font-weights();
 
-      > .badge {
-        @include badge-size($size);
+      > .badge-collection__badges {
+        > .badge {
+          @include badge-size($size);
+        }
       }
     }
   }

@@ -78,8 +78,8 @@ export const withBaseConfig = (rootDir: string, config: AllowedConfig): Config =
  *   The root directory of the project which contains the tests it is responsible for.  This should
  *   be provided by the __dirname variable inside of the project's `jest.config.ts`.
  *
- * @param {DynamicConfig} config
- *   Optional, additional Jest configuration options.
+ * @param {string[]} projects
+ *   The Jest "projects" for the application.
  */
 export const withApplicationConfig = (rootDir: string, projects: string[]) =>
   createNextJestConfig(

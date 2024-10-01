@@ -1,16 +1,43 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
-import { MobileNavigationCutoff } from "~/components/constants";
 import {
   type Breakpoint,
   Breakpoints,
   getMediaQuery,
   type ScreenSize,
-  sizeToNumber,
+  inferQuantitativeSizeValue,
+  type ContainerBreakpoint,
+  ContainerBreakpoints,
+  type ContainerSize,
 } from "~/components/types";
 
-import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
-import { useNavMenu } from "./use-nav-menu";
+import { useWindowResize } from "./use-window-resize";
+
+const getContainerBreakpoint = <T extends HTMLElement>(
+  container: T | null,
+): ContainerBreakpoint | "smallest" | null => {
+  let breakpoint: ContainerBreakpoint | null = null;
+  if (container) {
+    for (let i = 0; i < ContainerBreakpoints.models.length; i++) {
+      if (i === ContainerBreakpoints.members.length - 1) {
+        if (container.clientWidth < ContainerBreakpoints.models[i].size + 1) {
+          breakpoint = ContainerBreakpoints.members[i];
+        }
+      } else {
+        if (
+          container.clientWidth < ContainerBreakpoints.models[i + 1].size + 1 &&
+          container.clientWidth > ContainerBreakpoints.models[i].size
+        ) {
+          breakpoint = ContainerBreakpoints.members[i];
+        }
+      }
+    }
+    if (!breakpoint) {
+      return "smallest";
+    }
+  }
+  return breakpoint;
+};
 
 const getBreakpoint = (w: Window): Breakpoint | "smallest" => {
   let breakpoint: Breakpoint | null = null;
@@ -48,52 +75,31 @@ const Comparators: { [key in Comparison]: (actual: number, compare: number) => b
 
 export const useScreenSizes = () => {
   const [size, setSize] = useState<number>(window.innerWidth);
-  const { close } = useNavMenu();
 
   const [breakpoint, setBreakpoint] = useState<Breakpoint | "smallest">(() =>
     getBreakpoint(window),
   );
 
-  const handleResize = useCallback(() => {
+  useWindowResize(w => {
     const bk = getBreakpoint(window);
     setBreakpoint(bk);
-    setSize(window.innerWidth);
-
-    if (window.innerWidth > MobileNavigationCutoff) {
-      close();
-    }
-  }, [close]);
-
-  useIsomorphicLayoutEffect(() => {
-    handleResize();
-
-    const listener = () => {
-      handleResize();
-    };
-
-    window.addEventListener("resize", listener, false);
-    return () => {
-      window.removeEventListener("resize", listener);
-    };
-  }, []);
+    setSize(w.innerWidth);
+  });
 
   const compare = useCallback(
     (sz: ScreenSize, comparison: Comparison) => {
-      if (breakpoint !== null) {
-        if (Breakpoints.contains(sz)) {
-          if (Breakpoints.contains(breakpoint)) {
-            return Comparators[comparison](
-              Breakpoints.members.indexOf(breakpoint),
-              Breakpoints.members.indexOf(sz),
-            );
-          }
-          /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
-             breakpoint. */
-          return true;
+      if (Breakpoints.contains(sz)) {
+        if (Breakpoints.contains(breakpoint)) {
+          return Comparators[comparison](
+            Breakpoints.members.indexOf(breakpoint),
+            Breakpoints.members.indexOf(sz),
+          );
         }
-        return Comparators[comparison](size, sizeToNumber(sz));
+        /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
+             breakpoint. */
+        return true;
       }
-      return false;
+      return Comparators[comparison](size, inferQuantitativeSizeValue(sz));
     },
     [breakpoint, size],
   );
@@ -113,6 +119,68 @@ export const useScreenSizes = () => {
   const isGreaterThan = useCallback((sz: ScreenSize) => compare(sz, "greaterThan"), [compare]);
 
   return {
+    breakpoint,
+    size,
+    isLessThanOrEqualTo,
+    isLessThan,
+    isGreaterThan,
+    isGreaterThanOrEqualTo,
+  };
+};
+
+export const useContainerSizes = <T extends HTMLElement>() => {
+  const ref = useRef<T | null>(null);
+
+  const [size, setSize] = useState<number | null>(null);
+  const [breakpoint, setBreakpoint] = useState<ContainerBreakpoint | "smallest" | null>(() =>
+    getContainerBreakpoint(ref.current),
+  );
+
+  useWindowResize(() => {
+    if (ref.current) {
+      const bk = getContainerBreakpoint(ref.current);
+      setBreakpoint(bk);
+      setSize(ref.current.clientWidth);
+    }
+  });
+
+  const compare = useCallback(
+    (sz: ContainerSize, comparison: Comparison) => {
+      if (breakpoint !== null && size !== null) {
+        if (ContainerBreakpoints.contains(sz)) {
+          if (ContainerBreakpoints.contains(breakpoint)) {
+            return Comparators[comparison](
+              ContainerBreakpoints.members.indexOf(breakpoint),
+              ContainerBreakpoints.members.indexOf(sz),
+            );
+          }
+          /* Here, the breakpoint is "smallest" - and the container size is smaller than the
+             smallest breakpoint. */
+          return true;
+        }
+        return Comparators[comparison](size, inferQuantitativeSizeValue(sz));
+      }
+      return false;
+    },
+    [breakpoint, size],
+  );
+
+  const isLessThanOrEqualTo = useCallback(
+    (sz: ContainerSize) => compare(sz, "lessThanOrEqualTo"),
+    [compare],
+  );
+
+  const isGreaterThanOrEqualTo = useCallback(
+    (sz: ContainerSize) => compare(sz, "greaterThanOrEqualTo"),
+    [compare],
+  );
+
+  const isLessThan = useCallback((sz: ContainerSize) => compare(sz, "lessThan"), [compare]);
+
+  const isGreaterThan = useCallback((sz: ContainerSize) => compare(sz, "greaterThan"), [compare]);
+
+  return {
+    ref,
     breakpoint,
     size,
     isLessThanOrEqualTo,

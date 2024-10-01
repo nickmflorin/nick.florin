@@ -11,7 +11,11 @@ import * as types from "~/components/menus";
 import { type Action } from "~/components/structural/Actions";
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
-import { sizeToString, sizeToNumber, type QuantitativeSize } from "~/components/types/sizes";
+import {
+  sizeToString,
+  inferQuantitativeSizeValue,
+  type QuantitativeSize,
+} from "~/components/types/sizes";
 import { Description } from "~/components/typography";
 import { ShowHide, Square } from "~/components/util";
 
@@ -302,7 +306,7 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
               ? {
                   ...props.style,
                   height: sizeToString(height, "px"),
-                  lineHeight: `${sizeToNumber(height) - 2 * 6}px`,
+                  lineHeight: `${inferQuantitativeSizeValue(height) - 2 * 6}px`,
                 }
               : props.style
           }

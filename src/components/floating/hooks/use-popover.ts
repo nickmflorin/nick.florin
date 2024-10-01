@@ -10,7 +10,11 @@ import {
 } from "@floating-ui/react";
 
 import type * as types from "~/components/floating/types";
-import { type QuantitativeSize, sizeToNumber, sizeToString } from "~/components/types";
+import {
+  type QuantitativeSize,
+  inferQuantitativeSizeValue,
+  sizeToString,
+} from "~/components/types";
 
 import { useFloating, type UseFloatingConfig } from "./use-floating";
 
@@ -55,7 +59,7 @@ export const usePopover = ({
                   ? sizeToString(availableWidth, "px")
                   : width === "fit-content"
                   ? "fit-content"
-                  : sizeToString(Math.min(sizeToNumber(width), availableWidth), "px"),
+                  : sizeToString(Math.min(inferQuantitativeSizeValue(width), availableWidth), "px"),
             /* eslint-enable prettier/prettier */
             });
           }
@@ -66,7 +70,9 @@ export const usePopover = ({
           } else {
             Object.assign(elements.floating.style, {
               maxHeight:
-                maxHeight !== "fit-content" ? `${sizeToNumber(maxHeight)}px` : "fit-content",
+                maxHeight !== "fit-content"
+                  ? `${inferQuantitativeSizeValue(maxHeight)}px`
+                  : "fit-content",
             });
           }
         },

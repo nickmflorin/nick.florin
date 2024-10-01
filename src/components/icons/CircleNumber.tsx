@@ -2,7 +2,7 @@ import { clamp } from "lodash-es";
 
 import {
   classNames,
-  sizeToNumber,
+  inferQuantitativeSizeValue,
   sizeToString,
   type ComponentProps,
   type QuantitativeSize,
@@ -40,10 +40,10 @@ export const CircleNumber = ({
     )}
     style={{
       ...props.style,
-      height: sizeToString(clamp(sizeToNumber(size), 12, 64), "px"),
-      width: sizeToString(clamp(sizeToNumber(size), 12, 64), "px"),
+      height: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), "px"),
+      width: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), "px"),
       aspectRatio: "1/1",
-      lineHeight: sizeToString(sizeToNumber(size) - 4, "px"),
+      lineHeight: sizeToString(inferQuantitativeSizeValue(size) - 4, "px"),
     }}
   >
     {children}

@@ -12,3 +12,4 @@ export * from "./use-ordering";
 export * from "./use-filters";
 export * from "./use-resettable-state";
 export * from "./use-filter-state";
+export * from "./use-window-resize";

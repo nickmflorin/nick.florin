@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import {
   classNames,
-  sizeToNumber,
+  inferQuantitativeSizeValue,
   type ComponentProps,
   type QuantitativeSize,
 } from "~/components/types";
@@ -28,8 +28,8 @@ export const EmptyMessage = ({
   >
     <Image
       src="/empty.svg"
-      width={sizeToNumber(imageSize)}
-      height={sizeToNumber(imageSize)}
+      width={inferQuantitativeSizeValue(imageSize)}
+      height={inferQuantitativeSizeValue(imageSize)}
       alt="Empty"
     />
     <Description fontSize="sm" fontWeight="regular" align="center">
