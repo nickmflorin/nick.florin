@@ -5,8 +5,7 @@ import {
   RepositoryIncludesFields,
   type RepositoryIncludesField,
 } from "~/database/model";
-import { arraysHaveSameElements } from "~/lib";
-import { Filters } from "~/lib/filters";
+import { type FiltersValues, Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
@@ -93,13 +92,15 @@ export const getRepositoriesOrdering = <F extends RepositoryOrderableField, O ex
   ] as const;
 };
 
-export type RepositoriesFilters = {
-  readonly highlighted: boolean | null;
-  readonly visible: boolean | null;
-  readonly search: string;
-  readonly projects: string[];
-  readonly skills: string[];
-};
+export const RepositoriesFiltersObj = new Filters({
+  highlighted: Filters.flag(),
+  visible: Filters.flag(),
+  search: Filters.search(),
+  projects: Filters.multiString({ typeguard: isUuid }),
+  skills: Filters.multiString({ typeguard: isUuid }),
+});
+
+export type RepositoriesFilters = FiltersValues<typeof RepositoriesFiltersObj>;
 
 export type RepositoriesControls<I extends RepositoryIncludes = RepositoryIncludes> = Controls<
   I,
@@ -114,44 +115,6 @@ export type RepositoryControls<I extends RepositoryIncludes = RepositoryIncludes
   RepositoriesControls<I>,
   "includes" | "visibility"
 >;
-
-export const RepositoriesFiltersObj = new Filters({
-  highlighted: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  visible: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-  skills: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  projects: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-});
 
 // Used for API Routes
 export const RepositoryIncludesSchema = z

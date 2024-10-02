@@ -6,6 +6,11 @@ import { useResettableState } from "./use-resettable-state";
 
 type InitialState<S extends Record<string, unknown>> = S | (() => S);
 
+/**
+ * @deprecated
+ * This should be replaced with logic that can be incorporated into the 'useFilters' or
+ * 'useFilters' hooks.
+ */
 export const useFilterState = <S extends Record<string, unknown>>(
   initialState: InitialState<S>,
   comparators?: Partial<{ [key in keyof S]: (a: S[key], b: S[key]) => boolean }>,

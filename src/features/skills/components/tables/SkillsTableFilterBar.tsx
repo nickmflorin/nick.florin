@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useCallback } from "react";
+import { useRef } from "react";
 
 import type {
   ApiEducation,
@@ -10,9 +10,9 @@ import type {
   ProgrammingDomain,
   ProgrammingLanguage,
 } from "~/database/model";
-import { FiltersValues } from "~/lib/filters";
+import type { FilterFieldName } from "~/lib/filters";
 
-import { SkillsFiltersObj, type SkillsFilters } from "~/actions";
+import { SkillsFiltersObj } from "~/actions";
 
 import { DrawerIds } from "~/components/drawers";
 import type { SelectInstance } from "~/components/input/select";
@@ -25,12 +25,7 @@ import { RepositorySelect } from "~/features/repositories/components/input/Repos
 import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
 import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
 import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
-import { useFilters } from "~/hooks/use-filters";
-
-type SelectFilterField = Exclude<
-  keyof SkillsFilters,
-  "search" | "highlighted" | "prioritized" | "visible"
->;
+import { useFilters } from "~/hooks";
 
 export interface SkillsTableFilterBarProps extends ComponentProps {
   readonly isSearchable?: boolean;
@@ -38,49 +33,8 @@ export interface SkillsTableFilterBarProps extends ComponentProps {
   readonly experiences: ApiExperience<[]>[];
   readonly projects: ApiProject<[]>[];
   readonly repositories: ApiRepository<[]>[];
-  readonly excludeFilters?: SelectFilterField[];
+  readonly excludeFilters?: FilterFieldName<typeof SkillsFiltersObj>[];
 }
-
-type FilterRefs = {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  [key in SelectFilterField]: React.MutableRefObject<any>;
-};
-
-const useFilterRefs = ({ filters }: { filters: SkillsFilters }) => {
-  const refs = useRef<FilterRefs>({
-    experiences: useRef<SelectInstance<string, "multi"> | null>(null),
-    educations: useRef<SelectInstance<string, "multi"> | null>(null),
-    projects: useRef<SelectInstance<string, "multi"> | null>(null),
-    repositories: useRef<SelectInstance<string, "multi"> | null>(null),
-    programmingDomains: useRef<SelectInstance<ProgrammingDomain, "multi"> | null>(null),
-    programmingLanguages: useRef<SelectInstance<ProgrammingLanguage, "multi"> | null>(null),
-    categories: useRef<SelectInstance<SkillCategory, "multi"> | null>(null),
-  });
-
-  const clear = useCallback(() => {
-    for (const ref of Object.values(refs.current)) {
-      ref.current?.clear();
-    }
-  }, []);
-
-  const sync = useCallback((filts: SkillsFilters) => {
-    for (const [field, ref] of Object.entries(refs.current)) {
-      if (ref.current) {
-        const f = field as SelectFilterField;
-        const v = filts[f];
-        const setter = ref.current.setValue as (v: SkillsFilters[typeof f]) => void;
-        setter(v);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    sync(filters);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [filters]);
-
-  return { refs: refs.current, clear, sync };
-};
 
 export const SkillsTableFilterBar = ({
   excludeFilters = [],
@@ -90,40 +44,32 @@ export const SkillsTableFilterBar = ({
   repositories,
   ...props
 }: SkillsTableFilterBarProps): JSX.Element => {
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [filters, updateFilters, { pendingFilters }] = useFilters({
-    filters: SkillsFiltersObj,
+  const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(SkillsFiltersObj, {
+    experiences: useRef<SelectInstance<string, "multi"> | null>(null),
+    educations: useRef<SelectInstance<string, "multi"> | null>(null),
+    projects: useRef<SelectInstance<string, "multi"> | null>(null),
+    repositories: useRef<SelectInstance<string, "multi"> | null>(null),
+    programmingDomains: useRef<SelectInstance<ProgrammingDomain, "multi"> | null>(null),
+    programmingLanguages: useRef<SelectInstance<ProgrammingLanguage, "multi"> | null>(null),
+    categories: useRef<SelectInstance<SkillCategory, "multi"> | null>(null),
+    search: useRef<HTMLInputElement | null>(null),
+    visible: useRef<HTMLInputElement | null>(null),
+    highlighted: useRef<HTMLInputElement | null>(null),
+    prioritized: useRef<HTMLInputElement | null>(null),
   });
-  const { refs, clear } = useFilterRefs({ filters });
 
   return (
     <TableView.FilterBar
       {...props}
       excludeFilters={excludeFilters}
-      searchInputRef={searchInputRef}
+      searchInputRef={refs.search}
       searchPlaceholder="Search skills..."
       searchPending={Object.keys(pendingFilters).includes("search")}
       onSearch={v => updateFilters({ search: v })}
       newDrawerId={DrawerIds.CREATE_SKILL}
       search={filters.search}
       filters={filters}
-      onClear={() => {
-        clear();
-        /* TODO: Establish more of an Object-Oriented pattern for our "Filters" object, for each
-           specific model, and expose an attribute on the object 'emptyFilters' that can be used
-           to reset the value here. */
-        updateFilters({
-          experiences: [],
-          educations: [],
-          search: "",
-          programmingDomains: [],
-          programmingLanguages: [],
-          categories: [],
-          projects: [],
-          repositories: [],
-        });
-      }}
+      onClear={() => clear()}
       configuration={[
         {
           id: "projects",

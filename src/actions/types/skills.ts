@@ -5,13 +5,9 @@ import {
   SkillIncludesFields,
   type SkillIncludesField,
   SkillCategories,
-  type ProgrammingDomain,
-  type ProgrammingLanguage,
-  type SkillCategory,
   ProgrammingDomains,
   ProgrammingLanguages,
 } from "~/database/model";
-import { arraysHaveSameElements } from "~/lib";
 import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -97,110 +93,17 @@ export const getSkillsOrdering = <F extends SkillOrderableField, O extends Order
 };
 
 export const SkillsFiltersObj = new Filters({
-  highlighted: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  prioritized: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  visible: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-  categories: {
-    defaultValue: [] as SkillCategory[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return SkillCategories.contains(value) ? [value] : [];
-      }
-      return value.reduce(
-        (prev, curr) => (SkillCategories.contains(curr) ? [...prev, curr] : prev),
-        [] as SkillCategory[],
-      );
-    }),
-  },
-  programmingDomains: {
-    defaultValue: [] as ProgrammingDomain[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return ProgrammingDomains.contains(value) ? [value] : [];
-      }
-      return value.reduce(
-        (prev, curr) => (ProgrammingDomains.contains(curr) ? [...prev, curr] : prev),
-        [] as ProgrammingDomain[],
-      );
-    }),
-  },
-  programmingLanguages: {
-    defaultValue: [] as ProgrammingLanguage[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return ProgrammingLanguages.contains(value) ? [value] : [];
-      }
-      return value.reduce(
-        (prev, curr) => (ProgrammingLanguages.contains(curr) ? [...prev, curr] : prev),
-        [] as ProgrammingLanguage[],
-      );
-    }),
-  },
-  experiences: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  projects: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  repositories: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  educations: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
+  prioritized: Filters.flag(),
+  highlighted: Filters.flag(),
+  visible: Filters.flag(),
+  search: Filters.search(),
+  categories: Filters.multiEnum(SkillCategories.contains),
+  programmingDomains: Filters.multiEnum(ProgrammingDomains.contains),
+  programmingLanguages: Filters.multiEnum(ProgrammingLanguages.contains),
+  experiences: Filters.multiString({ typeguard: isUuid }),
+  projects: Filters.multiString({ typeguard: isUuid }),
+  repositories: Filters.multiString({ typeguard: isUuid }),
+  educations: Filters.multiString({ typeguard: isUuid }),
 });
 
 export type SkillsFilters = FiltersValues<typeof SkillsFiltersObj>;

@@ -1,6 +1,4 @@
-import { z } from "zod";
-
-import { Filters } from "~/lib/filters";
+import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 
 import type { ActionVisibility } from "~/actions/visibility";
@@ -88,9 +86,11 @@ export const getResumesOrdering = <F extends ResumeOrderableField, O extends Ord
   ] as const;
 };
 
-export type ResumesFilters = {
-  readonly search: string;
-};
+export const ResumesFiltersObj = new Filters({
+  search: Filters.search(),
+});
+
+export type ResumesFilters = FiltersValues<typeof ResumesFiltersObj>;
 
 export type ResumesControls = {
   readonly filters: Partial<ResumesFilters>;
@@ -108,9 +108,3 @@ export type FlattenedResumesControls = Partial<ResumesFilters> &
   };
 
 export type ResumeControls = Pick<ResumesControls, "visibility">;
-
-export const ResumesFiltersObj = new Filters({
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-});

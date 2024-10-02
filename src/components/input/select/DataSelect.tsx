@@ -64,7 +64,6 @@ export const DataSelect = forwardRef(
     ref: ForwardedRef<types.DataSelectInstance<M, O>>,
   ): JSX.Element => {
     const innerRef = useRef<types.DataSelectInstance<M, O> | null>(null);
-    // const menuContentRef = useRef<DataMenuContentInstance>(null);
 
     const getItemValue = useCallback(
       (m: M) => {
@@ -110,7 +109,6 @@ export const DataSelect = forwardRef(
             isLoading={isLoading}
             data={data}
             selectionIndicator={selectionIndicator}
-            // contentRef={menuContentRef}
             className={classNames("h-full rounded-sm", menuClassName)}
             itemIsSelected={m => {
               const fn = getItemValue as (m: M) => types.InferredDataSelectV<M, O>;

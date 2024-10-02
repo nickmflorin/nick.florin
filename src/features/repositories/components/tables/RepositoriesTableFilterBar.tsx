@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useRef, useCallback } from "react";
+import { useRef } from "react";
 
 import { type ApiSkill, type ApiProject } from "~/database/model";
+import { type FilterFieldName } from "~/lib/filters";
 
-import { RepositoriesFiltersObj, type RepositoriesFilters } from "~/actions";
+import { RepositoriesFiltersObj } from "~/actions";
 
 import { DrawerIds } from "~/components/drawers";
 import type { SelectInstance } from "~/components/input/select";
@@ -11,54 +12,16 @@ import { TableView } from "~/components/tables/TableView";
 import { type ComponentProps } from "~/components/types";
 import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters } from "~/hooks/use-filters";
+import { useFilters } from "~/hooks";
 
 import { SyncRepositoriesButton } from "./SyncRepositoriesButton";
-
-type SelectFilterField = Exclude<keyof RepositoriesFilters, "search" | "highlighted" | "visible">;
 
 export interface RepositoriesTableFilterBarProps extends ComponentProps {
   readonly isSearchable?: boolean;
   readonly skills: ApiSkill<[]>[];
   readonly projects: ApiProject<[]>[];
-  readonly excludeFilters?: SelectFilterField[];
+  readonly excludeFilters?: FilterFieldName<typeof RepositoriesFiltersObj>[];
 }
-
-type FilterRefs = {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  [key in SelectFilterField]: React.MutableRefObject<any>;
-};
-
-const useFilterRefs = ({ filters }: { filters: RepositoriesFilters }) => {
-  const refs = useRef<FilterRefs>({
-    projects: useRef<SelectInstance<string, "multi"> | null>(null),
-    skills: useRef<SelectInstance<string, "multi"> | null>(null),
-  });
-
-  const clear = useCallback(() => {
-    for (const ref of Object.values(refs.current)) {
-      ref.current?.clear();
-    }
-  }, []);
-
-  const sync = useCallback((filts: RepositoriesFilters) => {
-    for (const [field, ref] of Object.entries(refs.current)) {
-      if (ref.current) {
-        const f = field as SelectFilterField;
-        const v = filts[f];
-        const setter = ref.current.setValue as (v: RepositoriesFilters[typeof f]) => void;
-        setter(v);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    sync(filters);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [filters]);
-
-  return { refs: refs.current, clear, sync };
-};
 
 export const RepositoriesTableFilterBar = ({
   excludeFilters = [],
@@ -66,36 +29,29 @@ export const RepositoriesTableFilterBar = ({
   skills,
   ...props
 }: RepositoriesTableFilterBarProps): JSX.Element => {
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [filters, updateFilters, { pendingFilters }] = useFilters({
-    filters: RepositoriesFiltersObj,
-  });
-
-  const { refs, clear } = useFilterRefs({ filters });
+  const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(
+    RepositoriesFiltersObj,
+    {
+      projects: useRef<SelectInstance<string, "multi"> | null>(null),
+      skills: useRef<SelectInstance<string, "multi"> | null>(null),
+      search: useRef<HTMLInputElement | null>(null),
+      visible: useRef<HTMLInputElement | null>(null),
+      highlighted: useRef<HTMLInputElement | null>(null),
+    },
+  );
 
   return (
     <TableView.FilterBar
       {...props}
       excludeFilters={excludeFilters}
       searchPending={Object.keys(pendingFilters).includes("search")}
-      searchInputRef={searchInputRef}
+      searchInputRef={refs.search}
       searchPlaceholder="Search repositories..."
       onSearch={v => updateFilters({ search: v })}
       newDrawerId={DrawerIds.CREATE_REPOSITORY}
       search={filters.search}
       filters={filters}
-      onClear={() => {
-        clear();
-        /* TODO: Establish more of an Object-Oriented pattern for our "Filters" object, for each
-           specific model, and expose an attribute on the object 'emptyFilters' that can be used
-           to reset the value here. */
-        updateFilters({
-          projects: [],
-          skills: [],
-          search: "",
-        });
-      }}
+      onClear={() => clear()}
       configuration={[
         {
           id: "skills",

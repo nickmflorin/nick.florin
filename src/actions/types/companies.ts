@@ -7,8 +7,7 @@ import {
   CompanyIncludesFields,
   type CompanyIncludesField,
 } from "~/database/model";
-import { arraysHaveSameElements } from "~/lib";
-import { Filters } from "~/lib/filters";
+import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 /*
@@ -97,10 +96,12 @@ export const getCompaniesOrdering = <F extends CompanyOrderableField, O extends 
   ] as const;
 };
 
-export type CompaniesFilters = {
-  readonly search: string;
-  readonly experiences: string[];
-};
+export const CompaniesFiltersObj = new Filters({
+  search: Filters.search(),
+  experiences: Filters.multiString({ typeguard: isUuid }),
+});
+
+export type CompaniesFilters = FiltersValues<typeof CompaniesFiltersObj>;
 
 export type CompaniesControls<I extends CompanyIncludes = CompanyIncludes> = Controls<
   I,
@@ -115,23 +116,6 @@ export type CompanyControls<I extends CompanyIncludes = CompanyIncludes> = Pick<
   CompaniesControls<I>,
   "includes" | "visibility"
 >;
-
-export const CompaniesFiltersObj = new Filters({
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-  experiences: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-});
 
 // Used for API Routes
 export const CompanyIncludesSchema = z.union([z.string(), z.array(z.string())]).transform(value => {

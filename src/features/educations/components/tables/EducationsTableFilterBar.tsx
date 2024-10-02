@@ -1,5 +1,5 @@
 "use client";
-import { type ReactNode, useEffect, useRef, useCallback } from "react";
+import { type ReactNode, useRef } from "react";
 
 import { type ApiSkill, type Degree, type ApiCourse, type ApiSchool } from "~/database/model";
 
@@ -29,44 +29,6 @@ export interface EducationsTableFilterBarProps extends ComponentProps {
   readonly excludeFilters?: SelectFilterField[];
 }
 
-type FilterRefs = {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  [key in SelectFilterField]: React.MutableRefObject<any>;
-};
-
-const useFilterRefs = ({ filters }: { filters: EducationsFilters }) => {
-  const refs = useRef<FilterRefs>({
-    schools: useRef<SelectInstance<string, "multi"> | null>(null),
-    courses: useRef<SelectInstance<string, "multi"> | null>(null),
-    skills: useRef<SelectInstance<string, "multi"> | null>(null),
-    degrees: useRef<SelectInstance<Degree, "multi"> | null>(null),
-  });
-
-  const clear = useCallback(() => {
-    for (const ref of Object.values(refs.current)) {
-      ref.current?.clear();
-    }
-  }, []);
-
-  const sync = useCallback((filts: EducationsFilters) => {
-    for (const [field, ref] of Object.entries(refs.current)) {
-      if (ref.current) {
-        const f = field as SelectFilterField;
-        const v = filts[f];
-        const setter = ref.current.setValue as (v: EducationsFilters[typeof f]) => void;
-        setter(v);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    sync(filters);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [filters]);
-
-  return { refs: refs.current, clear, sync };
-};
-
 export const EducationsTableFilterBar = ({
   excludeFilters = [],
   schools,
@@ -75,37 +37,29 @@ export const EducationsTableFilterBar = ({
   skills,
   ...props
 }: EducationsTableFilterBarProps): JSX.Element => {
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [filters, updateFilters, { pendingFilters }] = useFilters({
-    filters: EducationsFiltersObj,
+  const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(EducationsFiltersObj, {
+    schools: useRef<SelectInstance<string, "multi"> | null>(null),
+    skills: useRef<SelectInstance<string, "multi"> | null>(null),
+    courses: useRef<SelectInstance<string, "multi"> | null>(null),
+    degrees: useRef<SelectInstance<Degree, "multi"> | null>(null),
+    search: useRef<HTMLInputElement | null>(null),
+    visible: useRef<HTMLInputElement | null>(null),
+    highlighted: useRef<HTMLInputElement | null>(null),
+    postPoned: useRef<HTMLInputElement | null>(null),
   });
-  const { refs, clear } = useFilterRefs({ filters });
 
   return (
     <TableView.FilterBar
       {...props}
       excludeFilters={excludeFilters}
       searchPending={Object.keys(pendingFilters).includes("search")}
-      searchInputRef={searchInputRef}
+      searchInputRef={refs.search}
       searchPlaceholder="Search educations..."
       onSearch={v => updateFilters({ search: v })}
       newDrawerId={DrawerIds.CREATE_EDUCATION}
       search={filters.search}
       filters={filters}
-      onClear={() => {
-        clear();
-        /* TODO: Establish more of an Object-Oriented pattern for our "Filters" object, for each
-           specific model, and expose an attribute on the object 'emptyFilters' that can be used
-           to reset the value here. */
-        updateFilters({
-          schools: [],
-          courses: [],
-          degrees: [],
-          skills: [],
-          search: "",
-        });
-      }}
+      onClear={() => clear()}
       configuration={[
         {
           id: "skills",

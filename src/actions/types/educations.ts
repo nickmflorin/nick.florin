@@ -4,11 +4,9 @@ import {
   type EducationIncludes,
   EducationIncludesFields,
   type EducationIncludesField,
-  type Degree,
   Degrees,
 } from "~/database/model";
-import { arraysHaveSameElements } from "~/lib";
-import { Filters } from "~/lib/filters";
+import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
@@ -98,16 +96,18 @@ export const getEducationsOrdering = <F extends EducationOrderableField, O exten
   ] as const;
 };
 
-export type EducationsFilters = {
-  readonly highlighted: boolean | null;
-  readonly visible: boolean | null;
-  readonly postPoned: boolean | null;
-  readonly skills: string[];
-  readonly search: string;
-  readonly schools: string[];
-  readonly courses: string[];
-  readonly degrees: Degree[];
-};
+export const EducationsFiltersObj = new Filters({
+  postPoned: Filters.flag(),
+  highlighted: Filters.flag(),
+  visible: Filters.flag(),
+  search: Filters.search(),
+  degrees: Filters.multiEnum(Degrees.contains),
+  courses: Filters.multiString({ typeguard: isUuid }),
+  skills: Filters.multiString({ typeguard: isUuid }),
+  schools: Filters.multiString({ typeguard: isUuid }),
+});
+
+export type EducationsFilters = FiltersValues<typeof EducationsFiltersObj>;
 
 export type EducationsControls<I extends EducationIncludes = EducationIncludes> = Controls<
   I,
@@ -122,74 +122,6 @@ export type EducationControls<I extends EducationIncludes = EducationIncludes> =
   EducationsControls<I>,
   "includes" | "visibility"
 >;
-
-export const EducationsFiltersObj = new Filters({
-  highlighted: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  visible: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  postPoned: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-  courses: {
-    equals: arraysHaveSameElements,
-    defaultValue: [] as string[],
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  skills: {
-    equals: arraysHaveSameElements,
-    defaultValue: [] as string[],
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  schools: {
-    equals: arraysHaveSameElements,
-    defaultValue: [] as string[],
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  degrees: {
-    equals: arraysHaveSameElements,
-    defaultValue: [] as Degree[],
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return Degrees.contains(value) ? [value] : [];
-      }
-      return value.reduce(
-        (prev, curr) => (Degrees.contains(curr) ? [...prev, curr] : prev),
-        [] as Degree[],
-      );
-    }),
-  },
-});
 
 // Used for API Routes
 export const EducationIncludesSchema = z

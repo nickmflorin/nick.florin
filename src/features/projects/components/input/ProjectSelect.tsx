@@ -29,13 +29,14 @@ export interface ProjectSelectProps<B extends SelectBehaviorType>
     | "includeDescriptions"
     | "getItemValueLabel"
   > {
+  readonly useAbbreviatedLabels?: boolean;
   readonly behavior: B;
   readonly data: BrandProject[];
 }
 
 export const ProjectSelect = forwardRef(
   <B extends SelectBehaviorType>(
-    { behavior, data, ...props }: ProjectSelectProps<B>,
+    { behavior, data, useAbbreviatedLabels = true, ...props }: ProjectSelectProps<B>,
     ref: ForwardedRef<ProjectSelectInstance<B>>,
   ): JSX.Element => (
     <DataSelect<ProjectSelectModel, { behavior: B; getItemValue: typeof getItemValue }>
@@ -62,7 +63,7 @@ export const ProjectSelect = forwardRef(
       itemRenderer={m => (
         <div className="flex flex-col gap-[4px]">
           <Text fontSize="sm" fontWeight="medium" truncate>
-            {m.name}
+            {useAbbreviatedLabels ? (m.shortName ?? m.name) : m.name}
           </Text>
           <Description fontSize="xs">{m.slug}</Description>
         </div>

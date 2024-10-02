@@ -1,14 +1,12 @@
 import { z } from "zod";
 
 import {
-  type DetailEntityType,
   type DetailIncludes,
   DetailIncludesFields,
   type DetailIncludesField,
   DetailEntityTypes,
 } from "~/database/model";
-import { arraysHaveSameElements } from "~/lib";
-import { Filters } from "~/lib/filters";
+import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
@@ -88,13 +86,15 @@ export const getDetailsOrdering = <F extends DetailOrderableField, O extends Ord
   ] as const;
 };
 
-export type DetailsFilters = {
-  readonly entityIds: string[];
-  readonly visible: boolean | null;
-  readonly skills: string[];
-  readonly search: string;
-  readonly entityTypes: DetailEntityType[];
-};
+export const DetailsFiltersObj = new Filters({
+  visible: Filters.flag(),
+  search: Filters.search(),
+  entityTypes: Filters.multiEnum(DetailEntityTypes.contains),
+  skills: Filters.multiString({ typeguard: isUuid }),
+  entityIds: Filters.multiString({ typeguard: isUuid }),
+});
+
+export type DetailsFilters = FiltersValues<typeof DetailsFiltersObj>;
 
 export type DetailsControls<
   I extends DetailIncludes = DetailIncludes,
@@ -111,53 +111,6 @@ export type DetailControls<I extends DetailIncludes = DetailIncludes> = Pick<
   DetailsControls<I>,
   "includes" | "visibility"
 >;
-
-export const DetailsFiltersObj = new Filters({
-  visible: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-  skills: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  entityIds: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  entityTypes: {
-    defaultValue: [] as DetailEntityType[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return DetailEntityTypes.contains(value) ? [value] : [];
-      }
-      return value.reduce(
-        (prev, curr) => (DetailEntityTypes.contains(curr) ? [...prev, curr] : prev),
-        [] as DetailEntityType[],
-      );
-    }),
-  },
-});
 
 // Used for API Routes
 export const DetailIncludesSchema = z.union([z.string(), z.array(z.string())]).transform(value => {

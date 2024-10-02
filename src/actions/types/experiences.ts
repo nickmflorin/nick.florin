@@ -5,8 +5,7 @@ import {
   ExperienceIncludesFields,
   type ExperienceIncludesField,
 } from "~/database/model";
-import { arraysHaveSameElements } from "~/lib";
-import { Filters } from "~/lib/filters";
+import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
@@ -96,13 +95,15 @@ export const getExperiencesOrdering = <F extends ExperienceOrderableField, O ext
   ] as const;
 };
 
-export type ExperiencesFilters = {
-  readonly highlighted: boolean | null;
-  readonly visible: boolean | null;
-  readonly skills: string[];
-  readonly search: string;
-  readonly companies: string[];
-};
+export const ExperiencesFiltersObj = new Filters({
+  highlighted: Filters.flag(),
+  visible: Filters.flag(),
+  search: Filters.search(),
+  skills: Filters.multiString({ typeguard: isUuid }),
+  companies: Filters.multiString({ typeguard: isUuid }),
+});
+
+export type ExperiencesFilters = FiltersValues<typeof ExperiencesFiltersObj>;
 
 export type ExperiencesControls<I extends ExperienceIncludes = ExperienceIncludes> = Controls<
   I,
@@ -117,44 +118,6 @@ export type ExperienceControls<I extends ExperienceIncludes = ExperienceIncludes
   ExperiencesControls<I>,
   "includes" | "visibility"
 >;
-
-export const ExperiencesFiltersObj = new Filters({
-  highlighted: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  visible: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-  skills: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  companies: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-});
 
 // Used for API Routes
 export const ExperienceIncludesSchema = z

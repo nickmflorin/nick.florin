@@ -1,33 +1,41 @@
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 
-import { type BaseFiltersConfiguration, type Filters, type ParsedFilters } from "~/lib/filters";
+import {
+  type Filters,
+  type FilterFieldName,
+  type FiltersValues,
+  type FilterRefs,
+} from "~/lib/filters";
 
 import { parseQueryParams, stringifyQueryParams } from "~/integrations/http";
 
-import { useReferentialCallback } from "~/hooks";
+import { useFilterRefs } from "./use-filter-refs";
+import { useReferentialCallback } from "./use-referential-callback";
 
-export interface UseFiltersOptions<C extends BaseFiltersConfiguration> {
-  readonly filters: Filters<C>;
+export interface UseFiltersOptions {
   readonly maintainExisting?: boolean;
 }
 
-export type FiltersUpdate<C extends BaseFiltersConfiguration> = Partial<ParsedFilters<C>>;
+export type FiltersUpdate<F extends Filters> = Partial<FiltersValues<F>>;
 
-export const useFilters = <C extends BaseFiltersConfiguration>({
-  filters,
-  maintainExisting = true,
-}: UseFiltersOptions<C>) => {
+export const useFilters = <F extends Filters>(
+  filters: F,
+  fieldRefs: FilterRefs<F>,
+  opts?: UseFiltersOptions,
+) => {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const pathname = usePathname();
 
-  const [pendingFilters, setPendingFilters] = useState<Partial<ParsedFilters<C>>>({});
+  const [pendingFilters, setPendingFilters] = useState<Partial<FiltersValues<F>>>({});
   const [isPending, transition] = useTransition();
 
-  const initialFilters = useMemo(() => filters.parse(searchParams), [filters, searchParams]);
+  const values = useMemo(() => filters.parse(searchParams), [filters, searchParams]);
 
-  const previousFilters = useRef<ParsedFilters<C>>(initialFilters);
+  const managedRefs = useFilterRefs<F>(fieldRefs, { values, filters });
+
+  const previousFilters = useRef<FiltersValues<F>>(values);
 
   useEffect(() => {
     if (!isPending) {
@@ -37,24 +45,24 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
 
   previousFilters.current = filters.parse(searchParams);
 
-  const setFilters = useReferentialCallback((update: FiltersUpdate<C>) => {
+  const updateFilters = useReferentialCallback((update: FiltersUpdate<F>) => {
     let currentFilters = filters.parse(searchParams);
 
-    let changedFilters: Partial<ParsedFilters<C>> = {};
+    let changedFilters: Partial<FiltersValues<F>> = {};
     for (const [field, value] of Object.entries(update)) {
-      let newValue: ParsedFilters<C>[keyof C];
+      const f = field as FilterFieldName<F>;
+      const v = value as FiltersValues<F>[typeof f];
 
-      const f = field as keyof C;
-      const v = value as ParsedFilters<C>[typeof f];
-      [currentFilters, newValue] = filters.add(currentFilters, f, v);
-      if (!filters.valuesAreEqual(f, previousFilters.current[f], newValue)) {
-        changedFilters = { ...changedFilters, [f]: newValue };
+      let newV: FiltersValues<F>[typeof f];
+
+      [currentFilters, newV] = filters.add(currentFilters, f, v);
+      if (!filters.fieldValuesAreEqual(f, previousFilters.current[f], newV)) {
+        changedFilters = { ...changedFilters, [f]: newV };
       }
     }
     previousFilters.current = currentFilters;
     let pruned = filters.prune(currentFilters);
-
-    if (maintainExisting) {
+    if (opts?.maintainExisting !== false) {
       const all = parseQueryParams(searchParams.toString());
       for (const [field, value] of Object.entries(all)) {
         if (!filters.contains(field)) {
@@ -68,9 +76,17 @@ export const useFilters = <C extends BaseFiltersConfiguration>({
     });
   });
 
-  return [
-    initialFilters,
-    setFilters,
-    { isPending, pendingFilters: isPending ? pendingFilters : {} },
-  ] as const;
+  const clear = useCallback(() => {
+    managedRefs.clear();
+    updateFilters(filters.defaultValues);
+  }, [managedRefs, filters.defaultValues, updateFilters]);
+
+  return {
+    ...managedRefs,
+    filters: values,
+    isPending,
+    pendingFilters: isPending ? pendingFilters : {},
+    clear,
+    updateFilters,
+  };
 };

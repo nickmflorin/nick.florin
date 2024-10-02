@@ -5,8 +5,7 @@ import {
   CourseIncludesFields,
   type CourseIncludesField,
 } from "~/database/model";
-import { arraysHaveSameElements } from "~/lib";
-import { Filters } from "~/lib/filters";
+import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
@@ -93,12 +92,14 @@ export const getCoursesOrdering = <F extends CourseOrderableField, O extends Ord
   ] as const;
 };
 
-export type CoursesFilters = {
-  readonly visible: boolean | null;
-  readonly skills: string[];
-  readonly search: string;
-  readonly educations: string[];
-};
+export const CoursesFiltersObj = new Filters({
+  visible: Filters.flag(),
+  search: Filters.search(),
+  skills: Filters.multiString({ typeguard: isUuid }),
+  educations: Filters.multiString({ typeguard: isUuid }),
+});
+
+export type CoursesFilters = FiltersValues<typeof CoursesFiltersObj>;
 
 export type CoursesControls<I extends CourseIncludes = CourseIncludes> = Controls<
   I,
@@ -116,39 +117,6 @@ export type CourseControls<I extends CourseIncludes = CourseIncludes> = Pick<
   CoursesControls<I>,
   "includes" | "visibility"
 >;
-
-export const CoursesFiltersObj = new Filters({
-  visible: {
-    schema: z.union([z.coerce.boolean(), z.null()]),
-    defaultValue: null,
-    excludeWhen: v => v === null,
-  },
-  /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
-     present in query params for initial URL but then is cleared. */
-  search: { schema: z.string(), defaultValue: "" },
-  skills: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-  educations: {
-    defaultValue: [] as string[],
-    equals: arraysHaveSameElements,
-    excludeWhen: v => v.length === 0,
-    schema: z.union([z.string(), z.array(z.string())]).transform(value => {
-      if (typeof value === "string") {
-        return isUuid(value) ? [value] : [];
-      }
-      return value.reduce((prev, curr) => (isUuid(curr) ? [...prev, curr] : prev), [] as string[]);
-    }),
-  },
-});
 
 // Used for API Routes
 export const CourseIncludesSchema = z.union([z.string(), z.array(z.string())]).transform(value => {
