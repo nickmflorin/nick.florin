@@ -5,6 +5,7 @@ import {
   type NestedDetailIncludesField,
   NestedDetailIncludesFields,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -104,7 +105,7 @@ export type NestedDetailControls<I extends NestedDetailIncludes = NestedDetailIn
   "includes" | "visibility"
 >;
 
-export const NestedDetailsFiltersObj = Filters({
+export const NestedDetailsFiltersObj = new Filters({
   visible: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
@@ -115,6 +116,7 @@ export const NestedDetailsFiltersObj = Filters({
   search: { schema: z.string(), defaultValue: "" },
   skills: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

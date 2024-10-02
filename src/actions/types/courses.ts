@@ -5,6 +5,7 @@ import {
   CourseIncludesFields,
   type CourseIncludesField,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -116,7 +117,7 @@ export type CourseControls<I extends CourseIncludes = CourseIncludes> = Pick<
   "includes" | "visibility"
 >;
 
-export const CoursesFiltersObj = Filters({
+export const CoursesFiltersObj = new Filters({
   visible: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
@@ -127,6 +128,7 @@ export const CoursesFiltersObj = Filters({
   search: { schema: z.string(), defaultValue: "" },
   skills: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -137,6 +139,7 @@ export const CoursesFiltersObj = Filters({
   },
   educations: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

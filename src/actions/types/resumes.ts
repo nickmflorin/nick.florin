@@ -109,7 +109,7 @@ export type FlattenedResumesControls = Partial<ResumesFilters> &
 
 export type ResumeControls = Pick<ResumesControls, "visibility">;
 
-export const ResumesFiltersObj = Filters({
+export const ResumesFiltersObj = new Filters({
   /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
      present in query params for initial URL but then is cleared. */
   search: { schema: z.string(), defaultValue: "" },

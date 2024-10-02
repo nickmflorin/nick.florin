@@ -7,6 +7,7 @@ import {
   type DetailIncludesField,
   DetailEntityTypes,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -111,7 +112,7 @@ export type DetailControls<I extends DetailIncludes = DetailIncludes> = Pick<
   "includes" | "visibility"
 >;
 
-export const DetailsFiltersObj = Filters({
+export const DetailsFiltersObj = new Filters({
   visible: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
@@ -122,6 +123,7 @@ export const DetailsFiltersObj = Filters({
   search: { schema: z.string(), defaultValue: "" },
   skills: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -132,6 +134,7 @@ export const DetailsFiltersObj = Filters({
   },
   entityIds: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -142,6 +145,7 @@ export const DetailsFiltersObj = Filters({
   },
   entityTypes: {
     defaultValue: [] as DetailEntityType[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

@@ -1,18 +1,14 @@
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 
-import {
-  type BaseFiltersConfiguration,
-  type FiltersClass,
-  type ParsedFilters,
-} from "~/lib/filters";
+import { type BaseFiltersConfiguration, type Filters, type ParsedFilters } from "~/lib/filters";
 
 import { parseQueryParams, stringifyQueryParams } from "~/integrations/http";
 
 import { useReferentialCallback } from "~/hooks";
 
 export interface UseFiltersOptions<C extends BaseFiltersConfiguration> {
-  readonly filters: FiltersClass<C>;
+  readonly filters: Filters<C>;
   readonly maintainExisting?: boolean;
 }
 

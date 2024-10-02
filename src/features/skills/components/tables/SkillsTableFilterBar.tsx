@@ -10,6 +10,7 @@ import type {
   ProgrammingDomain,
   ProgrammingLanguage,
 } from "~/database/model";
+import { FiltersValues } from "~/lib/filters";
 
 import { SkillsFiltersObj, type SkillsFilters } from "~/actions";
 

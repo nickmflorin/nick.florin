@@ -5,6 +5,7 @@ import {
   SchoolIncludesFields,
   type SchoolIncludesField,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -118,12 +119,13 @@ export type SchoolControls<I extends SchoolIncludes = SchoolIncludes> = Pick<
   "includes" | "visibility"
 >;
 
-export const SchoolsFiltersObj = Filters({
+export const SchoolsFiltersObj = new Filters({
   /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
      present in query params for initial URL but then is cleared. */
   search: { schema: z.string(), defaultValue: "" },
   educations: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

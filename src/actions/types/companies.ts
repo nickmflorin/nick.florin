@@ -7,10 +7,10 @@ import {
   CompanyIncludesFields,
   type CompanyIncludesField,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
-
 /*
 Note: Currently, the ordering and filtering aspects of data manipulation for Companies are not used
 by the client (even though the fetch actions support them).  However, these are left here so we can
@@ -116,12 +116,13 @@ export type CompanyControls<I extends CompanyIncludes = CompanyIncludes> = Pick<
   "includes" | "visibility"
 >;
 
-export const CompaniesFiltersObj = Filters({
+export const CompaniesFiltersObj = new Filters({
   /* TODO: excludeWhen: v => v.trim() === "" -- This seems to not load table data when search is
      present in query params for initial URL but then is cleared. */
   search: { schema: z.string(), defaultValue: "" },
   experiences: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

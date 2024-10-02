@@ -12,7 +12,7 @@ import {
   ProgrammingLanguages,
 } from "~/database/model";
 import { arraysHaveSameElements } from "~/lib";
-import { Filters } from "~/lib/filters";
+import { Filters, type FiltersValues } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
 
@@ -96,38 +96,7 @@ export const getSkillsOrdering = <F extends SkillOrderableField, O extends Order
   ] as const;
 };
 
-export type SkillsFilters = {
-  readonly highlighted: boolean | null;
-  readonly prioritized: boolean | null;
-  readonly visible: boolean | null;
-  readonly experiences: string[];
-  readonly educations: string[];
-  readonly programmingDomains: ProgrammingDomain[];
-  readonly programmingLanguages: ProgrammingLanguage[];
-  readonly search: string;
-  readonly categories: SkillCategory[];
-  readonly projects: string[];
-  readonly repositories: string[];
-};
-
-export type SkillsControls<I extends SkillIncludes = SkillIncludes> = Controls<
-  I,
-  SkillsFilters,
-  SkillOrderableField
->;
-
-export type FlattenedSkillsControls<I extends SkillIncludes = SkillIncludes> = FlattenedControls<
-  I,
-  SkillsFilters,
-  SkillOrderableField
->;
-
-export type SkillControls<I extends SkillIncludes = SkillIncludes> = Pick<
-  SkillsControls<I>,
-  "includes" | "visibility"
->;
-
-export const SkillsFiltersObj = Filters({
+export const SkillsFiltersObj = new Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
@@ -233,6 +202,25 @@ export const SkillsFiltersObj = Filters({
     }),
   },
 });
+
+export type SkillsFilters = FiltersValues<typeof SkillsFiltersObj>;
+
+export type SkillsControls<I extends SkillIncludes = SkillIncludes> = Controls<
+  I,
+  SkillsFilters,
+  SkillOrderableField
+>;
+
+export type FlattenedSkillsControls<I extends SkillIncludes = SkillIncludes> = FlattenedControls<
+  I,
+  SkillsFilters,
+  SkillOrderableField
+>;
+
+export type SkillControls<I extends SkillIncludes = SkillIncludes> = Pick<
+  SkillsControls<I>,
+  "includes" | "visibility"
+>;
 
 // Used for API Routes
 export const SkillIncludesSchema = z.union([z.string(), z.array(z.string())]).transform(value => {

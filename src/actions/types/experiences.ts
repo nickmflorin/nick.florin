@@ -5,6 +5,7 @@ import {
   ExperienceIncludesFields,
   type ExperienceIncludesField,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -117,7 +118,7 @@ export type ExperienceControls<I extends ExperienceIncludes = ExperienceIncludes
   "includes" | "visibility"
 >;
 
-export const ExperiencesFiltersObj = Filters({
+export const ExperiencesFiltersObj = new Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
@@ -133,6 +134,7 @@ export const ExperiencesFiltersObj = Filters({
   search: { schema: z.string(), defaultValue: "" },
   skills: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -143,6 +145,7 @@ export const ExperiencesFiltersObj = Filters({
   },
   companies: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

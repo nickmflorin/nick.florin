@@ -5,6 +5,7 @@ import {
   RepositoryIncludesFields,
   type RepositoryIncludesField,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -114,7 +115,7 @@ export type RepositoryControls<I extends RepositoryIncludes = RepositoryIncludes
   "includes" | "visibility"
 >;
 
-export const RepositoriesFiltersObj = Filters({
+export const RepositoriesFiltersObj = new Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
@@ -130,6 +131,7 @@ export const RepositoriesFiltersObj = Filters({
   search: { schema: z.string(), defaultValue: "" },
   skills: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {
@@ -140,6 +142,7 @@ export const RepositoriesFiltersObj = Filters({
   },
   projects: {
     defaultValue: [] as string[],
+    equals: arraysHaveSameElements,
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
       if (typeof value === "string") {

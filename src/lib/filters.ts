@@ -30,8 +30,37 @@ export type ParsedFilters<C extends BaseFiltersConfiguration> = {
   [key in keyof C]: C[key] extends FilterConfig<infer S extends z.ZodType> ? z.infer<S> : never;
 };
 
-export class FiltersClass<C extends BaseFiltersConfiguration> {
-  constructor(private readonly config: C) {
+export interface IFilters<C extends BaseFiltersConfiguration = BaseFiltersConfiguration> {
+  readonly config: C;
+  readonly defaultValues: FiltersDefaultValues<C>;
+  readonly schemas: FiltersSchemas<C>;
+  readonly contains: (f: unknown) => f is keyof C;
+  readonly hasFilter: (filters: Partial<ParsedFilters<C>>, f: keyof C) => boolean;
+  readonly add: <F extends ParsedFilters<C>, K extends keyof C>(
+    f: F,
+    field: K,
+    value: F[K],
+  ) => [F, F[K]];
+  readonly valuesAreEqual: <K extends keyof C, F extends ParsedFilters<C>>(
+    field: K,
+    f: F[K],
+    o: F[K],
+  ) => boolean;
+  readonly prune: <F extends Partial<ParsedFilters<C>>>(filters: F) => Partial<F>;
+  readonly areEmpty: (filters: Partial<ParsedFilters<C>>) => boolean;
+  readonly parse: (
+    params:
+      | URLSearchParams
+      | ReadonlyURLSearchParams
+      | Record<string, string | string[] | undefined>
+      | string
+      | null
+      | undefined,
+  ) => ParsedFilters<C>;
+}
+
+export class Filters<C extends BaseFiltersConfiguration> implements IFilters<C> {
+  constructor(public readonly config: C) {
     this.config = config;
   }
 
@@ -130,5 +159,16 @@ export class FiltersClass<C extends BaseFiltersConfiguration> {
   }
 }
 
-export const Filters = <C extends BaseFiltersConfiguration>(config: C) =>
-  new FiltersClass<C>(config);
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+type AnyFilters = Filters<any>;
+
+export type FiltersConfig<F extends AnyFilters> =
+  F extends IFilters<infer C extends BaseFiltersConfiguration> ? C : never;
+
+export type FilterField<F extends AnyFilters> = keyof FiltersConfig<F>;
+
+export type FiltersValues<F extends AnyFilters> = {
+  [key in keyof F["config"]]: F["config"][key] extends FilterConfig<infer S extends z.ZodType>
+    ? z.infer<S>
+    : never;
+};

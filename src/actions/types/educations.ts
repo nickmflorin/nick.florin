@@ -7,6 +7,7 @@ import {
   type Degree,
   Degrees,
 } from "~/database/model";
+import { arraysHaveSameElements } from "~/lib";
 import { Filters } from "~/lib/filters";
 import { type Order, type Ordering } from "~/lib/ordering";
 import { isUuid } from "~/lib/typeguards";
@@ -122,7 +123,7 @@ export type EducationControls<I extends EducationIncludes = EducationIncludes> =
   "includes" | "visibility"
 >;
 
-export const EducationsFiltersObj = Filters({
+export const EducationsFiltersObj = new Filters({
   highlighted: {
     schema: z.union([z.coerce.boolean(), z.null()]),
     defaultValue: null,
@@ -142,6 +143,7 @@ export const EducationsFiltersObj = Filters({
      present in query params for initial URL but then is cleared. */
   search: { schema: z.string(), defaultValue: "" },
   courses: {
+    equals: arraysHaveSameElements,
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
@@ -152,6 +154,7 @@ export const EducationsFiltersObj = Filters({
     }),
   },
   skills: {
+    equals: arraysHaveSameElements,
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
@@ -162,6 +165,7 @@ export const EducationsFiltersObj = Filters({
     }),
   },
   schools: {
+    equals: arraysHaveSameElements,
     defaultValue: [] as string[],
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
@@ -172,6 +176,7 @@ export const EducationsFiltersObj = Filters({
     }),
   },
   degrees: {
+    equals: arraysHaveSameElements,
     defaultValue: [] as Degree[],
     excludeWhen: v => v.length === 0,
     schema: z.union([z.string(), z.array(z.string())]).transform(value => {
