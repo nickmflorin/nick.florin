@@ -19,14 +19,14 @@ export interface ExperienceSelectProps<B extends SelectBehaviorType, I extends E
     "options" | "itemIsDisabled" | "itemRenderer" | "getItemValueLabel"
   > {
   readonly behavior: B;
-  readonly useAbbreviatedOptionLabels?: boolean;
+  readonly useAbbreviatedLabels?: boolean;
 }
 
 export const ExperienceSelect = forwardRef(
   <B extends SelectBehaviorType, I extends ExperienceIncludes>(
     {
       behavior,
-      useAbbreviatedOptionLabels,
+      useAbbreviatedLabels,
       includeDescriptions = true,
       ...props
     }: ExperienceSelectProps<B, I>,
@@ -41,7 +41,7 @@ export const ExperienceSelect = forwardRef(
       itemRenderer={m => (
         <div className="flex flex-col gap-[4px]">
           <Text fontSize="sm" fontWeight="medium">
-            {useAbbreviatedOptionLabels ? (m.shortTitle ?? m.title) : m.shortTitle}
+            {useAbbreviatedLabels ? (m.shortTitle ?? m.title) : m.shortTitle}
           </Text>
           {includeDescriptions && <Description fontSize="xs">{m.company.name}</Description>}
         </div>

@@ -32,7 +32,6 @@ export const useFilters = <F extends Filters>(
   const [isPending, transition] = useTransition();
 
   const values = useMemo(() => filters.parse(searchParams), [filters, searchParams]);
-
   const managedRefs = useFilterRefs<F>(fieldRefs, { values, filters });
 
   const previousFilters = useRef<FiltersValues<F>>(values);

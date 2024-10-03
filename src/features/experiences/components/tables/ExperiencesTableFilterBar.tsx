@@ -1,18 +1,19 @@
 "use client";
-import { useRef, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import type { ApiSkill, ApiCompany } from "~/database/model";
 import type { FilterFieldName } from "~/lib/filters";
 
 import { ExperiencesFiltersObj } from "~/actions";
 
+import { HighlightedFilterButton } from "~/components/buttons/HighlightedFilterButton";
+import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
 import { DrawerIds } from "~/components/drawers";
-import type { SelectInstance } from "~/components/input/select";
 import { TableView } from "~/components/tables/TableView";
 import { type ComponentProps } from "~/components/types";
 import { CompanySelect } from "~/features/companies/components/input/CompanySelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters } from "~/hooks";
+import { useFilters, useFilterRef } from "~/hooks";
 
 export interface ExperiencesTableFilterBarProps extends ComponentProps {
   readonly children?: ReactNode;
@@ -32,11 +33,11 @@ export const ExperiencesTableFilterBar = ({
   const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(
     ExperiencesFiltersObj,
     {
-      companies: useRef<SelectInstance<string, "multi"> | null>(null),
-      skills: useRef<SelectInstance<string, "multi"> | null>(null),
-      search: useRef<HTMLInputElement | null>(null),
-      visible: useRef<HTMLInputElement | null>(null),
-      highlighted: useRef<HTMLInputElement | null>(null),
+      companies: useFilterRef<"companies", typeof ExperiencesFiltersObj>(),
+      skills: useFilterRef<"skills", typeof ExperiencesFiltersObj>(),
+      search: useFilterRef<"search", typeof ExperiencesFiltersObj>(),
+      visible: useFilterRef<"visible", typeof ExperiencesFiltersObj>(),
+      highlighted: useFilterRef<"highlighted", typeof ExperiencesFiltersObj>(),
     },
   );
 
@@ -92,6 +93,50 @@ export const ExperiencesTableFilterBar = ({
               onChange={(companies: string[]) => updateFilters({ companies })}
               onClear={() => updateFilters({ companies: [] })}
               popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "highlighted",
+          label: "Highlighted",
+          isHiddenByDefault: false,
+          tooltipLabel: v =>
+            ({
+              null: "Show Highlighted",
+              true: "Show Unhighlighted",
+              false: "Show All",
+            })[String(v)],
+          renderer: (v: boolean | null, { params, ref }) => (
+            <HighlightedFilterButton
+              {...params}
+              ref={instance => {
+                refs.highlighted.current = instance;
+                ref?.(instance);
+              }}
+              initialValue={v}
+              onChange={highlighted => updateFilters({ highlighted })}
+            />
+          ),
+        },
+        {
+          id: "visible",
+          label: "Visible",
+          isHiddenByDefault: false,
+          tooltipLabel: v =>
+            ({
+              null: "Show Visible",
+              true: "Show Invisible",
+              false: "Show All",
+            })[String(v)],
+          renderer: (v: boolean | null, { params, ref }) => (
+            <VisibleFilterButton
+              {...params}
+              ref={instance => {
+                refs.visible.current = instance;
+                ref?.(instance);
+              }}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
             />
           ),
         },

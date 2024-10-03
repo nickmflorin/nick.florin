@@ -5,10 +5,10 @@ import type * as types from "./types";
 
 import { IconButton } from "~/components/buttons";
 import type { DrawerId } from "~/components/drawers";
+import { Tooltip } from "~/components/floating/Tooltip";
 import { TextInput } from "~/components/input/TextInput";
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";
-import { ShowHide } from "~/components/util";
 import { useDebounceCallback } from "~/hooks";
 
 import { FiltersSelect } from "./FiltersSelect";
@@ -30,6 +30,34 @@ export interface TableFilterBarProps<F extends types.TableFilters> extends Compo
   readonly onSearch?: (search: string) => void;
   readonly onClear?: () => void;
 }
+
+interface TableFilterRendererProps<K extends types.TableFilterId<F>, F extends types.TableFilters> {
+  readonly config: types.TableFilterConfiguration<K, F>;
+  readonly value: F[K];
+  readonly excludeFilters?: types.TableFilterId<F>[];
+  readonly visibleFilters: types.TableFilterId<F>[];
+}
+
+export const TableFilterRendererer = <
+  K extends types.TableFilterId<F>,
+  F extends types.TableFilters,
+>({
+  config,
+  value,
+  excludeFilters = [],
+  visibleFilters = [],
+}: TableFilterRendererProps<K, F>): JSX.Element => {
+  if (excludeFilters.includes(config.id) || !visibleFilters.includes(config.id)) {
+    return <></>;
+  } else if (config.tooltipLabel) {
+    const tooltip =
+      typeof config.tooltipLabel === "function" ? config.tooltipLabel(value) : config.tooltipLabel;
+    return (
+      <Tooltip content={tooltip}>{popoverProps => config.renderer(value, popoverProps)}</Tooltip>
+    );
+  }
+  return <>{(config as types.TableFilterWoTooltip<F, K>).renderer(value)}</>;
+};
 
 export const TableFilterBar = <F extends types.TableFilters>({
   children,
@@ -83,29 +111,37 @@ export const TableFilterBar = <F extends types.TableFilters>({
       {filters && (
         <>
           {(configuration ?? []).map(filter => (
-            <ShowHide
+            <TableFilterRendererer
               key={filter.id}
-              show={
-                !(excludeFilters ?? []).includes(filter.id) && visibleFilters.includes(filter.id)
-              }
-            >
-              {filter.renderer(filters[filter.id])}
-            </ShowHide>
+              value={filters[filter.id]}
+              config={filter}
+              visibleFilters={visibleFilters}
+              excludeFilters={excludeFilters}
+            />
           ))}
         </>
       )}
-      <IconButton.Transparent
-        icon="xmark"
-        radius="full"
-        element="button"
-        className="text-gray-400 h-full aspect-square w-auto p-[4px] hover:text-gray-500"
-        onClick={() => {
-          if (inputRef.current && !isControlled) {
-            inputRef.current.value = "";
-          }
-          onClear?.();
-        }}
-      />
+      <Tooltip content="Clear filters">
+        {({ ref, params }) => (
+          <IconButton.Transparent
+            {...params}
+            ref={ref}
+            icon="xmark"
+            radius="full"
+            element="button"
+            className="text-gray-400 h-full aspect-square w-auto p-[4px] hover:text-gray-500"
+            onClick={e => {
+              if (typeof params.onClick === "function") {
+                params.onClick?.(e);
+              }
+              if (inputRef.current && !isControlled) {
+                inputRef.current.value = "";
+              }
+              onClear?.();
+            }}
+          />
+        )}
+      </Tooltip>
       {configuration && (
         <FiltersSelect
           configuration={configuration}

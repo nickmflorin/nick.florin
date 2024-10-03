@@ -7,6 +7,7 @@ import { arraysHaveSameElements } from "~/lib/arrays";
 
 import { parseQueryParams } from "~/integrations/http";
 
+import { type FilterButtonInstance } from "~/components/buttons/FilterButton";
 import { type SelectInstance } from "~/components/input/select";
 
 import { type Prettify } from "./types";
@@ -51,13 +52,26 @@ type BooleanFilterConfig<D extends RawFilterConfigValue<"flag"> = RawFilterConfi
 type StringFilterConfig<D extends RawFilterConfigValue<"search"> = RawFilterConfigValue<"search">> =
   BaseFilterConfig<"search", D>;
 
-export type FilterConfig =
+type FilterConfig =
   | MultiEnumFilterConfig
   | MultiStringFilterConfig
   | BooleanFilterConfig
   | StringFilterConfig;
 
-export type FilterConfigRef<C extends FilterConfig> = C extends {
+type FilterConfigRefObj<C extends FilterConfig> = C extends {
+  type: "multi-enum";
+  typeguard: (v: string) => v is infer E extends string;
+}
+  ? SelectInstance<E, "multi"> | null
+  : C extends { type: "multi-string" }
+    ? SelectInstance<string, "multi"> | null
+    : C extends { type: "flag" }
+      ? FilterButtonInstance | null
+      : C extends { type: "search" }
+        ? HTMLInputElement | null
+        : never;
+
+type FilterConfigRef<C extends FilterConfig> = C extends {
   type: "multi-enum";
   typeguard: (v: string) => v is infer E extends string;
 }
@@ -65,12 +79,12 @@ export type FilterConfigRef<C extends FilterConfig> = C extends {
   : C extends { type: "multi-string" }
     ? React.MutableRefObject<SelectInstance<string, "multi"> | null>
     : C extends { type: "flag" }
-      ? React.MutableRefObject<HTMLInputElement | null>
+      ? React.MutableRefObject<FilterButtonInstance | null>
       : C extends { type: "search" }
         ? React.MutableRefObject<HTMLInputElement | null>
         : never;
 
-export type FilterConfigDefaultValue<C extends FilterConfig> = C extends {
+type FilterConfigDefaultValue<C extends FilterConfig> = C extends {
   defaultValue: infer V extends FilterConfigValue<C>;
 }
   ? V
@@ -84,7 +98,7 @@ export type FilterConfigDefaultValue<C extends FilterConfig> = C extends {
           ? string
           : never;
 
-export type FilterConfigValue<C extends FilterConfig> = C extends {
+type FilterConfigValue<C extends FilterConfig> = C extends {
   type: "multi-enum";
   typeguard: (v: string) => v is infer E extends string;
 }
@@ -111,7 +125,7 @@ type InferE<C extends FilterConfig> = C extends {
   ? E
   : never;
 
-export type FilterConfigSchema<C extends FilterConfig> = {
+type FilterConfigSchema<C extends FilterConfig> = {
   "multi-enum": z.ZodEffects<
     z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>,
     InferE<C>[],
@@ -122,11 +136,15 @@ export type FilterConfigSchema<C extends FilterConfig> = {
     string[],
     string | string[]
   >;
-  flag: z.ZodUnion<[z.ZodBoolean, z.ZodNull]>;
+  flag: z.ZodEffects<
+    z.ZodUnion<[z.ZodString, z.ZodNull, z.ZodBoolean]>,
+    boolean | null,
+    string | boolean | null
+  >;
   search: z.ZodString;
 }[C["type"]];
 
-export type FilterConfigField<C extends BaseFiltersConfiguration> = keyof C & string;
+type FilterConfigField<C extends BaseFiltersConfiguration> = keyof C & string;
 
 const getFilterSchema = <C extends FilterConfig>(config: C): FilterConfigSchema<C> => {
   switch (config.type) {
@@ -157,7 +175,16 @@ const getFilterSchema = <C extends FilterConfig>(config: C): FilterConfigSchema<
         );
       }) as FilterConfigSchema<C>;
     case "flag":
-      return z.union([z.coerce.boolean(), z.null()]) as FilterConfigSchema<C>;
+      return z.union([z.string(), z.null(), z.boolean()]).transform(v => {
+        if (typeof v === "boolean" || v === null) {
+          return v;
+        } else if (typeof v === "string" && v.trim().toLocaleLowerCase() === "true") {
+          return true;
+        } else if (typeof v === "string" && v.trim().toLocaleLowerCase() === "false") {
+          return false;
+        }
+        return null;
+      }) as FilterConfigSchema<C>;
     case "search":
       return z.string() as FilterConfigSchema<C>;
     default:
@@ -195,11 +222,7 @@ type FilterConfigRefClearer<C extends FilterConfig> = (ref: FilterConfigRef<C>) 
 const FilterConfigRefClearers = {
   "multi-enum": ref => ref.current?.clear(),
   "multi-string": ref => ref.current?.clear(),
-  flag: ref => {
-    if (ref.current) {
-      ref.current.checked = false;
-    }
-  },
+  flag: ref => ref.current?.clear(),
   search: ref => {
     if (ref.current) {
       ref.current.value = "";
@@ -215,13 +238,7 @@ type FilterConfigRefSetter<C extends FilterConfig> = (
 const FilterConfigRefSetters = {
   "multi-enum": (ref, v) => ref.current?.setValue(v),
   "multi-string": (ref, v) => ref.current?.setValue(v),
-  /* Note: This will have to be updated, since we will not be able to use checkboxes for boolean
-     filters since we have to represent (3) states: (1) true, (2) false, (3) null. */
-  flag: (ref, v) => {
-    if (ref.current) {
-      ref.current.checked = v ?? false;
-    }
-  },
+  flag: (ref, v) => ref.current?.setValue(v),
   search: (ref, v) => {
     if (ref.current) {
       ref.current.value = v;
@@ -473,20 +490,17 @@ export class Filters<C extends BaseFiltersConfiguration = BaseFiltersConfigurati
   }
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type AnyFilters = Filters<any>;
-
 export type FiltersConfig<F extends { config: unknown }> = F extends {
   config: infer C extends BaseFiltersConfiguration;
 }
   ? C
   : never;
 
-export type FilterFieldName<F extends AnyFilters> = keyof FiltersConfig<F> &
+export type FilterFieldName<F extends Filters> = keyof FiltersConfig<F> &
   string &
   keyof F["fields"];
 
-export type FilterValue<K extends FilterFieldName<F>, F extends AnyFilters> = FilterConfigValue<
+export type FilterValue<K extends FilterFieldName<F>, F extends Filters> = FilterConfigValue<
   FiltersConfig<F>[K]
 >;
 
@@ -496,23 +510,27 @@ export type FiltersValues<F extends Filters> = Prettify<{
 
 export type FilterDefaultValue<
   K extends FilterFieldName<F>,
-  F extends AnyFilters,
+  F extends Filters,
 > = FilterConfigDefaultValue<FiltersConfig<F>[K]>;
 
-export type FiltersDefaultValues<F extends AnyFilters> = Prettify<{
+export type FiltersDefaultValues<F extends Filters> = Prettify<{
   [key in FilterFieldName<F>]: FilterDefaultValue<key, F>;
 }>;
 
-export type FilterSchema<K extends FilterFieldName<F>, F extends AnyFilters> = FilterConfigSchema<
+export type FilterSchema<K extends FilterFieldName<F>, F extends Filters> = FilterConfigSchema<
   FiltersConfig<F>[K]
 >;
 
-export type FiltersSchemas<F extends AnyFilters> = {
+export type FiltersSchemas<F extends Filters> = {
   [key in FilterFieldName<F>]: FilterSchema<key, F>;
 };
 
-export type FilterRef<K extends FilterFieldName<F>, F extends AnyFilters> = FilterConfigRef<
+export type FilterRefObj<K extends FilterFieldName<F>, F extends Filters> = FilterConfigRefObj<
   FiltersConfig<F>[K]
 >;
 
-export type FilterRefs<F extends AnyFilters> = { [key in FilterFieldName<F>]: FilterRef<key, F> };
+export type FilterRef<K extends FilterFieldName<F>, F extends Filters> = FilterConfigRef<
+  FiltersConfig<F>[K]
+>;
+
+export type FilterRefs<F extends Filters> = { [key in FilterFieldName<F>]: FilterRef<key, F> };

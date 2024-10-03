@@ -1,19 +1,20 @@
 "use client";
-import { type ReactNode, useRef } from "react";
+import { type ReactNode } from "react";
 
 import { type ApiSkill, type Degree, type ApiCourse, type ApiSchool } from "~/database/model";
 
 import { EducationsFiltersObj, type EducationsFilters } from "~/actions";
 
+import { HighlightedFilterButton } from "~/components/buttons/HighlightedFilterButton";
+import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
 import { DrawerIds } from "~/components/drawers";
-import type { SelectInstance } from "~/components/input/select";
 import { TableView } from "~/components/tables/TableView";
 import { type ComponentProps } from "~/components/types";
 import { CourseSelect } from "~/features/courses/components/input/CourseSelect";
 import { DegreeSelect } from "~/features/educations/components/input/DegreeSelect";
 import { SchoolSelect } from "~/features/schools/components/input/SchoolSelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters } from "~/hooks/use-filters";
+import { useFilters, useFilterRef } from "~/hooks";
 
 type SelectFilterField = Exclude<
   keyof EducationsFilters,
@@ -38,14 +39,14 @@ export const EducationsTableFilterBar = ({
   ...props
 }: EducationsTableFilterBarProps): JSX.Element => {
   const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(EducationsFiltersObj, {
-    schools: useRef<SelectInstance<string, "multi"> | null>(null),
-    skills: useRef<SelectInstance<string, "multi"> | null>(null),
-    courses: useRef<SelectInstance<string, "multi"> | null>(null),
-    degrees: useRef<SelectInstance<Degree, "multi"> | null>(null),
-    search: useRef<HTMLInputElement | null>(null),
-    visible: useRef<HTMLInputElement | null>(null),
-    highlighted: useRef<HTMLInputElement | null>(null),
-    postPoned: useRef<HTMLInputElement | null>(null),
+    schools: useFilterRef<"schools", typeof EducationsFiltersObj>(),
+    skills: useFilterRef<"skills", typeof EducationsFiltersObj>(),
+    courses: useFilterRef<"courses", typeof EducationsFiltersObj>(),
+    degrees: useFilterRef<"degrees", typeof EducationsFiltersObj>(),
+    search: useFilterRef<"search", typeof EducationsFiltersObj>(),
+    visible: useFilterRef<"visible", typeof EducationsFiltersObj>(),
+    highlighted: useFilterRef<"highlighted", typeof EducationsFiltersObj>(),
+    postPoned: useFilterRef<"postPoned", typeof EducationsFiltersObj>(),
   });
 
   return (
@@ -139,6 +140,50 @@ export const EducationsTableFilterBar = ({
               onChange={(degrees: Degree[]) => updateFilters({ degrees })}
               onClear={() => updateFilters({ degrees: [] })}
               popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "highlighted",
+          label: "Highlighted",
+          isHiddenByDefault: false,
+          tooltipLabel: v =>
+            ({
+              null: "Show Highlighted",
+              true: "Show Unhighlighted",
+              false: "Show All",
+            })[String(v)],
+          renderer: (v: boolean | null, { params, ref }) => (
+            <HighlightedFilterButton
+              {...params}
+              ref={instance => {
+                refs.highlighted.current = instance;
+                ref?.(instance);
+              }}
+              initialValue={v}
+              onChange={highlighted => updateFilters({ highlighted })}
+            />
+          ),
+        },
+        {
+          id: "visible",
+          label: "Visible",
+          isHiddenByDefault: false,
+          tooltipLabel: v =>
+            ({
+              null: "Show Visible",
+              true: "Show Invisible",
+              false: "Show All",
+            })[String(v)],
+          renderer: (v: boolean | null, { params, ref }) => (
+            <VisibleFilterButton
+              {...params}
+              ref={instance => {
+                refs.visible.current = instance;
+                ref?.(instance);
+              }}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
             />
           ),
         },

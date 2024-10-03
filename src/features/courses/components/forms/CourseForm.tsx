@@ -39,7 +39,7 @@ export const CourseForm = (props: CourseFormProps): JSX.Element => (
           value={value ?? null}
           visibility="admin"
           behavior="single"
-          useAbbreviatedOptionLabels={false}
+          useAbbreviatedLabels={false}
           onChange={onChange}
           inPortal
           onError={() => props.form.setErrors("education", "There was an error loading the data.")}

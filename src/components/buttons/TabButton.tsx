@@ -21,7 +21,7 @@ export const TabButton = <E extends "button" | "link">({
   <Button.Transparent<E>
     {...(props as ButtonProps<E>)}
     className={classNames(
-      "rounded-none rounded-t-md relative top-[2px]",
+      "rounded-none rounded-t-md relative top-[2px] max-sm:w-full",
       "border-b-[2px] text-gray-800",
       "hover:bg-neutral-100",
       {

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
 
+import { type PopoverRenderProps } from "~/components/floating";
 import { type IconProp, type IconName } from "~/components/icons";
 import { type MenuItemInstance } from "~/components/menus";
 import type { QuantitativeSize, ComponentProps } from "~/components/types";
@@ -159,21 +160,51 @@ export interface CellDataTableInstance<
   C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
 > extends Pick<DataTableInstance<D, C>, "setRowLoading"> {}
 
-export type TableFilter<
+// Note: This will be updated to conform with the new Filters class.
+
+export type TableFilterWTooltip<
   F extends TableFilters = TableFilters,
   I extends TableFilterId<F> = TableFilterId<F>,
 > = {
   readonly id: I;
+  readonly placeholder?: string;
   readonly label: string;
   readonly isHiddenByDefault?: boolean;
-  readonly renderer: (value: F[I]) => ReactNode;
+  readonly isHideable?: boolean;
+  readonly tooltipLabel: string | ((value: F[I]) => ReactNode);
+  readonly renderer: (value: F[I], params: Partial<PopoverRenderProps>) => JSX.Element;
 };
+
+export type TableFilterWoTooltip<
+  F extends TableFilters = TableFilters,
+  I extends TableFilterId<F> = TableFilterId<F>,
+> = {
+  readonly id: I;
+  readonly placeholder?: string;
+  readonly label: string;
+  readonly isHiddenByDefault?: boolean;
+  readonly tooltipLabel?: never;
+  readonly isHideable?: boolean;
+  readonly renderer: (value: F[I]) => JSX.Element;
+};
+
+export type TableFilter<
+  F extends TableFilters = TableFilters,
+  I extends TableFilterId<F> = TableFilterId<F>,
+> = TableFilterWoTooltip<F, I> | TableFilterWTooltip<F, I>;
 
 type ExtractValues<T> = T[keyof T];
 
 export type TableFiltersConfiguration<F extends TableFilters> = ExtractValues<{
   [key in TableFilterId<F>]: TableFilter<F, key>;
 }>[];
+
+export type TableFilterConfiguration<
+  K extends TableFilterId<F>,
+  F extends TableFilters,
+> = ExtractValues<{
+  [key in K]: TableFilter<F, key>;
+}>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type TableFilters = { [key in string]: any };

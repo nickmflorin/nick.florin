@@ -111,7 +111,7 @@ export const SkillsChartFilterForm = ({
           behavior="multi"
           isClearable
           popoverPlacement="bottom"
-          useAbbreviatedOptionLabels={false}
+          useAbbreviatedLabels={false}
           inPortal
           onError={() => form.setErrors("experiences", "There was an error loading the data.")}
         />
@@ -129,7 +129,7 @@ export const SkillsChartFilterForm = ({
           inputClassName="w-full"
           behavior="multi"
           isClearable
-          useAbbreviatedOptionLabels={false}
+          useAbbreviatedLabels={false}
           value={value}
           onChange={onChange}
           popoverPlacement="bottom"

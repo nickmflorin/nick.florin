@@ -19,12 +19,12 @@ export interface EducationSelectProps<B extends SelectBehaviorType, I extends Ed
     "options" | "itemIsDisabled" | "itemRendererer" | "getItemValueLabel"
   > {
   readonly behavior: B;
-  readonly useAbbreviatedOptionLabels?: boolean;
+  readonly useAbbreviatedLabels?: boolean;
 }
 
 export const EducationSelect = forwardRef(
   <B extends SelectBehaviorType, I extends EducationIncludes>(
-    { behavior, useAbbreviatedOptionLabels, ...props }: EducationSelectProps<B, I>,
+    { behavior, useAbbreviatedLabels = true, ...props }: EducationSelectProps<B, I>,
     ref: ForwardedRef<EducationSelectInstance<B, I>>,
   ): JSX.Element => (
     <DataSelect<ApiEducation<I>, { behavior: B; getItemValue: typeof getItemValue }>
@@ -35,7 +35,7 @@ export const EducationSelect = forwardRef(
       itemRenderer={m => (
         <div className="flex flex-col gap-[4px] max-w-full">
           <Text fontSize="sm" fontWeight="medium" whiteSpace="normal">
-            {useAbbreviatedOptionLabels ? (m.shortMajor ?? m.major) : m.major}
+            {useAbbreviatedLabels ? (m.shortMajor ?? m.major) : m.major}
           </Text>
           <Description fontSize="xs" truncate>
             {m.school.name}

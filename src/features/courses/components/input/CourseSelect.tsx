@@ -19,12 +19,12 @@ export interface CourseSelectProps<B extends SelectBehaviorType>
     "options" | "itemIsDisabled" | "getItemValueLabel" | "itemRenderer"
   > {
   readonly behavior: B;
-  readonly useAbbreviatedOptionLabels?: boolean;
+  readonly useAbbreviatedLabels?: boolean;
 }
 
 export const CourseSelect = forwardRef(
   <B extends SelectBehaviorType>(
-    { behavior, useAbbreviatedOptionLabels, ...props }: CourseSelectProps<B>,
+    { behavior, useAbbreviatedLabels, ...props }: CourseSelectProps<B>,
     ref: ForwardedRef<CourseSelectInstance<B>>,
   ): JSX.Element => (
     <DataSelect<Course, { behavior: B; getItemValue: typeof getItemValue }>
@@ -35,7 +35,7 @@ export const CourseSelect = forwardRef(
       itemRenderer={m => (
         <div className="flex flex-col gap-[4px]">
           <Text fontSize="sm" fontWeight="medium">
-            {useAbbreviatedOptionLabels ? (m.shortName ?? m.name) : m.name}
+            {useAbbreviatedLabels ? (m.shortName ?? m.name) : m.name}
           </Text>
           {m.description && (
             <Description fontSize="xs" className="text-description">

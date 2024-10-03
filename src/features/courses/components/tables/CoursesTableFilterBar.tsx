@@ -1,18 +1,16 @@
 "use client";
-import { useRef } from "react";
-
 import { type ApiSkill, type ApiEducation } from "~/database/model";
 import type { FilterFieldName } from "~/lib/filters";
 
 import { CoursesFiltersObj } from "~/actions";
 
+import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
 import { DrawerIds } from "~/components/drawers";
-import type { SelectInstance } from "~/components/input/select";
 import { TableView } from "~/components/tables/TableView";
 import { type ComponentProps } from "~/components/types";
 import { EducationSelect } from "~/features/educations/components/input/EducationSelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters } from "~/hooks/use-filters";
+import { useFilters, useFilterRef } from "~/hooks";
 
 export interface CoursesTableFilterBarProps extends ComponentProps {
   readonly isSearchable?: boolean;
@@ -28,10 +26,10 @@ export const CoursesTableFilterBar = ({
   ...props
 }: CoursesTableFilterBarProps): JSX.Element => {
   const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(CoursesFiltersObj, {
-    skills: useRef<SelectInstance<string, "multi"> | null>(null),
-    educations: useRef<SelectInstance<string, "multi"> | null>(null),
-    search: useRef<HTMLInputElement | null>(null),
-    visible: useRef<HTMLInputElement | null>(null),
+    skills: useFilterRef<"skills", typeof CoursesFiltersObj>(),
+    educations: useFilterRef<"educations", typeof CoursesFiltersObj>(),
+    search: useFilterRef<"search", typeof CoursesFiltersObj>(),
+    visible: useFilterRef<"visible", typeof CoursesFiltersObj>(),
   });
 
   return (
@@ -86,6 +84,28 @@ export const CoursesTableFilterBar = ({
               onChange={(educations: string[]) => updateFilters({ educations })}
               onClear={() => updateFilters({ educations: [] })}
               popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "visible",
+          label: "Visible",
+          isHiddenByDefault: false,
+          tooltipLabel: v =>
+            ({
+              null: "Show Visible",
+              true: "Show Invisible",
+              false: "Show All",
+            })[String(v)],
+          renderer: (v: boolean | null, { params, ref }) => (
+            <VisibleFilterButton
+              {...params}
+              ref={instance => {
+                refs.visible.current = instance;
+                ref?.(instance);
+              }}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
             />
           ),
         },

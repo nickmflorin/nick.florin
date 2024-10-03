@@ -37,8 +37,8 @@ export const Tabs = ({ items, children, ...props }: TabsProps) => (
         {items.map((item, index) => (
           <Tab key={index} item={item} />
         ))}
+        {children}
       </div>
-      {children}
     </div>
   </div>
 );

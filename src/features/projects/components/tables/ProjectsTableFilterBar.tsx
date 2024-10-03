@@ -1,18 +1,17 @@
 "use client";
-import { useRef } from "react";
-
 import type { ApiSkill, ApiRepository } from "~/database/model";
 import type { FilterFieldName } from "~/lib/filters";
 
 import { ProjectsFiltersObj } from "~/actions";
 
+import { HighlightedFilterButton } from "~/components/buttons/HighlightedFilterButton";
+import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
 import { DrawerIds } from "~/components/drawers";
-import type { SelectInstance } from "~/components/input/select";
 import { TableView } from "~/components/tables/TableView";
 import { type ComponentProps } from "~/components/types";
 import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
 import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters } from "~/hooks";
+import { useFilters, useFilterRef } from "~/hooks";
 
 export interface ProjectsTableFilterBarProps extends ComponentProps {
   readonly isSearchable?: boolean;
@@ -28,11 +27,11 @@ export const ProjectsTableFilterBar = ({
   ...props
 }: ProjectsTableFilterBarProps): JSX.Element => {
   const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(ProjectsFiltersObj, {
-    repositories: useRef<SelectInstance<string, "multi"> | null>(null),
-    skills: useRef<SelectInstance<string, "multi"> | null>(null),
-    search: useRef<HTMLInputElement | null>(null),
-    visible: useRef<HTMLInputElement | null>(null),
-    highlighted: useRef<HTMLInputElement | null>(null),
+    repositories: useFilterRef<"repositories", typeof ProjectsFiltersObj>(),
+    skills: useFilterRef<"skills", typeof ProjectsFiltersObj>(),
+    search: useFilterRef<"search", typeof ProjectsFiltersObj>(),
+    visible: useFilterRef<"visible", typeof ProjectsFiltersObj>(),
+    highlighted: useFilterRef<"highlighted", typeof ProjectsFiltersObj>(),
   });
 
   return (
@@ -87,6 +86,50 @@ export const ProjectsTableFilterBar = ({
               onChange={(repositories: string[]) => updateFilters({ repositories })}
               onClear={() => updateFilters({ repositories: [] })}
               popoverPlacement="bottom"
+            />
+          ),
+        },
+        {
+          id: "highlighted",
+          label: "Highlighted",
+          isHiddenByDefault: false,
+          tooltipLabel: v =>
+            ({
+              null: "Show Highlighted",
+              true: "Show Unhighlighted",
+              false: "Show All",
+            })[String(v)],
+          renderer: (v: boolean | null, { params, ref }) => (
+            <HighlightedFilterButton
+              {...params}
+              ref={instance => {
+                refs.highlighted.current = instance;
+                ref?.(instance);
+              }}
+              initialValue={v}
+              onChange={highlighted => updateFilters({ highlighted })}
+            />
+          ),
+        },
+        {
+          id: "visible",
+          label: "Visible",
+          isHiddenByDefault: false,
+          tooltipLabel: v =>
+            ({
+              null: "Show Visible",
+              true: "Show Invisible",
+              false: "Show All",
+            })[String(v)],
+          renderer: (v: boolean | null, { params, ref }) => (
+            <VisibleFilterButton
+              {...params}
+              ref={instance => {
+                refs.visible.current = instance;
+                ref?.(instance);
+              }}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
             />
           ),
         },
