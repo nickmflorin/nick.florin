@@ -1,14 +1,20 @@
 import React, { type ReactNode } from "react";
 
+import type { ViewComponent } from "~/components/structural/View";
 import { ShowHide } from "~/components/util";
 
 import { LoadingView, type LoadingViewProps } from "./LoadingView";
 
-export interface LoadingProps extends Omit<LoadingViewProps, "isDisabled" | "dim"> {
+export interface LoadingProps<C extends ViewComponent>
+  extends Omit<LoadingViewProps<C>, "isDisabled" | "dim"> {
   readonly children?: ReactNode;
 }
 
-export const Loading = ({ isLoading = false, children, ...props }: LoadingProps): JSX.Element => {
+export const Loading = <C extends ViewComponent>({
+  isLoading = false,
+  children,
+  ...props
+}: LoadingProps<C>): JSX.Element => {
   if (children) {
     return (
       <>

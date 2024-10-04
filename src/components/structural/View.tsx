@@ -1,46 +1,22 @@
-import type { ReactNode } from "react";
+import React from "react";
 
+import { pick, omit } from "lodash-es";
+
+import { UnreachableCaseError } from "~/application/errors";
 import { logger } from "~/internal/logger";
 
 import {
   classNames,
   type QuantitativeSize,
   type ComponentProps,
-  type Style,
   sizeToString,
 } from "~/components/types";
-
-import { Paper } from "./Paper";
 
 export type ViewPosition = "relative" | "absolute" | "fixed";
 export type ViewOverflow = "scroll" | "auto" | "hidden" | "visible";
 export type ViewFill = "screen" | "parent";
 
-export type ViewComponentRenderProps = {
-  readonly children: ReactNode;
-  readonly style?: Style;
-  readonly className?: string;
-};
-
-type ViewComponentName = "tbody" | "div" | "paper";
-
-const DivViewComponent: React.ComponentType<ViewComponentRenderProps> = ({
-  children,
-  ...props
-}) => <div {...props}>{children}</div>;
-
-const TBodyViewComponent: React.ComponentType<ViewComponentRenderProps> = ({
-  children,
-  ...props
-}) => <tbody {...props}>{children}</tbody>;
-
-const ViewComponentMap: {
-  [key in ViewComponentName]: React.ComponentType<ViewComponentRenderProps>;
-} = {
-  tbody: TBodyViewComponent,
-  div: DivViewComponent,
-  paper: Paper,
-};
+export type ViewComponent = "tbody" | "div" | "tr";
 
 const ViewSizePropNames = [
   "height",
@@ -83,7 +59,7 @@ export type ViewFlexProps = Partial<{
   readonly grow: true;
 }>;
 
-export type ViewProps = ComponentProps &
+type ViewInternalProps = ComponentProps &
   ViewSizeProps &
   ViewPositionProps &
   ViewOverflowProps &
@@ -94,10 +70,58 @@ export type ViewProps = ComponentProps &
     readonly dim?: true;
     readonly isDisabled?: true;
     readonly dimIfDisabled?: false;
-    readonly component?: React.ComponentType<ViewComponentRenderProps> | ViewComponentName;
   };
 
-const parseFlex = ({
+export const ViewInternalPropsMap = {
+  __default_position__: true,
+  className: true,
+  style: true,
+  children: true,
+  dim: true,
+  isDisabled: true,
+  dimIfDisabled: true,
+  height: true,
+  width: true,
+  maxHeight: true,
+  maxWidth: true,
+  minHeight: true,
+  minWidth: true,
+  fill: true,
+  fillParent: true,
+  fillScreen: true,
+  flex: true,
+  orientation: true,
+  row: true,
+  column: true,
+  centerChildren: true,
+  grow: true,
+  position: true,
+  absolute: true,
+  fixed: true,
+  relative: true,
+  overflow: true,
+  overflowX: true,
+  overflowY: true,
+} as const satisfies {
+  [key in keyof Required<ViewInternalProps>]: true;
+};
+
+export const omitViewInternalProps = <P extends Record<string, unknown>>(
+  props: P,
+): Omit<P, keyof typeof ViewInternalPropsMap & keyof P> =>
+  omit(props, Object.keys(ViewInternalPropsMap) as (keyof Required<ViewInternalProps>)[]);
+
+export const pickViewInternalProps = <P extends Record<string, unknown>>(
+  props: P,
+): Pick<P, keyof typeof ViewInternalPropsMap & keyof P> =>
+  pick(props, Object.keys(ViewInternalPropsMap) as (keyof Required<ViewInternalProps>)[]);
+
+export type ViewProps<C extends ViewComponent> = ViewInternalProps &
+  Omit<React.ComponentProps<C>, keyof ViewInternalProps> & {
+    readonly component?: C;
+  };
+
+const parseFlex = <C extends ViewComponent>({
   flex = true,
   orientation,
   row,
@@ -105,7 +129,7 @@ const parseFlex = ({
   centerChildren,
   grow,
 }: Pick<
-  ViewProps,
+  ViewProps<C>,
   "flex" | "orientation" | "row" | "column" | "centerChildren" | "grow"
 >): string => {
   if (centerChildren) {
@@ -137,14 +161,14 @@ const parseFlex = ({
   return "";
 };
 
-const parsePosition = ({
+const parsePosition = <C extends ViewComponent>({
   position,
   absolute,
   fixed,
   relative,
   __default_position__,
 }: Pick<
-  ViewProps,
+  ViewProps<C>,
   "position" | "absolute" | "relative" | "__default_position__" | "fixed"
 >): ViewPosition => {
   if (position !== undefined) {
@@ -180,11 +204,11 @@ const parsePosition = ({
   return __default_position__ ?? "relative";
 };
 
-const parseFill = ({
+const parseFill = <C extends ViewComponent>({
   fill,
   fillParent,
   fillScreen,
-}: Pick<ViewProps, "fill" | "fillParent" | "fillScreen">): ViewFill | null => {
+}: Pick<ViewProps<C>, "fill" | "fillParent" | "fillScreen">): ViewFill | null => {
   if (fill !== undefined) {
     if (fillParent !== undefined || fillScreen !== undefined) {
       logger.warn(
@@ -234,11 +258,11 @@ const OverflowYClassName = (overflow: ViewOverflow) =>
     "overflow-y-auto": overflow === "auto",
   });
 
-const parseOverflow = ({
+const parseOverflow = <C extends ViewComponent>({
   overflow,
   overflowX,
   overflowY,
-}: Pick<ViewProps, "overflow" | "overflowX" | "overflowY">): string => {
+}: Pick<ViewProps<C>, "overflow" | "overflowX" | "overflowY">): string => {
   if (overflow !== undefined) {
     if (overflowX !== undefined || overflowY !== undefined) {
       logger.warn(
@@ -295,7 +319,9 @@ console.error = (msg, ...args) => {
   consoleError(msg, ...args);
 };
 
-const getViewStyle = (props: Pick<ViewProps, ViewSizePropName | "style">) =>
+const getViewStyle = <C extends ViewComponent>(
+  props: Pick<ViewProps<C>, ViewSizePropName | "style">,
+) =>
   ViewSizePropNames.reduce((prev: React.CSSProperties, key: ViewSizePropName) => {
     const size = props[key];
     if (size !== "parent" && size !== "screen" && size !== undefined) {
@@ -304,35 +330,47 @@ const getViewStyle = (props: Pick<ViewProps, ViewSizePropName | "style">) =>
     return prev;
   }, props.style ?? {});
 
-export const View = ({ children, component = DivViewComponent, ...props }: ViewProps) => {
+export const View = <C extends ViewComponent>({
+  children,
+  component = "div" as C,
+  ...props
+}: ViewProps<C>) => {
   const _fill = parseFill(props);
   const _position = parsePosition(props);
-  const Component = typeof component === "string" ? ViewComponentMap[component] : component;
-  return (
-    <Component
-      style={getViewStyle(props)}
-      className={classNames(
-        "view",
-        _position,
-        parseOverflow(props),
-        parseFlex(props),
-        {
-          "view--screen-w": _fill === "screen" || props.width === "screen",
-          "view--screen-h": _fill === "screen" || props.height === "screen",
-          "h-full": _fill === "parent" || props.height === "parent",
-          "w-full": _fill === "parent" || props.width === "parent",
-          "max-w-full": props.maxWidth === "parent",
-          "max-h-full": props.maxHeight === "parent",
-          "min-w-full": props.minWidth === "parent",
-          "min-h-full": props.minHeight === "parent",
-          "left-0 top-0": _fill !== null && _position === "absolute",
-          "opacity-30": props.dim || (props.dimIfDisabled !== false && props.isDisabled),
-          "pointer-events-none": props.isDisabled,
-        },
-        props.className,
-      )}
-    >
-      {children}
-    </Component>
-  );
+
+  const ps = {
+    ...omitViewInternalProps(props),
+    style: getViewStyle(props),
+    className: classNames(
+      "view",
+      _position,
+      parseOverflow(props),
+      parseFlex(props),
+      {
+        "view--screen-w": _fill === "screen" || props.width === "screen",
+        "view--screen-h": _fill === "screen" || props.height === "screen",
+        "h-full": _fill === "parent" || props.height === "parent",
+        "w-full": _fill === "parent" || props.width === "parent",
+        "max-w-full": props.maxWidth === "parent",
+        "max-h-full": props.maxHeight === "parent",
+        "min-w-full": props.minWidth === "parent",
+        "min-h-full": props.minHeight === "parent",
+        "left-0 top-0": _fill !== null && _position === "absolute",
+        "opacity-30": props.dim || (props.dimIfDisabled !== false && props.isDisabled),
+        "pointer-events-none": props.isDisabled,
+      },
+      props.className,
+    ),
+  } as Omit<React.ComponentProps<C>, "ref">;
+
+  switch (component) {
+    case "div":
+      return <div {...(ps as React.ComponentProps<"div">)}>{children}</div>;
+    case "tbody":
+      return <tbody {...(ps as React.ComponentProps<"tbody">)}>{children}</tbody>;
+    case "tr":
+      return <tr {...(ps as React.ComponentProps<"tr">)}>{children}</tr>;
+    default:
+      throw new UnreachableCaseError(`Invalid component: ${component}!`);
+  }
 };

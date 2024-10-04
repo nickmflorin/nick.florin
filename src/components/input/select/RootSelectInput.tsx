@@ -5,7 +5,6 @@ import React, {
   useRef,
   useEffect,
   useImperativeHandle,
-  type RefObject,
 } from "react";
 
 import { Input, type InputProps } from "~/components/input/generic";
@@ -13,11 +12,12 @@ import { NativeInput } from "~/components/input/generic/NativeInput";
 import { type InputEventName } from "~/components/input/types";
 import { classNames } from "~/components/types";
 
-export interface BasicSelectInputInstance {
+export interface RootSelectInputInstance extends HTMLDivElement {
+  readonly setLoading: (v: boolean) => void;
   readonly focus: () => void;
 }
 
-export interface BasicSelectInputProps
+export interface RootSelectInputProps
   extends Pick<
     InputProps,
     | "isLocked"
@@ -39,51 +39,63 @@ export interface BasicSelectInputProps
   > {
   readonly isOpen: boolean;
   readonly search?: string;
-  readonly inputRef?: RefObject<BasicSelectInputInstance>;
   readonly onSearch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const BasicSelectInput = forwardRef<HTMLDivElement, BasicSelectInputProps>(
+export const RootSelectInput = forwardRef(
   (
     {
       dynamicHeight = true,
       isOpen = false,
       search: propSearch,
       children,
-      inputRef,
+      isLoading: propIsLoading,
       onSearch,
       onClear,
       ...props
-    }: BasicSelectInputProps,
-    ref: ForwardedRef<HTMLDivElement>,
+    }: RootSelectInputProps,
+    ref: ForwardedRef<RootSelectInputInstance>,
   ) => {
+    const [_isLoading, setIsLoading] = useState(false);
+
+    const outerRef = useRef<HTMLDivElement>(null);
     const innerRef = useRef<HTMLInputElement>(null);
     const [_search, setSearch] = useState("");
 
     const search = propSearch ?? _search;
+    const isLoading = _isLoading || propIsLoading;
 
     useEffect(() => {
-      if (isOpen && innerRef.current) {
+      if (isOpen && innerRef.current && outerRef.current) {
         innerRef.current.focus();
-      } else if (!isOpen && innerRef.current) {
+        outerRef.current.focus();
+      } else if (!isOpen && innerRef.current && outerRef.current) {
         innerRef.current.blur();
+        outerRef.current.blur();
       }
     }, [isOpen]);
 
-    useImperativeHandle(inputRef, () => ({
-      focus: () => innerRef.current?.focus(),
-    }));
+    useImperativeHandle(ref, () =>
+      Object.assign(outerRef.current as HTMLDivElement, {
+        focus: () => {
+          innerRef.current?.focus();
+          outerRef.current?.focus();
+        },
+        setLoading: (v: boolean) => setIsLoading(v),
+      }),
+    );
 
     return (
       <Input
         withCaret
         {...props}
+        ref={outerRef}
+        isLoading={isLoading}
         showPlaceholder={
           onSearch === undefined ? props.showPlaceholder : !isOpen && props.showPlaceholder
         }
         isCaretOpen={isOpen}
         className={classNames("select", props.className)}
-        ref={ref}
         isActive={isOpen || props.isActive}
         dynamicHeight={dynamicHeight}
         isClearVisible={onSearch === undefined ? true : !isOpen}
@@ -108,5 +120,7 @@ export const BasicSelectInput = forwardRef<HTMLDivElement, BasicSelectInputProps
     );
   },
 ) as {
-  (props: BasicSelectInputProps & { readonly ref?: ForwardedRef<HTMLDivElement> }): JSX.Element;
+  (
+    props: RootSelectInputProps & { readonly ref?: ForwardedRef<RootSelectInputInstance> },
+  ): JSX.Element;
 };

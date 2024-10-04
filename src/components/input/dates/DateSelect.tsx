@@ -6,14 +6,16 @@ import { useRef, forwardRef, type ForwardedRef, useState } from "react";
 import { DateTime } from "luxon";
 import { type Optional } from "utility-types";
 
-import type * as types from "../select/types";
-
 import { PopoverContent } from "~/components/floating/PopoverContent";
 import { Loading } from "~/components/loading/Loading";
 import { type ComponentProps } from "~/components/types";
 
-import { BasicSelectInput, type BasicSelectInputProps } from "../select/BasicSelectInput";
-import { SelectPopover, type SelectPopoverProps } from "../select/SelectPopover";
+import { RootSelectInput, type RootSelectInputProps } from "../select/RootSelectInput";
+import {
+  SelectPopover,
+  type SelectPopoverProps,
+  type SelectPopoverInstance,
+} from "../select/SelectPopover";
 
 import { toDateTime } from "./util";
 
@@ -23,7 +25,7 @@ const DatePicker = dynamic(() => import("./DatePicker"), {
 
 export interface DateSelectProps
   extends Optional<Omit<SelectPopoverProps, "content" | "isReady">, "children">,
-    Omit<BasicSelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
+    Omit<RootSelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
   readonly value: Date | string | null;
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
@@ -47,9 +49,9 @@ export const DateSelect = forwardRef(
       onChange,
       ...props
     }: DateSelectProps,
-    ref: ForwardedRef<Omit<types.BasicSelectInstance, "focusInput"> | null>,
+    ref: ForwardedRef<SelectPopoverInstance | null>,
   ): JSX.Element => {
-    const internalInstance = useRef<Omit<types.BasicSelectInstance, "focusInput"> | null>(null);
+    const internalInstance = useRef<SelectPopoverInstance | null>(null);
 
     const [v, setV] = useState<Date | null>(toDateTime(value)?.toJSDate() ?? null);
 
@@ -59,9 +61,9 @@ export const DateSelect = forwardRef(
 
     return (
       <SelectPopover
-        menuWidth="target"
+        popoverWidth="target"
         {...props}
-        maxHeight="fit-content"
+        popoverMaxHeight="fit-content"
         ref={instance => {
           if (instance) {
             internalInstance.current = instance;
@@ -88,22 +90,22 @@ export const DateSelect = forwardRef(
         }
       >
         {children ||
-          (({ ref, params, isOpen, isLoading }) => (
-            <BasicSelectInput
+          (({ ref, params, isOpen }) => (
+            <RootSelectInput
               {...params}
               dynamicHeight={false}
               ref={ref}
               actions={actions}
               placeholder={placeholder}
               isOpen={isOpen}
-              isLoading={isLoading}
+              // isLoading={isLoading}
               isLocked={isLocked}
               size={size}
               isDisabled={isDisabled}
               className={inputClassName}
             >
               {v ? DateTime.fromJSDate(v).toFormat(formatString) : ""}
-            </BasicSelectInput>
+            </RootSelectInput>
           ))}
       </SelectPopover>
     );

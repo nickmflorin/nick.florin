@@ -56,6 +56,8 @@ export const DataSelect = forwardRef(
       isDisabled,
       isLocked,
       isLoading,
+      contentIsLoading,
+      inputIsLoading,
       onItemClick,
       itemRenderer,
       children,
@@ -100,13 +102,15 @@ export const DataSelect = forwardRef(
         isDisabled={isDisabled}
         isLocked={isLocked}
         isLoading={isLoading}
+        contentIsLoading={contentIsLoading}
+        inputIsLoading={inputIsLoading}
         data={data}
         content={(_, { toggle, isSelected }) => (
           <DataMenu<M>
             {...pickDataMenuProps(props)}
             isDisabled={isDisabled}
             isLocked={isLocked}
-            isLoading={isLoading}
+            isLoading={isLoading || contentIsLoading}
             data={data}
             selectionIndicator={selectionIndicator}
             className={classNames("h-full rounded-sm", menuClassName)}

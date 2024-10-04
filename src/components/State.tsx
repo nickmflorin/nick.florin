@@ -6,7 +6,7 @@ import { Loading, type LoadingProps } from "./loading/Loading";
 
 export interface StateProps {
   readonly isLoading?: boolean;
-  readonly loadingProps?: LoadingProps;
+  readonly loadingProps?: LoadingProps<"div">;
   readonly error?: ErrorType;
   readonly children: ReactNode;
   readonly hideChildrenOnError?: boolean;

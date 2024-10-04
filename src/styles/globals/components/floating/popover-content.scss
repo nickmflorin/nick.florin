@@ -13,4 +13,12 @@
   > .menu {
     max-height: inherit;
   }
+
+  &[data-attr-loading="true"] {
+    pointer-events: none;
+
+    > *:not([data-attr-loading-view="true"]) {
+      opacity: 0.6;
+    }
+  }
 }

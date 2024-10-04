@@ -68,7 +68,7 @@ export const EducationsTableFilterBar = ({
           renderer: v => (
             <SkillsSelect
               ref={refs.skills}
-              isLoading={Object.keys(pendingFilters).includes("skills")}
+              inputIsLoading={Object.keys(pendingFilters).includes("skills")}
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Skills"
@@ -89,7 +89,7 @@ export const EducationsTableFilterBar = ({
           renderer: v => (
             <SchoolSelect
               ref={refs.schools}
-              isLoading={Object.keys(pendingFilters).includes("schools")}
+              inputIsLoading={Object.keys(pendingFilters).includes("schools")}
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Schools"

@@ -61,7 +61,7 @@ export const RepositoriesTableFilterBar = ({
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Skills"
-              isLoading={Object.keys(pendingFilters).includes("skills")}
+              inputIsLoading={Object.keys(pendingFilters).includes("skills")}
               data={skills}
               behavior="multi"
               isClearable
@@ -82,7 +82,7 @@ export const RepositoriesTableFilterBar = ({
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Projects"
-              isLoading={Object.keys(pendingFilters).includes("projects")}
+              inputIsLoading={Object.keys(pendingFilters).includes("projects")}
               data={projects}
               behavior="multi"
               isClearable

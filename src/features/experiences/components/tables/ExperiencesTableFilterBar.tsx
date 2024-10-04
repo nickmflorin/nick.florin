@@ -61,7 +61,7 @@ export const ExperiencesTableFilterBar = ({
             <SkillsSelect
               ref={refs.skills}
               popoverClassName="z-50"
-              isLoading={Object.keys(pendingFilters).includes("skills")}
+              inputIsLoading={Object.keys(pendingFilters).includes("skills")}
               inputClassName="max-w-[320px]"
               placeholder="Skills"
               data={skills}
@@ -81,7 +81,7 @@ export const ExperiencesTableFilterBar = ({
           renderer: v => (
             <CompanySelect
               ref={refs.companies}
-              isLoading={Object.keys(pendingFilters).includes("companies")}
+              inputIsLoading={Object.keys(pendingFilters).includes("companies")}
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Companies"

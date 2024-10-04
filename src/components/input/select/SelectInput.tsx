@@ -2,23 +2,27 @@ import React, { type ForwardedRef, forwardRef, useMemo } from "react";
 
 import type * as types from "~/components/input/select/types";
 
-import { BasicSelectInput, type BasicSelectInputProps } from "./BasicSelectInput";
+import {
+  RootSelectInput,
+  type RootSelectInputInstance,
+  type RootSelectInputProps,
+} from "./RootSelectInput";
 
 export interface SelectInputProps<
   V extends types.AllowedSelectValue,
   B extends types.SelectBehaviorType,
-> extends Omit<BasicSelectInputProps, "showPlaceholder" | "onClear"> {
+> extends Omit<RootSelectInputProps, "showPlaceholder" | "onClear"> {
   readonly value: types.SelectNullableValue<V, B> | types.NotSet;
   readonly onClear?: types.IfDeselectable<B, () => void>;
 }
 
 export const SelectInput = forwardRef<
-  HTMLDivElement,
+  RootSelectInputInstance,
   SelectInputProps<types.AllowedSelectValue, types.SelectBehaviorType>
 >(
   <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
     { value, children, ...props }: SelectInputProps<V, B>,
-    ref: ForwardedRef<HTMLDivElement>,
+    ref: ForwardedRef<RootSelectInputInstance>,
   ) => {
     const showPlaceholder = useMemo(
       () => (Array.isArray(value) && value.length === 0) || value === null,
@@ -26,13 +30,13 @@ export const SelectInput = forwardRef<
     );
 
     return (
-      <BasicSelectInput {...props} ref={ref} showPlaceholder={showPlaceholder}>
+      <RootSelectInput {...props} ref={ref} showPlaceholder={showPlaceholder}>
         {children}
-      </BasicSelectInput>
+      </RootSelectInput>
     );
   },
 ) as {
   <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
-    props: SelectInputProps<V, B> & { readonly ref?: ForwardedRef<HTMLDivElement> },
+    props: SelectInputProps<V, B> & { readonly ref?: ForwardedRef<RootSelectInputInstance> },
   ): JSX.Element;
 };

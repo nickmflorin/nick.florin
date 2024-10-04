@@ -69,7 +69,8 @@ export const TableBody = ({
       /* See comment towards the top of the file related to the overridden 'console.error'
          method. */
       <Loading
-        component={ps => <tr {...ps} className={classNames("tr--loading", ps.className)} />}
+        component="tr"
+        className="tr--loading"
         isLoading={isLoading && tableHasLoadingIndicator(loadingIndicator, "spinner")}
       >
         {isError ? (

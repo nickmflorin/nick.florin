@@ -5,11 +5,11 @@ import { useSelectValue } from "~/components/input/select/hooks";
 import * as types from "~/components/input/select/types";
 import { type ComponentProps } from "~/components/types";
 
-import { BasicSelect, type BasicSelectProps } from "./BasicSelect";
+import { RootSelect, type RootSelectProps } from "./RootSelect";
 import { SelectInput } from "./SelectInput";
 
 export interface SelectProps<V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>
-  extends Omit<BasicSelectProps, "content" | "onClear" | "renderedValue" | "showPlaceholder"> {
+  extends Omit<RootSelectProps, "content" | "onClear" | "renderedValue" | "showPlaceholder"> {
   readonly behavior: B;
   readonly value?: types.SelectValue<V, B>;
   readonly initialValue?: types.SelectValue<V, B>;
@@ -23,23 +23,27 @@ export interface SelectProps<V extends types.AllowedSelectValue, B extends types
   readonly content: types.SelectManagedCallback<JSX.Element, V, B, types.SelectNullableValue<V, B>>;
 }
 
-const LocalSelect = forwardRef(
+export const Select = forwardRef(
   <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
     {
       behavior,
-      menuOffset = { mainAxis: 2 },
       popoverPlacement,
       closeMenuOnSelect,
-      menuWidth = "target",
       isLoading,
       inPortal,
       popoverClassName,
       inputClassName,
-      maxHeight,
       initialValue,
       value: _propValue,
       isReady,
       isClearable,
+      contentIsLoading,
+      inputIsLoading,
+      popoverAllowedPlacements,
+      popoverAutoUpdate,
+      popoverMaxHeight,
+      popoverOffset,
+      popoverWidth,
       onClear: _onClear,
       valueRenderer,
       children,
@@ -52,7 +56,7 @@ const LocalSelect = forwardRef(
     }: SelectProps<V, B>,
     ref: ForwardedRef<types.SelectInstance<V, B>>,
   ): JSX.Element => {
-    const internalInstance = useRef<types.BasicSelectInstance | null>(null);
+    const internalInstance = useRef<types.RootSelectInstance | null>(null);
 
     const { value, clear, ...managed } = useSelectValue<V, B>({
       initialValue,
@@ -85,32 +89,38 @@ const LocalSelect = forwardRef(
       focusInput: () => internalInstance.current?.focusInput(),
       setOpen: v => internalInstance.current?.setOpen(v),
       setLoading: v => internalInstance.current?.setLoading(v),
+      setContentLoading: v => internalInstance.current?.setContentLoading(v),
+      setInputLoading: v => internalInstance.current?.setInputLoading(v),
     }));
 
     return (
-      <BasicSelect
+      <RootSelect
         ref={internalInstance}
-        maxHeight={maxHeight}
         isReady={isReady}
         isLoading={isLoading}
+        contentIsLoading={contentIsLoading}
+        inputIsLoading={inputIsLoading}
+        inPortal={inPortal}
         popoverPlacement={popoverPlacement}
         popoverClassName={popoverClassName}
-        menuWidth={menuWidth}
-        inPortal={inPortal}
-        menuOffset={menuOffset}
+        popoverAllowedPlacements={popoverAllowedPlacements}
+        popoverAutoUpdate={popoverAutoUpdate}
+        popoverMaxHeight={popoverMaxHeight}
+        popoverOffset={popoverOffset}
+        popoverWidth={popoverWidth}
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
         content={value !== types.NOTSET ? content(value, { ...managed, clear }) : <></>}
       >
         {children ??
-          (({ ref, params, isOpen, isLoading }) => (
+          (({ ref, params, isOpen }) => (
             <SelectInput
               {...params}
               {...props}
               value={value}
               isOpen={isOpen}
-              isLoading={isLoading}
+              isLoading={inputIsLoading || isLoading}
               ref={ref}
               onClear={onClear as types.IfDeselectable<B, () => void>}
               className={inputClassName}
@@ -124,12 +134,10 @@ const LocalSelect = forwardRef(
                 : undefined}
             </SelectInput>
           ))}
-      </BasicSelect>
+      </RootSelect>
     );
   },
-);
-
-export const Select = LocalSelect as {
+) as {
   <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>(
     props: SelectProps<V, B> & {
       readonly ref?: ForwardedRef<types.SelectInstance<V, B>>;

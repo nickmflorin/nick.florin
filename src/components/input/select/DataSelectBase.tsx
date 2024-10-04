@@ -13,9 +13,9 @@ import { type MultiValueRendererProps } from "~/components/input/select/MultiVal
 import * as types from "~/components/input/select/types";
 import { type ComponentProps } from "~/components/types";
 
-import { BasicSelect, type BasicSelectProps } from "./BasicSelect";
-import { type BasicSelectInputInstance } from "./BasicSelectInput";
 import { DataSelectInput } from "./DataSelectInput";
+import { RootSelect, type RootSelectProps } from "./RootSelect";
+import { type RootSelectInputInstance } from "./RootSelectInput";
 
 export interface DataSelectBaseInstance {
   readonly focusInput: () => void;
@@ -25,7 +25,7 @@ export interface DataSelectBaseProps<
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<
-      BasicSelectProps,
+      RootSelectProps,
       "content" | "onClear" | "renderedValue" | "showPlaceholder" | "inputRef"
     >,
     Pick<
@@ -67,24 +67,15 @@ export interface DataSelectBaseProps<
   >;
 }
 
-const LocalDataSelectBase = forwardRef<
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  types.DataSelectInstance<any, any>,
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  DataSelectBaseProps<any, any>
->(
+const LocalDataSelectBase = forwardRef(
   <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     {
       options,
-      menuOffset = { mainAxis: 2 },
-      popoverPlacement,
       closeMenuOnSelect,
-      menuWidth = "target",
       isLoading,
       inPortal,
       popoverClassName,
       inputClassName,
-      maxHeight = 240,
       initialValue,
       value: _propValue,
       isReady,
@@ -94,7 +85,14 @@ const LocalDataSelectBase = forwardRef<
       chipsCanDeselect: _chipsCanDeselect,
       showIconsInChips = true,
       strictValueLookup = true,
-      autoUpdatePopover,
+      inputIsLoading,
+      contentIsLoading,
+      popoverPlacement,
+      popoverAllowedPlacements,
+      popoverAutoUpdate,
+      popoverMaxHeight,
+      popoverOffset,
+      popoverWidth,
       getItemValueLabel,
       children,
       content,
@@ -107,8 +105,8 @@ const LocalDataSelectBase = forwardRef<
     }: DataSelectBaseProps<M, O>,
     ref: ForwardedRef<types.DataSelectInstance<M, O>>,
   ): JSX.Element => {
-    const innerRef = useRef<Omit<types.DataSelectInstance<M, O>, "clear"> | null>(null);
-    const innerInputRef = useRef<BasicSelectInputInstance | null>(null);
+    const selectRef = useRef<types.RootSelectInstance | null>(null);
+    const inputRef = useRef<RootSelectInputInstance | null>(null);
 
     const { value, clear, ...managed } = useSelectModelValue<M, O>({
       initialValue,
@@ -123,7 +121,7 @@ const LocalDataSelectBase = forwardRef<
           closeMenuOnSelect ||
           (closeMenuOnSelect === undefined && options.behavior !== types.SelectBehaviorTypes.MULTI)
         ) {
-          innerRef.current?.setOpen(false);
+          selectRef.current?.setOpen(false);
         }
       },
     });
@@ -131,9 +129,14 @@ const LocalDataSelectBase = forwardRef<
     useImperativeHandle(ref, () => ({
       clear,
       setValue: v => managed.set(v),
-      focusInput: () => innerInputRef.current?.focus(),
-      setOpen: (v: boolean) => innerRef.current?.setOpen(v),
-      setLoading: (v: boolean) => innerRef.current?.setLoading(v),
+      focusInput: () => inputRef.current?.focus(),
+      setOpen: (v: boolean) => selectRef.current?.setOpen(v),
+      setInputLoading: (v: boolean) => inputRef.current?.setLoading(v),
+      setContentLoading: (v: boolean) => selectRef.current?.setContentLoading(v),
+      setLoading: (v: boolean) => {
+        selectRef.current?.setLoading(v);
+        inputRef.current?.setLoading(v);
+      },
     }));
 
     const defaultChipsCanDeselect =
@@ -151,17 +154,20 @@ const LocalDataSelectBase = forwardRef<
     }, [isClearable, value, _onClear, clear]);
 
     return (
-      <BasicSelect
-        ref={innerRef}
-        maxHeight={maxHeight}
+      <RootSelect
+        ref={selectRef}
         isReady={isReady}
         isLoading={isLoading}
-        popoverPlacement={popoverPlacement}
-        menuWidth={menuWidth}
-        popoverClassName={popoverClassName}
+        contentIsLoading={contentIsLoading}
+        inputIsLoading={inputIsLoading}
         inPortal={inPortal}
-        menuOffset={menuOffset}
-        autoUpdatePopover={autoUpdatePopover}
+        popoverPlacement={popoverPlacement}
+        popoverClassName={popoverClassName}
+        popoverAllowedPlacements={popoverAllowedPlacements}
+        popoverAutoUpdate={popoverAutoUpdate}
+        popoverMaxHeight={popoverMaxHeight}
+        popoverOffset={popoverOffset}
+        popoverWidth={popoverWidth}
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
@@ -177,7 +183,7 @@ const LocalDataSelectBase = forwardRef<
         }
       >
         {children ??
-          (({ ref, params, isOpen, isLoading: _isLoading }) => (
+          (({ ref: _ref, params, isOpen }) => (
             <DataSelectInput<M, O>
               {...params}
               {...props}
@@ -187,16 +193,22 @@ const LocalDataSelectBase = forwardRef<
               options={options}
               value={value}
               isOpen={isOpen}
-              isLoading={_isLoading}
-              ref={ref}
-              inputRef={innerInputRef}
+              isLoading={inputIsLoading || isLoading}
+              ref={instance => {
+                if (instance) {
+                  _ref(instance);
+                  if (instance) {
+                    inputRef.current = instance;
+                  }
+                }
+              }}
               onClear={onClear as types.IfDeselectable<O["behavior"], () => void>}
               modelValue={managed.modelValue}
               className={inputClassName}
               onBadgeClose={chipsCanDeselect ? (m: M) => managed.deselectModel(m) : undefined}
             />
           ))}
-      </BasicSelect>
+      </RootSelect>
     );
   },
 );

@@ -4,13 +4,17 @@ import { logger } from "~/internal/logger";
 
 import * as types from "~/components/input/select/types";
 
-import { BasicSelectInput, type BasicSelectInputProps } from "./BasicSelectInput";
 import { MultiValueRenderer, type MultiValueRendererProps } from "./MultiValueRenderer";
+import {
+  RootSelectInput,
+  type RootSelectInputProps,
+  type RootSelectInputInstance,
+} from "./RootSelectInput";
 
 export interface DataSelectInputProps<
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
-> extends Omit<BasicSelectInputProps, "showPlaceholder" | "children">,
+> extends Omit<RootSelectInputProps, "showPlaceholder" | "children">,
     Pick<
       MultiValueRendererProps<M>,
       | "chipClassName"
@@ -56,7 +60,7 @@ export const DataSelectInput = forwardRef(
       getItemId: _getItemId,
       ...props
     }: DataSelectInputProps<M, O>,
-    ref: ForwardedRef<HTMLDivElement>,
+    ref: ForwardedRef<RootSelectInputInstance>,
   ) => {
     const showPlaceholder = useMemo(
       () => (Array.isArray(modelValue) && modelValue.length === 0) || modelValue === null,
@@ -188,7 +192,7 @@ export const DataSelectInput = forwardRef(
     ]);
 
     return (
-      <BasicSelectInput
+      <RootSelectInput
         {...props}
         onClick={e => {
           e.stopPropagation();
@@ -199,11 +203,11 @@ export const DataSelectInput = forwardRef(
         showPlaceholder={showPlaceholder}
       >
         <>{renderedValue}</>
-      </BasicSelectInput>
+      </RootSelectInput>
     );
   },
 ) as {
   <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
-    props: DataSelectInputProps<M, O> & { readonly ref?: ForwardedRef<HTMLDivElement> },
+    props: DataSelectInputProps<M, O> & { readonly ref?: ForwardedRef<RootSelectInputInstance> },
   ): JSX.Element;
 };

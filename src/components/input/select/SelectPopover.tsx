@@ -2,19 +2,36 @@
 import React from "react";
 import { useState, forwardRef, type ForwardedRef, useImperativeHandle } from "react";
 
-import { autoPlacement } from "@floating-ui/react";
+import { omit, pick } from "lodash-es";
 
 import { Popover, type PopoverProps } from "~/components/floating/Popover";
-import { type PopoverRenderProps } from "~/components/floating/types";
-import type * as types from "~/components/input/select/types";
+import {
+  type PopoverRenderProps,
+  type FloatingContentRenderProps,
+} from "~/components/floating/types";
 
-export interface SelectPopoverProps
-  extends Pick<PopoverProps, "inPortal" | "content" | "maxHeight" | "autoUpdate"> {
-  readonly popoverPlacement?: PopoverProps["placement"];
-  readonly menuOffset?: PopoverProps["offset"];
-  readonly menuWidth?: PopoverProps["width"];
-  readonly isLoading?: boolean;
+export type SelectPopoverInstance = {
+  readonly setOpen: (isOpen: boolean) => void;
+  readonly setContentLoading: (isLoading: boolean) => void;
+};
+
+interface InnerSelectPopoverProps
+  extends Pick<
+    PopoverProps,
+    | "inPortal"
+    | "maxHeight"
+    | "autoUpdate"
+    | "placement"
+    | "allowedPlacements"
+    | "width"
+    | "offset"
+    | "isDisabled"
+  > {
+  readonly contentIsLoading?: boolean;
   readonly isReady?: boolean;
+  readonly content:
+    | JSX.Element
+    | ((props: FloatingContentRenderProps & { readonly contentIsLoading: boolean }) => JSX.Element);
   readonly onOpen?: (
     e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
   ) => void;
@@ -25,44 +42,35 @@ export interface SelectPopoverProps
     e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
     isOpen: boolean,
   ) => void;
-  readonly children: (
-    params: PopoverRenderProps & { readonly isOpen: boolean; readonly isLoading: boolean },
-  ) => JSX.Element;
+  readonly children: (params: PopoverRenderProps & { readonly isOpen: boolean }) => JSX.Element;
 }
 
-export const SelectPopover = forwardRef<
-  Omit<types.BasicSelectInstance, "focusInput">,
-  SelectPopoverProps
->(
+const InnerSelectPopover = forwardRef(
   (
     {
-      content,
-      menuOffset = { mainAxis: 2 },
-      popoverPlacement,
-      menuWidth = "target",
-      isLoading: _propIsLoading,
+      offset = { mainAxis: 2 },
+      width = "target",
+      contentIsLoading: _propContentIsLoading,
       isReady,
+      maxHeight = "240px",
+      content,
       children,
-      onOpen,
-      onClose,
-      onOpenChange,
       ...props
-    }: SelectPopoverProps,
-    ref: ForwardedRef<Omit<types.BasicSelectInstance, "focusInput">>,
+    }: InnerSelectPopoverProps,
+    ref: ForwardedRef<SelectPopoverInstance>,
   ): JSX.Element => {
-    const [_isLoading, setLoading] = useState(false);
+    const [_contentIsLoading, setContentLoading] = useState(false);
     const [isOpen, setOpen] = useState(false);
 
-    const isLoading = _propIsLoading || _isLoading;
+    const contentIsLoading = _propContentIsLoading || _contentIsLoading;
 
     useImperativeHandle(ref, () => ({
       setOpen,
-      setLoading,
+      setContentLoading,
     }));
 
     return (
       <Popover
-        {...props}
         /* Note: Using autoUpdate for the Select is particularly important - especially for Select
            elements inside of Forms that exist in Drawers - because the first time the Select is
            opened after initial render, the Select's content menu will appear with the best
@@ -74,25 +82,103 @@ export const SelectPopover = forwardRef<
            further to see exactly what performance impact it has as well as why the Select seems
            to not appropriately use the 'autoPlacement' behavior when inside of a Drawer during the
            first open of the Select's menu content. */
-        //  autoUpdate
-        placement={popoverPlacement}
-        middleware={[autoPlacement({ allowedPlacements: ["bottom", "top"] })]}
+        autoUpdate={false}
+        allowedPlacements={["bottom", "top"]}
+        {...props}
         triggers={["click"]}
-        width={menuWidth}
+        width={width}
+        maxHeight={maxHeight}
         withArrow={false}
-        offset={menuOffset}
+        offset={offset}
         isOpen={isOpen}
-        isDisabled={isReady === false}
-        onOpen={e => onOpen?.(e)}
-        onClose={e => onClose?.(e)}
+        isDisabled={isReady === false || props.isDisabled}
         onOpenChange={(isOpen, evt) => {
           setOpen(isOpen);
-          onOpenChange?.(evt, isOpen);
+          props.onOpenChange?.(evt, isOpen);
         }}
-        content={content}
+        content={
+          typeof content === "function"
+            ? renderProps => content({ ...renderProps, contentIsLoading })
+            : content
+        }
       >
-        {({ ref: _ref, params }) => children({ ref: _ref, params, isOpen, isLoading })}
+        {({ ref: _ref, params }) => children({ ref: _ref, params, isOpen })}
       </Popover>
     );
   },
+);
+
+export interface SelectPopoverProps
+  extends Pick<
+    InnerSelectPopoverProps,
+    | "inPortal"
+    | "content"
+    | "onOpen"
+    | "onClose"
+    | "onOpenChange"
+    | "children"
+    | "isReady"
+    | "contentIsLoading"
+  > {
+  readonly popoverMaxHeight?: InnerSelectPopoverProps["maxHeight"];
+  readonly popoverPlacement?: InnerSelectPopoverProps["placement"];
+  readonly popoverAllowedPlacements?: InnerSelectPopoverProps["allowedPlacements"];
+  readonly popoverWidth?: InnerSelectPopoverProps["width"];
+  readonly popoverOffset?: InnerSelectPopoverProps["offset"];
+  readonly popoverAutoUpdate?: InnerSelectPopoverProps["autoUpdate"];
+}
+
+export const SelectPopoverPropsMap = {
+  inPortal: true,
+  content: true,
+  popoverMaxHeight: true,
+  popoverAllowedPlacements: true,
+  popoverPlacement: true,
+  popoverWidth: true,
+  popoverOffset: true,
+  popoverAutoUpdate: true,
+  onOpen: true,
+  onClose: true,
+  onOpenChange: true,
+  children: true,
+  contentIsLoading: true,
+  isReady: true,
+} as const satisfies {
+  [key in keyof Required<SelectPopoverProps>]: true;
+};
+
+export const omitSelectPopoverProps = <P extends Record<string, unknown>>(
+  props: P,
+): Omit<P, keyof typeof SelectPopoverPropsMap & keyof P> =>
+  omit(props, Object.keys(SelectPopoverPropsMap) as (keyof Required<SelectPopoverProps>)[]);
+
+export const pickSelectPopoverProps = <P extends Record<string, unknown>>(
+  props: P,
+): Pick<P, keyof typeof SelectPopoverPropsMap & keyof P> =>
+  pick(props, Object.keys(SelectPopoverPropsMap) as (keyof Required<SelectPopoverProps>)[]);
+
+export const SelectPopover = forwardRef(
+  (
+    {
+      popoverAllowedPlacements,
+      popoverAutoUpdate,
+      popoverMaxHeight,
+      popoverOffset,
+      popoverPlacement,
+      popoverWidth,
+      ...props
+    }: SelectPopoverProps,
+    ref: ForwardedRef<SelectPopoverInstance>,
+  ): JSX.Element => (
+    <InnerSelectPopover
+      {...props}
+      ref={ref}
+      allowedPlacements={popoverAllowedPlacements}
+      placement={popoverPlacement}
+      width={popoverWidth}
+      offset={popoverOffset}
+      maxHeight={popoverMaxHeight}
+      autoUpdate={popoverAutoUpdate}
+    />
+  ),
 );

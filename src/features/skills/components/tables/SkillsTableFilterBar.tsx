@@ -80,7 +80,7 @@ export const SkillsTableFilterBar = ({
               inputClassName="max-w-[320px]"
               placeholder="Projects"
               data={projects}
-              isLoading={Object.keys(pendingFilters).includes("projects")}
+              inputIsLoading={Object.keys(pendingFilters).includes("projects")}
               behavior="multi"
               isClearable
               maximumValuesToRender={1}
@@ -100,7 +100,7 @@ export const SkillsTableFilterBar = ({
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Repositories"
-              isLoading={Object.keys(pendingFilters).includes("repositories")}
+              inputIsLoading={Object.keys(pendingFilters).includes("repositories")}
               data={repositories}
               behavior="multi"
               isClearable
@@ -121,7 +121,7 @@ export const SkillsTableFilterBar = ({
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Experiences"
-              isLoading={Object.keys(pendingFilters).includes("experiences")}
+              inputIsLoading={Object.keys(pendingFilters).includes("experiences")}
               data={experiences}
               behavior="multi"
               isClearable
@@ -141,7 +141,7 @@ export const SkillsTableFilterBar = ({
               ref={refs.educations}
               popoverClassName="z-50"
               placeholder="Educations"
-              isLoading={Object.keys(pendingFilters).includes("educations")}
+              inputIsLoading={Object.keys(pendingFilters).includes("educations")}
               data={educations}
               behavior="multi"
               isClearable
@@ -164,7 +164,7 @@ export const SkillsTableFilterBar = ({
               ref={refs.programmingLanguages}
               popoverClassName="z-50"
               placeholder="Prog. Languages"
-              isLoading={Object.keys(pendingFilters).includes("programmingLanguages")}
+              inputIsLoading={Object.keys(pendingFilters).includes("programmingLanguages")}
               behavior="multi"
               isClearable
               initialValue={v}
@@ -188,7 +188,7 @@ export const SkillsTableFilterBar = ({
               ref={refs.programmingDomains}
               popoverClassName="z-50"
               placeholder="Prog. Domains"
-              isLoading={Object.keys(pendingFilters).includes("programmingDomains")}
+              inputIsLoading={Object.keys(pendingFilters).includes("programmingDomains")}
               behavior="multi"
               isClearable
               initialValue={v}
@@ -215,7 +215,7 @@ export const SkillsTableFilterBar = ({
               behavior="multi"
               isClearable
               initialValue={v}
-              isLoading={Object.keys(pendingFilters).includes("categories")}
+              inputIsLoading={Object.keys(pendingFilters).includes("categories")}
               maximumValuesToRender={1}
               dynamicHeight={false}
               inputClassName="max-w-[320px]"

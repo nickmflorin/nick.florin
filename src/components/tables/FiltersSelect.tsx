@@ -29,9 +29,9 @@ export const FiltersSelect = <F extends types.TableFilters>({
       options={{ behavior: "multi" }}
       inputClassName="w-[240px]"
       popoverClassName="z-50"
-      menuOffset={{ mainAxis: 4, crossAxis: -50 }}
-      menuWidth="available"
-      maxHeight={260}
+      popoverOffset={{ mainAxis: 4, crossAxis: -50 }}
+      popoverWidth="available"
+      popoverMaxHeight={260}
     >
       {({ ref, params, isOpen }) => (
         <IconButton.Transparent

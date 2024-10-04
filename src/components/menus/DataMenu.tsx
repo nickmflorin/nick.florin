@@ -19,7 +19,6 @@ export interface DataMenuProps<M extends types.DataMenuModel> extends DataMenuCo
   readonly header?: JSX.Element;
   readonly footer?: JSX.Element;
   readonly search?: string;
-  // readonly contentRef?: React.RefObject<types.DataMenuContentInstance>;
   readonly onSearch?: (e: React.ChangeEvent<HTMLInputElement>, v: string) => void;
 }
 
@@ -28,7 +27,6 @@ export const DataMenuPropsMap = {
   header: true,
   footer: true,
   search: true,
-  // contentRef: true,
   id: true,
   className: true,
   style: true,

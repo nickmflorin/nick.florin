@@ -52,7 +52,7 @@ export const CoursesTableFilterBar = ({
             <SkillsSelect
               ref={refs.skills}
               popoverClassName="z-50"
-              isLoading={Object.keys(pendingFilters).includes("skills")}
+              inputIsLoading={Object.keys(pendingFilters).includes("skills")}
               inputClassName="max-w-[320px]"
               placeholder="Skills"
               data={skills}
@@ -75,7 +75,7 @@ export const CoursesTableFilterBar = ({
               popoverClassName="z-50"
               inputClassName="max-w-[320px]"
               placeholder="Educations"
-              isLoading={Object.keys(pendingFilters).includes("educations")}
+              inputIsLoading={Object.keys(pendingFilters).includes("educations")}
               data={educations}
               behavior="multi"
               isClearable

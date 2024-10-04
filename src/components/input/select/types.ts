@@ -63,13 +63,15 @@ export type IfDeselectable<B extends SelectBehaviorType, T, F = never> = B exten
   ? T
   : F;
 
-export type BasicSelectInstance = {
+export type RootSelectInstance = {
   readonly focusInput: () => void;
   readonly setOpen: (v: boolean) => void;
+  readonly setInputLoading: (v: boolean) => void;
+  readonly setContentLoading: (v: boolean) => void;
   readonly setLoading: (v: boolean) => void;
 };
 
-export type SelectInstance<V, B extends SelectBehaviorType> = BasicSelectInstance & {
+export type SelectInstance<V, B extends SelectBehaviorType> = RootSelectInstance & {
   readonly setValue: (v: SelectValue<V, B>) => void;
   readonly clear: () => void;
 };
