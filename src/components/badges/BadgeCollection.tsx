@@ -1,8 +1,11 @@
 "use client";
 import React, { useState } from "react";
 
+import { AnimatePresence, motion } from "framer-motion";
+
 import type { BadgeSize } from "./types";
 
+import { AnimateChangeInHeight } from "~/components/animations/AnimateChangeInHeight";
 import { ShowMoreLink } from "~/components/buttons/ShowMoreLink";
 import {
   type TypographyVisibilityState,
@@ -96,9 +99,22 @@ export const BadgeCollection = <M,>({
       component="div"
       className={classNames("badge-collection", `badge-collection--size-${size}`, props.className)}
     >
-      <div className="badge-collection__badges">
-        {state === "collapsed" ? partition[0] : [...partition[0], ...partition[1]]}
-      </div>
+      <AnimateChangeInHeight className="badge-collection__badges">
+        {partition[0]}
+        {partition[1].map((child, i) => (
+          <AnimatePresence key={i}>
+            {state === "expanded" && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={state === "expanded" ? { opacity: 1 } : { opacity: 0 }}
+                exit={{ opacity: 0 }}
+              >
+                {child}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        ))}
+      </AnimateChangeInHeight>
       {partition[1].length !== 0 && (
         <ShowMoreLink
           state={state}
