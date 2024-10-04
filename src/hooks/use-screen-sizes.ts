@@ -3,7 +3,8 @@ import { useState, useCallback, useRef } from "react";
 import {
   type Breakpoint,
   Breakpoints,
-  getMediaQuery,
+  getLowerRangeContainerBreakpoint,
+  getBreakpointFromWindow,
   type ScreenSize,
   inferQuantitativeSizeValue,
   type ContainerBreakpoint,
@@ -12,57 +13,6 @@ import {
 } from "~/components/types";
 
 import { useWindowResize } from "./use-window-resize";
-
-const getContainerBreakpoint = <T extends HTMLElement>(
-  container: T | null,
-): ContainerBreakpoint | "smallest" | null => {
-  let breakpoint: ContainerBreakpoint | null = null;
-  if (container) {
-    for (let i = 0; i < ContainerBreakpoints.models.length; i++) {
-      if (i === ContainerBreakpoints.members.length - 1) {
-        if (container.clientWidth < ContainerBreakpoints.models[i].size + 1) {
-          breakpoint = ContainerBreakpoints.members[i];
-        }
-      } else {
-        if (
-          container.clientWidth < ContainerBreakpoints.models[i + 1].size + 1 &&
-          container.clientWidth > ContainerBreakpoints.models[i].size
-        ) {
-          breakpoint = ContainerBreakpoints.members[i];
-        }
-      }
-    }
-    if (!breakpoint) {
-      return "smallest";
-    }
-  }
-  return breakpoint;
-};
-
-const getBreakpoint = (w: Window): Breakpoint | "smallest" => {
-  let breakpoint: Breakpoint | null = null;
-  for (let i = 0; i < Breakpoints.members.length; i++) {
-    let mediaQuery: string;
-    if (i === Breakpoints.members.length - 1) {
-      mediaQuery = getMediaQuery({
-        min: Breakpoints.members[i],
-      });
-    } else {
-      mediaQuery = getMediaQuery({
-        min: Breakpoints.members[i],
-        max: Breakpoints.members[i + 1] as Exclude<Breakpoint, "xxs">,
-      });
-    }
-
-    if (w.matchMedia(mediaQuery).matches) {
-      breakpoint = Breakpoints.members[i];
-    }
-  }
-  if (!breakpoint) {
-    return "smallest";
-  }
-  return breakpoint;
-};
 
 type Comparison = "lessThan" | "lessThanOrEqualTo" | "greaterThanOrEqualTo" | "greaterThan";
 
@@ -76,12 +26,12 @@ const Comparators: { [key in Comparison]: (actual: number, compare: number) => b
 export const useScreenSizes = () => {
   const [size, setSize] = useState<number>(window.innerWidth);
 
-  const [breakpoint, setBreakpoint] = useState<Breakpoint | "smallest">(() =>
-    getBreakpoint(window),
+  const [breakpoint, setBreakpoint] = useState<Breakpoint | "0">(() =>
+    getBreakpointFromWindow(window),
   );
 
   useWindowResize(w => {
-    const bk = getBreakpoint(window);
+    const bk = getBreakpointFromWindow(window);
     setBreakpoint(bk);
     setSize(w.innerWidth);
   });
@@ -132,13 +82,13 @@ export const useContainerSizes = <T extends HTMLElement>() => {
   const ref = useRef<T | null>(null);
 
   const [size, setSize] = useState<number | null>(null);
-  const [breakpoint, setBreakpoint] = useState<ContainerBreakpoint | "smallest" | null>(() =>
-    getContainerBreakpoint(ref.current),
+  const [breakpoint, setBreakpoint] = useState<ContainerBreakpoint | "0" | null>(() =>
+    ref.current ? getLowerRangeContainerBreakpoint(ref.current.clientWidth) : "0",
   );
 
   useWindowResize(() => {
     if (ref.current) {
-      const bk = getContainerBreakpoint(ref.current);
+      const bk = getLowerRangeContainerBreakpoint(ref.current.clientWidth);
       setBreakpoint(bk);
       setSize(ref.current.clientWidth);
     }

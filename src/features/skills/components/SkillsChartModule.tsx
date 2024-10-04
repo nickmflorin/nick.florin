@@ -5,6 +5,7 @@ import { arraysHaveSameElements } from "~/lib";
 
 import { Button } from "~/components/buttons";
 import { ErrorView } from "~/components/errors/ErrorView";
+import { Empty } from "~/components/feedback/Empty";
 import { CircleNumber } from "~/components/icons/CircleNumber";
 import { DynamicLoader, DynamicLoading } from "~/components/loading/dynamic-loading";
 import { Loading } from "~/components/loading/Loading";
@@ -96,7 +97,20 @@ export const SkillsChartModule = () => {
         <DynamicLoading>
           {({ isLoading: isLazyLoadingComponent }) => (
             <Loading isLoading={isLoading || isLazyLoadingComponent}>
-              {error ? <ErrorView error={error} /> : <SkillsBarChartView skills={skills ?? []} />}
+              <Empty
+                isEmpty={skills !== undefined && skills.length === 0}
+                content={
+                  differingFilters.length !== 0
+                    ? "No skills match the search criteria."
+                    : "No skills exist."
+                }
+              >
+                {error ? (
+                  <ErrorView error={error} />
+                ) : skills !== undefined ? (
+                  <SkillsBarChartView skills={skills ?? []} />
+                ) : null}
+              </Empty>
             </Loading>
           )}
         </DynamicLoading>

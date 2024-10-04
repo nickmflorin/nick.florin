@@ -5,14 +5,40 @@ export const isSizeUnit = (value: unknown): value is SizeUnit =>
 
 export type QualitativeSize = "fit-content";
 
+const StringUnitlessSizeRegex = /^([0-9/.]*)$/;
+
 export type StringUnitlessSize<T extends number = number> = `${T}`;
 
 export const isStringUnitlessSize = (value: unknown): value is StringUnitlessSize => {
-  if (typeof value === "string") {
+  if (typeof value === "string" && StringUnitlessSizeRegex.test(value)) {
     const v = parseInt(value);
     return !isNaN(v) && isFinite(v);
   }
   return false;
+};
+
+type ParsedStringUnitlessSize<O extends { strict?: boolean }> = O extends { strict: false }
+  ? number | null
+  : number;
+
+export const parseStringUnitlessSize = <O extends { strict?: boolean }>(
+  value: string,
+  opts?: O,
+): ParsedStringUnitlessSize<O> => {
+  const executed = StringUnitlessSizeRegex.exec(value);
+  if (executed) {
+    const numeric = parseFloat(executed[1]);
+    if (isNaN(numeric) || !isFinite(numeric)) {
+      if (opts?.strict !== false) {
+        throw new TypeError(`The provided size, '${value}', is invalid!`);
+      }
+      return null as ParsedStringUnitlessSize<O>;
+    }
+    return numeric;
+  } else if (opts?.strict !== false) {
+    throw new TypeError(`The provided size, '${value}', is invalid!`);
+  }
+  return null as ParsedStringUnitlessSize<O>;
 };
 
 export type UnitlessSize<T extends number = number> = T | StringUnitlessSize<T>;
@@ -39,23 +65,24 @@ export type QuantitativeSize<
 
 const QuantitativeSizeRegex = /^([0-9]*)(px|rem|%)$/;
 
-const parseQuantitativeSizeString = (value: string): [number, SizeUnit] | [null, null] => {
+export const parseQuantitativeSizeString = (value: string): [number, SizeUnit] | [null, null] => {
   const executed = QuantitativeSizeRegex.exec(value);
   if (executed) {
     const sz = executed[1];
     const u = executed[2];
-    const integer = parseInt(sz);
-    if (isNaN(integer) || !isFinite(integer)) {
+    const numeric = parseFloat(sz);
+    if (isNaN(numeric) || !isFinite(numeric)) {
       return [null, null];
     } else if (typeof u !== "string") {
       return [null, null];
     } else if (!isSizeUnit(u)) {
       return [null, null];
     }
-    return [integer, u];
+    return [numeric, u];
   }
   return [null, null];
 };
+
 type QuantitativeSizeTypeguardParams<U extends SizeUnit> = { readonly unit?: U };
 
 export const isQuantitativeSizeString = <
@@ -100,13 +127,8 @@ export const inferQuantitativeSizeValue = <T extends QuantitativeSize>(
   if (typeof value === "number") {
     return value as InferQuantitativeSizeValue<T>;
   } else if (isStringUnitlessSize(value)) {
-    const integer = parseInt(value);
-    /* This check is somewhat redundant, since the typeguard already performs this check.  But we
-       perform it again just in case. */
-    if (isNaN(integer) || !isFinite(integer)) {
-      throw new TypeError(`The provided size, '${value}', is invalid!`);
-    }
-    return integer as InferQuantitativeSizeValue<T>;
+    const numeric = parseStringUnitlessSize(value);
+    return numeric as InferQuantitativeSizeValue<T>;
   }
   const [sz] = parseQuantitativeSizeString(value);
   if (sz === null) {

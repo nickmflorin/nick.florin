@@ -1,88 +1,55 @@
-import { addQueryParamsToUrl, getQueryParams } from "~/integrations/http";
-
-const MOCK_QUERY = {
-  a: "bar",
-  b: 1,
-  c: true,
-  d: null,
-  e: undefined,
-  f: "",
-  g: "  ",
-  h: {
-    a: "bar",
-    b: 1,
-    c: true,
-    d: null,
-    e: undefined,
-    f: "",
-    g: "  ",
-    h: ["apple", "banana", "pear"],
-    i: [],
-    k: ["", "  ", "blueberry"],
-  },
-  i: ["apple", "banana", "pear"],
-  j: [],
-  k: [" ", "", null],
-  l: ["", "  ", "blueberry"],
-};
+import { getQueryParams, addQueryParamsToUrl } from "~/integrations/http";
 
 describe("getQueryParams() properly returns", () => {
-  it("properly returns query parameters on URL", () => {
-    const params = getQueryParams("http://example.com?foo=bar&bar=foo");
-    expect(params).toStrictEqual({
-      foo: "bar",
-      bar: "foo",
-    });
-  });
-  it("properly returns query parameters on path", () => {
-    const params = getQueryParams("/api?foo=bar&bar=foo");
-    expect(params).toStrictEqual({
-      foo: "bar",
-      bar: "foo",
-    });
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const CASES: [string, Record<string, any>][] = [
+    [
+      "https://nickflorin.com/api/skills?search=myskill&pageSize=10&page=4",
+      { search: "myskill", pageSize: "10", page: "4" },
+    ],
+    [
+      "api/skills?search=myskill&pageSize=10&page=4",
+      { search: "myskill", pageSize: "10", page: "4" },
+    ],
+    ["/api/skills?search=myskill&pageSize=&page=4", { search: "myskill", page: "4", pageSize: "" }],
+    ["https://nickflorin.com/api/skills", {}],
+    ["https://nickflorin.com/api/skills?", {}],
+    ["", {}],
+  ];
+  test.each(CASES)("(url = %s)", (url, expected) => {
+    expect(getQueryParams(url)).toEqual(expected);
   });
 });
 
 describe("addQueryParamsToUrl() properly returns", () => {
-  it("properly parses and includes query paramters", () => {
-    const url = addQueryParamsToUrl("http://example.com", MOCK_QUERY);
-    expect(getQueryParams(url)).toStrictEqual({
-      a: "bar",
-      b: "1",
-      c: "true",
-      d: "",
-      f: "",
-      g: "  ",
-      h: {
-        a: "bar",
-        b: "1",
-        c: "true",
-        d: "",
-        f: "",
-        g: "  ",
-        h: ["apple", "banana", "pear"],
-        k: ["", "  ", "blueberry"],
-      },
-      i: ["apple", "banana", "pear"],
-      k: [" ", "", ""],
-      l: ["", "  ", "blueberry"],
-    });
-  });
-  it("prooperly parses and includes pruned query paramters", () => {
-    const url = addQueryParamsToUrl("http://example.com", MOCK_QUERY);
-    expect(getQueryParams(url)).toStrictEqual({
-      a: "bar",
-      b: "1",
-      c: "true",
-      h: {
-        a: "bar",
-        b: "1",
-        c: "true",
-        h: ["apple", "banana", "pear"],
-        k: ["blueberry"],
-      },
-      i: ["apple", "banana", "pear"],
-      l: ["blueberry"],
-    });
+  const CASES: [Record<string, string | number | boolean | undefined | null>, string, string][] = [
+    [
+      { search: "myskill", pageSize: 10, page: 4 },
+      "https://nickflorin.com/api/skills",
+      "https://nickflorin.com/api/skills?search=myskill&pageSize=10&page=4",
+    ],
+    [
+      { search: "myskill", pageSize: null, page: 4 },
+      "https://nickflorin.com/api/skills?pageSize=10",
+      "https://nickflorin.com/api/skills?search=myskill&pageSize=&page=4",
+    ],
+    [
+      { search: "myskill", pageSize: 12, page: 4 },
+      "https://nickflorin.com/api/skills?filter=test&pageSize=10",
+      "https://nickflorin.com/api/skills?search=myskill&pageSize=12&page=4",
+    ],
+    [
+      { search: "myskill", pageSize: 12, page: "" },
+      "https://nickflorin.com/api/skills?filter=test&pageSize=10",
+      "https://nickflorin.com/api/skills?search=myskill&pageSize=12&page=",
+    ],
+    [
+      { search: "myskill", pageSize: 12, page: undefined },
+      "https://nickflorin.com/api/skills?filter=test&pageSize=10",
+      "https://nickflorin.com/api/skills?search=myskill&pageSize=12&page=",
+    ],
+  ];
+  test.each(CASES)("(params = %s)", (params, url, expected) => {
+    expect(addQueryParamsToUrl(url, params)).toBe(expected);
   });
 });

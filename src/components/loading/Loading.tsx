@@ -5,8 +5,7 @@ import { ShowHide } from "~/components/util";
 
 import { LoadingView, type LoadingViewProps } from "./LoadingView";
 
-export interface LoadingProps<C extends ViewComponent>
-  extends Omit<LoadingViewProps<C>, "isDisabled" | "dim"> {
+export interface LoadingProps<C extends ViewComponent> extends LoadingViewProps<C> {
   readonly children?: ReactNode;
 }
 

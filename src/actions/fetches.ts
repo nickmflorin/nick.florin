@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import superjson, { type SuperJSONResult } from "superjson";
+import { type SuperJSONResult } from "superjson";
 import { type Required } from "utility-types";
 
 import { getAuthedUser } from "~/application/auth/server-v2";
@@ -97,10 +97,13 @@ export const dataInFetchContext = <T, C extends FetchActionContext>(
   data: T,
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   context: C,
-): FetchActionResponse<T, C> =>
-  ({
+): FetchActionResponse<T, C> => {
+  /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Temp workaround for tests. */
+  const superjson = require("superjson");
+  return {
     data: shouldSerialize(context) ? superjson.serialize(data) : convertToPlainObject(data),
-  }) as FetchActionResponse<T, C>;
+  } as FetchActionResponse<T, C>;
+};
 
 export type StandardFetchActionReturn<R> = Promise<R | ApiClientError>;
 

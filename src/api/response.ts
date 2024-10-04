@@ -5,7 +5,6 @@ import {
   type EnumeratedLiteralsMember,
   type EnumeratedLiteralsModel,
 } from "enumerated-literals";
-import superjson from "superjson";
 
 export const ClientSuccessCodes = enumeratedLiterals(
   [{ value: "HTTP_200_OK", statusCode: 200 }] as const,
@@ -47,6 +46,8 @@ export class ClientResponse<T> {
   }
 
   public get serializedJson() {
+    /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Temp workaround for tests. */
+    const superjson = require("superjson");
     return { data: superjson.serialize(this.data) };
   }
 

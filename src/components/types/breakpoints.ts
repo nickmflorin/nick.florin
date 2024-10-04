@@ -101,7 +101,7 @@ export const getQuantitativeScreenSize = <
     if (options?.as === "string") {
       return sizeToString(size, "px") as QuantitativeScreenSize<T, O>;
     }
-    return size as QuantitativeScreenSize<T, O>;
+    return inferQuantitativeSizeValue(size) as QuantitativeScreenSize<T, O>;
   }
   const numericSize = Breakpoints.getModel(size).size;
   if (options?.as === "string") {
@@ -141,6 +141,49 @@ export const getMediaQuery = ({ min, max }: GetMediaQueryParams) => {
   throw new Error("Invalid Function Implementation: The min or max value must be provided.");
 };
 
+export const getLowerRangeBreakpoint = (size: QuantitativeSize<"px">): Breakpoint | "0" => {
+  const numericSize = getQuantitativeScreenSize(size, { as: "number" });
+  for (let i = 0; i < Breakpoints.models.length; i++) {
+    if (i === Breakpoints.models.length - 1) {
+      if (numericSize < Breakpoints.models[i].size) {
+        return Breakpoints.models[i].value;
+      }
+    } else {
+      if (
+        numericSize >= Breakpoints.models[i].size &&
+        numericSize < Breakpoints.models[i + 1].size
+      ) {
+        return Breakpoints.models[i].value;
+      }
+    }
+  }
+  return "0";
+};
+
+export const getBreakpointFromWindow = (w: Window): Breakpoint | "0" => {
+  let breakpoint: Breakpoint | null = null;
+  for (let i = 0; i < Breakpoints.members.length; i++) {
+    let mediaQuery: string;
+    if (i === Breakpoints.members.length - 1) {
+      mediaQuery = getMediaQuery({
+        min: Breakpoints.members[i],
+      });
+    } else {
+      mediaQuery = getMediaQuery({
+        min: Breakpoints.members[i],
+        max: Breakpoints.members[i + 1] as Exclude<Breakpoint, "xxs">,
+      });
+    }
+    if (w.matchMedia(mediaQuery).matches) {
+      breakpoint = Breakpoints.members[i];
+    }
+  }
+  if (!breakpoint) {
+    return "0";
+  }
+  return breakpoint;
+};
+
 type SizeRange<K extends ScreenSize | ContainerSize> = `${K | "0"}:${K | "inf"}`;
 type SizeRangeMap<K extends ScreenSize | ContainerSize, T> = Partial<{ [key in SizeRange<K>]: T }>;
 
@@ -166,7 +209,10 @@ export const screenSizeIsInRange = (size: ScreenSize, range: ScreenSizeRange): b
   const min = _min !== "0" ? getQuantitativeScreenSize(_min, { as: "number" }) : 0;
   const max = _max !== "inf" ? getQuantitativeScreenSize(_max, { as: "number" }) : Infinity;
   if (min === max || min > max) {
-    throw new TypeError(`Invalid range '${range}' provided!`);
+    throw new TypeError(
+      `Invalid range '${range}' provided! The minimum value '${min}' must be less ` +
+        `than the maximum value '${max}'.`,
+    );
   }
   const control = getQuantitativeScreenSize(size, { as: "number" });
   return control >= min && control < max;
@@ -282,13 +328,34 @@ export const getQuantitativeContainerSize = <
     if (options?.as === "string") {
       return sizeToString(size, "px") as QuantitativeContainerSize<T, O>;
     }
-    return size as QuantitativeContainerSize<T, O>;
+    return inferQuantitativeSizeValue(size) as QuantitativeContainerSize<T, O>;
   }
   const numericSize = ContainerBreakpoints.getModel(size).size;
   if (options?.as === "string") {
     return sizeToString(numericSize, "px") as QuantitativeContainerSize<T, O>;
   }
   return numericSize as QuantitativeContainerSize<T, O>;
+};
+
+export const getLowerRangeContainerBreakpoint = (
+  size: QuantitativeSize<"px">,
+): ContainerBreakpoint | "0" => {
+  const numericSize = getQuantitativeScreenSize(size, { as: "number" });
+  for (let i = 0; i < ContainerBreakpoints.models.length; i++) {
+    if (i === ContainerBreakpoints.models.length - 1) {
+      if (numericSize < ContainerBreakpoints.models[i].size) {
+        return ContainerBreakpoints.models[i].value;
+      }
+    } else {
+      if (
+        numericSize >= ContainerBreakpoints.models[i].size &&
+        numericSize < ContainerBreakpoints.models[i + 1].size
+      ) {
+        return ContainerBreakpoints.models[i].value;
+      }
+    }
+  }
+  return "0";
 };
 
 export type ContainerSizeRange = SizeRange<ContainerSize>;
@@ -298,7 +365,10 @@ export const containerSizeIsInRange = (size: ContainerSize, range: ContainerSize
   const min = _min !== "0" ? getQuantitativeContainerSize(_min, { as: "number" }) : 0;
   const max = _max !== "inf" ? getQuantitativeContainerSize(_max, { as: "number" }) : Infinity;
   if (min === max || min > max) {
-    throw new TypeError(`Invalid range '${range}' provided!`);
+    throw new TypeError(
+      `Invalid range '${range}' provided! The minimum value '${min}' must be less ` +
+        `than the maximum value '${max}'.`,
+    );
   }
   const control = getQuantitativeContainerSize(size, { as: "number" });
   return control >= min && control < max;

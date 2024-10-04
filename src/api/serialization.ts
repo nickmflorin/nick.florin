@@ -1,4 +1,4 @@
-import superjson, { type SuperJSONResult } from "superjson";
+import { type SuperJSONResult } from "superjson";
 import { z } from "zod";
 
 /**
@@ -12,6 +12,8 @@ import { z } from "zod";
  * https://github.com/prisma/prisma/issues/20627
  */
 export function convertToPlainObject<T>(value: T): T {
+  /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Temp workaround for tests. */
+  const superjson = require("superjson");
   return superjson.parse(superjson.stringify(value));
 }
 

@@ -1,5 +1,4 @@
 import { type SuperJSONResult } from "superjson";
-import superjson from "superjson";
 
 import { logger } from "~/internal/logger";
 
@@ -56,6 +55,9 @@ const processors: {
       );
       return ApiClientGlobalError.reconstruct(response);
     } else if (isErrorResponseBody(json)) {
+      /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Tmp workaround for tests. */
+      const superjson = require("superjson");
+
       const deserialized = superjson.deserialize(json.error);
       if (isApiClientGlobalErrorJson(deserialized)) {
         return ApiClientGlobalError.fromJson(deserialized);

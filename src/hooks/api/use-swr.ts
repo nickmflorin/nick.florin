@@ -1,6 +1,5 @@
 import { useRef } from "react";
 
-import superjson from "superjson";
 import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
@@ -36,6 +35,7 @@ export type SWRResponse<T> = RootSWRResponse<T, ApiError> & {
   readonly initialResponseReceived: boolean;
   readonly isInitialLoading: boolean;
   readonly isRefetching: boolean;
+  readonly controller: AbortController;
 };
 
 const shouldFetch = (k: Key) => ![null, undefined, false].includes(k as null | undefined | boolean);
@@ -44,14 +44,10 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
   path: Key,
   { onError: _onError, query, ...config }: SWRConfig<T, Q>,
 ): SWRResponse<T> => {
-  // const initialPathname = useRef<string | null>(null);
+  /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Temp workaround for tests. */
+  const superjson = require("superjson");
 
   const initialResponseReceived = useRef<boolean>(false);
-  // const pathname = usePathname();
-
-  /* if (!initialPathname.current) {
-       initialPathname.current = pathname;
-     } */
 
   /* If the `onError` configuration callback is provided, it is very important that the globally
        configured `onError` configuration callback is *still* called beforehand. */
@@ -105,6 +101,7 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
     initialResponseReceived: initialResponseReceived.current,
     isRefetching: initialResponseReceived.current && others.isLoading,
     isInitialLoading: others.isLoading && !initialResponseReceived.current,
+    controller: abortController,
     ...others,
   } as SWRResponse<T>;
 };

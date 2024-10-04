@@ -10,7 +10,7 @@ import { PortalDrawerWrapper } from "~/components/drawers/PortalDrawerWrapper";
 import { Tooltip } from "~/components/floating/Tooltip";
 import { Loading } from "~/components/loading/Loading";
 import { type SkillsChartFilterFormValues } from "~/features/skills/components/forms/SkillsChartFilterForm";
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
+import { useScreenSizes } from "~/hooks";
 
 const SkillsFilterPopover = dynamic(
   () => import("./SkillsFilterPopover").then(mod => mod.SkillsFilterPopover),
