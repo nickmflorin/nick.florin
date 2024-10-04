@@ -9,11 +9,11 @@ import type * as types from "~/features/resume/types";
 import { useScreenSizes } from "~/hooks/use-screen-sizes";
 
 export const ImageSizes: {
-  [key in types.ResumeModelSize]: { [key in Breakpoint | "smallest"]: number };
+  [key in types.ResumeModelSize]: { [key in Breakpoint | "0"]: number };
 } = {
-  small: { smallest: 42, xxs: 42, xs: 42, sm: 42, md: 42, lg: 42, xl: 42, "2xl": 42 },
-  medium: { smallest: 42, xxs: 42, xs: 44, sm: 44, md: 44, lg: 44, xl: 44, "2xl": 44 },
-  large: { smallest: 42, xxs: 42, xs: 44, sm: 48, md: 72, lg: 72, xl: 72, "2xl": 72 },
+  small: { "0": 42, xxs: 42, xs: 42, sm: 42, md: 42, lg: 42, xl: 42, "2xl": 42 },
+  medium: { "0": 42, xxs: 42, xs: 44, sm: 44, md: 44, lg: 44, xl: 44, "2xl": 44 },
+  large: { "0": 42, xxs: 42, xs: 44, sm: 48, md: 72, lg: 72, xl: 72, "2xl": 72 },
 };
 
 export interface ResumeModelHeaderScaffoldProps extends ComponentProps {
@@ -27,12 +27,11 @@ export interface ResumeModelHeaderScaffoldProps extends ComponentProps {
   readonly image: (params: { size: number }) => JSX.Element;
 }
 
-const ImageGaps: { [key in types.ResumeModelSize]: { [key in Breakpoint | "smallest"]: number } } =
-  {
-    small: { smallest: 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-    medium: { smallest: 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-    large: { smallest: 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-  };
+const ImageGaps: { [key in types.ResumeModelSize]: { [key in Breakpoint | "0"]: number } } = {
+  small: { "0": 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
+  medium: { "0": 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
+  large: { "0": 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
+};
 
 export const ResumeModelHeaderScaffold = ({
   title,
