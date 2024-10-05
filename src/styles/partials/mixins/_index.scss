@@ -9,84 +9,163 @@
 @forward "./selectors";
 @forward "./element-properties";
 
-$states: ("disabled", "hovered", "focused", "focused-within", "visited");
-
-$disabled-selectors: (":disabled", ".disabled");
+$disabled-selectors: (":disabled", '[data-attr-disabled="true"]');
+$loading-selectors: ('[data-attr-loading="true"]');
+$selected-selectors: ('[data-attr-selected="true"]');
+$locked-selectors: ('[data-attr-locked="true"]');
+$read-only-selectors: ('[data-attr-read-only="true"]');
+$active-selectors: ('[data-attr-active="true"]');
 $hovered-selectors: (":hover");
 $focused-selectors: (":focus");
 $focused-within-selectors: (":focus-within");
 $visited-selectors: (":visited");
 
-/// Should be used when defining the properties of an element that it will have when it is focused.
 @mixin focused($args...) {
   @include selectors.with-selectors($focused-selectors, $args...) {
-    @include selectors.without-selectors($disabled-selectors, $args...) {
-      @content;
-    }
-  }
-}
-
-/// Should be used when defining the properties of an element that it will have when it is NOT
-/// focused.
-@mixin not-focused($args...) {
-  @include selectors.without-selectors($focused-selectors, $args...) {
-    @content;
-  }
-}
-
-/// Should be used when defining the properties of an element that it will have when a child
-/// element is focused.
-@mixin focused-within($args...) {
-  @include selectors.with-selectors($focused-within-selectors, $args...) {
-    @include selectors.without-selectors($disabled-selectors, $args...) {
-      @content;
-    }
-  }
-}
-
-/// Should be used when defining the properties of an element that it will have when it is disabled.
-@mixin disabled($args...) {
-  @include selectors.with-selectors($disabled-selectors, $args...) {
-    cursor: not-allowed !important;
-    // Turning off pointer-events with `pointer-events: none` prevents the disabled cursor from
-    // appearing.
-    pointer-events: auto !important;
-    @content;
-  }
-}
-
-/// Should be used when defining the properties of an element that it will have when it is NOT
-/// disabled.
-@mixin not-disabled($args...) {
-  @include selectors.without-selectors($disabled-selectors, $args...) {
-    @content;
-  }
-}
-
-/// Should be used when defining the properties of an element that it will have when it is hovered.
-@mixin hovered($args...) {
-  @include selectors.with-selectors($hovered-selectors, $args...) {
-    @include selectors.without-selectors($disabled-selectors, $args...) {
-      @content;
-    }
-  }
-}
-
-/// Should be used when defining the properties of an element that it will have when it is both
-/// hovered and focused.
-@mixin focused-hovered($args...) {
-  @include selectors.with-selectors($focused-selectors, $args...) {
-    @include selectors.with-selectors($hovered-selectors, $args...) {
-      @include selectors.without-selectors($disabled-selectors, $args...) {
+    @include not-disabled-or-locked() {
+      @include not-active() {
         @content;
       }
     }
   }
 }
 
-/// Should be used when defining the properties of an element that it will have when it is visited.
+@mixin not-focused($args...) {
+  @include selectors.without-selectors($focused-selectors, $args...) {
+    @content;
+  }
+}
+
+@mixin focused-within($args...) {
+  @include selectors.with-selectors($focused-within-selectors, $args...) {
+    @include not-disabled-or-locked() {
+      @include not-active() {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin selected($args...) {
+  @include selectors.with-selectors($selected-selectors, $args...) {
+    @include not-disabled() {
+      @content;
+    }
+  }
+}
+
+@mixin not-selected($args...) {
+  @include selectors.without-selectors($selected-selectors, $args...) {
+    @content;
+  }
+}
+
+@mixin loading($args...) {
+  @include selectors.with-selectors($loading-selectors, $args...) {
+    pointer-events: none !important;
+    @content;
+  }
+}
+
+@mixin not-loading($args...) {
+  @include selectors.without-selectors($loading-selectors, $args...) {
+    @content;
+  }
+}
+
+@mixin locked($args...) {
+  @include selectors.with-selectors($loading-selectors, $args...) {
+    pointer-events: none !important;
+    @content;
+  }
+}
+
+@mixin not-locked($args...) {
+  @include selectors.without-selectors($locked-selectors, $args...) {
+    @content;
+  }
+}
+
+@mixin not-locked-or-loading($args...) {
+  @include not-loading() {
+    @include not-locked() {
+      @content;
+    }
+  }
+}
+
+@mixin active($args...) {
+  @include selectors.with-selectors($active-selectors, $args...) {
+    @include not-disabled-or-locked() {
+      @content;
+    }
+  }
+}
+
+@mixin not-active($args...) {
+  @include selectors.without-selectors($active-selectors, $args...) {
+    @content;
+  }
+}
+
+@mixin disabled($args...) {
+  @include selectors.with-selectors($disabled-selectors, $args...) {
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    // Turning off pointer-events with `pointer-events: none` prevents the disabled cursor from
+    // appearing - Might have to revisit this, this does not seem to work with selects.
+    // pointer-events: auto !important;
+    @content;
+  }
+}
+
+@mixin disabled-or-locked($args...) {
+  @include disabled() {
+    @content;
+  }
+  @include locked() {
+    @content;
+  }
+}
+
+@mixin not-disabled-or-locked($args...) {
+  @include not-disabled() {
+    @include not-locked() {
+      @content;
+    }
+  }
+}
+
+@mixin not-disabled($args...) {
+  @include selectors.without-selectors($disabled-selectors, $args...) {
+    @content;
+  }
+}
+
+@mixin read-only {
+  @include selectors.with-selectors($read-only-selectors, $args...) {
+    @include not-disabled-or-locked() {
+      @content;
+    }
+  }
+}
+
+@mixin hovered($args...) {
+  @include selectors.with-selectors($hovered-selectors, $args...) {
+    @include not-disabled-or-locked() {
+      @include not-active() {
+        @content;
+      }
+    }
+  }
+}
+
 @mixin visited($args...) {
   @include selectors.with-selectors($visited-selectors, $args...) {
-    @content;
+    @include not-disabled-or-locked() {
+      @include not-active() {
+        @content;
+      }
+    }
   }
 }

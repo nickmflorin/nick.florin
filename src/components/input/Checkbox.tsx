@@ -3,7 +3,7 @@ import { forwardRef, useState } from "react";
 
 import { Checkbox as RootCheckbox, type CheckboxProps as RootCheckboxProps } from "@mantine/core";
 
-import { classNames } from "~/components/types";
+import { classNames, parseDataAttributes } from "~/components/types";
 import { type ComponentProps } from "~/components/types";
 import { Label } from "~/components/typography";
 
@@ -27,6 +27,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       return (
         <RootCheckbox
           {...props}
+          {...parseDataAttributes({isDisabled, isLocked})}
           ref={ref}
           checked={value === undefined ? isChecked : value}
           onClick={e => e.stopPropagation()}
@@ -36,7 +37,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           }}
           className={classNames(
             "checkbox",
-            { disabled: isDisabled, "checkbox--locked": isLocked },
             props.className,
           )}
         />

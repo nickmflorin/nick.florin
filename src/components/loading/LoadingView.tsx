@@ -2,7 +2,7 @@ import { type SpinnerProps } from "~/components/icons";
 import { Spinner } from "~/components/icons/Spinner";
 import { View, type ViewComponent, type ViewProps } from "~/components/structural/View";
 import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
+import { classNames, parseDataAttributes } from "~/components/types";
 
 export interface LoadingViewProps<C extends ViewComponent>
   extends Pick<
@@ -31,11 +31,11 @@ export const LoadingView = <C extends ViewComponent>({
 }: LoadingViewProps<C>) => (
   <View
     {...props}
+    {...parseDataAttributes({ isLoading, loadingView: true })}
     fill={fillScreen ? "screen" : fill}
     overflow="hidden"
     absolute
     centerChildren
-    data-attr-loading-view="true"
     className={classNames(
       {
         /* If the spinner is being displayed, the view needs to have a higher z-index than it other

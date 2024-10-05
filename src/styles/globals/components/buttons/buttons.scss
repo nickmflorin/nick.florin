@@ -9,7 +9,6 @@
 @use "./base" as *;
 @use "./constants" as constants;
 @use "./fonts" as fonts;
-@use "./mixins" as mixins;
 @use "./sizing" as sizing;
 @use "./colors" as colors;
 
@@ -80,7 +79,10 @@
 
 .button {
   @include button-base();
-  @include mixins.button-locked-or-loading();
+
+  @include partials.locked();
+  @include partials.loading();
+  @include partials.disabled();
 
   .icon {
     aspect-ratio: 1;
@@ -137,7 +139,7 @@
     aspect-ratio: 1;
     padding: 0;
 
-    &.button--tight {
+    &[data-attr-tight="true"] {
       overflow: visible;
       @include button-properties("icon-button", $tight-fit: true);
     }

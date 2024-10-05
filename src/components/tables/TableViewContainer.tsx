@@ -10,13 +10,9 @@ export interface TableViewContainerProps extends ComponentProps {
 
 export const TableViewContainer = ({
   children,
-  isLoading = false,
   ...props
 }: TableViewContainerProps): JSX.Element => (
-  <div
-    {...props}
-    className={classNames("table-view", { "table-view--loading": isLoading }, props.className)}
-  >
+  <div {...props} className={classNames("table-view", props.className)}>
     {children}
   </div>
 );

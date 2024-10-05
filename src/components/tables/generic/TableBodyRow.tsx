@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-import { classNames } from "~/components/types";
+import { classNames, parseDataAttributes } from "~/components/types";
 import { type ClassName } from "~/components/types";
 
 import { AbstractTableRow, type AbstractTableRowProps } from "./AbstractTableRow";
@@ -32,12 +32,14 @@ export const TableBodyRow = ({
   return (
     <AbstractTableRow
       {...props}
+      {...parseDataAttributes({
+        highlighted: isHovered && highlightOnHover,
+        isLoading,
+        isLocked,
+        bordered,
+      })}
       className={classNames(
         "table__body-row",
-        { ["table__body-row--loading"]: isLoading },
-        { ["table__body-row--locked"]: isLocked },
-        { ["table__body-row--bordered"]: bordered },
-        { ["table__body-row--highlighted"]: isHovered && highlightOnHover },
         { ["cursor-pointer"]: props.onClick },
         { [classNames(hoveredClassName)]: isHovered },
         props.className,

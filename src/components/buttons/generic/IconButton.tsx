@@ -18,6 +18,7 @@ import {
   sizeToString,
   type QuantitativeSize,
   type ComponentProps,
+  parseDataAttributes,
 } from "~/components/types";
 
 import { AbstractButton } from "./AbstractButton";
@@ -88,11 +89,11 @@ const LocalIconButton = forwardRef(
     return (
       <AbstractButton
         {...ps}
+        {...parseDataAttributes({ tight })}
         className={classNames(
           `button--variant-${variant ?? "transparent"}`,
           buttonSizeClassName(size),
           buttonIconSizeClassName(iconSize),
-          { "button--tight": tight },
           ps.className,
         )}
         style={{ ...props.style, ...getButtonSizeStyle({ size }) }}

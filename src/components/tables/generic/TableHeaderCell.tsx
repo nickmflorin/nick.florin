@@ -12,6 +12,7 @@ import {
   type ComponentProps,
   HorizontalFlexAlignClassNames,
   type HorizontalFlexAlign,
+  parseDataAttributes,
 } from "~/components/types";
 
 export interface TableHeaderCellProps extends ComponentProps {
@@ -44,10 +45,10 @@ export const TableHeaderCell = ({
 }: TableHeaderCellProps) => (
   <th
     {...props}
+    {...parseDataAttributes({ isOrdered })}
     className={classNames(
       "table__cell table__header-cell",
       {
-        "table__header-cell--ordered": isOrdered,
         "pointer-events-auto cursor-pointer":
           onClick !== undefined || (isOrderable && order !== undefined),
       },

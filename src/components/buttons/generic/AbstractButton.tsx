@@ -8,7 +8,7 @@ import { omit } from "lodash-es";
 import type * as types from "~/components/buttons";
 import { getButtonClassName } from "~/components/buttons/util";
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps, parseDataAttributes } from "~/components/types";
 
 type InternalPropName = keyof Required<types.AbstractInternalButtonProps<types.ButtonElement>>;
 
@@ -77,7 +77,16 @@ export const AbstractButton = forwardRef(
     ref: types.PolymorphicButtonRef<E>,
   ): JSX.Element => {
     const className = getButtonClassName(props);
-    const nativeProps = toNativeButtonProps(props);
+    const nativeProps = {
+      ...toNativeButtonProps(props),
+      ...parseDataAttributes({
+        tourId: props.tourId,
+        isDisabled: props.isDisabled,
+        isLocked: props.isLocked,
+        isActive: props.isActive,
+        isLoading: props.isLoading
+      }),
+    };
 
     switch (props.element) {
       case "a": {
@@ -86,7 +95,6 @@ export const AbstractButton = forwardRef(
           <NativeAnchor
             {...(nativeProps as types.NativeButtonProps<"a">)}
             style={props.style}
-            data-attr-tour-id={props.tourId}
             className={className}
             target={openInNewTab ? "_blank" : (nativeProps as types.NativeButtonProps<"a">).target}
             rel={

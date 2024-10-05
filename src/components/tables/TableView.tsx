@@ -31,7 +31,7 @@ const LocalTableView = ({
   controlBarTargetId,
   ...props
 }: TableViewProps): JSX.Element => (
-  <TableViewContainer {...props} isLoading={isLoading}>
+  <TableViewContainer {...props}>
     <TableViewHeader {...headerProps} controlBarTargetId={controlBarTargetId}>
       {header}
     </TableViewHeader>

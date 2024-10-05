@@ -1,6 +1,6 @@
 import { type TableSize, TableSizes } from "~/components/tables/types";
 import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
+import { classNames, parseDataAttributes } from "~/components/types";
 
 export interface TableProps
   extends ComponentProps,
@@ -19,15 +19,8 @@ export const Table = ({
 }: TableProps) => (
   <table
     {...props}
-    className={classNames(
-      "table-v2",
-      `table-v2--size-${size}`,
-      {
-        "table-v2--higlighted-rows-on-hover": highlightRowsOnHover,
-        "table-v2--bordered": bordered,
-      },
-      props.className,
-    )}
+    {...parseDataAttributes({ highlightRowsOnHover, bordered })}
+    className={classNames("table", `table--size-${size}`, props.className)}
   >
     {children}
   </table>

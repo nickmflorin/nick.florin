@@ -1,3 +1,5 @@
+@use "partials";
+
 $checkbox-bg-color: theme("colors.blue.900");
 
 @mixin checkbox-size() {
@@ -6,11 +8,15 @@ $checkbox-bg-color: theme("colors.blue.900");
 }
 
 @mixin checked-state() {
-  .checkbox[data-checked="true"]:not(.disabled, .checkbox--locked) {
-    > .mantine-Checkbox-body {
-      > .mantine-Checkbox-inner {
-        > .mantine-Checkbox-input {
-          @content;
+  .checkbox[data-checked="true"] {
+    @include partials.not-disabled() {
+      @include partials.not-locked() {
+        > .mantine-Checkbox-body {
+          > .mantine-Checkbox-inner {
+            > .mantine-Checkbox-input {
+              @content;
+            }
+          }
         }
       }
     }
@@ -40,14 +46,13 @@ $checkbox-bg-color: theme("colors.blue.900");
     background-color: theme("colors.white");
   }
 
-  &.disabled,
-  &.checkbox--locked {
+  @include partials.disabled-or-locked() {
     @include checkbox-input() {
       cursor: not-allowed;
       pointer-events: none;
     }
   }
-  &.disabled {
+  @include partials.disabled() {
     @include checkbox-input() {
       background-color: theme("colors.gray.100");
       border-color: theme("colors.gray.300");

@@ -9,7 +9,6 @@
 @use "./constants" as constants;
 @use "./structure" as structure;
 @use "./variants" as variants;
-@use "./mixins" as mixins;
 
 @mixin input-sizes($type) {
   @include structure.input-structure(
@@ -34,9 +33,9 @@
 
 .input {
   @include base.input-base;
-  @include mixins.input-locked();
-  @include mixins.input-locked();
-  @include mixins.input-disabled();
+  @include partials.locked();
+  @include partials.loading();
+  @include partials.disabled();
 
   display: flex;
   flex-direction: row;

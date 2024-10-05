@@ -6,35 +6,22 @@
 $menu-item-padding: 6px 10px;
 
 @mixin content-locked() {
-  pointer-events: none;
   > .menu__item {
     pointer-events: none;
   }
 }
 
 @mixin content-loading() {
-  pointer-events: none;
   opacity: 0.6;
 }
 
 @mixin content-disabled() {
-  pointer-events: none;
   opacity: 0.4;
 }
 
 @mixin menu-item-hovered() {
   @include partials.hovered {
-    &.menu__item--highlight-on-hover {
-      &:not(.disabled, .menu__item--locked) {
-        @content;
-      }
-    }
-  }
-}
-
-@mixin menu-item-focused() {
-  @include partials.focused {
-    &:not(.disabled, .menu__item--locked) {
+    &[data-attr-highlight-on-hover="true"] {
       @content;
     }
   }
@@ -110,38 +97,38 @@ $menu-item-padding: 6px 10px;
       color: theme("colors.disabled");
     }
 
-    &.menu__item--locked,
-    &.menu__item--loading {
-      pointer-events: none;
-    }
+    @include partials.locked();
+    @include partials.loading();
 
     @include menu-item-hovered {
-      &:not(.menu__item--selected) {
+      @include partials.not-selected() {
         background-color: theme("colors.gray.50");
       }
     }
 
-    @include menu-item-focused {
-      &:not(.menu__item--selected) {
+    @include partials.focused {
+      @include partials.not-selected() {
         background-color: theme("colors.gray.50");
       }
     }
 
-    &.menu__item--navigated:not(.disabled) {
-      &:not(.menu__item--selected, .disabled, .menu__item--locked) {
-        background-color: theme("colors.gray.50");
-      }
-      &.menu__item--selected {
-        background-color: theme("colors.gray.200");
+    &[data-attr-navigated="true"] {
+      @include partials.not-disabled() {
+        @include partials.not-selected() {
+          background-color: theme("colors.gray.50");
+        }
+        @include partials.selected {
+          background-color: theme("colors.gray.200");
+        }
       }
     }
 
-    &.menu__item--selected:not(.disabled) {
+    @include partials.selected() {
       background-color: theme("colors.gray.100");
       @include menu-item-hovered {
         background-color: theme("colors.gray.200");
       }
-      @include menu-item-focused {
+      @include partials.focused {
         background-color: theme("colors.gray.200");
       }
     }
@@ -167,7 +154,7 @@ $menu-item-padding: 6px 10px;
     }
   }
 
-  &--bordered {
+  &[data-attr-bordered="true"] {
     .menu__item {
       &:not(:last-of-type) {
         border-bottom: 1px solid theme("colors.border");
@@ -184,7 +171,7 @@ $menu-item-padding: 6px 10px;
     }
   }
 
-  &--bordered-groups:not(.menu__item--bordered) {
+  &[data-attr-bordered-groups="true"]:not([data-attr-bordered="true"]) {
     .menu__item-group {
       &:not(:first-of-type) {
         border-top: 1px solid theme("colors.border");
@@ -192,15 +179,15 @@ $menu-item-padding: 6px 10px;
     }
   }
 
-  &--locked {
+  @include partials.locked() {
     @include content-locked();
   }
 
-  &--loading {
+  @include partials.loading() {
     @include content-loading();
   }
 
-  &--disabled {
+  @include partials.disabled() {
     @include content-disabled();
   }
 
@@ -208,15 +195,15 @@ $menu-item-padding: 6px 10px;
     > .menu__item-group__content {
       @include content-locked();
 
-      &--loading {
+      @include partials.loading() {
         @include content-loading();
       }
 
-      &--disabled {
+      @include partials.disabled() {
         @include content-disabled();
       }
 
-      &--bordered {
+      &[data-attr-bordered="true"] {
         .menu__item {
           &:not(:last-of-type) {
             border-bottom: 1px solid theme("colors.border");
@@ -239,7 +226,7 @@ $menu-item-padding: 6px 10px;
   max-height: 100%;
   border: 1px solid theme("colors.border");
 
-  &:focus {
+  @include partials.focused() {
     outline: none !important;
   }
 

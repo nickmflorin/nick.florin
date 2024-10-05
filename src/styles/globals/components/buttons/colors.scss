@@ -4,7 +4,6 @@
 
 @use "partials";
 
-@use "./mixins" as mixins;
 @use "./constants" as constants;
 
 $button-solid-colors: (
@@ -516,16 +515,16 @@ $fallbacks: (
 @mixin button-color($identifiers) {
   @include button-color-properties($identifiers);
 
-  @include mixins.button-hovered {
+  @include partials.hovered {
     @include button-color-properties($identifiers, $state: "hovered");
-    @include mixins.button-active() {
+    @include partials.active() {
       @include button-color-properties($identifiers, $state: ("focused", "active"));
     }
   }
 
-  @include mixins.button-focused {
+  @include partials.focused {
     @include button-color-properties($identifiers, $state: "focused");
-    @include mixins.button-active() {
+    @include partials.active() {
       @include button-color-properties($identifiers, $state: ("focused", "active"));
     }
   }
@@ -534,7 +533,7 @@ $fallbacks: (
     @include button-color-properties($identifiers, $state: "disabled");
   }
 
-  @include mixins.button-active() {
+  @include partials.active() {
     @include button-color-properties($identifiers, $state: "active");
   }
 }

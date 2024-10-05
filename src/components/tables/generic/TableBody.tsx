@@ -3,7 +3,12 @@ import { type ReactNode } from "react";
 
 import { Loading } from "~/components/loading/Loading";
 import { tableHasLoadingIndicator, type TableLoadingIndicator } from "~/components/tables/types";
-import { classNames, type QuantitativeSize, type ComponentProps } from "~/components/types";
+import {
+  classNames,
+  type QuantitativeSize,
+  type ComponentProps,
+  parseDataAttributes,
+} from "~/components/types";
 
 const TableSkeleton = dynamic(() => import("./TableSkeleton").then(mod => mod.TableSkeleton));
 const TableFeedbackState = dynamic(() =>
@@ -48,14 +53,10 @@ export const TableBody = ({
 }: TableBodyProps) => (
   <tbody
     {...props}
-    className={classNames(
-      "table__body",
-      {
-        "table__body--loading":
-          isLoading && tableHasLoadingIndicator(loadingIndicator, "fade-rows"),
-      },
-      props.className,
-    )}
+    {...parseDataAttributes({
+      isLoading: isLoading && tableHasLoadingIndicator(loadingIndicator, "fade-rows"),
+    })}
+    className={classNames("table__body", props.className)}
   >
     {isLoading && tableHasLoadingIndicator(loadingIndicator, "skeleton") ? (
       <TableSkeleton
@@ -70,7 +71,6 @@ export const TableBody = ({
          method. */
       <Loading
         component="tr"
-        className="tr--loading"
         isLoading={isLoading && tableHasLoadingIndicator(loadingIndicator, "spinner")}
       >
         {isError ? (

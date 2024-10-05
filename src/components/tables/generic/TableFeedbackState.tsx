@@ -6,7 +6,7 @@ import { ErrorView } from "~/components/errors/ErrorView";
 import { EmptyMessage } from "~/components/feedback/EmptyMessage";
 import { type TableBodyProps } from "~/components/tables/generic/TableBody";
 import { type TableBodyRowProps } from "~/components/tables/generic/TableBodyRow";
-import { classNames } from "~/components/types";
+import { parseDataAttributes } from "~/components/types";
 
 const TableBody = dynamic(() => import("./TableBody").then(mod => mod.TableBody));
 const TableBodyCell = dynamic(() => import("./TableBodyCell").then(mod => mod.TableBodyCell));
@@ -95,7 +95,7 @@ export const TableFeedbackState = ({
 }: TableFeedbackStateProps) =>
   as === "tbody" ? (
     <TableBody {...(props as TableBodyProps)}>
-      <TableBodyRow className="table__body-row--feedback">
+      <TableBodyRow {...parseDataAttributes({ feedback: true })}>
         <TableFeedbackStateInner
           {...props}
           stateType={stateType}
@@ -108,10 +108,7 @@ export const TableFeedbackState = ({
       </TableBodyRow>
     </TableBody>
   ) : (
-    <TableBodyRow
-      {...(props as TableBodyRowProps)}
-      className={classNames("table__body-row--feedback", props.className)}
-    >
+    <TableBodyRow {...(props as TableBodyRowProps)} {...parseDataAttributes({ feedback: true })}>
       <TableFeedbackStateInner
         stateType={stateType}
         emptyContent={emptyContent}

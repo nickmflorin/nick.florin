@@ -10,7 +10,7 @@ import { LoadingText } from "~/components/loading/LoadingText";
 import * as types from "~/components/menus";
 import { type Action } from "~/components/structural/Actions";
 import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps, parseDataAttributes } from "~/components/types";
 import {
   sizeToString,
   inferQuantitativeSizeValue,
@@ -266,6 +266,15 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
       <ShowHide show={isVisible}>
         <div
           {...props}
+          {...parseDataAttributes({
+            isLoading,
+            isDisabled,
+            isLocked,
+            isNavigated: isCurrentNavigation,
+            isSelected:
+              isSelected && types.menuItemHasSelectionIndicator(selectionIndicator, "highlight"),
+            highlightOnHover,
+          })}
           ref={localRef}
           /* This is not an ideal/great solution, but short of a stop-gap hack.  The problem is that
              when we have a drawer that has Select's that render their popover's in a portal, the
@@ -288,16 +297,13 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
           }}
           className={classNames(
             "menu__item",
-            { "menu__item--highlight-on-hover": highlightOnHover },
             { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
             {
-              "menu__item--selected":
-                isSelected && types.menuItemHasSelectionIndicator(selectionIndicator, "highlight"),
-              [classNames("menu__item--navigated", navigatedClassName)]: isCurrentNavigation,
+              [classNames(navigatedClassName)]: isCurrentNavigation,
               [classNames(selectedClassName)]: isSelected,
-              [classNames("menu__item--loading", loadingClassName)]: isLoading,
-              [classNames("disabled", disabledClassName)]: isDisabled,
-              [classNames("menu__item--locked", lockedClassName)]: isLocked,
+              [classNames(loadingClassName)]: isLoading,
+              [classNames(disabledClassName)]: isDisabled,
+              [classNames(lockedClassName)]: isLocked,
             },
             props.className,
           )}

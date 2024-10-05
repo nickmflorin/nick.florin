@@ -5,7 +5,6 @@
 @use "partials";
 
 @use "./constants" as constants;
-@use "./mixins" as mixins;
 
 $input-variants: ("primary");
 $input-default-variant: "primary";
@@ -164,23 +163,23 @@ $input-variant-properties: (
 @mixin input-variant($variant, $type) {
   @include input-variant-state($variant, $type);
 
-  @include mixins.input-disabled {
+  @include partials.disabled {
     @include input-variant-state($variant, $type, $state: "disabled");
   }
 
-  @include mixins.input-hovered {
+  @include partials.hovered {
     @include input-variant-state($variant, $type, $state: "hovered");
   }
 
-  @include mixins.input-focused {
+  @include partials.focused {
     @include input-variant-state($variant, $type, $state: "focused");
   }
 
-  @include mixins.input-focused-within {
+  @include partials.focused-within {
     @include input-variant-state($variant, $type, $state: "focused");
   }
 
-  @include mixins.input-active {
+  @include partials.active {
     @include input-variant-state($variant, $type, $state: "active");
   }
 }

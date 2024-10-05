@@ -3,7 +3,7 @@ import React, { forwardRef, type ForwardedRef } from "react";
 import { pick, omit } from "lodash-es";
 
 import { Loading } from "~/components/loading/Loading";
-import { type ComponentProps, classNames } from "~/components/types";
+import { type ComponentProps, classNames, parseDataAttributes } from "~/components/types";
 
 import { MenuFeedbackState } from "./MenuFeedbackState";
 import { type MenuFeedbackProps, hasFeedback } from "./types";
@@ -108,19 +108,15 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps<MenuConte
       return (
         <div
           {...props}
+          {...parseDataAttributes({
+            isDisabled,
+            isLocked,
+            isLoading,
+            isBordered,
+            borderedGroups: groupsAreBordered && __private_parent_prop__ !== "group",
+          })}
           ref={ref}
-          className={classNames(
-            primaryClassName,
-            { disabled: isDisabled },
-            {
-              [`${primaryClassName}--bordered`]: isBordered,
-              [`${primaryClassName}--bordered-groups`]:
-                groupsAreBordered && __private_parent_prop__ !== "group",
-              [`${primaryClassName}--loading`]: isLoading,
-              [`${primaryClassName}--locked`]: isLocked,
-            },
-            props.className,
-          )}
+          className={classNames(primaryClassName, props.className)}
         >
           <Loading isLoading={isLoading} position="fixed">
             <MenuFeedbackState

@@ -94,7 +94,7 @@
   }
 }
 
-.table-v2 {
+.table {
   height: 100%;
   width: 100%;
   border-collapse: separate;
@@ -102,7 +102,7 @@
 
   @include table-size(constants.$table-default-size);
   @each $size in constants.$table-sizes {
-    &.table-v2--#{$size} {
+    &.table--#{$size} {
       @include table-size($size);
     }
   }
@@ -129,7 +129,7 @@
         border-bottom: none;
         background-color: constants.$table-header-bg-color;
 
-        &:not(.table__header-cell--ordered) {
+        &:not([data-attr-ordered="true"]) {
           .table__header-cell__sort-icon {
             opacity: 0;
           }
@@ -185,19 +185,21 @@
         }
       }
 
-      &--highlighted {
-        &:not(.table__body-row--loading, .table__body-row--feedback, .table__body-row--locked) {
-          background-color: constants.$table-row-highlighted-color;
+      &[data-attr-highlighted="true"] {
+        &:not([data-attr-feedback="true"]) {
+          @include partials.not-locked-or-loading() {
+            background-color: constants.$table-row-highlighted-color;
+          }
         }
       }
 
-      &--locked {
+      @include partials.locked() {
         td:not(.loading-cell):not(.select-cell) {
           pointer-events: none;
         }
       }
 
-      &--loading {
+      @include partials.loading() {
         opacity: 0.4;
 
         @include table-body-cell($direct: true) {
@@ -209,7 +211,7 @@
         }
       }
 
-      &--bordered {
+      &[data-attr-bordered="true"] {
         &:not(:last-child) {
           @include table-body-cell($direct: true, $bordered: true);
         }
@@ -219,14 +221,16 @@
       }
     }
 
-    &.table__body--loading {
-      @include table-body-row($direct: true) {
-        opacity: 0.4;
+    &.table__body {
+      @include partials.loading() {
+        @include table-body-row($direct: true) {
+          opacity: 0.4;
 
-        @include table-body-cell($direct: true) {
-          > .table__body-cell__inner {
-            > .popover-content {
-              opacity: 1;
+          @include table-body-cell($direct: true) {
+            > .table__body-cell__inner {
+              > .popover-content {
+                opacity: 1;
+              }
             }
           }
         }
@@ -234,17 +238,17 @@
     }
   }
 
-  &--higlighted-rows-on-hover {
+  &[data-attr-highlight-rows-on-hover="true"] {
     @include table-body-row($direct: false) {
-      &:hover {
-        &:not(.table__body-row--loading, .table__body-row--feedback) {
+      @include partials.hovered() {
+        &:not([data-attr-feedback="true"]) {
           background-color: constants.$table-row-highlighted-color;
         }
       }
     }
   }
 
-  &--bordered {
+  &[data-attr-bordered="true"] {
     @include table-body-row($direct: true) {
       &:not(:last-child) {
         @include table-body-cell($direct: true, $bordered: true);

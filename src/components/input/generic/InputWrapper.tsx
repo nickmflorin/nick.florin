@@ -16,6 +16,7 @@ import {
   type BorderRadius,
   getTypographyClassName,
   getTypographyStyle,
+  parseDataAttributes,
   omitTypographyProps,
 } from "~/components/types";
 
@@ -41,8 +42,6 @@ export type InputWrapperProps<C extends WrapperComponentName> = ComponentProps &
     readonly radius?: BorderRadius;
   };
 
-const dataAttributeValue = (v?: boolean) => (v === true ? true : undefined);
-
 export const InputWrapper = forwardRef(
   <C extends WrapperComponentName>(
     {
@@ -63,22 +62,22 @@ export const InputWrapper = forwardRef(
   ): JSX.Element => {
     const ps = {
       ...omitTypographyProps(props),
+      ...parseDataAttributes({
+        isLoading,
+        isDisabled,
+        isLocked,
+        isActive,
+        isReadOnly,
+      }),
       ref,
       children,
-      "data-attr-disabled": dataAttributeValue(isDisabled),
-      "data-attr-locked": dataAttributeValue(isLocked),
-      "data-attr-loading": dataAttributeValue(isLoading),
-      "data-attr-active": dataAttributeValue(isActive),
-      "data-attr-read-only": dataAttributeValue(isReadOnly),
       style: { ...getTypographyStyle(props), ...props.style },
       className: classNames(
         "input",
         `input--size-${size}`,
         `input--variant-${variant}`,
         `input--radius-${radius}`,
-        {
-          "input--dynamic-height": dynamicHeight,
-        },
+        { "input--dynamic-height": dynamicHeight },
         getTypographyClassName(props),
         props.className,
       ),
