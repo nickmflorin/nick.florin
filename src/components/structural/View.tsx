@@ -10,6 +10,7 @@ import {
   type QuantitativeSize,
   type ComponentProps,
   sizeToString,
+  parseDataAttributes,
 } from "~/components/types";
 
 export type ViewPosition = "relative" | "absolute" | "fixed";
@@ -347,8 +348,6 @@ export const View = <C extends ViewComponent>({
       parseOverflow(props),
       parseFlex(props),
       {
-        "view--screen-w": _fill === "screen" || props.width === "screen",
-        "view--screen-h": _fill === "screen" || props.height === "screen",
         "h-full": _fill === "parent" || props.height === "parent",
         "w-full": _fill === "parent" || props.width === "parent",
         "max-w-full": props.maxWidth === "parent",
@@ -363,13 +362,21 @@ export const View = <C extends ViewComponent>({
     ),
   } as Omit<React.ComponentProps<C>, "ref">;
 
+  const p = {
+    ...ps,
+    ...parseDataAttributes({
+      screenW: _fill === "screen" || props.width === "screen",
+      screenH: _fill === "screen" || props.height === "screen",
+    }),
+  };
+
   switch (component) {
     case "div":
-      return <div {...(ps as React.ComponentProps<"div">)}>{children}</div>;
+      return <div {...(p as React.ComponentProps<"div">)}>{children}</div>;
     case "tbody":
-      return <tbody {...(ps as React.ComponentProps<"tbody">)}>{children}</tbody>;
+      return <tbody {...(p as React.ComponentProps<"tbody">)}>{children}</tbody>;
     case "tr":
-      return <tr {...(ps as React.ComponentProps<"tr">)}>{children}</tr>;
+      return <tr {...(p as React.ComponentProps<"tr">)}>{children}</tr>;
     default:
       throw new UnreachableCaseError(`Invalid component: ${component}!`);
   }
