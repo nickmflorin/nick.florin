@@ -19,8 +19,8 @@ export const Table = ({
 }: TableProps) => (
   <table
     {...props}
-    {...parseDataAttributes({ highlightRowsOnHover, bordered })}
-    className={classNames("table", `table--size-${size}`, props.className)}
+    {...parseDataAttributes({ highlightRowsOnHover, bordered, size })}
+    className={classNames("table", props.className)}
   >
     {children}
   </table>

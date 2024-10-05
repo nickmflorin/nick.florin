@@ -23,7 +23,7 @@
 }
 
 @mixin inherit-properties() {
-  color: inherit;
+  // color: inherit;
   line-height: inherit;
   font-family: inherit;
   font-size: inherit;
@@ -77,6 +77,13 @@
   }
 }
 
+@mixin button-type($type) {
+  &[data-attr-type="#{$type}"] {
+    @include button-properties($type);
+    @content;
+  }
+}
+
 .button {
   @include button-base();
 
@@ -94,13 +101,12 @@
   @include partials.border-radius(constants.$button-default-border-radius);
 
   @include radii.with-radius() using ($radii, $value) {
-    &.button--radius-#{$radii} {
+    &[data-attr-radius="#{$radii}"] {
       @include partials.border-radius($value);
     }
   }
 
-  &--type-button {
-    @include button-properties("button");
+  @include button-type("button") {
     @include button-structure();
 
     white-space: nowrap;
@@ -109,8 +115,7 @@
     text-align: center;
   }
 
-  &--type-link {
-    @include button-properties("link");
+  @include button-type("link") {
     @include button-structure();
     @include fit-content();
 
@@ -120,8 +125,7 @@
     vertical-align: middle;
   }
 
-  &--type-inline-link {
-    @include button-properties("inline-link");
+  @include button-type("inline-link") {
     @include inherit-properties();
 
     text-decoration: none;
@@ -129,8 +133,7 @@
     vertical-align: baseline;
   }
 
-  &--type-icon-button {
-    @include button-properties("icon-button");
+  @include button-type("icon-button") {
     @include button-structure();
 
     min-width: fit-content;

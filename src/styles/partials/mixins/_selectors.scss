@@ -69,36 +69,3 @@
     }
   }
 }
-
-/// A selector that behaves as the distinct provided selector without the other selectors.
-///
-/// @param {list} $choice
-///   The distinct selector that should be used.
-/// @param {list} $selectors
-///   The selectors which should be negated.
-/// @param {selector} $base
-///   An optionally provided base that the negation will apply to.  If not provided, defaults to the parent selector, &.
-/// @param {string} $prefix
-///   An optionally provided prefix that the provided selectors should be modified to include.
-///
-/// .button {
-///   $feedback-types: ("warning", "error", "success");
-///   @include with-distinct-selectors("warning", $feedback-types, $prefix: ".feedback--") {
-///     color: red;
-///   }
-/// }
-///
-/// compiles to
-///
-/// .button.feedback--warning:not(.feedback--error, .feedback--success) {
-///   color: red;
-/// }
-@mixin with-distinct-selector($choice, $selectors, $base: null, $prefix: null) {
-  // Remove the distinct selector from the list of selectors if it is included.
-  $selectors: fn.list-remove($selectors, $choice, $strict: false);
-  @include with-selectors(($choice), $base: $base, $prefix: $prefix) {
-    @include without-selectors($selectors, $base: $base, $prefix: $prefix) {
-      @content;
-    }
-  }
-}

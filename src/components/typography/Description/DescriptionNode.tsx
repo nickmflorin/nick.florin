@@ -8,6 +8,7 @@ import {
   getTypographyClassName,
   classNames,
   getTypographyStyle,
+  parseDataAttributes,
 } from "~/components/types";
 import { omitTypographyProps } from "~/components/types";
 
@@ -50,10 +51,10 @@ export const DescriptionNode = forwardRef<
     }
     const ps = {
       ...omitTypographyProps(props),
+      ...parseDataAttributes({ inherit }),
       style: { ...getTypographyStyle(props), ...props.style },
       className: classNames(
         "description",
-        { "description--inherit": inherit },
         getTypographyClassName(props),
         {
           [classNames("text-sm", props.className)]: props.fontSize === undefined,

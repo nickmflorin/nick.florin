@@ -127,27 +127,27 @@
     display: inherit !important;
   }
 
-  &--fit-square:not(&--fit-fit) {
+  &[data-attr-fit="square"] {
     @include sizing.icon-fit("square");
   }
 
-  &--fit-fit:not(&--fit-square) {
+  &[data-attr-fit="fit"] {
     @include sizing.icon-fit("fit");
   }
 
-  &:not(&--fit-fit, &--fit-square) {
+  &:not([data-attr-fit="fit"], [data-attr-fit="square"]) {
     @include sizing.icon-fit(constants.$default-icon-size-fit);
   }
 
-  &--dimension-height:not(&--dimension-width) {
+  &[data-attr-dimension="height"] {
     @include sizing.icon-size-classes("height");
   }
 
-  &--dimension-width:not(&--dimension-height) {
+  &[data-attr-dimension="width"] {
     @include sizing.icon-size-classes("width");
   }
 
-  &:not(&--dimension-width, &--dimension-height) {
+  &:not([data-attr-dimension="height"], [data-attr-dimension="width"]) {
     @include sizing.icon-size-classes(constants.$default-icon-size-dimension);
   }
 }

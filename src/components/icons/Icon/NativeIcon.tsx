@@ -1,13 +1,15 @@
 import { forwardRef, type ReactNode } from "react";
 
-import { type IconProps } from "~/components/icons/types";
-import { classNames } from "~/components/types";
+import { pick } from "lodash-es";
 
-import { getNativeIconStyle, type DynamicIconClassNamePropName } from "./util";
+import { type IconProps, IconDiscreteSizes } from "~/components/icons/types";
+import { parseDataAttributes, classNames } from "~/components/types";
+
+import { getNativeIconStyle } from "./util";
 
 export type NativeIconProps = Pick<
   IconProps,
-  "style" | "className" | DynamicIconClassNamePropName
+  "style" | "className" | "size" | "dimension" | "fit" | "isDisabled"
 > & {
   readonly children?: ReactNode;
 };
@@ -15,7 +17,11 @@ export type NativeIconProps = Pick<
 export const NativeIcon = forwardRef<HTMLElement, NativeIconProps>((props, ref) => (
   <i
     ref={ref}
-    className={classNames(props.className)}
+    {...parseDataAttributes({
+      ...pick(props, ["fit", "dimension", "isDisabled"] as const),
+      size: IconDiscreteSizes.contains(props.size) ? props.size : undefined,
+    })}
+    className={classNames("icon", props.className)}
     style={{ ...props.style, ...getNativeIconStyle(props) }}
   >
     {props.children}

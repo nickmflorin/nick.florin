@@ -20,7 +20,6 @@
 }
 
 @include auth-page(signUp);
-
 @include auth-page(signIn);
 
 h1.cl-headerTitle {
@@ -49,7 +48,7 @@ h6.cl-headerTitle {
 
 button.cl-formButtonPrimary {
   @include buttons.button-base();
-  @include buttons.button-size("button", "small");
+  @include buttons.button-size-properties("button", "small");
   @include buttons.button-color(
     (
       type: "button",
@@ -64,7 +63,7 @@ button.cl-formButtonPrimary {
 
 button.cl-socialButtonsBlockButton__google {
   @include buttons.button-base();
-  @include buttons.button-size("button", "medium");
+  @include buttons.button-size-properties("button", "medium");
   @include buttons.button-color(
     (
       type: "button",

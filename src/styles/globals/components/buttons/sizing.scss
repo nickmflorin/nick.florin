@@ -3,15 +3,25 @@
 @use "sass:meta";
 
 @use "partials";
-@use "./constants" as constants;
 
-@mixin button-icon-size($type, $size) {
+@use "./constants" as constants;
+@use "./mixins" as mixins;
+
+@mixin button-icon-size-properties($type, $size) {
   .icon {
     height: partials.mapget(constants.$button-icon-sizes, $type, $size);
   }
 }
 
-@mixin button-size($type, $size, $tight-fit: false) {
+@mixin button-icon-sizes($type) {
+  @each $size in map.keys(partials.mapget(constants.$button-icon-sizes, $type)) {
+    @include mixins.button-icon-size($size) {
+      @include button-icon-size-properties($type: $type, $size: $size);
+    }
+  }
+}
+
+@mixin button-size-properties($type, $size, $tight-fit: false) {
   @if $type == "icon-button" or $type == "button" {
     // If the 'no-padding' flag is set, the size of the icon button should be the same as the size
     // of the icon it contains.
@@ -33,40 +43,31 @@
         padding: partials.mapget(constants.$button-padding, $size);
       }
     }
-    /* Size the icon based on the size of the button, unless the 'button--icon-size' class
-       name is explicitly defined on the button. */
-    @include button-icon-size($type: $type, $size: $size);
+    /* Size the icon based on the size of the button, unless the 'icon-size' data attribute is
+       present. */
+    @include button-icon-size-properties($type: $type, $size: $size);
     /* Allow the icon size in the button to be controlled independently of the button's primary
        size if the class name is present. */
     @include button-icon-sizes($type);
   }
   // Inline links do not have icons.
   @if $type != "inline-link" {
-    @include button-icon-size($type: $type, $size: $size);
-  }
-}
-
-@mixin button-icon-sizes($type) {
-  @each $size in map.keys(partials.mapget(constants.$button-icon-sizes, $type)) {
-    &.button--icon-size-#{$size} {
-      @include button-icon-size($type: $type, $size: $size);
-    }
+    @include button-icon-size-properties($type: $type, $size: $size);
   }
 }
 
 @mixin button-sizes($type, $tight-fit: false) {
-  // Links do not have sizes, their size is determined from the line-height of the text they
-  // contain.
+  // Links do not have sizes, their size is determined from the line-height of the text they contain.
   @if $type != "link" and $type != "inline-link" {
-    @include button-size($type, constants.$button-default-size, $tight-fit: $tight-fit);
+    @include button-size-properties($type, constants.$button-default-size, $tight-fit: $tight-fit);
     @each $size in map.keys(constants.$button-sizes) {
-      &.button--size-#{$size} {
-        @include button-size($type, $size, $tight-fit: $tight-fit);
+      @include mixins.button-size($size) {
+        @include button-size-properties($type, $size, $tight-fit: $tight-fit);
       }
     }
   } @else if $type == "link" {
     // Apply a default icon size just in case the class name is not present.
-    @include button-icon-size($type: $type, $size: constants.$link-default-icon-size);
+    @include button-icon-size-properties($type: $type, $size: constants.$link-default-icon-size);
     /* The Link is sized based on the line height of its text, but it still can have icons - which
        need to be sized explicitly and independently of the line height of the Link's text. */
     @include button-icon-sizes($type);

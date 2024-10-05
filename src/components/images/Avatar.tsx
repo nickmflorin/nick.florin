@@ -12,6 +12,7 @@ import {
   sizeToString,
   inferQuantitativeSizeValue,
   type BorderRadius,
+  parseDataAttributes,
 } from "~/components/types";
 
 export interface AvatarProps extends ComponentProps {
@@ -51,12 +52,8 @@ export const Avatar = ({
   return (
     <div
       {...props}
-      className={classNames(
-        "avatar",
-        `avatar--radius-${radius}`,
-        { "avatar--without-image": failed || !src || src.trim() === "" },
-        props.className,
-      )}
+      {...parseDataAttributes({ radius, withoutImage: failed || !src || src.trim() === "" })}
+      className={classNames("avatar", props.className)}
       style={
         size
           ? { ...props.style, height: sizeToString(size, "px"), width: sizeToString(size, "px") }

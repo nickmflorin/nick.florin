@@ -3,17 +3,14 @@ import { forwardRef, type ReactNode } from "react";
 import { capitalize } from "~/lib/formatters";
 
 import * as types from "~/components/buttons";
-import {
-  buttonSizeClassName,
-  buttonIconSizeClassName,
-  getButtonSizeStyle,
-} from "~/components/buttons/util";
+import { getButtonSizeStyle } from "~/components/buttons/util";
 import {
   type TypographyCharacteristics,
   classNames,
   type ComponentProps,
   type QuantitativeSize,
   getTypographyClassName,
+  parseDataAttributes,
 } from "~/components/types";
 
 import { AbstractButton } from "./AbstractButton";
@@ -74,10 +71,19 @@ const LocalButton = forwardRef(
     return (
       <AbstractButton
         {...ps}
+        {...parseDataAttributes({
+          variant: variant ?? "solid",
+          /* Only include the size data attribute if the size conforms to a standardized, discrete
+             size option (e.g. "sm", "md", "lg", etc.).  If it does not, it is a numeric size, and
+             should be incorporated into the element via inline styles. */
+          size: types.ButtonDiscreteSizes.contains(size) ? size : undefined,
+          /* Only include the icon size data attribute if the icon size conforms to a standardized,
+             discrete size option (e.g. "sm", "md", "lg", etc.).  If it does not, it is a numeric
+             size, and should be incorporated into the element via inline styles. */
+          iconSize:
+            iconSize && types.ButtonDiscreteIconSizes.contains(iconSize) ? iconSize : undefined,
+        })}
         className={classNames(
-          `button--variant-${variant ?? "solid"}`,
-          buttonSizeClassName(size),
-          buttonIconSizeClassName(iconSize),
           getTypographyClassName({ fontSize, fontFamily, fontWeight, transform, truncate }),
           props.className,
         )}

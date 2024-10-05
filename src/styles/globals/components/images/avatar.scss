@@ -34,7 +34,7 @@
   }
 
   @include radii.with-radius using ($size, $value) {
-    &--radius-#{$size} {
+    &[data-attr-radius="#{$size}"] {
       @include avatar-radius($value);
       > .avatar__image {
         @include avatar-radius($value);
@@ -42,7 +42,7 @@
     }
   }
 
-  &.avatar--without-image {
+  &[data-attr-without-image="true"] {
     background-color: theme("colors.gray.200");
     color: inherit;
     font-size: inherit;
@@ -51,7 +51,7 @@
 
     @include radii.with-radius using ($size, $value) {
       @include avatar-radius($value);
-      &.avatar--radius-#{$size} {
+      &[data-attr-radius="#{$size}"] {
         @include avatar-radius($value);
       }
     }

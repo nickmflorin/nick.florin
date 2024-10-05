@@ -8,8 +8,9 @@ import { classNames } from "~/components/types";
 
 import { Spinner } from "../Spinner";
 
+import { FontAwesomeIcon } from "./FontAwesomeIcon";
 import { NativeIcon } from "./NativeIcon";
-import { getIconClassName, getInternalIconClassName, getNativeIconStyle } from "./util";
+import { getNativeIconStyle } from "./util";
 
 /**
  * Renders an icon element, <i>, with the appropriate class name, style and data-attributes.
@@ -24,17 +25,7 @@ import { getIconClassName, getInternalIconClassName, getNativeIconStyle } from "
  */
 export const Icon = forwardRef<HTMLElement, IconProps>(
   (
-    {
-      icon,
-      children,
-      isLoading,
-      style,
-      iconStyle,
-      loadingClassName,
-      spinnerSize,
-      family,
-      ...props
-    },
+    { icon, children, isLoading, style, loadingClassName, spinnerSize, ...props },
     ref,
   ): JSX.Element => {
     if (isLoading) {
@@ -62,25 +53,11 @@ export const Icon = forwardRef<HTMLElement, IconProps>(
           />
         );
       }
-      const ic =
-        typeof icon === "string"
-          ? { name: icon, iconStyle, family }
-          : { iconStyle, family, ...icon };
-      return (
-        <NativeIcon
-          {...props}
-          ref={ref}
-          style={style}
-          className={getIconClassName({
-            ...props,
-            icon: ic,
-          })}
-        />
-      );
+      return <FontAwesomeIcon {...props} ref={ref} style={style} icon={icon} />;
     }
     // Here, the icon is an internal SVG component that is provided via the 'children' prop.
     return (
-      <NativeIcon {...props} ref={ref} style={style} className={getInternalIconClassName(props)}>
+      <NativeIcon {...props} ref={ref} style={style}>
         {children}
       </NativeIcon>
     );

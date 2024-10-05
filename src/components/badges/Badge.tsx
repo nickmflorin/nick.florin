@@ -3,7 +3,12 @@ import React, { type ReactNode } from "react";
 import { IconButton } from "~/components/buttons";
 import { type IconProp, type IconName, isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
-import { type ComponentProps, type BorderRadius, classNames } from "~/components/types";
+import {
+  type ComponentProps,
+  type BorderRadius,
+  classNames,
+  parseDataAttributes,
+} from "~/components/types";
 import { BaseTypography, type BaseTypographyProps } from "~/components/typography/BaseTypography";
 
 import { type BadgeSize, BadgeSizes } from "./types";
@@ -29,10 +34,9 @@ export const Badge = ({
   <BaseTypography<"div">
     {...props}
     component="div"
+    {...parseDataAttributes({ size, radius })}
     className={classNames(
       "badge",
-      `badge--size-${size}`,
-      radius ? `badge--radius-${radius}` : "",
       { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
       props.className,
     )}

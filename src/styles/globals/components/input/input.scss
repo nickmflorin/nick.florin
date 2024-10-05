@@ -18,10 +18,10 @@
   );
 
   @each $size in structure.$input-sizes {
-    &.input--size-#{$size} {
+    &[data-attr-size="#{$size}"] {
       @include structure.input-structure($size, $type, structure.$input-default-border-radii);
       @include radii.with-radius() using ($radii, $value) {
-        &.input--radius-#{$radii} {
+        &[data-attr-radius="#{$radii}"] {
           @include structure.input-structure($size, $type, $radii);
         }
       }

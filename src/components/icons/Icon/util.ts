@@ -11,9 +11,7 @@ import {
   type IconProps,
   IconDimensions,
   IconFits,
-  type ChildrenIconProps,
   type FontAwesomeIconProp,
-  type BasicIconProps,
 } from "~/components/icons";
 import { type Style, classNames } from "~/components/types";
 
@@ -45,7 +43,11 @@ const getIconStyleClassName = (style: IconStyle = DEFAULT_ICON_STYLE) =>
  *
  * @returns {string}
  */
-export const getNativeIconClassName = ({ family, iconStyle, name }: FontAwesomeIconProp): string =>
+export const getFontAwesomeIconClassName = ({
+  family,
+  iconStyle,
+  name,
+}: FontAwesomeIconProp): string =>
   classNames(
     getIconFamilyClassName(family),
     getIconStyleClassName(iconStyle),
@@ -76,46 +78,3 @@ export const getNativeIconStyle = ({
     };
   }
 };
-
-const DynamicIconClassNamePropNames = ["fit", "size", "dimension", "isDisabled"] as const;
-
-export type DynamicIconClassNamePropName = (typeof DynamicIconClassNamePropNames)[number];
-
-type DynamicIconClassNameProps = Pick<IconProps, DynamicIconClassNamePropName>;
-
-type DynamicIconClassNameConfig<N extends DynamicIconClassNamePropName> = (
-  dynamic: DynamicIconClassNameProps[N],
-) => string | null;
-
-const DynamicClassNameConfig: {
-  [key in DynamicIconClassNamePropName]: DynamicIconClassNameConfig<key>;
-} = {
-  isDisabled: v => (v !== undefined ? "disabled" : null),
-  fit: v => (v !== undefined ? `icon--fit-${v}` : null),
-  /* The size class is only applicable if the size is provided as a discrete size string, not a
-     literal size value (e.g. "sm", not "30px"). */
-  size: v => (v !== undefined && IconDiscreteSizes.contains(v) ? `icon--size-${v}` : null),
-  dimension: v => (v !== undefined ? `icon--dimension-${v}` : null),
-};
-
-const getDynamicIconClassName = (props: Pick<IconProps, DynamicIconClassNamePropName>): string =>
-  [...DynamicIconClassNamePropNames].reduce(
-    <N extends DynamicIconClassNamePropName>(prev: string, curr: N) => {
-      const propName = curr as N;
-      return classNames(prev, DynamicClassNameConfig[propName](props[propName]));
-    },
-    "",
-  );
-
-export const getInternalIconClassName = ({
-  className,
-  ...props
-}: Pick<BasicIconProps | ChildrenIconProps, "className" | DynamicIconClassNamePropName>): string =>
-  classNames("icon", getDynamicIconClassName(props), className);
-
-export const getIconClassName = ({
-  icon,
-  ...rest
-}: Pick<BasicIconProps, "className" | DynamicIconClassNamePropName> & {
-  icon: FontAwesomeIconProp;
-}): string => classNames(getNativeIconClassName(icon), getInternalIconClassName(rest));

@@ -3,10 +3,9 @@ import url from "url";
 import NextLink, { type LinkProps as NextLinkProps } from "next/link";
 import React, { forwardRef } from "react";
 
-import { omit } from "lodash-es";
+import { omit, pick } from "lodash-es";
 
 import type * as types from "~/components/buttons";
-import { getButtonClassName } from "~/components/buttons/util";
 import { classNames } from "~/components/types";
 import { type ComponentProps, parseDataAttributes } from "~/components/types";
 
@@ -76,16 +75,31 @@ export const AbstractButton = forwardRef(
     props: types.AbstractButtonProps<E>,
     ref: types.PolymorphicButtonRef<E>,
   ): JSX.Element => {
-    const className = getButtonClassName(props);
     const nativeProps = {
       ...toNativeButtonProps(props),
       ...parseDataAttributes({
-        tourId: props.tourId,
-        isDisabled: props.isDisabled,
-        isLocked: props.isLocked,
-        isActive: props.isActive,
-        isLoading: props.isLoading,
+        ...pick(props, [
+          "tourId",
+          "isDisabled",
+          "isLocked",
+          "isLoading",
+          "isActive",
+          "scheme",
+          "radius",
+        ] as const),
+        type: props.buttonType,
       }),
+      style: props.style,
+      className: classNames(
+        "button",
+        props.className,
+        /* These class names should override any class name that may already exist in the props if
+           the button is in the given state - so they should come after 'props.className'. */
+        { [classNames(props.lockedClassName)]: props.isLocked },
+        { [classNames(props.loadingClassName)]: props.isLoading },
+        { [classNames(props.disabledClassName)]: props.isDisabled },
+        { [classNames(props.activeClassName)]: props.isActive },
+      ),
     };
 
     switch (props.element) {
@@ -94,8 +108,6 @@ export const AbstractButton = forwardRef(
         return (
           <NativeAnchor
             {...(nativeProps as types.NativeButtonProps<"a">)}
-            style={props.style}
-            className={className}
             target={openInNewTab ? "_blank" : (nativeProps as types.NativeButtonProps<"a">).target}
             rel={
               openInNewTab
@@ -110,9 +122,6 @@ export const AbstractButton = forwardRef(
         return (
           <NativeLink
             {...(nativeProps as types.NativeButtonProps<"link">)}
-            style={props.style}
-            data-attr-tour-id={props.tourId}
-            className={className}
             ref={ref as types.PolymorphicButtonRef<"a">}
           />
         );
@@ -121,9 +130,6 @@ export const AbstractButton = forwardRef(
         return (
           <NativeDiv
             {...(nativeProps as types.NativeButtonProps<"div">)}
-            style={props.style}
-            className={className}
-            data-attr-tour-id={props.tourId}
             ref={ref as types.PolymorphicButtonRef<"div">}
           />
         );
@@ -133,10 +139,7 @@ export const AbstractButton = forwardRef(
           <NativeButton
             type="button"
             {...(nativeProps as types.NativeButtonProps<"button">)}
-            style={props.style}
-            className={className}
             disabled={props.isDisabled}
-            data-attr-tour-id={props.tourId}
             ref={ref as types.PolymorphicButtonRef<"button">}
           />
         );

@@ -14,8 +14,8 @@
 }
 
 span.description,
-div.description.description--inherit,
-p.description.description--inherit {
+div.description[data-attr-inherit="true"],
+p.description[data-attr-inherit="true"] {
   @include mixins.inherit-font-properties();
 
   @include mixins.with-font-weights();
@@ -23,8 +23,8 @@ p.description.description--inherit {
   @include mixins.with-fonts("description");
 }
 
-div.description:not(.description--inherit),
-p.description:not(.description--inherit) {
+div.description:not([data-attr-inherit="true"]),
+p.description:not([data-attr-inherit="true"]) {
   @include description-base();
 
   @include mixins.with-font-weights();

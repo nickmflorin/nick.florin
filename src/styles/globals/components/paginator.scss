@@ -1,3 +1,5 @@
+@use "partials";
+
 @use "./buttons" as buttons;
 
 $paginator-button-identifiers: (
@@ -17,10 +19,10 @@ $paginator-button-identifiers: (
 
     > button {
       @include buttons.button-base();
-      @include buttons.button-size("button", "small");
+      @include buttons.button-size-properties("button", "small");
       @include buttons.button-color($paginator-button-identifiers);
 
-      &[data-active="true"] {
+      @include partials.active() {
         @include buttons.button-color-properties($paginator-button-identifiers, $state: "active");
       }
     }

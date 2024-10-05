@@ -25,7 +25,7 @@ p {
   }
 }
 
-p:not(.body-inherit) {
+p:not([data-attr-inherit="true"]) {
   @include body-base();
 }
 
@@ -34,8 +34,8 @@ p:not(.body-inherit) {
 }
 
 span.body,
-div.body.body--inherit,
-p.body.body--inherit {
+div.body[data-attr-inherit="true"],
+p.body[data-attr-inherit="true"] {
   @include mixins.inherit-font-properties();
 
   @include mixins.with-font-weights();
@@ -43,8 +43,8 @@ p.body.body--inherit {
   @include mixins.with-fonts("body");
 }
 
-div.body:not(.body--inherit),
-p.body:not(.body--inherit) {
+div.body:not([data-attr-inherit="true"]),
+p.body:not([data-attr-inherit="true"]) {
   @include body-base();
 
   @include mixins.with-font-weights();

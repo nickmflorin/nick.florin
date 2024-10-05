@@ -6,7 +6,7 @@ import { type Optional } from "utility-types";
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { Loading } from "~/components/loading/Loading";
-import { classNames } from "~/components/types";
+import { classNames, parseDataAttributes } from "~/components/types";
 import { type ComponentProps, BorderRadii, type BorderRadius } from "~/components/types";
 
 import { type ImageProp } from "./types";
@@ -80,16 +80,13 @@ export const ModelImage = ({
       <Loading isLoading={loading === true} />
       {_url !== undefined && _url !== null && _url.trim() !== "" ? (
         <Image
+          {...parseDataAttributes({ radius })}
           height={_size}
           width={_size}
           src={_url}
           alt={alt}
           priority={priority}
-          className={classNames(
-            "model-image__image",
-            `model-image__image--radius-${radius}`,
-            imageClassName,
-          )}
+          className={classNames("model-image__image", imageClassName)}
         />
       ) : (
         <div className="model-image__fallback">

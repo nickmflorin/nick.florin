@@ -53,7 +53,7 @@ $icon-sizes: (
 
 @mixin icon-size-classes($dimension) {
   @each $size in map.keys($icon-sizes) {
-    &.icon--size-#{$size} {
+    &[data-attr-size="#{$size}"] {
       @include icon-sizing($size, $dimension);
     }
   }

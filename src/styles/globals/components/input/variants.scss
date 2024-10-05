@@ -188,7 +188,7 @@ $input-variant-properties: (
   @include input-variant($input-default-variant, $type);
 
   @each $variant in $input-variants {
-    &--variant-#{$variant} {
+    &[data-attr-variant="#{$variant}"] {
       @include input-variant($variant, $type);
     }
   }

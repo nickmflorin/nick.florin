@@ -13,7 +13,7 @@
 
   > .model-image__image {
     @include radii.with-radius using ($size, $value) {
-      &--radius-#{$size} {
+      &[data-attr-radius="#{$size}"] {
         @include partials.border-radius($value);
         // The reasoning is unclear, but it appears that the border-radius property must be applied
         // to work on Safari or iOS devices, whereas the clip-path property must be defined to work

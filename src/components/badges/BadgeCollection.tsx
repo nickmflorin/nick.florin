@@ -14,6 +14,7 @@ import {
   type ComponentProps,
   type ContainerSizeRangeMap,
   getFromContainerSizeRangeMap,
+  parseDataAttributes,
 } from "~/components/types";
 import { BaseTypography, type BaseTypographyProps } from "~/components/typography/BaseTypography";
 import { useContainerSizes } from "~/hooks/use-screen-sizes";
@@ -95,9 +96,10 @@ export const BadgeCollection = <M,>({
   return (
     <BaseTypography
       {...rest}
+      {...parseDataAttributes({ size })}
       ref={ref}
       component="div"
-      className={classNames("badge-collection", `badge-collection--size-${size}`, props.className)}
+      className={classNames("badge-collection", props.className)}
     >
       <AnimateChangeInHeight className="badge-collection__badges">
         {partition[0]}

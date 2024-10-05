@@ -1,3 +1,5 @@
+@use "partials";
+
 .popover-content {
   z-index: 10;
   border-radius: theme("borderRadius.sm");
@@ -14,7 +16,7 @@
     max-height: inherit;
   }
 
-  &[data-attr-loading="true"] {
+  @include partials.loading() {
     pointer-events: none;
 
     > *:not([data-attr-loading-view="true"]) {

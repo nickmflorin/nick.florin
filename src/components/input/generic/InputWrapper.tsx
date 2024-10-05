@@ -68,19 +68,15 @@ export const InputWrapper = forwardRef(
         isLocked,
         isActive,
         isReadOnly,
+        radius,
+        variant,
+        size,
+        dynamicHeight,
       }),
       ref,
       children,
       style: { ...getTypographyStyle(props), ...props.style },
-      className: classNames(
-        "input",
-        `input--size-${size}`,
-        `input--variant-${variant}`,
-        `input--radius-${radius}`,
-        { "input--dynamic-height": dynamicHeight },
-        getTypographyClassName(props),
-        props.className,
-      ),
+      className: classNames("input", getTypographyClassName(props), props.className),
     };
     switch (component) {
       case "div":

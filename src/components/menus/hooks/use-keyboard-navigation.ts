@@ -10,7 +10,7 @@ export interface UseKeyboardNavigationOptions<T> {
   readonly enabled?: boolean;
   readonly data: T[];
   readonly containerRef?: MutableRefObject<HTMLDivElement | null>;
-  readonly navigatedClassName?: string;
+  readonly navigatedSelector?: string;
   readonly scrollOptions?: ScrollIntoViewOptions;
   readonly excludeItemFromNavigation?: (datum: T) => boolean;
   readonly getItemAtNavigatedIndex?: (data: T[], index: number) => T | undefined;
@@ -23,7 +23,8 @@ export const useKeyboardNavigation = <T>({
   data,
   containerRef: propContainerRef,
   scrollOptions,
-  navigatedClassName = ".menu__item--navigated",
+  /* eslint-disable-next-line quotes */
+  navigatedSelector = '[data-attr-navigated="true"]',
   excludeItemFromNavigation,
   getItemAtNavigatedIndex: _getItemAtNavigatedIndex,
   onExit,
@@ -46,7 +47,7 @@ export const useKeyboardNavigation = <T>({
     (direction: NavigationDirection) => {
       if (containerRef.current) {
         const navigatedElement = containerRef.current.querySelector(
-          navigatedClassName.startsWith(".") ? navigatedClassName : `.${navigatedClassName}`,
+          navigatedSelector,
         ) as HTMLElement | null;
         if (navigatedElement) {
           switch (direction) {
@@ -81,7 +82,7 @@ export const useKeyboardNavigation = <T>({
         );
       }
     },
-    [scrollOptions, containerRef, navigatedClassName],
+    [scrollOptions, containerRef, navigatedSelector],
   );
 
   const numItems = navigatableData.length;

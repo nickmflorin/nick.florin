@@ -115,7 +115,7 @@ $badge-default-size: "sm";
 
   @include partials.border-radius($badge-default-radius);
   @include radii.with-radius() using ($radii, $value) {
-    &.badge--radius-#{$radii} {
+    &[data-attr-radius="#{$radii}"] {
       @include partials.border-radius($value);
     }
   }
@@ -131,7 +131,7 @@ $badge-default-size: "sm";
   @include badge-size($badge-default-size);
 
   @each $size in map.keys($badge-sizes) {
-    &.badge--size-#{$size} {
+    &[data-attr-size="#{$size}"] {
       @include badge-size($size);
     }
   }
@@ -180,7 +180,7 @@ $badge-default-size: "sm";
   }
 
   @include typography.use-fonts("body") using ($size, $data) {
-    &.badge-collection--size-#{$size} {
+    &[data-attr-size="#{$size}"] {
       $height: partials.mapget($badge-sizes, $size);
       font-weight: partials.mapget($data, font-weight);
 

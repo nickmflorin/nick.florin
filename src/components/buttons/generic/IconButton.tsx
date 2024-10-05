@@ -3,12 +3,7 @@ import { forwardRef, type ReactNode } from "react";
 import { capitalize } from "~/lib/formatters";
 
 import * as types from "~/components/buttons";
-import {
-  buttonSizeClassName,
-  buttonIconSizeClassName,
-  toIconSize,
-  getButtonSizeStyle,
-} from "~/components/buttons/util";
+import { toIconSize, getButtonSizeStyle } from "~/components/buttons/util";
 import { type IconName, type IconProp, isIconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import Spinner from "~/components/icons/Spinner";
@@ -89,13 +84,19 @@ const LocalIconButton = forwardRef(
     return (
       <AbstractButton
         {...ps}
-        {...parseDataAttributes({ tight })}
-        className={classNames(
-          `button--variant-${variant ?? "transparent"}`,
-          buttonSizeClassName(size),
-          buttonIconSizeClassName(iconSize),
-          ps.className,
-        )}
+        {...parseDataAttributes({
+          tight,
+          variant: variant ?? "transparent",
+          /* Only include the size data attribute if the size conforms to a standardized, discrete
+             size option (e.g. "sm", "md", "lg", etc.).  If it does not, it is a numeric size, and
+             should be incorporated into the element via inline styles. */
+          size: types.ButtonDiscreteSizes.contains(size) ? size : undefined,
+          /* Only include the icon size data attribute if the icon size conforms to a standardized,
+             discrete size option (e.g. "sm", "md", "lg", etc.).  If it does not, it is a numeric
+             size, and should be incorporated into the element via inline styles. */
+          iconSize:
+            iconSize && types.ButtonDiscreteIconSizes.contains(iconSize) ? iconSize : undefined,
+        })}
         style={{ ...props.style, ...getButtonSizeStyle({ size }) }}
       >
         <div className="button__content">

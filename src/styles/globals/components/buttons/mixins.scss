@@ -1,0 +1,23 @@
+@mixin button-variant($variant) {
+  &[data-attr-variant="#{$variant}"] {
+    @content;
+  }
+}
+
+@mixin button-scheme($scheme) {
+  &[data-attr-scheme="#{$scheme}"] {
+    @content;
+  }
+}
+
+@mixin button-size($size) {
+  &[data-attr-size="#{$size}"] {
+    @content;
+  }
+}
+
+@mixin button-icon-size($size) {
+  &[data-attr-icon-size="#{$size}"] {
+    @content;
+  }
+}

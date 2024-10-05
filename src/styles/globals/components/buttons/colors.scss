@@ -5,6 +5,7 @@
 @use "partials";
 
 @use "./constants" as constants;
+@use "./mixins" as mixins;
 
 $button-solid-colors: (
   "primary": (
@@ -549,7 +550,7 @@ $fallbacks: (
       )
     );
     @each $variant in constants.$button-variants {
-      &.button--variant-#{$variant} {
+      @include mixins.button-variant($variant) {
         @include button-color(
           (
             type: $type,
@@ -558,7 +559,7 @@ $fallbacks: (
           )
         );
         @each $scheme in constants.$button-schemes {
-          &.button--scheme-#{$scheme} {
+          @include mixins.button-scheme($scheme) {
             @include button-color(
               (
                 type: $type,
@@ -571,8 +572,14 @@ $fallbacks: (
       }
     }
   } @else {
+    @include button-color(
+      (
+        type: $type,
+        scheme: constants.$button-default-scheme,
+      )
+    );
     @each $scheme in constants.$button-schemes {
-      &.button--scheme-#{$scheme} {
+      @include mixins.button-scheme($scheme) {
         @include button-color(
           (
             type: $type,

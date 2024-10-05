@@ -6,6 +6,7 @@
 @use "../typography" as typography;
 
 @use "./constants" as constants;
+@use "./mixins" as mixins;
 @use "./sizing" as sizing;
 
 @mixin button-font-base($type) {
@@ -42,7 +43,7 @@
 
   @include btn-size-fonts(constants.$button-default-size);
   @each $size in map.keys(constants.$button-sizes) {
-    &.button--size-#{$size} {
+    @include mixins.button-size($size) {
       @include btn-size-fonts($size);
     }
   }

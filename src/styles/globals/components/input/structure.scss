@@ -127,7 +127,7 @@ $input-size-properties: (
   }
 
   @if $type != "text-area" {
-    &:not(.input--dynamic-height) {
+    &:not([data-attr-dynamic-height="true"]) {
       max-height: $height;
       height: $height;
     }

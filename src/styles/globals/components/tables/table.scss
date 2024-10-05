@@ -102,7 +102,7 @@
 
   @include table-size(constants.$table-default-size);
   @each $size in constants.$table-sizes {
-    &.table--#{$size} {
+    &[data-attr-size="#{$size}"] {
       @include table-size($size);
     }
   }
