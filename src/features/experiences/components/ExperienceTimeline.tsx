@@ -21,7 +21,7 @@ export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promis
   const { data: _experiences } = await fetcher(
     {
       visibility: "public",
-      filters: { highlighted: true },
+      filters: { visible: true },
     },
     { strict: true },
   );

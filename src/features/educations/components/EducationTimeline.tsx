@@ -21,7 +21,7 @@ export type EducationTimelineProps = ComponentProps;
 export const EducationTimeline = async (props: EducationTimelineProps): Promise<JSX.Element> => {
   const fetcher = fetchEducations(["skills", "details", "courses"]);
   const { data: _educations } = await fetcher(
-    { visibility: "public", filters: {} },
+    { visibility: "public", filters: { visible: true } },
     { strict: true },
   );
   /* Remove redundant top-level skills from each education that are also skills for details nested
