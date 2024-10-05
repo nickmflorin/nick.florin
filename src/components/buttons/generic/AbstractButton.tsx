@@ -84,7 +84,7 @@ export const AbstractButton = forwardRef(
         isDisabled: props.isDisabled,
         isLocked: props.isLocked,
         isActive: props.isActive,
-        isLoading: props.isLoading
+        isLoading: props.isLoading,
       }),
     };
 

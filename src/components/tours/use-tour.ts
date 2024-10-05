@@ -26,25 +26,36 @@ export const useTour = () => {
 
   const setTourIsOpen = useCallback(
     (tourOpen: boolean) => {
+      let timeoutId: NodeJS.Timeout;
+
+      const exitOnError = (e: string) => {
+        logger.error(e);
+        setError(
+          "There was an error initializing the tour.  Do not worry - we are working on a fix!",
+        );
+        _setTourIsOpen(false);
+        removeMutationObserver();
+        setWaitingForTour(false);
+      };
+
       if (tourOpen) {
         const button = document.getElementById("site-dropdown-menu-button");
         if (!button) {
-          logger.error(
+          return exitOnError(
             "Could not find button with ID 'site-dropdown-menu-button' in DOM.  Tour " +
               "cannot be started.",
           );
-          setError(
-            "There was an error initializing the tour.  Do not worry - we are working on a fix!",
-          );
-          return _setTourIsOpen(false);
         }
-
         button.click();
         observer.current = new MutationObserver(() => {
           const divElement = document.getElementById("site-dropdown-menu-resume-item");
           if (divElement) {
-            observer.current?.disconnect();
-            observer.current = null;
+            if (timeoutId) {
+              /* If we found the element, clear the timeout responsible for issuing an error
+                 indicating that we could not find the element. */
+              clearTimeout(timeoutId);
+            }
+            removeMutationObserver();
             setTimeout(() => {
               _setTourIsOpen(true);
               _setModalIsOpen(false);
@@ -59,18 +70,23 @@ export const useTour = () => {
             subtree: true,
             childList: true,
           });
+          timeoutId = setTimeout(() => {
+            exitOnError(
+              "Could not find '#site-dropdown-menu-resume-item' element in DOM - there " +
+                "may not be any resumes populated.",
+            );
+          }, 2000);
         } else {
-          logger.error(
+          return exitOnError(
             "Could not find 'header__right' element in DOM - the drawer cannot be observed and " +
               "the tour must be ended.",
           );
-          setError(
-            "There was an error initializing the tour.  Do not worry - we are working on a fix!",
-          );
         }
+      } else {
+        _setTourIsOpen(false);
       }
     },
-    [_setTourIsOpen],
+    [_setTourIsOpen, removeMutationObserver],
   );
 
   const setModalIsOpen = useCallback(

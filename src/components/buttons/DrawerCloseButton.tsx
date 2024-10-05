@@ -1,5 +1,3 @@
-import { classNames } from "~/components/types";
-
 import { IconButton, type IconButtonProps } from "./generic";
 
 export interface DrawerCloseButtonProps
@@ -12,7 +10,6 @@ export const DrawerCloseButton = (props: DrawerCloseButtonProps): JSX.Element =>
     scheme="light"
     size="xsmall"
     iconSize="large"
-    className={classNames("drawer__close-button", props.className)}
     icon={{ name: "xmark", iconStyle: "solid" }}
   />
 );

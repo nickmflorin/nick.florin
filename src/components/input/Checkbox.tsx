@@ -27,7 +27,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       return (
         <RootCheckbox
           {...props}
-          {...parseDataAttributes({isDisabled, isLocked})}
+          {...parseDataAttributes({ isDisabled, isLocked })}
           ref={ref}
           checked={value === undefined ? isChecked : value}
           onClick={e => e.stopPropagation()}
@@ -35,10 +35,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             setIsChecked(e.target.checked);
             props.onChange?.(e);
           }}
-          className={classNames(
-            "checkbox",
-            props.className,
-          )}
+          className={classNames("checkbox", props.className)}
         />
       );
     }

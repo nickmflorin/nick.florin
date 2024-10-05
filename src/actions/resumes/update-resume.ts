@@ -44,7 +44,6 @@ export const updateResume = async (
     where: { id: resume.id },
     data: {
       ...data,
-      createdById: user.id,
       updatedById: user.id,
     },
   });

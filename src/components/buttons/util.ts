@@ -50,10 +50,10 @@ export const getButtonClassName = <E extends types.ButtonElement>(props: ButtonC
     props.className,
     /* These class names should override any class name that may already exist in the props if the
        button is in the given state - so they should come after 'props.className'. */
-    {[classNames(props.lockedClassName)]: props.isLocked},
-    {[classNames(props.loadingClassName)]: props.isLoading},
-    {[classNames(props.disabledClassName)]: props.isDisabled},
-    {[classNames(props.activeClassName)]: props.isActive},
+    { [classNames(props.lockedClassName)]: props.isLocked },
+    { [classNames(props.loadingClassName)]: props.isLoading },
+    { [classNames(props.disabledClassName)]: props.isDisabled },
+    { [classNames(props.activeClassName)]: props.isActive },
   );
 
 export type ButtonSizeStyleProps = {

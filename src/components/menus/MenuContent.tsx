@@ -118,7 +118,7 @@ export const MenuContent = forwardRef<HTMLDivElement, MenuContentProps<MenuConte
           ref={ref}
           className={classNames(primaryClassName, props.className)}
         >
-          <Loading isLoading={isLoading} position="fixed">
+          <Loading isLoading={isLoading} position="fixed" spinnerSize="16px">
             <MenuFeedbackState
               isEmpty={isEmpty}
               isError={isError}
