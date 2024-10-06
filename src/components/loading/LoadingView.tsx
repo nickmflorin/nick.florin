@@ -32,9 +32,9 @@ export const LoadingView = <C extends ViewComponent>({
   <View
     {...props}
     {...parseDataAttributes({ isLoading, loadingView: true })}
+    __default_position__="absolute"
     fill={fillScreen ? "screen" : fill}
     overflow="hidden"
-    absolute
     centerChildren
     className={classNames(
       {

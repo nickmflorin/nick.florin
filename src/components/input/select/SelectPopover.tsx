@@ -12,7 +12,6 @@ import {
 
 export type SelectPopoverInstance = {
   readonly setOpen: (isOpen: boolean) => void;
-  readonly setContentLoading: (isLoading: boolean) => void;
 };
 
 interface InnerSelectPopoverProps
@@ -27,11 +26,8 @@ interface InnerSelectPopoverProps
     | "offset"
     | "isDisabled"
   > {
-  readonly contentIsLoading?: boolean;
   readonly isReady?: boolean;
-  readonly content:
-    | JSX.Element
-    | ((props: FloatingContentRenderProps & { readonly contentIsLoading: boolean }) => JSX.Element);
+  readonly content: JSX.Element | ((props: FloatingContentRenderProps) => JSX.Element);
   readonly onOpen?: (
     e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
   ) => void;
@@ -50,7 +46,6 @@ const InnerSelectPopover = forwardRef(
     {
       offset = { mainAxis: 2 },
       width = "target",
-      contentIsLoading: _propContentIsLoading,
       isReady,
       maxHeight = "240px",
       content,
@@ -59,14 +54,10 @@ const InnerSelectPopover = forwardRef(
     }: InnerSelectPopoverProps,
     ref: ForwardedRef<SelectPopoverInstance>,
   ): JSX.Element => {
-    const [_contentIsLoading, setContentLoading] = useState(false);
     const [isOpen, setOpen] = useState(false);
-
-    const contentIsLoading = _propContentIsLoading || _contentIsLoading;
 
     useImperativeHandle(ref, () => ({
       setOpen,
-      setContentLoading,
     }));
 
     return (
@@ -97,9 +88,7 @@ const InnerSelectPopover = forwardRef(
           props.onOpenChange?.(evt, isOpen);
         }}
         content={
-          typeof content === "function"
-            ? renderProps => content({ ...renderProps, contentIsLoading })
-            : content
+          typeof content === "function" ? renderProps => content({ ...renderProps }) : content
         }
       >
         {({ ref: _ref, params }) => children({ ref: _ref, params, isOpen })}
@@ -111,14 +100,7 @@ const InnerSelectPopover = forwardRef(
 export interface SelectPopoverProps
   extends Pick<
     InnerSelectPopoverProps,
-    | "inPortal"
-    | "content"
-    | "onOpen"
-    | "onClose"
-    | "onOpenChange"
-    | "children"
-    | "isReady"
-    | "contentIsLoading"
+    "inPortal" | "content" | "onOpen" | "onClose" | "onOpenChange" | "children" | "isReady"
   > {
   readonly popoverMaxHeight?: InnerSelectPopoverProps["maxHeight"];
   readonly popoverPlacement?: InnerSelectPopoverProps["placement"];
@@ -141,7 +123,6 @@ export const SelectPopoverPropsMap = {
   onClose: true,
   onOpenChange: true,
   children: true,
-  contentIsLoading: true,
   isReady: true,
 } as const satisfies {
   [key in keyof Required<SelectPopoverProps>]: true;

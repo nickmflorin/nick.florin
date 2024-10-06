@@ -66,21 +66,16 @@ export const RootSelectInput = forwardRef(
     const isLoading = _isLoading || propIsLoading;
 
     useEffect(() => {
-      if (isOpen && innerRef.current && outerRef.current) {
+      if (isOpen && innerRef.current) {
         innerRef.current.focus();
-        outerRef.current.focus();
-      } else if (!isOpen && innerRef.current && outerRef.current) {
+      } else if (!isOpen && innerRef.current) {
         innerRef.current.blur();
-        outerRef.current.blur();
       }
     }, [isOpen]);
 
     useImperativeHandle(ref, () =>
       Object.assign(outerRef.current as HTMLDivElement, {
-        focus: () => {
-          innerRef.current?.focus();
-          outerRef.current?.focus();
-        },
+        focus: () => innerRef.current?.focus(),
         setLoading: (v: boolean) => setIsLoading(v),
       }),
     );

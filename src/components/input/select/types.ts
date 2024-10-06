@@ -67,19 +67,25 @@ export type RootSelectInstance = {
   readonly focusInput: () => void;
   readonly setOpen: (v: boolean) => void;
   readonly setInputLoading: (v: boolean) => void;
-  readonly setContentLoading: (v: boolean) => void;
-  readonly setLoading: (v: boolean) => void;
+  readonly setPopoverLoading: (v: boolean) => void;
 };
 
 export type SelectInstance<V, B extends SelectBehaviorType> = RootSelectInstance & {
   readonly setValue: (v: SelectValue<V, B>) => void;
   readonly clear: () => void;
+  readonly setLoading: (v: boolean) => void;
+};
+
+export type DataSelectSelectInstance<V, B extends SelectBehaviorType> = SelectInstance<V, B> & {
+  readonly setContentLoading: (v: boolean) => void;
 };
 
 export type DataSelectInstance<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-> = SelectInstance<InferredDataSelectV<M, O>, InferredDataSelectB<M, O>>;
+> = SelectInstance<InferredDataSelectV<M, O>, InferredDataSelectB<M, O>> & {
+  readonly setContentLoading: (v: boolean) => void;
+};
 
 export type AllowedSelectValue = string | number | Record<string, unknown>;
 

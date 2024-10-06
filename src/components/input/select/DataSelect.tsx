@@ -1,6 +1,14 @@
 "use client";
 import dynamic from "next/dynamic";
-import React, { forwardRef, type ForwardedRef, type ReactNode, useRef, useCallback } from "react";
+import React, {
+  forwardRef,
+  type ForwardedRef,
+  type ReactNode,
+  useRef,
+  useCallback,
+  useState,
+  useImperativeHandle,
+} from "react";
 
 import type * as types from "~/components//input/select/types";
 import { Loading } from "~/components/loading/Loading";
@@ -41,8 +49,12 @@ export interface DataSelectProps<
       | "getItemIcon"
       | "onItemClick"
       | "includeDescriptions"
+      | "boldSubstrings"
       | Exclude<`item${string}` & keyof DataMenuProps<M>, "itemIsSelected">
     > {
+  readonly isLoading?: boolean;
+  readonly contentIsLoading?: boolean;
+  readonly boldOptionsOnSearch?: boolean;
   readonly menuClassName?: ComponentProps["className"];
   readonly itemRenderer?: (model: M, params: MenuItemRenderProps) => ReactNode;
 }
@@ -55,17 +67,40 @@ export const DataSelect = forwardRef(
       data,
       isDisabled,
       isLocked,
-      isLoading,
-      contentIsLoading,
+      isLoading: _propIsLoading,
+      contentIsLoading: _propContentIsLoading,
       inputIsLoading,
+      boldOptionsOnSearch,
+      search,
       onItemClick,
       itemRenderer,
+      onSearch,
       children,
       ...props
     }: DataSelectProps<M, O>,
     ref: ForwardedRef<types.DataSelectInstance<M, O>>,
   ): JSX.Element => {
-    const innerRef = useRef<types.DataSelectInstance<M, O> | null>(null);
+    const [_contentIsLoading, setContentIsLoading] = useState(false);
+    const [_isLoading, setIsLoading] = useState(false);
+
+    const contentIsLoading = _propContentIsLoading || _contentIsLoading;
+    const isLoading = _propIsLoading || _isLoading;
+
+    const innerRef = useRef<Omit<
+      types.DataSelectInstance<M, O>,
+      "setContentLoading" | "setLoading"
+    > | null>(null);
+
+    useImperativeHandle(ref, () => ({
+      clear: () => innerRef.current?.clear(),
+      setValue: v => innerRef.current?.setValue(v),
+      focusInput: () => innerRef.current?.focusInput(),
+      setOpen: (v: boolean) => innerRef.current?.setOpen(v),
+      setInputLoading: (v: boolean) => innerRef.current?.setInputLoading(v),
+      setPopoverLoading: (v: boolean) => innerRef.current?.setPopoverLoading(v),
+      setContentLoading: (v: boolean) => setContentIsLoading(v),
+      setLoading: (v: boolean) => setIsLoading(v),
+    }));
 
     const getItemValue = useCallback(
       (m: M) => {
@@ -90,46 +125,45 @@ export const DataSelect = forwardRef(
     const selectionIndicator = _selectionIndicator ?? defaultSelectionIndicator;
     return (
       <DataSelectBase<M, O>
-        ref={instance => {
-          innerRef.current = instance;
-          if (typeof ref === "function") {
-            ref(instance);
-          } else if (ref) {
-            ref.current = instance;
-          }
-        }}
+        ref={innerRef}
         {...omitDataMenuProps(props)}
+        search={search}
         isDisabled={isDisabled}
         isLocked={isLocked}
-        isLoading={isLoading}
-        contentIsLoading={contentIsLoading}
-        inputIsLoading={inputIsLoading}
+        inputIsLoading={inputIsLoading || isLoading}
         data={data}
-        content={(_, { toggle, isSelected }) => (
-          <DataMenu<M>
-            {...pickDataMenuProps(props)}
-            isDisabled={isDisabled}
-            isLocked={isLocked}
-            isLoading={isLoading || contentIsLoading}
-            data={data}
-            selectionIndicator={selectionIndicator}
-            className={classNames("h-full rounded-sm", menuClassName)}
-            itemIsSelected={m => {
-              const fn = getItemValue as (m: M) => types.InferredDataSelectV<M, O>;
-              return isSelected(fn(m));
-            }}
-            onItemClick={(e, m: M, instance) => {
-              const fn = getItemValue as (m: M) => types.InferredDataSelectV<M, O>;
-              toggle(fn(m), instance);
-              onItemClick?.(e, m, instance);
-            }}
-            onKeyboardNavigationExit={() => {
-              innerRef.current?.focusInput();
-            }}
-          >
-            {itemRenderer ? (m, params) => itemRenderer(m, params) : undefined}
-          </DataMenu>
-        )}
+        onSearch={onSearch}
+        content={(_, { isOpen, toggle, isSelected }) =>
+          // Force dynamic rendering of the DataMenu with the conditional render.
+          isOpen ? (
+            <DataMenu<M>
+              {...pickDataMenuProps(props)}
+              boldSubstrings={boldOptionsOnSearch ? search : undefined}
+              isDisabled={isDisabled}
+              isLocked={isLocked}
+              isLoading={isLoading || contentIsLoading}
+              data={data}
+              selectionIndicator={selectionIndicator}
+              className={classNames("h-full rounded-sm", menuClassName)}
+              itemIsSelected={m => {
+                const fn = getItemValue as (m: M) => types.InferredDataSelectV<M, O>;
+                return isSelected(fn(m));
+              }}
+              onItemClick={(e, m: M, instance) => {
+                const fn = getItemValue as (m: M) => types.InferredDataSelectV<M, O>;
+                toggle(fn(m), instance);
+                onItemClick?.(e, m, instance);
+              }}
+              onKeyboardNavigationExit={() => {
+                innerRef.current?.focusInput();
+              }}
+            >
+              {itemRenderer ? (m, params) => itemRenderer(m, params) : undefined}
+            </DataMenu>
+          ) : (
+            <></>
+          )
+        }
       >
         {children}
       </DataSelectBase>

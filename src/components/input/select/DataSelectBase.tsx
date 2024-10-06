@@ -8,6 +8,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 
+import type { FloatingContentRenderProps } from "~/components/floating";
 import { useSelectModelValue } from "~/components/input/select/hooks";
 import { type MultiValueRendererProps } from "~/components/input/select/MultiValueRenderer";
 import * as types from "~/components/input/select/types";
@@ -59,12 +60,11 @@ export interface DataSelectBaseProps<
   readonly getItemId?: (m: M) => string | number | undefined;
   readonly getItemValueLabel?: (m: M) => ReactNode;
   readonly onChange?: types.DataSelectChangeHandler<M, O>;
-  readonly content: types.DataSelectManagedCallback<
-    JSX.Element,
-    M,
-    O,
-    types.DataSelectNullableValue<M, O>
-  >;
+  readonly content?: (
+    value: types.DataSelectNullableValue<M, O>,
+    params: Omit<types.ManagedSelectModelValue<M, O>, "value"> &
+      Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">,
+  ) => JSX.Element;
 }
 
 const LocalDataSelectBase = forwardRef(
@@ -72,7 +72,6 @@ const LocalDataSelectBase = forwardRef(
     {
       options,
       closeMenuOnSelect,
-      isLoading,
       inPortal,
       popoverClassName,
       inputClassName,
@@ -86,7 +85,7 @@ const LocalDataSelectBase = forwardRef(
       showIconsInChips = true,
       strictValueLookup = true,
       inputIsLoading,
-      contentIsLoading,
+      popoverIsLoading,
       popoverPlacement,
       popoverAllowedPlacements,
       popoverAutoUpdate,
@@ -103,7 +102,7 @@ const LocalDataSelectBase = forwardRef(
       getBadgeIcon,
       ...props
     }: DataSelectBaseProps<M, O>,
-    ref: ForwardedRef<types.DataSelectInstance<M, O>>,
+    ref: ForwardedRef<Omit<types.DataSelectInstance<M, O>, "setContentLoading" | "setLoading">>,
   ): JSX.Element => {
     const selectRef = useRef<types.RootSelectInstance | null>(null);
     const inputRef = useRef<RootSelectInputInstance | null>(null);
@@ -132,11 +131,7 @@ const LocalDataSelectBase = forwardRef(
       focusInput: () => inputRef.current?.focus(),
       setOpen: (v: boolean) => selectRef.current?.setOpen(v),
       setInputLoading: (v: boolean) => inputRef.current?.setLoading(v),
-      setContentLoading: (v: boolean) => selectRef.current?.setContentLoading(v),
-      setLoading: (v: boolean) => {
-        selectRef.current?.setLoading(v);
-        inputRef.current?.setLoading(v);
-      },
+      setPopoverLoading: (v: boolean) => selectRef.current?.setPopoverLoading(v),
     }));
 
     const defaultChipsCanDeselect =
@@ -157,8 +152,7 @@ const LocalDataSelectBase = forwardRef(
       <RootSelect
         ref={selectRef}
         isReady={isReady}
-        isLoading={isLoading}
-        contentIsLoading={contentIsLoading}
+        popoverIsLoading={popoverIsLoading}
         inputIsLoading={inputIsLoading}
         inPortal={inPortal}
         popoverPlacement={popoverPlacement}
@@ -171,16 +165,16 @@ const LocalDataSelectBase = forwardRef(
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
-        content={
-          value !== types.NOTSET ? (
-            content(value, { ...managed, clear } as Omit<
+        content={p => {
+          if (value !== types.NOTSET && content !== undefined) {
+            return content(value, { ...managed, ...p, clear } as Omit<
               types.ManagedSelectModelValue<M, O>,
               "value"
-            >)
-          ) : (
-            <></>
-          )
-        }
+            > &
+              Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">);
+          }
+          return <></>;
+        }}
       >
         {children ??
           (({ ref: _ref, params, isOpen }) => (
@@ -193,7 +187,7 @@ const LocalDataSelectBase = forwardRef(
               options={options}
               value={value}
               isOpen={isOpen}
-              isLoading={inputIsLoading || isLoading}
+              isLoading={inputIsLoading}
               ref={instance => {
                 if (instance) {
                   _ref(instance);
@@ -216,7 +210,9 @@ const LocalDataSelectBase = forwardRef(
 export const DataSelectBase = LocalDataSelectBase as {
   <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     props: DataSelectBaseProps<M, O> & {
-      readonly ref?: ForwardedRef<types.DataSelectInstance<M, O>>;
+      readonly ref?: ForwardedRef<
+        Omit<types.DataSelectInstance<M, O>, "setContentLoading" | "setLoading">
+      >;
     },
   ): JSX.Element;
 };

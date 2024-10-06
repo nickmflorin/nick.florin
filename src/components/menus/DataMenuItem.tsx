@@ -14,6 +14,7 @@ export type DataMenuItemProps<M extends types.DataMenuModel> = Omit<
     readonly includeDescription?: boolean;
     readonly isCurrentNavigation?: boolean;
     readonly selectionIndicator?: types.MenuItemSelectionIndicator;
+    readonly boldSubstrings?: string;
     readonly onItemClick?: (
       e: React.MouseEvent<HTMLDivElement, MouseEvent>,
       instance: types.MenuItemInstance,
@@ -35,10 +36,8 @@ export const DataMenuItem = forwardRef(
       itemIconProps,
       itemLoadingClassName,
       itemLockedClassName,
-      selectionIndicator,
       itemHeight,
       itemNavigatedClassName,
-      includeDescription,
       itemIsDisabled,
       itemIsSelected,
       itemIsLoading,
@@ -80,9 +79,7 @@ export const DataMenuItem = forwardRef(
         height={itemHeight}
         icon={icon}
         description={description}
-        includeDescription={includeDescription}
         iconSize={datum.iconSize ?? itemIconSize}
-        selectionIndicator={selectionIndicator}
         iconProps={{ ...itemIconProps, ...datum.iconProps }}
         iconClassName={classNames(
           typeof itemIconClassName === "function" ? itemIconClassName(datum) : itemIconClassName,

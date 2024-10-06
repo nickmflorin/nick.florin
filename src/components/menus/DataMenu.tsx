@@ -35,6 +35,7 @@ export const DataMenuPropsMap = {
   children: true,
   includeDescriptions: true,
   __private_parent_prop__: true,
+  boldSubstrings: true,
   // ~~~~~~~~ Event Handlers ~~~~~~~~
   onFocus: true,
   onBlur: true,

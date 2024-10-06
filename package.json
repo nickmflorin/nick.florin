@@ -71,6 +71,8 @@
     "dotenv-cli": "^7.3.0",
     "enumerated-literals": "^1.2.5",
     "framer-motion": "^10.18.0",
+    "html-react-parser": "^5.1.17",
+    "htmlparser2": "^9.1.0",
     "lodash-es": "^4.17.21",
     "luxon": "^3.4.4",
     "next": "14.2.14",

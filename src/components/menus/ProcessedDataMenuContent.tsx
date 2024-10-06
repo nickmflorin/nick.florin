@@ -32,6 +32,7 @@ export interface ProcessedDataMenuContentProps<M extends types.DataMenuModel>
     >,
     Omit<types.MenuItemFlagProps<M>, "itemIsVisible">,
     types.DataMenuItemCharacteristicsProps<M> {
+  readonly boldSubstrings?: string;
   readonly selectionIndicator?: types.MenuItemSelectionIndicator;
   readonly processedData: types.DataMenuProcessedData<M>;
   readonly includeDescriptions?: boolean;

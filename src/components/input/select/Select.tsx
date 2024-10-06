@@ -1,5 +1,12 @@
 "use client";
-import React, { useMemo, useRef, forwardRef, type ForwardedRef, useImperativeHandle } from "react";
+import React, {
+  useMemo,
+  useRef,
+  forwardRef,
+  type ForwardedRef,
+  useImperativeHandle,
+  useState,
+} from "react";
 
 import { useSelectValue } from "~/components/input/select/hooks";
 import * as types from "~/components/input/select/types";
@@ -11,6 +18,7 @@ import { SelectInput } from "./SelectInput";
 export interface SelectProps<V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>
   extends Omit<RootSelectProps, "content" | "onClear" | "renderedValue" | "showPlaceholder"> {
   readonly behavior: B;
+  readonly isLoading?: boolean;
   readonly value?: types.SelectValue<V, B>;
   readonly initialValue?: types.SelectValue<V, B>;
   readonly popoverClassName?: ComponentProps["className"];
@@ -29,7 +37,7 @@ export const Select = forwardRef(
       behavior,
       popoverPlacement,
       closeMenuOnSelect,
-      isLoading,
+      isLoading: _propIsLoading,
       inPortal,
       popoverClassName,
       inputClassName,
@@ -37,12 +45,12 @@ export const Select = forwardRef(
       value: _propValue,
       isReady,
       isClearable,
-      contentIsLoading,
       inputIsLoading,
       popoverAllowedPlacements,
       popoverAutoUpdate,
       popoverMaxHeight,
       popoverOffset,
+      popoverIsLoading,
       popoverWidth,
       onClear: _onClear,
       valueRenderer,
@@ -56,7 +64,10 @@ export const Select = forwardRef(
     }: SelectProps<V, B>,
     ref: ForwardedRef<types.SelectInstance<V, B>>,
   ): JSX.Element => {
-    const internalInstance = useRef<types.RootSelectInstance | null>(null);
+    const [_isLoading, setIsLoading] = useState(false);
+    const isLoading = _propIsLoading || _isLoading;
+
+    const innerRef = useRef<types.RootSelectInstance | null>(null);
 
     const { value, clear, ...managed } = useSelectValue<V, B>({
       initialValue,
@@ -68,10 +79,20 @@ export const Select = forwardRef(
           closeMenuOnSelect ||
           (closeMenuOnSelect === undefined && behavior !== types.SelectBehaviorTypes.MULTI)
         ) {
-          internalInstance.current?.setOpen(false);
+          innerRef.current?.setOpen(false);
         }
       },
     });
+
+    useImperativeHandle(ref, () => ({
+      clear,
+      setValue: v => managed.set(v),
+      focusInput: () => innerRef.current?.focusInput(),
+      setOpen: (v: boolean) => innerRef.current?.setOpen(v),
+      setInputLoading: (v: boolean) => innerRef.current?.setInputLoading(v),
+      setPopoverLoading: (v: boolean) => innerRef.current?.setPopoverLoading(v),
+      setLoading: (v: boolean) => setIsLoading(v),
+    }));
 
     const onClear = useMemo(() => {
       if (_onClear || isClearable) {
@@ -83,24 +104,14 @@ export const Select = forwardRef(
       return undefined;
     }, [_onClear, isClearable, clear]);
 
-    useImperativeHandle(ref, () => ({
-      clear,
-      setValue: v => managed.set(v),
-      focusInput: () => internalInstance.current?.focusInput(),
-      setOpen: v => internalInstance.current?.setOpen(v),
-      setLoading: v => internalInstance.current?.setLoading(v),
-      setContentLoading: v => internalInstance.current?.setContentLoading(v),
-      setInputLoading: v => internalInstance.current?.setInputLoading(v),
-    }));
-
     return (
       <RootSelect
-        ref={internalInstance}
+        ref={innerRef}
         isReady={isReady}
-        isLoading={isLoading}
-        contentIsLoading={contentIsLoading}
-        inputIsLoading={inputIsLoading}
         inPortal={inPortal}
+        /* Do not pass 'inputIsLoading' through to RootSelect.  It will not have an effect - as we
+           are overriding the input child element below. */
+        popoverIsLoading={popoverIsLoading}
         popoverPlacement={popoverPlacement}
         popoverClassName={popoverClassName}
         popoverAllowedPlacements={popoverAllowedPlacements}

@@ -3,8 +3,6 @@ import dynamic from "next/dynamic";
 import { useRef, useState, useMemo } from "react";
 import { type ReactNode, useImperativeHandle, forwardRef } from "react";
 
-import { isFragment } from "react-is";
-
 import { type SpinnerProps, type IconProp, type IconName, isIconProp } from "~/components/icons";
 import { LoadingText } from "~/components/loading/LoadingText";
 import * as types from "~/components/menus";
@@ -17,6 +15,7 @@ import {
   type QuantitativeSize,
 } from "~/components/types/sizes";
 import { Description } from "~/components/typography";
+import { ReplacedSubstrings } from "~/components/typography/ReplacedSubstrings";
 import { ShowHide, Square } from "~/components/util";
 
 import { MenuItemCheckbox } from "./MenuItemCheckbox";
@@ -30,6 +29,7 @@ type MenuItemRenderCallback<V> = V | ((params: types.MenuItemRenderProps) => V);
 export interface MenuItemProps
   extends ComponentProps,
     Omit<React.ComponentProps<"div">, "children" | "onClick" | "ref" | keyof ComponentProps> {
+  readonly boldSubstrings?: string;
   readonly icon?: MenuItemRenderCallback<IconProp | IconName | JSX.Element | undefined>;
   readonly description?: MenuItemRenderCallback<ReactNode>;
   readonly iconClassName?: ComponentProps["className"];
@@ -156,6 +156,7 @@ interface MenuItemContentProps
       | "isSelected"
       | "selectionIndicator"
       | "includeDescription"
+      | "boldSubstrings"
     >,
     MenuItemLeftAffixProps {
   readonly children: ReactNode | ((params: types.MenuItemRenderProps) => ReactNode);
@@ -165,7 +166,8 @@ const MenuItemContent = ({
   contentClassName,
   description: _description,
   includeDescription = true,
-  children,
+  children: _children,
+  boldSubstrings,
   ...rest
 }: MenuItemContentProps) => {
   const description = useMemo(
@@ -180,29 +182,51 @@ const MenuItemContent = ({
     [_description, rest.isLocked, rest.isLoading, rest.isDisabled],
   );
 
+  const children = useMemo(() => {
+    let c: ReactNode;
+    if (typeof _children === "function") {
+      c = _children({
+        isLocked: rest.isLocked ?? false,
+        isLoading: rest.isLoading ?? false,
+        isDisabled: rest.isDisabled ?? false,
+      });
+    } else {
+      c = _children;
+    }
+    if (typeof c === "string" && boldSubstrings) {
+      return (
+        <ReplacedSubstrings substring={boldSubstrings} fontWeight="semibold">
+          {c}
+        </ReplacedSubstrings>
+      );
+    }
+    return c;
+  }, [_children, boldSubstrings, rest.isLocked, rest.isLoading, rest.isDisabled]);
+
   if (description && includeDescription) {
     return (
-      <div className={classNames("menu__item__content-wrapper", contentClassName)}>
-        <MenuItemContent {...rest}>{children}</MenuItemContent>
+      <div className="menu__item__content-wrapper">
+        <MenuItemContent
+          {...rest}
+          boldSubstrings={boldSubstrings}
+          contentClassName={contentClassName}
+        >
+          {_children}
+        </MenuItemContent>
         <Description component="div" className="menu__item__description">
           {description}
         </Description>
       </div>
     );
   }
+
   return (
     <div className={classNames("menu__item__content", contentClassName)}>
       <MenuItemLeftAffix {...rest} />
-      {children !== null && children !== undefined && !isFragment(children) && (
+      {children !== null && children !== undefined && (
         <div className="menu__item__inner-content">
           {rest.isLoading && rest.loadingText ? (
             <LoadingText>{rest.loadingText}</LoadingText>
-          ) : typeof children === "function" ? (
-            children({
-              isLocked: rest.isLocked ?? false,
-              isLoading: rest.isLoading ?? false,
-              isDisabled: rest.isDisabled ?? false,
-            })
           ) : (
             children
           )}
@@ -218,6 +242,7 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
     {
       height,
       actions = [],
+      boldSubstrings,
       isSelected = false,
       selectedClassName,
       loadingClassName,
@@ -318,6 +343,7 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
           }
         >
           <MenuItemContent
+            boldSubstrings={boldSubstrings}
             actions={actions}
             spinnerClassName={spinnerClassName}
             spinnerProps={spinnerProps}

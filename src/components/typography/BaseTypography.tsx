@@ -35,7 +35,6 @@ export const BaseTypography = forwardRef(
       style: { ...getTypographyStyle(props), ...props.style },
       className: classNames(getTypographyClassName(props), props.className),
     };
-
     switch (component) {
       case "h1":
         return (
