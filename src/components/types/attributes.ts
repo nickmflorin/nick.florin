@@ -1,4 +1,5 @@
 import { toHyphenCase, type HyphenCase } from "~/lib/formatters";
+import { type ExtractValues } from "~/lib/types";
 
 type DataAttributesInput = Record<string, string | boolean | undefined>;
 
@@ -19,8 +20,6 @@ type DataAttrValue<T extends boolean | string | undefined> = [T] extends [string
   : T extends true | undefined
     ? T
     : never;
-
-type ExtractValues<T> = T[keyof T];
 
 type DataAttributeKeys<A extends DataAttributesInput> = ExtractValues<{
   [key in keyof A]: DataAttrValue<A[key]> extends never ? never : key;

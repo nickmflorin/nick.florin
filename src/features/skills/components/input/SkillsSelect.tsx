@@ -70,7 +70,9 @@ export const SkillsSelect = forwardRef(
         includeDescriptions && m.description !== null && m.description.trim().length !== 0 ? (
           <div className="flex flex-col gap-[4px]">
             <Label skill={m} search={search} boldOptionsOnSearch={boldOptionsOnSearch} />
-            <Description fontSize="xs">{m.description}</Description>
+            <Description fontSize="xs" lineClamp={3}>
+              {m.description}
+            </Description>
           </div>
         ) : (
           <Label skill={m} search={search} boldOptionsOnSearch={boldOptionsOnSearch} />

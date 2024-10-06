@@ -87,6 +87,7 @@ export const DataMenuPropsMap = {
   errorContent: true,
   feedbackClassName: true,
   feedbackStyle: true,
+  bottomItems: true,
 } as const satisfies {
   [key in keyof Required<DataMenuProps<types.DataMenuModel>>]: true;
 };

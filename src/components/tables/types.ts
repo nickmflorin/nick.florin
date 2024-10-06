@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
 
+import { type ExtractValues } from "~/lib/types";
+
 import { type PopoverRenderProps } from "~/components/floating";
 import { type IconProp, type IconName } from "~/components/icons";
 import { type MenuItemInstance } from "~/components/menus";
@@ -192,8 +194,6 @@ export type TableFilter<
   F extends TableFilters = TableFilters,
   I extends TableFilterId<F> = TableFilterId<F>,
 > = TableFilterWoTooltip<F, I> | TableFilterWTooltip<F, I>;
-
-type ExtractValues<T> = T[keyof T];
 
 export type TableFiltersConfiguration<F extends TableFilters> = ExtractValues<{
   [key in TableFilterId<F>]: TableFilter<F, key>;

@@ -24,13 +24,17 @@ import { MenuItemSpinner } from "./MenuItemSpinner";
 
 const Actions = dynamic(() => import("~/components/structural/Actions").then(mod => mod.Actions));
 
+type MenuItemSimpleRenderCallback<V> =
+  | V
+  | ((params: Omit<types.MenuItemRenderProps, `set${string}`>) => V);
+
 type MenuItemRenderCallback<V> = V | ((params: types.MenuItemRenderProps) => V);
 
 export interface MenuItemProps
   extends ComponentProps,
     Omit<React.ComponentProps<"div">, "children" | "onClick" | "ref" | keyof ComponentProps> {
   readonly boldSubstrings?: string;
-  readonly icon?: MenuItemRenderCallback<IconProp | IconName | JSX.Element | undefined>;
+  readonly icon?: MenuItemSimpleRenderCallback<IconProp | IconName | JSX.Element | undefined>;
   readonly description?: MenuItemRenderCallback<ReactNode>;
   readonly iconClassName?: ComponentProps["className"];
   readonly iconProps?: types.MenuItemIconProps;
@@ -97,7 +101,10 @@ const MenuItemLeftAffix = ({
   ...rest
 }: MenuItemLeftAffixProps) => {
   const icon = typeof _icon === "function" ? _icon({ isLocked, isLoading, isDisabled }) : _icon;
-  if (!types.menuItemHasSelectionIndicator(selectionIndicator, "checkbox")) {
+  if (
+    !types.menuItemHasSelectionIndicator(selectionIndicator, "checkbox") ||
+    isSelected === undefined
+  ) {
     if (icon !== undefined) {
       if (typeof icon === "string" || isIconProp(icon)) {
         return <MenuItemIcon {...rest} icon={icon} isLoading={isLoading} />;
@@ -151,7 +158,6 @@ const MenuItemLeftAffix = ({
 interface MenuItemContentProps
   extends Pick<
       MenuItemProps,
-      | "description"
       | "contentClassName"
       | "isSelected"
       | "selectionIndicator"
@@ -159,7 +165,8 @@ interface MenuItemContentProps
       | "boldSubstrings"
     >,
     MenuItemLeftAffixProps {
-  readonly children: ReactNode | ((params: types.MenuItemRenderProps) => ReactNode);
+  readonly description?: MenuItemSimpleRenderCallback<ReactNode>;
+  readonly children: MenuItemSimpleRenderCallback<ReactNode>;
 }
 
 const MenuItemContent = ({
@@ -348,7 +355,11 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
             spinnerClassName={spinnerClassName}
             spinnerProps={spinnerProps}
             icon={icon}
-            description={description}
+            description={
+              typeof description === "function"
+                ? params => description({ ...params, setLocked, setLoading, setDisabled })
+                : description
+            }
             includeDescription={includeDescription}
             iconClassName={iconClassName}
             iconProps={iconProps}
@@ -361,7 +372,9 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
             isSelected={isSelected}
             loadingText={loadingText}
           >
-            {children}
+            {typeof children === "function"
+              ? params => children({ ...params, setLocked, setLoading, setDisabled })
+              : children}
           </MenuItemContent>
         </div>
       </ShowHide>

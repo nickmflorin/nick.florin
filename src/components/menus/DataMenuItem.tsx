@@ -5,11 +5,13 @@ import { MenuItem } from "~/components/menus/MenuItem";
 import { classNames } from "~/components/types";
 
 export type DataMenuItemProps<M extends types.DataMenuModel> = Omit<
-  types.MenuItemFlagProps<M>,
+  types.DataMenuItemFlagProps<M>,
   "itemIsVisible"
 > &
-  Omit<types.DataMenuItemCharacteristicsProps<M>, "getItemId" | "onItemClick"> & {
+  types.DataMenuItemClassNameProps<M> &
+  Omit<types.DataMenuItemAccessorProps<M>, "getItemId"> & {
     readonly datum: M;
+    readonly isCustom?: boolean;
     readonly id: string | number;
     readonly includeDescription?: boolean;
     readonly isCurrentNavigation?: boolean;
@@ -27,6 +29,7 @@ export const DataMenuItem = forwardRef(
     {
       datum,
       id,
+      isCustom = false,
       itemClassName,
       itemIconSize,
       itemDisabledClassName,
@@ -48,11 +51,11 @@ export const DataMenuItem = forwardRef(
       children,
       ...props
     }: DataMenuItemProps<M>,
-    ref: ForwardedRef<types.MenuItemInstance>,
+    ref?: ForwardedRef<types.MenuItemInstance>,
   ) => {
     const icon = useMemo(() => {
       if (getItemIcon) {
-        return (params: types.MenuItemRenderProps) => {
+        return (params: Omit<types.MenuItemRenderProps, `set${string}`>) => {
           const ic = getItemIcon(datum, params);
           return ic ?? datum.icon;
         };
@@ -74,6 +77,7 @@ export const DataMenuItem = forwardRef(
       <MenuItem
         {...props}
         id={String(id)}
+        selectionIndicator={isCustom ? undefined : props.selectionIndicator}
         ref={ref}
         actions={datum.actions}
         height={itemHeight}
@@ -112,12 +116,16 @@ export const DataMenuItem = forwardRef(
             : itemLoadingClassName,
           datum.loadingClassName,
         )}
-        selectedClassName={classNames(
-          typeof itemSelectedClassName === "function"
-            ? itemSelectedClassName(datum)
-            : itemSelectedClassName,
-          datum.selectedClassName,
-        )}
+        selectedClassName={
+          !isCustom
+            ? classNames(
+                typeof itemSelectedClassName === "function"
+                  ? itemSelectedClassName(datum)
+                  : itemSelectedClassName,
+                datum.selectedClassName,
+              )
+            : undefined
+        }
         lockedClassName={classNames(
           typeof itemLockedClassName === "function"
             ? itemLockedClassName(datum)
@@ -127,9 +135,13 @@ export const DataMenuItem = forwardRef(
         isDisabled={types.evalMenuItemFlag("isDisabled", itemIsDisabled, datum) || datum.isDisabled}
         isLocked={types.evalMenuItemFlag("isLocked", itemIsLocked, datum) || datum.isLocked}
         isLoading={types.evalMenuItemFlag("isLoading", itemIsLoading, datum) || datum.isLoading}
-        isSelected={Boolean(
-          types.evalMenuItemFlag("isSelected", itemIsSelected, datum) || datum.isSelected,
-        )}
+        isSelected={
+          !isCustom
+            ? Boolean(
+                types.evalMenuItemFlag("isSelected", itemIsSelected, datum) || datum.isSelected,
+              )
+            : undefined
+        }
         onClick={(e, instance) => {
           onItemClick?.(e, instance);
           datum.onClick?.(e, instance);
@@ -142,7 +154,7 @@ export const DataMenuItem = forwardRef(
 ) as {
   <M extends types.DataMenuModel>(
     props: DataMenuItemProps<M> & {
-      readonly ref: ForwardedRef<types.MenuItemInstance>;
+      readonly ref?: ForwardedRef<types.MenuItemInstance>;
     },
   ): JSX.Element;
 };

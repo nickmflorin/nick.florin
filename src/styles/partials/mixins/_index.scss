@@ -160,6 +160,12 @@ $visited-selectors: (":visited");
   }
 }
 
+@mixin not-hovered($args...) {
+  @include selectors.without-selectors($hovered-selectors, $args...) {
+    @content;
+  }
+}
+
 @mixin visited($args...) {
   @include selectors.with-selectors($visited-selectors, $args...) {
     @include not-disabled-or-locked() {

@@ -16,7 +16,7 @@ import {
   type MenuItemSelectionIndicator,
   type MenuItemRenderProps,
   type DataMenuGroupProps,
-  type DataMenuItemCharacteristicsProps,
+  type DataMenuItemFlagProps,
   type MenuFeedbackProps,
 } from "~/components/menus";
 import {
@@ -40,8 +40,9 @@ export interface DataSelectProps<
     Pick<
       DataMenuProps<M>,
       | keyof DataMenuGroupProps<M>
-      | Exclude<keyof DataMenuItemCharacteristicsProps<M>, "itemIsSelected">
+      | Exclude<keyof DataMenuItemFlagProps<M>, "itemIsSelected">
       | keyof MenuFeedbackProps
+      | "bottomItems"
       | "header"
       | "footer"
       | "enableKeyboardInteractions"

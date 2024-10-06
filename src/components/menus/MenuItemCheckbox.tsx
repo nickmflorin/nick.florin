@@ -15,7 +15,6 @@ export const MenuItemCheckbox = ({
   isDisabled,
   isSelected,
   isLoading,
-  // hasIcon,
   ...props
 }: MenuItemCheckboxProps) => (
   <Square>
