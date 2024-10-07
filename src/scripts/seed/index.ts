@@ -1,5 +1,5 @@
 import { db } from "~/database/prisma";
-import { getScriptContext } from "~/scripts/context";
+import { cli } from "~/scripts";
 
 import { calculateSkillExperiences } from "./calculate-skill-experiences";
 import { seedCompanies } from "./seed-companies";
@@ -10,11 +10,9 @@ import { seedResumes } from "./seed-resumes";
 import { seedSchools } from "./seed-schools";
 import { seedSkills } from "./seed-skills";
 
-async function main() {
+const script: cli.Script = async ctx => {
   await db.$transaction(
     async tx => {
-      const ctx = await getScriptContext(tx, { upsertUser: true });
-
       await seedProfile(tx, ctx);
       await seedResumes(tx, ctx);
       await seedSkills(tx, ctx); // Must be done before projects, repositories, schools & companies.
@@ -27,15 +25,6 @@ async function main() {
     },
     { timeout: 500000 },
   );
-}
+};
 
-main()
-  .then(async () => {
-    await db.$disconnect();
-  })
-  .catch(async e => {
-    /* eslint-disable-next-line no-console */
-    console.error(e);
-    await db.$disconnect();
-    process.exit(1);
-  });
+cli.runScript(script, { upsertUser: true, devOnly: false });

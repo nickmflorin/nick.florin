@@ -1,8 +1,8 @@
 import { list, type ListBlobResult } from "@vercel/blob";
 
-import { stdout } from "~/application/support";
 import { type Transaction } from "~/database/prisma";
 import { type SeedContext } from "~/scripts/context";
+import { stdout } from "~/support";
 
 type Blob = ListBlobResult["blobs"][number];
 

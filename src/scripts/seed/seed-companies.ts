@@ -1,8 +1,8 @@
-import { stdout } from "~/application/support";
 import { json } from "~/database/fixtures";
 import { DetailEntityType, type Company } from "~/database/model";
 import { type Transaction } from "~/database/prisma";
 import { type SeedContext } from "~/scripts/context";
+import { stdout } from "~/support";
 
 import { createDetail } from "./seed-details";
 import { findCorresponding } from "./util";

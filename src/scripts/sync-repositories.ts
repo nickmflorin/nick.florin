@@ -1,26 +1,15 @@
 import { db } from "~/database/prisma";
+import { cli } from "~/scripts";
 
 import { githubClient } from "~/integrations/github";
 
-import { getScriptContext } from "./context";
-
-async function main() {
+const script: cli.Script = async ctx => {
   await db.$transaction(
     async tx => {
-      const ctx = await getScriptContext(tx, { upsertUser: true });
       await githubClient.syncRepositories({ tx, user: ctx.user });
     },
     { timeout: 500000 },
   );
-}
+};
 
-main()
-  .then(async () => {
-    await db.$disconnect();
-  })
-  .catch(async e => {
-    /* eslint-disable-next-line no-console */
-    console.error(e);
-    await db.$disconnect();
-    process.exit(1);
-  });
+cli.runScript(script, { upsertUser: false, devOnly: false });

@@ -3,13 +3,15 @@ import clerk from "@clerk/clerk-sdk-node";
 import { type OrganizationMembership } from "@clerk/nextjs/server";
 
 import { CMS_USER_ORG_ROLE, CMS_USER_ORG_SLUG, USER_ADMIN_ROLE } from "~/application/auth";
-import { type User } from "~/database/model";
+import { type PrismaClient, type User } from "~/database/model";
 import { upsertUserFromClerk } from "~/database/model/user";
-import { type Transaction } from "~/database/prisma";
+import { db, type Transaction } from "~/database/prisma";
 
 import { environment } from "~/environment";
 
-export type SeedContext = {
+import * as errors from "./errors";
+
+export type ScriptContext = {
   readonly clerkUser: ClerkUser;
   readonly user: User;
 };
@@ -18,14 +20,30 @@ type ScriptContextOptions = {
   readonly upsertUser?: boolean;
 };
 
-const membershipHasCmsAccess = (membership: OrganizationMembership) =>
+const membershipHasAdminAccess = (membership: OrganizationMembership) =>
   membership.organization.slug === CMS_USER_ORG_SLUG &&
   [USER_ADMIN_ROLE, CMS_USER_ORG_ROLE].includes(membership.role);
 
-export const getScriptContext = async (
+export async function getScriptContext(
   tx: Transaction,
-  { upsertUser = true }: ScriptContextOptions,
-): Promise<SeedContext> => {
+  opts: ScriptContextOptions,
+): Promise<ScriptContext>;
+
+export async function getScriptContext(opts?: ScriptContextOptions): Promise<ScriptContext>;
+
+export async function getScriptContext(
+  arg0?: Transaction | ScriptContextOptions,
+  arg1?: ScriptContextOptions,
+): Promise<ScriptContext> {
+  let tx: Transaction | PrismaClient;
+  let upsertUser: boolean;
+  if (arg1) {
+    tx = arg0 as Transaction;
+    upsertUser = arg1.upsertUser ?? true;
+  } else {
+    tx = db;
+    upsertUser = (arg0 as ScriptContextOptions).upsertUser ?? true;
+  }
   const { NODE_ENV, VERCEL_ENV, CLERK_SECRET_KEY } = environment.pick([
     "NODE_ENV",
     "VERCEL_ENV",
@@ -77,30 +95,30 @@ export const getScriptContext = async (
        be run, not the 'pnpm pullenv' command.
 
        To prevent errors from happening due to this mismatch, we have to perform this check. */
-    throw new Error(
+    throw new errors.CommandLineEnvironmentError(
       "There seems to be a configuration mismatch that may incidentally cause development " +
         "Clerk data to be used to run this script.",
     );
   }
-  const personalClerkId = process.env.PERSONAL_CLERK_USER_ID;
+  const personalClerkId = process.env.SCRIPT_CONTEXT_CLERK_USER_ID;
   if (personalClerkId === undefined) {
     /* The only reason this value can be undefined is because is for the test environment - so as
-       long as we are not running the seed process in a test environment, this check is just to
-       satisfy TS. */
-    throw new Error(
-      "Cannot seed database without the 'PERSONAL_CLERK_USER_ID' as an environment variable.",
+       long as we are not running the script in a test environment, this check is just to satisfy
+       TS. */
+    throw new errors.CommandLineEnvironmentError(
+      "Cannot access script context without the 'SCRIPT_CONTEXT_CLERK_USER_ID' as an " +
+        "environment variable.",
     );
   }
   const clerkUser = await clerk.users.getUser(personalClerkId);
-
   const memberships = await clerk.users.getOrganizationMembershipList({
     userId: clerkUser.id,
   });
-
-  if (memberships.filter(m => membershipHasCmsAccess(m)).length === 0) {
-    throw new Error("The Clerk user must be an admin to run this script.");
+  if (memberships.filter(m => membershipHasAdminAccess(m)).length === 0) {
+    throw new errors.CommandLineEnvironmentError(
+      "The Clerk user must be an admin to run this script.",
+    );
   }
-
   if (upsertUser) {
     return {
       clerkUser,
@@ -111,4 +129,4 @@ export const getScriptContext = async (
     clerkUser,
     user: await tx.user.findUniqueOrThrow({ where: { clerkId: clerkUser.id } }),
   };
-};
+}

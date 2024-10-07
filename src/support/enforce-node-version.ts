@@ -4,7 +4,7 @@ before allowing execution to continue.
 */
 import semver from "semver";
 
-import { engines } from "../../../package.json";
+import { engines } from "../../package.json";
 
 import * as terminal from "./terminal";
 

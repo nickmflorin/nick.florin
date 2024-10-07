@@ -2,7 +2,7 @@ import { type z } from "zod";
 
 import type * as types from "./types";
 
-import { terminal } from "~/application/support";
+import { terminal } from "~/support";
 
 import {
   ConfigurationError,

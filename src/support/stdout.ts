@@ -1,4 +1,6 @@
-import * as terminal from "~/application/support/terminal";
+import { isError } from "~/application/errors";
+import { CommandLineError } from "~/scripts/cli";
+import * as terminal from "~/support/terminal";
 
 type KeyValueLineItem = {
   label: string;
@@ -185,9 +187,16 @@ export class SeedStdout {
     console.info(this.formatMessage(message, "info", opts));
   }
 
-  public error(message: string, opts?: LineItem[] | MessageOptions): void {
-    /* eslint-disable-next-line no-console */
-    console.error(this.formatMessage(message, "error", opts));
+  public error(message: string | Error, opts?: LineItem[] | MessageOptions): void {
+    if (message instanceof CommandLineError || typeof message === "string") {
+      /* eslint-disable-next-line no-console */
+      console.error(
+        this.formatMessage(isError(message) ? message.message : message, "error", opts),
+      );
+    } else {
+      /* eslint-disable-next-line no-console */
+      console.error(message);
+    }
   }
 
   public warn(message: string, opts?: LineItem[] | MessageOptions): void {

@@ -1,11 +1,11 @@
 import { type z } from "zod";
 
-import { type SeedStdout } from "~/application/support/stdout";
 import { type EducationJsonSchema } from "~/database/fixtures";
 import { type Course, type Education, type Skill } from "~/database/model";
 import { getUniqueConstraintFields, type Transaction } from "~/database/prisma";
 import { slugify, humanizeList } from "~/lib/formatters";
 import { type SeedContext } from "~/scripts/context";
+import { type SeedStdout } from "~/support/stdout";
 
 export async function seedCourses(
   tx: Transaction,

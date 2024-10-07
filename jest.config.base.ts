@@ -111,7 +111,7 @@ export const withModuleConfig = (rootDir: string, { module, ...config }: ModuleC
       displayName: TestModuleDisplayNames[module],
       setupFilesAfterEnv: [
         ...(config?.setupFilesAfterEnv ?? []),
-        // `${__dirname}/src/application/support/global-ts-test-setup.ts`,
+        // `${__dirname}/src/support/global-ts-test-setup.ts`,
         "jest-expect-message",
       ],
     }),

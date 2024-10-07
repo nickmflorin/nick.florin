@@ -1,9 +1,9 @@
-import { stdout } from "~/application/support";
 import { json } from "~/database/fixtures";
 import { type Skill } from "~/database/model";
 import { type Transaction, getUniqueConstraintFields } from "~/database/prisma";
 import { slugify, humanizeList } from "~/lib/formatters";
 import { type SeedContext } from "~/scripts/context";
+import { stdout } from "~/support";
 
 export const seedSkills = async (tx: Transaction, ctx: SeedContext) => {
   const skills = json.skills;

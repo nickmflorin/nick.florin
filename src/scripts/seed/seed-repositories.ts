@@ -1,10 +1,10 @@
-import { stdout } from "~/application/support";
 import { json } from "~/database/fixtures";
 import type { BrandRepository, BrandSkill } from "~/database/model";
 import { type Transaction } from "~/database/prisma";
 import { differingFields } from "~/lib/differences";
 import { humanizeList } from "~/lib/formatters";
 import { type SeedContext } from "~/scripts/context";
+import { stdout } from "~/support";
 
 import { githubClient } from "~/integrations/github";
 

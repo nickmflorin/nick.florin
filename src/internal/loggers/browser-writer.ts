@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { levels } from "pino";
 import { z } from "zod";
 
-import { terminal } from "~/application/support";
+import { terminal } from "~/support";
 
 import {
   EnvironmentNames,

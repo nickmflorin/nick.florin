@@ -1,9 +1,9 @@
-import { stdout } from "~/application/support";
 import { json } from "~/database/fixtures";
 import { type Project, type Skill } from "~/database/model";
 import { type Transaction, getUniqueConstraintFields } from "~/database/prisma";
 import { humanizeList, slugify } from "~/lib/formatters";
 import { type SeedContext } from "~/scripts/context";
+import { stdout } from "~/support";
 
 import { findCorresponding } from "./util";
 

@@ -1,13 +1,11 @@
-import { stdout } from "~/application/support";
 import { calculateSkillsExperience } from "~/database/model";
 import { db } from "~/database/prisma";
+import { cli } from "~/scripts";
+import { stdout } from "~/support";
 
-import { getScriptContext } from "./context";
-
-async function main() {
+const script: cli.Script = async ctx => {
   await db.$transaction(
     async tx => {
-      const { user } = await getScriptContext(tx, { upsertUser: false });
       const skills = await tx.skill.findMany();
 
       const output = stdout.begin(`Calculating experience for ${skills.length} skills...`);
@@ -18,7 +16,7 @@ async function main() {
           returnAs: "experience",
         });
         if (skill.experience !== null && experience !== skill.experience) {
-          throw new Error(
+          throw new cli.CommandLineError(
             `The calculated experience for skill '${skill.label}' does not match the overidden ` +
               "experience value when it should.  This indicates there is something wrong with " +
               "the experience calculation!",
@@ -33,7 +31,7 @@ async function main() {
           );
           await tx.skill.update({
             where: { id: skill.id },
-            data: { calculatedExperience: experience, updatedById: user.id },
+            data: { calculatedExperience: experience, updatedById: ctx.user.id },
           });
         } else {
           output.success(
@@ -46,15 +44,6 @@ async function main() {
     },
     { timeout: 500000 },
   );
-}
+};
 
-main()
-  .then(async () => {
-    await db.$disconnect();
-  })
-  .catch(async e => {
-    /* eslint-disable-next-line no-console */
-    console.error(e);
-    await db.$disconnect();
-    process.exit(1);
-  });
+cli.runScript(script, { upsertUser: false, devOnly: true });

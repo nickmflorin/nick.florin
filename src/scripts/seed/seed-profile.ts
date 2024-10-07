@@ -1,7 +1,7 @@
-import { stdout } from "~/application/support";
 import { json } from "~/database/fixtures";
 import { type Transaction } from "~/database/prisma";
 import { type SeedContext } from "~/scripts/context";
+import { stdout } from "~/support";
 
 export async function seedProfile(tx: Transaction, ctx: SeedContext) {
   stdout.begin(`Seeding ${json.profiles.length} Profiles...`);

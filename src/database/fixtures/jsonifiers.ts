@@ -3,7 +3,6 @@ import { type z } from "zod";
 
 import type * as types from "./types";
 
-import { stdout } from "~/application/support";
 import type {
   BrandSchool,
   BrandEducation,
@@ -19,6 +18,7 @@ import type {
 } from "~/database/model";
 import { DetailEntityType } from "~/database/model";
 import type { Transaction } from "~/database/prisma";
+import { stdout } from "~/support";
 
 import { cleanModel } from "./util";
 
