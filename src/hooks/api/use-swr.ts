@@ -96,7 +96,7 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
   }
 
   return {
-    data: data && isSuperJsonResult(data) ? superjson.deserialize(data) : data,
+    data,
     error,
     initialResponseReceived: initialResponseReceived.current,
     isRefetching: initialResponseReceived.current && others.isLoading,

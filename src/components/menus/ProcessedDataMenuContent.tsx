@@ -9,7 +9,7 @@ import React, {
   type ReactNode,
 } from "react";
 
-import type * as types from "~/components/menus";
+import * as types from "~/components/menus";
 import {
   MenuContent,
   type MenuContentProps,
@@ -80,13 +80,8 @@ export const ProcessedDataMenuContent = forwardRef(
               /* Keyboard Interactions are only supported for custom data menu item instances that
                  are defined as a model, not a render function or a JSX element. */
               const model = datum.model;
-              if (
-                typeof model === "object" &&
-                model !== null &&
-                "onClick" in model &&
-                typeof model.onClick === "function"
-              ) {
-                return model.onClick(e, menuItemRef.current);
+              if (types.dataMenuCustomModelIsObject(model)) {
+                return model.onClick?.(e, menuItemRef.current);
               }
               return;
             }

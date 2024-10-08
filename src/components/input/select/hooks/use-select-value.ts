@@ -239,6 +239,8 @@ export const useSelectValue = <
             );
             return INDETERMINATE;
           } else if (val === null) {
+            /* The value of a single, non-nullable Select may still be null if a selection or other
+               interaction has not yet taken place. */
             return false;
           }
           return isEqual(val, v);
@@ -279,79 +281,41 @@ export const useSelectValue = <
   const _select = useCallback(
     (v: V, cb?: SelectInternalEventCallback<typeof types.SelectEvents.SELECT, V, B>) => {
       if (value !== types.NOTSET) {
-        switch (behavior) {
-          case types.SelectBehaviorTypes.MULTI: {
-            return setValue(
-              (prev): types.SelectValue<V, B> | types.DoNothing => {
-                const selected = _isSelected(v, prev);
-                /* If the selected state is corrupted, simply return just the current value being
-                   selected as a fallback. */
-                if (selected === INDETERMINATE) {
-                  return [v] as types.SelectValue<V, B>;
-                } else if (selected) {
-                  logger.warn(
-                    "Inconsistent State: Cannot select an already-selected value!  This either " +
-                      "indicates that there are duplicate values for the same item in the " +
-                      "select or that the select is being performed for an already selected item.",
-                  );
-                  return types.DONOTHING;
-                }
+        return setValue(
+          (prev): types.SelectValue<V, B> | types.DoNothing => {
+            const selected = _isSelected(v, prev);
+            /* If the selected state is corrupted, simply return just the current value being
+               selected as a fallback. */
+            if (selected === INDETERMINATE) {
+              return v as types.SelectValue<V, B>;
+            } else if (selected) {
+              logger.warn(
+                "Inconsistent State: Cannot select an already-selected value!  This either " +
+                  "indicates that there are duplicate values for the same item in the " +
+                  "select or that the select is being performed for an already selected item.",
+              );
+              return types.DONOTHING;
+            }
+            switch (behavior) {
+              case types.SelectBehaviorTypes.MULTI: {
                 return [...(prev as V[]), v] as types.SelectValue<V, B>;
-              },
-              types.SelectEvents.SELECT,
-              { selected: v },
-              cb,
-            );
-          }
-          case types.SelectBehaviorTypes.SINGLE: {
-            return setValue(
-              (prev): types.SelectValue<V, B> | types.DoNothing => {
-                const selected = _isSelected(v, prev);
-                /* If the selected state is corrupted, simply return just the current value being
-                   selected as a fallback. */
-                if (selected === INDETERMINATE) {
-                  return v as types.SelectValue<V, B>;
-                } else if (selected) {
-                  logger.warn(
-                    "Inconsistent State: Cannot select an already-selected value!  This either " +
-                      "indicates that there are duplicate values for the same item in the " +
-                      "select or that the select is being performed for an already selected item.",
-                  );
-                  return types.DONOTHING;
-                }
+              }
+              case types.SelectBehaviorTypes.SINGLE: {
                 return v as types.SelectValue<V, B>;
-              },
-              types.SelectEvents.SELECT,
-              { selected: v },
-              cb,
-            );
-          }
-          case types.SelectBehaviorTypes.SINGLE_NULLABLE: {
-            return setValue(
-              (prev): types.SelectValue<V, B> | types.DoNothing => {
-                const selected = _isSelected(v, prev);
-                /* If the selected state is corrupted, simply return just the current value being
-                   selected as a fallback. */
-                if (selected === INDETERMINATE) {
-                  return v as types.SelectValue<V, B>;
-                } else if (selected) {
-                  logger.warn(
-                    "Inconsistent State: Cannot select an already-selected value!  This either " +
-                      "indicates that there are duplicate values for the same item in the " +
-                      "select or that the select is being performed for an already selected item.",
-                  );
-                  return types.DONOTHING;
-                }
+              }
+              case types.SelectBehaviorTypes.SINGLE_NULLABLE: {
                 return v as types.SelectValue<V, B>;
-              },
-              types.SelectEvents.SELECT,
-              { selected: v },
-              cb,
-            );
-          }
-        }
+              }
+              default:
+                throw new UnreachableCaseError(`Invalid select behavior: '${behavior}'!`);
+            }
+          },
+          types.SelectEvents.SELECT,
+          { selected: v },
+          cb,
+        );
       }
-      throw new Error("Cannot select a value until the 'isReady' flag is 'true'.");
+      logger.error("Cannot select a value until the 'isReady' flag is 'true'.");
     },
     [behavior, value, _isSelected, setValue],
   );
@@ -375,58 +339,48 @@ export const useSelectValue = <
       if (!types.isDeselectable(behavior)) {
         throw new Error(`Cannot deselect a select with behavior '${behavior}'!`);
       }
+      const IntermindateDeselectValues: {
+        [key in types.DeselectableSelectBehavior]: types.SelectValue<V, B>;
+      } = {
+        [types.SelectBehaviorTypes.MULTI]: [] as V[] as types.SelectValue<V, B>,
+        [types.SelectBehaviorTypes.SINGLE_NULLABLE]: null as types.SelectValue<V, B>,
+      };
+
       if (value !== types.NOTSET) {
-        switch (behavior) {
-          case types.SelectBehaviorTypes.MULTI:
-            return setValue(
-              (prev): types.SelectValue<V, B> | types.DoNothing => {
-                const selected = _isSelected(v, prev);
-                /* If the selected state is corrupted, simply return just an empty value as a
-                   fallback. */
-                if (selected === INDETERMINATE) {
-                  return [] as V[] as types.SelectValue<V, B>;
-                } else if (!selected) {
-                  logger.warn(
-                    "Inconsistent State: Cannot deselect an unselected value!  This either " +
-                      "indicates that there are duplicate values for the same item in the select " +
-                      "or that the deselect is being performed for an unselected item.",
-                  );
-                  return types.DONOTHING;
-                }
+        return setValue(
+          (prev): types.SelectValue<V, B> | types.DoNothing => {
+            const selected = _isSelected(v, prev);
+            /* If the selected state is corrupted, simply return just an empty value as a
+               fallback. */
+            if (selected === INDETERMINATE) {
+              return IntermindateDeselectValues[behavior];
+            } else if (!selected) {
+              logger.warn(
+                "Inconsistent State: Cannot deselect an unselected value!  This either " +
+                  "indicates that there are duplicate values for the same item in the select " +
+                  "or that the deselect is being performed for an unselected item.",
+              );
+              return types.DONOTHING;
+            }
+            switch (behavior) {
+              case types.SelectBehaviorTypes.MULTI: {
                 /* This type coercion is safe, because if the previous value were not an array, the
-                  '_isSelected' method would have returned 'INDETERMINATE'. */
+                   '_isSelected' method would have returned 'INDETERMINATE'. */
                 return (prev as V[]).filter(vi => !isEqual(vi, v)) as types.SelectValue<V, B>;
-              },
-              types.SelectEvents.DESELECT,
-              { deselected: v },
-              cb,
-            );
-          case types.SelectBehaviorTypes.SINGLE:
-            return logger.warn("Cannot deselect an item in a single non-nullable select!");
-          case types.SelectBehaviorTypes.SINGLE_NULLABLE:
-            return setValue(
-              (prev): types.SelectValue<V, B> | types.DoNothing => {
-                const selected = _isSelected(v, prev);
-                /* If the selected state is corrupted, simply return null as a fallback. */
-                if (selected === INDETERMINATE) {
-                  return null as types.SelectValue<V, B>;
-                } else if (!selected) {
-                  logger.warn(
-                    "Inconsistent State: Cannot deselect an unselected value!  This either " +
-                      "indicates that there are duplicate values for the same item in the select " +
-                      "or that the deselect is being performed for an unselected item.",
-                  );
-                  return types.DONOTHING;
-                }
+              }
+              case types.SelectBehaviorTypes.SINGLE_NULLABLE: {
                 return null as types.SelectValue<V, B>;
-              },
-              types.SelectEvents.DESELECT,
-              { deselected: v },
-              cb,
-            );
-        }
+              }
+              default:
+                throw new UnreachableCaseError(`Invalid select behavior: '${behavior}'!`);
+            }
+          },
+          types.SelectEvents.DESELECT,
+          { deselected: v },
+          cb,
+        );
       }
-      throw new Error("Cannot deselect a value until the 'isReady' flag is 'true'.");
+      logger.error("Cannot deselect a value until the 'isReady' flag is 'true'.");
     },
     [behavior, value, _isSelected, setValue],
   );
@@ -486,12 +440,6 @@ export const useSelectValue = <
         case types.SelectBehaviorTypes.MULTI:
           setValue([] as V[] as types.SelectValue<V, B>, types.SelectEvents.CLEAR, {});
           return;
-        case types.SelectBehaviorTypes.SINGLE:
-          throw new UnreachableCaseError(
-            "A single, non-nullable select should not be clearable.  This code should be " +
-              "considered unreachable, as whether or not the select is clearable should have " +
-              "been previously checked before this code was encountered.",
-          );
         case types.SelectBehaviorTypes.SINGLE_NULLABLE:
           setValue(null as types.SelectValue<V, B>, types.SelectEvents.CLEAR, {}, cb);
           return;

@@ -79,7 +79,9 @@ const processors: {
     try {
       const data = await response.json();
       if (isSuccessResponseBody(data)) {
-        return { data: data.data.json };
+        /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Tmp for tests. */
+        const superjson = require("superjson");
+        return { data: superjson.deserialize(data.data) };
       }
     } catch (e) {
       return { error: new HttpSerializationError(params) };

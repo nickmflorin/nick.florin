@@ -113,12 +113,12 @@ export const useKeyboardNavigation = <T>({
         e.stopPropagation();
         incrementNavigatedIndex();
       } else if (e.key === "Enter") {
-        if (navigatedIndex && onEnter !== undefined) {
+        if (navigatedIndex !== null && onEnter !== undefined) {
           const datum = getItemAtNavigatedIndex(navigatableData, navigatedIndex);
           if (datum !== undefined) {
             e.preventDefault();
             e.stopPropagation();
-            onEnter?.(e, navigatedIndex as number, datum);
+            onEnter(e, navigatedIndex, datum);
           }
         }
       } else {

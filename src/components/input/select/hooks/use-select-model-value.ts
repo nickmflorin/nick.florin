@@ -11,10 +11,13 @@ import type { MenuItemInstance } from "~/components/menus";
 import { useSelectValue, type UseSelectValueParams } from "./use-select-value";
 
 export interface UseSelectModelValueParams<
-  M extends types.ClicklessDataSelectModel,
+  M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<
-    UseSelectValueParams<types.InferredDataSelectV<M, O>, types.InferredDataSelectB<M, O>>,
+    UseSelectValueParams<
+      types.InferredDataSelectValue<M, O>,
+      types.InferredDataSelectBehavior<M, O>
+    >,
     "onChange" | "behavior"
   > {
   readonly data: M[];
@@ -25,7 +28,7 @@ export interface UseSelectModelValueParams<
 }
 
 const getInitialModelValue = <
-  M extends types.ClicklessDataSelectModel,
+  M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 >({
   options,
@@ -33,9 +36,12 @@ const getInitialModelValue = <
   getModel,
 }: Pick<UseSelectModelValueParams<M, O>, "options"> & {
   readonly value: types.DataSelectNullableValue<M, O>;
-  readonly getModel: (v: types.InferredDataSelectV<M, O>) => M | null;
+  readonly getModel: (v: types.InferredDataSelectValue<M, O>) => M | null;
 }): types.DataSelectNullableModelValue<M, O> => {
-  const v = value as types.InferredDataSelectV<M, O> | null | types.InferredDataSelectV<M, O>[];
+  const v = value as
+    | types.InferredDataSelectValue<M, O>
+    | null
+    | types.InferredDataSelectValue<M, O>[];
   if (Array.isArray(v)) {
     if (options.behavior !== types.SelectBehaviorTypes.MULTI) {
       throw new Error("Encountered an iterable value for a single select!");
@@ -80,15 +86,15 @@ const getInitialModelValue = <
   return null as types.DataSelectNullableModelValue<M, O>;
 };
 
-const getModel = <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
-  v: types.InferredDataSelectV<M, O>,
+const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
+  v: types.InferredDataSelectValue<M, O>,
   {
     data,
     strictValueLookup,
     getItemValue,
   }: {
     strictValueLookup: boolean;
-    getItemValue: (m: M) => types.InferredDataSelectV<M, O>;
+    getItemValue: (m: M) => types.InferredDataSelectValue<M, O>;
     data: M[];
   },
 ): M | null => {
@@ -115,10 +121,7 @@ const getModel = <M extends types.ClicklessDataSelectModel, O extends types.Data
   return ms[0];
 };
 
-const reduceModelValue = <
-  M extends types.ClicklessDataSelectModel,
-  O extends types.DataSelectOptions<M>,
->(
+const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
   curr: types.DataSelectNullableModelValue<M, O>,
   value: types.DataSelectNullableValue<M, O>,
   {
@@ -128,15 +131,15 @@ const reduceModelValue = <
     data,
   }: {
     strictValueLookup: boolean;
-    getItemValue: (m: M) => types.InferredDataSelectV<M, O>;
+    getItemValue: (m: M) => types.InferredDataSelectValue<M, O>;
     options: O;
     data: M[];
   },
 ): types.DataSelectNullableModelValue<M, O> | types.DoNothing => {
   // Distribute/flatten the conditional type to a union of its potential values.
   const selectValue = value as
-    | types.InferredDataSelectV<M, O>
-    | types.InferredDataSelectV<M, O>[]
+    | types.InferredDataSelectValue<M, O>
+    | types.InferredDataSelectValue<M, O>[]
     | null;
 
   // Distribute/flatten the conditional type to a union of its potential values.
@@ -165,7 +168,7 @@ const reduceModelValue = <
          the case that the data provided to the Select is filtered.
 
          See the docstring on the hook for more information. */
-      let validValueElements: types.InferredDataSelectV<M, O>[] = [];
+      let validValueElements: types.InferredDataSelectValue<M, O>[] = [];
       const modelValue = selectValue.reduce((prev, vi) => {
         const m = getModel(vi, {
           strictValueLookup,
@@ -288,7 +291,7 @@ const reduceModelValue = <
 
 /**
  * A hook that is responsible for maintaining both the value of a Select component and the data
- * models associated with that value, {@link types.DataSelectModel}, based on the behavior
+ * models associated with that value, {@link types.ConnectedDataSelectModel}, based on the behavior
  * of the Select, {@link SelectBehaviorType}, and the value-related props provided to the
  * Select.
  *
@@ -383,7 +386,7 @@ const reduceModelValue = <
  * 'useMemo' hook.
  */
 export const useSelectModelValue = <
-  M extends types.ClicklessDataSelectModel,
+  M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 >({
   data,
@@ -403,9 +406,9 @@ export const useSelectModelValue = <
   const getItemValue = useCallback(
     (m: M) => {
       if (options.getItemValue !== undefined) {
-        return options.getItemValue(m) as types.InferredDataSelectV<M, O>;
+        return options.getItemValue(m) as types.InferredDataSelectValue<M, O>;
       } else if ("value" in m && m.value !== undefined) {
-        return m.value as types.InferredDataSelectV<M, O>;
+        return m.value as types.InferredDataSelectValue<M, O>;
       }
       throw new Error(
         "If the 'getItemValue' callback prop is not provided, each model must be attributed " +
@@ -423,7 +426,7 @@ export const useSelectModelValue = <
     value,
     set: _set,
     ...rest
-  } = useSelectValue<types.InferredDataSelectV<M, O>, O["behavior"]>({
+  } = useSelectValue<types.InferredDataSelectValue<M, O>, O["behavior"]>({
     ...params,
     isReady,
     behavior: options.behavior,
@@ -456,7 +459,7 @@ export const useSelectModelValue = <
   });
 
   const getInitializedModelValue = useCallback(
-    (v: types.SelectNullableValue<types.InferredDataSelectV<M, O>, O["behavior"]>) =>
+    (v: types.SelectNullableValue<types.InferredDataSelectValue<M, O>, O["behavior"]>) =>
       getInitialModelValue({
         options,
         value: v,

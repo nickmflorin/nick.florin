@@ -8,7 +8,7 @@ import { arraysHaveSameElements } from "~/lib/arrays";
 import { parseQueryParams } from "~/integrations/http";
 
 import { type FilterButtonInstance } from "~/components/buttons/FilterButton";
-import { type DataSelectSelectInstance } from "~/components/input/select";
+import { type DataSelectInstance, type DataSelectModel } from "~/components/input/select";
 
 import { type Prettify } from "./types";
 
@@ -62,9 +62,9 @@ type FilterConfigRefObj<C extends FilterConfig> = C extends {
   type: "multi-enum";
   typeguard: (v: string) => v is infer E extends string;
 }
-  ? DataSelectSelectInstance<E, "multi"> | null
+  ? DataSelectInstance<DataSelectModel<E>, { behavior: "multi" }> | null
   : C extends { type: "multi-string" }
-    ? DataSelectSelectInstance<string, "multi"> | null
+    ? DataSelectInstance<DataSelectModel<string>, { behavior: "multi" }> | null
     : C extends { type: "flag" }
       ? FilterButtonInstance | null
       : C extends { type: "search" }
@@ -75,9 +75,12 @@ type FilterConfigRef<C extends FilterConfig> = C extends {
   type: "multi-enum";
   typeguard: (v: string) => v is infer E extends string;
 }
-  ? React.MutableRefObject<DataSelectSelectInstance<E, "multi"> | null>
+  ? React.MutableRefObject<DataSelectInstance<DataSelectModel<E>, { behavior: "multi" }> | null>
   : C extends { type: "multi-string" }
-    ? React.MutableRefObject<DataSelectSelectInstance<string, "multi"> | null>
+    ? React.MutableRefObject<DataSelectInstance<
+        DataSelectModel<string>,
+        { behavior: "multi" }
+      > | null>
     : C extends { type: "flag" }
       ? React.MutableRefObject<FilterButtonInstance | null>
       : C extends { type: "search" }

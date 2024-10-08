@@ -12,13 +12,13 @@ import type {
   DataSelectChangeHandler,
   SelectBehaviorType,
   SelectValue,
-  ClicklessDataSelectModel,
+  DataSelectModel,
 } from "~/components/input/select";
 import type * as types from "~/components/tables/types";
 
 interface BaseSelectProps<
   B extends SelectBehaviorType,
-  M extends ClicklessDataSelectModel<V>,
+  M extends DataSelectModel<V>,
   V extends AllowedSelectValue,
 > {
   readonly isClearable?: boolean;
@@ -33,7 +33,7 @@ interface BaseSelectProps<
 
 interface SelectCellProps<
   B extends SelectBehaviorType,
-  M extends ClicklessDataSelectModel<V>,
+  M extends DataSelectModel<V>,
   R extends types.DataTableDatum,
   V extends AllowedSelectValue,
   T,
@@ -52,7 +52,7 @@ interface SelectCellProps<
 
 export const SelectCell = <
   B extends SelectBehaviorType,
-  M extends ClicklessDataSelectModel<V>,
+  M extends DataSelectModel<V>,
   R extends types.DataTableDatum,
   V extends AllowedSelectValue,
   T,

@@ -13,7 +13,6 @@ import { type ApiClientResponseOrError } from "~/api/client";
 import type { SelectBehaviorType } from "~/components/input/select";
 import { Text } from "~/components/typography";
 import { useDebounceCallback } from "~/hooks";
-import { useSkills } from "~/hooks/api";
 
 import { SkillsSelect, type SkillsSelectInstance, type SkillsSelectProps } from "./SkillsSelect";
 
@@ -122,27 +121,25 @@ export const ClientSkillsSelect = forwardRef(
               localSearch.trim().length !== 0 &&
               (data ?? []).filter(sk => sk.label === localSearch).length === 0,
             onClick: async (e, item, select) => {
-              /* eslint-disable-next-line no-console -- This is temporary. */
-              console.log("Added Skill");
-              item.setLoading(true)
+              item.setLoading(true);
               let response: Awaited<ReturnType<typeof createSkill>>;
               try {
                 response = await createSkill({ label: localSearch });
               } catch (e) {
-                console.error(e);
-                item.setLoading(false)
+                item.setLoading(false);
                 return;
               }
               const { error, data } = response;
               if (error) {
-                console.error(error);
-                item.setLoading(false)
+                item.setLoading(false);
                 return;
               }
-              await fetchSkills({})
-              select.select(data.id)
-              item.setLoading(false)
-
+              /* TODO: Instead of waiting for the skills to refetch here, and then performing the
+                 select - we should incorporate a 'addOptimisticModel' method to the data select
+                 instance, with an option for "preemptive-selecting". */
+              await fetchSkills({});
+              select.select(data.id);
+              item.setLoading(false);
             },
           },
         ]}

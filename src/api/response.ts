@@ -45,14 +45,8 @@ export class ClientResponse<T> {
     return { data: this.data };
   }
 
-  public get serializedJson() {
-    /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Temp workaround for tests. */
-    const superjson = require("superjson");
-    return { data: superjson.serialize(this.data) };
-  }
-
   public get response() {
-    return NextResponse.json(this.serializedJson, { status: this.statusCode });
+    return NextResponse.json({ data: this.data }, { status: this.statusCode });
   }
 
   public static OK = <T>(data: T) =>

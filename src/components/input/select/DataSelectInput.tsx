@@ -12,7 +12,7 @@ import {
 } from "./RootSelectInput";
 
 export interface DataSelectInputProps<
-  M extends types.ClicklessDataSelectModel,
+  M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<RootSelectInputProps, "showPlaceholder" | "children">,
     Pick<
@@ -41,7 +41,7 @@ export interface DataSelectInputProps<
 }
 
 export const DataSelectInput = forwardRef(
-  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     {
       value,
       dynamicHeight = true,
@@ -211,7 +211,7 @@ export const DataSelectInput = forwardRef(
     );
   },
 ) as {
-  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     props: DataSelectInputProps<M, O> & { readonly ref?: ForwardedRef<RootSelectInputInstance> },
   ): JSX.Element;
 };

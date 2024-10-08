@@ -42,7 +42,7 @@ const DataMenu = dynamic(() => import("~/components/menus/DataMenu"), {
 }) as DataMenuComponent;
 
 export interface DataSelectProps<
-  M extends types.ClicklessDataSelectModel,
+  M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<DataSelectBaseProps<M, O, types.DataSelectInstance<M, O>>, "content">,
     Pick<
@@ -66,7 +66,7 @@ export interface DataSelectProps<
   readonly bottomItems?: (types.DataSelectCustomMenuItem<M, O> | JSX.Element)[];
   readonly valueRenderer?: types.DataSelectValueRenderer<M, O>;
   readonly itemRenderer?: (
-    model: types.DataSelectModel<M, O>,
+    model: types.ConnectedDataSelectModel<M, O>,
     params: MenuItemRenderProps,
   ) => ReactNode;
   readonly onItemClick?: (
@@ -78,7 +78,7 @@ export interface DataSelectProps<
 }
 
 export const DataSelect = forwardRef(
-  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     {
       menuClassName,
       selectionIndicator: _selectionIndicator,
@@ -109,6 +109,7 @@ export const DataSelect = forwardRef(
 
     const select = useMemo(
       (): types.DataSelectInstance<M, O> => ({
+        set: v => innerRef.current?.set(v),
         isSelected: m => innerRef.current?.isSelected(m) ?? false,
         isModelSelected: m => innerRef.current?.isModelSelected(m) ?? false,
         selectModel: m => innerRef.current?.selectModel(m),
@@ -127,10 +128,10 @@ export const DataSelect = forwardRef(
           props.options,
         ),
         deselect: types.ifDataSelectDeselectable<
-          (v: types.InferredDataSelectV<M, O>) => void,
+          (v: types.InferredDataSelectValue<M, O>) => void,
           M,
           O
-        >((v: types.InferredDataSelectV<M, O>) => innerRef.current?.deselect(v), props.options),
+        >((v: types.InferredDataSelectValue<M, O>) => innerRef.current?.deselect(v), props.options),
         deselectModel: types.ifDataSelectDeselectable<(m: M) => void, M, O>(
           (m: M) => innerRef.current?.deselectModel(m),
           props.options,
@@ -140,7 +141,7 @@ export const DataSelect = forwardRef(
           props.options,
         ),
         __private__deselect__: types.ifDataSelectDeselectable<
-          (v: types.InferredDataSelectV<M, O>, item?: MenuItemInstance) => void,
+          (v: types.InferredDataSelectValue<M, O>, item?: MenuItemInstance) => void,
           M,
           O
         >((v, item) => innerRef.current?.__private__deselect__(v, item), props.options),
@@ -206,6 +207,9 @@ export const DataSelect = forwardRef(
                 types.dataSelectCustomItemIsObject(item)
                   ? ({
                       ...item,
+                      onClick: item.onClick
+                        ? (...args) => item.onClick?.(...args, select)
+                        : undefined,
                       renderer: item.renderer
                         ? (...args) => item.renderer?.(...args, select)
                         : undefined,
@@ -225,13 +229,13 @@ export const DataSelect = forwardRef(
               itemIsSelected={m => {
                 const fn = getItemValue as (
                   m: Omit<M, "onClick">,
-                ) => types.InferredDataSelectV<M, O>;
+                ) => types.InferredDataSelectValue<M, O>;
                 return isSelected(fn(m));
               }}
               onItemClick={(e, m: M, instance) => {
                 const fn = getItemValue as (
                   m: Omit<M, "onClick">,
-                ) => types.InferredDataSelectV<M, O>;
+                ) => types.InferredDataSelectValue<M, O>;
                 __private__toggle__(fn(m), instance);
                 onItemClick?.(e, m, instance, select);
               }}
@@ -251,7 +255,7 @@ export const DataSelect = forwardRef(
     );
   },
 ) as {
-  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     props: DataSelectProps<M, O> & { readonly ref?: ForwardedRef<types.DataSelectInstance<M, O>> },
   ): JSX.Element;
 };

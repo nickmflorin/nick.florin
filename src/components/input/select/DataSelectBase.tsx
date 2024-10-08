@@ -19,12 +19,12 @@ import { RootSelect, type RootSelectProps } from "./RootSelect";
 import { type RootSelectInputInstance } from "./RootSelectInput";
 
 export interface DataSelectBaseInstance<
-  M extends types.ClicklessDataSelectModel,
+  M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<types.DataSelectInstance<M, O>, "setContentLoading" | "setLoading"> {}
 
 export interface DataSelectBaseProps<
-  M extends types.ClicklessDataSelectModel,
+  M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
   I extends DataSelectBaseInstance<M, O> = DataSelectBaseInstance<M, O>,
 > extends Omit<
@@ -52,7 +52,7 @@ export interface DataSelectBaseProps<
   readonly popoverClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
-  readonly data: types.DataSelectModel<M, O>[];
+  readonly data: types.ConnectedDataSelectModel<M, O>[];
   readonly isClearable?: boolean;
   readonly chipsCanDeselect?: boolean;
   readonly showIconsInChips?: boolean;
@@ -73,7 +73,7 @@ export interface DataSelectBaseProps<
 }
 
 const LocalDataSelectBase = forwardRef(
-  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     {
       options,
       closeMenuOnSelect,
@@ -229,7 +229,7 @@ const LocalDataSelectBase = forwardRef(
 );
 
 export const DataSelectBase = LocalDataSelectBase as {
-  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     props: DataSelectBaseProps<M, O> & {
       readonly ref?: ForwardedRef<DataSelectBaseInstance<M, O>>;
     },
