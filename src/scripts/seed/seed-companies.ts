@@ -1,13 +1,13 @@
 import { json } from "~/database/fixtures";
 import { DetailEntityType, type Company } from "~/database/model";
 import { type Transaction } from "~/database/prisma";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
 import { createDetail } from "./seed-details";
 import { findCorresponding } from "./util";
 
-export async function seedCompanies(tx: Transaction, ctx: SeedContext) {
+export async function seedCompanies(tx: Transaction, ctx: cli.ScriptContext) {
   if (json.companies.length !== 0) {
     let companies: Company[] = [];
 

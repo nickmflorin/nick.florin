@@ -8,8 +8,10 @@ import React, {
   useState,
 } from "react";
 
+import { type FloatingContentRenderProps } from "~/components/floating";
 import { useSelectValue } from "~/components/input/select/hooks";
 import * as types from "~/components/input/select/types";
+import type { MenuItemInstance } from "~/components/menus";
 import { type ComponentProps } from "~/components/types";
 
 import { RootSelect, type RootSelectProps } from "./RootSelect";
@@ -25,10 +27,13 @@ export interface SelectProps<V extends types.AllowedSelectValue, B extends types
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
   readonly isClearable?: boolean;
-  readonly onClear?: types.IfDeselectable<B, () => void>;
+  readonly onClear?: types.IfClearable<B, () => void>;
   readonly valueRenderer?: types.SelectValueRenderer<V, B>;
   readonly onChange?: types.SelectChangeHandler<V, B>;
-  readonly content: types.SelectManagedCallback<JSX.Element, V, B, types.SelectNullableValue<V, B>>;
+  readonly content?: (
+    value: types.SelectNullableValue<V, B>,
+    select: types.SelectInstance<V, B> & Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">,
+  ) => JSX.Element;
 }
 
 export const Select = forwardRef(
@@ -73,7 +78,7 @@ export const Select = forwardRef(
       initialValue,
       __private_controlled_value__: _propValue,
       behavior,
-      onChange: v => onChange?.(v),
+      onChange: (v, p) => onChange?.(v, p),
       onSelect: () => {
         if (
           closeMenuOnSelect ||
@@ -84,15 +89,27 @@ export const Select = forwardRef(
       },
     });
 
-    useImperativeHandle(ref, () => ({
-      clear,
-      setValue: v => managed.set(v),
-      focusInput: () => innerRef.current?.focusInput(),
-      setOpen: (v: boolean) => innerRef.current?.setOpen(v),
-      setInputLoading: (v: boolean) => innerRef.current?.setInputLoading(v),
-      setPopoverLoading: (v: boolean) => innerRef.current?.setPopoverLoading(v),
-      setLoading: (v: boolean) => setIsLoading(v),
-    }));
+    const select = useMemo(
+      (): types.SelectInstance<V, B> => ({
+        ...managed,
+        clear: types.ifClearable<() => void, B>(() => clear(), behavior),
+        __private__clear__: types.ifClearable<() => void, B>(() => clear(), behavior),
+        setValue: v => managed.set(v),
+        deselect: types.ifDeselectable((v: V) => managed.deselect(v), behavior),
+        __private__deselect__: types.ifDeselectable(
+          (v: V, item?: MenuItemInstance) => managed.__private__deselect__(v, item),
+          behavior,
+        ),
+        focusInput: () => innerRef.current?.focusInput(),
+        setOpen: (v: boolean) => innerRef.current?.setOpen(v),
+        setInputLoading: (v: boolean) => innerRef.current?.setInputLoading(v),
+        setPopoverLoading: (v: boolean) => innerRef.current?.setPopoverLoading(v),
+        setLoading: (v: boolean) => setIsLoading(v),
+      }),
+      [behavior, managed, clear],
+    );
+
+    useImperativeHandle(ref, () => select);
 
     const onClear = useMemo(() => {
       if (_onClear || isClearable) {
@@ -122,7 +139,16 @@ export const Select = forwardRef(
         onOpen={onOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
-        content={value !== types.NOTSET ? content(value, { ...managed, clear }) : <></>}
+        content={p => {
+          if (value !== types.NOTSET && content !== undefined) {
+            return content(value, {
+              ...p,
+              ...select,
+            } as types.SelectInstance<V, B> &
+              Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">);
+          }
+          return <></>;
+        }}
       >
         {children ??
           (({ ref, params, isOpen }) => (
@@ -141,7 +167,7 @@ export const Select = forwardRef(
                 ? // This type coercion is safe because SelectValue and SelectNullableValue are the
                   /* same when the select's behavior is not single, non-nullable and the value is
                      not null. */
-                  valueRenderer?.(value as types.SelectValue<V, B>, { ...managed, clear })
+                  valueRenderer?.(value as types.SelectValue<V, B>, select)
                 : undefined}
             </SelectInput>
           ))}

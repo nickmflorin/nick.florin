@@ -35,7 +35,7 @@ export const ProjectsCell = ({ skill, table }: ProjectsCellProps): JSX.Element =
       behavior="multi"
       inPortal
       isClearable
-      onChange={async (v, { item }) => {
+      onChange={async (v, _, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

@@ -36,7 +36,7 @@ export const EducationsCell = ({ skill, table }: EducationsCellProps): JSX.Eleme
       value={value}
       inPortal
       summarizeValueAfter={2}
-      onChange={async (v, { item }) => {
+      onChange={async (v, _, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

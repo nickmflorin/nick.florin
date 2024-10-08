@@ -36,7 +36,7 @@ export const CompanyCell = ({ experience, table }: CompanyCellProps): JSX.Elemen
       behavior="single"
       value={value}
       inPortal
-      onChange={async (v, { item }) => {
+      onChange={async (v, _, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

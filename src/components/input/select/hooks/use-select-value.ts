@@ -432,7 +432,7 @@ export const useSelectValue = <
   );
 
   const __private__deselect__ = useCallback(
-    (v: V, item: MenuItemInstance) => {
+    (v: V, item?: MenuItemInstance) => {
       if (!types.isDeselectable(behavior)) {
         throw new Error(`Cannot deselect a select with behavior '${behavior}'!`);
       }

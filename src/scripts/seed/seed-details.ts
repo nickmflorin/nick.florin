@@ -1,13 +1,13 @@
 import { type JsonDetail } from "~/database/fixtures";
 import { type DetailEntityType, type Skill } from "~/database/model";
 import { type Transaction } from "~/database/prisma";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 
 import { findCorrespondingProject } from "./seed-projects";
 
 export const createDetail = async (
   tx: Transaction,
-  ctx: SeedContext,
+  ctx: cli.ScriptContext,
   {
     entityId,
     entityType,

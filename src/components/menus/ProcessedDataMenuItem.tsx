@@ -2,6 +2,7 @@ import React, { forwardRef, type ForwardedRef, type ReactNode } from "react";
 
 import { omit } from "lodash-es";
 
+import { type MenuItemClickEvent } from "~/components/menus";
 import * as types from "~/components/menus";
 
 import { DataMenuItem, type DataMenuItemProps } from "./DataMenuItem";
@@ -16,7 +17,7 @@ export interface ProcessedDataMenuItemProps<M extends types.DataMenuModel>
     Pick<types.DataMenuItemAccessorProps<M>, "getItemId"> {
   readonly datum: types.DataMenuProcessedDatum<M>;
   readonly onItemClick?: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent> | KeyboardEvent,
+    e: MenuItemClickEvent,
     datum: M,
     instance: types.MenuItemInstance,
   ) => void;
@@ -105,7 +106,7 @@ export const ProcessedDataMenuItem = forwardRef(
       }
       return m;
     }
-    const id = getItemId?.(datum.model) ?? datum.model.id ?? `menu-item-${datum.model.index}`;
+    const id = getItemId?.(datum.model) ?? datum.model.id ?? `menu-item-${datum.index}`;
     return (
       <DataMenuItem<M>
         {...props}

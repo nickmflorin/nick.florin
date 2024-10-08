@@ -9,6 +9,8 @@ import { type Action } from "~/components/structural/Actions";
 import { type ComponentProps, type QuantitativeSize } from "~/components/types";
 import { type LabelProps } from "~/components/typography";
 
+export type MenuItemClickEvent = React.MouseEvent<HTMLDivElement, MouseEvent> | KeyboardEvent;
+
 export type MenuItemInstance = {
   readonly setLocked: (value: boolean) => void;
   readonly setDisabled: (value: boolean) => void;
@@ -67,7 +69,7 @@ export const hasFeedback = (
   props: Pick<MenuFeedbackProps, "isError" | "isEmpty" | "hasNoResults">,
 ) => props.isEmpty === true || props.isError === true || props.hasNoResults === true;
 
-type BaseDataMenuModel = {
+export type BaseDataMenuModel = {
   readonly id?: string | number;
   readonly icon?: IconProp | IconName | JSX.Element;
   readonly description?: ReactNode;
@@ -85,17 +87,15 @@ type BaseDataMenuModel = {
   readonly isDisabled?: boolean;
   readonly isVisible?: boolean;
   readonly actions?: Action[];
-  readonly onClick?: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent> | KeyboardEvent,
-    instance: MenuItemInstance,
-  ) => void;
+  readonly onClick?: (e: MenuItemClickEvent, instance: MenuItemInstance) => void;
 };
 
 export type DataMenuModel = BaseDataMenuModel & {
   readonly selectedClassName?: ComponentProps["className"];
   readonly isSelected?: boolean;
-  [key: string]: unknown;
 };
+
+export type DataMenuModelCustomRenderer = (instance: MenuItemInstance) => JSX.Element;
 
 export type DataMenuCustomModel = BaseDataMenuModel & {
   readonly renderer?: DataMenuModelCustomRenderer;
@@ -283,8 +283,6 @@ export type DataMenuProcessedModel<M extends DataMenuModel> = {
   readonly model: M;
   readonly index: number;
 };
-
-export type DataMenuModelCustomRenderer = (instance: MenuItemInstance) => JSX.Element;
 
 export type DataMenuProcessedCustom = {
   readonly model: DataMenuCustomModel | JSX.Element;

@@ -12,7 +12,7 @@ import {
 } from "./RootSelectInput";
 
 export interface DataSelectInputProps<
-  M extends types.DataSelectModel,
+  M extends types.ClicklessDataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<RootSelectInputProps, "showPlaceholder" | "children">,
     Pick<
@@ -32,13 +32,16 @@ export interface DataSelectInputProps<
   readonly modelValue: types.DataSelectNullableModelValue<M, O> | types.NotSet;
   readonly options: O;
   readonly itemValueRenderer?: (m: M) => JSX.Element;
-  readonly valueRenderer?: types.DataSelectValueRenderer<M, O>;
+  readonly valueRenderer?: (
+    value: types.DataSelectValue<M, O>,
+    modelValue: types.DataSelectModelValue<M, O>,
+  ) => ReactNode;
   readonly getItemLabel?: (m: M) => ReactNode;
   readonly getItemId?: (m: M) => string | number | undefined;
 }
 
 export const DataSelectInput = forwardRef(
-  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
     {
       value,
       dynamicHeight = true,
@@ -103,7 +106,7 @@ export const DataSelectInput = forwardRef(
         if (typeof v === "string" || typeof v === "number") {
           return String(v);
         } else if ("value" in m && (typeof m.value === "string" || typeof m.value === "number")) {
-          return String(m.v);
+          return String(m.value);
         }
         const label = getItemLabel(m);
         if (typeof label === "string" || typeof label === "number") {
@@ -132,9 +135,10 @@ export const DataSelectInput = forwardRef(
              when the Select's behavior is single, but non-nullable.  Since we are already checking
              if the value and model values are arrays, we can safely coerce them to the non-nullable
              value forms because we know they are non-null. */
-          return valueRenderer(value as types.DataSelectValue<M, O>, {
-            modelValue: modelValue as types.DataSelectModelValue<M, O>,
-          });
+          return valueRenderer(
+            value as types.DataSelectValue<M, O>,
+            modelValue as types.DataSelectModelValue<M, O>,
+          );
         }
         /* Make sure to sort the models based on a consistent key to prevent reordering of the
            badges in the MultiValueRenderer when rerenders occur. */
@@ -207,7 +211,7 @@ export const DataSelectInput = forwardRef(
     );
   },
 ) as {
-  <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
+  <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
     props: DataSelectInputProps<M, O> & { readonly ref?: ForwardedRef<RootSelectInputInstance> },
   ): JSX.Element;
 };

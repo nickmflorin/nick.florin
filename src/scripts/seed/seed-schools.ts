@@ -1,14 +1,14 @@
 import { json } from "~/database/fixtures";
 import { DetailEntityType, type School } from "~/database/model";
 import { type Transaction } from "~/database/prisma";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
 import { seedCourses } from "./seed-courses";
 import { createDetail } from "./seed-details";
 import { findCorresponding } from "./util";
 
-export async function seedSchools(tx: Transaction, ctx: SeedContext) {
+export async function seedSchools(tx: Transaction, ctx: cli.ScriptContext) {
   if (json.schools.length !== 0) {
     let schools: School[] = [];
 

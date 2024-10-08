@@ -38,7 +38,7 @@ export const SkillsCell = ({ repository, table }: SkillsCellProps): JSX.Element 
       behavior="multi"
       summarizeValueAfter={2}
       isClearable
-      onChange={async (v, { item }) => {
+      onChange={async (v, _, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

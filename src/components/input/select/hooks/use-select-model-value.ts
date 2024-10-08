@@ -11,7 +11,7 @@ import type { MenuItemInstance } from "~/components/menus";
 import { useSelectValue, type UseSelectValueParams } from "./use-select-value";
 
 export interface UseSelectModelValueParams<
-  M extends types.DataSelectModel,
+  M extends types.ClicklessDataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<
     UseSelectValueParams<types.InferredDataSelectV<M, O>, types.InferredDataSelectB<M, O>>,
@@ -25,7 +25,7 @@ export interface UseSelectModelValueParams<
 }
 
 const getInitialModelValue = <
-  M extends types.DataSelectModel,
+  M extends types.ClicklessDataSelectModel,
   O extends types.DataSelectOptions<M>,
 >({
   options,
@@ -80,7 +80,7 @@ const getInitialModelValue = <
   return null as types.DataSelectNullableModelValue<M, O>;
 };
 
-const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
+const getModel = <M extends types.ClicklessDataSelectModel, O extends types.DataSelectOptions<M>>(
   v: types.InferredDataSelectV<M, O>,
   {
     data,
@@ -115,7 +115,10 @@ const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOpt
   return ms[0];
 };
 
-const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
+const reduceModelValue = <
+  M extends types.ClicklessDataSelectModel,
+  O extends types.DataSelectOptions<M>,
+>(
   curr: types.DataSelectNullableModelValue<M, O>,
   value: types.DataSelectNullableValue<M, O>,
   {
@@ -380,7 +383,7 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
  * 'useMemo' hook.
  */
 export const useSelectModelValue = <
-  M extends types.DataSelectModel,
+  M extends types.ClicklessDataSelectModel,
   O extends types.DataSelectOptions<M>,
 >({
   data,
@@ -516,7 +519,7 @@ export const useSelectModelValue = <
     __private__select__model__: (m: M, item: MenuItemInstance) =>
       rest.__private__select__(getItemValue(m), item),
     __private__deselect__model__: types.ifDataSelectDeselectable(
-      (m: M, item: MenuItemInstance) => rest.__private__deselect__(getItemValue(m), item),
+      (m: M, item?: MenuItemInstance) => rest.__private__deselect__(getItemValue(m), item),
       options,
     ),
     deselectModel: types.ifDataSelectDeselectable((m: M) => deselect(getItemValue(m)), options),

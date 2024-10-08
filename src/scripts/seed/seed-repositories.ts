@@ -3,12 +3,12 @@ import type { BrandRepository, BrandSkill } from "~/database/model";
 import { type Transaction } from "~/database/prisma";
 import { differingFields } from "~/lib/differences";
 import { humanizeList } from "~/lib/formatters";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
 import { githubClient } from "~/integrations/github";
 
-export async function seedRepositories(tx: Transaction, ctx: SeedContext) {
+export async function seedRepositories(tx: Transaction, ctx: cli.ScriptContext) {
   const output = stdout.begin("Generating Repositories...");
 
   output.begin("Fetching repositories from GitHub...");

@@ -17,10 +17,7 @@ export type DataMenuItemProps<M extends types.DataMenuModel> = Omit<
     readonly isCurrentNavigation?: boolean;
     readonly selectionIndicator?: types.MenuItemSelectionIndicator;
     readonly boldSubstrings?: string;
-    readonly onItemClick?: (
-      e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-      instance: types.MenuItemInstance,
-    ) => void;
+    readonly onItemClick?: (e: types.MenuItemClickEvent, instance: types.MenuItemInstance) => void;
     readonly children?: (datum: M, params: types.MenuItemRenderProps) => ReactNode;
   };
 

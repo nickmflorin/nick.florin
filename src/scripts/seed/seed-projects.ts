@@ -2,7 +2,7 @@ import { json } from "~/database/fixtures";
 import { type Project, type Skill } from "~/database/model";
 import { type Transaction, getUniqueConstraintFields } from "~/database/prisma";
 import { humanizeList, slugify } from "~/lib/formatters";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
 import { findCorresponding } from "./util";
@@ -23,7 +23,7 @@ export const findCorrespondingProject = async (tx: Transaction, name: string): P
   return findCorrespondingProjectSync(name, projects);
 };
 
-export async function seedProjects(tx: Transaction, ctx: SeedContext) {
+export async function seedProjects(tx: Transaction, ctx: cli.ScriptContext) {
   if (json.projects.length !== 0) {
     const output = stdout.begin(`Generating ${json.projects.length} Projects...`);
 

@@ -1,7 +1,7 @@
 import { list, type ListBlobResult } from "@vercel/blob";
 
 import { type Transaction } from "~/database/prisma";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
 type Blob = ListBlobResult["blobs"][number];
@@ -56,7 +56,7 @@ const blobIsValid = (blob: Blob): [false, string, Blob] | [true, null, Blob] => 
   return [true, null, blob];
 };
 
-export async function seedResumes(tx: Transaction, ctx: SeedContext) {
+export async function seedResumes(tx: Transaction, ctx: cli.ScriptContext) {
   stdout.begin("Seeding Resumes...");
   const blobs = await fetchBlobs();
 

@@ -1,5 +1,4 @@
 import { isError } from "~/application/errors";
-import { CommandLineError } from "~/scripts/cli";
 import * as terminal from "~/support/terminal";
 
 type KeyValueLineItem = {
@@ -188,15 +187,8 @@ export class SeedStdout {
   }
 
   public error(message: string | Error, opts?: LineItem[] | MessageOptions): void {
-    if (message instanceof CommandLineError || typeof message === "string") {
-      /* eslint-disable-next-line no-console */
-      console.error(
-        this.formatMessage(isError(message) ? message.message : message, "error", opts),
-      );
-    } else {
-      /* eslint-disable-next-line no-console */
-      console.error(message);
-    }
+    /* eslint-disable-next-line no-console */
+    console.error(this.formatMessage(isError(message) ? message.message : message, "error", opts));
   }
 
   public warn(message: string, opts?: LineItem[] | MessageOptions): void {

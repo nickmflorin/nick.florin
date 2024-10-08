@@ -2,10 +2,10 @@ import { json } from "~/database/fixtures";
 import { type Skill } from "~/database/model";
 import { type Transaction, getUniqueConstraintFields } from "~/database/prisma";
 import { slugify, humanizeList } from "~/lib/formatters";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
-export const seedSkills = async (tx: Transaction, ctx: SeedContext) => {
+export const seedSkills = async (tx: Transaction, ctx: cli.ScriptContext) => {
   const skills = json.skills;
   if (skills.length !== 0) {
     const output = stdout.begin(`Generating Skills from ${skills.length} Fixtures...`);

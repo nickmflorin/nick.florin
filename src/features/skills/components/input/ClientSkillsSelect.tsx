@@ -121,16 +121,28 @@ export const ClientSkillsSelect = forwardRef(
             isVisible:
               localSearch.trim().length !== 0 &&
               (data ?? []).filter(sk => sk.label === localSearch).length === 0,
-            onClick: async () => {
+            onClick: async (e, item, select) => {
               /* eslint-disable-next-line no-console -- This is temporary. */
               console.log("Added Skill");
+              item.setLoading(true)
               let response: Awaited<ReturnType<typeof createSkill>>;
               try {
                 response = await createSkill({ label: localSearch });
               } catch (e) {
                 console.error(e);
+                item.setLoading(false)
                 return;
               }
+              const { error, data } = response;
+              if (error) {
+                console.error(error);
+                item.setLoading(false)
+                return;
+              }
+              await fetchSkills({})
+              select.select(data.id)
+              item.setLoading(false)
+
             },
           },
         ]}

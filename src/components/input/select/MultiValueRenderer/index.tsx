@@ -13,7 +13,6 @@ type MultiValueRendererModel = {
   readonly icon?: IconProp | IconName | JSX.Element;
   readonly label?: ReactNode;
   readonly content?: ReactNode;
-  [key: string]: unknown;
 };
 
 interface MultiValueRendererBaseProps {

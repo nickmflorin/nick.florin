@@ -1,9 +1,9 @@
 import { calculateSkillsExperience } from "~/database/model";
 import { type Transaction } from "~/database/prisma";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
-export async function calculateSkillExperiences(tx: Transaction, ctx: SeedContext) {
+export async function calculateSkillExperiences(tx: Transaction, ctx: cli.ScriptContext) {
   const skills = await tx.skill.findMany({});
   if (skills.length !== 0) {
     stdout.begin(`Calculating experience for ${skills.length} skills...`);

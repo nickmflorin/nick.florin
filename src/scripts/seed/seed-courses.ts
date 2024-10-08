@@ -4,12 +4,12 @@ import { type EducationJsonSchema } from "~/database/fixtures";
 import { type Course, type Education, type Skill } from "~/database/model";
 import { getUniqueConstraintFields, type Transaction } from "~/database/prisma";
 import { slugify, humanizeList } from "~/lib/formatters";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { type SeedStdout } from "~/support/stdout";
 
 export async function seedCourses(
   tx: Transaction,
-  ctx: SeedContext,
+  ctx: cli.ScriptContext,
   education: Education,
   jsonEducation: z.infer<typeof EducationJsonSchema>,
   output: SeedStdout,

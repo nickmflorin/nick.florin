@@ -1,9 +1,9 @@
 import { json } from "~/database/fixtures";
 import { type Transaction } from "~/database/prisma";
-import { type SeedContext } from "~/scripts/context";
+import { type cli } from "~/scripts";
 import { stdout } from "~/support";
 
-export async function seedProfile(tx: Transaction, ctx: SeedContext) {
+export async function seedProfile(tx: Transaction, ctx: cli.ScriptContext) {
   stdout.begin(`Seeding ${json.profiles.length} Profiles...`);
 
   const profiles = await tx.profile.createMany({

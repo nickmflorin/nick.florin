@@ -36,7 +36,7 @@ export const ExperiencesCell = ({ skill, table }: ExperiencesCellProps): JSX.Ele
       behavior="multi"
       summarizeValueAfter={2}
       isClearable
-      onChange={async (v, { item }) => {
+      onChange={async (v, _, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

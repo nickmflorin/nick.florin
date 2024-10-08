@@ -36,7 +36,7 @@ export interface ProcessedDataMenuContentProps<M extends types.DataMenuModel>
   readonly includeDescriptions?: boolean;
   readonly enableKeyboardInteractions?: boolean;
   readonly onItemClick?: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent> | KeyboardEvent,
+    e: types.MenuItemClickEvent,
     datum: M,
     instance: types.MenuItemInstance,
   ) => void;

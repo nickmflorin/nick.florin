@@ -38,7 +38,7 @@ export const ProjectsCell = ({ repository, table }: ProjectsCellProps): JSX.Elem
       behavior="multi"
       inPortal
       isClearable
-      onChange={async (v, { item }) => {
+      onChange={async (v, _, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

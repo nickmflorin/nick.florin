@@ -12,13 +12,13 @@ import type {
   DataSelectChangeHandler,
   SelectBehaviorType,
   SelectValue,
-  DataSelectModel,
+  ClicklessDataSelectModel,
 } from "~/components/input/select";
 import type * as types from "~/components/tables/types";
 
 interface BaseSelectProps<
   B extends SelectBehaviorType,
-  M extends DataSelectModel<V>,
+  M extends ClicklessDataSelectModel<V>,
   V extends AllowedSelectValue,
 > {
   readonly isClearable?: boolean;
@@ -33,7 +33,7 @@ interface BaseSelectProps<
 
 interface SelectCellProps<
   B extends SelectBehaviorType,
-  M extends DataSelectModel<V>,
+  M extends ClicklessDataSelectModel<V>,
   R extends types.DataTableDatum,
   V extends AllowedSelectValue,
   T,
@@ -52,7 +52,7 @@ interface SelectCellProps<
 
 export const SelectCell = <
   B extends SelectBehaviorType,
-  M extends DataSelectModel<V>,
+  M extends ClicklessDataSelectModel<V>,
   R extends types.DataTableDatum,
   V extends AllowedSelectValue,
   T,
@@ -83,11 +83,11 @@ export const SelectCell = <
       isClearable
       inPortal
       behavior={behavior}
-      onChange={async (v, { item }) => {
+      onChange={async (v, _, params) => {
         // Optimistically update the value.
         setValue(v);
         table.setRowLoading(row.id, true);
-        item?.setLoading(true);
+        params.item?.setLoading(true);
 
         let response: MutationActionResponse<T> | undefined = undefined;
         try {
@@ -99,7 +99,7 @@ export const SelectCell = <
             { value: v },
           );
           table.setRowLoading(row.id, false);
-          item?.setLoading(false);
+          params.item?.setLoading(false);
           return toast.error(errorMessage);
         }
         const { error } = response;
@@ -110,7 +110,7 @@ export const SelectCell = <
             { value: v },
           );
           table.setRowLoading(row.id, false);
-          item?.setLoading(false);
+          params.item?.setLoading(false);
           return toast.error(errorMessage);
         }
         /* Refresh the state from the server regardless of whether or not the request succeeded.
@@ -119,7 +119,7 @@ export const SelectCell = <
         transition(() => {
           router.refresh();
           table.setRowLoading(row.id, false);
-          item?.setLoading(false);
+          params.item?.setLoading(false);
         });
       }}
     />
