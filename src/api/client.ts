@@ -10,6 +10,7 @@ import {
   type ClientNotOkResponseProcessor,
   HttpSerializationError,
   HttpNetworkError,
+  type InferredClientResponseOrError,
 } from "~/integrations/http";
 
 import { type ApiClientError, ApiClientFormError, ApiClientGlobalError } from "./errors";
@@ -93,3 +94,5 @@ export const apiClient = new HttpClient({
   processors,
   NetworkErrorClass: HttpNetworkError,
 });
+
+export type ApiClientResponseOrError<T> = InferredClientResponseOrError<T, typeof apiClient>;

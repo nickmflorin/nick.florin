@@ -10,7 +10,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 
-import type * as types from "~/components//input/select/types";
+import * as types from "~/components//input/select/types";
 import { Loading } from "~/components/loading/Loading";
 import {
   type MenuItemSelectionIndicator,
@@ -93,7 +93,10 @@ export const DataSelect = forwardRef(
     > | null>(null);
 
     useImperativeHandle(ref, () => ({
-      clear: () => innerRef.current?.clear(),
+      selectModel: m => innerRef.current?.selectModel(m),
+      toggleModel: m => innerRef.current?.toggleModel(m),
+      select: v => innerRef.current?.select(v),
+      toggle: v => innerRef.current?.toggle(v),
       setValue: v => innerRef.current?.setValue(v),
       focusInput: () => innerRef.current?.focusInput(),
       setOpen: (v: boolean) => innerRef.current?.setOpen(v),
@@ -101,6 +104,18 @@ export const DataSelect = forwardRef(
       setPopoverLoading: (v: boolean) => innerRef.current?.setPopoverLoading(v),
       setContentLoading: (v: boolean) => setContentIsLoading(v),
       setLoading: (v: boolean) => setIsLoading(v),
+      clear: types.ifDataSelectClearable<() => void, M, O>(
+        () => innerRef.current?.clear(),
+        props.options,
+      ),
+      deselect: types.ifDataSelectDeselectable<(v: types.InferredDataSelectV<M, O>) => void, M, O>(
+        (v: types.InferredDataSelectV<M, O>) => innerRef.current?.deselect(v),
+        props.options,
+      ),
+      deselectModel: types.ifDataSelectDeselectable<(m: M) => void, M, O>(
+        (m: M) => innerRef.current?.deselectModel(m),
+        props.options,
+      ),
     }));
 
     const getItemValue = useCallback(
@@ -134,7 +149,7 @@ export const DataSelect = forwardRef(
         inputIsLoading={inputIsLoading || isLoading}
         data={data}
         onSearch={onSearch}
-        content={(_, { isOpen, toggle, isSelected }) =>
+        content={(_, { isOpen, __private__toggle__, isSelected }) =>
           // Force dynamic rendering of the DataMenu with the conditional render.
           isOpen ? (
             <DataMenu<M>
@@ -152,7 +167,7 @@ export const DataSelect = forwardRef(
               }}
               onItemClick={(e, m: M, instance) => {
                 const fn = getItemValue as (m: M) => types.InferredDataSelectV<M, O>;
-                toggle(fn(m), instance);
+                __private__toggle__(fn(m), instance);
                 onItemClick?.(e, m, instance);
               }}
               onKeyboardNavigationExit={() => {

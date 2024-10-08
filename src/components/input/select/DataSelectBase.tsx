@@ -128,6 +128,25 @@ const LocalDataSelectBase = forwardRef(
     useImperativeHandle(ref, () => ({
       clear,
       setValue: v => managed.set(v),
+      selectModel: m => managed.selectModel(m),
+      toggleModel: m => managed.toggleModel(m),
+      toggle: v => managed.toggle(v),
+      select: v => managed.select(v),
+      deselect: (v => {
+        if (!types.isDeselectable(options.behavior)) {
+          throw new Error("Cannot deselect a single non-nullable select!");
+        }
+        managed.deselect(v);
+      }) as types.IfDeselectable<
+        types.InferredDataSelectB<M, O>,
+        (v: types.InferredDataSelectV<M, O>) => void
+      >,
+      deselectModel: (m => {
+        if (!types.isDeselectable(options.behavior)) {
+          throw new Error("Cannot deselect a single non-nullable select!");
+        }
+        managed.deselectModel(m);
+      }) as types.IfDeselectable<types.InferredDataSelectB<M, O>, (m: M) => void>,
       focusInput: () => inputRef.current?.focus(),
       setOpen: (v: boolean) => selectRef.current?.setOpen(v),
       setInputLoading: (v: boolean) => inputRef.current?.setLoading(v),

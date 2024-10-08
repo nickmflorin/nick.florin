@@ -424,7 +424,7 @@ export const useSelectModelValue = <
     ...params,
     isReady,
     behavior: options.behavior,
-    onChange: (v, item) => {
+    onChange: (v, params) => {
       if (modelValue === types.NOTSET) {
         logger.error(
           "Detected a change event in the select when the model value has not yet been set!",
@@ -445,10 +445,7 @@ export const useSelectModelValue = <
       }
       /* This should only be called if the Select's model value is not "NOTSET" to begin with,
          because the Select will disable selection if it is not in a "ready" state. */
-      onChange?.(v, {
-        modelValue: reduced as types.DataSelectModelValue<M, O>,
-        item,
-      });
+      onChange?.(v, reduced as types.DataSelectModelValue<M, O>, params);
     },
     onSelect,
     onClear,
@@ -513,8 +510,16 @@ export const useSelectModelValue = <
     toggle,
     deselect,
     isModelSelected: (m: M) => isSelected(getItemValue(m)),
-    toggleModel: (m: M, item?: MenuItemInstance) => toggle(getItemValue(m), item),
-    selectModel: (m: M, item?: MenuItemInstance) => select(getItemValue(m), item),
-    deselectModel: (m: M, item?: MenuItemInstance) => deselect(getItemValue(m), item),
+    toggleModel: (m: M) => toggle(getItemValue(m)),
+    __private__toggle__model__: (m: M, item: MenuItemInstance) =>
+      rest.__private__toggle__(getItemValue(m), item),
+    __private__select__model__: (m: M, item: MenuItemInstance) =>
+      rest.__private__select__(getItemValue(m), item),
+    __private__deselect__model__: types.ifDataSelectDeselectable(
+      (m: M, item: MenuItemInstance) => rest.__private__deselect__(getItemValue(m), item),
+      options,
+    ),
+    deselectModel: types.ifDataSelectDeselectable((m: M) => deselect(getItemValue(m)), options),
+    selectModel: (m: M) => select(getItemValue(m)),
   };
 };

@@ -89,7 +89,7 @@ type InferredNotOkayProcessorError<P extends HttpClientResponseProcessors> = P e
     : never
   : errors.HttpClientError;
 
-type ClientResponseOrError<
+export type ClientResponseOrError<
   T,
   N extends errors.HttpNetworkError,
   P extends HttpClientResponseProcessors,
@@ -484,3 +484,11 @@ export class HttpClient<N extends errors.HttpNetworkError, P extends HttpClientR
     });
   }
 }
+
+export type InferredClientResponseOrError<T, C> =
+  C extends HttpClient<
+    infer N extends errors.HttpNetworkError,
+    infer P extends HttpClientResponseProcessors
+  >
+    ? ClientResponseOrError<T, N, P>
+    : never;

@@ -5,43 +5,42 @@ import { isEqual } from "lodash-es";
 import { UnreachableCaseError } from "~/application/errors";
 import { logger } from "~/internal/logger";
 
-import {
-  type SelectBehaviorType,
-  type SelectValue,
-  type IfDeselectable,
-  SelectBehaviorTypes,
-  type AllowedSelectValue,
-  type ManagedSelectValue,
-  type SelectEvent,
-  type SelectEventParams,
-  type SelectNullableValue,
-  NOTSET,
-  DONOTHING,
-  type DoNothing,
-  type NotSet,
-} from "~/components/input/select/types";
+import * as types from "~/components/input/select/types";
 import type { MenuItemInstance } from "~/components/menus";
 
-export interface UseSelectValueParams<V extends AllowedSelectValue, B extends SelectBehaviorType> {
-  readonly initialValue?: SelectValue<V, B>;
+export interface UseSelectValueParams<
+  V extends types.AllowedSelectValue,
+  B extends types.SelectBehaviorType,
+> {
+  readonly initialValue?: types.SelectValue<V, B>;
   readonly behavior: B;
   /* This prop is only used internally to the <Select /> - related components.  It should not be
      provided to this hook directly when it is used outside of the Select or DataSelect's
      internals. */
-  readonly __private_controlled_value__?: SelectNullableValue<V, B>;
+  readonly __private_controlled_value__?: types.SelectNullableValue<V, B>;
   readonly isReady?: boolean;
-  readonly onChange?: (value: SelectValue<V, B>, item?: MenuItemInstance) => void;
-  readonly onSelect?: (value: SelectValue<V, B>, params: SelectEventParams<"select", V>) => void;
-  readonly onDeselect?: (
-    value: SelectValue<V, B>,
-    params: SelectEventParams<"deselect", V>,
+  readonly onChange?: <E extends types.SelectEvent>(
+    v: types.SelectValue<V, B>,
+    params: types.SelectEventParams<E, V>,
   ) => void;
-  readonly onClear?: (value: SelectValue<V, B>) => void;
-  readonly onEvent?: <E extends SelectEvent>(
-    event: E,
-    value: SelectValue<V, B>,
-    params: SelectEventParams<E, V>,
+  readonly onSelect?: (
+    value: types.SelectValue<V, B>,
+    params: types.SelectEventParams<typeof types.SelectEvents.SELECT, V>,
   ) => void;
+  readonly onDeselect?: types.IfDeselectable<
+    B,
+    (
+      value: types.SelectValue<V, B>,
+      params: types.SelectEventParams<typeof types.SelectEvents.DESELECT, V>,
+    ) => void
+  >;
+  readonly onClear?: types.IfClearable<
+    B,
+    (
+      value: types.SelectValue<V, B>,
+      params: types.SelectEventParams<typeof types.SelectEvents.CLEAR, V>,
+    ) => void
+  >;
 }
 
 const INDETERMINATE = "__INDETERMINATE__" as const;
@@ -50,19 +49,19 @@ type Indeterminate = typeof INDETERMINATE;
 const CONTROLLED = "__CONTROLLED__" as const;
 type Controlled = typeof CONTROLLED;
 
-const getInitialValue = <V extends AllowedSelectValue, B extends SelectBehaviorType>({
+const getInitialValue = <V extends types.AllowedSelectValue, B extends types.SelectBehaviorType>({
   behavior,
   initialValue,
   __private_controlled_value__,
-}: Omit<UseSelectValueParams<V, B>, "onSelect" | "onChange" | "onClear" | "onDeselect" | "on">):
-  | SelectValue<V, B>
+}: Pick<UseSelectValueParams<V, B>, "behavior" | "initialValue" | "__private_controlled_value__">):
+  | types.SelectValue<V, B>
   | Controlled => {
   if (__private_controlled_value__ === undefined) {
     if (initialValue === undefined) {
-      if (behavior === SelectBehaviorTypes.SINGLE_NULLABLE) {
-        return null as SelectValue<V, B>;
-      } else if (behavior === SelectBehaviorTypes.MULTI) {
-        return [] as V[] as SelectValue<V, B>;
+      if (behavior === types.SelectBehaviorTypes.SINGLE_NULLABLE) {
+        return null as types.SelectValue<V, B>;
+      } else if (behavior === types.SelectBehaviorTypes.MULTI) {
+        return [] as V[] as types.SelectValue<V, B>;
       }
       throw new Error(
         "For a single, non-nullable select, without a controlled value, the 'initialValue' " +
@@ -79,31 +78,47 @@ const getInitialValue = <V extends AllowedSelectValue, B extends SelectBehaviorT
   return CONTROLLED;
 };
 
+type SelectInternalEventCallback<
+  E extends types.SelectEvent,
+  V extends types.AllowedSelectValue,
+  B extends types.SelectBehaviorType,
+> = (params: {
+  readonly value: types.SelectValue<V, B>;
+  readonly event: E;
+  readonly params: types.SelectEventRawParams<E, V>;
+}) => void;
+
 /**
  * A hook that is responsible for maintaining the value of a Select component, based on the behavior
- * of the Select, {@link SelectBehaviorType}, and the value-related props provided to the
+ * of the Select, {@link types.SelectBehaviorType}, and the value-related props provided to the
  * Select.
  */
-export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBehaviorType>({
+export const useSelectValue = <
+  V extends types.AllowedSelectValue,
+  B extends types.SelectBehaviorType,
+>({
   initialValue,
   behavior,
   __private_controlled_value__,
   isReady = true,
-  onEvent,
   onSelect,
   onClear,
   onDeselect,
   onChange,
-}: UseSelectValueParams<V, B>): ManagedSelectValue<V, B> => {
-  const [_value, __setValue] = useState<SelectNullableValue<V, B> | Controlled | NotSet>(() =>
-    isReady ? getInitialValue({ behavior, initialValue, __private_controlled_value__ }) : NOTSET,
+}: UseSelectValueParams<V, B>): types.ManagedSelectValue<V, B> => {
+  const [_value, __setValue] = useState<
+    types.SelectNullableValue<V, B> | Controlled | types.NotSet
+  >(() =>
+    isReady
+      ? getInitialValue({ behavior, initialValue, __private_controlled_value__ })
+      : types.NOTSET,
   );
 
   const _setValue = useCallback(
     (
       v:
-        | SelectNullableValue<V, B>
-        | ((curr: SelectNullableValue<V, B> | NotSet) => SelectValue<V, B>),
+        | types.SelectNullableValue<V, B>
+        | ((curr: types.SelectNullableValue<V, B> | types.NotSet) => types.SelectValue<V, B>),
       options?: { __private_ignore_controlled_state__: boolean },
     ) => {
       __setValue(curr => {
@@ -138,48 +153,51 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
   }, [_value, __private_controlled_value__]);
 
   const onAction = useCallback(
-    <E extends SelectEvent>(event: E, v: SelectValue<V, B>, params: SelectEventParams<E, V>) => {
-      onEvent?.(event, v, params);
-      switch (event) {
-        case "select":
-          return onSelect?.(v, params as SelectEventParams<"select", V>);
-        case "deselect":
-          return onDeselect?.(v, params as SelectEventParams<"deselect", V>);
-        case "clear":
-          return onClear?.(v);
+    <E extends types.SelectEvent>(
+      v: types.SelectValue<V, B>,
+      params: types.SelectEventParams<E, V>,
+    ) => {
+      switch (params.event) {
+        case types.SelectEvents.SELECT:
+          return onSelect?.(v, params);
+        case types.SelectEvents.DESELECT:
+          return onDeselect?.(v, params);
+        case types.SelectEvents.CLEAR:
+          return onClear?.(v, params);
       }
     },
-    [onEvent, onSelect, onClear, onDeselect],
+    [onSelect, onClear, onDeselect],
   );
 
   const setValue = useCallback(
-    <E extends SelectEvent>(
-      v: SelectValue<V, B> | ((curr: SelectNullableValue<V, B>) => SelectValue<V, B> | DoNothing),
+    <E extends types.SelectEvent>(
+      v:
+        | types.SelectValue<V, B>
+        | ((curr: types.SelectNullableValue<V, B>) => types.SelectValue<V, B> | types.DoNothing),
       event: E,
-      params: SelectEventParams<E, V>,
-      item?: MenuItemInstance,
+      params: types.SelectEventRawParams<E, V>,
+      cb?: SelectInternalEventCallback<E, V, B>,
     ) => {
-      if (value !== NOTSET) {
-        let updated: SelectValue<V, B> | DoNothing;
+      if (value !== types.NOTSET) {
+        let updated: types.SelectValue<V, B> | types.DoNothing;
         if (typeof v === "function") {
           updated = v(value);
         } else {
           updated = v;
         }
-        if (updated !== DONOTHING) {
+        if (updated !== types.DONOTHING) {
           /* If the Select is being used in a controlled fashion, do not update the value maintained
              internally in state.  It is important that the internal value be a constant value of
              type Controlled if the Select is being used in a controlled fashion. */
           if (!isControlled) {
             _setValue(updated);
           }
-          onChange?.(updated, item);
-          return onAction(event, updated, params);
+          return cb?.({ value: updated, event, params });
         }
       }
       throw new Error("Cannot set the value of a select until the 'isReady' flag is 'true'.");
     },
-    [value, isControlled, _setValue, onAction, onChange],
+    [value, isControlled, _setValue],
   );
 
   useEffect(() => {
@@ -190,9 +208,9 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
   }, [__private_controlled_value__, isReady]);
 
   const _isSelected = useCallback(
-    (v: V, val: SelectNullableValue<V, B>): boolean | Indeterminate => {
+    (v: V, val: types.SelectNullableValue<V, B>): boolean | Indeterminate => {
       switch (behavior) {
-        case SelectBehaviorTypes.MULTI: {
+        case types.SelectBehaviorTypes.MULTI: {
           if (!Array.isArray(val)) {
             logger.error(
               "Corrupted State: Detected non-array state value for multi-select! The select " +
@@ -213,7 +231,7 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
             return true;
           }
         }
-        case SelectBehaviorTypes.SINGLE: {
+        case types.SelectBehaviorTypes.SINGLE: {
           if (Array.isArray(val)) {
             logger.error(
               "Corrupted State: Detected array state value for single-select! The select " +
@@ -221,16 +239,11 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
             );
             return INDETERMINATE;
           } else if (val === null) {
-            /* logger.error(
-                 "Corrupted State: Detected null state value for non-nullable select! The select " +
-                   "behavior may be compromised.",
-               );
-               return INDETERMINATE; */
             return false;
           }
           return isEqual(val, v);
         }
-        case SelectBehaviorTypes.SINGLE_NULLABLE: {
+        case types.SelectBehaviorTypes.SINGLE_NULLABLE: {
           if (Array.isArray(val)) {
             logger.error(
               "Corrupted State: Detected array state value for single-select! The select " +
@@ -251,7 +264,7 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
 
   const isSelected = useCallback(
     (v: V): boolean => {
-      if (value !== NOTSET) {
+      if (value !== types.NOTSET) {
         const selected = _isSelected(v, value);
         /* If the selected state is indeterminate, it means there is corrupted state.  In this case,
            we have to assume that the value is not selected.  This may lead to buggy behavior, but
@@ -263,77 +276,77 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
     [value, _isSelected],
   );
 
-  const select = useCallback(
-    (v: V, item?: MenuItemInstance) => {
-      if (value !== NOTSET) {
+  const _select = useCallback(
+    (v: V, cb?: SelectInternalEventCallback<typeof types.SelectEvents.SELECT, V, B>) => {
+      if (value !== types.NOTSET) {
         switch (behavior) {
-          case SelectBehaviorTypes.MULTI: {
+          case types.SelectBehaviorTypes.MULTI: {
             return setValue(
-              (prev): SelectValue<V, B> | DoNothing => {
+              (prev): types.SelectValue<V, B> | types.DoNothing => {
                 const selected = _isSelected(v, prev);
                 /* If the selected state is corrupted, simply return just the current value being
                    selected as a fallback. */
                 if (selected === INDETERMINATE) {
-                  return [v] as SelectValue<V, B>;
+                  return [v] as types.SelectValue<V, B>;
                 } else if (selected) {
                   logger.warn(
                     "Inconsistent State: Cannot select an already-selected value!  This either " +
                       "indicates that there are duplicate values for the same item in the " +
                       "select or that the select is being performed for an already selected item.",
                   );
-                  return DONOTHING;
+                  return types.DONOTHING;
                 }
-                return [...(prev as V[]), v] as SelectValue<V, B>;
+                return [...(prev as V[]), v] as types.SelectValue<V, B>;
               },
-              "select",
+              types.SelectEvents.SELECT,
               { selected: v },
-              item,
+              cb,
             );
           }
-          case SelectBehaviorTypes.SINGLE: {
+          case types.SelectBehaviorTypes.SINGLE: {
             return setValue(
-              (prev): SelectValue<V, B> | DoNothing => {
+              (prev): types.SelectValue<V, B> | types.DoNothing => {
                 const selected = _isSelected(v, prev);
                 /* If the selected state is corrupted, simply return just the current value being
                    selected as a fallback. */
                 if (selected === INDETERMINATE) {
-                  return v as SelectValue<V, B>;
+                  return v as types.SelectValue<V, B>;
                 } else if (selected) {
                   logger.warn(
                     "Inconsistent State: Cannot select an already-selected value!  This either " +
                       "indicates that there are duplicate values for the same item in the " +
                       "select or that the select is being performed for an already selected item.",
                   );
-                  return DONOTHING;
+                  return types.DONOTHING;
                 }
-                return v as SelectValue<V, B>;
+                return v as types.SelectValue<V, B>;
               },
-              "select",
+              types.SelectEvents.SELECT,
               { selected: v },
-              item,
+              cb,
             );
           }
-          case SelectBehaviorTypes.SINGLE_NULLABLE: {
+          case types.SelectBehaviorTypes.SINGLE_NULLABLE: {
             return setValue(
-              (prev): SelectValue<V, B> | DoNothing => {
+              (prev): types.SelectValue<V, B> | types.DoNothing => {
                 const selected = _isSelected(v, prev);
                 /* If the selected state is corrupted, simply return just the current value being
                    selected as a fallback. */
                 if (selected === INDETERMINATE) {
-                  return v as SelectValue<V, B>;
+                  return v as types.SelectValue<V, B>;
                 } else if (selected) {
                   logger.warn(
                     "Inconsistent State: Cannot select an already-selected value!  This either " +
                       "indicates that there are duplicate values for the same item in the " +
                       "select or that the select is being performed for an already selected item.",
                   );
-                  return DONOTHING;
+                  return types.DONOTHING;
                 }
-                return v as SelectValue<V, B>;
+                return v as types.SelectValue<V, B>;
               },
-              "select",
+              types.SelectEvents.SELECT,
               { selected: v },
-              item,
+              cb,
             );
           }
         }
@@ -343,56 +356,73 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
     [behavior, value, _isSelected, setValue],
   );
 
-  const deselect = useCallback(
-    (v: V, item?: MenuItemInstance) => {
-      if (value !== NOTSET) {
+  const __private__select__ = useCallback(
+    (v: V, item: MenuItemInstance) =>
+      _select(v, ({ value: updated, params, event }) => {
+        const fullParams = types.convertSelectEventRawParams<typeof types.SelectEvents.SELECT, V>(
+          params,
+          event,
+          { item },
+        );
+        onChange?.(updated, fullParams);
+        return onAction(updated, fullParams);
+      }),
+    [_select, onChange, onAction],
+  );
+
+  const _deselect = useCallback(
+    (v: V, cb?: SelectInternalEventCallback<typeof types.SelectEvents.DESELECT, V, B>) => {
+      if (!types.isDeselectable(behavior)) {
+        throw new Error(`Cannot deselect a select with behavior '${behavior}'!`);
+      }
+      if (value !== types.NOTSET) {
         switch (behavior) {
-          case SelectBehaviorTypes.MULTI:
+          case types.SelectBehaviorTypes.MULTI:
             return setValue(
-              (prev): SelectValue<V, B> | DoNothing => {
+              (prev): types.SelectValue<V, B> | types.DoNothing => {
                 const selected = _isSelected(v, prev);
                 /* If the selected state is corrupted, simply return just an empty value as a
                    fallback. */
                 if (selected === INDETERMINATE) {
-                  return [] as V[] as SelectValue<V, B>;
+                  return [] as V[] as types.SelectValue<V, B>;
                 } else if (!selected) {
                   logger.warn(
                     "Inconsistent State: Cannot deselect an unselected value!  This either " +
                       "indicates that there are duplicate values for the same item in the select " +
                       "or that the deselect is being performed for an unselected item.",
                   );
-                  return DONOTHING;
+                  return types.DONOTHING;
                 }
                 /* This type coercion is safe, because if the previous value were not an array, the
                   '_isSelected' method would have returned 'INDETERMINATE'. */
-                return (prev as V[]).filter(vi => !isEqual(vi, v)) as SelectValue<V, B>;
+                return (prev as V[]).filter(vi => !isEqual(vi, v)) as types.SelectValue<V, B>;
               },
-              "deselect",
+              types.SelectEvents.DESELECT,
               { deselected: v },
-              item,
+              cb,
             );
-          case SelectBehaviorTypes.SINGLE:
+          case types.SelectBehaviorTypes.SINGLE:
             return logger.warn("Cannot deselect an item in a single non-nullable select!");
-          case SelectBehaviorTypes.SINGLE_NULLABLE:
+          case types.SelectBehaviorTypes.SINGLE_NULLABLE:
             return setValue(
-              (prev): SelectValue<V, B> | DoNothing => {
+              (prev): types.SelectValue<V, B> | types.DoNothing => {
                 const selected = _isSelected(v, prev);
                 /* If the selected state is corrupted, simply return null as a fallback. */
                 if (selected === INDETERMINATE) {
-                  return null as SelectValue<V, B>;
+                  return null as types.SelectValue<V, B>;
                 } else if (!selected) {
                   logger.warn(
                     "Inconsistent State: Cannot deselect an unselected value!  This either " +
                       "indicates that there are duplicate values for the same item in the select " +
                       "or that the deselect is being performed for an unselected item.",
                   );
-                  return DONOTHING;
+                  return types.DONOTHING;
                 }
-                return null as SelectValue<V, B>;
+                return null as types.SelectValue<V, B>;
               },
-              "deselect",
+              types.SelectEvents.DESELECT,
               { deselected: v },
-              item,
+              cb,
             );
         }
       }
@@ -401,36 +431,102 @@ export const useSelectValue = <V extends AllowedSelectValue, B extends SelectBeh
     [behavior, value, _isSelected, setValue],
   );
 
-  const toggle = useCallback(
-    (v: V, item?: MenuItemInstance) => {
-      if (isSelected(v)) {
-        return deselect(v, item);
+  const __private__deselect__ = useCallback(
+    (v: V, item: MenuItemInstance) => {
+      if (!types.isDeselectable(behavior)) {
+        throw new Error(`Cannot deselect a select with behavior '${behavior}'!`);
       }
-      return select(v, item);
+      _deselect(v, ({ value: updated, params, event }) => {
+        const fullParams = types.convertSelectEventRawParams<typeof types.SelectEvents.DESELECT, V>(
+          params,
+          event,
+          { item },
+        );
+        onChange?.(updated, fullParams);
+        onAction(updated, fullParams);
+      });
     },
-    [isSelected, select, deselect],
+    [behavior, _deselect, onChange, onAction],
   );
 
-  const clear = useCallback(() => {
-    switch (behavior) {
-      case SelectBehaviorTypes.MULTI:
-        return setValue([] as V[] as SelectValue<V, B>, "clear", {});
-      case SelectBehaviorTypes.SINGLE:
-        return logger.warn("Cannot clear a single non-nullable select!");
-      case SelectBehaviorTypes.SINGLE_NULLABLE:
-        return setValue(null as SelectValue<V, B>, "clear", {});
-      default:
-        throw new UnreachableCaseError();
-    }
-  }, [behavior, setValue]);
+  const _toggle = useCallback(
+    (v: V) => {
+      if (isSelected(v)) {
+        if (!types.isDeselectable(behavior)) {
+          logger.warn(`Cannot deselect a select with behavior '${behavior}'!`);
+          return;
+        }
+        return _deselect(v);
+      }
+      return _select(v);
+    },
+    [behavior, _deselect, _select, isSelected],
+  );
+
+  const __private__toggle__ = useCallback(
+    (v: V, item: MenuItemInstance) => {
+      if (isSelected(v)) {
+        if (!types.isDeselectable(behavior)) {
+          logger.warn(`Cannot deselect a select with behavior '${behavior}'!`);
+          return;
+        }
+        return __private__deselect__(v, item);
+      }
+      return __private__select__(v, item);
+    },
+    [behavior, __private__deselect__, __private__select__, isSelected],
+  );
+
+  const _clear = useCallback(
+    (cb?: SelectInternalEventCallback<typeof types.SelectEvents.CLEAR, V, B>) => {
+      if (!types.isClearable(behavior)) {
+        throw new Error(`Cannot clear a select with behavior '${behavior}'!`);
+      }
+      switch (behavior) {
+        case types.SelectBehaviorTypes.MULTI:
+          setValue([] as V[] as types.SelectValue<V, B>, types.SelectEvents.CLEAR, {});
+          return;
+        case types.SelectBehaviorTypes.SINGLE:
+          throw new UnreachableCaseError(
+            "A single, non-nullable select should not be clearable.  This code should be " +
+              "considered unreachable, as whether or not the select is clearable should have " +
+              "been previously checked before this code was encountered.",
+          );
+        case types.SelectBehaviorTypes.SINGLE_NULLABLE:
+          setValue(null as types.SelectValue<V, B>, types.SelectEvents.CLEAR, {}, cb);
+          return;
+        default:
+          throw new UnreachableCaseError(`Invalid behavior '${behavior}'!`);
+      }
+    },
+    [behavior, setValue],
+  );
+
+  const __private__clear__ = useCallback(
+    () =>
+      _clear(({ value: updated, params, event }) => {
+        const fullParams = types.convertSelectEventRawParams<typeof types.SelectEvents.CLEAR, V>(
+          params,
+          event,
+          {},
+        );
+        onChange?.(updated, fullParams);
+        onAction(updated, fullParams);
+      }),
+    [_clear, onChange, onAction],
+  );
 
   return {
     value,
+    __private__clear__: types.ifClearable(__private__clear__, behavior),
+    __private__deselect__: types.ifDeselectable(__private__deselect__, behavior),
+    __private__select__,
+    __private__toggle__,
     set: _setValue,
-    clear,
+    clear: types.ifDeselectable(() => _clear(), behavior),
     isSelected,
-    deselect: deselect as IfDeselectable<B, (value: V) => void, never>,
-    select,
-    toggle,
+    deselect: types.ifDeselectable((v: V) => _deselect(v), behavior),
+    select: (v: V) => _select(v),
+    toggle: (v: V) => _toggle(v),
   };
 };

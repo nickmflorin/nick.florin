@@ -1,10 +1,14 @@
 "use client";
-import { forwardRef, type ForwardedRef, useState } from "react";
+import { forwardRef, type ForwardedRef, useState, useCallback, useRef, useEffect } from "react";
 
+import { type ApiSkill } from "~/database/model";
 import { logger } from "~/internal/logger";
 
 import { type ActionVisibility } from "~/actions";
+import { createSkill } from "~/actions/skills/create-skill";
+import { apiClient } from "~/api";
 import { type ApiError } from "~/api";
+import { type ApiClientResponseOrError } from "~/api/client";
 
 import type { SelectBehaviorType } from "~/components/input/select";
 import { Text } from "~/components/typography";
@@ -19,37 +23,82 @@ export interface ClientSkillsSelectProps<B extends SelectBehaviorType>
   readonly onError?: (e: ApiError) => void;
 }
 
+type FetchSearchParams = {
+  readonly search?: string;
+  readonly loadingClosure?: (v: boolean) => void;
+};
+
 export const ClientSkillsSelect = forwardRef(
   <B extends SelectBehaviorType>(
     { visibility, onError, ...props }: ClientSkillsSelectProps<B>,
     ref: ForwardedRef<SkillsSelectInstance<B>>,
   ): JSX.Element => {
-    const [localSeach, setLocalSearch] = useState("");
-    const [search, _setSearch] = useState("");
+    const lastSearchedRef = useRef<string | null>(null);
 
-    const setSearch = useDebounceCallback((v: string) => _setSearch(v), 300);
+    const [localSearch, setLocalSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const setSearch = useDebounceCallback((v: string) => setDebouncedSearch(v), 300);
 
-    const {
-      data,
-      isLoading: isLoading,
-      error,
-    } = useSkills({
-      query: { includes: [], visibility, orderBy: "label", order: "asc", search },
-      keepPreviousData: true,
-      onError: e => {
-        logger.error(e, "There was an error loading the skills via the API.", {
-          search,
-        });
-        onError?.(e);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<ApiError | string | undefined>(undefined);
+    const [data, setData] = useState<ApiSkill<[]>[] | undefined>(undefined);
+
+    const fetchSkills = useCallback(
+      async (params: FetchSearchParams) => {
+        const search = params.search ?? lastSearchedRef.current ?? "";
+        params.loadingClosure?.(true);
+        const response: ApiClientResponseOrError<ApiSkill<[]>[]> = await apiClient.get(
+          "/api/skills",
+          {
+            includes: [],
+            visibility,
+            orderBy: "label",
+            order: "asc",
+            search,
+          },
+          { processed: true, strict: false },
+        );
+        const { error: e, response: data } = response;
+        if (e) {
+          setError(e);
+          onError?.(e);
+          logger.error(e, "There was an error loading the skills via the API.", {
+            search,
+          });
+          return params.loadingClosure?.(false);
+        }
+        lastSearchedRef.current = search;
+        params.loadingClosure?.(false);
+        return setData(data);
       },
-    });
+      [visibility, onError],
+    );
+
+    useEffect(() => {
+      fetchSkills({ search: debouncedSearch, loadingClosure: setIsLoading });
+    }, [debouncedSearch, fetchSkills]);
+
+    /* const {
+         data,
+         isLoading: isLoading,
+         error,
+       } = useSkills({
+         query: { includes: [], visibility, orderBy: "label", order: "asc", search },
+         keepPreviousData: true,
+         onError: e => {
+           logger.error(e, "There was an error loading the skills via the API.", {
+             search,
+           });
+           onError?.(e);
+         },
+       }); */
 
     return (
       <SkillsSelect
         summarizeValueAfter={2}
         {...props}
         ref={ref}
-        search={localSeach}
+        search={localSearch}
         isReady={data !== undefined && props.isReady !== false}
         data={data ?? []}
         isDisabled={error !== undefined || props.isDisabled}
@@ -70,11 +119,18 @@ export const ClientSkillsSelect = forwardRef(
             icon: { name: "plus-circle", iconStyle: "solid" },
             iconClassName: "text-green-700",
             isVisible:
-              localSeach.trim().length !== 0 &&
-              (data ?? []).filter(sk => sk.label === search).length === 0,
-            onClick: () => {
+              localSearch.trim().length !== 0 &&
+              (data ?? []).filter(sk => sk.label === localSearch).length === 0,
+            onClick: async () => {
               /* eslint-disable-next-line no-console -- This is temporary. */
               console.log("Added Skill");
+              let response: Awaited<ReturnType<typeof createSkill>>;
+              try {
+                response = await createSkill({ label: localSearch });
+              } catch (e) {
+                console.error(e);
+                return;
+              }
             },
           },
         ]}
