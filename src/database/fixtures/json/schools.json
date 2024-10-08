@@ -28,11 +28,11 @@
           "highlighted": true,
           "skills": [
             "data-visualizations",
-            "django",
-            "python",
             "matlab",
+            "django",
             "optimization-methods",
             "numerical-computation",
+            "python",
             "vba",
             "r",
             "scipy",
@@ -129,7 +129,7 @@
               "updatedAt": "2024-09-21T16:34:54.975Z",
               "visible": true,
               "description": null,
-              "skills": ["python", "matlab", "optimization-methods", "numerical-computation"]
+              "skills": ["matlab", "optimization-methods", "numerical-computation", "python"]
             }
           ],
           "details": []
@@ -151,11 +151,11 @@
           "highlighted": true,
           "skills": [
             "data-visualizations",
-            "django",
-            "python",
             "matlab",
+            "django",
             "optimization-methods",
             "numerical-computation",
+            "python",
             "scipy",
             "pandas",
             "numpy",
@@ -240,7 +240,7 @@
           "postPoned": false,
           "visible": true,
           "highlighted": true,
-          "skills": ["python", "matlab", "numerical-computation", "c-plus-plus"],
+          "skills": ["matlab", "numerical-computation", "python", "c-plus-plus"],
           "courses": [
             {
               "name": "Computer Science",
@@ -350,7 +350,7 @@
               "updatedAt": "2024-09-21T16:34:37.259Z",
               "visible": true,
               "description": null,
-              "skills": ["python", "matlab", "numerical-computation"]
+              "skills": ["matlab", "numerical-computation", "python"]
             }
           ],
           "details": []

@@ -44,4 +44,4 @@ const script: cli.Script = async () => {
   });
 };
 
-cli.runScript(script, { upsertUser: true, devOnly: true });
+cli.runScript(script, { upsertUser: false, devOnly: false });

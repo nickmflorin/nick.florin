@@ -43,7 +43,7 @@ export const environment = NextEnvironment.create(
       LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY,
       LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
       CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
-      PERSONAL_CLERK_USER_ID: process.env.PERSONAL_CLERK_USER_ID,
+      SCRIPT_CONTEXT_CLERK_USER_ID: process.env.SCRIPT_CONTEXT_CLERK_USER_ID,
       APP_NAME_FORMAL: process.env.APP_NAME_FORMAL,
       FONT_AWESOME_KIT_TOKEN: process.env.FONT_AWESOME_KIT_TOKEN,
       SITE_URL: process.env.SITE_URL,
@@ -89,7 +89,7 @@ export const environment = NextEnvironment.create(
         preview: z.string().startsWith("sk_test"),
         production: z.string().startsWith("sk_live"),
       }[environmentName],
-      PERSONAL_CLERK_USER_ID: {
+      SCRIPT_CONTEXT_CLERK_USER_ID: {
         test: z.literal("").optional(),
         development: z.string().startsWith("user_"),
         local: z.string().startsWith("user_"),
