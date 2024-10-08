@@ -3,13 +3,7 @@ import { useRef } from "react";
 import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
 import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
 
-import {
-  apiClient,
-  isApiError,
-  isSuperJsonResult,
-  type ApiClientError,
-  type ApiError,
-} from "~/api";
+import { apiClient, isApiError, type ApiClientError, type ApiError } from "~/api";
 import {
   type HttpNetworkError,
   type HttpSerializationError,
@@ -44,9 +38,6 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
   path: Key,
   { onError: _onError, query, ...config }: SWRConfig<T, Q>,
 ): SWRResponse<T> => {
-  /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Temp workaround for tests. */
-  const superjson = require("superjson");
-
   const initialResponseReceived = useRef<boolean>(false);
 
   /* If the `onError` configuration callback is provided, it is very important that the globally

@@ -100,12 +100,12 @@ export type InferredDataSelectBehavior<
 export type DataSelectValue<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-> = SelectValue<InferredDataSelectValue<M, O>, O["behavior"]>;
+> = SelectValue<InferredDataSelectValue<M, O>, InferredDataSelectBehavior<M, O>>;
 
 export type DataSelectNullableValue<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-> = SelectNullableValue<InferredDataSelectValue<M, O>, O["behavior"]>;
+> = SelectNullableValue<InferredDataSelectValue<M, O>, InferredDataSelectBehavior<M, O>>;
 
 export type DataSelectModelValue<
   M extends DataSelectModel,
