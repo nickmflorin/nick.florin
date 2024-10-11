@@ -62,7 +62,7 @@ export interface MenuItemProps
   readonly children: ReactNode | ((params: types.MenuItemRenderProps) => ReactNode);
   readonly onClick?: (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    instance: types.MenuItemInstance,
+    instance: types.ConnectedMenuItemInstance,
   ) => void;
 }
 
@@ -244,7 +244,7 @@ const MenuItemContent = ({
   );
 };
 
-export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
+export const MenuItem = forwardRef<types.ConnectedMenuItemInstance, MenuItemProps>(
   (
     {
       height,
@@ -321,6 +321,7 @@ export const MenuItem = forwardRef<types.MenuItemInstance, MenuItemProps>(
             if (!isDisabled && !isLocked && !isLoading) {
               props.onClick?.(e, {
                 ...(localRef.current as HTMLDivElement),
+                isConnected: true,
                 setLoading,
                 setDisabled,
                 setLocked,

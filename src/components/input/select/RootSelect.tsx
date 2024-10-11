@@ -79,11 +79,11 @@ export const RootSelect = forwardRef(
         {...pickSelectPopoverProps(props)}
         ref={popoverRef}
         inPortal={inPortal}
-        content={({ params, ref, styles, isOpen, setIsOpen }) => (
+        content={({ params, ref: _ref, styles, isOpen, setIsOpen }) => (
           <SelectPopoverContent
             {...params}
             style={styles}
-            ref={ref}
+            ref={_ref}
             className={popoverClassName}
             inPortal={inPortal}
             isLoading={popoverIsLoading}

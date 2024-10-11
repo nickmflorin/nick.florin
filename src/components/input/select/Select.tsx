@@ -9,9 +9,8 @@ import React, {
 } from "react";
 
 import { type FloatingContentRenderProps } from "~/components/floating";
-import { useSelectValue } from "~/components/input/select/hooks";
+import { useSelect } from "~/components/input/select/hooks";
 import * as types from "~/components/input/select/types";
-import type { MenuItemInstance } from "~/components/menus";
 import { type ComponentProps } from "~/components/types";
 
 import { RootSelect, type RootSelectProps } from "./RootSelect";
@@ -74,7 +73,7 @@ export const Select = forwardRef(
 
     const innerRef = useRef<types.RootSelectInstance | null>(null);
 
-    const { value, clear, ...managed } = useSelectValue<V, B>({
+    const { value, clear, ...managed } = useSelect<V, B>({
       initialValue,
       __private_controlled_value__: _propValue,
       behavior,
@@ -92,14 +91,9 @@ export const Select = forwardRef(
     const select = useMemo(
       (): types.SelectInstance<V, B> => ({
         ...managed,
-        clear: types.ifClearable<() => void, B>(() => clear(), behavior),
-        __private__clear__: types.ifClearable<() => void, B>(() => clear(), behavior),
+        clear: types.ifClearable<types.SelectInstance<V, B>["clear"], B>(clear, behavior),
         setValue: v => managed.set(v),
-        deselect: types.ifDeselectable((v: V) => managed.deselect(v), behavior),
-        __private__deselect__: types.ifDeselectable(
-          (v: V, item?: MenuItemInstance) => managed.__private__deselect__(v, item),
-          behavior,
-        ),
+        deselect: types.ifDeselectable(managed.deselect, behavior),
         focusInput: () => innerRef.current?.focusInput(),
         setOpen: (v: boolean) => innerRef.current?.setOpen(v),
         setInputLoading: (v: boolean) => innerRef.current?.setInputLoading(v),
@@ -115,7 +109,7 @@ export const Select = forwardRef(
       if (_onClear || isClearable) {
         return () => {
           _onClear?.();
-          clear();
+          clear({ dispatchChangeEvent: true });
         };
       }
       return undefined;

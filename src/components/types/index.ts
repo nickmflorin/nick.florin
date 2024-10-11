@@ -6,3 +6,4 @@ export * from "./props";
 export * from "./sizes";
 export * from "./typography";
 export * from "./theme";
+export * from "./util";

@@ -28,7 +28,7 @@ export const useProcessedData = <M extends types.DataMenuModel>({
 
     const visibleData = data.filter(
       model =>
-        types.evalMenuItemFlag("isVisible", itemIsVisible, model) !== false &&
+        types.evalMenuItemFlag("isVisible", model, itemIsVisible) !== false &&
         model.isVisible !== false,
     );
 
@@ -42,7 +42,7 @@ export const useProcessedData = <M extends types.DataMenuModel>({
               filtered.reduce(
                 (gp, model) => ({
                   ...gp,
-                  data: [...gp.data, { model, index: getUpdatedIndex() }],
+                  data: [...gp.data, { model, index: getUpdatedIndex(), isCustom: false }],
                 }),
                 {
                   isGroup: true,
@@ -55,16 +55,18 @@ export const useProcessedData = <M extends types.DataMenuModel>({
           return processed;
         },
         !hideGrouplessItems
-          ? visibleData.reduce((acc, model) => {
+          ? visibleData.reduce((acc, model): types.DataMenuProcessedData<M> => {
               if (!groups || groups.length === 0 || groups.every(group => !group.filter(model))) {
-                return [...acc, { model, index: getUpdatedIndex() }];
+                return [...acc, { model, index: getUpdatedIndex(), isCustom: false }];
               }
               return acc;
             }, [] as types.DataMenuProcessedData<M>)
           : ([] as types.DataMenuProcessedData<M>),
       ),
       ...bottomItems
-        .filter(item => (types.dataMenuCustomModelIsObject(item) ? item.isVisible !== false : true))
+        .filter(item =>
+          types.dataMenuModelArgIsCustomModel(item) ? item.isVisible !== false : true,
+        )
         .map(
           (item): types.DataMenuProcessedCustom => ({
             model: item,

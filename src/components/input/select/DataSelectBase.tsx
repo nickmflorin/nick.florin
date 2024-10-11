@@ -9,24 +9,20 @@ import React, {
 } from "react";
 
 import type { FloatingContentRenderProps } from "~/components/floating";
-import { useSelectModelValue } from "~/components/input/select/hooks";
+import { useDataSelect } from "~/components/input/select/hooks";
 import { type MultiValueRendererProps } from "~/components/input/select/MultiValueRenderer";
 import * as types from "~/components/input/select/types";
 import { type ComponentProps } from "~/components/types";
+import { ifRefConnected } from "~/components/types";
 
 import { DataSelectInput } from "./DataSelectInput";
 import { RootSelect, type RootSelectProps } from "./RootSelect";
 import { type RootSelectInputInstance } from "./RootSelectInput";
 
-export interface DataSelectBaseInstance<
-  M extends types.DataSelectModel,
-  O extends types.DataSelectOptions<M>,
-> extends Omit<types.DataSelectInstance<M, O>, "setContentLoading" | "setLoading"> {}
-
 export interface DataSelectBaseProps<
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
-  I extends DataSelectBaseInstance<M, O> = DataSelectBaseInstance<M, O>,
+  I extends types.DataSelectBaseInstance<M, O> = types.DataSelectBaseInstance<M, O>,
 > extends Omit<
       RootSelectProps,
       "content" | "onClear" | "renderedValue" | "showPlaceholder" | "inputRef"
@@ -63,9 +59,9 @@ export interface DataSelectBaseProps<
     modelValue: types.DataSelectModelValue<M, O>,
     select: I,
   ) => ReactNode;
-  readonly getItemId?: (m: Omit<M, "onClick">) => string | number | undefined;
+  readonly getModelId?: (m: Omit<M, "onClick">) => string | number;
   readonly getItemValueLabel?: (m: M) => ReactNode;
-  readonly onChange?: types.DataSelectChangeHandler<M, O>;
+  readonly onChange?: types.DataSelectBaseChangeHandler<M, O>;
   readonly content?: (
     value: types.DataSelectNullableValue<M, O>,
     select: I & Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">,
@@ -107,12 +103,12 @@ const LocalDataSelectBase = forwardRef(
       getBadgeIcon,
       ...props
     }: DataSelectBaseProps<M, O>,
-    ref: ForwardedRef<DataSelectBaseInstance<M, O>>,
+    ref: ForwardedRef<types.DataSelectBaseInstance<M, O>>,
   ): JSX.Element => {
     const selectRef = useRef<types.RootSelectInstance | null>(null);
     const inputRef = useRef<RootSelectInputInstance | null>(null);
 
-    const { value, clear, ...managed } = useSelectModelValue<M, O>({
+    const { value, clear, ...managed } = useDataSelect<M, O>({
       initialValue,
       __private_controlled_value__: _propValue,
       strictValueLookup,
@@ -131,16 +127,18 @@ const LocalDataSelectBase = forwardRef(
     });
 
     const selectInstance = useMemo(
-      (): DataSelectBaseInstance<M, O> => ({
+      (): types.DataSelectBaseInstance<M, O> => ({
         ...managed,
-        clear,
         setValue: v => managed.set(v),
-        deselect: types.ifDataSelectDeselectable(v => managed.deselect(v), options),
-        deselectModel: types.ifDataSelectDeselectable(m => managed.deselectModel(m), options),
-        focusInput: () => inputRef.current?.focus(),
-        setOpen: (v: boolean) => selectRef.current?.setOpen(v),
-        setInputLoading: (v: boolean) => inputRef.current?.setLoading(v),
-        setPopoverLoading: (v: boolean) => selectRef.current?.setPopoverLoading(v),
+        clear: types.ifDataSelectClearable(clear, options),
+        deselect: types.ifDataSelectDeselectable(managed.deselect, options),
+        focusInput: () => ifRefConnected(inputRef, i => i.focus()),
+        setOpen: (v: boolean) => ifRefConnected(selectRef, s => s.setOpen(v)),
+        setInputLoading: (v: boolean) => ifRefConnected(inputRef, i => i.setLoading(v)),
+        setPopoverLoading: (v: boolean) =>
+          ifRefConnected(selectRef, s => s.setPopoverLoading(v), {
+            methodName: "setPopoverLoading",
+          }),
       }),
       [options, managed, clear],
     );
@@ -155,7 +153,7 @@ const LocalDataSelectBase = forwardRef(
       if ((_onClear || isClearable) && value !== types.NOTSET) {
         return () => {
           _onClear?.();
-          clear();
+          clear({ dispatchChangeEvent: true });
         };
       }
       return undefined;
@@ -184,7 +182,7 @@ const LocalDataSelectBase = forwardRef(
               ...p,
               ...selectInstance,
               clear,
-            } as DataSelectBaseInstance<M, O> &
+            } as types.DataSelectBaseInstance<M, O> &
               Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">);
           }
           return <></>;
@@ -219,7 +217,11 @@ const LocalDataSelectBase = forwardRef(
               modelValue={managed.modelValue}
               className={inputClassName}
               onBadgeClose={
-                chipsCanDeselect ? (m: M) => managed.__private__deselect__model__(m) : undefined
+                chipsCanDeselect
+                  ? (m: M) => {
+                      managed.deselect(m, { dispatchChangeEvent: true });
+                    }
+                  : undefined
               }
             />
           ))}
@@ -231,7 +233,7 @@ const LocalDataSelectBase = forwardRef(
 export const DataSelectBase = LocalDataSelectBase as {
   <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
     props: DataSelectBaseProps<M, O> & {
-      readonly ref?: ForwardedRef<DataSelectBaseInstance<M, O>>;
+      readonly ref?: ForwardedRef<types.DataSelectBaseInstance<M, O>>;
     },
   ): JSX.Element;
 };

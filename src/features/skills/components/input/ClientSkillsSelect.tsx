@@ -1,6 +1,8 @@
 "use client";
 import { forwardRef, type ForwardedRef, useState, useCallback, useRef, useEffect } from "react";
 
+import { toast } from "react-toastify";
+
 import { type ApiSkill } from "~/database/model";
 import { logger } from "~/internal/logger";
 
@@ -44,6 +46,7 @@ export const ClientSkillsSelect = forwardRef(
 
     const fetchSkills = useCallback(
       async (params: FetchSearchParams) => {
+        console.log("FETCHING SKILLS")
         const search = params.search ?? lastSearchedRef.current ?? "";
         params.loadingClosure?.(true);
         const response: ApiClientResponseOrError<ApiSkill<[]>[]> = await apiClient.get(
@@ -77,21 +80,6 @@ export const ClientSkillsSelect = forwardRef(
       fetchSkills({ search: debouncedSearch, loadingClosure: setIsLoading });
     }, [debouncedSearch, fetchSkills]);
 
-    /* const {
-         data,
-         isLoading: isLoading,
-         error,
-       } = useSkills({
-         query: { includes: [], visibility, orderBy: "label", order: "asc", search },
-         keepPreviousData: true,
-         onError: e => {
-           logger.error(e, "There was an error loading the skills via the API.", {
-             search,
-           });
-           onError?.(e);
-         },
-       }); */
-
     return (
       <SkillsSelect
         summarizeValueAfter={2}
@@ -109,6 +97,8 @@ export const ClientSkillsSelect = forwardRef(
         }}
         bottomItems={[
           {
+            isCustom: true,
+            id: "add-skill",
             label: (
               <Text fontSize="sm" truncate fontWeight="medium">
                 Add Skill
@@ -118,7 +108,7 @@ export const ClientSkillsSelect = forwardRef(
             icon: { name: "plus-circle", iconStyle: "solid" },
             iconClassName: "text-green-700",
             isVisible:
-              localSearch.trim().length !== 0 &&
+              localSearch.trim().length >= 3 &&
               (data ?? []).filter(sk => sk.label === localSearch).length === 0,
             onClick: async (e, item, select) => {
               item.setLoading(true);
@@ -126,20 +116,26 @@ export const ClientSkillsSelect = forwardRef(
               try {
                 response = await createSkill({ label: localSearch });
               } catch (e) {
-                item.setLoading(false);
-                return;
+                logger.errorUnsafe(
+                  e,
+                  `There was an error creating the skill with label '${localSearch}'.`,
+                  { label: localSearch },
+                );
+                toast.error(`There was an error creating the skill.`)
+                return item.setLoading(false);
               }
               const { error, data } = response;
               if (error) {
-                item.setLoading(false);
-                return;
+                logger.error(
+                  error,
+                  `There was an error creating the skill with label '${localSearch}'.`,
+                  { label: localSearch },
+                );
+                toast.error(`There was an error creating the skill.`)
+                return item.setLoading(false);
               }
-              /* TODO: Instead of waiting for the skills to refetch here, and then performing the
-                 select - we should incorporate a 'addOptimisticModel' method to the data select
-                 instance, with an option for "preemptive-selecting". */
-              await fetchSkills({});
-              select.select(data.id);
               item.setLoading(false);
+              select.addOptimisticModel(data, { select: true, dispatchChangeEvent: true });
             },
           },
         ]}

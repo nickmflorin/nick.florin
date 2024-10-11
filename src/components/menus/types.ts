@@ -9,13 +9,161 @@ import { type Action } from "~/components/structural/Actions";
 import { type ComponentProps, type QuantitativeSize } from "~/components/types";
 import { type LabelProps } from "~/components/typography";
 
+import { type DataMenuProps } from "./DataMenu";
+
 export type MenuItemClickEvent = React.MouseEvent<HTMLDivElement, MouseEvent> | KeyboardEvent;
 
-export type MenuItemInstance = {
+export type DisconnectedMenuItemInstance = {
+  readonly isConnected: false;
   readonly setLocked: (value: boolean) => void;
   readonly setDisabled: (value: boolean) => void;
   readonly setLoading: (value: boolean) => void;
 };
+
+export type ConnectedMenuItemInstance = {
+  readonly isConnected?: true;
+  readonly setLocked: (value: boolean) => void;
+  readonly setDisabled: (value: boolean) => void;
+  readonly setLoading: (value: boolean) => void;
+};
+
+export type MenuItemInstance = DisconnectedMenuItemInstance | ConnectedMenuItemInstance;
+
+/* ---------------------------------- Data Menu Model -----------------------------------------*/
+export type BaseDataMenuModel = {
+  readonly icon?: IconProp | IconName | JSX.Element;
+  readonly description?: ReactNode;
+  readonly iconProps?: MenuItemIconProps;
+  readonly iconSize?: QuantitativeSize<"px">;
+  readonly iconClassName?: ComponentProps["className"];
+  readonly spinnerClassName?: ComponentProps["className"];
+  readonly disabledClassName?: ComponentProps["className"];
+  readonly loadingClassName?: ComponentProps["className"];
+  readonly lockedClassName?: ComponentProps["className"];
+  readonly className?: ComponentProps["className"];
+  readonly label?: ReactNode;
+  readonly isLocked?: boolean;
+  readonly isLoading?: boolean;
+  readonly isDisabled?: boolean;
+  readonly isVisible?: boolean;
+  readonly actions?: Action[];
+  readonly onClick?: (e: MenuItemClickEvent, instance: ConnectedMenuItemInstance) => void;
+};
+
+export type DataMenuModel = BaseDataMenuModel & {
+  readonly id?: string | number;
+  readonly selectedClassName?: ComponentProps["className"];
+  readonly isSelected?: boolean;
+  readonly renderer?: never;
+  readonly isCustom?: never;
+};
+
+export type DataMenuModelCustomRenderer = (instance: ConnectedMenuItemInstance) => JSX.Element;
+
+export type DataMenuCustomModel = BaseDataMenuModel & {
+  readonly id: string;
+  readonly isCustom: true;
+  readonly selectedClassName?: never;
+  readonly isSelected?: never;
+  readonly renderer?: DataMenuModelCustomRenderer;
+};
+
+export type GetDataMenuModelId<
+  M extends DataMenuModel,
+  I extends string | number = string | number,
+> = (datum: M) => I;
+
+export type DataMenuModelId<M extends DataMenuModel, O extends DataMenuOptions<M>> = O extends {
+  getModelId: infer Fn;
+}
+  ? Fn extends GetDataMenuModelId<M, infer I extends string | number>
+    ? I
+    : never
+  : M extends { id: infer V extends string | number }
+    ? V
+    : never;
+
+export type DataMenuCustomModelRefKey = `custom-${string}`;
+
+export const getDataMenuModelId = <
+  M extends DataMenuModel,
+  O extends DataMenuOptions<M>,
+  P extends { readonly strict?: boolean },
+>(
+  m: M,
+  options: O,
+  params?: P,
+): P extends { strict: true } ? DataMenuModelId<M, O> : DataMenuModelId<M, O> | null => {
+  if (options.getModelId !== undefined) {
+    return options.getModelId(m) as DataMenuModelId<M, O>;
+  } else if (m.id !== undefined) {
+    return m.id as DataMenuModelId<M, O>;
+  } else if (params?.strict) {
+    throw new Error(
+      "Encountered a model for which the id could not be constructed.  The model itself " +
+        "did not define an 'id' property, and the 'getModelId' option was not defined.",
+    );
+  }
+  return null as P extends { strict: true } ? DataMenuModelId<M, O> : DataMenuModelId<M, O> | null;
+};
+
+export type GetDataMenuModelRefKey<
+  M extends DataMenuModel,
+  K extends string | number = string | number,
+> = (m: M) => K;
+
+export type DataMenuModelRefKey<M extends DataMenuModel, O extends DataMenuOptions<M>> = O extends {
+  getModelRefKey: infer Fn;
+}
+  ? Fn extends GetDataMenuModelRefKey<M, infer K extends string | number>
+    ? K
+    : never
+  : DataMenuModelId<M, O>;
+
+export const getDataMenuModelRefKey = <
+  M extends DataMenuModel,
+  O extends DataMenuOptions<M>,
+  P extends { readonly strict?: boolean },
+>(
+  m: M,
+  options: O,
+  params?: P,
+): P extends { strict: true } ? DataMenuModelRefKey<M, O> : DataMenuModelRefKey<M, O> | null => {
+  if (options.getModelRefKey !== undefined) {
+    return options.getModelRefKey(m) as DataMenuModelRefKey<M, O>;
+  }
+  const id = getDataMenuModelId(m, options, { strict: false });
+  if (id !== null) {
+    return id as DataMenuModelRefKey<M, O>;
+  } else if (params?.strict) {
+    throw new Error(
+      "Encountered a model for which the ref key could not be constructed.  The model itself " +
+        "did not define either an 'id' property or a 'refKey' property, and both the " +
+        "'getModelRefKey' and 'getModelId' options were not defined.",
+    );
+  }
+  return null as P extends { strict: true }
+    ? DataMenuModelRefKey<M, O>
+    : DataMenuModelRefKey<M, O> | null;
+};
+
+export type DataMenuOptions<M extends DataMenuModel> = {
+  readonly getModelRefKey?: GetDataMenuModelRefKey<M>;
+  readonly getModelId?: GetDataMenuModelId<M>;
+};
+
+export const dataMenuModelArgIsCustomModel = <M extends DataMenuModel>(
+  m: M | DataMenuCustomModel | JSX.Element,
+): m is DataMenuCustomModel => (m as DataMenuCustomModel).isCustom;
+
+export const dataMenuModelArgIsModel = <M extends DataMenuModel>(
+  m: M | DataMenuCustomModel | JSX.Element,
+): m is M =>
+  typeof m !== "function" &&
+  !React.isValidElement(m) &&
+  (m as DataMenuModel).isCustom === undefined;
+
+/* ---------------------------------- Data Menu Props -----------------------------------------*/
 
 export type MenuItemRenderProps = {
   readonly isLocked: boolean;
@@ -68,42 +216,6 @@ export interface MenuFeedbackProps {
 export const hasFeedback = (
   props: Pick<MenuFeedbackProps, "isError" | "isEmpty" | "hasNoResults">,
 ) => props.isEmpty === true || props.isError === true || props.hasNoResults === true;
-
-export type BaseDataMenuModel = {
-  readonly id?: string | number;
-  readonly icon?: IconProp | IconName | JSX.Element;
-  readonly description?: ReactNode;
-  readonly iconProps?: MenuItemIconProps;
-  readonly iconSize?: QuantitativeSize<"px">;
-  readonly iconClassName?: ComponentProps["className"];
-  readonly spinnerClassName?: ComponentProps["className"];
-  readonly disabledClassName?: ComponentProps["className"];
-  readonly loadingClassName?: ComponentProps["className"];
-  readonly lockedClassName?: ComponentProps["className"];
-  readonly className?: ComponentProps["className"];
-  readonly label?: ReactNode;
-  readonly isLocked?: boolean;
-  readonly isLoading?: boolean;
-  readonly isDisabled?: boolean;
-  readonly isVisible?: boolean;
-  readonly actions?: Action[];
-  readonly onClick?: (e: MenuItemClickEvent, instance: MenuItemInstance) => void;
-};
-
-export type DataMenuModel = BaseDataMenuModel & {
-  readonly selectedClassName?: ComponentProps["className"];
-  readonly isSelected?: boolean;
-};
-
-export type DataMenuModelCustomRenderer = (instance: MenuItemInstance) => JSX.Element;
-
-export type DataMenuCustomModel = BaseDataMenuModel & {
-  readonly renderer?: DataMenuModelCustomRenderer;
-};
-
-export const dataMenuCustomModelIsObject = (
-  m: DataMenuCustomModel | DataMenuModelCustomRenderer | JSX.Element,
-): m is DataMenuCustomModel => typeof m !== "function" && !React.isValidElement(m);
 
 export type DataMenuModelCallbackPropFn<M extends DataMenuModel, T = unknown> = (m: M) => T;
 
@@ -158,6 +270,10 @@ const MenuItemFlagNames = [
 
 type DataMenuItemFlagName = (typeof MenuItemFlagNames)[number];
 
+const CustomMenuItemFlagNames = ["isDisabled", "isLoading", "isVisible", "isLocked"] as const;
+
+type DataMenuCustomItemFlagName = (typeof CustomMenuItemFlagNames)[number];
+
 export type DataMenuItemFlagProp<M extends DataMenuModel> = (model: M) => boolean;
 
 export type DataMenuItemFlagProps<M extends DataMenuModel> = {
@@ -180,11 +296,21 @@ export const pickDataMenuItemOuterFlagProps = <P extends Record<string, unknown>
   props: P,
 ): Pick<P, MenuItemFlagOuterName & keyof P> => pick(props, Object.values(MenuItemFlagOuterNames));
 
-export const evalMenuItemFlag = <M extends DataMenuModel, F extends DataMenuItemFlagName>(
+export function evalMenuItemFlag<M extends DataMenuModel, F extends DataMenuItemFlagName>(
   flag: F,
-  prop: DataMenuItemFlagProp<M> | undefined,
   model: M,
-): boolean => {
+  prop: DataMenuItemFlagProp<M> | undefined,
+): boolean;
+
+export function evalMenuItemFlag<F extends DataMenuCustomItemFlagName>(
+  flag: F,
+  model: DataMenuCustomModel,
+): boolean;
+
+export function evalMenuItemFlag<
+  M extends DataMenuModel,
+  F extends DataMenuItemFlagName | DataMenuCustomItemFlagName,
+>(flag: F, model: M, prop?: DataMenuItemFlagProp<M>): boolean {
   const modelFlag = model[flag];
   if (modelFlag !== undefined) {
     return modelFlag;
@@ -192,12 +318,6 @@ export const evalMenuItemFlag = <M extends DataMenuModel, F extends DataMenuItem
     return prop(model);
   }
   return DataMenuItemDefaultFlags[flag];
-};
-
-export interface DataMenuContentInstance {
-  readonly focus: () => void;
-  readonly incrementNavigatedIndex: () => void;
-  readonly decrementNavigatedIndex: () => void;
 }
 
 export type DataMenuGroupProps<M extends DataMenuModel> = {
@@ -221,7 +341,6 @@ export type DataMenuItemAccessorProps<M extends DataMenuModel> = {
     datum: M,
     params: Omit<MenuItemRenderProps, `set${string}`>,
   ) => ReactNode;
-  readonly getItemId?: (datum: M) => string | number | undefined;
   readonly getItemIcon?: (
     datum: M,
     params: Omit<MenuItemRenderProps, `set${string}`>,
@@ -230,7 +349,6 @@ export type DataMenuItemAccessorProps<M extends DataMenuModel> = {
 
 export const DataMenuItemAccessorPropsMap = {
   getItemDescription: true,
-  getItemId: true,
   getItemIcon: true,
 } as const satisfies { [key in keyof DataMenuItemAccessorProps<DataMenuModel>]: true };
 
@@ -256,30 +374,34 @@ export const pickDataMenuItemAccessorProps = <
     Object.keys(DataMenuItemAccessorPropsMap) as (keyof Required<DataMenuItemAccessorProps<M>>)[],
   );
 
-export type DataMenuItemClassNameProps<M extends DataMenuModel> = {
-  readonly itemClassName?: DataMenuItemClassName<M>;
+export type DataMenuItemClassNameProps<
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  C extends DataMenuItemClassName<any> | ComponentProps["className"],
+> = {
+  readonly itemClassName?: C;
   readonly itemHeight?: QuantitativeSize<"px">;
-  readonly itemNavigatedClassName?: DataMenuItemClassName<M>;
-  readonly itemSpinnerClassName?: DataMenuItemClassName<M>;
-  readonly itemIconClassName?: DataMenuItemClassName<M>;
+  readonly itemNavigatedClassName?: C;
+  readonly itemSpinnerClassName?: C;
+  readonly itemIconClassName?: C;
   readonly itemIconProps?: MenuItemIconProps;
   readonly itemIconSize?: QuantitativeSize<"px">;
-  readonly itemDisabledClassName?: DataMenuItemClassName<M>;
-  readonly itemLoadingClassName?: DataMenuItemClassName<M>;
-  readonly itemLockedClassName?: DataMenuItemClassName<M>;
-  readonly itemSelectedClassName?: DataMenuItemClassName<M>;
+  readonly itemDisabledClassName?: C;
+  readonly itemLoadingClassName?: C;
+  readonly itemLockedClassName?: C;
+  readonly itemSelectedClassName?: C;
 };
 
+/* ------------------------------ Data Menu Model Processing -----------------------------------*/
 export type DataMenuProcessedGroup<M extends DataMenuModel> = {
   readonly label?: ReactNode;
   readonly isGroup: true;
-  readonly isCustom?: false;
-  readonly data: { model: M; index: number }[];
+  readonly isCustom?: never;
+  readonly data: DataMenuProcessedModel<M>[];
 };
 
 export type DataMenuProcessedModel<M extends DataMenuModel> = {
   readonly isGroup?: false;
-  readonly isCustom?: false;
+  readonly isCustom: false;
   readonly model: M;
   readonly index: number;
 };
@@ -297,3 +419,176 @@ export type DataMenuProcessedDatum<M extends DataMenuModel> =
   | DataMenuProcessedCustom;
 
 export type DataMenuProcessedData<M extends DataMenuModel> = DataMenuProcessedDatum<M>[];
+
+export type DataMenuFlattenedProcessedData<M extends DataMenuModel> = (
+  | DataMenuProcessedModel<M>
+  | DataMenuProcessedCustom
+)[];
+
+/* -------------------------- Data Menu Item Instance Management -------------------------------*/
+export type DataMenuItemInstances<M extends BaseDataMenuModel, O extends DataMenuOptions<M>> = {
+  [key in DataMenuModelRefKey<M, O> | DataMenuCustomModelRefKey]: MenuItemInstance;
+};
+
+export type DataMenuItemInstanceLookupArg<M extends DataMenuModel, O extends DataMenuOptions<M>> =
+  | M
+  | DataMenuCustomModelRefKey
+  | DataMenuModelRefKey<M, O>
+  | DataMenuCustomModel;
+
+export const menuItemInstanceLookupArgIsModel = <
+  M extends DataMenuModel,
+  O extends DataMenuOptions<M>,
+>(
+  arg: DataMenuItemInstanceLookupArg<M, O>,
+): arg is M | DataMenuCustomModel => typeof arg !== "string" && typeof arg !== "number";
+
+export type CreateDataMenuItemInstanceOptions = {
+  readonly strict?: boolean;
+};
+
+export type CreateDataMenuItemInstanceRT<O extends CreateDataMenuItemInstanceOptions> = O extends {
+  strict: true;
+}
+  ? DisconnectedMenuItemInstance
+  : DisconnectedMenuItemInstance | null;
+
+export type MenuModelInstancesManagerGetKeyRT<
+  A extends DataMenuItemInstanceLookupArg<M, O>,
+  M extends DataMenuModel,
+  O extends DataMenuOptions<M>,
+> = A extends DataMenuCustomModelRefKey | DataMenuCustomModel
+  ? DataMenuCustomModelRefKey
+  : DataMenuModelRefKey<M, O>;
+
+export interface MenuModelInstancesManager<
+  M extends BaseDataMenuModel,
+  O extends DataMenuOptions<M>,
+> {
+  readonly connect: (
+    m: DataMenuItemInstanceLookupArg<M, O>,
+    instance: ConnectedMenuItemInstance,
+  ) => void;
+  readonly getKey: <A extends DataMenuItemInstanceLookupArg<M, O>>(
+    args: A,
+  ) => MenuModelInstancesManagerGetKeyRT<A, M, O>;
+  readonly exists: (k: DataMenuItemInstanceLookupArg<M, O>) => boolean;
+  readonly get: (k: DataMenuItemInstanceLookupArg<M, O>) => MenuItemInstance | null;
+  readonly create: <CO extends CreateDataMenuItemInstanceOptions>(
+    k: DataMenuItemInstanceLookupArg<M, O>,
+    opts?: CO,
+  ) => CreateDataMenuItemInstanceRT<CO>;
+  readonly createIfNecessary: (
+    k: DataMenuItemInstanceLookupArg<M, O>,
+  ) => DisconnectedMenuItemInstance | null;
+  readonly getOrCreate: (k: DataMenuItemInstanceLookupArg<M, O>) => MenuItemInstance;
+}
+
+/* -------------------------------- Data Menu Instances -------------------------------------*/
+export interface DataMenuContentInstance<M extends DataMenuModel, O extends DataMenuOptions<M>> {
+  readonly getInstance: (m: DataMenuItemInstanceLookupArg<M, O>) => MenuItemInstance | null;
+  readonly getOrCreateInstance: (m: DataMenuItemInstanceLookupArg<M, O>) => MenuItemInstance;
+  readonly createInstanceIfNecessary: (
+    m: DataMenuItemInstanceLookupArg<M, O>,
+  ) => DisconnectedMenuItemInstance | null;
+  readonly createInstance: <CO extends CreateDataMenuItemInstanceOptions>(
+    k: DataMenuItemInstanceLookupArg<M, O>,
+    opts?: CO,
+  ) => CreateDataMenuItemInstanceRT<CO>;
+  readonly focus: () => void;
+  readonly incrementNavigatedIndex: () => void;
+  readonly decrementNavigatedIndex: () => void;
+}
+
+export type DataMenuInstance<
+  M extends DataMenuModel,
+  O extends DataMenuOptions<M>,
+> = DataMenuContentInstance<M, O>;
+
+export const DataMenuPropsMap = {
+  data: true,
+  options: true,
+  header: true,
+  footer: true,
+  search: true,
+  id: true,
+  className: true,
+  style: true,
+  enableKeyboardInteractions: true,
+  selectionIndicator: true,
+  children: true,
+  includeDescriptions: true,
+  __private_parent_prop__: true,
+  boldSubstrings: true,
+  // ~~~~~~~~ Event Handlers ~~~~~~~~
+  onFocus: true,
+  onBlur: true,
+  onSearch: true,
+  onKeyboardNavigationExit: true,
+  // ~~~~~~~~ State ~~~~~~~~
+  isDisabled: true,
+  isLocked: true,
+  isBordered: true,
+  isLoading: true,
+  // ~~~~~~~~ Groups ~~~~~~~~
+  groups: true,
+  hideEmptyGroups: true,
+  hideGrouplessItems: true,
+  groupContentClassName: true,
+  groupLabelClassName: true,
+  groupLabelContainerClassName: true,
+  groupLabelProps: true,
+  groupsAreBordered: true,
+  // ~~~~~~~~ Item State/Characteristics ~~~~~~~~
+  itemIsVisible: true,
+  getItemIcon: true,
+  getItemDescription: true,
+  onItemClick: true,
+  itemSelectedClassName: true,
+  itemIsDisabled: true,
+  itemIsLoading: true,
+  itemIsLocked: true,
+  itemIsSelected: true,
+  itemClassName: true,
+  itemHeight: true,
+  itemNavigatedClassName: true,
+  itemSpinnerClassName: true,
+  itemLockedClassName: true,
+  itemIconClassName: true,
+  itemIconProps: true,
+  itemIconSize: true,
+  itemDisabledClassName: true,
+  itemLoadingClassName: true,
+  // ~~~~~~~~ Feedback Props ~~~~~~~~
+  isEmpty: true,
+  isError: true,
+  hasNoResults: true,
+  emptyContent: true,
+  noResultsContent: true,
+  errorTitle: true,
+  errorMessage: true,
+  errorContent: true,
+  feedbackClassName: true,
+  feedbackStyle: true,
+  bottomItems: true,
+} as const satisfies {
+  [key in keyof Required<DataMenuProps<DataMenuModel, DataMenuOptions<DataMenuModel>>>]: true;
+};
+
+export const omitDataMenuProps = <
+  P extends Record<string, unknown>,
+  M extends DataMenuModel,
+  O extends DataMenuOptions<M>,
+>(
+  props: P,
+): Omit<P, keyof typeof DataMenuPropsMap & keyof P> =>
+  omit(props, Object.keys(DataMenuPropsMap) as (keyof Required<DataMenuProps<M, O>>)[]);
+
+export const pickDataMenuProps = <
+  P extends Record<string, unknown>,
+  M extends DataMenuModel,
+  O extends DataMenuOptions<M>,
+>(
+  props: P,
+): Pick<P, keyof typeof DataMenuPropsMap & keyof P> =>
+  pick(props, Object.keys(DataMenuPropsMap) as (keyof Required<DataMenuProps<M, O>>)[]);

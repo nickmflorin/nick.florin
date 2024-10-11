@@ -5,72 +5,33 @@ import { omit } from "lodash-es";
 import { type MenuItemClickEvent } from "~/components/menus";
 import * as types from "~/components/menus";
 
+import { CustomDataMenuItem } from "./CustomDataMenuItem";
 import { DataMenuItem, type DataMenuItemProps } from "./DataMenuItem";
-import { MenuItemGroup } from "./MenuItemGroup";
 
-export interface ProcessedDataMenuItemProps<M extends types.DataMenuModel>
-  extends Omit<DataMenuItemProps<M>, "datum" | "onItemClick" | "id">,
-    Omit<
-      types.DataMenuGroupProps<M>,
-      "hideEmptyGroups" | "hideGrouplessItems" | "groups" | "itemIsVisible" | "isCustom"
-    >,
-    Pick<types.DataMenuItemAccessorProps<M>, "getItemId"> {
-  readonly datum: types.DataMenuProcessedDatum<M>;
+export interface ProcessedDataMenuItemProps<
+  M extends types.DataMenuModel,
+  O extends types.DataMenuOptions<M>,
+> extends Omit<DataMenuItemProps<M>, "datum" | "onItemClick" | "id"> {
+  readonly datum: types.DataMenuProcessedModel<M> | types.DataMenuProcessedCustom;
+  readonly options: O;
   readonly onItemClick?: (
     e: MenuItemClickEvent,
     datum: M,
-    instance: types.MenuItemInstance,
+    instance: types.ConnectedMenuItemInstance,
   ) => void;
   readonly children?: (datum: M, params: types.MenuItemRenderProps) => ReactNode;
 }
 
 export const ProcessedDataMenuItem = forwardRef(
-  <M extends types.DataMenuModel>(
-    {
-      datum,
-      groupContentClassName,
-      groupLabelClassName,
-      groupLabelContainerClassName,
-      groupLabelProps,
-      getItemId,
-      children,
-      onItemClick,
-      ...props
-    }: ProcessedDataMenuItemProps<M>,
-    ref?: ForwardedRef<types.MenuItemInstance>,
+  <M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>(
+    { datum, options, children, onItemClick, ...props }: ProcessedDataMenuItemProps<M, O>,
+    ref?: ForwardedRef<types.ConnectedMenuItemInstance>,
   ) => {
-    if (datum.isGroup) {
-      return (
-        <MenuItemGroup
-          label={datum.label}
-          labelProps={groupLabelProps}
-          labelClassName={groupLabelClassName}
-          labelContainerClassName={groupLabelContainerClassName}
-          contentClassName={groupContentClassName}
-        >
-          {datum.data.map(datum => {
-            const id = getItemId?.(datum.model) ?? datum.model.id ?? `menu-item-${datum.index}`;
-            return (
-              <DataMenuItem<M>
-                {...props}
-                key={id}
-                ref={ref}
-                id={id}
-                datum={datum.model}
-                onItemClick={(e, instance) => onItemClick?.(e, datum.model, instance)}
-              >
-                {children}
-              </DataMenuItem>
-            );
-          })}
-        </MenuItemGroup>
-      );
-    } else if (datum.isCustom) {
+    if (datum.isCustom) {
       const m = datum.model;
-      if (types.dataMenuCustomModelIsObject(m)) {
-        const id = m.id ?? `menu-item-${datum.index}`;
+      if (types.dataMenuModelArgIsCustomModel(m)) {
         return (
-          <DataMenuItem<types.DataMenuCustomModel>
+          <CustomDataMenuItem
             /* The flag props (e.g. itemIsDisabled, itemIsSelected, etc.) cannot be used since they
                are all calbacks that take the model M as the first and only argument (which is not
                in context here).  Same thing applies to the accessor props.
@@ -80,9 +41,6 @@ export const ProcessedDataMenuItem = forwardRef(
               types.omitDataMenuItemAccessorProps(types.omitDataMenuItemOuterFlagProps(props)),
               ["itemSelectedClassName", "isSelected", "selectionIndicator"],
             )}
-            isCustom
-            selectionIndicator="none"
-            itemHeight={props.itemHeight}
             /* Since the various item class names can be a callback that takes the model M as
                an argument, they can only be applied to the custom menu items if they are not
                a callback.  This is because the custom menu item model is not associated with
@@ -97,16 +55,13 @@ export const ProcessedDataMenuItem = forwardRef(
             itemLoadingClassName={types.extractValueFromCallbackProp(props.itemLoadingClassName)}
             itemLockedClassName={types.extractValueFromCallbackProp(props.itemLockedClassName)}
             ref={ref}
-            id={id}
             datum={m}
-          >
-            {m.renderer !== undefined ? (_, params) => m.renderer?.(params) : undefined}
-          </DataMenuItem>
+          />
         );
       }
       return m;
     }
-    const id = getItemId?.(datum.model) ?? datum.model.id ?? `menu-item-${datum.index}`;
+    const id = types.getDataMenuModelId(datum.model, options) ?? `menu-item-${datum.index}`;
     return (
       <DataMenuItem<M>
         {...props}
@@ -120,9 +75,9 @@ export const ProcessedDataMenuItem = forwardRef(
     );
   },
 ) as {
-  <M extends types.DataMenuModel>(
-    props: ProcessedDataMenuItemProps<M> & {
-      readonly ref?: ForwardedRef<types.MenuItemInstance>;
+  <M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>(
+    props: ProcessedDataMenuItemProps<M, O> & {
+      readonly ref?: ForwardedRef<types.ConnectedMenuItemInstance>;
     },
   ): JSX.Element;
 };

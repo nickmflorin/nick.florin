@@ -1,120 +1,77 @@
-import { forwardRef, type ForwardedRef } from "react";
-
-import { omit, pick } from "lodash-es";
+import { forwardRef, type ForwardedRef, useRef, useImperativeHandle } from "react";
 
 import type * as types from "~/components/menus";
 import { Menu } from "~/components/menus/Menu";
 import { MenuFooter } from "~/components/menus/MenuFooter";
 import { MenuHeader } from "~/components/menus/MenuHeader";
+import { ifRefConnected } from "~/components/types";
 
 import { DataMenuContent, type DataMenuContentProps } from "./DataMenuContent";
 
 export type DataMenuComponent = {
-  <M extends types.DataMenuModel>(
-    props: DataMenuProps<M> & { readonly ref?: ForwardedRef<HTMLDivElement> },
+  <M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>(
+    props: DataMenuProps<M, O> & { readonly ref?: ForwardedRef<types.DataMenuInstance<M, O>> },
   ): JSX.Element;
 };
 
-export interface DataMenuProps<M extends types.DataMenuModel> extends DataMenuContentProps<M> {
+export interface DataMenuProps<M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>
+  extends DataMenuContentProps<M, O> {
   readonly header?: JSX.Element;
   readonly footer?: JSX.Element;
   readonly search?: string;
   readonly onSearch?: (e: React.ChangeEvent<HTMLInputElement>, v: string) => void;
 }
 
-export const DataMenuPropsMap = {
-  data: true,
-  header: true,
-  footer: true,
-  search: true,
-  id: true,
-  className: true,
-  style: true,
-  enableKeyboardInteractions: true,
-  selectionIndicator: true,
-  children: true,
-  includeDescriptions: true,
-  __private_parent_prop__: true,
-  boldSubstrings: true,
-  // ~~~~~~~~ Event Handlers ~~~~~~~~
-  onFocus: true,
-  onBlur: true,
-  onSearch: true,
-  onKeyboardNavigationExit: true,
-  // ~~~~~~~~ State ~~~~~~~~
-  isDisabled: true,
-  isLocked: true,
-  isBordered: true,
-  isLoading: true,
-  // ~~~~~~~~ Groups ~~~~~~~~
-  groups: true,
-  hideEmptyGroups: true,
-  hideGrouplessItems: true,
-  groupContentClassName: true,
-  groupLabelClassName: true,
-  groupLabelContainerClassName: true,
-  groupLabelProps: true,
-  groupsAreBordered: true,
-  // ~~~~~~~~ Item State/Characteristics ~~~~~~~~
-  itemIsVisible: true,
-  getItemIcon: true,
-  getItemDescription: true,
-  getItemId: true,
-  onItemClick: true,
-  itemSelectedClassName: true,
-  itemIsDisabled: true,
-  itemIsLoading: true,
-  itemIsLocked: true,
-  itemIsSelected: true,
-  itemClassName: true,
-  itemHeight: true,
-  itemNavigatedClassName: true,
-  itemSpinnerClassName: true,
-  itemLockedClassName: true,
-  itemIconClassName: true,
-  itemIconProps: true,
-  itemIconSize: true,
-  itemDisabledClassName: true,
-  itemLoadingClassName: true,
-  // ~~~~~~~~ Feedback Props ~~~~~~~~
-  isEmpty: true,
-  isError: true,
-  hasNoResults: true,
-  emptyContent: true,
-  noResultsContent: true,
-  errorTitle: true,
-  errorMessage: true,
-  errorContent: true,
-  feedbackClassName: true,
-  feedbackStyle: true,
-  bottomItems: true,
-} as const satisfies {
-  [key in keyof Required<DataMenuProps<types.DataMenuModel>>]: true;
-};
+export const DataMenu = forwardRef(
+  <M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>(
+    { header, footer, search, style, className, onSearch, ...props }: DataMenuProps<M, O>,
+    ref: ForwardedRef<types.DataMenuInstance<M, O>>,
+  ): JSX.Element => {
+    const contentRef = useRef<types.DataMenuContentInstance<M, O> | null>(null);
 
-export const omitDataMenuProps = <P extends Record<string, unknown>, M extends types.DataMenuModel>(
-  props: P,
-): Omit<P, keyof typeof DataMenuPropsMap & keyof P> =>
-  omit(props, Object.keys(DataMenuPropsMap) as (keyof Required<DataMenuProps<M>>)[]);
+    useImperativeHandle(ref, () => ({
+      getInstance: (...args) =>
+        ifRefConnected(contentRef, c => c.getOrCreateInstance(...args), {
+          strict: true,
+          methodName: "getInstance",
+          name: "data-menu-content",
+        }),
+      getOrCreateInstance: (...args) =>
+        ifRefConnected(contentRef, c => c.getOrCreateInstance(...args), {
+          strict: true,
+          methodName: "getOrCreateInstance",
+          name: "data-menu-content",
+        }),
+      createInstance: <CO extends types.CreateDataMenuItemInstanceOptions>(
+        m: types.DataMenuItemInstanceLookupArg<M, O>,
+        opts?: CO,
+      ) =>
+        ifRefConnected(contentRef, c => c.createInstance(m, opts), {
+          strict: true,
+          methodName: "createInstance",
+          name: "data-menu-content",
+        }),
+      createInstanceIfNecessary: (...args) =>
+        ifRefConnected(contentRef, c => c.createInstanceIfNecessary(...args), {
+          strict: true,
+          methodName: "createInstanceIfNecessary",
+          name: "data-menu-content",
+        }),
+      focus: () => contentRef.current?.focus(),
+      incrementNavigatedIndex: () => contentRef.current?.incrementNavigatedIndex(),
+      decrementNavigatedIndex: () => contentRef.current?.decrementNavigatedIndex(),
+    }));
 
-export const pickDataMenuProps = <P extends Record<string, unknown>, M extends types.DataMenuModel>(
-  props: P,
-): Pick<P, keyof typeof DataMenuPropsMap & keyof P> =>
-  pick(props, Object.keys(DataMenuPropsMap) as (keyof Required<DataMenuProps<M>>)[]);
-
-export const DataMenu = forwardRef<HTMLDivElement, DataMenuProps<types.DataMenuModel>>(
-  <M extends types.DataMenuModel>(
-    { header, footer, search, style, className, onSearch, ...props }: DataMenuProps<M>,
-    ref: ForwardedRef<HTMLDivElement>,
-  ): JSX.Element => (
-    <Menu style={style} className={className} ref={ref}>
-      <MenuHeader search={search} onSearch={onSearch}>
-        {header}
-      </MenuHeader>
-      <DataMenuContent {...props} />
-      <MenuFooter>{footer}</MenuFooter>
-    </Menu>
-  ),
+    return (
+      <Menu style={style} className={className}>
+        <MenuHeader search={search} onSearch={onSearch}>
+          {header}
+        </MenuHeader>
+        <DataMenuContent {...props} ref={contentRef} />
+        <MenuFooter>{footer}</MenuFooter>
+      </Menu>
+    );
+  },
 ) as DataMenuComponent;
 
 export default DataMenu;

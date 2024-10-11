@@ -37,7 +37,7 @@ export interface DataSelectInputProps<
     modelValue: types.DataSelectModelValue<M, O>,
   ) => ReactNode;
   readonly getItemLabel?: (m: M) => ReactNode;
-  readonly getItemId?: (m: M) => string | number | undefined;
+  readonly getModelId?: (m: M) => string | number;
 }
 
 export const DataSelectInput = forwardRef(
@@ -60,7 +60,7 @@ export const DataSelectInput = forwardRef(
       getItemLabel: _getItemLabel,
       getBadgeIcon,
       getBadgeProps,
-      getItemId: _getItemId,
+      getModelId: _getItemId,
       ...props
     }: DataSelectInputProps<M, O>,
     ref: ForwardedRef<RootSelectInputInstance>,
@@ -70,7 +70,7 @@ export const DataSelectInput = forwardRef(
       [modelValue],
     );
 
-    const getItemId = useCallback(
+    const getModelId = useCallback(
       (m: M) => {
         const id = _getItemId?.(m);
         if (typeof id === "string" || typeof id === "number") {
@@ -98,7 +98,7 @@ export const DataSelectInput = forwardRef(
 
     const getModelKey = useCallback(
       (m: M, index: number): string => {
-        const id = getItemId(m);
+        const id = getModelId(m);
         if (id !== undefined) {
           return id;
         }
@@ -114,7 +114,7 @@ export const DataSelectInput = forwardRef(
         }
         return `model-${index}`;
       },
-      [options, getItemLabel, getItemId],
+      [options, getItemLabel, getModelId],
     );
 
     const renderedValue = useMemo(() => {
