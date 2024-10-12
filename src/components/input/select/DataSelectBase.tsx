@@ -42,28 +42,28 @@ export interface DataSelectBaseProps<
       | "valueSummary"
     > {
   readonly options: O;
-  readonly value?: types.DataSelectValue<M, O>;
+  readonly value?: types.SelectValue<{ model: M; options: O }>;
   readonly strictValueLookup?: boolean;
-  readonly initialValue?: types.DataSelectValue<M, O>;
+  readonly initialValue?: types.SelectValue<{ model: M; options: O }>;
   readonly popoverClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
   readonly data: types.ConnectedDataSelectModel<M, O>[];
-  readonly isClearable?: boolean;
-  readonly chipsCanDeselect?: boolean;
+  readonly isClearable?: types.IfClearable<{ options: O; model: M }, boolean>;
+  readonly chipsCanDeselect?: types.IfDeselectable<{ model: M; options: O }, boolean>;
   readonly showIconsInChips?: boolean;
-  readonly onClear?: types.IfDeselectable<O["behavior"], () => void>;
+  readonly onClear?: types.IfClearable<{ model: M; options: O }, () => void>;
   readonly itemValueRenderer?: (m: M) => JSX.Element;
   readonly valueRenderer?: (
-    value: types.DataSelectValue<M, O>,
+    value: types.SelectValue<{ model: M; options: O }>,
     modelValue: types.DataSelectModelValue<M, O>,
     select: I,
   ) => ReactNode;
-  readonly getModelId?: (m: Omit<M, "onClick">) => string | number;
+  // readonly getModelId?: (m: Omit<M, "onClick">) => string | number;
   readonly getItemValueLabel?: (m: M) => ReactNode;
-  readonly onChange?: types.DataSelectBaseChangeHandler<M, O>;
+  readonly onChange?: types.SelectChangeHandler<{ model: M; options: O }>;
   readonly content?: (
-    value: types.DataSelectNullableValue<M, O>,
+    value: types.SelectNullableValue<{ model: M; options: O }>,
     select: I & Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">,
   ) => JSX.Element;
 }
@@ -129,9 +129,7 @@ const LocalDataSelectBase = forwardRef(
     const selectInstance = useMemo(
       (): types.DataSelectBaseInstance<M, O> => ({
         ...managed,
-        setValue: v => managed.set(v),
-        clear: types.ifDataSelectClearable(clear, options),
-        deselect: types.ifDataSelectDeselectable(managed.deselect, options),
+        clear,
         focusInput: () => ifRefConnected(inputRef, i => i.focus()),
         setOpen: (v: boolean) => ifRefConnected(selectRef, s => s.setOpen(v)),
         setInputLoading: (v: boolean) => ifRefConnected(inputRef, i => i.setLoading(v)),
@@ -140,7 +138,7 @@ const LocalDataSelectBase = forwardRef(
             methodName: "setPopoverLoading",
           }),
       }),
-      [options, managed, clear],
+      [managed, clear],
     );
 
     useImperativeHandle(ref, () => selectInstance);

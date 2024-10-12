@@ -14,14 +14,19 @@ export interface UseDataSelectParams<
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<
-    UseSelectParams<types.InferredDataSelectValue<M, O>, types.InferredDataSelectBehavior<M, O>>,
+    UseSelectParams<types.InferV<{ model: M; options: O }>, types.InferB<{ model: M; options: O }>>,
     "onChange" | "behavior"
   > {
   readonly data: M[];
   readonly options: O;
   readonly isReady?: boolean;
   readonly strictValueLookup?: boolean;
-  readonly onChange?: types.DataSelectBaseChangeHandler<M, O>;
+  readonly onChange?: {
+    <E extends types.SelectEvent>(
+      value: types.SelectValue<{ model: M; options: O }>,
+      params: types.SelectChangeEventParams<E, { model: M; options: O }, { modelValue: true }>,
+    ): void;
+  };
 }
 
 const getInitialModelValue = <
@@ -32,13 +37,13 @@ const getInitialModelValue = <
   value,
   getModel,
 }: Pick<UseDataSelectParams<M, O>, "options"> & {
-  readonly value: types.DataSelectNullableValue<M, O>;
-  readonly getModel: (v: types.InferredDataSelectValue<M, O>) => M | null;
+  readonly value: types.SelectNullableValue<{ model: M; options: O }>;
+  readonly getModel: (v: types.InferV<{ model: M; options: O }>) => M | null;
 }): types.DataSelectNullableModelValue<M, O> => {
   const v = value as
-    | types.InferredDataSelectValue<M, O>
+    | types.InferV<{ model: M; options: O }>
     | null
-    | types.InferredDataSelectValue<M, O>[];
+    | types.InferV<{ model: M; options: O }>[];
   if (Array.isArray(v)) {
     if (options.behavior !== types.SelectBehaviorTypes.MULTI) {
       throw new Error("Encountered an iterable value for a single select!");
@@ -84,14 +89,14 @@ const getInitialModelValue = <
 };
 
 const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
-  v: types.InferredDataSelectValue<M, O>,
+  v: types.InferV<{ model: M; options: O }>,
   {
     data,
     strictValueLookup,
     getItemValue,
   }: {
     strictValueLookup: boolean;
-    getItemValue: (m: M) => types.InferredDataSelectValue<M, O>;
+    getItemValue: (m: M) => types.InferV<{ model: M; options: O }>;
     data: M[];
   },
 ): M | null => {
@@ -120,7 +125,7 @@ const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOpt
 
 const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataSelectOptions<M>>(
   curr: types.DataSelectNullableModelValue<M, O>,
-  value: types.DataSelectNullableValue<M, O>,
+  value: types.SelectNullableValue<{ model: M; options: O }>,
   {
     getItemValue,
     strictValueLookup,
@@ -128,15 +133,15 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
     data,
   }: {
     strictValueLookup: boolean;
-    getItemValue: (m: M) => types.InferredDataSelectValue<M, O>;
+    getItemValue: (m: M) => types.InferV<{ model: M; options: O }>;
     options: O;
     data: M[];
   },
 ): types.DataSelectNullableModelValue<M, O> | types.DoNothing => {
   // Distribute/flatten the conditional type to a union of its potential values.
   const selectValue = value as
-    | types.InferredDataSelectValue<M, O>
-    | types.InferredDataSelectValue<M, O>[]
+    | types.InferV<{ model: M; options: O }>
+    | types.InferV<{ model: M; options: O }>[]
     | null;
 
   // Distribute/flatten the conditional type to a union of its potential values.
@@ -165,7 +170,7 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
          the case that the data provided to the Select is filtered.
 
          See the docstring on the hook for more information. */
-      let validValueElements: types.InferredDataSelectValue<M, O>[] = [];
+      let validValueElements: types.InferV<{ model: M; options: O }>[] = [];
       const modelValue = selectValue.reduce((prev, vi) => {
         const m = getModel(vi, {
           strictValueLookup,
@@ -411,32 +416,18 @@ export const useDataSelect = <
     setValue: _setValue,
     clear: _clear,
     ...rest
-  } = useSelect<types.InferredDataSelectValue<M, O>, O["behavior"]>({
+  } = useSelect<types.InferV<{ model: M; options: O }>, O["behavior"]>({
     ...params,
     isReady,
     behavior: options.behavior,
-    onChange: (v, params) => {
-      if (modelValue === types.NOTSET) {
-        logger.error(
-          "Detected a change event in the select when the model value has not yet been set!",
-        );
-        return;
-      }
-      const reduced = reduceModelValue(modelValue, v, {
-        strictValueLookup,
-        options,
-        data,
-        getItemValue,
-      });
-      if (
-        reduced === types.DONOTHING ||
-        (reduced === null && options.behavior === types.SelectBehaviorTypes.SINGLE)
-      ) {
-        return;
-      }
-      /* This should only be called if the Select's model value is not "NOTSET" to begin with,
-         because the Select will disable selection if it is not in a "ready" state. */
-      onChange?.(v, reduced as types.DataSelectModelValue<M, O>, params);
+    onChange: () => {
+      /* The 'onChange' callback is fired directly from inside of this hook, and not the 'useSelect'
+         hook.  If the 'onChange' callback were provided to the 'useSelect' hook, it would result
+         in the callback being fired twice per change event. */
+      throw new Error(
+        "The 'onChange' callback should not be called from inside the 'useSelect' hook! " +
+          "It is overridden and called directly in this hook instead.",
+      );
     },
     onSelect,
     onClear,
@@ -444,7 +435,7 @@ export const useDataSelect = <
   });
 
   const getInitializedModelValue = useCallback(
-    (v: types.SelectNullableValue<types.InferredDataSelectValue<M, O>, O["behavior"]>) =>
+    (v: types.SelectNullableValue<{ model: M; options: O }>) =>
       getInitialModelValue({
         options,
         value: v,
@@ -460,7 +451,7 @@ export const useDataSelect = <
   >(() => (isReady && value !== types.NOTSET ? getInitializedModelValue(value) : types.NOTSET));
 
   const setValue = useCallback(
-    (v: types.DataSelectValue<M, O>) => {
+    (v: types.SelectValue<{ model: M; options: O }>) => {
       /* If the 'modelValue' has not yet been set/initialized, then we need to initialize it before
          we can apply the reducer to the value. */
       const mv: types.DataSelectNullableModelValue<M, O> =
@@ -494,22 +485,23 @@ export const useDataSelect = <
 
   useEffect(() => {
     if (isReady && value !== types.NOTSET) {
-      setValue(value as types.DataSelectValue<M, O>);
+      setValue(value as types.SelectValue<{ model: M; options: O }>);
     }
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [value, isReady]);
 
-  const callback = useCallback(
+  const handleEvent = useCallback(
     <E extends types.SelectEvent>(
-      updated: types.SelectValue<
-        types.InferredDataSelectValue<M, O>,
-        types.InferredDataSelectBehavior<M, O>
-      >,
-      params: types.SelectEventChangeParams<E, types.InferredDataSelectValue<M, O>> & {
+      updated: types.SelectValue<{ model: M; options: O }>,
+      {
+        dispatchChangeEvent = true,
+        data: _data,
+        ...params
+      }: types.SelectChangeEventParams<E, { model: M; options: O }> & {
         readonly dispatchChangeEvent?: boolean;
         readonly data?: M[];
       },
-      cb?: types.DataSelectBaseEventChangeHandler<E, M, O>,
+      cb?: types.SelectEventChangeHandler<E, { model: M; options: O }, { modelValue: true }>,
     ) => {
       if (modelValue === types.NOTSET) {
         logger.error(
@@ -520,7 +512,7 @@ export const useDataSelect = <
       const reduced = reduceModelValue(modelValue, updated, {
         strictValueLookup,
         options,
-        data: params.data ?? data,
+        data: _data ?? data,
         getItemValue,
       });
       if (
@@ -530,11 +522,15 @@ export const useDataSelect = <
         return;
       }
       setModelValue(reduced);
-      cb?.(updated, reduced as types.DataSelectModelValue<M, O>, params);
-      if (params.dispatchChangeEvent !== false) {
+      const r = {
+        ...params,
+        modelValue: reduced as types.DataSelectModelValue<M, O>,
+      } as types.SelectChangeEventParams<E, { model: M; options: O }, { modelValue: true }>;
+      cb?.(updated, r);
+      if (dispatchChangeEvent) {
         /* This should only be called if the Select's model value is not "NOTSET" to begin with,
            because the Select will disable selection if it is not in a "ready" state. */
-        onChange?.(updated, reduced as types.DataSelectModelValue<M, O>, params);
+        onChange?.(updated, r);
       }
     },
     [data, modelValue, options, strictValueLookup, getItemValue, onChange],
@@ -542,73 +538,90 @@ export const useDataSelect = <
 
   const deselect = useCallback(
     (
-      v: M | types.InferredDataSelectValue<M, O>,
-      { dispatchChangeEvent }: types.SelectEventPublicArgs,
-      cb?: types.DataSelectBaseEventChangeHandler<typeof types.SelectEvents.DESELECT, M, O>,
+      v: M | types.InferV<{ model: M; options: O }>,
+      p?: types.SelectEventPublicArgs,
+      cb?: types.SelectEventChangeHandler<
+        typeof types.SelectEvents.DESELECT,
+        { model: M; options: O },
+        { modelValue: true }
+      >,
     ) =>
       _deselect(
         typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M),
+        /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
+           will be dispatched in the above 'callback' function instead. */
         { dispatchChangeEvent: false },
-        (updated, params) => callback(updated, { ...params, dispatchChangeEvent }, cb),
+        (updated, params) => handleEvent(updated, { ...p, ...params }, cb),
       ),
-    [_deselect, callback, getItemValue],
+    [_deselect, handleEvent, getItemValue],
   );
 
   const select = useCallback(
     (
-      v: M | types.InferredDataSelectValue<M, O>,
-      {
-        dispatchChangeEvent,
-        optimisticModels,
-      }: types.SelectEventPublicArgs & { readonly optimisticModels?: M[] },
-      cb?: types.DataSelectBaseEventChangeHandler<typeof types.SelectEvents.SELECT, M, O>,
+      v: M | types.InferV<{ model: M; options: O }>,
+      p?: types.SelectEventPublicArgs & { readonly optimisticModels?: M[] },
+      cb?: types.SelectEventChangeHandler<
+        typeof types.SelectEvents.SELECT,
+        { model: M; options: O },
+        { modelValue: true }
+      >,
     ) =>
       _select(
         typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M),
+        /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
+           will be dispatched in the above 'callback' function instead. */
         { dispatchChangeEvent: false },
         (updated, params) =>
-          callback(
+          handleEvent(
             updated,
             {
               ...params,
-              dispatchChangeEvent,
+              ...p,
               /* Add any additional, potentially optimistically added models to the data that is
                  used to lookup the value. */
-              data: uniqBy([...data, ...(optimisticModels ?? [])], getItemValue),
+              data: uniqBy([...data, ...(p?.optimisticModels ?? [])], getItemValue),
             },
             cb,
           ),
       ),
-    [data, _select, callback, getItemValue],
+    [data, _select, handleEvent, getItemValue],
   );
 
   const clear = useCallback(
     (
-      { dispatchChangeEvent }: types.SelectEventPublicArgs,
-      cb?: types.DataSelectBaseEventChangeHandler<typeof types.SelectEvents.CLEAR, M, O>,
+      p?: types.SelectEventPublicArgs,
+      cb?: types.SelectEventChangeHandler<
+        typeof types.SelectEvents.CLEAR,
+        { model: M; options: O },
+        { modelValue: true }
+      >,
     ) =>
+      /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
+         will be dispatched in the above 'callback' function instead. */
       _clear({ dispatchChangeEvent: false }, (updated, params) =>
-        callback(updated, { ...params, dispatchChangeEvent }, cb),
+        handleEvent(updated, { ...params, ...p }, cb),
       ),
-    [_clear, callback],
+    [_clear, handleEvent],
   );
 
   const toggle = useCallback(
     (
-      v: types.InferredDataSelectValue<M, O> | M,
-      { dispatchChangeEvent }: types.SelectEventPublicArgs,
-      cb?: types.DataSelectBaseEventChangeHandler<
+      v: types.InferV<{ model: M; options: O }> | M,
+      p?: types.SelectEventPublicArgs,
+      cb?: types.SelectEventChangeHandler<
         typeof types.SelectEvents.DESELECT | typeof types.SelectEvents.SELECT,
-        M,
-        O
+        { model: M; options: O },
+        { modelValue: true }
       >,
     ) =>
       _toggle(
         typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M),
+        /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
+           will be dispatched in the above 'callback' function instead. */
         { dispatchChangeEvent: false },
-        (updated, params) => callback(updated, { ...params, dispatchChangeEvent }, cb),
+        (updated, params) => handleEvent(updated, { ...params, ...p }, cb),
       ),
-    [_toggle, callback, getItemValue],
+    [_toggle, handleEvent, getItemValue],
   );
 
   return {
@@ -616,11 +629,11 @@ export const useDataSelect = <
     value,
     modelValue,
     setValue,
-    isSelected: (v: M | types.InferredDataSelectValue<M, O>) =>
+    isSelected: (v: M | types.InferV<{ model: M; options: O }>) =>
       _isSelected(typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M)),
     select,
-    deselect: types.ifDataSelectDeselectable(deselect, options),
+    deselect: types.ifDeselectable(deselect, { options }),
     toggle,
-    clear: types.ifDataSelectDeselectable(clear, options),
+    clear: types.ifClearable(clear, { options }),
   };
 };

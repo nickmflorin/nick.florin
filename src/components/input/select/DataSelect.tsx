@@ -91,7 +91,7 @@ export interface DataSelectProps<
     model: types.ConnectedDataSelectModel<M, O>,
     params: MenuItemRenderProps,
   ) => ReactNode;
-  readonly onChange?: types.DataSelectChangeHandler<M, O>;
+  readonly onChange?: types.SelectChangeHandler<{ model: M; options: O }>;
   readonly onItemClick?: (
     e: MenuItemClickEvent,
     m: M,
@@ -207,7 +207,10 @@ export const DataSelect = forwardRef(
         clear: types.ifDataSelectClearable<
           (
             p: types.SelectEventPublicArgs,
-            cb?: types.DataSelectEventChangeHandler<typeof types.SelectEvents.CLEAR, M, O>,
+            cb?: types.SelectEventChangeHandler<
+              typeof types.SelectEvents.CLEAR,
+              { model: M; options: O }
+            >,
           ) => void,
           M,
           O
@@ -223,7 +226,10 @@ export const DataSelect = forwardRef(
           (
             v: M | types.InferredDataSelectValue<M, O>,
             p: types.SelectEventPublicArgs,
-            cb?: types.DataSelectEventChangeHandler<typeof types.SelectEvents.DESELECT, M, O>,
+            cb?: types.SelectEventChangeHandler<
+              typeof types.SelectEvents.DESELECT,
+              { model: M; options: O }
+            >,
           ) => void,
           M,
           O

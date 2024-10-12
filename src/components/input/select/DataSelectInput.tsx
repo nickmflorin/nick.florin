@@ -37,7 +37,7 @@ export interface DataSelectInputProps<
     modelValue: types.DataSelectModelValue<M, O>,
   ) => ReactNode;
   readonly getItemLabel?: (m: M) => ReactNode;
-  readonly getModelId?: (m: M) => string | number;
+  // readonly getModelId?: (m: M) => string | number;
 }
 
 export const DataSelectInput = forwardRef(

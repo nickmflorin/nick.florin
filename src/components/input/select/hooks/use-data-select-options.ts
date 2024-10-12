@@ -18,9 +18,9 @@ export const useDataSelectOptions = <
   const getItemValue = useCallback(
     (m: M) => {
       if (options.getItemValue !== undefined) {
-        return options.getItemValue(m) as types.InferredDataSelectValue<M, O>;
+        return options.getItemValue(m) as types.InferV<{ model: M; options: O }>;
       } else if ("value" in m && m.value !== undefined) {
-        return m.value as types.InferredDataSelectValue<M, O>;
+        return m.value as types.InferV<{ model: M; options: O }>;
       }
       throw new Error(
         "If the 'getItemValue' callback prop is not provided, each model must be attributed " +

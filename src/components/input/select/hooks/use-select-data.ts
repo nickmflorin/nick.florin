@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 import { logger } from "~/internal/logger";
 
 import type * as types from "~/components/input/select/types";
-import { ifRefConnected } from "~/components/types";
 import { useDeepEqualEffect } from "~/hooks";
 
 export interface UseSelectDataParams<
@@ -36,14 +35,14 @@ export const useSelectData = <
             curr: types.ConnectedDataSelectModel<M, O>[],
           ) => [types.ConnectedDataSelectModel<M, O>, types.ConnectedDataSelectModel<M, O>[]]),
     ): types.ConnectedDataSelectModel<M, O> => {
-        if (typeof m === "function") {
-          const [model, population] = m(optimisticData);
-          setOptimisticData(population);
-          return model
-        }
-        setOptimisticData(curr => [...curr, m]);
-       return m
-      },
+      if (typeof m === "function") {
+        const [model, population] = m(optimisticData);
+        setOptimisticData(population);
+        return model;
+      }
+      setOptimisticData(curr => [...curr, m]);
+      return m;
+    },
     [optimisticData],
   );
 
