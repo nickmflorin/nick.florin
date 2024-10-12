@@ -7,17 +7,17 @@ import { DataSelect, type DataSelectProps } from "~/components/input/select/Data
 import { Text, Description } from "~/components/typography";
 import { ReplacedSubstrings } from "~/components/typography/ReplacedSubstrings";
 
-const getItemValue = (m: ApiSkill) => m.id;
+const getModelValue = (m: ApiSkill) => m.id;
 
 export type SkillsSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
   ApiSkill,
-  { behavior: B; getItemValue: typeof getItemValue }
+  { behavior: B; getModelValue: typeof getModelValue }
 >;
 
 export interface SkillsSelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<ApiSkill, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled" | "itemRenderer" | "getItemValueLabel"
+    DataSelectProps<ApiSkill, { behavior: B; getModelValue: typeof getModelValue }>,
+    "options" | "itemIsDisabled" | "itemRenderer" | "getModelValueLabel"
   > {
   readonly behavior: B;
 }
@@ -58,13 +58,13 @@ export const SkillsSelect = forwardRef(
     }: SkillsSelectProps<B>,
     ref: ForwardedRef<SkillsSelectInstance<B>>,
   ): JSX.Element => (
-    <DataSelect<ApiSkill, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<ApiSkill, { behavior: B; getModelValue: typeof getModelValue }>
       summarizeValueAfter={2}
       {...props}
       search={search}
       ref={ref}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.label}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.label}
       includeDescriptions={false}
       itemRenderer={m =>
         includeDescriptions && m.description !== null && m.description.trim().length !== 0 ? (

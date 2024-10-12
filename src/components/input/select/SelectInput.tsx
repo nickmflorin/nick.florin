@@ -12,8 +12,8 @@ export interface SelectInputProps<
   V extends types.AllowedSelectValue,
   B extends types.SelectBehaviorType,
 > extends Omit<RootSelectInputProps, "showPlaceholder" | "onClear"> {
-  readonly value: types.SelectNullableValue<V, B> | types.NotSet;
-  readonly onClear?: types.IfDeselectable<B, () => void>;
+  readonly value: types.SelectNullableValue<{ value: V; behavior: B }> | types.NotSet;
+  readonly onClear?: types.IfClearable<{ behavior: B }, (() => void) | undefined>;
 }
 
 export const SelectInput = forwardRef<

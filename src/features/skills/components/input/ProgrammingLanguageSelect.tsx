@@ -9,12 +9,12 @@ import { DataSelect, type DataSelectProps } from "~/components/input/select/Data
 
 type M = EnumeratedLiteralsModel<typeof ProgrammingLanguages>;
 
-const getItemValue = (m: M) => m.value;
+const getModelValue = (m: M) => m.value;
 
 export interface ProgrammingLanguageSelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "data" | "itemRenderer" | "getItemValueLabel" | "getItemIcon"
+    DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
+    "options" | "data" | "itemRenderer" | "getModelValueLabel" | "getItemIcon"
   > {
   readonly behavior: B;
 }
@@ -22,13 +22,13 @@ export interface ProgrammingLanguageSelectProps<B extends SelectBehaviorType>
 export const ProgrammingLanguageSelect = forwardRef(
   <B extends SelectBehaviorType>(
     { behavior, ...props }: ProgrammingLanguageSelectProps<B>,
-    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getItemValue: typeof getItemValue }>>,
+    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>>,
   ): JSX.Element => (
-    <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
       {...props}
       ref={ref}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.label}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.label}
       getItemIcon={m => m.icon}
       data={[...ProgrammingLanguages.models]}
       itemRenderer={m => m.label}
@@ -38,7 +38,7 @@ export const ProgrammingLanguageSelect = forwardRef(
   <B extends SelectBehaviorType>(
     props: ProgrammingLanguageSelectProps<B> & {
       readonly ref?: ForwardedRef<
-        DataSelectInstance<M, { behavior: B; getItemValue: typeof getItemValue }>
+        DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>
       >;
     },
   ): JSX.Element;

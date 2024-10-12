@@ -9,12 +9,12 @@ import { DataSelect, type DataSelectProps } from "~/components/input/select/Data
 
 type M = EnumeratedLiteralsModel<typeof ProgrammingDomains>;
 
-const getItemValue = (m: M) => m.value;
+const getModelValue = (m: M) => m.value;
 
 export interface ProgrammingDomainSelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "data" | "itemRenderer" | "getItemValueLabel"
+    DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
+    "options" | "data" | "itemRenderer" | "getModelValueLabel"
   > {
   readonly behavior: B;
 }
@@ -22,13 +22,13 @@ export interface ProgrammingDomainSelectProps<B extends SelectBehaviorType>
 export const ProgrammingDomainSelect = forwardRef(
   <B extends SelectBehaviorType>(
     { behavior, ...props }: ProgrammingDomainSelectProps<B>,
-    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getItemValue: typeof getItemValue }>>,
+    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>>,
   ): JSX.Element => (
-    <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
       {...props}
       ref={ref}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.label}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.label}
       data={[...ProgrammingDomains.models]}
       itemRenderer={m => m.label}
     />
@@ -37,7 +37,7 @@ export const ProgrammingDomainSelect = forwardRef(
   <B extends SelectBehaviorType>(
     props: ProgrammingDomainSelectProps<B> & {
       readonly ref?: ForwardedRef<
-        DataSelectInstance<M, { behavior: B; getItemValue: typeof getItemValue }>
+        DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>
       >;
     },
   ): JSX.Element;

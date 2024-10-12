@@ -4,7 +4,7 @@ import { Button } from "~/components/buttons";
 import { CaretIcon } from "~/components/icons/CaretIcon";
 import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 
-const getItemValue = <D extends types.DataTableDatum, C extends types.DataTableColumnConfig<D>>(
+const getModelValue = <D extends types.DataTableDatum, C extends types.DataTableColumnConfig<D>>(
   m: C,
 ): C["id"] => m.id;
 
@@ -12,7 +12,7 @@ export interface ColumnSelectProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 > extends Omit<
-    DataSelectProps<C, { behavior: "multi"; getItemValue: typeof getItemValue<D, C> }>,
+    DataSelectProps<C, { behavior: "multi"; getModelValue: typeof getModelValue<D, C> }>,
     "options" | "data"
   > {
   readonly columns: C[];
@@ -25,10 +25,10 @@ export const ColumnSelect = <
   columns,
   ...props
 }: ColumnSelectProps<D, C>) => (
-  <DataSelect<C, { behavior: "multi"; getItemValue: typeof getItemValue<D, C> }>
+  <DataSelect<C, { behavior: "multi"; getModelValue: typeof getModelValue<D, C> }>
     {...props}
-    options={{ getItemValue: getItemValue as typeof getItemValue<D, C>, behavior: "multi" }}
-    getItemValueLabel={(m: C) => m.label ?? ""}
+    options={{ getModelValue: getModelValue as typeof getModelValue<D, C>, behavior: "multi" }}
+    getModelValueLabel={(m: C) => m.label ?? ""}
     data={columns.filter(c => c.isHideable !== false)}
     inputClassName="w-[240px]"
     popoverClassName="z-50"

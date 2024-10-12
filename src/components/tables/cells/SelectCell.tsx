@@ -9,7 +9,7 @@ import { type MutationActionResponse } from "~/actions";
 
 import type {
   AllowedSelectValue,
-  DataSelectChangeHandler,
+  SelectChangeHandler,
   SelectBehaviorType,
   SelectValue,
   DataSelectModel,
@@ -26,9 +26,15 @@ interface BaseSelectProps<
   readonly inputClassName: string;
   readonly summarizeValueAfter?: number;
   readonly inPortal?: boolean;
-  readonly value: SelectValue<V, B>;
+  readonly value: SelectValue<{ value: V; behavior: B }>;
   readonly behavior: B;
-  readonly onChange: DataSelectChangeHandler<M, { behavior: B; getItemValue: (m: M) => V }>;
+  readonly onChange: SelectChangeHandler<
+    {
+      model: M;
+      options: { behavior: B; getModelValue: (m: M) => V };
+    },
+    { modelValue: true; item: true }
+  >;
 }
 
 interface SelectCellProps<
@@ -43,11 +49,13 @@ interface SelectCellProps<
   readonly row: R;
   readonly behavior: B;
   readonly attribute: string;
-  readonly value: SelectValue<V, B>;
+  readonly value: SelectValue<{ value: V; behavior: B }>;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   readonly table: types.CellDataTableInstance<R, any>;
   readonly component: React.ComponentType<BaseSelectProps<B, M, V>>;
-  readonly action: (value: SelectValue<V, B>) => Promise<MutationActionResponse<T>>;
+  readonly action: (
+    value: SelectValue<{ value: V; behavior: B }>,
+  ) => Promise<MutationActionResponse<T>>;
 }
 
 export const SelectCell = <
@@ -67,7 +75,7 @@ export const SelectCell = <
   inputClassName = "w-full",
   component: Component,
 }: SelectCellProps<B, M, R, V, T>): JSX.Element => {
-  const [value, setValue] = useState<SelectValue<V, B>>(_value);
+  const [value, setValue] = useState<SelectValue<{ value: V; behavior: B }>>(_value);
   const router = useRouter();
   const [_, transition] = useTransition();
 
@@ -83,7 +91,7 @@ export const SelectCell = <
       isClearable
       inPortal
       behavior={behavior}
-      onChange={async (v, _, params) => {
+      onChange={async (v, params) => {
         // Optimistically update the value.
         setValue(v);
         table.setRowLoading(row.id, true);

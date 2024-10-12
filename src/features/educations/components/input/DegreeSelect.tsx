@@ -9,17 +9,17 @@ import { DataSelect, type DataSelectProps } from "~/components/input/select/Data
 
 type M = EnumeratedLiteralsModel<typeof Degrees>;
 
-const getItemValue = (m: M) => m.value;
+const getModelValue = (m: M) => m.value;
 
 export type DegreeSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
   M,
-  { behavior: B; getItemValue: typeof getItemValue }
+  { behavior: B; getModelValue: typeof getModelValue }
 >;
 
 export interface DegreeSelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "data" | "getItemValueLabel" | "itemRenderer"
+    DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
+    "options" | "data" | "getModelValueLabel" | "itemRenderer"
   > {
   readonly behavior: B;
 }
@@ -29,11 +29,11 @@ export const DegreeSelect = forwardRef(
     { behavior, ...props }: DegreeSelectProps<B>,
     ref: ForwardedRef<DegreeSelectInstance<B>>,
   ): JSX.Element => (
-    <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
       {...props}
       ref={ref}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.shortLabel}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.shortLabel}
       data={[...Degrees.models]}
       itemRenderer={m => m.label}
     />

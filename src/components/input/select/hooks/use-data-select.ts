@@ -93,14 +93,14 @@ const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOpt
   {
     data,
     strictValueLookup,
-    getItemValue,
+    getModelValue,
   }: {
     strictValueLookup: boolean;
-    getItemValue: (m: M) => types.InferV<{ model: M; options: O }>;
+    getModelValue: (m: M) => types.InferV<{ model: M; options: O }>;
     data: M[];
   },
 ): M | null => {
-  const ms = data.filter(m => isEqual(getItemValue(m), v));
+  const ms = data.filter(m => isEqual(getModelValue(m), v));
   if (ms.length === 0) {
     if (strictValueLookup) {
       throw new Error(
@@ -127,13 +127,13 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
   curr: types.DataSelectNullableModelValue<M, O>,
   value: types.SelectNullableValue<{ model: M; options: O }>,
   {
-    getItemValue,
+    getModelValue,
     strictValueLookup,
     options,
     data,
   }: {
     strictValueLookup: boolean;
-    getItemValue: (m: M) => types.InferV<{ model: M; options: O }>;
+    getModelValue: (m: M) => types.InferV<{ model: M; options: O }>;
     options: O;
     data: M[];
   },
@@ -174,8 +174,8 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
       const modelValue = selectValue.reduce((prev, vi) => {
         const m = getModel(vi, {
           strictValueLookup,
-          data: uniqBy([...data, ...curr], m => getItemValue(m)),
-          getItemValue,
+          data: uniqBy([...data, ...curr], m => getModelValue(m)),
+          getModelValue,
         });
         /* The model, 'm', will be 'null' if the value does not match any of the models in the data
            and 'strictValueLookup' is not 'false'. */
@@ -234,9 +234,9 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
         strictValueLookup,
         data:
           existing === null
-            ? uniqBy(data, m => getItemValue(m))
-            : uniqBy([...data, existing], m => getItemValue(m)),
-        getItemValue,
+            ? uniqBy(data, m => getModelValue(m))
+            : uniqBy([...data, existing], m => getModelValue(m)),
+        getModelValue,
       });
       /* If the model, 'm', cannot be found in the data - then our only form of recourse is to
          ignore the change. */
@@ -278,8 +278,8 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
          See the docstring on the hook for more information. */
       const model = getModel(selectValue, {
         strictValueLookup,
-        data: existing ? uniqBy([...data, existing], m => getItemValue(m)) : data,
-        getItemValue,
+        data: existing ? uniqBy([...data, existing], m => getModelValue(m)) : data,
+        getModelValue,
       });
       if (!model) {
         return types.DONOTHING;
@@ -304,7 +304,7 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
  * the Select when the menu items associated with those models are selected, deselected or cleared.
  *
  * The value of each model, or element in the array of data provided to the Select, can be defined
- * by either attributing the model with a `value` attribute or providing a `getItemValue` callback
+ * by either attributing the model with a `value` attribute or providing a `getModelValue` callback
  * prop to the Select.
  *
  * The overall value of the Select is managed by the `use-select-value` hook, which is responsible
@@ -322,7 +322,7 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
  * >>> return (
  * >>>   <DataSelect
  * >>>     data={bills}
- * >>>     getItemValue={(b: Bill) => b.id}
+ * >>>     getModelValue={(b: Bill) => b.id}
  * >>>     onChange={(value, bills) => ...}
  * >>>   />
  * >>> )
@@ -346,7 +346,7 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
  * >>>   <DataSelect
  * >>      value={[1, 2, 4]}
  * >>>     data={bills}
- * >>>     getItemValue={(b: Bill) => b.id}
+ * >>>     getModelValue={(b: Bill) => b.id}
  * >>>     onChange={(value, bills) => ...}
  * >>>   />
  * >>> )
@@ -405,7 +405,7 @@ export const useDataSelect = <
   O,
   types.DataSelectNullableModelValue<M, O> | types.NotSet
 > => {
-  const { getItemValue } = useDataSelectOptions<M, O>({ options });
+  const { getModelValue } = useDataSelectOptions<M, O>({ options });
 
   const {
     isSelected: _isSelected,
@@ -439,9 +439,9 @@ export const useDataSelect = <
       getInitialModelValue({
         options,
         value: v,
-        getModel: v => getModel(v, { data, strictValueLookup, getItemValue }),
+        getModel: v => getModel(v, { data, strictValueLookup, getModelValue }),
       }),
-    [data, strictValueLookup, options, getItemValue],
+    [data, strictValueLookup, options, getModelValue],
   );
 
   /* Manage the Select's model value in state in parallel to the Select's value.  See docstring
@@ -461,7 +461,7 @@ export const useDataSelect = <
         strictValueLookup,
         options,
         data,
-        getItemValue,
+        getModelValue,
       });
       if (
         reduced === types.DONOTHING ||
@@ -479,7 +479,7 @@ export const useDataSelect = <
       strictValueLookup,
       getInitializedModelValue,
       _setValue,
-      getItemValue,
+      getModelValue,
     ],
   );
 
@@ -513,7 +513,7 @@ export const useDataSelect = <
         strictValueLookup,
         options,
         data: _data ?? data,
-        getItemValue,
+        getModelValue,
       });
       if (
         reduced === types.DONOTHING ||
@@ -533,7 +533,7 @@ export const useDataSelect = <
         onChange?.(updated, r);
       }
     },
-    [data, modelValue, options, strictValueLookup, getItemValue, onChange],
+    [data, modelValue, options, strictValueLookup, getModelValue, onChange],
   );
 
   const deselect = useCallback(
@@ -547,13 +547,13 @@ export const useDataSelect = <
       >,
     ) =>
       _deselect(
-        typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M),
+        typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M),
         /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
            will be dispatched in the above 'callback' function instead. */
         { dispatchChangeEvent: false },
         (updated, params) => handleEvent(updated, { ...p, ...params }, cb),
       ),
-    [_deselect, handleEvent, getItemValue],
+    [_deselect, handleEvent, getModelValue],
   );
 
   const select = useCallback(
@@ -567,7 +567,7 @@ export const useDataSelect = <
       >,
     ) =>
       _select(
-        typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M),
+        typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M),
         /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
            will be dispatched in the above 'callback' function instead. */
         { dispatchChangeEvent: false },
@@ -579,12 +579,12 @@ export const useDataSelect = <
               ...p,
               /* Add any additional, potentially optimistically added models to the data that is
                  used to lookup the value. */
-              data: uniqBy([...data, ...(p?.optimisticModels ?? [])], getItemValue),
+              data: uniqBy([...data, ...(p?.optimisticModels ?? [])], getModelValue),
             },
             cb,
           ),
       ),
-    [data, _select, handleEvent, getItemValue],
+    [data, _select, handleEvent, getModelValue],
   );
 
   const clear = useCallback(
@@ -615,13 +615,13 @@ export const useDataSelect = <
       >,
     ) =>
       _toggle(
-        typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M),
+        typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M),
         /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
            will be dispatched in the above 'callback' function instead. */
         { dispatchChangeEvent: false },
         (updated, params) => handleEvent(updated, { ...params, ...p }, cb),
       ),
-    [_toggle, handleEvent, getItemValue],
+    [_toggle, handleEvent, getModelValue],
   );
 
   return {
@@ -630,7 +630,7 @@ export const useDataSelect = <
     modelValue,
     setValue,
     isSelected: (v: M | types.InferV<{ model: M; options: O }>) =>
-      _isSelected(typeof v === "string" || typeof v === "number" ? v : getItemValue(v as M)),
+      _isSelected(typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M)),
     select,
     deselect: types.ifDeselectable(deselect, { options }),
     toggle,

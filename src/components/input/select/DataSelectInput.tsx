@@ -4,6 +4,7 @@ import { logger } from "~/internal/logger";
 
 import * as types from "~/components/input/select/types";
 
+import { useDataSelectOptions } from "./hooks/use-data-select-options";
 import { MultiValueRenderer, type MultiValueRendererProps } from "./MultiValueRenderer";
 import {
   RootSelectInput,
@@ -28,16 +29,15 @@ export interface DataSelectInputProps<
       | "summarizeValue"
       | "valueSummary"
     > {
-  readonly value: types.DataSelectNullableValue<M, O> | types.NotSet;
+  readonly value: types.SelectNullableValue<{ model: M; options: O }> | types.NotSet;
   readonly modelValue: types.DataSelectNullableModelValue<M, O> | types.NotSet;
   readonly options: O;
   readonly itemValueRenderer?: (m: M) => JSX.Element;
   readonly valueRenderer?: (
-    value: types.DataSelectValue<M, O>,
+    value: types.SelectValue<{ model: M; options: O }>,
     modelValue: types.DataSelectModelValue<M, O>,
   ) => ReactNode;
   readonly getItemLabel?: (m: M) => ReactNode;
-  // readonly getModelId?: (m: M) => string | number;
 }
 
 export const DataSelectInput = forwardRef(
@@ -60,27 +60,15 @@ export const DataSelectInput = forwardRef(
       getItemLabel: _getItemLabel,
       getBadgeIcon,
       getBadgeProps,
-      getModelId: _getItemId,
       ...props
     }: DataSelectInputProps<M, O>,
     ref: ForwardedRef<RootSelectInputInstance>,
   ) => {
+    const { getModelId } = useDataSelectOptions<M, O>({ options });
+
     const showPlaceholder = useMemo(
       () => (Array.isArray(modelValue) && modelValue.length === 0) || modelValue === null,
       [modelValue],
-    );
-
-    const getModelId = useCallback(
-      (m: M) => {
-        const id = _getItemId?.(m);
-        if (typeof id === "string" || typeof id === "number") {
-          return String(id);
-        } else if ("id" in m && (typeof m.id === "string" || typeof m.id === "number")) {
-          return String(m.id);
-        }
-        return undefined;
-      },
-      [_getItemId],
     );
 
     const getItemLabel = useCallback(
@@ -94,27 +82,6 @@ export const DataSelectInput = forwardRef(
         }
       },
       [_getItemLabel],
-    );
-
-    const getModelKey = useCallback(
-      (m: M, index: number): string => {
-        const id = getModelId(m);
-        if (id !== undefined) {
-          return id;
-        }
-        const v = options.getItemValue?.(m);
-        if (typeof v === "string" || typeof v === "number") {
-          return String(v);
-        } else if ("value" in m && (typeof m.value === "string" || typeof m.value === "number")) {
-          return String(m.value);
-        }
-        const label = getItemLabel(m);
-        if (typeof label === "string" || typeof label === "number") {
-          return String(label).toLocaleLowerCase();
-        }
-        return `model-${index}`;
-      },
-      [options, getItemLabel, getModelId],
     );
 
     const renderedValue = useMemo(() => {
@@ -136,20 +103,17 @@ export const DataSelectInput = forwardRef(
              if the value and model values are arrays, we can safely coerce them to the non-nullable
              value forms because we know they are non-null. */
           return valueRenderer(
-            value as types.DataSelectValue<M, O>,
+            value as types.SelectValue<{ model: M; options: O }>,
             modelValue as types.DataSelectModelValue<M, O>,
           );
         }
         /* Make sure to sort the models based on a consistent key to prevent reordering of the
            badges in the MultiValueRenderer when rerenders occur. */
-        const sorted = modelValue
-          .map((m, i) => ({ model: m, index: i }))
-          .sort((a, b) => {
-            const aKey = getModelKey(a.model, a.index);
-            const bKey = getModelKey(b.model, b.index);
-            return aKey > bKey ? 1 : -1;
-          })
-          .map((m): M => m.model);
+        const sorted = modelValue.sort((a, b) => {
+          const aKey = getModelId(a);
+          const bKey = getModelId(b);
+          return aKey > bKey ? 1 : -1;
+        });
         return (
           <MultiValueRenderer<M>
             data={sorted}
@@ -188,11 +152,11 @@ export const DataSelectInput = forwardRef(
       chipSize,
       getBadgeProps,
       onBadgeClose,
-      getModelKey,
       valueRenderer,
       itemValueRenderer,
       getBadgeIcon,
       getItemLabel,
+      getModelId,
     ]);
 
     return (

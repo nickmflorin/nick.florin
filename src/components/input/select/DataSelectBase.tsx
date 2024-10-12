@@ -59,9 +59,8 @@ export interface DataSelectBaseProps<
     modelValue: types.DataSelectModelValue<M, O>,
     select: I,
   ) => ReactNode;
-  // readonly getModelId?: (m: Omit<M, "onClick">) => string | number;
-  readonly getItemValueLabel?: (m: M) => ReactNode;
-  readonly onChange?: types.SelectChangeHandler<{ model: M; options: O }>;
+  readonly getModelValueLabel?: (m: M) => ReactNode;
+  readonly onChange?: types.SelectChangeHandler<{ model: M; options: O }, { modelValue: true }>;
   readonly content?: (
     value: types.SelectNullableValue<{ model: M; options: O }>,
     select: I & Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">,
@@ -93,7 +92,7 @@ const LocalDataSelectBase = forwardRef(
       popoverMaxHeight,
       popoverOffset,
       popoverWidth,
-      getItemValueLabel,
+      getModelValueLabel,
       children,
       content,
       onChange,
@@ -196,7 +195,7 @@ const LocalDataSelectBase = forwardRef(
                   ? (v, mv) => props.valueRenderer?.(v, mv, selectInstance)
                   : undefined
               }
-              getItemLabel={getItemValueLabel}
+              getItemLabel={getModelValueLabel}
               getBadgeIcon={showIconsInChips ? getBadgeIcon : undefined}
               isDisabled={props.isDisabled || managed.modelValue === types.NOTSET}
               options={options}
@@ -211,7 +210,7 @@ const LocalDataSelectBase = forwardRef(
                   }
                 }
               }}
-              onClear={onClear as types.IfDeselectable<O["behavior"], () => void>}
+              onClear={types.ifClearable(onClear, { options })}
               modelValue={managed.modelValue}
               className={inputClassName}
               onBadgeClose={

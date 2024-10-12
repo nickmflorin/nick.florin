@@ -91,7 +91,10 @@ export interface DataSelectProps<
     model: types.ConnectedDataSelectModel<M, O>,
     params: MenuItemRenderProps,
   ) => ReactNode;
-  readonly onChange?: types.SelectChangeHandler<{ model: M; options: O }>;
+  readonly onChange?: types.SelectChangeHandler<
+    { model: M; options: O },
+    { modelValue: true; item: true }
+  >;
   readonly onItemClick?: (
     e: MenuItemClickEvent,
     m: M,
@@ -132,7 +135,7 @@ export const DataSelect = forwardRef(
     const contentIsLoading = _propContentIsLoading || _contentIsLoading;
     const isLoading = _propIsLoading || _isLoading;
 
-    const { getItemValue } = useDataSelectOptions<M, O>({ options });
+    const { getModelValue } = useDataSelectOptions<M, O>({ options });
     const { data, addOptimisticModel } = useSelectData<M, O>({
       data: _data,
       base: base.current,
@@ -204,42 +207,42 @@ export const DataSelect = forwardRef(
           }),
         setContentLoading: (v: boolean) => setContentIsLoading(v),
         setLoading: (v: boolean) => setIsLoading(v),
-        clear: types.ifDataSelectClearable<
+        clear: types.ifClearable<
           (
-            p: types.SelectEventPublicArgs,
+            p?: types.SelectEventPublicArgs,
             cb?: types.SelectEventChangeHandler<
               typeof types.SelectEvents.CLEAR,
-              { model: M; options: O }
+              { model: M; options: O },
+              { modelValue: true }
             >,
           ) => void,
-          M,
-          O
+          { options: O }
         >(
           (p, cb) =>
             ifRefConnected(base, b => b.clear(p, cb), {
               methodName: "clear",
               name: "data-select-base",
             }),
-          options,
+          { options },
         ),
-        deselect: types.ifDataSelectDeselectable<
+        deselect: types.ifDeselectable<
           (
-            v: M | types.InferredDataSelectValue<M, O>,
-            p: types.SelectEventPublicArgs,
+            v: M | types.InferV<{ model: M; options: O }>,
+            p?: types.SelectEventPublicArgs,
             cb?: types.SelectEventChangeHandler<
               typeof types.SelectEvents.DESELECT,
-              { model: M; options: O }
+              { model: M; options: O },
+              { modelValue: true }
             >,
           ) => void,
-          M,
-          O
+          { options: O }
         >(
           (v, p, cb) =>
             ifRefConnected(base, b => b.deselect(v, p, cb), {
               methodName: "deselect",
               name: "data-select-base",
             }),
-          options,
+          { options },
         ),
       }),
       [options, addOptimisticModel],
@@ -266,26 +269,36 @@ export const DataSelect = forwardRef(
         inputIsLoading={inputIsLoading || isLoading}
         data={data}
         onSearch={onSearch}
-        onChange={(v, mv, params) => {
+        onChange={(v, params) => {
           if (menu.current) {
             if (params.event === types.SelectEvents.SELECT) {
               const vi = params.selected;
               const item = menu.current.getInstance(vi);
               if (!item) {
-                logger.warn("FOOBAR");
+                logger.warn(
+                  "During a select event, a corresponding menu item instance could not be " +
+                    `found for the the selected item with value '${vi}'.  The 'onChange' event ` +
+                    "handler will not be called.",
+                  { value: vi, params },
+                );
               } else {
-                props.onChange?.(v, mv, { ...params, item });
+                props.onChange?.(v, { ...params, item });
               }
             } else if (params.event === types.SelectEvents.DESELECT) {
               const vi = params.deselected;
               const item = menu.current.getInstance(vi);
               if (!item) {
-                logger.warn("FOOBAR");
+                logger.warn(
+                  "During a deselect event, a corresponding menu item instance could not be " +
+                    `found for the the deselected item with value '${vi}'.  The 'onChange' event ` +
+                    "handler will not be called.",
+                  { value: vi, params },
+                );
               } else {
-                props.onChange?.(v, mv, { ...params, item });
+                props.onChange?.(v, { ...params, item });
               }
             } else {
-              props.onChange?.(v, mv, { event: types.SelectEvents.CLEAR });
+              props.onChange?.(v, params);
             }
           }
         }}
@@ -294,7 +307,7 @@ export const DataSelect = forwardRef(
           isOpen ? (
             <DataMenu<M, O>
               {...pickDataMenuProps(props)}
-              options={{ getModelId: getItemValue }}
+              options={{ getModelId: getModelValue }}
               forwardedRef={menu}
               boldSubstrings={boldOptionsOnSearch ? search : undefined}
               isDisabled={isDisabled}

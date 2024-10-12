@@ -15,20 +15,32 @@ export const useDataSelectOptions = <
 >({
   options,
 }: UseDataSelectDataParams<M, O>) => {
-  const getItemValue = useCallback(
+  const getModelValue = useCallback(
     (m: M) => {
-      if (options.getItemValue !== undefined) {
-        return options.getItemValue(m) as types.InferV<{ model: M; options: O }>;
+      if (options.getModelValue !== undefined) {
+        return options.getModelValue(m) as types.InferV<{ model: M; options: O }>;
       } else if ("value" in m && m.value !== undefined) {
         return m.value as types.InferV<{ model: M; options: O }>;
       }
       throw new Error(
-        "If the 'getItemValue' callback prop is not provided, each model must be attributed " +
+        "If the 'getModelValue' callback prop is not provided, each model must be attributed " +
           "with a defined 'value' property!",
       );
     },
     [options],
   );
 
-  return { getItemValue };
+  const getModelId = useCallback(
+    (m: M) => {
+      if (options.getModelId !== undefined) {
+        return options.getModelId(m);
+      } else if ("id" in m && m.id !== undefined) {
+        return m.id;
+      }
+      return getModelValue(m);
+    },
+    [options, getModelValue],
+  );
+
+  return { getModelValue, getModelId };
 };

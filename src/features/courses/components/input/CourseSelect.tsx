@@ -6,17 +6,17 @@ import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/
 import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 import { Text, Description } from "~/components/typography";
 
-const getItemValue = (m: Course) => m.id;
+const getModelValue = (m: Course) => m.id;
 
 export type CourseSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
   Course,
-  { behavior: B; getItemValue: typeof getItemValue }
+  { behavior: B; getModelValue: typeof getModelValue }
 >;
 
 export interface CourseSelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<Course, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled" | "getItemValueLabel" | "itemRenderer"
+    DataSelectProps<Course, { behavior: B; getModelValue: typeof getModelValue }>,
+    "options" | "itemIsDisabled" | "getModelValueLabel" | "itemRenderer"
   > {
   readonly behavior: B;
   readonly useAbbreviatedLabels?: boolean;
@@ -27,11 +27,11 @@ export const CourseSelect = forwardRef(
     { behavior, useAbbreviatedLabels, ...props }: CourseSelectProps<B>,
     ref: ForwardedRef<CourseSelectInstance<B>>,
   ): JSX.Element => (
-    <DataSelect<Course, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<Course, { behavior: B; getModelValue: typeof getModelValue }>
       {...props}
       ref={ref}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.shortName ?? m.name}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.shortName ?? m.name}
       itemRenderer={m => (
         <div className="flex flex-col gap-[4px]">
           <Text fontSize="sm" fontWeight="medium">

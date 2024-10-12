@@ -12,22 +12,22 @@ export type ProjectSelectModel = Omit<BrandProject, "icon"> & {
   readonly icon: IconProp | IconName;
 };
 
-const getItemValue = (m: ProjectSelectModel) => m.id;
+const getModelValue = (m: ProjectSelectModel) => m.id;
 
 export type ProjectSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
   ProjectSelectModel,
-  { behavior: B; getItemValue: typeof getItemValue }
+  { behavior: B; getModelValue: typeof getModelValue }
 >;
 
 export interface ProjectSelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<ProjectSelectModel, { behavior: B; getItemValue: typeof getItemValue }>,
+    DataSelectProps<ProjectSelectModel, { behavior: B; getModelValue: typeof getModelValue }>,
     | "options"
     | "itemIsDisabled"
     | "data"
     | "itemRenderer"
     | "includeDescriptions"
-    | "getItemValueLabel"
+    | "getModelValueLabel"
   > {
   readonly useAbbreviatedLabels?: boolean;
   readonly behavior: B;
@@ -39,7 +39,7 @@ export const ProjectSelect = forwardRef(
     { behavior, data, useAbbreviatedLabels = true, ...props }: ProjectSelectProps<B>,
     ref: ForwardedRef<ProjectSelectInstance<B>>,
   ): JSX.Element => (
-    <DataSelect<ProjectSelectModel, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<ProjectSelectModel, { behavior: B; getModelValue: typeof getModelValue }>
       {...props}
       ref={ref}
       data={(data ?? []).map(datum => {
@@ -57,8 +57,8 @@ export const ProjectSelect = forwardRef(
         }
         return { ...datum, icon: { name: icon } };
       })}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.shortName ?? m.name}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.shortName ?? m.name}
       includeDescriptions={false}
       itemRenderer={m => (
         <div className="flex flex-col gap-[4px]">

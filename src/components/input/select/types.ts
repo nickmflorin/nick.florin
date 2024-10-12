@@ -10,6 +10,7 @@ import {
   type ConnectedMenuItemInstance,
   type MenuItemClickEvent,
   type DataMenuCustomModel,
+  type DataMenuOptions,
   type DisconnectedMenuItemInstance,
   type CreateDataMenuItemInstanceRT,
   type DataMenuItemInstanceLookupArg,
@@ -102,33 +103,12 @@ export type InferV<Args extends Pick<SelectArgs, "value" | "model" | "options">>
 }
   ? V
   : Args extends { model: infer M extends DataSelectModel; options: infer O }
-    ? O extends { getItemValue: (m: M) => infer V extends AllowedSelectValue }
+    ? O extends { getModelValue: (m: M) => infer V extends AllowedSelectValue }
       ? V
       : M extends DataSelectModel<infer V extends AllowedSelectValue>
         ? V
         : never
     : never;
-
-export type InferId<Args extends Pick<SelectArgs, "value" | "model" | "options">> = Args extends {
-  readonly model: infer M extends DataSelectModel;
-  readonly options: infer O;
-}
-  ? O extends DataSelectOptions<M>
-    ? O
-    : never
-  : never;
-
-/* Args extends {
-     readonly value: infer V extends AllowedSelectValue;
-   }
-     ? V
-     : Args extends { model: infer M extends DataSelectModel; options: infer O }
-       ? O extends { getItemValue: (m: M) => infer V extends AllowedSelectValue }
-         ? V
-         : M extends DataSelectModel<infer V extends AllowedSelectValue>
-           ? V
-           : never
-       : never; */
 
 export type InferB<Args extends Pick<SelectArgs, "behavior" | "options">> = Args extends {
   readonly behavior: infer B extends SelectBehaviorType;
@@ -257,10 +237,9 @@ export type SelectValue<Args extends SelectArgs> = _SelectValue<InferV<Args>, In
 export type DataSelectOptions<
   M extends DataSelectModel,
   B extends SelectBehaviorType = SelectBehaviorType,
-> = {
+> = Omit<DataMenuOptions<M>, "getRefKey"> & {
   readonly behavior: B;
-  readonly getItemValue?: (model: M) => AllowedSelectValue;
-  readonly getItemId?: (model: M) => string | number;
+  readonly getModelValue?: (model: M) => AllowedSelectValue;
 };
 
 export interface DataSelectModel<V extends AllowedSelectValue = AllowedSelectValue>
@@ -342,75 +321,6 @@ export type SelectEventRecord<E extends SelectEvent, V extends AllowedSelectValu
 export type SelectEventPublicArgs = {
   readonly dispatchChangeEvent?: boolean;
 };
-
-export type DataSelectEventPublicArgs<A extends SelectEvent> = {
-  readonly select:
-    | {
-        /* Can either be connected or disconnected, depending on the manner in which the selection
-           occurs.  See the docstring on the EventItemParam type. */
-        readonly item: MenuItemInstance;
-        readonly dispatchChangeEvent?: true;
-      }
-    | {
-        readonly dispatchChangeEvent: false;
-        readonly item?: never;
-      };
-  readonly deselect:
-    | {
-        /* Can either be connected or disconnected, depending on the manner in which the deselection
-           occurs.  See the docstring on the EventItemParam type. */
-        readonly item: MenuItemInstance;
-        readonly dispatchChangeEvent?: true;
-      }
-    | {
-        readonly dispatchChangeEvent: false;
-        readonly item?: never;
-      };
-  readonly clear: {
-    readonly item?: never;
-    readonly dispatchChangeEvent?: boolean;
-  };
-}[A];
-
-/**
- * Represents the presence, or lack of presence, of the {@link MenuItemInstance} associated with
- * the MenuItem that may be relevant when a {@link SelectEvent} occurs.
- *
- * For a selection that occurs as a result of a MenuItem click (or a Checkbox selection made
- * in regard to the Checkbox inside the MenuItem) or a deselection that occurs as a result of a
- * MenuItem click (or a Checkbox deselection made in regard to the Checkbox inside the MenuItem),
- * the {@link MenuItemInstance} will always be available and "connected" to the MenuItem in the
- * UI.  In other words, the instance will always be of type {@link ConnectedMenuItemInstance} (a
- * more specific type than {@link MenuItemInstance}).  This is because the {@link MenuItemInstance}
- * becomes connected to the MenuItem in the UI when the MenuItem is rendered in the UI - and if the
- * selection or deselection occurs in the previously mentioned manners, the MenuItem would have had
- * to be rendered in the UI.
- *
- * However, the {@link MenuItemInstance} attached to the event parameters,
- * {@link SelectEventChangeParams}, may not be "connected" (and would be of type
- * {@link DisconnectedMenuItemInstance}) in multiple scenarios:
- *
- * 1. When a selection occurs for a model that has _just_ been added optimistically, the MenuItem
- *    may not have been rendered in the UI at that point in time, because the selection occurs
- *    immediately after the model is added to the data, but before the menu has a chance to
- *    rerender.  This means that the ref associated with the item's instance will not be attached
- *    to the MenuItem yet.
- *
- * 2. When a deselection occurs as a result of clicking on the "Close Button" (X) inside of a
- *    Badge in the Select's Input, the item's instance may not be available, because the Badge may
- *    correspond to an item that is currently not rendered in the UI due to filtering or searching
- *    of the original data.
- *
- * In both of these cases, and potentially different future cases as well, the
- * {@link MenuItemInstance} will still be non-null, but will be of type
- * {@link DisconnectedMenuItemInstance}.  In other words, the {@link MenuItemInstance} included
- * in the event params, {@link SelectEventChangeParams}, will not be connected to a MenuItem
- * that is rendered in the UI and the methods attached to the instance will not have an affect.
- *
- * The methods of the {@link DisconnectedMenuItemInstance} will not have an affect on the MenuItem,
- * but they will log a warning that the method is being called for a {@link MenuItemInstance} that
- * is not yet connected to a MenuItem in the UI.
- */
 
 type EventParamsIncludesDefault = { modelValue?: false; item?: false };
 
@@ -599,7 +509,7 @@ export interface ManagedDataSelect<
   readonly clear: IfClearable<
     { model: M; options: O },
     (
-      p: SelectEventPublicArgs,
+      p?: SelectEventPublicArgs,
       cb?: SelectEventChangeHandler<
         typeof SelectEvents.CLEAR,
         { model: M; options: O },

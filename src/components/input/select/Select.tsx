@@ -20,17 +20,17 @@ export interface SelectProps<V extends types.AllowedSelectValue, B extends types
   extends Omit<RootSelectProps, "content" | "onClear" | "renderedValue" | "showPlaceholder"> {
   readonly behavior: B;
   readonly isLoading?: boolean;
-  readonly value?: types.SelectValue<V, B>;
-  readonly initialValue?: types.SelectValue<V, B>;
+  readonly value?: types.SelectValue<{ value: V; behavior: B }>;
+  readonly initialValue?: types.SelectValue<{ value: V; behavior: B }>;
   readonly popoverClassName?: ComponentProps["className"];
   readonly inputClassName?: ComponentProps["className"];
   readonly closeMenuOnSelect?: boolean;
   readonly isClearable?: boolean;
-  readonly onClear?: types.IfClearable<B, () => void>;
+  readonly onClear?: types.IfClearable<{ behavior: B }, () => void>;
   readonly valueRenderer?: types.SelectValueRenderer<V, B>;
-  readonly onChange?: types.SelectChangeHandler<V, B>;
+  readonly onChange?: types.SelectChangeHandler<{ value: V; behavior: B }>;
   readonly content?: (
-    value: types.SelectNullableValue<V, B>,
+    value: types.SelectNullableValue<{ value: V; behavior: B }>,
     select: types.SelectInstance<V, B> & Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">,
   ) => JSX.Element;
 }
@@ -91,9 +91,10 @@ export const Select = forwardRef(
     const select = useMemo(
       (): types.SelectInstance<V, B> => ({
         ...managed,
-        clear: types.ifClearable<types.SelectInstance<V, B>["clear"], B>(clear, behavior),
-        setValue: v => managed.set(v),
-        deselect: types.ifDeselectable(managed.deselect, behavior),
+        clear: types.ifClearable<types.SelectInstance<V, B>["clear"], { behavior: B }>(clear, {
+          behavior,
+        }),
+        deselect: types.ifDeselectable(managed.deselect, { behavior }),
         focusInput: () => innerRef.current?.focusInput(),
         setOpen: (v: boolean) => innerRef.current?.setOpen(v),
         setInputLoading: (v: boolean) => innerRef.current?.setInputLoading(v),
@@ -153,7 +154,7 @@ export const Select = forwardRef(
               isOpen={isOpen}
               isLoading={inputIsLoading || isLoading}
               ref={ref}
-              onClear={onClear as types.IfDeselectable<B, () => void>}
+              onClear={types.ifClearable(onClear, { behavior })}
               className={inputClassName}
             >
               {value !== types.NOTSET &&
@@ -161,7 +162,7 @@ export const Select = forwardRef(
                 ? // This type coercion is safe because SelectValue and SelectNullableValue are the
                   /* same when the select's behavior is not single, non-nullable and the value is
                      not null. */
-                  valueRenderer?.(value as types.SelectValue<V, B>, select)
+                  valueRenderer?.(value as types.SelectValue<{ value: V; behavior: B }>, select)
                 : undefined}
             </SelectInput>
           ))}

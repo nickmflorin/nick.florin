@@ -9,12 +9,12 @@ import { DataSelect, type DataSelectProps } from "~/components/input/select/Data
 
 type M = EnumeratedLiteralsModel<typeof SkillCategories>;
 
-const getItemValue = (m: M) => m.value;
+const getModelValue = (m: M) => m.value;
 
 export interface SkillCategorySelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<M, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "data" | "getItemValueLabel" | "itemRenderer"
+    DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
+    "options" | "data" | "getModelValueLabel" | "itemRenderer"
   > {
   readonly behavior: B;
 }
@@ -22,13 +22,13 @@ export interface SkillCategorySelectProps<B extends SelectBehaviorType>
 export const SkillCategorySelect = forwardRef(
   <B extends SelectBehaviorType>(
     { behavior, ...props }: SkillCategorySelectProps<B>,
-    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getItemValue: typeof getItemValue }>>,
+    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>>,
   ): JSX.Element => (
-    <DataSelect<M, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
       {...props}
       ref={ref}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.label}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.label}
       data={[...SkillCategories.models]}
       itemRenderer={m => m.label}
     />
@@ -37,7 +37,7 @@ export const SkillCategorySelect = forwardRef(
   <B extends SelectBehaviorType>(
     props: SkillCategorySelectProps<B> & {
       readonly ref?: ForwardedRef<
-        DataSelectInstance<M, { behavior: B; getItemValue: typeof getItemValue }>
+        DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>
       >;
     },
   ): JSX.Element;

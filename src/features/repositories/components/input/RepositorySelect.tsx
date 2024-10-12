@@ -6,17 +6,17 @@ import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/
 import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
 import { RepositoryTile } from "~/features/repositories/components/RepositoryTile";
 
-const getItemValue = (m: ApiRepository) => m.id;
+const getModelValue = (m: ApiRepository) => m.id;
 
 export type RepositorySelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
   ApiRepository,
-  { behavior: B; getItemValue: typeof getItemValue }
+  { behavior: B; getModelValue: typeof getModelValue }
 >;
 
 export interface RepositorySelectProps<B extends SelectBehaviorType>
   extends Omit<
-    DataSelectProps<ApiRepository, { behavior: B; getItemValue: typeof getItemValue }>,
-    "options" | "itemIsDisabled" | "itemRenderer" | "includeDescriptions" | "getItemValueLabel"
+    DataSelectProps<ApiRepository, { behavior: B; getModelValue: typeof getModelValue }>,
+    "options" | "itemIsDisabled" | "itemRenderer" | "includeDescriptions" | "getModelValueLabel"
   > {
   readonly behavior: B;
 }
@@ -26,11 +26,11 @@ export const RepositorySelect = forwardRef(
     { behavior, ...props }: RepositorySelectProps<B>,
     ref: ForwardedRef<RepositorySelectInstance<B>>,
   ): JSX.Element => (
-    <DataSelect<ApiRepository, { behavior: B; getItemValue: typeof getItemValue }>
+    <DataSelect<ApiRepository, { behavior: B; getModelValue: typeof getModelValue }>
       {...props}
       ref={ref}
-      options={{ behavior, getItemValue }}
-      getItemValueLabel={m => m.slug}
+      options={{ behavior, getModelValue }}
+      getModelValueLabel={m => m.slug}
       includeDescriptions={false}
       itemRenderer={m => (
         <RepositoryTile
