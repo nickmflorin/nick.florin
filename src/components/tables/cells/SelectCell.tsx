@@ -95,6 +95,7 @@ export const SelectCell = <
         // Optimistically update the value.
         setValue(v);
         table.setRowLoading(row.id, true);
+        // The item will not be defined for 'clear'.
         params.item?.setLoading(true);
 
         let response: MutationActionResponse<T> | undefined = undefined;
@@ -107,6 +108,7 @@ export const SelectCell = <
             { value: v },
           );
           table.setRowLoading(row.id, false);
+          // The item will not be defined for 'clear'.
           params.item?.setLoading(false);
           return toast.error(errorMessage);
         }
@@ -118,6 +120,7 @@ export const SelectCell = <
             { value: v },
           );
           table.setRowLoading(row.id, false);
+          // The item will not be defined for 'clear'.
           params.item?.setLoading(false);
           return toast.error(errorMessage);
         }
@@ -127,6 +130,7 @@ export const SelectCell = <
         transition(() => {
           router.refresh();
           table.setRowLoading(row.id, false);
+          // The item will not be defined for 'clear'.
           params.item?.setLoading(false);
         });
       }}

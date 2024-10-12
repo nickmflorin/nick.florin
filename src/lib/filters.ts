@@ -73,14 +73,14 @@ type FilterConfigRefObj<C extends FilterConfig> = C extends {
 
 type FilterConfigRef<C extends FilterConfig> = C extends {
   type: "multi-enum";
-  typeguard: (v: string) => v is infer E extends string;
 }
-  ? React.MutableRefObject<DataSelectInstance<DataSelectModel<E>, { behavior: "multi" }> | null>
+  ? /* eslint-disable-next-line @typescript-eslint/no-explicit-any -- Would be nice to fix this, but
+       it's complicated. */
+    React.MutableRefObject<DataSelectInstance<any, { behavior: "multi" }> | null>
   : C extends { type: "multi-string" }
-    ? React.MutableRefObject<DataSelectInstance<
-        DataSelectModel<string>,
-        { behavior: "multi" }
-      > | null>
+    ? /* eslint-disable-next-line @typescript-eslint/no-explicit-any -- Would be nice to fix this,
+         but it's complicated. */
+      React.MutableRefObject<DataSelectInstance<any, { behavior: "multi" }> | null>
     : C extends { type: "flag" }
       ? React.MutableRefObject<FilterButtonInstance | null>
       : C extends { type: "search" }

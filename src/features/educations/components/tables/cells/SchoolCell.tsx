@@ -33,7 +33,7 @@ export const SchoolCell = ({ education, table }: SchoolCellProps): JSX.Element =
       behavior="single"
       value={value}
       inPortal
-      onChange={async (v, _, { item }) => {
+      onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

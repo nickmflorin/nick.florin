@@ -35,7 +35,7 @@ export const RepositoriesCell = ({ skill, table }: RepositoriesCellProps): JSX.E
       isClearable
       inputClassName="w-full"
       value={value}
-      onChange={async (v, _, { item }) => {
+      onChange={async (v, { item }) => {
         // Optimistically update the value.
         setValue(v);
         item?.setLoading(true);

@@ -329,12 +329,20 @@ type EventParamsIncludes =
   | { modelValue: true; item?: false }
   | { modelValue: true; item: true };
 
+type EventItemParam<E extends SelectEvent> = E extends SelectEvent
+  ? {
+      select: { readonly item: MenuItemInstance };
+      deselect: { readonly item: MenuItemInstance };
+      clear: { readonly item?: never };
+    }[E]
+  : never;
+
 type _SelectChangeEventParams<E extends SelectEvent, Args extends SelectArgs> = Prettify<
-  SelectEventRecord<E, InferV<Args>> & {
-    readonly event: E;
-    readonly modelValue: DataSelectModelValue<InferM<Args>, InferO<Args>>;
-    readonly item: MenuItemInstance;
-  }
+  SelectEventRecord<E, InferV<Args>> &
+    EventItemParam<E> & {
+      readonly event: E;
+      readonly modelValue: DataSelectModelValue<InferM<Args>, InferO<Args>>;
+    }
 >;
 
 type TruthyKeys<K extends { [key in string]?: boolean | undefined }> = keyof {
