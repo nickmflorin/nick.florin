@@ -7,15 +7,16 @@ import { type ComponentProps, classNames } from "~/components/types";
 export type CustomDataMenuItemProps = Omit<
   types.DataMenuItemClassNameProps<ComponentProps["className"]>,
   "itemSelectedClassName"
-> & {
-  readonly datum: types.DataMenuCustomModel;
-  readonly isCurrentNavigation?: boolean;
-  readonly boldSubstrings?: string;
-  readonly onItemClick?: (
-    e: types.MenuItemClickEvent,
-    instance: types.ConnectedMenuItemInstance,
-  ) => void;
-};
+> &
+  types.DataMenuItemSizeProps & {
+    readonly datum: types.DataMenuCustomModel;
+    readonly isCurrentNavigation?: boolean;
+    readonly boldSubstrings?: string;
+    readonly onItemClick?: (
+      e: types.MenuItemClickEvent,
+      instance: types.ConnectedMenuItemInstance,
+    ) => void;
+  };
 
 export const CustomDataMenuItem = forwardRef(
   (
@@ -23,10 +24,11 @@ export const CustomDataMenuItem = forwardRef(
       datum,
       itemClassName,
       itemIconSize,
+      itemSpinnerSize,
+      itemCheckboxSize,
       itemDisabledClassName,
       itemSpinnerClassName,
       itemIconClassName,
-      itemIconProps,
       itemLoadingClassName,
       itemLockedClassName,
       itemHeight,
@@ -44,7 +46,8 @@ export const CustomDataMenuItem = forwardRef(
       height={itemHeight}
       icon={datum.icon}
       iconSize={datum.iconSize ?? itemIconSize}
-      iconProps={{ ...itemIconProps, ...datum.iconProps }}
+      spinnerSize={datum.spinnerSize ?? itemSpinnerSize}
+      checkboxSize={datum.checkboxSize ?? itemCheckboxSize}
       selectionIndicator="none"
       iconClassName={classNames(itemIconClassName, datum.iconClassName)}
       navigatedClassName={itemNavigatedClassName}

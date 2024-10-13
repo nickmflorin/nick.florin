@@ -3,8 +3,13 @@ import { forwardRef, useState } from "react";
 
 import { Checkbox as RootCheckbox, type CheckboxProps as RootCheckboxProps } from "@mantine/core";
 
-import { classNames, parseDataAttributes } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import {
+  classNames,
+  parseDataAttributes,
+  type QuantitativeSize,
+  type ComponentProps,
+  sizeToString,
+} from "~/components/types";
 import { Label } from "~/components/typography";
 
 export interface CheckboxProps
@@ -14,11 +19,12 @@ export interface CheckboxProps
   readonly isDisabled?: boolean;
   readonly isLocked?: boolean;
   readonly label?: string;
+  readonly size?: QuantitativeSize<"px">;
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
-    { isDisabled = false, isLocked = false, value, label, ...props }: CheckboxProps,
+    { isDisabled = false, isLocked = false, value, size, label, ...props }: CheckboxProps,
     ref,
   ): JSX.Element => {
     const [isChecked, setIsChecked] = useState(false);
@@ -36,6 +42,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             props.onChange?.(e);
           }}
           className={classNames("checkbox", props.className)}
+          style={{
+            ...props.style,
+            height: size !== undefined ? sizeToString(size, "px") : props.style?.height,
+            width: size !== undefined ? sizeToString(size, "px") : props.style?.width,
+          }}
         />
       );
     }

@@ -2,11 +2,6 @@
 
 $checkbox-bg-color: theme("colors.blue.900");
 
-@mixin checkbox-size() {
-  height: 16px;
-  width: 16px;
-}
-
 @mixin checked-state() {
   .checkbox[data-checked="true"] {
     @include partials.not-disabled() {
@@ -34,13 +29,21 @@ $checkbox-bg-color: theme("colors.blue.900");
 }
 
 .checkbox {
+  height: 16px;
+  width: 16px;
+
   > .mantine-Checkbox-body {
+    height: 100%;
+    width: 100%;
+
     > .mantine-Checkbox-inner {
-      @include checkbox-size();
+      height: 100%;
+      width: 100%;
     }
   }
   @include checkbox-input() {
-    @include checkbox-size();
+    height: 100%;
+    width: 100%;
     border-radius: theme("borderRadius.xs");
     border: 1px solid theme("colors.gray.500");
     background-color: theme("colors.white");

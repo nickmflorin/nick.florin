@@ -6,6 +6,8 @@ import React, {
   type ReactNode,
 } from "react";
 
+import { logger } from "~/internal/logger";
+
 import * as types from "~/components/menus";
 import {
   MenuContent,
@@ -26,6 +28,7 @@ export interface ProcessedDataMenuContentProps<
       "hideEmptyGroups" | "hideGrouplessItems" | "groups" | "itemIsVisible"
     >,
     Omit<types.DataMenuItemFlagProps<M>, "itemIsVisible">,
+    types.DataMenuItemSizeProps,
     types.DataMenuItemClassNameProps<types.DataMenuItemClassName<M>>,
     types.DataMenuItemAccessorProps<M> {
   readonly options: O;
@@ -109,6 +112,17 @@ export const ProcessedDataMenuContent = forwardRef(
                 if (!model.isCustom) {
                   return props.onItemClick?.(e, model, instance);
                 }
+              } else if (instance) {
+                logger.warn(
+                  "Detected an Enter KeyboardEvent on a MenuItem who's instance is not connected!",
+                  { model },
+                );
+              } else {
+                logger.warn(
+                  "Detected an Enter KeyboardEvent on a MenuItem for which an instance is not " +
+                    "established!",
+                  { model },
+                );
               }
             }
           }

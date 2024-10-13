@@ -46,7 +46,6 @@ export const ExperienceForm = (props: ExperienceFormProps): JSX.Element => {
             isReady={value !== undefined}
             visibility="admin"
             inputClassName="w-full"
-            isClearable
             behavior="single"
             value={value}
             onChange={onChange}

@@ -101,7 +101,7 @@ export const EducationsFiltersObj = new Filters({
   highlighted: Filters.flag(),
   visible: Filters.flag(),
   search: Filters.search(),
-  degrees: Filters.multiEnum(Degrees.contains),
+  degrees: Filters.multiEnum(Degrees.contains.bind(Degrees)),
   courses: Filters.multiString({ typeguard: isUuid }),
   skills: Filters.multiString({ typeguard: isUuid }),
   schools: Filters.multiString({ typeguard: isUuid }),

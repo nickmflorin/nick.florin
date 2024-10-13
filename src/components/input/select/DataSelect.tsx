@@ -85,7 +85,7 @@ export interface DataSelectProps<
   readonly contentIsLoading?: boolean;
   readonly boldOptionsOnSearch?: boolean;
   readonly menuClassName?: ComponentProps["className"];
-  readonly bottomItems?: (types.DataSelectCustomMenuItem<M, O> | JSX.Element)[];
+  readonly customItems?: (Omit<types.DataSelectCustomMenuItem<M, O>, "isCustom"> | JSX.Element)[];
   readonly valueRenderer?: types.DataSelectValueRenderer<M, O>;
   readonly itemRenderer?: (
     model: types.ConnectedDataSelectModel<M, O>,
@@ -313,7 +313,7 @@ export const DataSelect = forwardRef(
               isDisabled={isDisabled}
               isLocked={isLocked}
               isLoading={isLoading || contentIsLoading}
-              bottomItems={props.bottomItems?.map(item =>
+              customItems={props.customItems?.map(item =>
                 types.dataSelectCustomItemIsObject(item)
                   ? ({
                       ...item,

@@ -13,9 +13,9 @@ export interface DataMenuContentProps<
   O extends types.DataMenuOptions<M>,
 > extends Omit<ProcessedDataMenuContentProps<M, O>, "processedData">,
     types.DataMenuGroupProps<M>,
-    types.DataMenuItemFlagProps<M> {
+    Pick<types.DataMenuItemFlagProps<M>, "itemIsVisible"> {
   readonly data: M[];
-  readonly bottomItems?: (types.DataMenuCustomModel | JSX.Element)[];
+  readonly customItems?: (Omit<types.DataMenuCustomModel, "isCustom"> | JSX.Element)[];
 }
 
 export const DataMenuContent = forwardRef(
@@ -24,7 +24,7 @@ export const DataMenuContent = forwardRef(
       data,
       hideEmptyGroups,
       hideGrouplessItems,
-      bottomItems,
+      customItems,
       groups,
       itemIsVisible,
       ...props
@@ -34,7 +34,7 @@ export const DataMenuContent = forwardRef(
     const processedData = useProcessedData({
       data,
       groups,
-      bottomItems,
+      customItems,
       hideEmptyGroups,
       hideGrouplessItems,
       itemIsVisible,

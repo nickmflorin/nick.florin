@@ -90,7 +90,7 @@ const ContentIcon = ({
     fit="square"
     dimension="height"
     size={toIconSize(iconSize)}
-    loadingClassName={classNames(iconClassName, spinnerClassName)}
+    spinnerClassName={classNames(iconClassName, spinnerClassName)}
     className={iconClassName}
   />
 );

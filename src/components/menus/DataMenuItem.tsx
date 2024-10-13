@@ -9,7 +9,8 @@ export type DataMenuItemProps<M extends types.DataMenuModel> = Omit<
   "itemIsVisible"
 > &
   types.DataMenuItemClassNameProps<types.DataMenuItemClassName<M>> &
-  types.DataMenuItemAccessorProps<M> & {
+  types.DataMenuItemAccessorProps<M> &
+  types.DataMenuItemSizeProps & {
     readonly datum: M;
     readonly id: string | number;
     readonly includeDescription?: boolean;
@@ -30,11 +31,12 @@ export const DataMenuItem = forwardRef(
       id,
       itemClassName,
       itemIconSize,
+      itemSpinnerSize,
+      itemCheckboxSize,
       itemDisabledClassName,
       itemSelectedClassName,
       itemSpinnerClassName,
       itemIconClassName,
-      itemIconProps,
       itemLoadingClassName,
       itemLockedClassName,
       itemHeight,
@@ -81,7 +83,8 @@ export const DataMenuItem = forwardRef(
         icon={icon}
         description={description}
         iconSize={datum.iconSize ?? itemIconSize}
-        iconProps={{ ...itemIconProps, ...datum.iconProps }}
+        spinnerSize={datum.spinnerSize ?? itemSpinnerSize}
+        checkboxSize={datum.checkboxSize ?? itemCheckboxSize}
         iconClassName={classNames(
           typeof itemIconClassName === "function" ? itemIconClassName(datum) : itemIconClassName,
           datum.iconClassName,

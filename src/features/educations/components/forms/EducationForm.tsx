@@ -85,7 +85,6 @@ export const EducationForm = (props: EducationFormProps): JSX.Element => {
             inputClassName="w-full"
             value={value}
             behavior="single"
-            isClearable
             onChange={onChange}
           />
         )}

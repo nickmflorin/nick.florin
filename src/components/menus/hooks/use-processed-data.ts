@@ -6,15 +6,35 @@ export interface UseProcessedDataProps<M extends types.DataMenuModel>
   extends Pick<types.DataMenuItemFlagProps<M>, "itemIsVisible">,
     Pick<types.DataMenuGroupProps<M>, "hideEmptyGroups" | "hideGrouplessItems" | "groups"> {
   readonly data: M[];
-  readonly bottomItems?: (types.DataMenuCustomModel | JSX.Element)[];
+  readonly customItems?: (Omit<types.DataMenuCustomModel, "isCustom"> | JSX.Element)[];
 }
+
+const processCustomItems = (
+  custom: (Omit<types.DataMenuCustomModel, "isCustom"> | JSX.Element)[],
+  { location, getIndex }: { location: types.DataMenuCustomModelLocation; getIndex: () => number },
+): types.DataMenuProcessedCustom[] => {
+  const defaultLocation = "after-content";
+  return custom
+    .filter(item =>
+      types.dataMenuCustomModelIsObj(item)
+        ? item.isVisible !== false && (item.location ?? defaultLocation) === location
+        : true,
+    )
+    .map(
+      (item): types.DataMenuProcessedCustom => ({
+        model: types.dataMenuCustomModelIsObj(item) ? { ...item, isCustom: true } : item,
+        index: getIndex(),
+        isCustom: true,
+      }),
+    );
+};
 
 export const useProcessedData = <M extends types.DataMenuModel>({
   data,
   groups,
   hideEmptyGroups,
   hideGrouplessItems,
-  bottomItems = [],
+  customItems = [],
   itemIsVisible,
 }: UseProcessedDataProps<M>) =>
   useMemo<types.DataMenuProcessedData<M>>(() => {
@@ -54,25 +74,21 @@ export const useProcessedData = <M extends types.DataMenuModel>({
           }
           return processed;
         },
-        !hideGrouplessItems
-          ? visibleData.reduce((acc, model): types.DataMenuProcessedData<M> => {
-              if (!groups || groups.length === 0 || groups.every(group => !group.filter(model))) {
-                return [...acc, { model, index: getUpdatedIndex(), isCustom: false }];
-              }
-              return acc;
-            }, [] as types.DataMenuProcessedData<M>)
-          : ([] as types.DataMenuProcessedData<M>),
-      ),
-      ...bottomItems
-        .filter(item =>
-          types.dataMenuModelArgIsCustomModel(item) ? item.isVisible !== false : true,
-        )
-        .map(
-          (item): types.DataMenuProcessedCustom => ({
-            model: item,
-            index: getUpdatedIndex(),
-            isCustom: true,
+        [
+          ...processCustomItems(customItems, {
+            location: "before-content",
+            getIndex: getUpdatedIndex,
           }),
-        ),
+          ...(!hideGrouplessItems
+            ? visibleData.reduce((acc, model): types.DataMenuProcessedData<M> => {
+                if (!groups || groups.length === 0 || groups.every(group => !group.filter(model))) {
+                  return [...acc, { model, index: getUpdatedIndex(), isCustom: false }];
+                }
+                return acc;
+              }, [] as types.DataMenuProcessedData<M>)
+            : ([] as types.DataMenuProcessedData<M>)),
+        ],
+      ),
+      ...processCustomItems(customItems, { location: "after-content", getIndex: getUpdatedIndex }),
     ];
-  }, [data, groups, hideGrouplessItems, bottomItems, hideEmptyGroups, itemIsVisible]);
+  }, [data, groups, hideGrouplessItems, customItems, hideEmptyGroups, itemIsVisible]);

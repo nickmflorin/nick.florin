@@ -121,7 +121,7 @@ export const useDataMenuItemInstances = <
     connect: (
       m: types.DataMenuItemInstanceLookupArg<M, O>,
       instance: types.ConnectedMenuItemInstance,
-    ) => set(getKey(m), instance),
+    ) => set(m, instance),
     getKey: <A extends types.DataMenuItemInstanceLookupArg<M, O>>(m: A) =>
       getKey(m) as types.MenuModelInstancesManagerGetKeyRT<A, M, O>,
     exists: (m: types.DataMenuItemInstanceLookupArg<M, O>) => get(m) !== null,

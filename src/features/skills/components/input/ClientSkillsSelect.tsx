@@ -1,20 +1,18 @@
 "use client";
-import { forwardRef, type ForwardedRef, useState, useCallback, useRef, useEffect } from "react";
+import { forwardRef, type ForwardedRef, useState } from "react";
 
 import { toast } from "react-toastify";
 
-import { type ApiSkill } from "~/database/model";
 import { logger } from "~/internal/logger";
 
 import { type ActionVisibility } from "~/actions";
 import { createSkill } from "~/actions/skills/create-skill";
-import { apiClient } from "~/api";
 import { type ApiError } from "~/api";
-import { type ApiClientResponseOrError } from "~/api/client";
 
 import type { SelectBehaviorType } from "~/components/input/select";
 import { Text } from "~/components/typography";
 import { useDebounceCallback } from "~/hooks";
+import { useSkills } from "~/hooks/api";
 
 import { SkillsSelect, type SkillsSelectInstance, type SkillsSelectProps } from "./SkillsSelect";
 
@@ -24,61 +22,26 @@ export interface ClientSkillsSelectProps<B extends SelectBehaviorType>
   readonly onError?: (e: ApiError) => void;
 }
 
-type FetchSearchParams = {
-  readonly search?: string;
-  readonly loadingClosure?: (v: boolean) => void;
-};
-
 export const ClientSkillsSelect = forwardRef(
   <B extends SelectBehaviorType>(
     { visibility, onError, ...props }: ClientSkillsSelectProps<B>,
     ref: ForwardedRef<SkillsSelectInstance<B>>,
   ): JSX.Element => {
-    const lastSearchedRef = useRef<string | null>(null);
-
     const [localSearch, setLocalSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const setSearch = useDebounceCallback((v: string) => setDebouncedSearch(v), 300);
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<ApiError | string | undefined>(undefined);
-    const [data, setData] = useState<ApiSkill<[]>[] | undefined>(undefined);
+    /* const [isLoading, setIsLoading] = useState(false);
+       const [error, setError] = useState<ApiError | string | undefined>(undefined);
+       const [data, setData] = useState<ApiSkill<[]>[] | undefined>(undefined); */
 
-    const fetchSkills = useCallback(
-      async (params: FetchSearchParams) => {
-        console.log("FETCHING SKILLS")
-        const search = params.search ?? lastSearchedRef.current ?? "";
-        params.loadingClosure?.(true);
-        const response: ApiClientResponseOrError<ApiSkill<[]>[]> = await apiClient.get(
-          "/api/skills",
-          {
-            includes: [],
-            visibility,
-            orderBy: "label",
-            order: "asc",
-            search,
-          },
-          { processed: true, strict: false },
-        );
-        const { error: e, response: data } = response;
-        if (e) {
-          setError(e);
-          onError?.(e);
-          logger.error(e, "There was an error loading the skills via the API.", {
-            search,
-          });
-          return params.loadingClosure?.(false);
-        }
-        lastSearchedRef.current = search;
-        params.loadingClosure?.(false);
-        return setData(data);
+    const { data, isLoading, error } = useSkills({
+      query: { includes: [], visibility, orderBy: "label", order: "asc", search: debouncedSearch },
+      onError: e => {
+        logger.error(e, "There was an error loading the repositories via the API.");
+        onError?.(e);
       },
-      [visibility, onError],
-    );
-
-    useEffect(() => {
-      fetchSkills({ search: debouncedSearch, loadingClosure: setIsLoading });
-    }, [debouncedSearch, fetchSkills]);
+    });
 
     return (
       <SkillsSelect
@@ -90,14 +53,13 @@ export const ClientSkillsSelect = forwardRef(
         data={data ?? []}
         isDisabled={error !== undefined || props.isDisabled}
         isLocked={isLoading || props.isLocked}
-        isLoading={isLoading || props.isLoading}
+        inputIsLoading={isLoading || props.inputIsLoading}
         onSearch={e => {
           setLocalSearch(e.target.value);
           setSearch(e.target.value);
         }}
-        bottomItems={[
+        customItems={[
           {
-            isCustom: true,
             id: "add-skill",
             label: (
               <Text fontSize="sm" truncate fontWeight="medium">
@@ -105,8 +67,11 @@ export const ClientSkillsSelect = forwardRef(
               </Text>
             ),
             iconSize: "18px",
+            isLoading: true,
             icon: { name: "plus-circle", iconStyle: "solid" },
             iconClassName: "text-green-700",
+            spinnerClassName: "text-gray-600",
+            spinnerSize: "16px",
             isVisible:
               localSearch.trim().length >= 3 &&
               (data ?? []).filter(sk => sk.label === localSearch).length === 0,
@@ -121,7 +86,7 @@ export const ClientSkillsSelect = forwardRef(
                   `There was an error creating the skill with label '${localSearch}'.`,
                   { label: localSearch },
                 );
-                toast.error(`There was an error creating the skill.`)
+                toast.error("There was an error creating the skill.");
                 return item.setLoading(false);
               }
               const { error, data } = response;
@@ -131,7 +96,7 @@ export const ClientSkillsSelect = forwardRef(
                   `There was an error creating the skill with label '${localSearch}'.`,
                   { label: localSearch },
                 );
-                toast.error(`There was an error creating the skill.`)
+                toast.error("There was an error creating the skill.");
                 return item.setLoading(false);
               }
               item.setLoading(false);

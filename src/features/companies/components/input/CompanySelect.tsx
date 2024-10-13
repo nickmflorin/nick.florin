@@ -25,7 +25,7 @@ export interface CompanySelectProps<B extends SelectBehaviorType>
 
 export const CompanySelect = forwardRef(
   <B extends SelectBehaviorType>(
-    { behavior, useAbbreviatedLabels, ...props }: CompanySelectProps<B>,
+    { behavior, useAbbreviatedLabels, includeDescriptions = true, ...props }: CompanySelectProps<B>,
     ref: ForwardedRef<CompanySelectInstance<B>>,
   ): JSX.Element => (
     <DataSelect<Company, { behavior: B; getModelValue: typeof getModelValue }>
@@ -33,14 +33,17 @@ export const CompanySelect = forwardRef(
       ref={ref}
       options={{ behavior, getModelValue }}
       getModelValueLabel={m => m.shortName ?? m.name}
+      includeDescriptions={false}
       itemRenderer={m => (
         <div className="flex flex-col gap-[4px]">
           <Text fontSize="sm" fontWeight="medium">
             {useAbbreviatedLabels ? (m.shortName ?? m.name) : m.name}
           </Text>
-          <Description fontSize="xs">
-            {stringifyLocation({ city: m.city, state: m.state })}
-          </Description>
+          {includeDescriptions && (
+            <Description fontSize="xs">
+              {stringifyLocation({ city: m.city, state: m.state })}
+            </Description>
+          )}
         </div>
       )}
     />

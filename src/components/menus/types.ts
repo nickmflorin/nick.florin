@@ -2,9 +2,11 @@ import React, { type ReactNode } from "react";
 
 import { omit, pick } from "lodash-es";
 
+import type { Optional } from "utility-types";
+
 import { type ExtractValues } from "~/lib/types";
 
-import { type IconProp, type IconName, type IconProps } from "~/components/icons";
+import { type IconProp, type IconName } from "~/components/icons";
 import { type Action } from "~/components/structural/Actions";
 import { type ComponentProps, type QuantitativeSize } from "~/components/types";
 import { type LabelProps } from "~/components/typography";
@@ -13,6 +15,16 @@ import { type DataMenuProps } from "./DataMenu";
 
 export type MenuItemClickEvent = React.MouseEvent<HTMLDivElement, MouseEvent> | KeyboardEvent;
 
+/**
+ * Represents a more specific sub-type of {@link MenuItemInstance} that has NOT been connected to
+ * the UI yet.  In other words, the ref-relationship between the
+ * {@link DisconnectedMenuItemInstance} and the MenuItem has not yet been established, because the
+ * MenuItem has not yet been rendered in the UI.
+ *
+ * This can happen when optimistic models are added to the data rendered by a DataMenu.  In certain
+ * cases, the {@link MenuItemInstance} associated with the model will have to be created before
+ * the MenuItem associated with the model is rendered in the UI.
+ */
 export type DisconnectedMenuItemInstance = {
   readonly isConnected: false;
   readonly setLocked: (value: boolean) => void;
@@ -20,6 +32,12 @@ export type DisconnectedMenuItemInstance = {
   readonly setLoading: (value: boolean) => void;
 };
 
+/**
+ * Represents a more specific sub-type of {@link MenuItemInstance} that has been connected to
+ * the UI.  When the MenuItem associated with the {@link DisconnectedMenuItemInstance} is rendered
+ * in the UI, the {@link DisconnectedMenuItemInstance} becomes a {@link ConnectedMenuItemInstance}
+ * because the ref-relationship with the MenuItem is established when it is rendered.
+ */
 export type ConnectedMenuItemInstance = {
   readonly isConnected?: true;
   readonly setLocked: (value: boolean) => void;
@@ -29,12 +47,18 @@ export type ConnectedMenuItemInstance = {
 
 export type MenuItemInstance = DisconnectedMenuItemInstance | ConnectedMenuItemInstance;
 
+export type DataMenuModelClickHandler = (
+  e: MenuItemClickEvent,
+  instance: ConnectedMenuItemInstance,
+) => void;
+
 /* ---------------------------------- Data Menu Model -----------------------------------------*/
-export type BaseDataMenuModel = {
+export type BaseDataMenuModel<C = DataMenuModelClickHandler> = {
   readonly icon?: IconProp | IconName | JSX.Element;
   readonly description?: ReactNode;
-  readonly iconProps?: MenuItemIconProps;
   readonly iconSize?: QuantitativeSize<"px">;
+  readonly checkboxSize?: QuantitativeSize<"px">;
+  readonly spinnerSize?: QuantitativeSize<"px">;
   readonly iconClassName?: ComponentProps["className"];
   readonly spinnerClassName?: ComponentProps["className"];
   readonly disabledClassName?: ComponentProps["className"];
@@ -47,7 +71,7 @@ export type BaseDataMenuModel = {
   readonly isDisabled?: boolean;
   readonly isVisible?: boolean;
   readonly actions?: Action[];
-  readonly onClick?: (e: MenuItemClickEvent, instance: ConnectedMenuItemInstance) => void;
+  readonly onClick?: C;
 };
 
 export type DataMenuModel = BaseDataMenuModel & {
@@ -60,9 +84,12 @@ export type DataMenuModel = BaseDataMenuModel & {
 
 export type DataMenuModelCustomRenderer = (instance: ConnectedMenuItemInstance) => JSX.Element;
 
-export type DataMenuCustomModel = BaseDataMenuModel & {
+export type DataMenuCustomModelLocation = "before-content" | "after-content";
+
+export type DataMenuCustomModel<C = DataMenuModelClickHandler> = BaseDataMenuModel<C> & {
   readonly id: string;
   readonly isCustom: true;
+  readonly location?: DataMenuCustomModelLocation;
   readonly selectedClassName?: never;
   readonly isSelected?: never;
   readonly renderer?: DataMenuModelCustomRenderer;
@@ -156,6 +183,13 @@ export const dataMenuModelArgIsCustomModel = <M extends DataMenuModel>(
   m: M | DataMenuCustomModel | JSX.Element,
 ): m is DataMenuCustomModel => (m as DataMenuCustomModel).isCustom;
 
+export const dataMenuCustomModelIsObj = <
+  O extends Optional<DataMenuCustomModel<C>, "isCustom">,
+  C extends (...args: any[]) => void = DataMenuModelClickHandler,
+>(
+  m: O | JSX.Element,
+): m is O => (m as DataMenuCustomModel<C>).id !== undefined;
+
 export const dataMenuModelArgIsModel = <M extends DataMenuModel>(
   m: M | DataMenuCustomModel | JSX.Element,
 ): m is M =>
@@ -194,11 +228,6 @@ export const menuItemHasSelectionIndicator = (
   }
   return check === ind;
 };
-
-export type MenuItemIconProps = Omit<
-  IconProps,
-  "size" | "className" | "icon" | "name" | "iconStyle" | "family" | "children"
->;
 
 export interface MenuFeedbackProps {
   readonly isEmpty?: boolean;
@@ -379,16 +408,20 @@ export type DataMenuItemClassNameProps<
   C extends DataMenuItemClassName<any> | ComponentProps["className"],
 > = {
   readonly itemClassName?: C;
-  readonly itemHeight?: QuantitativeSize<"px">;
   readonly itemNavigatedClassName?: C;
   readonly itemSpinnerClassName?: C;
   readonly itemIconClassName?: C;
-  readonly itemIconProps?: MenuItemIconProps;
-  readonly itemIconSize?: QuantitativeSize<"px">;
   readonly itemDisabledClassName?: C;
   readonly itemLoadingClassName?: C;
   readonly itemLockedClassName?: C;
   readonly itemSelectedClassName?: C;
+};
+
+export type DataMenuItemSizeProps = {
+  readonly itemIconSize?: QuantitativeSize<"px">;
+  readonly itemSpinnerSize?: QuantitativeSize<"px">;
+  readonly itemCheckboxSize?: QuantitativeSize<"px">;
+  readonly itemHeight?: QuantitativeSize<"px">;
 };
 
 /* ------------------------------ Data Menu Model Processing -----------------------------------*/
@@ -530,6 +563,11 @@ export const DataMenuPropsMap = {
   isLocked: true,
   isBordered: true,
   isLoading: true,
+  itemIsDisabled: true,
+  itemIsLoading: true,
+  itemIsLocked: true,
+  itemIsSelected: true,
+  itemIsVisible: true,
   // ~~~~~~~~ Groups ~~~~~~~~
   groups: true,
   hideEmptyGroups: true,
@@ -539,26 +577,25 @@ export const DataMenuPropsMap = {
   groupLabelContainerClassName: true,
   groupLabelProps: true,
   groupsAreBordered: true,
-  // ~~~~~~~~ Item State/Characteristics ~~~~~~~~
-  itemIsVisible: true,
+  // ~~~~~~~~ Item Size Characteristics ~~~~~~~~
+  itemIconSize: true,
+  itemSpinnerSize: true,
+  itemHeight: true,
+  itemCheckboxSize: true,
+  // ~~~~~~~~ Item Accessor Characteristics ~~~~~~~~
   getItemIcon: true,
   getItemDescription: true,
-  onItemClick: true,
+  // ~~~~~~~~ Item Class Name Characteristics ~~~~~~~~
   itemSelectedClassName: true,
-  itemIsDisabled: true,
-  itemIsLoading: true,
-  itemIsLocked: true,
-  itemIsSelected: true,
   itemClassName: true,
-  itemHeight: true,
   itemNavigatedClassName: true,
   itemSpinnerClassName: true,
   itemLockedClassName: true,
   itemIconClassName: true,
-  itemIconProps: true,
-  itemIconSize: true,
   itemDisabledClassName: true,
   itemLoadingClassName: true,
+  // ~~~~~~~~ Event Handlers ~~~~~~~~
+  onItemClick: true,
   // ~~~~~~~~ Feedback Props ~~~~~~~~
   isEmpty: true,
   isError: true,
@@ -570,7 +607,7 @@ export const DataMenuPropsMap = {
   errorContent: true,
   feedbackClassName: true,
   feedbackStyle: true,
-  bottomItems: true,
+  customItems: true,
 } as const satisfies {
   [key in keyof Required<DataMenuProps<DataMenuModel, DataMenuOptions<DataMenuModel>>>]: true;
 };

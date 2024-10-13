@@ -6,13 +6,15 @@ import { classNames, sizeToString } from "~/components/types";
 export interface SquareProps extends ComponentProps {
   readonly size?: QuantitativeSize<"px">;
   readonly children: ReactNode;
+  readonly contain?: boolean;
 }
 
-export const Square = ({ size, children, ...props }: SquareProps): JSX.Element => (
+export const Square = ({ size, children, contain, ...props }: SquareProps): JSX.Element => (
   <div
     {...props}
     className={classNames(
       "flex flex-col h-full w-auto aspect-square justify-center items-center",
+      { "[&>*]:max-h-full [&>*]:max-w-full": contain },
       props.className,
     )}
     style={{

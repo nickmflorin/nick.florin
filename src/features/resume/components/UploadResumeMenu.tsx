@@ -47,7 +47,7 @@ export const UploadResumeMenu = ({ manager, resume, onClose }: UploadResumeMenuP
               className="text-green-700"
               iconStyle="solid"
               isLoading={isUpdating}
-              loadingClassName="text-gray-600"
+              spinnerClassName="text-gray-600"
             />
           }
           onClick={async e => {
@@ -86,7 +86,7 @@ export const UploadResumeMenu = ({ manager, resume, onClose }: UploadResumeMenuP
               size="14px"
               className="text-red-500"
               isLoading={isDeleting}
-              loadingClassName="text-gray-600"
+              spinnerClassName="text-gray-600"
             />
           }
           onClick={async e => {

@@ -1,4 +1,4 @@
-import { isValidElement, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 
@@ -15,6 +15,7 @@ import {
   type CreateDataMenuItemInstanceRT,
   type DataMenuItemInstanceLookupArg,
   type CreateDataMenuItemInstanceOptions,
+  dataMenuCustomModelIsObj,
 } from "~/components/menus";
 
 export const NOTSET = "__NOTSET__" as const;
@@ -590,22 +591,62 @@ export type DataSelectMenuOptions<M extends DataSelectModel, O extends DataSelec
 
 export interface DataSelectInstance<M extends DataSelectModel, O extends DataSelectOptions<M>>
   extends DataSelectBaseInstance<M, O> {
+  /**
+   * Retrieves the {@link MenuItemInstance} associated with the rendered or unrendered MenuItem
+   * who's content is related to the with the provided value or model,
+   * {@link DataMenuItemInstanceLookupArg}.
+   *
+   * If the MenuItem associated with the provided value or model,
+   * {@link DataMenuItemInstanceLookupArg}, is not yet rendered in the UI, the method will return
+   * an instance of type {@link DisconnectedMenuItemInstance}.  If the MenuItem associated with
+   * the provided value or model is rendered in the UI, the method wil return an instance of type
+   * {@link ConnectedMenuItemInstance}.
+   *
+   * If the {@link MenuItemInstance} has not yet been created, the method will return null.
+   */
   readonly getMenuItemInstance: (
     m: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
   ) => MenuItemInstance | null;
+  /**
+   * Retrieves the {@link MenuItemInstance} associated with the rendered or unrendered MenuItem
+   * who's content is related to the with the provided value or model,
+   * {@link DataMenuItemInstanceLookupArg}.  If the {@link MenuItemInstance} has not yet been
+   * created, the method will create the {@link MenuItemInstance} and return it.
+   */
   readonly getOrCreateMenuItemInstance: (
     m: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
   ) => MenuItemInstance;
+  /**
+   * Creates a {@link MenuItemInstance} associated with the provided value or model only if
+   * the {@link MenuItemInstance} has not yet been created.
+   */
   readonly createMenuItemInstanceIfNecessary: (
     m: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
   ) => DisconnectedMenuItemInstance | null;
+  /**
+   * Creates a {@link MenuItemInstance} associated with the provided value or model.
+   */
   readonly createMenuItemInstance: <CO extends CreateDataMenuItemInstanceOptions>(
     k: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
     opts?: CO,
   ) => CreateDataMenuItemInstanceRT<CO>;
-  readonly setContentLoading: (v: boolean) => void;
+  /**
+   * Adds a model, {@link M}, to the data stored in state that the DataSelect uses to render the
+   * content in the popover.  This method can be used when applying optimistic updates to the
+   * population of models, {@link M[]}, that may have been previously fetched from an API request.
+   */
   readonly addOptimisticModel: AddOptimisticModel<M>;
+  /**
+   * Sets the loading state of the DataSelect as a whole.  When in a loading state, the DataSelect
+   * will treat both the DataMenu's content and the DataSelectInput as being in loading states,
+   * each of which will show loading indicators.
+   */
   readonly setLoading: (v: boolean) => void;
+  /**
+   * Sets the loading state of the DataSelect's DataMenu's content.  When in a loading state, the
+   * DataMenu's content will show a loading indicator.
+   */
+  readonly setContentLoading: (v: boolean) => void;
 }
 
 /* ------------------------------ Select Custom Items ------------------------------ */
@@ -614,24 +655,28 @@ export type DataSelectCustomItemRenderer<
   O extends DataSelectOptions<M>,
 > = (instance: MenuItemInstance, select: DataSelectInstance<M, O>) => JSX.Element;
 
+type DataSelectCustomModelItemClickHandler<
+  M extends DataSelectModel,
+  O extends DataSelectOptions<M>,
+> = (e: MenuItemClickEvent, instance: MenuItemInstance, select: DataSelectInstance<M, O>) => void;
+
 export type DataSelectCustomMenuItem<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-> = Omit<DataMenuCustomModel, "onClick"> & {
+> = DataMenuCustomModel<DataSelectCustomModelItemClickHandler<M, O>> & {
   readonly renderer?: DataSelectCustomItemRenderer<M, O>;
-  readonly onClick?: (
-    e: MenuItemClickEvent,
-    instance: MenuItemInstance,
-    select: DataSelectInstance<M, O>,
-  ) => void;
 };
 
 export const dataSelectCustomItemIsObject = <
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
 >(
-  obj: DataSelectCustomMenuItem<M, O> | JSX.Element,
-): obj is DataSelectCustomMenuItem<M, O> => !isValidElement(obj);
+  obj: Omit<DataSelectCustomMenuItem<M, O>, "isCustom"> | JSX.Element,
+): obj is Omit<DataSelectCustomMenuItem<M, O>, "isCustom"> =>
+  dataMenuCustomModelIsObj<
+    Omit<DataSelectCustomMenuItem<M, O>, "isCustom">,
+    DataSelectCustomModelItemClickHandler<M, O>
+  >(obj);
 
 /* ------------------------------ Select Value Renderers ------------------------------ */
 export type SelectValueRenderer<V extends AllowedSelectValue, B extends SelectBehaviorType> = (

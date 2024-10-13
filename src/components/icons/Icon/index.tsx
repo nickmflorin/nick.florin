@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { forwardRef } from "react";
 
-import { pick } from "lodash-es";
-
 import { type IconProps, isSvgIconProp } from "~/components/icons";
 import { classNames } from "~/components/types";
 
@@ -25,7 +23,7 @@ import { getNativeIconStyle } from "./util";
  */
 export const Icon = forwardRef<HTMLElement, IconProps>(
   (
-    { icon, children, isLoading, style, loadingClassName, spinnerSize, ...props },
+    { icon, children, isLoading, style, spinnerClassName, spinnerSize, ...props },
     ref,
   ): JSX.Element => {
     if (isLoading) {
@@ -34,10 +32,9 @@ export const Icon = forwardRef<HTMLElement, IconProps>(
       return (
         <Spinner
           isLoading
-          {...pick(props, ["className", "style"])}
           size={spinnerSize ?? props.size}
           style={style}
-          className={classNames(props.className, loadingClassName)}
+          className={classNames(props.className, spinnerClassName)}
         />
       );
     } else if (icon !== undefined) {

@@ -89,7 +89,7 @@ export const getDetailsOrdering = <F extends DetailOrderableField, O extends Ord
 export const DetailsFiltersObj = new Filters({
   visible: Filters.flag(),
   search: Filters.search(),
-  entityTypes: Filters.multiEnum(DetailEntityTypes.contains),
+  entityTypes: Filters.multiEnum(DetailEntityTypes.contains.bind(DetailEntityTypes)),
   skills: Filters.multiString({ typeguard: isUuid }),
   entityIds: Filters.multiString({ typeguard: isUuid }),
 });

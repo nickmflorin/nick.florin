@@ -113,7 +113,7 @@ const LocalIconButton = forwardRef(
           ) : isIconProp(icon) || typeof icon === "string" ? (
             <Icon
               className={iconClassName}
-              loadingClassName={spinnerClassName}
+              spinnerClassName={spinnerClassName}
               icon={icon}
               isLoading={props.isLoading}
               fit="square"

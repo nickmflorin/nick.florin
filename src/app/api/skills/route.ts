@@ -2,7 +2,7 @@ import { type NextRequest } from "next/server";
 
 import { z } from "zod";
 
-import type { SkillIncludes } from "~/database/model";
+import { type SkillIncludes } from "~/database/model";
 import { parseOrdering } from "~/lib/ordering";
 
 import {
