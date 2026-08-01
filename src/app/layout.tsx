@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import { type ReactNode } from "react";
 
 import { Analytics } from "@vercel/analytics/react";
@@ -34,14 +33,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48" />
-        <Script
+        {/* A plain <script> rather than next/script.  The latter is a client component that reads
+            HeadManagerContext, which is unavailable while a route is being statically prerendered
+            under Next 16, and fails the build with "Cannot read properties of null (reading
+            'useContext')".  React 19 hoists a plain async script into the head on its own. */}
+        <script
           type="text/javascript"
           src={`https://kit.fontawesome.com/${environment.get("FONT_AWESOME_KIT_TOKEN")}.js`}
           /* Using "nest" instead of "replace" avoids errors related to
              NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is
              not a child of this node */
           data-auto-replace-svg="nest"
-          strategy="beforeInteractive"
+          async
         />
       </head>
       <body className={InterFont.className}>
