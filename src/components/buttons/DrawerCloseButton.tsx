@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { IconButton, type IconButtonProps } from "./generic";
 
 export interface DrawerCloseButtonProps

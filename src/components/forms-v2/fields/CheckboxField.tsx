@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { Checkbox, type CheckboxProps } from "~/components/input/Checkbox";
 
 import { type FieldName, type BaseFormValues, type FormInstance } from "..";

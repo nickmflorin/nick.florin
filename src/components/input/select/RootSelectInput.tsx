@@ -5,6 +5,7 @@ import React, {
   useRef,
   useEffect,
   useImperativeHandle,
+  type JSX,
 } from "react";
 
 import { Input, type InputProps } from "~/components/input/generic";

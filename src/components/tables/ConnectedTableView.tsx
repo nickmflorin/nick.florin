@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type JSX } from "react";
 
 import { ConnectedTableControlBar } from "~/components/tables/ConnectedTableControlBar";
 

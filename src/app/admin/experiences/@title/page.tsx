@@ -7,10 +7,11 @@ import { LoadingText } from "~/components/loading/LoadingText";
 import { ExperiencesTitle } from "./ExperiencesTitle";
 
 export interface ExperiencesTitlePageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function ExperiencesTitlePage({ searchParams }: ExperiencesTitlePageProps) {
+export default async function ExperiencesTitlePage(props: ExperiencesTitlePageProps) {
+  const searchParams = await props.searchParams;
   const filters = ExperiencesFiltersObj.parse(searchParams);
   return (
     <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>

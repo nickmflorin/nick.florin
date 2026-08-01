@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { type JSX } from "react";
 
 import { type BarTooltipProps } from "@nivo/bar";
 

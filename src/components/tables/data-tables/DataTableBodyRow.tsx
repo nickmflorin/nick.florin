@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type FloatingContentRenderProps } from "~/components/floating";
 import Spinner from "~/components/icons/Spinner";
 import type { TableBodyRowProps } from "~/components/tables/generic/TableBodyRow";

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { DateTimeText } from "~/components/typography/DateTimeText";
 
 export type ReadOnlyDateTimeCellProps = {

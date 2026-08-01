@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import type { JSX } from "react";
 
 import { type RepositoriesControls, type RepositoriesFilters } from "~/actions";
 import { fetchRepositories } from "~/actions/repositories/fetch-repositories";

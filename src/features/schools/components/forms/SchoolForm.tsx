@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { type z } from "zod";
 
 import { SchoolSchema } from "~/actions/schemas";

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type IconProp } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";
 import { classNames } from "~/components/types";

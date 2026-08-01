@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { Label } from "~/components/typography";
 
 interface DetailDrawerSectionProps {

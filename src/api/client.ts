@@ -56,7 +56,8 @@ const processors: {
       );
       return ApiClientGlobalError.reconstruct(response);
     } else if (isErrorResponseBody(json)) {
-      /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Tmp workaround for tests. */
+      /* eslint-disable-next-line @typescript-eslint/no-require-imports
+         -- Tmp workaround for tests. */
       const superjson = require("superjson");
 
       const deserialized = superjson.deserialize(json.error);
@@ -79,7 +80,7 @@ const processors: {
     try {
       const data = await response.json();
       if (isSuccessResponseBody(data)) {
-        /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Tmp for tests. */
+        /* eslint-disable-next-line @typescript-eslint/no-require-imports -- Tmp for tests. */
         const superjson = require("superjson");
         return { data: superjson.deserialize(data.data) };
       }

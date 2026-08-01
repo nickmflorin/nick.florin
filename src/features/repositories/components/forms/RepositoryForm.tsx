@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { Checkboxes } from "~/components/forms-v2/fields/Checkboxes";
 import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms-v2/Form";

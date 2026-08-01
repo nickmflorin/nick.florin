@@ -1,28 +1,19 @@
-import dynamic from "next/dynamic";
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 import { Suspense } from "react";
 
 import { Loading } from "~/components/loading/Loading";
 import { SiteNavMenu } from "~/features/site/components/SiteNavMenu";
 
+import {
+  ContextDrawerWrapper,
+  SiteNavMenuOverlay,
+  ToastContainer,
+  UserProfile,
+} from "./DynamicOverlays";
 import { Header } from "./Header";
 import { LayoutNavigation } from "./LayoutNavigation";
 import { Navigating } from "./Navigating";
 import { type ISidebarItem } from "./types";
-
-const ToastContainer = dynamic(() => import("./ToastContainer"), { ssr: false });
-const ContextDrawerWrapper = dynamic(
-  () => import("~/components/drawers/ContextDrawerWrapper").then(mod => mod.ContextDrawerWrapper),
-  { ssr: false },
-);
-const SiteNavMenuOverlay = dynamic(
-  () => import("~/features/site/components/SiteNavMenuOverlay").then(mod => mod.SiteNavMenuOverlay),
-  { ssr: false },
-);
-const UserProfile = dynamic(
-  () => import("~/features/site/components/UserProfile").then(mod => mod.UserProfile),
-  { ssr: false },
-);
 
 export interface LayoutProps {
   readonly children: ReactNode;

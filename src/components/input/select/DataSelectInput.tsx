@@ -1,4 +1,11 @@
-import React, { type ForwardedRef, forwardRef, useMemo, type ReactNode, useCallback } from "react";
+import React, {
+  type ForwardedRef,
+  forwardRef,
+  useMemo,
+  type ReactNode,
+  useCallback,
+  type JSX,
+} from "react";
 
 import { logger } from "~/internal/logger";
 

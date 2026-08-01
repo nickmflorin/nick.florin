@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type JSX } from "react";
 
 import { classNames } from "~/components/types";
 import { type ComponentProps } from "~/components/types";

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type * as types from "./types";
 
 import { IconButton } from "~/components/buttons";

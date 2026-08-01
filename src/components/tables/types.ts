@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 
 import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
 
@@ -64,7 +64,6 @@ export type DataTableColumnConfig<D extends DataTableDatum = any, I extends stri
   readonly skeleton?: ReactNode;
 };
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export interface DataTableColumn<D extends DataTableDatum, C extends DataTableColumnConfig<D>> {
   readonly id: C["id"];
   readonly config: C;

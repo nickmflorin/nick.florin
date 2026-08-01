@@ -14,10 +14,11 @@ import { RepositoriesTableControlBarPlaceholder } from "~/features/repositories/
 import { RepositoriesTableBody } from "./RepositoriesTableBody";
 
 export interface RepositoriesTablePageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function RepositoriesTablePage({ searchParams }: RepositoriesTablePageProps) {
+export default async function RepositoriesTablePage(props: RepositoriesTablePageProps) {
+  const searchParams = await props.searchParams;
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = RepositoriesFiltersObj.parse(searchParams);

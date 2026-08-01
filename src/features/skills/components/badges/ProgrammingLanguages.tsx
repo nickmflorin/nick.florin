@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ProgrammingLanguage } from "~/database/model";
 
 import { BadgeCollection } from "~/components/badges/BadgeCollection";

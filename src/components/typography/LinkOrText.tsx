@@ -1,4 +1,5 @@
 "use client";
+import type { JSX } from "react";
 
 import { Link } from "~/components/buttons";
 import { Tooltip, type TooltipProps } from "~/components/floating/Tooltip";

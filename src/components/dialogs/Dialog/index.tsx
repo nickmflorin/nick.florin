@@ -1,5 +1,5 @@
 "use client";
-import { forwardRef, type ReactNode } from "react";
+import { forwardRef, type ReactNode, type JSX } from "react";
 
 import {
   useMergeRefs,

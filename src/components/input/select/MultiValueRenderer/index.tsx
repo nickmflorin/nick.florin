@@ -1,4 +1,4 @@
-import React, { useMemo, memo, type ReactNode } from "react";
+import React, { useMemo, memo, type ReactNode, type JSX } from "react";
 
 import { Badge, type BadgeProps } from "~/components/badges/Badge";
 import { type IconProp, type IconName } from "~/components/icons";

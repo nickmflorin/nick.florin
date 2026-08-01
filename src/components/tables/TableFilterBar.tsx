@@ -1,5 +1,5 @@
 "use client";
-import React, { type ReactNode, useRef, type MutableRefObject, useState } from "react";
+import React, { type ReactNode, useRef, type MutableRefObject, useState, type JSX } from "react";
 
 import type * as types from "./types";
 

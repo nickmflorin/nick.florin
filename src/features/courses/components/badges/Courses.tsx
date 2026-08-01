@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { type BrandCourse } from "~/database/model";
 
 import { BadgeCollection } from "~/components/badges/BadgeCollection";

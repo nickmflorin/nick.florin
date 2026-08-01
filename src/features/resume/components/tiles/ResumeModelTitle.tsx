@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type BrandModel, type ResumeBrand, Degrees } from "~/database/model";
 
 import { ExpandResumeModelButton } from "~/components/buttons/ExpandResumeModelButton";

@@ -1,4 +1,4 @@
-import React, { forwardRef, type ForwardedRef } from "react";
+import React, { forwardRef, type ForwardedRef, type JSX } from "react";
 
 import { pick, omit } from "lodash-es";
 

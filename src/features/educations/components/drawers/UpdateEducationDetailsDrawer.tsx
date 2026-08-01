@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { DetailEntityType } from "~/database/model";
 
 import {

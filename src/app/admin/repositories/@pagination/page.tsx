@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { z } from "zod";
 
 import { RepositoriesFiltersObj } from "~/actions";
@@ -6,12 +8,13 @@ import { fetchRepositoriesPagination } from "~/actions/repositories/fetch-reposi
 import { Paginator } from "~/components/pagination-v2/Paginator";
 
 export interface RepositoriesTablePaginationPageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function RepositoriesTablePaginationPage({
-  searchParams,
-}: RepositoriesTablePaginationPageProps): Promise<JSX.Element> {
+export default async function RepositoriesTablePaginationPage(
+  props: RepositoriesTablePaginationPageProps,
+): Promise<JSX.Element> {
+  const searchParams = await props.searchParams;
   const _page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = RepositoriesFiltersObj.parse(searchParams);

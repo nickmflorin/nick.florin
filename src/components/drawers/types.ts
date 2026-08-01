@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 
 import type { DrawerDynamicProps } from "./drawers";

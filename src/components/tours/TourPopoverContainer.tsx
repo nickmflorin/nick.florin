@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useCallback, useRef, useEffect } from "react";
+import { type ReactNode, useMemo, useCallback, useRef, useEffect, type JSX } from "react";
 
 import { type PopoverContentProps } from "@reactour/tour";
 

@@ -14,10 +14,11 @@ import { CoursesTableControlBarPlaceholder } from "~/features/courses/components
 import { CoursesTableBody } from "./CoursesTableBody";
 
 export interface CoursesTablePageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function CoursesTablePage({ searchParams }: CoursesTablePageProps) {
+export default async function CoursesTablePage(props: CoursesTablePageProps) {
+  const searchParams = await props.searchParams;
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = CoursesFiltersObj.parse(searchParams);

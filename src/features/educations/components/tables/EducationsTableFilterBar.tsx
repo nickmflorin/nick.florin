@@ -1,5 +1,5 @@
 "use client";
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 
 import { type ApiSkill, type Degree, type ApiCourse, type ApiSchool } from "~/database/model";
 

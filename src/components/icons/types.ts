@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import {
   type IconStyle as RootIconStyle,
   type IconFamily as RootIconFamily,
@@ -6,10 +8,10 @@ import {
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
 import { z } from "zod";
 
-export type IconName = RootIconName;
-
 import { type ComponentProps } from "~/components/types";
 import { type QuantitativeSize } from "~/components/types/sizes";
+
+export type IconName = RootIconName;
 
 export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
 export type IconDimension = EnumeratedLiteralsMember<typeof IconDimensions>;

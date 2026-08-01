@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type LabeledNavItem } from "~/application/pages";
 
 import { classNames } from "~/components/types";

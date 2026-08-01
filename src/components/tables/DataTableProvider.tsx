@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useState, useMemo, type ReactNode } from "react";
+import { useCallback, useState, useMemo, type ReactNode, type JSX } from "react";
 
 import { uniqBy, uniq } from "lodash-es";
 

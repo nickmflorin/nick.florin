@@ -1,4 +1,4 @@
-import { forwardRef, type ForwardedRef, useRef, useImperativeHandle } from "react";
+import { forwardRef, type ForwardedRef, useRef, useImperativeHandle, type JSX } from "react";
 
 import type * as types from "~/components/menus";
 import { Menu } from "~/components/menus/Menu";

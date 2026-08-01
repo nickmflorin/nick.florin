@@ -5,7 +5,9 @@
 @use "./components";
 @use "./public";
 
-@import "~normalize.css/normalize.css";
+/* Turbopack - the default bundler as of Next 16 - resolves node_modules imports directly and does
+   not support the legacy webpack tilde ("~") prefix. */
+@import "normalize.css/normalize.css";
 
 // This is temporary - or at least until we incorporate dark mode.
 :root {

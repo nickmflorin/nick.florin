@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { classNames } from "~/components/types";
 
 import { type IconButtonProps, IconButton } from "./generic";

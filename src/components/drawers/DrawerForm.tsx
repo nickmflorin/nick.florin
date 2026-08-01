@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { useWatch } from "react-hook-form";
 import { type PickByValueExact } from "utility-types";
 

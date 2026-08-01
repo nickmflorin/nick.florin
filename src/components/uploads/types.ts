@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type DropzoneProps } from "@mantine/dropzone";
 import { type FileRejection, type FileError, type FileWithPath } from "react-dropzone-esm";
 

@@ -6,8 +6,8 @@ import { CMS_USER_ORG_SLUG, CMS_USER_ORG_ROLE, USER_ADMIN_ROLE } from "~/applica
 
 const isProtectedRoute = createRouteMatcher(["/admin(.*)"]);
 
-export default clerkMiddleware((auth, req) => {
-  const { has, redirectToSignIn, userId, orgSlug } = auth();
+export default clerkMiddleware(async (auth, req) => {
+  const { has, redirectToSignIn, userId, orgSlug } = await auth();
   if (isProtectedRoute(req)) {
     const hasAdminCmsAccess =
       (has({ role: USER_ADMIN_ROLE }) || has({ role: CMS_USER_ORG_ROLE })) &&

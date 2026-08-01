@@ -1,4 +1,4 @@
-import React, { type ForwardedRef, forwardRef } from "react";
+import React, { type ForwardedRef, forwardRef, type JSX } from "react";
 
 import { PopoverContent, type PopoverContentProps } from "~/components/floating/PopoverContent";
 import { classNames } from "~/components/types";

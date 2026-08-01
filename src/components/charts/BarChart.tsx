@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { ResponsiveBar, type BarDatum } from "@nivo/bar";
 
 import type * as types from "./types";

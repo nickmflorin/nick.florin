@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import type { JSX } from "react";
 
 import { type ExperiencesControls, type ExperiencesFilters } from "~/actions";
 import { fetchExperiences } from "~/actions/experiences/fetch-experiences";

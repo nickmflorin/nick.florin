@@ -1,4 +1,21 @@
-export * from "./generated";
+/* Prisma 5 emits a CommonJS client, and Turbopack cannot statically analyze 'export *' against one.
+   Doing so still works, but it emits a warning on every compile - three times over, once per
+   environment - and forces Turbopack to fall back to resolving the re-exports at runtime.
+
+   Types are erased at build time, so only the runtime values need to be listed explicitly.  If the
+   Prisma schema gains a new enum, it has to be added below; leaving it out is a compile error
+   wherever it is used, not a runtime failure. */
+export type * from "./generated";
+export {
+  $Enums,
+  Degree,
+  DetailEntityType,
+  PrismaClient,
+  ProgrammingDomain,
+  ProgrammingLanguage,
+  SkillCategory,
+} from "./generated";
+
 export * from "./company";
 export * from "./course";
 export * from "./details";

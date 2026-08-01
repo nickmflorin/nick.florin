@@ -1,4 +1,4 @@
-import { forwardRef, type ForwardedRef, type ReactNode, useMemo } from "react";
+import { forwardRef, type ForwardedRef, type ReactNode, useMemo, type JSX } from "react";
 
 import * as types from "~/components/menus";
 import { MenuItem } from "~/components/menus/MenuItem";

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, type JSX } from "react";
 
 import { useWatch } from "react-hook-form";
 

@@ -28,7 +28,7 @@ export class NextLogger extends BaseNextLogger {
            will break. */
         let pretty: (config: { colorize: true; sync: true }) => DestinationStream | null;
         try {
-          /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+          /* eslint-disable-next-line @typescript-eslint/no-require-imports */
           pretty = require("pino-pretty");
         } catch (e) {
           return null;

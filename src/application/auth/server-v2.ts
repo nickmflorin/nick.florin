@@ -30,9 +30,11 @@ export async function getClerkUser(
   let orgSlug: string | null | undefined;
   let orgRole: string | null | undefined;
   if (req) {
+    /* The request-bound "getAuth" remains synchronous in Clerk v6+, whereas the no-request "auth"
+       helper is now asynchronous. */
     ({ userId, orgSlug, orgRole } = getAuth(req));
   } else {
-    ({ userId, orgSlug, orgRole } = auth());
+    ({ userId, orgSlug, orgRole } = await auth());
   }
   return {
     userId,

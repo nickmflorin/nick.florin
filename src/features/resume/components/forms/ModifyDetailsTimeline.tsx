@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type JSX } from "react";
 
 import { Timeline } from "@mantine/core";
 
@@ -36,7 +36,6 @@ export const ModifyDetailsTimeline = ({
 
   useDeepEqualEffect(() => {
     setOptimisticDetails(details);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [details]);
 
   return (

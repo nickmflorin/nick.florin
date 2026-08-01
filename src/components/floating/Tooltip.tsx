@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 
 import { type PopoverRenderProps } from "~/components/floating/types";
 import { classNames } from "~/components/types";

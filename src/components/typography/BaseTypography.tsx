@@ -1,4 +1,4 @@
-import { type ForwardedRef, forwardRef } from "react";
+import { type ForwardedRef, forwardRef, type JSX } from "react";
 
 import { UnreachableCaseError } from "~/application/errors";
 

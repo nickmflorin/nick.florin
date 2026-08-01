@@ -14,10 +14,11 @@ import { ProjectsTableControlBarPlaceholder } from "~/features/projects/componen
 import { ProjectsTableBody } from "./ProjectsTableBody";
 
 export interface ProjectsTablePageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function ProjectsTablePage({ searchParams }: ProjectsTablePageProps) {
+export default async function ProjectsTablePage(props: ProjectsTablePageProps) {
+  const searchParams = await props.searchParams;
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = ProjectsFiltersObj.parse(searchParams);

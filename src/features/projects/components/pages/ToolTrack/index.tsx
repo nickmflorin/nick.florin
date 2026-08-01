@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { InlineLink } from "~/components/buttons";
 import { Description } from "~/components/typography";
 import { DescriptionGroup } from "~/features/projects/components/DescriptionGroup";

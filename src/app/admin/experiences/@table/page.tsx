@@ -14,10 +14,11 @@ import { ExperiencesTableControlBarPlaceholder } from "~/features/experiences/co
 import { ExperiencesTableBody } from "./ExperiencesTableBody";
 
 export interface ExperiencesTablePageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function ExperiencesTablePage({ searchParams }: ExperiencesTablePageProps) {
+export default async function ExperiencesTablePage(props: ExperiencesTablePageProps) {
+  const searchParams = await props.searchParams;
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = ExperiencesFiltersObj.parse(searchParams);

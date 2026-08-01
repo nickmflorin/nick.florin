@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import type { ApiSkill, ApiRepository } from "~/database/model";
 import type { FilterFieldName } from "~/lib/filters";
 

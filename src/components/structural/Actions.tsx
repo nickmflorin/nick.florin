@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 import React from "react";
 
 import { isFragment } from "react-is";
@@ -9,7 +9,9 @@ import { classNames } from "~/components/types";
 
 export type Action = Exclude<ReactNode, string | number | true>;
 
-type FilteredAction = Exclude<Action, React.ReactFragment | null | undefined>;
+/* React 19 removed the deprecated 'React.ReactFragment' alias, which was defined as an iterable of
+   nodes. */
+type FilteredAction = Exclude<Action, Iterable<ReactNode> | null | undefined>;
 
 const isValidAction = (action: Action): action is FilteredAction =>
   Boolean(action) && !isFragment(action);

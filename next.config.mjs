@@ -12,19 +12,32 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import("next").NextConfig} */
 const config = {
-  swcMinify: true,
   output: "standalone",
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
   reactStrictMode: false,
+  logging: {
+    /* Next 16 forwards browser console output to the dev server's terminal, defaulting to "warn".
+       That surfaces third-party warnings which previously only appeared in the browser console -
+       Clerk's structural CSS notice alone prints ~15 lines on every page load.
+
+       Errors are still forwarded, since those are worth seeing without switching to the browser.
+       Set this to false to disable the forwarding entirely. */
+    browserToTerminal: "error",
+  },
   experimental: {
     optimizePackageImports: ["@mantine/core", "zod", "@mantine/dropzone", "@mantine/dates"],
   },
   transpilePackages: ["@mantine/core"],
   sassOptions: {
-    includePaths: [path.join(__dirname, "src/styles")],
+    /* The modern Sass API - which sass-loader v16 uses as of Next 16 - replaces the legacy
+       "includePaths" option with "loadPaths". */
+    loadPaths: [path.join(__dirname, "src/styles")],
+    /* Sass is changing the ordering of declarations that follow nested rules to match CSS.  The
+       tractable occurrences of this in our stylesheets have been fixed, but the button color
+       system generates declarations inside '@at-root' blocks via 'mapped-properties()', which
+       still emits a few hundred warnings on every compile and needs restructuring to resolve.
+
+       This must be removed - and that restructuring done - before upgrading to Dart Sass 2. */
+    silenceDeprecations: ["mixed-decls"],
   },
   images: {
     remotePatterns: [
@@ -64,12 +77,10 @@ const config = {
   ],
 };
 
-const bundled = (phase, { defaultConfig }) =>
-  withBundleAnalyzer({
-    enabled: process.env.ANALYZE_BUNDLE === "true" && phase === "phase-production-build",
-  })({
-    ...defaultConfig,
-    ...config,
-  });
-
-export default bundled;
+/* The bundle analyzer injects a "webpack" option into the configuration.  Because Next 16 builds
+   with Turbopack by default - and fails the build outright when it encounters a webpack
+   configuration it did not expect - the analyzer is only applied when it is actually in use, via
+   the "analyze-build" script, which opts back into webpack with the "--webpack" flag. */
+export default process.env.ANALYZE_BUNDLE === "true"
+  ? withBundleAnalyzer({ enabled: true })(config)
+  : config;

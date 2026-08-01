@@ -1,5 +1,5 @@
 "use client";
-import { forwardRef, useId, useLayoutEffect } from "react";
+import { forwardRef, useId, useLayoutEffect, type JSX } from "react";
 
 import { useDialogContext } from "~/components/dialogs/hooks/use-dialog-context";
 import { classNames } from "~/components/types";

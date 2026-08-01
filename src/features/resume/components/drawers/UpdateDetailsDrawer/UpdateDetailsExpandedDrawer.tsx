@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { isUuid } from "~/lib/typeguards";
 
 import { ApiResponseState } from "~/components/ApiResponseState";

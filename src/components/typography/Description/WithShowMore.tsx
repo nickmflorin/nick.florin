@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { ShowMoreLink } from "~/components/buttons/ShowMoreLink";
 import { type TypographyVisibilityState } from "~/components/types";
 

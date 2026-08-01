@@ -28,7 +28,8 @@ export function useDebounceCallback<T extends (...args: any) => ReturnType<T>>(
   delay = 500,
   options?: DebouncedCallbackOptions,
 ): DebouncedState<T> {
-  const debouncedFunc = useRef<ReturnType<typeof debounce>>();
+  /* React 19 requires an explicit initial value for useRef. */
+  const debouncedFunc = useRef<ReturnType<typeof debounce> | undefined>(undefined);
 
   useUnmount(() => {
     if (debouncedFunc.current) {

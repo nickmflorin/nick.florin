@@ -6,6 +6,7 @@ import React, {
   type ForwardedRef,
   useImperativeHandle,
   useState,
+  type JSX,
 } from "react";
 
 import { type FloatingContentRenderProps } from "~/components/floating";

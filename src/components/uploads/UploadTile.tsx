@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { FileError } from "react-dropzone-esm";
 
 import { Link, IconButton } from "~/components/buttons";

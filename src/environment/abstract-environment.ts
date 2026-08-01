@@ -27,7 +27,6 @@ export type EnvironmentOptions<R extends types.RuntimeEnv<V>, V extends types.Va
 
 type EnvironmentMap<T = unknown> = { [key in EnvironmentName]: T };
 
-/* eslint-disable prettier/prettier */
 // prettier-ignore
 type EnvironmentMapResult<M extends Partial<EnvironmentMap>> = M extends EnvironmentMap<infer T>
   ? T
@@ -41,7 +40,6 @@ type EnvironmentMapRestrictedResult<M extends Partial<EnvironmentMap>> = M exten
 >
   ? T
   : never;
-/* eslint-enable prettier/prettier */
 
 export abstract class AbstractEnvironment<
   K extends types.EnvKey<R, V>,

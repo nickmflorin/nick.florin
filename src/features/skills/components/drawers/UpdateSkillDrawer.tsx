@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { BrandSkill } from "~/database/model";
 
 import { ApiResponseState } from "~/components/ApiResponseState";

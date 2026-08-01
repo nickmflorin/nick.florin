@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, type JSX } from "react";
 
 import type { ComponentProps } from "~/components/types";
 import { classNames } from "~/components/types";

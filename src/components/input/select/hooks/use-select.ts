@@ -184,7 +184,6 @@ export const useSelect = <V extends types.AllowedSelectValue, B extends types.Se
     if (isReady && __private_controlled_value__ !== undefined) {
       __setValue(__private_controlled_value__);
     }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [__private_controlled_value__, isReady]);
 
   const _isSelected = useCallback(

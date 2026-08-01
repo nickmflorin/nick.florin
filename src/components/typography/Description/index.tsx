@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, type ReactNode, type JSX } from "react";
 
 import { type QuantitativeSize, sizeToString } from "~/components/types/sizes";
 import { useControlledTypographyVisibility } from "~/components/typography/hooks";

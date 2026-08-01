@@ -1,4 +1,4 @@
-import { forwardRef, type ReactNode } from "react";
+import { forwardRef, type ReactNode, type JSX } from "react";
 
 import { capitalize } from "~/lib/formatters";
 

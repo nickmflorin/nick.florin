@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { UnreachableCaseError } from "~/application/errors";
 
 import { Button } from "~/components/buttons";

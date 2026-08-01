@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 
 import { DeleteButton } from "~/components/buttons/DeleteButton";
 import { Checkbox } from "~/components/input/Checkbox";

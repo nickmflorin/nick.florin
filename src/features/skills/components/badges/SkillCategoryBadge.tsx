@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type SkillCategory, SkillCategories } from "~/database/model";
 
 import { Badge, type BadgeProps } from "~/components/badges/Badge";

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import { useState, type ReactNode, type JSX } from "react";
 
 import { type IconProp, type IconName } from "~/components/icons";
 import { Icon } from "~/components/icons/Icon";

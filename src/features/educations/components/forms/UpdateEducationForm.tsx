@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useTransition, type JSX } from "react";
 
 import { toast } from "react-toastify";
 
@@ -41,7 +41,6 @@ export const UpdateEducationForm = ({
       minor: education.minor ?? "",
       note: education.note ?? "",
     });
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [education]);
 
   return (

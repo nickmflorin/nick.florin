@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ResponsiveBarSvgProps, type BarDatum } from "@nivo/bar";
 
 export interface BarChartProps<D extends BarDatum>

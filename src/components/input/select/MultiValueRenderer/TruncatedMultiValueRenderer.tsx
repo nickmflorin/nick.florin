@@ -1,4 +1,4 @@
-import React, { memo, useMemo, type ReactNode } from "react";
+import React, { memo, useMemo, type ReactNode, type JSX } from "react";
 
 import { isFragment } from "react-is";
 

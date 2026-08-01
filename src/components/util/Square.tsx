@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 
 import type { ComponentProps, QuantitativeSize } from "~/components/types";
 import { classNames, sizeToString } from "~/components/types";

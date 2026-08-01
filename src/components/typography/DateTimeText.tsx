@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { DateTime, type DateTimeFormatOptions } from "luxon";
 
 import { logger } from "~/internal/logger";

@@ -1,6 +1,8 @@
-import { type Theme } from "@nivo/core";
+/* As of nivo 0.99, theme types live in '@nivo/theming' rather than '@nivo/core'.  The type accepted
+   by a chart's "theme" prop is 'PartialTheme'; 'Theme' now denotes a fully resolved theme. */
+import { type PartialTheme } from "@nivo/theming";
 
-export const THEME: Theme = {
+export const THEME: PartialTheme = {
   background: "transparent",
   text: {
     fontSize: 11,

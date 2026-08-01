@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
 
 import {

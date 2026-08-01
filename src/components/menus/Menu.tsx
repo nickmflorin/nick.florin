@@ -1,4 +1,4 @@
-import { forwardRef, type ForwardedRef, type ReactNode } from "react";
+import { forwardRef, type ForwardedRef, type ReactNode, type JSX } from "react";
 
 import { classNames, type ComponentProps } from "~/components/types";
 

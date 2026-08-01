@@ -1,5 +1,5 @@
 "use client";
-import { cloneElement, useMemo } from "react";
+import { cloneElement, useMemo, type JSX } from "react";
 
 import type * as types from "./types";
 

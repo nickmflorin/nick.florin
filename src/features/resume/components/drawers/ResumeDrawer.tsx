@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { MIME_TYPES } from "@mantine/dropzone";
 
 import { type ExtendingDrawerProps } from "~/components/drawers";

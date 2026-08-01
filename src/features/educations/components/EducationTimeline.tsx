@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import type { JSX } from "react";
 
 import { uniqBy } from "lodash-es";
 

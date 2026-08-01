@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useTransition, type JSX } from "react";
 
 import { toast } from "react-toastify";
 

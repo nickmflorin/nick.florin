@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type * as types from "~/components/tables/types";
 
 import { type AbstractDataTableBodyProps, AbstractDataTableBody } from "./AbstractDataTableBody";

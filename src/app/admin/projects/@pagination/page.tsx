@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { z } from "zod";
 
 import { ProjectsFiltersObj } from "~/actions";
@@ -6,12 +8,13 @@ import { fetchProjectsPagination } from "~/actions/projects/fetch-projects";
 import { Paginator } from "~/components/pagination-v2/Paginator";
 
 export interface ProjectsTablePaginationPageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function ProjectsTablePaginationPage({
-  searchParams,
-}: ProjectsTablePaginationPageProps): Promise<JSX.Element> {
+export default async function ProjectsTablePaginationPage(
+  props: ProjectsTablePaginationPageProps,
+): Promise<JSX.Element> {
+  const searchParams = await props.searchParams;
   const _page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = ProjectsFiltersObj.parse(searchParams);

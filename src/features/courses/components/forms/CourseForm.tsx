@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
 import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { TextInput } from "~/components/input/TextInput";

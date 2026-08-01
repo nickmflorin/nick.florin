@@ -3,7 +3,8 @@ import { useRef, useEffect, useMemo, type DependencyList } from "react";
 import { isEqual } from "lodash-es";
 
 export const useDeepEqualMemo: typeof useMemo = (fn, deps) => {
-  const ref = useRef<DependencyList>();
+  /* React 19 requires an explicit initial value for useRef. */
+  const ref = useRef<DependencyList | undefined>(undefined);
   const signalRef = useRef<number>(0);
 
   if (!isEqual(deps, ref.current)) {
@@ -16,7 +17,8 @@ export const useDeepEqualMemo: typeof useMemo = (fn, deps) => {
 };
 
 export const useDeepEqualEffect: typeof useEffect = (effect, deps) => {
-  const ref = useRef<DependencyList>();
+  /* React 19 requires an explicit initial value for useRef. */
+  const ref = useRef<DependencyList | undefined>(undefined);
   const signalRef = useRef<number>(0);
 
   if (!isEqual(deps, ref.current)) {

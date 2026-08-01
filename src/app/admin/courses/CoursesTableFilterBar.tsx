@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, type JSX } from "react";
 
 import { fetchEducations } from "~/actions/educations/fetch-educations";
 import { fetchSkills } from "~/actions/skills/fetch-skills";

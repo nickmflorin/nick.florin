@@ -1,4 +1,4 @@
-import React, { type ForwardedRef, forwardRef, useMemo } from "react";
+import React, { type ForwardedRef, forwardRef, useMemo, type JSX } from "react";
 
 import type * as types from "~/components/input/select/types";
 

@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { clamp } from "lodash-es";
 
 import { type BrandSkill } from "~/database/model";

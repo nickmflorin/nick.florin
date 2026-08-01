@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import type { JSX } from "react";
 
 import { MobileNavigationCutoff } from "~/components/constants";
 import { type ISidebarItem } from "~/components/layout/types";

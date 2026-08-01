@@ -1,4 +1,4 @@
-import { type EmailAddress, type User as ClerkUser } from "@clerk/clerk-sdk-node";
+import { type EmailAddress, type User as ClerkUser } from "@clerk/backend";
 
 import { type Transaction } from "~/database/prisma";
 import { humanizeList } from "~/lib/formatters";

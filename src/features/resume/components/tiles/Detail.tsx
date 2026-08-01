@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { isNestedDetail, type ApiDetail, type ApiNestedDetail } from "~/database/model";
 
 import { Link } from "~/components/buttons";

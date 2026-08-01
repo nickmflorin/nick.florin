@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 
 import { Loading } from "~/components/loading/Loading";
 import { tableHasLoadingIndicator, type TableLoadingIndicator } from "~/components/tables/types";

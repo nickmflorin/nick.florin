@@ -8,6 +8,7 @@ import React, {
   useState,
   useMemo,
   useImperativeHandle,
+  type JSX,
 } from "react";
 
 import { logger } from "~/internal/logger";

@@ -1,4 +1,4 @@
-import { forwardRef, type ForwardedRef } from "react";
+import { forwardRef, type ForwardedRef, type JSX } from "react";
 
 import { type BrandProject, ProjectSlugs } from "~/database/model";
 import { logger } from "~/internal/logger";

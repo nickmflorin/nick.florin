@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ModelTimePeriod, stringifyTimePeriod } from "~/database/model";
 
 import { Tag, type TagProps } from "./Tag";

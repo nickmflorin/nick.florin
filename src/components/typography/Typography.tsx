@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, type JSX } from "react";
 
 import { type Subtract } from "utility-types";
 

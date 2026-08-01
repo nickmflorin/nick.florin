@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type FloatingContentRenderProps } from "~/components/floating";
 import { Popover, type PopoverProps } from "~/components/floating/Popover";
 import { PopoverContent } from "~/components/floating/PopoverContent";

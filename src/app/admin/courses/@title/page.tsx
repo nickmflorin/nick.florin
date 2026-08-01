@@ -7,10 +7,11 @@ import { LoadingText } from "~/components/loading/LoadingText";
 import { CoursesTitle } from "./CoursesTitle";
 
 export interface CoursesTitlePageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function CoursesTitlePage({ searchParams }: CoursesTitlePageProps) {
+export default async function CoursesTitlePage(props: CoursesTitlePageProps) {
+  const searchParams = await props.searchParams;
   const filters = CoursesFiltersObj.parse(searchParams);
   return (
     <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>

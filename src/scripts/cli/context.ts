@@ -1,6 +1,8 @@
-import { type User as ClerkUser } from "@clerk/clerk-sdk-node";
-import clerk from "@clerk/clerk-sdk-node";
-import { type OrganizationMembership } from "@clerk/nextjs/server";
+import {
+  createClerkClient,
+  type OrganizationMembership,
+  type User as ClerkUser,
+} from "@clerk/backend";
 
 import { CMS_USER_ORG_ROLE, CMS_USER_ORG_SLUG, USER_ADMIN_ROLE } from "~/application/auth";
 import { type PrismaClient, type User } from "~/database/model";
@@ -110,8 +112,15 @@ export async function getScriptContext(
         "environment variable.",
     );
   }
+  /* The singleton default export of the (now discontinued) '@clerk/clerk-sdk-node' package has been
+     replaced by an explicitly constructed client.  The secret key is passed directly, rather than
+     being read from the environment implicitly, so that the validation performed above applies. */
+  const clerk = createClerkClient({ secretKey: CLERK_SECRET_KEY });
+
   const clerkUser = await clerk.users.getUser(personalClerkId);
-  const memberships = await clerk.users.getOrganizationMembershipList({
+  /* This endpoint returns a paginated response - not a bare array, as it did in v4 of the Clerk SDK
+     - so the memberships must be read off of the 'data' property. */
+  const { data: memberships } = await clerk.users.getOrganizationMembershipList({
     userId: clerkUser.id,
   });
   if (memberships.filter(m => membershipHasAdminAccess(m)).length === 0) {

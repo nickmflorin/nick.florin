@@ -61,7 +61,12 @@ export type SetFormErrors<I extends BaseFormValues> = {
   (errors: FieldErrors<I>): void;
 };
 
-export type FormInstance<I extends BaseFormValues> = Omit<UseFormReturn<I>, "setError"> & {
+/* 'setValues' is omitted from the React Hook Form return type because this form defines its own,
+   with different semantics - see the note in 'use-form.ts'. */
+export type FormInstance<I extends BaseFormValues> = Omit<
+  UseFormReturn<I>,
+  "setError" | "setValues"
+> & {
   readonly errors: string[];
   readonly fieldErrors: FieldErrors<I>;
   readonly registerChangeHandler: <N extends FieldName<I>>(

@@ -95,6 +95,10 @@ $badge-default-size: "sm";
   }
 }
 
+// Sass is changing the ordering of declarations that follow nested rules to match CSS, so every
+// plain declaration in these blocks is kept above the mixins and selectors that emit nested rules.
+// The declarations are all for distinct properties, so ordering them this way leaves the resulting
+// cascade unchanged.
 .badge {
   @include badge-and-tag();
   color: theme("colors.body");
@@ -102,10 +106,19 @@ $badge-default-size: "sm";
   background-color: theme("colors.gray.200");
   letter-spacing: 0.0156em;
   outline: 0.0625rem solid transparent;
+  @include partials.border-radius($badge-default-radius);
+
+  // Allow the font weight to be overridden with a prop.
+  font-weight: theme("fontWeight.medium");
+
+  // Allow the font family to be overridden with a prop.
+  font-family: typography.get-font-family("body");
+
+  @include badge-size($badge-default-size);
 
   > .badge__content {
-    @include badge-and-tag-content("badge");
     gap: 6px;
+    @include badge-and-tag-content("badge");
 
     > .badge__close-button {
       color: inherit;
@@ -113,22 +126,14 @@ $badge-default-size: "sm";
     }
   }
 
-  @include partials.border-radius($badge-default-radius);
   @include radii.with-radius() using ($radii, $value) {
     &[data-attr-radius="#{$radii}"] {
       @include partials.border-radius($value);
     }
   }
 
-  // Allow the font weight to be overridden with a prop.
-  font-weight: theme("fontWeight.medium");
   @include typography.with-font-weights();
-
-  // Allow the font family to be overridden with a prop.
-  font-family: typography.get-font-family("body");
   @include typography.with-font-families();
-
-  @include badge-size($badge-default-size);
 
   @each $size in map.keys($badge-sizes) {
     &[data-attr-size="#{$size}"] {
@@ -145,18 +150,18 @@ $badge-default-size: "sm";
 
   // Allow the font weight to be overridden with a prop.
   font-weight: theme("fontWeight.medium");
-  @include typography.with-font-weights();
 
   // Allow the font family to be overridden with a prop.
   font-family: typography.get-font-family("label");
-  @include typography.with-font-families();
 
+  @include typography.with-font-weights();
+  @include typography.with-font-families();
   @include typography.with-font-transforms();
   @include typography.with-font-sizes("label");
 
   > .tag__content {
-    @include badge-and-tag-content("tag");
     gap: 4px;
+    @include badge-and-tag-content("tag");
   }
 }
 

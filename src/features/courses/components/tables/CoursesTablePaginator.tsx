@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type CoursesFilters } from "~/actions";
 import { fetchCoursesPagination } from "~/actions/courses/fetch-courses";
 

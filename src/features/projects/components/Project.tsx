@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ApiProject } from "~/database/model";
 
 import Badge from "~/components/badges/Badge";

@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useState, type JSX } from "react";
 
 import type * as types from "./types";
 

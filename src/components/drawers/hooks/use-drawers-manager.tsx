@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, type JSX } from "react";
 
 import type * as types from "../types";
 

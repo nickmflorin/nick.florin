@@ -1,7 +1,7 @@
 import url from "url";
 
 import NextLink, { type LinkProps as NextLinkProps } from "next/link";
-import React, { forwardRef } from "react";
+import React, { forwardRef, type JSX } from "react";
 
 import { omit, pick } from "lodash-es";
 

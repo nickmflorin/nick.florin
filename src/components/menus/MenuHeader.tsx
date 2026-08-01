@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { isFragment } from "react-is";
 
 import { TextInput } from "~/components/input/TextInput";

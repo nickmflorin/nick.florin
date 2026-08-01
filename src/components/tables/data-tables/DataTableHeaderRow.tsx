@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type Ordering } from "~/lib/ordering";
 
 import type { TableHeaderRowProps } from "~/components/tables/generic/TableHeaderRow";

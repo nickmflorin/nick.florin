@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, type JSX } from "react";
 
 import { DynamicLoadingContext } from "./context";
 

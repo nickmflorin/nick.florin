@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type Order } from "~/lib/ordering";
 
 import {

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { ApiSkill } from "~/database/model";
 import { generateChartColors } from "~/lib/charts";
 

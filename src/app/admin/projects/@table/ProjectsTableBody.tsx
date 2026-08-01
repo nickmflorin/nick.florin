@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import type { JSX } from "react";
 
 import { type ProjectsControls, type ProjectsFilters } from "~/actions";
 import { fetchProjects } from "~/actions/projects/fetch-projects";

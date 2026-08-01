@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, type JSX } from "react";
 
 import { toast } from "react-toastify";
 

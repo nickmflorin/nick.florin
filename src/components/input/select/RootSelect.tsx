@@ -6,6 +6,7 @@ import React, {
   type ForwardedRef,
   useRef,
   useImperativeHandle,
+  type JSX,
 } from "react";
 
 import { type Optional } from "utility-types";

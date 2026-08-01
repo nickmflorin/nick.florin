@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { type ReactNode, memo } from "react";
+import { type ReactNode, memo, type JSX } from "react";
 
 const FloatingPortal = dynamic(() => import("@floating-ui/react").then(mod => mod.FloatingPortal));
 

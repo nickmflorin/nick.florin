@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { forwardRef } from "react";
+import { forwardRef, type JSX } from "react";
 
 import { type IconProps, isSvgIconProp } from "~/components/icons";
 import { classNames } from "~/components/types";

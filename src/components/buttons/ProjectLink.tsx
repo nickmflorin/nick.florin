@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { BrandProject } from "~/database/model";
 
 import { classNames } from "~/components/types";

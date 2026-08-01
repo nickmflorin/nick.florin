@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { deleteExperiences } from "~/actions/experiences/delete-experiences";
 import { hideExperiences } from "~/actions/experiences/hide-experiences";
 import { highlightExperiences } from "~/actions/experiences/highlight-experiences";

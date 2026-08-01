@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ModelTimePeriod, stringifyTimePeriod } from "~/database/model";
 
 import { Badge, type BadgeProps } from "./Badge";

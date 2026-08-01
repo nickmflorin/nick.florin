@@ -49,7 +49,6 @@ export const usePopover = ({
       size({
         apply({ availableHeight, availableWidth, rects, elements }) {
           if (width !== undefined) {
-            /* eslint-disable prettier/prettier */
             // prettier-ignore
             Object.assign(elements.floating.style, {
               width:
@@ -60,7 +59,7 @@ export const usePopover = ({
                   : width === "fit-content"
                   ? "fit-content"
                   : sizeToString(Math.min(inferQuantitativeSizeValue(width), availableWidth), "px"),
-            /* eslint-enable prettier/prettier */
+             
             });
           }
           if (maxHeight === undefined) {

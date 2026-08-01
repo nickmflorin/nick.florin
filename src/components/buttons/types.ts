@@ -2,7 +2,7 @@ import { type UrlObject } from "url";
 
 import { type LinkProps as NextLinkProps } from "next/link";
 import type React from "react";
-import { type ForwardedRef } from "react";
+import { type ForwardedRef, type JSX } from "react";
 
 import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
 

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, type JSX } from "react";
 
 import { type FloatingContentRenderProps } from "~/components/floating";
 import { type ActionsCellProps } from "~/components/tables/cells/ActionsCell";

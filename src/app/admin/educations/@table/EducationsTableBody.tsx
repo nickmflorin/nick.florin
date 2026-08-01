@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import type { JSX } from "react";
 
 import { type EducationsControls, type EducationsFilters } from "~/actions";
 import { fetchEducations } from "~/actions/educations/fetch-educations";

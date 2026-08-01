@@ -1,5 +1,5 @@
 "use client";
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 
 import type { ApiSkill, ApiCompany } from "~/database/model";
 import type { FilterFieldName } from "~/lib/filters";

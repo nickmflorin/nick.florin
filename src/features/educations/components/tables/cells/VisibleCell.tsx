@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { updateEducation } from "~/actions/educations/update-education";
 
 import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";

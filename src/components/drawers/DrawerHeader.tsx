@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ComponentProps, classNames } from "~/components/types";
 import { Title, Description } from "~/components/typography";
 

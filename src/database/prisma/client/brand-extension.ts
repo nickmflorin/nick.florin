@@ -6,7 +6,7 @@ import { Prisma } from "~/database/model";
  */
 export const brandExtension = Prisma.defineExtension(client => {
   type ModelKey = Exclude<keyof typeof client, `$${string}` | symbol>;
-  /* eslint-disable-next-line @typescript-eslint/ban-types */
+  /* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
   type Result = { [K in ModelKey]: { $kind: { needs: {}; compute: () => K } } };
 
   const result = {} as Result;

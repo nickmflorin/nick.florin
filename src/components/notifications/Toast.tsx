@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, type JSX } from "react";
 
 import { toast, type ToastContent, type ToastOptions } from "react-toastify";
 

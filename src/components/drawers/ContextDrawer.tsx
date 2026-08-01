@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 
 import { ErrorBoundary } from "~/components/errors/ErrorBoundary";
 import { type ComponentProps, classNames } from "~/components/types";

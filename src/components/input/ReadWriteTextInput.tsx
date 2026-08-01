@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  type JSX,
 } from "react";
 
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
@@ -69,7 +70,10 @@ const isEscapeEvent = (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "E
 const INPUT_PROPS = ["className", "style", "variant", "size", "placeholder"] as const;
 
 export const ReadWriteTextInput = forwardRef<ReadWriteTextInputInstance, ReadWriteTextInputProps>(
-  function _ReadWriteTextInput(
+  /* The name of this inner function expression must look like a component name - it may not be
+     prefixed with an underscore - or the 'rules-of-hooks' rule will not recognize the hooks it
+     calls as being called from a component. */
+  function ReadWriteTextInputComponent(
     {
       initialState = ReadWriteTextInputStates.READING,
       isDisabled = false,

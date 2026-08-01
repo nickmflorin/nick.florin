@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { updateExperience } from "~/actions/experiences/update-experience";
 
 import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";

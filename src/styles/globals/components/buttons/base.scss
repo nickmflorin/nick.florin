@@ -7,7 +7,6 @@
 
 @mixin button-base() {
   @include partials.transition(none);
-  @include partials.disabled;
   appearance: none;
   @include partials.border-radius(constants.$button-default-border-radius);
   box-shadow: none !important;
@@ -26,4 +25,9 @@
   text-decoration: none;
   user-select: none;
   vertical-align: middle;
+
+  // Emits a nested rule via '@at-root', so it is included after the declarations above rather than
+  // before them - Sass is changing the ordering of declarations that follow nested rules to match
+  // CSS.  The rule it emits targets a more specific selector, so the cascade is unaffected.
+  @include partials.disabled;
 }

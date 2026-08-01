@@ -1,5 +1,5 @@
 "use client";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState, type JSX } from "react";
 
 import { Portal } from "@mui/base/Portal";
 

@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { ConnectedColumnSelect } from "./ConnectedColumnSelect";
 import { useDataTable } from "./hooks";
 import {

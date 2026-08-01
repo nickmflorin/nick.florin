@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type ExtendingDrawerProps } from "~/components/drawers";
 import { DrawerForm } from "~/components/drawers/DrawerForm";
 import { CreateRepositoryForm } from "~/features/repositories/components/forms/CreateRepositoryForm";

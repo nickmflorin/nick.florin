@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { IconButton } from "~/components/buttons";
 import { type FloatingContentRenderProps } from "~/components/floating";
 import { DropdownMenu } from "~/components/menus/DropdownMenu";

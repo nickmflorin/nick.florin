@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { preloadProfile } from "~/actions/get-profile";
 
 import { LayoutMenuButton } from "~/components/buttons/LayoutMenuButton";

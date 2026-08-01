@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 
 import { Table, type TableProps } from "~/components/tables/generic/Table";
 import { TableHead } from "~/components/tables/generic/TableHead";

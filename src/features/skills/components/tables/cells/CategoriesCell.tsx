@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { EnumeratedLiteralsModel } from "enumerated-literals";
 
 import { type BrandSkill, type SkillCategories, type SkillCategory } from "~/database/model";

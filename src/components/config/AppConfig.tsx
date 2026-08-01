@@ -1,5 +1,5 @@
 /* eslint-disable import/order */
-import { type ReactNode } from "react";
+import { type ReactNode, type JSX } from "react";
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 
 /*
@@ -32,7 +32,8 @@ export interface AppConfigProps {
 }
 
 export const AppConfig = ({ children }: AppConfigProps): JSX.Element => (
-  <ClerkProvider>
+  /* Clerk no longer accepts 'afterSignOutUrl' on <UserButton/>; it is now global configuration. */
+  <ClerkProvider afterSignOutUrl="/">
     <ClerkLoading>
       <Loading fillScreen isLoading />
     </ClerkLoading>

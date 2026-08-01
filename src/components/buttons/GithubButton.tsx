@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { getProfile } from "~/actions/get-profile";
 
 import { SocialButton } from "./SocialButton";

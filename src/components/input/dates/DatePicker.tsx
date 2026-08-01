@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import {
   DatePicker as RootDatePicker,
   type DatePickerProps as RootDatePickerProps,

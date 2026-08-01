@@ -2,36 +2,59 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
-    "jsx": "preserve",
+    /* The legacy "node" (Node10) resolution ignores the "exports" maps that modern packages - Clerk
+       v7 among them - use to expose their type declarations, which silently resolves their types to
+       "any".  "bundler" matches how Next actually resolves modules. */
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     "incremental": true,
     "pretty": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": [
+        "./src/*"
+      ]
     },
     "isolatedModules": true
   },
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "commonjs",
+      /* "bundler" resolution is only valid alongside an ESM module target, so the CommonJS output
+         ts-node uses has to fall back to the Node resolution algorithm. */
+      "moduleResolution": "node"
     },
-    "require": ["tsconfig-paths/register"]
+    "require": [
+      "tsconfig-paths/register"
+    ]
   },
-  "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "src"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "src",
+    ".next/dev/types/**/*.ts"
+  ]
 }

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { DeprioritizeButton } from "~/components/buttons/DeprioritizeButton";
 import { HideButton } from "~/components/buttons/HideButton";
 import { HighlightButton } from "~/components/buttons/HighlightButton";

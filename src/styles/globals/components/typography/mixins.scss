@@ -177,8 +177,17 @@
 }
 
 @mixin with-fonts($type) {
+  // The font family is derived from the type alone - 'get-font()' never varies it by size - so it
+  // is declared once here, rather than redundantly on each iteration of the loop below.
+  //
+  // It is wrapped in '& {}' because callers include this mixin after others that emit nested rules,
+  // which would otherwise trigger Sass's 'mixed-decls' deprecation.  The wrapper opts into the
+  // CSS-standard ordering that Sass is moving to; the resulting cascade is the same either way.
+  & {
+    font-family: constants.get-font-family($type);
+  }
+
   @include use-fonts($type) using ($size, $properties) {
-    font-family: partials.mapget($properties, font-family);
     &.#{constants.get-font-size-class($size)} {
       font-size: partials.mapget($properties, font-size);
       line-height: partials.mapget($properties, line-height);

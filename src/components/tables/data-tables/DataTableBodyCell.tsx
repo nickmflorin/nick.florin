@@ -1,4 +1,4 @@
-import { isValidElement } from "react";
+import { isValidElement, type JSX } from "react";
 
 import { TableBodyCell } from "~/components/tables/generic/TableBodyCell";
 import type * as types from "~/components/tables/types";

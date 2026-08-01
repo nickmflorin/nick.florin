@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Fixtures
 /src/database/fixtures/json/fake/
+.env*
+
+/generated/*

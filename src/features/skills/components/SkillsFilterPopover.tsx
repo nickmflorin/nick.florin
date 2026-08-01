@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useEffect } from "react";
+import { useEffect, type JSX } from "react";
 
 import { flip } from "@floating-ui/react";
 

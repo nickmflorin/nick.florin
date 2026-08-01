@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import parse from "html-react-parser";
 import { ElementType } from "htmlparser2";
 

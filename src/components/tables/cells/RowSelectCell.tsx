@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { Checkbox } from "~/components/input/Checkbox";
 
 export interface RowSelectCellProps {

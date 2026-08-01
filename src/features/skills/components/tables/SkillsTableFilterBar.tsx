@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import type {
   ApiEducation,
   ApiExperience,

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type JSX } from "react";
 
 import { type ApiDetail, type ApiNestedDetail, type DetailEntityType } from "~/database/model";
 

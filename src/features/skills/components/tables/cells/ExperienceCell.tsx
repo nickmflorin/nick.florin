@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import Icon from "~/components/icons/Icon";
 import { Text } from "~/components/typography";
 import { type SkillsTableModel } from "~/features/skills/types";

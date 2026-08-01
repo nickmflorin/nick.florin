@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { z } from "zod";
 
 import { SkillsFiltersObj } from "~/actions";
@@ -6,12 +8,13 @@ import { fetchSkillsPagination } from "~/actions/skills/fetch-skills";
 import { Paginator } from "~/components/pagination-v2/Paginator";
 
 export interface SkillsTablePaginationPageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function SkillsTablePaginationPage({
-  searchParams,
-}: SkillsTablePaginationPageProps): Promise<JSX.Element> {
+export default async function SkillsTablePaginationPage(
+  props: SkillsTablePaginationPageProps,
+): Promise<JSX.Element> {
+  const searchParams = await props.searchParams;
   const _page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = SkillsFiltersObj.parse(searchParams);

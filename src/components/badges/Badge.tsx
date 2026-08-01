@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, type JSX } from "react";
 
 import { IconButton } from "~/components/buttons";
 import { type IconProp, type IconName, isIconProp } from "~/components/icons";

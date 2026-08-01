@@ -14,10 +14,11 @@ import { SkillsTableControlBarPlaceholder } from "~/features/skills/components/t
 import { SkillsTableBody } from "./SkillsTableBody";
 
 export interface SkillsTablePageProps {
-  readonly searchParams: Record<string, string>;
+  readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function SkillsTablePage({ searchParams }: SkillsTablePageProps) {
+export default async function SkillsTablePage(props: SkillsTablePageProps) {
+  const searchParams = await props.searchParams;
   const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
 
   const filters = SkillsFiltersObj.parse(searchParams);

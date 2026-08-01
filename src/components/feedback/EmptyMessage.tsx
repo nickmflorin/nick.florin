@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { ReactNode } from "react";
+import type { ReactNode, JSX } from "react";
 
 import {
   classNames,

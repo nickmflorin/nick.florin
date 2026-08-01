@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import type { BrandRepository } from "~/database/model";
 import { getRepositoryGithubUrl } from "~/database/model";
 

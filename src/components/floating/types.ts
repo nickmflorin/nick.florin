@@ -1,4 +1,4 @@
-import { type CSSProperties, type RefObject } from "react";
+import { type CSSProperties, type RefObject, type JSX } from "react";
 
 import {
   type ReferenceType,
@@ -78,7 +78,9 @@ export interface FloatingContext {
 }
 
 export interface PopoverContext extends FloatingContext {
-  readonly arrowRef: RefObject<SVGSVGElement>;
+  /* React 19 changed 'useRef<T>(null)' to produce a 'RefObject<T | null>', so the nullability has
+     to be reflected here. */
+  readonly arrowRef: RefObject<SVGSVGElement | null>;
 }
 
 export type PopoverContentRenderFn = (props: FloatingContentRenderProps) => JSX.Element;

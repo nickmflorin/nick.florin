@@ -287,9 +287,11 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     [formState.errors, internalFieldErrors],
   );
 
+  /* React Hook Form's 'handleSubmit' is now generic over the result of the submit handler, so this
+     wrapper has to thread that type parameter through in order to remain assignable to it. */
   const handleSubmit = useCallback(
-    (fn: SubmitHandler<I>, onError?: SubmitErrorHandler<I> | undefined) =>
-      _handleSubmit((data: I) => {
+    <TResult>(fn: SubmitHandler<I, TResult>, onError?: SubmitErrorHandler<I> | undefined) =>
+      _handleSubmit<TResult>((data: I) => {
         clearErrors();
         return fn(data);
       }, onError),
@@ -309,6 +311,9 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     registerChangeHandler,
     clearErrors,
     setErrors,
-    ...omit(form, ["setError"]),
+    /* React Hook Form added its own 'setValues' in v7.84.  It has different semantics to this
+       form's - it merges a partial object, rather than assigning each field individually via
+       'setValue' - so it is excluded here to keep the existing behavior for consumers. */
+    ...omit(form, ["setError", "setValues"]),
   };
 };

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { ResumesAdminTab } from "~/components/layout/ResumesAdminTab";
 import { TabbedContent } from "~/components/layout/TabbedContent";
 

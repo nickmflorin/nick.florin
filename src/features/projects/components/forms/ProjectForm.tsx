@@ -1,4 +1,6 @@
 "use client";
+import type { JSX } from "react";
+
 import { Form, type FormProps } from "~/components/forms-v2/Form";
 import { DateSelect } from "~/components/input/dates/DateSelect";
 import { TextArea } from "~/components/input/TextArea";

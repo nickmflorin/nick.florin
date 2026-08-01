@@ -1,3 +1,8 @@
+import tseslint from "@typescript-eslint/eslint-plugin";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import prettierConfig from "eslint-config-prettier";
+import prettierRecommended from "eslint-plugin-prettier/recommended";
+
 const ModuleGroups = [
   ["application", "lib", "server", "database", "internal", "scripts", "support"],
   ["app", "actions", "api", "integrations", "environment"],
@@ -160,23 +165,52 @@ const TS_BASE_RULES = {
   "react/display-name": "off",
 };
 
-/** @type {import("eslint").Linter.Config} */
-module.exports = {
-  extends: [
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "next/core-web-vitals",
-    "plugin:prettier/recommended",
-  ],
-  rules: TS_BASE_RULES,
-  ignorePatterns: [
-    "next-env.d.ts",
-    "!.*",
-    "package.json",
-    "package-lock.json",
-    "src/database/prisma/migrations/*",
-    "src/database/model/generated/*",
-    "/node_modules/**",
-    ".next/*",
-  ],
-};
+/** @type {import("eslint").Linter.Config[]} */
+const config = [
+  /* Flat config no longer reads '.eslintignore', so the previously ignored paths - and the
+     'ignorePatterns' from the old '.eslintrc.cjs' - are declared here instead. */
+  {
+    ignores: [
+      "node_modules/**",
+      "public/**",
+      "build/**",
+      ".next/**",
+      "next-env.d.ts",
+      "src/database/model/generated/**",
+      "src/database/prisma/migrations/**",
+    ],
+  },
+  ...tseslint.configs["flat/recommended"],
+  prettierConfig,
+  ...nextCoreWebVitals,
+  prettierRecommended,
+  {
+    /* These rules are new to the versions of '@typescript-eslint' and 'eslint-plugin-react-hooks'
+       that this project now depends on, and they are enabled as errors by their respective
+       'recommended' presets.  They flag roughly 130 pre-existing patterns that predate the upgrade.
+
+       Addressing them means changing runtime behavior - 'set-state-in-effect' and 'refs' in
+       particular - which does not belong in a dependency upgrade.  They are downgraded to warnings
+       so that they stay visible, and so that genuine errors are not lost in the noise, rather than
+       being disabled outright.  They should be worked through and promoted back to errors. */
+    rules: {
+      "@typescript-eslint/no-empty-object-type": "warn",
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/refs": "warn",
+      "react-hooks/use-memo": "warn",
+      "react-hooks/immutability": "warn",
+    },
+  },
+  {
+    rules: BASE_RULES,
+  },
+  {
+    /* The TypeScript rules have to be scoped to TypeScript files.  Under flat config, the
+       '@typescript-eslint' parser is only configured for these files, and rules such as
+       'consistent-type-imports' throw outright when they run against a file parsed without it. */
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: TS_BASE_RULES,
+  },
+];
+
+export default config;

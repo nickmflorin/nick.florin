@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, type JSX } from "react";
 
 import { type IconButtonProps, IconButton } from "./generic";
 

@@ -1,5 +1,9 @@
+"use client";
+/* This component uses hooks, so it was already only ever rendered inside a client boundary.  The
+   directive is now required explicitly, because Next does not allow 'ssr: false' with next/dynamic
+   outside of a Client Component. */
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, type JSX } from "react";
 
 import { type ApiSkill } from "~/database/model";
 

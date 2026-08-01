@@ -1,4 +1,4 @@
-import { forwardRef, type ForwardedRef } from "react";
+import { forwardRef, type ForwardedRef, type JSX } from "react";
 
 import { logger } from "~/internal/logger";
 

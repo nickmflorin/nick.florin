@@ -4,6 +4,7 @@ import React, {
   useImperativeHandle,
   useMemo,
   type ReactNode,
+  type JSX,
 } from "react";
 
 import { logger } from "~/internal/logger";

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type JSX } from "react";
 
 import { type DetailEntityType, type ApiDetail } from "~/database/model";
 

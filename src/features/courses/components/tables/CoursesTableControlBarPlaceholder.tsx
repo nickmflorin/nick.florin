@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { HideButton } from "~/components/buttons/HideButton";
 import { ShowButton } from "~/components/buttons/ShowButton";
 import {

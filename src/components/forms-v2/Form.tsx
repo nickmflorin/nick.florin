@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { type SubmitErrorHandler } from "react-hook-form";
 
 import { type ComponentProps, classNames } from "~/components/types";

@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 import { useDataTable } from "~/components/tables/hooks";
 import type * as types from "~/components/tables/types";
 

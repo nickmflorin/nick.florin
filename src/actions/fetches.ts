@@ -95,10 +95,9 @@ export const errorInFetchContext = <C extends FetchActionContext>(
 
 export const dataInFetchContext = <T, C extends FetchActionContext>(
   data: T,
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   context: C,
 ): FetchActionResponse<T, C> => {
-  /* eslint-disable-next-line @typescript-eslint/no-var-requires -- Temp workaround for tests. */
+  /* eslint-disable-next-line @typescript-eslint/no-require-imports -- Temp workaround for tests. */
   const superjson = require("superjson");
   return {
     data: shouldSerialize(context) ? superjson.serialize(data) : convertToPlainObject(data),
