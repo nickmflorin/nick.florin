@@ -12,7 +12,6 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import("next").NextConfig} */
 const config = {
-  output: "standalone",
   reactStrictMode: false,
   logging: {
     /* Next 16 forwards browser console output to the dev server's terminal, defaulting to "warn".
