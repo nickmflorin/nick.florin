@@ -1,54 +1,54 @@
-import dynamic from "next/dynamic";
-import { useEffect, type JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX, useEffect } from 'react';
 
-import { flip } from "@floating-ui/react";
+import { flip } from '@floating-ui/react';
 
-import { type ApiSkill } from "~/database/model";
+import { type ApiSkill } from '~/database/model';
 
 import {
   ChartFilterButton,
   type ChartFilterButtonProps,
-} from "~/components/buttons/ChartFilterButton";
-import { PopoverContent } from "~/components/floating/PopoverContent";
-import Tooltip from "~/components/floating/Tooltip";
-import { mergeFloatingEventHandlers } from "~/components/floating/util";
-import { useForm } from "~/components/forms-v2/hooks/use-form";
+} from '~/components/buttons/ChartFilterButton';
+import { PopoverContent } from '~/components/floating/PopoverContent';
+import { Tooltip } from '~/components/floating/Tooltip';
+import { mergeFloatingEventHandlers } from '~/components/floating/util';
+import { useForm } from '~/components/forms-v2/hooks/use-form';
 import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
-} from "~/features/skills/components/forms/SkillsChartFilterForm";
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
+} from '~/features/skills/components/forms/SkillsChartFilterForm';
+import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
-const Popover = dynamic(() => import("~/components/floating/Popover"));
+const Popover = dynamic(() => import('~/components/floating/Popover').then(mod => mod.Popover));
 
 export interface SkillsFilterPopoverProps {
-  readonly isDisabled?: boolean;
-  readonly buttonProps?: Omit<ChartFilterButtonProps, "isDisabled">;
+  readonly buttonProps?: Omit<ChartFilterButtonProps, 'isDisabled'>;
   readonly filters: SkillsChartFilterFormValues;
-  readonly skills: ApiSkill<[]>[];
-  readonly filtersHaveChanged: boolean;
-  readonly onClear: () => void;
+  readonly hasFiltersChanged: boolean;
+  readonly isDisabled?: boolean;
   readonly onChange: (values: SkillsChartFilterFormValues) => void;
+  readonly onClear: () => void;
+  readonly skills: ApiSkill<[]>[];
 }
 
 export const SkillsFilterPopover = ({
-  isDisabled = false,
   buttonProps,
-  filtersHaveChanged,
-  skills,
   filters,
+  hasFiltersChanged,
+  isDisabled = false,
   onChange,
   onClear,
+  skills,
 }: SkillsFilterPopoverProps): JSX.Element => {
   const { isLessThan } = useScreenSizes();
 
   const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({
-    schema: SkillsChartFilterFormSchema,
-    defaultValues: { showTopSkills: "all" },
+    defaultValues: { showTopSkills: 'all' },
     onChange: ({ values }) => {
-      onChange?.(values);
+      onChange(values);
     },
+    schema: SkillsChartFilterFormSchema,
   });
 
   useEffect(() => {
@@ -57,39 +57,39 @@ export const SkillsFilterPopover = ({
 
   return (
     <Popover
-      placement="bottom-end"
-      triggers={["click"]}
-      offset={{ mainAxis: 4 }}
-      width={400}
-      withArrow={false}
       autoUpdate
-      inPortal
-      isDisabled={isDisabled}
-      middleware={[flip({})]}
       content={
-        <PopoverContent className="p-[20px] rounded-md overflow-y-auto">
+        <PopoverContent className='p-[20px] rounded-md overflow-y-auto'>
           <SkillsChartFilterForm
             form={{ ...form, setValues }}
-            isClearDisabled={!filtersHaveChanged}
+            isClearDisabled={!hasFiltersChanged}
             isScrollable={false}
-            skills={skills}
             onClear={onClear}
+            skills={skills}
           />
         </PopoverContent>
       }
+      hasArrow={false}
+      isDisabled={isDisabled}
+      isInPortal
+      middleware={[flip({})]}
+      offset={{ mainAxis: 4 }}
+      placement='bottom-end'
+      triggers={['click']}
+      width={400}
     >
-      {({ ref, params, isOpen }) => (
-        <Tooltip content="Filters" inPortal isDisabled={isOpen} offset={{ mainAxis: 4 }}>
-          {({ ref: _ref, params: _params }) => (
+      {({ isOpen, params, ref }) => (
+        <Tooltip content='Filters' isDisabled={isOpen} isInPortal offset={{ mainAxis: 4 }}>
+          {({ params: _params, ref: _ref }) => (
             <ChartFilterButton
               {...mergeFloatingEventHandlers(params, _params)}
-              size={isLessThan("md") ? "xsmall" : "small"}
+              size={isLessThan('md') ? 'xsmall' : 'small'}
               {...buttonProps}
+              isDisabled={isDisabled}
               ref={instance => {
                 _ref?.(instance);
                 ref(instance);
               }}
-              isDisabled={isDisabled}
             />
           )}
         </Tooltip>

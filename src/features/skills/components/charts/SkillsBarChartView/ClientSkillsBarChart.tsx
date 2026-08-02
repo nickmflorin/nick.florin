@@ -1,94 +1,107 @@
-"use client";
-import dynamic from "next/dynamic";
-import React, { type JSX } from "react";
+'use client';
+import dynamic from 'next/dynamic';
+import { type CSSProperties, type JSX } from 'react';
 
-import { type BarTooltipProps } from "@nivo/bar";
+import { type BarTooltipProps } from '@nivo/bar';
 
-import { type ApiSkill } from "~/database/model";
-import { generateChartColors } from "~/lib/charts";
+import { type ApiSkill } from '~/database/model';
+import { generateChartColors } from '~/lib/charts';
 
-import { BarChart } from "~/components/charts/BarChart";
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import { TooltipContent } from "~/components/floating/TooltipContent";
-import { Loading } from "~/components/loading/Loading";
-import { classNames } from "~/components/types";
+import { BarChart } from '~/components/charts/BarChart';
+import { useDrawers } from '~/components/drawers/hooks/use-drawers';
+import { TooltipContent } from '~/components/floating/TooltipContent';
+import { Loading } from '~/components/loading/Loading';
+import { classNames } from '~/components/types';
 
-import { type SkillsBarChartDatum } from "./types";
+import { type SkillsBarChartDatum } from './types';
 
-const SkillsBarChartTooltip = dynamic(() => import("./SkillsBarChartTooltip"), {
-  ssr: false,
-  loading: () => <Loading isLoading={true} spinnerSize="sm" />,
-});
+const SkillsBarChartTooltip = dynamic(
+  () => import('./SkillsBarChartTooltip').then(mod => mod.SkillsBarChartTooltip),
+  {
+    loading: () => <Loading isLoading spinnerSize='sm' />,
+    ssr: false,
+  },
+);
 
 interface ClientSkillsBarChartProps {
   readonly skills: ApiSkill[];
 }
 
-/* This is a best estimated guess for the average tooltip size.  It may need some fine
-   tuning later on, but seems to work for now. */
+/**
+ * A best estimate of the average tooltip size, used to keep the tooltip from rendering outside the
+ * bounds of the chart.
+ */
 const TooltipWidth = 260;
 
 const TooltipPaddingAdjustment = 10;
 
+/**
+ * Returns the horizontal position style for the skills bar chart tooltip.
+ *
+ * The tooltip is shifted left or right depending on where its bar sits within the chart, to
+ * prevent the tooltip from being cut off by the edge of the chart or its overflow container.
+ *
+ * @param {number} barMidpoint The horizontal midpoint of the bar that the tooltip belongs to.
+ * @param {number} elementWidth The width of the chart element that the tooltip renders inside.
+ *
+ * @returns {CSSProperties} The style used to reposition the tooltip, if repositioning is needed.
+ */
+const getTooltipPositionStyle = (barMidpoint: number, elementWidth: number): CSSProperties => {
+  if (barMidpoint + TooltipWidth / 2 > elementWidth - TooltipPaddingAdjustment) {
+    return { right: elementWidth - barMidpoint + TooltipPaddingAdjustment };
+  } else if (barMidpoint - TooltipWidth / 2 < TooltipPaddingAdjustment) {
+    return { left: barMidpoint + TooltipPaddingAdjustment };
+  }
+  return {};
+};
+
 export const ClientSkillsBarChart = ({ skills }: ClientSkillsBarChartProps): JSX.Element => {
-  const { open, ids } = useDrawers();
+  const { ids, open } = useDrawers();
 
   return (
     <BarChart<SkillsBarChartDatum>
+      axisBottom={null}
+      axisLeft={{
+        legend: '# Years Experience',
+        legendOffset: -40,
+        legendPosition: 'middle',
+        tickPadding: 5,
+        tickRotation: 0,
+        tickSize: 5,
+        truncateTickAt: 0,
+      }}
+      barAriaLabel={d => `skill-${String(d.data.id)}`}
+      borderColor={{
+        from: 'color',
+        modifiers: [['darker', 1.6]],
+      }}
+      colorBy='indexValue'
+      colors={generateChartColors(skills.length)}
       data={skills.map(skill => ({
         ...skill,
         experience: skill.calculatedExperience,
       }))}
-      indexBy="label"
-      keys={["experience"]}
       enableLabel={false}
-      barAriaLabel={d => `skill-${String(d.data.id)}`}
-      borderColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
-      }}
-      colors={generateChartColors(skills.length)}
-      colorBy="indexValue"
-      axisBottom={null}
-      axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: "# Years Experience",
-        legendPosition: "middle",
-        legendOffset: -40,
-        truncateTickAt: 0,
-      }}
+      indexBy='label'
+      keys={['experience']}
       onClick={datum => open(ids.VIEW_SKILL, { skillId: datum.data.id })}
       tooltip={props => {
-        /* We want to apply left and right adjustments to the tooltip depending on the coordinates
-           of the bar to prevent the tooltip from going off screen (or getting cutoff by the
-           overflow). */
-        const barX = (props as BarTooltipProps<SkillsBarChartDatum> & { absX: number | undefined })
+        const barX = (props as { absX: number | undefined } & BarTooltipProps<SkillsBarChartDatum>)
           .absX;
-        const barW = (props as BarTooltipProps<SkillsBarChartDatum> & { width: number | undefined })
+        const barW = (props as { width: number | undefined } & BarTooltipProps<SkillsBarChartDatum>)
           .width;
 
-        const element = document.getElementById("skills-bar-chart-element");
+        const element = document.getElementById('skills-bar-chart-element');
 
-        let style: React.CSSProperties = {};
-        if (barX !== undefined && element && barW !== undefined) {
-          const barMidpoint = barX + barW / 2;
-
-          if (barMidpoint + TooltipWidth / 2 > element.clientWidth - TooltipPaddingAdjustment) {
-            style = {
-              ...style,
-              right: element.clientWidth - barMidpoint + TooltipPaddingAdjustment,
-            };
-          } else if (barMidpoint - TooltipWidth / 2 < TooltipPaddingAdjustment) {
-            style = { ...style, left: barMidpoint + TooltipPaddingAdjustment };
-          }
-        }
+        const style: CSSProperties =
+          barX !== undefined && element && barW !== undefined
+            ? getTooltipPositionStyle(barX + barW / 2, element.clientWidth)
+            : {};
 
         return (
           <TooltipContent
             className={classNames(
-              "flex flex-col relative min-h-[40px] gap-[10px] px-[8px] py-[10px]",
+              'flex flex-col relative min-h-[40px] gap-[10px] px-[8px] py-[10px]',
             )}
             style={style}
           >

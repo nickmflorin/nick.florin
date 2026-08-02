@@ -1,31 +1,29 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { ContextDrawer } from "~/components/drawers/ContextDrawer";
-import { useSkill } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { ContextDrawer } from '~/components/drawers/ContextDrawer';
+import { useSkill } from '~/hooks/api';
 
-import { SkillDrawerContent } from "./SkillDrawerContent";
+import { SkillDrawerContent } from './SkillDrawerContent';
 
 export interface SkillDrawerProps extends ExtendingDrawerProps {
   readonly skillId: string;
 }
 
 export const SkillDrawer = ({ skillId }: SkillDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useSkill(skillId, {
-    query: {
-      includes: ["experiences", "educations", "projects", "repositories", "courses"],
-      visibility: "public",
-    },
+  const { data, error, isLoading } = useSkill(skillId, {
     keepPreviousData: true,
+    query: {
+      includes: ['experiences', 'educations', 'projects', 'repositories', 'courses'],
+      visibility: 'public',
+    },
   });
   return (
     <ContextDrawer>
-      <ApiResponseState error={error} isLoading={isLoading} data={data}>
+      <ApiResponseState data={data} error={error} isLoading={isLoading}>
         {skill => <SkillDrawerContent skill={skill} />}
       </ApiResponseState>
     </ContextDrawer>
   );
 };
-
-export default SkillDrawer;

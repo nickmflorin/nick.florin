@@ -1,5 +1,5 @@
-import { type ProjectsFilters } from "~/actions";
-import { fetchProjectsCount } from "~/actions/projects/fetch-projects";
+import { type ProjectsFilters } from '~/actions';
+import { fetchProjectsCount } from '~/actions/projects/fetch-projects';
 
 export interface ProjectsTitleProps {
   readonly filters: ProjectsFilters;
@@ -8,6 +8,6 @@ export interface ProjectsTitleProps {
 export const ProjectsTitle = async ({ filters }: ProjectsTitleProps) => {
   const {
     data: { count },
-  } = await fetchProjectsCount({ visibility: "admin", filters }, { strict: true });
+  } = await fetchProjectsCount({ filters, visibility: 'admin' }, { strict: true });
   return <>{count}</>;
 };

@@ -1,53 +1,57 @@
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image';
 
-import { type Optional } from "utility-types";
+import { type Optional } from 'utility-types';
 
-import { type IconProp } from "~/components/icons";
-import { Icon } from "~/components/icons/Icon";
-import { Loading } from "~/components/loading/Loading";
-import { classNames, parseDataAttributes } from "~/components/types";
-import { type ComponentProps, BorderRadii, type BorderRadius } from "~/components/types";
+import { type IconProp } from '~/components/icons';
+import { Icon } from '~/components/icons/Icon';
+import { Loading } from '~/components/loading/Loading';
+import {
+  BorderRadii,
+  type BorderRadius,
+  classNames,
+  type ComponentProps,
+  parseDataAttributes,
+} from '~/components/types';
 
-import { type ImageProp } from "./types";
+import { type ImageProp } from './types';
 
-type BaseModelImageProps = ComponentProps & {
-  readonly fallbackIcon?: IconProp;
+type BaseModelImageProps = {
   readonly alt?: string;
+  readonly fallbackIcon?: IconProp;
+  readonly hasPriority?: boolean;
+  readonly imageClassName?: ComponentProps['className'];
   readonly loading?: boolean;
   readonly radius?: BorderRadius;
-  readonly priority?: boolean;
-  readonly imageClassName?: ComponentProps["className"];
-};
+} & ComponentProps;
 
-export type ModelImageSpreadProps = BaseModelImageProps &
-  ImageProp & {
-    readonly image?: never;
-  };
+export type ModelImageSpreadProps = {
+  readonly image?: never;
+} & BaseModelImageProps &
+  ImageProp;
 
-type ModelImageExplicitProps = BaseModelImageProps &
-  Pick<ImageProp, "size"> & { [key in Exclude<keyof ImageProp, "size">]?: never } & {
-    readonly image: Omit<ImageProp, "size">;
-  };
+type ModelImageExplicitProps = {
+  readonly image: Omit<ImageProp, 'size'>;
+} & BaseModelImageProps &
+  Partial<Record<Exclude<keyof ImageProp, 'size'>, never>> &
+  Pick<ImageProp, 'size'>;
 
-type ModelImageExplicitSizeOverwriteProps = BaseModelImageProps &
-  Optional<Pick<ImageProp, "size">, "size"> & {
-    [key in Exclude<keyof ImageProp, "size">]?: never;
-  } & {
-    readonly image: ImageProp;
-  };
+type ModelImageExplicitSizeOverwriteProps = {
+  readonly image: ImageProp;
+} & BaseModelImageProps &
+  Optional<Pick<ImageProp, 'size'>, 'size'> &
+  Partial<Record<Exclude<keyof ImageProp, 'size'>, never>>;
 
 export type ModelImageProps =
-  | ModelImageSpreadProps
-  | ModelImageExplicitProps
-  | ModelImageExplicitSizeOverwriteProps;
+  ModelImageExplicitProps | ModelImageExplicitSizeOverwriteProps | ModelImageSpreadProps;
 
+/**
+ * Returns the value for property `k` of {@link ImageProp}, preferring an explicit prop provided at
+ * the top level of {@link ModelImageProps} over the corresponding property nested under `image`.
+ */
 const getImageVar = <K extends keyof ImageProp>(
   k: K,
-  props: Pick<ModelImageProps, "image" | K>,
+  props: Pick<ModelImageProps, 'image' | K>,
 ): ImageProp[K] => {
-  /* Explicit props in top level spread take precedence/are used to override potential props nested
-     under 'image'. */
   if (props[k] === undefined) {
     /* It is safe to force coerce here because the only missing property would be size, in which
        case it will simply be undefined. */
@@ -58,38 +62,38 @@ const getImageVar = <K extends keyof ImageProp>(
 
 /** @deprecated */
 export const ModelImage = ({
-  fallbackIcon = { name: "image" },
-  alt = "",
-  url,
-  size,
+  alt = '',
   className,
-  style,
+  fallbackIcon = { name: 'image' },
+  hasPriority,
   image,
-  radius = BorderRadii.NONE,
   imageClassName,
   loading,
-  priority,
+  radius = BorderRadii.NONE,
+  size,
+  style,
+  url,
 }: ModelImageProps) => {
-  const _url = getImageVar("url", { image, url });
-  const _size = getImageVar("size", { image, size });
+  const _url = getImageVar('url', { image, url });
+  const _size = getImageVar('size', { image, size });
   return (
     <div
+      className={classNames('model-image', className)}
       style={{ ...style, height: size, width: size }}
-      className={classNames("model-image", className)}
     >
       <Loading isLoading={loading === true} />
-      {_url !== undefined && _url !== null && _url.trim() !== "" ? (
+      {_url !== undefined && _url !== null && _url.trim() !== '' ? (
         <Image
           {...parseDataAttributes({ radius })}
-          height={_size}
-          width={_size}
-          src={_url}
           alt={alt}
-          priority={priority}
-          className={classNames("model-image__image", imageClassName)}
+          className={classNames('model-image__image', imageClassName)}
+          height={_size}
+          priority={hasPriority}
+          src={_url}
+          width={_size}
         />
       ) : (
-        <div className="model-image__fallback">
+        <div className='model-image__fallback'>
           <Icon icon={fallbackIcon} />
         </div>
       )}

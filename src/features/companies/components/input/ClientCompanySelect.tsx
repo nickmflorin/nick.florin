@@ -1,54 +1,52 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type ForwardedRef, type JSX } from 'react';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { type ActionVisibility } from "~/actions";
-import { type ApiError } from "~/api";
+import { type ActionVisibility } from '~/actions';
+import { type ApiError } from '~/api';
 
-import type { SelectBehaviorType } from "~/components/input/select";
-import { useCompanies } from "~/hooks/api";
+import { type SelectBehaviorType } from '~/components/input/select';
+import { useCompanies } from '~/hooks/api';
 
 import {
   CompanySelect,
   type CompanySelectInstance,
   type CompanySelectProps,
-} from "./CompanySelect";
+} from './CompanySelect';
 
-export interface ClientCompanySelectProps<B extends SelectBehaviorType>
-  extends Omit<CompanySelectProps<B>, "data"> {
-  readonly visibility: ActionVisibility;
+export interface ClientCompanySelectProps<B extends SelectBehaviorType> extends Omit<
+  CompanySelectProps<B>,
+  'data'
+> {
   readonly onError?: (e: ApiError) => void;
+  readonly visibility: ActionVisibility;
 }
 
-export const ClientCompanySelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { visibility, onError, ...props }: ClientCompanySelectProps<B>,
-    ref: ForwardedRef<CompanySelectInstance<B>>,
-  ): JSX.Element => {
-    const { data, isLoading, error } = useCompanies({
-      query: { includes: [], visibility },
-      onError: e => {
-        logger.error(e, "There was an error loading the companies via the API.");
-        onError?.(e);
-      },
-    });
-
-    return (
-      <CompanySelect<B>
-        {...props}
-        ref={ref}
-        isReady={data !== undefined && props.isReady !== false}
-        data={data ?? []}
-        isDisabled={error !== undefined || props.isDisabled}
-        isLocked={isLoading || props.isLocked}
-        isLoading={isLoading || props.isLoading}
-      />
-    );
-  },
-) as {
-  <B extends SelectBehaviorType>(
-    props: ClientCompanySelectProps<B> & {
-      readonly ref?: ForwardedRef<CompanySelectInstance<B>>;
+export const ClientCompanySelect = <B extends SelectBehaviorType>({
+  onError,
+  ref,
+  visibility,
+  ...props
+}: {
+  readonly ref?: ForwardedRef<CompanySelectInstance<B>>;
+} & ClientCompanySelectProps<B>): JSX.Element => {
+  const { data, error, isLoading } = useCompanies({
+    onError: e => {
+      logger.error(e, 'There was an error loading the companies via the API.');
+      onError?.(e);
     },
-  ): JSX.Element;
+    query: { includes: [], visibility },
+  });
+
+  return (
+    <CompanySelect<B>
+      {...props}
+      data={data ?? []}
+      isDisabled={error !== undefined || props.isDisabled}
+      isLoading={isLoading || props.isLoading}
+      isLocked={isLoading || props.isLocked}
+      isReady={data !== undefined && props.isReady !== false}
+      ref={ref}
+    />
+  );
 };

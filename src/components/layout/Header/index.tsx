@@ -1,18 +1,18 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { preloadProfile } from "~/actions/get-profile";
+import { preloadProfile } from '~/actions/get-profile';
 
-import { LayoutMenuButton } from "~/components/buttons/LayoutMenuButton";
-import { SiteDropdownMenu } from "~/features/site/components/SiteDropdownMenu";
+import { LayoutMenuButton } from '~/components/buttons/LayoutMenuButton';
+import { SiteDropdownMenu } from '~/features/site/components/SiteDropdownMenu';
 
-import { ProfileSection } from "./ProfileSection";
+import { ProfileSection } from './ProfileSection';
 
 export const Header = (): JSX.Element => {
   preloadProfile();
   return (
     <>
       <ProfileSection />
-      <div className="header__right">
+      <div className='header__right'>
         <SiteDropdownMenu />
         <LayoutMenuButton />
       </div>

@@ -1,11 +1,11 @@
-import { ResumeModelCondensedTileSkeleton } from "~/features/resume/components/tiles/ResumeModelCondensedTileSkeleton";
+import { ResumeModelCondensedTileSkeleton } from '~/features/resume/components/tiles/ResumeModelCondensedTileSkeleton';
 
-export default function Loading() {
-  return (
-    <>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <ResumeModelCondensedTileSkeleton key={i} showTags={false} numDescriptionLines={3} />
-      ))}
-    </>
-  );
-}
+const Loading = () => (
+  <>
+    {Array.from({ length: 4 }).map((_, i) => (
+      <ResumeModelCondensedTileSkeleton areTagsVisible={false} key={i} numDescriptionLines={3} />
+    ))}
+  </>
+);
+
+export default Loading;

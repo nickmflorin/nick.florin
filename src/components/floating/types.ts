@@ -1,52 +1,52 @@
-import { type CSSProperties, type RefObject, type JSX } from "react";
+import { type CSSProperties, type JSX, type MouseEvent, type RefObject } from 'react';
 
 import {
-  type ReferenceType,
-  type useInteractions,
-  type UseClickProps,
-  type UseHoverProps,
-  type UseDismissProps,
-  type UseRoleProps,
   type ExtendedRefs,
+  type ReferenceType,
   type FloatingContext as RootFloatingContext,
-} from "@floating-ui/react";
+  type UseClickProps,
+  type UseDismissProps,
+  type UseHoverProps,
+  type useInteractions,
+  type UseRoleProps,
+} from '@floating-ui/react';
 
 export type PopoverRenderProps = {
   readonly isOpen: boolean;
-  readonly params: ReturnType<ReturnType<typeof useInteractions>["getReferenceProps"]>;
-  readonly ref: (node: ReferenceType | null) => void;
+  readonly params: ReturnType<ReturnType<typeof useInteractions>['getReferenceProps']>;
+  readonly ref: (node: null | ReferenceType) => void;
 };
 
 export type FloatingContentRenderProps = {
   readonly isOpen: boolean;
   readonly params: Record<string, unknown>;
-  readonly styles: CSSProperties;
+  readonly ref: (node: HTMLElement | null) => void;
   readonly setIsOpen: (
     v: boolean,
-    evt: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
+    evt: Event | MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement>,
   ) => void;
-  readonly ref: (node: HTMLElement | null) => void;
+  readonly styles: CSSProperties;
 };
 
-export type FloatingTriggerId = "hover" | "click" | "dismiss" | "role";
+export type FloatingTriggerId = 'click' | 'dismiss' | 'hover' | 'role';
 
 export type FloatingTriggerOptions<T extends FloatingTriggerId> = {
-  hover: UseHoverProps;
   click: UseClickProps;
   dismiss: UseDismissProps;
+  hover: UseHoverProps;
   role: UseRoleProps;
 }[T];
 
 export type FloatingTriggerWithOptions<T extends FloatingTriggerId = FloatingTriggerId> =
   T extends FloatingTriggerId
-    ? { readonly type: T; readonly options: Omit<FloatingTriggerOptions<T>, "enabled"> }
+    ? { readonly options: Omit<FloatingTriggerOptions<T>, 'enabled'>; readonly type: T }
     : never;
 
 export type FloatingTrigger<T extends FloatingTriggerId = FloatingTriggerId> =
-  T extends FloatingTriggerId ? T | FloatingTriggerWithOptions<T> : never;
+  T extends FloatingTriggerId ? FloatingTriggerWithOptions<T> | T : never;
 
 export const hasFloatingTrigger = (triggers: FloatingTrigger[], id: FloatingTriggerId): boolean => {
-  const ts = triggers.map(t => (typeof t === "string" ? t : t.type));
+  const ts = triggers.map(t => (typeof t === 'string' ? t : t.type));
   return ts.includes(id);
 };
 
@@ -54,7 +54,7 @@ export const parseFloatingTriggerOptions = <T extends FloatingTriggerId>(
   triggers: FloatingTrigger[],
   id: T,
 ): FloatingTriggerOptions<T> => {
-  const ts = triggers.map(t => (typeof t === "string" ? { type: t, options: {} } : t));
+  const ts = triggers.map(t => (typeof t === 'string' ? { options: {}, type: t } : t));
   const filtered = ts.filter(t => t.type === id);
   if (filtered.length === 0) {
     return { enabled: false };
@@ -65,30 +65,32 @@ export const parseFloatingTriggerOptions = <T extends FloatingTriggerId>(
 };
 
 export interface FloatingContext {
+  readonly context: RootFloatingContext;
+  readonly floatingProps: Record<string, unknown>;
+  readonly floatingStyles: CSSProperties;
   readonly isOpen: boolean;
   readonly referenceProps: Record<string, unknown>;
-  readonly floatingProps: Record<string, unknown>;
-  readonly floatingStyles: React.CSSProperties;
-  readonly context: RootFloatingContext;
   readonly refs: ExtendedRefs<ReferenceType>;
   readonly setIsOpen: (
     v: boolean,
-    evt: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
+    evt: Event | MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement>,
   ) => void;
 }
 
 export interface PopoverContext extends FloatingContext {
-  /* React 19 changed 'useRef<T>(null)' to produce a 'RefObject<T | null>', so the nullability has
-     to be reflected here. */
-  readonly arrowRef: RefObject<SVGSVGElement | null>;
+  /**
+   * React 19 changed `useRef<T>(null)` to produce a `RefObject<T | null>`, so the nullability has
+   * to be reflected here.
+   */
+  readonly arrowRef: RefObject<null | SVGSVGElement>;
 }
 
-export type PopoverContentRenderFn = (props: FloatingContentRenderProps) => JSX.Element;
+export type PopoverContentRenderFn = (props: FloatingContentRenderProps) => JSX.Element | null;
 
 export type PopoverContent = JSX.Element | PopoverContentRenderFn;
 
 export type PopoverOuterContentRenderFn = (
-  props: FloatingContentRenderProps & { readonly children: JSX.Element },
+  props: { readonly children: JSX.Element } & FloatingContentRenderProps,
 ) => JSX.Element;
 
 export type PopoverOuterContent = PopoverOuterContentRenderFn;

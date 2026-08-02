@@ -1,112 +1,96 @@
-"use client";
-import { forwardRef } from "react";
-
-import type * as types from "./types";
+'use client';
+import type * as types from './types';
 
 import {
-  sidebarItemIsExternal,
   type IExternalSidebarItem,
   type IInternalSidebarItem,
-} from "~/components/layout";
-import { classNames } from "~/components/types";
-import { useNavMenu, useNavigationItem } from "~/hooks";
+  sidebarItemIsExternal,
+} from '~/components/layout';
+import { classNames } from '~/components/types';
+import { useNavigationItem, useNavMenu } from '~/hooks';
 
-import { Button, type ButtonProps } from "./generic";
+import { Button, type ButtonProps } from './generic';
 
-export type InternalNavMenuAnchorProps = Omit<
-  ButtonProps<"link">,
-  "options" | "isActive" | "icon" | "href" | "element"
-> & {
-  readonly item: Omit<IInternalSidebarItem, "children">;
-};
+export type InternalNavMenuAnchorProps = {
+  readonly item: Omit<IInternalSidebarItem, 'children'>;
+  readonly ref?: types.PolymorphicButtonRef<'link'>;
+} & Omit<ButtonProps<'link'>, 'element' | 'href' | 'icon' | 'isActive' | 'options'>;
 
-export type ExternalNavMenuAnchorProps = Omit<
-  ButtonProps<"a">,
-  "options" | "isActive" | "icon" | "href" | "element"
-> & {
+export type ExternalNavMenuAnchorProps = {
   readonly item: IExternalSidebarItem;
-};
+  readonly ref?: types.PolymorphicButtonRef<'a'>;
+} & Omit<ButtonProps<'a'>, 'element' | 'href' | 'icon' | 'isActive' | 'options'>;
 
-export const InternalNavMenuAnchor = forwardRef<
-  types.PolymorphicButtonElement<"link">,
-  InternalNavMenuAnchorProps
->(({ item, ...props }: InternalNavMenuAnchorProps, ref: types.PolymorphicButtonRef<"link">) => {
-  const { isActive, href, setNavigating } = useNavigationItem(item);
+export const InternalNavMenuAnchor = ({ item, ref, ...props }: InternalNavMenuAnchorProps) => {
+  const { href, isActive, setNavigating } = useNavigationItem(item);
   const { close } = useNavMenu();
   return (
-    <Button.Solid<"link">
+    <Button.Solid<'link'>
       {...props}
-      element="link"
-      activeClassName="bg-blue-800 outline-blue-800 text-white"
+      activeClassName='bg-blue-800 outline-blue-800 text-white'
+      className={classNames(
+        'z-0 text-body outline-gray-50 bg-gray-50 w-full h-full',
+        { ['hover:bg-gray-300 hover:outline-gray-300']: !isActive },
+        props.className,
+      )}
+      element='link'
+      fontSize='sm'
+      href={href}
+      icon={item.icon}
+      iconSize='medium'
+      isActive={isActive}
       onClick={() => {
         setNavigating();
         close();
       }}
-      className={classNames(
-        "z-0 text-body outline-gray-50 bg-gray-50 w-full h-full",
-        { ["hover:bg-gray-300 hover:outline-gray-300"]: !isActive },
-        props.className,
-      )}
       ref={ref}
-      href={href}
-      size="medium"
-      iconSize="medium"
-      fontSize="sm"
-      icon={item.icon}
-      isActive={isActive}
+      size='medium'
     >
       {item.label}
     </Button.Solid>
   );
-});
+};
 
-export const ExternalNavMenuAnchor = forwardRef<
-  types.PolymorphicButtonElement<"a">,
-  ExternalNavMenuAnchorProps
->(({ item, ...props }: ExternalNavMenuAnchorProps, ref: types.PolymorphicButtonRef<"link">) => (
-  <Button.Solid<"a">
+export const ExternalNavMenuAnchor = ({ item, ref, ...props }: ExternalNavMenuAnchorProps) => (
+  <Button.Solid<'a'>
     {...props}
     className={classNames(
-      "z-0 text-body outline-gray-50 bg-gray-50 w-full h-full",
-      "hover:bg-gray-300 hover:outline-gray-300",
+      'z-0 text-body outline-gray-50 bg-gray-50 w-full h-full',
+      'hover:bg-gray-300 hover:outline-gray-300',
       props.className,
     )}
-    ref={ref}
-    element="a"
+    element='a'
+    fontSize='sm'
     href={item.href}
-    size="medium"
-    iconSize="medium"
-    fontSize="sm"
     icon={item.icon}
+    iconSize='medium'
     openInNewTab
+    ref={ref}
+    size='medium'
   >
     {item.label}
   </Button.Solid>
-));
+);
 
 export type NavMenuAnchorProps<
-  I extends Omit<IInternalSidebarItem, "children"> | IExternalSidebarItem =
-    | Omit<IInternalSidebarItem, "children">
-    | IExternalSidebarItem,
-> = Omit<ButtonProps<"link" | "a">, "options" | "isActive" | "icon" | "href"> & {
+  I extends IExternalSidebarItem | Omit<IInternalSidebarItem, 'children'> =
+    IExternalSidebarItem | Omit<IInternalSidebarItem, 'children'>,
+> = {
   readonly item: I;
-};
+  readonly ref?: types.PolymorphicButtonRef<'a'>;
+} & Omit<ButtonProps<'a' | 'link'>, 'href' | 'icon' | 'isActive' | 'options'>;
 
-export const NavMenuAnchor = forwardRef<
-  types.PolymorphicButtonElement<"a"> | types.PolymorphicButtonElement<"link">,
-  NavMenuAnchorProps
->(
-  <I extends Omit<IInternalSidebarItem, "children"> | IExternalSidebarItem>(
-    { item, ...props }: NavMenuAnchorProps<I>,
-    ref: types.PolymorphicButtonRef<"link"> | types.PolymorphicButtonRef<"a">,
-  ) => {
-    if (sidebarItemIsExternal(item)) {
-      return (
-        <ExternalNavMenuAnchor {...(props as ExternalNavMenuAnchorProps)} item={item} ref={ref} />
-      );
-    }
+export const NavMenuAnchor = <
+  I extends IExternalSidebarItem | Omit<IInternalSidebarItem, 'children'>,
+>({
+  item,
+  ref,
+  ...props
+}: NavMenuAnchorProps<I>) => {
+  if (sidebarItemIsExternal(item)) {
     return (
-      <InternalNavMenuAnchor {...(props as InternalNavMenuAnchorProps)} item={item} ref={ref} />
+      <ExternalNavMenuAnchor {...(props as ExternalNavMenuAnchorProps)} item={item} ref={ref} />
     );
-  },
-);
+  }
+  return <InternalNavMenuAnchor {...(props as InternalNavMenuAnchorProps)} item={item} ref={ref} />;
+};

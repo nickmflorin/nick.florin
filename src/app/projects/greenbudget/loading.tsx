@@ -1,5 +1,5 @@
-import { Loading as LoadingComponent } from "~/components/loading/Loading";
+import { Loading as LoadingComponent } from '~/components/loading/Loading';
 
-const Loading = () => <LoadingComponent isLoading={true} />;
+const Loading = () => <LoadingComponent isLoading />;
 
 export default Loading;

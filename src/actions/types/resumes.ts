@@ -1,7 +1,7 @@
-import { Filters, type FiltersValues } from "~/lib/filters";
-import { type Order, type Ordering } from "~/lib/ordering";
+import { Filters, type FiltersValues } from '~/lib/filters';
+import { type Order, type Ordering } from '~/lib/ordering';
 
-import type { ActionVisibility } from "~/actions/visibility";
+import { type ActionVisibility } from '~/actions/visibility';
 
 /*
 Note: Currently, the ordering and filtering aspects of data manipulation for Resumes are not used
@@ -9,42 +9,42 @@ by the client (even though the fetch actions support them).  However, these are 
 eventually incorporate a resumes table similarly to the other tables in the admin.
 */
 export const ResumeOrderableFields = [
-  "filename",
-  "pathname",
-  "createdAt",
-  "updatedAt",
-  "size",
+  'filename',
+  'pathname',
+  'createdAt',
+  'updatedAt',
+  'size',
 ] as const;
 
 export type ResumeOrderableField = (typeof ResumeOrderableFields)[number];
 
 export const ResumesDefaultOrdering = {
-  orderBy: "createdAt",
-  order: "desc",
+  order: 'desc',
+  orderBy: 'createdAt',
 } as const satisfies Ordering<ResumeOrderableField>;
 
 type ResumesMappedPrismaOrdering<
   F extends ResumeOrderableField = ResumeOrderableField,
   O extends Order = Order,
 > = {
+  readonly createdAt: { createdAt: O };
   readonly filename: { filename: O };
   readonly pathname: { pathname: O };
-  readonly createdAt: { createdAt: O };
-  readonly updatedAt: { updatedAt: O };
   readonly size: { size: O };
+  readonly updatedAt: { updatedAt: O };
 }[F];
 
 export const ResumesOrderingMap = <O extends Order>(order: O) =>
   ({
+    createdAt: { createdAt: order } as const,
     filename: { filename: order } as const,
     pathname: { pathname: order } as const,
-    createdAt: { createdAt: order } as const,
-    updatedAt: { updatedAt: order } as const,
     size: { size: order } as const,
+    updatedAt: { updatedAt: order } as const,
   }) satisfies { [key in ResumeOrderableField]: ResumesMappedPrismaOrdering<key, O> };
 
 type PrismaOrdering<F extends string, O extends Order = Order> = F extends string
-  ? { [key in F]: O }
+  ? Record<F, O>
   : never;
 
 type OrderingToPrisma<O extends Ordering> =
@@ -53,36 +53,35 @@ type OrderingToPrisma<O extends Ordering> =
 export const getResumesOrdering = <F extends ResumeOrderableField, O extends Order>(
   ordering?: Ordering<F, O>,
 ): (
-  | ResumesMappedPrismaOrdering<F, O>
-  | PrismaOrdering<"id", "desc">
-  | PrismaOrdering<"createdAt", "desc">
   | OrderingToPrisma<typeof ResumesDefaultOrdering>
+  | PrismaOrdering<'id', 'desc'>
+  | ResumesMappedPrismaOrdering<F, O>
 )[] => {
   if (ordering) {
     const map = ResumesOrderingMap(ordering.order)[ordering.orderBy];
     const arr: (
+      | PrismaOrdering<'createdAt', 'desc'>
+      | PrismaOrdering<'id', 'desc'>
       | ResumesMappedPrismaOrdering<F, O>
-      | PrismaOrdering<"id", "desc">
-      | PrismaOrdering<"createdAt", "desc">
       | undefined
     )[] = [
       map,
-      ordering.orderBy !== "createdAt" ? { createdAt: "desc" } : undefined,
-      { id: "desc" },
+      ordering.orderBy === 'createdAt' ? undefined : { createdAt: 'desc' },
+      { id: 'desc' },
     ];
     return arr.filter(
       (
         v,
       ): v is
-        | ResumesMappedPrismaOrdering<F, O>
-        | PrismaOrdering<"id", "desc">
-        | PrismaOrdering<"createdAt", "desc"> => v !== undefined,
+        | PrismaOrdering<'createdAt', 'desc'>
+        | PrismaOrdering<'id', 'desc'>
+        | ResumesMappedPrismaOrdering<F, O> => v !== undefined,
     );
   }
   return [
     { [ResumesDefaultOrdering.orderBy]: ResumesDefaultOrdering.order },
-    { createdAt: "desc" },
-    { id: "desc" },
+    { createdAt: 'desc' },
+    { id: 'desc' },
   ] as const;
 };
 
@@ -94,17 +93,17 @@ export type ResumesFilters = FiltersValues<typeof ResumesFiltersObj>;
 
 export type ResumesControls = {
   readonly filters: Partial<ResumesFilters>;
+  readonly limit?: number;
   readonly ordering?: Ordering<ResumeOrderableField>;
   readonly page?: number;
-  readonly limit?: number;
   readonly visibility: ActionVisibility;
 };
 
-export type FlattenedResumesControls = Partial<ResumesFilters> &
-  Partial<Ordering<ResumeOrderableField>> & {
-    readonly page?: number;
-    readonly limit?: number;
-    readonly visibility: ActionVisibility;
-  };
+export type FlattenedResumesControls = {
+  readonly limit?: number;
+  readonly page?: number;
+  readonly visibility: ActionVisibility;
+} & Partial<Ordering<ResumeOrderableField>> &
+  Partial<ResumesFilters>;
 
-export type ResumeControls = Pick<ResumesControls, "visibility">;
+export type ResumeControls = Pick<ResumesControls, 'visibility'>;

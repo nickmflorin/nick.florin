@@ -1,104 +1,91 @@
-import { forwardRef, type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { capitalize } from "~/lib/formatters";
+import { capitalize } from '~/lib/formatters';
 
-import * as types from "~/components/buttons";
+import * as types from '~/components/buttons';
 import {
-  type TypographyCharacteristics,
-  type ComponentProps,
-  type QuantitativeSize,
   classNames,
+  type ComponentProps,
   getTypographyClassName,
-  omitTypographyProps,
   getTypographyStyle,
-} from "~/components/types";
+  omitTypographyProps,
+  type QuantitativeSize,
+  type TypographyCharacteristics,
+} from '~/components/types';
 
-import { AbstractButton } from "./AbstractButton";
-import { ButtonContent } from "./ButtonContent";
+import { AbstractButton } from './AbstractButton';
+import { ButtonContent } from './ButtonContent';
 
-export type LinkProps<E extends types.ButtonElement> = Omit<
-  types.AbstractButtonProps<E>,
-  "buttonType"
-> &
+export type LinkProps<E extends types.ButtonElement> = {
+  readonly children?: ReactNode;
+  readonly gap?: QuantitativeSize<'px'>;
+  readonly icon?: types.ButtonIconProp;
+  readonly iconClassName?: ComponentProps['className'];
+  readonly iconSize?: types.ButtonIconSize;
+  readonly loadingLocation?: types.ButtonLoadingLocation;
+  readonly spinnerClassName?: ComponentProps['className'];
+  readonly spinnerSize?: QuantitativeSize<'px'>;
+} & Omit<types.AbstractButtonProps<E>, 'buttonType'> &
   Pick<
     TypographyCharacteristics,
-    "fontSize" | "fontFamily" | "fontWeight" | "transform" | "truncate"
-  > & {
-    readonly children?: ReactNode;
-    readonly icon?: types.ButtonIconProp;
-    readonly iconClassName?: ComponentProps["className"];
-    readonly iconSize?: types.ButtonIconSize;
-    readonly spinnerSize?: QuantitativeSize<"px">;
-    readonly spinnerClassName?: ComponentProps["className"];
-    readonly gap?: QuantitativeSize<"px">;
-    readonly loadingLocation?: types.ButtonLoadingLocation;
-  };
+    'fontFamily' | 'fontSize' | 'fontWeight' | 'transform' | 'truncate'
+  >;
 
-const LocalLink = forwardRef(
-  <E extends types.ButtonElement>(
-    {
-      children,
-      icon,
-      gap,
-      iconClassName,
-      spinnerClassName,
-      loadingLocation,
-      iconSize,
-      spinnerSize,
-      ...props
-    }: LinkProps<E>,
-    ref: types.PolymorphicButtonRef<E>,
-  ) => {
-    const ps = {
-      ...omitTypographyProps(props),
-      buttonType: "link",
-      ref,
-    } as types.AbstractButtonProps<E> & {
-      readonly ref?: types.PolymorphicButtonRef<E>;
-    };
-    return (
-      <AbstractButton
-        {...ps}
-        className={classNames(getTypographyClassName(props), props.className)}
-        style={{ ...getTypographyStyle(props), ...props.style }}
+const LocalLink = <E extends types.ButtonElement>({
+  children,
+  gap,
+  icon,
+  iconClassName,
+  iconSize,
+  loadingLocation,
+  ref,
+  spinnerClassName,
+  spinnerSize,
+  ...props
+}: { readonly ref?: types.PolymorphicButtonRef<E> } & LinkProps<E>): JSX.Element => {
+  const ps = {
+    ...omitTypographyProps(props),
+    buttonType: 'link',
+    ref,
+  } as {
+    readonly ref?: types.PolymorphicButtonRef<E>;
+  } & types.AbstractButtonProps<E>;
+  return (
+    <AbstractButton
+      {...ps}
+      className={classNames(getTypographyClassName(props), props.className)}
+      style={{ ...getTypographyStyle(props), ...props.style }}
+    >
+      <ButtonContent
+        gap={gap}
+        icon={icon}
+        iconClassName={iconClassName}
+        iconSize={iconSize}
+        isLoading={props.isLoading}
+        loadingLocation={loadingLocation}
+        spinnerClassName={spinnerClassName}
+        spinnerSize={spinnerSize}
       >
-        <ButtonContent
-          gap={gap}
-          iconSize={iconSize}
-          iconClassName={iconClassName}
-          isLoading={props.isLoading}
-          icon={icon}
-          loadingLocation={loadingLocation}
-          spinnerClassName={spinnerClassName}
-          spinnerSize={spinnerSize}
-        >
-          {children}
-        </ButtonContent>
-      </AbstractButton>
-    );
-  },
-) as {
-  <E extends types.ButtonElement>(
-    props: LinkProps<E> & { readonly ref?: types.PolymorphicButtonRef<E> },
-  ): JSX.Element;
+        {children}
+      </ButtonContent>
+    </AbstractButton>
+  );
 };
 
-type ColorSchemePartial = {
-  <E extends types.ButtonElement>(
-    props: Omit<LinkProps<E>, "scheme"> & { readonly ref?: types.PolymorphicButtonRef<E> },
-  ): JSX.Element;
-};
+type ColorSchemePartial = <E extends types.ButtonElement>(
+  props: { readonly ref?: types.PolymorphicButtonRef<E> } & Omit<LinkProps<E>, 'scheme'>,
+) => JSX.Element;
 
-type WithColorSchemes = { [key in Capitalize<types.ButtonColorScheme>]: ColorSchemePartial };
+type WithColorSchemes = Record<Capitalize<types.ButtonColorScheme>, ColorSchemePartial>;
 
 const withColorSchemes = types.ButtonColorSchemes.members.reduce<WithColorSchemes>(
   (acc, scheme) => ({
     ...acc,
-    [capitalize(scheme)]: forwardRef(
-      <E extends types.ButtonElement>(
-        props: Omit<LinkProps<E>, "scheme">,
-        ref: types.PolymorphicButtonRef<E>,
-      ) => <LocalLink<E> {...({ ...props, scheme } as LinkProps<E>)} ref={ref} />,
+    [capitalize(scheme)]: <E extends types.ButtonElement>({
+      ref,
+      ...props
+    }: { readonly ref?: types.PolymorphicButtonRef<E> } & Omit<LinkProps<E>, 'scheme'>) => (
+      <LocalLink<E> {...{ ...props, scheme }} ref={ref} />
     ),
   }),
   {} as WithColorSchemes,
@@ -107,5 +94,3 @@ const withColorSchemes = types.ButtonColorSchemes.members.reduce<WithColorScheme
 export const Link = Object.assign(LocalLink, withColorSchemes);
 
 export type LinkComponent = typeof LocalLink & WithColorSchemes;
-
-export default Link;

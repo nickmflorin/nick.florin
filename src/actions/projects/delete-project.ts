@@ -1,15 +1,15 @@
-"use server";
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { calculateSkillsExperience } from "~/database/model";
-import { db } from "~/database/prisma";
+'use server';
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { calculateSkillsExperience } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const deleteProject = async (
   id: string,
 ): Promise<MutationActionResponse<{ message: string }>> => {
-  const { error, user, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -18,8 +18,8 @@ export const deleteProject = async (
     };
   }
   const project = await db.project.findUnique({
-    where: { id },
     include: { skills: true },
+    where: { id },
   });
   if (!project) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -28,6 +28,6 @@ export const deleteProject = async (
     const skillIds = project.skills.map(s => s.id);
     await tx.project.delete({ where: { id: project.id } });
     await calculateSkillsExperience(tx, skillIds, { user });
-    return { data: { message: "Success" } };
+    return { data: { message: 'Success' } };
   });
 };

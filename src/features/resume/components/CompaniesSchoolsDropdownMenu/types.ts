@@ -1,8 +1,8 @@
-import { type ApiSchool, type ApiCompany } from "~/database/model";
+import { type ApiCompany, type ApiSchool } from '~/database/model';
 
-export type ModelType = "company" | "school";
+export type ModelType = 'company' | 'school';
 
 export type Model<T extends ModelType> = {
-  company: ApiCompany<["experiences"]>;
-  school: ApiSchool<["educations"]>;
+  company: ApiCompany<['experiences']>;
+  school: ApiSchool<['educations']>;
 }[T];

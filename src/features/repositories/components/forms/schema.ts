@@ -1,7 +1,7 @@
-"use client";
-import { type z } from "zod";
+'use client';
+import { type z } from 'zod';
 
-import { RepositorySchema } from "~/actions/schemas";
+import { RepositorySchema } from '~/actions/schemas';
 
 export const RepositoryFormSchema = RepositorySchema.required();
 

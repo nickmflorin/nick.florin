@@ -1,7 +1,7 @@
-import { calculateSkillsExperience } from "~/database/model";
-import { type Transaction } from "~/database/prisma";
-import { type cli } from "~/scripts";
-import { stdout } from "~/support";
+import { calculateSkillsExperience } from '~/database/model';
+import { type Transaction } from '~/database/prisma';
+import { type cli } from '~/scripts';
+import { stdout } from '~/support';
 
 export async function calculateSkillExperiences(tx: Transaction, ctx: cli.ScriptContext) {
   const skills = await tx.skill.findMany({});

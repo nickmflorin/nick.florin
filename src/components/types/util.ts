@@ -1,4 +1,6 @@
-import { logger } from "~/internal/logger";
+import { type RefObject } from 'react';
+
+import { logger } from '~/internal/logger';
 
 type RefConnectedCalback<T, R = unknown> = (obj: T) => R;
 
@@ -8,19 +10,19 @@ type InferRefCallbackReturn<T, C extends RefConnectedCalback<T>> =
 type IsRefConnectedOpts<D = unknown> = IsRefConnectedLaxOpts<D> | IsRefConnectedStrictOpts;
 
 type IsRefConnectedLaxOpts<D = unknown> = {
-  readonly strict?: false;
-  readonly name?: string;
+  readonly defaultValue?: D;
   readonly message?: string;
   readonly methodName?: string;
-  readonly defaultValue?: D;
+  readonly name?: string;
+  readonly strict?: false;
 };
 
 type IsRefConnectedStrictOpts = {
-  readonly strict: true;
-  readonly name?: string;
+  readonly defaultValue?: never;
   readonly message?: string;
   readonly methodName?: string;
-  readonly defaultValue?: never;
+  readonly name?: string;
+  readonly strict: true;
 };
 
 type RefAttributeDefaultValue<O extends IsRefConnectedOpts> = O extends { defaultValue: infer D }
@@ -38,23 +40,23 @@ type IfRefConnectedRT<
   : InferRefCallbackReturn<T, C> | RefAttributeDefaultValue<O>;
 
 export const ifRefConnected = <T, C extends RefConnectedCalback<T>, O extends IsRefConnectedOpts>(
-  ref: React.RefObject<T | null>,
+  ref: RefObject<null | T>,
   cb: C,
   opts?: O,
 ): IfRefConnectedRT<T, C, O> => {
   const errorMessage =
     opts?.message ??
-    (opts?.name !== undefined
+    (opts?.name === undefined
       ? opts?.methodName
+        ? `The method '${opts.methodName}' cannot be executed on the ref instance because the ` +
+          'ref is not yet connected to the UI.'
+        : 'The method cannot be executed on the ref instance because the ref is not yet ' +
+          'connected to the UI.'
+      : opts.methodName
         ? `The method '${opts.methodName}' cannot be executed on the ref instance because ` +
           `the ref '${opts.name}' is not yet connected to the UI.`
         : `The method cannot be executed on the ref instance because the ref '${opts.name}' is ` +
-          "not yet connected to the UI."
-      : opts?.methodName
-        ? `The method '${opts.methodName}' cannot be executed on the ref instance because the ` +
-          "ref is not yet connected to the UI."
-        : "The method cannot be executed on the ref instance because the ref is not yet " +
-          "connected to the UI.");
+          'not yet connected to the UI.');
   if (ref.current) {
     return cb(ref.current) as InferRefCallbackReturn<T, C> as IfRefConnectedRT<T, C, O>;
   } else if (opts?.strict) {

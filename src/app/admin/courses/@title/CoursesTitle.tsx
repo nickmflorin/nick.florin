@@ -1,5 +1,5 @@
-import { type CoursesFilters } from "~/actions";
-import { fetchCoursesCount } from "~/actions/courses/fetch-courses";
+import { type CoursesFilters } from '~/actions';
+import { fetchCoursesCount } from '~/actions/courses/fetch-courses';
 
 export interface CoursesTitleProps {
   readonly filters: CoursesFilters;
@@ -8,6 +8,6 @@ export interface CoursesTitleProps {
 export const CoursesTitle = async ({ filters }: CoursesTitleProps) => {
   const {
     data: { count },
-  } = await fetchCoursesCount({ visibility: "admin", filters }, { strict: true });
+  } = await fetchCoursesCount({ filters, visibility: 'admin' }, { strict: true });
   return <>{count}</>;
 };

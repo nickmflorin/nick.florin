@@ -1,19 +1,19 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest } from 'next/server';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import type { SchoolIncludes } from "~/database/model";
-import { parseOrdering } from "~/lib/ordering";
+import { type SchoolIncludes } from '~/database/model';
+import { parseOrdering } from '~/lib/ordering';
 
 import {
-  SchoolsFiltersObj,
-  SchoolsDefaultOrdering,
-  SchoolOrderableFields,
   SchoolIncludesSchema,
-} from "~/actions";
-import { fetchSchools } from "~/actions/schools/fetch-schools";
-import { ClientResponse } from "~/api";
-import { parseQueryParams } from "~/integrations/http";
+  SchoolOrderableFields,
+  SchoolsDefaultOrdering,
+  SchoolsFiltersObj,
+} from '~/actions';
+import { fetchSchools } from '~/actions/schools/fetch-schools';
+import { ClientResponse } from '~/api';
+import { parseQueryParams } from '~/integrations/http';
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
@@ -24,9 +24,9 @@ export const GET = async (request: NextRequest) => {
   const limit = z.coerce.number().int().positive().safeParse(query.limit).data;
   const visibility =
     z
-      .union([z.literal("admin"), z.literal("public")])
-      .default("public")
-      .safeParse(query.visibility).data ?? "public";
+      .union([z.literal('admin'), z.literal('public')])
+      .default('public')
+      .safeParse(query.visibility).data ?? 'public';
 
   let includes: SchoolIncludes = [];
   if (parsed.success) {
@@ -41,7 +41,7 @@ export const GET = async (request: NextRequest) => {
   });
 
   const fetcher = fetchSchools(includes);
-  const { error, data } = await fetcher({ filters, ordering, limit, visibility }, { scope: "api" });
+  const { data, error } = await fetcher({ filters, limit, ordering, visibility }, { scope: 'api' });
   if (error) {
     return error.response;
   }

@@ -1,11 +1,11 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type SkillCategory } from "~/database/model";
+import { type SkillCategory } from '~/database/model';
 
-import { BadgeCollection } from "~/components/badges/BadgeCollection";
-import { type ComponentProps } from "~/components/types";
+import { BadgeCollection } from '~/components/badges/BadgeCollection';
+import { type ComponentProps } from '~/components/types';
 
-import { SkillCategoryBadge } from "./SkillCategoryBadge";
+import { SkillCategoryBadge } from './SkillCategoryBadge';
 
 export interface SkillCategoriesProps extends ComponentProps {
   readonly categories: SkillCategory[];
@@ -14,7 +14,7 @@ export interface SkillCategoriesProps extends ComponentProps {
 export const SkillCategories = ({ categories, ...props }: SkillCategoriesProps): JSX.Element => (
   <BadgeCollection {...props}>
     {categories.map(cat => (
-      <SkillCategoryBadge key={cat.toLowerCase()} category={cat} />
+      <SkillCategoryBadge category={cat} key={cat.toLowerCase()} />
     ))}
   </BadgeCollection>
 );

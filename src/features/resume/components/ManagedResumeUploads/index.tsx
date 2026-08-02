@@ -1,13 +1,15 @@
-import type { BrandResume } from "~/database/model";
+import { type BrandResume } from '~/database/model';
 
-import { uploadResume } from "~/actions/resumes/upload-resume";
+import { uploadResume } from '~/actions/resumes/upload-resume';
 
-import { ManagedUploads, type ManagedUploadsProps } from "~/components/uploads/ManagedUploads";
+import { ManagedUploads, type ManagedUploadsProps } from '~/components/uploads/ManagedUploads';
 
-import { UploadResumeTile } from "./UploadResumeTile";
+import { UploadResumeTile } from './UploadResumeTile';
 
-export interface ManagedResumeUploadsProps
-  extends Omit<ManagedUploadsProps<BrandResume>, "uploadAction"> {}
+export interface ManagedResumeUploadsProps extends Omit<
+  ManagedUploadsProps<BrandResume>,
+  'uploadAction'
+> {}
 
 export const ManagedResumeUploads = (props: ManagedResumeUploadsProps) => (
   <ManagedUploads {...props} uploadAction={async formData => await uploadResume(formData)}>

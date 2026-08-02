@@ -1,2 +1,2 @@
-export * as terminal from "./terminal";
-export { stdout } from "./stdout";
+export { stdout } from './stdout';
+export * as terminal from './terminal';

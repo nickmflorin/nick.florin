@@ -1,11 +1,11 @@
-@use "partials";
+@use 'partials';
 
-@use "./buttons" as buttons;
+@use './buttons' as buttons;
 
 $paginator-button-identifiers: (
-  type: "button",
-  variant: "solid",
-  scheme: "secondary",
+  type: 'button',
+  variant: 'solid',
+  scheme: 'secondary',
 );
 
 .paginator {
@@ -19,11 +19,11 @@ $paginator-button-identifiers: (
 
     > button {
       @include buttons.button-base();
-      @include buttons.button-size-properties("button", "small");
+      @include buttons.button-size-properties('button', 'small');
       @include buttons.button-color($paginator-button-identifiers);
 
       @include partials.active() {
-        @include buttons.button-color-properties($paginator-button-identifiers, $state: "active");
+        @include buttons.button-color-properties($paginator-button-identifiers, $state: 'active');
       }
     }
 

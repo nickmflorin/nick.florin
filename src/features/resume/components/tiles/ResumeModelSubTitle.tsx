@@ -1,28 +1,29 @@
-import { type BrandModel, type ResumeBrand } from "~/database/model";
+import { type BrandModel, type ResumeBrand } from '~/database/model';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps, type FontWeight } from "~/components/types";
-import { LinkOrText } from "~/components/typography/LinkOrText";
-import type { ResumeModelSize } from "~/features/resume/types";
+import { classNames, type ComponentProps, type FontWeight } from '~/components/types';
+import { LinkOrText } from '~/components/typography/LinkOrText';
+import { type ResumeModelSize } from '~/features/resume/types';
 
-const LinkFontWeights: { [key in ResumeModelSize]: FontWeight } = {
-  small: "regular",
-  medium: "medium",
-  large: "medium",
+const LinkFontWeights: Record<ResumeModelSize, FontWeight> = {
+  large: 'medium',
+  medium: 'medium',
+  small: 'regular',
 };
 
-export interface ResumeModelSubTitleProps<M extends BrandModel<T>, T extends ResumeBrand>
-  extends ComponentProps {
+export interface ResumeModelSubTitleProps<
+  M extends BrandModel<T>,
+  T extends ResumeBrand,
+> extends ComponentProps {
+  readonly fontWeight?: FontWeight;
   readonly model: M;
   readonly size: ResumeModelSize;
-  readonly textClassName?: ComponentProps["className"];
-  readonly fontWeight?: FontWeight;
+  readonly textClassName?: ComponentProps['className'];
 }
 
 export const ResumeModelSubTitle = <M extends BrandModel<T>, T extends ResumeBrand>({
+  fontWeight,
   model,
   size,
-  fontWeight,
   textClassName,
   ...props
 }: ResumeModelSubTitleProps<M, T>) => (
@@ -30,18 +31,16 @@ export const ResumeModelSubTitle = <M extends BrandModel<T>, T extends ResumeBra
     {...props}
     className={classNames(
       {
-        small: "text-sm",
-        medium: "text-smplus",
-        large: "text-smplus max-sm:text-sm",
+        large: 'text-smplus max-sm:text-sm',
+        medium: 'text-smplus',
+        small: 'text-sm',
       }[size],
       props.className,
     )}
-    fontWeight={
-      fontWeight !== undefined ? fontWeight : size !== undefined ? LinkFontWeights[size] : "medium"
-    }
+    fontWeight={fontWeight ?? LinkFontWeights[size]}
     textClassName={textClassName}
-    url={model.$kind === "experience" ? model.company.websiteUrl : model.school.websiteUrl}
+    url={model.$kind === 'experience' ? model.company.websiteUrl : model.school.websiteUrl}
   >
-    {model.$kind === "experience" ? model.company.name : model.school.name}
+    {model.$kind === 'experience' ? model.company.name : model.school.name}
   </LinkOrText>
 );

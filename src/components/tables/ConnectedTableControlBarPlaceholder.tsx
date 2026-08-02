@@ -1,15 +1,17 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { ConnectedColumnSelect } from "./ConnectedColumnSelect";
-import { useDataTable } from "./hooks";
+import { ConnectedColumnSelect } from './ConnectedColumnSelect';
+import { useDataTable } from './hooks';
 import {
   TableControlBarPlaceholder,
   type TableControlBarPlaceholderProps,
-} from "./TableControlBarPlaceholder";
+} from './TableControlBarPlaceholder';
 
-export interface ConnectedTableControlBarPlaceholderProps
-  extends Omit<TableControlBarPlaceholderProps, "canDeleteRows" | "targetId"> {}
+export interface ConnectedTableControlBarPlaceholderProps extends Omit<
+  TableControlBarPlaceholderProps,
+  'canDeleteRows' | 'targetId'
+> {}
 
 export const ConnectedTableControlBarPlaceholder = (
   props: ConnectedTableControlBarPlaceholderProps,
@@ -19,9 +21,9 @@ export const ConnectedTableControlBarPlaceholder = (
   return (
     <TableControlBarPlaceholder
       {...props}
-      targetId={controlBarTargetId}
-      rowsAreDeletable={rowsAreDeletable}
+      areRowsDeletable={rowsAreDeletable}
       columnsSelect={<ConnectedColumnSelect />}
+      targetId={controlBarTargetId}
     />
   );
 };

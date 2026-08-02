@@ -1,10 +1,10 @@
-type HumanizeListIteree = string | number;
+type HumanizeListIteree = number | string;
 
 type HumanizeListOptions<T extends HumanizeListIteree> = {
-  readonly conjunction?: "and" | "or";
-  readonly oxfordComma?: boolean;
+  readonly conjunction?: 'and' | 'or';
   readonly delimiter?: string;
   readonly formatter?: (value: T) => string;
+  readonly oxfordComma?: boolean;
 };
 
 export const humanizeList = <T extends HumanizeListIteree>(
@@ -12,22 +12,22 @@ export const humanizeList = <T extends HumanizeListIteree>(
   options?: HumanizeListOptions<T>,
 ) => {
   const {
-    conjunction = "and",
-    oxfordComma = true,
-    delimiter = ",",
+    conjunction = 'and',
+    delimiter = ',',
     formatter = (value: T) => value.toString(),
-  } = options || {};
+    oxfordComma = true,
+  } = options ?? {};
   if (values.length === 0) {
-    return "";
+    return '';
   } else if (values.length === 1) {
     return formatter(values[0]);
   }
   let humanized = values
     .slice(0, values.length - 1)
     .map(v => formatter(v))
-    .join(delimiter.trim() + " ");
+    .join(delimiter.trim() + ' ');
   if (values.length >= 3 && oxfordComma) {
     humanized += delimiter.trim();
   }
-  return [humanized, conjunction.trim(), formatter(values[values.length - 1])].join(" ");
+  return [humanized, conjunction.trim(), formatter(values[values.length - 1])].join(' ');
 };

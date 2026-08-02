@@ -1,37 +1,43 @@
-import dynamic from "next/dynamic";
-import { useState, type JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX, useState } from 'react';
 
 import {
-  type DetailEntityType,
-  type ApiNestedDetail,
   type ApiDetail,
+  type ApiNestedDetail,
+  type DetailEntityType,
   isNestedDetail,
-} from "~/database/model";
+} from '~/database/model';
 
-import { IconButton } from "~/components/buttons";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { ContextDrawer } from "~/components/drawers/ContextDrawer";
-import { Loading } from "~/components/loading/Loading";
-import { Title } from "~/components/typography";
+import { IconButton } from '~/components/buttons';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { ContextDrawer } from '~/components/drawers/ContextDrawer';
+import { Loading } from '~/components/loading/Loading';
+import { Title } from '~/components/typography';
 
-const UpdateDetailsCollapsedDrawer = dynamic(() => import("./UpdateDetailsCollapsedDrawer"), {
-  loading: () => <Loading isLoading={true} />,
-});
+const UpdateDetailsCollapsedDrawer = dynamic(
+  () => import('./UpdateDetailsCollapsedDrawer').then(mod => mod.UpdateDetailsCollapsedDrawer),
+  {
+    loading: () => <Loading isLoading />,
+  },
+);
 
-const UpdateDetailsExpandedDrawer = dynamic(() => import("./UpdateDetailsExpandedDrawer"), {
-  loading: () => <Loading isLoading={true} />,
-});
+const UpdateDetailsExpandedDrawer = dynamic(
+  () => import('./UpdateDetailsExpandedDrawer').then(mod => mod.UpdateDetailExpandedDrawer),
+  {
+    loading: () => <Loading isLoading />,
+  },
+);
 
 export interface UpdateDetailsDrawerProps<T extends DetailEntityType> extends ExtendingDrawerProps {
-  readonly entityType: T;
   readonly entityId: string;
+  readonly entityType: T;
 }
 
 export const UpdateDetailsDrawer = <T extends DetailEntityType>({
-  entityType,
   entityId,
+  entityType,
 }: UpdateDetailsDrawerProps<T>): JSX.Element => {
-  const [expandedDetail, setExpandedDetail] = useState<ApiNestedDetail<[]> | ApiDetail<[]> | null>(
+  const [expandedDetail, setExpandedDetail] = useState<ApiDetail<[]> | ApiNestedDetail<[]> | null>(
     null,
   );
   return (
@@ -39,13 +45,13 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
       {expandedDetail ? (
         <>
           <ContextDrawer.Header>
-            <div className="flex flex-row items-center gap-[8px]">
+            <div className='flex flex-row items-center gap-[8px]'>
               <IconButton.Transparent
-                scheme="light"
-                icon={{ name: "arrow-left" }}
+                icon={{ name: 'arrow-left' }}
                 onClick={() => setExpandedDetail(null)}
+                scheme='light'
               />
-              <Title component="h4">{expandedDetail.label}</Title>
+              <Title component='h4'>{expandedDetail.label}</Title>
             </div>
           </ContextDrawer.Header>
           <ContextDrawer.Content>
@@ -57,13 +63,11 @@ export const UpdateDetailsDrawer = <T extends DetailEntityType>({
         </>
       ) : (
         <UpdateDetailsCollapsedDrawer
-          entityType={entityType}
           entityId={entityId}
+          entityType={entityType}
           onExpand={detail => setExpandedDetail(detail)}
         />
       )}
     </ContextDrawer>
   );
 };
-
-export default UpdateDetailsDrawer;

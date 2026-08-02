@@ -1,30 +1,37 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandProject, type User, type Detail, type NestedDetail } from "~/database/model";
-import { calculateSkillsExperience } from "~/database/model";
-import { db, type Transaction } from "~/database/prisma";
-import { logger } from "~/internal/logger";
-import { slugify } from "~/lib/formatters";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import {
+  type BrandProject,
+  calculateSkillsExperience,
+  type Detail,
+  type NestedDetail,
+  type User,
+} from '~/database/model';
+import { db, type Transaction } from '~/database/prisma';
+import { logger } from '~/internal/logger';
+import { slugify } from '~/lib/formatters';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { ProjectSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { ProjectSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 const UpdateProjectSchema = ProjectSchema.partial();
 
-/* Note: Syncing the details with a project means removing the previously existing project that the
-   Detail may have been associated with. */
+/**
+ * Syncs the provided details with the project, which includes removing the previously existing
+ * project that a {@link Detail} may have been associated with.
+ */
 const syncDetails = async (
   tx: Transaction,
-  { project, details, user }: { project: BrandProject; user: User; details?: Detail[] },
+  { details, project, user }: { details?: Detail[]; project: BrandProject; user: User },
 ) => {
   if (details) {
     const existingDetails = await tx.detail.findMany({ where: { projectId: project.id } });
@@ -34,16 +41,17 @@ const syncDetails = async (
 
     if (toRemove.length !== 0) {
       logger.info(
-        `Disassociating ${toRemove.length} details from project ${project.id} (name = ${project.name}).`,
+        `Disassociating ${toRemove.length} details from project ${project.id} (name = ` +
+          `${project.name}).`,
         {
-          removing: toRemove.map(d => `${d.id} (name = '${d.label}')`),
           project: project.id,
           projectName: project.name,
+          removing: toRemove.map(d => `${d.id} (name = '${d.label}')`),
         },
       );
       await tx.detail.updateMany({
-        where: { id: { in: toRemove.map(d => d.id) } },
         data: { projectId: null, updatedById: user.id },
+        where: { id: { in: toRemove.map(d => d.id) } },
       });
     }
     if (toAdd.length !== 0) {
@@ -56,22 +64,24 @@ const syncDetails = async (
         },
       );
       await tx.detail.updateMany({
-        where: { id: { in: toAdd.map(d => d.id) } },
         data: { projectId: project.id, updatedById: user.id },
+        where: { id: { in: toAdd.map(d => d.id) } },
       });
     }
   }
 };
 
-/* Note: Syncing the nested details with a project means removing the previously existing project
-     that the NestedDetail may have been associated with. */
+/**
+ * Syncs the provided nested details with the project, which includes removing the previously
+ * existing project that a {@link NestedDetail} may have been associated with.
+ */
 const syncNestedDetails = async (
   tx: Transaction,
   {
-    project,
     nestedDetails,
+    project,
     user,
-  }: { project: BrandProject; user: User; nestedDetails?: NestedDetail[] },
+  }: { nestedDetails?: NestedDetail[]; project: BrandProject; user: User },
 ) => {
   if (nestedDetails) {
     const existingDetails = await tx.nestedDetail.findMany({ where: { projectId: project.id } });
@@ -84,14 +94,14 @@ const syncNestedDetails = async (
         `Disassociating ${toRemove.length} nested details from project ${project.id} ` +
           `(name = ${project.name}).`,
         {
-          removing: toRemove.map(d => `${d.id} (name = '${d.label}')`),
           project: project.id,
           projectName: project.name,
+          removing: toRemove.map(d => `${d.id} (name = '${d.label}')`),
         },
       );
       await tx.nestedDetail.updateMany({
-        where: { id: { in: toRemove.map(d => d.id) } },
         data: { projectId: null, updatedById: user.id },
+        where: { id: { in: toRemove.map(d => d.id) } },
       });
     }
     if (toAdd.length !== 0) {
@@ -105,8 +115,8 @@ const syncNestedDetails = async (
         },
       );
       await tx.detail.updateMany({
-        where: { id: { in: toAdd.map(d => d.id) } },
         data: { projectId: project.id, updatedById: user.id },
+        where: { id: { in: toAdd.map(d => d.id) } },
       });
     }
   }
@@ -116,7 +126,7 @@ export const updateProject = async (
   experienceId: string,
   data: z.infer<typeof UpdateProjectSchema>,
 ): Promise<MutationActionResponse<BrandProject>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -126,8 +136,8 @@ export const updateProject = async (
   }
 
   const project = await db.project.findUnique({
-    where: { id: experienceId },
     include: { skills: true },
+    where: { id: experienceId },
   });
   if (!project) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -140,75 +150,74 @@ export const updateProject = async (
   }
 
   const {
-    slug: _slug,
-    skills: _skills,
     details: _details,
     name: _name,
     nestedDetails: _nestedDetails,
     repositories: _repositories,
+    skills: _skills,
+    slug: _slug,
     ...rest
   } = parsed.data;
 
-  const name = _name !== undefined ? _name : project.name;
+  const name = _name ?? project.name;
 
   const fieldErrors = new ApiClientFieldErrors();
 
   if (_name !== undefined && _name.trim() !== project.name.trim()) {
-    if (await db.project.count({ where: { name: _name, id: { notIn: [project.id] } } })) {
-      fieldErrors.addUnique("name", "The name must be unique.");
+    if (await db.project.count({ where: { id: { notIn: [project.id] }, name: _name } })) {
+      fieldErrors.addUnique('name', 'The name must be unique.');
       /* If the slug is being cleared, we have to make sure that the slugified version of the new
          name is still unique. */
     } else if (
       _slug === null &&
       (await db.project.count({
-        where: { slug: slugify(_name), id: { notIn: [project.id] } },
+        where: { id: { notIn: [project.id] }, slug: slugify(_name) },
       }))
     ) {
-      // Here, the slug should be provided explicitly, rather than cleared.
-      fieldErrors.addUnique("name", "The name does not generate a unique slug.");
+      fieldErrors.addUnique('name', 'The name does not generate a unique slug.');
     }
   } else if (
     _slug === null &&
     (await db.project.count({
-      where: { slug: slugify(name), id: { notIn: [project.id] } },
+      where: { id: { notIn: [project.id] }, slug: slugify(name) },
     }))
   ) {
     /* Here, the slug should be provided explicitly, rather than cleared.  The error is shown in
-       regard to the slug, not the name, because the slug is what is being cleared whereas the
-       name remains unchanged. */
+       regard to the slug, not the name, because the slug is what is being cleared whereas the name
+       remains unchanged. */
     fieldErrors.addUnique(
-      "slug",
-      "The name generates a non-unique slug, so the slug must be provided.",
+      'slug',
+      'The name generates a non-unique slug, so the slug must be provided.',
     );
   } else if (
     _slug !== null &&
     _slug !== undefined &&
-    (await db.project.count({ where: { slug: _slug, id: { notIn: [project.id] } } }))
+    (await db.project.count({ where: { id: { notIn: [project.id] }, slug: _slug } }))
   ) {
-    fieldErrors.addUnique("slug", "The slug must be unique.");
+    fieldErrors.addUnique('slug', 'The slug must be unique.');
   }
 
   const [details] = await queryM2MsDynamically(db, {
-    model: "detail",
-    // It is important to cast to undefined if the details are not provided in the payload!
-    ids: _details,
     fieldErrors,
+    // The ids must remain undefined when the details are not provided in the payload.
+    ids: _details,
+    model: 'detail',
   });
   const [nestedDetails] = await queryM2MsDynamically(db, {
-    model: "nestedDetail",
-    // It is important to cast to undefined if the details are not provided in the payload!
-    ids: _nestedDetails,
     fieldErrors,
+    // The ids must remain undefined when the nested details are not provided in the payload.
+    ids: _nestedDetails,
+    model: 'nestedDetail',
   });
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
   const [repositories] = await queryM2MsDynamically(db, {
-    model: "repository",
-    ids: _repositories,
     fieldErrors,
+    ids: _repositories,
+    model: 'repository',
   });
 
   if (!fieldErrors.isEmpty) {
@@ -219,13 +228,13 @@ export const updateProject = async (
 
   let updateData = {
     ...rest,
-    slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
     name: _name === undefined || _name.trim() === project.name.trim() ? undefined : _name.trim(),
-    updatedById: user.id,
     repositories: repositories
       ? { set: repositories.map(repo => ({ slug: repo.slug })) }
       : undefined,
     skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+    slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
+    updatedById: user.id,
   };
   if (updateData.visible === false && updateData.highlighted === undefined) {
     updateData = { ...updateData, highlighted: false };
@@ -235,14 +244,14 @@ export const updateProject = async (
 
   return await db.$transaction(async tx => {
     const updated = await tx.project.update({
-      where: { id: project.id },
       data: updateData,
+      where: { id: project.id },
     });
     if (nestedDetails) {
-      await syncNestedDetails(tx, { project, nestedDetails, user });
+      await syncNestedDetails(tx, { nestedDetails, project, user });
     }
     if (details) {
-      await syncDetails(tx, { project, details, user });
+      await syncDetails(tx, { details, project, user });
     }
     await calculateSkillsExperience(tx, sks, { user });
     return { data: convertToPlainObject(updated) };

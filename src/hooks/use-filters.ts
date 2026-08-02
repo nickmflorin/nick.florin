@@ -1,17 +1,17 @@
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useMemo, useOptimistic, useTransition } from 'react';
 
 import {
-  type Filters,
   type FilterFieldName,
-  type FiltersValues,
   type FilterRefs,
-} from "~/lib/filters";
+  type Filters,
+  type FiltersValues,
+} from '~/lib/filters';
 
-import { parseQueryParams, stringifyQueryParams } from "~/integrations/http";
+import { parseQueryParams, stringifyQueryParams } from '~/integrations/http';
 
-import { useFilterRefs } from "./use-filter-refs";
-import { useReferentialCallback } from "./use-referential-callback";
+import { useFilterRefs } from './use-filter-refs';
+import { useReferentialCallback } from './use-referential-callback';
 
 export interface UseFiltersOptions {
   readonly maintainExisting?: boolean;
@@ -25,24 +25,17 @@ export const useFilters = <F extends Filters>(
   opts?: UseFiltersOptions,
 ) => {
   const searchParams = useSearchParams();
-  const { replace } = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
 
-  const [pendingFilters, setPendingFilters] = useState<Partial<FiltersValues<F>>>({});
+  /* The fields that an update changed are only pending for as long as the navigation that applies
+     them to the URL is in flight, which is exactly the lifetime of the transition that performs it.
+     Holding them optimistically lets the transition itself discard them once it settles. */
+  const [pendingFilters, setPendingFilters] = useOptimistic<Partial<FiltersValues<F>>>({});
   const [isPending, transition] = useTransition();
 
   const values = useMemo(() => filters.parse(searchParams), [filters, searchParams]);
-  const managedRefs = useFilterRefs<F>(fieldRefs, { values, filters });
-
-  const previousFilters = useRef<FiltersValues<F>>(values);
-
-  useEffect(() => {
-    if (!isPending) {
-      setPendingFilters({});
-    }
-  }, [isPending]);
-
-  previousFilters.current = filters.parse(searchParams);
+  const managedRefs = useFilterRefs<F>(fieldRefs, { filters, values });
 
   const updateFilters = useReferentialCallback((update: FiltersUpdate<F>) => {
     let currentFilters = filters.parse(searchParams);
@@ -55,11 +48,12 @@ export const useFilters = <F extends Filters>(
       let newV: FiltersValues<F>[typeof f];
 
       [currentFilters, newV] = filters.add(currentFilters, f, v);
-      if (!filters.fieldValuesAreEqual(f, previousFilters.current[f], newV)) {
+      /* The values parsed out of the URL are what the update is measured against, so that only the
+         fields the update actually changes are reported as pending. */
+      if (!filters.fieldValuesAreEqual(f, values[f], newV)) {
         changedFilters = { ...changedFilters, [f]: newV };
       }
     }
-    previousFilters.current = currentFilters;
     let pruned = filters.prune(currentFilters);
     if (opts?.maintainExisting !== false) {
       const all = parseQueryParams(searchParams.toString());
@@ -69,9 +63,9 @@ export const useFilters = <F extends Filters>(
         }
       }
     }
-    setPendingFilters(changedFilters);
     transition(() => {
-      replace(`${pathname}?${stringifyQueryParams(pruned)}`);
+      setPendingFilters(changedFilters);
+      router.replace(`${pathname}?${stringifyQueryParams(pruned)}`);
     });
   });
 
@@ -82,10 +76,10 @@ export const useFilters = <F extends Filters>(
 
   return {
     ...managedRefs,
+    clear,
     filters: values,
     isPending,
     pendingFilters: isPending ? pendingFilters : {},
-    clear,
     updateFilters,
   };
 };

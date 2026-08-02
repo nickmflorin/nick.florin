@@ -1,28 +1,28 @@
-import { type ApiEducation, type ApiExperience } from "~/database/model";
+import { type ApiEducation, type ApiExperience } from '~/database/model';
 
-import { Link } from "~/components/buttons";
-import { DrawerIds } from "~/components/drawers";
-import { type DrawerDynamicProps } from "~/components/drawers/drawers";
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
+import { Link } from '~/components/buttons';
+import { DrawerIds } from '~/components/drawers';
+import { type DrawerDynamicProps } from '~/components/drawers/drawers';
+import { useDrawers } from '~/components/drawers/hooks/use-drawers';
 
-type Model = ApiExperience<["details"]> | ApiEducation<["details"]>;
+type Model = ApiEducation<['details']> | ApiExperience<['details']>;
 
 type ModelDrawerIds = {
-  experience: typeof DrawerIds.UPDATE_EXPERIENCE_DETAILS;
   education: typeof DrawerIds.UPDATE_EDUCATION_DETAILS;
+  experience: typeof DrawerIds.UPDATE_EXPERIENCE_DETAILS;
 };
 
 const DrawerProps = {
-  experience: {
-    id: DrawerIds.UPDATE_EXPERIENCE_DETAILS,
-    props: (id: string) => ({ entityId: id }),
-  },
   education: {
     id: DrawerIds.UPDATE_EDUCATION_DETAILS,
     props: (id: string) => ({ entityId: id }),
   },
+  experience: {
+    id: DrawerIds.UPDATE_EXPERIENCE_DETAILS,
+    props: (id: string) => ({ entityId: id }),
+  },
 } as const satisfies {
-  [key in Model["$kind"]]: {
+  [key in Model['$kind']]: {
     id: ModelDrawerIds[key];
     props: (id: string) => DrawerDynamicProps<ModelDrawerIds[key]>;
   };

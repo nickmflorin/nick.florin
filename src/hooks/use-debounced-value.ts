@@ -1,15 +1,17 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import type { DebouncedState, DebouncedCallbackOptions } from "./use-debounced-callback";
+import {
+  type DebouncedCallbackOptions,
+  type DebouncedState,
+  useDebounceCallback,
+} from './use-debounced-callback';
 
-import { useDebounceCallback } from "./use-debounced-callback";
-
-type UseDebouncedValueOptions<T> = DebouncedCallbackOptions & {
+type UseDebouncedValueOptions<T> = {
   equalityFn?: (left: T, right: T) => boolean;
-};
+} & DebouncedCallbackOptions;
 
 export function useDebouncedValue<T>(
-  initialValue: T | (() => T),
+  initialValue: (() => T) | T,
   delay: number,
   options?: UseDebouncedValueOptions<T>,
 ): [T, DebouncedState<(value: T) => void>] {
@@ -17,15 +19,26 @@ export function useDebouncedValue<T>(
   const unwrappedInitialValue = initialValue instanceof Function ? initialValue() : initialValue;
 
   const [debouncedValue, setDebouncedValue] = useState<T>(unwrappedInitialValue);
-  const previousValueRef = useRef<T | undefined>(unwrappedInitialValue);
+  const previousValueRef = useRef<T>(unwrappedInitialValue);
+  const equalityRef = useRef(eq);
 
   const updateDebouncedValue = useDebounceCallback(setDebouncedValue, delay, options);
 
-  // Update the debounced value if the initial value changes
-  if (!eq(previousValueRef.current as T, unwrappedInitialValue)) {
-    updateDebouncedValue(unwrappedInitialValue);
-    previousValueRef.current = unwrappedInitialValue;
-  }
+  useEffect(() => {
+    equalityRef.current = eq;
+  });
+
+  /* The value is compared against the one seen on the previous commit, rather than against a
+     dependency array, because the comparison has to be made with the caller's equality function
+     instead of by identity.  The comparison runs after every commit for that reason, and the
+     previous value is only ever touched from inside an effect so that no bookkeeping happens
+     while rendering. */
+  useEffect(() => {
+    if (!equalityRef.current(previousValueRef.current, unwrappedInitialValue)) {
+      previousValueRef.current = unwrappedInitialValue;
+      updateDebouncedValue(unwrappedInitialValue);
+    }
+  });
 
   return [debouncedValue, updateDebouncedValue];
 }

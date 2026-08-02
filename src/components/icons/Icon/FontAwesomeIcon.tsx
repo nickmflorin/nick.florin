@@ -1,30 +1,31 @@
-import { forwardRef } from "react";
+import { type FontAwesomeIconProp, type IconName, type IconProps } from '~/components/icons/types';
+import { classNames } from '~/components/types';
 
-import { type FontAwesomeIconProp, type IconProps, type IconName } from "~/components/icons/types";
-import { classNames } from "~/components/types";
-
-import { NativeIcon, type NativeIconProps } from "./NativeIcon";
-import { getFontAwesomeIconClassName } from "./util";
+import { NativeIcon, type NativeIconProps } from './NativeIcon';
+import { getFontAwesomeIconClassName } from './util';
 
 export interface FontAwesomeIconProps
-  extends NativeIconProps,
-    Pick<IconProps, "iconStyle" | "family"> {
+  extends NativeIconProps, Pick<IconProps, 'family' | 'iconStyle'> {
   readonly icon: FontAwesomeIconProp | IconName;
 }
 
-export const FontAwesomeIcon = forwardRef<HTMLElement, FontAwesomeIconProps>(
-  ({ icon, iconStyle, family, ...props }, ref) => (
-    <NativeIcon
-      {...props}
-      ref={ref}
-      className={classNames(
-        getFontAwesomeIconClassName(
-          typeof icon === "string"
-            ? { name: icon, iconStyle, family }
-            : { iconStyle, family, ...icon },
-        ),
-        props.className,
-      )}
-    />
-  ),
+export const FontAwesomeIcon = ({
+  family,
+  icon,
+  iconStyle,
+  ref,
+  ...props
+}: FontAwesomeIconProps) => (
+  <NativeIcon
+    {...props}
+    className={classNames(
+      getFontAwesomeIconClassName(
+        typeof icon === 'string'
+          ? { family, iconStyle, name: icon }
+          : { family, iconStyle, ...icon },
+      ),
+      props.className,
+    )}
+    ref={ref}
+  />
 );

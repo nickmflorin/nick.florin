@@ -1,43 +1,43 @@
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
-import { type Required } from "utility-types";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
+import { type Required } from 'utility-types';
 
-import { type UserResource, clerkUserIsAdmin } from "~/application/auth/roles";
-import { type LabeledNavItem } from "~/application/pages";
+import { clerkUserIsAdmin, type UserResource } from '~/application/auth/roles';
+import { type LabeledNavItem } from '~/application/pages';
 
-export const SidebarItemAccessTypes = enumeratedLiterals(["admin"] as const, {});
+export const SidebarItemAccessTypes = enumeratedLiterals(['admin'] as const, {});
 export type SidebarItemAccessType = EnumeratedLiteralsMember<typeof SidebarItemAccessTypes>;
 
-export interface IInternalGroupedSidebarItem extends Required<LabeledNavItem, "icon"> {
-  readonly visible?: boolean;
-  readonly href?: never;
+export interface IInternalGroupedSidebarItem extends Required<LabeledNavItem, 'icon'> {
+  readonly accessType?: SidebarItemAccessType;
   readonly children: [IInternalSidebarItem, ...IInternalSidebarItem[]];
-  readonly accessType?: SidebarItemAccessType;
-}
-
-export interface IInternalSidebarItem extends Required<LabeledNavItem, "icon"> {
-  readonly visible?: boolean;
   readonly href?: never;
-  readonly children?: never;
-  readonly accessType?: SidebarItemAccessType;
+  readonly visible?: boolean;
 }
 
-export interface IExternalSidebarItem
-  extends Required<Pick<LabeledNavItem, "icon" | "label">, "icon"> {
+export interface IInternalSidebarItem extends Required<LabeledNavItem, 'icon'> {
+  readonly accessType?: SidebarItemAccessType;
   readonly children?: never;
+  readonly href?: never;
   readonly visible?: boolean;
+}
+
+export interface IExternalSidebarItem extends Required<
+  Pick<LabeledNavItem, 'icon' | 'label'>,
+  'icon'
+> {
+  readonly accessType?: never;
+  readonly active?: never;
+  readonly children?: never;
   readonly href: string;
   readonly path?: never;
-  readonly active?: never;
-  readonly accessType?: never;
+  readonly visible?: boolean;
 }
 
 export type ISidebarItem =
-  | IInternalSidebarItem
-  | IExternalSidebarItem
-  | IInternalGroupedSidebarItem;
+  IExternalSidebarItem | IInternalGroupedSidebarItem | IInternalSidebarItem;
 
 export const sidebarItemIsExternal = (navItem: ISidebarItem): navItem is IExternalSidebarItem =>
-  (navItem as IExternalSidebarItem).href !== undefined;
+  navItem.href !== undefined;
 
 export type SidebarItemHasChildren<I extends ISidebarItem> = I extends {
   children: [IInternalSidebarItem, ...IInternalSidebarItem[]];
@@ -46,9 +46,8 @@ export type SidebarItemHasChildren<I extends ISidebarItem> = I extends {
   : false;
 
 export const sidebarItemHasChildren = (item: ISidebarItem): item is IInternalGroupedSidebarItem =>
-  (item as IInternalGroupedSidebarItem).children !== undefined &&
-  (item as IInternalGroupedSidebarItem).children.filter(child => child.visible !== false).length !==
-    0;
+  item.children !== undefined &&
+  item.children.filter(child => child.visible !== false).length !== 0;
 
 export const flattenSidebarItems = (
   items: ISidebarItem[],
@@ -65,7 +64,7 @@ export const flattenSidebarItems = (
 
 export const sidebarItemIsVisible = (
   item: ISidebarItem,
-  user: UserResource | null | undefined,
+  user: null | undefined | UserResource,
 ): boolean => {
   if (sidebarItemIsExternal(item)) {
     return item.visible ?? true;

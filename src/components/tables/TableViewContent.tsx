@@ -1,8 +1,7 @@
-import React, { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { Loading } from "~/components/loading/Loading";
-import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
+import { Loading } from '~/components/loading/Loading';
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface TableViewContentProps extends ComponentProps {
   readonly children: ReactNode;
@@ -14,9 +13,9 @@ export const TableViewContent = ({
   isLoading = false,
   ...props
 }: TableViewContentProps): JSX.Element => (
-  <div {...props} className={classNames("table-view__content", props.className)}>
+  <div {...props} className={classNames('table-view__content', props.className)}>
     <Loading isLoading={isLoading}>
-      <div className="max-h-full h-full overflow-x-auto">{children}</div>
+      <div className='max-h-full h-full overflow-x-auto'>{children}</div>
     </Loading>
   </div>
 );

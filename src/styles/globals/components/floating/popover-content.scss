@@ -1,11 +1,11 @@
-@use "partials";
+@use 'partials';
 
 .popover-content {
   z-index: 10;
-  border-radius: theme("borderRadius.sm");
-  box-shadow: theme("boxShadow.md");
+  border-radius: theme('borderRadius.sm');
+  box-shadow: theme('boxShadow.md');
   padding: 10px 12px;
-  background-color: theme("colors.white");
+  background-color: theme('colors.white');
   overflow: hidden;
 
   &:focus {
@@ -19,7 +19,7 @@
   @include partials.loading() {
     pointer-events: none;
 
-    > *:not([data-attr-loading-view="true"]) {
+    > *:not([data-attr-loading-view='true']) {
       opacity: 0.6;
     }
   }

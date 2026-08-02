@@ -1,57 +1,54 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type ForwardedRef, type JSX } from 'react';
 
-import type { ExperienceIncludes } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type ExperienceIncludes } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { type ActionVisibility } from "~/actions";
-import { type ApiError } from "~/api";
+import { type ActionVisibility } from '~/actions';
+import { type ApiError } from '~/api';
 
-import type { SelectBehaviorType } from "~/components/input/select";
-import { useExperiences } from "~/hooks/api";
+import { type SelectBehaviorType } from '~/components/input/select';
+import { useExperiences } from '~/hooks/api';
 
 import {
   ExperienceSelect,
   type ExperienceSelectInstance,
   type ExperienceSelectProps,
-} from "./ExperienceSelect";
+} from './ExperienceSelect';
 
 export interface ClientExperienceSelectProps<
   B extends SelectBehaviorType,
   I extends ExperienceIncludes,
-> extends Omit<ExperienceSelectProps<B, I>, "data"> {
-  readonly visibility: ActionVisibility;
+> extends Omit<ExperienceSelectProps<B, I>, 'data'> {
   readonly includes: I;
   readonly onError?: (e: ApiError) => void;
+  readonly visibility: ActionVisibility;
 }
 
-export const ClientExperienceSelect = forwardRef(
-  <B extends SelectBehaviorType, I extends ExperienceIncludes>(
-    { visibility, onError, includes, ...props }: ClientExperienceSelectProps<B, I>,
-    ref: ForwardedRef<ExperienceSelectInstance<B, I>>,
-  ): JSX.Element => {
-    const { data, isLoading, error } = useExperiences({
-      query: { includes, visibility },
-      onError: e => {
-        logger.error(e, "There was an error loading the experiences via the API.");
-        onError?.(e);
-      },
-    });
-    return (
-      <ExperienceSelect
-        {...props}
-        ref={ref}
-        isReady={data !== undefined && props.isReady !== false}
-        data={data ?? []}
-        isDisabled={error !== undefined || props.isDisabled}
-        isLocked={isLoading || props.isLocked}
-        isLoading={isLoading || props.isLoading}
-      />
-    );
-  },
-) as {
-  <B extends SelectBehaviorType, I extends ExperienceIncludes>(
-    props: ClientExperienceSelectProps<B, I> & {
-      readonly ref?: ForwardedRef<ExperienceSelectInstance<B, I>>;
+export const ClientExperienceSelect = <B extends SelectBehaviorType, I extends ExperienceIncludes>({
+  includes,
+  onError,
+  ref,
+  visibility,
+  ...props
+}: {
+  readonly ref?: ForwardedRef<ExperienceSelectInstance<B, I>>;
+} & ClientExperienceSelectProps<B, I>): JSX.Element => {
+  const { data, error, isLoading } = useExperiences({
+    onError: e => {
+      logger.error(e, 'There was an error loading the experiences via the API.');
+      onError?.(e);
     },
-  ): JSX.Element;
+    query: { includes, visibility },
+  });
+  return (
+    <ExperienceSelect
+      {...props}
+      data={data ?? []}
+      isDisabled={error !== undefined || props.isDisabled}
+      isLoading={isLoading || props.isLoading}
+      isLocked={isLoading || props.isLocked}
+      isReady={data !== undefined && props.isReady !== false}
+      ref={ref}
+    />
+  );
 };

@@ -2,30 +2,30 @@ export type HexColor = `#${string}`;
 
 type RGBColorOptions = {
   readonly alpha?: number;
-  readonly format?: "string" | "set";
+  readonly format?: 'set' | 'string';
   readonly strict?: boolean;
 };
 
 type RGBColorSet<O extends RGBColorOptions> = O extends { alpha: infer A extends number }
   ? {
-      r: number;
-      g: number;
-      b: number;
       a: A;
+      b: number;
+      g: number;
+      r: number;
     }
   : {
-      r: number;
-      g: number;
-      b: number;
       a?: never;
+      b: number;
+      g: number;
+      r: number;
     };
 
-type RGBReturn<O extends RGBColorOptions> = O extends { format: "set" }
+type RGBReturn<O extends RGBColorOptions> = O extends { format: 'set' }
   ? O extends { strict: false }
-    ? RGBColorSet<O> | null
+    ? null | RGBColorSet<O>
     : RGBColorSet<O>
   : O extends { strict: false }
-    ? string | null
+    ? null | string
     : string;
 
 export const hexToRgb = <O extends RGBColorOptions>(hex: HexColor, opts: O): RGBReturn<O> => {
@@ -34,27 +34,26 @@ export const hexToRgb = <O extends RGBColorOptions>(hex: HexColor, opts: O): RGB
     const r = parseInt(result[1], 16);
     const g = parseInt(result[2], 16);
     const b = parseInt(result[3], 16);
-    if (opts.format === "set") {
+    if (opts.format === 'set') {
       if (opts.alpha) {
         return {
-          r,
-          g,
-          b,
           a: opts.alpha,
+          b,
+          g,
+          r,
         } as RGBReturn<O>;
       }
       return {
-        r,
-        g,
         b,
+        g,
+        r,
       } as RGBReturn<O>;
     }
-    return `rgb${opts.alpha ? "a" : ""}(${r}, ${g}, ${b}${
-      opts.alpha ? `, ${opts.alpha}` : ""
+    return `rgb${opts.alpha ? 'a' : ''}(${r}, ${g}, ${b}${
+      opts.alpha ? `, ${opts.alpha}` : ''
     })` as RGBReturn<O>;
   } else if (opts.strict === false) {
     return null as RGBReturn<O>;
-  } else {
-    throw new Error(`Invalid hex color '${hex}' provided!`);
   }
+  throw new Error(`Invalid hex color '${hex}' provided!`);
 };

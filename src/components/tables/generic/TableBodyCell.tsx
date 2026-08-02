@@ -1,30 +1,27 @@
-import { type ReactNode } from "react";
+import { type ComponentProps as ReactComponentProps, type ReactNode } from 'react';
 
 import {
   classNames,
-  type HorizontalFlexAlign,
   type ComponentProps,
+  type HorizontalFlexAlign,
   HorizontalFlexAlignClassNames,
-} from "~/components/types";
+} from '~/components/types';
 
 export interface TableBodyCellProps
-  extends ComponentProps,
-    Omit<React.ComponentProps<"td">, keyof ComponentProps> {
-  readonly children?: ReactNode;
+  extends ComponentProps, Omit<ReactComponentProps<'td'>, keyof ComponentProps> {
   readonly align?: HorizontalFlexAlign;
+  readonly children?: ReactNode;
 }
 
 export const TableBodyCell = ({ align, ...props }: TableBodyCellProps) => (
-  <td {...props} className={classNames("table__cell table__body-cell", props.className)}>
+  <td {...props} className={classNames('table__cell table__body-cell', props.className)}>
     <div
       className={classNames(
-        "table__body-cell__inner",
-        align ? HorizontalFlexAlignClassNames[align] : "",
+        'table__body-cell__inner',
+        align ? HorizontalFlexAlignClassNames[align] : '',
       )}
     >
       {props.children}
     </div>
   </td>
 );
-
-export default TableBodyCell;

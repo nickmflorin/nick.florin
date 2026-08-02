@@ -1,57 +1,59 @@
-import { useRef } from "react";
+import { useState } from 'react';
 
-import useRootSWR, { useSWRConfig, type SWRResponse as RootSWRResponse, type Arguments } from "swr";
-import { type SWRConfiguration, type PublicConfiguration } from "swr/_internal";
+import useRootSWR, { type Arguments, type SWRResponse as RootSWRResponse, useSWRConfig } from 'swr';
+import { type PublicConfiguration, type SWRConfiguration } from 'swr/_internal';
 
-import { apiClient, isApiError, type ApiClientError, type ApiError } from "~/api";
+import { apiClient, type ApiClientError, type ApiError, isApiError } from '~/api';
 import {
   type HttpNetworkError,
   type HttpSerializationError,
   type QueryParamObj,
-} from "~/integrations/http";
+} from '~/integrations/http';
 
 type ApiPath = `/api/${string}`;
-type Args = Exclude<Arguments, string> | ApiPath;
-export type Key = Args | (() => Args);
+type Args = ApiPath | Exclude<Arguments, string>;
+export type Key = (() => Args) | Args;
 
-export type SWRConfig<T, Q extends QueryParamObj = QueryParamObj> = Omit<
-  SWRConfiguration<T, ApiClientError | HttpNetworkError | HttpSerializationError>,
-  /* The 'shouldRetryOnError' configuration parameter is set globally in the <SWRConfig> component
-     and should not be overridden. */
-  "shouldRetryOnError" | "onError" | "onSuccess"
-> & {
-  readonly query: Q;
+export type SWRConfig<T, Q extends QueryParamObj = QueryParamObj> = {
   readonly onError?: (e: ApiError) => void;
   readonly onSuccess?: (data: T, query: Q) => void;
-};
+  readonly query: Q;
+} & Omit<
+  SWRConfiguration<T, ApiClientError | HttpNetworkError | HttpSerializationError>,
+  | 'onError'
+  | 'onSuccess'
+  /* The 'shouldRetryOnError' configuration parameter is set globally in the <SWRConfig> component
+     and should not be overridden. */
+  | 'shouldRetryOnError'
+>;
 
-export type SWRResponse<T> = RootSWRResponse<T, ApiError> & {
+export type SWRResponse<T> = {
+  readonly controller: AbortController;
   readonly initialResponseReceived: boolean;
   readonly isInitialLoading: boolean;
   readonly isRefetching: boolean;
-  readonly controller: AbortController;
-};
+} & RootSWRResponse<T, ApiError>;
 
-const shouldFetch = (k: Key) => ![null, undefined, false].includes(k as null | undefined | boolean);
+const shouldFetch = (k: Key) => ![false, null, undefined].includes(k as boolean | null | undefined);
 
 export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
   path: Key,
   { onError: _onError, query, ...config }: SWRConfig<T, Q>,
 ): SWRResponse<T> => {
-  const initialResponseReceived = useRef<boolean>(false);
+  /* Whether a response, successful or not, has come back at least once.  This is held in state
+     rather than in a ref because it distinguishes the initial load from a refetch, which the
+     consumer renders differently. */
+  const [initialResponseReceived, setInitialResponseReceived] = useState<boolean>(false);
 
-  /* If the `onError` configuration callback is provided, it is very important that the globally
-       configured `onError` configuration callback is *still* called beforehand. */
   const { onError } = useSWRConfig();
 
-  // TODO: Investigate whether or not it is necessary to abort requests if the pathname changes.
   const abortController = new AbortController();
 
   const fetcher = ([p, q]: [Key, Q]) =>
     apiClient.get(p as string, q, {
-      strict: true,
       processed: true,
       signal: abortController.signal,
+      strict: true,
     });
 
   const { data, error, ...others } = useRootSWR<T, ApiError, [Key, Q] | null>(
@@ -59,25 +61,27 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
     fetcher,
     {
       ...config,
-      onSuccess: d => {
-        initialResponseReceived.current = true;
-        config.onSuccess?.(d, query);
-      },
       onError: (e: unknown, key, c) => {
-        initialResponseReceived.current = true;
+        setInitialResponseReceived(true);
 
-        // It is important that the globally configured onError callback is called first.
+        /* The globally configured `onError` callback must be called first, so that global error
+           handling, such as logging, is not skipped when a per-call `onError` callback is also
+           provided. */
         onError(e, key, c as PublicConfiguration);
 
-        /* If the error is not an expected ApiClientError or HttpError, it should have already been
-           thrown by the global error handler above.  However, we still need to repeat that check
-           for type safety here. */
+        /* An error that is not an expected ApiClientError or HttpError is expected to have already
+           been thrown by the global error handler above.  This check is still repeated here for
+           type safety. */
         if (isApiError(e)) {
           return _onError?.(e);
         }
-        /* This will force the useSWR call to throw the error, instead of embedding the error in the
+        /* Rethrowing forces the useSWR call to throw the error, instead of embedding it in the
            hook's return. */
         throw e;
+      },
+      onSuccess: d => {
+        setInitialResponseReceived(true);
+        config.onSuccess?.(d, query);
       },
     },
   );
@@ -87,12 +91,12 @@ export const useSWR = <T, Q extends QueryParamObj = QueryParamObj>(
   }
 
   return {
+    controller: abortController,
     data,
     error,
-    initialResponseReceived: initialResponseReceived.current,
-    isRefetching: initialResponseReceived.current && others.isLoading,
-    isInitialLoading: others.isLoading && !initialResponseReceived.current,
-    controller: abortController,
+    initialResponseReceived,
+    isInitialLoading: others.isLoading && !initialResponseReceived,
+    isRefetching: initialResponseReceived && others.isLoading,
     ...others,
   } as SWRResponse<T>;
 };

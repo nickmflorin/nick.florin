@@ -1,2 +1,2 @@
-export * from "./CreateDetailForm";
-export * from "./CreateNestedDetailForm";
+export * from './CreateDetailForm';
+export * from './CreateNestedDetailForm';

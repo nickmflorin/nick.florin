@@ -1,4 +1,4 @@
-@use "./constants" as constants;
+@use './constants' as constants;
 
 /*
 There are several browsers, notably Google Chrome, that seem to believe they are allowed to just
@@ -49,7 +49,7 @@ that masks (covers) the styling that those browsers apply on auto-fill.
   }
 }
 
-@include reset-browser-autofill(("input", "textarea"));
+@include reset-browser-autofill(('input', 'textarea'));
 
 input:focus-visible {
   outline: none !important;

@@ -1,4 +1,4 @@
-@use "./constants" as constants;
+@use './constants' as constants;
 
 .header {
   display: flex;
@@ -10,9 +10,9 @@
   overflow: hidden;
   min-height: constants.$header-height;
   padding: 12px;
-  border-bottom: 1px solid theme("colors.border");
-  background: linear-gradient(to bottom, transparent, theme("colors.gray.100"))
-    theme("colors.gray.50");
+  border-bottom: 1px solid theme('colors.border');
+  background: linear-gradient(to bottom, transparent, theme('colors.gray.100'))
+    theme('colors.gray.50');
 
   &__left,
   &__right {

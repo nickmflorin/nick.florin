@@ -1,8 +1,8 @@
-@use "partials";
+@use 'partials';
 
 .project-image-container {
-  margin-top: theme("spacing.2");
-  margin-bottom: theme("spacing.2");
+  margin-top: theme('spacing.2');
+  margin-bottom: theme('spacing.2');
   width: 100%;
   max-width: 100%;
 
@@ -15,16 +15,16 @@
     max-width: 100%;
 
     > .project-image-wrapper {
-      @include partials.border-radius(theme("borderRadius.md"));
+      @include partials.border-radius(theme('borderRadius.md'));
       position: relative;
       max-width: 100%;
       max-height: 100%;
       flex-grow: 100;
       overflow: hidden;
 
-      -webkit-box-shadow: theme("boxShadow.sm");
-      -moz-box-shadow: theme("boxShadow.sm");
-      box-shadow: theme("boxShadow.sm");
+      -webkit-box-shadow: theme('boxShadow.sm');
+      -moz-box-shadow: theme('boxShadow.sm');
+      box-shadow: theme('boxShadow.sm');
 
       > .project-image-image {
         overflow: hidden;

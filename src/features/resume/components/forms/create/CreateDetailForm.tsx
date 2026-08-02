@@ -1,16 +1,18 @@
-import { useMemo, type JSX } from "react";
+import { type JSX, useMemo } from 'react';
 
-import { type DetailEntityType, type ApiDetail } from "~/database/model";
+import { type ApiDetail, type DetailEntityType } from '~/database/model';
 
-import { createDetail } from "~/actions/details/create-detail";
+import { createDetail } from '~/actions/details/create-detail';
 
 import {
   GenericCreateDetailForm,
   type GenericCreateDetailFormProps,
-} from "./GenericCreateDetailForm";
+} from './GenericCreateDetailForm';
 
-export interface CreateDetailFormProps
-  extends Omit<GenericCreateDetailFormProps<ApiDetail<["skills"]>>, "action" | "actions"> {
+export interface CreateDetailFormProps extends Omit<
+  GenericCreateDetailFormProps<ApiDetail<['skills']>>,
+  'action' | 'actions'
+> {
   readonly entityId: string;
   readonly entityType: DetailEntityType;
 }
@@ -25,8 +27,6 @@ export const CreateDetailForm = ({
     [entityId, entityType],
   );
   return (
-    <GenericCreateDetailForm<ApiDetail<["skills"]>> action={createDetailForEntity} {...props} />
+    <GenericCreateDetailForm<ApiDetail<['skills']>> action={createDetailForEntity} {...props} />
   );
 };
-
-export default CreateDetailForm;

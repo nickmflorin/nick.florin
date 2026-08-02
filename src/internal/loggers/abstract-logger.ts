@@ -1,33 +1,30 @@
-import pino, { type LoggerOptions, type DestinationStream } from "pino";
-import { v4 as uuid } from "uuid";
+import pino, { type DestinationStream, type LoggerOptions } from 'pino';
+import { v4 as uuid } from 'uuid';
 
 import {
-  type VercelEnvironmentName,
   type EnvironmentName,
   type LogLevel,
-} from "~/environment/constants";
+  type VercelEnvironmentName,
+} from '~/environment/constants';
 
-import { DEFAULT_LOG_LEVELS } from "./constants";
-import { type AbstractLoggerConfig } from "./types";
+import { DEFAULT_LOG_LEVELS } from './constants';
+import { type AbstractLoggerConfig } from './types';
 
-type LogMethodType = "warn" | "error" | "info" | "debug";
+type LogMethodType = 'debug' | 'error' | 'info' | 'warn';
 
 export abstract class AbstractLogger {
-  public readonly name: string;
-
   protected readonly instance: string;
-  private readonly globalContext: Record<string, unknown> | undefined = undefined;
-
-  private _level: LogLevel | undefined = undefined;
-  private _pino: pino.Logger | null = null;
-
-  private readonly _vercelEnvironment: VercelEnvironmentName | undefined = undefined;
   private readonly _environment: EnvironmentName;
   private _includeContext: boolean | undefined;
+  private _level: LogLevel | undefined = undefined;
+  private _pino: null | pino.Logger = null;
+  private readonly _vercelEnvironment: undefined | VercelEnvironmentName = undefined;
+  private readonly globalContext: Record<string, unknown> | undefined = undefined;
+  public readonly name: string;
 
   constructor(
     name: string,
-    { environment, level, globalContext, vercelEnvironment, includeContext }: AbstractLoggerConfig,
+    { environment, globalContext, includeContext, level, vercelEnvironment }: AbstractLoggerConfig,
   ) {
     this.instance = uuid();
     this._environment = environment;
@@ -38,34 +35,44 @@ export abstract class AbstractLogger {
     this._includeContext = includeContext;
   }
 
-  protected abstract get stream(): DestinationStream | null;
+  protected log(method: LogMethodType, context: object): void;
 
-  protected abstract get config(): LoggerOptions;
+  protected log(method: LogMethodType, message: string | undefined, context?: object): void;
 
-  protected get environment() {
-    return this._environment;
+  protected log(
+    method: LogMethodType,
+    message: object | string | undefined,
+    context?: object,
+  ): void {
+    const ctx = typeof message === 'string' ? (context ?? {}) : message;
+    const msg = typeof message === 'string' ? message : undefined;
+    this.pino[method](ctx, msg);
   }
 
-  private get vercelEnvironment() {
-    return this._vercelEnvironment;
+  private reset() {
+    if (this.stream) {
+      this._pino = pino(this.config, this.stream);
+    } else {
+      this._pino = pino(this.config);
+    }
   }
 
   public modify({
     includeContext,
     level,
-  }: Pick<AbstractLoggerConfig, "includeContext" | "level">): void {
+  }: Pick<AbstractLoggerConfig, 'includeContext' | 'level'>): void {
     let reset = false;
 
     if (includeContext !== undefined) {
       if (includeContext && !this.includeContext) {
         this._includeContext = includeContext;
         /* eslint-disable-next-line no-console -- The logger is not yet configured here. */
-        console.info("Resetting logger to include context...");
+        console.info('Resetting logger to include context...');
         reset = true;
       } else if (!includeContext && this.includeContext) {
         this._includeContext = includeContext;
         /* eslint-disable-next-line no-console -- The logger is not yet configured here. */
-        console.info("Resetting logger to exclude context...");
+        console.info('Resetting logger to exclude context...');
         reset = true;
       }
     }
@@ -73,12 +80,12 @@ export abstract class AbstractLogger {
     if (includeContext && !this.includeContext) {
       this._includeContext = includeContext;
       /* eslint-disable-next-line no-console -- The logger is not yet configured here. */
-      console.info("Resetting logger to include context...");
+      console.info('Resetting logger to include context...');
       this.reset();
     } else if (!includeContext && this.includeContext) {
       this._includeContext = includeContext;
       /* eslint-disable-next-line no-console -- The logger is not yet configured here. */
-      console.info("Resetting logger to exclude context...");
+      console.info('Resetting logger to exclude context...');
       this.reset();
     }
     if (level !== this.level) {
@@ -90,6 +97,31 @@ export abstract class AbstractLogger {
     if (reset) {
       this.reset();
     }
+  }
+
+  protected abstract get config(): LoggerOptions;
+
+  protected get context() {
+    let ctx: Record<string, unknown> = {
+      name: this.name,
+    };
+    if (this.includeContext) {
+      ctx = {
+        ...ctx,
+        ...this.globalContext,
+        environment: this.environment,
+        instance: this.instance,
+        vercelEnvironment: this.vercelEnvironment,
+      };
+    }
+    return Object.keys(ctx).reduce(
+      (prev, key) => (ctx[key] === undefined ? prev : { ...prev, [key]: ctx[key] }),
+      {} as Record<string, unknown>,
+    );
+  }
+
+  protected get environment() {
+    return this._environment;
   }
 
   public get includeContext() {
@@ -108,45 +140,6 @@ export abstract class AbstractLogger {
     this.modify({ level });
   }
 
-  protected get context() {
-    let ctx: Record<string, unknown> = {
-      name: this.name,
-    };
-    if (this.includeContext) {
-      ctx = {
-        ...ctx,
-        ...this.globalContext,
-        environment: this.environment,
-        instance: this.instance,
-        vercelEnvironment: this.vercelEnvironment,
-      };
-    }
-    return Object.keys(ctx).reduce(
-      (prev, key) => (ctx[key] !== undefined ? { ...prev, [key]: ctx[key] } : prev),
-      {} as Record<string, unknown>,
-    );
-  }
-
-  private reset() {
-    if (this.stream) {
-      this._pino = pino(this.config, this.stream);
-    } else {
-      this._pino = pino(this.config);
-    }
-  }
-
-  protected log(method: LogMethodType, context: object): void;
-  protected log(method: LogMethodType, message: string | undefined, context?: object): void;
-  protected log(
-    method: LogMethodType,
-    message: string | object | undefined,
-    context?: object,
-  ): void {
-    const ctx = typeof message === "string" ? (context ?? {}) : message;
-    const msg = typeof message === "string" ? message : undefined;
-    this.pino[method](ctx, msg);
-  }
-
   private get pino() {
     if (!this._pino) {
       this.reset();
@@ -154,5 +147,10 @@ export abstract class AbstractLogger {
     /* This type coercion is safe because we are setting the _pino instance variable in the reset
        method. */
     return this._pino as pino.Logger;
+  }
+  protected abstract get stream(): DestinationStream | null;
+
+  private get vercelEnvironment() {
+    return this._vercelEnvironment;
   }
 }

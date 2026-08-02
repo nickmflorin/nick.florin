@@ -1,47 +1,80 @@
-"use client";
-import { usePathname } from "next/navigation";
-import React, { type ReactNode } from "react";
-import { useState, useCallback, useEffect } from "react";
+'use client';
+import { usePathname } from 'next/navigation';
+import { type ReactNode, useCallback, useState } from 'react';
 
-import { pathIsActive, type NavItem } from "~/application/pages";
+import { type NavItem, pathIsActive } from '~/application/pages';
 
-import { useDebouncedValue } from "~/hooks";
+import { useDebouncedValue } from '~/hooks';
 
-import { NavigationContext } from "./context";
+import { NavigationContext } from './context';
+
+/**
+ * The delay, in milliseconds, before a pending navigation is treated as in-flight and its loading
+ * indicator is shown.
+ *
+ * When the "real" active state (determined from the pathname) differs from the optimistic one, it
+ * means that the navigable element has just been clicked but the navigation has not completed yet.
+ * This delay prevents the loading indicator from flashing when the navigation is immediate.
+ */
+const NavigationPendingDelayMs = 200;
+
+/**
+ * Determines the optimistic and pending navigation state that should be set when a navigable
+ * element identified by `item` is clicked, given whether that element is already active.
+ *
+ * When the clicked element is already active, both states must be cleared rather than left as they
+ * are. This is because, if another element is pending navigation when an already active element is
+ * clicked, the click cancels that pending navigation without the pathname ever changing, so the
+ * effect that clears pending state on navigation would never run - leaving the other element stuck
+ * with an infinite loading indicator.
+ */
+const getNavigationStateOnClick = (
+  item: Pick<NavItem, 'activePaths' | 'path'>,
+  isActive: boolean,
+): [null | Pick<NavItem, 'activePaths' | 'path'>, null | Pick<NavItem, 'activePaths' | 'path'>] =>
+  isActive ? [null, null] : [item, item];
 
 export const NavigationProvider = ({ children }: { readonly children: ReactNode }) => {
-  const [optimisticallyActiveNavigation, setOptimisticActiveNavigation] = useState<Pick<
+  const [clickedNavigation, setClickedNavigation] = useState<null | Pick<
     NavItem,
-    "path" | "activePaths"
-  > | null>(null);
-  const [_pendingNavigation, setPendingNavigation] = useState<Pick<
+    'activePaths' | 'path'
+  >>(null);
+  const [clickedPendingNavigation, setClickedPendingNavigation] = useState<null | Pick<
     NavItem,
-    "path" | "activePaths"
-  > | null>(null);
-
-  const isOptimisticallyActive = useCallback(
-    (item: Pick<NavItem, "path">) =>
-      optimisticallyActiveNavigation !== null && optimisticallyActiveNavigation.path === item.path,
-    [optimisticallyActiveNavigation],
-  );
+    'activePaths' | 'path'
+  >>(null);
 
   const pathname = usePathname();
 
-  /* An active state that is determined solely from the pathname.  This is the "real" active\
-     state. */
   const isActive = useCallback(
-    (item: Pick<NavItem, "activePaths">) =>
+    (item: Pick<NavItem, 'activePaths'>) =>
       pathname ? pathIsActive(item.activePaths, pathname) : false,
     [pathname],
   );
 
-  /* When the "real" active state differs from the optimistic one, it means that the navigatable
-     element has just been clicked but the navigation hasn't completed yet.  The delay of 200ms is
-     to prevent flashing loading indicators from appearing when the navigation is immediate. */
-  const [pendingItem] = useDebouncedValue(_pendingNavigation, 200);
+  /* Once the pathname catches up with the element that was clicked, the navigation has completed
+     and neither the optimistic nor the pending state describes anything anymore.  Both are
+     discarded here, as the navigation lands, rather than being cleared from an effect after it. */
+  const hasNavigationLanded = (item: null | Pick<NavItem, 'activePaths'>): boolean =>
+    item !== null && isActive(item);
+
+  const optimisticallyActiveNavigation = hasNavigationLanded(clickedNavigation)
+    ? null
+    : clickedNavigation;
+  const pendingNavigation = hasNavigationLanded(clickedPendingNavigation)
+    ? null
+    : clickedPendingNavigation;
+
+  const isOptimisticallyActive = useCallback(
+    (item: Pick<NavItem, 'path'>) =>
+      optimisticallyActiveNavigation !== null && optimisticallyActiveNavigation.path === item.path,
+    [optimisticallyActiveNavigation],
+  );
+
+  const [pendingItem] = useDebouncedValue(pendingNavigation, NavigationPendingDelayMs);
 
   const isPending = useCallback(
-    (item: Pick<NavItem, "activePaths" | "path">) =>
+    (item: Pick<NavItem, 'activePaths' | 'path'>) =>
       pendingItem !== null &&
       pendingItem.path === item.path &&
       isOptimisticallyActive(item) &&
@@ -49,44 +82,18 @@ export const NavigationProvider = ({ children }: { readonly children: ReactNode 
     [pendingItem, isOptimisticallyActive, isActive],
   );
 
-  useEffect(() => {
-    if (optimisticallyActiveNavigation && isActive(optimisticallyActiveNavigation)) {
-      /* Keep the optimistic active state in sync with the real active state after the navigation
-         occurs. */
-      setOptimisticActiveNavigation(null);
-      setPendingNavigation(null);
-    }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [pathname]);
-
   const setNavigating = useCallback(
-    (item: Pick<NavItem, "activePaths" | "path">) => {
-      if (!isActive(item)) {
-        setOptimisticActiveNavigation(item);
-        setPendingNavigation(item);
-      } else {
-        /* If the clicked element is already active, then we need to set the global optimistically
-           active element to null.  This is because if an already active element is clicked, and
-           there is another element that is pending, we need to remove the pending state from the
-           pending element because the page navigation will not transition to the path associated
-           with the pending element (it will in effect be cancelled, and the navigation will remain
-           on the existing page).  If we did not do this, then we would wind up with an infinite
-           loading indicator on the previously pending element, because the pathname would not
-           change and the pending element would never "finish" pending. */
-        setOptimisticActiveNavigation(null);
-        setPendingNavigation(null);
-      }
+    (item: Pick<NavItem, 'activePaths' | 'path'>) => {
+      const [optimistic, pending] = getNavigationStateOnClick(item, isActive(item));
+      setClickedNavigation(optimistic);
+      setClickedPendingNavigation(pending);
     },
-    [isActive, setOptimisticActiveNavigation],
+    [isActive],
   );
 
   return (
-    <NavigationContext.Provider
-      value={{ pendingItem, isActive, isPending, setNavigating, isInScope: true }}
-    >
+    <NavigationContext value={{ isActive, isInScope: true, isPending, pendingItem, setNavigating }}>
       {children}
-    </NavigationContext.Provider>
+    </NavigationContext>
   );
 };
-
-export default NavigationProvider;

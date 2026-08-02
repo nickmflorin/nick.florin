@@ -1,14 +1,14 @@
-import { Suspense, type JSX } from "react";
+import { type JSX, Suspense } from 'react';
 
-import { fetchEducations } from "~/actions/educations/fetch-educations";
-import { fetchSkills } from "~/actions/skills/fetch-skills";
+import { fetchEducations } from '~/actions/educations/fetch-educations';
+import { fetchSkills } from '~/actions/skills/fetch-skills';
 
-import { CoursesTableFilterBar as ClientCoursesTableFilterBar } from "~/features/courses/components/tables/CoursesTableFilterBar";
+import { CoursesTableFilterBar as ClientCoursesTableFilterBar } from '~/features/courses/components/tables/CoursesTableFilterBar';
 
 const getSkills = async () => {
   const skillsFetcher = fetchSkills([]);
   const { data: skills } = await skillsFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
 
@@ -18,7 +18,7 @@ const getSkills = async () => {
 const getEducations = async () => {
   const educationFetcher = fetchEducations([]);
   const { data: educations } = await educationFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
   return educations;

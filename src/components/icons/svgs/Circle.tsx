@@ -1,40 +1,37 @@
-import React from "react";
+import { type HexColor } from '~/lib/colors';
 
-import { type HexColor } from "~/lib/colors";
+import { classNames, type ComponentProps } from '~/components/types';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-
-export type CircleProps = ComponentProps & {
+export type CircleProps = {
   readonly color?: string;
-  readonly size: number;
-  readonly selected?: boolean;
-  readonly selectable?: boolean;
+  readonly isSelectable?: boolean;
+  readonly isSelected?: boolean;
   readonly selectedColor?: HexColor;
-};
+  readonly size: number;
+} & ComponentProps;
 
 export const Circle = ({
   color,
-  selectedColor = "#6eb6ff",
-  selectable,
-  selected,
+  isSelectable = false,
+  isSelected,
+  selectedColor = '#6eb6ff',
   size,
   ...props
 }: CircleProps) => (
   <svg
     {...props}
-    className={classNames("icon", props.className)}
+    className={classNames('icon', props.className)}
     style={{ ...props.style, height: `${size}px`, width: `${size}px` }}
   >
-    {(selectable || selected !== undefined) && (
+    {(isSelectable || isSelected !== undefined) && (
       <rect
+        fill={isSelected ? selectedColor : 'transparent'}
         height={size}
-        width={size}
-        fill={selected ? selectedColor : "transparent"}
         rx={size / 2}
         ry={size / 2}
+        width={size}
       />
     )}
-    <circle cx={size / 2} cy={size / 2} r={size / 2 - 1} fill={color} />
+    <circle cx={size / 2} cy={size / 2} fill={color} r={size / 2 - 1} />
   </svg>
 );

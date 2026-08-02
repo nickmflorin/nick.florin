@@ -1,10 +1,16 @@
-import dynamic from "next/dynamic";
-import { type ReactNode, memo, type JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX, memo, type ReactNode } from 'react';
 
-const FloatingPortal = dynamic(() => import("@floating-ui/react").then(mod => mod.FloatingPortal));
+const FloatingPortal = dynamic(() => import('@floating-ui/react').then(mod => mod.FloatingPortal));
 
 export const ConditionalPortal = memo(
-  ({ children, inPortal = false }: { inPortal?: boolean; children: ReactNode }): JSX.Element => {
+  ({
+    children,
+    inPortal = false,
+  }: {
+    readonly children: ReactNode;
+    readonly inPortal?: boolean;
+  }): JSX.Element => {
     if (inPortal) {
       return <FloatingPortal>{children}</FloatingPortal>;
     }

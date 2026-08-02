@@ -1,81 +1,68 @@
-import { isError } from "~/application/errors";
-import * as terminal from "~/support/terminal";
+import { isError } from '~/application/errors';
+import * as terminal from '~/support/terminal';
 
 type KeyValueLineItem = {
   label: string;
   value: string;
 };
 
-type IndexedNextedLineItem = {
-  items: LineItem[];
+type IndexedNestedLineItem = {
   index: true;
+  items: LineItem[];
   label?: never;
   value?: never;
 };
 
 type NestedKeyValueLineItem = {
+  index?: true;
+  items: LineItem[];
   label: string;
   value?: string;
-  items: LineItem[];
-  index?: true;
 };
 
 type LineItem =
-  | KeyValueLineItem
-  | string
-  | NestedKeyValueLineItem
-  | null
-  | LineItem[]
-  | IndexedNextedLineItem;
+  IndexedNestedLineItem | KeyValueLineItem | LineItem[] | NestedKeyValueLineItem | null | string;
 
 const lineItemIsNested = (
   lineItem: LineItem,
-): lineItem is NestedKeyValueLineItem | IndexedNextedLineItem =>
-  typeof lineItem !== "string" &&
+): lineItem is IndexedNestedLineItem | NestedKeyValueLineItem =>
+  typeof lineItem !== 'string' &&
   lineItem !== null &&
   Array.isArray((lineItem as NestedKeyValueLineItem).items);
 
 type MessageOptions = {
-  readonly lineItems?: LineItem[];
   readonly count?: [number, number];
   readonly indexLineItems?: boolean;
+  readonly lineItems?: LineItem[];
 };
 
-type Level = "info" | "error" | "complete" | "begin" | "warn" | "success";
+type Level = 'begin' | 'complete' | 'error' | 'info' | 'success' | 'warn';
 
-const LevelColors: { [key in Level]: (v: string) => string } = {
-  info: v => terminal.applyStyles(v, { foreground: "gray" }),
-  error: v => terminal.applyStyles(v, { foreground: "red" }),
-  complete: v => terminal.applyStyles(v, { foreground: "green" }),
-  begin: v => terminal.applyStyles(v, { foreground: "yellow" }),
-  warn: v => terminal.applyStyles(v, { foreground: "yellow" }),
-  success: v => terminal.applyStyles(v, { foreground: "green" }),
+const LevelColors: Record<Level, (v: string) => string> = {
+  begin: v => terminal.applyStyles(v, { foreground: 'yellow' }),
+  complete: v => terminal.applyStyles(v, { foreground: 'green' }),
+  error: v => terminal.applyStyles(v, { foreground: 'red' }),
+  info: v => terminal.applyStyles(v, { foreground: 'gray' }),
+  success: v => terminal.applyStyles(v, { foreground: 'green' }),
+  warn: v => terminal.applyStyles(v, { foreground: 'yellow' }),
 };
 
-const IndentedLevelColors: { [key in Level]: (v: string) => string } = {
-  info: v => terminal.applyStyles(v, { foreground: "gray" }),
-  error: v => terminal.applyStyles(v, { foreground: "red" }),
-  complete: v => terminal.applyStyles(v, { foreground: "cyan" }),
-  begin: v => terminal.applyStyles(v, { foreground: "yellow" }),
-  warn: v => terminal.applyStyles(v, { foreground: "yellow" }),
-  success: v => terminal.applyStyles(v, { foreground: "green" }),
+const IndentedLevelColors: Record<Level, (v: string) => string> = {
+  begin: v => terminal.applyStyles(v, { foreground: 'yellow' }),
+  complete: v => terminal.applyStyles(v, { foreground: 'cyan' }),
+  error: v => terminal.applyStyles(v, { foreground: 'red' }),
+  info: v => terminal.applyStyles(v, { foreground: 'gray' }),
+  success: v => terminal.applyStyles(v, { foreground: 'green' }),
+  warn: v => terminal.applyStyles(v, { foreground: 'yellow' }),
 };
 
 export class SeedStdout {
-  private nestedLevel: number = 0;
   private readonly isNested: boolean = false;
+  private nestedLevel = 0;
 
-  constructor({ nestedLevel = 0, isNested }: { nestedLevel?: number; isNested: boolean }) {
+  constructor({ isNested, nestedLevel = 0 }: { isNested: boolean; nestedLevel?: number }) {
     this.nestedLevel = nestedLevel;
     this.isNested = isNested;
-  }
-
-  private get indentation(): string {
-    return " ".repeat(this.nestedLevel);
-  }
-
-  private indent(msg: string, { additional = 0 }: { additional?: number }): string {
-    return `${this.indentation}${"  ".repeat(additional)}${msg}`;
   }
 
   private colorize(msg: string, level: Level): string {
@@ -89,17 +76,17 @@ export class SeedStdout {
     item: LineItem,
     index: number,
     {
-      indexLineItems = true,
       additionalIndent = 0,
-    }: Pick<MessageOptions, "indexLineItems"> & { readonly additionalIndent?: number },
-  ): string | null {
+      indexLineItems = true,
+    }: { readonly additionalIndent?: number } & Pick<MessageOptions, 'indexLineItems'>,
+  ): null | string {
     let msg: string;
     if (item === null) {
       return null;
     } else if (lineItemIsNested(item)) {
       const formatted = this.formatLineItems(item.items, {
-        indexLineItems: indexLineItems || item.index === true,
         additionalIndent: additionalIndent + 1,
+        indexLineItems: indexLineItems || item.index === true,
       });
       if (!formatted) {
         return null;
@@ -112,31 +99,31 @@ export class SeedStdout {
       }
     } else if (Array.isArray(item)) {
       return this.formatLineItems(item, {
-        indexLineItems,
         additionalIndent: additionalIndent + 1,
+        indexLineItems,
       });
     } else {
-      msg = typeof item === "string" ? item : `${item.label}: ${item.value}`;
+      msg = typeof item === 'string' ? item : `${item.label}: ${item.value}`;
     }
     return indexLineItems
       ? this.colorize(
           this.indent(`${index + 1}. ${msg}`, { additional: additionalIndent + 1 }),
-          "info",
+          'info',
         )
-      : this.colorize(this.indent(`- ${msg}`, { additional: additionalIndent + 1 }), "info");
+      : this.colorize(this.indent(`- ${msg}`, { additional: additionalIndent + 1 }), 'info');
   }
 
   private formatLineItems(
     items: LineItem[],
-    options: Pick<MessageOptions, "indexLineItems"> & { readonly additionalIndent?: number },
-  ): string | null {
+    options: { readonly additionalIndent?: number } & Pick<MessageOptions, 'indexLineItems'>,
+  ): null | string {
     const mapped = items
       .map((item, i) => this.formatLineItem(item, i, options))
       .filter(v => v !== null);
     if (mapped.length === 0) {
       return null;
     }
-    return mapped.join("\n");
+    return mapped.join('\n');
   }
 
   private formatMessage(message: string, level: Level, opts?: LineItem[] | MessageOptions): string {
@@ -156,7 +143,7 @@ export class SeedStdout {
     if (count) {
       msg = `${msg} (${count[0] + 1}/${count[1]})`;
     }
-    if (lineItems && lineItems.length !== 0) {
+    if (lineItems.length !== 0) {
       const formatted = this.formatLineItems(lineItems, { indexLineItems });
       if (formatted) {
         return `${this.colorize(this.indent(msg, {}), level)}\n${formatted}`;
@@ -165,40 +152,8 @@ export class SeedStdout {
     return this.colorize(this.indent(msg, {}), level);
   }
 
-  public complete(message: string, opts?: LineItem[] | MessageOptions): void {
-    /* eslint-disable-next-line no-console */
-    console.info(this.formatMessage(message, "complete", opts));
-    if (this.isNested) {
-      this.nestedLevel = Math.max(this.nestedLevel - 1, 0);
-    }
-  }
-
-  public failed(message: string, opts?: LineItem[] | MessageOptions): void {
-    /* eslint-disable-next-line no-console */
-    console.info(this.formatMessage(message, "error", opts));
-    if (this.isNested) {
-      this.nestedLevel = Math.max(this.nestedLevel - 1, 0);
-    }
-  }
-
-  public info(message: string, opts?: LineItem[] | MessageOptions): void {
-    /* eslint-disable-next-line no-console */
-    console.info(this.formatMessage(message, "info", opts));
-  }
-
-  public error(message: string | Error, opts?: LineItem[] | MessageOptions): void {
-    /* eslint-disable-next-line no-console */
-    console.error(this.formatMessage(isError(message) ? message.message : message, "error", opts));
-  }
-
-  public warn(message: string, opts?: LineItem[] | MessageOptions): void {
-    /* eslint-disable-next-line no-console */
-    console.error(this.formatMessage(message, "warn", opts));
-  }
-
-  public success(message: string, opts?: LineItem[] | MessageOptions): void {
-    /* eslint-disable-next-line no-console */
-    console.error(this.formatMessage(message, "success", opts));
+  private indent(msg: string, { additional = 0 }: { additional?: number }): string {
+    return `${this.indentation}${'  '.repeat(additional)}${msg}`;
   }
 
   public begin(message: string, opts?: LineItem[] | MessageOptions): SeedStdout {
@@ -207,8 +162,48 @@ export class SeedStdout {
       this.nestedLevel = currentLevel + 1;
     }
     /* eslint-disable-next-line no-console */
-    console.info(this.formatMessage(message, "begin", opts));
-    return new SeedStdout({ nestedLevel: currentLevel + 1, isNested: true });
+    console.info(this.formatMessage(message, 'begin', opts));
+    return new SeedStdout({ isNested: true, nestedLevel: currentLevel + 1 });
+  }
+
+  public complete(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.info(this.formatMessage(message, 'complete', opts));
+    if (this.isNested) {
+      this.nestedLevel = Math.max(this.nestedLevel - 1, 0);
+    }
+  }
+
+  public error(message: Error | string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.error(this.formatMessage(isError(message) ? message.message : message, 'error', opts));
+  }
+
+  public failed(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.info(this.formatMessage(message, 'error', opts));
+    if (this.isNested) {
+      this.nestedLevel = Math.max(this.nestedLevel - 1, 0);
+    }
+  }
+
+  public info(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.info(this.formatMessage(message, 'info', opts));
+  }
+
+  public success(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.error(this.formatMessage(message, 'success', opts));
+  }
+
+  public warn(message: string, opts?: LineItem[] | MessageOptions): void {
+    /* eslint-disable-next-line no-console */
+    console.error(this.formatMessage(message, 'warn', opts));
+  }
+
+  private get indentation(): string {
+    return ' '.repeat(this.nestedLevel);
   }
 }
 

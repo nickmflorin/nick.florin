@@ -1,48 +1,48 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { InlineLink } from "~/components/buttons";
-import { Description } from "~/components/typography";
-import { CaptionDescription } from "~/features/projects/components/CaptionDescription";
-import { DescriptionGroup } from "~/features/projects/components/DescriptionGroup";
-import { Emphasize } from "~/features/projects/components/Emphasize";
-import { Project, type ProjectProps } from "~/features/projects/components/Project";
-import { ProjectImage } from "~/features/projects/components/ProjectImage";
-import { Section, SectionTitle } from "~/features/projects/components/Section";
+import { InlineLink } from '~/components/buttons';
+import { Description } from '~/components/typography';
+import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
+import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
+import { Emphasize } from '~/features/projects/components/Emphasize';
+import { Project, type ProjectProps } from '~/features/projects/components/Project';
+import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { Section, SectionTitle } from '~/features/projects/components/Section';
 
-export interface WebsiteProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
+export interface WebsiteProps extends Omit<ProjectProps, 'children' | 'description' | 'title'> {}
 
 export const Website = (props: WebsiteProps): JSX.Element => (
   <Project
-    title={props.project.name}
     description={
       <Description>
         A CMS-powered, interactive and dynamic personal portfolio/website written using&nbsp;
-        <InlineLink element="a" href="https://nextjs.org/">
+        <InlineLink element='a' href='https://nextjs.org/'>
           NextJS
         </InlineLink>
         .
       </Description>
     }
+    title={props.project.name}
     {...props}
   >
-    <Section title="Internal Component Library" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Internal Component Library'>
       <DescriptionGroup>
         <Description>
           The application does not rely on any third-party component library. Instead, it leverages
           an internal component library developed using frameworks like&nbsp;
-          <InlineLink element="a" href="https://sass-lang.com/">
+          <InlineLink element='a' href='https://sass-lang.com/'>
             SASS
           </InlineLink>
           &nbsp;and&nbsp;
-          <InlineLink element="a" href="https://tailwindcss.com/">
+          <InlineLink element='a' href='https://tailwindcss.com/'>
             TailwindCSS
           </InlineLink>
           ,&nbsp;along with tooling libraries such as&nbsp;
-          <InlineLink element="a" href="https://floating-ui.com/">
+          <InlineLink element='a' href='https://floating-ui.com/'>
             Floating UI
           </InlineLink>
           &nbsp;and&nbsp;
-          <InlineLink element="a" href="https://www.framer.com/motion/">
+          <InlineLink element='a' href='https://www.framer.com/motion/'>
             Framer Motion
           </InlineLink>
           .
@@ -50,18 +50,18 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         <Description>
           This choice was made primarily as an experiment - to gauge the difficulty, feasibility,
           limitations and benefits of avoiding a third-party component library like&nbsp;
-          <InlineLink element="a" href="https://mantine.dev/">
+          <InlineLink element='a' href='https://mantine.dev/'>
             Mantine
           </InlineLink>
           &nbsp;or&nbsp;
-          <InlineLink element="a" href="https://chakra-ui.com/">
+          <InlineLink element='a' href='https://chakra-ui.com/'>
             Chakra UI
           </InlineLink>
           .
         </Description>
-        <Description className="italic">
+        <Description className='italic'>
           Disclosure:&nbsp;
-          <InlineLink element="a" href="https://mantine.dev/">
+          <InlineLink element='a' href='https://mantine.dev/'>
             Mantine
           </InlineLink>
           &nbsp;was used to a minimal extent in a couple of places where it did not make any sense
@@ -69,14 +69,14 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         </Description>
       </DescriptionGroup>
     </Section>
-    <Section title={<SectionTitle>Skill-Centric Design</SectionTitle>} marginBottom={false}>
+    <Section hasMarginBottom={false} title={<SectionTitle>Skill-Centric Design</SectionTitle>}>
       <DescriptionGroup>
         <Description>
           The application was designed with the concept of a <Emphasize>Skill</Emphasize> at its
           core. A&nbsp;
           <Emphasize>Skill</Emphasize>&nbsp;represents a particular ability or expertise learned
           throughout an academic and/or professional career, such as&nbsp;
-          <InlineLink element="a" href="https://nextjs.org/">
+          <InlineLink element='a' href='https://nextjs.org/'>
             NextJS
           </InlineLink>
           .
@@ -90,8 +90,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         </Description>
       </DescriptionGroup>
       <ProjectImage
-        src="/projects/website/modifying-skills.png"
-        alt="Modifying Skills"
+        alt='Modifying Skills'
         caption={
           <CaptionDescription>
             <Emphasize.Caption>Skill</Emphasize.Caption>(s) can be modified, deleted and/or created
@@ -100,10 +99,10 @@ export const Website = (props: WebsiteProps): JSX.Element => (
             relates to.
           </CaptionDescription>
         }
+        src='/projects/website/modifying-skills.png'
       />
       <ProjectImage
-        src="/projects/website/modifying-courses.png"
-        alt="Modifying Courses"
+        alt='Modifying Courses'
         caption={
           <CaptionDescription>
             The relationship between <Emphasize.Caption>Skill</Emphasize.Caption>(s) and associated
@@ -118,76 +117,75 @@ export const Website = (props: WebsiteProps): JSX.Element => (
             date.
           </CaptionDescription>
         }
+        src='/projects/website/modifying-courses.png'
       />
       <Description>
         All of the content of the application can be dynamically modified directly via the
         admin-only CMS. This includes the ability to modify, create, delete and update the
         experience history viewable on the&nbsp;
-        <InlineLink element="link" href="/">
+        <InlineLink element='link' href='/'>
           Dashboard
         </InlineLink>
         &nbsp;or&nbsp;
-        <InlineLink element="link" href="/resume/experience">
+        <InlineLink element='link' href='/resume/experience'>
           Resume
         </InlineLink>
         &nbsp;pages.
       </Description>
       <ProjectImage
-        src="/projects/website/modifying-experience.png"
-        alt="Modifying Experience"
-        captionCentered
-        caption={["Modifying experience history via the admin-only CMS."]}
+        alt='Modifying Experience'
+        caption={['Modifying experience history via the admin-only CMS.']}
+        isCaptionCentered
+        src='/projects/website/modifying-experience.png'
       />
     </Section>
-    <Section title="Integrations" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Integrations'>
       <DescriptionGroup>
         <Description>
           The application integrates directly with APIs from sources such as&nbsp;
-          <InlineLink element="a" href="https://linkedin.com/">
+          <InlineLink element='a' href='https://linkedin.com/'>
             LinkedIn
           </InlineLink>
           &nbsp;and&nbsp;
-          <InlineLink element="a" href="https://github.com/">
+          <InlineLink element='a' href='https://github.com/'>
             GitHub
           </InlineLink>
           ,&nbsp;allowing relevant data to be prepopulated or imported directly from these sources,
           and then reconciled with internal data.
         </Description>
         <ProjectImage
-          src="/projects/website/modifying-repositories.png"
-          alt="Modifying Experience"
-          captionCentered
+          alt='Modifying Experience'
           caption={[
-            "Modifying the repositories visible in the application after they are imported via " +
+            'Modifying the repositories visible in the application after they are imported via ' +
               "GitHub's API.",
           ]}
+          isCaptionCentered
+          src='/projects/website/modifying-repositories.png'
         />
       </DescriptionGroup>
     </Section>
-    <Section title="Resume Management" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Resume Management'>
       <DescriptionGroup>
         <Description>
           The application offers the ability to manage resume(s) directly in the admin-only CMS.
           Resumes can be uploaded, deleted and toggled between, with the ability to expose a
           specific, most up-to-date resume for public download and viewing in the application.
         </Description>
-        <div className="flex flex-row gap-[24px]">
+        <div className='flex flex-row gap-[24px]'>
           <ProjectImage
-            src="/projects/website/uploading-resumes.png"
-            alt="Uploading Resumes"
-            caption={["Uploading resumes via the admin-only CMS."]}
-            captionCentered
+            alt='Uploading Resumes'
+            caption={['Uploading resumes via the admin-only CMS.']}
+            isCaptionCentered
+            src='/projects/website/uploading-resumes.png'
           />
           <ProjectImage
-            src="/projects/website/modifying-resumes.png"
-            alt="Modifying Resumes"
-            caption={["Modifying resumes via the admin-only CMS."]}
-            captionCentered
+            alt='Modifying Resumes'
+            caption={['Modifying resumes via the admin-only CMS.']}
+            isCaptionCentered
+            src='/projects/website/modifying-resumes.png'
           />
         </div>
       </DescriptionGroup>
     </Section>
   </Project>
 );
-
-export default Website;

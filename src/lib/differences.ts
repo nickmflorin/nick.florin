@@ -1,4 +1,4 @@
-import { isEqual } from "lodash-es";
+import { isEqual } from 'lodash-es';
 
 export type DifferingField<
   M extends Record<string, unknown>,
@@ -6,8 +6,8 @@ export type DifferingField<
   F extends keyof M & keyof Mi,
 > = {
   readonly field: F;
-  readonly previousValue?: M[F];
   readonly newValue?: Mi[F];
+  readonly previousValue?: M[F];
 };
 
 export const differingFields = <
@@ -22,7 +22,7 @@ export const differingFields = <
   fields.reduce(
     (acc: DifferingField<M, Mi, F>[], field: F): DifferingField<M, Mi, F>[] => {
       if (!isEqual(existing[field], additional[field])) {
-        return [...acc, { field, previousValue: existing[field], newValue: additional[field] }];
+        return [...acc, { field, newValue: additional[field], previousValue: existing[field] }];
       }
       return acc;
     },

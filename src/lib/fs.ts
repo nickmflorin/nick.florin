@@ -1,6 +1,6 @@
 const K_UNIT = 1024;
 
-export const FILE_SIZE_UNITS = ["b", "kb", "mb", "gb", "tb", "pb"] as const;
+export const FILE_SIZE_UNITS = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'] as const;
 
 export type FileSizeUnit = (typeof FILE_SIZE_UNITS)[number];
 

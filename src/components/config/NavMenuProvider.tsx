@@ -1,10 +1,10 @@
-"use client";
-import React, { type ReactNode, useState } from "react";
+'use client';
+import { type ReactNode, useState } from 'react';
 
-import { MobileNavigationCutoff } from "~/components/constants";
-import { useWindowResize } from "~/hooks";
+import { MobileNavigationCutoff } from '~/components/constants';
+import { useWindowResize } from '~/hooks';
 
-import { NavMenuContext } from "./context";
+import { NavMenuContext } from './context';
 
 export const NavMenuProvider = ({ children }: { readonly children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,19 +16,17 @@ export const NavMenuProvider = ({ children }: { readonly children: ReactNode }) 
   });
 
   return (
-    <NavMenuContext.Provider
+    <NavMenuContext
       value={{
-        isOpen,
-        isInScope: true,
         close: () => setIsOpen(false),
+        isInScope: true,
+        isOpen,
         open: () => setIsOpen(true),
-        toggle: () => setIsOpen(v => !v),
         setIsOpen,
+        toggle: () => setIsOpen(v => !v),
       }}
     >
       {children}
-    </NavMenuContext.Provider>
+    </NavMenuContext>
   );
 };
-
-export default NavMenuProvider;

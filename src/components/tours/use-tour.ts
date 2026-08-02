@@ -1,21 +1,34 @@
-import { useState, useLayoutEffect, useRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useTour as useRootTour } from "@reactour/tour";
-import { useCookies } from "next-client-cookies";
+import { useTour as useRootTour } from '@reactour/tour';
+import { useCookies } from 'next-client-cookies';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
+import { useScreenSizes } from '~/hooks/use-screen-sizes';
+
+/**
+ * The cookie that records that the user has dismissed the tour and does not want to be shown it
+ * again.
+ */
+const SuppressTourCookie = 'nick.florin:suppress-tour';
 
 export const useTour = () => {
   const cookies = useCookies();
-  const [modalIsOpen, _setModalIsOpen] = useState(false);
-  const wasChecked = useRef<boolean>(false);
   const { setIsOpen: _setTourIsOpen } = useRootTour();
   const observer = useRef<MutationObserver | null>(null);
   const [waitingForTour, setWaitingForTour] = useState(false);
   const { isLessThanOrEqualTo } = useScreenSizes();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
+
+  /* Whether the tour should be offered is decided once, as the initial state, rather than from an
+     effect that opens the modal after the first render.  Both of the things it depends on - the
+     screen size and the cookie - are readable while rendering, so there is nothing to synchronize
+     with afterwards, and deciding up front avoids showing the dialog a render late. */
+  const [internalModalIsOpen, setInternalModalIsOpen] = useState<boolean>(
+    () =>
+      !isLessThanOrEqualTo('md') && cookies.get(SuppressTourCookie)?.toLocaleLowerCase() !== 'true',
+  );
 
   const removeMutationObserver = useCallback(() => {
     observer.current?.disconnect();
@@ -26,12 +39,12 @@ export const useTour = () => {
 
   const setTourIsOpen = useCallback(
     (tourOpen: boolean) => {
-      let timeoutId: NodeJS.Timeout;
+      let timeoutId: NodeJS.Timeout | undefined;
 
       const exitOnError = (e: string) => {
         logger.error(e);
         setError(
-          "There was an error initializing the tour.  Do not worry - we are working on a fix!",
+          'There was an error initializing the tour.  Do not worry - we are working on a fix!',
         );
         _setTourIsOpen(false);
         removeMutationObserver();
@@ -39,16 +52,16 @@ export const useTour = () => {
       };
 
       if (tourOpen) {
-        const button = document.getElementById("site-dropdown-menu-button");
+        const button = document.getElementById('site-dropdown-menu-button');
         if (!button) {
           return exitOnError(
             "Could not find button with ID 'site-dropdown-menu-button' in DOM.  Tour " +
-              "cannot be started.",
+              'cannot be started.',
           );
         }
         button.click();
         observer.current = new MutationObserver(() => {
-          const divElement = document.getElementById("site-dropdown-menu-resume-item");
+          const divElement = document.getElementById('site-dropdown-menu-resume-item');
           if (divElement) {
             if (timeoutId) {
               /* If we found the element, clear the timeout responsible for issuing an error
@@ -58,28 +71,28 @@ export const useTour = () => {
             removeMutationObserver();
             setTimeout(() => {
               _setTourIsOpen(true);
-              _setModalIsOpen(false);
+              setInternalModalIsOpen(false);
               setWaitingForTour(false);
             }, 1000);
           }
         });
-        const node = document.getElementsByClassName("header__right")[0];
+        const node = document.getElementsByClassName('header__right').item(0);
         if (node) {
           setWaitingForTour(true);
           observer.current.observe(node, {
-            subtree: true,
             childList: true,
+            subtree: true,
           });
           timeoutId = setTimeout(() => {
             exitOnError(
               "Could not find '#site-dropdown-menu-resume-item' element in DOM - there " +
-                "may not be any resumes populated.",
+                'may not be any resumes populated.',
             );
           }, 2000);
         } else {
           return exitOnError(
             "Could not find 'header__right' element in DOM - the drawer cannot be observed and " +
-              "the tour must be ended.",
+              'the tour must be ended.',
           );
         }
       } else {
@@ -92,30 +105,20 @@ export const useTour = () => {
   const setModalIsOpen = useCallback(
     (v: boolean) => {
       if (v) {
-        _setModalIsOpen(true);
+        setInternalModalIsOpen(true);
       } else {
-        _setModalIsOpen(false);
+        setInternalModalIsOpen(false);
         removeMutationObserver();
       }
     },
     [removeMutationObserver],
   );
 
-  useLayoutEffect(() => {
-    if (isLessThanOrEqualTo("md")) {
-      return;
-    } else if (!wasChecked.current) {
-      wasChecked.current = true;
-      const cookie = cookies.get("nick.florin:suppress-tour");
-      if (cookie && cookie.toLocaleLowerCase() === "true") {
-        return;
-      }
-      setModalIsOpen(true);
-    }
-    return () => {
-      setModalIsOpen(false);
-    };
-  }, [cookies, setModalIsOpen, isLessThanOrEqualTo]);
-
-  return { error, modalIsOpen, waitingForTour, setTourIsOpen, setModalIsOpen };
+  return {
+    error,
+    modalIsOpen: internalModalIsOpen,
+    setModalIsOpen,
+    setTourIsOpen,
+    waitingForTour,
+  };
 };

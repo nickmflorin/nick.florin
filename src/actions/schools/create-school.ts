@@ -1,23 +1,23 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandSchool } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandSchool } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { SchoolSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { SchoolSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 export const createSchool = async (
   data: z.infer<typeof SchoolSchema>,
 ): Promise<MutationActionResponse<BrandSchool>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -35,10 +35,10 @@ export const createSchool = async (
   const fieldErrors = new ApiClientFieldErrors();
 
   if (await db.school.count({ where: { name } })) {
-    fieldErrors.addUnique("name", "The 'name' must be unique for a given school.");
+    fieldErrors.addUnique('name', "The 'name' must be unique for a given school.");
   }
   if (await db.school.count({ where: { shortName } })) {
-    fieldErrors.addUnique("shortName", "The 'shortName' must be unique for a given school.");
+    fieldErrors.addUnique('shortName', "The 'shortName' must be unique for a given school.");
   }
   if (!fieldErrors.isEmpty) {
     return { error: fieldErrors.json };
@@ -46,9 +46,9 @@ export const createSchool = async (
   const school = await db.school.create({
     data: {
       ...rest,
+      createdById: user.id,
       name,
       shortName,
-      createdById: user.id,
       updatedById: user.id,
     },
   });

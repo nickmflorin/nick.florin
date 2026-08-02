@@ -1,61 +1,61 @@
-import dynamic from "next/dynamic";
-import { type ReactNode, type JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX, type ReactNode } from 'react';
 
-import { type PopoverRenderProps } from "~/components/floating/types";
-import { classNames } from "~/components/types";
+import { type PopoverRenderProps } from '~/components/floating/types';
+import { classNames } from '~/components/types';
 
-import { type PopoverProps } from "./Popover";
-import { TooltipContent, type TooltipContentProps } from "./TooltipContent";
+import { type PopoverProps } from './Popover';
+import { TooltipContent, type TooltipContentProps } from './TooltipContent';
 
-const Popover = dynamic(() => import("./Popover"));
+const Popover = dynamic(() => import('./Popover').then(mod => mod.Popover));
 
-export interface NonConditionalTooltipProps extends Omit<PopoverProps, "content"> {
+export interface NonConditionalTooltipProps extends Omit<PopoverProps, 'content'> {
+  readonly className?: TooltipContentProps['className'];
   readonly content: ReactNode;
   readonly isDisabled?: never;
   readonly isEnabled?: never;
-  readonly className?: TooltipContentProps["className"];
 }
 
-export interface DisabledConditionalTooltipProps
-  extends Omit<PopoverProps, "content" | "children"> {
+export interface DisabledConditionalTooltipProps extends Omit<
+  PopoverProps,
+  'children' | 'content'
+> {
+  readonly children: ((params: Partial<PopoverRenderProps>) => JSX.Element) | JSX.Element;
+  readonly className?: TooltipContentProps['className'];
   readonly content: ReactNode;
   readonly isDisabled: boolean;
   readonly isEnabled?: never;
-  readonly className?: TooltipContentProps["className"];
-  readonly children: JSX.Element | ((params: Partial<PopoverRenderProps>) => JSX.Element);
 }
 
-export interface EnabledConditionalTooltipProps extends Omit<PopoverProps, "content" | "children"> {
+export interface EnabledConditionalTooltipProps extends Omit<PopoverProps, 'children' | 'content'> {
+  readonly children: ((params: Partial<PopoverRenderProps>) => JSX.Element) | JSX.Element;
+  readonly className?: TooltipContentProps['className'];
   readonly content: ReactNode;
-  readonly isEnabled: boolean;
   readonly isDisabled?: never;
-  readonly className?: TooltipContentProps["className"];
-  readonly children: JSX.Element | ((params: Partial<PopoverRenderProps>) => JSX.Element);
+  readonly isEnabled: boolean;
 }
 
 export type TooltipProps =
-  | EnabledConditionalTooltipProps
-  | DisabledConditionalTooltipProps
-  | NonConditionalTooltipProps;
+  DisabledConditionalTooltipProps | EnabledConditionalTooltipProps | NonConditionalTooltipProps;
 
 export const Tooltip = ({
   children,
-  content,
   className,
-  isEnabled,
+  content,
   isDisabled,
+  isEnabled,
   ...props
 }: TooltipProps) => {
   if (isEnabled !== undefined || isDisabled !== undefined) {
-    if (typeof children === "function") {
+    if (typeof children === 'function') {
       if (isEnabled === false || isDisabled === true) {
-        return <>{children({ ref: undefined, isOpen: undefined, params: undefined })}</>;
+        return <>{children({ isOpen: undefined, params: undefined, ref: undefined })}</>;
       }
       return (
         <Popover
           {...props}
           content={
-            <TooltipContent className={classNames("z-50", className)}>{content}</TooltipContent>
+            <TooltipContent className={classNames('z-50', className)}>{content}</TooltipContent>
           }
         >
           {children}
@@ -68,7 +68,7 @@ export const Tooltip = ({
       <Popover
         {...props}
         content={
-          <TooltipContent className={classNames("z-50", className)}>{content}</TooltipContent>
+          <TooltipContent className={classNames('z-50', className)}>{content}</TooltipContent>
         }
       >
         {children}
@@ -78,11 +78,9 @@ export const Tooltip = ({
   return (
     <Popover
       {...props}
-      content={<TooltipContent className={classNames("z-50", className)}>{content}</TooltipContent>}
+      content={<TooltipContent className={classNames('z-50', className)}>{content}</TooltipContent>}
     >
       {children}
     </Popover>
   );
 };
-
-export default Tooltip;

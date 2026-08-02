@@ -7,15 +7,17 @@ export type WithoutTrailingSlashes<T extends string> = T extends `${infer R exte
   : T;
 
 export const withoutTrailingSlashes = <T extends string>(url: T): WithoutTrailingSlashes<T> => {
-  while (url.endsWith("/")) {
-    url = url.slice(0, -1) as T;
+  let trimmed: string = url;
+  while (trimmed.endsWith('/')) {
+    trimmed = trimmed.slice(0, -1);
   }
-  return url as WithoutTrailingSlashes<T>;
+  return trimmed as WithoutTrailingSlashes<T>;
 };
 
 export const withoutLeadingSlashes = <T extends string>(url: T): WithoutLeadingSlashes<T> => {
-  while (url.startsWith("/")) {
-    url = url.slice(1) as T;
+  let trimmed: string = url;
+  while (trimmed.startsWith('/')) {
+    trimmed = trimmed.slice(1);
   }
-  return url as WithoutLeadingSlashes<T>;
+  return trimmed as WithoutLeadingSlashes<T>;
 };

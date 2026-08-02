@@ -1,29 +1,27 @@
-import { useRouter } from "next/navigation";
-import { useCallback, useTransition } from "react";
+import { useRouter } from 'next/navigation';
+import { type MouseEvent, useCallback, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { deleteSkill } from "~/actions/skills/delete-skill";
-import { updateSkill } from "~/actions/skills/update-skill";
+import { deleteSkill } from '~/actions/skills/delete-skill';
+import { updateSkill } from '~/actions/skills/update-skill';
 
-import { DrawerIds } from "~/components/drawers";
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import Icon from "~/components/icons/Icon";
-import { type DataTableRowAction } from "~/components/tables";
-import { type SkillsTableModel } from "~/features/skills";
+import { DrawerIds } from '~/components/drawers';
+import { useDrawers } from '~/components/drawers/hooks/use-drawers';
+import { Icon } from '~/components/icons/Icon';
+import { type DataTableRowAction } from '~/components/tables';
+import { type SkillsTableModel } from '~/features/skills';
 
 interface CallbackParams {
-  close: (
-    evt: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>,
-  ) => void;
+  close: (evt: Event | MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement>) => void;
 }
 
 export const useSkillsTableRowActions = () => {
   const { open } = useDrawers();
 
-  const { refresh } = useRouter();
+  const router = useRouter();
 
   const [showPending, showTransition] = useTransition();
   const [hidePending, hideTransition] = useTransition();
@@ -37,223 +35,252 @@ export const useSkillsTableRowActions = () => {
   return useCallback(
     (skill: SkillsTableModel, { close }: CallbackParams): DataTableRowAction[] => [
       {
-        content: "Edit",
+        content: 'Edit',
+        icon: <Icon className='text-blue-600' icon='pen-to-square' size='16px' />,
         isLoading: editPending,
-        icon: <Icon icon="pen-to-square" size="16px" className="text-blue-600" />,
-        onClick: async e => {
+        onClick: e => {
           editTransition(() => {
-            open(DrawerIds.UPDATE_SKILL, { skillId: skill.id, eager: { label: skill.label } });
+            open(DrawerIds.UPDATE_SKILL, { eager: { label: skill.label }, skillId: skill.id });
             close(e);
           });
         },
       },
       {
-        isVisible: !skill.visible,
-        content: "Show",
-        loadingText: "Showing",
-        icon: <Icon icon="eye" size="16px" className="text-gray-600" />,
+        content: 'Show',
+        icon: <Icon className='text-gray-600' icon='eye' size='16px' />,
         isLoading: showPending,
-        onClick: async (e, instance) => {
-          instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
-          try {
-            response = await updateSkill(skill.id, { visible: true });
-          } catch (e) {
-            logger.errorUnsafe(e, `There was an error showing skill with ID '${skill.id}'!`);
-            toast.error("There was an error showing the skill. Please try again later.");
-            return instance.setLoading(false);
-          }
-          const { error } = response;
-          if (error) {
-            logger.error(error, `There was an error enabling skill with ID '${skill.id}'!`);
-            toast.error("There was an error enabling the skill. Please try again later.");
-            instance.setLoading(false);
-            return;
-          }
-          return showTransition(() => {
-            refresh();
-            instance.setLoading(false);
-            close(e);
-          });
+        isVisible: !skill.visible,
+        loadingText: 'Showing',
+        onClick: (e, instance) => {
+          void (async () => {
+            instance.setLoading(true);
+            let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
+            try {
+              response = await updateSkill(skill.id, { visible: true });
+            } catch (err) {
+              logger.errorUnsafe(err, `There was an error showing skill with ID '${skill.id}'!`);
+              toast.error('There was an error showing the skill. Please try again later.');
+              return instance.setLoading(false);
+            }
+            const { error } = response;
+            if (error) {
+              logger.error(error, `There was an error enabling skill with ID '${skill.id}'!`);
+              toast.error('There was an error enabling the skill. Please try again later.');
+              instance.setLoading(false);
+              return;
+            }
+            return showTransition(() => {
+              router.refresh();
+              instance.setLoading(false);
+              close(e);
+            });
+          })();
         },
       },
       {
-        isVisible: skill.visible,
-        content: "Hide",
-        loadingText: "Hiding",
-        icon: <Icon icon="eye-slash" size="16px" className="text-gray-600" />,
+        content: 'Hide',
+        icon: <Icon className='text-gray-600' icon='eye-slash' size='16px' />,
         isLoading: hidePending,
-        onClick: async (e, instance) => {
-          instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
-          try {
-            response = await updateSkill(skill.id, { visible: false });
-          } catch (e) {
-            logger.errorUnsafe(e, `There was an error hiding skill with ID '${skill.id}'!`);
-            toast.error("There was an error hiding the skill. Please try again later.");
-            return instance.setLoading(false);
-          }
-          const { error } = response;
-          if (error) {
-            logger.error(error, `There was an error hiding skill with ID '${skill.id}'!`);
-            toast.error("There was an error hiding the skill. Please try again later.");
-            instance.setLoading(false);
-            return;
-          }
-          return hideTransition(() => {
-            refresh();
-            instance.setLoading(false);
-            close(e);
-          });
+        isVisible: skill.visible,
+        loadingText: 'Hiding',
+        onClick: (e, instance) => {
+          void (async () => {
+            instance.setLoading(true);
+            let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
+            try {
+              response = await updateSkill(skill.id, { visible: false });
+            } catch (err) {
+              logger.errorUnsafe(err, `There was an error hiding skill with ID '${skill.id}'!`);
+              toast.error('There was an error hiding the skill. Please try again later.');
+              return instance.setLoading(false);
+            }
+            const { error } = response;
+            if (error) {
+              logger.error(error, `There was an error hiding skill with ID '${skill.id}'!`);
+              toast.error('There was an error hiding the skill. Please try again later.');
+              instance.setLoading(false);
+              return;
+            }
+            return hideTransition(() => {
+              router.refresh();
+              instance.setLoading(false);
+              close(e);
+            });
+          })();
         },
       },
       {
-        content: "Delete",
+        content: 'Delete',
+        icon: <Icon className='text-red-600' icon='trash-alt' size='16px' />,
         isLoading: deletePending,
-        loadingText: "Deleting",
-        icon: <Icon icon="trash-alt" size="16px" className="text-red-600" />,
-        onClick: async (e, instance) => {
-          instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof deleteSkill>> | null = null;
-          try {
-            response = await deleteSkill(skill.id);
-          } catch (e) {
-            logger.errorUnsafe(e, `There was an error deleting the skill with ID '${skill.id}'!`);
-            toast.error("There was an error deleting the skill. Please try again later.");
-            return instance.setLoading(false);
-          }
-          const { error } = response;
-          if (error) {
-            logger.error(error, `There was an error deleting the skill with ID '${skill.id}'!`);
-            toast.error("There was an error deleting the skill. Please try again later.");
-            instance.setLoading(false);
-            return;
-          }
-          return deleteTransition(() => {
-            refresh();
-            instance.setLoading(false);
-            close(e);
-          });
+        loadingText: 'Deleting',
+        onClick: (e, instance) => {
+          void (async () => {
+            instance.setLoading(true);
+            let response: Awaited<ReturnType<typeof deleteSkill>> | null = null;
+            try {
+              response = await deleteSkill(skill.id);
+            } catch (err) {
+              logger.errorUnsafe(
+                err,
+                `There was an error deleting the skill with ID '${skill.id}'!`,
+              );
+              toast.error('There was an error deleting the skill. Please try again later.');
+              return instance.setLoading(false);
+            }
+            const { error } = response;
+            if (error) {
+              logger.error(error, `There was an error deleting the skill with ID '${skill.id}'!`);
+              toast.error('There was an error deleting the skill. Please try again later.');
+              instance.setLoading(false);
+              return;
+            }
+            return deleteTransition(() => {
+              router.refresh();
+              instance.setLoading(false);
+              close(e);
+            });
+          })();
         },
       },
       {
-        isVisible: !skill.highlighted,
-        content: "Highlight",
-        loadingText: "Highlighting",
-        icon: <Icon icon="star" size="16px" className="text-gray-600" />,
+        content: 'Highlight',
+        icon: <Icon className='text-gray-600' icon='star' size='16px' />,
         isLoading: highlightPending,
-        onClick: async (e, instance) => {
-          instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
-          try {
-            response = await updateSkill(skill.id, { highlighted: true });
-          } catch (e) {
-            logger.errorUnsafe(e, `There was an error highlighting skill with ID '${skill.id}'!`);
-            toast.error("There was an error highlighting the skill. Please try again later.");
-            return instance.setLoading(false);
-          }
-          const { error } = response;
-          if (error) {
-            logger.error(error, `There was an error highlighting skill with ID '${skill.id}'!`);
-            toast.error("There was an error highlighting the skill. Please try again later.");
-            instance.setLoading(false);
-            return;
-          }
-          return highlightTransition(() => {
-            refresh();
-            instance.setLoading(false);
-            close(e);
-          });
+        isVisible: !skill.highlighted,
+        loadingText: 'Highlighting',
+        onClick: (e, instance) => {
+          void (async () => {
+            instance.setLoading(true);
+            let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
+            try {
+              response = await updateSkill(skill.id, { highlighted: true });
+            } catch (err) {
+              logger.errorUnsafe(
+                err,
+                `There was an error highlighting skill with ID '${skill.id}'!`,
+              );
+              toast.error('There was an error highlighting the skill. Please try again later.');
+              return instance.setLoading(false);
+            }
+            const { error } = response;
+            if (error) {
+              logger.error(error, `There was an error highlighting skill with ID '${skill.id}'!`);
+              toast.error('There was an error highlighting the skill. Please try again later.');
+              instance.setLoading(false);
+              return;
+            }
+            return highlightTransition(() => {
+              router.refresh();
+              instance.setLoading(false);
+              close(e);
+            });
+          })();
         },
       },
       {
-        isVisible: skill.highlighted,
-        content: "Unhighlight",
-        loadingText: "Unhighlighting",
-        icon: <Icon icon="ban" size="16px" className="text-gray-600" />,
+        content: 'Unhighlight',
+        icon: <Icon className='text-gray-600' icon='ban' size='16px' />,
         isLoading: unhighlightPending,
-        onClick: async (e, instance) => {
-          instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
-          try {
-            response = await updateSkill(skill.id, { highlighted: false });
-          } catch (e) {
-            logger.errorUnsafe(e, `There was an error unhighlighting skill with ID '${skill.id}'!`);
-            toast.error("There was an error unhighlighting the skill. Please try again later.");
-            return instance.setLoading(false);
-          }
-          const { error } = response;
-          if (error) {
-            logger.error(error, `There was an error unhighlighting skill with ID '${skill.id}'!`);
-            toast.error("There was an error unhighlighting the skill. Please try again later.");
-            instance.setLoading(false);
-            return;
-          }
-          return unhighlightTransition(() => {
-            refresh();
-            instance.setLoading(false);
-            close(e);
-          });
+        isVisible: skill.highlighted,
+        loadingText: 'Unhighlighting',
+        onClick: (e, instance) => {
+          void (async () => {
+            instance.setLoading(true);
+            let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
+            try {
+              response = await updateSkill(skill.id, { highlighted: false });
+            } catch (err) {
+              logger.errorUnsafe(
+                err,
+                `There was an error unhighlighting skill with ID '${skill.id}'!`,
+              );
+              toast.error('There was an error unhighlighting the skill. Please try again later.');
+              return instance.setLoading(false);
+            }
+            const { error } = response;
+            if (error) {
+              logger.error(error, `There was an error unhighlighting skill with ID '${skill.id}'!`);
+              toast.error('There was an error unhighlighting the skill. Please try again later.');
+              instance.setLoading(false);
+              return;
+            }
+            return unhighlightTransition(() => {
+              router.refresh();
+              instance.setLoading(false);
+              close(e);
+            });
+          })();
         },
       },
       {
-        isVisible: !skill.prioritized,
-        content: "Prioritize",
-        loadingText: "Prioritizing",
-        icon: <Icon icon="arrow-up-1-9" size="16px" className="text-gray-600" />,
+        content: 'Prioritize',
+        icon: <Icon className='text-gray-600' icon='arrow-up-1-9' size='16px' />,
         isLoading: prioritizePending,
-        onClick: async (e, instance) => {
-          instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
-          try {
-            response = await updateSkill(skill.id, { prioritized: true });
-          } catch (e) {
-            logger.errorUnsafe(e, `There was an error prioritizing skill with ID '${skill.id}'!`);
-            toast.error("There was an error prioritizing the skill. Please try again later.");
-            return instance.setLoading(false);
-          }
-          const { error } = response;
-          if (error) {
-            logger.error(error, `There was an error prioritizing skill with ID '${skill.id}'!`);
-            toast.error("There was an error prioritizing the skill. Please try again later.");
-            instance.setLoading(false);
-            return;
-          }
-          return prioritizeTransition(() => {
-            refresh();
-            instance.setLoading(false);
-            close(e);
-          });
+        isVisible: !skill.prioritized,
+        loadingText: 'Prioritizing',
+        onClick: (e, instance) => {
+          void (async () => {
+            instance.setLoading(true);
+            let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
+            try {
+              response = await updateSkill(skill.id, { prioritized: true });
+            } catch (err) {
+              logger.errorUnsafe(
+                err,
+                `There was an error prioritizing skill with ID '${skill.id}'!`,
+              );
+              toast.error('There was an error prioritizing the skill. Please try again later.');
+              return instance.setLoading(false);
+            }
+            const { error } = response;
+            if (error) {
+              logger.error(error, `There was an error prioritizing skill with ID '${skill.id}'!`);
+              toast.error('There was an error prioritizing the skill. Please try again later.');
+              instance.setLoading(false);
+              return;
+            }
+            return prioritizeTransition(() => {
+              router.refresh();
+              instance.setLoading(false);
+              close(e);
+            });
+          })();
         },
       },
       {
-        isVisible: skill.prioritized,
-        content: "Deprioritize",
-        loadingText: "Deprioritizing",
-        icon: <Icon icon="arrow-down-1-9" size="16px" className="text-gray-600" />,
+        content: 'Deprioritize',
+        icon: <Icon className='text-gray-600' icon='arrow-down-1-9' size='16px' />,
         isLoading: deprioritizePending,
-        onClick: async (e, instance) => {
-          instance.setLoading(true);
-          let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
-          try {
-            response = await updateSkill(skill.id, { prioritized: false });
-          } catch (e) {
-            logger.errorUnsafe(e, `There was an error deprioritizing skill with ID '${skill.id}'!`);
-            toast.error("There was an error deprioritizing the skill. Please try again later.");
-            return instance.setLoading(false);
-          }
-          const { error } = response;
-          if (error) {
-            logger.error(error, `There was an error deprioritizing skill with ID '${skill.id}'!`);
-            toast.error("There was an error deprioritizing the skill. Please try again later.");
-            instance.setLoading(false);
-            return;
-          }
-          return deprioritizeTransition(() => {
-            refresh();
-            instance.setLoading(false);
-            close(e);
-          });
+        isVisible: skill.prioritized,
+        loadingText: 'Deprioritizing',
+        onClick: (e, instance) => {
+          void (async () => {
+            instance.setLoading(true);
+            let response: Awaited<ReturnType<typeof updateSkill>> | null = null;
+            try {
+              response = await updateSkill(skill.id, { prioritized: false });
+            } catch (err) {
+              logger.errorUnsafe(
+                err,
+                `There was an error deprioritizing skill with ID '${skill.id}'!`,
+              );
+              toast.error('There was an error deprioritizing the skill. Please try again later.');
+              return instance.setLoading(false);
+            }
+            const { error } = response;
+            if (error) {
+              logger.error(error, `There was an error deprioritizing skill with ID '${skill.id}'!`);
+              toast.error('There was an error deprioritizing the skill. Please try again later.');
+              instance.setLoading(false);
+              return;
+            }
+            return deprioritizeTransition(() => {
+              router.refresh();
+              instance.setLoading(false);
+              close(e);
+            });
+          })();
         },
       },
     ],
@@ -267,7 +294,7 @@ export const useSkillsTableRowActions = () => {
       deprioritizePending,
       prioritizePending,
       open,
-      refresh,
+      router,
     ],
   );
 };

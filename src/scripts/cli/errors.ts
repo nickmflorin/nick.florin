@@ -1,30 +1,30 @@
 export class CommandLineError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "CommandLineError";
+    this.name = 'CommandLineError';
   }
 }
 
 export class CommandLineEnvironmentError extends CommandLineError {
   constructor(message?: string) {
-    super(message ?? "Invalid environment detected!");
-    this.name = "CommandLineEnvironmentError";
+    super(message ?? 'Invalid environment detected!');
+    this.name = 'CommandLineEnvironmentError';
   }
 }
 
 export class CommandLineDevOnlyError extends CommandLineError {
   constructor(message?: string) {
     super(
-      message ?? "Attempting to access development-only logic in a non-development environment!",
+      message ?? 'Attempting to access development-only logic in a non-development environment!',
     );
-    this.name = "CommandLineDevOnlyError";
+    this.name = 'CommandLineDevOnlyError';
   }
 }
 
 export abstract class CommandLineArgumentError extends CommandLineError {
   constructor(message: string) {
     super(message);
-    this.name = "CommandLineArgumentError";
+    this.name = 'CommandLineArgumentError';
   }
 }
 
@@ -35,13 +35,13 @@ export class InvalidCommandLineArgumentError extends CommandLineError {
         ? `Invalid value for argument '${name}': ${value}. ${context}`
         : `Invalid value for argument '${name}': ${value}.`,
     );
-    this.name = "InvalidCommandLineArgumentError";
+    this.name = 'InvalidCommandLineArgumentError';
   }
 }
 
 export class MissingCommandLineArgumentError extends CommandLineError {
   constructor(name: string) {
     super(`Missing value for argument '${name}'.`);
-    this.name = "MissingCommandLineArgumentError";
+    this.name = 'MissingCommandLineArgumentError';
   }
 }

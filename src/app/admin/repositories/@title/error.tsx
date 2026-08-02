@@ -1,5 +1,5 @@
-"use client";
+'use client';
 
-export default function Error() {
-  return <>{0}</>;
-}
+const Error = () => <>{0}</>;
+
+export default Error;

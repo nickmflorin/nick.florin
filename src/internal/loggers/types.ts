@@ -1,27 +1,26 @@
-import { isError } from "~/application/errors";
+import { isError } from '~/application/errors';
 
-import { isApiError, type ApiClientErrorJson, type ApiError, isApiClientErrorJson } from "~/api";
+import { type ApiClientErrorJson, type ApiError, isApiClientErrorJson, isApiError } from '~/api';
 import {
-  type VercelEnvironmentName,
   type EnvironmentName,
   type LogLevel,
-} from "~/environment/constants";
+  type VercelEnvironmentName,
+} from '~/environment/constants';
 
-export type NextLoggerTransport = "sentry" | "browser";
+export type NextLoggerTransport = 'browser' | 'sentry';
 
 export interface AbstractLoggerConfig {
   readonly environment: EnvironmentName;
-  readonly level?: LogLevel;
   readonly globalContext?: Record<string, unknown>;
-  readonly vercelEnvironment?: VercelEnvironmentName;
   readonly includeContext?: boolean;
+  readonly level?: LogLevel;
+  readonly vercelEnvironment?: VercelEnvironmentName;
 }
 
 export interface NextLoggerConfig extends AbstractLoggerConfig {
   readonly pretty?: boolean;
   readonly transports?:
-    | NextLoggerTransport[]
-    | Partial<Record<EnvironmentName, NextLoggerTransport[]>>;
+    NextLoggerTransport[] | Partial<Record<EnvironmentName, NextLoggerTransport[]>>;
 }
 
 /**
@@ -35,21 +34,21 @@ export interface CaptureOptions {
 /**
  * Can be used to both provide options to the log method and to provide additional context to the
  * data that is logged.
- *
- * @property {boolean | undefined} capture
- *   If not specified as 'false', the log message and/or error will be dispatched to Sentry.
  */
 export interface CaptureContext {
-  readonly capture?: boolean;
   [key: string]: unknown;
+  /**
+   * If not specified as 'false', the log message and/or error will be dispatched to Sentry.
+   */
+  readonly capture?: boolean;
 }
 
 export interface SentryCaptureContext {
-  readonly level?: Exclude<LogLevel, "silent">;
   [key: string]: unknown;
+  readonly level?: Exclude<LogLevel, 'silent'>;
 }
 
-export type LoggerError = Error | ApiError | ApiClientErrorJson;
+export type LoggerError = ApiClientErrorJson | ApiError | Error;
 
 export const isLoggerError = (error: unknown): error is LoggerError =>
   isError(error) || isApiError(error) || isApiClientErrorJson(error);

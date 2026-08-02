@@ -1,39 +1,41 @@
-import { type ResumeBrand, type BrandModel } from "~/database/model";
+import { type BrandModel, type ResumeBrand } from '~/database/model';
 
-import { type ComponentProps } from "~/components/types";
-import { ShowHide } from "~/components/util";
-import * as types from "~/features/resume/types";
+import { type ComponentProps } from '~/components/types';
+import { ShowHide } from '~/components/util';
+import * as types from '~/features/resume/types';
 
-import { ResumeModelTile } from "./ResumeModelTile";
+import { ResumeModelTile } from './ResumeModelTile';
 
-export interface ResumeModelCondensedTileProps<M extends BrandModel<T>, T extends ResumeBrand>
-  extends ComponentProps {
+export interface ResumeModelCondensedTileProps<
+  M extends BrandModel<T>,
+  T extends ResumeBrand,
+> extends ComponentProps {
+  readonly areTagsVisible?: boolean;
+  readonly isDescriptionShowMoreLinkVisible?: boolean;
+  readonly isDescriptionVisible?: boolean;
+  readonly isTitleExpandable?: boolean;
   readonly model: M;
-  readonly showTags?: boolean;
-  readonly titleIsExpandable?: boolean;
-  readonly includeDescription?: boolean;
-  readonly includeDescriptionShowMoreLink?: boolean;
 }
 
 export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends ResumeBrand>({
+  areTagsVisible = true,
+  isDescriptionShowMoreLinkVisible = true,
+  isDescriptionVisible = true,
+  isTitleExpandable,
   model,
-  titleIsExpandable,
-  showTags = true,
-  includeDescription = true,
-  includeDescriptionShowMoreLink = true,
   ...props
 }: ResumeModelCondensedTileProps<M, T>) => (
   <ResumeModelTile {...props}>
     <ResumeModelTile.Header
-      size="small"
+      areTagsVisible={areTagsVisible}
+      isTitleExpandable={isTitleExpandable}
       model={model}
-      showTags={showTags}
-      titleIsExpandable={titleIsExpandable}
+      size='small'
     >
-      <ShowHide show={types.hasDescription(model) && includeDescription}>
+      <ShowHide show={types.hasDescription(model) && isDescriptionVisible}>
         <ResumeModelTile.ModelDescription
+          isShowMoreLinkVisible={isDescriptionShowMoreLinkVisible}
           lineClamp={3}
-          includeShowMoreLink={includeDescriptionShowMoreLink}
           model={model}
         />
       </ShowHide>

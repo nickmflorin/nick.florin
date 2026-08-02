@@ -1,43 +1,48 @@
-import React, { memo, useMemo, type ReactNode, type JSX } from "react";
+import { Fragment, type JSX, memo, type ReactNode, useMemo } from 'react';
 
-import { isFragment } from "react-is";
+import { isFragment } from 'react-is';
 
-import { titleCase } from "~/lib/formatters";
+import { titleCase } from '~/lib/formatters';
 
-import { classNames, type ComponentProps } from "~/components/types";
-import { Text, type TextProps } from "~/components/typography/Text";
+import { classNames, type ComponentProps } from '~/components/types';
+import { Text, type TextProps } from '~/components/typography/Text';
 
-interface SelectValueTextProps extends Omit<TextProps<"div">, "fontSize" | "lineClamp"> {}
+interface SelectValueTextProps extends Omit<TextProps<'div'>, 'fontSize' | 'lineClamp'> {}
 
 const SelectValueText = (props: SelectValueTextProps) => (
   <Text
     {...props}
-    fontSize="xs"
-    className={classNames("text-gray-600", props.className)}
+    className={classNames('text-gray-600', props.className)}
+    fontSize='xs'
     lineClamp={1}
   >
     {props.children}
   </Text>
 );
 
-export interface TruncatedMultiValuRendererProps {
-  readonly summarizeValueAfter?: number;
-  readonly summarizeValue?: boolean;
-  readonly valueSummary?: ReactNode | ((params: { count: number }) => ReactNode);
-  readonly content: (string | number | JSX.Element)[] | string | number | JSX.Element;
-  readonly maximumValuesToRender?: number;
+export interface TruncatedMultiValueRendererProps {
   readonly children: (params: { children: JSX.Element[] }) => JSX.Element;
+  /**
+   * The models that should be rendered, which must already be sorted by the caller because the
+   * partition applied when the number of models exceeds `maximumValuesToRender` assumes the
+   * models are in a specific order.
+   */
+  readonly content: (JSX.Element | number | string)[] | JSX.Element | number | string;
+  readonly maximumValuesToRender?: number;
+  readonly summarizeValue?: boolean;
+  readonly summarizeValueAfter?: number;
+  readonly valueSummary?: ((params: { count: number }) => ReactNode) | ReactNode;
 }
 
 interface ValueSummaryProps extends ComponentProps {
   readonly children?: ReactNode;
   readonly count: number;
-  readonly suffix?: "more" | "selected";
+  readonly suffix?: 'more' | 'selected';
 }
 
-const ValueSummary = ({ children, count, suffix = "selected", ...props }: ValueSummaryProps) => {
+const ValueSummary = ({ children, count, suffix = 'selected', ...props }: ValueSummaryProps) => {
   if (children) {
-    if (typeof children === "string") {
+    if (typeof children === 'string') {
       return <SelectValueText {...props}>{children}</SelectValueText>;
     }
     return children;
@@ -47,20 +52,18 @@ const ValueSummary = ({ children, count, suffix = "selected", ...props }: ValueS
 
 export const TruncatedMultiValueRenderer = memo(
   ({
-    maximumValuesToRender,
+    children,
     content,
+    maximumValuesToRender,
     summarizeValue,
     summarizeValueAfter,
     valueSummary,
-    children,
-  }: TruncatedMultiValuRendererProps) => {
+  }: TruncatedMultiValueRendererProps) => {
     const contents = useMemo(
       () => (Array.isArray(content) ? content : [content]).filter(c => !isFragment(c)),
       [content],
     );
 
-    /* Note: The models must be sorted before being provided as a prop to this component, because
-       the partition will be made assuming that the models are in a specific order. */
     const partition = useMemo(() => {
       if (maximumValuesToRender !== undefined) {
         return [contents.slice(0, maximumValuesToRender), contents.slice(maximumValuesToRender)];
@@ -71,30 +74,28 @@ export const TruncatedMultiValueRenderer = memo(
     if (partition && partition[1].length !== 0) {
       if (partition[0].length !== 0) {
         return (
-          <div className="flex flex-row gap-[4px] items-center overflow-hidden">
+          <div className='flex flex-row gap-[4px] items-center overflow-hidden'>
             {children({
-              children: partition[0].map((child, i) => (
-                <React.Fragment key={i}>{child}</React.Fragment>
-              )),
+              children: partition[0].map((child, i) => <Fragment key={i}>{child}</Fragment>),
             })}
-            <ValueSummary count={partition[1].length} suffix="more">
-              {typeof valueSummary === "function"
+            <ValueSummary count={partition[1].length} suffix='more'>
+              {typeof valueSummary === 'function'
                 ? valueSummary({ count: partition[1].length })
                 : valueSummary}
             </ValueSummary>
           </div>
         );
       }
-      return <></>;
+      return null;
     } else if (
       summarizeValueAfter !== undefined &&
       contents.length !== 0 &&
       contents.length > Math.max(0, summarizeValueAfter)
     ) {
       return (
-        <div className="flex flex-row gap-[4px] items-center overflow-hidden">
-          <ValueSummary count={contents.length} suffix="selected">
-            {typeof valueSummary === "function"
+        <div className='flex flex-row gap-[4px] items-center overflow-hidden'>
+          <ValueSummary count={contents.length} suffix='selected'>
+            {typeof valueSummary === 'function'
               ? valueSummary({ count: contents.length })
               : valueSummary}
           </ValueSummary>
@@ -102,9 +103,9 @@ export const TruncatedMultiValueRenderer = memo(
       );
     } else if (summarizeValue && contents.length !== 0) {
       return (
-        <div className="flex flex-row gap-[4px] items-center overflow-hidden">
-          <ValueSummary count={contents.length} suffix="selected">
-            {typeof valueSummary === "function"
+        <div className='flex flex-row gap-[4px] items-center overflow-hidden'>
+          <ValueSummary count={contents.length} suffix='selected'>
+            {typeof valueSummary === 'function'
               ? valueSummary({ count: contents.length })
               : valueSummary}
           </ValueSummary>
@@ -112,9 +113,9 @@ export const TruncatedMultiValueRenderer = memo(
       );
     } else if (contents.length !== 0) {
       return children({
-        children: contents.map((child, i) => <React.Fragment key={i}>{child}</React.Fragment>),
+        children: contents.map((child, i) => <Fragment key={i}>{child}</Fragment>),
       });
     }
-    return <></>;
+    return null;
   },
 );

@@ -1,20 +1,20 @@
-import { type ApiRepository } from "~/database/model";
+import { type ApiRepository } from '~/database/model';
 
-import { useForm } from "~/components/forms-v2/hooks/use-form";
+import { useForm } from '~/components/forms-v2/hooks/use-form';
 
-import { RepositoryFormSchema } from "./schema";
+import { RepositoryFormSchema } from './schema';
 
-export const useRepositoryForm = (repository?: Partial<ApiRepository<["skills", "projects"]>>) =>
+export const useRepositoryForm = (repository?: Partial<ApiRepository<['skills', 'projects']>>) =>
   useForm({
-    schema: RepositoryFormSchema,
     defaultValues: {
+      description: repository?.description ?? '',
       highlighted: repository?.highlighted ?? false,
-      visible: repository?.visible ?? false,
-      startDate: repository?.startDate ?? new Date(),
-      slug: repository?.slug ?? "",
-      npmPackageName: repository?.npmPackageName ?? "",
-      description: repository?.description ?? "",
-      skills: repository?.skills ? repository.skills.map(sk => sk.id) : [],
+      npmPackageName: repository?.npmPackageName ?? '',
       projects: repository?.projects ? repository.projects.map(p => p.id) : [],
+      skills: repository?.skills ? repository.skills.map(sk => sk.id) : [],
+      slug: repository?.slug ?? '',
+      startDate: repository?.startDate ?? new Date(),
+      visible: repository?.visible ?? false,
     },
+    schema: RepositoryFormSchema,
   });

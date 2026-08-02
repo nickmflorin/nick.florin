@@ -1,78 +1,78 @@
-import { type ApiCourse } from "~/database/model";
+import { type ApiCourse } from '~/database/model';
 
-import type {
-  DataTableColumnConfig,
-  OrderableTableColumnId,
-  TableColumnId,
-} from "~/components/tables";
+import {
+  type DataTableColumnConfig,
+  type OrderableTableColumnId,
+  type TableColumnId,
+} from '~/components/tables';
 
-export type CoursesTableModel = ApiCourse<["education", "skills"]>;
+export type CoursesTableModel = ApiCourse<['education', 'skills']>;
 
 export const CourseOrderableFields = [
-  "name",
-  "shortName",
-  "slug",
-  "createdAt",
-  "updatedAt",
-  "education",
+  'name',
+  'shortName',
+  'slug',
+  'createdAt',
+  'updatedAt',
+  'education',
 ] as const;
 
 export const CoursesTableColumns = [
   {
-    id: "name",
-    label: "Name",
+    id: 'name',
+    isOrderable: true,
+    label: 'Name',
     width: 260,
-    isOrderable: true,
   },
   {
-    id: "shortName",
-    label: "Name (Abbv.)",
+    id: 'shortName',
+    isOrderable: true,
+    label: 'Name (Abbv.)',
     width: 200,
-    isOrderable: true,
   },
   {
-    id: "slug",
-    label: "Slug",
+    id: 'slug',
+    isOrderable: true,
+    label: 'Slug',
     width: 200,
-    isOrderable: true,
   },
   {
-    id: "education",
-    label: "Education",
-    minWidth: 200,
-    width: 260,
+    id: 'education',
+    label: 'Education',
     maxWidth: 320,
-  },
-  {
-    id: "skills",
-    label: "Skills",
     minWidth: 200,
     width: 260,
+  },
+  {
+    id: 'skills',
+    label: 'Skills',
     maxWidth: 320,
-  },
-  {
-    id: "createdAt",
-    label: "Created",
-    align: "right",
-    width: 200,
     minWidth: 200,
-    isOrderable: true,
+    width: 260,
   },
   {
-    id: "updatedAt",
-    label: "Updated",
-    align: "right",
-    width: 200,
+    align: 'right',
+    id: 'createdAt',
+    isOrderable: true,
+    label: 'Created',
     minWidth: 200,
-    isOrderable: true,
+    width: 200,
   },
   {
-    id: "visible",
-    label: "Visible",
-    width: 80,
+    align: 'right',
+    id: 'updatedAt',
+    isOrderable: true,
+    label: 'Updated',
+    minWidth: 200,
+    width: 200,
+  },
+  {
+    align: 'center',
+    id: 'visible',
+    label: 'Visible',
     maxWidth: 80,
     minWidth: 80,
-    align: "center",
+    width: 80,
   },
 ] as const satisfies DataTableColumnConfig<CoursesTableModel>[];
 

@@ -1,16 +1,16 @@
-import { Suspense, type JSX } from "react";
+import { type JSX, Suspense } from 'react';
 
-import { fetchEducations } from "~/actions/educations/fetch-educations";
-import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
-import { fetchProjects } from "~/actions/projects/fetch-projects";
-import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
+import { fetchEducations } from '~/actions/educations/fetch-educations';
+import { fetchExperiences } from '~/actions/experiences/fetch-experiences';
+import { fetchProjects } from '~/actions/projects/fetch-projects';
+import { fetchRepositories } from '~/actions/repositories/fetch-repositories';
 
-import { SkillsTableFilterBar as ClientSkillsTableFilterBar } from "~/features/skills/components/tables/SkillsTableFilterBar";
+import { SkillsTableFilterBar as ClientSkillsTableFilterBar } from '~/features/skills/components/tables/SkillsTableFilterBar';
 
 const getEducations = async () => {
   const eduFetcher = fetchEducations([]);
   const { data: educations } = await eduFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
   return educations;
@@ -19,7 +19,7 @@ const getEducations = async () => {
 const getExperiences = async () => {
   const expFetcher = fetchExperiences([]);
   const { data: experiences } = await expFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
   return experiences;
@@ -28,7 +28,7 @@ const getExperiences = async () => {
 const getProjects = async () => {
   const projFetcher = fetchProjects([]);
   const { data: projects } = await projFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
   return projects;
@@ -37,7 +37,7 @@ const getProjects = async () => {
 const getRepositories = async () => {
   const repositoriesFetcher = fetchRepositories([]);
   const { data: repositories } = await repositoriesFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
   return repositories;
@@ -55,8 +55,8 @@ export const SkillsTableFilterBar = async (): Promise<JSX.Element> => {
       <ClientSkillsTableFilterBar
         educations={educations}
         experiences={experiences}
-        repositories={repositories}
         projects={projects}
+        repositories={repositories}
       />
     </Suspense>
   );

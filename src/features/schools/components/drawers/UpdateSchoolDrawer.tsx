@@ -1,39 +1,37 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandSchool } from "~/database/model";
+import { type BrandSchool } from '~/database/model';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { useSchoolForm } from "~/features/schools/components/forms/hooks";
-import UpdateSchoolForm from "~/features/schools/components/forms/UpdateSchoolForm";
-import { useSchool } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { DrawerForm } from '~/components/drawers/DrawerForm';
+import { useSchoolForm } from '~/features/schools/components/forms/hooks';
+import { UpdateSchoolForm } from '~/features/schools/components/forms/UpdateSchoolForm';
+import { useSchool } from '~/hooks/api';
 
-interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
+interface UpdateSchoolDrawerProps extends ExtendingDrawerProps {
+  readonly eager: Pick<BrandSchool, 'name'>;
   readonly schoolId: string;
-  readonly eager: Pick<BrandSchool, "name">;
 }
 
-export const UpdateCourseDrawer = ({
-  schoolId,
+export const UpdateSchoolDrawer = ({
   eager,
   onClose,
-}: UpdateCourseDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useSchool(schoolId, {
+  schoolId,
+}: UpdateSchoolDrawerProps): JSX.Element => {
+  const { data, error, isLoading, isValidating } = useSchool(schoolId, {
     keepPreviousData: true,
-    query: { visibility: "admin", includes: [] },
+    query: { includes: [], visibility: 'admin' },
   });
   const form = useSchoolForm();
 
   return (
-    <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
-      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+    <DrawerForm eagerTitle={eager.name} form={form} titleField='name'>
+      <ApiResponseState data={data} error={error} isLoading={isLoading || isValidating}>
         {school => (
-          <UpdateSchoolForm form={form} school={school} onSuccess={onClose} onCancel={onClose} />
+          <UpdateSchoolForm form={form} onCancel={onClose} onSuccess={onClose} school={school} />
         )}
       </ApiResponseState>
     </DrawerForm>
   );
 };
-
-export default UpdateCourseDrawer;

@@ -1,19 +1,19 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type Experience } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type Experience } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { createExperience } from "~/actions/experiences/create-experience";
+import { createExperience } from '~/actions/experiences/create-experience';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { ExperienceForm, type ExperienceFormProps } from "./ExperienceForm";
+import { ExperienceForm, type ExperienceFormProps } from './ExperienceForm';
 
-export interface CreateExperienceFormProps extends Omit<ExperienceFormProps, "action"> {
+export interface CreateExperienceFormProps extends Omit<ExperienceFormProps, 'action'> {
   readonly onCancel?: () => void;
   readonly onSuccess?: (m: Experience) => void;
 }
@@ -23,14 +23,12 @@ export const CreateExperienceForm = ({
   onSuccess,
   ...props
 }: CreateExperienceFormProps): JSX.Element => {
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
   return (
     <ExperienceForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof createExperience>> | null = null;
         try {
@@ -39,20 +37,19 @@ export const CreateExperienceForm = ({
           logger.errorUnsafe(e, "There was an error creating the experience'.", {
             data,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error creating the experience.");
+          return toast.error('There was an error creating the experience.');
         }
-        const { error, data: experience } = response;
+        const { data: experience, error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.(experience);
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default CreateExperienceForm;

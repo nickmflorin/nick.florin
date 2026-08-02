@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useCallback, useRef } from 'react';
 
 type Callback<P extends unknown[], R> = (...args: P) => R;
 
@@ -29,13 +29,13 @@ type Callback<P extends unknown[], R> = (...args: P) => R;
  * When the function is stored as a reference, it does not trigger rerenders or dependency changes
  * to the effect - and instead of re-creating the function when its dependencies on state and/or
  * props change, the same function reference is used.
+ *
+ * @deprecated
+ * This hook is made obsolete with React 19's {@link useEffectEvent}.
  */
 export const useReferentialCallback = <P extends unknown[], R>(fn: Callback<P, R>) => {
   const ref = useRef<Callback<P, R>>(fn);
   ref.current = fn;
-  /* In a traditional useCallback, when the args change the function will be recreated with a
-     different reference. Here, the same reference is used, but the reference is called with the
-     updated arguments. */
   const func: Callback<P, R> = (...args: P) => ref.current.apply(this, args);
   return useCallback(func, []);
 };

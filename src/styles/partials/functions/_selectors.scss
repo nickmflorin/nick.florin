@@ -1,14 +1,14 @@
-@use "sass:meta";
-@use "sass:selector";
-@use "sass:list";
+@use 'sass:meta';
+@use 'sass:selector';
+@use 'sass:list';
 
-@use "throw";
+@use 'throw';
 
 @function prefix-selectors($selectors, $prefix: null) {
   @if $prefix {
     $new-selectors: ();
     @each $n in $selectors {
-      $new-selectors: list.append($new-selectors, "#{$prefix}#{$n}", list.separator($selectors));
+      $new-selectors: list.append($new-selectors, '#{$prefix}#{$n}', list.separator($selectors));
     }
     @return $new-selectors;
   }
@@ -22,8 +22,8 @@
     @return prefix-selectors($selectors, $prefix: $prefix);
   }
   @return throw.error(
-    "Expected the selectors to be provided as a list or a string.",
-    $source: "join-selectors()",
+    'Expected the selectors to be provided as a list or a string.',
+    $source: 'join-selectors()',
     $selectors: $selectors
   );
 }

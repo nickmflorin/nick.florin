@@ -1,88 +1,83 @@
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useState, useCallback, useMemo } from "react";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useMemo, useState } from 'react';
 
-import { UnreachableCaseError } from "~/application/errors";
-import { parseOrdering, type Order, type Ordering } from "~/lib/ordering";
+import { UnreachableCaseError } from '~/application/errors';
+import { type Order, type Ordering, parseOrdering } from '~/lib/ordering';
 
-import { useReferentialCallback } from "~/hooks";
+import { useReferentialCallback } from '~/hooks';
 
-const DEFAULT_ORDER = "asc";
+const DEFAULT_ORDER = 'asc';
 
 export interface UseOrderingStateConfig<I extends string> {
+  readonly clearOrderingOnCycleComplete?: boolean;
   readonly defaultOrder?: Order;
   readonly defaultOrdering?: never;
-  readonly initialOrdering?: Ordering<I> | null;
   readonly fields?: never;
-  readonly clearOrderingOnCycleComplete?: boolean;
+  readonly initialOrdering?: null | Ordering<I>;
   readonly useQueryParams?: false;
 }
 
 export interface UseOrderingQueryConfig<I extends string> {
+  readonly clearOrderingOnCycleComplete?: boolean;
   readonly defaultOrder?: Order;
   readonly defaultOrdering: Ordering<I>;
-  readonly initialOrdering?: never;
   readonly fields: I[];
-  readonly clearOrderingOnCycleComplete?: boolean;
+  readonly initialOrdering?: never;
   readonly useQueryParams: true;
 }
 
 export type UseOrderingConfig<I extends string> =
-  | UseOrderingStateConfig<I>
-  | UseOrderingQueryConfig<I>;
+  UseOrderingQueryConfig<I> | UseOrderingStateConfig<I>;
 
 const getOrderCycle = (defaultOrder: Order): [Order, Order] =>
-  defaultOrder === "asc" ? ["asc", "desc"] : ["desc", "asc"];
+  defaultOrder === 'asc' ? ['asc', 'desc'] : ['desc', 'asc'];
 
 type UpdateOrderParams<I extends string> =
+  | {
+      readonly field: I;
+      readonly order: null | Order;
+    }
   | {
       readonly field: I;
       readonly order?: never;
     }
   | {
       readonly field?: never;
-      readonly order: Order | null;
-    }
-  | {
-      readonly field: I;
-      readonly order: Order | null;
+      readonly order: null | Order;
     };
 
 export const useOrdering = <I extends string>(config?: UseOrderingConfig<I>) => {
   const searchParams = useSearchParams();
-  const { replace } = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
 
   const {
-    defaultOrdering,
-    initialOrdering: _initialOrdering,
     clearOrderingOnCycleComplete = false,
-    useQueryParams,
     defaultOrder = DEFAULT_ORDER,
+    defaultOrdering,
     fields,
+    initialOrdering: _initialOrdering,
+    useQueryParams,
   } = useMemo(() => config ?? {}, [config]);
 
-  const initialOrdering = useMemo(
-    () =>
-      useQueryParams
-        ? parseOrdering(searchParams, { fields, defaultOrdering })
-        : (_initialOrdering ?? null),
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [],
+  /* The initial ordering is resolved once, when the hook first runs.  A lazy state initializer is
+     used rather than a memo so that later changes to the query parameters do not reset an ordering
+     the user has since chosen. */
+  const [ordering, setOrdering] = useState<null | Ordering<I>>(() =>
+    useQueryParams
+      ? parseOrdering(searchParams, { defaultOrdering, fields })
+      : (_initialOrdering ?? null),
   );
 
-  const [ordering, setOrdering] = useState<Ordering<I> | null>(initialOrdering);
-
   const updateOrdering = useCallback(
-    (ording: Ordering<I> | null, { field, order }: UpdateOrderParams<I>): Ordering<I> | null => {
+    (ording: null | Ordering<I>, { field, order }: UpdateOrderParams<I>): null | Ordering<I> => {
       if (ording === null) {
         if (field) {
-          return { orderBy: field, order: order ?? defaultOrder };
+          return { order: order ?? defaultOrder, orderBy: field };
         }
-        /* Here, we cannot update the ordering without a field because there is no existing field
-           in the existing order in state. */
         return ording;
       } else if (field && order) {
-        return { orderBy: field, order };
+        return { order, orderBy: field };
       } else if (field) {
         if (field === ording.orderBy) {
           const cycle = getOrderCycle(defaultOrder);
@@ -93,7 +88,7 @@ export const useOrdering = <I extends string>(config?: UseOrderingConfig<I>) => 
           }
           return { ...ording, order: cycle[0] };
         }
-        return { orderBy: field, order: defaultOrder };
+        return { order: defaultOrder, orderBy: field };
       } else if (order) {
         return { ...ording, order };
       }
@@ -106,15 +101,15 @@ export const useOrdering = <I extends string>(config?: UseOrderingConfig<I>) => 
     const updatedOrdering = updateOrdering(ordering, params);
     setOrdering(updatedOrdering);
     if (useQueryParams) {
-      const params = new URLSearchParams(searchParams?.toString());
+      const queryParams = new URLSearchParams(searchParams.toString());
       if (updatedOrdering) {
-        params.set("orderBy", updatedOrdering.orderBy);
-        params.set("order", updatedOrdering.order);
+        queryParams.set('orderBy', updatedOrdering.orderBy);
+        queryParams.set('order', updatedOrdering.order);
       } else {
-        params.delete("orderBy");
-        params.delete("order");
+        queryParams.delete('orderBy');
+        queryParams.delete('order');
       }
-      replace(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${queryParams.toString()}`);
     }
   });
 

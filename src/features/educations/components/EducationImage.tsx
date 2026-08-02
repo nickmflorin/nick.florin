@@ -1,9 +1,11 @@
-import { ModelImage, type ModelImageSpreadProps } from "~/components/images/ModelImage";
+import { ModelImage, type ModelImageSpreadProps } from '~/components/images/ModelImage';
 
-type BaseEducation = { school: { logoImageUrl: string | null } };
+type BaseEducation = { school: { logoImageUrl: null | string } };
 
-export interface EducationImageProps<E extends BaseEducation>
-  extends Omit<ModelImageSpreadProps, "fallbackIcon" | "url" | "size"> {
+export interface EducationImageProps<E extends BaseEducation> extends Omit<
+  ModelImageSpreadProps,
+  'fallbackIcon' | 'size' | 'url'
+> {
   readonly education: E;
   readonly size: number;
 }
@@ -15,8 +17,8 @@ export const EducationImage = <E extends BaseEducation>({
 }: EducationImageProps<E>) => (
   <ModelImage
     {...props}
-    fallbackIcon={{ name: "school" }}
-    url={education.school.logoImageUrl}
+    fallbackIcon={{ name: 'school' }}
     size={size}
+    url={education.school.logoImageUrl}
   />
 );

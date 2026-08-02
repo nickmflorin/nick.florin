@@ -1,10 +1,14 @@
-import { forwardRef } from "react";
+import { type Ref } from 'react';
 
-import { IconButton, type IconButtonProps } from "./generic";
+import { IconButton, type IconButtonProps } from './generic';
 
-export interface RemoteButtonProps
-  extends Omit<IconButtonProps<"button">, "icon" | "scheme" | "variant"> {}
+export interface RemoteButtonProps extends Omit<
+  IconButtonProps<'button'>,
+  'icon' | 'ref' | 'scheme' | 'variant'
+> {
+  readonly ref?: Ref<HTMLButtonElement>;
+}
 
-export const RemoteButton = forwardRef<HTMLButtonElement, RemoteButtonProps>((props, ref) => (
-  <IconButton.Transparent {...props} scheme="light" icon="laptop-code" ref={ref} />
-));
+export const RemoteButton = ({ ref, ...props }: RemoteButtonProps) => (
+  <IconButton.Transparent {...props} icon='laptop-code' ref={ref} scheme='light' />
+);

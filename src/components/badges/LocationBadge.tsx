@@ -1,16 +1,18 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type ModelLocation, stringifyLocation } from "~/database/model";
+import { type ModelLocation, stringifyLocation } from '~/database/model';
 
-import { Badge, type BadgeProps } from "./Badge";
+import { Badge, type BadgeProps } from './Badge';
 
-export interface LocationBadgeProps
-  extends Omit<BadgeProps, "children" | "icon" | "iconClassName"> {
+export interface LocationBadgeProps extends Omit<
+  BadgeProps,
+  'children' | 'icon' | 'iconClassName'
+> {
   readonly location: ModelLocation;
 }
 
 export const LocationBadge = ({ location, ...props }: LocationBadgeProps): JSX.Element => (
-  <Badge icon={{ name: "location-dot" }} {...props}>
+  <Badge icon={{ name: 'location-dot' }} {...props}>
     {stringifyLocation(location)}
   </Badge>
 );

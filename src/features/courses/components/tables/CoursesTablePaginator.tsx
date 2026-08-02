@@ -1,9 +1,9 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type CoursesFilters } from "~/actions";
-import { fetchCoursesPagination } from "~/actions/courses/fetch-courses";
+import { type CoursesFilters } from '~/actions';
+import { fetchCoursesPagination } from '~/actions/courses/fetch-courses';
 
-import { Paginator } from "~/components/pagination-v2/Paginator";
+import { Paginator } from '~/components/pagination-v2/Paginator';
 
 export interface CoursesTablePaginatorProps {
   readonly filters: CoursesFilters;
@@ -16,6 +16,6 @@ export const CoursesTablePaginator = async ({
 }: CoursesTablePaginatorProps): Promise<JSX.Element> => {
   const {
     data: { count, page, pageSize },
-  } = await fetchCoursesPagination({ filters, page: _page, visibility: "admin" }, { strict: true });
-  return <Paginator count={count} pageSize={pageSize} page={page} />;
+  } = await fetchCoursesPagination({ filters, page: _page, visibility: 'admin' }, { strict: true });
+  return <Paginator count={count} page={page} pageSize={pageSize} />;
 };

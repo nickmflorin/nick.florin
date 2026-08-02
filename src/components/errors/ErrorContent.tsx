@@ -1,37 +1,39 @@
-import React, { type JSX } from "react";
+import { type JSX } from 'react';
 
-import { isApiError } from "~/api";
+import { isApiError } from '~/api';
 
 import {
+  classNames,
   type ComponentProps,
   type TypographyCharacteristics,
-  classNames,
-} from "~/components/types";
-import { Text } from "~/components/typography/Text";
+} from '~/components/types';
+import { Text } from '~/components/typography/Text';
 
-import * as types from "./types";
+import * as types from './types';
 
-export interface ErrorContentProps
-  extends Omit<TypographyCharacteristics, "transform" | "lineClamp" | "truncate"> {
-  readonly textClassName?: ComponentProps["className"];
+export interface ErrorContentProps extends Omit<
+  TypographyCharacteristics,
+  'lineClamp' | 'transform' | 'truncate'
+> {
   readonly children?: types.ErrorContentType;
   readonly error?: types.ErrorType;
+  readonly textClassName?: ComponentProps['className'];
 }
 
 export const ErrorContent = ({
-  textClassName = "text-gray-500",
-  fontSize = "sm",
-  fontFamily,
-  fontWeight = "regular",
   children,
   error,
+  fontFamily,
+  fontSize = 'sm',
+  fontWeight = 'regular',
+  textClassName = 'text-gray-500',
 }: ErrorContentProps): JSX.Element => {
   const message =
-    children !== undefined
-      ? children
-      : error && isApiError(error)
+    children === undefined
+      ? error && isApiError(error)
         ? error.message
-        : (error ?? types.DEFAULT_ERROR_MESSAGE);
+        : (error ?? types.DEFAULT_ERROR_MESSAGE)
+      : children;
 
   if (Array.isArray(message)) {
     for (const m of message) {
@@ -40,13 +42,13 @@ export const ErrorContent = ({
       }
     }
     return (
-      <div className="flex flex-col gap-[10px]">
+      <div className='flex flex-col gap-[10px]'>
         {message.map((child, index) => (
           <ErrorContent
-            key={index}
-            fontSize={fontSize}
             fontFamily={fontFamily}
+            fontSize={fontSize}
             fontWeight={fontWeight}
+            key={index}
             textClassName={textClassName}
           >
             {child}
@@ -54,13 +56,13 @@ export const ErrorContent = ({
         ))}
       </div>
     );
-  } else if (typeof message === "string") {
+  } else if (typeof message === 'string') {
     return (
       <Text
-        fontSize={fontSize}
+        className={classNames('text-center', textClassName)}
         fontFamily={fontFamily}
+        fontSize={fontSize}
         fontWeight={fontWeight}
-        className={classNames("text-center", textClassName)}
       >
         {message}
       </Text>

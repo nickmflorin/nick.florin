@@ -1,14 +1,14 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest } from 'next/server';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import type { NestedDetailIncludes } from "~/database/model";
-import { db } from "~/database/prisma";
+import { type NestedDetailIncludes } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { NestedDetailIncludesSchema } from "~/actions";
-import { fetchNestedDetail } from "~/actions/details/fetch-nested-detail";
-import { ClientResponse } from "~/api";
-import { parseQueryParams } from "~/integrations/http";
+import { NestedDetailIncludesSchema } from '~/actions';
+import { fetchNestedDetail } from '~/actions/details/fetch-nested-detail';
+import { ClientResponse } from '~/api';
+import { parseQueryParams } from '~/integrations/http';
 
 export async function generateStaticParams() {
   const nestedDetails = await db.nestedDetail.findMany();
@@ -31,12 +31,12 @@ export const GET = async (request: NextRequest, props: { params: Promise<{ id: s
 
   const visibility =
     z
-      .union([z.literal("admin"), z.literal("public")])
-      .default("public")
-      .safeParse(query.visibility).data ?? "public";
+      .union([z.literal('admin'), z.literal('public')])
+      .default('public')
+      .safeParse(query.visibility).data ?? 'public';
 
   const fetcher = fetchNestedDetail(includes);
-  const { error, data } = await fetcher(params.id, { visibility }, { scope: "api" });
+  const { data, error } = await fetcher(params.id, { visibility }, { scope: 'api' });
   if (error) {
     return error.response;
   }

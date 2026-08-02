@@ -1,7 +1,9 @@
-export * from "./unreachable-case-error";
+export * from './unreachable-case-error';
 
 export const isError = (e: unknown): e is Error =>
-  typeof e === "object" &&
+  typeof e === 'object' &&
   e !== null &&
-  (e as Error).stack !== undefined &&
-  (e as Error).message !== undefined;
+  'stack' in e &&
+  e.stack !== undefined &&
+  'message' in e &&
+  e.message !== undefined;

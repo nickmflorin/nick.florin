@@ -1,12 +1,12 @@
-import { Icon } from "~/components/icons/Icon";
+import { Icon } from '~/components/icons/Icon';
 
 export const TimelineIcon = () => (
   <Icon
-    icon="code-commit"
-    dimension="width"
-    size="14px"
-    iconStyle="solid"
-    fit="square"
-    family="classic"
+    dimension='width'
+    family='classic'
+    fit='square'
+    icon='code-commit'
+    iconStyle='solid'
+    size='14px'
   />
 );

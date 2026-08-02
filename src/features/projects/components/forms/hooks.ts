@@ -1,17 +1,17 @@
-import { useForm } from "~/components/forms-v2/hooks/use-form";
+import { useForm } from '~/components/forms-v2/hooks/use-form';
 
-import { ProjectFormSchema } from "./schema";
+import { ProjectFormSchema } from './schema';
 
 export const useProjectForm = () =>
   useForm({
-    schema: ProjectFormSchema,
     defaultValues: {
-      name: "",
-      shortName: "",
-      slug: "",
-      repositories: [],
-      skills: [],
       details: [],
+      name: '',
       nestedDetails: [],
+      repositories: [],
+      shortName: '',
+      skills: [],
+      slug: '',
     },
+    schema: ProjectFormSchema,
   });

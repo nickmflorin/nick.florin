@@ -1,19 +1,20 @@
-import { uniq } from "lodash-es";
+import { uniq } from 'lodash-es';
 
-import { humanizeList } from "~/lib/formatters";
+import { humanizeList } from '~/lib/formatters';
 
 class ModelLookupError extends Error {
   constructor(msg: string, reference: string, data?: Record<string, unknown>) {
     const d: Record<string, unknown> = { ...data, reference };
     const dataStrings = Object.keys(d).reduce(
-      (prev: string[], k: string) => (d[k] !== undefined ? [...prev, `${k} = '${d[k]}'`] : prev),
+      (prev: string[], k: string) =>
+        d[k] === undefined ? prev : [...prev, `${k} = '${JSON.stringify(d[k])}'`],
       [],
     );
-    super(`[${dataStrings.join(", ")}] ${msg}`);
+    super(`[${dataStrings.join(', ')}] ${msg}`);
   }
 }
 
-const modelStringValueStandardizer = (name: string) => name.toLowerCase().replaceAll(" ", "");
+const modelStringValueStandardizer = (name: string) => name.toLowerCase().replaceAll(' ', '');
 const modelStringValueComparator = (name1: string, name2: string) =>
   modelStringValueStandardizer(name1) === modelStringValueStandardizer(name2);
 
@@ -25,22 +26,21 @@ type StringRequiredKeys<M extends Model> = keyof {
 };
 
 type FindCorrespondingFieldOptions<M extends Model, J extends Json> = {
-  readonly strict?: boolean;
-  readonly field: StringRequiredKeys<M | J> | StringRequiredKeys<M | J>[];
-  readonly reference: string;
   readonly comparator?: never;
+  readonly field: StringRequiredKeys<J | M> | StringRequiredKeys<J | M>[];
+  readonly reference: string;
+  readonly strict?: boolean;
 };
 
 type FindCorrespondingComparatorOptions<M extends Model, J extends Json> = {
-  readonly strict?: boolean;
-  readonly reference: string;
-  readonly field?: never;
   readonly comparator: (model: M, json: J) => boolean;
+  readonly field?: never;
+  readonly reference: string;
+  readonly strict?: boolean;
 };
 
 type FindCorrespondingOptions<M extends Model, J extends Json> =
-  | FindCorrespondingComparatorOptions<M, J>
-  | FindCorrespondingFieldOptions<M, J>;
+  FindCorrespondingComparatorOptions<M, J> | FindCorrespondingFieldOptions<M, J>;
 
 export function getModelValue<P extends Record<string, unknown>>(
   m: P,
@@ -48,7 +48,7 @@ export function getModelValue<P extends Record<string, unknown>>(
   reference: string,
 ): string {
   const v = m[getter as keyof P];
-  if (typeof v !== "string") {
+  if (typeof v !== 'string') {
     throw new ModelLookupError(
       `Invalid comparator field, '${String(
         getter,
@@ -93,17 +93,17 @@ const findSingleCorresponding = <
     });
   }
 
-  const { comparator, reference, field: _field, strict = false } = options;
+  const { comparator, field: _field, reference, strict = false } = options;
 
-  const field = _field as StringRequiredKeys<M | J> | undefined;
+  const field = _field;
 
-  function _getValue(m: M | J): string {
+  function _getValue(m: J | M): string {
     if (field) {
       return getModelValue(m, field, reference);
     }
     throw new ModelLookupError(
       "Invalid function implementation:  If the 'field' is not provided, the 'comparator' " +
-        "option must be specified.",
+        'option must be specified.',
       reference,
     );
   }
@@ -112,7 +112,8 @@ const findSingleCorresponding = <
   if (comparator) {
     compareFn = comparator;
   } else {
-    compareFn = (model, json) => modelStringValueComparator(_getValue(model), _getValue(json));
+    compareFn = (model, jsonFixture) =>
+      modelStringValueComparator(_getValue(model), _getValue(jsonFixture));
   }
 
   const filtered = models.filter(m => compareFn(m, json));
@@ -121,7 +122,7 @@ const findSingleCorresponding = <
       throw new ModelLookupError(
         `The provided ${reference} could not be found in the set of provided models`,
         reference,
-        { jsonValue: _getValue(json), field },
+        { field, jsonValue: _getValue(json) },
       );
     }
     return null as FindCorrespondingSingleRT<M, J, O>;
@@ -129,25 +130,25 @@ const findSingleCorresponding = <
     if (comparator) {
       throw new ModelLookupError(
         `The provided comparator returned true for ${filtered.length} existing models in the ` +
-          "database.  The comparator must uniquely identify a model.",
+          'database.  The comparator must uniquely identify a model.',
         reference,
-        { jsonValue: _getValue(json), field },
+        { field, jsonValue: _getValue(json) },
       );
     }
     const uniqValues = uniq(filtered.map(m => _getValue(m)));
     if (uniqValues.length === 1) {
       throw new ModelLookupError(
         `The JSON fixture model value, '${_getValue(json)}', maps to ${filtered.length} existing ` +
-          "models in the database.  Each model in the database has the same existing " +
+          'models in the database.  Each model in the database has the same existing ' +
           `value, '${uniqValues[0]}'.`,
         reference,
         { field },
       );
     }
-    const humanized = humanizeList(uniqValues, { conjunction: "and", formatter: v => `'${v}'` });
+    const humanized = humanizeList(uniqValues, { conjunction: 'and', formatter: v => `'${v}'` });
     throw new ModelLookupError(
       `The JSON fixture model value, '${_getValue(json)}', maps to ${filtered.length} existing ` +
-        "models in the database.  The models in the database have the following values: " +
+        'models in the database.  The models in the database have the following values: ' +
         `${humanized}.`,
       reference,
       { field },

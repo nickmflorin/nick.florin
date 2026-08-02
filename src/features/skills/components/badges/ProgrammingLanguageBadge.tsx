@@ -1,11 +1,11 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type ProgrammingLanguage, ProgrammingLanguages } from "~/database/model";
+import { type ProgrammingLanguage, ProgrammingLanguages } from '~/database/model';
 
-import { Badge, type BadgeProps } from "~/components/badges/Badge";
-import { classNames } from "~/components/types";
+import { Badge, type BadgeProps } from '~/components/badges/Badge';
+import { classNames } from '~/components/types';
 
-export interface ProgrammingLanguageBadgeProps extends Omit<BadgeProps, "children"> {
+export interface ProgrammingLanguageBadgeProps extends Omit<BadgeProps, 'children'> {
   readonly language: ProgrammingLanguage;
 }
 
@@ -17,7 +17,7 @@ export const ProgrammingLanguageBadge = ({
   return (
     <Badge
       {...props}
-      className={classNames("bg-white text-body border", props.className)}
+      className={classNames('bg-white text-body border', props.className)}
       icon={config.icon}
     >
       {config.label}

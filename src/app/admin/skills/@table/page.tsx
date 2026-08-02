@@ -1,25 +1,25 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import { parseOrdering } from "~/lib/ordering";
+import { parseOrdering } from '~/lib/ordering';
 
-import { SkillsDefaultOrdering, SkillsFiltersObj } from "~/actions";
+import { SkillsDefaultOrdering, SkillsFiltersObj } from '~/actions';
 
-import { Loading } from "~/components/loading/Loading";
-import { columnIsOrderable } from "~/components/tables";
-import { SkillsTableColumns } from "~/features/skills";
-import { SkillsTableControlBarPlaceholder } from "~/features/skills/components/tables/SkillsTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { columnIsOrderable } from '~/components/tables';
+import { SkillsTableColumns } from '~/features/skills';
+import { SkillsTableControlBarPlaceholder } from '~/features/skills/components/tables/SkillsTableControlBarPlaceholder';
 
-import { SkillsTableBody } from "./SkillsTableBody";
+import { SkillsTableBody } from './SkillsTableBody';
 
 export interface SkillsTablePageProps {
   readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function SkillsTablePage(props: SkillsTablePageProps) {
+const SkillsTablePage = async (props: SkillsTablePageProps) => {
   const searchParams = await props.searchParams;
-  const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
+  const page = z.coerce.number().int().positive().min(1).safeParse(searchParams.page).data ?? 1;
 
   const filters = SkillsFiltersObj.parse(searchParams);
 
@@ -30,15 +30,17 @@ export default async function SkillsTablePage(props: SkillsTablePageProps) {
 
   return (
     <Suspense
-      key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
       fallback={
         <>
           <SkillsTableControlBarPlaceholder />
-          <Loading isLoading component="tbody" />
+          <Loading component='tbody' isLoading />
         </>
       }
+      key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
     >
-      <SkillsTableBody filters={filters} page={page} ordering={ordering} />
+      <SkillsTableBody filters={filters} ordering={ordering} page={page} />
     </Suspense>
   );
-}
+};
+
+export default SkillsTablePage;

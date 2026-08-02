@@ -1,6 +1,6 @@
-import { useCallback } from "react";
+import { useCallback } from 'react';
 
-import type * as types from "~/components/input/select/types";
+import type * as types from '~/components/input/select/types';
 
 export interface UseDataSelectDataParams<
   M extends types.DataSelectModel,
@@ -19,7 +19,7 @@ export const useDataSelectOptions = <
     (m: M) => {
       if (options.getModelValue !== undefined) {
         return options.getModelValue(m) as types.InferV<{ model: M; options: O }>;
-      } else if ("value" in m && m.value !== undefined) {
+      } else if ('value' in m && m.value !== undefined) {
         return m.value as types.InferV<{ model: M; options: O }>;
       }
       throw new Error(
@@ -34,7 +34,7 @@ export const useDataSelectOptions = <
     (m: M) => {
       if (options.getModelId !== undefined) {
         return options.getModelId(m);
-      } else if ("id" in m && m.id !== undefined) {
+      } else if ('id' in m && m.id !== undefined) {
         return m.id;
       }
       return getModelValue(m);
@@ -42,5 +42,5 @@ export const useDataSelectOptions = <
     [options, getModelValue],
   );
 
-  return { getModelValue, getModelId };
+  return { getModelId, getModelValue };
 };

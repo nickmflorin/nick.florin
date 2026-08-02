@@ -1,14 +1,14 @@
-import { useCookies } from "next-client-cookies";
+import { useCookies } from 'next-client-cookies';
 
-import { Button } from "~/components/buttons";
-import { Text } from "~/components/typography";
+import { Button } from '~/components/buttons';
+import { Text } from '~/components/typography';
 
-import { Dialog } from "./Dialog";
+import { Dialog } from './Dialog';
 
 export interface WelcomeDialogProps {
+  readonly error: null | string;
   readonly isOpen: boolean;
-  readonly error: string | null;
-  readonly waitingForTour: boolean;
+  readonly isWaitingForTour: boolean;
   readonly onClose: () => void;
   readonly onStart: () => void;
 }
@@ -16,15 +16,15 @@ export interface WelcomeDialogProps {
 export const WelcomeDialog = ({
   error,
   isOpen,
-  waitingForTour,
-  onStart,
+  isWaitingForTour,
   onClose,
+  onStart,
 }: WelcomeDialogProps) => {
   const cookies = useCookies();
 
   return (
-    <Dialog.Provider isOpen={isOpen} onClose={onClose}>
-      <Dialog className="w-[500px]">
+    <Dialog.Root isOpen={isOpen} onClose={onClose}>
+      <Dialog className='w-[500px]'>
         <Dialog.Close />
         <Dialog.Title>Welcome to my Personal Portfolio!</Dialog.Title>
         <Dialog.Content>
@@ -34,40 +34,38 @@ export const WelcomeDialog = ({
           </Dialog.Description>
         </Dialog.Content>
         <Dialog.Footer>
-          <div className="flex flex-col gap-[8px]">
-            <div className="flex flex-row items-center gap-[8px]">
+          <div className='flex flex-col gap-[8px]'>
+            <div className='flex flex-row items-center gap-[8px]'>
               <Button.Solid
-                className="flex-1"
-                scheme="secondary"
+                className='flex-1'
                 onClick={() => {
-                  cookies.set("nick.florin:suppress-tour", "true");
+                  cookies.set('nick.florin:suppress-tour', 'true');
                   onClose();
                 }}
+                scheme='secondary'
               >
                 Skip and don&apos;t ask again
               </Button.Solid>
-              <Button.Solid className="flex-1" onClick={onClose} scheme="secondary">
+              <Button.Solid className='flex-1' onClick={onClose} scheme='secondary'>
                 Skip for now
               </Button.Solid>
               <Button.Solid
-                className="flex-1"
-                scheme="primary"
+                className='flex-1'
+                isLoading={isWaitingForTour}
                 onClick={() => onStart()}
-                isLoading={waitingForTour}
+                scheme='primary'
               >
                 Next
               </Button.Solid>
             </div>
             {error && (
-              <Text className="text-danger-700" fontSize="xs">
+              <Text className='text-danger-700' fontSize='xs'>
                 {error}
               </Text>
             )}
           </div>
         </Dialog.Footer>
       </Dialog>
-    </Dialog.Provider>
+    </Dialog.Root>
   );
 };
-
-export default WelcomeDialog;

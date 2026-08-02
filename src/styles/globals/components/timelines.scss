@@ -1,14 +1,14 @@
-@mixin timeline-line($width: 2px, $color: theme("colors.gray.400")) {
+@mixin timeline-line($width: 2px, $color: theme('colors.gray.400')) {
   .timeline__inner {
     .mantine-Timeline-root {
       .timeline__item:not(:last-child) {
         &::before {
           /* Note: This fixes an issue with Mantine's timeline component where the actual timeline
-             line disappears when the `styles.layer.sccss` files are imported for both the
+             line disappears when the `styles.layer.css` files are imported for both the
              `@mantine/core` package and the `mantine-datatable` package
              (see ~/components/config/MantineProvider.tsx`).
 
-             Note: This comment may now be obselete because we removed mantine-datatable.  However,
+             Note: This comment may now be obsolete because we removed mantine-datatable.  However,
              we are leaving it around for the time being, for context - just in case.
 
              There seems to be a style collision between the two stylesheets, which causes the
@@ -90,26 +90,26 @@
 .commit-timeline {
   @include timeline-item-offset(22px);
 
-  @media (max-width: theme("screens.md")) {
+  @media (max-width: theme('screens.md')) {
     @include timeline-item-offset(14px);
     @include timeline-item() {
       &:where(:not(:first-of-type)) {
-        margin-top: theme("spacing.4");
+        margin-top: theme('spacing.4');
       }
     }
   }
 
-  @include timeline-line($width: 2px, $color: theme("colors.gray.200"));
+  @include timeline-line($width: 2px, $color: theme('colors.gray.200'));
   @include timeline-item-bullet() {
-    background-color: theme("colors.gray.200");
+    background-color: theme('colors.gray.200');
   }
 }
 
 .details-timeline {
   @include timeline-item-offset(4px);
   @include timeline-item-spacing(10px);
-  @include timeline-line($width: 1px, $color: theme("colors.gray.200"));
+  @include timeline-line($width: 1px, $color: theme('colors.gray.200'));
   @include timeline-item-bullet() {
-    background-color: theme("colors.gray.200");
+    background-color: theme('colors.gray.200');
   }
 }

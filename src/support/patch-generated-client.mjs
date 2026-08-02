@@ -1,10 +1,10 @@
-import { readFileSync, writeFileSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
+import { readFileSync, writeFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const GeneratedDirectory = join(
   dirname(fileURLToPath(import.meta.url)),
-  "../database/model/generated",
+  '../database/model/generated',
 );
 
 /**
@@ -29,30 +29,30 @@ const GeneratedDirectory = join(
  */
 const PatchTargets = [
   {
-    file: "index.js",
+    file: 'index.js',
     patterns: [
       {
         pattern: /path\.join\(process\.cwd\(\), (?=[A-Za-z_$])/g,
-        replacement: "path.join(/*turbopackIgnore: true*/ process.cwd(), ",
+        replacement: 'path.join(/*turbopackIgnore: true*/ process.cwd(), ',
       },
     ],
   },
   {
-    file: "runtime/library.js",
+    file: 'runtime/library.js',
     patterns: [
       {
         pattern:
           /([A-Za-z_$][\w$]*(?:\.default)?\.(?:join|resolve)\()(?=(?!__dirname)[A-Za-z_$](?![\w$]*\.homedir))/g,
-        replacement: "$1/*turbopackIgnore: true*/ ",
+        replacement: '$1/*turbopackIgnore: true*/ ',
       },
       {
         pattern:
           /([A-Za-z_$][\w$]*(?:\.default)?\.(?:existsSync|readFileSync|statSync|readdirSync|realpathSync|lstatSync)\()(?=(?!__dirname)[A-Za-z_$])/g,
-        replacement: "$1/*turbopackIgnore: true*/ ",
+        replacement: '$1/*turbopackIgnore: true*/ ',
       },
       {
         pattern: /(\.join\()(?=[A-Za-z_$][\w$]*\.homedir)/g,
-        replacement: "$1/*turbopackIgnore: true*/ ",
+        replacement: '$1/*turbopackIgnore: true*/ ',
       },
     ],
   },
@@ -69,7 +69,7 @@ const PatchTargets = [
  */
 for (const target of PatchTargets) {
   const filePath = join(GeneratedDirectory, target.file);
-  let content = readFileSync(filePath, "utf8");
+  let content = readFileSync(filePath, 'utf8');
   let annotated = 0;
 
   for (const { pattern, replacement } of target.patterns) {
@@ -78,10 +78,10 @@ for (const target of PatchTargets) {
   }
 
   if (annotated === 0) {
-    if (!content.includes("turbopackIgnore")) {
+    if (!content.includes('turbopackIgnore')) {
       throw new Error(
         `The generated Prisma client file '${target.file}' no longer contains any of the ` +
-          "expected dynamic filesystem operations. The Prisma generator output has likely " +
+          'expected dynamic filesystem operations. The Prisma generator output has likely ' +
           "changed; update or remove 'src/support/patch-generated-client.mjs' accordingly.",
       );
     }

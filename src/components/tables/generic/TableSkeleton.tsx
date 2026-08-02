@@ -1,36 +1,33 @@
-import React, { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { type TableBodyProps } from "~/components/tables/generic/TableBody";
-import type { QuantitativeSize } from "~/components/types";
+import { TableBody, type TableBodyProps } from '~/components/tables/generic/TableBody';
+import { type QuantitativeSize } from '~/components/types';
 
-import { TableBody } from "./TableBody";
-import { TableBodyCell } from "./TableBodyCell";
-import { TableBodyRow } from "./TableBodyRow";
+import { TableBodyCell } from './TableBodyCell';
+import { TableBodyRow } from './TableBodyRow';
 
 interface BaseTableSkeletonProps {
-  readonly numRows?: number;
   readonly cellSkeletons?: ReactNode[];
   readonly numColumns?: number;
-  readonly rowHeight?: QuantitativeSize<"px">;
+  readonly numRows?: number;
+  readonly rowHeight?: QuantitativeSize<'px'>;
 }
 
-/* Note: We are not currently using this component, so we have a dummy
-   '<div className="skeleton" />' as the skeleton for each cell - although the 'skeleton' class
-   name and associated component is not yet built.  This was done so we can preemptively remove
-   @mui from the application in its entirety - and since we are currently not using skeletons
-   *anywhere*, this was a lazy stop-gap for now. */
+/* A plain '<div className="skeleton" />' is used as the fallback skeleton for each cell because no
+   'skeleton' class name or component exists in the design system yet; this avoids depending on
+   '@mui' for skeletons anywhere in the application. */
 const TableSkeletonInner = ({
-  numRows = 25,
   cellSkeletons,
   numColumns = 5,
+  numRows = 25,
   rowHeight,
 }: BaseTableSkeletonProps) => (
   <>
-    {new Array(numRows).fill("").map((e, i) => (
-      <TableBodyRow tabIndex={-1} key={i} height={rowHeight}>
-        {(cellSkeletons ?? new Array(numColumns).fill(<div className="skeleton" />)).map(
-          (skeleton, i) => (
-            <TableBodyCell key={i}>{skeleton}</TableBodyCell>
+    {new Array(numRows).fill('').map((e, i) => (
+      <TableBodyRow height={rowHeight} key={i} tabIndex={-1}>
+        {(cellSkeletons ?? new Array(numColumns).fill(<div className='skeleton' />)).map(
+          (skeleton, j) => (
+            <TableBodyCell key={j}>{skeleton}</TableBodyCell>
           ),
         )}
       </TableBodyRow>
@@ -39,26 +36,25 @@ const TableSkeletonInner = ({
 );
 
 export interface TableSkeletonBodyProps
-  extends BaseTableSkeletonProps,
-    Omit<TableBodyProps, "children"> {
-  readonly component?: "tbody";
+  extends BaseTableSkeletonProps, Omit<TableBodyProps, 'children'> {
+  readonly component?: 'tbody';
 }
 
 export interface TableSkeletonFragmentProps extends BaseTableSkeletonProps {
-  readonly component: "fragment";
+  readonly component: 'fragment';
 }
 
 export type TableSkeletonProps = TableSkeletonBodyProps | TableSkeletonFragmentProps;
 
 export const TableSkeleton = ({
   cellSkeletons,
+  component,
+  numColumns,
   numRows = 25,
   rowHeight,
-  numColumns,
-  component,
   ...props
 }: TableSkeletonProps) =>
-  component === "tbody" ? (
+  component === 'tbody' ? (
     <TableBody {...props}>
       <TableSkeletonInner
         cellSkeletons={cellSkeletons}

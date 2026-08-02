@@ -1,42 +1,46 @@
-import React from "react";
+import {
+  type CSSProperties,
+  type ComponentProps as ReactComponentProps,
+  type ReactNode,
+} from 'react';
 
-import { pick, omit } from "lodash-es";
+import { omit, pick } from 'lodash-es';
 
-import { UnreachableCaseError } from "~/application/errors";
-import { logger } from "~/internal/logger";
+import { UnreachableCaseError } from '~/application/errors';
+import { logger } from '~/internal/logger';
 
 import {
   classNames,
-  type QuantitativeSize,
   type ComponentProps,
-  sizeToString,
   parseDataAttributes,
-} from "~/components/types";
+  type QuantitativeSize,
+  sizeToString,
+} from '~/components/types';
 
-export type ViewPosition = "relative" | "absolute" | "fixed";
-export type ViewOverflow = "scroll" | "auto" | "hidden" | "visible";
-export type ViewFill = "screen" | "parent";
+export type ViewPosition = 'absolute' | 'fixed' | 'relative';
+export type ViewOverflow = 'auto' | 'hidden' | 'scroll' | 'visible';
+export type ViewFill = 'parent' | 'screen';
 
-export type ViewComponent = "tbody" | "div" | "tr";
+export type ViewComponent = 'div' | 'tbody' | 'tr';
 
 const ViewSizePropNames = [
-  "height",
-  "width",
-  "maxHeight",
-  "maxWidth",
-  "minHeight",
-  "minWidth",
+  'height',
+  'width',
+  'maxHeight',
+  'maxWidth',
+  'minHeight',
+  'minWidth',
 ] as const;
 
 export type ViewSizePropName = (typeof ViewSizePropNames)[number];
 
-export type ViewSizeProps = { [key in ViewSizePropName]?: QuantitativeSize<"px"> | ViewFill };
+export type ViewSizeProps = Partial<Record<ViewSizePropName, QuantitativeSize<'px'> | ViewFill>>;
 
 export type ViewPositionProps = Partial<{
   readonly absolute: true;
-  readonly relative: true;
   readonly fixed: true;
   readonly position: ViewPosition;
+  readonly relative: true;
 }>;
 
 export type ViewOverflowProps = Partial<{
@@ -46,138 +50,140 @@ export type ViewOverflowProps = Partial<{
 }>;
 
 export type ViewFillProps = Partial<{
-  readonly fill: ViewFill | null;
+  readonly fill: null | ViewFill;
   readonly fillParent: true;
   readonly fillScreen: true;
 }>;
 
 export type ViewFlexProps = Partial<{
-  readonly flex: true;
-  readonly orientation: "row" | "column";
-  readonly row: true;
-  readonly column: true;
   readonly centerChildren: true;
+  readonly column: true;
+  readonly flex: boolean;
   readonly grow: true;
+  readonly orientation: 'column' | 'row';
+  readonly row: true;
 }>;
 
-type ViewInternalProps = ComponentProps &
-  ViewSizeProps &
-  ViewPositionProps &
-  ViewOverflowProps &
+type ViewInternalProps = {
+  readonly __default_position__?: ViewPosition;
+  readonly children?: ReactNode;
+  readonly dim?: true;
+  readonly dimIfDisabled?: false;
+  readonly isDisabled?: true;
+} & ComponentProps &
   ViewFillProps &
-  ViewFlexProps & {
-    readonly __default_position__?: ViewPosition;
-    readonly children?: React.ReactNode;
-    readonly dim?: true;
-    readonly isDisabled?: true;
-    readonly dimIfDisabled?: false;
-  };
+  ViewFlexProps &
+  ViewOverflowProps &
+  ViewPositionProps &
+  ViewSizeProps;
 
 export const ViewInternalPropsMap = {
+  /* eslint-disable-next-line camelcase -- The underscores intentionally mark this as an
+     internal, non-public prop. */
   __default_position__: true,
-  className: true,
-  style: true,
+  absolute: true,
+  centerChildren: true,
   children: true,
+  className: true,
+  column: true,
   dim: true,
-  isDisabled: true,
   dimIfDisabled: true,
+  fill: true,
+  fillParent: true,
+  fillScreen: true,
+  fixed: true,
+  flex: true,
+  grow: true,
   height: true,
-  width: true,
+  isDisabled: true,
   maxHeight: true,
   maxWidth: true,
   minHeight: true,
   minWidth: true,
-  fill: true,
-  fillParent: true,
-  fillScreen: true,
-  flex: true,
   orientation: true,
-  row: true,
-  column: true,
-  centerChildren: true,
-  grow: true,
-  position: true,
-  absolute: true,
-  fixed: true,
-  relative: true,
   overflow: true,
   overflowX: true,
   overflowY: true,
+  position: true,
+  relative: true,
+  row: true,
+  style: true,
+  width: true,
 } as const satisfies {
   [key in keyof Required<ViewInternalProps>]: true;
 };
 
 export const omitViewInternalProps = <P extends Record<string, unknown>>(
   props: P,
-): Omit<P, keyof typeof ViewInternalPropsMap & keyof P> =>
+): Omit<P, keyof P & keyof typeof ViewInternalPropsMap> =>
   omit(props, Object.keys(ViewInternalPropsMap) as (keyof Required<ViewInternalProps>)[]);
 
 export const pickViewInternalProps = <P extends Record<string, unknown>>(
   props: P,
-): Pick<P, keyof typeof ViewInternalPropsMap & keyof P> =>
+): Pick<P, keyof P & keyof typeof ViewInternalPropsMap> =>
   pick(props, Object.keys(ViewInternalPropsMap) as (keyof Required<ViewInternalProps>)[]);
 
-export type ViewProps<C extends ViewComponent> = ViewInternalProps &
-  Omit<React.ComponentProps<C>, keyof ViewInternalProps> & {
-    readonly component?: C;
-  };
+export type ViewProps<C extends ViewComponent> = {
+  readonly component?: C;
+} & Omit<ReactComponentProps<C>, keyof ViewInternalProps> &
+  ViewInternalProps;
 
 const parseFlex = <C extends ViewComponent>({
+  centerChildren,
+  column,
   flex = true,
+  grow,
   orientation,
   row,
-  column,
-  centerChildren,
-  grow,
 }: Pick<
   ViewProps<C>,
-  "flex" | "orientation" | "row" | "column" | "centerChildren" | "grow"
+  'centerChildren' | 'column' | 'flex' | 'grow' | 'orientation' | 'row'
 >): string => {
   if (centerChildren) {
-    return classNames("flex", "flex-col", "items-center", "justify-center", { grow });
+    return classNames('flex', 'flex-col', 'items-center', 'justify-center', { grow });
   } else if (flex) {
     if (orientation) {
       if (row || column) {
         logger.warn(
           "The props 'row' and/or 'column' should not be specified on a view when the " +
             "'orientation' prop is explicitly defined.",
-          { orientation, row, column },
+          { column, orientation, row },
         );
       }
-      return classNames("flex", {
+      return classNames('flex', {
+        'flex-col': orientation === 'column',
+        'flex-row': orientation === 'row',
         grow,
-        "flex-col": orientation === "column",
-        "flex-row": orientation === "row",
       });
     } else if (row && column) {
       logger.warn(
         "The props 'row' and 'column' should not both be specified on a view at the " +
           "same time.  The 'column' prop will take precedence.",
-        { orientation, row, column },
+        { column, orientation, row },
       );
-      return classNames("flex", "flex-col", { grow });
+      return classNames('flex', 'flex-col', { grow });
     }
-    return classNames("flex", { grow, "flex-col": column || row === undefined, "flex-row": row });
+    return classNames('flex', { 'flex-col': column ?? row === undefined, 'flex-row': row, grow });
   }
-  return "";
+  return '';
 };
 
 const parsePosition = <C extends ViewComponent>({
-  position,
+  __default_position__,
   absolute,
   fixed,
+  position,
   relative,
-  __default_position__,
 }: Pick<
   ViewProps<C>,
-  "position" | "absolute" | "relative" | "__default_position__" | "fixed"
+  '__default_position__' | 'absolute' | 'fixed' | 'position' | 'relative'
 >): ViewPosition => {
   if (position !== undefined) {
     if (absolute !== undefined || relative !== undefined || fixed !== undefined) {
       logger.warn(
         "The props 'absolute', 'relative' and/or 'fixed' should not be specified on a view when " +
           "the 'position' prop is explicitly defined.",
-        { absolute, relative, position, fixed },
+        { absolute, fixed, position, relative },
       );
     }
     return position;
@@ -186,30 +192,32 @@ const parsePosition = <C extends ViewComponent>({
       logger.warn(
         "The prop 'absolute' should not be specified at the same time as the props " +
           "'relative' or 'fixed'. The 'absolute' prop will take precedence.",
-        { absolute, relative, position },
+        { absolute, position, relative },
       );
     }
-    return "absolute";
+    return 'absolute';
   } else if (relative !== undefined) {
     if (fixed) {
       logger.warn(
         "The prop 'relative' should not be specified at the same time as the prop " +
           "'fixed'. The 'relative' prop will take precedence.",
-        { absolute, relative, position, fixed },
+        { absolute, fixed, position, relative },
       );
     }
-    return "relative";
+    return 'relative';
   } else if (fixed !== undefined) {
-    return "fixed";
+    return 'fixed';
   }
-  return __default_position__ ?? "relative";
+  /* eslint-disable-next-line camelcase -- The underscores intentionally mark this as an
+     internal, non-public prop. */
+  return __default_position__ ?? 'relative';
 };
 
 const parseFill = <C extends ViewComponent>({
   fill,
   fillParent,
   fillScreen,
-}: Pick<ViewProps<C>, "fill" | "fillParent" | "fillScreen">): ViewFill | null => {
+}: Pick<ViewProps<C>, 'fill' | 'fillParent' | 'fillScreen'>): null | ViewFill => {
   if (fill !== undefined) {
     if (fillParent !== undefined || fillScreen !== undefined) {
       logger.warn(
@@ -226,44 +234,44 @@ const parseFill = <C extends ViewComponent>({
           "same time.  The 'fillParent' prop will take precedence.",
         { fill, fillParent, fillScreen },
       );
-      return "parent";
+      return 'parent';
     }
-    return "screen";
+    return 'screen';
   } else if (fillParent) {
-    return "parent";
+    return 'parent';
   }
   return null;
 };
 
 const OverflowClassName = (overflow: ViewOverflow) =>
   classNames({
-    "overflow-hidden": overflow === "hidden",
-    "overflow-visible": overflow === "visible",
-    "overflow-scroll": overflow === "scroll",
-    "overflow-auto": overflow === "auto",
+    'overflow-auto': overflow === 'auto',
+    'overflow-hidden': overflow === 'hidden',
+    'overflow-scroll': overflow === 'scroll',
+    'overflow-visible': overflow === 'visible',
   });
 
 const OverflowXClassName = (overflow: ViewOverflow) =>
   classNames({
-    "overflow-x-hidden": overflow === "hidden",
-    "overflow-x-visible": overflow === "visible",
-    "overflow-x-scroll": overflow === "scroll",
-    "overflow-x-auto": overflow === "auto",
+    'overflow-x-auto': overflow === 'auto',
+    'overflow-x-hidden': overflow === 'hidden',
+    'overflow-x-scroll': overflow === 'scroll',
+    'overflow-x-visible': overflow === 'visible',
   });
 
 const OverflowYClassName = (overflow: ViewOverflow) =>
   classNames({
-    "overflow-y-hidden": overflow === "hidden",
-    "overflow-y-visible": overflow === "visible",
-    "overflow-y-scroll": overflow === "scroll",
-    "overflow-y-auto": overflow === "auto",
+    'overflow-y-auto': overflow === 'auto',
+    'overflow-y-hidden': overflow === 'hidden',
+    'overflow-y-scroll': overflow === 'scroll',
+    'overflow-y-visible': overflow === 'visible',
   });
 
 const parseOverflow = <C extends ViewComponent>({
   overflow,
   overflowX,
   overflowY,
-}: Pick<ViewProps<C>, "overflow" | "overflowX" | "overflowY">): string => {
+}: Pick<ViewProps<C>, 'overflow' | 'overflowX' | 'overflowY'>): string => {
   if (overflow !== undefined) {
     if (overflowX !== undefined || overflowY !== undefined) {
       logger.warn(
@@ -280,40 +288,37 @@ const parseOverflow = <C extends ViewComponent>({
   } else if (overflowY) {
     return OverflowYClassName(overflowY);
   }
-  return OverflowClassName("hidden");
+  return OverflowClassName('hidden');
 };
 
+/**
+ * Suppresses the console warning that React issues when the `<Loading />` component, rendered as a
+ * `<tr>` element, places its loading indicator (an `<i>` element) inside of the `<tr>` element:
+ *
+ * `Warning: validateDOMNesting(...): <i> cannot appear as a child of <tr>.`
+ *
+ * There does not seem to be anything critically, or even mildly, problematic with the inclusion of
+ * an `<i>` element inside of the `<tr>` element - everything seems to work as expected. This is
+ * assumed to be React being over-sensitive about the structure of the DOM, so the warning is
+ * ignored manually here.
+ */
 /* eslint-disable-next-line no-console */
 const consoleError = console.error;
 
-/* Note:
-   -----
-   When using the <Loading /> component, as a <tr> element, the loading indicator (an <i> element)
-   will be placed inside of the <tr /> element.  This causes React to issue a warning similar to
-   the following:
-
-   Warning: validateDOMNesting(...): <i> cannot appear as a child of <tr>.
-
-   However, there does not seem to e anything crtitically (or even mildly) problematic with the
-   inclusion of an <i> element inside of the <tr> element - everything seems to be working as
-   expected.
-
-   For now, we will assume this is just React being over-sensitive about the structure of the
-   DOM, and will ignore this console warning manually.  If we notice issues with it down the line,
-   we should remove this suppression and investigate further. */
 /* eslint-disable-next-line no-console */
-console.error = (msg, ...args) => {
+console.error = (msg: unknown, ...args: unknown[]) => {
   if (
-    typeof msg === "string" &&
-    (msg.includes("validateDOMNesting(...)") || msg.includes("In HTML")) &&
+    typeof msg === 'string' &&
+    (msg.includes('validateDOMNesting(...)') || msg.includes('In HTML')) &&
     args.length >= 2 &&
-    args[0] === "<i>" &&
-    ["tr", "tbody"].includes(args[1])
+    args[0] === '<i>' &&
+    typeof args[1] === 'string' &&
+    ['tbody', 'tr'].includes(args[1])
   ) {
     return;
   } else if (
-    typeof msg === "string" &&
-    msg.includes("Warning: In HTML, <i> cannot be a child of <tbody>.")
+    typeof msg === 'string' &&
+    msg.includes('Warning: In HTML, <i> cannot be a child of <tbody>.')
   ) {
     return;
   }
@@ -321,19 +326,19 @@ console.error = (msg, ...args) => {
 };
 
 const getViewStyle = <C extends ViewComponent>(
-  props: Pick<ViewProps<C>, ViewSizePropName | "style">,
+  props: Pick<ViewProps<C>, 'style' | ViewSizePropName>,
 ) =>
-  ViewSizePropNames.reduce((prev: React.CSSProperties, key: ViewSizePropName) => {
+  ViewSizePropNames.reduce((prev: CSSProperties, key: ViewSizePropName) => {
     const size = props[key];
-    if (size !== "parent" && size !== "screen" && size !== undefined) {
-      return { ...prev, [key]: sizeToString(size, "px") };
+    if (size !== 'parent' && size !== 'screen' && size !== undefined) {
+      return { ...prev, [key]: sizeToString(size, 'px') };
     }
     return prev;
   }, props.style ?? {});
 
 export const View = <C extends ViewComponent>({
   children,
-  component = "div" as C,
+  component = 'div' as C,
   ...props
 }: ViewProps<C>) => {
   const _fill = parseFill(props);
@@ -341,42 +346,42 @@ export const View = <C extends ViewComponent>({
 
   const ps = {
     ...omitViewInternalProps(props),
-    style: getViewStyle(props),
     className: classNames(
-      "view",
+      'view',
       _position,
       parseOverflow(props),
       parseFlex(props),
       {
-        "h-full": _fill === "parent" || props.height === "parent",
-        "w-full": _fill === "parent" || props.width === "parent",
-        "max-w-full": props.maxWidth === "parent",
-        "max-h-full": props.maxHeight === "parent",
-        "min-w-full": props.minWidth === "parent",
-        "min-h-full": props.minHeight === "parent",
-        "left-0 top-0": _fill !== null && _position === "absolute",
-        "opacity-30": props.dim || (props.dimIfDisabled !== false && props.isDisabled),
-        "pointer-events-none": props.isDisabled,
+        'h-full': _fill === 'parent' || props.height === 'parent',
+        'left-0 top-0': _fill !== null && _position === 'absolute',
+        'max-h-full': props.maxHeight === 'parent',
+        'max-w-full': props.maxWidth === 'parent',
+        'min-h-full': props.minHeight === 'parent',
+        'min-w-full': props.minWidth === 'parent',
+        'opacity-30': props.dim ?? (props.dimIfDisabled !== false && props.isDisabled),
+        'pointer-events-none': props.isDisabled,
+        'w-full': _fill === 'parent' || props.width === 'parent',
       },
       props.className,
     ),
-  } as Omit<React.ComponentProps<C>, "ref">;
+    style: getViewStyle(props),
+  } as Omit<ReactComponentProps<C>, 'ref'>;
 
   const p = {
     ...ps,
     ...parseDataAttributes({
-      screenW: _fill === "screen" || props.width === "screen",
-      screenH: _fill === "screen" || props.height === "screen",
+      screenH: _fill === 'screen' || props.height === 'screen',
+      screenW: _fill === 'screen' || props.width === 'screen',
     }),
   };
 
   switch (component) {
-    case "div":
-      return <div {...(p as React.ComponentProps<"div">)}>{children}</div>;
-    case "tbody":
-      return <tbody {...(p as React.ComponentProps<"tbody">)}>{children}</tbody>;
-    case "tr":
-      return <tr {...(p as React.ComponentProps<"tr">)}>{children}</tr>;
+    case 'div':
+      return <div {...p}>{children}</div>;
+    case 'tbody':
+      return <tbody {...(p as ReactComponentProps<'tbody'>)}>{children}</tbody>;
+    case 'tr':
+      return <tr {...(p as ReactComponentProps<'tr'>)}>{children}</tr>;
     default:
       throw new UnreachableCaseError(`Invalid component: ${component}!`);
   }

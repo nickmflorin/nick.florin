@@ -1,40 +1,40 @@
-import { DateTime } from "luxon";
-import { levels } from "pino";
-import { z } from "zod";
+import { DateTime } from 'luxon';
+import { levels } from 'pino';
+import { z } from 'zod';
 
-import { terminal } from "~/support";
+import { terminal } from '~/support';
 
 import {
-  EnvironmentNames,
   type EnvironmentName,
+  EnvironmentNames,
   type LogLevel,
   LogLevels,
-} from "~/environment/constants";
+} from '~/environment/constants';
 
-export const LogLevelColors: { [key in LogLevel | "log"]: terminal.TerminalColor } = {
-  error: "red",
-  warn: "yellow",
-  info: "cyan",
-  debug: "gray",
-  log: "gray",
-  silent: "gray",
+export const LogLevelColors: Record<'log' | LogLevel, terminal.TerminalColor> = {
+  debug: 'gray',
+  error: 'red',
+  info: 'cyan',
+  log: 'gray',
+  silent: 'gray',
+  warn: 'yellow',
 };
 
 /* eslint-disable no-console */
-export const ConsoleWriters: { [key in LogLevel | "log"]: typeof console.log } = {
-  error: console.error,
-  warn: console.warn,
-  info: console.info,
+export const ConsoleWriters: Record<'log' | LogLevel, typeof console.log> = {
   debug: console.debug,
+  error: console.error,
+  info: console.info,
   log: console.log,
   silent: console.debug,
+  warn: console.warn,
 };
 /* eslint-enable no-console */
 
-const _parseLevel = (o: object): LogLevel | "log" | null => {
-  if ("level" in o && typeof o.level === "number") {
+const _parseLevel = (o: object): 'log' | LogLevel | null => {
+  if ('level' in o && typeof o.level === 'number') {
     const l = levels.labels[o.level];
-    if (LogLevels.contains(l) || l === "log") {
+    if (LogLevels.contains(l) || l === 'log') {
       return l;
     }
   }
@@ -42,29 +42,36 @@ const _parseLevel = (o: object): LogLevel | "log" | null => {
 };
 
 const _parseEnvironment = (o: object): EnvironmentName | null => {
-  if ("environment" in o && EnvironmentNames.contains(o.environment)) {
+  if ('environment' in o && EnvironmentNames.contains(o.environment)) {
     return o.environment;
   }
   return null;
 };
 
 type LogContext = {
-  level: LogLevel | "log";
-  message: string;
-  time: DateTime;
   environment: EnvironmentName;
+  level: 'log' | LogLevel;
+  message: string;
   name: string;
+  time: DateTime;
 };
 
 type LogBrowserConfig = {
+  readonly environment: EnvironmentName;
   readonly name: string;
   readonly pretty: boolean;
-  readonly environment: EnvironmentName;
 };
 
 const formatters: {
   [key in keyof LogContext]: (v: LogContext[key], c: LogBrowserConfig) => string;
 } = {
+  environment: (environment, { pretty }) => {
+    if (pretty) {
+      const colorized = terminal.applyStyles(environment, { effect: 'dim' });
+      return `[${colorized}]`;
+    }
+    return `[${environment}]`;
+  },
   level: (level, { pretty }) => {
     if (pretty) {
       const colorized = terminal.applyStyles(level.toUpperCase(), {
@@ -75,71 +82,64 @@ const formatters: {
     return `[${level.toUpperCase()}]`;
   },
   message: message => message,
-  environment: (environment, { pretty }) => {
-    if (pretty) {
-      const colorized = terminal.applyStyles(environment, { effect: "dim" });
-      return `[${colorized}]`;
-    }
-    return `[${environment}]`;
-  },
   name: (name, { pretty }) => {
     if (pretty) {
-      const colorized = terminal.applyStyles(name, { foreground: "green" });
+      const colorized = terminal.applyStyles(name, { foreground: 'green' });
       return `[${colorized}]`;
     }
     return `[${name}]`;
   },
   time: (dt, { pretty }) => {
     if (pretty) {
-      const colorized = terminal.applyStyles(dt.toFormat("LLL dd yyyy HH:mm:ss"), {
-        foreground: "blue",
+      const colorized = terminal.applyStyles(dt.toFormat('LLL dd yyyy HH:mm:ss'), {
+        foreground: 'blue',
       });
       return `[${colorized}]`;
     }
-    return `[${dt.toFormat("LLL dd yyyy HH:mm:ss")}]`;
+    return `[${dt.toFormat('LLL dd yyyy HH:mm:ss')}]`;
   },
 };
 
 const parsers: { [key in keyof LogContext]: (ctx: Partial<LogContext>, o: object) => void } = {
-  level: (ctx, o) => {
-    const level = _parseLevel(o);
-    if (level && "level" in o) {
-      delete o["level"];
-      ctx.level = level;
-    }
-  },
   environment: (ctx, o) => {
     const environment = _parseEnvironment(o);
-    if (environment && "environment" in o) {
-      delete o["environment"];
+    if (environment && 'environment' in o) {
+      delete o.environment;
       ctx.environment = environment;
     }
   },
-  name: (ctx, o) => {
-    if ("name" in o) {
-      const parsed = z.string().safeParse(o.name);
-      if (parsed.success) {
-        delete o["name"];
-        ctx.name = parsed.data;
-      }
+  level: (ctx, o) => {
+    const level = _parseLevel(o);
+    if (level && 'level' in o) {
+      delete o.level;
+      ctx.level = level;
     }
   },
   message: (ctx, o) => {
-    if ("msg" in o) {
+    if ('msg' in o) {
       const parsed = z.string().safeParse(o.msg);
       if (parsed.success) {
-        delete o["msg"];
+        delete o.msg;
         ctx.message = parsed.data;
       }
     }
   },
+  name: (ctx, o) => {
+    if ('name' in o) {
+      const parsed = z.string().safeParse(o.name);
+      if (parsed.success) {
+        delete o.name;
+        ctx.name = parsed.data;
+      }
+    }
+  },
   time: (ctx, o) => {
-    if ("time" in o) {
+    if ('time' in o) {
       const parsed = z.number().int().safeParse(o.time);
       if (parsed.success) {
         const dt = DateTime.fromMillis(parsed.data);
         if (dt.isValid) {
-          delete o["time"];
+          delete o.time;
           ctx.time = dt;
         }
       }
@@ -157,10 +157,10 @@ const formatContext = (context: Partial<LogContext>, c: LogBrowserConfig): strin
           context.environment ? formatters.environment(context.environment, c) : undefined,
         ]
           .filter(v => v !== undefined)
-          .join(" ") + (context.message ? ":" : "")
+          .join(' ') + (context.message ? ':' : '')
       : undefined,
     context.message ? formatters.message(context.message, c) : undefined,
-  ].join(" ");
+  ].join(' ');
 
 const parseLogContext = (o: object, c: LogBrowserConfig): [string, object] => {
   const context: Partial<LogContext> = {};
@@ -197,9 +197,9 @@ export const createBrowserWriter =
     const level = _parseLevel(o);
     const writer = level ? ConsoleWriters[level] : ConsoleWriters.info;
     const [message, obj] = parseLogContext(o, config);
-    if (Object.keys(obj).length !== 0) {
-      writer(message, obj);
-    } else {
+    if (Object.keys(obj).length === 0) {
       writer(message);
+    } else {
+      writer(message, obj);
     }
   };

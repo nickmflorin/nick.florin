@@ -1,24 +1,24 @@
-"use client";
-import React, { memo, useMemo, type ReactNode } from "react";
+'use client';
+import { memo, type ReactNode, useMemo } from 'react';
 
-import { isEqual } from "lodash-es";
+import { isEqual } from 'lodash-es';
 
-import type { BrandCourse } from "~/database/model";
+import { type BrandCourse } from '~/database/model';
 
-import { InlineLink } from "~/components/buttons";
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import { Text } from "~/components/typography";
+import { InlineLink } from '~/components/buttons';
+import { useDrawers } from '~/components/drawers/hooks/use-drawers';
+import { Text } from '~/components/typography';
 
 interface CourseLinkProps {
   readonly course: BrandCourse;
 }
 
 const CourseLink = ({ course }: CourseLinkProps) => {
-  const { open, ids } = useDrawers();
+  const { ids, open } = useDrawers();
   return (
     <InlineLink
-      element="a"
-      fontWeight="regular"
+      element='a'
+      fontWeight='regular'
       onClick={() => open(ids.VIEW_COURSE, { courseId: course.id })}
     >
       {course.name}
@@ -35,37 +35,37 @@ export const HumanizedCourses = memo(({ courses }: HumanizedCoursesProps) => {
     if (courses.length === 0) {
       return [];
     } else if (courses.length === 1) {
-      return [<CourseLink key={courses[0].id} course={courses[0]} />];
+      return [<CourseLink course={courses[0]} key={courses[0].id} />];
     } else if (courses.length === 2) {
       return [
-        <CourseLink key={courses[0].id} course={courses[0]} />,
-        <Text key={`${courses[0].id}_break`} component="span">
+        <CourseLink course={courses[0]} key={courses[0].id} />,
+        <Text component='span' key={`${courses[0].id}_break`}>
           &nbsp;and&nbsp;
         </Text>,
-        <CourseLink key={courses[1].id} course={courses[1]} />,
+        <CourseLink course={courses[1]} key={courses[1].id} />,
       ];
     }
     const partial: ReactNode[] = courses.slice(0, courses.length - 2).flatMap(course => [
-      <CourseLink key={course.id} course={course} />,
-      <Text key={`${course.id}_break`} component="span">
+      <CourseLink course={course} key={course.id} />,
+      <Text component='span' key={`${course.id}_break`}>
         ,&nbsp;
       </Text>,
     ]);
     return [
       ...partial,
-      <CourseLink key={courses[courses.length - 2].id} course={courses[courses.length - 2]} />,
-      <Text key={`${courses[courses.length - 2].id}_break`} component="span">
+      <CourseLink course={courses[courses.length - 2]} key={courses[courses.length - 2].id} />,
+      <Text component='span' key={`${courses[courses.length - 2].id}_break`}>
         &nbsp;and&nbsp;
       </Text>,
-      <CourseLink key={courses[courses.length - 1].id} course={courses[courses.length - 1]} />,
-      <Text key={`${courses[courses.length - 1].id}_break`} component="span">
+      <CourseLink course={courses[courses.length - 1]} key={courses[courses.length - 1].id} />,
+      <Text component='span' key={`${courses[courses.length - 1].id}_break`}>
         .
       </Text>,
     ];
   }, [courses]);
 
   if (humanized.length === 0) {
-    return <></>;
+    return null;
   }
   return <>{humanized}</>;
 }, isEqual);

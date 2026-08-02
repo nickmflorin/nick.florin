@@ -1,45 +1,37 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type JSX, type Ref } from 'react';
 
-import type { EnumeratedLiteralsModel } from "enumerated-literals";
+import { type EnumeratedLiteralsModel } from 'enumerated-literals';
 
-import { ProgrammingLanguages } from "~/database/model";
+import { ProgrammingLanguages } from '~/database/model';
 
-import type { DataSelectInstance, SelectBehaviorType } from "~/components/input/select";
-import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
+import { type DataSelectInstance, type SelectBehaviorType } from '~/components/input/select';
+import { DataSelect, type DataSelectProps } from '~/components/input/select/DataSelect';
 
 type M = EnumeratedLiteralsModel<typeof ProgrammingLanguages>;
 
 const getModelValue = (m: M) => m.value;
 
-export interface ProgrammingLanguageSelectProps<B extends SelectBehaviorType>
-  extends Omit<
-    DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
-    "options" | "data" | "itemRenderer" | "getModelValueLabel" | "getItemIcon"
-  > {
+export interface ProgrammingLanguageSelectProps<B extends SelectBehaviorType> extends Omit<
+  DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
+  'data' | 'getItemIcon' | 'getModelValueLabel' | 'itemRenderer' | 'options'
+> {
   readonly behavior: B;
 }
 
-export const ProgrammingLanguageSelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { behavior, ...props }: ProgrammingLanguageSelectProps<B>,
-    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>>,
-  ): JSX.Element => (
-    <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
-      {...props}
-      ref={ref}
-      options={{ behavior, getModelValue }}
-      getModelValueLabel={m => m.label}
-      getItemIcon={m => m.icon}
-      data={[...ProgrammingLanguages.models]}
-      itemRenderer={m => m.label}
-    />
-  ),
-) as {
-  <B extends SelectBehaviorType>(
-    props: ProgrammingLanguageSelectProps<B> & {
-      readonly ref?: ForwardedRef<
-        DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>
-      >;
-    },
-  ): JSX.Element;
-};
+export const ProgrammingLanguageSelect = <B extends SelectBehaviorType>({
+  behavior,
+  ref,
+  ...props
+}: {
+  readonly ref?: Ref<DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>>;
+} & ProgrammingLanguageSelectProps<B>): JSX.Element => (
+  <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
+    {...props}
+    data={[...ProgrammingLanguages.models]}
+    getItemIcon={m => m.icon}
+    getModelValueLabel={m => m.label}
+    itemRenderer={m => m.label}
+    options={{ behavior, getModelValue }}
+    ref={ref}
+  />
+);

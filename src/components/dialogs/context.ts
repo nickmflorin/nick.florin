@@ -1,5 +1,5 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-export const DialogContext = createContext<types.DialogContext | null>(null);
+export const DialogContext = createContext<null | types.DialogContext>(null);

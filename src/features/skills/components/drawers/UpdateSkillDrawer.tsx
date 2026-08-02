@@ -1,42 +1,40 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandSkill } from "~/database/model";
+import { type BrandSkill } from '~/database/model';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { useSkillForm } from "~/features/skills/components/forms/hooks";
-import UpdateSkillForm from "~/features/skills/components/forms/UpdateSkillForm";
-import { useSkill } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { DrawerForm } from '~/components/drawers/DrawerForm';
+import { useSkillForm } from '~/features/skills/components/forms/hooks';
+import { UpdateSkillForm } from '~/features/skills/components/forms/UpdateSkillForm';
+import { useSkill } from '~/hooks/api';
 
-interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
+interface UpdateSkillDrawerProps extends ExtendingDrawerProps {
+  readonly eager: Pick<BrandSkill, 'label'>;
   readonly skillId: string;
-  readonly eager: Pick<BrandSkill, "label">;
 }
 
-export const UpdateCourseDrawer = ({
-  skillId,
+export const UpdateSkillDrawer = ({
   eager,
   onClose,
-}: UpdateCourseDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useSkill(skillId, {
-    query: {
-      includes: ["projects", "educations", "experiences", "repositories", "courses"],
-      visibility: "admin",
-    },
+  skillId,
+}: UpdateSkillDrawerProps): JSX.Element => {
+  const { data, error, isLoading, isValidating } = useSkill(skillId, {
     keepPreviousData: true,
+    query: {
+      includes: ['projects', 'educations', 'experiences', 'repositories', 'courses'],
+      visibility: 'admin',
+    },
   });
   const form = useSkillForm();
 
   return (
-    <DrawerForm form={form} titleField="label" eagerTitle={eager.label}>
-      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+    <DrawerForm eagerTitle={eager.label} form={form} titleField='label'>
+      <ApiResponseState data={data} error={error} isLoading={isLoading || isValidating}>
         {skill => (
-          <UpdateSkillForm form={form} skill={skill} onCancel={onClose} onSuccess={onClose} />
+          <UpdateSkillForm form={form} onCancel={onClose} onSuccess={onClose} skill={skill} />
         )}
       </ApiResponseState>
     </DrawerForm>
   );
 };
-
-export default UpdateCourseDrawer;

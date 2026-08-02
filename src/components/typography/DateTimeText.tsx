@@ -1,88 +1,85 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { DateTime, type DateTimeFormatOptions } from "luxon";
+import { DateTime, type DateTimeFormatOptions } from 'luxon';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
 import {
+  classNames,
   type ComponentProps,
   type TypographyCharacteristics,
   type TypographyComponent,
-} from "~/components/types";
-import { classNames } from "~/components/types";
+} from '~/components/types';
 
-import { Text, type TextProps } from "./Text";
+import { Text, type TextProps } from './Text';
 
-type BaseDateTimeTextProps<C extends TypographyComponent<"text">> = Omit<
-  TextProps<C>,
-  "children" | "ref"
-> & {
+type BaseDateTimeTextProps<C extends TypographyComponent<'text'>> = {
+  readonly dateFormat?: never;
+  readonly dateProps?: never;
   readonly format?: DateTimeFormatOptions | string;
+  readonly formatSeparately?: false;
   readonly strict?: boolean;
   readonly timeFormat?: never;
-  readonly dateFormat?: never;
-  readonly formatSeparately?: false;
-  readonly dateProps?: never;
   readonly timeProps?: never;
-};
+} & Omit<TextProps<C>, 'children' | 'ref'>;
 
-type BaseSeparatedDateTimeTextProps = ComponentProps &
-  TypographyCharacteristics & {
-    readonly component?: "div" | "text";
-    readonly dateProps?: Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> &
-      ComponentProps;
-    readonly timeProps?: Omit<TypographyCharacteristics, "align" | "truncate" | "lineClamp"> &
-      ComponentProps;
-    readonly format?: never;
-    readonly strict?: boolean;
-    readonly formatSeparately: true;
-    readonly timeFormat?: DateTimeFormatOptions | string;
-    readonly dateFormat?: DateTimeFormatOptions | string;
-  };
+type BaseSeparatedDateTimeTextProps = {
+  readonly component?: 'div' | 'text';
+  readonly dateFormat?: DateTimeFormatOptions | string;
+  readonly dateProps?: ComponentProps &
+    Omit<TypographyCharacteristics, 'align' | 'lineClamp' | 'truncate'>;
+  readonly format?: never;
+  readonly formatSeparately: true;
+  readonly strict?: boolean;
+  readonly timeFormat?: DateTimeFormatOptions | string;
+  readonly timeProps?: ComponentProps &
+    Omit<TypographyCharacteristics, 'align' | 'lineClamp' | 'truncate'>;
+} & ComponentProps &
+  TypographyCharacteristics;
 
-type DateTimeProp = DateTime | string | Date;
+type DateTimeProp = Date | DateTime | string;
 
-type DateTimeValueProps<C extends TypographyComponent<"text">> = BaseDateTimeTextProps<C> & {
-  readonly value: DateTimeProp;
+type DateTimeValueProps<C extends TypographyComponent<'text'>> = {
   readonly children?: never;
-};
+  readonly value: DateTimeProp;
+} & BaseDateTimeTextProps<C>;
 
-type DateTimeChildrenProps<C extends TypographyComponent<"text">> = BaseDateTimeTextProps<C> & {
+type DateTimeChildrenProps<C extends TypographyComponent<'text'>> = {
   readonly children: string;
   readonly value?: never;
-};
+} & BaseDateTimeTextProps<C>;
 
-type DateTimeRenderProps<C extends TypographyComponent<"text">> = BaseDateTimeTextProps<C> & {
+type DateTimeRenderProps<C extends TypographyComponent<'text'>> = {
+  readonly children: (params: { text: string; value: DateTime }) => JSX.Element;
   readonly value: DateTimeProp;
-  readonly children: (params: { value: DateTime; text: string }) => JSX.Element;
-};
+} & BaseDateTimeTextProps<C>;
 
-type SeparatedDateTimeValueProps = BaseSeparatedDateTimeTextProps & {
-  readonly value: DateTimeProp;
+type SeparatedDateTimeValueProps = {
   readonly children?: never;
-};
+  readonly value: DateTimeProp;
+} & BaseSeparatedDateTimeTextProps;
 
-type SeparatedDateTimeChildrenProp = BaseSeparatedDateTimeTextProps & {
+type SeparatedDateTimeChildrenProp = {
   readonly children: string;
   readonly value?: never;
-};
+} & BaseSeparatedDateTimeTextProps;
 
-export type DateTimeProps<C extends TypographyComponent<"text">> =
+export type DateTimeProps<C extends TypographyComponent<'text'>> =
   | DateTimeChildrenProps<C>
-  | DateTimeValueProps<C>
   | DateTimeRenderProps<C>
+  | DateTimeValueProps<C>
   | SeparatedDateTimeChildrenProp
   | SeparatedDateTimeValueProps;
 
-const parser = <C extends TypographyComponent<"text">>(
+const parser = <C extends TypographyComponent<'text'>>(
   value: DateTimeProp,
-  { strict }: Required<Pick<BaseDateTimeTextProps<C>, "strict">>,
+  { strict }: Required<Pick<BaseDateTimeTextProps<C>, 'strict'>>,
 ): DateTime | null => {
   if (value instanceof DateTime) {
     if (!value.isValid) {
       throw new Error(
-        "The provided DateTime object is not valid!  Validity must be checked before providing " +
-          "to the DateTimeText component.",
+        'The provided DateTime object is not valid!  Validity must be checked before providing ' +
+          'to the DateTimeText component.',
       );
     }
     return value;
@@ -91,13 +88,13 @@ const parser = <C extends TypographyComponent<"text">>(
     if (!dt.isValid) {
       if (strict) {
         throw new Error(
-          `An invalid date, '${value}', was provided to the DateTimeText component.  The component ` +
-            "cannot render.",
+          `An invalid date, '${String(value)}', was provided to the DateTimeText component.  ` +
+            'The component cannot render.',
         );
       }
       logger.warn(
-        `An invalid date, '${value}', was provided to the DateTimeText component.  The component ` +
-          "cannot render.",
+        `An invalid date, '${String(value)}', was provided to the DateTimeText component.  The ` +
+          'component cannot render.',
         { value },
       );
       return null;
@@ -109,12 +106,12 @@ const parser = <C extends TypographyComponent<"text">>(
     if (strict) {
       throw new Error(
         `An invalid date, '${value}', was provided to the DateTimeText component.  The component ` +
-          "cannot render.",
+          'cannot render.',
       );
     }
     logger.warn(
       `An invalid date, '${value}', was provided to the DateTimeText component.  The component ` +
-        "cannot render.",
+        'cannot render.',
       { value },
     );
     return null;
@@ -122,62 +119,62 @@ const parser = <C extends TypographyComponent<"text">>(
   return dt;
 };
 
-export const DateTimeText = <C extends TypographyComponent<"text">>({
-  value,
+export const DateTimeText = <C extends TypographyComponent<'text'>>({
   children,
-  format = DateTime.DATETIME_MED,
-  dateFormat = DateTime.DATE_MED,
-  timeFormat = DateTime.TIME_SIMPLE,
-  strict = false,
-  formatSeparately,
   className,
-  style,
-  timeProps,
+  component = 'div',
+  dateFormat = DateTime.DATE_MED,
   dateProps,
-  component = "div",
+  format = DateTime.DATETIME_MED,
+  formatSeparately,
+  strict = false,
+  style,
+  timeFormat = DateTime.TIME_SIMPLE,
+  timeProps,
+  value,
   ...props
-}: DateTimeProps<C>): JSX.Element => {
+}: DateTimeProps<C>): JSX.Element | null => {
   if (!formatSeparately) {
-    if (typeof children === "function") {
+    if (typeof children === 'function') {
       const obj = parser(value, { strict });
       if (obj) {
         return children({
+          text: typeof format === 'string' ? obj.toFormat(format) : obj.toLocaleString(format),
           value: obj,
-          text: typeof format === "string" ? obj.toFormat(format) : obj.toLocaleString(format),
         });
       }
-      return <></>;
+      return null;
     }
     const obj = parser(value ?? children, { strict });
     if (obj) {
       return (
         <Text {...props} className={className} style={style}>
-          {typeof format === "string" ? obj.toFormat(format) : obj.toLocaleString(format)}
+          {typeof format === 'string' ? obj.toFormat(format) : obj.toLocaleString(format)}
         </Text>
       );
     }
-    return <></>;
+    return null;
   }
   const obj = parser(value ?? children, { strict });
   if (obj) {
-    if (component === "text") {
+    if (component === 'text') {
       return (
-        <Text {...props} style={style} className={className} lineClamp={1}>
+        <Text {...props} className={className} lineClamp={1} style={style}>
           <Text
             {...dateProps}
-            component="span"
-            className={classNames("text-body", dateProps?.className)}
+            className={classNames('text-body', dateProps?.className)}
+            component='span'
           >
-            {typeof dateFormat === "string"
+            {typeof dateFormat === 'string'
               ? obj.toFormat(dateFormat)
               : obj.toLocaleString(dateFormat)}
-          </Text>{" "}
+          </Text>{' '}
           <Text
             {...timeProps}
-            component="span"
-            className={classNames("text-description", timeProps?.className)}
+            className={classNames('text-description', timeProps?.className)}
+            component='span'
           >
-            {typeof timeFormat === "string"
+            {typeof timeFormat === 'string'
               ? obj.toFormat(timeFormat)
               : obj.toLocaleString(timeFormat)}
           </Text>
@@ -185,29 +182,29 @@ export const DateTimeText = <C extends TypographyComponent<"text">>({
       );
     }
     return (
-      <div style={style} className={classNames("flex flex-row gap-1", className)}>
+      <div className={classNames('flex flex-row gap-1', className)} style={style}>
         <Text
           {...props}
           {...dateProps}
-          className={classNames("text-body", dateProps?.className)}
+          className={classNames('text-body', dateProps?.className)}
           lineClamp={1}
         >
-          {typeof dateFormat === "string"
+          {typeof dateFormat === 'string'
             ? obj.toFormat(dateFormat)
             : obj.toLocaleString(dateFormat)}
         </Text>
         <Text
           {...props}
           {...timeProps}
-          className={classNames("text-description", timeProps?.className)}
+          className={classNames('text-description', timeProps?.className)}
           lineClamp={1}
         >
-          {typeof timeFormat === "string"
+          {typeof timeFormat === 'string'
             ? obj.toFormat(timeFormat)
             : obj.toLocaleString(timeFormat)}
         </Text>
       </div>
     );
   }
-  return <></>;
+  return null;
 };

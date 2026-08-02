@@ -1,16 +1,16 @@
-@use "sass:map";
-@use "partials";
+@use 'sass:map';
+@use 'partials';
 
 $radii: (
-  "none": theme("borderRadius.none"),
-  "xs": theme("borderRadius.xs"),
-  "sm": theme("borderRadius.sm"),
-  "md": theme("borderRadius.md"),
-  "lg": theme("borderRadius.lg"),
-  "xl": theme("borderRadius.xl"),
-  "2xl": theme("borderRadius.2xl"),
-  "3xl": theme("borderRadius.3xl"),
-  "full": theme("borderRadius.full"),
+  'none': theme('borderRadius.none'),
+  'xs': theme('borderRadius.xs'),
+  'sm': theme('borderRadius.sm'),
+  'md': theme('borderRadius.md'),
+  'lg': theme('borderRadius.lg'),
+  'xl': theme('borderRadius.xl'),
+  '2xl': theme('borderRadius.2xl'),
+  '3xl': theme('borderRadius.3xl'),
+  'full': theme('borderRadius.full'),
 );
 
 @function get-radius($size) {

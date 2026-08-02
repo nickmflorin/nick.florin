@@ -1,58 +1,58 @@
-import type { JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { ResumesAdminTab } from "~/components/layout/ResumesAdminTab";
-import { TabbedContent } from "~/components/layout/TabbedContent";
+import { ResumesAdminTab } from '~/components/layout/ResumesAdminTab';
+import { TabbedContent } from '~/components/layout/TabbedContent';
 
 interface AdminLayoutProps {
-  readonly children: React.ReactNode;
+  readonly children: ReactNode;
 }
 
-export default async function AdminLayout({ children }: AdminLayoutProps): Promise<JSX.Element> {
-  return (
-    <TabbedContent
-      padding={8}
-      className="pb-[8px]"
-      items={[
-        {
-          label: "Skills",
-          path: "/admin/skills",
-          activePaths: { leadingPath: "/admin/skills" },
-          icon: { name: "palette" },
-        },
-        {
-          label: "Experiences",
-          path: "/admin/experiences",
-          icon: { name: "briefcase" },
-          activePaths: { leadingPath: "/admin/experiences" },
-        },
-        {
-          label: "Educations",
-          path: "/admin/educations",
-          icon: { name: "building-columns" },
-          activePaths: { leadingPath: "/admin/educations" },
-        },
-        {
-          label: "Projects",
-          path: "/admin/projects",
-          icon: { name: "hammer" },
-          activePaths: { leadingPath: "/admin/projects" },
-        },
-        {
-          label: "Courses",
-          path: "/admin/courses",
-          icon: { name: "backpack" },
-          activePaths: { leadingPath: "/admin/courses" },
-        },
-        {
-          label: "Repositories",
-          path: "/admin/repositories",
-          icon: { name: "github", iconStyle: "brands" },
-          activePaths: { leadingPath: "/admin/repositories" },
-        },
-      ]}
-      extra={<ResumesAdminTab />}
-    >
-      {children}
-    </TabbedContent>
-  );
-}
+const AdminLayout = ({ children }: AdminLayoutProps): JSX.Element => (
+  <TabbedContent
+    className='pb-[8px]'
+    extra={<ResumesAdminTab />}
+    items={[
+      {
+        activePaths: { leadingPath: '/admin/skills' },
+        icon: { name: 'palette' },
+        label: 'Skills',
+        path: '/admin/skills',
+      },
+      {
+        activePaths: { leadingPath: '/admin/experiences' },
+        icon: { name: 'briefcase' },
+        label: 'Experiences',
+        path: '/admin/experiences',
+      },
+      {
+        activePaths: { leadingPath: '/admin/educations' },
+        icon: { name: 'building-columns' },
+        label: 'Educations',
+        path: '/admin/educations',
+      },
+      {
+        activePaths: { leadingPath: '/admin/projects' },
+        icon: { name: 'hammer' },
+        label: 'Projects',
+        path: '/admin/projects',
+      },
+      {
+        activePaths: { leadingPath: '/admin/courses' },
+        icon: { name: 'backpack' },
+        label: 'Courses',
+        path: '/admin/courses',
+      },
+      {
+        activePaths: { leadingPath: '/admin/repositories' },
+        icon: { iconStyle: 'brands', name: 'github' },
+        label: 'Repositories',
+        path: '/admin/repositories',
+      },
+    ]}
+    padding={8}
+  >
+    {children}
+  </TabbedContent>
+);
+
+export default AdminLayout;

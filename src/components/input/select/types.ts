@@ -1,59 +1,59 @@
-import { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
-import { type Prettify } from "~/lib/types";
+import { type Prettify } from '~/lib/types';
 
 import {
-  type DataMenuModel,
-  type MenuItemInstance,
   type ConnectedMenuItemInstance,
-  type MenuItemClickEvent,
+  type CreateDataMenuItemInstanceOptions,
+  type CreateDataMenuItemInstanceRT,
   type DataMenuCustomModel,
+  dataMenuCustomModelIsObj,
+  type DataMenuItemInstanceLookupArg,
+  type DataMenuModel,
   type DataMenuOptions,
   type DisconnectedMenuItemInstance,
-  type CreateDataMenuItemInstanceRT,
-  type DataMenuItemInstanceLookupArg,
-  type CreateDataMenuItemInstanceOptions,
-  dataMenuCustomModelIsObj,
-} from "~/components/menus";
+  type MenuItemClickEvent,
+  type MenuItemInstance,
+} from '~/components/menus';
 
-export const NOTSET = "__NOTSET__" as const;
+export const NOTSET = '__NOTSET__' as const;
 export type NotSet = typeof NOTSET;
 
-export const DONOTHING = "__DONOTHING__" as const;
+export const DONOTHING = '__DONOTHING__' as const;
 export type DoNothing = typeof DONOTHING;
 
-export const SelectEvents = enumeratedLiterals(["select", "deselect", "clear"] as const, {});
+export const SelectEvents = enumeratedLiterals(['select', 'deselect', 'clear'] as const, {});
 export type SelectEvent = EnumeratedLiteralsMember<typeof SelectEvents>;
 
 /**
  * Represents the primitives that are allowed to represent the value of individual items in a
  * Select.
  */
-export type AllowedSelectValue = string | number;
+export type AllowedSelectValue = number | string;
 
 /* ------------------------------ Select Behaviors ------------------------------ */
 export const SelectBehaviorTypes = enumeratedLiterals(
-  ["multi", "single-nullable", "single"] as const,
+  ['multi', 'single-nullable', 'single'] as const,
   {},
 );
 export type SelectBehaviorType = EnumeratedLiteralsMember<typeof SelectBehaviorTypes>;
 
 /* ------------------------------ Select Args ------------------------------ */
 type SelectArg = {
-  readonly value: AllowedSelectValue;
   readonly behavior: SelectBehaviorType;
   readonly model?: never;
   readonly options?: never;
+  readonly value: AllowedSelectValue;
 };
 
 type DataSelectArg<
   M extends DataSelectModel = DataSelectModel,
   O extends DataSelectOptions<M> = DataSelectOptions<M>,
 > = {
-  readonly model: M;
   readonly behavior?: never;
+  readonly model: M;
   readonly options: O;
   readonly value?: never;
 };
@@ -66,23 +66,20 @@ type DataSelectArg<
 type SelectArgs<M extends DataSelectModel = any> = DataSelectArg<M> | SelectArg;
 
 export const argsHaveModel = <M extends DataSelectModel>(
-  args: Pick<SelectArgs<M>, "model">,
-): args is Pick<DataSelectArg<M>, "model"> =>
-  (args as Pick<DataSelectArg<M>, "model">).model !== undefined;
+  args: Pick<SelectArgs<M>, 'model'>,
+): args is Pick<DataSelectArg<M>, 'model'> => args.model !== undefined;
 
 export const argsHaveBehavior = <M extends DataSelectModel>(
-  args: Pick<SelectArgs<M>, "behavior">,
-): args is Pick<SelectArg, "behavior"> =>
-  (args as Pick<SelectArg, "behavior">).behavior !== undefined;
+  args: Pick<SelectArgs<M>, 'behavior'>,
+): args is Pick<SelectArg, 'behavior'> => args.behavior !== undefined;
 
 export const argsHaveValue = <M extends DataSelectModel>(
-  args: Pick<SelectArgs<M>, "value">,
-): args is Pick<SelectArg, "value"> => (args as Pick<SelectArg, "value">).value !== undefined;
+  args: Pick<SelectArgs<M>, 'value'>,
+): args is Pick<SelectArg, 'value'> => args.value !== undefined;
 
 export const argsHaveOptions = <M extends DataSelectModel>(
-  args: Pick<SelectArgs<M>, "options">,
-): args is Pick<DataSelectArg<M>, "options"> =>
-  (args as Pick<DataSelectArg<M>, "options">).options !== undefined;
+  args: Pick<SelectArgs<M>, 'options'>,
+): args is Pick<DataSelectArg<M>, 'options'> => args.options !== undefined;
 
 export type InferM<Args extends SelectArgs> = Args extends {
   readonly model: infer M extends DataSelectModel;
@@ -99,7 +96,7 @@ export type InferO<Args extends SelectArgs> = Args extends {
     : never
   : never;
 
-export type InferV<Args extends Pick<SelectArgs, "value" | "model" | "options">> = Args extends {
+export type InferV<Args extends Pick<SelectArgs, 'model' | 'options' | 'value'>> = Args extends {
   readonly value: infer V extends AllowedSelectValue;
 }
   ? V
@@ -111,7 +108,7 @@ export type InferV<Args extends Pick<SelectArgs, "value" | "model" | "options">>
         : never
     : never;
 
-export type InferB<Args extends Pick<SelectArgs, "behavior" | "options">> = Args extends {
+export type InferB<Args extends Pick<SelectArgs, 'behavior' | 'options'>> = Args extends {
   readonly behavior: infer B extends SelectBehaviorType;
 }
   ? B
@@ -121,7 +118,7 @@ export type InferB<Args extends Pick<SelectArgs, "behavior" | "options">> = Args
       : never
     : never;
 
-export const selectBehavior = <Args extends Pick<SelectArgs, "behavior" | "options">>(
+export const selectBehavior = <Args extends Pick<SelectArgs, 'behavior' | 'options'>>(
   args: Args,
 ): InferB<Args> => (argsHaveOptions(args) ? args.options.behavior : args.behavior) as InferB<Args>;
 
@@ -129,32 +126,30 @@ export type IfSingleNullable<
   B extends SelectBehaviorType,
   T,
   F = never,
-> = B extends "single-nullable" ? T : F;
+> = B extends 'single-nullable' ? T : F;
 
-export type IfMulti<B extends SelectBehaviorType, T, F = never> = B extends "multi" ? T : F;
+export type IfMulti<B extends SelectBehaviorType, T, F = never> = B extends 'multi' ? T : F;
 
-export type IfSingle<B extends SelectBehaviorType, T, F = never> = B extends "single" ? T : F;
+export type IfSingle<B extends SelectBehaviorType, T, F = never> = B extends 'single' ? T : F;
 
 type _IfDeselectable<B extends SelectBehaviorType, T, F = never> = B extends
-  | "multi"
-  | "single-nullable"
+  'multi' | 'single-nullable'
   ? T
   : F;
 
 export type IfDeselectable<
-  Args extends Pick<SelectArgs, "behavior" | "options">,
+  Args extends Pick<SelectArgs, 'behavior' | 'options'>,
   T,
   F = never,
 > = _IfDeselectable<InferB<Args>, T, F>;
 
 type _IfClearable<B extends SelectBehaviorType, T, F = never> = B extends
-  | "multi"
-  | "single-nullable"
+  'multi' | 'single-nullable'
   ? T
   : F;
 
 export type IfClearable<
-  Args extends Pick<SelectArgs, "options" | "behavior">,
+  Args extends Pick<SelectArgs, 'behavior' | 'options'>,
   T,
   F = never,
 > = _IfClearable<InferB<Args>, T, F>;
@@ -181,13 +176,13 @@ export const isDeselectable = (
 export const isClearable = (behavior: SelectBehaviorType): behavior is ClearableSelectBehavior =>
   CLEARABLE_BEHAVIORS.includes(behavior as ClearableSelectBehavior);
 
-export const ifDeselectable = <T, Args extends Pick<SelectArgs, "behavior" | "options">>(
+export const ifDeselectable = <T, Args extends Pick<SelectArgs, 'behavior' | 'options'>>(
   value: T,
   args: Args,
 ): IfDeselectable<Args, T> =>
   (isDeselectable(selectBehavior(args)) ? value : undefined) as IfDeselectable<Args, T>;
 
-export const ifClearable = <T, Args extends Pick<SelectArgs, "behavior" | "options">>(
+export const ifClearable = <T, Args extends Pick<SelectArgs, 'behavior' | 'options'>>(
   value: T,
   args: Args,
 ): IfClearable<Args, T> =>
@@ -197,12 +192,12 @@ export const ifClearable = <T, Args extends Pick<SelectArgs, "behavior" | "optio
 type _SelectNullableValue<
   V extends AllowedSelectValue,
   B extends SelectBehaviorType,
-> = B extends "multi"
+> = B extends 'multi'
   ? V[]
-  : B extends "single-nullable"
-    ? V | null
-    : B extends "single"
-      ? V | null
+  : B extends 'single-nullable'
+    ? null | V
+    : B extends 'single'
+      ? null | V
       : never;
 
 /**
@@ -221,11 +216,11 @@ export type SelectNullableValue<Args extends SelectArgs> = _SelectNullableValue<
   InferB<Args>
 >;
 
-type _SelectValue<V extends AllowedSelectValue, B extends SelectBehaviorType> = B extends "multi"
+type _SelectValue<V extends AllowedSelectValue, B extends SelectBehaviorType> = B extends 'multi'
   ? V[]
-  : B extends "single-nullable"
-    ? V | null
-    : B extends "single"
+  : B extends 'single-nullable'
+    ? null | V
+    : B extends 'single'
       ? V
       : never;
 
@@ -238,29 +233,30 @@ export type SelectValue<Args extends SelectArgs> = _SelectValue<InferV<Args>, In
 export type DataSelectOptions<
   M extends DataSelectModel,
   B extends SelectBehaviorType = SelectBehaviorType,
-> = Omit<DataMenuOptions<M>, "getRefKey"> & {
+> = {
   readonly behavior: B;
   readonly getModelValue?: (model: M) => AllowedSelectValue;
-};
+} & Omit<DataMenuOptions<M>, 'getRefKey'>;
 
-export interface DataSelectModel<V extends AllowedSelectValue = AllowedSelectValue>
-  extends Omit<DataMenuModel, "refKey"> {
-  // The element that will be used to communicate the value of the select in the select input.
-  readonly valueLabel?: ReactNode;
-  readonly value?: V;
+export interface DataSelectModel<V extends AllowedSelectValue = AllowedSelectValue> extends Omit<
+  DataMenuModel,
+  'refKey'
+> {
   readonly refKey?: never;
+  readonly value?: V;
+  /**
+   * The element that is used to communicate the value of the select in the select input.
+   */
+  readonly valueLabel?: ReactNode;
 }
 
-export type ConnectedDataSelectModel<
-  M extends DataSelectModel,
-  O extends DataSelectOptions<M>,
-> = M & {
+export type ConnectedDataSelectModel<M extends DataSelectModel, O extends DataSelectOptions<M>> = {
   readonly onClick?: (
     e: MenuItemClickEvent,
     instance: ConnectedMenuItemInstance,
     select: DataSelectInstance<M, O>,
   ) => void;
-};
+} & M;
 
 /**
  * Represents the model {@link M} or models {@link M[]} that are associated with the value that a
@@ -270,11 +266,11 @@ export type ConnectedDataSelectModel<
 export type DataSelectModelValue<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-> = O extends { behavior: "multi" }
+> = O extends { behavior: 'multi' }
   ? M[]
-  : O extends { behavior: "single-nullable" }
+  : O extends { behavior: 'single-nullable' }
     ? M | null
-    : O extends { behavior: "single" }
+    : O extends { behavior: 'single' }
       ? M
       : never;
 
@@ -295,27 +291,27 @@ export type DataSelectModelValue<
 export type DataSelectNullableModelValue<
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
-> = O extends { behavior: "multi" }
+> = O extends { behavior: 'multi' }
   ? M[]
-  : O extends { behavior: "single-nullable" }
+  : O extends { behavior: 'single-nullable' }
     ? M | null
-    : O extends { behavior: "single" }
+    : O extends { behavior: 'single' }
       ? M | null
       : never;
 
 /* ------------------------------ Select Change Handlers ------------------------------ */
 export type SelectEventRecord<E extends SelectEvent, V extends AllowedSelectValue> = {
-  readonly select: {
-    readonly selected: V;
+  readonly clear: {
     readonly deselected?: never;
+    readonly selected?: never;
   };
   readonly deselect: {
-    readonly selected?: never;
     readonly deselected: V;
-  };
-  readonly clear: {
     readonly selected?: never;
+  };
+  readonly select: {
     readonly deselected?: never;
+    readonly selected: V;
   };
 }[E];
 
@@ -323,30 +319,30 @@ export type SelectEventPublicArgs = {
   readonly dispatchChangeEvent?: boolean;
 };
 
-type EventParamsIncludesDefault = { modelValue?: false; item?: false };
+type EventParamsIncludesDefault = { item?: false; modelValue?: false };
 
 type EventParamsIncludes =
-  | EventParamsIncludesDefault
-  | { modelValue: true; item?: false }
-  | { modelValue: true; item: true };
+  | { item: true; modelValue: true }
+  | { item?: false; modelValue: true }
+  | EventParamsIncludesDefault;
 
 type EventItemParam<E extends SelectEvent> = E extends SelectEvent
   ? {
-      select: { readonly item: MenuItemInstance };
-      deselect: { readonly item: MenuItemInstance };
       clear: { readonly item?: never };
+      deselect: { readonly item: MenuItemInstance };
+      select: { readonly item: MenuItemInstance };
     }[E]
   : never;
 
 type _SelectChangeEventParams<E extends SelectEvent, Args extends SelectArgs> = Prettify<
-  SelectEventRecord<E, InferV<Args>> &
-    EventItemParam<E> & {
-      readonly event: E;
-      readonly modelValue: DataSelectModelValue<InferM<Args>, InferO<Args>>;
-    }
+  {
+    readonly event: E;
+    readonly modelValue: DataSelectModelValue<InferM<Args>, InferO<Args>>;
+  } & EventItemParam<E> &
+    SelectEventRecord<E, InferV<Args>>
 >;
 
-type TruthyKeys<K extends { [key in string]?: boolean | undefined }> = keyof {
+type TruthyKeys<K extends Partial<Record<string, boolean | undefined>>> = keyof {
   [key in keyof K as [K[key]] extends [true] ? key : never]: key;
 };
 
@@ -359,11 +355,10 @@ type TruthyKeys<K extends { [key in string]?: boolean | undefined }> = keyof {
  * The following attributes are dynamic, and not included in the resulting type by default.  They
  * can be included in the resulting type by including the generic type 'I' in the type definition.
  *
- * 1. 'modelValue' - Represents the model value associated with the value of a DataSelect.  This is
- *                   only applicable for the DataSelect.  @see {DataSelectModelValue}
- * 2. 'instance' - Represents the {@link MenuItemInstance} associated with the MenuItem that may be
- *                 have been selected/deselected.  This is only applicable for the DataSelect.
- *                 @see {MenuItemInstance}
+ * 1. 'modelValue' - Represents the model value associated with the value of a DataSelect. This is
+ *    only applicable for the DataSelect. See {@link DataSelectModelValue}.
+ * 2. 'instance' - Represents the {@link MenuItemInstance} associated with the MenuItem that may
+ *    have been selected/deselected. This is only applicable for the DataSelect.
  *
  * The ability to dynamically include/exclude both of these attributes in the resulting type gives
  * this type enough flexibility to be consistently used across the various contexts of the Select
@@ -411,26 +406,22 @@ export type SelectChangeEventParams<
   Args extends SelectArgs,
   I extends EventParamsIncludes = EventParamsIncludesDefault,
 > = E extends SelectEvent
-  ? Pick<_SelectChangeEventParams<E, Args>, "selected" | "deselected" | "event" | TruthyKeys<I>>
+  ? Pick<_SelectChangeEventParams<E, Args>, 'deselected' | 'event' | 'selected' | TruthyKeys<I>>
   : never;
 
 export type SelectChangeHandler<
   Args extends SelectArgs,
   I extends EventParamsIncludes = EventParamsIncludesDefault,
-> = {
-  <E extends SelectEvent>(
-    value: SelectValue<Args>,
-    params: SelectChangeEventParams<E, Args, I>,
-  ): void;
-};
+> = <E extends SelectEvent>(
+  value: SelectValue<Args>,
+  params: SelectChangeEventParams<E, Args, I>,
+) => void;
 
 export type SelectEventChangeHandler<
   E extends SelectEvent,
   Args extends SelectArgs,
   I extends EventParamsIncludes = EventParamsIncludesDefault,
-> = {
-  (value: SelectValue<Args>, params: SelectChangeEventParams<E, Args, I>): void;
-};
+> = (value: SelectValue<Args>, params: SelectChangeEventParams<E, Args, I>) => void;
 
 /* ------------------------------ Select Instances ------------------------------ */
 type SelectEventActionFn<
@@ -438,32 +429,19 @@ type SelectEventActionFn<
   Args extends SelectArgs,
   I extends EventParamsIncludes = EventParamsIncludesDefault,
   P extends SelectEventPublicArgs = SelectEventPublicArgs,
-> = (value: InferV<Args> | InferM<Args>, p?: P, cb?: SelectEventChangeHandler<E, Args, I>) => void;
+> = (value: InferM<Args> | InferV<Args>, p?: P, cb?: SelectEventChangeHandler<E, Args, I>) => void;
 
 export interface ManagedSelect<V extends AllowedSelectValue, B extends SelectBehaviorType> {
-  readonly value: SelectNullableValue<{ value: V; behavior: B }> | NotSet;
-  /**
-   * Sets the value of the select directly.  This method can be used to manipulate the value of
-   * the select directly, but is mostly intended for purposes internal to the Select component
-   * and its variations.
-   *
-   * The method will not cause the 'onChange' handler to fire.
-   */
-  readonly setValue: (
-    value: SelectValue<{ value: V; behavior: B }>,
-    options?: { __private_ignore_controlled_state__: boolean },
-  ) => void;
-  readonly isSelected: (v: V) => boolean;
   /**
    * Clears the value of the Select. This method can be used to manipulate the value of the Select
    * directly. By default, the method will cause the 'onChange' handler to fire - but if that is not
    * desired, the 'dispatchChangeEvent' option can be set to false.
    */
   readonly clear: IfClearable<
-    { value: V; behavior: B },
+    { behavior: B; value: V },
     (
       p?: SelectEventPublicArgs,
-      cb?: SelectEventChangeHandler<typeof SelectEvents.CLEAR, { value: V; behavior: B }>,
+      cb?: SelectEventChangeHandler<typeof SelectEvents.CLEAR, { behavior: B; value: V }>,
     ) => void
   >;
   /**
@@ -476,10 +454,11 @@ export interface ManagedSelect<V extends AllowedSelectValue, B extends SelectBeh
    * {@link MenuItemInstance} is included in the option parameters it accepts.
    */
   readonly deselect: IfDeselectable<
-    { value: V; behavior: B },
-    SelectEventActionFn<typeof SelectEvents.DESELECT, { value: V; behavior: B }>,
+    { behavior: B; value: V },
+    SelectEventActionFn<typeof SelectEvents.DESELECT, { behavior: B; value: V }>,
     never
   >;
+  readonly isSelected: (v: V) => boolean;
   /**
    * Selects the item associated with the value {@link V} in the Select.  This method can be used
    * to manipulate the value of the Select directly.  By default, the method will cause the
@@ -489,7 +468,18 @@ export interface ManagedSelect<V extends AllowedSelectValue, B extends SelectBeh
    * If the 'dispatchChangeEvent' option is not set to false, the method will require that the
    * {@link MenuItemInstance} is included in the option parameters it accepts.
    */
-  readonly select: SelectEventActionFn<typeof SelectEvents.SELECT, { value: V; behavior: B }>;
+  readonly select: SelectEventActionFn<typeof SelectEvents.SELECT, { behavior: B; value: V }>;
+  /**
+   * Sets the value of the select directly.  This method can be used to manipulate the value of
+   * the select directly, but is mostly intended for purposes internal to the Select component
+   * and its variations.
+   *
+   * The method will not cause the 'onChange' handler to fire.
+   */
+  readonly setValue: (
+    value: SelectValue<{ behavior: B; value: V }>,
+    options?: { __private_ignore_controlled_state__: boolean },
+  ) => void;
   /**
    * Toggles the selection state of the item associated with the value {@link V} in the Select. This
    * method can be used to manipulate the value of the Select directly.  By default, the method will
@@ -501,8 +491,9 @@ export interface ManagedSelect<V extends AllowedSelectValue, B extends SelectBeh
    */
   readonly toggle: SelectEventActionFn<
     typeof SelectEvents.DESELECT | typeof SelectEvents.SELECT,
-    { value: V; behavior: B }
+    { behavior: B; value: V }
   >;
+  readonly value: NotSet | SelectNullableValue<{ behavior: B; value: V }>;
 }
 
 export interface ManagedDataSelect<
@@ -510,11 +501,9 @@ export interface ManagedDataSelect<
   O extends DataSelectOptions<M>,
   MV extends DataSelectNullableModelValue<M, O> | NotSet = DataSelectNullableModelValue<M, O>,
 > extends Pick<
-    ManagedSelect<InferV<{ model: M; options: O }>, InferB<{ model: M; options: O }>>,
-    "value" | "setValue"
-  > {
-  readonly modelValue: MV;
-  readonly isSelected: (m: M | InferV<{ model: M; options: O }>) => boolean;
+  ManagedSelect<InferV<{ model: M; options: O }>, InferB<{ model: M; options: O }>>,
+  'setValue' | 'value'
+> {
   readonly clear: IfClearable<
     { model: M; options: O },
     (
@@ -534,63 +523,85 @@ export interface ManagedDataSelect<
       { modelValue: true }
     >
   >;
-  readonly toggle: SelectEventActionFn<
-    typeof SelectEvents.SELECT | typeof SelectEvents.DESELECT,
-    { model: M; options: O },
-    { modelValue: true }
-  >;
+  readonly isSelected: (m: InferV<{ model: M; options: O }> | M) => boolean;
+  readonly modelValue: MV;
   readonly select: SelectEventActionFn<
     typeof SelectEvents.SELECT,
     { model: M; options: O },
     { modelValue: true },
-    SelectEventPublicArgs & { readonly optimisticModels?: M[] }
+    { readonly optimisticModels?: M[] } & SelectEventPublicArgs
+  >;
+  readonly toggle: SelectEventActionFn<
+    typeof SelectEvents.DESELECT | typeof SelectEvents.SELECT,
+    { model: M; options: O },
+    { modelValue: true }
   >;
 }
 
 export type RootSelectInstance = {
   readonly focusInput: () => void;
-  readonly setOpen: (v: boolean) => void;
   readonly setInputLoading: (v: boolean) => void;
+  readonly setOpen: (v: boolean) => void;
   readonly setPopoverLoading: (v: boolean) => void;
 };
 
-export type SelectInstance<
-  V extends AllowedSelectValue,
-  B extends SelectBehaviorType,
-> = RootSelectInstance &
-  Omit<ManagedSelect<V, B>, "value"> & {
-    readonly setValue: (v: SelectValue<{ value: V; behavior: B }>) => void;
-    readonly setLoading: (v: boolean) => void;
-  };
+export type SelectInstance<V extends AllowedSelectValue, B extends SelectBehaviorType> = {
+  readonly setLoading: (v: boolean) => void;
+  readonly setValue: (v: SelectValue<{ behavior: B; value: V }>) => void;
+} & Omit<ManagedSelect<V, B>, 'value'> &
+  RootSelectInstance;
 
 export type AddOptimisticModelParams =
   | {
-      readonly dispatchChangeEvent?: false;
-      readonly select?: false;
-    }
-  | {
       readonly dispatchChangeEvent?: boolean;
       readonly select: true;
+    }
+  | {
+      readonly dispatchChangeEvent?: false;
+      readonly select?: false;
     };
 
 export type AddOptimisticModel<M extends DataSelectModel> = (
-  m: M | ((curr: M[]) => [M, M[]]),
+  m: ((curr: M[]) => [M, M[]]) | M,
   params: AddOptimisticModelParams,
 ) => void;
 
 export interface DataSelectBaseInstance<M extends DataSelectModel, O extends DataSelectOptions<M>>
-  extends RootSelectInstance,
+  extends
+    RootSelectInstance,
     Pick<
       ManagedDataSelect<M, O>,
-      "clear" | "deselect" | "select" | "toggle" | "isSelected" | "setValue"
+      'clear' | 'deselect' | 'isSelected' | 'select' | 'setValue' | 'toggle'
     > {}
 
 export type DataSelectMenuOptions<M extends DataSelectModel, O extends DataSelectOptions<M>> = {
   readonly getModelId: (m: M) => InferV<{ model: M; options: O }>;
 };
 
-export interface DataSelectInstance<M extends DataSelectModel, O extends DataSelectOptions<M>>
-  extends DataSelectBaseInstance<M, O> {
+export interface DataSelectInstance<
+  M extends DataSelectModel,
+  O extends DataSelectOptions<M>,
+> extends DataSelectBaseInstance<M, O> {
+  /**
+   * Adds a model, {@link M}, to the data stored in state that the DataSelect uses to render the
+   * content in the popover.  This method can be used when applying optimistic updates to the
+   * population of models, {@link M[]}, that may have been previously fetched from an API request.
+   */
+  readonly addOptimisticModel: AddOptimisticModel<M>;
+  /**
+   * Creates a {@link MenuItemInstance} associated with the provided value or model.
+   */
+  readonly createMenuItemInstance: <CO extends CreateDataMenuItemInstanceOptions>(
+    k: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
+    opts?: CO,
+  ) => CreateDataMenuItemInstanceRT<CO>;
+  /**
+   * Creates a {@link MenuItemInstance} associated with the provided value or model only if
+   * the {@link MenuItemInstance} has not yet been created.
+   */
+  readonly createMenuItemInstanceIfNecessary: (
+    m: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
+  ) => DisconnectedMenuItemInstance | null;
   /**
    * Retrieves the {@link MenuItemInstance} associated with the rendered or unrendered MenuItem
    * who's content is related to the with the provided value or model,
@@ -617,36 +628,16 @@ export interface DataSelectInstance<M extends DataSelectModel, O extends DataSel
     m: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
   ) => MenuItemInstance;
   /**
-   * Creates a {@link MenuItemInstance} associated with the provided value or model only if
-   * the {@link MenuItemInstance} has not yet been created.
+   * Sets the loading state of the DataSelect's DataMenu's content.  When in a loading state, the
+   * DataMenu's content will show a loading indicator.
    */
-  readonly createMenuItemInstanceIfNecessary: (
-    m: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
-  ) => DisconnectedMenuItemInstance | null;
-  /**
-   * Creates a {@link MenuItemInstance} associated with the provided value or model.
-   */
-  readonly createMenuItemInstance: <CO extends CreateDataMenuItemInstanceOptions>(
-    k: DataMenuItemInstanceLookupArg<M, DataSelectMenuOptions<M, O>>,
-    opts?: CO,
-  ) => CreateDataMenuItemInstanceRT<CO>;
-  /**
-   * Adds a model, {@link M}, to the data stored in state that the DataSelect uses to render the
-   * content in the popover.  This method can be used when applying optimistic updates to the
-   * population of models, {@link M[]}, that may have been previously fetched from an API request.
-   */
-  readonly addOptimisticModel: AddOptimisticModel<M>;
+  readonly setContentLoading: (v: boolean) => void;
   /**
    * Sets the loading state of the DataSelect as a whole.  When in a loading state, the DataSelect
    * will treat both the DataMenu's content and the DataSelectInput as being in loading states,
    * each of which will show loading indicators.
    */
   readonly setLoading: (v: boolean) => void;
-  /**
-   * Sets the loading state of the DataSelect's DataMenu's content.  When in a loading state, the
-   * DataMenu's content will show a loading indicator.
-   */
-  readonly setContentLoading: (v: boolean) => void;
 }
 
 /* ------------------------------ Select Custom Items ------------------------------ */
@@ -660,27 +651,24 @@ type DataSelectCustomModelItemClickHandler<
   O extends DataSelectOptions<M>,
 > = (e: MenuItemClickEvent, instance: MenuItemInstance, select: DataSelectInstance<M, O>) => void;
 
-export type DataSelectCustomMenuItem<
-  M extends DataSelectModel,
-  O extends DataSelectOptions<M>,
-> = DataMenuCustomModel<DataSelectCustomModelItemClickHandler<M, O>> & {
+export type DataSelectCustomMenuItem<M extends DataSelectModel, O extends DataSelectOptions<M>> = {
   readonly renderer?: DataSelectCustomItemRenderer<M, O>;
-};
+} & DataMenuCustomModel<DataSelectCustomModelItemClickHandler<M, O>>;
 
 export const dataSelectCustomItemIsObject = <
   M extends DataSelectModel,
   O extends DataSelectOptions<M>,
 >(
-  obj: Omit<DataSelectCustomMenuItem<M, O>, "isCustom"> | JSX.Element,
-): obj is Omit<DataSelectCustomMenuItem<M, O>, "isCustom"> =>
+  obj: JSX.Element | Omit<DataSelectCustomMenuItem<M, O>, 'isCustom'>,
+): obj is Omit<DataSelectCustomMenuItem<M, O>, 'isCustom'> =>
   dataMenuCustomModelIsObj<
-    Omit<DataSelectCustomMenuItem<M, O>, "isCustom">,
+    Omit<DataSelectCustomMenuItem<M, O>, 'isCustom'>,
     DataSelectCustomModelItemClickHandler<M, O>
   >(obj);
 
 /* ------------------------------ Select Value Renderers ------------------------------ */
 export type SelectValueRenderer<V extends AllowedSelectValue, B extends SelectBehaviorType> = (
-  value: SelectValue<{ value: V; behavior: B }>,
+  value: SelectValue<{ behavior: B; value: V }>,
   select: SelectInstance<V, B>,
 ) => ReactNode;
 

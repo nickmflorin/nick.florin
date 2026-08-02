@@ -1,90 +1,90 @@
-@use "sass:map";
-@use "sass:list";
+@use 'sass:map';
+@use 'sass:list';
 
-@use "partials";
+@use 'partials';
 
-@use "../radii" as radii;
-@use "./constants" as constants;
+@use '../radii' as radii;
+@use './constants' as constants;
 
-$input-sizes: ("xsmall", "small", "medium", "large", "xlarge");
-$input-default-size: "medium";
+$input-sizes: ('xsmall', 'small', 'medium', 'large', 'xlarge');
+$input-default-size: 'medium';
 
-$input-default-border-radii: "sm";
+$input-default-border-radii: 'sm';
 
 $input-size-properties: (
-  "xsmall": (
-    "font-size": 13px,
-    "line-height": (
+  'xsmall': (
+    'font-size': 13px,
+    'line-height': (
       // Leads to Height of 28px
-      "text-input": 20px,
-      "select": 20px,
+      'text-input': 20px,
+      'select': 20px,
       // Leads to Height of 28px for Single Line of Text
-      "text-area": 16px,
+      'text-area': 16px,
     ),
-    "padding": (
-      "text-input": 4px 10px,
-      "select": 4px 10px,
-      "text-area": 5px 10px,
+    'padding': (
+      'text-input': 4px 10px,
+      'select': 4px 10px,
+      'text-area': 5px 10px,
     ),
   ),
-  "small": (
-    "font-size": 14px,
-    "line-height": (
+  'small': (
+    'font-size': 14px,
+    'line-height': (
       // Leads to Height of 32px
-      "text-input": 20px,
-      "select": 20px,
+      'text-input': 20px,
+      'select': 20px,
       // Leads to Height of 32px for Single Line of Text
-      "text-area": 16px,
+      'text-area': 16px,
     ),
-    "padding": (
-      "text-input": 6px 12px,
-      "text-area": 8px 12px,
-      "select": 6px 12px,
+    'padding': (
+      'text-input': 6px 12px,
+      'text-area': 8px 12px,
+      'select': 6px 12px,
     ),
   ),
-  "medium": (
-    "font-size": 14px,
-    "line-height": (
+  'medium': (
+    'font-size': 14px,
+    'line-height': (
       // Leads to Height of 36px
-      "text-input": 24px,
-      "select": 24px,
+      'text-input': 24px,
+      'select': 24px,
       // Leads to Height of 36px for Single Line of Text
-      "text-area": 18px,
+      'text-area': 18px,
     ),
-    "padding": (
-      "text-input": 6px 12px,
-      "select": 6px 12px,
-      "text-area": 9px 12px,
+    'padding': (
+      'text-input': 6px 12px,
+      'select': 6px 12px,
+      'text-area': 9px 12px,
     ),
   ),
-  "large": (
-    "font-size": 14px,
-    "line-height": (
+  'large': (
+    'font-size': 14px,
+    'line-height': (
       // Leads to Height of 40px
-      "text-input": 28px,
-      "select": 28px,
+      'text-input': 28px,
+      'select': 28px,
       // Leads to Height of 40px for Single Line of Text
-      "text-area": 20px,
+      'text-area': 20px,
     ),
-    "padding": (
-      "text-input": 6px 12px,
-      "select": 6px 12px,
-      "text-area": 10px 12px,
+    'padding': (
+      'text-input': 6px 12px,
+      'select': 6px 12px,
+      'text-area': 10px 12px,
     ),
   ),
-  "xlarge": (
-    "font-size": 16px,
-    "line-height": (
+  'xlarge': (
+    'font-size': 16px,
+    'line-height': (
       // Leads to Height of 44px
-      "text-input": 30px,
-      "select": 30px,
+      'text-input': 30px,
+      'select': 30px,
       // Leads to Height of 44px for Single Line of Text
-      "text-area": 20px,
+      'text-area': 20px,
     ),
-    "padding": (
-      "text-input": 6px 12px,
-      "select": 6px 12px,
-      "text-area": 12px 14px,
+    'padding': (
+      'text-input': 6px 12px,
+      'select': 6px 12px,
+      'text-area': 12px 14px,
     ),
   ),
 );
@@ -95,10 +95,10 @@ $input-size-properties: (
   font-size: partials.mapget($properties, font-size);
 
   $padding: map.get($properties, padding, $type);
-  /* For the padding, if we are dealing with larger radii, we should add additioanal horizontal
+  /* For the padding, if we are dealing with larger radii, we should add additional horizontal
      padding to the left and right sides to account for the large border radius. */
   padding: $padding;
-  @if $radii == "full" {
+  @if $radii == 'full' {
     padding: list.nth($padding, 1) list.nth($padding, 2) + 4px;
   }
 
@@ -126,8 +126,8 @@ $input-size-properties: (
     }
   }
 
-  @if $type != "text-area" {
-    &:not([data-attr-dynamic-height="true"]) {
+  @if $type != 'text-area' {
+    &:not([data-attr-dynamic-height='true']) {
       max-height: $height;
       height: $height;
     }

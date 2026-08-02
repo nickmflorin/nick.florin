@@ -1,17 +1,17 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
-import { isUuid } from "~/lib/typeguards";
+import { isUuid } from '~/lib/typeguards';
 
 export const useId = (
-  initialValue?: string | null,
-): [string | null, (v: string | null) => void] => {
-  const [id, _setId] = useState(isUuid(initialValue) ? initialValue : null);
+  initialValue?: null | string,
+): [null | string, (v: null | string) => void] => {
+  const [id, setId] = useState(isUuid(initialValue) ? initialValue : null);
 
-  const setId = useCallback((v: string | null) => {
+  const setValidatedId = useCallback((v: null | string) => {
     if (v === null || isUuid(v)) {
-      return _setId(v);
+      return setId(v);
     }
   }, []);
 
-  return [id, setId];
+  return [id, setValidatedId];
 };

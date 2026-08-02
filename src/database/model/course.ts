@@ -1,25 +1,19 @@
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
-import type { BrandCourse, BrandEducation } from "./brand";
+import { type BrandCourse, type BrandEducation } from './brand';
+import { type ConditionallyInclude } from './inclusion';
+import { type ApiSkill } from './skills';
 
-import { type ConditionallyInclude } from "./inclusion";
-import { type ApiSkill } from "./skills";
-
-export const CourseIncludesFields = enumeratedLiterals(["skills", "education"] as const, {});
+export const CourseIncludesFields = enumeratedLiterals(['skills', 'education'] as const, {});
 export type CourseIncludesField = EnumeratedLiteralsMember<typeof CourseIncludesFields>;
 
-export type CourseIncludes =
-  | ["education", "skills"]
-  | ["skills", "education"]
-  | ["education"]
-  | ["skills"]
-  | [];
+export type CourseIncludes = CourseIncludesField[];
 
 export type ApiCourse<I extends CourseIncludes = []> = ConditionallyInclude<
-  BrandCourse & {
-    readonly skills: ApiSkill[];
+  {
     readonly education: BrandEducation;
-  },
-  ["skills", "education"],
+    readonly skills: ApiSkill[];
+  } & BrandCourse,
+  ['skills', 'education'],
   I
 >;

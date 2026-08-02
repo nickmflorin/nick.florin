@@ -1,12 +1,10 @@
-import { type z } from "zod";
+import { type z } from 'zod';
 
-type ValidEnvValue = string | number | boolean | undefined | string[];
+type ValidEnvValue = boolean | number | string | string[] | undefined;
 
-type BaseRuntimeEnv = {
-  [key in string]: string | undefined;
-};
+type BaseRuntimeEnv = Record<string, string | undefined>;
 
-export type EnvironmentValidationMethod = "first-access" | "instantiation";
+export type EnvironmentValidationMethod = 'first-access' | 'instantiation';
 
 export type EnvKey<R extends RuntimeEnv<V>, V extends Validators<R>> = Extract<keyof R, string> &
   Extract<keyof V, string>;
@@ -22,8 +20,7 @@ export type NextServerOnlyKey<R extends RuntimeEnv<V>, V extends Validators<R>> 
 >;
 
 export type NextEnvKey<R extends RuntimeEnv<V>, V extends Validators<R>> =
-  | NextClientKey<R, V>
-  | NextServerOnlyKey<R, V>;
+  NextClientKey<R, V> | NextServerOnlyKey<R, V>;
 
 export type EnvValue<
   K extends EnvKey<R, V>,
@@ -35,9 +32,10 @@ export type Env<R extends RuntimeEnv<V>, V extends Validators<R>> = {
   [key in EnvKey<R, V>]: EnvValue<key, R, V>;
 };
 
-export type Validators<R extends BaseRuntimeEnv = BaseRuntimeEnv> = {
-  [key in Extract<keyof R, string>]: z.ZodType<ValidEnvValue>;
-};
+export type Validators<R extends BaseRuntimeEnv = BaseRuntimeEnv> = Record<
+  Extract<keyof R, string>,
+  z.ZodType<ValidEnvValue>
+>;
 
 export type NextClientValidators<R extends RuntimeEnv<V>, V extends Validators<R>> = {
   [key in NextClientKey<R, V>]: V[key];
@@ -63,10 +61,8 @@ export type NextServerOnlyEnv<R extends RuntimeEnv<V>, V extends Validators<R>> 
   [key in NextServerOnlyKey<R, V>]: EnvValue<key, R, V>;
 };
 
-export type RuntimeEnv<V extends Validators> = {
-  [key in Extract<keyof V, string>]: string | undefined;
-};
+export type RuntimeEnv<V extends Validators> = Record<Extract<keyof V, string>, string | undefined>;
 
 export type NextMergedEnv<R extends RuntimeEnv<V>, V extends Validators<R>> = {
-  [key in NextServerOnlyKey<R, V> | NextClientKey<R, V>]: R[key];
+  [key in NextClientKey<R, V> | NextServerOnlyKey<R, V>]: R[key];
 };

@@ -1,74 +1,76 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect, useEffectEvent, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type School } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type School } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { updateSchool } from "~/actions/schools/update-school";
+import { updateSchool } from '~/actions/schools/update-school';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { useDeepEqualEffect } from "~/hooks";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { SchoolForm, type SchoolFormProps } from "./SchoolForm";
+import { SchoolForm, type SchoolFormProps } from './SchoolForm';
 
-export interface UpdateSchoolFormProps extends Omit<SchoolFormProps, "action"> {
-  readonly school: School;
+export interface UpdateSchoolFormProps extends Omit<SchoolFormProps, 'action'> {
   readonly onCancel?: () => void;
   readonly onSuccess?: () => void;
+  readonly school: School;
 }
 
 export const UpdateSchoolForm = ({
-  school,
   onCancel,
   onSuccess,
+  school,
   ...props
 }: UpdateSchoolFormProps): JSX.Element => {
   const updateSchoolWithId = updateSchool.bind(null, school.id);
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
-  // Prevents the form from resetting when an error occurs.
-  useDeepEqualEffect(() => {
+  /* The form is repopulated only when a different school is being edited.  Keying the effect on
+     the identifier rather than the school itself means a background revalidation of the same
+     school never discards values the user is in the middle of editing. */
+  const setSchoolFormValues = useEffectEvent(() => {
     props.form.setValues({
       ...school,
-      shortName: school.shortName ?? "",
-      description: school.description ?? "",
-      websiteUrl: school.websiteUrl ?? "",
-      logoImageUrl: school.logoImageUrl ?? "",
+      description: school.description ?? '',
+      logoImageUrl: school.logoImageUrl ?? '',
+      shortName: school.shortName ?? '',
+      websiteUrl: school.websiteUrl ?? '',
     });
-  }, [school, props.form.setValues]);
+  });
+
+  useEffect(() => {
+    setSchoolFormValues();
+  }, [school.id]);
 
   return (
     <SchoolForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof updateSchoolWithId>> | null = null;
         try {
           response = await updateSchoolWithId(data);
         } catch (e) {
           logger.errorUnsafe(e, `There was an error updating the school with ID '${school.id}'.`, {
-            school,
             data,
+            school,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error updating the school.");
+          return toast.error('There was an error updating the school.');
         }
         const { error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.();
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default UpdateSchoolForm;

@@ -1,9 +1,9 @@
-"use server";
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { db } from "~/database/prisma";
+'use server';
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const deleteSkill = async (
   id: string,
@@ -23,5 +23,5 @@ export const deleteSkill = async (
     return { error: ApiClientGlobalError.NotFound({}).json };
   }
   await db.skill.delete({ where: { id: skill.id } });
-  return { data: { message: "Success" } };
+  return { data: { message: 'Success' } };
 };

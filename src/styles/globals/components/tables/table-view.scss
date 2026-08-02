@@ -1,11 +1,11 @@
-@use "partials" as partials;
-@use "./constants" as constants;
+@use 'partials' as partials;
+@use './constants' as constants;
 
 @mixin control-bar-flex() {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: theme("spacing.4");
+  gap: theme('spacing.4');
 }
 
 .table-view {
@@ -18,13 +18,13 @@
   max-height: 100%;
   overflow: auto;
   min-height: 0;
-  gap: theme("spacing.4");
+  gap: theme('spacing.4');
 
   > .table-view__header {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: theme("spacing.4");
+    gap: theme('spacing.4');
 
     .table-view__control-bar {
       @include control-bar-flex();
@@ -53,7 +53,7 @@
         > .table-view__control-bar-actions {
           display: flex;
           flex-direction: row;
-          gap: theme("spacing.4");
+          gap: theme('spacing.4');
           align-items: center;
           flex-grow: 1;
         }
@@ -74,11 +74,11 @@
 
     > .MuiTableContainer-root {
       border: 1px solid constants.$table-header-bg-color;
-      @include partials.border-radius(theme("borderRadius.sm"));
+      @include partials.border-radius(theme('borderRadius.sm'));
       // The reasoning is unclear, but it appears that the border-radius property must be applied
       // to work on Safari or iOS devices, whereas the clip-path property must be defined to
       // work on Chrome.
-      @include partials.clip-path-radius(theme("borderRadius.sm"));
+      @include partials.clip-path-radius(theme('borderRadius.sm'));
     }
   }
 

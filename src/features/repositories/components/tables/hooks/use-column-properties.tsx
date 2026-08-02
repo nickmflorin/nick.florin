@@ -1,15 +1,15 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { NpmLink } from "~/components/buttons/NpmLink";
-import { type DataTableColumnProperties } from "~/components/tables";
-import { ReadOnlyDateTimeCell } from "~/components/tables/cells/ReadOnlyDateTimeCell";
-import { useDataTable } from "~/components/tables/hooks";
-import { type RepositoriesTableModel, type RepositoriesTableColumn } from "~/features/repositories";
+import { NpmLink } from '~/components/buttons/NpmLink';
+import { type DataTableColumnProperties } from '~/components/tables';
+import { ReadOnlyDateTimeCell } from '~/components/tables/cells/ReadOnlyDateTimeCell';
+import { useDataTable } from '~/components/tables/hooks';
+import { type RepositoriesTableColumn, type RepositoriesTableModel } from '~/features/repositories';
 
-import { HighlightedCell } from "../cells/HighlightedCell";
-import { ProjectsCell } from "../cells/ProjectsCell";
-import { SkillsCell } from "../cells/SkillsCell";
-import { VisibleCell } from "../cells/VisibleCell";
+import { HighlightedCell } from '../cells/HighlightedCell';
+import { ProjectsCell } from '../cells/ProjectsCell';
+import { SkillsCell } from '../cells/SkillsCell';
+import { VisibleCell } from '../cells/VisibleCell';
 
 export const useRepositoriesTableColumnProperties = (): DataTableColumnProperties<
   RepositoriesTableModel,
@@ -18,34 +18,19 @@ export const useRepositoriesTableColumnProperties = (): DataTableColumnPropertie
   const { setRowLoading } = useDataTable<RepositoriesTableModel, RepositoriesTableColumn>();
   return useMemo(
     () => ({
-      slug: {
-        cellRenderer(datum) {
-          return datum.slug;
-        },
-      },
-      npmPackageName: {
-        cellRenderer(datum) {
-          return datum.npmPackageName ? <NpmLink npmPackageName={datum.npmPackageName} /> : <></>;
-        },
-      },
-      updatedAt: {
-        cellRenderer(datum) {
-          return <ReadOnlyDateTimeCell date={datum.updatedAt} />;
-        },
-      },
       createdAt: {
         cellRenderer(datum) {
           return <ReadOnlyDateTimeCell date={datum.createdAt} />;
         },
       },
-      startDate: {
+      highlighted: {
         cellRenderer(datum) {
-          return <ReadOnlyDateTimeCell date={datum.startDate} />;
+          return <HighlightedCell repository={datum} table={{ setRowLoading }} />;
         },
       },
-      skills: {
+      npmPackageName: {
         cellRenderer(datum) {
-          return <SkillsCell repository={datum} table={{ setRowLoading }} />;
+          return datum.npmPackageName ? <NpmLink npmPackageName={datum.npmPackageName} /> : null;
         },
       },
       projects: {
@@ -53,9 +38,24 @@ export const useRepositoriesTableColumnProperties = (): DataTableColumnPropertie
           return <ProjectsCell repository={datum} table={{ setRowLoading }} />;
         },
       },
-      highlighted: {
+      skills: {
         cellRenderer(datum) {
-          return <HighlightedCell repository={datum} table={{ setRowLoading }} />;
+          return <SkillsCell repository={datum} table={{ setRowLoading }} />;
+        },
+      },
+      slug: {
+        cellRenderer(datum) {
+          return datum.slug;
+        },
+      },
+      startDate: {
+        cellRenderer(datum) {
+          return <ReadOnlyDateTimeCell date={datum.startDate} />;
+        },
+      },
+      updatedAt: {
+        cellRenderer(datum) {
+          return <ReadOnlyDateTimeCell date={datum.updatedAt} />;
         },
       },
       visible: {

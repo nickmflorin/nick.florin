@@ -1,9 +1,8 @@
-import type { JsonifiableModel } from "./types";
+import { type PluralBrand, pluralizeBrandModel } from '~/database/model';
 
-import type { PluralBrand } from "~/database/model";
-import { pluralizeBrandModel } from "~/database/model";
+import { type JsonifiableModel } from './types';
 
-export const JSON_FIXTURE_DIR = "./src/database/fixtures/json" as const;
+export const JSON_FIXTURE_DIR = './src/database/fixtures/json' as const;
 
 type JsonFixtureFilePathOpts = {
   readonly live?: boolean;
@@ -28,7 +27,7 @@ const getJsonFixtureFilePath = <T extends string, O extends JsonFixtureFilePathO
     ? (JSON_FIXTURE_DIR as JsonFixtureDir<O>)
     : (`${JSON_FIXTURE_DIR}/fake` as JsonFixtureDir<O>);
 
-  if (fileName.endsWith(".json")) {
+  if (fileName.endsWith('.json')) {
     return [dir, `${dir}/${fileName}` as JsonFixtureFilePath<T, O>];
   }
   return [dir, `${dir}/${fileName}.json` as JsonFixtureFilePath<T, O>];

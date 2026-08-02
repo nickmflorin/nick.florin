@@ -1,28 +1,27 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { InlineLink } from "~/components/buttons";
-import { Description } from "~/components/typography";
-import { DescriptionGroup } from "~/features/projects/components/DescriptionGroup";
-import { Project, type ProjectProps } from "~/features/projects/components/Project";
-import { ProjectImage } from "~/features/projects/components/ProjectImage";
-import { Section } from "~/features/projects/components/Section";
+import { InlineLink } from '~/components/buttons';
+import { Description } from '~/components/typography';
+import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
+import { Project, type ProjectProps } from '~/features/projects/components/Project';
+import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { Section } from '~/features/projects/components/Section';
 
-export interface ToolTrackProps extends Omit<ProjectProps, "title" | "description" | "children"> {}
+export interface ToolTrackProps extends Omit<ProjectProps, 'children' | 'description' | 'title'> {}
 
 export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
   <Project
-    title={props.project.name}
     description={
       <DescriptionGroup>
         <Description>
           ToolTrack application written using&nbsp;
-          <InlineLink element="a" href="https://nextjs.org/">
+          <InlineLink element='a' href='https://nextjs.org/'>
             NextJS
           </InlineLink>
           &nbsp; that allows users to monitor, manage and configure notifications and alerts that
           they will receive as it relates to inventory & price changes that occur for products
           offered by the woodworking hand tool manufacturer, &nbsp;
-          <InlineLink element="a" href="https://lie-nielsen.com/">
+          <InlineLink element='a' href='https://lie-nielsen.com/'>
             Lie Nielsen
           </InlineLink>
           .
@@ -34,9 +33,10 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
       </DescriptionGroup>
     }
+    title={props.project.name}
     {...props}
   >
-    <Section title="Background" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Background'>
       <DescriptionGroup>
         <Description>
           As a woodworker myself, I am deeply involved in the woodworking community. I have a strong
@@ -54,7 +54,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
         <Description>
           Today, &nbsp;
-          <InlineLink element="a" href="https://lie-nielsen.com/">
+          <InlineLink element='a' href='https://lie-nielsen.com/'>
             Lie Nielsen
           </InlineLink>
           &nbsp; is considered by most to be the best manufacturer of North American-style hand
@@ -63,11 +63,11 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
       </DescriptionGroup>
     </Section>
-    <Section title="The Problem" marginBottom={false}>
+    <Section hasMarginBottom={false} title='The Problem'>
       <DescriptionGroup>
         <Description>
           The problem that this application attempts to solve is that purchasing tools from&nbsp;
-          <InlineLink element="a" href="https://lie-nielsen.com/">
+          <InlineLink element='a' href='https://lie-nielsen.com/'>
             Lie Nielsen
           </InlineLink>
           &nbsp;can sometimes be difficult. The company itself - which is located in Maine, is very
@@ -80,7 +80,7 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
         <Description>
           The difficulty in getting your hands on some&nbsp;
-          <InlineLink element="a" href="https://lie-nielsen.com/">
+          <InlineLink element='a' href='https://lie-nielsen.com/'>
             Lie Nielsen
           </InlineLink>
           &nbsp;tools has warranted the need for an application like this - one that allows users to
@@ -89,35 +89,35 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         </Description>
       </DescriptionGroup>
     </Section>
-    <Section title="Internal Component Library" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Internal Component Library'>
       <DescriptionGroup>
         <Description>
           Like this website, this application does not rely on any third-party component library.
           Instead, it leverages an internal component library developed using frameworks like&nbsp;
-          <InlineLink element="a" href="https://sass-lang.com/">
+          <InlineLink element='a' href='https://sass-lang.com/'>
             SASS
           </InlineLink>
           &nbsp;and&nbsp;
-          <InlineLink element="a" href="https://tailwindcss.com/">
+          <InlineLink element='a' href='https://tailwindcss.com/'>
             TailwindCSS
           </InlineLink>
           ,&nbsp;along with tooling libraries such as&nbsp;
-          <InlineLink element="a" href="https://floating-ui.com/">
+          <InlineLink element='a' href='https://floating-ui.com/'>
             Floating UI
           </InlineLink>
           &nbsp;and&nbsp;
-          <InlineLink element="a" href="https://www.framer.com/motion/">
+          <InlineLink element='a' href='https://www.framer.com/motion/'>
             Framer Motion
           </InlineLink>
           .
         </Description>
       </DescriptionGroup>
     </Section>
-    <Section title="Subscribing to Events" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Subscribing to Events'>
       <Description>
         This application was designed such that users can subscribe to various events that may occur
         as it relates to a specific product offered on&nbsp;
-        <InlineLink element="a" href="https://lie-nielsen.com/">
+        <InlineLink element='a' href='https://lie-nielsen.com/'>
           Lie Nielsen
         </InlineLink>
         &apos;s website. Currently, these events include subscribing to changes in price of a
@@ -130,44 +130,42 @@ export const ToolTrack = (props: ToolTrackProps): JSX.Element => (
         result in a notification being sent to the subscribed user when it is processed.
       </Description>
       <ProjectImage
-        src="/projects/tooltrack/subscribing-to-products.png"
-        alt="Subscribing to Products"
+        alt='Subscribing to Products'
         caption={[
           "Users can view all of the products listed on the company's website and subscribe to " +
-            "receive notifications for various events that may occur for a given product.",
+            'receive notifications for various events that may occur for a given product.',
         ]}
+        src='/projects/tooltrack/subscribing-to-products.png'
       />
     </Section>
-    <Section title="Managing Subscriptions" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Managing Subscriptions'>
       <Description>
         Users can view all of their active product subscriptions in a centralized view. From this
         view, they can make changes to their active subscriptions, disable them temporarily or
         unsubscribe from them entirely.
       </Description>
       <ProjectImage
-        src="/projects/tooltrack/managing-subscriptions.png"
-        alt="Managing Subscriptions"
+        alt='Managing Subscriptions'
         caption={[
-          "Subscriptions to all products offered by the company can be managed in a " +
-            "centralized view.",
+          'Subscriptions to all products offered by the company can be managed in a ' +
+            'centralized view.',
         ]}
+        src='/projects/tooltrack/managing-subscriptions.png'
       />
     </Section>
-    <Section title="Product Detail" marginBottom={false}>
+    <Section hasMarginBottom={false} title='Product Detail'>
       <Description>
         Users can get more detailed information about a specific product, their subscriptions to
         that product and historical data related to that product in the product&apos;s detail view.
       </Description>
       <ProjectImage
-        src="/projects/tooltrack/product-detail.png"
-        alt="Product Detail"
+        alt='Product Detail'
         caption={[
-          "Users can view historical data for, manage their subscriptions of and view " +
-            "current up to date information for each product the company offers.",
+          'Users can view historical data for, manage their subscriptions of and view ' +
+            'current up to date information for each product the company offers.',
         ]}
+        src='/projects/tooltrack/product-detail.png'
       />
     </Section>
   </Project>
 );
-
-export default ToolTrack;

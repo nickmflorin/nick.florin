@@ -1,13 +1,13 @@
-import { fetchEducations } from "~/actions/educations/fetch-educations";
+import { fetchEducations } from '~/actions/educations/fetch-educations';
 
-import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
+import { ResumeModelCondensedTile } from '~/features/resume/components/tiles/ResumeModelCondensedTile';
 
-export default async function EducationsPage() {
+const EducationsPage = async () => {
   const fetcher = fetchEducations([]);
   const { data: educations } = await fetcher(
     {
-      visibility: "public",
       filters: { highlighted: true },
+      visibility: 'public',
     },
     { strict: true },
   );
@@ -15,13 +15,15 @@ export default async function EducationsPage() {
     <>
       {educations.map((education, index) => (
         <ResumeModelCondensedTile
-          model={education}
+          areTagsVisible={false}
+          isDescriptionShowMoreLinkVisible
+          isTitleExpandable
           key={index}
-          titleIsExpandable
-          showTags={false}
-          includeDescriptionShowMoreLink
+          model={education}
         />
       ))}
     </>
   );
-}
+};
+
+export default EducationsPage;

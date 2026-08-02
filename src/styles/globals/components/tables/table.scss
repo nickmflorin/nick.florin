@@ -1,7 +1,7 @@
-@use "partials";
+@use 'partials';
 
-@use "../typography" as typography;
-@use "./constants" as constants;
+@use '../typography' as typography;
+@use './constants' as constants;
 
 @mixin table-head() {
   > thead.table__head {
@@ -84,11 +84,11 @@
 }
 
 @mixin table-size($size) {
-  $td: partials.mapget(constants.$table-size-properties, $size, "td");
+  $td: partials.mapget(constants.$table-size-properties, $size, 'td');
   @include table-body-cell() {
     @include partials.mapped-properties($td);
   }
-  $th: partials.mapget(constants.$table-size-properties, $size, "th");
+  $th: partials.mapget(constants.$table-size-properties, $size, 'th');
   @include table-header-cell() {
     @include partials.mapped-properties($th);
   }
@@ -102,7 +102,7 @@
 
   @include table-size(constants.$table-default-size);
   @each $size in constants.$table-sizes {
-    &[data-attr-size="#{$size}"] {
+    &[data-attr-size='#{$size}'] {
       @include table-size($size);
     }
   }
@@ -118,7 +118,7 @@
       outline: 0;
 
       @include table-header-cell($direct: true) {
-        @include typography.font("body", $size: "xs", $weight: "medium");
+        @include typography.font('body', $size: 'xs', $weight: 'medium');
         display: table-cell;
         position: sticky;
         top: 0;
@@ -129,7 +129,7 @@
         border-bottom: none;
         background-color: constants.$table-header-bg-color;
 
-        &:not([data-attr-ordered="true"]) {
+        &:not([data-attr-ordered='true']) {
           .table__header-cell__sort-icon {
             opacity: 0;
           }
@@ -164,7 +164,7 @@
       outline: 0;
 
       @include table-body-cell($direct: true) {
-        @include typography.font("body", $size: "xs", $weight: "regular");
+        @include typography.font('body', $size: 'xs', $weight: 'regular');
         color: inherit;
         font-size: 14px;
         line-height: 18px;
@@ -185,8 +185,8 @@
         }
       }
 
-      &[data-attr-highlighted="true"] {
-        &:not([data-attr-feedback="true"]) {
+      &[data-attr-highlighted='true'] {
+        &:not([data-attr-feedback='true']) {
           @include partials.not-locked-or-loading() {
             background-color: constants.$table-row-highlighted-color;
           }
@@ -211,7 +211,7 @@
         }
       }
 
-      &[data-attr-bordered="true"] {
+      &[data-attr-bordered='true'] {
         &:not(:last-child) {
           @include table-body-cell($direct: true, $bordered: true);
         }
@@ -238,17 +238,17 @@
     }
   }
 
-  &[data-attr-highlight-rows-on-hover="true"] {
+  &[data-attr-highlight-rows-on-hover='true'] {
     @include table-body-row($direct: false) {
       @include partials.hovered() {
-        &:not([data-attr-feedback="true"]) {
+        &:not([data-attr-feedback='true']) {
           background-color: constants.$table-row-highlighted-color;
         }
       }
     }
   }
 
-  &[data-attr-bordered="true"] {
+  &[data-attr-bordered='true'] {
     @include table-body-row($direct: true) {
       &:not(:last-child) {
         @include table-body-cell($direct: true, $bordered: true);

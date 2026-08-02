@@ -1,14 +1,14 @@
 import {
-  type WithoutTrailingSlashes,
   type WithoutLeadingSlashes,
   withoutLeadingSlashes,
+  type WithoutTrailingSlashes,
   withoutTrailingSlashes,
-} from "~/integrations/http";
+} from '~/integrations/http';
 
-import { type PathActive } from "./types";
+import { type PathActive } from './types';
 
-export const UUID_PATH_PARAM_REGEX_STRING = "([0-9a-zA-z-]+)";
-export const PATH_END_REGEX_STRING = "(?:\\/)?(\\?([^\\/]+)?(\\/)?)?$";
+export const UUID_PATH_PARAM_REGEX_STRING = '([0-9a-zA-z-]+)';
+export const PATH_END_REGEX_STRING = '(?:\\/)?(\\?([^\\/]+)?(\\/)?)?$';
 
 /**
  * Creates a regular expression that can be used to match a path with or without one or multiple
@@ -23,23 +23,25 @@ export const PATH_END_REGEX_STRING = "(?:\\/)?(\\?([^\\/]+)?(\\/)?)?$";
  * const regex = createLeadingPathRegex("/customers/:id/");
  */
 export const createLeadingPathRegex = (path: string, options?: { endPath?: boolean }): RegExp => {
-  path = path.startsWith("/") ? path.substring(1) : path;
-  path = path.endsWith("/") ? path.substring(0, path.length - 1) : path;
+  const withoutLeadingSlash = path.startsWith('/') ? path.substring(1) : path;
+  const trimmed = withoutLeadingSlash.endsWith('/')
+    ? withoutLeadingSlash.substring(0, withoutLeadingSlash.length - 1)
+    : withoutLeadingSlash;
   if (options?.endPath !== false) {
     return new RegExp(
-      `^/${path.replaceAll(":id", UUID_PATH_PARAM_REGEX_STRING)}${PATH_END_REGEX_STRING}`,
+      `^/${trimmed.replaceAll(':id', UUID_PATH_PARAM_REGEX_STRING)}${PATH_END_REGEX_STRING}`,
     );
   }
-  return new RegExp(`^/${path.replaceAll(":id", UUID_PATH_PARAM_REGEX_STRING)}`);
+  return new RegExp(`^/${trimmed.replaceAll(':id', UUID_PATH_PARAM_REGEX_STRING)}`);
 };
 
 export const pathIsActive = (path: PathActive, pathname: string): boolean => {
   if (!Array.isArray(path)) {
     if (path instanceof RegExp) {
       return path.test(pathname);
-    } else if (typeof path === "boolean") {
+    } else if (typeof path === 'boolean') {
       return path;
-    } else if (typeof path === "function") {
+    } else if (typeof path === 'function') {
       return path(pathname);
     }
     const regex = createLeadingPathRegex(path.leadingPath, { endPath: path.endPath });
@@ -59,19 +61,21 @@ type OptionalTrailingSlash<T extends string, O extends GetUrlOptions<string>> = 
   ? T
   : `${T}/`;
 
-const LOCALHOST = "http://localhost:3000" as const;
+const LOCALHOST = 'http://localhost:3000' as const;
 type LocalHost = typeof LOCALHOST;
 
 export type ApplicationUrl<O extends GetUrlOptions<P>, P extends string> = O extends {
-  readonly path: infer P extends string;
+  readonly path: infer InferredPath extends string;
 }
-  ?
-      | OptionalTrailingSlash<`${LocalHost}/${WithoutTrailingSlashes<WithoutLeadingSlashes<P>>}`, O>
-      | OptionalTrailingSlash<
-          `https://${string}/${WithoutTrailingSlashes<WithoutLeadingSlashes<P>>}`,
-          O
-        >
-  : OptionalTrailingSlash<LocalHost, O> | OptionalTrailingSlash<`https://${string}`, O>;
+  ? | OptionalTrailingSlash<
+        `${LocalHost}/${WithoutTrailingSlashes<WithoutLeadingSlashes<InferredPath>>}`,
+        O
+      >
+    | OptionalTrailingSlash<
+        `https://${string}/${WithoutTrailingSlashes<WithoutLeadingSlashes<InferredPath>>}`,
+        O
+      >
+  : OptionalTrailingSlash<`https://${string}`, O> | OptionalTrailingSlash<LocalHost, O>;
 
 const withOptionalTrailingSlash = <T extends string, O extends GetUrlOptions<string>>(
   value: T,
@@ -84,14 +88,14 @@ const withOptionalTrailingSlash = <T extends string, O extends GetUrlOptions<str
 };
 
 const parseEnvironmentVariableUrl = (
-  source: "NEXT_PUBLIC_SITE_URL" | "NEXT_PUBLIC_VERCEL_URL",
+  source: 'NEXT_PUBLIC_SITE_URL' | 'NEXT_PUBLIC_VERCEL_URL',
   url: string | undefined,
 ): string | undefined => {
   if (url) {
-    if ((url.startsWith("http") && !url.startsWith("https")) || url.startsWith("/")) {
+    if ((url.startsWith('http') && !url.startsWith('https')) || url.startsWith('/')) {
       throw new Error(`Detected invalid URL for environment variable '${source}': '${url}'!`);
     }
-    return url.startsWith("https://")
+    return url.startsWith('https://')
       ? withoutTrailingSlashes(url)
       : `https://${withoutTrailingSlashes(url)}`;
   }
@@ -104,14 +108,14 @@ export const getApplicationUrl = <O extends GetUrlOptions<P>, P extends string>(
   let url: string;
 
   const publicSiteUrl = parseEnvironmentVariableUrl(
-    "NEXT_PUBLIC_SITE_URL",
+    'NEXT_PUBLIC_SITE_URL',
     process.env.NEXT_PUBLIC_SITE_URL,
   );
   if (publicSiteUrl) {
     url = publicSiteUrl;
   } else {
     const publicVercelURl = parseEnvironmentVariableUrl(
-      "NEXT_PUBLIC_VERCEL_URL",
+      'NEXT_PUBLIC_VERCEL_URL',
       process.env.NEXT_PUBLIC_VERCEL_URL,
     );
     if (publicVercelURl) {

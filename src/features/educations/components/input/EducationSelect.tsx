@@ -1,10 +1,10 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type ForwardedRef, type JSX } from 'react';
 
-import { type ApiEducation, type EducationIncludes } from "~/database/model";
+import { type ApiEducation, type EducationIncludes } from '~/database/model';
 
-import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/select";
-import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
-import { Text, Description } from "~/components/typography";
+import { type DataSelectInstance, type SelectBehaviorType } from '~/components/input/select';
+import { DataSelect, type DataSelectProps } from '~/components/input/select/DataSelect';
+import { Description, Text } from '~/components/typography';
 
 const getModelValue = (m: ApiEducation) => m.id;
 
@@ -13,41 +13,39 @@ export type EducationSelectInstance<
   I extends EducationIncludes,
 > = DataSelectInstance<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>;
 
-export interface EducationSelectProps<B extends SelectBehaviorType, I extends EducationIncludes>
-  extends Omit<
-    DataSelectProps<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>,
-    "options" | "itemIsDisabled" | "itemRendererer" | "getModelValueLabel"
-  > {
+export interface EducationSelectProps<
+  B extends SelectBehaviorType,
+  I extends EducationIncludes,
+> extends Omit<
+  DataSelectProps<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>,
+  'getModelValueLabel' | 'itemIsDisabled' | 'itemRenderer' | 'options'
+> {
   readonly behavior: B;
-  readonly useAbbreviatedLabels?: boolean;
+  readonly hasAbbreviatedLabels?: boolean;
 }
 
-export const EducationSelect = forwardRef(
-  <B extends SelectBehaviorType, I extends EducationIncludes>(
-    { behavior, useAbbreviatedLabels = true, ...props }: EducationSelectProps<B, I>,
-    ref: ForwardedRef<EducationSelectInstance<B, I>>,
-  ): JSX.Element => (
-    <DataSelect<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>
-      {...props}
-      ref={ref}
-      options={{ behavior, getModelValue }}
-      getModelValueLabel={m => m.shortMajor ?? m.major}
-      itemRenderer={m => (
-        <div className="flex flex-col gap-[4px] max-w-full">
-          <Text fontSize="sm" fontWeight="medium" whiteSpace="normal">
-            {useAbbreviatedLabels ? (m.shortMajor ?? m.major) : m.major}
-          </Text>
-          <Description fontSize="xs" truncate>
-            {m.school.name}
-          </Description>
-        </div>
-      )}
-    />
-  ),
-) as {
-  <B extends SelectBehaviorType, I extends EducationIncludes>(
-    props: EducationSelectProps<B, I> & {
-      readonly ref?: ForwardedRef<EducationSelectInstance<B, I>>;
-    },
-  ): JSX.Element;
-};
+export const EducationSelect = <B extends SelectBehaviorType, I extends EducationIncludes = []>({
+  behavior,
+  hasAbbreviatedLabels = true,
+  ref,
+  ...props
+}: {
+  readonly ref?: ForwardedRef<EducationSelectInstance<B, I>>;
+} & EducationSelectProps<B, I>): JSX.Element => (
+  <DataSelect<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>
+    {...props}
+    getModelValueLabel={m => m.shortMajor ?? m.major}
+    itemRenderer={m => (
+      <div className='flex flex-col gap-[4px] max-w-full'>
+        <Text fontSize='sm' fontWeight='medium' whiteSpace='normal'>
+          {hasAbbreviatedLabels ? (m.shortMajor ?? m.major) : m.major}
+        </Text>
+        <Description fontSize='xs' truncate>
+          {m.school.name}
+        </Description>
+      </div>
+    )}
+    options={{ behavior, getModelValue }}
+    ref={ref}
+  />
+);

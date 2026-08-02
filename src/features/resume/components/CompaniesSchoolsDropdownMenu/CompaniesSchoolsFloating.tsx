@@ -1,27 +1,25 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { UnreachableCaseError } from "~/application/errors";
+import { Button } from '~/components/buttons';
+import { DrawerIds } from '~/components/drawers';
+import { useDrawers } from '~/components/drawers/hooks/use-drawers';
+import { Popover } from '~/components/floating/Popover';
+import { PopoverContent } from '~/components/floating/PopoverContent';
+import { CaretIcon } from '~/components/icons/CaretIcon';
+import { Menu } from '~/components/menus/Menu';
 
-import { Button } from "~/components/buttons";
-import { DrawerIds } from "~/components/drawers";
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import { Popover } from "~/components/floating/Popover";
-import { PopoverContent } from "~/components/floating/PopoverContent";
-import { CaretIcon } from "~/components/icons/CaretIcon";
-import { Menu } from "~/components/menus/Menu";
+import { CompaniesSchoolsMenuFooter } from './CompaniesSchoolsMenuFooter';
+import { type ModelType } from './types';
 
-import { CompaniesSchoolsMenuFooter } from "./CompaniesSchoolsMenuFooter";
-import { type ModelType } from "./types";
-
-const ButtonContent: { [key in ModelType]: string } = {
-  company: "Companies",
-  school: "Schools",
+const ButtonContent: Record<ModelType, string> = {
+  company: 'Companies',
+  school: 'Schools',
 };
 
 export interface CompaniesSchoolsFloatingProps {
-  readonly modelType: ModelType;
   readonly content: JSX.Element;
+  readonly modelType: ModelType;
 }
 
 export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchoolsFloatingProps) => {
@@ -29,41 +27,38 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
   return (
     <Popover
       content={content}
-      withArrow={false}
+      hasArrow={false}
       maxHeight={400}
+      offset={{ mainAxis: 4 }}
       outerContent={({ children, setIsOpen }) => (
-        <PopoverContent className="p-[0px] rounded-md overflow-hidden z-50">
-          <Menu className="box-shadow-none">
+        <PopoverContent className='p-[0px] rounded-md overflow-hidden z-50'>
+          <Menu className='box-shadow-none'>
             {children}
             <CompaniesSchoolsMenuFooter
               onCreate={e => {
-                if (modelType === "company") {
+                if (modelType === 'company') {
                   open(DrawerIds.CREATE_COMPANY, {});
-                  setIsOpen(false, e);
-                } else if (modelType === "school") {
-                  open(DrawerIds.CREATE_SCHOOL, {});
-                  setIsOpen(false, e);
                 } else {
-                  throw new UnreachableCaseError();
+                  open(DrawerIds.CREATE_SCHOOL, {});
                 }
+                setIsOpen(false, e);
               }}
             />
           </Menu>
         </PopoverContent>
       )}
-      placement="bottom-end"
-      triggers={["click"]}
-      offset={{ mainAxis: 4 }}
+      placement='bottom-end'
+      triggers={['click']}
       width={400}
     >
-      {({ ref, params, isOpen }) => (
+      {({ isOpen, params, ref }) => (
         <Button.Solid
           ref={ref}
           {...params}
-          scheme="secondary"
           icon={{
-            right: <CaretIcon open={isOpen} />,
+            right: <CaretIcon isOpen={isOpen} />,
           }}
+          scheme='secondary'
         >
           {ButtonContent[modelType]}
         </Button.Solid>
@@ -71,5 +66,3 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
     </Popover>
   );
 };
-
-export default CompaniesSchoolsFloating;

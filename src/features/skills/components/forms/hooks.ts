@@ -1,25 +1,25 @@
-import { SkillSchema } from "~/actions/schemas";
+import { SkillSchema } from '~/actions/schemas';
 
-import { useForm } from "~/components/forms-v2/hooks/use-form";
+import { useForm } from '~/components/forms-v2/hooks/use-form';
 
 export const useSkillForm = () =>
   useForm({
-    schema: SkillSchema.required(),
     defaultValues: {
-      label: "",
-      slug: "",
-      description: "",
-      experiences: [],
-      educations: [],
       categories: [],
       courses: [],
-      projects: [],
-      repositories: [],
+      description: '',
+      educations: [],
+      experience: null,
+      experiences: [],
+      highlighted: false,
+      label: '',
+      prioritized: false,
       programmingDomains: [],
       programmingLanguages: [],
-      highlighted: false,
-      experience: null,
+      projects: [],
+      repositories: [],
+      slug: '',
       visible: true,
-      prioritized: false,
     },
+    schema: SkillSchema.required(),
   });

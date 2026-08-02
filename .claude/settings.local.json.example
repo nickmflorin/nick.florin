@@ -1,0 +1,86 @@
+{
+  "//": "TEMPLATE — copy to .claude/settings.local.json (gitignored) to adopt this repo's Claude Code permission pattern. Do NOT commit your real settings.local.json. Conventions: reusable ':*' prefixes (never exact one-off commands), allow read-only pipe helpers so compound commands resolve, and a deny[] block for never-do commands (deny is evaluated before allow, per-subcommand). 'rm' and 'git checkout' are intentionally left unlisted so they prompt rather than hard-block. Avoid allowing bare interpreters that can run arbitrary code (python3:*, node:*) — they bypass per-subcommand analysis; note 'awk:*' is allowed here for convenience despite awk's system() escape hatch, so drop it if you want awk to prompt. NOTE: several allowed rules are NOT read-only — sed:* and awk:* (in-place / arbitrary execution), tee:* (overwrites files), and pnpm exec:* (runs project tooling such as prisma migrate or rimraf). They are included for workflow convenience; drop them if you want those to prompt. 'gh' is allowed broadly (gh api:*, gh pr:*, gh run:*), which INCLUDES GitHub writes (gh api POST/PATCH, gh pr create/merge) — narrow these to read-only subcommands (view/list/diff/checks) if you want writes to prompt. The PreToolUse hook runs .claude/hooks/prefer-native-tools.sh on every Bash call to steer file ops toward the right tool: Read/Edit/Write for reading and editing, and the rg (ripgrep)/fd CLIs for searching and finding (this Claude Code build removed the native Grep/Glob tools, so rg/fd are the sanctioned CLIs and the hook points shell grep/egrep/fgrep at rg and find at fd). grep/rg/find/fd all stay allowlisted so a steered command never hard-blocks; note rg/fd skip .gitignored/hidden files by default (use -uuu / -HI to include them). additionalDirectories grants access outside the project root (here /tmp). A single ':*' rule is a true prefix wildcard — 'Bash(grep:*)' covers every grep flag combination, so you never need separate rules per flag. Allow/deny rules are a convenience, not a security boundary; use a PreToolUse hook + sandbox if you need a hard guarantee.",
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(find:*)",
+      "Bash(fd:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(wc:*)",
+      "Bash(cut:*)",
+      "Bash(tr:*)",
+      "Bash(jq:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(echo:*)",
+      "Bash(printf:*)",
+      "Bash(diff:*)",
+      "Bash(cd:*)",
+      "Bash(pwd:*)",
+      "Bash(date:*)",
+      "Bash(du:*)",
+      "Bash(mkdir:*)",
+      "Bash(tee:*)",
+      "Bash(lsof:*)",
+      "Bash(pnpm exec:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(pnpm spellcheck:*)",
+      "Bash(npx jest:*)",
+      "Bash(npx eslint:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git status:*)",
+      "Bash(git branch:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git rev-list:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git fetch:*)",
+      "Bash(git grep:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git ls-remote:*)",
+      "Bash(git cat-file:*)",
+      "Bash(git merge-base:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git mv:*)",
+      "Bash(gh api:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh run:*)",
+      "Bash(gh search:*)",
+      "Bash(gh repo view:*)",
+      "Read(//tmp/**)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git reset:*)",
+      "Bash(git clean:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(kill:*)",
+      "Bash(killall:*)"
+    ],
+    "additionalDirectories": ["/tmp"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/prefer-native-tools.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

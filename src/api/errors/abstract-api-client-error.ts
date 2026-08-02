@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-import { HttpClientError, type HttpClientErrorConfig, type JsonObject } from "~/integrations/http";
+import { HttpClientError, type HttpClientErrorConfig, type JsonObject } from '~/integrations/http';
 
-import { type ApiClientGlobalErrorCode } from "../codes";
+import { type ApiClientGlobalErrorCode } from '../codes';
 
 export interface AbstractApiClientErrorConfig extends HttpClientErrorConfig {
   readonly code: ApiClientGlobalErrorCode;

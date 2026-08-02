@@ -1,16 +1,16 @@
-import { db } from "~/database/prisma";
+import { db } from '~/database/prisma';
 
-import { convertToPlainObject } from "~/api/serialization";
+import { convertToPlainObject } from '~/api/serialization';
 
-import { Website } from "~/features/projects/components/pages/Website";
+import { Website } from '~/features/projects/components/pages/Website';
 
-import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
+import { RedirectIfNotVisible } from '../RedirectIfNotVisible';
 
-export default async function WebsitePage() {
+const WebsitePage = async () => {
   const project = convertToPlainObject(
     await db.project.findUniqueOrThrow({
-      where: { slug: "website" },
       include: { repositories: true, skills: true },
+      where: { slug: 'website' },
     }),
   );
 
@@ -19,4 +19,6 @@ export default async function WebsitePage() {
       <Website project={project} />
     </RedirectIfNotVisible>
   );
-}
+};
+
+export default WebsitePage;

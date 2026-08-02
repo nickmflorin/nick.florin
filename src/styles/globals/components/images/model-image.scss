@@ -1,6 +1,6 @@
-@use "partials";
-@use "../radii" as radii;
-@use "../typography" as typography;
+@use 'partials';
+@use '../radii' as radii;
+@use '../typography' as typography;
 
 .model-image {
   display: flex;
@@ -13,7 +13,7 @@
 
   > .model-image__image {
     @include radii.with-radius using ($size, $value) {
-      &[data-attr-radius="#{$size}"] {
+      &[data-attr-radius='#{$size}'] {
         @include partials.border-radius($value);
         // The reasoning is unclear, but it appears that the border-radius property must be applied
         // to work on Safari or iOS devices, whereas the clip-path property must be defined to work
@@ -36,19 +36,19 @@
     height: 100%;
     width: auto;
     aspect-ratio: 1;
-    background-color: theme("colors.neutral.100");
+    background-color: theme('colors.neutral.100');
     padding: 6px;
 
     > .icon {
       max-height: 26px;
       aspect-ratio: 1;
       width: auto;
-      color: theme("colors.gray.600");
+      color: theme('colors.gray.600');
     }
 
     > .text {
-      font-weight: theme("fontWeight.medium");
-      color: theme("colors.gray.300");
+      font-weight: theme('fontWeight.medium');
+      color: theme('colors.gray.300');
       font-size: inherit;
     }
   }

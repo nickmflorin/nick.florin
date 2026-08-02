@@ -1,72 +1,70 @@
-import React, { type JSX } from "react";
+import { Fragment, type JSX } from 'react';
 
-import { Icon } from "~/components/icons/Icon";
+import { Icon } from '~/components/icons/Icon';
 import {
-  type ComponentProps,
   classNames,
+  type ComponentProps,
   type TypographyCharacteristics,
-} from "~/components/types";
-import { type QuantitativeSize, sizeToString } from "~/components/types/sizes";
+} from '~/components/types';
+import { type QuantitativeSize, sizeToString } from '~/components/types/sizes';
 
-import { Text } from "./Text";
+import { Text } from './Text';
 
 export interface PipedTextProps extends TypographyCharacteristics, ComponentProps {
-  readonly children: (string | JSX.Element | null | undefined)[];
-  readonly gap?: QuantitativeSize<"px">;
-  readonly textClassName?: ComponentProps["className"];
-  readonly pipeClassName?: ComponentProps["className"];
-  readonly pipeSize?: QuantitativeSize<"px">;
+  readonly children: (JSX.Element | null | string | undefined)[];
+  readonly gap?: QuantitativeSize<'px'>;
+  readonly pipeClassName?: ComponentProps['className'];
+  readonly pipeSize?: QuantitativeSize<'px'>;
+  readonly textClassName?: ComponentProps['className'];
 }
 
 export const PipedText = ({
   children,
-  pipeClassName,
-  fontSize = "xs",
-  pipeSize = "14px",
-  gap = "4px",
-  textClassName,
-  style,
   className,
+  fontSize = 'xs',
+  gap = '4px',
+  pipeClassName,
+  pipeSize = '14px',
+  style,
+  textClassName,
   ...props
-}: PipedTextProps): JSX.Element => {
+}: PipedTextProps): JSX.Element | null => {
   const filtered = children.filter(
     (child): child is JSX.Element | string => child !== null && child !== undefined,
   );
   if (filtered.length === 0) {
-    return <></>;
+    return null;
   }
   return (
     <div
-      className={classNames("flex flex-row items-center", className)}
-      style={{ ...style, gap: sizeToString(gap, "px") }}
+      className={classNames('flex flex-row items-center', className)}
+      style={{ ...style, gap: sizeToString(gap, 'px') }}
     >
       {filtered.map((child, index) => {
         if (index !== filtered.length - 1) {
-          /* TODO: Make size of pipe icon dynamic based on size of text - we can either do this
-             in SASS or we need a TS mapping of text size strings to font sizes... */
           return (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <Text
                 {...props}
+                className={classNames('text-description', textClassName)}
                 fontSize={fontSize}
-                className={classNames("text-description", textClassName)}
               >
                 {child}
               </Text>
               <Icon
-                icon="pipe"
+                className={classNames('text-gray-800', pipeClassName)}
+                icon='pipe'
                 size={pipeSize}
-                className={classNames("text-gray-800", pipeClassName)}
               />
-            </React.Fragment>
+            </Fragment>
           );
         }
         return (
           <Text
             {...props}
-            key={index}
+            className={classNames('text-description', textClassName)}
             fontSize={fontSize}
-            className={classNames("text-description", textClassName)}
+            key={index}
           >
             {child}
           </Text>

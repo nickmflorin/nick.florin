@@ -1,29 +1,29 @@
 import {
   View,
-  type ViewSizeProps,
   type ViewFillProps,
   type ViewPositionProps,
-} from "~/components/structural/View";
-import { type ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
+  type ViewSizeProps,
+} from '~/components/structural/View';
+import { classNames, type ComponentProps } from '~/components/types';
 
-import { EmptyMessage, type EmptyMessageProps } from "./EmptyMessage";
+import { EmptyMessage, type EmptyMessageProps } from './EmptyMessage';
 
 export interface EmptyViewProps
-  extends ComponentProps,
+  extends
+    ComponentProps,
     ViewSizeProps,
     ViewPositionProps,
     ViewFillProps,
     Omit<EmptyMessageProps, keyof ComponentProps> {}
 
-export const EmptyView = ({ children, fill = "parent", ...props }: EmptyViewProps) => (
+export const EmptyView = ({ children, fill = 'parent', ...props }: EmptyViewProps) => (
   <View
     {...props}
-    fill={fill}
+    __default_position__='relative'
     centerChildren
-    overflow="hidden"
-    __default_position__="relative"
-    className={classNames("p-2", props.className)}
+    className={classNames('p-2', props.className)}
+    fill={fill}
+    overflow='hidden'
   >
     <EmptyMessage {...props}>{children}</EmptyMessage>
   </View>

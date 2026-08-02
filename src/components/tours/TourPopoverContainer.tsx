@@ -1,43 +1,44 @@
-import { type ReactNode, useMemo, useCallback, useRef, useEffect, type JSX } from "react";
+import { type JSX, type ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { type PopoverContentProps } from "@reactour/tour";
+import { type PopoverContentProps } from '@reactour/tour';
 
-import { logger } from "~/internal/logger";
-import { isUuid } from "~/lib/typeguards";
+import { logger } from '~/internal/logger';
+import { isUuid } from '~/lib/typeguards';
 
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { classNames } from "~/components/types";
+import { useDrawers } from '~/components/drawers/hooks/use-drawers';
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
+import { classNames } from '~/components/types';
 
-const findBar = () =>
-  // The first two <g/> elements are for the axis of the chart.
-  document.querySelectorAll(".skills-bar-chart-view svg > g > g:nth-child(3) > rect")[0];
+/**
+ * Finds the DOM element for the bar in the skills bar chart.
+ *
+ * The first two `<g>` elements in the chart's SVG are for the axis, so the target bar is the third
+ * `g` child.
+ */
+const findBar = (): Element | undefined =>
+  document.querySelectorAll('.skills-bar-chart-view svg > g > g:nth-child(3) > rect')[0];
 
 const findExpandButton = () =>
   document.querySelectorAll(
     [
-      /* eslint-disable-next-line quotes */
       'div[data-attr-tour-id="recent-experience"]',
-      /* eslint-disable-next-line quotes */
       'div[data-attr-tour-id="resume-model-tile"]:first-child',
-      /* eslint-disable-next-line quotes */
       'button[data-attr-tour-id="expand-button"]',
-    ].join(" "),
+    ].join(' '),
   )[0];
 
 const getBarSkillId = (element: Element) => {
-  const attr = element.getAttribute("aria-label");
-  if (attr && attr.startsWith("skill-")) {
-    const skillId = attr.split("skill-")[1];
+  const attr = element.getAttribute('aria-label');
+  if (attr?.startsWith('skill-')) {
+    const skillId = attr.split('skill-')[1];
     if (isUuid(skillId)) {
       return skillId;
-    } else {
-      logger.error(
-        `The bar had a valid aria-label referencing a skill, but the ID, '${skillId}' was not ` +
-          "a valid UUID!  It cannot be used for the tour.",
-        { attribute: attr },
-      );
     }
+    logger.error(
+      'The bar had a valid aria-label referencing a skill, but the ID that it contains was ' +
+        'not a valid UUID!  It cannot be used for the tour.',
+      { attribute: attr },
+    );
   } else if (attr) {
     logger.error(`The bar's aria-label, '${attr}', is invalid.  It cannot be used for the tour.`);
   } else {
@@ -47,20 +48,20 @@ const getBarSkillId = (element: Element) => {
 };
 
 export const TourPopoverContainer = ({
-  steps,
   currentStep,
   setCurrentStep,
   setIsOpen,
+  steps,
   ...props
-}: PopoverContentProps): JSX.Element => {
-  const { open, ids } = useDrawers();
+}: PopoverContentProps): JSX.Element | null => {
+  const { ids, open } = useDrawers();
   const drawerObserver = useRef<MutationObserver | null>(null);
 
   const content = useMemo(() => {
     let ct: ReactNode | void;
     const c = steps[currentStep].content;
-    if (typeof c === "function") {
-      ct = c({ steps, currentStep, setCurrentStep, setIsOpen, ...props });
+    if (typeof c === 'function') {
+      ct = c({ currentStep, setCurrentStep, setIsOpen, steps, ...props });
     } else {
       ct = c;
     }
@@ -80,23 +81,23 @@ export const TourPopoverContainer = ({
   const waitForDrawer = useCallback(
     (step: number) => {
       drawerObserver.current = new MutationObserver(() => {
-        const divElement = document.getElementsByClassName("drawer")[0];
+        const divElement = document.getElementsByClassName('drawer').item(0);
         if (divElement) {
           drawerObserver.current?.disconnect();
           setCurrentStep(step + 1);
         }
       });
 
-      const node = document.getElementsByClassName("layout__content")[0];
+      const node = document.getElementsByClassName('layout__content').item(0);
       if (node) {
         drawerObserver.current.observe(node, {
-          subtree: true,
           childList: true,
+          subtree: true,
         });
       } else {
         logger.error(
           "Could not find 'layout__content' element in DOM - the drawer cannot be observed and " +
-            "the tour must be ended.",
+            'the tour must be ended.',
         );
         setIsOpen(false);
       }
@@ -107,13 +108,13 @@ export const TourPopoverContainer = ({
   const nextStep = useCallback(() => {
     if (currentStep === 1) {
       const ele = findExpandButton();
-      if (typeof (ele as HTMLElement).click === "function") {
+      if (typeof (ele as HTMLElement).click === 'function') {
         (ele as HTMLElement).click();
         return waitForDrawer(currentStep);
       }
       logger.error(
-        "The expand button could not be found or did not expose a click method - it cannot " +
-          "be used for the tour.",
+        'The expand button could not be found or did not expose a click method - it cannot ' +
+          'be used for the tour.',
       );
       return setIsOpen(false);
     } else if (currentStep === 3) {
@@ -128,39 +129,34 @@ export const TourPopoverContainer = ({
         }
         open(ids.VIEW_SKILL, { skillId });
         return waitForDrawer(currentStep);
-      } else {
-        /* This might happen if there are query parameters in the URL that cause the filtered data
-           of the chart to be empty.  While this is an edge case, it is still possible. */
-        logger.error(
-          "The skills bar chart does not seem to have any data in it - it cannot be used for " +
-            "the tour.",
-        );
-        return setIsOpen(false);
       }
-    } else {
-      setCurrentStep(currentStep + 1);
+      /* This might happen if there are query parameters in the URL that cause the filtered data
+           of the chart to be empty.  While this is an edge case, it is still possible. */
+      logger.error(
+        'The skills bar chart does not seem to have any data in it - it cannot be used for ' +
+          'the tour.',
+      );
+      return setIsOpen(false);
     }
+    setCurrentStep(currentStep + 1);
   }, [currentStep, ids, open, setIsOpen, setCurrentStep, waitForDrawer]);
 
   if (content) {
     return (
       <div
-        className={classNames("tour__container flex flex-col gap-[12px]", {
-          "pr-[10px]": steps[currentStep].position === "left",
-          "pl-[10px]": steps[currentStep].position === "right",
-          "pt-[10px]": steps[currentStep].position === "bottom",
-          "pb-[10px]": steps[currentStep].position === "top",
+        className={classNames('tour__container flex flex-col gap-[12px]', {
+          'pb-[10px]': steps[currentStep].position === 'top',
+          'pl-[10px]': steps[currentStep].position === 'right',
+          'pr-[10px]': steps[currentStep].position === 'left',
+          'pt-[10px]': steps[currentStep].position === 'bottom',
         })}
       >
-        <div className="tour__container__inner">
+        <div className='tour__container__inner'>
           {content}
           <ButtonFooter
-            buttonSize="xsmall"
-            orientation="full-width"
-            submitText={currentStep === steps.length - 1 ? "Finish" : "Next"}
-            submitButtonType="button"
-            cancelText={currentStep !== steps.length - 1 ? "Close" : undefined}
-            onCancel={currentStep !== steps.length - 1 ? () => setIsOpen(false) : undefined}
+            buttonSize='xsmall'
+            cancelText={currentStep === steps.length - 1 ? undefined : 'Close'}
+            onCancel={currentStep === steps.length - 1 ? undefined : () => setIsOpen(false)}
             onSubmit={() => {
               if (currentStep === steps.length - 1) {
                 setIsOpen(false);
@@ -168,10 +164,13 @@ export const TourPopoverContainer = ({
                 nextStep();
               }
             }}
+            orientation='full-width'
+            submitButtonType='button'
+            submitText={currentStep === steps.length - 1 ? 'Finish' : 'Next'}
           />
         </div>
       </div>
     );
   }
-  return <></>;
+  return null;
 };

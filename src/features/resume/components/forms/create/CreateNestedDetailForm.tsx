@@ -1,16 +1,18 @@
-import { useMemo, type JSX } from "react";
+import { type JSX, useMemo } from 'react';
 
-import { type ApiNestedDetail } from "~/database/model";
+import { type ApiNestedDetail } from '~/database/model';
 
-import { createNestedDetail } from "~/actions/details/create-nested-detail";
+import { createNestedDetail } from '~/actions/details/create-nested-detail';
 
 import {
   GenericCreateDetailForm,
   type GenericCreateDetailFormProps,
-} from "./GenericCreateDetailForm";
+} from './GenericCreateDetailForm';
 
-export interface CreateNestedDetailFormProps
-  extends Omit<GenericCreateDetailFormProps<ApiNestedDetail<["skills"]>>, "action" | "actions"> {
+export interface CreateNestedDetailFormProps extends Omit<
+  GenericCreateDetailFormProps<ApiNestedDetail<['skills']>>,
+  'action' | 'actions'
+> {
   readonly detailId: string;
 }
 
@@ -20,11 +22,9 @@ export const CreateNestedDetailForm = ({
 }: CreateNestedDetailFormProps): JSX.Element => {
   const createDetailForParent = useMemo(() => createNestedDetail.bind(null, detailId), [detailId]);
   return (
-    <GenericCreateDetailForm<ApiNestedDetail<["skills"]>>
+    <GenericCreateDetailForm<ApiNestedDetail<['skills']>>
       action={createDetailForParent}
       {...props}
     />
   );
 };
-
-export default CreateNestedDetailForm;

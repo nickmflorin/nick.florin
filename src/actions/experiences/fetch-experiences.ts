@@ -1,25 +1,29 @@
-import type { ApiExperience, ExperienceIncludes } from "~/database/model";
-import { DetailEntityType, fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
-import { conditionalFilters } from "~/database/util";
+import {
+  type ApiExperience,
+  DetailEntityType,
+  type ExperienceIncludes,
+  fieldIsIncluded,
+} from '~/database/model';
+import { db } from '~/database/prisma';
+import { conditionalFilters } from '~/database/util';
 
 import {
-  getExperiencesOrdering,
+  type ActionCountParams,
+  type ActionFilterParams,
+  type ActionPaginationParams,
+  clampPagination,
   constructTableSearchClause,
+  type ExperiencesControls,
+  getExperiencesOrdering,
   PAGE_SIZES,
   type ServerSidePaginationParams,
-  clampPagination,
-  type ExperiencesControls,
-  standardListFetchAction,
   type StandardFetchActionReturn,
-  type ActionCountParams,
-  type ActionPaginationParams,
-  type ActionFilterParams,
-} from "~/actions";
+  standardListFetchAction,
+} from '~/actions';
 
-const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<ExperiencesControls>) =>
+const filtersClause = ({ filterIsVisible, filters }: ActionFilterParams<ExperiencesControls>) =>
   conditionalFilters([
-    filters.search ? constructTableSearchClause("experience", filters.search) : undefined,
+    filters.search ? constructTableSearchClause('experience', filters.search) : undefined,
     filters.companies && filters.companies.length !== 0
       ? { companyId: { in: filters.companies } }
       : undefined,
@@ -32,8 +36,8 @@ const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<Experien
     { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<ExperiencesControls>) => {
-  const clause = filtersClause({ filters, filterIsVisible });
+const whereClause = ({ filterIsVisible, filters }: ActionFilterParams<ExperiencesControls>) => {
+  const clause = filtersClause({ filterIsVisible, filters });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -47,10 +51,10 @@ export const fetchExperiencesCount = standardListFetchAction(
   ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    const count = await db.experience.count({ where: whereClause({ filters, filterIsVisible }) });
+    const count = await db.experience.count({ where: whereClause({ filterIsVisible, filters }) });
     return { count };
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchExperiencesPagination = standardListFetchAction(
@@ -59,20 +63,20 @@ export const fetchExperiencesPagination = standardListFetchAction(
     { filterIsVisible },
   ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.experience.count({
-      where: whereClause({ filters, filterIsVisible }),
+      where: whereClause({ filterIsVisible, filters }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.experience });
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
   standardListFetchAction(
     async (
-      { filters, ordering, page, limit, visibility }: Omit<ExperiencesControls<I>, "includes">,
+      { filters, limit, ordering, page, visibility }: Omit<ExperiencesControls<I>, 'includes'>,
       { filterIsVisible },
     ): StandardFetchActionReturn<ApiExperience<I>[]> => {
-      let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
+      let pagination: null | Omit<ServerSidePaginationParams, 'count'> = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchExperiencesPagination(
           { filters, page, visibility },
@@ -80,63 +84,63 @@ export const fetchExperiences = <I extends ExperienceIncludes>(includes: I) =>
         ));
       }
 
-      const experiences = await db.experience.findMany({
-        where: whereClause({ filters, filterIsVisible }),
+      const experiences = (await db.experience.findMany({
         include: {
           company: true,
-          skills: fieldIsIncluded("skills", includes)
+          skills: fieldIsIncluded('skills', includes)
             ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
         },
         orderBy: getExperiencesOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination ? pagination.pageSize : limit,
-      });
+        where: whereClause({ filterIsVisible, filters }),
+      })) as ApiExperience<I>[];
 
-      if (fieldIsIncluded("details", includes)) {
+      if (fieldIsIncluded('details', includes)) {
         const details = await db.detail.findMany({
-          where: {
-            entityType: DetailEntityType.EXPERIENCE,
-            entityId: { in: experiences.map(e => e.id) },
-            visible: filterIsVisible(filters.visible),
-          },
           include: {
-            project: {
-              include: {
-                skills: fieldIsIncluded("skills", includes)
-                  ? { where: { visible: filterIsVisible(filters.visible) } }
-                  : undefined,
-              },
-            },
-            skills: fieldIsIncluded("skills", includes)
-              ? { where: { visible: filterIsVisible(filters.visible) } }
-              : undefined,
             nestedDetails: {
-              orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-              where: {
-                visible: filterIsVisible(filters.visible),
-              },
               include: {
-                skills: fieldIsIncluded("skills", includes)
-                  ? { where: { visible: filterIsVisible(filters.visible) } }
-                  : undefined,
                 project: {
                   include: {
-                    skills: fieldIsIncluded("skills", includes)
+                    skills: fieldIsIncluded('skills', includes)
                       ? { where: { visible: filterIsVisible(filters.visible) } }
                       : undefined,
                   },
                 },
+                skills: fieldIsIncluded('skills', includes)
+                  ? { where: { visible: filterIsVisible(filters.visible) } }
+                  : undefined,
+              },
+              orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+              where: {
+                visible: filterIsVisible(filters.visible),
               },
             },
+            project: {
+              include: {
+                skills: fieldIsIncluded('skills', includes)
+                  ? { where: { visible: filterIsVisible(filters.visible) } }
+                  : undefined,
+              },
+            },
+            skills: fieldIsIncluded('skills', includes)
+              ? { where: { visible: filterIsVisible(filters.visible) } }
+              : undefined,
+          },
+          where: {
+            entityId: { in: experiences.map(e => e.id) },
+            entityType: DetailEntityType.EXPERIENCE,
+            visible: filterIsVisible(filters.visible),
           },
         });
-        return experiences.map(
-          (edu): ApiExperience<I> =>
-            ({ ...edu, details: details.filter(d => d.entityId === edu.id) }) as ApiExperience<I>,
-        );
+        return experiences.map((edu): ApiExperience<I> => ({
+          ...edu,
+          details: details.filter(d => d.entityId === edu.id),
+        }));
       }
-      return experiences as ApiExperience<I>[];
+      return experiences;
     },
-    { authenticated: false, adminOnly: false },
+    { adminOnly: false, authenticated: false },
   );

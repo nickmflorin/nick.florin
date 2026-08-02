@@ -1,16 +1,16 @@
-import { db } from "~/database/prisma";
+import { db } from '~/database/prisma';
 
-import { convertToPlainObject } from "~/api/serialization";
+import { convertToPlainObject } from '~/api/serialization';
 
-import { ToolTrack } from "~/features/projects/components/pages/ToolTrack";
+import { ToolTrack } from '~/features/projects/components/pages/ToolTrack';
 
-import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
+import { RedirectIfNotVisible } from '../RedirectIfNotVisible';
 
-export default async function ToolTrackPage() {
+const ToolTrackPage = async () => {
   const project = convertToPlainObject(
     await db.project.findUniqueOrThrow({
-      where: { slug: "tooltrack" },
       include: { repositories: true, skills: true },
+      where: { slug: 'tooltrack' },
     }),
   );
 
@@ -19,4 +19,6 @@ export default async function ToolTrackPage() {
       <ToolTrack project={project} />
     </RedirectIfNotVisible>
   );
-}
+};
+
+export default ToolTrackPage;

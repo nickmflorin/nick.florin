@@ -1,19 +1,21 @@
-import { forwardRef, type JSX } from "react";
+import { type JSX, type Ref } from 'react';
 
-import { IconButton, type IconButtonProps } from "./generic";
+import { IconButton, type IconButtonProps } from './generic';
 
-export interface ChartFilterButtonProps
-  extends Omit<IconButtonProps<"button">, "options" | "icon" | "element"> {}
+export interface ChartFilterButtonProps extends Omit<
+  IconButtonProps<'button'>,
+  'element' | 'icon' | 'options' | 'ref'
+> {
+  readonly ref?: Ref<HTMLButtonElement>;
+}
 
-export const ChartFilterButton = forwardRef<HTMLButtonElement, ChartFilterButtonProps>(
-  (props: ChartFilterButtonProps, ref): JSX.Element => (
-    <IconButton.Solid
-      size="medium"
-      scheme="secondary"
-      {...props}
-      ref={ref}
-      icon={{ name: "sliders" }}
-      element="button"
-    />
-  ),
+export const ChartFilterButton = ({ ref, ...props }: ChartFilterButtonProps): JSX.Element => (
+  <IconButton.Solid
+    scheme='secondary'
+    size='medium'
+    {...props}
+    element='button'
+    icon={{ name: 'sliders' }}
+    ref={ref}
+  />
 );

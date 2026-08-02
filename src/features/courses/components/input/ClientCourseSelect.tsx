@@ -1,50 +1,48 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type JSX, type Ref } from 'react';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import type { ActionVisibility } from "~/actions";
-import { type ApiError } from "~/api";
+import { type ActionVisibility } from '~/actions';
+import { type ApiError } from '~/api';
 
-import type { SelectBehaviorType } from "~/components/input/select";
-import { useCourses } from "~/hooks/api";
+import { type SelectBehaviorType } from '~/components/input/select';
+import { useCourses } from '~/hooks/api';
 
-import { CourseSelect, type CourseSelectInstance, type CourseSelectProps } from "./CourseSelect";
+import { CourseSelect, type CourseSelectInstance, type CourseSelectProps } from './CourseSelect';
 
-export interface ClientCourseSelectProps<B extends SelectBehaviorType>
-  extends Omit<CourseSelectProps<B>, "data"> {
-  readonly visibility: ActionVisibility;
+export interface ClientCourseSelectProps<B extends SelectBehaviorType> extends Omit<
+  CourseSelectProps<B>,
+  'data'
+> {
   readonly onError?: (e: ApiError) => void;
+  readonly visibility: ActionVisibility;
 }
 
-export const ClientCourseSelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { visibility, onError, ...props }: ClientCourseSelectProps<B>,
-    ref: ForwardedRef<CourseSelectInstance<B>>,
-  ): JSX.Element => {
-    const { data, isLoading, error } = useCourses({
-      query: { includes: [], visibility },
-      onError: e => {
-        logger.error(e, "There was an error loading the courses via the API.");
-        onError?.(e);
-      },
-    });
-
-    return (
-      <CourseSelect<B>
-        {...props}
-        ref={ref}
-        isReady={data !== undefined && props.isReady !== false}
-        data={data ?? []}
-        isDisabled={error !== undefined || props.isDisabled}
-        isLocked={isLoading || props.isLocked}
-        isLoading={isLoading || props.isLoading}
-      />
-    );
-  },
-) as {
-  <B extends SelectBehaviorType>(
-    props: ClientCourseSelectProps<B> & {
-      readonly ref?: ForwardedRef<CourseSelectInstance<B>>;
+export const ClientCourseSelect = <B extends SelectBehaviorType>({
+  onError,
+  ref,
+  visibility,
+  ...props
+}: {
+  readonly ref?: Ref<CourseSelectInstance<B>>;
+} & ClientCourseSelectProps<B>): JSX.Element => {
+  const { data, error, isLoading } = useCourses({
+    onError: e => {
+      logger.error(e, 'There was an error loading the courses via the API.');
+      onError?.(e);
     },
-  ): JSX.Element;
+    query: { includes: [], visibility },
+  });
+
+  return (
+    <CourseSelect<B>
+      {...props}
+      data={data ?? []}
+      isDisabled={error !== undefined || props.isDisabled}
+      isLoading={isLoading || props.isLoading}
+      isLocked={isLoading || props.isLocked}
+      isReady={data !== undefined && props.isReady !== false}
+      ref={ref}
+    />
+  );
 };

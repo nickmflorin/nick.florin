@@ -1,34 +1,34 @@
-"use client";
-import { motion } from "framer-motion";
+'use client';
+import { motion } from 'framer-motion';
 
-import { SidebarAnchor } from "~/components/buttons/SidebarAnchor";
+import { SidebarAnchor } from '~/components/buttons/SidebarAnchor';
 
-import { type IExternalSidebarItem, type IInternalSidebarItem } from "../types";
+import { type IExternalSidebarItem, type IInternalSidebarItem } from '../types';
 
-import * as constants from "./constants";
+import * as constants from './constants';
 
 const itemVariants = {
-  open: () => ({
-    y: 0,
-    opacity: 1,
-  }),
   closed: ({ index }: { index: number }) => ({
-    y: `-${constants.calculateChildItemOffsetY(index)}px`,
-    transition: { y: { stiffness: 1000 } },
     opacity: 0,
+    transition: { y: { stiffness: 1000 } },
+    y: `-${constants.calculateChildItemOffsetY(index)}px`,
+  }),
+  open: () => ({
+    opacity: 1,
+    y: 0,
   }),
 };
 
 export interface SidebarItemChildProps {
   readonly index: number;
-  readonly item: Omit<IInternalSidebarItem, "children"> | IExternalSidebarItem;
+  readonly item: IExternalSidebarItem | Omit<IInternalSidebarItem, 'children'>;
 }
 
 export const SidebarItemChild = ({ index, item }: SidebarItemChildProps) => (
   <motion.div
-    variants={itemVariants}
+    className='w-full h-[48px] aspect-square z-0 mb-[4px] last:mb-0'
     custom={{ index }}
-    className="w-full h-[48px] aspect-square z-0 mb-[4px] last:mb-0"
+    variants={itemVariants}
   >
     <SidebarAnchor item={item} />
   </motion.div>

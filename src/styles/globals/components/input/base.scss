@@ -1,6 +1,6 @@
-@use "partials";
+@use 'partials';
 
-@use "./constants" as constants;
+@use './constants' as constants;
 
 @mixin input-base() {
   @include partials.transition(none);

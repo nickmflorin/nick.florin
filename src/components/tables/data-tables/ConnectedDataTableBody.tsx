@@ -1,38 +1,37 @@
-import { useEffect, type JSX } from "react";
+import { type JSX, useEffect } from 'react';
 
-import { useDataTable } from "~/components/tables/hooks";
-import type * as types from "~/components/tables/types";
+import { useDataTable } from '~/components/tables/hooks';
+import type * as types from '~/components/tables/types';
 
-import { type AbstractDataTableBodyProps, AbstractDataTableBody } from "./AbstractDataTableBody";
-import { ConnectedDataTableBodyRow } from "./ConnectedDataTableBodyRow";
+import { AbstractDataTableBody, type AbstractDataTableBodyProps } from './AbstractDataTableBody';
+import { ConnectedDataTableBodyRow } from './ConnectedDataTableBodyRow';
 
 export interface ConnectedDataTableBodyProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
-> extends Omit<AbstractDataTableBodyProps<D, C>, "columns" | "children"> {
-  readonly performSelectionWhenClicked?: boolean;
+> extends Omit<AbstractDataTableBodyProps<D, C>, 'children' | 'columns'> {
+  readonly shouldPerformSelectionWhenClicked?: boolean;
 }
 
 export const ConnectedDataTableBody = <
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 >({
-  performSelectionWhenClicked,
+  shouldPerformSelectionWhenClicked,
   ...props
 }: ConnectedDataTableBodyProps<D, C>): JSX.Element => {
   const { columns, syncSelectedRows } = useDataTable<D, C>();
 
   useEffect(() => {
     syncSelectedRows(props.data);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [props.data]);
+  }, [props.data, syncSelectedRows]);
 
   return (
     <AbstractDataTableBody {...props} columns={columns}>
       {ps => (
         <ConnectedDataTableBodyRow<D, C>
           {...ps}
-          performSelectionWhenClicked={performSelectionWhenClicked}
+          shouldPerformSelectionWhenClicked={shouldPerformSelectionWhenClicked}
         />
       )}
     </AbstractDataTableBody>

@@ -1,9 +1,9 @@
-import type { ApiExperience, ExperienceIncludes } from "~/database/model";
+import { type ApiExperience, type ExperienceIncludes } from '~/database/model';
 
-import { type FlattenedExperiencesControls } from "~/actions";
+import { type FlattenedExperiencesControls } from '~/actions';
 
-import { useSWR, type SWRConfig } from "./use-swr";
+import { type SWRConfig, useSWR } from './use-swr';
 
 export const useExperiences = <I extends ExperienceIncludes>(
   config: SWRConfig<ApiExperience<I>[], FlattenedExperiencesControls<I>>,
-) => useSWR<ApiExperience<I>[], FlattenedExperiencesControls<I>>("/api/experiences", config);
+) => useSWR<ApiExperience<I>[], FlattenedExperiencesControls<I>>('/api/experiences', config);

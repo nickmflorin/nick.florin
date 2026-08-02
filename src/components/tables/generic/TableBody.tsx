@@ -1,90 +1,88 @@
-import dynamic from "next/dynamic";
-import { type ReactNode, type JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX, type ReactNode } from 'react';
 
-import { Loading } from "~/components/loading/Loading";
-import { tableHasLoadingIndicator, type TableLoadingIndicator } from "~/components/tables/types";
+import { Loading } from '~/components/loading/Loading';
+import { tableHasLoadingIndicator, type TableLoadingIndicator } from '~/components/tables/types';
 import {
   classNames,
-  type QuantitativeSize,
   type ComponentProps,
   parseDataAttributes,
-} from "~/components/types";
+  type QuantitativeSize,
+} from '~/components/types';
 
-const TableSkeleton = dynamic(() => import("./TableSkeleton").then(mod => mod.TableSkeleton));
+const TableSkeleton = dynamic(() => import('./TableSkeleton').then(mod => mod.TableSkeleton));
 const TableFeedbackState = dynamic(() =>
-  import("./TableFeedbackState").then(mod => mod.TableFeedbackState),
+  import('./TableFeedbackState').then(mod => mod.TableFeedbackState),
 );
 
 export interface TableBodyProps extends ComponentProps {
-  readonly isLoading?: boolean;
+  readonly cellSkeletons?: ReactNode[];
+  readonly children?: ReactNode;
+  readonly emptyContent?: JSX.Element | string;
+  readonly errorContent?: JSX.Element | string;
+  readonly errorMessage?: string;
+  readonly errorTitle?: string;
+  readonly hasNoResults?: boolean;
   readonly isEmpty?: boolean;
   readonly isError?: boolean;
-  readonly hasNoResults?: boolean;
-  readonly emptyContent?: string | JSX.Element;
-  readonly noResultsContent?: string | JSX.Element;
-  readonly errorTitle?: string;
-  readonly errorMessage?: string;
-  readonly errorContent?: string | JSX.Element;
-  readonly numSkeletonRows?: number;
-  readonly numSkeletonColumns?: number;
-  readonly cellSkeletons?: ReactNode[];
-  readonly skeletonRowHeight?: QuantitativeSize<"px">;
+  readonly isLoading?: boolean;
   readonly loadingIndicator?: TableLoadingIndicator;
-  readonly children?: ReactNode;
+  readonly noResultsContent?: JSX.Element | string;
+  readonly numSkeletonColumns?: number;
+  readonly numSkeletonRows?: number;
+  readonly skeletonRowHeight?: QuantitativeSize<'px'>;
 }
 
 export const TableBody = ({
+  cellSkeletons,
   children,
-  isEmpty,
-  isError,
   emptyContent,
-  noResultsContent,
-  hasNoResults,
+  errorContent,
   errorMessage,
   errorTitle,
-  errorContent,
+  hasNoResults,
+  isEmpty,
+  isError,
   isLoading,
-  cellSkeletons,
-  skeletonRowHeight,
-  numSkeletonColumns,
   loadingIndicator,
+  noResultsContent,
+  numSkeletonColumns,
   numSkeletonRows,
+  skeletonRowHeight,
   ...props
 }: TableBodyProps) => (
   <tbody
     {...props}
     {...parseDataAttributes({
-      isLoading: isLoading && tableHasLoadingIndicator(loadingIndicator, "fade-rows"),
+      isLoading: isLoading && tableHasLoadingIndicator(loadingIndicator, 'fade-rows'),
     })}
-    className={classNames("table__body", props.className)}
+    className={classNames('table__body', props.className)}
   >
-    {isLoading && tableHasLoadingIndicator(loadingIndicator, "skeleton") ? (
+    {isLoading && tableHasLoadingIndicator(loadingIndicator, 'skeleton') ? (
       <TableSkeleton
-        component="fragment"
-        numRows={numSkeletonRows}
         cellSkeletons={cellSkeletons}
-        rowHeight={skeletonRowHeight}
+        component='fragment'
         numColumns={numSkeletonColumns}
+        numRows={numSkeletonRows}
+        rowHeight={skeletonRowHeight}
       />
     ) : (
-      /* See comment towards the top of the file related to the overridden 'console.error'
-         method. */
       <Loading
-        component="tr"
-        isLoading={isLoading && tableHasLoadingIndicator(loadingIndicator, "spinner")}
+        component='tr'
+        isLoading={isLoading && tableHasLoadingIndicator(loadingIndicator, 'spinner')}
       >
         {isError ? (
           <TableFeedbackState
-            as="tr"
-            stateType="error"
+            as='tr'
             errorContent={errorContent}
-            errorTitle={errorTitle}
             errorMessage={errorMessage}
+            errorTitle={errorTitle}
+            stateType='error'
           />
         ) : hasNoResults ? (
-          <TableFeedbackState stateType="no-results" noResultsContent={noResultsContent} as="tr" />
+          <TableFeedbackState as='tr' noResultsContent={noResultsContent} stateType='no-results' />
         ) : isEmpty ? (
-          <TableFeedbackState stateType="empty" emptyContent={emptyContent} as="tr" />
+          <TableFeedbackState as='tr' emptyContent={emptyContent} stateType='empty' />
         ) : (
           children
         )}
@@ -92,5 +90,3 @@ export const TableBody = ({
     )}
   </tbody>
 );
-
-export default TableBody;

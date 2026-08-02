@@ -1,17 +1,17 @@
-import { useContext } from "react";
+import { use } from 'react';
 
-import { DataTableContext } from "~/components/tables/context";
-import type {
-  DataTableColumnConfig,
-  DataTableDatum,
-  DataTableInstance,
-} from "~/components/tables/types";
+import { DataTableContext } from '~/components/tables/context';
+import {
+  type DataTableColumnConfig,
+  type DataTableDatum,
+  type DataTableInstance,
+} from '~/components/tables/types';
 
 export const useDataTable = <
   D extends DataTableDatum,
   C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
 >() => {
-  const ctx = useContext(DataTableContext);
+  const ctx = use(DataTableContext);
   if (!ctx.isInScope) {
     throw new Error("The 'useDataTable' hook must be called within the 'DataTableProvider'!");
   }

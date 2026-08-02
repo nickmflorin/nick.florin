@@ -1,9 +1,9 @@
-@use "partials";
+@use 'partials';
 
-$checkbox-bg-color: theme("colors.blue.900");
+$checkbox-bg-color: theme('colors.blue.900');
 
 @mixin checked-state() {
-  .checkbox[data-checked="true"] {
+  .checkbox[data-checked='true'] {
     @include partials.not-disabled() {
       @include partials.not-locked() {
         > .mantine-Checkbox-body {
@@ -44,9 +44,9 @@ $checkbox-bg-color: theme("colors.blue.900");
   @include checkbox-input() {
     height: 100%;
     width: 100%;
-    border-radius: theme("borderRadius.xs");
-    border: 1px solid theme("colors.gray.500");
-    background-color: theme("colors.white");
+    border-radius: theme('borderRadius.xs');
+    border: 1px solid theme('colors.gray.500');
+    background-color: theme('colors.white');
   }
 
   @include partials.disabled-or-locked() {
@@ -57,8 +57,8 @@ $checkbox-bg-color: theme("colors.blue.900");
   }
   @include partials.disabled() {
     @include checkbox-input() {
-      background-color: theme("colors.gray.100");
-      border-color: theme("colors.gray.300");
+      background-color: theme('colors.gray.100');
+      border-color: theme('colors.gray.300');
     }
   }
 }

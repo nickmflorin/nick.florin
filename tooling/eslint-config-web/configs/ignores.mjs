@@ -1,0 +1,46 @@
+/**
+ * Global ignore patterns for the flat config.  In flat config, a config object with ONLY an
+ * `ignores` key acts as a global ignore.
+ *
+ * @type {string[]}
+ */
+export default [
+  '**/node_modules/**',
+  '**/.claude/**',
+  '**/.next/**',
+  '**/_next/**',
+  '**/.swc/**',
+  '**/.vercel/**',
+  '**/dist/**',
+  '**/build/**',
+  '**/.cache/**',
+  '**/public/**',
+  '**/migrations/**',
+  '**/generated/**',
+  '**/next-env.d.ts',
+  '**/package.json',
+  '**/pnpm-lock.yaml',
+  '**/*.md',
+  '**/*.prettierignore',
+  '**/.env',
+  '**/.env.*',
+  '*.prisma',
+  '**/.gitignore',
+  '**/.npmrc',
+  '**/.nvmrc',
+  '**/*.sh',
+  '**/*.ico',
+  '**/*.sql',
+  '**/*.csv',
+  '**/*.toml',
+  '**/*.png',
+  '**/*.jpg',
+  '**/*.jpeg',
+  '**/*.gif',
+  '**/*.webp',
+  '**/*.svg',
+  '**/*.scss',
+  '**/*.tsbuildinfo',
+  '**/.eslintcache',
+  '**/.eslintcache.*',
+];

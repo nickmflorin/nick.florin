@@ -1,28 +1,25 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandRepository } from "~/database/model";
-import { calculateSkillsExperience } from "~/database/model";
-import { db } from "~/database/prisma";
-import { logger } from "~/internal/logger";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandRepository, calculateSkillsExperience } from '~/database/model';
+import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { RepositorySchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { RepositorySchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
-
-const UpdateRepositorySchema = RepositorySchema.partial();
+} from '~/api';
 
 export const createRepository = async (
-  data: z.infer<typeof UpdateRepositorySchema>,
+  data: Partial<z.infer<typeof RepositorySchema>>,
 ): Promise<MutationActionResponse<BrandRepository>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -38,28 +35,28 @@ export const createRepository = async (
     };
   }
 
-  const { skills: _skills, projects: _projects, ...rest } = parsed.data;
+  const { projects: _projects, skills: _skills, ...rest } = parsed.data;
 
   const fieldErrors = new ApiClientFieldErrors();
 
   if (await db.repository.count({ where: { slug: rest.slug } })) {
-    fieldErrors.addUnique("slug", "The slug must be unique.");
+    fieldErrors.addUnique('slug', 'The slug must be unique.');
   }
   if (
     rest.npmPackageName &&
     (await db.repository.count({ where: { npmPackageName: rest.npmPackageName } }))
   ) {
-    fieldErrors.addUnique("npmPackageName", "The npm package name must be unique.");
+    fieldErrors.addUnique('npmPackageName', 'The npm package name must be unique.');
   }
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
   const [projects] = await queryM2MsDynamically(db, {
-    model: "project",
-    ids: _projects,
     fieldErrors,
+    ids: _projects,
+    model: 'project',
   });
   if (!fieldErrors.isEmpty) {
     return { error: fieldErrors.json };
@@ -69,9 +66,9 @@ export const createRepository = async (
       data: {
         ...rest,
         createdById: user.id,
-        updatedById: user.id,
         projects: projects ? { connect: projects.map(proj => ({ id: proj.id })) } : undefined,
         skills: skills ? { connect: skills.map(skill => ({ slug: skill.slug })) } : undefined,
+        updatedById: user.id,
       },
     });
     if (skills && skills.length !== 0) {

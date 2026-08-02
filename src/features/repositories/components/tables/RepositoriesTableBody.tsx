@@ -1,26 +1,25 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
 import {
-  type ConnectedDataTableBodyProps,
   ConnectedDataTableBody,
-} from "~/components/tables/data-tables/ConnectedDataTableBody";
-import { type RepositoriesTableColumn, type RepositoriesTableModel } from "~/features/repositories";
+  type ConnectedDataTableBodyProps,
+} from '~/components/tables/data-tables/ConnectedDataTableBody';
+import { type RepositoriesTableColumn, type RepositoriesTableModel } from '~/features/repositories';
 
-import { useRepositoriesTableColumnProperties } from "./hooks/use-column-properties";
-import { useRepositoriesTableRowActions } from "./hooks/use-row-actions";
-import { RepositoriesTableControlBar } from "./RepositoriesTableControlBar";
+import { useRepositoriesTableColumnProperties } from './hooks/use-column-properties';
+import { useRepositoriesTableRowActions } from './hooks/use-row-actions';
+import { RepositoriesTableControlBar } from './RepositoriesTableControlBar';
 
-export interface RepositoriesTableBodyProps
-  extends Omit<
-    ConnectedDataTableBodyProps<RepositoriesTableModel, RepositoriesTableColumn>,
-    "rowIsSelected" | "onRowSelected" | "getRowActions" | "columns" | "columnProperties"
-  > {
-  readonly controlBarTooltipsInPortal?: boolean;
+export interface RepositoriesTableBodyProps extends Omit<
+  ConnectedDataTableBodyProps<RepositoriesTableModel, RepositoriesTableColumn>,
+  'columnProperties' | 'columns' | 'getRowActions' | 'onRowSelected' | 'rowIsSelected'
+> {
+  readonly areControlBarTooltipsInPortal?: boolean;
 }
 
 export const RepositoriesTableBody = ({
-  controlBarTooltipsInPortal,
+  areControlBarTooltipsInPortal,
   ...props
 }: RepositoriesTableBodyProps): JSX.Element => {
   const columnProperties = useRepositoriesTableColumnProperties();
@@ -29,14 +28,14 @@ export const RepositoriesTableBody = ({
   return (
     <>
       <RepositoriesTableControlBar
+        areTooltipsInPortal={areControlBarTooltipsInPortal}
         data={props.data}
         isDisabled={props.isEmpty}
-        tooltipsInPortal={controlBarTooltipsInPortal}
       />
       <ConnectedDataTableBody<RepositoriesTableModel, RepositoriesTableColumn>
-        performSelectionWhenClicked
-        emptyContent="There are no repositories."
-        noResultsContent="No repositories found for search criteria."
+        emptyContent='There are no repositories.'
+        noResultsContent='No repositories found for search criteria.'
+        shouldPerformSelectionWhenClicked
         {...props}
         columnProperties={columnProperties}
         getRowActions={(experience, { setIsOpen }) =>

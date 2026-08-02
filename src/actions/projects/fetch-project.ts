@@ -1,34 +1,33 @@
-import type { ApiProject, ProjectIncludes } from "~/database/model";
-import { fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
+import { type ApiProject, fieldIsIncluded, type ProjectIncludes } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { standardDetailFetchAction, type StandardFetchActionReturn } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { standardDetailFetchAction, type StandardFetchActionReturn } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const fetchProject = <I extends ProjectIncludes>(includes: I) =>
   standardDetailFetchAction(
-    async (id, _, { isVisible, isAdmin }): StandardFetchActionReturn<ApiProject<I>> => {
+    async (id, _, { isAdmin, isVisible }): StandardFetchActionReturn<ApiProject<I>> => {
       let project = (await db.project.findUnique({
-        where: { id },
         include: {
-          skills: fieldIsIncluded("skills", includes)
+          repositories: fieldIsIncluded('repositories', includes)
             ? { where: { visible: isVisible } }
             : undefined,
-          repositories: fieldIsIncluded("repositories", includes)
+          skills: fieldIsIncluded('skills', includes)
             ? { where: { visible: isVisible } }
             : undefined,
         },
-      })) as ApiProject<I>;
+        where: { id },
+      })) as ApiProject<I> | null;
       if (!project) {
         return ApiClientGlobalError.NotFound({
-          message: "The project could not be found.",
+          message: 'The project could not be found.',
         });
       } else if (!isAdmin && !project.visible) {
         ApiClientGlobalError.Forbidden({
-          message: "The user does not have permission to access this data.",
+          message: 'The user does not have permission to access this data.',
         });
       }
-      if (fieldIsIncluded("nestedDetails", includes)) {
+      if (fieldIsIncluded('nestedDetails', includes)) {
         project = {
           ...project,
           nestedDetails: await db.nestedDetail.findMany({
@@ -36,7 +35,7 @@ export const fetchProject = <I extends ProjectIncludes>(includes: I) =>
           }),
         };
       }
-      if (fieldIsIncluded("details", includes)) {
+      if (fieldIsIncluded('details', includes)) {
         project = {
           ...project,
           details: await db.detail.findMany({
@@ -44,7 +43,7 @@ export const fetchProject = <I extends ProjectIncludes>(includes: I) =>
           }),
         };
       }
-      return project as ApiProject<I>;
+      return project;
     },
-    { authenticated: true, adminOnly: true },
+    { adminOnly: true, authenticated: true },
   );

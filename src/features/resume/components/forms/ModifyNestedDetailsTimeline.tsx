@@ -1,49 +1,53 @@
-import { useState, type JSX } from "react";
+import { type JSX, useState } from 'react';
 
-import { Timeline } from "@mantine/core";
+import { Timeline } from '@mantine/core';
+import { isEqual } from 'lodash-es';
 
-import { type ApiNestedDetail } from "~/database/model";
+import { type ApiNestedDetail } from '~/database/model';
 
-import { TimelineIcon } from "~/components/icons/TimelineIcon";
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { DetailsTimeline } from "~/features/resume/components/DetailsTimeline";
-import { useDeepEqualEffect } from "~/hooks";
+import { TimelineIcon } from '~/components/icons/TimelineIcon';
+import { classNames, type ComponentProps } from '~/components/types';
+import { DetailsTimeline } from '~/features/resume/components/DetailsTimeline';
 
-import { CreateNestedDetailForm, type CreateNestedDetailFormProps } from "./create";
-import { CollapsedUpdateDetailForm } from "./update/CollapsedUpdateDetailForm";
+import { CreateNestedDetailForm, type CreateNestedDetailFormProps } from './create';
+import { CollapsedUpdateDetailForm } from './update/CollapsedUpdateDetailForm';
 
 export interface ModifyNestedDetailsTimelineProps
-  extends ComponentProps,
-    Pick<CreateNestedDetailFormProps, "detailId" | "onCancel" | "onCreated"> {
-  readonly details: ApiNestedDetail<["skills"]>[];
+  extends ComponentProps, Pick<CreateNestedDetailFormProps, 'detailId' | 'onCancel' | 'onCreated'> {
+  readonly details: ApiNestedDetail<['skills']>[];
   readonly isCreating: boolean;
-  readonly onExpand: (detail: ApiNestedDetail<["skills"]>) => void;
+  readonly onExpand: (detail: ApiNestedDetail<['skills']>) => void;
 }
 
 export const ModifyNestedDetailsTimeline = ({
-  details,
   detailId,
+  details,
   isCreating,
-  onCreated,
   onCancel,
+  onCreated,
   onExpand,
   ...props
 }: ModifyNestedDetailsTimelineProps): JSX.Element => {
   const [optimisticDetails, setOptimisticDetails] =
-    useState<ApiNestedDetail<["skills"]>[]>(details);
+    useState<ApiNestedDetail<['skills']>[]>(details);
+  const [syncedDetails, setSyncedDetails] = useState<ApiNestedDetail<['skills']>[]>(details);
 
-  useDeepEqualEffect(() => {
+  /* The optimistic details are re-seeded during render, rather than from an effect, whenever the
+     details provided to the component change.  React applies a state update performed during render
+     before it commits, so this avoids the additional committed render that an effect would cause.
+     The comparison is by value because the details are re-created on each render of the parent. */
+  if (!isEqual(details, syncedDetails)) {
+    setSyncedDetails(details);
     setOptimisticDetails(details);
-  }, [details]);
+  }
 
   return (
-    <DetailsTimeline {...props} className={classNames("h-full max-h-full w-full", props.className)}>
+    <DetailsTimeline {...props} className={classNames('h-full max-h-full w-full', props.className)}>
       {isCreating && (
-        <Timeline.Item key="0" hidden={!isCreating} bullet={<TimelineIcon />}>
+        <Timeline.Item bullet={<TimelineIcon />} hidden={!isCreating} key='0'>
           <CreateNestedDetailForm
-            key="new-detail"
             detailId={detailId}
+            key='new-detail'
             onCancel={onCancel}
             onCreated={detail => {
               setOptimisticDetails(curr => [{ ...detail, nestedDetails: [] }, ...curr]);
@@ -53,13 +57,13 @@ export const ModifyNestedDetailsTimeline = ({
         </Timeline.Item>
       )}
       {...optimisticDetails.map((detail, i) => (
-        <Timeline.Item key={i + 1} bullet={<TimelineIcon />}>
+        <Timeline.Item bullet={<TimelineIcon />} key={i + 1}>
           <CollapsedUpdateDetailForm
-            key={detail.id}
             detail={detail}
             isExpanded={false}
-            onExpand={() => onExpand(detail)}
+            key={detail.id}
             onDeleted={() => setOptimisticDetails(curr => curr.filter(d => d.id !== detail.id))}
+            onExpand={() => onExpand(detail)}
           />
         </Timeline.Item>
       ))}

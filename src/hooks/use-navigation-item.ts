@@ -1,13 +1,13 @@
-import { useMemo, useCallback } from "react";
+import { useCallback, useMemo } from 'react';
 
-import { type NavItem } from "~/application/pages";
+import { type NavItem } from '~/application/pages';
 
-import { useNavigation } from "./use-navigation";
+import { useNavigation } from './use-navigation';
 
-export const useNavigationItem = <N extends Pick<NavItem, "activePaths" | "path">>(item: N) => {
+export const useNavigationItem = <N extends Pick<NavItem, 'activePaths' | 'path'>>(item: N) => {
   const {
-    isPending: _isPending,
     isActive: _isActive,
+    isPending: _isPending,
     setNavigating: _setNavigating,
   } = useNavigation();
 
@@ -20,9 +20,9 @@ export const useNavigationItem = <N extends Pick<NavItem, "activePaths" | "path"
   }, [item, _setNavigating]);
 
   return {
-    isPending,
-    isActive,
-    setNavigating,
     href: item.path,
+    isActive,
+    isPending,
+    setNavigating,
   };
 };

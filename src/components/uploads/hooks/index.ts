@@ -1,1 +1,1 @@
-export * from "./use-managed-uploads";
+export * from './use-managed-uploads';

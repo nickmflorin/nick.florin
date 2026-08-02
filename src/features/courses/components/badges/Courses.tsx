@@ -1,13 +1,13 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { type BrandCourse } from "~/database/model";
+import { type BrandCourse } from '~/database/model';
 
-import { BadgeCollection } from "~/components/badges/BadgeCollection";
-import { useDrawers } from "~/components/drawers/hooks/use-drawers";
-import { type ComponentProps } from "~/components/types";
+import { BadgeCollection } from '~/components/badges/BadgeCollection';
+import { useDrawers } from '~/components/drawers/hooks/use-drawers';
+import { type ComponentProps } from '~/components/types';
 
-import { CourseBadge } from "./CourseBadge";
+import { CourseBadge } from './CourseBadge';
 
 export interface CoursesProps extends ComponentProps {
   readonly courses: BrandCourse[];
@@ -16,17 +16,17 @@ export interface CoursesProps extends ComponentProps {
 /**
  * @deprecated
  */
-export const Courses = ({ courses, ...props }: CoursesProps): JSX.Element => {
-  const { open, ids } = useDrawers();
+export const Courses = ({ courses, ...props }: CoursesProps): JSX.Element | null => {
+  const { ids, open } = useDrawers();
   if (courses.length === 0) {
-    return <></>;
+    return null;
   }
   return (
     <BadgeCollection {...props}>
       {courses.map(course => (
         <CourseBadge
-          key={course.id}
           course={course}
+          key={course.id}
           onClick={() => open(ids.VIEW_COURSE, { courseId: course.id })}
         />
       ))}

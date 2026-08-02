@@ -1,72 +1,72 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
 import {
-  type IconStyle as RootIconStyle,
   type IconFamily as RootIconFamily,
   type IconName as RootIconName,
-} from "@fortawesome/fontawesome-svg-core";
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
-import { z } from "zod";
+  type IconStyle as RootIconStyle,
+} from '@fortawesome/fontawesome-svg-core';
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
+import { z } from 'zod';
 
-import { type ComponentProps } from "~/components/types";
-import { type QuantitativeSize } from "~/components/types/sizes";
+import { type ComponentProps } from '~/components/types';
+import { type QuantitativeSize } from '~/components/types/sizes';
 
 export type IconName = RootIconName;
 
-export const IconDimensions = enumeratedLiterals(["height", "width"] as const, {});
+export const IconDimensions = enumeratedLiterals(['height', 'width'] as const, {});
 export type IconDimension = EnumeratedLiteralsMember<typeof IconDimensions>;
 
-export const IconFits = enumeratedLiterals(["square", "fit"] as const, {});
+export const IconFits = enumeratedLiterals(['square', 'fit'] as const, {});
 export type IconFit = EnumeratedLiteralsMember<typeof IconFits>;
 
 export const IconDiscreteSizes = enumeratedLiterals(
-  ["xxs", "xs", "sm", "md", "lg", "xl", "xxl", "xxxl", "fill"] as const,
+  ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl', 'xxxl', 'fill'] as const,
   {},
 );
 
 export type IconDiscreteSize = EnumeratedLiteralsMember<typeof IconDiscreteSizes>;
-export type IconSize = IconDiscreteSize | QuantitativeSize<"px">;
+export type IconSize = IconDiscreteSize | QuantitativeSize<'px'>;
 
-export type IconFamily = Exclude<RootIconFamily, "duotone" | "sharp-duotone">;
+export type IconFamily = Exclude<RootIconFamily, 'duotone' | 'sharp-duotone'>;
 
 export enum IconFamilies {
-  CLASSIC = "classic",
-  SHARP = "sharp",
+  CLASSIC = 'classic',
+  SHARP = 'sharp',
 }
 
-export const IconFamilyClassNameMap: { [key in IconFamily]: string } = {
-  classic: "",
-  sharp: "fa-sharp",
+export const IconFamilyClassNameMap: Record<IconFamily, string> = {
+  classic: '',
+  sharp: 'fa-sharp',
 };
 
 export const DEFAULT_ICON_FAMILY = IconFamilies.CLASSIC;
 
-export type IconStyle = Exclude<RootIconStyle, "duotone" | "light" | "thin">;
+export type IconStyle = Exclude<RootIconStyle, 'duotone' | 'light' | 'thin'>;
 
 export enum IconStyles {
-  SOLID = "solid",
-  REGULAR = "regular",
-  BRANDS = "brands",
+  BRANDS = 'brands',
+  REGULAR = 'regular',
+  SOLID = 'solid',
 }
 
 export const DEFAULT_ICON_STYLE = IconStyles.REGULAR;
 
-export const IconStyleClassNameMap: { [key in IconStyle]: string } = {
-  regular: "fa-regular",
-  solid: "fa-solid",
-  brands: "fa-brands",
+export const IconStyleClassNameMap: Record<IconStyle, string> = {
+  brands: 'fa-brands',
+  regular: 'fa-regular',
+  solid: 'fa-solid',
 };
 
 export type FontAwesomeIconProp = {
-  readonly name: IconName;
   readonly family?: IconFamily;
   readonly iconStyle?: IconStyle;
+  readonly name: IconName;
 };
 
 export const FontAwesomeIconPropSchema = z.object({
-  name: z.string(),
   family: z.nativeEnum(IconFamilies).optional(),
   iconStyle: z.nativeEnum(IconStyles).optional(),
+  name: z.string(),
 });
 
 export const isFontAwesomeIconProp = (value: unknown): value is FontAwesomeIconProp =>
@@ -75,7 +75,7 @@ export const isFontAwesomeIconProp = (value: unknown): value is FontAwesomeIconP
 export type SvgIconProp = `/${string}.svg`;
 
 const SvgIconPropSchema = z.custom<SvgIconProp>(
-  val => typeof val === "string" && val.startsWith("/") && val.endsWith(".svg"),
+  val => typeof val === 'string' && val.startsWith('/') && val.endsWith('.svg'),
 );
 
 export const isSvgIconProp = (value: unknown): value is SvgIconProp =>
@@ -91,66 +91,71 @@ export const isIconProp = (value: unknown): value is IconProp =>
  */
 export type IconProp = FontAwesomeIconProp | SvgIconProp;
 
-type BaseIconProps = ComponentProps & {
-  readonly size?: IconSize;
-  readonly spinnerSize?: IconSize;
+type BaseIconProps = {
   /**
-   * Whether or not the Icon should be rendered as a "loading" spinner.  Useful in cases where a
-   * component contains an Icon but needs to replace it with a loading indicator when in a loading
-   * state.
+   * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
+   * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.
+   *
+   * @default 'height'
    */
-  readonly isLoading?: boolean;
-  readonly spinnerClassName?: ComponentProps["className"];
+  readonly dimension?: IconDimension;
   /**
    * A string, "fit" or "square", that defines whether or not the `svg` element should fit snuggly
    * around the inner `path` element of the Icon or SVG ("fit") or the `svg` element should have
    * a 1-1 aspect ratio, with its inner `path` element being centered in the containing `svg`
    * ("square").
    *
-   * Default: "square"
+   * @default 'square'
    */
   readonly fit?: IconFit;
   /**
-   * The dimension {@link IconDimension} that the Icon should be sized in based on the provided
-   * `size` prop. An Icon must maintain its aspect-ratio, so it cannot size in both directions.
-   *
-   * Default: "height";
+   * Whether or not the Icon should be rendered as a "loading" spinner. Useful in cases where a
+   * component contains an Icon but needs to replace it with a loading indicator when in a loading
+   * state.
    */
-  readonly dimension?: IconDimension;
-};
+  readonly isLoading?: boolean;
+  readonly size?: IconSize;
+  readonly spinnerClassName?: ComponentProps['className'];
+  readonly spinnerSize?: IconSize;
+} & ComponentProps;
 
-export type BasicIconProps = BaseIconProps & {
-  readonly family?: IconFamily;
-  readonly iconStyle?: IconStyle;
-  readonly icon: IconProp | IconName;
+export type BasicIconProps = {
   readonly children?: never;
-  readonly isDisabled?: boolean; // Not applicable if Icon is an SVG
-};
+  readonly family?: IconFamily;
+  readonly icon: IconName | IconProp;
+  readonly iconStyle?: IconStyle;
+  /**
+   * Not applicable if the icon is an SVG.
+   */
+  readonly isDisabled?: boolean;
+} & BaseIconProps;
 
-export type ChildrenIconProps = BaseIconProps & {
-  [key in keyof FontAwesomeIconProp]?: never;
-} & {
-  readonly family?: never;
-  readonly iconStyle?: never;
-  readonly icon?: never;
-  /* If the icon is an SVG, instead of a Font Awesome configured icon, it can be passed to the
-     component as a child. */
+export type ChildrenIconProps = {
+  /**
+   * If the icon is an SVG, instead of a Font Awesome configured icon, it can be passed to the
+   * component as a child.
+   */
   readonly children: JSX.Element;
+  readonly family?: never;
+  readonly icon?: never;
+  readonly iconStyle?: never;
   readonly isDisabled?: never;
-};
+} & {
+  [key in keyof FontAwesomeIconProp]?: never;
+} & BaseIconProps;
 
 export type SpinnerProps = Omit<
   BasicIconProps,
-  | "spin"
-  | "icon"
-  | "iconStyle"
-  | "family"
-  | "fit"
-  | "isDisabled"
-  | "visible"
-  | "hidden"
-  | "spinnerClassName"
-  | "spinnerSize"
+  | 'family'
+  | 'fit'
+  | 'hidden'
+  | 'icon'
+  | 'iconStyle'
+  | 'isDisabled'
+  | 'spin'
+  | 'spinnerClassName'
+  | 'spinnerSize'
+  | 'visible'
 >;
 
-export type IconProps = ChildrenIconProps | BasicIconProps;
+export type IconProps = BasicIconProps | ChildrenIconProps;

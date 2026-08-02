@@ -1,44 +1,38 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type ForwardedRef, type JSX } from 'react';
 
-import type { EnumeratedLiteralsModel } from "enumerated-literals";
+import { type EnumeratedLiteralsModel } from 'enumerated-literals';
 
-import { ProgrammingDomains } from "~/database/model";
+import { ProgrammingDomains } from '~/database/model';
 
-import type { DataSelectInstance, SelectBehaviorType } from "~/components/input/select";
-import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
+import { type DataSelectInstance, type SelectBehaviorType } from '~/components/input/select';
+import { DataSelect, type DataSelectProps } from '~/components/input/select/DataSelect';
 
 type M = EnumeratedLiteralsModel<typeof ProgrammingDomains>;
 
 const getModelValue = (m: M) => m.value;
 
-export interface ProgrammingDomainSelectProps<B extends SelectBehaviorType>
-  extends Omit<
-    DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
-    "options" | "data" | "itemRenderer" | "getModelValueLabel"
-  > {
+export interface ProgrammingDomainSelectProps<B extends SelectBehaviorType> extends Omit<
+  DataSelectProps<M, { behavior: B; getModelValue: typeof getModelValue }>,
+  'data' | 'getModelValueLabel' | 'itemRenderer' | 'options'
+> {
   readonly behavior: B;
 }
 
-export const ProgrammingDomainSelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { behavior, ...props }: ProgrammingDomainSelectProps<B>,
-    ref: ForwardedRef<DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>>,
-  ): JSX.Element => (
-    <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
-      {...props}
-      ref={ref}
-      options={{ behavior, getModelValue }}
-      getModelValueLabel={m => m.label}
-      data={[...ProgrammingDomains.models]}
-      itemRenderer={m => m.label}
-    />
-  ),
-) as {
-  <B extends SelectBehaviorType>(
-    props: ProgrammingDomainSelectProps<B> & {
-      readonly ref?: ForwardedRef<
-        DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>
-      >;
-    },
-  ): JSX.Element;
-};
+export const ProgrammingDomainSelect = <B extends SelectBehaviorType>({
+  behavior,
+  ref,
+  ...props
+}: {
+  readonly ref?: ForwardedRef<
+    DataSelectInstance<M, { behavior: B; getModelValue: typeof getModelValue }>
+  >;
+} & ProgrammingDomainSelectProps<B>): JSX.Element => (
+  <DataSelect<M, { behavior: B; getModelValue: typeof getModelValue }>
+    {...props}
+    data={[...ProgrammingDomains.models]}
+    getModelValueLabel={m => m.label}
+    itemRenderer={m => m.label}
+    options={{ behavior, getModelValue }}
+    ref={ref}
+  />
+);

@@ -1,70 +1,64 @@
-import { forwardRef, type ForwardedRef } from "react";
+import { type Ref } from 'react';
 
-import * as types from "~/components/menus";
-import { MenuItem } from "~/components/menus/MenuItem";
-import { type ComponentProps, classNames } from "~/components/types";
+import * as types from '~/components/menus';
+import { MenuItem } from '~/components/menus/MenuItem';
+import { classNames, type ComponentProps } from '~/components/types';
 
-export type CustomDataMenuItemProps = Omit<
-  types.DataMenuItemClassNameProps<ComponentProps["className"]>,
-  "itemSelectedClassName"
-> &
-  types.DataMenuItemSizeProps & {
-    readonly datum: types.DataMenuCustomModel;
-    readonly isCurrentNavigation?: boolean;
-    readonly boldSubstrings?: string;
-    readonly onItemClick?: (
-      e: types.MenuItemClickEvent,
-      instance: types.ConnectedMenuItemInstance,
-    ) => void;
-  };
+export type CustomDataMenuItemProps = {
+  readonly boldSubstrings?: string;
+  readonly datum: types.DataMenuCustomModel;
+  readonly isCurrentNavigation?: boolean;
+  readonly onItemClick?: (
+    e: types.MenuItemClickEvent,
+    instance: types.ConnectedMenuItemInstance,
+  ) => void;
+  readonly ref?: Ref<types.ConnectedMenuItemInstance>;
+} & Omit<types.DataMenuItemClassNameProps<ComponentProps['className']>, 'itemSelectedClassName'> &
+  types.DataMenuItemSizeProps;
 
-export const CustomDataMenuItem = forwardRef(
-  (
-    {
-      datum,
-      itemClassName,
-      itemIconSize,
-      itemSpinnerSize,
-      itemCheckboxSize,
-      itemDisabledClassName,
-      itemSpinnerClassName,
-      itemIconClassName,
-      itemLoadingClassName,
-      itemLockedClassName,
-      itemHeight,
-      itemNavigatedClassName,
-      onItemClick,
-      ...props
-    }: CustomDataMenuItemProps,
-    ref?: ForwardedRef<types.ConnectedMenuItemInstance>,
-  ) => (
-    <MenuItem
-      {...props}
-      id={String(datum.id)}
-      ref={ref}
-      actions={datum.actions}
-      height={itemHeight}
-      icon={datum.icon}
-      iconSize={datum.iconSize ?? itemIconSize}
-      spinnerSize={datum.spinnerSize ?? itemSpinnerSize}
-      checkboxSize={datum.checkboxSize ?? itemCheckboxSize}
-      selectionIndicator="none"
-      iconClassName={classNames(itemIconClassName, datum.iconClassName)}
-      navigatedClassName={itemNavigatedClassName}
-      spinnerClassName={classNames(itemSpinnerClassName, datum.spinnerClassName)}
-      className={classNames(itemClassName, datum.className)}
-      disabledClassName={classNames(itemDisabledClassName, datum.disabledClassName)}
-      loadingClassName={classNames(itemLoadingClassName, datum.loadingClassName)}
-      lockedClassName={classNames(itemLockedClassName, datum.lockedClassName)}
-      isDisabled={types.evalMenuItemFlag("isDisabled", datum)}
-      isLocked={types.evalMenuItemFlag("isLocked", datum)}
-      isLoading={types.evalMenuItemFlag("isLoading", datum)}
-      onClick={(e, instance) => {
-        onItemClick?.(e, instance);
-        datum.onClick?.(e, instance);
-      }}
-    >
-      {datum.renderer !== undefined ? params => datum.renderer?.(params) : datum.label}
-    </MenuItem>
-  ),
+export const CustomDataMenuItem = ({
+  datum,
+  itemCheckboxSize,
+  itemClassName,
+  itemDisabledClassName,
+  itemHeight,
+  itemIconClassName,
+  itemIconSize,
+  itemLoadingClassName,
+  itemLockedClassName,
+  itemNavigatedClassName,
+  itemSpinnerClassName,
+  itemSpinnerSize,
+  onItemClick,
+  ref,
+  ...props
+}: CustomDataMenuItemProps) => (
+  <MenuItem
+    {...props}
+    actions={datum.actions}
+    checkboxSize={datum.checkboxSize ?? itemCheckboxSize}
+    className={classNames(itemClassName, datum.className)}
+    disabledClassName={classNames(itemDisabledClassName, datum.disabledClassName)}
+    height={itemHeight}
+    icon={datum.icon}
+    iconClassName={classNames(itemIconClassName, datum.iconClassName)}
+    iconSize={datum.iconSize ?? itemIconSize}
+    id={String(datum.id)}
+    isDisabled={types.evalMenuItemFlag('isDisabled', datum)}
+    isLoading={types.evalMenuItemFlag('isLoading', datum)}
+    isLocked={types.evalMenuItemFlag('isLocked', datum)}
+    loadingClassName={classNames(itemLoadingClassName, datum.loadingClassName)}
+    lockedClassName={classNames(itemLockedClassName, datum.lockedClassName)}
+    navigatedClassName={itemNavigatedClassName}
+    onClick={(e, instance) => {
+      onItemClick?.(e, instance);
+      datum.onClick?.(e, instance);
+    }}
+    ref={ref}
+    selectionIndicator='none'
+    spinnerClassName={classNames(itemSpinnerClassName, datum.spinnerClassName)}
+    spinnerSize={datum.spinnerSize ?? itemSpinnerSize}
+  >
+    {datum.renderer === undefined ? datum.label : params => datum.renderer?.(params)}
+  </MenuItem>
 );

@@ -1,43 +1,43 @@
-import dynamic from "next/dynamic";
-import type { JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX } from 'react';
 
-import { type EducationsControls, type EducationsFilters } from "~/actions";
-import { fetchEducations } from "~/actions/educations/fetch-educations";
+import { type EducationsControls, type EducationsFilters } from '~/actions';
+import { fetchEducations } from '~/actions/educations/fetch-educations';
 
-import { Loading } from "~/components/loading/Loading";
-import { EducationsTableControlBarPlaceholder } from "~/features/educations/components/tables/EducationsTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { EducationsTableControlBarPlaceholder } from '~/features/educations/components/tables/EducationsTableControlBarPlaceholder';
 
 const ClientEducationsTableBody = dynamic(
   () =>
-    import("~/features/educations/components/tables/EducationsTableBody").then(
+    import('~/features/educations/components/tables/EducationsTableBody').then(
       mod => mod.EducationsTableBody,
     ),
   {
     loading: () => (
       <>
         <EducationsTableControlBarPlaceholder />
-        <Loading isLoading component="tbody" />
+        <Loading component='tbody' isLoading />
       </>
     ),
   },
 );
 
 const getEducations = async ({
-  page,
   filters,
   ordering,
+  page,
 }: {
   readonly filters: EducationsFilters;
+  readonly ordering: EducationsControls['ordering'];
   readonly page: number;
-  readonly ordering: EducationsControls["ordering"];
 }) => {
-  const fetcher = fetchEducations(["skills", "details"]);
+  const fetcher = fetchEducations(['skills', 'details']);
   const { data: educations } = await fetcher(
     {
       filters,
       ordering,
       page,
-      visibility: "admin",
+      visibility: 'admin',
     },
     { strict: true },
   );
@@ -46,15 +46,15 @@ const getEducations = async ({
 
 export interface EducationsTableBodyProps {
   readonly filters: EducationsFilters;
+  readonly ordering: EducationsControls['ordering'];
   readonly page: number;
-  readonly ordering: EducationsControls["ordering"];
 }
 
 export const EducationsTableBody = async ({
   filters,
-  page,
   ordering,
+  page,
 }: EducationsTableBodyProps): Promise<JSX.Element> => {
-  const educations = await getEducations({ page, filters, ordering });
+  const educations = await getEducations({ filters, ordering, page });
   return <ClientEducationsTableBody data={educations} />;
 };

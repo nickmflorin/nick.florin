@@ -1,64 +1,65 @@
-"use client";
-import { forwardRef, useState, type JSX } from "react";
+'use client';
+import { type JSX, type Ref, useState } from 'react';
 
-import { Checkbox as RootCheckbox, type CheckboxProps as RootCheckboxProps } from "@mantine/core";
+import { Checkbox as RootCheckbox, type CheckboxProps as RootCheckboxProps } from '@mantine/core';
 
 import {
   classNames,
+  type ComponentProps,
   parseDataAttributes,
   type QuantitativeSize,
-  type ComponentProps,
   sizeToString,
-} from "~/components/types";
-import { Label } from "~/components/typography";
+} from '~/components/types';
+import { Label } from '~/components/typography';
 
 export interface CheckboxProps
-  extends Pick<RootCheckboxProps, "readOnly" | "onChange">,
-    ComponentProps {
-  readonly value?: boolean;
+  extends Pick<RootCheckboxProps, 'onChange' | 'readOnly'>, ComponentProps {
+  readonly isChecked?: boolean;
   readonly isDisabled?: boolean;
   readonly isLocked?: boolean;
   readonly label?: string;
-  readonly size?: QuantitativeSize<"px">;
+  readonly ref?: Ref<HTMLInputElement>;
+  readonly size?: QuantitativeSize<'px'>;
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  (
-    { isDisabled = false, isLocked = false, value, size, label, ...props }: CheckboxProps,
-    ref,
-  ): JSX.Element => {
-    const [isChecked, setIsChecked] = useState(false);
+export const Checkbox = ({
+  isChecked,
+  isDisabled = false,
+  isLocked = false,
+  label,
+  ref,
+  size,
+  ...props
+}: CheckboxProps): JSX.Element => {
+  const [isInternallyChecked, setIsInternallyChecked] = useState(false);
 
-    if (label === undefined) {
-      return (
-        <RootCheckbox
-          {...props}
-          {...parseDataAttributes({ isDisabled, isLocked })}
-          ref={ref}
-          checked={value === undefined ? isChecked : value}
-          onClick={e => e.stopPropagation()}
-          onChange={e => {
-            setIsChecked(e.target.checked);
-            props.onChange?.(e);
-          }}
-          className={classNames("checkbox", props.className)}
-          style={{
-            ...props.style,
-            height: size !== undefined ? sizeToString(size, "px") : props.style?.height,
-            width: size !== undefined ? sizeToString(size, "px") : props.style?.width,
-          }}
-        />
-      );
-    }
+  if (label === undefined) {
     return (
-      <div className="flex flex-row gap-[6px] items-center">
-        <Checkbox value={value} isDisabled={isDisabled} isLocked={isLocked} {...props} />
-        <Label fontSize="sm" fontWeight="medium" className="leading-[16px]">
-          {label}
-        </Label>
-      </div>
+      <RootCheckbox
+        {...props}
+        {...parseDataAttributes({ isDisabled, isLocked })}
+        checked={isChecked ?? isInternallyChecked}
+        className={classNames('checkbox', props.className)}
+        onChange={e => {
+          setIsInternallyChecked(e.target.checked);
+          props.onChange?.(e);
+        }}
+        onClick={e => e.stopPropagation()}
+        ref={ref}
+        style={{
+          ...props.style,
+          height: size === undefined ? props.style?.height : sizeToString(size, 'px'),
+          width: size === undefined ? props.style?.width : sizeToString(size, 'px'),
+        }}
+      />
     );
-  },
-);
-
-export default Checkbox;
+  }
+  return (
+    <div className='flex flex-row gap-[6px] items-center'>
+      <Checkbox isChecked={isChecked} isDisabled={isDisabled} isLocked={isLocked} {...props} />
+      <Label className='leading-[16px]' fontSize='sm' fontWeight='medium'>
+        {label}
+      </Label>
+    </div>
+  );
+};

@@ -1,12 +1,12 @@
-@use "../typography" as typography;
+@use '../typography' as typography;
 
 // These colors are the default values for the input component.  The specific colors may change
 // depending on the variant.
-$input-bg-color: theme("colors.white");
-$input-color: theme("colors.body");
-$input-caret-color: theme("colors.body");
+$input-bg-color: theme('colors.white');
+$input-color: theme('colors.body');
+$input-caret-color: theme('colors.body');
 
-$input-placeholder-color: theme("colors.placeholder");
+$input-placeholder-color: theme('colors.placeholder');
 
 $input-font-weight: 400;
-$input-font-family: typography.get-font-family("body");
+$input-font-family: typography.get-font-family('body');

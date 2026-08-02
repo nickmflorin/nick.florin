@@ -1,17 +1,17 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandCourse } from "~/database/model";
+import { type BrandCourse } from '~/database/model';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { useCourseForm } from "~/features/courses/components/forms/hooks";
-import { UpdateCourseForm } from "~/features/courses/components/forms/UpdateCourseF";
-import { useCourse } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { DrawerForm } from '~/components/drawers/DrawerForm';
+import { useCourseForm } from '~/features/courses/components/forms/hooks';
+import { UpdateCourseForm } from '~/features/courses/components/forms/UpdateCourseF';
+import { useCourse } from '~/hooks/api';
 
 interface UpdateCourseDrawerProps extends ExtendingDrawerProps {
   readonly courseId: string;
-  readonly eager: Pick<BrandCourse, "name">;
+  readonly eager: Pick<BrandCourse, 'name'>;
 }
 
 export const UpdateCourseDrawer = ({
@@ -19,21 +19,19 @@ export const UpdateCourseDrawer = ({
   eager,
   onClose,
 }: UpdateCourseDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useCourse(courseId, {
-    query: { includes: ["education", "skills"], visibility: "admin" },
+  const { data, error, isLoading, isValidating } = useCourse(courseId, {
     keepPreviousData: true,
+    query: { includes: ['education', 'skills'], visibility: 'admin' },
   });
   const form = useCourseForm();
 
   return (
-    <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
-      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+    <DrawerForm eagerTitle={eager.name} form={form} titleField='name'>
+      <ApiResponseState data={data} error={error} isLoading={isLoading || isValidating}>
         {course => (
-          <UpdateCourseForm form={form} course={course} onSuccess={onClose} onCancel={onClose} />
+          <UpdateCourseForm course={course} form={form} onCancel={onClose} onSuccess={onClose} />
         )}
       </ApiResponseState>
     </DrawerForm>
   );
 };
-
-export default UpdateCourseDrawer;

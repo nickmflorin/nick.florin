@@ -1,7 +1,7 @@
-@use "sass:map";
-@use "sass:meta";
+@use 'sass:map';
+@use 'sass:meta';
 
-@use "../functions" as fn;
+@use '../functions' as fn;
 
 @mixin border($c, $w: 1px) {
   border: $w solid $c;

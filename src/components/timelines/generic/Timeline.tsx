@@ -1,24 +1,23 @@
-"use client";
-import React from "react";
+'use client';
 
-import { Timeline as RootTimeline } from "@mantine/core";
+import { Timeline as RootTimeline } from '@mantine/core';
 
-import { classNames } from "~/components/types";
+import { classNames } from '~/components/types';
 
-import { type TimelineProps } from "./types";
+import { type TimelineProps } from './types';
 
-export const Timeline = ({ children, style, className, ...props }: TimelineProps) => (
-  <div style={style} className={classNames("timeline", className)}>
-    <div className="timeline__inner">
+export const Timeline = ({ children, className, style, ...props }: TimelineProps) => (
+  <div className={classNames('timeline', className)} style={style}>
+    <div className='timeline__inner'>
       <RootTimeline
         bulletSize={24}
         lineWidth={2}
         {...props}
         classNames={{
-          item: "timeline__item",
-          itemBody: "timeline__item__body",
-          itemContent: "timeline__item__body__content",
-          itemBullet: "timeline__item__bullet",
+          item: 'timeline__item',
+          itemBody: 'timeline__item__body',
+          itemBullet: 'timeline__item__bullet',
+          itemContent: 'timeline__item__body__content',
         }}
       >
         {children}
@@ -26,5 +25,3 @@ export const Timeline = ({ children, style, className, ...props }: TimelineProps
     </div>
   </div>
 );
-
-export default Timeline;

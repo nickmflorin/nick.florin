@@ -1,18 +1,18 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandCompany } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandCompany } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { CompanySchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { CompanySchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 const UpdateCompanySchema = CompanySchema.partial();
 
@@ -20,7 +20,7 @@ export const updateCompany = async (
   companyId: string,
   data: z.infer<typeof UpdateCompanySchema>,
 ): Promise<MutationActionResponse<BrandCompany>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -45,11 +45,11 @@ export const updateCompany = async (
   const fieldErrors = new ApiClientFieldErrors();
   const { name, shortName, ...rest } = parsed.data;
 
-  if (name && (await db.company.count({ where: { name, id: { notIn: [company.id] } } }))) {
+  if (name && (await db.company.count({ where: { id: { notIn: [company.id] }, name } }))) {
     fieldErrors.addUnique(name, "The 'name' must be unique for a given company.");
   } else if (
     shortName &&
-    (await db.company.count({ where: { shortName, id: { notIn: [company.id] } } }))
+    (await db.company.count({ where: { id: { notIn: [company.id] }, shortName } }))
   ) {
     fieldErrors.addUnique(shortName, "The 'shortName' must be unique for a given company.");
   }
@@ -57,14 +57,14 @@ export const updateCompany = async (
     return { error: fieldErrors.json };
   }
   const updated = await db.company.update({
-    where: { id: company.id },
     data: {
       ...rest,
+      createdById: user.id,
       name,
       shortName,
-      createdById: user.id,
       updatedById: user.id,
     },
+    where: { id: company.id },
   });
   return { data: convertToPlainObject(updated) };
 };

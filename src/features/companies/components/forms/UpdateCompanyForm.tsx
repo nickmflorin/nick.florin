@@ -1,20 +1,19 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect, useEffectEvent, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type Company } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type Company } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { updateCompany } from "~/actions/companies/update-company";
+import { updateCompany } from '~/actions/companies/update-company';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { useDeepEqualEffect } from "~/hooks";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { CompanyForm, type CompanyFormProps } from "./CompanyForm";
+import { CompanyForm, type CompanyFormProps } from './CompanyForm';
 
-export interface UpdateCompanyFormProps extends Omit<CompanyFormProps, "action"> {
+export interface UpdateCompanyFormProps extends Omit<CompanyFormProps, 'action'> {
   readonly company: Company;
   readonly onCancel?: () => void;
   readonly onSuccess?: () => void;
@@ -27,25 +26,29 @@ export const UpdateCompanyForm = ({
   ...props
 }: UpdateCompanyFormProps): JSX.Element => {
   const updateCompanyWithId = updateCompany.bind(null, company.id);
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
-  // Prevents the form from resetting when an error occurs.
-  useDeepEqualEffect(() => {
+  /* The form is repopulated only when a different company is being edited.  Keying the effect on
+     the identifier rather than the company itself means a background revalidation of the same
+     company never discards values the user is in the middle of editing. */
+  const setCompanyFormValues = useEffectEvent(() => {
     props.form.setValues({
       ...company,
-      shortName: company.shortName ?? "",
-      description: company.description ?? "",
-      websiteUrl: company.websiteUrl ?? "",
-      logoImageUrl: company.logoImageUrl ?? "",
+      description: company.description ?? '',
+      logoImageUrl: company.logoImageUrl ?? '',
+      shortName: company.shortName ?? '',
+      websiteUrl: company.websiteUrl ?? '',
     });
-  }, [company, props.form.setValues]);
+  });
+
+  useEffect(() => {
+    setCompanyFormValues();
+  }, [company.id]);
 
   return (
     <CompanyForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof updateCompanyWithId>> | null = null;
         try {
@@ -56,20 +59,19 @@ export const UpdateCompanyForm = ({
             `There was an error updating the company with ID '${company.id}'.`,
             { company, data },
           );
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error updating the company.");
+          return toast.error('There was an error updating the company.');
         }
         const { error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.();
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default UpdateCompanyForm;

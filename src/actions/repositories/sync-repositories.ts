@@ -1,13 +1,13 @@
-"use server";
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { db } from "~/database/prisma";
+'use server';
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
-import { githubClient } from "~/integrations/github";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
+import { githubClient } from '~/integrations/github';
 
 export const syncRepositories = async (): Promise<MutationActionResponse<{ message: string }>> => {
-  const { error, user, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -17,6 +17,6 @@ export const syncRepositories = async (): Promise<MutationActionResponse<{ messa
   }
   return await db.$transaction(async tx => {
     await githubClient.syncRepositories({ tx, user });
-    return { data: { message: "Repositories synced successfully" } };
+    return { data: { message: 'Repositories synced successfully' } };
   });
 };

@@ -1,29 +1,29 @@
-import { isValidElement, type JSX } from "react";
+import { isValidElement, type JSX } from 'react';
 
-import { TableBodyCell } from "~/components/tables/generic/TableBodyCell";
-import type * as types from "~/components/tables/types";
-import { classNames } from "~/components/types";
+import { TableBodyCell } from '~/components/tables/generic/TableBodyCell';
+import type * as types from '~/components/tables/types';
+import { classNames } from '~/components/types';
 
 export interface DataTableBodyCellProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 > {
-  readonly datum: D;
   readonly column: types.DataTableColumn<D, C>;
+  readonly datum: D;
 }
 
 const CellAccessorContent = <D extends types.DataTableDatum>({
-  datum,
   accessor,
+  datum,
 }: {
-  datum: D;
-  accessor: Exclude<keyof D, "id">;
-}): JSX.Element => {
+  readonly accessor: Exclude<keyof D, 'id'>;
+  readonly datum: D;
+}): JSX.Element | null => {
   const v = datum[accessor];
-  if (isValidElement(v) || typeof v === "string" || typeof v === "number") {
+  if (isValidElement(v) || typeof v === 'string' || typeof v === 'number') {
     return <>{v}</>;
   }
-  return <></>;
+  return null;
 };
 
 export const DataTableBodyCell = <
@@ -41,9 +41,7 @@ export const DataTableBodyCell = <
     {column.cellRenderer ? (
       column.cellRenderer(datum)
     ) : column.config.accessor ? (
-      <CellAccessorContent datum={datum} accessor={column.config.accessor} />
-    ) : (
-      <></>
-    )}
+      <CellAccessorContent accessor={column.config.accessor} datum={datum} />
+    ) : null}
   </TableBodyCell>
 );

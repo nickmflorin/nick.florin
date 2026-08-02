@@ -1,18 +1,18 @@
-"use client";
-import type { ReactNode } from "react";
+'use client';
+import { type ReactNode } from 'react';
 
-import { ExperiencesDefaultOrdering } from "~/actions";
+import { ExperiencesDefaultOrdering } from '~/actions';
 
-import { columnIsOrderable } from "~/components/tables";
-import { ConnectedDataTableWrapper } from "~/components/tables/data-tables/ConnectedDataTableWrapper";
+import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableWrapper } from '~/components/tables/data-tables/ConnectedDataTableWrapper';
 import {
-  ExperiencesTableColumns,
-  type ExperiencesTableOrderableColumnId,
-  type ExperiencesTableColumnId,
   type ExperiencesTableColumn,
+  type ExperiencesTableColumnId,
+  ExperiencesTableColumns,
   type ExperiencesTableModel,
-} from "~/features/experiences";
-import { useOrdering } from "~/hooks/use-ordering";
+  type ExperiencesTableOrderableColumnId,
+} from '~/features/experiences';
+import { useOrdering } from '~/hooks/use-ordering';
 
 export interface ExperiencesDataTableWrapperProps {
   readonly children: ReactNode;
@@ -24,15 +24,15 @@ export const ExperiencesDataTableWrapper = ({
   excludeColumns,
 }: ExperiencesDataTableWrapperProps) => {
   const [ordering, setOrdering] = useOrdering<ExperiencesTableOrderableColumnId>({
-    useQueryParams: true,
-    fields: [...ExperiencesTableColumns].filter(c => columnIsOrderable(c)).map(c => c.id),
     defaultOrdering: ExperiencesDefaultOrdering,
+    fields: [...ExperiencesTableColumns].filter(c => columnIsOrderable(c)).map(c => c.id),
+    useQueryParams: true,
   });
   return (
     <ConnectedDataTableWrapper<ExperiencesTableModel, ExperiencesTableColumn>
       excludeColumns={excludeColumns}
-      ordering={ordering}
       onSort={(e, col) => setOrdering({ field: col.id })}
+      ordering={ordering}
     >
       {children}
     </ConnectedDataTableWrapper>

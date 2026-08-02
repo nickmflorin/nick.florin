@@ -1,27 +1,28 @@
-"use client";
-import dynamic from "next/dynamic";
+'use client';
+import dynamic from 'next/dynamic';
 
-import { useTour } from "./use-tour";
+import { useTour } from './use-tour';
 
-const WelcomeDialog = dynamic(() => import("~/components/dialogs/WelcomeDialog"), {
-  ssr: false,
-});
+const WelcomeDialog = dynamic(
+  () => import('~/components/dialogs/WelcomeDialog').then(mod => mod.WelcomeDialog),
+  {
+    ssr: false,
+  },
+);
 
 export const Tour = () => {
-  const { error, modalIsOpen, waitingForTour, setTourIsOpen, setModalIsOpen } = useTour();
+  const { error, modalIsOpen, setModalIsOpen, setTourIsOpen, waitingForTour } = useTour();
 
   if (modalIsOpen) {
     return (
       <WelcomeDialog
-        isOpen={true}
         error={error}
-        waitingForTour={waitingForTour}
-        onStart={() => setTourIsOpen(true)}
+        isOpen
+        isWaitingForTour={waitingForTour}
         onClose={() => setModalIsOpen(false)}
+        onStart={() => setTourIsOpen(true)}
       />
     );
   }
-  return <></>;
+  return null;
 };
-
-export default Tour;

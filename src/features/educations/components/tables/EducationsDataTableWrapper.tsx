@@ -1,18 +1,18 @@
-"use client";
-import type { ReactNode } from "react";
+'use client';
+import { type ReactNode } from 'react';
 
-import { EducationsDefaultOrdering } from "~/actions";
+import { EducationsDefaultOrdering } from '~/actions';
 
-import { columnIsOrderable } from "~/components/tables";
-import { ConnectedDataTableWrapper } from "~/components/tables/data-tables/ConnectedDataTableWrapper";
+import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableWrapper } from '~/components/tables/data-tables/ConnectedDataTableWrapper';
 import {
-  EducationsTableColumns,
-  type EducationsTableOrderableColumnId,
-  type EducationsTableColumnId,
   type EducationsTableColumn,
+  type EducationsTableColumnId,
+  EducationsTableColumns,
   type EducationsTableModel,
-} from "~/features/educations";
-import { useOrdering } from "~/hooks/use-ordering";
+  type EducationsTableOrderableColumnId,
+} from '~/features/educations';
+import { useOrdering } from '~/hooks/use-ordering';
 
 export interface EducationsDataTableWrapperProps {
   readonly children: ReactNode;
@@ -24,15 +24,15 @@ export const EducationsDataTableWrapper = ({
   excludeColumns,
 }: EducationsDataTableWrapperProps) => {
   const [ordering, setOrdering] = useOrdering<EducationsTableOrderableColumnId>({
-    useQueryParams: true,
-    fields: [...EducationsTableColumns].filter(c => columnIsOrderable(c)).map(c => c.id),
     defaultOrdering: EducationsDefaultOrdering,
+    fields: [...EducationsTableColumns].filter(c => columnIsOrderable(c)).map(c => c.id),
+    useQueryParams: true,
   });
   return (
     <ConnectedDataTableWrapper<EducationsTableModel, EducationsTableColumn>
       excludeColumns={excludeColumns}
-      ordering={ordering}
       onSort={(e, col) => setOrdering({ field: col.id })}
+      ordering={ordering}
     >
       {children}
     </ConnectedDataTableWrapper>

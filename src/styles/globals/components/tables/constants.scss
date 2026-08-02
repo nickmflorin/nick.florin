@@ -1,35 +1,35 @@
-$table-header-bg-color: theme("colors.gray.50");
-$table-row-highlighted-color: theme("colors.gray.50");
-$table-border-color: theme("colors.gray.50");
+$table-header-bg-color: theme('colors.gray.50');
+$table-row-highlighted-color: theme('colors.gray.50');
+$table-border-color: theme('colors.gray.50');
 $table-border: 1px solid $table-border-color;
-$table-color: theme("colors.body");
-$table-body-bg-color: theme("colors.white");
+$table-color: theme('colors.body');
+$table-body-bg-color: theme('colors.white');
 
-$table-sizes: ("small", "medium", "large");
-$table-default-size: "small";
+$table-sizes: ('small', 'medium', 'large');
+$table-default-size: 'small';
 
 $table-size-properties: (
-  "small": (
-    "td": (
+  'small': (
+    'td': (
       padding: 6px 8px,
     ),
-    "th": (
+    'th': (
       padding: 10px 12px,
     ),
   ),
-  "medium": (
-    "td": (
+  'medium': (
+    'td': (
       padding: 8px 10px,
     ),
-    "th": (
+    'th': (
       padding: 10px 12px,
     ),
   ),
-  "large": (
-    "td": (
+  'large': (
+    'td': (
       padding: 10px 12px,
     ),
-    "th": (
+    'th': (
       padding: 10px 12px,
     ),
   ),

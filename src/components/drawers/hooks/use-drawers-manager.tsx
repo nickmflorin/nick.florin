@@ -1,15 +1,14 @@
-import React, { useState, useCallback, type JSX } from "react";
+import { type ComponentType, type JSX, useCallback, useState } from 'react';
 
-import type * as types from "../types";
+import type * as types from '../types';
 
-import { DrawerContainer } from "~/components/drawers/DrawerContainer";
+import { DrawerContainer } from '~/components/drawers/DrawerContainer';
 
-import { getDrawerComponent } from "../drawers";
-import { type DrawerDynamicProps } from "../drawers";
+import { type DrawerDynamicProps, getDrawerComponent } from '../drawers';
 
-export const useDrawersManager = (): Omit<types.DrawersManager, "isInScope"> => {
+export const useDrawersManager = (): Omit<types.DrawersManager, 'isInScope'> => {
   const [drawer, setDrawer] = useState<JSX.Element | null>(null);
-  const [drawerId, setDrawerId] = useState<types.DrawerId | null>(null);
+  const [drawerId, setDrawerId] = useState<null | types.DrawerId>(null);
 
   const close = useCallback(() => {
     setDrawer(null);
@@ -19,8 +18,8 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isInScope"> => 
   const open = useCallback(
     <D extends types.DrawerId>(id: D, props: DrawerDynamicProps<D>) => {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const Drawer = getDrawerComponent(id) as React.ComponentType<any>;
-      const ps = { ...props, onClose: () => close() } as React.ComponentProps<typeof Drawer>;
+      const Drawer = getDrawerComponent(id) as ComponentType<any>;
+      const ps = { ...props, onClose: () => close() };
 
       setDrawer(
         <DrawerContainer>
@@ -32,5 +31,5 @@ export const useDrawersManager = (): Omit<types.DrawersManager, "isInScope"> => 
     [close],
   );
 
-  return { drawer, drawerId, open, close };
+  return { close, drawer, drawerId, open };
 };

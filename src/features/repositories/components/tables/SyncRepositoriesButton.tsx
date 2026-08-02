@@ -1,24 +1,23 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { syncRepositories } from "~/actions/repositories/sync-repositories";
+import { syncRepositories } from '~/actions/repositories/sync-repositories';
 
-import { Button } from "~/components/buttons";
+import { Button } from '~/components/buttons';
 
 export const SyncRepositoriesButton = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [isPending, transition] = useTransition();
 
   return (
     <Button.Solid
       isLoading={isLoading || isPending}
-      scheme="secondary"
       onClick={async () => {
         setIsLoading(true);
 
@@ -26,26 +25,25 @@ export const SyncRepositoriesButton = () => {
         try {
           response = await syncRepositories();
         } catch (e) {
-          logger.errorUnsafe(e, "There was an error syncing the repositories.");
+          logger.errorUnsafe(e, 'There was an error syncing the repositories.');
           setIsLoading(false);
-          return toast.error("There was an error syncing the repositories.");
+          return toast.error('There was an error syncing the repositories.');
         }
         const { error } = response;
         if (error) {
-          logger.error(error, "There was an error syncing the repositories.");
+          logger.error(error, 'There was an error syncing the repositories.');
           setIsLoading(false);
-          return toast.error("There was an error syncing the repositories.");
+          return toast.error('There was an error syncing the repositories.');
         }
         transition(() => {
-          refresh();
+          router.refresh();
           setIsLoading(false);
-          toast.success("Repositories synced successfully.");
+          toast.success('Repositories synced successfully.');
         });
       }}
+      scheme='secondary'
     >
       Sync
     </Button.Solid>
   );
 };
-
-export default SyncRepositoriesButton;

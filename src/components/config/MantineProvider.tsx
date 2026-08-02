@@ -1,7 +1,7 @@
-import { MantineProvider as RootMantineProvider } from "@mantine/core";
+import { type ReactNode } from 'react';
 
-function MantineProvider({ children }: { children: React.ReactNode }) {
-  return <RootMantineProvider forceColorScheme="light">{children}</RootMantineProvider>;
-}
+import { MantineProvider as RootMantineProvider } from '@mantine/core';
 
-export default MantineProvider;
+export const MantineProvider = ({ children }: { readonly children: ReactNode }) => (
+  <RootMantineProvider forceColorScheme='light'>{children}</RootMantineProvider>
+);

@@ -1,7 +1,7 @@
 export const constructOrSearch = (query: string | undefined, fields: string[]) => ({
   OR:
     query !== undefined && query.length !== 0
-      ? fields.map(field => ({ [field]: { contains: query, mode: "insensitive" as const } }))
+      ? fields.map(field => ({ [field]: { contains: query, mode: 'insensitive' as const } }))
       : undefined,
 });
 
@@ -20,18 +20,17 @@ type ConditionalAndClauseConditional<C extends Record<string, unknown> = Record<
   C | null;
 
 const isConditionalAndClauseObj = <C extends Record<string, unknown>>(
-  clause: ConditionalAndClauseObj<boolean, C> | ConditionalAndClauseConditional<C>,
+  clause: ConditionalAndClauseConditional<C> | ConditionalAndClauseObj<boolean, C>,
 ): clause is ConditionalAndClauseObj<boolean, C> =>
   Boolean(
     clause &&
-      "condition" in clause &&
-      (clause as ConditionalAndClauseObj<boolean, C>).condition !== undefined &&
-      typeof (clause as ConditionalAndClauseObj<boolean, C>).condition === "boolean",
+    'condition' in clause &&
+    typeof (clause as ConditionalAndClauseObj<boolean, C>).condition === 'boolean',
   );
 
 type InferConditionalAndClause<
-  T extends (Record<string, unknown> | null | ConditionalAndClauseObj)[],
-> = T extends (infer Ti extends Record<string, unknown> | null | ConditionalAndClauseObj)[]
+  T extends (ConditionalAndClauseObj | null | Record<string, unknown>)[],
+> = T extends (infer Ti extends ConditionalAndClauseObj | null | Record<string, unknown>)[]
   ? Ti extends { clause: infer Ci extends Record<string, unknown> }
     ? Ci
     : Ti extends Record<string, unknown>
@@ -40,7 +39,7 @@ type InferConditionalAndClause<
   : never;
 
 export const conditionalAndClause = <
-  T extends (ConditionalAndClauseObj | Record<string, unknown> | null)[],
+  T extends (ConditionalAndClauseObj | null | Record<string, unknown>)[],
 >(
   clauses: T,
 ): { AND: InferConditionalAndClause<T>[] } => ({
@@ -50,9 +49,9 @@ export const conditionalAndClause = <
         ? c.condition
           ? [...prev, c.clause as InferConditionalAndClause<T>]
           : prev
-        : c !== null
-          ? [...prev, c as InferConditionalAndClause<T>]
-          : prev,
+        : c === null
+          ? prev
+          : [...prev, c as InferConditionalAndClause<T>],
     [] as InferConditionalAndClause<T>[],
   ),
 });

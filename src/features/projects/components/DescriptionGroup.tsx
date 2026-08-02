@@ -1,16 +1,18 @@
-import { type ReactNode, forwardRef, type JSX } from "react";
+import { type JSX, type ReactNode, type Ref } from 'react';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface DescriptionGroupProps extends ComponentProps {
   readonly children: ReactNode;
+  readonly ref?: Ref<HTMLDivElement>;
 }
 
-export const DescriptionGroup = forwardRef<HTMLDivElement, DescriptionGroupProps>(
-  ({ children, ...props }, ref): JSX.Element => (
-    <div {...props} ref={ref} className={classNames("flex flex-col gap-[8px]", props.className)}>
-      {children}
-    </div>
-  ),
+export const DescriptionGroup = ({
+  children,
+  ref,
+  ...props
+}: DescriptionGroupProps): JSX.Element => (
+  <div {...props} className={classNames('flex flex-col gap-[8px]', props.className)} ref={ref}>
+    {children}
+  </div>
 );

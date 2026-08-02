@@ -1,4 +1,4 @@
-import { isEqual } from "lodash-es";
+import { isEqual } from 'lodash-es';
 
 export const uniq = <T>(a: T[], equality?: (a: T, b: T) => boolean): T[] => {
   const eq = equality ?? isEqual;
@@ -19,7 +19,7 @@ export const arraysHaveSameElements = <T>(
 
   const uniques: [T[], T[]] = [uniq(a, eq), uniq(b, eq)];
   if (uniques[0].length !== a.length || uniques[1].length !== b.length) {
-    throw new Error("The provided arrays must contain only unique elements.");
+    throw new Error('The provided arrays must contain only unique elements.');
   }
   return (
     uniques[0].length === uniques[1].length &&
@@ -33,7 +33,7 @@ type StrictArrayLookupOptions = {
 
 type StrictArrayLookupRT<T, O extends StrictArrayLookupOptions> = O extends { strict: true }
   ? T
-  : T | null;
+  : null | T;
 
 export const strictArrayLookup = <T, O extends StrictArrayLookupOptions>(
   arr: T[],
@@ -52,7 +52,7 @@ export const strictArrayLookup = <T, O extends StrictArrayLookupOptions>(
 
 export function* cycle<T>(data: T[]): Generator<T, T, T> {
   let index = 0;
-  while (true) {
+  for (;;) {
     if (index === data.length) {
       index = 0;
     }
@@ -63,7 +63,7 @@ export function* cycle<T>(data: T[]): Generator<T, T, T> {
 
 export function* tupleCycle<T, R>(primary: T[], secondary: R[]): Generator<[T, R], [T, R], [T, R]> {
   let indices: [number, number] = [0, 0];
-  while (true) {
+  for (;;) {
     if (indices[0] === primary.length) {
       indices = [0, indices[1]];
     }

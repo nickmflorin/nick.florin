@@ -1,29 +1,29 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandProject } from "~/database/model";
+import { type BrandProject } from '~/database/model';
 
-import { classNames } from "~/components/types";
+import { classNames } from '~/components/types';
 
-import { Link, type LinkProps } from "./generic";
+import { Link, type LinkProps } from './generic';
 
-export type ProjectLinkProps = Omit<LinkProps<"link">, "children" | "href"> & {
+export type ProjectLinkProps = {
   readonly project: BrandProject;
-  readonly useAbbreviatedName?: boolean;
-};
+  readonly shouldUseAbbreviatedName?: boolean;
+} & Omit<LinkProps<'link'>, 'children' | 'href'>;
 
 export const ProjectLink = ({
   project,
-  useAbbreviatedName = false,
+  shouldUseAbbreviatedName = false,
   ...props
 }: ProjectLinkProps): JSX.Element => (
   <Link
-    fontWeight="medium"
-    fontSize="sm"
+    fontSize='sm'
+    fontWeight='medium'
     {...props}
-    element="a"
-    className={classNames("text-blue-900", props.className)}
+    className={classNames('text-blue-900', props.className)}
+    element='a'
     href={`/projects/${project.slug}`}
   >
-    {useAbbreviatedName ? (project.shortName ?? project.name) : project.name}
+    {shouldUseAbbreviatedName ? (project.shortName ?? project.name) : project.name}
   </Link>
 );

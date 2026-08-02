@@ -1,117 +1,129 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { type ReactNode } from "react";
+import { type Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { type ReactNode } from 'react';
 
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
-import { environment } from "~/environment";
+import { environment } from '~/environment';
 
-import { AppConfig } from "~/components/config/AppConfig";
-import { SidebarItemAccessTypes } from "~/components/layout";
-import { Layout } from "~/components/layout/Layout";
+import { AppConfig } from '~/components/config/AppConfig';
+import { Layout } from '~/components/layout/Layout';
+
+/**
+ * The value applied to the font-awesome script's `data-auto-replace-svg` attribute.
+ *
+ * Using "nest" instead of "replace" avoids errors related to `NotFoundError: Failed to execute
+ * 'removeChild' on 'Node': The node to be removed is not a child of this node`.
+ */
+const FontAwesomeAutoReplaceSvgStrategy = 'nest';
+
+/**
+ * Loads the FontAwesome kit script in the document head.
+ *
+ * Renders a plain `<script>` rather than `next/script`. The latter is a client component that
+ * reads `HeadManagerContext`, which is unavailable while a route is being statically prerendered
+ * under Next 16, and fails the build with "Cannot read properties of null (reading
+ * 'useContext')". React 19 hoists a plain async script into the head on its own.
+ */
+const FontAwesomeScript = () => (
+  <script
+    async
+    data-auto-replace-svg={FontAwesomeAutoReplaceSvgStrategy}
+    src={`https://kit.fontawesome.com/${environment.get('FONT_AWESOME_KIT_TOKEN')}.js`}
+    type='text/javascript'
+  />
+);
 
 const InterFont = Inter({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal"],
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-inter",
+  display: 'swap',
+  style: ['normal'],
+  subsets: ['latin'],
+  variable: '--font-inter',
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
-  title: environment.get("APP_NAME_FORMAL"),
-  description: "Personal portfolio, resume & website for Nick Florin.",
+  description: 'Personal portfolio, resume & website for Nick Florin.',
+  title: environment.get('APP_NAME_FORMAL'),
 };
 
 interface RootLayoutProps {
   readonly children: ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
-  return (
-    <html lang="en">
-      <head>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="48x48" />
-        {/* A plain <script> rather than next/script.  The latter is a client component that reads
-            HeadManagerContext, which is unavailable while a route is being statically prerendered
-            under Next 16, and fails the build with "Cannot read properties of null (reading
-            'useContext')".  React 19 hoists a plain async script into the head on its own. */}
-        <script
-          type="text/javascript"
-          src={`https://kit.fontawesome.com/${environment.get("FONT_AWESOME_KIT_TOKEN")}.js`}
-          /* Using "nest" instead of "replace" avoids errors related to
-             NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is
-             not a child of this node */
-          data-auto-replace-svg="nest"
-          async
-        />
-      </head>
-      <body className={InterFont.className}>
-        <AppConfig>
-          <Layout
-            nav={[
-              {
-                label: "Dashboard",
-                icon: { name: "grid" },
-                path: "/dashboard",
-                activePaths: [{ leadingPath: "/dashboard" }],
-              },
-              {
-                label: "Resume",
-                icon: { name: "list-check" },
-                path: "/resume",
-                activePaths: [
-                  { leadingPath: "/resume/experience" },
-                  { leadingPath: "/resume/education" },
-                ],
-                children: [
-                  {
-                    label: "Experience",
-                    icon: { name: "briefcase" },
-                    path: "/resume/experience",
-                    activePaths: [{ leadingPath: "/resume/experience" }],
-                  },
-                  {
-                    label: "Education",
-                    icon: { name: "building-columns" },
-                    path: "/resume/education",
-                    activePaths: [{ leadingPath: "/resume/education" }],
-                  },
-                ],
-              },
-              {
-                label: "Projects",
-                icon: { name: "hammer" },
-                path: "/projects",
-                activePaths: [{ leadingPath: "/projects", endPath: false }],
-              },
-              {
-                label: "Blog",
-                icon: { name: "medium", iconStyle: "brands" },
-                href: "https://medium.com/@nickmflorin",
-              },
-              {
-                label: "Admin CMS",
-                icon: { name: "gear" },
-                path: "/admin/skills",
-                activePaths: [
-                  { leadingPath: "/admin/skills" },
-                  { leadingPath: "/admin/experiences" },
-                  { leadingPath: "/admin/educations" },
-                  { leadingPath: "/admin/courses" },
-                  { leadingPath: "/admin/projects" },
-                  { leadingPath: "/admin/repositories" },
-                ],
-              },
-            ]}
-          >
-            {children}
-          </Layout>
-          <Analytics />
-          <SpeedInsights />
-        </AppConfig>
-      </body>
-    </html>
-  );
-}
+const RootLayout = ({ children }: RootLayoutProps) => (
+  <html lang='en'>
+    <head>
+      <link href='/favicon.ico' rel='icon' sizes='48x48' type='image/x-icon' />
+      <FontAwesomeScript />
+    </head>
+    <body className={InterFont.className}>
+      <AppConfig>
+        <Layout
+          nav={[
+            {
+              activePaths: [{ leadingPath: '/dashboard' }],
+              icon: { name: 'grid' },
+              label: 'Dashboard',
+              path: '/dashboard',
+            },
+            {
+              activePaths: [
+                { leadingPath: '/resume/experience' },
+                { leadingPath: '/resume/education' },
+              ],
+              children: [
+                {
+                  activePaths: [{ leadingPath: '/resume/experience' }],
+                  icon: { name: 'briefcase' },
+                  label: 'Experience',
+                  path: '/resume/experience',
+                },
+                {
+                  activePaths: [{ leadingPath: '/resume/education' }],
+                  icon: { name: 'building-columns' },
+                  label: 'Education',
+                  path: '/resume/education',
+                },
+              ],
+              icon: { name: 'list-check' },
+              label: 'Resume',
+              path: '/resume',
+            },
+            {
+              activePaths: [{ endPath: false, leadingPath: '/projects' }],
+              icon: { name: 'hammer' },
+              label: 'Projects',
+              path: '/projects',
+            },
+            {
+              href: 'https://medium.com/@nickmflorin',
+              icon: { iconStyle: 'brands', name: 'medium' },
+              label: 'Blog',
+            },
+            {
+              activePaths: [
+                { leadingPath: '/admin/skills' },
+                { leadingPath: '/admin/experiences' },
+                { leadingPath: '/admin/educations' },
+                { leadingPath: '/admin/courses' },
+                { leadingPath: '/admin/projects' },
+                { leadingPath: '/admin/repositories' },
+              ],
+              icon: { name: 'gear' },
+              label: 'Admin CMS',
+              path: '/admin/skills',
+            },
+          ]}
+        >
+          {children}
+        </Layout>
+        <Analytics />
+        <SpeedInsights />
+      </AppConfig>
+    </body>
+  </html>
+);
+
+export default RootLayout;

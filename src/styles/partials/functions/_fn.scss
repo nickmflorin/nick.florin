@@ -1,7 +1,7 @@
-@use "sass:list";
-@use "sass:map";
-@use "sass:meta";
-@use "throw";
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use 'throw';
 
 // SASS value types that are not maps, lists, functions or non-primitive data types.
 $sass-primitives: (number, string, color, calculation, bool, null);
@@ -12,28 +12,29 @@ $sass-primitives: (number, string, color, calculation, bool, null);
   @if meta.type-of($list) != list and meta.type-of($list) != arglist {
     @return throw.error(
       "The provided value '#{meta.inspect($list)}' must be of type 'list', but is '#{type-of($list)}'.",
-      $source: "in-list()",
+      $source: 'in-list()',
       $list: $list
     );
   }
   @return (null != list.index($list, $value));
 }
 
-/// Finds the first key in the provided set of keys that does not exist in the map at the level or tier of the map it is
-/// associated with.
+/// Finds the first key in the provided set of keys that does not exist in the map at the level or
+/// tier of the map it is associated with.
 ///
 /// SASS's map.get supports both single key access (map.get("key1")) and nested key access
-/// (map.get($map, "key1", "key2")), but it is not strict.  In other words, it will return null values in the case that
-/// a given key does not exist.  Usually, in the context of this application, this is bug prone - and this method helps
-/// us determine which key is missing when a provided key does not exist.
+/// (map.get($map, "key1", "key2")), but it is not strict.  In other words, it will return null
+/// values in the case that a given key does not exist.  Usually, in the context of this
+/// application, this is bug prone - and this method helps us determine which key is missing when a
+/// provided key does not exist.
 @function missing-map-key($map, $keys...) {
   $running: $map;
 
-  // The strict parameter can be used to throw the error directly in the function, as opposed to returning the key that
-  // is missing and the level it is missing at.
+  // The strict parameter can be used to throw the error directly in the function, as opposed to
+  // returning the key that is missing and the level it is missing at.
   $strict: if(
-    map.has-key(meta.keywords($keys), "strict"),
-    map.get(meta.keywords($keys), "strict"),
+    map.has-key(meta.keywords($keys), 'strict'),
+    map.get(meta.keywords($keys), 'strict'),
     false
   );
 
@@ -45,21 +46,21 @@ $sass-primitives: (number, string, color, calculation, bool, null);
       @if $strict {
         // Here - the additional debugging information is widely helpful.
         $message: "The provided map, '#{meta.inspect($map)}', does not have key #{$k} " +
-          "(type = #{meta.inspect(meta.type-of($k))}) at level #{$level}";
+          '(type = #{meta.inspect(meta.type-of($k))}) at level #{$level}';
         @if list.length($previous) != 0 {
-          // Including the running map is only applicable if there were previous keys, because if there are no previous
-          // keys the running map is the same as the original map.
+          // Including the running map is only applicable if there were previous keys, because if
+          // there are no previous keys the running map is the same as the original map.
           $message: $message +
-            ", (previous keys were #{meta.inspect($previous)}) (map at level is #{meta.inspect($running)})";
+            ', (previous keys were #{meta.inspect($previous)}) (map at level is #{meta.inspect($running)})';
         }
-        @return throw.error($message, $source: "missing-map-key()");
+        @return throw.error($message, $source: 'missing-map-key()');
       }
-      // We are only concerned with identifying the first key that is missing because further keys will always be
-      // missing if a previous one is.
+      // We are only concerned with identifying the first key that is missing because further keys
+      // will always be missing if a previous one is.
       @if list.length($previous) != 0 {
-        @return ("level": $level, "key": $k, "previous": $previous);
+        @return ('level': $level, 'key': $k, 'previous': $previous);
       }
-      @return ("level": $level, "key": $k);
+      @return ('level': $level, 'key': $k);
     }
     $previous: list.append($previous, $k, comma);
     $running: map.get($running, $k);
@@ -67,12 +68,14 @@ $sass-primitives: (number, string, color, calculation, bool, null);
   @return null;
 }
 
-/// A safer form of SASS's map.get() function that raises errors when keys do not exist, instead of returning null.
+/// A safer form of SASS's map.get() function that raises errors when keys do not exist, instead of
+/// returning null.
 ///
 /// SASS's map.get supports both single key access (map.get("key1")) and nested key access
-/// (map.get($map, "key1", "key2")), but it is not strict.  In other words, it will return null values in the case that
-/// a given key does not exist.  Usually, in the context of this application, this is bug prone - and we should use this
-/// method when we need to be sure that the key exists.
+/// (map.get($map, "key1", "key2")), but it is not strict.  In other words, it will return null
+/// values in the case that a given key does not exist.  Usually, in the context of this
+/// application, this is bug prone - and we should use this method when we need to be sure that the
+/// key exists.
 @function mapget($map, $keys...) {
   $map: validate-type($map, map);
   $_: missing-map-key($map, $keys..., $strict: true);
@@ -83,8 +86,8 @@ $sass-primitives: (number, string, color, calculation, bool, null);
 @function validate-type($value, $types, $throw: true) {
   @if list.length($types) == 0 {
     @return throw.error(
-      "At least one type must be provided for comparison.",
-      $source: "validate-type()"
+      'At least one type must be provided for comparison.',
+      $source: 'validate-type()'
     );
   } @else if list.length($types) != 1 {
     @each $tp in $types {
@@ -95,7 +98,7 @@ $sass-primitives: (number, string, color, calculation, bool, null);
     }
     @return throw.error(
       "The provided value '#{meta.inspect($value)}' is not a type of any of '#{meta.inspect($types)}'.",
-      $source: "validate-type()",
+      $source: 'validate-type()',
       $value: $value
     );
   }
@@ -103,7 +106,7 @@ $sass-primitives: (number, string, color, calculation, bool, null);
   @if type-of($value) == $value {
     @return throw.error(
       "The provided value '#{meta.inspect($value)}' cannot be a type.",
-      $source: "validate-type()",
+      $source: 'validate-type()',
       $value: $value
     );
   } @else if type-of($value) == $type {
@@ -113,17 +116,17 @@ $sass-primitives: (number, string, color, calculation, bool, null);
   }
   @return throw.error(
     "The provided value '#{meta.inspect($value)}' is not of type #{meta.inspect($type)}.",
-    $source: "validate-type()",
+    $source: 'validate-type()',
     $value: $value
   );
 }
 
-$invalid: "__INVALID__";
+$invalid: '__INVALID__';
 
-/// Validates the provided value based on whether or not they exist in a provided list or map, where the existence in
-/// the map case is based on the keys of that map.  The name, which represents what the value is, can be provided for
-/// additional context in the thrown error.
-@function validate-value($value, $values, $reference: "value", $strict: true) {
+/// Validates the provided value based on whether or not they exist in a provided list or map, where
+/// the existence in the map case is based on the keys of that map.  The name, which represents what
+/// the value is, can be provided for additional context in the thrown error.
+@function validate-value($value, $values, $reference: 'value', $strict: true) {
   $valid: false;
   @if type-of($values) == map {
     $valid: in-list($value, map.keys($values));
@@ -132,7 +135,7 @@ $invalid: "__INVALID__";
   } @else {
     @return throw.error(
       "The provided values are of type '#{type-of($values)}' when they must be a map or list.",
-      $source: "validate-value()",
+      $source: 'validate-value()',
       $values: $values
     );
   }
@@ -146,7 +149,7 @@ $invalid: "__INVALID__";
   @if $strict {
     @return throw.error(
       "The provided #{$reference} '#{$value}' is invalid, must be one of #{$valids}.",
-      $source: "validate-value()",
+      $source: 'validate-value()',
       $value: $value,
       $reference: $reference
     );
@@ -154,7 +157,7 @@ $invalid: "__INVALID__";
   @return $invalid;
 }
 
-@function validate-values($values, $correct-values, $reference: "value") {
+@function validate-values($values, $correct-values, $reference: 'value') {
   $values: validate-type($values, list);
 
   $invalids: ();
@@ -171,7 +174,7 @@ $invalid: "__INVALID__";
     }
     @return throw.error(
       "The provided values '#{$invalids}' for #{$reference} are invalid, must be one of #{$valids}.",
-      $source: "validate-value()",
+      $source: 'validate-value()',
       $values: $values,
       $reference: $reference
     );
@@ -187,29 +190,30 @@ $invalid: "__INVALID__";
   @if not is-sass-primitive($v) {
     $invalid: meta.type-of($v);
     @return throw.error(
-      "The value #{meta.inspect($v)} is not a SASS primitive, but has type #{$invalid}.",
-      $source: "ensure-sass-primitive()",
+      'The value #{meta.inspect($v)} is not a SASS primitive, but has type #{$invalid}.',
+      $source: 'ensure-sass-primitive()',
       $value: $v
     );
   }
   @return $v;
 }
 
-/// Optionally picks or ignores properties from a map based on optionally provided named parameters "pick" or "ignore".
+/// Optionally picks or ignores properties from a map based on optionally provided named parameters
+/// "pick" or "ignore".
 @function pick-or-ignore($data, $args...) {
-  $ignore: map.get(meta.keywords($args), "ignore");
-  $pick: map.get(meta.keywords($args), "pick");
+  $ignore: map.get(meta.keywords($args), 'ignore');
+  $pick: map.get(meta.keywords($args), 'pick');
   $strict: if(
-    map.has-key(meta.keywords($args), "strict"),
-    map.get(meta.keywords($args), "strict"),
+    map.has-key(meta.keywords($args), 'strict'),
+    map.get(meta.keywords($args), 'strict'),
     true
   );
   @if $ignore and $pick {
     @return throw.error(
       "The 'ignore' named argument cannot be provided alongside the 'pick' argument.  If selecting " +
         "just a subset of parameters, provide the 'pick' argument without the 'ignore' named " +
-        "argument.",
-      $source: "pick-or-ignore()",
+        'argument.',
+      $source: 'pick-or-ignore()',
       $pick: $pick,
       $ignore: $ignore,
       $data: $data
@@ -220,9 +224,9 @@ $invalid: "__INVALID__";
       @if not map.has-key($data, $ignore-property) {
         @if $strict {
           @return throw.error(
-            "The ignore property #{$ignore-property} does not exist in the set of typography " +
-              "properties, #{map.keys($properties)}.",
-            $source: "pick-or-ignore()",
+            'The ignore property #{$ignore-property} does not exist in the set of typography ' +
+              'properties, #{map.keys($properties)}.',
+            $source: 'pick-or-ignore()',
             $ignore: $ignore,
             $data: $data
           );
@@ -237,9 +241,9 @@ $invalid: "__INVALID__";
       @if not map.has-key($data, $pick-property) {
         @if $strict {
           @return throw.error(
-            "The pick property #{$pick-property} does not exist in the set of properties, " +
-              "#{map.keys($data)}.",
-            $source: "pick-or-ignore()",
+            'The pick property #{$pick-property} does not exist in the set of properties, ' +
+              '#{map.keys($data)}.',
+            $source: 'pick-or-ignore()',
             $pick: $pick,
             $data: $data
           );

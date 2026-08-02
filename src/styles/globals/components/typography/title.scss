@@ -1,8 +1,8 @@
-@use "sass:map";
-@use "partials";
+@use 'sass:map';
+@use 'partials';
 
-@use "./base" as *;
-@use "./mixins" as mixins;
+@use './base' as *;
+@use './mixins' as mixins;
 
 @mixin title-base() {
   @include mixins.with-font-transforms();
@@ -10,7 +10,7 @@
   /* The combination of font-size and line-height will be determined primarily by the heading
      tag (e.g. "h1", "h2", etc).  But, if attributed with a 'font-size-<size>' class, the font-size
      and line-height can be overridden. */
-  @include mixins.with-fonts("title");
+  @include mixins.with-fonts('title');
 
   /* The font-weight will be determined primarily by the heading tag (e.g. "h1", "h2", etc).  But,
      if attributed with a 'font-weight-<weight>' class, the font-weight can be overridden. */
@@ -24,8 +24,8 @@ h4,
 h5,
 h6 {
   @include typography-base();
-  @include mixins.default-font-color("title");
-  @include mixins.font-family("title");
+  @include mixins.default-font-color('title');
+  @include mixins.font-family('title');
 
   em,
   b {
@@ -36,31 +36,31 @@ h6 {
 }
 
 h1 {
-  @include mixins.font("title", $size: "xl");
+  @include mixins.font('title', $size: 'xl');
   @include title-base();
 }
 
 h2 {
-  @include mixins.font("title", $size: "lg");
+  @include mixins.font('title', $size: 'lg');
   @include title-base();
 }
 
 h3 {
-  @include mixins.font("title", $size: "md");
+  @include mixins.font('title', $size: 'md');
   @include title-base();
 }
 
 h4 {
-  @include mixins.font("title", $size: "sm");
+  @include mixins.font('title', $size: 'sm');
   @include title-base();
 }
 
 h5 {
-  @include mixins.font("title", $size: "xs");
+  @include mixins.font('title', $size: 'xs');
   @include title-base();
 }
 
 h6 {
-  @include mixins.font("title", $size: "xxs");
+  @include mixins.font('title', $size: 'xxs');
   @include title-base();
 }

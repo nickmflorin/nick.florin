@@ -1,84 +1,80 @@
-import { useRef, useState, useEffect, useCallback, type MutableRefObject, useMemo } from "react";
+import { type MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { clamp } from "lodash-es";
+import { clamp } from 'lodash-es';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-export type NavigationDirection = "up" | "down";
+export type NavigationDirection = 'down' | 'up';
 
 export interface UseKeyboardNavigationOptions<T> {
-  readonly enabled?: boolean;
-  readonly data: T[];
   readonly containerRef?: MutableRefObject<HTMLDivElement | null>;
-  readonly navigatedSelector?: string;
-  readonly scrollOptions?: ScrollIntoViewOptions;
+  readonly data: T[];
+  readonly enabled?: boolean;
   readonly excludeItemFromNavigation?: (datum: T) => boolean;
   readonly getItemAtNavigatedIndex?: (data: T[], index: number) => T | undefined;
-  readonly onExit?: () => void;
+  readonly navigatedSelector?: string;
   readonly onEnter?: (e: KeyboardEvent, index: number, datum: T) => void;
+  readonly onExit?: () => void;
+  readonly scrollOptions?: ScrollIntoViewOptions;
 }
 
 export const useKeyboardNavigation = <T>({
-  enabled = true,
-  data,
   containerRef: propContainerRef,
-  scrollOptions,
-  /* eslint-disable-next-line quotes */
-  navigatedSelector = '[data-attr-navigated="true"]',
+  data,
+  enabled = true,
   excludeItemFromNavigation,
   getItemAtNavigatedIndex: _getItemAtNavigatedIndex,
-  onExit,
+  navigatedSelector = '[data-attr-navigated="true"]',
   onEnter,
+  onExit,
+  scrollOptions,
 }: UseKeyboardNavigationOptions<T>) => {
   const _containerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = propContainerRef ?? _containerRef;
 
   const navigatableData = useMemo(
     () =>
-      excludeItemFromNavigation !== undefined
-        ? data.filter(datum => !excludeItemFromNavigation(datum))
-        : data,
+      excludeItemFromNavigation === undefined
+        ? data
+        : data.filter(datum => !excludeItemFromNavigation(datum)),
     [data, excludeItemFromNavigation],
   );
 
-  const [navigatedIndex, setNavigatedIndex] = useState<number | null>(null);
+  const [rawNavigatedIndex, setRawNavigatedIndex] = useState<null | number>(null);
 
   const scrollIntoView = useCallback(
     (direction: NavigationDirection) => {
       if (containerRef.current) {
-        const navigatedElement = containerRef.current.querySelector(
-          navigatedSelector,
-        ) as HTMLElement | null;
+        const navigatedElement = containerRef.current.querySelector<HTMLElement>(navigatedSelector);
         if (navigatedElement) {
           switch (direction) {
-            case "down": {
+            case 'down': {
               if (
                 navigatedElement.offsetTop + navigatedElement.offsetHeight >=
                 containerRef.current.clientHeight
               ) {
                 return navigatedElement.scrollIntoView({
                   ...scrollOptions,
-                  behavior: scrollOptions?.behavior ?? "smooth",
-                  block: scrollOptions?.block ?? "start",
+                  behavior: scrollOptions?.behavior ?? 'smooth',
+                  block: scrollOptions?.block ?? 'start',
                 });
               }
               return;
             }
-            case "up": {
+            case 'up': {
               if (navigatedElement.offsetTop - navigatedElement.offsetHeight <= 0) {
                 return navigatedElement.scrollIntoView({
                   ...scrollOptions,
-                  behavior: scrollOptions?.behavior ?? "smooth",
-                  block: scrollOptions?.block ?? "start",
+                  behavior: scrollOptions?.behavior ?? 'smooth',
+                  block: scrollOptions?.block ?? 'start',
                 });
               }
-              return;
             }
           }
         }
       } else {
         logger.warn(
-          "Could not scroll the navigated element into view because the container ref is null.",
+          'Could not scroll the navigated element into view because the container ref is null.',
         );
       }
     },
@@ -87,32 +83,33 @@ export const useKeyboardNavigation = <T>({
 
   const numItems = navigatableData.length;
 
-  useEffect(() => {
-    setNavigatedIndex(curr => (curr ? clamp(curr, 0, numItems - 1) : null));
-  }, [numItems]);
+  /* The navigated index is clamped as it is read rather than corrected from an effect, so that it
+     can never point past the end of the data - not even on the render in which the data shrinks. */
+  const navigatedIndex =
+    rawNavigatedIndex === null || numItems === 0 ? null : clamp(rawNavigatedIndex, 0, numItems - 1);
 
   const incrementNavigatedIndex = useCallback(() => {
-    setNavigatedIndex(curr => Math.min(curr !== null ? curr + 1 : 0, numItems - 1));
-    setTimeout(() => scrollIntoView("down"));
-  }, [numItems, scrollIntoView]);
+    setRawNavigatedIndex(Math.min(navigatedIndex === null ? 0 : navigatedIndex + 1, numItems - 1));
+    setTimeout(() => scrollIntoView('down'));
+  }, [numItems, navigatedIndex, scrollIntoView]);
 
   const decrementNavigatedIndex = useCallback(() => {
-    setNavigatedIndex(curr => Math.max(curr !== null ? curr - 1 : 0, 0));
-    setTimeout(() => scrollIntoView("up"));
-  }, [scrollIntoView]);
+    setRawNavigatedIndex(Math.max(navigatedIndex === null ? 0 : navigatedIndex - 1, 0));
+    setTimeout(() => scrollIntoView('up'));
+  }, [navigatedIndex, scrollIntoView]);
 
   useEffect(() => {
     const getItemAtNavigatedIndex = _getItemAtNavigatedIndex ?? ((d, index) => d[index]);
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowUp") {
+      if (e.key === 'ArrowUp') {
         e.preventDefault();
         e.stopPropagation();
         decrementNavigatedIndex();
-      } else if (e.key === "ArrowDown") {
+      } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         e.stopPropagation();
         incrementNavigatedIndex();
-      } else if (e.key === "Enter") {
+      } else if (e.key === 'Enter') {
         if (navigatedIndex !== null && onEnter !== undefined) {
           const datum = getItemAtNavigatedIndex(navigatableData, navigatedIndex);
           if (datum !== undefined) {
@@ -126,10 +123,10 @@ export const useKeyboardNavigation = <T>({
       }
     };
     if (enabled) {
-      window.addEventListener("keydown", onKeyDown);
+      window.addEventListener('keydown', onKeyDown);
     }
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [
     enabled,
@@ -142,5 +139,5 @@ export const useKeyboardNavigation = <T>({
     onExit,
   ]);
 
-  return { containerRef, navigatedIndex, incrementNavigatedIndex, decrementNavigatedIndex };
+  return { containerRef, decrementNavigatedIndex, incrementNavigatedIndex, navigatedIndex };
 };

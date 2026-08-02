@@ -1,74 +1,74 @@
-@use "sass:list";
-@use "partials";
+@use 'sass:list';
+@use 'partials';
 
 $button-outline-width: 1px;
 $button-outline-offset: -$button-outline-width;
 
-$button-state-names: ("hovered", "focused", "disabled", "active");
+$button-state-names: ('hovered', 'focused', 'disabled', 'active');
 
-$button-default-font-family: theme("fontFamily.body");
-$button-default-border-radius: theme("borderRadius.sm");
-$button-default-font-weight: theme("fontWeight.medium");
+$button-default-font-family: theme('fontFamily.body');
+$button-default-border-radius: theme('borderRadius.sm');
+$button-default-font-weight: theme('fontWeight.medium');
 
-$button-schemes: ("primary", "light", "danger", "success", "secondary");
-$button-variants: ("solid", "outlined", "transparent");
+$button-schemes: ('primary', 'light', 'danger', 'success', 'secondary');
+$button-variants: ('solid', 'outlined', 'transparent');
 
-$button-default-scheme: "primary";
+$button-default-scheme: 'primary';
 
 $button-default-variants: (
-  "icon-button": "transparent",
-  "button": "solid",
+  'icon-button': 'transparent',
+  'button': 'solid',
 );
 
 $button-padding: (
-  "xsmall": 6px 14px,
-  "small": 8px 16px,
-  "medium": 10px 20px,
-  "large": 10px 26px,
-  "xlarge": 12px 30px,
+  'xsmall': 6px 14px,
+  'small': 8px 16px,
+  'medium': 10px 20px,
+  'large': 10px 26px,
+  'xlarge': 12px 30px,
 );
 
 // Note: These size variations are standardized between smaller elements, such as Inputs & Buttons.
 $button-sizes: (
-  "xsmall": 28px,
-  "small": 32px,
-  "medium": 36px,
-  "large": 40px,
-  "xlarge": 44px,
+  'xsmall': 28px,
+  'small': 32px,
+  'medium': 36px,
+  'large': 40px,
+  'xlarge': 44px,
 );
 
-$button-default-size: "small";
-$link-default-font-size: "sm";
+$button-default-size: 'small';
+$link-default-font-size: 'sm';
 
 $button-icon-sizes: (
-  "button": (
-    "xsmall": partials.mapget($button-sizes, "xsmall") - 2 *
-      list.nth(partials.mapget($button-padding, "xsmall"), 1),
-    "small": partials.mapget($button-sizes, "small") - 2 *
-      list.nth(partials.mapget($button-padding, "small"), 1),
-    "medium": partials.mapget($button-sizes, "medium") - 2 *
-      list.nth(partials.mapget($button-padding, "medium"), 1),
-    "large": partials.mapget($button-sizes, "large") - 2 *
-      list.nth(partials.mapget($button-padding, "large"), 1),
-    "xlarge": partials.mapget($button-sizes, "xlarge") - 2 *
-      list.nth(partials.mapget($button-padding, "xlarge"), 1),
-    "full": 100%,
+  'button': (
+    'xsmall': partials.mapget($button-sizes, 'xsmall') - 2 *
+      list.nth(partials.mapget($button-padding, 'xsmall'), 1),
+    'small': partials.mapget($button-sizes, 'small') - 2 *
+      list.nth(partials.mapget($button-padding, 'small'), 1),
+    'medium': partials.mapget($button-sizes, 'medium') - 2 *
+      list.nth(partials.mapget($button-padding, 'medium'), 1),
+    'large': partials.mapget($button-sizes, 'large') - 2 *
+      list.nth(partials.mapget($button-padding, 'large'), 1),
+    'xlarge': partials.mapget($button-sizes, 'xlarge') - 2 *
+      list.nth(partials.mapget($button-padding, 'xlarge'), 1),
+    'full': 100%,
   ),
-  "link": (
-    "xsmall": 13px,
-    "small": 14px,
-    "medium": 16px,
-    "large": 18px,
-    "xlarge": 20px,
-    "full": 100%,
+  'link': (
+    'xsmall': 13px,
+    'small': 14px,
+    'medium': 16px,
+    'large': 18px,
+    'xlarge': 20px,
+    'full': 100%,
   ),
-  "icon-button": (
-    "xsmall": 14px,
-    "small": 16px,
-    "medium": 18px,
-    "large": 18px,
-    "xlarge": 20px,
-    "full": 100%,
+  'icon-button': (
+    'xsmall': 14px,
+    'small': 16px,
+    'medium': 18px,
+    'large': 18px,
+    'xlarge': 20px,
+    'full': 100%,
   ),
 );
 
@@ -76,7 +76,7 @@ $button-icon-sizes: (
    contain.  As such, the size of an icon in a link cannot be determined by the "size" of the link,
    since there is no "size" prop.  Instead, we use a default size for the icon in a link, and then
    size the icon based on a separate prop, "iconSize". */
-$link-default-icon-size: "small";
+$link-default-icon-size: 'small';
 
 /* These are sizes that are applied to just the <Button /> component, as defaults, depending on the
   'size' prop provided to the <Button />.  If the 'fontSize' prop is provided to the <Button />,
@@ -85,15 +85,15 @@ $link-default-icon-size: "small";
   Note that this is not applicable for the <Link />, <InlineLink /> or <IconButton /> components.
   */
 $button-font-sizes: (
-  "xsmall": 12px,
-  "small": 13px,
-  "medium": 14px,
-  "large": 16px,
-  "xlarge": 18px,
+  'xsmall': 12px,
+  'small': 13px,
+  'medium': 14px,
+  'large': 16px,
+  'xlarge': 18px,
 );
 
 $button-font-weights: (
-  "button": theme("fontWeight.medium"),
-  "link": theme("fontWeight.medium"),
-  "inline-link": theme("fontWeight.medium"),
+  'button': theme('fontWeight.medium'),
+  'link': theme('fontWeight.medium'),
+  'inline-link': theme('fontWeight.medium'),
 );

@@ -1,5 +1,5 @@
-import { type SkillsFilters } from "~/actions";
-import { fetchSkillsCount } from "~/actions/skills/fetch-skills";
+import { type SkillsFilters } from '~/actions';
+import { fetchSkillsCount } from '~/actions/skills/fetch-skills';
 
 export interface SkillsTitleProps {
   readonly filters: SkillsFilters;
@@ -8,6 +8,6 @@ export interface SkillsTitleProps {
 export const SkillsTitle = async ({ filters }: SkillsTitleProps) => {
   const {
     data: { count },
-  } = await fetchSkillsCount({ visibility: "admin", filters }, { strict: true });
+  } = await fetchSkillsCount({ filters, visibility: 'admin' }, { strict: true });
   return <>{count}</>;
 };

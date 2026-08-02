@@ -1,30 +1,33 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface MultiValueRendererContainerProps extends ComponentProps {
   readonly children: ReactNode;
-  readonly dynamicHeight?: boolean;
+  /**
+   * Whether the container may grow in height to wrap its children onto additional rows.
+   *
+   * When false, the Select input shows only one row of badges or text, and content that would
+   * exceed the width of the Select truncates with ellipsis overflow instead of causing the Select
+   * to expand in height.
+   *
+   * @default true
+   */
+  readonly hasDynamicHeight?: boolean;
 }
 
-/* If the 'dynamicHeight' prop is set to false, it means that the Select input should only show
-   one "row" of badges, or text, and badges that cause the inner content to exceed the width of
-   the Select should not cause the Select to expand in height, but rather, the badges to truncate
-   with ellipsis overflow.  This means that the 'flex-wrap' should only be set if the
-   'dynamicHeight' prop is true. */
 export const MultiValueRendererContainer = ({
-  dynamicHeight = true,
   children,
+  hasDynamicHeight = true,
   ...props
 }: MultiValueRendererContainerProps) => (
   <div
     {...props}
     className={classNames(
-      "flex gap-x-[4px] overflow-hidden",
+      'flex gap-x-[4px] overflow-hidden',
       {
-        "flex-wrap gap-y-[4px]": dynamicHeight,
-        "flex-row": !dynamicHeight,
+        'flex-row': !hasDynamicHeight,
+        'flex-wrap gap-y-[4px]': hasDynamicHeight,
       },
       props.className,
     )}

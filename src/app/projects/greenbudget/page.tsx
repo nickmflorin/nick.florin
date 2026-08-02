@@ -1,16 +1,16 @@
-import { db } from "~/database/prisma";
+import { db } from '~/database/prisma';
 
-import { convertToPlainObject } from "~/api/serialization";
+import { convertToPlainObject } from '~/api/serialization';
 
-import { GreenBudget } from "~/features/projects/components/pages/GreenBudget";
+import { GreenBudget } from '~/features/projects/components/pages/GreenBudget';
 
-import { RedirectIfNotVisible } from "../RedirectIfNotVisible";
+import { RedirectIfNotVisible } from '../RedirectIfNotVisible';
 
-export default async function GreenBudgetPage() {
+const GreenBudgetPage = async () => {
   const project = convertToPlainObject(
     await db.project.findUniqueOrThrow({
-      where: { slug: "greenbudget" },
       include: { repositories: true, skills: true },
+      where: { slug: 'greenbudget' },
     }),
   );
   return (
@@ -18,4 +18,6 @@ export default async function GreenBudgetPage() {
       <GreenBudget project={project} />
     </RedirectIfNotVisible>
   );
-}
+};
+
+export default GreenBudgetPage;

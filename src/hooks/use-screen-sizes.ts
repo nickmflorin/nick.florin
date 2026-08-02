@@ -1,32 +1,32 @@
-import { useState, useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from 'react';
 
 import {
   type Breakpoint,
   Breakpoints,
-  getLowerRangeContainerBreakpoint,
-  getBreakpointFromWindow,
-  type ScreenSize,
-  inferQuantitativeSizeValue,
   type ContainerBreakpoint,
   ContainerBreakpoints,
   type ContainerSize,
-} from "~/components/types";
+  getBreakpointFromWindow,
+  getLowerRangeContainerBreakpoint,
+  inferQuantitativeSizeValue,
+  type ScreenSize,
+} from '~/components/types';
 
-import { useWindowResize } from "./use-window-resize";
+import { useWindowResize } from './use-window-resize';
 
-type Comparison = "lessThan" | "lessThanOrEqualTo" | "greaterThanOrEqualTo" | "greaterThan";
+type Comparison = 'greaterThan' | 'greaterThanOrEqualTo' | 'lessThan' | 'lessThanOrEqualTo';
 
-const Comparators: { [key in Comparison]: (actual: number, compare: number) => boolean } = {
+const Comparators: Record<Comparison, (actual: number, compare: number) => boolean> = {
+  greaterThan: (actual, compare) => actual > compare,
+  greaterThanOrEqualTo: (actual, compare) => actual >= compare,
   lessThan: (actual, compare) => actual < compare,
   lessThanOrEqualTo: (actual, compare) => actual <= compare,
-  greaterThanOrEqualTo: (actual, compare) => actual >= compare,
-  greaterThan: (actual, compare) => actual > compare,
 };
 
 export const useScreenSizes = () => {
   const [size, setSize] = useState<number>(window.innerWidth);
 
-  const [breakpoint, setBreakpoint] = useState<Breakpoint | "0">(() =>
+  const [breakpoint, setBreakpoint] = useState<'0' | Breakpoint>(() =>
     getBreakpointFromWindow(window),
   );
 
@@ -46,7 +46,7 @@ export const useScreenSizes = () => {
           );
         }
         /* Here, the breakpoint is "smallest" - and the screen size is smaller than the smallest
-             breakpoint. */
+           breakpoint. */
         return true;
       }
       return Comparators[comparison](size, inferQuantitativeSizeValue(sz));
@@ -55,36 +55,37 @@ export const useScreenSizes = () => {
   );
 
   const isLessThanOrEqualTo = useCallback(
-    (sz: ScreenSize) => compare(sz, "lessThanOrEqualTo"),
+    (sz: ScreenSize) => compare(sz, 'lessThanOrEqualTo'),
     [compare],
   );
 
   const isGreaterThanOrEqualTo = useCallback(
-    (sz: ScreenSize) => compare(sz, "greaterThanOrEqualTo"),
+    (sz: ScreenSize) => compare(sz, 'greaterThanOrEqualTo'),
     [compare],
   );
 
-  const isLessThan = useCallback((sz: ScreenSize) => compare(sz, "lessThan"), [compare]);
+  const isLessThan = useCallback((sz: ScreenSize) => compare(sz, 'lessThan'), [compare]);
 
-  const isGreaterThan = useCallback((sz: ScreenSize) => compare(sz, "greaterThan"), [compare]);
+  const isGreaterThan = useCallback((sz: ScreenSize) => compare(sz, 'greaterThan'), [compare]);
 
   return {
     breakpoint,
-    size,
-    isLessThanOrEqualTo,
-    isLessThan,
     isGreaterThan,
     isGreaterThanOrEqualTo,
+    isLessThan,
+    isLessThanOrEqualTo,
+    size,
   };
 };
 
 export const useContainerSizes = <T extends HTMLElement>() => {
-  const ref = useRef<T | null>(null);
+  const ref = useRef<null | T>(null);
 
-  const [size, setSize] = useState<number | null>(null);
-  const [breakpoint, setBreakpoint] = useState<ContainerBreakpoint | "0" | null>(() =>
-    ref.current ? getLowerRangeContainerBreakpoint(ref.current.clientWidth) : "0",
-  );
+  const [size, setSize] = useState<null | number>(null);
+  /* The container cannot be measured before the ref is attached to it, which does not happen until
+     after the initial render, so the breakpoint starts at the smallest one and is corrected by the
+     first resize measurement. */
+  const [breakpoint, setBreakpoint] = useState<'0' | ContainerBreakpoint | null>('0');
 
   useWindowResize(() => {
     if (ref.current) {
@@ -116,26 +117,26 @@ export const useContainerSizes = <T extends HTMLElement>() => {
   );
 
   const isLessThanOrEqualTo = useCallback(
-    (sz: ContainerSize) => compare(sz, "lessThanOrEqualTo"),
+    (sz: ContainerSize) => compare(sz, 'lessThanOrEqualTo'),
     [compare],
   );
 
   const isGreaterThanOrEqualTo = useCallback(
-    (sz: ContainerSize) => compare(sz, "greaterThanOrEqualTo"),
+    (sz: ContainerSize) => compare(sz, 'greaterThanOrEqualTo'),
     [compare],
   );
 
-  const isLessThan = useCallback((sz: ContainerSize) => compare(sz, "lessThan"), [compare]);
+  const isLessThan = useCallback((sz: ContainerSize) => compare(sz, 'lessThan'), [compare]);
 
-  const isGreaterThan = useCallback((sz: ContainerSize) => compare(sz, "greaterThan"), [compare]);
+  const isGreaterThan = useCallback((sz: ContainerSize) => compare(sz, 'greaterThan'), [compare]);
 
   return {
-    ref,
     breakpoint,
-    size,
-    isLessThanOrEqualTo,
-    isLessThan,
     isGreaterThan,
     isGreaterThanOrEqualTo,
+    isLessThan,
+    isLessThanOrEqualTo,
+    ref,
+    size,
   };
 };

@@ -1,10 +1,10 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type ModelTimePeriod, stringifyTimePeriod } from "~/database/model";
+import { type ModelTimePeriod, stringifyTimePeriod } from '~/database/model';
 
-import { Tag, type TagProps } from "./Tag";
+import { Tag, type TagProps } from './Tag';
 
-export interface TimePeriodTagProps extends Omit<TagProps, "children" | "icon"> {
+export interface TimePeriodTagProps extends Omit<TagProps, 'children' | 'icon'> {
   readonly timePeriod: ModelTimePeriod;
 }
 

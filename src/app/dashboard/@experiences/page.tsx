@@ -1,13 +1,13 @@
-import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
+import { fetchExperiences } from '~/actions/experiences/fetch-experiences';
 
-import { ResumeModelCondensedTile } from "~/features/resume/components/tiles/ResumeModelCondensedTile";
+import { ResumeModelCondensedTile } from '~/features/resume/components/tiles/ResumeModelCondensedTile';
 
-export default async function ExperiencesPage() {
+const ExperiencesPage = async () => {
   const fetcher = fetchExperiences([]);
   const { data: experiences } = await fetcher(
     {
-      visibility: "public",
       filters: { highlighted: true },
+      visibility: 'public',
     },
     { strict: true },
   );
@@ -15,13 +15,15 @@ export default async function ExperiencesPage() {
     <>
       {experiences.map((experience, index) => (
         <ResumeModelCondensedTile
-          model={experience}
+          areTagsVisible={false}
+          isDescriptionShowMoreLinkVisible
+          isTitleExpandable
           key={index}
-          titleIsExpandable
-          showTags={false}
-          includeDescriptionShowMoreLink
+          model={experience}
         />
       ))}
     </>
   );
-}
+};
+
+export default ExperiencesPage;

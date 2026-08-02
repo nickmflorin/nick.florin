@@ -1,43 +1,45 @@
-import { forwardRef, type JSX } from "react";
+import { type JSX } from 'react';
 
 import {
-  TitleFontSizeOrderMap,
   DiscreteFontSizes,
+  type FontSize,
+  TitleFontSizeOrderMap,
   type TypographyComponent,
   type TypographyRef,
-} from "~/components/types";
+} from '~/components/types';
 
-import { Typography, type TypographyProps } from "./Typography";
+import { Typography, type TypographyProps } from './Typography';
 
-export type TitleProps<C extends TypographyComponent<"title">> = Omit<
-  TypographyProps<"title", C>,
-  "variant" | "component"
-> & {
+export type TitleProps<C extends TypographyComponent<'title'>> = {
   readonly component?: C;
+} & Omit<TypographyProps<'title', C>, 'component' | 'variant'>;
+
+/**
+ * Returns the heading element that {@link Title} should render as, defaulting the element based on
+ * the provided font size when an explicit `component` is not provided.
+ */
+const getTitleComponent = <C extends TypographyComponent<'title'>>(
+  component: C | undefined,
+  fontSize: FontSize | undefined,
+): TypographyComponent<'title'> => {
+  if (!component && fontSize && DiscreteFontSizes.contains(fontSize)) {
+    return TitleFontSizeOrderMap[fontSize];
+  }
+  return component ?? 'h3';
 };
 
-export const Title = forwardRef(
-  <C extends TypographyComponent<"title">>(
-    { component, ...props }: TitleProps<C>,
-    ref: TypographyRef<C>,
-  ): JSX.Element => {
-    let c: TypographyComponent<"title"> = component ?? "h3";
-    /* If the font size is provided, but the component is not - default the component based on the
-       corresponding font size. */
-    if (props.fontSize && !component && DiscreteFontSizes.contains(props.fontSize)) {
-      c = TitleFontSizeOrderMap[props.fontSize];
-    }
+export const Title = <C extends TypographyComponent<'title'>>({
+  component,
+  ref,
+  ...props
+}: { readonly ref?: TypographyRef<C> } & TitleProps<C>): JSX.Element => {
+  const c = getTitleComponent(component, props.fontSize);
 
-    const ps = {
-      ...props,
-      component: c,
-      variant: "title",
-    } as TypographyProps<"title", C>;
+  const ps = {
+    ...props,
+    component: c,
+    variant: 'title',
+  } as TypographyProps<'title', C>;
 
-    return <Typography {...ps} ref={ref} />;
-  },
-) as {
-  <C extends TypographyComponent<"title">>(
-    props: TitleProps<C> & { readonly ref?: TypographyRef<C> },
-  ): JSX.Element;
+  return <Typography {...ps} ref={ref} />;
 };

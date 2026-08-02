@@ -1,32 +1,33 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-import { type ApiError } from "~/api";
+import { type ApiError } from '~/api';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { useManagedUploads } from "~/components/uploads/hooks";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { useManagedUploads } from '~/components/uploads/hooks';
 
 import {
   ManagedUploadsContainer,
   type ManagedUploadsContainerProps,
-} from "./ManagedUploadsContainer";
-import { Uploads, type UploadsProps } from "./Uploads";
+} from './ManagedUploadsContainer';
+import { Uploads, type UploadsProps } from './Uploads';
 
 export interface ManagedUploadsProps<M extends types.BaseUploadModel>
-  extends Omit<ManagedUploadsContainerProps<M>, "children" | "manager">,
-    Pick<UploadsProps<M>, "children"> {
+  extends
+    Omit<ManagedUploadsContainerProps<M>, 'children' | 'manager'>,
+    Pick<UploadsProps<M>, 'children'> {
   readonly data: M[];
+  readonly error?: ApiError | null | string;
   readonly isLoading?: boolean;
-  readonly error?: string | ApiError | null;
   readonly uploadAction: types.UploadAction<M>;
 }
 
 export const ManagedUploads = <M extends types.BaseUploadModel>({
-  isLoading = false,
-  error = null,
-  data,
   children,
+  data,
+  error = null,
+  isLoading = false,
   uploadAction,
   ...props
 }: ManagedUploadsProps<M>) => {

@@ -1,23 +1,26 @@
-import { type IconProp } from "~/components/icons";
+import { type IconProp } from '~/components/icons';
 
 export type LeadingPath = `/${string}`;
 
-/* RegExp is not a serializable value so it cannot be passed from Server Components to Client
-   Components.  To alleviate this issue, we incorporate the { leadingPath: string } type, which will
-   prompt a RegExp to be created on the client with the 'leadingPath' string. */
+/**
+ * The form that a single path-active check can take, used internally by {@link PathActive}.
+ *
+ * RegExp is not a serializable value, so it cannot be passed from Server Components to Client
+ * Components. To alleviate this, the `{ leadingPath: string }` shape is included, which prompts a
+ * RegExp to be created on the client from the `leadingPath` string.
+ */
 type _PathActive =
-  | RegExp
-  | boolean
   | ((pathname: string) => boolean)
-  | { leadingPath: LeadingPath; endPath?: boolean };
+  | { endPath?: boolean; leadingPath: LeadingPath }
+  | boolean
+  | RegExp;
 
 export type PathActive = _PathActive | _PathActive[];
 
 export interface NavItem {
-  // TODO: Add support for allowing just an 'IconName' to be provided.
+  readonly activePaths: PathActive;
   readonly icon?: IconProp;
   readonly path: LeadingPath;
-  readonly activePaths: PathActive;
 }
 
 export interface LabeledNavItem extends NavItem {

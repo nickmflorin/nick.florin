@@ -1,117 +1,119 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { type ApiSkill, type ApiEducation } from "~/database/model";
-import type { FilterFieldName } from "~/lib/filters";
+import { type ApiEducation, type ApiSkill } from '~/database/model';
+import { type FilterFieldName } from '~/lib/filters';
 
-import { CoursesFiltersObj } from "~/actions";
+import { CoursesFiltersObj } from '~/actions';
 
-import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
-import { DrawerIds } from "~/components/drawers";
-import { TableView } from "~/components/tables/TableView";
-import { type ComponentProps } from "~/components/types";
-import { EducationSelect } from "~/features/educations/components/input/EducationSelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters, useFilterRef } from "~/hooks";
+import { VisibleFilterButton } from '~/components/buttons/VisibleFilterButton';
+import { DrawerIds } from '~/components/drawers';
+import { TableView } from '~/components/tables/TableView';
+import { type ComponentProps } from '~/components/types';
+import { EducationSelect } from '~/features/educations/components/input/EducationSelect';
+import { SkillsSelect } from '~/features/skills/components/input/SkillsSelect';
+import { useFilterRef, useFilters } from '~/hooks';
 
 export interface CoursesTableFilterBarProps extends ComponentProps {
-  readonly isSearchable?: boolean;
-  readonly skills: ApiSkill<[]>[];
   readonly educations: ApiEducation<[]>[];
   readonly excludeFilters?: FilterFieldName<typeof CoursesFiltersObj>[];
+  readonly isSearchable?: boolean;
+  readonly skills: ApiSkill<[]>[];
 }
 
 export const CoursesTableFilterBar = ({
-  excludeFilters = [],
   educations,
+  excludeFilters = [],
   skills,
   ...props
 }: CoursesTableFilterBarProps): JSX.Element => {
-  const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(CoursesFiltersObj, {
-    skills: useFilterRef<"skills", typeof CoursesFiltersObj>(),
-    educations: useFilterRef<"educations", typeof CoursesFiltersObj>(),
-    search: useFilterRef<"search", typeof CoursesFiltersObj>(),
-    visible: useFilterRef<"visible", typeof CoursesFiltersObj>(),
+  const { clear, filters, pendingFilters, refs, updateFilters } = useFilters(CoursesFiltersObj, {
+    educations: useFilterRef<'educations', typeof CoursesFiltersObj>(),
+    search: useFilterRef<'search', typeof CoursesFiltersObj>(),
+    skills: useFilterRef<'skills', typeof CoursesFiltersObj>(),
+    visible: useFilterRef<'visible', typeof CoursesFiltersObj>(),
   });
 
   return (
     <TableView.FilterBar
       {...props}
-      excludeFilters={excludeFilters}
-      searchInputRef={refs.search}
-      searchPending={Object.keys(pendingFilters).includes("search")}
-      searchPlaceholder="Search courses..."
-      onSearch={v => updateFilters({ search: v })}
-      newDrawerId={DrawerIds.CREATE_COURSE}
-      search={filters.search}
-      filters={filters}
-      onClear={() => clear()}
       configuration={[
         {
-          id: "skills",
-          label: "Skills",
+          id: 'skills',
+          label: 'Skills',
           renderer: v => (
             <SkillsSelect
-              ref={refs.skills}
-              popoverClassName="z-50"
-              inputIsLoading={Object.keys(pendingFilters).includes("skills")}
-              inputClassName="max-w-[320px]"
-              placeholder="Skills"
+              behavior='multi'
               data={skills}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(skills: string[]) => updateFilters({ skills })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('skills')}
+              maximumValuesToRender={1}
+              onChange={(updatedSkills: string[]) => updateFilters({ skills: updatedSkills })}
               onClear={() => updateFilters({ skills: [] })}
-              popoverPlacement="bottom"
+              placeholder='Skills'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.skills}
             />
           ),
         },
         {
-          id: "educations",
-          label: "Educations",
+          id: 'educations',
+          label: 'Educations',
           renderer: v => (
             <EducationSelect
-              ref={refs.educations}
-              popoverClassName="z-50"
-              inputClassName="max-w-[320px]"
-              placeholder="Educations"
-              inputIsLoading={Object.keys(pendingFilters).includes("educations")}
+              behavior='multi'
               data={educations}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(educations: string[]) => updateFilters({ educations })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('educations')}
+              maximumValuesToRender={1}
+              onChange={(updatedEducations: string[]) =>
+                updateFilters({ educations: updatedEducations })
+              }
               onClear={() => updateFilters({ educations: [] })}
-              popoverPlacement="bottom"
+              placeholder='Educations'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.educations}
             />
           ),
         },
         {
-          id: "visible",
-          label: "Visible",
+          id: 'visible',
           isHiddenByDefault: false,
-          tooltipLabel: v =>
-            ({
-              null: "Show Visible",
-              true: "Show Invisible",
-              false: "Show All",
-            })[String(v)],
+          label: 'Visible',
           renderer: (v: boolean | null, { params, ref }) => (
             <VisibleFilterButton
               {...params}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
               ref={instance => {
                 refs.visible.current = instance;
                 ref?.(instance);
               }}
-              initialValue={v}
-              onChange={visible => updateFilters({ visible })}
             />
           ),
+          tooltipLabel: v =>
+            ({
+              false: 'Show All',
+              null: 'Show Visible',
+              true: 'Show Invisible',
+            })[String(v)],
         },
       ]}
+      excludeFilters={excludeFilters}
+      filters={filters}
+      isSearchPending={Object.keys(pendingFilters).includes('search')}
+      newDrawerId={DrawerIds.CREATE_COURSE}
+      onClear={() => clear()}
+      onSearch={v => updateFilters({ search: v })}
+      search={filters.search}
+      searchInputRef={refs.search}
+      searchPlaceholder='Search courses...'
     />
   );
 };

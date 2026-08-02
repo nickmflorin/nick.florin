@@ -1,56 +1,53 @@
-import { type ReactNode, type JSX } from "react";
+import { type JSX, type MouseEvent, type ReactNode } from 'react';
 
-import { Table, type TableProps } from "~/components/tables/generic/Table";
-import { TableHead } from "~/components/tables/generic/TableHead";
-import type * as types from "~/components/tables/types";
-import { type QuantitativeSize } from "~/components/types";
+import { Table, type TableProps } from '~/components/tables/generic/Table';
+import { TableHead } from '~/components/tables/generic/TableHead';
+import type * as types from '~/components/tables/types';
+import { type QuantitativeSize } from '~/components/types';
 
-import { DataTableHeaderRow, type DataTableHeaderRowProps } from "./DataTableHeaderRow";
+import { DataTableHeaderRow, type DataTableHeaderRowProps } from './DataTableHeaderRow';
 
 export type DataTableWrapperProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
-> = Omit<TableProps, "children"> &
+> = {
+  readonly children: ReactNode;
+  readonly headerHeight?: QuantitativeSize<'px'>;
+  readonly onSort?: (event: MouseEvent<unknown>, col: types.OrderableTableColumn<C>) => void;
+} & Omit<TableProps, 'children'> &
   Pick<
     DataTableHeaderRowProps<D, C>,
-    "rowsHaveActions" | "rowsAreSelectable" | "columns" | "ordering" | "excludeColumns"
-  > & {
-    readonly headerHeight?: QuantitativeSize<"px">;
-    readonly children: ReactNode;
-    readonly onSort?: (
-      event: React.MouseEvent<unknown>,
-      col: types.OrderableTableColumn<C>,
-    ) => void;
-  };
+    'areRowsSelectable' | 'columns' | 'excludeColumns' | 'hasRowActions' | 'ordering'
+  >;
 
 export const DataTableWrapper = <
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 >({
-  ordering,
-  headerHeight,
+  areRowsSelectable,
   children,
   columns,
-  rowsHaveActions,
-  rowsAreSelectable,
   excludeColumns,
+  hasRowActions,
+  headerHeight,
   onSort,
+  ordering,
   ...props
 }: DataTableWrapperProps<D, C>): JSX.Element => (
   <Table {...props}>
     <TableHead>
       <DataTableHeaderRow<D, C>
+        areRowsSelectable={areRowsSelectable}
         columns={columns}
-        ordering={ordering}
-        height={headerHeight}
         excludeColumns={excludeColumns}
-        rowsHaveActions={rowsHaveActions}
-        rowsAreSelectable={rowsAreSelectable}
+        hasRowActions={hasRowActions}
+        height={headerHeight}
         onSort={(e, col) => {
           if (col.isOrderable) {
             onSort?.(e, col as types.OrderableTableColumn<C>);
           }
         }}
+        ordering={ordering}
       />
     </TableHead>
     {children}

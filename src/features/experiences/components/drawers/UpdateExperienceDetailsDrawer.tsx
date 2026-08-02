@@ -1,17 +1,17 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { DetailEntityType } from "~/database/model";
+import { DetailEntityType } from '~/database/model';
 
 import {
-  type UpdateDetailsDrawerProps,
   UpdateDetailsDrawer,
-} from "~/features/resume/components/drawers/UpdateDetailsDrawer";
+  type UpdateDetailsDrawerProps,
+} from '~/features/resume/components/drawers/UpdateDetailsDrawer';
 
-interface UpdateExperienceDetailsDrawerProps
-  extends Omit<UpdateDetailsDrawerProps<typeof DetailEntityType.EXPERIENCE>, "entityType"> {}
+interface UpdateExperienceDetailsDrawerProps extends Omit<
+  UpdateDetailsDrawerProps<typeof DetailEntityType.EXPERIENCE>,
+  'entityType'
+> {}
 
-export const UpdatExperienceDetailsDrawer = (
+export const UpdateExperienceDetailsDrawer = (
   props: UpdateExperienceDetailsDrawerProps,
 ): JSX.Element => <UpdateDetailsDrawer {...props} entityType={DetailEntityType.EXPERIENCE} />;
-
-export default UpdatExperienceDetailsDrawer;

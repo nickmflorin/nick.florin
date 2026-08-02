@@ -1,25 +1,24 @@
-import type { ApiCourse, CourseIncludes } from "~/database/model";
-import { fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
-import { conditionalFilters } from "~/database/util";
+import { type ApiCourse, type CourseIncludes, fieldIsIncluded } from '~/database/model';
+import { db } from '~/database/prisma';
+import { conditionalFilters } from '~/database/util';
 
 import {
-  constructTableSearchClause,
-  PAGE_SIZES,
-  type ServerSidePaginationParams,
-  clampPagination,
-  type CoursesControls,
-  standardListFetchAction,
-  getCoursesOrdering,
-  type StandardFetchActionReturn,
-  type ActionPaginationParams,
   type ActionCountParams,
   type ActionFilterParams,
-} from "~/actions";
+  type ActionPaginationParams,
+  clampPagination,
+  constructTableSearchClause,
+  type CoursesControls,
+  getCoursesOrdering,
+  PAGE_SIZES,
+  type ServerSidePaginationParams,
+  type StandardFetchActionReturn,
+  standardListFetchAction,
+} from '~/actions';
 
-const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<CoursesControls>) =>
+const filtersClause = ({ filterIsVisible, filters }: ActionFilterParams<CoursesControls>) =>
   conditionalFilters([
-    filters.search ? constructTableSearchClause("course", filters.search) : undefined,
+    filters.search ? constructTableSearchClause('course', filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
       ? { educationId: { in: filters.educations } }
       : undefined,
@@ -29,8 +28,8 @@ const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<CoursesC
     { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<CoursesControls>) => {
-  const clause = filtersClause({ filters, filterIsVisible });
+const whereClause = ({ filterIsVisible, filters }: ActionFilterParams<CoursesControls>) => {
+  const clause = filtersClause({ filterIsVisible, filters });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -44,10 +43,10 @@ export const fetchCoursesCount = standardListFetchAction(
   ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    const count = await db.course.count({ where: whereClause({ filters, filterIsVisible }) });
+    const count = await db.course.count({ where: whereClause({ filterIsVisible, filters }) });
     return { count };
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchCoursesPagination = standardListFetchAction(
@@ -56,20 +55,20 @@ export const fetchCoursesPagination = standardListFetchAction(
     { filterIsVisible },
   ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.course.count({
-      where: whereClause({ filters, filterIsVisible }),
+      where: whereClause({ filterIsVisible, filters }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.course });
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchCourses = <I extends CourseIncludes>(includes: I) =>
   standardListFetchAction(
     async (
-      { filters, ordering, page, limit, visibility }: Omit<CoursesControls<I>, "includes">,
+      { filters, limit, ordering, page, visibility }: Omit<CoursesControls<I>, 'includes'>,
       { filterIsVisible },
     ): StandardFetchActionReturn<ApiCourse<I>[]> => {
-      let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
+      let pagination: null | Omit<ServerSidePaginationParams, 'count'> = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchCoursesPagination(
           { filters, page, visibility },
@@ -78,20 +77,20 @@ export const fetchCourses = <I extends CourseIncludes>(includes: I) =>
       }
 
       const courses = await db.course.findMany({
-        where: whereClause({ filters, filterIsVisible }),
         include: {
-          education: fieldIsIncluded("education", includes)
+          education: fieldIsIncluded('education', includes)
             ? { include: { school: true } }
             : undefined,
-          skills: fieldIsIncluded("skills", includes)
+          skills: fieldIsIncluded('skills', includes)
             ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
         },
         orderBy: getCoursesOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination ? pagination.pageSize : limit,
+        where: whereClause({ filterIsVisible, filters }),
       });
       return courses as ApiCourse<I>[];
     },
-    { authenticated: true, adminOnly: true },
+    { adminOnly: true, authenticated: true },
   );

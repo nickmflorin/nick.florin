@@ -1,17 +1,16 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { Label, Description } from "~/components/typography";
+import { classNames, type ComponentProps } from '~/components/types';
+import { Description, Label } from '~/components/typography';
 
 export interface TourContentProps extends ComponentProps {
-  readonly label?: ReactNode;
   readonly children: ReactNode;
+  readonly label?: ReactNode;
 }
 
-export const TourContent = ({ label, children, ...props }: TourContentProps) => (
-  <div {...props} className={classNames("tour__content", props.className)}>
-    {typeof label === "string" ? <Label fontSize="sm">{label}</Label> : label}
-    {typeof children === "string" ? <Description fontSize="xs">{children}</Description> : children}
+export const TourContent = ({ children, label, ...props }: TourContentProps) => (
+  <div {...props} className={classNames('tour__content', props.className)}>
+    {typeof label === 'string' ? <Label fontSize='sm'>{label}</Label> : label}
+    {typeof children === 'string' ? <Description fontSize='xs'>{children}</Description> : children}
   </div>
 );

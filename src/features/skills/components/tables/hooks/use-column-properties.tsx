@@ -1,21 +1,21 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { type DataTableColumnProperties } from "~/components/tables";
-import { ReadOnlyDateTimeCell } from "~/components/tables/cells/ReadOnlyDateTimeCell";
-import { useDataTable } from "~/components/tables/hooks";
-import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills";
+import { type DataTableColumnProperties } from '~/components/tables';
+import { ReadOnlyDateTimeCell } from '~/components/tables/cells/ReadOnlyDateTimeCell';
+import { useDataTable } from '~/components/tables/hooks';
+import { type SkillsTableColumn, type SkillsTableModel } from '~/features/skills';
 
-import { CategoriesCell } from "../cells/CategoriesCell";
-import { EducationsCell } from "../cells/EducationsCell";
-import { ExperienceCell } from "../cells/ExperienceCell";
-import { ExperiencesCell } from "../cells/ExperiencesCell";
-import { HighlightedCell } from "../cells/HighlightedCell";
-import { PrioritizedCell } from "../cells/PrioritizedCell";
-import { ProgrammingDomainsCell } from "../cells/ProgrammingDomainsCell";
-import { ProgrammingLanguagesCell } from "../cells/ProgrammingLanguagesCell";
-import { ProjectsCell } from "../cells/ProjectsCell";
-import { RepositoriesCell } from "../cells/RepositoriesCell";
-import { VisibleCell } from "../cells/VisibleCell";
+import { CategoriesCell } from '../cells/CategoriesCell';
+import { EducationsCell } from '../cells/EducationsCell';
+import { ExperienceCell } from '../cells/ExperienceCell';
+import { ExperiencesCell } from '../cells/ExperiencesCell';
+import { HighlightedCell } from '../cells/HighlightedCell';
+import { PrioritizedCell } from '../cells/PrioritizedCell';
+import { ProgrammingDomainsCell } from '../cells/ProgrammingDomainsCell';
+import { ProgrammingLanguagesCell } from '../cells/ProgrammingLanguagesCell';
+import { ProjectsCell } from '../cells/ProjectsCell';
+import { RepositoriesCell } from '../cells/RepositoriesCell';
+import { VisibleCell } from '../cells/VisibleCell';
 
 export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
   SkillsTableModel,
@@ -24,14 +24,19 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
   const { setRowLoading } = useDataTable<SkillsTableModel, SkillsTableColumn>();
   return useMemo(
     () => ({
-      label: {
+      categories: {
         cellRenderer(datum) {
-          return datum.label;
+          return <CategoriesCell skill={datum} table={{ setRowLoading }} />;
         },
       },
-      slug: {
+      createdAt: {
         cellRenderer(datum) {
-          return datum.slug;
+          return <ReadOnlyDateTimeCell date={datum.createdAt} />;
+        },
+      },
+      educations: {
+        cellRenderer(datum) {
+          return <EducationsCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       experience: {
@@ -39,19 +44,34 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
           return <ExperienceCell skill={datum} />;
         },
       },
-      categories: {
+      experiences: {
         cellRenderer(datum) {
-          return <CategoriesCell skill={datum} table={{ setRowLoading }} />;
+          return <ExperiencesCell skill={datum} table={{ setRowLoading }} />;
         },
       },
-      programmingLanguages: {
+      highlighted: {
         cellRenderer(datum) {
-          return <ProgrammingLanguagesCell skill={datum} table={{ setRowLoading }} />;
+          return <HighlightedCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      label: {
+        cellRenderer(datum) {
+          return datum.label;
+        },
+      },
+      prioritized: {
+        cellRenderer(datum) {
+          return <PrioritizedCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       programmingDomains: {
         cellRenderer(datum) {
           return <ProgrammingDomainsCell skill={datum} table={{ setRowLoading }} />;
+        },
+      },
+      programmingLanguages: {
+        cellRenderer(datum) {
+          return <ProgrammingLanguagesCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       projects: {
@@ -64,34 +84,14 @@ export const useSkillsTableColumnProperties = (): DataTableColumnProperties<
           return <RepositoriesCell skill={datum} table={{ setRowLoading }} />;
         },
       },
-      experiences: {
+      slug: {
         cellRenderer(datum) {
-          return <ExperiencesCell skill={datum} table={{ setRowLoading }} />;
-        },
-      },
-      educations: {
-        cellRenderer(datum) {
-          return <EducationsCell skill={datum} table={{ setRowLoading }} />;
+          return datum.slug;
         },
       },
       updatedAt: {
         cellRenderer(datum) {
           return <ReadOnlyDateTimeCell date={datum.updatedAt} />;
-        },
-      },
-      createdAt: {
-        cellRenderer(datum) {
-          return <ReadOnlyDateTimeCell date={datum.createdAt} />;
-        },
-      },
-      highlighted: {
-        cellRenderer(datum) {
-          return <HighlightedCell skill={datum} table={{ setRowLoading }} />;
-        },
-      },
-      prioritized: {
-        cellRenderer(datum) {
-          return <PrioritizedCell skill={datum} table={{ setRowLoading }} />;
         },
       },
       visible: {

@@ -1,26 +1,25 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
 import {
-  type ConnectedDataTableBodyProps,
   ConnectedDataTableBody,
-} from "~/components/tables/data-tables/ConnectedDataTableBody";
-import { type ProjectsTableColumn, type ProjectsTableModel } from "~/features/projects";
+  type ConnectedDataTableBodyProps,
+} from '~/components/tables/data-tables/ConnectedDataTableBody';
+import { type ProjectsTableColumn, type ProjectsTableModel } from '~/features/projects';
 
-import { useProjectsTableColumnProperties } from "./hooks/use-column-properties";
-import { useProjectsTableRowActions } from "./hooks/use-row-actions";
-import { ProjectsTableControlBar } from "./ProjectsTableControlBar";
+import { useProjectsTableColumnProperties } from './hooks/use-column-properties';
+import { useProjectsTableRowActions } from './hooks/use-row-actions';
+import { ProjectsTableControlBar } from './ProjectsTableControlBar';
 
-export interface ProjectsTableBodyProps
-  extends Omit<
-    ConnectedDataTableBodyProps<ProjectsTableModel, ProjectsTableColumn>,
-    "rowIsSelected" | "onRowSelected" | "getRowActions" | "columns" | "columnProperties"
-  > {
-  readonly controlBarTooltipsInPortal?: boolean;
+export interface ProjectsTableBodyProps extends Omit<
+  ConnectedDataTableBodyProps<ProjectsTableModel, ProjectsTableColumn>,
+  'columnProperties' | 'columns' | 'getRowActions' | 'onRowSelected' | 'rowIsSelected'
+> {
+  readonly areControlBarTooltipsInPortal?: boolean;
 }
 
 export const ProjectsTableBody = ({
-  controlBarTooltipsInPortal,
+  areControlBarTooltipsInPortal,
   ...props
 }: ProjectsTableBodyProps): JSX.Element => {
   const columnProperties = useProjectsTableColumnProperties();
@@ -29,14 +28,14 @@ export const ProjectsTableBody = ({
   return (
     <>
       <ProjectsTableControlBar
+        areTooltipsInPortal={areControlBarTooltipsInPortal}
         data={props.data}
         isDisabled={props.isEmpty}
-        tooltipsInPortal={controlBarTooltipsInPortal}
       />
       <ConnectedDataTableBody<ProjectsTableModel, ProjectsTableColumn>
-        performSelectionWhenClicked
-        emptyContent="There are no projects."
-        noResultsContent="No projects found for search criteria."
+        emptyContent='There are no projects.'
+        noResultsContent='No projects found for search criteria.'
+        shouldPerformSelectionWhenClicked
         {...props}
         columnProperties={columnProperties}
         getRowActions={(project, { setIsOpen }) =>

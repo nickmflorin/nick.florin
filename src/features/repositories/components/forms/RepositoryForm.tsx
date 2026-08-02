@@ -1,92 +1,92 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { Checkboxes } from "~/components/forms-v2/fields/Checkboxes";
-import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
-import { Form, type FormProps } from "~/components/forms-v2/Form";
-import { DateSelect } from "~/components/input/dates/DateSelect";
-import { TextArea } from "~/components/input/TextArea";
-import { TextInput } from "~/components/input/TextInput";
-import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
+import { Checkboxes } from '~/components/forms-v2/fields/Checkboxes';
+import { CheckboxField } from '~/components/forms-v2/fields/CheckboxField';
+import { Form, type FormProps } from '~/components/forms-v2/Form';
+import { DateSelect } from '~/components/input/dates/DateSelect';
+import { TextArea } from '~/components/input/TextArea';
+import { TextInput } from '~/components/input/TextInput';
+import { ClientProjectSelect } from '~/features/projects/components/input/ClientProjectSelect';
+import { ClientSkillsSelect } from '~/features/skills/components/input/ClientSkillsSelect';
 
-import { type RepositoryFormValues } from "./schema";
+import { type RepositoryFormValues } from './schema';
 
-export interface RepositoryFormProps
-  extends Omit<FormProps<RepositoryFormValues>, "children" | "onSubmit" | "contentClassName"> {}
+export interface RepositoryFormProps extends Omit<
+  FormProps<RepositoryFormValues>,
+  'children' | 'contentClassName' | 'onSubmit'
+> {}
 
 export const RepositoryForm = (props: RepositoryFormProps): JSX.Element => (
-  <Form {...props} contentClassName="gap-[12px]">
+  <Form {...props} contentClassName='gap-[12px]'>
     <Form.Field
-      name="slug"
-      label="Slug"
       form={props.form}
-      helpText="This must match the slug in Github."
+      helpText='This must match the slug in Github.'
+      label='Slug'
+      name='slug'
     >
-      <TextInput className="w-full" {...props.form.register("slug")} />
+      <TextInput className='w-full' {...props.form.register('slug')} />
     </Form.Field>
-    <Form.Field name="description" label="Description" form={props.form}>
-      <TextArea className="w-full" {...props.form.register("description")} rows={4} />
+    <Form.Field form={props.form} label='Description' name='description'>
+      <TextArea className='w-full' {...props.form.register('description')} rows={4} />
     </Form.Field>
-    <Form.ControlledField name="projects" label="Projects" form={props.form}>
-      {({ value, onChange }) => (
+    <Form.ControlledField form={props.form} label='Projects' name='projects'>
+      {({ onChange, value }) => (
         <ClientProjectSelect
-          visibility="admin"
-          behavior="multi"
+          behavior='multi'
+          inputClassName='w-full'
           isClearable
-          inputClassName="w-full"
-          value={value}
           onChange={onChange}
+          value={value}
+          visibility='admin'
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField name="skills" label="Skills" form={props.form}>
-      {({ value, onChange }) => (
+    <Form.ControlledField form={props.form} label='Skills' name='skills'>
+      {({ onChange, value }) => (
         <ClientSkillsSelect
-          behavior="multi"
-          visibility="admin"
-          inputClassName="w-full"
-          value={value}
+          behavior='multi'
+          inputClassName='w-full'
           onChange={onChange}
+          value={value}
+          visibility='admin'
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField name="startDate" label="Start Date" form={props.form}>
-      {({ value, onChange }) => (
-        <DateSelect inputClassName="w-full" value={value} onChange={onChange} />
+    <Form.ControlledField form={props.form} label='Start Date' name='startDate'>
+      {({ onChange, value }) => (
+        <DateSelect inputClassName='w-full' onChange={onChange} value={value} />
       )}
     </Form.ControlledField>
     <Form.Field
-      name="npmPackageName"
-      label="NPM Package Name"
       form={props.form}
-      helpText="The name of the package on npm (if applicable)."
+      helpText='The name of the package on npm (if applicable).'
+      label='NPM Package Name'
+      name='npmPackageName'
     >
-      <TextInput className="w-full" {...props.form.register("npmPackageName")} />
+      <TextInput className='w-full' {...props.form.register('npmPackageName')} />
     </Form.Field>
-    <Checkboxes outer>
+    <Checkboxes hasOuterMargin>
       <CheckboxField
-        name="highlighted"
         form={props.form}
-        label="Highlighted"
+        label='Highlighted'
+        name='highlighted'
         onChange={e => {
           if (e.target.checked) {
-            props.form.setValue("visible", true);
+            props.form.setValue('visible', true);
           }
         }}
       />
       <CheckboxField
-        name="visible"
         form={props.form}
-        label="Visible"
+        label='Visible'
+        name='visible'
         onChange={e => {
           if (!e.target.checked) {
-            props.form.setValue("highlighted", false);
+            props.form.setValue('highlighted', false);
           }
         }}
       />
     </Checkboxes>
   </Form>
 );
-
-export default RepositoryForm;

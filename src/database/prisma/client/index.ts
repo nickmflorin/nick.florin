@@ -18,20 +18,20 @@ as global variables are not reloaded:
 See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-management
      #prevent-hot-reloading-from-creating-new-instances-of-prismaclient
 */
-import { PrismaClient as RootPrismaClient } from "~/database/model";
+import { PrismaClient as RootPrismaClient } from '~/database/model';
 
-import { environment } from "~/environment";
+import { environment } from '~/environment';
 
-import { brandExtension } from "./brand-extension";
-import { ModelMetaDataMiddleware } from "./middleware";
+import { brandExtension } from './brand-extension';
+import { ModelMetaDataMiddleware } from './middleware';
 
-export * from "./errors";
+export * from './errors';
 
 export const initializePrismaClient = () => {
   /* eslint-disable-next-line no-console -- The logger is not in context for seeding. */
-  console.info(`Initializing Prisma Client at ${environment.get("POSTGRES_HOST")}.`);
+  console.info(`Initializing Prisma Client at ${environment.get('POSTGRES_HOST')}.`);
   const prisma = new RootPrismaClient({
-    log: environment.get("DATABASE_LOG_LEVEL"),
+    log: environment.get('DATABASE_LOG_LEVEL'),
   });
   prisma.$use(ModelMetaDataMiddleware);
   return prisma.$extends(brandExtension);
@@ -39,26 +39,36 @@ export const initializePrismaClient = () => {
 
 export type PrismaClient = ReturnType<typeof initializePrismaClient>;
 
-export let db: PrismaClient;
+const globalDb = globalThis as unknown as { db: PrismaClient | undefined };
 
-const globalDb = globalThis as unknown as { db: PrismaClient };
-
-if (typeof window === "undefined") {
-  if (process.env.NODE_ENV === "production") {
-    db = initializePrismaClient();
-  } else {
-    if (!globalDb.db) {
-      db = initializePrismaClient();
-      /* eslint-disable-next-line no-console -- The logger is not in context for seeding. */
-      console.info("Storing Globally Instantiated Prisma Client");
-      globalDb.db = db;
-    } else {
-      db = globalDb.db;
+/**
+ * Returns the {@link PrismaClient} that the application should use.
+ *
+ * In production a new client is instantiated per server process.  Outside of production the client
+ * is cached on the global object, because the development server re-evaluates modules on every hot
+ * reload and would otherwise exhaust the database's connection limit.
+ */
+const resolveDb = (): PrismaClient => {
+  if (typeof window === 'undefined') {
+    if (process.env.NODE_ENV === 'production') {
+      return initializePrismaClient();
+    } else if (globalDb.db) {
+      return globalDb.db;
     }
+    const client = initializePrismaClient();
+    /* eslint-disable-next-line no-console -- The logger is not in context for seeding. */
+    console.info('Storing Globally Instantiated Prisma Client');
+    globalDb.db = client;
+    return client;
   }
-}
+  /* There is no database connection in the browser.  The export is typed as though the client is
+     always present because it is only ever dereferenced in server-side code. */
+  return undefined as unknown as PrismaClient;
+};
+
+export const db: PrismaClient = resolveDb();
 
 export type Transaction = Omit<
   PrismaClient,
-  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+  '$connect' | '$disconnect' | '$extends' | '$on' | '$transaction' | '$use'
 >;

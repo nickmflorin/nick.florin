@@ -1,68 +1,68 @@
-@use "sass:color";
-@use "sass:map";
-@use "sass:meta";
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:meta';
 
-@use "partials";
+@use 'partials';
 
-@use "./constants" as constants;
+@use './constants' as constants;
 
-$input-variants: ("primary");
-$input-default-variant: "primary";
+$input-variants: ('primary');
+$input-default-variant: 'primary';
 
 $input-variant-properties: (
-  "primary": (
-    background-color: theme("colors.white"),
-    outline-color: theme("colors.border"),
+  'primary': (
+    background-color: theme('colors.white'),
+    outline-color: theme('colors.border'),
     color: (
-      "text-area": theme("colors.description"),
-      "text-input": theme("colors.body"),
-      "select": theme("colors.body"),
+      'text-area': theme('colors.description'),
+      'text-input': theme('colors.body'),
+      'select': theme('colors.body'),
     ),
-    caret-color: theme("colors.body"),
-    placeholder-color: theme("colors.placeholder"),
+    caret-color: theme('colors.body'),
+    placeholder-color: theme('colors.placeholder'),
     outline-thickness: 1px,
-    icon-color: theme("colors.body"),
+    icon-color: theme('colors.body'),
     hovered: (
-      outline-color: theme("colors.primary"),
+      outline-color: theme('colors.primary'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
-      placeholder-color: theme("colors.disabled"),
-      outline-color: theme("colors.disabled-border"),
+      color: theme('colors.disabled'),
+      placeholder-color: theme('colors.disabled'),
+      outline-color: theme('colors.disabled-border'),
     ),
     focused: (
-      outline-color: theme("colors.primary"),
+      outline-color: theme('colors.primary'),
       outline-thickness: 2px,
-      icon-color: theme("colors.primary"),
+      icon-color: theme('colors.primary'),
     ),
     active: (
-      outline-color: theme("colors.primary"),
-      icon-color: theme("colors.primary"),
+      outline-color: theme('colors.primary'),
+      icon-color: theme('colors.primary'),
       outline-thickness: 2px,
     ),
   ),
-  "bare": (
-    background-color: theme("colors.gray.100"),
-    outline-color: theme("colors.transparent"),
+  'bare': (
+    background-color: theme('colors.gray.100'),
+    outline-color: theme('colors.transparent'),
     color: (
-      "text-area": theme("colors.description"),
-      "text-input": theme("colors.body"),
-      "select": theme("colors.body"),
+      'text-area': theme('colors.description'),
+      'text-input': theme('colors.body'),
+      'select': theme('colors.body'),
     ),
-    caret-color: theme("colors.body"),
-    placeholder-color: theme("colors.placeholder"),
+    caret-color: theme('colors.body'),
+    placeholder-color: theme('colors.placeholder'),
     outline-thickness: 1px,
-    icon-color: theme("colors.body"),
+    icon-color: theme('colors.body'),
     disabled: (
-      color: theme("colors.disabled"),
-      placeholder-color: theme("colors.disabled"),
-      outline-color: theme("colors.disabled-border"),
+      color: theme('colors.disabled'),
+      placeholder-color: theme('colors.disabled'),
+      outline-color: theme('colors.disabled-border'),
     ),
     focused: (
-      background-color: theme("colors.gray.200"),
+      background-color: theme('colors.gray.200'),
     ),
     active: (
-      outline-color: theme("colors.blue.800"),
+      outline-color: theme('colors.blue.800'),
     ),
   ),
 );
@@ -71,13 +71,13 @@ $input-variant-properties: (
   $properties: map.get($input-variant-properties, $variant);
 
   @if $property ==
-    "disabled" or
+    'disabled' or
     $property ==
-    "focused" or
+    'focused' or
     $property ==
-    "active" or
+    'active' or
     $property ==
-    "hovered"
+    'hovered'
   {
     @error "The property cannot be a state.";
   }
@@ -119,7 +119,7 @@ $input-variant-properties: (
     $type,
     background-color,
     $state: $state,
-    $fallback: theme("colors.white")
+    $fallback: theme('colors.white')
   );
   color: $color;
   caret-color: get-input-property($variant, $type, caret-color, $state: $state, $fallback: $color);
@@ -164,23 +164,23 @@ $input-variant-properties: (
   @include input-variant-state($variant, $type);
 
   @include partials.disabled {
-    @include input-variant-state($variant, $type, $state: "disabled");
+    @include input-variant-state($variant, $type, $state: 'disabled');
   }
 
   @include partials.hovered {
-    @include input-variant-state($variant, $type, $state: "hovered");
+    @include input-variant-state($variant, $type, $state: 'hovered');
   }
 
   @include partials.focused {
-    @include input-variant-state($variant, $type, $state: "focused");
+    @include input-variant-state($variant, $type, $state: 'focused');
   }
 
   @include partials.focused-within {
-    @include input-variant-state($variant, $type, $state: "focused");
+    @include input-variant-state($variant, $type, $state: 'focused');
   }
 
   @include partials.active {
-    @include input-variant-state($variant, $type, $state: "active");
+    @include input-variant-state($variant, $type, $state: 'active');
   }
 }
 
@@ -188,7 +188,7 @@ $input-variant-properties: (
   @include input-variant($input-default-variant, $type);
 
   @each $variant in $input-variants {
-    &[data-attr-variant="#{$variant}"] {
+    &[data-attr-variant='#{$variant}'] {
       @include input-variant($variant, $type);
     }
   }

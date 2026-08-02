@@ -1,18 +1,18 @@
-"use client";
-import type { ReactNode } from "react";
+'use client';
+import { type ReactNode } from 'react';
 
-import { SkillsDefaultOrdering } from "~/actions";
+import { SkillsDefaultOrdering } from '~/actions';
 
-import { columnIsOrderable } from "~/components/tables";
-import { ConnectedDataTableWrapper } from "~/components/tables/data-tables/ConnectedDataTableWrapper";
+import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableWrapper } from '~/components/tables/data-tables/ConnectedDataTableWrapper';
 import {
-  SkillsTableColumns,
-  type SkillsTableOrderableColumnId,
-  type SkillsTableColumnId,
   type SkillsTableColumn,
+  type SkillsTableColumnId,
+  SkillsTableColumns,
   type SkillsTableModel,
-} from "~/features/skills";
-import { useOrdering } from "~/hooks/use-ordering";
+  type SkillsTableOrderableColumnId,
+} from '~/features/skills';
+import { useOrdering } from '~/hooks/use-ordering';
 
 export interface SkillsDataTableWrapperProps {
   readonly children: ReactNode;
@@ -24,15 +24,15 @@ export const SkillsDataTableWrapper = ({
   excludeColumns,
 }: SkillsDataTableWrapperProps) => {
   const [ordering, setOrdering] = useOrdering<SkillsTableOrderableColumnId>({
-    useQueryParams: true,
-    fields: [...SkillsTableColumns].filter(c => columnIsOrderable(c)).map(c => c.id),
     defaultOrdering: SkillsDefaultOrdering,
+    fields: [...SkillsTableColumns].filter(c => columnIsOrderable(c)).map(c => c.id),
+    useQueryParams: true,
   });
   return (
     <ConnectedDataTableWrapper<SkillsTableModel, SkillsTableColumn>
       excludeColumns={excludeColumns}
-      ordering={ordering}
       onSort={(e, col) => setOrdering({ field: col.id })}
+      ordering={ordering}
     >
       {children}
     </ConnectedDataTableWrapper>

@@ -1,63 +1,60 @@
-import { forwardRef, type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { capitalize } from "~/lib/formatters";
+import { capitalize } from '~/lib/formatters';
 
-import * as types from "~/components/buttons/types";
-import { type TypographyCharacteristics } from "~/components/types";
-import { classNames, getTypographyClassName } from "~/components/types";
+import * as types from '~/components/buttons/types';
+import {
+  classNames,
+  getTypographyClassName,
+  type TypographyCharacteristics,
+} from '~/components/types';
 
-import { AbstractButton } from "./AbstractButton";
+import { AbstractButton } from './AbstractButton';
 
-export type InlineLinkProps<E extends types.ButtonElement> = Omit<
-  types.AbstractButtonProps<E>,
-  "buttonType" | "isLoading"
-> &
-  Pick<TypographyCharacteristics, "fontSize" | "fontFamily" | "fontWeight" | "transform"> & {
-    readonly children?: ReactNode;
-  };
+export type InlineLinkProps<E extends types.ButtonElement> = {
+  readonly children?: ReactNode;
+} & Omit<types.AbstractButtonProps<E>, 'buttonType' | 'isLoading'> &
+  Pick<TypographyCharacteristics, 'fontFamily' | 'fontSize' | 'fontWeight' | 'transform'>;
 
-const LocalInlineLink = forwardRef(
-  <E extends types.ButtonElement>(
-    { fontSize, fontWeight, transform, fontFamily, children, ...props }: InlineLinkProps<E>,
-    ref: types.PolymorphicButtonRef<E>,
-  ) => {
-    const ps = { ...props, buttonType: "inline-link", ref } as types.AbstractButtonProps<E> & {
-      readonly ref?: types.PolymorphicButtonRef<E>;
-    };
-    return (
-      <AbstractButton
-        {...ps}
-        className={classNames(
-          getTypographyClassName({ fontSize, fontFamily, fontWeight, transform }),
-          props.className,
-        )}
-      >
-        {children}
-      </AbstractButton>
-    );
-  },
-) as {
-  <E extends types.ButtonElement>(
-    props: InlineLinkProps<E> & { readonly ref?: types.PolymorphicButtonRef<E> },
-  ): JSX.Element;
+const LocalInlineLink = <E extends types.ButtonElement>({
+  children,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  ref,
+  transform,
+  ...props
+}: { readonly ref?: types.PolymorphicButtonRef<E> } & InlineLinkProps<E>): JSX.Element => {
+  const ps = { ...props, buttonType: 'inline-link', ref } as {
+    readonly ref?: types.PolymorphicButtonRef<E>;
+  } & types.AbstractButtonProps<E>;
+  return (
+    <AbstractButton
+      {...ps}
+      className={classNames(
+        getTypographyClassName({ fontFamily, fontSize, fontWeight, transform }),
+        props.className,
+      )}
+    >
+      {children}
+    </AbstractButton>
+  );
 };
 
-type ColorSchemePartial = {
-  <E extends types.ButtonElement>(
-    props: Omit<InlineLinkProps<E>, "scheme"> & { readonly ref?: types.PolymorphicButtonRef<E> },
-  ): JSX.Element;
-};
+type ColorSchemePartial = <E extends types.ButtonElement>(
+  props: { readonly ref?: types.PolymorphicButtonRef<E> } & Omit<InlineLinkProps<E>, 'scheme'>,
+) => JSX.Element;
 
-type WithColorSchemes = { [key in Capitalize<types.ButtonColorScheme>]: ColorSchemePartial };
+type WithColorSchemes = Record<Capitalize<types.ButtonColorScheme>, ColorSchemePartial>;
 
 const withColorSchemes = types.ButtonColorSchemes.members.reduce<WithColorSchemes>(
   (acc, scheme) => ({
     ...acc,
-    [capitalize(scheme)]: forwardRef(
-      <E extends types.ButtonElement>(
-        props: Omit<InlineLinkProps<E>, "scheme">,
-        ref: types.PolymorphicButtonRef<E>,
-      ) => <LocalInlineLink<E> {...({ ...props, scheme } as InlineLinkProps<E>)} ref={ref} />,
+    [capitalize(scheme)]: <E extends types.ButtonElement>({
+      ref,
+      ...props
+    }: { readonly ref?: types.PolymorphicButtonRef<E> } & Omit<InlineLinkProps<E>, 'scheme'>) => (
+      <LocalInlineLink<E> {...{ ...props, scheme }} ref={ref} />
     ),
   }),
   {} as WithColorSchemes,
@@ -66,5 +63,3 @@ const withColorSchemes = types.ButtonColorSchemes.members.reduce<WithColorScheme
 export const InlineLink = Object.assign(LocalInlineLink, withColorSchemes);
 
 export type InlineLinkComponent = typeof LocalInlineLink & WithColorSchemes;
-
-export default InlineLink;

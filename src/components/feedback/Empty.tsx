@@ -1,18 +1,18 @@
-import React, { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { ShowHide } from "~/components/util";
+import { ShowHide } from '~/components/util';
 
-import { EmptyView, type EmptyViewProps } from "./EmptyView";
+import { EmptyView, type EmptyViewProps } from './EmptyView';
 
 export interface EmptyProps extends EmptyViewProps {
-  readonly isEmpty?: boolean;
   readonly content?: ReactNode;
+  readonly isEmpty?: boolean;
 }
 
 export const Empty = ({
-  isEmpty = false,
-  content,
   children,
+  content,
+  isEmpty = false,
   ...props
 }: EmptyProps): JSX.Element => {
   if (children) {

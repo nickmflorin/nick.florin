@@ -1,21 +1,23 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { ExperiencesFiltersObj } from "~/actions";
+import { ExperiencesFiltersObj } from '~/actions';
 
-import { LoadingText } from "~/components/loading/LoadingText";
+import { LoadingText } from '~/components/loading/LoadingText';
 
-import { ExperiencesTitle } from "./ExperiencesTitle";
+import { ExperiencesTitle } from './ExperiencesTitle';
 
 export interface ExperiencesTitlePageProps {
   readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function ExperiencesTitlePage(props: ExperiencesTitlePageProps) {
+const ExperiencesTitlePage = async (props: ExperiencesTitlePageProps) => {
   const searchParams = await props.searchParams;
   const filters = ExperiencesFiltersObj.parse(searchParams);
   return (
-    <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>
+    <Suspense fallback={<LoadingText />} key={JSON.stringify(filters)}>
       <ExperiencesTitle filters={filters} />
     </Suspense>
   );
-}
+};
+
+export default ExperiencesTitlePage;

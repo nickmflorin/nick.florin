@@ -1,29 +1,28 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type TypographyComponent } from "~/components/types";
+import { type TypographyComponent } from '~/components/types';
 
 import {
   FileSize,
-  type FileSizeSizeProps,
   type FileSizeFileProps,
   type FileSizeProps,
-} from "./FileSize";
-import { Text, type TextProps } from "./Text";
+  type FileSizeSizeProps,
+} from './FileSize';
+import { Text, type TextProps } from './Text';
 
-type FileSizeTextSizeProps<C extends TypographyComponent<"text">> = Omit<TextProps<C>, "children"> &
-  FileSizeSizeProps;
+type FileSizeTextSizeProps<C extends TypographyComponent<'text'>> = FileSizeSizeProps &
+  Omit<TextProps<C>, 'children'>;
 
-type FileSizeTextFileProps<C extends TypographyComponent<"text">> = Omit<TextProps<C>, "children"> &
-  FileSizeFileProps;
+type FileSizeTextFileProps<C extends TypographyComponent<'text'>> = FileSizeFileProps &
+  Omit<TextProps<C>, 'children'>;
 
-export type FileSizeTextProps<C extends TypographyComponent<"text">> =
-  | FileSizeTextSizeProps<C>
-  | FileSizeTextFileProps<C>;
+export type FileSizeTextProps<C extends TypographyComponent<'text'>> =
+  FileSizeTextFileProps<C> | FileSizeTextSizeProps<C>;
 
-export const FileSizeText = <C extends TypographyComponent<"text">>({
+export const FileSizeText = <C extends TypographyComponent<'text'>>({
   file,
   fileSize,
-  fontSize = "sm",
+  fontSize = 'sm',
   ...props
 }: FileSizeTextProps<C>): JSX.Element => (
   <Text {...props} fontSize={fontSize}>

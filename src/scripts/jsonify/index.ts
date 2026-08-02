@@ -1,18 +1,18 @@
-import fs from "fs";
+import fs from 'fs';
 
 import {
-  Jsonifiers,
   getModelJsonFixtureFilePath,
-  type Jsonifier,
   type JsonifiableModel,
-} from "~/database/fixtures";
-import { pluralizeBrandModel } from "~/database/model";
-import { db } from "~/database/prisma";
-import { cli } from "~/scripts";
-import { stdout } from "~/support";
+  type Jsonifier,
+  Jsonifiers,
+} from '~/database/fixtures';
+import { pluralizeBrandModel } from '~/database/model';
+import { db } from '~/database/prisma';
+import { cli } from '~/scripts';
+import { stdout } from '~/support';
 
 const script: cli.Script = async () => {
-  const live = cli.getBooleanCliArgument("live", { defaultValue: false });
+  const live = cli.getBooleanCliArgument('live', { defaultValue: false });
 
   await db.$transaction(async tx => {
     let key: JsonifiableModel;
@@ -20,6 +20,8 @@ const script: cli.Script = async () => {
       const jsonifier = Jsonifiers[key] as Jsonifier<typeof key>;
 
       stdout.begin(`Generating fixtures for model '${key}'...`);
+      /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+         order, against a shared transaction client. */
       const data = await jsonifier.data(tx);
       const jsonified = data.map(d => jsonifier.jsonify(d));
 
@@ -31,7 +33,7 @@ const script: cli.Script = async () => {
       fs.writeFile(
         filename,
         JSON.stringify({ [pluralizeBrandModel(key)]: jsonified }),
-        "utf-8",
+        'utf-8',
         err => {
           if (err) {
             stdout.failed(`There was an error writing the fixtures to file ${filename}: \n${err}`);
@@ -44,4 +46,4 @@ const script: cli.Script = async () => {
   });
 };
 
-cli.runScript(script, { upsertUser: false, devOnly: false });
+void cli.runScript(script, { devOnly: false, upsertUser: false });

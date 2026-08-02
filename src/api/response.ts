@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
 import {
   enumeratedLiterals,
   type EnumeratedLiteralsMember,
   type EnumeratedLiteralsModel,
-} from "enumerated-literals";
+} from 'enumerated-literals';
 
 export const ClientSuccessCodes = enumeratedLiterals(
-  [{ value: "HTTP_200_OK", statusCode: 200 }] as const,
+  [{ statusCode: 200, value: 'HTTP_200_OK' }] as const,
   {},
 );
 
@@ -16,28 +16,30 @@ export type ClientSuccessCode = EnumeratedLiteralsMember<typeof ClientSuccessCod
 export type ClientSuccessStatusCode<C extends ClientSuccessCode = ClientSuccessCode> = Extract<
   EnumeratedLiteralsModel<typeof ClientSuccessCodes>,
   { value: C }
->["statusCode"];
+>['statusCode'];
 
 export type ClientSuccessResponseBody<T> = { data: T };
 
 export interface ClientSuccessConfig<T> {
-  readonly data: T;
   readonly code?: ClientSuccessCode;
+  readonly data: T;
   readonly statusCode?: ClientSuccessStatusCode;
 }
 
 export class ClientResponse<T> {
+  public static OK = <D>(data: D) =>
+    new ClientResponse<D>({ code: ClientSuccessCodes.HTTP_200_OK, data });
   private readonly data: T;
   private readonly statusCode: ClientSuccessStatusCode;
 
-  constructor({ data, code, statusCode }: ClientSuccessConfig<T>) {
+  constructor({ code, data, statusCode }: ClientSuccessConfig<T>) {
     this.data = data;
     if (statusCode) {
       this.statusCode = statusCode;
     } else if (code) {
-      this.statusCode = ClientSuccessCodes.getAttribute(code, "statusCode");
+      this.statusCode = ClientSuccessCodes.getAttribute(code, 'statusCode');
     } else {
-      this.statusCode = ClientSuccessCodes.getAttribute("HTTP_200_OK", "statusCode");
+      this.statusCode = ClientSuccessCodes.getAttribute('HTTP_200_OK', 'statusCode');
     }
   }
 
@@ -48,7 +50,4 @@ export class ClientResponse<T> {
   public get response() {
     return NextResponse.json({ data: this.data }, { status: this.statusCode });
   }
-
-  public static OK = <T>(data: T) =>
-    new ClientResponse<T>({ data, code: ClientSuccessCodes.HTTP_200_OK });
 }

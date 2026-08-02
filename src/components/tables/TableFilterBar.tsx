@@ -1,57 +1,70 @@
-"use client";
-import React, { type ReactNode, useRef, type MutableRefObject, useState, type JSX } from "react";
+'use client';
+import {
+  type JSX,
+  type MouseEventHandler,
+  type MutableRefObject,
+  type ReactNode,
+  useRef,
+  useState,
+} from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-import { IconButton } from "~/components/buttons";
-import type { DrawerId } from "~/components/drawers";
-import { Tooltip } from "~/components/floating/Tooltip";
-import { TextInput } from "~/components/input/TextInput";
-import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
-import { useDebounceCallback } from "~/hooks";
+import { IconButton } from '~/components/buttons';
+import { type DrawerId } from '~/components/drawers';
+import { Tooltip } from '~/components/floating/Tooltip';
+import { TextInput } from '~/components/input/TextInput';
+import { classNames, type ComponentProps } from '~/components/types';
+import { useDebounceCallback } from '~/hooks';
 
-import { FiltersSelect } from "./FiltersSelect";
-import { NewButton } from "./NewButton";
+import { FiltersSelect } from './FiltersSelect';
+import { NewButton } from './NewButton';
+
+/**
+ * Narrows the `onClick` handler that the floating element library embeds in the reference props it
+ * provides to the tooltip's trigger, which it types as a record of unknown values.
+ */
+const isButtonClickHandler = (value: unknown): value is MouseEventHandler<HTMLButtonElement> =>
+  typeof value === 'function';
 
 export interface TableFilterBarProps<F extends types.TableFilters> extends ComponentProps {
   readonly children?: ReactNode;
-  readonly isSearchable?: boolean;
-  readonly searchPlaceholder?: string;
-  readonly searchDebounceInterval?: number;
-  readonly searchPending?: boolean;
-  readonly search?: string;
-  readonly isControlled?: boolean;
-  readonly excludeFilters?: (keyof F & string)[];
-  readonly searchInputRef?: MutableRefObject<HTMLInputElement | null>;
-  readonly newDrawerId?: DrawerId;
-  readonly filters?: F;
   readonly configuration?: types.TableFiltersConfiguration<F>;
-  readonly onSearch?: (search: string) => void;
+  readonly excludeFilters?: (keyof F & string)[];
+  readonly filters?: F;
+  readonly isControlled?: boolean;
+  readonly isSearchable?: boolean;
+  readonly isSearchPending?: boolean;
+  readonly newDrawerId?: DrawerId;
   readonly onClear?: () => void;
+  readonly onSearch?: (search: string) => void;
+  readonly search?: string;
+  readonly searchDebounceInterval?: number;
+  readonly searchInputRef?: MutableRefObject<HTMLInputElement | null>;
+  readonly searchPlaceholder?: string;
 }
 
 interface TableFilterRendererProps<K extends types.TableFilterId<F>, F extends types.TableFilters> {
   readonly config: types.TableFilterConfiguration<K, F>;
-  readonly value: F[K];
   readonly excludeFilters?: types.TableFilterId<F>[];
+  readonly value: F[K];
   readonly visibleFilters: types.TableFilterId<F>[];
 }
 
-export const TableFilterRendererer = <
+export const TableFilterRenderer = <
   K extends types.TableFilterId<F>,
   F extends types.TableFilters,
 >({
   config,
-  value,
   excludeFilters = [],
+  value,
   visibleFilters = [],
-}: TableFilterRendererProps<K, F>): JSX.Element => {
+}: TableFilterRendererProps<K, F>): JSX.Element | null => {
   if (excludeFilters.includes(config.id) || !visibleFilters.includes(config.id)) {
-    return <></>;
+    return null;
   } else if (config.tooltipLabel) {
     const tooltip =
-      typeof config.tooltipLabel === "function" ? config.tooltipLabel(value) : config.tooltipLabel;
+      typeof config.tooltipLabel === 'function' ? config.tooltipLabel(value) : config.tooltipLabel;
     return (
       <Tooltip content={tooltip}>{popoverProps => config.renderer(value, popoverProps)}</Tooltip>
     );
@@ -61,19 +74,19 @@ export const TableFilterRendererer = <
 
 export const TableFilterBar = <F extends types.TableFilters>({
   children,
-  isSearchable = true,
-  searchPlaceholder = "Search...",
-  searchDebounceInterval = 0,
-  search = "",
-  isControlled = false,
-  searchPending = false,
-  searchInputRef,
-  newDrawerId,
   configuration,
-  filters,
   excludeFilters,
-  onSearch: _onSearch,
+  filters,
+  isControlled = false,
+  isSearchable = true,
+  isSearchPending = false,
+  newDrawerId,
   onClear,
+  onSearch: _onSearch,
+  search = '',
+  searchDebounceInterval = 0,
+  searchInputRef,
+  searchPlaceholder = 'Search...',
   ...props
 }: TableFilterBarProps<F>): JSX.Element => {
   const _inputRef = useRef<HTMLInputElement | null>(null);
@@ -85,60 +98,60 @@ export const TableFilterBar = <F extends types.TableFilters>({
       .map(config => config.id),
   );
 
-  const onSearch = useDebounceCallback((search: string) => {
-    _onSearch?.(search);
+  const onSearch = useDebounceCallback((nextSearch: string) => {
+    _onSearch?.(nextSearch);
   }, searchDebounceInterval);
 
   return (
-    <div {...props} className={classNames("flex flex-row items-center gap-2", props.className)}>
+    <div {...props} className={classNames('flex flex-row items-center gap-2', props.className)}>
       {isSearchable && (
         <TextInput
-          ref={inputRef}
-          isLoading={searchPending}
-          defaultValue={!isControlled ? search : undefined}
-          value={isControlled ? search : undefined}
+          className='grow'
+          defaultValue={isControlled ? undefined : search}
+          isLoading={isSearchPending}
           onChange={e => onSearch(e.target.value)}
-          placeholder={searchPlaceholder}
-          className="grow"
           onClear={() => {
             if (inputRef.current && !isControlled) {
-              inputRef.current.value = "";
+              inputRef.current.value = '';
             }
-            _onSearch?.("");
+            _onSearch?.('');
           }}
+          placeholder={searchPlaceholder}
+          ref={inputRef}
+          value={isControlled ? search : undefined}
         />
       )}
       {filters && (
         <>
           {(configuration ?? []).map(filter => (
-            <TableFilterRendererer
+            <TableFilterRenderer
+              config={filter}
+              excludeFilters={excludeFilters}
               key={filter.id}
               value={filters[filter.id]}
-              config={filter}
               visibleFilters={visibleFilters}
-              excludeFilters={excludeFilters}
             />
           ))}
         </>
       )}
-      <Tooltip content="Clear filters">
-        {({ ref, params }) => (
+      <Tooltip content='Clear filters'>
+        {({ params, ref }) => (
           <IconButton.Transparent
             {...params}
-            ref={ref}
-            icon="xmark"
-            radius="full"
-            element="button"
-            className="text-gray-400 h-full aspect-square w-auto p-[4px] hover:text-gray-500"
+            className='text-gray-400 h-full aspect-square w-auto p-[4px] hover:text-gray-500'
+            element='button'
+            icon='xmark'
             onClick={e => {
-              if (typeof params.onClick === "function") {
-                params.onClick?.(e);
+              if (isButtonClickHandler(params.onClick)) {
+                params.onClick(e);
               }
               if (inputRef.current && !isControlled) {
-                inputRef.current.value = "";
+                inputRef.current.value = '';
               }
               onClear?.();
             }}
+            radius='full'
+            ref={ref}
           />
         )}
       </Tooltip>
@@ -146,8 +159,8 @@ export const TableFilterBar = <F extends types.TableFilters>({
         <FiltersSelect
           configuration={configuration}
           excludeFilters={excludeFilters}
-          value={visibleFilters}
           onChange={f => setVisibleFilters(f)}
+          value={visibleFilters}
         />
       )}
       {newDrawerId && <NewButton drawerId={newDrawerId} />}

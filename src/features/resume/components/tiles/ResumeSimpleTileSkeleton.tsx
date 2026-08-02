@@ -1,28 +1,30 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { Skeleton } from "~/components/loading/Skeleton";
-import { type ComponentProps } from "~/components/types";
-import { DescriptionSkeleton } from "~/components/typography/DescriptionSkeleton";
+import { Skeleton } from '~/components/loading/Skeleton';
+import { type ComponentProps } from '~/components/types';
+import { DescriptionSkeleton } from '~/components/typography/DescriptionSkeleton';
 
-import { ResumeSimpleTileScaffold } from "./ResumeSimpleTileScaffold";
+import { ResumeSimpleTileScaffold } from './ResumeSimpleTileScaffold';
 
 export interface ResumeSimpleTileSkeletonProps extends ComponentProps {
-  readonly numDescriptionLines?: number;
   readonly children?: ReactNode;
-  readonly includeDescription?: boolean;
+  readonly isDescriptionVisible?: boolean;
+  readonly numDescriptionLines?: number;
 }
 
 export const ResumeSimpleTileSkeleton = ({
-  numDescriptionLines = 2,
-  includeDescription = true,
   children,
+  isDescriptionVisible = true,
+  numDescriptionLines = 2,
   ...props
 }: ResumeSimpleTileSkeletonProps) => (
   <ResumeSimpleTileScaffold
     {...props}
+    description={
+      isDescriptionVisible ? <DescriptionSkeleton numLines={numDescriptionLines} /> : null
+    }
     descriptionGap={8}
-    icon={<Skeleton width={22} height={22} />}
-    description={includeDescription ? <DescriptionSkeleton numLines={numDescriptionLines} /> : null}
+    icon={<Skeleton height={22} width={22} />}
   >
     {children}
   </ResumeSimpleTileScaffold>

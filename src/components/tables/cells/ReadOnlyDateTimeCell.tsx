@@ -1,13 +1,11 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { DateTimeText } from "~/components/typography/DateTimeText";
+import { DateTimeText } from '~/components/typography/DateTimeText';
 
 export type ReadOnlyDateTimeCellProps = {
   readonly date: Date;
 };
 
 export const ReadOnlyDateTimeCell = ({ date }: ReadOnlyDateTimeCellProps): JSX.Element => (
-  <DateTimeText formatSeparately value={date} fontWeight="regular" component="text" />
+  <DateTimeText component='text' fontWeight='regular' formatSeparately value={date} />
 );
-
-export default ReadOnlyDateTimeCell;

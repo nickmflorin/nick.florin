@@ -1,55 +1,57 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect, useEffectEvent, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type ApiCourse } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type ApiCourse } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { updateCourse } from "~/actions/courses/update-course";
+import { updateCourse } from '~/actions/courses/update-course';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { useDeepEqualEffect } from "~/hooks";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { CourseForm, type CourseFormProps } from "./CourseForm";
+import { CourseForm, type CourseFormProps } from './CourseForm';
 
-export interface UpdateCourseFormProps extends Omit<CourseFormProps, "action"> {
-  readonly course: ApiCourse<["education", "skills"]>;
+export interface UpdateCourseFormProps extends Omit<CourseFormProps, 'action'> {
+  readonly course: ApiCourse<['education', 'skills']>;
   readonly onCancel?: () => void;
   readonly onSuccess?: () => void;
 }
 
 export const UpdateCourseForm = ({
   course,
+  form,
   onCancel,
   onSuccess,
-  form,
   ...props
 }: UpdateCourseFormProps): JSX.Element => {
   const updateCourseWithId = updateCourse.bind(null, course.id);
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
-  // Prevents the form from resetting when an error occurs.
-  useDeepEqualEffect(() => {
+  /* The form is repopulated only when a different course is being edited.  Keying the effect on
+     the identifier rather than the course itself means a background revalidation of the same
+     course never discards values the user is in the middle of editing. */
+  const setCourseFormValues = useEffectEvent(() => {
     form.setValues({
       ...course,
-      shortName: course.shortName,
-      name: course.name,
-      slug: course.slug,
       education: course.education.id,
+      name: course.name,
+      shortName: course.shortName,
       skills: course.skills.map(s => s.id),
+      slug: course.slug,
     });
-  }, [course, form.setValues]);
+  });
+
+  useEffect(() => {
+    setCourseFormValues();
+  }, [course.id]);
 
   return (
     <CourseForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
-      form={form}
-      action={async (data, form) => {
+      action={async (data, formInstance) => {
         let response: Awaited<ReturnType<typeof updateCourseWithId>> | null = null;
         try {
           response = await updateCourseWithId(data);
@@ -58,20 +60,20 @@ export const UpdateCourseForm = ({
             course,
             data,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error updating the course.");
+          return toast.error('There was an error updating the course.');
         }
         const { error } = response;
         if (error) {
-          return form.handleApiError(error);
+          return formInstance.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.();
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      form={form}
+      isLoading={pending}
     />
   );
 };
-
-export default UpdateCourseForm;

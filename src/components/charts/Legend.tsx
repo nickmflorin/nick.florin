@@ -1,11 +1,10 @@
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
-import { LegendItem } from "./LegendItem";
+import { LegendItem } from './LegendItem';
 
 export interface ILegendItem {
-  readonly label: string;
   readonly color: string;
+  readonly label: string;
 }
 
 export interface LegendProps extends ComponentProps {
@@ -16,7 +15,7 @@ export const Legend = ({ items, ...props }: LegendProps) => (
   <div
     {...props}
     className={classNames(
-      "flex flex-wrap gap-y-[4px] gap-x-[6px] overflow-x-hidden",
+      'flex flex-wrap gap-y-[4px] gap-x-[6px] overflow-x-hidden',
       props.className,
     )}
   >

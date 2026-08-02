@@ -1,8 +1,8 @@
-import { fetchCompanies } from "~/actions/companies/fetch-companies";
-import { fetchSchools } from "~/actions/schools/fetch-schools";
+import { fetchCompanies } from '~/actions/companies/fetch-companies';
+import { fetchSchools } from '~/actions/schools/fetch-schools';
 
-import { ClientCompaniesSchoolsMenuContent } from "./ClientCompaniesSchoolsMenuContent";
-import { type ModelType, type Model } from "./types";
+import { ClientCompaniesSchoolsMenuContent } from './ClientCompaniesSchoolsMenuContent';
+import { type Model, type ModelType } from './types';
 
 export interface CompaniesSchoolsMenuContentProps<M extends ModelType> {
   readonly modelType: M;
@@ -10,16 +10,16 @@ export interface CompaniesSchoolsMenuContentProps<M extends ModelType> {
 
 const fetchers: { [key in ModelType]: () => Promise<Model<key>[]> } = {
   company: async () => {
-    const fetcher = fetchCompanies(["experiences"]);
+    const fetcher = fetchCompanies(['experiences']);
     const { data: companies } = await fetcher(
-      { visibility: "admin", filters: {} },
+      { filters: {}, visibility: 'admin' },
       { strict: true },
     );
     return companies;
   },
   school: async () => {
-    const fetcher = fetchSchools(["educations"]);
-    const { data: schools } = await fetcher({ visibility: "admin", filters: {} }, { strict: true });
+    const fetcher = fetchSchools(['educations']);
+    const { data: schools } = await fetcher({ filters: {}, visibility: 'admin' }, { strict: true });
     return schools;
   },
 };

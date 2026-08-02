@@ -1,22 +1,22 @@
-import React, { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type ForwardedRef, type JSX, type ComponentProps as ReactComponentProps } from 'react';
 
-import { isFragment } from "react-is";
+import { isFragment } from 'react-is';
 
 import {
-  type ComponentProps,
-  type TypographyCharacteristics,
-  getTypographyClassName,
   classNames,
+  type ComponentProps,
+  getTypographyClassName,
   getTypographyStyle,
+  omitTypographyProps,
   parseDataAttributes,
-} from "~/components/types";
-import { omitTypographyProps } from "~/components/types";
+  type TypographyCharacteristics,
+} from '~/components/types';
 
-export type DescriptionComponent = "span" | "div" | "p";
+export type DescriptionComponent = 'div' | 'p' | 'span';
 
 type PolymorphicDescriptionProps<T extends DescriptionComponent> = Omit<
-  React.ComponentProps<T>,
-  keyof ComponentProps | "ref"
+  ReactComponentProps<T>,
+  'ref' | keyof ComponentProps
 >;
 
 type PolymorphicDescriptionRef<T extends DescriptionComponent> = {
@@ -25,61 +25,55 @@ type PolymorphicDescriptionRef<T extends DescriptionComponent> = {
   span: ForwardedRef<HTMLSpanElement>;
 }[T];
 
-export type DescriptionNodeProps<C extends DescriptionComponent> = TypographyCharacteristics &
-  ComponentProps &
-  PolymorphicDescriptionProps<C> & {
-    readonly component?: DescriptionComponent;
-    readonly inherit?: boolean;
-  };
+export type DescriptionNodeProps<C extends DescriptionComponent> = {
+  readonly component?: DescriptionComponent;
+  readonly isInherited?: boolean;
+} & ComponentProps &
+  PolymorphicDescriptionProps<C> &
+  TypographyCharacteristics;
 
-export const DescriptionNode = forwardRef<
-  HTMLDivElement,
-  DescriptionNodeProps<DescriptionComponent>
->(
-  <C extends DescriptionComponent>(
-    { component = "div", inherit = false, ...props }: DescriptionNodeProps<C>,
-    ref: PolymorphicDescriptionRef<C>,
-  ): JSX.Element => {
-    if (
-      isFragment(props.children) ||
-      props.children === undefined ||
-      props.children === null ||
-      typeof props.children === "boolean" ||
-      (typeof props.children === "string" && props.children.trim() === "")
-    ) {
-      return <></>;
+export const DescriptionNode = <C extends DescriptionComponent>({
+  component = 'div',
+  isInherited = false,
+  ref,
+  ...props
+}: {
+  readonly ref?: PolymorphicDescriptionRef<C>;
+} & DescriptionNodeProps<C>): JSX.Element | null => {
+  if (
+    isFragment(props.children) ||
+    props.children === undefined ||
+    typeof props.children === 'boolean' ||
+    (typeof props.children === 'string' && props.children.trim() === '')
+  ) {
+    return null;
+  }
+  const ps = {
+    ...omitTypographyProps(props),
+    ...parseDataAttributes({ inherit: isInherited }),
+    className: classNames(
+      'description',
+      getTypographyClassName(props),
+      {
+        [classNames('max-sm:text-xs', props.className)]: props.fontSize === undefined,
+        [classNames('text-sm', props.className)]: props.fontSize === undefined,
+      },
+      props.className,
+    ),
+    style: { ...getTypographyStyle(props), ...props.style },
+  };
+  switch (component) {
+    case 'div': {
+      const p = ps as ReactComponentProps<'div'>;
+      return <div {...p} ref={ref as PolymorphicDescriptionRef<'div'>} />;
     }
-    const ps = {
-      ...omitTypographyProps(props),
-      ...parseDataAttributes({ inherit }),
-      style: { ...getTypographyStyle(props), ...props.style },
-      className: classNames(
-        "description",
-        getTypographyClassName(props),
-        {
-          [classNames("text-sm", props.className)]: props.fontSize === undefined,
-          [classNames("max-sm:text-xs", props.className)]: props.fontSize === undefined,
-        },
-        props.className,
-      ),
-    };
-    switch (component) {
-      case "span": {
-        const p = ps as React.ComponentProps<"span">;
-        return <span {...p} ref={ref as PolymorphicDescriptionRef<"span">} />;
-      }
-      case "div": {
-        const p = ps as React.ComponentProps<"div">;
-        return <div {...p} ref={ref as PolymorphicDescriptionRef<"div">} />;
-      }
-      case "p": {
-        const p = ps as React.ComponentProps<"p">;
-        return <p {...p} ref={ref as PolymorphicDescriptionRef<"p">} />;
-      }
+    case 'p': {
+      const p = ps as ReactComponentProps<'p'>;
+      return <p {...p} ref={ref as PolymorphicDescriptionRef<'p'>} />;
     }
-  },
-) as {
-  <C extends DescriptionComponent>(
-    props: DescriptionNodeProps<C> & { readonly ref?: PolymorphicDescriptionRef<C> },
-  ): JSX.Element;
+    case 'span': {
+      const p = ps as ReactComponentProps<'span'>;
+      return <span {...p} ref={ref} />;
+    }
+  }
 };

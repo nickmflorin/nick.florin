@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": ["Bash(pnpm run:*)", "Edit(/.claude/skills/sync-ai-config/**)"]
+  },
+  "enabledPlugins": {
+    "nextjs@nextjs-marketplace": true,
+    "github": true,
+    "context7": true,
+    "greptile": true
+  },
+  "extraKnownMarketplaces": {
+    "nextjs-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "rdimascio/nextjs-marketplace"
+      }
+    }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_response.filePath // .tool_input.file_path // empty'); [ -n \"$f\" ] && pnpm exec prettier --write --ignore-path ./.prettierignore --ignore-unknown --log-level warn \"$f\"; true",
+            "statusMessage": "Formatting with Prettier"
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/parity-sync-reminder.mjs\"",
+            "statusMessage": "Checking AI-config parity"
+          }
+        ]
+      }
+    ]
+  }
+}

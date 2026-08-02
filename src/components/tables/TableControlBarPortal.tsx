@@ -1,27 +1,21 @@
-"use client";
-import { type ReactNode, useEffect, useState, type JSX } from "react";
+'use client';
+import { type JSX, type ReactNode } from 'react';
 
-import { Portal } from "@mui/base/Portal";
+import { Portal } from '@mui/base/Portal';
 
 export interface TableControlBarPortalProps {
   readonly children?: ReactNode;
-  readonly targetId?: string | null;
+  readonly targetId?: null | string;
 }
 
 export const TableControlBarPortal = ({
   children,
   targetId,
 }: TableControlBarPortalProps): JSX.Element => {
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (targetId) {
-      setContainer(document.getElementById(targetId));
-    }
-  }, [targetId]);
-
   if (targetId) {
-    return <Portal container={container}>{children}</Portal>;
+    /* The container is provided as a callback rather than as an element so that the lookup happens
+       in the layout effect that the Portal already runs, at which point the target is mounted. */
+    return <Portal container={() => document.getElementById(targetId)}>{children}</Portal>;
   }
   return <>{children}</>;
 };

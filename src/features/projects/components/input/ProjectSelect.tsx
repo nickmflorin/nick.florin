@@ -1,16 +1,16 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type ForwardedRef, type JSX } from 'react';
 
-import { type BrandProject, ProjectSlugs } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type BrandProject, ProjectSlugs } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { type IconProp, type IconName } from "~/components/icons";
-import type { SelectBehaviorType, DataSelectInstance } from "~/components/input/select";
-import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
-import { Text, Description } from "~/components/typography";
+import { type IconName, type IconProp } from '~/components/icons';
+import { type DataSelectInstance, type SelectBehaviorType } from '~/components/input/select';
+import { DataSelect, type DataSelectProps } from '~/components/input/select/DataSelect';
+import { Description, Text } from '~/components/typography';
 
-export type ProjectSelectModel = Omit<BrandProject, "icon"> & {
-  readonly icon: IconProp | IconName;
-};
+export type ProjectSelectModel = {
+  readonly icon: IconName | IconProp;
+} & Omit<BrandProject, 'icon'>;
 
 const getModelValue = (m: ProjectSelectModel) => m.id;
 
@@ -19,61 +19,58 @@ export type ProjectSelectInstance<B extends SelectBehaviorType> = DataSelectInst
   { behavior: B; getModelValue: typeof getModelValue }
 >;
 
-export interface ProjectSelectProps<B extends SelectBehaviorType>
-  extends Omit<
-    DataSelectProps<ProjectSelectModel, { behavior: B; getModelValue: typeof getModelValue }>,
-    | "options"
-    | "itemIsDisabled"
-    | "data"
-    | "itemRenderer"
-    | "includeDescriptions"
-    | "getModelValueLabel"
-  > {
-  readonly useAbbreviatedLabels?: boolean;
+export interface ProjectSelectProps<B extends SelectBehaviorType> extends Omit<
+  DataSelectProps<ProjectSelectModel, { behavior: B; getModelValue: typeof getModelValue }>,
+  | 'data'
+  | 'getModelValueLabel'
+  | 'itemIsDisabled'
+  | 'itemRenderer'
+  | 'options'
+  | 'shouldIncludeDescriptions'
+> {
   readonly behavior: B;
   readonly data: BrandProject[];
+  readonly hasAbbreviatedLabels?: boolean;
 }
 
-export const ProjectSelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { behavior, data, useAbbreviatedLabels = true, ...props }: ProjectSelectProps<B>,
-    ref: ForwardedRef<ProjectSelectInstance<B>>,
-  ): JSX.Element => (
-    <DataSelect<ProjectSelectModel, { behavior: B; getModelValue: typeof getModelValue }>
-      {...props}
-      ref={ref}
-      data={(data ?? []).map(datum => {
-        let icon: IconName;
-        const slug = datum.slug;
-        if (!ProjectSlugs.contains(slug)) {
-          logger.warn(
-            `Encountered a project stored in the database without a corresponding hard-coded slug: ${slug}.`,
-            { slug },
-          );
-          // This is the default, fallback icon...
-          icon = "chart-kanban";
-        } else {
-          icon = ProjectSlugs.getModel(slug).icon;
-        }
-        return { ...datum, icon: { name: icon } };
-      })}
-      options={{ behavior, getModelValue }}
-      getModelValueLabel={m => m.shortName ?? m.name}
-      includeDescriptions={false}
-      itemRenderer={m => (
-        <div className="flex flex-col gap-[4px]">
-          <Text fontSize="sm" fontWeight="medium" truncate>
-            {useAbbreviatedLabels ? (m.shortName ?? m.name) : m.name}
-          </Text>
-          <Description fontSize="xs">{m.slug}</Description>
-        </div>
-      )}
-    />
-  ),
-) as {
-  <B extends SelectBehaviorType>(
-    props: ProjectSelectProps<B> & {
-      readonly ref?: ForwardedRef<ProjectSelectInstance<B>>;
-    },
-  ): JSX.Element;
-};
+export const ProjectSelect = <B extends SelectBehaviorType>({
+  behavior,
+  data,
+  hasAbbreviatedLabels = true,
+  ref,
+  ...props
+}: {
+  readonly ref?: ForwardedRef<ProjectSelectInstance<B>>;
+} & ProjectSelectProps<B>): JSX.Element => (
+  <DataSelect<ProjectSelectModel, { behavior: B; getModelValue: typeof getModelValue }>
+    {...props}
+    data={data.map(datum => {
+      let icon: IconName;
+      const slug = datum.slug;
+      if (ProjectSlugs.contains(slug)) {
+        icon = ProjectSlugs.getModel(slug).icon;
+      } else {
+        logger.warn(
+          'Encountered a project stored in the database without a corresponding hard-coded ' +
+            `slug: ${slug}.`,
+          { slug },
+        );
+        // This is the default, fallback icon...
+        icon = 'chart-kanban';
+      }
+      return { ...datum, icon: { name: icon } };
+    })}
+    getModelValueLabel={m => m.shortName ?? m.name}
+    itemRenderer={m => (
+      <div className='flex flex-col gap-[4px]'>
+        <Text fontSize='sm' fontWeight='medium' truncate>
+          {hasAbbreviatedLabels ? (m.shortName ?? m.name) : m.name}
+        </Text>
+        <Description fontSize='xs'>{m.slug}</Description>
+      </div>
+    )}
+    options={{ behavior, getModelValue }}
+    ref={ref}
+    shouldIncludeDescriptions={false}
+  />
+);

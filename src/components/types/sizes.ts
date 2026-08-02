@@ -1,16 +1,16 @@
-export type SizeUnit = "px" | "rem" | "%";
+export type SizeUnit = '%' | 'px' | 'rem';
 
 export const isSizeUnit = (value: unknown): value is SizeUnit =>
-  ["px", "rem", "%"].includes(value as string);
+  ['%', 'px', 'rem'].includes(value as string);
 
-export type QualitativeSize = "fit-content";
+export type QualitativeSize = 'fit-content';
 
 const StringUnitlessSizeRegex = /^([0-9/.]*)$/;
 
 export type StringUnitlessSize<T extends number = number> = `${T}`;
 
 export const isStringUnitlessSize = (value: unknown): value is StringUnitlessSize => {
-  if (typeof value === "string" && StringUnitlessSizeRegex.test(value)) {
+  if (typeof value === 'string' && StringUnitlessSizeRegex.test(value)) {
     const v = parseInt(value);
     return !isNaN(v) && isFinite(v);
   }
@@ -18,7 +18,7 @@ export const isStringUnitlessSize = (value: unknown): value is StringUnitlessSiz
 };
 
 type ParsedStringUnitlessSize<O extends { strict?: boolean }> = O extends { strict: false }
-  ? number | null
+  ? null | number
   : number;
 
 export const parseStringUnitlessSize = <O extends { strict?: boolean }>(
@@ -41,17 +41,17 @@ export const parseStringUnitlessSize = <O extends { strict?: boolean }>(
   return null as ParsedStringUnitlessSize<O>;
 };
 
-export type UnitlessSize<T extends number = number> = T | StringUnitlessSize<T>;
+export type UnitlessSize<T extends number = number> = StringUnitlessSize<T> | T;
 
 export const isUnitlessSize = (value: unknown): value is UnitlessSize => {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     return isStringUnitlessSize(value);
   }
-  return typeof value === "number" && !isNaN(value) && isFinite(value);
+  return typeof value === 'number' && !isNaN(value) && isFinite(value);
 };
 
 export const isQualitativeSize = (value: unknown): value is QualitativeSize =>
-  ["fit-content"].includes(value as string);
+  ['fit-content'].includes(value as string);
 
 export type QuantitativeSizeString<
   U extends SizeUnit = SizeUnit,
@@ -61,11 +61,11 @@ export type QuantitativeSizeString<
 export type QuantitativeSize<
   U extends SizeUnit = SizeUnit,
   N extends UnitlessSize = UnitlessSize,
-> = U extends SizeUnit ? QuantitativeSizeString<U, N> | N : never;
+> = U extends SizeUnit ? N | QuantitativeSizeString<U, N> : never;
 
 const QuantitativeSizeRegex = /^([0-9]*)(px|rem|%)$/;
 
-export const parseQuantitativeSizeString = (value: string): [number, SizeUnit] | [null, null] => {
+export const parseQuantitativeSizeString = (value: string): [null, null] | [number, SizeUnit] => {
   const executed = QuantitativeSizeRegex.exec(value);
   if (executed) {
     const sz = executed[1];
@@ -73,7 +73,7 @@ export const parseQuantitativeSizeString = (value: string): [number, SizeUnit] |
     const numeric = parseFloat(sz);
     if (isNaN(numeric) || !isFinite(numeric)) {
       return [null, null];
-    } else if (typeof u !== "string") {
+    } else if (typeof u !== 'string') {
       return [null, null];
     } else if (!isSizeUnit(u)) {
       return [null, null];
@@ -92,17 +92,17 @@ export const isQuantitativeSizeString = <
   value: unknown,
   params: P,
 ): value is P extends { unit: U } ? QuantitativeSize<U> : QuantitativeSize => {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     const [sz, u] = parseQuantitativeSizeString(value);
-    if (sz !== null && u !== null) {
-      return params.unit !== undefined ? u === params.unit : true;
+    if (sz !== null) {
+      return params.unit === undefined ? true : u === params.unit;
     }
   }
   return false;
 };
 
 export const isQuantitativeSize = (value: unknown): value is QuantitativeSize =>
-  isQuantitativeSizeString(value, {}) || isStringUnitlessSize(value) || typeof value === "number";
+  isQuantitativeSizeString(value, {}) || isStringUnitlessSize(value) || typeof value === 'number';
 
 export const isQuantitativeSizeOfUnit = <U extends SizeUnit>(
   value: unknown,
@@ -110,7 +110,7 @@ export const isQuantitativeSizeOfUnit = <U extends SizeUnit>(
 ): value is QuantitativeSize<U> =>
   isQuantitativeSizeString(value, { unit }) ||
   isStringUnitlessSize(value) ||
-  typeof value === "number";
+  typeof value === 'number';
 
 export type InferQuantitativeSizeValue<T extends QuantitativeSize> =
   T extends `${infer N extends number}${SizeUnit}`
@@ -124,7 +124,7 @@ export type InferQuantitativeSizeValue<T extends QuantitativeSize> =
 export const inferQuantitativeSizeValue = <T extends QuantitativeSize>(
   value: T,
 ): InferQuantitativeSizeValue<T> => {
-  if (typeof value === "number") {
+  if (typeof value === 'number') {
     return value as InferQuantitativeSizeValue<T>;
   } else if (isStringUnitlessSize(value)) {
     const numeric = parseStringUnitlessSize(value);
@@ -138,27 +138,26 @@ export const inferQuantitativeSizeValue = <T extends QuantitativeSize>(
 };
 
 export type Size<U extends SizeUnit = SizeUnit, N extends UnitlessSize = UnitlessSize> =
-  | QuantitativeSize<U, N>
-  | QualitativeSize;
+  QualitativeSize | QuantitativeSize<U, N>;
 
 type SizeToStringRT<
-  T extends QuantitativeSize | UnitlessSize | QualitativeSize,
+  T extends QualitativeSize | QuantitativeSize | UnitlessSize,
   U extends SizeUnit,
 > = T extends UnitlessSize
   ? QuantitativeSizeString<U, InferQuantitativeSizeValue<T>>
-  : T extends QuantitativeSizeString | QualitativeSize
+  : T extends QualitativeSize | QuantitativeSizeString
     ? T
     : never;
 
 export function sizeToString<
-  T extends QuantitativeSize | UnitlessSize | QualitativeSize,
+  T extends QualitativeSize | QuantitativeSize | UnitlessSize,
   U extends SizeUnit,
 >(size: T, unit?: U): SizeToStringRT<T, U> {
   if (isQualitativeSize(size) || isQuantitativeSizeString(size, {})) {
     return size as SizeToStringRT<T, U>;
   } else if (unit === undefined) {
     throw new TypeError(
-      "Invalid Function Implementation: The unit must be provided for numeric values.",
+      'Invalid Function Implementation: The unit must be provided for numeric values.',
     );
   }
   return `${size}${unit}` as SizeToStringRT<T, U>;

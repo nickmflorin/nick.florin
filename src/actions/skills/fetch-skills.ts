@@ -1,25 +1,24 @@
-import type { ApiSkill, SkillIncludes } from "~/database/model";
-import { fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
-import { conditionalFilters } from "~/database/util";
+import { type ApiSkill, fieldIsIncluded, type SkillIncludes } from '~/database/model';
+import { db } from '~/database/prisma';
+import { conditionalFilters } from '~/database/util';
 
 import {
-  getSkillsOrdering,
+  type ActionCountParams,
+  type ActionFilterParams,
+  type ActionPaginationParams,
+  clampPagination,
   constructTableSearchClause,
+  getSkillsOrdering,
   PAGE_SIZES,
   type ServerSidePaginationParams,
-  clampPagination,
   type SkillsControls,
-  standardListFetchAction,
   type StandardFetchActionReturn,
-  type ActionCountParams,
-  type ActionPaginationParams,
-  type ActionFilterParams,
-} from "~/actions";
+  standardListFetchAction,
+} from '~/actions';
 
-const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<SkillsControls>) =>
+const filtersClause = ({ filterIsVisible, filters }: ActionFilterParams<SkillsControls>) =>
   conditionalFilters([
-    filters.search ? constructTableSearchClause("skill", filters.search) : undefined,
+    filters.search ? constructTableSearchClause('skill', filters.search) : undefined,
     filters.educations && filters.educations.length !== 0
       ? { educations: { some: { id: { in: filters.educations } } } }
       : undefined,
@@ -50,8 +49,8 @@ const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<SkillsCo
     { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<SkillsControls>) => {
-  const clause = filtersClause({ filters, filterIsVisible });
+const whereClause = ({ filterIsVisible, filters }: ActionFilterParams<SkillsControls>) => {
+  const clause = filtersClause({ filterIsVisible, filters });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -65,10 +64,10 @@ export const fetchSkillsCount = standardListFetchAction(
   ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    const count = await db.skill.count({ where: whereClause({ filters, filterIsVisible }) });
+    const count = await db.skill.count({ where: whereClause({ filterIsVisible, filters }) });
     return { count };
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchSkillsPagination = standardListFetchAction(
@@ -77,20 +76,20 @@ export const fetchSkillsPagination = standardListFetchAction(
     { filterIsVisible },
   ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.skill.count({
-      where: whereClause({ filters, filterIsVisible }),
+      where: whereClause({ filterIsVisible, filters }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.skill });
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
   standardListFetchAction(
     async (
-      { filters, ordering, page, limit, visibility }: Omit<SkillsControls<I>, "includes">,
+      { filters, limit, ordering, page, visibility }: Omit<SkillsControls<I>, 'includes'>,
       { filterIsVisible },
     ): StandardFetchActionReturn<ApiSkill<I>[]> => {
-      let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
+      let pagination: null | Omit<ServerSidePaginationParams, 'count'> = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchSkillsPagination(
           { filters, page, visibility },
@@ -98,7 +97,31 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
         ));
       }
       return (await db.skill.findMany({
-        where: whereClause({ filters, filterIsVisible }),
+        include: {
+          courses: fieldIsIncluded('courses', includes)
+            ? { where: { visible: filterIsVisible(filters.visible) } }
+            : undefined,
+          educations: fieldIsIncluded('educations', includes)
+            ? {
+                include: { school: true },
+                orderBy: { startDate: 'desc' },
+                where: {
+                  visible: filterIsVisible(filters.visible),
+                },
+              }
+            : undefined,
+          experiences: fieldIsIncluded('experiences', includes)
+            ? {
+                include: { company: true },
+                orderBy: { startDate: 'desc' },
+                where: { visible: filterIsVisible(filters.visible) },
+              }
+            : undefined,
+          projects: fieldIsIncluded('projects', includes),
+          repositories: fieldIsIncluded('repositories', includes)
+            ? { where: { visible: filterIsVisible(filters.visible) } }
+            : undefined,
+        },
         orderBy: getSkillsOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination
@@ -106,32 +129,8 @@ export const fetchSkills = <I extends SkillIncludes>(includes: I) =>
           : limit !== undefined && limit !== 0
             ? limit
             : undefined,
-        include: {
-          courses: fieldIsIncluded("courses", includes)
-            ? { where: { visible: filterIsVisible(filters.visible) } }
-            : undefined,
-          repositories: fieldIsIncluded("repositories", includes)
-            ? { where: { visible: filterIsVisible(filters.visible) } }
-            : undefined,
-          projects: fieldIsIncluded("projects", includes),
-          educations: fieldIsIncluded("educations", includes)
-            ? {
-                where: {
-                  visible: filterIsVisible(filters.visible),
-                },
-                include: { school: true },
-                orderBy: { startDate: "desc" },
-              }
-            : undefined,
-          experiences: fieldIsIncluded("experiences", includes)
-            ? {
-                where: { visible: filterIsVisible(filters.visible) },
-                include: { company: true },
-                orderBy: { startDate: "desc" },
-              }
-            : undefined,
-        },
+        where: whereClause({ filterIsVisible, filters }),
       })) as ApiSkill<I>[];
     },
-    { authenticated: false, adminOnly: false },
+    { adminOnly: false, authenticated: false },
   );

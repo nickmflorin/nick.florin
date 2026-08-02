@@ -1,16 +1,16 @@
-"use server";
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { calculateSkillsExperience, DetailEntityType } from "~/database/model";
-import { db } from "~/database/prisma";
-import { logger } from "~/internal/logger";
+'use server';
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { calculateSkillsExperience, DetailEntityType } from '~/database/model';
+import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const deleteEducation = async (
   id: string,
 ): Promise<MutationActionResponse<{ message: string }>> => {
-  const { error, user, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -19,29 +19,29 @@ export const deleteEducation = async (
     };
   }
   const education = await db.education.findUnique({
-    where: { id },
     include: { skills: true },
+    where: { id },
   });
   if (!education) {
     return { error: ApiClientGlobalError.NotFound({}).json };
   }
   return await db.$transaction(async tx => {
     const details = await tx.detail.findMany({
-      where: { entityType: DetailEntityType.EDUCATION, entityId: education.id },
       include: { nestedDetails: true, skills: true },
+      where: { entityId: education.id, entityType: DetailEntityType.EDUCATION },
     });
     const nestedDetails = await tx.nestedDetail.findMany({
-      where: { detailId: { in: details.map(d => d.id) } },
       include: { skills: true },
+      where: { detailId: { in: details.map(d => d.id) } },
     });
     if (details.length !== 0) {
       logger.info(
         `The education being deleted is associated with ${details.length} details, which ` +
-          "will also be deleted.",
-        { educationId: education.id, details: details.map(d => d.id) },
+          'will also be deleted.',
+        { details: details.map(d => d.id), educationId: education.id },
       );
       const result = await tx.detail.deleteMany({
-        where: { entityType: DetailEntityType.EDUCATION, entityId: education.id },
+        where: { entityId: education.id, entityType: DetailEntityType.EDUCATION },
       });
       logger.info(`Deleted ${result.count} details associated with the education being deleted.`, {
         educationId: education.id,
@@ -49,16 +49,16 @@ export const deleteEducation = async (
     }
     if (nestedDetails.length !== 0) {
       logger.info(
-        `The education being deleted is associated with ${details.length} nested detail(s), which ` +
-          "will also be deleted.",
-        { educationId: education.id, details: details.map(d => d.id) },
+        `The education being deleted is associated with ${details.length} nested detail(s), ` +
+          'which will also be deleted.',
+        { details: details.map(d => d.id), educationId: education.id },
       );
       const nestedResult = await tx.nestedDetail.deleteMany({
         where: { detailId: { in: nestedDetails.map(d => d.id) } },
       });
       logger.info(
         `Deleted ${nestedResult.count} nested details associated with the education ` +
-          "being deleted.",
+          'being deleted.',
         { educationId: education.id },
       );
     }
@@ -71,6 +71,6 @@ export const deleteEducation = async (
     await tx.education.delete({ where: { id } });
     await calculateSkillsExperience(tx, skillIds, { user });
 
-    return { data: { message: "Success" } };
+    return { data: { message: 'Success' } };
   });
 };

@@ -1,33 +1,31 @@
-import type { JSX } from "react";
+import { type ChangeEvent, type JSX } from 'react';
 
-import { isFragment } from "react-is";
+import { isFragment } from 'react-is';
 
-import { TextInput } from "~/components/input/TextInput";
-import { type ComponentProps, classNames } from "~/components/types";
+import { TextInput } from '~/components/input/TextInput';
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface MenuHeaderProps extends ComponentProps {
   readonly children?: JSX.Element;
+  readonly onSearch?: (e: ChangeEvent<HTMLInputElement>, v: string) => void;
   readonly search?: string;
-  readonly onSearch?: (e: React.ChangeEvent<HTMLInputElement>, v: string) => void;
 }
 
 export const MenuHeader = ({
   children,
-  search,
   onSearch,
+  search,
   ...props
-}: MenuHeaderProps): JSX.Element => {
-  /* Note: We may want to allow the search to be uncontrolled here - but that would require state
-     and turning this into a client component. */
+}: MenuHeaderProps): JSX.Element | null => {
   if ((children && !isFragment(children)) || search || onSearch) {
     return (
-      <div {...props} className={classNames("menu__header", props.className)}>
+      <div {...props} className={classNames('menu__header', props.className)}>
         {onSearch && (
-          <TextInput value={search} size="small" onChange={e => onSearch(e, e.target.value)} />
+          <TextInput onChange={e => onSearch(e, e.target.value)} size='small' value={search} />
         )}
         {children}
       </div>
     );
   }
-  return <></>;
+  return null;
 };

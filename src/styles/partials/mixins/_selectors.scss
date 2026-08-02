@@ -1,13 +1,14 @@
-@use "sass:selector";
+@use 'sass:selector';
 
-@use "../functions" as fn;
+@use '../functions' as fn;
 
 /// A selector that behaves as if all of the provided selectors have been applied.
 ///
 /// @param {list} $selectors
 ///   The selectors which should be applied.
 /// @param {selector} $base
-///   An optionally provided base that the selector will apply to.  If not provided, defaults to the parent selector, &.
+///   An optionally provided base that the selector will apply to.  If not provided, defaults to the
+///   parent selector, &.
 /// @param {string} $prefix
 ///   An optionally provided prefix that the provided selectors should be modified to include.
 ///
@@ -40,7 +41,8 @@
 /// @param {list} $selectors
 ///   The selectors which should be negated.
 /// @param {selector} $base
-///   An optionally provided base that the negation will apply to.  If not provided, defaults to the parent selector, &.
+///   An optionally provided base that the negation will apply to.  If not provided, defaults to the
+///   parent selector, &.
 /// @param {string} $prefix
 ///   An optionally provided prefix that the provided selectors should be modified to include.
 ///
@@ -57,13 +59,13 @@
 /// }
 @mixin without-selectors($selectors, $base: null, $prefix: null) {
   $joined: fn.join-selectors($selectors, $prefix: $prefix);
-  $nots: selector.parse(":not(#{$joined})");
+  $nots: selector.parse(':not(#{$joined})');
   @if not $base or $base == & {
     @at-root #{selector.unify(&, $nots)} {
       @content;
     }
   } @else {
-    $nots: selector.parse(":not(#{$joined})");
+    $nots: selector.parse(':not(#{$joined})');
     #{selector.unify($base, $nots)} {
       @content;
     }

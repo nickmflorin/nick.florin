@@ -1,49 +1,49 @@
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import type { MutationActionResponse } from "~/actions";
+import { type MutationActionResponse } from '~/actions';
 
-import { Dialog } from "~/components/dialogs/Dialog";
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import type { DataTableDatum } from "~/components/tables";
+import { Dialog } from '~/components/dialogs/Dialog';
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
+import { type DataTableDatum } from '~/components/tables';
 
 export interface DeleteConfirmationDialogProps<M extends DataTableDatum, T> {
-  readonly isOpen: boolean;
-  readonly data: M[];
-  readonly modelName?: string;
   readonly action: (ids: string[]) => Promise<MutationActionResponse<T>>;
+  readonly data: M[];
+  readonly isOpen: boolean;
+  readonly modelName?: string;
+  readonly onCancel: () => void;
   readonly onClose: () => void;
   readonly onSuccess: () => void;
-  readonly onCancel: () => void;
 }
 
 export const DeleteConfirmationDialog = <M extends DataTableDatum, T>({
-  isOpen,
-  data,
-  modelName = "row",
   action,
-  onSuccess,
+  data,
+  isOpen,
+  modelName = 'row',
   onCancel,
   onClose,
+  onSuccess,
 }: DeleteConfirmationDialogProps<M, T>) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [pending, transition] = useTransition();
-  const { refresh } = useRouter();
+  const router = useRouter();
 
   if (data.length === 0) {
-    return <></>;
+    return null;
   }
-  const reference = `${modelName.toLowerCase()}${data.length === 1 ? "" : "s"}`;
+  const reference = `${modelName.toLowerCase()}${data.length === 1 ? '' : 's'}`;
 
   return (
-    <Dialog.Provider isOpen={isOpen} onClose={onClose}>
-      <Dialog className="w-[500px]">
+    <Dialog.Root isOpen={isOpen} onClose={onClose}>
+      <Dialog className='w-[500px]'>
         <Dialog.Close />
-        <Dialog.Title>Confirmirmation</Dialog.Title>
+        <Dialog.Title>Confirmation</Dialog.Title>
         <Dialog.Content>
           <Dialog.Description>
             {`You are about to delete ${data.length} ${reference}. Would you like to continue?`}
@@ -51,9 +51,6 @@ export const DeleteConfirmationDialog = <M extends DataTableDatum, T>({
         </Dialog.Content>
         <Dialog.Footer>
           <ButtonFooter
-            submitText="Delete"
-            submitButtonType="button"
-            orientation="full-width"
             isSubmitting={isDeleting || pending}
             onCancel={onCancel}
             onSubmit={async () => {
@@ -77,17 +74,18 @@ export const DeleteConfirmationDialog = <M extends DataTableDatum, T>({
                 } else {
                   toast.success(`Successfully deleted the ${reference}.`);
                   transition(() => {
-                    refresh();
-                    onSuccess?.();
+                    router.refresh();
+                    onSuccess();
                   });
                 }
               }
             }}
+            orientation='full-width'
+            submitButtonType='button'
+            submitText='Delete'
           />
         </Dialog.Footer>
       </Dialog>
-    </Dialog.Provider>
+    </Dialog.Root>
   );
 };
-
-export default DeleteConfirmationDialog;

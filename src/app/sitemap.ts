@@ -1,19 +1,19 @@
-import { type MetadataRoute } from "next";
+import { type MetadataRoute } from 'next';
 
-import { db } from "~/database/prisma";
+import { db } from '~/database/prisma';
 
-import { environment } from "~/environment";
+import { environment } from '~/environment';
 
-const toSiteUrl = (path: `/${string}` = "/"): string => {
-  const siteUrl = environment.get("SITE_URL");
-  if (siteUrl.endsWith("/")) {
+const toSiteUrl = (path: `/${string}` = '/'): string => {
+  const siteUrl = environment.get('SITE_URL');
+  if (siteUrl.endsWith('/')) {
     return `${siteUrl.slice(0, -1)}${path}`;
   }
   return `${siteUrl}${path}`;
 };
 
 const getLastUpdatedEducation = async () => {
-  const educations = await db.education.findMany({ orderBy: { updatedAt: "desc" } });
+  const educations = await db.education.findMany({ orderBy: { updatedAt: 'desc' } });
   if (educations.length > 0) {
     return educations[0].updatedAt;
   }
@@ -21,52 +21,58 @@ const getLastUpdatedEducation = async () => {
 };
 
 const getLastUpdatedExperience = async () => {
-  const educations = await db.experience.findMany({ orderBy: { updatedAt: "desc" } });
+  const educations = await db.experience.findMany({ orderBy: { updatedAt: 'desc' } });
   if (educations.length > 0) {
     return educations[0].updatedAt;
   }
   return new Date();
 };
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  /* Note: The last-updated values here are not truly indicative of when the page would have last
-     changed, because there are relational models that can be changed that would not trigger the
-     core model to refresh it's last updated date.  For now, this suffices. */
-  const baseUrls = [
+/**
+ * Returns the sitemap entries that are not derived from the set of projects.
+ *
+ * The last-modified values are not truly indicative of when a page last changed, because
+ * relational models can change without the core model refreshing its own last-modified date. This
+ * approximation suffices for the sitemap's purposes.
+ */
+const getBaseUrls = async () =>
+  [
     {
+      changeFrequency: 'monthly',
+      lastModified: new Date(),
+      priority: 1,
       url: toSiteUrl(),
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 1,
     },
     {
-      url: toSiteUrl("/dashboard"),
+      changeFrequency: 'weekly',
       lastModified: new Date(),
-      changeFrequency: "weekly",
       priority: 1,
+      url: toSiteUrl('/dashboard'),
     },
     {
-      url: toSiteUrl("/resume/experience"),
+      changeFrequency: 'monthly',
       lastModified: await getLastUpdatedExperience(),
-      changeFrequency: "monthly",
       priority: 1,
+      url: toSiteUrl('/resume/experience'),
     },
     {
-      url: toSiteUrl("/resume/education"),
+      changeFrequency: 'monthly',
       lastModified: await getLastUpdatedEducation(),
-      changeFrequency: "monthly",
       priority: 1,
+      url: toSiteUrl('/resume/education'),
     },
   ] as const;
 
-  const projects = await db.project.findMany({ orderBy: { updatedAt: "desc" } });
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrls = await getBaseUrls();
+  const projects = await db.project.findMany({ orderBy: { updatedAt: 'desc' } });
   return [
     ...baseUrls,
     ...projects.map(({ slug, updatedAt }) => ({
-      url: toSiteUrl(`/projects/${slug}`),
+      changeFrequency: 'monthly' as const,
       lastModified: updatedAt,
-      changeFrequency: "monthly" as const,
       priority: 0.8,
+      url: toSiteUrl(`/projects/${slug}`),
     })),
   ];
 }

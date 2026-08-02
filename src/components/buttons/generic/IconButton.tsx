@@ -1,54 +1,56 @@
-import { forwardRef, type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { capitalize } from "~/lib/formatters";
+import { capitalize } from '~/lib/formatters';
 
-import * as types from "~/components/buttons";
-import { toIconSize, getButtonSizeStyle } from "~/components/buttons/util";
-import { type IconName, type IconProp, isIconProp } from "~/components/icons";
-import { Icon } from "~/components/icons/Icon";
-import Spinner from "~/components/icons/Spinner";
+import * as types from '~/components/buttons';
 import {
-  classNames,
+  getButtonSizeStyle,
+  toDiscreteIconSize,
+  toDiscreteSize,
+  toIconSize,
+} from '~/components/buttons/util';
+import { type IconName, type IconProp, isIconProp } from '~/components/icons';
+import { Icon } from '~/components/icons/Icon';
+import { Spinner } from '~/components/icons/Spinner';
+import {
   type ClassName,
-  sizeToString,
-  type QuantitativeSize,
+  classNames,
   type ComponentProps,
   parseDataAttributes,
-} from "~/components/types";
+  type QuantitativeSize,
+  sizeToString,
+} from '~/components/types';
 
-import { AbstractButton } from "./AbstractButton";
+import { AbstractButton } from './AbstractButton';
 
-export type IconButtonProps<E extends types.ButtonElement> = Omit<
-  types.AbstractButtonProps<E>,
-  "buttonType"
-> & {
-  readonly tight?: boolean;
+export type IconButtonProps<E extends types.ButtonElement> = {
   readonly children?: ReactNode;
   readonly icon?: IconName | IconProp | JSX.Element;
-  readonly spinnerClassName?: ComponentProps["className"];
-  readonly iconClassName?: ComponentProps["className"];
+  readonly iconClassName?: ComponentProps['className'];
   readonly iconSize?: types.ButtonIconSize;
-  readonly spinnerSize?: QuantitativeSize<"px">;
+  readonly isTight?: boolean;
   readonly size?: types.ButtonSize;
+  readonly spinnerClassName?: ComponentProps['className'];
+  readonly spinnerSize?: QuantitativeSize<'px'>;
   readonly variant?: types.IconButtonVariant;
-};
+} & Omit<types.AbstractButtonProps<E>, 'buttonType'>;
 
 interface WithLoadingProps {
   readonly children: ReactNode;
-  readonly isLoading?: boolean;
-  readonly iconSize?: types.ButtonIconSize;
-  readonly spinnerSize?: QuantitativeSize<"px">;
-  readonly spinnerClassName?: ClassName;
   readonly iconClassName?: ClassName;
+  readonly iconSize?: types.ButtonIconSize;
+  readonly isLoading?: boolean;
+  readonly spinnerClassName?: ClassName;
+  readonly spinnerSize?: QuantitativeSize<'px'>;
 }
 
 const WithLoading = ({
   children,
-  isLoading,
-  spinnerSize,
-  iconSize,
   iconClassName,
+  iconSize,
+  isLoading,
   spinnerClassName,
+  spinnerSize,
 }: WithLoadingProps): JSX.Element => {
   if (isLoading) {
     return (
@@ -62,108 +64,93 @@ const WithLoading = ({
   return <>{children}</>;
 };
 
-const LocalIconButton = forwardRef(
-  <E extends types.ButtonElement>(
-    {
-      children,
-      icon,
-      iconClassName,
-      spinnerSize,
-      spinnerClassName,
-      iconSize,
-      tight = false,
-      size,
-      variant,
-      ...props
-    }: IconButtonProps<E>,
-    ref: types.PolymorphicButtonRef<E>,
-  ) => {
-    const ps = { ...props, buttonType: "icon-button", ref } as types.AbstractButtonProps<E> & {
-      readonly ref?: types.PolymorphicButtonRef<E>;
-    };
-    return (
-      <AbstractButton
-        {...ps}
-        {...parseDataAttributes({
-          tight,
-          variant: variant ?? "transparent",
-          /* Only include the size data attribute if the size conforms to a standardized, discrete
-             size option (e.g. "sm", "md", "lg", etc.).  If it does not, it is a numeric size, and
-             should be incorporated into the element via inline styles. */
-          size: types.ButtonDiscreteSizes.contains(size) ? size : undefined,
-          /* Only include the icon size data attribute if the icon size conforms to a standardized,
-             discrete size option (e.g. "sm", "md", "lg", etc.).  If it does not, it is a numeric
-             size, and should be incorporated into the element via inline styles. */
-          iconSize:
-            iconSize && types.ButtonDiscreteIconSizes.contains(iconSize) ? iconSize : undefined,
-        })}
-        style={{ ...props.style, ...getButtonSizeStyle({ size }) }}
-      >
-        <div className="button__content">
-          {children ? (
-            <WithLoading
-              isLoading={props.isLoading}
-              iconSize={iconSize}
-              spinnerSize={spinnerSize}
-              iconClassName={iconClassName}
-              spinnerClassName={spinnerClassName}
-            >
-              {children}
-            </WithLoading>
-          ) : isIconProp(icon) || typeof icon === "string" ? (
-            <Icon
-              className={iconClassName}
-              spinnerClassName={spinnerClassName}
-              icon={icon}
-              isLoading={props.isLoading}
-              fit="square"
-              dimension="height"
-              spinnerSize={spinnerSize}
-              size={
-                iconSize !== undefined && !types.ButtonDiscreteIconSizes.contains(iconSize)
-                  ? sizeToString(iconSize, "px")
-                  : undefined
-              }
-            />
-          ) : (
-            <WithLoading
-              isLoading={props.isLoading}
-              iconSize={iconSize}
-              iconClassName={iconClassName}
-              spinnerSize={spinnerSize}
-              spinnerClassName={spinnerClassName}
-            >
-              {icon}
-            </WithLoading>
-          )}
-        </div>
-      </AbstractButton>
-    );
-  },
-) as {
-  <E extends types.ButtonElement>(
-    props: IconButtonProps<E> & { readonly ref?: types.PolymorphicButtonRef<E> },
-  ): JSX.Element;
+const LocalIconButton = <E extends types.ButtonElement>({
+  children,
+  icon,
+  iconClassName,
+  iconSize,
+  isTight = false,
+  ref,
+  size,
+  spinnerClassName,
+  spinnerSize,
+  variant,
+  ...props
+}: { readonly ref?: types.PolymorphicButtonRef<E> } & IconButtonProps<E>): JSX.Element => {
+  const ps = { ...props, buttonType: 'icon-button', ref } as {
+    readonly ref?: types.PolymorphicButtonRef<E>;
+  } & types.AbstractButtonProps<E>;
+  return (
+    <AbstractButton
+      {...ps}
+      {...parseDataAttributes({
+        iconSize: toDiscreteIconSize(iconSize),
+        size: toDiscreteSize(size),
+        tight: isTight,
+        variant: variant ?? 'transparent',
+      })}
+      style={{ ...props.style, ...getButtonSizeStyle({ size }) }}
+    >
+      <div className='button__content'>
+        {children ? (
+          <WithLoading
+            iconClassName={iconClassName}
+            iconSize={iconSize}
+            isLoading={props.isLoading}
+            spinnerClassName={spinnerClassName}
+            spinnerSize={spinnerSize}
+          >
+            {children}
+          </WithLoading>
+        ) : isIconProp(icon) || typeof icon === 'string' ? (
+          <Icon
+            className={iconClassName}
+            dimension='height'
+            fit='square'
+            icon={icon}
+            isLoading={props.isLoading}
+            size={
+              iconSize !== undefined && !types.ButtonDiscreteIconSizes.contains(iconSize)
+                ? sizeToString(iconSize, 'px')
+                : undefined
+            }
+            spinnerClassName={spinnerClassName}
+            spinnerSize={spinnerSize}
+          />
+        ) : (
+          <WithLoading
+            iconClassName={iconClassName}
+            iconSize={iconSize}
+            isLoading={props.isLoading}
+            spinnerClassName={spinnerClassName}
+            spinnerSize={spinnerSize}
+          >
+            {icon}
+          </WithLoading>
+        )}
+      </div>
+    </AbstractButton>
+  );
 };
 
-type VariantPartial = {
-  <E extends types.ButtonElement>(
-    props: Omit<IconButtonProps<E>, "variant"> & {
-      readonly ref?: types.PolymorphicButtonRef<E>;
-    },
-  ): JSX.Element;
-};
+type VariantPartial = <E extends types.ButtonElement>(
+  props: {
+    readonly ref?: types.PolymorphicButtonRef<E>;
+  } & Omit<IconButtonProps<E>, 'variant'>,
+) => JSX.Element;
 
-type WithVariants = { [key in Capitalize<types.IconButtonVariant>]: VariantPartial };
+type WithVariants = Record<Capitalize<types.IconButtonVariant>, VariantPartial>;
 
-const withVariants = types.ButtonVariants["icon-button"].members.reduce<WithVariants>(
+const withVariants = types.ButtonVariants['icon-button'].members.reduce<WithVariants>(
   (acc, variant) => ({
     ...acc,
-    [capitalize(variant)]: forwardRef(
-      <E extends types.ButtonElement>(
-        props: Omit<IconButtonProps<E>, "variant">,
-        ref: types.PolymorphicButtonRef<E>,
-      ) => <LocalIconButton<E> {...({ ...props, variant } as IconButtonProps<E>)} ref={ref} />,
+    [capitalize(variant)]: <E extends types.ButtonElement>({
+      ref,
+      ...props
+    }: {
+      readonly ref?: types.PolymorphicButtonRef<E>;
+    } & Omit<IconButtonProps<E>, 'variant'>) => (
+      <LocalIconButton<E> {...{ ...props, variant }} ref={ref} />
     ),
   }),
   {} as WithVariants,

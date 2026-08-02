@@ -1,11 +1,14 @@
-import { forwardRef } from "react";
+import { type Ref } from 'react';
 
-import { FilterButton, type FilterButtonProps, type FilterButtonInstance } from "./FilterButton";
+import { FilterButton, type FilterButtonInstance, type FilterButtonProps } from './FilterButton';
 
-export interface HighlightedFilterButtonProps
-  extends Omit<FilterButtonProps, "icons" | "classNames"> {}
+export interface HighlightedFilterButtonProps extends Omit<
+  FilterButtonProps,
+  'classNames' | 'icons' | 'ref'
+> {
+  readonly ref?: Ref<FilterButtonInstance>;
+}
 
-export const HighlightedFilterButton = forwardRef<
-  FilterButtonInstance,
-  HighlightedFilterButtonProps
->((props, ref) => <FilterButton {...props} icons={{ true: "star", false: "ban" }} ref={ref} />);
+export const HighlightedFilterButton = ({ ref, ...props }: HighlightedFilterButtonProps) => (
+  <FilterButton {...props} icons={{ false: 'ban', true: 'star' }} ref={ref} />
+);

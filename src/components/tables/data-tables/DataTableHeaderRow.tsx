@@ -1,56 +1,58 @@
-import type { JSX } from "react";
+import { type JSX, type MouseEvent } from 'react';
 
-import { type Ordering } from "~/lib/ordering";
+import { type Ordering } from '~/lib/ordering';
 
-import type { TableHeaderRowProps } from "~/components/tables/generic/TableHeaderRow";
-import { TableHeaderRow } from "~/components/tables/generic/TableHeaderRow";
-import type * as types from "~/components/tables/types";
+import {
+  TableHeaderRow,
+  type TableHeaderRowProps,
+} from '~/components/tables/generic/TableHeaderRow';
+import type * as types from '~/components/tables/types';
 
-import { TableHeaderCell } from "../generic/TableHeaderCell";
+import { TableHeaderCell } from '../generic/TableHeaderCell';
 
-import { DataTableHeaderCell } from "./DataTableHeaderCell";
+import { DataTableHeaderCell } from './DataTableHeaderCell';
 
 export interface DataTableHeaderRowProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
-> extends Omit<TableHeaderRowProps, "children"> {
+> extends Omit<TableHeaderRowProps, 'children'> {
+  readonly areRowsSelectable?: boolean;
   readonly columns: C[];
   readonly excludeColumns?: types.TableColumnId<C>[];
-  readonly ordering?: Ordering<types.OrderableTableColumnId<C>> | null;
-  readonly rowsHaveActions?: boolean;
-  readonly rowsAreSelectable?: boolean;
-  readonly onSort?: (event: React.MouseEvent<unknown>, col: C) => void;
+  readonly hasRowActions?: boolean;
+  readonly onSort?: (event: MouseEvent<unknown>, col: C) => void;
+  readonly ordering?: null | Ordering<types.OrderableTableColumnId<C>>;
 }
 
 export const DataTableHeaderRow = <
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 >({
+  areRowsSelectable,
   columns,
-  ordering,
-  rowsHaveActions,
-  rowsAreSelectable,
   excludeColumns = [],
+  hasRowActions,
   onSort,
+  ordering,
   ...props
 }: DataTableHeaderRowProps<D, C>): JSX.Element => (
   <TableHeaderRow {...props}>
-    {rowsAreSelectable && <TableHeaderCell align="center" width={40} maxWidth={40} minWidth={40} />}
+    {areRowsSelectable && <TableHeaderCell align='center' maxWidth={40} minWidth={40} width={40} />}
     {columns
       .filter(col => !excludeColumns.includes(col.id))
       .map(column => (
         <DataTableHeaderCell<D, C>
-          key={column.id}
           column={column}
           isOrdered={ordering?.orderBy === column.id}
-          order={ordering?.orderBy === column.id ? ordering.order : null}
+          key={column.id}
           onSort={e => {
             if (column.isOrderable && onSort) {
               onSort(e, column);
             }
           }}
+          order={ordering?.orderBy === column.id ? ordering.order : null}
         />
       ))}
-    {rowsHaveActions && <TableHeaderCell align="center" width={60} maxWidth={60} minWidth={60} />}
+    {hasRowActions && <TableHeaderCell align='center' maxWidth={60} minWidth={60} width={60} />}
   </TableHeaderRow>
 );

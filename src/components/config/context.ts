@@ -1,27 +1,29 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
-import { type INavMenuContext, type INavigationContext, type IUserProfileContext } from "./types";
+import { noop } from 'lodash-es';
+
+import { type INavigationContext, type INavMenuContext, type IUserProfileContext } from './types';
 
 export const NavigationContext = createContext<INavigationContext>({
-  isInScope: false,
-  pendingItem: null,
-  isPending: () => false,
   isActive: () => false,
-  setNavigating: () => {},
+  isInScope: false,
+  isPending: () => false,
+  pendingItem: null,
+  setNavigating: noop,
 });
 
 export const NavMenuContext = createContext<INavMenuContext>({
+  close: noop,
   isInScope: false,
   isOpen: false,
-  open: () => {},
-  close: () => {},
-  toggle: () => {},
-  setIsOpen: () => {},
+  open: noop,
+  setIsOpen: noop,
+  toggle: noop,
 });
 
 export const UserProfileContext = createContext<IUserProfileContext>({
+  close: noop,
   isInScope: false,
   isOpen: false,
-  open: () => {},
-  close: () => {},
+  open: noop,
 });

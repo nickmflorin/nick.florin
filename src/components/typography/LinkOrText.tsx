@@ -1,58 +1,58 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { Link } from "~/components/buttons";
-import { Tooltip, type TooltipProps } from "~/components/floating/Tooltip";
+import { Link } from '~/components/buttons';
+import { Tooltip, type TooltipProps } from '~/components/floating/Tooltip';
 import {
   classNames,
-  type FontSize,
   type ComponentProps,
-  type FontWeight,
   type FontFamily,
-} from "~/components/types";
+  type FontSize,
+  type FontWeight,
+} from '~/components/types';
 
-import { Text } from "./Text";
+import { Text } from './Text';
 
 export interface LinkOrTextProps extends ComponentProps {
-  readonly url?: string | null;
   readonly children: string;
-  readonly tooltip?: string;
-  readonly tooltipPlacement?: TooltipProps["placement"];
+  readonly fontFamily?: FontFamily;
   readonly fontSize?: FontSize;
   readonly fontWeight?: FontWeight;
-  readonly textClassName?: ComponentProps["className"];
-  readonly linkClassName?: ComponentProps["className"];
-  readonly fontFamily?: FontFamily;
+  readonly linkClassName?: ComponentProps['className'];
+  readonly textClassName?: ComponentProps['className'];
+  readonly tooltip?: string;
+  readonly tooltipPlacement?: TooltipProps['placement'];
+  readonly url?: null | string;
 }
 
 export const LinkOrText = ({
   children,
-  url,
-  tooltip,
-  tooltipPlacement = "bottom-end",
-  fontSize = "md",
-  textClassName,
+  fontFamily = 'inter',
+  fontSize = 'md',
+  fontWeight = 'medium',
   linkClassName,
-  fontFamily = "inter",
-  fontWeight = "medium",
+  textClassName,
+  tooltip,
+  tooltipPlacement = 'bottom-end',
+  url,
   ...props
 }: LinkOrTextProps): JSX.Element => {
   if (url) {
     if (tooltip) {
       return (
         <Tooltip content={tooltip} placement={tooltipPlacement}>
-          {({ ref, params }) => (
+          {({ params, ref }) => (
             <Link
               {...params}
               {...props}
-              ref={ref}
               className={classNames(props.className, linkClassName)}
-              href={url}
-              fontSize={fontSize}
+              element='a'
               fontFamily={fontFamily}
+              fontSize={fontSize}
               fontWeight={fontWeight}
-              element="a"
+              href={url}
               openInNewTab
+              ref={ref}
             >
               {children}
             </Link>
@@ -64,11 +64,11 @@ export const LinkOrText = ({
       <Link
         {...props}
         className={classNames(props.className, linkClassName)}
-        href={url}
-        fontSize={fontSize}
+        element='a'
         fontFamily={fontFamily}
+        fontSize={fontSize}
         fontWeight={fontWeight}
-        element="a"
+        href={url}
         openInNewTab
       >
         {children}
@@ -79,8 +79,8 @@ export const LinkOrText = ({
     <Text
       {...props}
       className={classNames(props.className, textClassName)}
-      fontSize={fontSize}
       fontFamily={fontFamily}
+      fontSize={fontSize}
       fontWeight={fontWeight}
     >
       {children}

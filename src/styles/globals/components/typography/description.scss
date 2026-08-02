@@ -1,11 +1,11 @@
-@use "partials";
+@use 'partials';
 
-@use "./base" as *;
-@use "./constants" as constants;
-@use "./mixins" as mixins;
+@use './base' as *;
+@use './constants' as constants;
+@use './mixins' as mixins;
 
 @mixin description-base() {
-  @include mixins.font("description", constants.get-default-size("description"));
+  @include mixins.font('description', constants.get-default-size('description'));
 }
 
 .description {
@@ -14,20 +14,20 @@
 }
 
 span.description,
-div.description[data-attr-inherit="true"],
-p.description[data-attr-inherit="true"] {
+div.description[data-attr-inherit='true'],
+p.description[data-attr-inherit='true'] {
   @include mixins.inherit-font-properties();
 
   @include mixins.with-font-weights();
   @include mixins.with-font-transforms();
-  @include mixins.with-fonts("description");
+  @include mixins.with-fonts('description');
 }
 
-div.description:not([data-attr-inherit="true"]),
-p.description:not([data-attr-inherit="true"]) {
+div.description:not([data-attr-inherit='true']),
+p.description:not([data-attr-inherit='true']) {
   @include description-base();
 
   @include mixins.with-font-weights();
   @include mixins.with-font-transforms();
-  @include mixins.with-fonts("description");
+  @include mixins.with-fonts('description');
 }

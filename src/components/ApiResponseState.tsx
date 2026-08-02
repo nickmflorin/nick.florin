@@ -1,48 +1,44 @@
-import { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { type ApiError } from "~/api";
+import { type ApiError } from '~/api';
 
-import { type SpinnerProps } from "~/components/icons";
+import { type SpinnerProps } from '~/components/icons';
 
-import { State } from "./State";
+import { State } from './State';
 
 export interface ApiResponseViewProps<T> {
-  readonly error?: string | null | ApiError;
-  readonly isLoading?: boolean;
-  readonly isInitialLoading?: boolean;
+  readonly areChildrenHiddenOnError?: boolean;
+  readonly children: ((data: T) => ReactNode) | ReactNode;
   readonly data?: T;
+  readonly error?: ApiError | null | string;
+  readonly isInitialLoading?: boolean;
+  readonly isLoading?: boolean;
   readonly skeleton?: JSX.Element;
-  readonly hideChildrenOnError?: boolean;
-  readonly spinnerSize?: Exclude<SpinnerProps["size"], "full">;
-  readonly children: ReactNode | ((data: T) => ReactNode);
+  readonly spinnerSize?: Exclude<SpinnerProps['size'], 'full'>;
 }
 
 export const ApiResponseState = <T,>({
-  error,
-  isLoading,
-  spinnerSize,
-  data,
-  isInitialLoading,
-  hideChildrenOnError = true,
-  skeleton,
+  areChildrenHiddenOnError = true,
   children,
+  data,
+  error,
+  isInitialLoading,
+  isLoading,
+  skeleton,
+  spinnerSize,
 }: ApiResponseViewProps<T>): JSX.Element => (
   <State
-    isLoading={isLoading}
+    areChildrenHiddenOnError={areChildrenHiddenOnError}
     error={error}
-    hideChildrenOnError={hideChildrenOnError}
+    isLoading={isLoading}
     loadingProps={{ spinnerSize }}
   >
-    {isInitialLoading ? (
-      skeleton
-    ) : typeof children === "function" ? (
-      data ? (
-        children(data)
-      ) : (
-        <></>
-      )
-    ) : (
-      children
-    )}
+    {isInitialLoading
+      ? skeleton
+      : typeof children === 'function'
+        ? data
+          ? children(data)
+          : null
+        : children}
   </State>
 );

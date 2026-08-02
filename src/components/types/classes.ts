@@ -1,8 +1,7 @@
 /* eslint-disable-next-line no-restricted-imports */
-import clsx, { type ClassArray, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import clsx, { type ClassArray, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-export type ClassName = ClassValue | ClassArray;
+export type ClassName = ClassArray | ClassValue;
 
-export const classNames = (...classNames: ClassName[]): string =>
-  twMerge(classNames.map(c => clsx(c)));
+export const classNames = (...classes: ClassName[]): string => twMerge(classes.map(c => clsx(c)));

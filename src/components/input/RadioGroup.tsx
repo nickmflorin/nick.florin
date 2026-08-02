@@ -1,30 +1,30 @@
-import { Radio } from "./Radio";
+import { Radio } from './Radio';
 
-type RadioGroupValue = string | number | readonly string[];
+type RadioGroupValue = number | readonly string[] | string;
 
 type RadioGroupDatum<V extends RadioGroupValue> = {
-  readonly value: V;
   readonly label: string;
+  readonly value: V;
 };
 
 export interface RadioGroupProps<T extends RadioGroupDatum<RadioGroupValue>> {
   readonly data: T[];
-  readonly value: T["value"];
-  readonly onChange: (v: T["value"]) => void;
+  readonly onChange: (v: T['value']) => void;
+  readonly value: T['value'];
 }
 
 export const RadioGroup = <T extends RadioGroupDatum<RadioGroupValue>>({
   data,
-  value,
   onChange,
+  value,
 }: RadioGroupProps<T>) => (
-  <div className="flex flex-row gap-[10px]">
-    {data.map(({ value: radioValue, label }, i) => (
+  <div className='flex flex-row gap-[10px]'>
+    {data.map(({ label, value: radioValue }, i) => (
       <Radio
-        key={i}
-        value={value}
-        onClick={() => onChange(radioValue)}
         checked={radioValue === value}
+        key={i}
+        onClick={() => onChange(radioValue)}
+        value={value}
       >
         {label}
       </Radio>

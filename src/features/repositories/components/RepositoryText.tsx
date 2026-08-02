@@ -1,22 +1,21 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandRepository } from "~/database/model";
+import { type BrandRepository } from '~/database/model';
 
-import { classNames } from "~/components/types";
-import type { TextProps } from "~/components/typography";
-import { Text } from "~/components/typography";
+import { classNames } from '~/components/types';
+import { Text, type TextProps } from '~/components/typography';
 
-export type RepositoryTextProps = Omit<TextProps<"div">, "children"> & {
+export type RepositoryTextProps = {
   readonly repository: BrandRepository;
-};
+} & Omit<TextProps<'div'>, 'children'>;
 
 export const RepositoryText = ({ repository, ...props }: RepositoryTextProps): JSX.Element => (
   <Text
-    fontWeight="medium"
-    fontSize="sm"
+    fontSize='sm'
+    fontWeight='medium'
     {...props}
-    component="div"
-    className={classNames("text-blue-900", props.className)}
+    className={classNames('text-blue-900', props.className)}
+    component='div'
   >
     {repository.slug}
   </Text>

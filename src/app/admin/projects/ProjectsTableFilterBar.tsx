@@ -1,14 +1,14 @@
-import { Suspense, type JSX } from "react";
+import { type JSX, Suspense } from 'react';
 
-import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
-import { fetchSkills } from "~/actions/skills/fetch-skills";
+import { fetchRepositories } from '~/actions/repositories/fetch-repositories';
+import { fetchSkills } from '~/actions/skills/fetch-skills';
 
-import { ProjectsTableFilterBar as ClientProjectsTableFilterBar } from "~/features/projects/components/tables/ProjectsTableFilterBar";
+import { ProjectsTableFilterBar as ClientProjectsTableFilterBar } from '~/features/projects/components/tables/ProjectsTableFilterBar';
 
 const getSkills = async () => {
   const skillsFetcher = fetchSkills([]);
   const { data: skills } = await skillsFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
 
@@ -18,7 +18,7 @@ const getSkills = async () => {
 const getRepositories = async () => {
   const repositoriesFetcher = fetchRepositories([]);
   const { data: repositories } = await repositoriesFetcher(
-    { visibility: "admin", filters: {} },
+    { filters: {}, visibility: 'admin' },
     { strict: true },
   );
   return repositories;

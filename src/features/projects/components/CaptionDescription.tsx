@@ -1,26 +1,28 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { classNames } from "~/components/types";
-import { Description, type DescriptionProps } from "~/components/typography/Description";
+import { classNames } from '~/components/types';
+import { Description, type DescriptionProps } from '~/components/typography/Description';
 
-export interface CaptionDescriptionProps
-  extends Omit<DescriptionProps<"div">, "fontSize" | "component"> {
-  readonly centered?: boolean;
+export interface CaptionDescriptionProps extends Omit<
+  DescriptionProps<'div'>,
+  'component' | 'fontSize'
+> {
+  readonly isCentered?: boolean;
 }
 
 export const CaptionDescription = ({
   children,
-  centered = false,
+  isCentered = false,
   ...props
 }: CaptionDescriptionProps): JSX.Element => (
   <Description
     {...props}
-    component="div"
     className={classNames(
-      "text-sm max-md:text-xs text-left text-[#a4a4a4]",
-      { "w-full": !centered, "text-center": centered },
+      'text-sm max-md:text-xs text-left text-[#a4a4a4]',
+      { 'text-center': isCentered, 'w-full': !isCentered },
       props.className,
     )}
+    component='div'
   >
     {children}
   </Description>

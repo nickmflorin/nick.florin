@@ -1,9 +1,9 @@
-@use "sass:list";
-@use "sass:map";
+@use 'sass:list';
+@use 'sass:map';
 
-@use "partials";
+@use 'partials';
 
-@use "./constants" as constants;
+@use './constants' as constants;
 
 @mixin button-base() {
   @include partials.transition(none);

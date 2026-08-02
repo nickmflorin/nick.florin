@@ -1,15 +1,15 @@
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
-import { type BrandEducation, type BrandSchool } from "./brand";
-import { type ConditionallyInclude } from "./inclusion";
+import { type BrandEducation, type BrandSchool } from './brand';
+import { type ConditionallyInclude } from './inclusion';
 
-export const SchoolIncludesFields = enumeratedLiterals(["educations"] as const, {});
+export const SchoolIncludesFields = enumeratedLiterals(['educations'] as const, {});
 export type SchoolIncludesField = EnumeratedLiteralsMember<typeof SchoolIncludesFields>;
 
-export type SchoolIncludes = ["educations"] | [];
+export type SchoolIncludes = SchoolIncludesField[];
 
 export type ApiSchool<I extends SchoolIncludes> = ConditionallyInclude<
-  BrandSchool & { readonly educations: BrandEducation[] },
-  ["educations"],
+  { readonly educations: BrandEducation[] } & BrandSchool,
+  ['educations'],
   I
 >;

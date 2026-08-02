@@ -1,30 +1,30 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { type ComponentProps, classNames } from "~/components/types";
-import { sizeToString, type QuantitativeSize } from "~/components/types/sizes";
+import { classNames, type ComponentProps } from '~/components/types';
+import { type QuantitativeSize, sizeToString } from '~/components/types/sizes';
 
 export interface CheckboxesProps extends ComponentProps {
-  readonly orientation?: "horizontal" | "vertical";
-  readonly gap?: QuantitativeSize<"px">;
   readonly children: ReactNode;
-  readonly outer?: boolean;
+  readonly gap?: QuantitativeSize<'px'>;
+  readonly hasOuterMargin?: boolean;
+  readonly orientation?: 'horizontal' | 'vertical';
 }
 
 export const Checkboxes = ({
-  gap = "16px",
-  outer = false,
   children,
-  orientation = "horizontal",
+  gap = '16px',
+  hasOuterMargin = false,
+  orientation = 'horizontal',
   ...props
 }: CheckboxesProps) => (
   <div
     {...props}
-    className={classNames("flex", {
-      "flex-row": orientation === "horizontal",
-      "flex-col": orientation === "vertical",
-      "mt-[6px]": outer,
+    className={classNames('flex', {
+      'flex-col': orientation === 'vertical',
+      'flex-row': orientation === 'horizontal',
+      'mt-[6px]': hasOuterMargin,
     })}
-    style={{ gap: sizeToString(gap, "px") }}
+    style={{ gap: sizeToString(gap, 'px') }}
   >
     {children}
   </div>

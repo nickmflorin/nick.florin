@@ -1,8 +1,8 @@
-import type React from "react";
+import { type CSSProperties } from 'react';
 
-import { type ClassName } from "./classes";
+import { type ClassName } from './classes';
 
-export type Style = React.CSSProperties;
+export type Style = CSSProperties;
 
 export type ComponentProps = {
   readonly className?: ClassName;

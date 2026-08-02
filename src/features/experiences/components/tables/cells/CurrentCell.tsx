@@ -1,11 +1,14 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { updateExperience } from "~/actions/experiences/update-experience";
+import { updateExperience } from '~/actions/experiences/update-experience';
 
-import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";
-import type * as types from "~/components/tables/types";
-import type { ExperiencesTableModel, ExperiencesTableColumn } from "~/features/experiences/types";
+import { CheckboxCell } from '~/components/tables/cells/CheckboxCell';
+import type * as types from '~/components/tables/types';
+import {
+  type ExperiencesTableColumn,
+  type ExperiencesTableModel,
+} from '~/features/experiences/types';
 
 interface CurrentCellProps {
   readonly experience: ExperiencesTableModel;
@@ -14,10 +17,10 @@ interface CurrentCellProps {
 
 export const CurrentCell = ({ experience, table }: CurrentCellProps): JSX.Element => (
   <CheckboxCell
-    attribute="isCurrent"
+    action={async (id, value) => await updateExperience(id, { isCurrent: value })}
+    attribute='isCurrent'
+    errorMessage='There was an error updating the experience.'
     model={experience}
     table={table}
-    errorMessage="There was an error updating the experience."
-    action={async (id, value) => await updateExperience(id, { isCurrent: value })}
   />
 );

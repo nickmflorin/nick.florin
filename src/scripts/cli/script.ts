@@ -1,8 +1,9 @@
-import { db } from "~/database/prisma";
-import { stdout } from "~/support";
+import { isError } from '~/application/errors';
+import { db } from '~/database/prisma';
+import { stdout } from '~/support';
 
-import * as context from "./context";
-import * as errors from "./errors";
+import * as context from './context';
+import * as errors from './errors';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 type Fn<A extends any[], R> = (...args: A) => R;
@@ -10,7 +11,7 @@ type Fn<A extends any[], R> = (...args: A) => R;
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export function inDevRestrictedEnv<A extends any[], R>(fn: Fn<A, R>): Fn<A, R> {
   return function (...args: A) {
-    if (process.env.NODE_ENV !== "development") {
+    if (process.env.NODE_ENV !== 'development') {
       throw new errors.CommandLineDevOnlyError();
     }
     return fn(...args);
@@ -25,7 +26,7 @@ interface RunScriptOptions {
 export type Script = (context: context.ScriptContext) => Promise<void>;
 
 export const runScript = async (fn: Script, opts?: RunScriptOptions) => {
-  if (opts?.devOnly && process.env.NODE_ENV !== "development") {
+  if (opts?.devOnly && process.env.NODE_ENV !== 'development') {
     return stdout.error(new errors.CommandLineDevOnlyError());
   }
 
@@ -34,12 +35,12 @@ export const runScript = async (fn: Script, opts?: RunScriptOptions) => {
     await fn(ctx);
   };
 
-  modified()
+  await modified()
     .then(async () => {
       await db.$disconnect();
     })
-    .catch(async e => {
-      stdout.error(e);
+    .catch(async (e: unknown) => {
+      stdout.error(isError(e) ? e : String(e));
       await db.$disconnect();
       process.exit(1);
     });

@@ -1,43 +1,43 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
 import {
   classNames,
-  sizeToString,
   type ComponentProps,
   type QuantitativeSize,
-} from "~/components/types";
+  sizeToString,
+} from '~/components/types';
 
 export interface ContentProps extends ComponentProps {
   readonly children: ReactNode;
-  readonly scrollable?: boolean;
-  readonly outerClassName?: ComponentProps["className"];
-  readonly padding?: QuantitativeSize<"px">;
+  readonly isScrollable?: boolean;
+  readonly outerClassName?: ComponentProps['className'];
+  readonly padding?: QuantitativeSize<'px'>;
 }
 
 export const Content = ({
   children,
-  padding,
+  isScrollable,
   outerClassName,
-  scrollable,
+  padding,
   ...props
 }: ContentProps) => (
   <div
     className={classNames(
-      "content",
+      'content',
       {
-        "overflow-y-auto": scrollable,
-        "overflow-y-hidden": scrollable === false,
+        'overflow-y-auto': isScrollable,
+        'overflow-y-hidden': isScrollable === false,
       },
       outerClassName,
     )}
   >
     <div
       {...props}
-      className={classNames("content__scroll-viewport", props.className)}
+      className={classNames('content__scroll-viewport', props.className)}
       style={{
         ...props.style,
-        paddingTop: padding ? sizeToString(padding, "px") : props.style?.paddingTop,
-        paddingBottom: padding ? sizeToString(padding, "px") : props.style?.paddingBottom,
+        paddingBottom: padding ? sizeToString(padding, 'px') : props.style?.paddingBottom,
+        paddingTop: padding ? sizeToString(padding, 'px') : props.style?.paddingTop,
       }}
     >
       {children}

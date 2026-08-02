@@ -1,19 +1,19 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { EnumeratedLiteralsModel } from "enumerated-literals";
+import { type EnumeratedLiteralsModel } from 'enumerated-literals';
 
 import {
   type BrandSkill,
-  type ProgrammingLanguages,
   type ProgrammingLanguage,
-} from "~/database/model";
+  type ProgrammingLanguages,
+} from '~/database/model';
 
-import { updateSkill } from "~/actions/skills/update-skill";
+import { updateSkill } from '~/actions/skills/update-skill';
 
-import { SelectCell } from "~/components/tables/cells/SelectCell";
-import type * as types from "~/components/tables/types";
-import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
-import type { SkillsTableModel, SkillsTableColumn } from "~/features/skills/types";
+import { SelectCell } from '~/components/tables/cells/SelectCell';
+import type * as types from '~/components/tables/types';
+import { ProgrammingLanguageSelect } from '~/features/skills/components/input/ProgrammingLanguageSelect';
+import { type SkillsTableColumn, type SkillsTableModel } from '~/features/skills/types';
 
 interface ProgrammingLanguagesCellProps {
   readonly skill: SkillsTableModel;
@@ -25,19 +25,19 @@ export const ProgrammingLanguagesCell = ({
   table,
 }: ProgrammingLanguagesCellProps): JSX.Element => (
   <SelectCell<
-    "multi",
+    'multi',
     EnumeratedLiteralsModel<typeof ProgrammingLanguages>,
     SkillsTableModel,
     ProgrammingLanguage,
     BrandSkill
   >
-    component={ProgrammingLanguageSelect}
-    table={table}
-    behavior="multi"
-    attribute="programmingLanguages"
-    value={skill.programmingLanguages}
-    row={skill}
     action={async v => await updateSkill(skill.id, { programmingLanguages: v })}
-    errorMessage="There was an error updating the skill."
+    attribute='programmingLanguages'
+    behavior='multi'
+    component={ProgrammingLanguageSelect}
+    errorMessage='There was an error updating the skill.'
+    row={skill}
+    table={table}
+    value={skill.programmingLanguages}
   />
 );

@@ -1,40 +1,38 @@
-import { type Prisma } from "~/database/model";
-import { modelHasField } from "~/database/model/util";
+import { type Prisma } from '~/database/model';
+import { modelHasField } from '~/database/model/util';
+import { isRecordType } from '~/lib/typeguards';
 
 type UpdateAction = Extract<Prisma.PrismaAction, `update${string}`>;
 
-const UPDATE_ACTIONS: UpdateAction[] = ["update", "updateMany"];
-const UPDATE_OR_UPSERT_ACTIONS: (UpdateAction | "upsert")[] = [...UPDATE_ACTIONS, "upsert"];
+const UPDATE_ACTIONS: UpdateAction[] = ['update', 'updateMany'];
+const UPDATE_OR_UPSERT_ACTIONS: ('upsert' | UpdateAction)[] = [...UPDATE_ACTIONS, 'upsert'];
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const getUpdateData = (args: any, action: UpdateAction | "upsert") =>
-  ({
-    upsert: args.update,
-    update: args.data,
-    updateMany: args.data,
-  })[action];
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const updateDataHasField = (field: string, args: any, action: UpdateAction | "upsert"): boolean => {
-  const data = getUpdateData(args, action);
-  if (typeof data === "object" && data !== null && data[field] !== undefined) {
-    return true;
+const getUpdateData = (args: unknown, action: 'upsert' | UpdateAction): unknown => {
+  if (isRecordType(args)) {
+    return action === 'upsert' ? args.update : args.data;
   }
-  return false;
+  return undefined;
 };
 
-const FIELDS_REQUIRED_ON_UPDATE = ["updatedById"];
-const FIELDS_PROHIBITED_ON_UPDATE = ["createdById", "createdAt", "assignedAt"];
+const updateDataHasField = (
+  field: string,
+  args: unknown,
+  action: 'upsert' | UpdateAction,
+): boolean => {
+  const data = getUpdateData(args, action);
+  return isRecordType(data) && data[field] !== undefined;
+};
 
-export const ModelMetaDataMiddleware: Prisma.Middleware = async (
-  { action, model, args, ...params },
-  next,
-) => {
-  if (UPDATE_OR_UPSERT_ACTIONS.includes(action as UpdateAction | "upsert") && model) {
+const FIELDS_REQUIRED_ON_UPDATE = ['updatedById'];
+const FIELDS_PROHIBITED_ON_UPDATE = ['createdById', 'createdAt', 'assignedAt'];
+
+export const ModelMetaDataMiddleware: Prisma.Middleware<unknown> = async (params, next) => {
+  const { action, model } = params;
+  if (UPDATE_OR_UPSERT_ACTIONS.includes(action as 'upsert' | UpdateAction) && model) {
     for (const field of FIELDS_REQUIRED_ON_UPDATE) {
       if (
         modelHasField(model, field) &&
-        !updateDataHasField(field, args, action as UpdateAction | "upsert")
+        !updateDataHasField(field, params.args, action as 'upsert' | UpdateAction)
       ) {
         throw new Error(
           `For action '${action}' on model '${model}', the field '${field}' is required.`,
@@ -44,7 +42,7 @@ export const ModelMetaDataMiddleware: Prisma.Middleware = async (
     for (const field of FIELDS_PROHIBITED_ON_UPDATE) {
       if (
         modelHasField(model, field) &&
-        updateDataHasField(field, args, action as UpdateAction | "upsert")
+        updateDataHasField(field, params.args, action as 'upsert' | UpdateAction)
       ) {
         throw new Error(
           `For action '${action}' on model '${model}', the field '${field}' is prohibited.`,
@@ -52,5 +50,5 @@ export const ModelMetaDataMiddleware: Prisma.Middleware = async (
       }
     }
   }
-  return next({ ...params, action, model, args });
+  return next(params);
 };

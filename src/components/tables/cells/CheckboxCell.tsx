@@ -1,18 +1,16 @@
-import { useRouter } from "next/navigation";
-import { useTransition, useState, useEffect, type JSX } from "react";
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect, useState, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { type MutationActionResponse } from "~/actions";
+import { type MutationActionResponse } from '~/actions';
 
-import { Checkbox } from "~/components/input/Checkbox";
-import type * as types from "~/components/tables/types";
+import { Checkbox } from '~/components/input/Checkbox';
+import type * as types from '~/components/tables/types';
 
-type CheckboxCellModel<N extends string> = { id: string; $kind: string } & {
-  [key in N]: boolean;
-};
+type CheckboxCellModel<N extends string> = { $kind: string; id: string } & Record<N, boolean>;
 
 type CheckboxCellAction<T> = (id: string, value: boolean) => Promise<MutationActionResponse<T>>;
 
@@ -22,11 +20,11 @@ interface CheckboxCellProps<
   C extends types.DataTableColumnConfig<M>,
   T,
 > {
-  readonly model: M;
-  readonly table: types.CellDataTableInstance<M, C>;
+  readonly action: CheckboxCellAction<T>;
   readonly attribute: N;
   readonly errorMessage: string;
-  readonly action: CheckboxCellAction<T>;
+  readonly model: M;
+  readonly table: types.CellDataTableInstance<M, C>;
 }
 
 export const CheckboxCell = <
@@ -35,11 +33,11 @@ export const CheckboxCell = <
   C extends types.DataTableColumnConfig<M>,
   T,
 >({
-  model,
-  table,
+  action,
   attribute,
   errorMessage,
-  action,
+  model,
+  table,
 }: CheckboxCellProps<M, N, C, T>): JSX.Element => {
   const router = useRouter();
   const [_, transition] = useTransition();
@@ -51,9 +49,8 @@ export const CheckboxCell = <
 
   return (
     <Checkbox
-      value={checked}
+      isChecked={checked}
       onChange={async evt => {
-        // Set checked state optimistically.
         setChecked(evt.target.checked);
         table.setRowLoading(model.id, true);
 

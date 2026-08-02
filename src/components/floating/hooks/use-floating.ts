@@ -1,66 +1,75 @@
-import { useState, useMemo, useCallback } from "react";
+import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 
 import {
+  autoUpdate as autoUpdater,
+  type Middleware,
   type Placement,
   useFloating as rootUseFloating,
-  useInteractions,
-  useHover,
   useClick,
   useDismiss,
-  autoUpdate as autoUpdater,
+  useHover,
+  useInteractions,
   useRole,
-  type Middleware,
-} from "@floating-ui/react";
+} from '@floating-ui/react';
 
-import * as types from "~/components/floating/types";
+import * as types from '~/components/floating/types';
+
+/**
+ * Determines the options passed to the "dismiss" interaction of the floating element.
+ *
+ * If "dismiss" is explicitly included as a trigger, the options defined for that trigger are used.
+ * Otherwise, if "click" is a trigger, the default options for the "dismiss" trigger are used,
+ * enabled only when "click" is present.
+ */
+const getDismissOptions = (triggers: types.FloatingTrigger[]) =>
+  types.hasFloatingTrigger(triggers, 'dismiss')
+    ? { ...types.parseFloatingTriggerOptions(triggers, 'dismiss'), enabled: true }
+    : { enabled: types.hasFloatingTrigger(triggers, 'click') };
 
 export interface UseFloatingConfig {
-  readonly isOpen?: boolean;
+  /**
+   * Whether the floating element's position auto-updates when the reference or floating element
+   * resizes, scrolls, or otherwise moves.
+   *
+   * This should not be blindly turned on, as it can cause performance degradation.
+   *
+   * @default false
+   */
+  readonly autoUpdate?: boolean;
   readonly debug?: boolean;
   readonly initiallyIsOpen?: boolean;
-  readonly autoUpdate?: boolean;
-  readonly triggers?: types.FloatingTrigger[];
-  readonly placement?: Placement;
-  readonly middleware?: Array<Middleware | null | undefined | false>;
-  readonly onOpen?: (
-    e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => void;
+  readonly isOpen?: boolean;
+  readonly middleware?: (false | Middleware | null | undefined)[];
   readonly onClose?: (
-    e: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement, MouseEvent>,
+    e: Event | MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement>,
   ) => void;
+  readonly onOpen?: (e: Event | MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement>) => void;
   readonly onOpenChange?: (
     value: boolean,
-    evt: Event | React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement, MouseEvent>,
+    evt: Event | MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement>,
   ) => void;
+  readonly placement?: Placement;
+  readonly triggers?: types.FloatingTrigger[];
 }
 
 export const useFloating = ({
-  // Note: This should not be blindly turned on because it can cause performance degradation.
   autoUpdate = false,
-  triggers = ["hover"],
-  isOpen: propIsOpen,
-  placement,
-  middleware,
   initiallyIsOpen = false,
-  onOpen,
+  isOpen: propIsOpen,
+  middleware,
   onClose,
+  onOpen,
   onOpenChange,
+  placement,
+  triggers = ['hover'],
 }: UseFloatingConfig): types.FloatingContext => {
-  const [_isOpen, _setIsOpen] = useState(initiallyIsOpen);
+  const [internalIsOpen, setInternalIsOpen] = useState(initiallyIsOpen);
 
-  /* Allow the open state of the floating element to be controlled externally to the component if
-     desired. */
-  const isOpen = propIsOpen === undefined ? _isOpen : propIsOpen;
+  const isOpen = propIsOpen ?? internalIsOpen;
 
   const setIsOpen = useCallback(
-    (
-      v: boolean,
-      evt:
-        | Event
-        | React.MouseEvent<HTMLButtonElement>
-        | React.MouseEvent<HTMLDivElement, MouseEvent>,
-    ) => {
-      _setIsOpen(v);
+    (v: boolean, evt: Event | MouseEvent<HTMLButtonElement> | MouseEvent<HTMLDivElement>) => {
+      setInternalIsOpen(v);
       onOpenChange?.(v, evt);
       if (v === true) {
         onOpen?.(evt);
@@ -71,49 +80,40 @@ export const useFloating = ({
     [onOpen, onClose, onOpenChange],
   );
 
-  const { refs, floatingStyles, context } = rootUseFloating({
-    open: isOpen,
-    whileElementsMounted: autoUpdate ? autoUpdater : undefined,
+  const { context, floatingStyles, refs } = rootUseFloating({
+    middleware,
     onOpenChange: (value: boolean, evt: Event) => {
-      /* TODO: We may have to expose this as a prop somehow - it may not be desirable behavior
-         for all use cases. */
-      if ((evt as KeyboardEvent).key !== "Enter") {
+      if ((evt as KeyboardEvent).key !== 'Enter') {
         setIsOpen(value, evt);
       }
     },
+    open: isOpen,
     placement,
-    middleware,
+    whileElementsMounted: autoUpdate ? autoUpdater : undefined,
   });
 
-  const dismiss = useDismiss(
-    context,
-    /* If "dismiss" is explicitly included as a trigger, use the options defined for that trigger.
-       Otherwise, if "click" is a trigger, use the default options for the "dismiss" trigger. */
-    types.hasFloatingTrigger(triggers, "dismiss")
-      ? { ...types.parseFloatingTriggerOptions(triggers, "dismiss"), enabled: true }
-      : { enabled: types.hasFloatingTrigger(triggers, "click") },
-  );
-  const role = useRole(context, types.parseFloatingTriggerOptions(triggers, "role"));
-  const hover = useHover(context, types.parseFloatingTriggerOptions(triggers, "hover"));
+  const dismiss = useDismiss(context, getDismissOptions(triggers));
+  const role = useRole(context, types.parseFloatingTriggerOptions(triggers, 'role'));
+  const hover = useHover(context, types.parseFloatingTriggerOptions(triggers, 'hover'));
 
   /* If the floating element's open state is being controlled externally, we do not want it to
      automatically change when the reference element is clicked. */
-  const click = useClick(context, types.parseFloatingTriggerOptions(triggers, "click"));
+  const click = useClick(context, types.parseFloatingTriggerOptions(triggers, 'click'));
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss, role]);
+  const { getFloatingProps, getReferenceProps } = useInteractions([hover, click, dismiss, role]);
 
   const referenceProps = useMemo(() => getReferenceProps(), [getReferenceProps]);
   const floatingProps = useMemo(() => getFloatingProps(), [getFloatingProps]);
 
   return useMemo(
     () => ({
-      setIsOpen,
-      referenceProps,
-      floatingProps,
       context,
-      refs,
+      floatingProps,
       floatingStyles,
       isOpen,
+      referenceProps,
+      refs,
+      setIsOpen,
     }),
     [isOpen, floatingProps, floatingStyles, context, refs, referenceProps, setIsOpen],
   );

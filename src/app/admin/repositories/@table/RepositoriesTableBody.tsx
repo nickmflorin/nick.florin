@@ -1,43 +1,43 @@
-import dynamic from "next/dynamic";
-import type { JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX } from 'react';
 
-import { type RepositoriesControls, type RepositoriesFilters } from "~/actions";
-import { fetchRepositories } from "~/actions/repositories/fetch-repositories";
+import { type RepositoriesControls, type RepositoriesFilters } from '~/actions';
+import { fetchRepositories } from '~/actions/repositories/fetch-repositories';
 
-import { Loading } from "~/components/loading/Loading";
-import { RepositoriesTableControlBarPlaceholder } from "~/features/repositories/components/tables/RepositoriesTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { RepositoriesTableControlBarPlaceholder } from '~/features/repositories/components/tables/RepositoriesTableControlBarPlaceholder';
 
 const ClientRepositoriesTableBody = dynamic(
   () =>
-    import("~/features/repositories/components/tables/RepositoriesTableBody").then(
+    import('~/features/repositories/components/tables/RepositoriesTableBody').then(
       mod => mod.RepositoriesTableBody,
     ),
   {
     loading: () => (
       <>
         <RepositoriesTableControlBarPlaceholder />
-        <Loading isLoading component="tbody" />
+        <Loading component='tbody' isLoading />
       </>
     ),
   },
 );
 
 const getRepositories = async ({
-  page,
   filters,
   ordering,
+  page,
 }: {
   readonly filters: RepositoriesFilters;
+  readonly ordering: RepositoriesControls['ordering'];
   readonly page: number;
-  readonly ordering: RepositoriesControls["ordering"];
 }) => {
-  const fetcher = fetchRepositories(["skills", "projects"]);
+  const fetcher = fetchRepositories(['skills', 'projects']);
   const { data: repositories } = await fetcher(
     {
       filters,
       ordering,
       page,
-      visibility: "admin",
+      visibility: 'admin',
     },
     { strict: true },
   );
@@ -46,15 +46,15 @@ const getRepositories = async ({
 
 export interface RepositoriesTableBodyProps {
   readonly filters: RepositoriesFilters;
+  readonly ordering: RepositoriesControls['ordering'];
   readonly page: number;
-  readonly ordering: RepositoriesControls["ordering"];
 }
 
 export const RepositoriesTableBody = async ({
   filters,
-  page,
   ordering,
+  page,
 }: RepositoriesTableBodyProps): Promise<JSX.Element> => {
-  const repositories = await getRepositories({ page, filters, ordering });
+  const repositories = await getRepositories({ filters, ordering, page });
   return <ClientRepositoriesTableBody data={repositories} />;
 };

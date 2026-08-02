@@ -1,13 +1,13 @@
-import type { User } from "~/database/model";
-import { type Transaction } from "~/database/prisma";
+import { type User } from '~/database/model';
+import { type Transaction } from '~/database/prisma';
 
-import { environment } from "~/environment";
+import { environment } from '~/environment';
 
-import * as types from "./types";
+import * as types from './types';
 
 interface SyncRepositoriesParams {
-  readonly user: User;
   readonly tx: Transaction;
+  readonly user: User;
 }
 
 export class GithubClient<U extends string> {
@@ -20,35 +20,30 @@ export class GithubClient<U extends string> {
   async fetchRepositories(): Promise<types.GithubRepo<U>[]> {
     const url = `${types.GITHUB_BASE_URL}/users/${this.username}/repos`;
     const response = await fetch(url);
-    return await response.json();
+    const data: unknown = await response.json();
+    /* The GitHub API's response body is not validated against the model that describes it, so the
+       shape of the response is asserted rather than narrowed. */
+    return data as types.GithubRepo<U>[];
   }
 
   async syncRepositories({ tx, user }: SyncRepositoriesParams): Promise<void> {
     const githubRepos = await this.fetchRepositories();
     for (const repo of githubRepos) {
+      /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+         order, against a shared transaction client. */
       const existing = await tx.repository.findUnique({ where: { slug: repo.name } });
-      if (existing) {
-        if (existing.description === undefined || existing.startDate === undefined) {
-          await tx.repository.update({
-            where: { id: existing.id },
-            data: {
-              description: existing.description ?? repo.description,
-              startDate: existing.startDate ?? new Date(repo.created_at),
-              createdBy: { connect: { id: user.id } },
-              updatedBy: { connect: { id: user.id } },
-            },
-          });
-        }
-      } else {
+      if (!existing) {
+        /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+           order, against a shared transaction client. */
         await tx.repository.create({
           data: {
-            slug: repo.name,
-            description: repo.description,
-            startDate: new Date(repo.created_at),
             createdBy: { connect: { id: user.id } },
+            description: repo.description,
+            highlighted: false,
+            slug: repo.name,
+            startDate: new Date(repo.created_at),
             updatedBy: { connect: { id: user.id } },
             visible: false,
-            highlighted: false,
           },
         });
       }
@@ -56,5 +51,5 @@ export class GithubClient<U extends string> {
   }
 }
 
-const username = environment.get("GITHUB_USERNAME");
+const username = environment.get('GITHUB_USERNAME');
 export const githubClient = new GithubClient(username);

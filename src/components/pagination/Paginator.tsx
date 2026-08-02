@@ -1,57 +1,64 @@
-"use client";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+'use client';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
 
-import { Pagination } from "@mantine/core";
-import { clamp } from "lodash-es";
-import { z } from "zod";
+import { Pagination } from '@mantine/core';
+import { clamp } from 'lodash-es';
+import { z } from 'zod';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
-export interface PaginatorProps extends Pick<ComponentProps, "className"> {
+export interface PaginatorProps extends Pick<ComponentProps, 'className'> {
   readonly count: number;
   readonly pageSize?: number;
 }
 
-/* Note: We will eventually be replacing usage of Mantine's Pagination component here with our own
-   internal Pagination component.  We should also consider incorporating the ability to change
-   page size. */
+/**
+ * The total page count passed to the paginator.
+ *
+ * The paginator disappears if its `total` is set to `0`, so the value is clamped to a minimum of
+ * `1`.
+ */
+const getPaginatorTotal = (count: number, pageSize: number): number =>
+  Math.max(1, Math.ceil(count / clamp(pageSize, 1, 100)));
+
+/**
+ * Returns the page that the paginator should show, clamped to the range that the count and page
+ * size allow.  A URL without a usable page falls back to the first page.
+ */
+const getActivePage = (
+  searchParams: URLSearchParams,
+  { count, pageSize }: { count: number; pageSize: number },
+): number => {
+  const parsed = z.coerce.number().int().positive().safeParse(searchParams.get('page'));
+  return parsed.success ? clamp(parsed.data, 1, Math.ceil(count / clamp(pageSize, 1, 100))) : 1;
+};
+
 export const Paginator = ({ count, pageSize = 10, ...props }: PaginatorProps) => {
-  const [activePage, _setPage] = useState(1);
   const searchParams = useSearchParams();
-  const { replace } = useRouter();
+  const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    const page = searchParams?.get("page");
-    if (page) {
-      const parsed = z.coerce.number().int().positive().safeParse(page);
-      if (parsed.success) {
-        _setPage(clamp(parsed.data, 1, Math.ceil(count / clamp(pageSize, 1, 100))));
-      }
-    }
-  }, [searchParams, pageSize, count]);
+  const activePage = getActivePage(new URLSearchParams(searchParams.toString()), {
+    count,
+    pageSize,
+  });
 
   const setPage = useCallback(
     (page: number) => {
-      _setPage(page);
-      const params = new URLSearchParams(searchParams?.toString());
-      params.set("page", page.toString());
-      replace(`${pathname}?${params.toString()}`);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', page.toString());
+      router.replace(`${pathname}?${params.toString()}`);
     },
-    [pathname, searchParams, replace],
+    [pathname, searchParams, router],
   );
 
   return (
     <Pagination
-      className={classNames("paginator", props.className)}
-      value={activePage}
+      className={classNames('paginator', props.className)}
       onChange={setPage}
-      // Setting the total to 0 causes the paginator to disappear.
-      total={Math.max(1, Math.ceil(count / clamp(pageSize, 1, 100)))}
+      total={getPaginatorTotal(count, pageSize)}
+      value={activePage}
     />
   );
 };
-
-export default Paginator;

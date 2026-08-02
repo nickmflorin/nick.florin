@@ -1,59 +1,58 @@
-import { useMemo, type JSX } from "react";
+import { type JSX, useMemo } from 'react';
 
-import { ensuresDefinedValue } from "~/lib/typeguards";
+import { ensuresDefinedValue } from '~/lib/typeguards';
 
-import { type ComponentProps, classNames } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
 import {
   type BaseFormValues,
   type FieldError,
   type FieldErrors,
-  type FormInstance,
   type FieldName,
-} from "../types";
+  type FormInstance,
+} from '../types';
 
-import { FormFieldError } from "./FieldError";
+import { FormFieldError } from './FieldError';
 
-type FieldFormErrorsProps<N extends FieldName<I>, I extends BaseFormValues> = ComponentProps & {
+type FieldFormErrorsProps<N extends FieldName<I>, I extends BaseFormValues> = {
+  readonly errors?: never;
   readonly form: FormInstance<I>;
   readonly name: N;
-  readonly errors?: never;
-};
+} & ComponentProps;
 
-type FieldExplicitErrorsProps = ComponentProps & {
+type FieldExplicitErrorsProps = {
+  readonly errors: FieldError[];
   readonly form?: never;
   readonly name?: never;
-  readonly errors: FieldError[];
-};
+} & ComponentProps;
 
 export type FormFieldErrorsProps<N extends FieldName<I>, I extends BaseFormValues> =
-  | FieldFormErrorsProps<N, I>
-  | FieldExplicitErrorsProps;
+  FieldExplicitErrorsProps | FieldFormErrorsProps<N, I>;
 
 export const FormFieldErrors = <N extends FieldName<I>, I extends BaseFormValues>({
+  errors: _errors = [],
   form,
   name,
-  errors: _errors = [],
   ...props
-}: FormFieldErrorsProps<N, I>): JSX.Element => {
+}: FormFieldErrorsProps<N, I>): JSX.Element | null => {
   const fieldErrors = useMemo(() => (form ? form.fieldErrors : undefined), [form]);
 
   const errors = useMemo(() => {
     if (fieldErrors) {
-      const _name = ensuresDefinedValue(Array.isArray(name) ? name[0] : name);
-      return fieldErrors?.[_name as keyof FieldErrors<I>] ?? [];
+      const _name = ensuresDefinedValue(name);
+      return fieldErrors[_name as keyof FieldErrors<I>] ?? [];
     }
     return _errors;
   }, [_errors, name, fieldErrors]);
 
   if (errors.length !== 0) {
     return (
-      <div {...props} className={classNames("flex flex-col gap-[2px]", props.className)}>
+      <div {...props} className={classNames('flex flex-col gap-[2px]', props.className)}>
         {errors.map((e, i) => (
           <FormFieldError key={i}>{e}</FormFieldError>
         ))}
       </div>
     );
   }
-  return <></>;
+  return null;
 };

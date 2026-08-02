@@ -1,20 +1,20 @@
-import { json } from "~/database/fixtures";
-import { type Project, type Skill } from "~/database/model";
-import { type Transaction, getUniqueConstraintFields } from "~/database/prisma";
-import { humanizeList, slugify } from "~/lib/formatters";
-import { type cli } from "~/scripts";
-import { stdout } from "~/support";
+import { json } from '~/database/fixtures';
+import { type Project, type Skill } from '~/database/model';
+import { getUniqueConstraintFields, type Transaction } from '~/database/prisma';
+import { humanizeList, slugify } from '~/lib/formatters';
+import { type cli } from '~/scripts';
+import { stdout } from '~/support';
 
-import { findCorresponding } from "./util";
+import { findCorresponding } from './util';
 
 export const findCorrespondingProjectSync = (name: string, projects: Project[]): Project =>
   findCorresponding(
     projects,
     { name, slug: name },
     {
-      field: ["name", "slug"],
+      field: ['name', 'slug'],
+      reference: 'skill',
       strict: true,
-      reference: "skill",
     },
   );
 
@@ -30,53 +30,52 @@ export async function seedProjects(tx: Transaction, ctx: cli.ScriptContext) {
     let projects: Project[] = [];
     for (let i = 0; i < json.projects.length; i++) {
       const {
-        skills: jsonSkills = [],
         repositories: jsonRepositories,
+        skills: jsonSkills = [],
         ...jsonProject
       } = json.projects[i];
 
       output.begin(`Generating Project: ${jsonProject.name}...`);
-      let project: Project & { readonly skills: Skill[] };
+      let project: { readonly skills: Skill[] } & Project;
       try {
+        /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+           order, against a shared transaction client. */
         project = await tx.project.create({
-          include: { skills: true },
           data: {
             ...jsonProject,
-            repositories: { connect: (jsonRepositories ?? []).map((slug: string) => ({ slug })) },
-            slug:
-              jsonProject.slug === undefined || jsonProject.slug === null
-                ? slugify(jsonProject.name)
-                : jsonProject.slug,
             createdById: ctx.user.id,
-            updatedById: ctx.user.id,
+            repositories: { connect: (jsonRepositories ?? []).map((slug: string) => ({ slug })) },
             skills: {
               connect: jsonSkills.map((skill: string) => ({ slug: skill })),
             },
+            slug: jsonProject.slug ?? slugify(jsonProject.name),
+            updatedById: ctx.user.id,
           },
+          include: { skills: true },
         });
       } catch (e) {
         const fields = getUniqueConstraintFields(e);
         if (fields !== null && fields.length !== 0) {
           throw new Error(
-            "The following field(s) are not unique: " +
-              humanizeList(fields, { conjunction: "and", formatter: field => `'${field}'` }),
+            'The following field(s) are not unique: ' +
+              humanizeList(fields, { conjunction: 'and', formatter: field => `'${field}'` }),
           );
         }
         throw e;
       }
       projects = [...projects, project];
 
-      output.complete("Successfully Generated Project", {
+      output.complete('Successfully Generated Project', {
+        count: [i, json.projects.length],
         lineItems: [
-          { label: "Name", value: project.name },
-          { label: "Slug", value: project.slug },
+          { label: 'Name', value: project.name },
+          { label: 'Slug', value: project.slug },
           {
-            label: "Skills",
-            items: project.skills.map(skill => ({ label: "Slug", value: skill.slug })),
             index: true,
+            items: project.skills.map(skill => ({ label: 'Slug', value: skill.slug })),
+            label: 'Skills',
           },
         ],
-        count: [i, json.projects.length],
       });
     }
     output.complete(`Successfully Generated ${projects.length} Project(s)`, {

@@ -1,12 +1,12 @@
-import { useContext } from "react";
+import { use } from 'react';
 
-import { DialogContext } from "../context";
+import { DialogContext } from '../context';
 
 export const useDialogContext = () => {
-  const context = useContext(DialogContext);
+  const context = use(DialogContext);
 
-  if (context == null) {
-    throw new Error("Dialog components must be wrapped in <Dialog />");
+  if (context === null) {
+    throw new Error('Dialog components must be wrapped in <Dialog.Root />');
   }
 
   return context;

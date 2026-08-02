@@ -1,51 +1,50 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { clamp } from "lodash-es";
+import { clamp } from 'lodash-es';
 
 import {
   classNames,
-  inferQuantitativeSizeValue,
-  sizeToString,
   type ComponentProps,
+  inferQuantitativeSizeValue,
   type QuantitativeSize,
-} from "~/components/types";
-import { BaseTypography, type BaseTypographyProps } from "~/components/typography/BaseTypography";
+  sizeToString,
+} from '~/components/types';
+import { BaseTypography, type BaseTypographyProps } from '~/components/typography/BaseTypography';
 
 export interface CircleNumberProps
-  extends ComponentProps,
-    Omit<BaseTypographyProps<"div">, "lineHeight" | "component"> {
+  extends ComponentProps, Omit<BaseTypographyProps<'div'>, 'component' | 'lineHeight'> {
+  readonly activeClassName?: ComponentProps['className'];
   readonly children: number | string;
-  readonly size?: QuantitativeSize<"px">;
+  readonly inactiveClassName?: ComponentProps['className'];
   readonly isActive?: boolean;
-  readonly activeClassName?: ComponentProps["className"];
-  readonly inactiveClassName?: ComponentProps["className"];
+  readonly size?: QuantitativeSize<'px'>;
 }
 
 export const CircleNumber = ({
-  children,
   activeClassName,
+  children,
   inactiveClassName,
   isActive = false,
-  size = "24px",
+  size = '24px',
   ...props
 }: CircleNumberProps): JSX.Element => (
   <BaseTypography
     {...props}
-    component="div"
     className={classNames(
-      "flex items-center justify-center rounded-full p-[2px]",
+      'flex items-center justify-center rounded-full p-[2px]',
       {
-        [classNames("bg-blue-700 text-white", activeClassName)]: isActive,
-        [classNames("bg-gray-300 text-body", inactiveClassName)]: !isActive,
+        [classNames('bg-blue-700 text-white', activeClassName)]: isActive,
+        [classNames('bg-gray-300 text-body', inactiveClassName)]: !isActive,
       },
       props.className,
     )}
+    component='div'
     style={{
       ...props.style,
-      height: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), "px"),
-      width: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), "px"),
-      aspectRatio: "1/1",
-      lineHeight: sizeToString(inferQuantitativeSizeValue(size) - 4, "px"),
+      aspectRatio: '1/1',
+      height: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), 'px'),
+      lineHeight: sizeToString(inferQuantitativeSizeValue(size) - 4, 'px'),
+      width: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), 'px'),
     }}
   >
     {children}

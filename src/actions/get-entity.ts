@@ -1,9 +1,9 @@
-import "server-only";
+import 'server-only';
 
-import { cache } from "react";
+import { cache } from 'react';
 
-import { type DetailEntity, DetailEntityType } from "~/database/model";
-import { db } from "~/database/prisma";
+import { type DetailEntity, DetailEntityType } from '~/database/model';
+import { db } from '~/database/prisma';
 
 export const getEntity = cache(
   async <T extends DetailEntityType>(

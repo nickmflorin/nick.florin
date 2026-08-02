@@ -1,112 +1,108 @@
-"use client";
-import dynamic from "next/dynamic";
-import React, { useEffect, type JSX, useRef, forwardRef, type ForwardedRef, useState } from "react";
+'use client';
+import dynamic from 'next/dynamic';
+import { type JSX, type Ref, useRef } from 'react';
 
-import { DateTime } from "luxon";
-import { type Optional } from "utility-types";
+import { DateTime } from 'luxon';
+import { type Optional } from 'utility-types';
 
-import { PopoverContent } from "~/components/floating/PopoverContent";
-import { Loading } from "~/components/loading/Loading";
-import { type ComponentProps } from "~/components/types";
+import { PopoverContent } from '~/components/floating/PopoverContent';
+import { Loading } from '~/components/loading/Loading';
+import { type ComponentProps } from '~/components/types';
 
-import { RootSelectInput, type RootSelectInputProps } from "../select/RootSelectInput";
+import { RootSelectInput, type RootSelectInputProps } from '../select/RootSelectInput';
 import {
   SelectPopover,
-  type SelectPopoverProps,
   type SelectPopoverInstance,
-} from "../select/SelectPopover";
+  type SelectPopoverProps,
+} from '../select/SelectPopover';
 
-import { toDateTime } from "./util";
+import { toDateTime } from './util';
 
-const DatePicker = dynamic(() => import("./DatePicker"), {
-  loading: () => <Loading isLoading={true} />,
+const DatePicker = dynamic(() => import('./DatePicker').then(mod => mod.DatePicker), {
+  loading: () => <Loading isLoading />,
 });
 
 export interface DateSelectProps
-  extends Optional<Omit<SelectPopoverProps, "content" | "isReady">, "children">,
-    Omit<RootSelectInputProps, "isOpen" | "dynamicHeight" | "children" | "showPlaceholder"> {
-  readonly value: Date | string | null;
-  readonly inputClassName?: ComponentProps["className"];
-  readonly closeMenuOnSelect?: boolean;
+  extends
+    Optional<Omit<SelectPopoverProps, 'content' | 'isReady' | 'ref'>, 'children'>,
+    Omit<
+      RootSelectInputProps,
+      'children' | 'hasDynamicHeight' | 'isOpen' | 'isPlaceholderVisible' | 'ref'
+    > {
   readonly formatString?: string;
+  readonly inputClassName?: ComponentProps['className'];
   readonly onChange?: (v: Date | null) => void;
+  readonly ref?: Ref<SelectPopoverInstance>;
+  readonly shouldCloseMenuOnSelect?: boolean;
+  readonly value: Date | null | string;
 }
 
-export const DateSelect = forwardRef(
-  (
-    {
-      children,
-      isLocked,
-      size,
-      isDisabled,
-      inputClassName,
-      actions,
-      placeholder,
-      value,
-      closeMenuOnSelect = true,
-      formatString = "yyyy-MM-dd",
-      onChange,
-      ...props
-    }: DateSelectProps,
-    ref: ForwardedRef<SelectPopoverInstance | null>,
-  ): JSX.Element => {
-    const internalInstance = useRef<SelectPopoverInstance | null>(null);
+export const DateSelect = ({
+  actions,
+  children,
+  formatString = 'yyyy-MM-dd',
+  inputClassName,
+  isDisabled,
+  isLocked,
+  onChange,
+  placeholder,
+  ref,
+  shouldCloseMenuOnSelect = true,
+  size,
+  value,
+  ...props
+}: DateSelectProps): JSX.Element => {
+  const internalInstance = useRef<null | SelectPopoverInstance>(null);
 
-    const [v, setV] = useState<Date | null>(toDateTime(value)?.toJSDate() ?? null);
+  const selected = toDateTime(value)?.toJSDate() ?? null;
 
-    useEffect(() => {
-      setV(toDateTime(value)?.toJSDate() ?? null);
-    }, [value]);
-
-    return (
-      <SelectPopover
-        popoverWidth="target"
-        {...props}
-        popoverMaxHeight="fit-content"
-        ref={instance => {
-          if (instance) {
-            internalInstance.current = instance;
-            if (typeof ref === "function") {
-              ref(instance);
-            } else if (ref) {
-              ref.current = instance;
-            }
+  return (
+    <SelectPopover
+      popoverWidth='target'
+      {...props}
+      content={
+        <PopoverContent className='select__dates-content min-h-[100px]'>
+          <DatePicker
+            onChange={dt => {
+              onChange?.(dt);
+              if (shouldCloseMenuOnSelect) {
+                internalInstance.current?.setOpen(false);
+              }
+            }}
+            value={value}
+          />
+        </PopoverContent>
+      }
+      popoverMaxHeight='fit-content'
+      ref={instance => {
+        if (instance) {
+          internalInstance.current = instance;
+          if (typeof ref === 'function') {
+            ref(instance);
+          } else if (ref) {
+            ref.current = instance;
           }
-        }}
-        content={
-          <PopoverContent className="select__dates-content min-h-[100px]">
-            <DatePicker
-              value={value}
-              onChange={dt => {
-                setV(dt);
-                onChange?.(dt);
-                if (closeMenuOnSelect) {
-                  internalInstance.current?.setOpen(false);
-                }
-              }}
-            />
-          </PopoverContent>
         }
-      >
-        {children ||
-          (({ ref, params, isOpen }) => (
-            <RootSelectInput
-              {...params}
-              dynamicHeight={false}
-              ref={ref}
-              actions={actions}
-              placeholder={placeholder}
-              isOpen={isOpen}
-              // isLoading={isLoading}
-              isLocked={isLocked}
-              size={size}
-              isDisabled={isDisabled}
-              className={inputClassName}
-            >
-              {v ? DateTime.fromJSDate(v).toFormat(formatString) : ""}
-            </RootSelectInput>
-          ))}
-      </SelectPopover>
-    );
-  },
-);
+      }}
+    >
+      {children ??
+        (({ isOpen, params, ref: inputRef }) => (
+          <RootSelectInput
+            {...params}
+            actions={actions}
+            className={inputClassName}
+            hasDynamicHeight={false}
+            isDisabled={isDisabled}
+            // isLoading={isLoading}
+            isLocked={isLocked}
+            isOpen={isOpen}
+            placeholder={placeholder}
+            ref={inputRef}
+            size={size}
+          >
+            {selected ? DateTime.fromJSDate(selected).toFormat(formatString) : ''}
+          </RootSelectInput>
+        ))}
+    </SelectPopover>
+  );
+};

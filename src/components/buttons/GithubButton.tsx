@@ -1,17 +1,17 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { getProfile } from "~/actions/get-profile";
+import { getProfile } from '~/actions/get-profile';
 
-import { SocialButton } from "./SocialButton";
+import { SocialButton } from './SocialButton';
 
 export const GithubButton = async (): Promise<JSX.Element> => {
   const profile = await getProfile();
   return (
     <SocialButton
-      tight
-      icon={{ name: "github", iconStyle: "brands" }}
-      href={profile?.githubUrl ?? "#"}
-      className="hover:text-github-black"
+      className='hover:text-github-black'
+      href={profile?.githubUrl ?? '#'}
+      icon={{ iconStyle: 'brands', name: 'github' }}
+      isTight
       openInNewTab
     />
   );

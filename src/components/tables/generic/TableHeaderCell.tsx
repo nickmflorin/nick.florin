@@ -1,58 +1,57 @@
-import type { ReactNode } from "react";
-import React from "react";
+import { type MouseEvent, type ReactNode } from 'react';
 
-import { type Order } from "~/lib/ordering";
+import { type Order } from '~/lib/ordering';
 
-import { type IconProp, type IconName } from "~/components/icons";
-import { SortIcon } from "~/components/icons/SortIcon";
+import { type IconName, type IconProp } from '~/components/icons';
+import { SortIcon } from '~/components/icons/SortIcon';
 import {
-  type QuantitativeSize,
   classNames,
-  sizeToString,
   type ComponentProps,
-  HorizontalFlexAlignClassNames,
   type HorizontalFlexAlign,
+  HorizontalFlexAlignClassNames,
   parseDataAttributes,
-} from "~/components/types";
+  type QuantitativeSize,
+  sizeToString,
+} from '~/components/types';
 
 export interface TableHeaderCellProps extends ComponentProps {
-  readonly icon?: IconProp | IconName;
-  readonly isOrderable?: boolean;
-  readonly order?: Order | null;
   readonly align?: HorizontalFlexAlign;
-  readonly width?: QuantitativeSize<"px">;
-  readonly minWidth?: QuantitativeSize<"px">;
-  readonly maxWidth?: QuantitativeSize<"px">;
   readonly children?: ReactNode;
+  readonly icon?: IconName | IconProp;
+  readonly isOrderable?: boolean;
   readonly isOrdered?: boolean;
-  readonly onClick?: (e: React.MouseEvent<HTMLTableHeaderCellElement>) => void;
-  readonly onSort?: (event: React.MouseEvent<HTMLTableHeaderCellElement>) => void;
+  readonly maxWidth?: QuantitativeSize<'px'>;
+  readonly minWidth?: QuantitativeSize<'px'>;
+  readonly onClick?: (e: MouseEvent<HTMLTableHeaderCellElement>) => void;
+  readonly onSort?: (event: MouseEvent<HTMLTableHeaderCellElement>) => void;
+  readonly order?: null | Order;
+  readonly width?: QuantitativeSize<'px'>;
 }
 
 export const TableHeaderCell = ({
+  align,
+  children,
   icon,
   isOrderable = false,
-  align,
-  order,
-  children,
-  width,
-  minWidth,
-  maxWidth,
   isOrdered,
-  onSort,
+  maxWidth,
+  minWidth,
   onClick,
+  onSort,
+  order,
+  width,
   ...props
 }: TableHeaderCellProps) => (
   <th
     {...props}
     {...parseDataAttributes({ isOrdered })}
     className={classNames(
-      "table__cell table__header-cell",
+      'table__cell table__header-cell',
       {
-        "pointer-events-auto cursor-pointer":
+        'pointer-events-auto cursor-pointer':
           onClick !== undefined || (isOrderable && order !== undefined),
       },
-      align ? HorizontalFlexAlignClassNames[align] : "",
+      align ? HorizontalFlexAlignClassNames[align] : '',
       props.className,
     )}
     onClick={e => {
@@ -61,25 +60,25 @@ export const TableHeaderCell = ({
     }}
     style={{
       ...props.style,
-      minWidth: minWidth ? sizeToString(minWidth, "px") : props.style?.minWidth,
-      maxWidth: maxWidth ? sizeToString(maxWidth, "px") : props.style?.maxWidth,
-      width: width ? sizeToString(width, "px") : props.style?.width,
+      maxWidth: maxWidth ? sizeToString(maxWidth, 'px') : props.style?.maxWidth,
+      minWidth: minWidth ? sizeToString(minWidth, 'px') : props.style?.minWidth,
+      width: width ? sizeToString(width, 'px') : props.style?.width,
     }}
   >
     {isOrderable && order !== undefined ? (
       <div
         className={classNames(
-          "table__header-cell__inner gap-3",
-          align ? HorizontalFlexAlignClassNames[align] : "",
+          'table__header-cell__inner gap-3',
+          align ? HorizontalFlexAlignClassNames[align] : '',
         )}
       >
-        {align === "right" ? (
+        {align === 'right' ? (
           <>
             <SortIcon
-              order={order ?? "asc"}
+              className='table__header-cell__sort-icon'
               icon={icon}
-              className="table__header-cell__sort-icon"
-              size="14px"
+              order={order ?? 'asc'}
+              size='14px'
             />
             {children}
           </>
@@ -87,10 +86,10 @@ export const TableHeaderCell = ({
           <>
             {children}
             <SortIcon
-              order={order ?? "asc"}
+              className='table__header-cell__sort-icon'
               icon={icon}
-              className="table__header-cell__sort-icon"
-              size="14px"
+              order={order ?? 'asc'}
+              size='14px'
             />
           </>
         )}
@@ -98,8 +97,8 @@ export const TableHeaderCell = ({
     ) : (
       <div
         className={classNames(
-          "table__header-cell__inner",
-          align ? HorizontalFlexAlignClassNames[align] : "",
+          'table__header-cell__inner',
+          align ? HorizontalFlexAlignClassNames[align] : '',
         )}
       >
         {children}
@@ -107,5 +106,3 @@ export const TableHeaderCell = ({
     )}
   </th>
 );
-
-export default TableHeaderCell;

@@ -1,4 +1,4 @@
-import { LoadingText } from "~/components/loading/LoadingText";
+import { LoadingText } from '~/components/loading/LoadingText';
 
 const Loading = () => <LoadingText />;
 

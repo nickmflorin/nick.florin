@@ -1,14 +1,14 @@
 import {
   type ApiDetail,
-  type DetailIncludes,
   type ApiNestedDetail,
-  type ToSkillIncludes,
+  type DetailIncludes,
   type NestedDetailIncludes,
-} from "~/database/model";
+  type ToSkillIncludes,
+} from '~/database/model';
 
-import { type DetailControls, type NestedDetailControls } from "~/actions";
+import { type DetailControls, type NestedDetailControls } from '~/actions';
 
-import { useSWR, type SWRConfig } from "./use-swr";
+import { type SWRConfig, useSWR } from './use-swr';
 
 const PrimaryPath = <I extends string>(id: I): `/api/details/${I}` => `/api/details/${id}`;
 
@@ -19,10 +19,9 @@ type NestedParams = { id: string; isNested: true };
 type PrimaryParams = { id: string; isNested?: false };
 type Params = NestedParams | PrimaryParams;
 
-const paramsArePrimary = (params: Params): params is PrimaryParams =>
-  (params as NestedParams).isNested !== true;
+const paramsArePrimary = (params: Params): params is PrimaryParams => params.isNested !== true;
 
-type M<P extends PrimaryParams | NestedParams, I extends DetailIncludes> = P extends NestedParams
+type M<P extends NestedParams | PrimaryParams, I extends DetailIncludes> = P extends NestedParams
   ? ApiNestedDetail<ToSkillIncludes<I>>
   : ApiDetail<I>;
 
@@ -35,17 +34,17 @@ type Controls<
   I extends Includes<P>,
 > = P extends NestedParams
   ? NestedDetailControls<I & NestedDetailIncludes>
-  : DetailControls<I & DetailIncludes>;
+  : DetailControls<DetailIncludes & I>;
 
 export function useDetail<P extends NestedParams | PrimaryParams, I extends Includes<P>>(
-  params: P | null,
+  params: null | P,
   config: SWRConfig<M<P, I>, Controls<P, I>>,
 ) {
   const path =
-    params !== null
-      ? paramsArePrimary(params)
+    params === null
+      ? null
+      : paramsArePrimary(params)
         ? PrimaryPath(params.id)
-        : NestedPath(params.id)
-      : null;
+        : NestedPath(params.id);
   return useSWR<M<P, I>, Controls<P, I>>(path, config);
 }

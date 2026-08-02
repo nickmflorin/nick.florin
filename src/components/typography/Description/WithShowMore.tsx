@@ -1,25 +1,25 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { ShowMoreLink } from "~/components/buttons/ShowMoreLink";
-import { type TypographyVisibilityState } from "~/components/types";
+import { ShowMoreLink } from '~/components/buttons/ShowMoreLink';
+import { type TypographyVisibilityState } from '~/components/types';
 
 export const WithShowMore = ({
-  includeShowMoreLink = false,
-  state,
   children,
+  isShowMoreLinkVisible = false,
   isTruncated,
   onToggle,
+  state,
 }: {
-  includeShowMoreLink?: boolean;
-  state: TypographyVisibilityState;
-  children: JSX.Element;
-  isTruncated: boolean;
-  onToggle: () => void;
+  readonly children: JSX.Element;
+  readonly isShowMoreLinkVisible?: boolean;
+  readonly isTruncated: boolean;
+  readonly onToggle: () => void;
+  readonly state: TypographyVisibilityState;
 }) =>
-  includeShowMoreLink && isTruncated ? (
-    <div className="flex flex-col gap-[2px]">
+  isShowMoreLinkVisible && isTruncated ? (
+    <div className='flex flex-col gap-[2px]'>
       {children}
-      <ShowMoreLink state={state} onClick={onToggle} />
+      <ShowMoreLink onClick={onToggle} state={state} />
     </div>
   ) : (
     children

@@ -1,38 +1,38 @@
-import Image from "next/image";
-import type { ReactNode, JSX } from "react";
+import Image from 'next/image';
+import { type JSX, type ReactNode } from 'react';
 
 import {
   classNames,
-  inferQuantitativeSizeValue,
   type ComponentProps,
+  inferQuantitativeSizeValue,
   type QuantitativeSize,
-} from "~/components/types";
-import { Description } from "~/components/typography";
+} from '~/components/types';
+import { Description } from '~/components/typography';
 
 export interface EmptyMessageProps extends ComponentProps {
-  readonly imageSize?: QuantitativeSize<"px">;
   readonly children?: ReactNode;
+  readonly imageSize?: QuantitativeSize<'px'>;
 }
 
 export const EmptyMessage = ({
-  imageSize = 72,
   children,
+  imageSize = 72,
   ...props
 }: EmptyMessageProps): JSX.Element => (
   <div
     {...props}
     className={classNames(
-      "flex flex-col items-center justify-center gap-6 max-w-[280px] p-2",
+      'flex flex-col items-center justify-center gap-6 max-w-[280px] p-2',
       props.className,
     )}
   >
     <Image
-      src="/empty.svg"
-      width={inferQuantitativeSizeValue(imageSize)}
+      alt='Empty'
       height={inferQuantitativeSizeValue(imageSize)}
-      alt="Empty"
+      src='/empty.svg'
+      width={inferQuantitativeSizeValue(imageSize)}
     />
-    <Description fontSize="sm" fontWeight="regular" align="center">
+    <Description align='center' fontSize='sm' fontWeight='regular'>
       {children}
     </Description>
   </div>

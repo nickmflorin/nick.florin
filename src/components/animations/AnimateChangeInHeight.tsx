@@ -1,20 +1,16 @@
-import { useRef, useState, useEffect } from "react";
+import { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface AnimateChangeInHeightProps extends ComponentProps {
-  children: React.ReactNode;
+  readonly children: ReactNode;
 }
 
-export const AnimateChangeInHeight: React.FC<AnimateChangeInHeightProps> = ({
-  children,
-  className,
-}) => {
+export const AnimateChangeInHeight: FC<AnimateChangeInHeightProps> = ({ children, className }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState<number | "auto">("auto");
+  const [height, setHeight] = useState<'auto' | number>('auto');
 
   useEffect(() => {
     if (containerRef.current) {
@@ -35,9 +31,9 @@ export const AnimateChangeInHeight: React.FC<AnimateChangeInHeightProps> = ({
 
   return (
     <motion.div
-      style={{ height }}
-      initial={{ height: "auto" }}
       animate={{ height }}
+      initial={{ height: 'auto' }}
+      style={{ height }}
       transition={{ duration: 0.2 }}
     >
       <div className={classNames(className)} ref={containerRef}>

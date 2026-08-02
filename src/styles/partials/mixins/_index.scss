@@ -1,24 +1,24 @@
-@use "sass:list";
-@use "sass:map";
-@use "sass:meta";
-@use "sass:selector";
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
+@use 'sass:selector';
 
-@use "../functions" as fn;
-@use "./selectors" as selectors;
+@use '../functions' as fn;
+@use './selectors' as selectors;
 
-@forward "./selectors";
-@forward "./element-properties";
+@forward './selectors';
+@forward './element-properties';
 
-$disabled-selectors: (":disabled", '[data-attr-disabled="true"]');
+$disabled-selectors: (':disabled', '[data-attr-disabled="true"]');
 $loading-selectors: ('[data-attr-loading="true"]');
 $selected-selectors: ('[data-attr-selected="true"]');
 $locked-selectors: ('[data-attr-locked="true"]');
 $read-only-selectors: ('[data-attr-read-only="true"]');
 $active-selectors: ('[data-attr-active="true"]');
-$hovered-selectors: (":hover");
-$focused-selectors: (":focus");
-$focused-within-selectors: (":focus-within");
-$visited-selectors: (":visited");
+$hovered-selectors: (':hover');
+$focused-selectors: (':focus');
+$focused-within-selectors: (':focus-within');
+$visited-selectors: (':visited');
 
 @mixin focused($args...) {
   @include selectors.with-selectors($focused-selectors, $args...) {

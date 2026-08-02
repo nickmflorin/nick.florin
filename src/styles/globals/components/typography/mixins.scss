@@ -1,7 +1,7 @@
-@use "sass:map";
+@use 'sass:map';
 
-@use "partials";
-@use "./constants" as constants;
+@use 'partials';
+@use './constants' as constants;
 
 @mixin truncate {
   text-overflow: ellipsis;
@@ -31,19 +31,19 @@
 }
 
 @mixin text-font-family() {
-  @include font-family("body");
+  @include font-family('body');
 }
 
 @mixin title_font-family() {
-  @include font-family("title");
+  @include font-family('title');
 }
 
 @mixin label-font-family() {
-  @include font-family("label");
+  @include font-family('label');
 }
 
 @mixin description-font-family() {
-  @include font-family("description");
+  @include font-family('description');
 }
 
 /* --------------------------------------- Font Weights ----------------------------------------- */
@@ -52,19 +52,19 @@
 }
 
 @mixin text-font-weight($size) {
-  @include font-weight("body", $size);
+  @include font-weight('body', $size);
 }
 
 @mixin title-font-weight($size) {
-  @include font-weight("title", $size);
+  @include font-weight('title', $size);
 }
 
 @mixin label-font-weight($size) {
-  @include font-weight("label", $size);
+  @include font-weight('label', $size);
 }
 
 @mixin description-font-weight($size) {
-  @include font-weight("description", $size);
+  @include font-weight('description', $size);
 }
 
 /* --------------------------------------- Font Sizes ----------------------------------------- */
@@ -73,19 +73,19 @@
 }
 
 @mixin title_font-size($size) {
-  @include font-size("title", $size);
+  @include font-size('title', $size);
 }
 
 @mixin text-font-size($size) {
-  @include font-size("body", $size);
+  @include font-size('body', $size);
 }
 
 @mixin label-font-size($size) {
-  @include font-size("label", $size);
+  @include font-size('label', $size);
 }
 
 @mixin description-font-size($size) {
-  @include font-size("description", $size);
+  @include font-size('description', $size);
 }
 
 @mixin line-height($type, $size) {
@@ -93,19 +93,19 @@
 }
 
 @mixin title_line-height($size) {
-  @include line-height("title", $size);
+  @include line-height('title', $size);
 }
 
 @mixin text-line-height($size) {
-  @include line-height("body", $size);
+  @include line-height('body', $size);
 }
 
 @mixin label-line-height($size) {
-  @include line-height("label", $size);
+  @include line-height('label', $size);
 }
 
 @mixin description-line-height($size) {
-  @include line-height("description", $size);
+  @include line-height('description', $size);
 }
 
 /* --------------------------------------- Font Colors ------------------------------------------ */
@@ -114,19 +114,19 @@
 }
 
 @mixin text-default-font-color() {
-  @include default-font-color("body");
+  @include default-font-color('body');
 }
 
 @mixin title-default-font-color() {
-  @include default-font-color("title");
+  @include default-font-color('title');
 }
 
 @mixin label-default-font-color() {
-  @include default-font-color("label");
+  @include default-font-color('label');
 }
 
 @mixin description-default-font-color() {
-  @include default-font-color("description");
+  @include default-font-color('description');
 }
 
 /* --------------------------------------- Font Specs ------------------------------------------ */
@@ -164,7 +164,7 @@
 
 @mixin with-font-families() {
   &.f-family-inter {
-    font-family: theme("fontFamily.inter");
+    font-family: theme('fontFamily.inter');
   }
 }
 

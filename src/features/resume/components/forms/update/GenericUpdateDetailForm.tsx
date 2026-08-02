@@ -1,43 +1,48 @@
-import { useRouter } from "next/navigation";
-import React, { useState, useTransition, useMemo, useEffect, type JSX } from "react";
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect, useMemo, useState, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { updateDetail } from "~/actions/details/update-detail";
-import { updateNestedDetail } from "~/actions/details/update-nested-detail";
+import { updateDetail } from '~/actions/details/update-detail';
+import { updateNestedDetail } from '~/actions/details/update-nested-detail';
 
-import { IconButton } from "~/components/buttons";
-import { FormFieldErrors } from "~/components/forms-v2/Field/FieldErrors";
-import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
-import { Form, type FormProps } from "~/components/forms-v2/Form";
-import { useForm } from "~/components/forms-v2/hooks";
-import { CaretIcon } from "~/components/icons/CaretIcon";
-import { TextArea } from "~/components/input/TextArea";
-import { TextInput } from "~/components/input/TextInput";
-import { type Action } from "~/components/structural/Actions";
-import { Actions } from "~/components/structural/Actions";
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { classNames } from "~/components/types";
-import { ShowHide } from "~/components/util";
-import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { ClientSkillsSelect } from "~/features/skills/components/input/ClientSkillsSelect";
+import { IconButton } from '~/components/buttons';
+import { FormFieldErrors } from '~/components/forms-v2/Field/FieldErrors';
+import { CheckboxField } from '~/components/forms-v2/fields/CheckboxField';
+import { Form, type FormProps } from '~/components/forms-v2/Form';
+import { useForm } from '~/components/forms-v2/hooks';
+import { CaretIcon } from '~/components/icons/CaretIcon';
+import { TextArea } from '~/components/input/TextArea';
+import { TextInput } from '~/components/input/TextInput';
+import { type Action, Actions } from '~/components/structural/Actions';
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
+import { classNames } from '~/components/types';
+import { ShowHide } from '~/components/util';
+import { ClientProjectSelect } from '~/features/projects/components/input/ClientProjectSelect';
+import { ClientSkillsSelect } from '~/features/skills/components/input/ClientSkillsSelect';
 
-import { type DetailFormValues, DetailFormSchema } from "../types";
+import { DetailFormSchema, type DetailFormValues } from '../types';
 
 export interface GenericUpdateDetailFormProps<
-  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
-> extends Omit<FormProps<DetailFormValues>, "children" | "contentClassName" | "form" | "action"> {
+  D extends ApiDetail<['skills']> | ApiNestedDetail<['skills']>,
+> extends Omit<FormProps<DetailFormValues>, 'action' | 'children' | 'contentClassName' | 'form'> {
   readonly actions?: Action[];
-  readonly isExpanded: boolean;
   readonly detail: D;
+  readonly isExpanded: boolean;
   readonly onSuccess?: () => void;
 }
 
+/**
+ * The initial number of rows for a text area that uses `autoSize`, so that it starts as a single
+ * row and only grows to fit content that spans multiple rows.
+ */
+const AutoSizingTextAreaInitialRows = 1;
+
 export const GenericUpdateDetailForm = <
-  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
+  D extends ApiDetail<['skills']> | ApiNestedDetail<['skills']>,
 >({
   actions,
   detail,
@@ -48,7 +53,7 @@ export const GenericUpdateDetailForm = <
   const [isOpen, setIsOpen] = useState(false);
 
   const [_, transition] = useTransition();
-  const { refresh } = useRouter();
+  const router = useRouter();
 
   const updateDetailWithId = useMemo(
     () =>
@@ -59,194 +64,191 @@ export const GenericUpdateDetailForm = <
   );
 
   const { setValues, ...form } = useForm<DetailFormValues>({
-    schema: DetailFormSchema,
     defaultValues: {
-      label: "",
-      description: "",
-      shortDescription: "",
+      description: '',
+      label: '',
       project: null,
-      visible: true,
+      shortDescription: '',
       skills: [],
+      visible: true,
     },
+    schema: DetailFormSchema,
   });
 
   useEffect(() => {
     setValues({
+      description: detail.description ?? '',
       label: detail.label,
-      description: detail.description ?? "",
-      shortDescription: detail.shortDescription ?? "",
       project: detail.project?.id ?? null,
-      visible: detail.visible,
+      shortDescription: detail.shortDescription ?? '',
       skills: detail.skills.map(sk => sk.id),
+      visible: detail.visible,
     });
   }, [detail, setValues]);
 
   return (
     <Form<DetailFormValues>
       {...props}
-      footer={<ButtonFooter submitText="Save" buttonSize="xsmall" />}
-      form={{ setValues, ...form }}
-      action={async (data, form) => {
+      action={async (data, submittedForm) => {
         let response: Awaited<ReturnType<typeof updateDetailWithId>> | null = null;
         try {
           response = await updateDetailWithId(data);
         } catch (e) {
           logger.errorUnsafe(e, `There was an error updating the detail with ID '${detail.id}'.`, {
-            detail,
             data,
+            detail,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error updating the detail.");
+          return toast.error('There was an error updating the detail.');
         }
         const { error } = response;
         if (error) {
-          return form.handleApiError(error);
+          return submittedForm.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.();
         });
       }}
-      contentClassName="gap-[12px]"
+      contentClassName='gap-[12px]'
+      footer={<ButtonFooter buttonSize='xsmall' submitText='Save' />}
+      form={{ setValues, ...form }}
       structure={
-        !isExpanded
-          ? ({ footer, body }) => (
-              <div className="flex flex-col">
-                <div className="flex flex-row justify-between items-center">
+        isExpanded
+          ? ({ body, footer }) => (
+              <>
+                {body}
+                {footer}
+              </>
+            )
+          : ({ body, footer }) => (
+              <div className='flex flex-col'>
+                <div className='flex flex-row justify-between items-center'>
                   <Form.Field
-                    name="label"
-                    form={{ ...form, setValues }}
-                    className="mr-[12px]"
                     autoRenderErrors={false}
+                    className='mr-[12px]'
+                    form={{ ...form, setValues }}
+                    name='label'
                   >
                     <TextInput
-                      className="w-full p-0 outline-none"
-                      {...form.register("label")}
-                      placeholder="Label"
+                      className='w-full p-0 outline-none'
+                      {...form.register('label')}
+                      fontWeight='medium'
                       isReadOnly={!isOpen}
-                      fontWeight="medium"
-                      size="small"
+                      placeholder='Label'
+                      size='small'
                     />
                   </Form.Field>
-                  <div className="flex flex-row gap-[6px] items-center">
+                  <div className='flex flex-row gap-[6px] items-center'>
                     <Actions actions={actions ?? []} />
                     <IconButton.Transparent
-                      key={actions ? actions.length : "0"}
-                      size="xsmall"
+                      key={actions ? actions.length : '0'}
                       onClick={() => setIsOpen(curr => !curr)}
+                      size='xsmall'
                     >
-                      <CaretIcon open={isOpen} />
+                      <CaretIcon isOpen={isOpen} />
                     </IconButton.Transparent>
                   </div>
                 </div>
                 <ShowHide show={isOpen === true}>
-                  <FormFieldErrors form={{ ...form, setValues }} name="label" />
-                  <div className="flex flex-col mt-[4px]">
+                  <FormFieldErrors form={{ ...form, setValues }} name='label' />
+                  <div className='flex flex-col mt-[4px]'>
                     {body}
                     {footer}
                   </div>
                 </ShowHide>
               </div>
             )
-          : ({ footer, body }) => (
-              <>
-                {body}
-                {footer}
-              </>
-            )
       }
     >
       <ShowHide show={isExpanded}>
         <Form.Field
-          name="label"
-          form={{ ...form, setValues }}
-          label="Label"
           autoRenderErrors={false}
-          labelProps={{ fontSize: "xs" }}
+          form={{ ...form, setValues }}
+          label='Label'
+          labelProps={{ fontSize: 'xs' }}
+          name='label'
         >
           <TextInput
-            className={classNames("w-full", { "p-0 outline-none": !isExpanded })}
-            {...form.register("label")}
-            placeholder="Label"
-            fontWeight={isExpanded ? "regular" : "medium"}
-            size="small"
+            className={classNames('w-full', { 'p-0 outline-none': !isExpanded })}
+            {...form.register('label')}
+            fontWeight={isExpanded ? 'regular' : 'medium'}
+            placeholder='Label'
+            size='small'
           />
         </Form.Field>
       </ShowHide>
       <Form.Field
-        name="description"
-        label="Description"
         form={{ ...form, setValues }}
-        labelProps={{ fontSize: "xs" }}
+        label='Description'
+        labelProps={{ fontSize: 'xs' }}
+        name='description'
       >
         <TextArea
-          className={classNames("w-full", { "p-0 outline-none": !isExpanded })}
-          autoSize={true}
-          {...form.register("description")}
-          size="small"
+          autoSize
+          className={classNames('w-full', { 'p-0 outline-none': !isExpanded })}
+          {...form.register('description')}
           placeholder={
-            "A brief description of the detail that will appear on the " + "online portfolio."
+            'A brief description of the detail that will appear on the ' + 'online portfolio.'
           }
+          size='small'
         />
       </Form.Field>
       <Form.Field
-        name="shortDescription"
-        label="Short Description"
         form={{ ...form, setValues }}
-        labelProps={{ fontSize: "xs" }}
+        label='Short Description'
+        labelProps={{ fontSize: 'xs' }}
+        name='shortDescription'
       >
         <TextArea
-          className={classNames("w-full", { "p-0 outline-none": !isExpanded })}
-          autoSize={true}
-          {...form.register("shortDescription")}
-          /* This simply sets the text area to a single row unless it has content in it that spans
-           multiple rows. */
-          rows={1}
-          placeholder="A shortened version of the description."
-          size="small"
+          autoSize
+          className={classNames('w-full', { 'p-0 outline-none': !isExpanded })}
+          {...form.register('shortDescription')}
+          placeholder='A shortened version of the description.'
+          rows={AutoSizingTextAreaInitialRows}
+          size='small'
         />
       </Form.Field>
       <Form.ControlledField
-        name="skills"
-        label="Skills"
-        labelProps={{ fontSize: "xs" }}
         form={{ ...form, setValues }}
-        helpText="Any skills that the detail is associated with, if applicable."
+        helpText='Any skills that the detail is associated with, if applicable.'
+        label='Skills'
+        labelProps={{ fontSize: 'xs' }}
+        name='skills'
       >
-        {({ value, onChange }) => (
+        {({ onChange, value }) => (
           <ClientSkillsSelect
-            behavior="multi"
-            visibility="admin"
-            inputClassName="w-full"
-            value={value}
+            behavior='multi'
+            inputClassName='w-full'
+            isInPortal
             onChange={onChange}
-            inPortal
-            onError={() => form.setErrors("skills", "There was an error loading the data.")}
+            onError={() => form.setErrors('skills', 'There was an error loading the data.')}
+            value={value}
+            visibility='admin'
           />
         )}
       </Form.ControlledField>
       <Form.ControlledField
-        name="project"
-        label="Project"
-        labelProps={{ fontSize: "xs" }}
         form={{ ...form, setValues }}
-        helpText="The project that the detail is associated with, if applicable."
+        helpText='The project that the detail is associated with, if applicable.'
+        label='Project'
+        labelProps={{ fontSize: 'xs' }}
+        name='project'
       >
-        {({ value, onChange }) => (
+        {({ onChange, value }) => (
           <ClientProjectSelect
-            visibility="admin"
-            inputClassName="w-full"
-            value={value}
-            behavior="single-nullable"
+            behavior='single-nullable'
+            inputClassName='w-full'
             isClearable
+            isInPortal
             onChange={onChange}
-            inPortal
-            onError={() => form.setErrors("project", "There was an error loading the data.")}
+            onError={() => form.setErrors('project', 'There was an error loading the data.')}
+            value={value}
+            visibility='admin'
           />
         )}
       </Form.ControlledField>
       <ShowHide show={isExpanded}>
-        <CheckboxField name="visible" form={{ ...form, setValues }} label="Visible" />
+        <CheckboxField form={{ ...form, setValues }} label='Visible' name='visible' />
       </ShowHide>
     </Form>
   );

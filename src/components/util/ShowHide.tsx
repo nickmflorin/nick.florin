@@ -1,31 +1,26 @@
-import React, { type ReactNode, type JSX } from "react";
+import { type JSX, memo, type ReactNode } from 'react';
 
 type ShowProps = {
-  readonly show: boolean;
   readonly children: ReactNode;
+  readonly show: boolean;
 };
 
 type HideProps = {
-  readonly hide: boolean;
   readonly children: ReactNode;
+  readonly hide: boolean;
 };
 
-type ShowHideProps = ShowProps | HideProps;
+type ShowHideProps = HideProps | ShowProps;
 
-const isShowProps = (props: ShowHideProps): props is ShowProps =>
-  (props as ShowProps).show !== undefined;
+const isShowProps = (props: ShowHideProps): props is ShowProps => 'show' in props;
 
-const _ShowHide = (props: ShowHideProps): JSX.Element =>
+const _ShowHide = (props: ShowHideProps): JSX.Element | null =>
   isShowProps(props) ? (
     props.show === true ? (
       <>{props.children}</>
-    ) : (
-      <></>
-    )
-  ) : props.hide === true ? (
-    <></>
-  ) : (
+    ) : null
+  ) : props.hide === true ? null : (
     <>{props.children}</>
   );
 
-export const ShowHide = React.memo(_ShowHide);
+export const ShowHide = memo(_ShowHide);

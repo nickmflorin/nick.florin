@@ -1,6 +1,6 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useState } from 'react';
 
-import { DynamicLoadingContext } from "./context";
+import { DynamicLoadingContext } from './context';
 
 export interface DynamicLoadingProps {
   readonly children: (params: { isLoading: boolean }) => ReactNode;
@@ -36,8 +36,8 @@ export const DynamicLoading = ({ children }: DynamicLoadingProps) => {
   const [isDynamicallyLoading, setIsDynamicallyLoading] = useState(false);
 
   return (
-    <DynamicLoadingContext.Provider value={setIsDynamicallyLoading}>
+    <DynamicLoadingContext value={setIsDynamicallyLoading}>
       {children({ isLoading: isDynamicallyLoading })}
-    </DynamicLoadingContext.Provider>
+    </DynamicLoadingContext>
   );
 };

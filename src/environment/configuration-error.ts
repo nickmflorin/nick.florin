@@ -1,27 +1,21 @@
-/**
- * Note to Ben: Please do not read into this file too much - this was mostly me fiddling around
- * with a prior project and I didn't feel like slicing and dicing the Environment class too much
- * (since I more or less copy pasted that from an older project of mine).
- */
-import { z } from "zod";
+import { z } from 'zod';
 
-import type * as types from "./types";
+import type * as types from './types';
 
 type FieldErrorObj<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> = {
   readonly field: types.EnvKey<R, V>;
-  readonly message?: string;
   readonly issue?: z.ZodIssue;
+  readonly message?: string;
 };
 
 const FieldErrorObjSchema = z.object({
   field: z.string(),
-  message: z.string().optional(),
   issue: z.any(),
+  message: z.string().optional(),
 });
 
 type FieldError<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> =
-  | FieldErrorObj<R, V>
-  | types.EnvKey<R, V>;
+  FieldErrorObj<R, V> | types.EnvKey<R, V>;
 
 type FieldMessage<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> = (
   v: FieldErrorObj<R, V>,
@@ -35,22 +29,22 @@ export type ConfigurationErrorFormattingOptions<
   R extends types.RuntimeEnv<V>,
   V extends types.Validators<R>,
 > = {
-  readonly title?: string;
+  readonly fieldMessage?: FieldMessage<R, V>;
+  readonly fieldName?: FieldName<R, V>;
   readonly indexFieldMessages?: boolean;
   readonly message?: (v: FieldErrorObj<R, V>[]) => string;
-  readonly fieldName?: FieldName<R, V>;
-  readonly fieldMessage?: FieldMessage<R, V>;
+  readonly title?: string;
 };
 
 type IssueMessage = {
-  message: string;
   conditional: (issue: z.ZodIssue) => boolean;
+  message: string;
 };
 
 const DEFAULT_FIELD_MESSAGES: IssueMessage[] = [
   {
-    conditional: issue => issue.code === "invalid_type" && issue.message === "Required",
-    message: "The environment variable is required but was not found in the environment.",
+    conditional: issue => issue.code === 'invalid_type' && issue.message === 'Required',
+    message: 'The environment variable is required but was not found in the environment.',
   },
 ];
 
@@ -64,12 +58,10 @@ const getIssueMessage = (issue: z.ZodIssue) => {
 };
 
 export type ConfiguredError<R extends types.RuntimeEnv<V>, V extends types.Validators<R>> =
-  | FieldError<R, V>
-  | (FieldError<R, V> | null)[]
-  | z.ZodError;
+  (FieldError<R, V> | null)[] | FieldError<R, V> | z.ZodError;
 
 const isFieldErrorObj = <R extends types.RuntimeEnv<V>, V extends types.Validators<R>>(
-  err: z.ZodIssue | FieldError<R, V>,
+  err: FieldError<R, V> | z.ZodIssue,
 ): err is FieldErrorObj<R, V> => FieldErrorObjSchema.safeParse(err).success;
 
 const isZodError = <R extends types.RuntimeEnv<V>, V extends types.Validators<R>>(
@@ -85,23 +77,46 @@ export class _ConfigurationError<R extends types.RuntimeEnv<V>, V extends types.
     this.options = options;
   }
 
-  private get indexFieldMessages(): boolean {
-    return this.options?.indexFieldMessages ?? true;
+  private formatLineItem(err: FieldError<R, V> | z.ZodIssue, index: number): string {
+    const obj = this.toFieldErrorObj(err);
+    if (this.indexFieldMessages) {
+      return `${index + 1}. ${this.fieldName(obj)}: ${this.fieldMessage(obj)}`;
+    }
+    return `${this.fieldName(obj)}: ${this.fieldMessage(obj)}`;
   }
 
-  private get title(): string {
-    return this.options?.title ?? "Configuration Error";
+  private toFieldErrorObj(err: FieldError<R, V> | z.ZodIssue): FieldErrorObj<R, V> {
+    if (typeof err === 'string') {
+      return { field: err };
+    } else if (isFieldErrorObj(err)) {
+      return err;
+    }
+    const field = err.path[0] as types.EnvKey<R, V>;
+    return { field, issue: err };
+  }
+
+  private get errors(): FieldErrorObj<R, V>[] {
+    if (Array.isArray(this.error)) {
+      return this.error
+        .filter((v): v is FieldError<R, V> => v !== null)
+        .map(err => this.toFieldErrorObj(err));
+    } else if (typeof this.error === 'string') {
+      return [this.toFieldErrorObj(this.error)];
+    } else if (isZodError(this.error)) {
+      return this.error.issues.map(err => this.toFieldErrorObj(err));
+    }
+    return [this.toFieldErrorObj(this.error)];
   }
 
   private get fieldMessage(): FieldMessage<R, V> {
     return (
       this.options?.fieldMessage ??
-      (({ message, issue }) => {
+      (({ issue, message }) => {
         const msg = message
           ? message
           : issue
             ? getIssueMessage(issue)
-            : "The environment variable is invalid.";
+            : 'The environment variable is invalid.';
 
         if (issue) {
           return `${msg} (code = '${issue.code}')`;
@@ -115,47 +130,21 @@ export class _ConfigurationError<R extends types.RuntimeEnv<V>, V extends types.
     return this.options?.fieldName ?? (({ field }) => field);
   }
 
-  private get errors(): FieldErrorObj<R, V>[] {
-    if (Array.isArray(this.error)) {
-      return this.error
-        .filter((v): v is FieldError<R, V> => v !== null)
-        .map(err => this.toFieldErrorObj(err));
-    } else if (typeof this.error === "string") {
-      return [this.toFieldErrorObj(this.error)];
-    } else if (isZodError(this.error)) {
-      return this.error.issues.map(err => this.toFieldErrorObj(err));
-    }
-    return [this.toFieldErrorObj(this.error)];
-  }
-
-  private toFieldErrorObj(err: FieldError<R, V> | z.ZodIssue): FieldErrorObj<R, V> {
-    if (typeof err === "string") {
-      return { field: err };
-    } else if (isFieldErrorObj(err)) {
-      return err;
-    } else {
-      /* TODO: Figure out how to validate that the provided field is in the set of configuration
-         keys. */
-      const field = err.path[0] as types.EnvKey<R, V>;
-      return { field, issue: err };
-    }
-  }
-
-  private formatLineItem(err: FieldError<R, V> | z.ZodIssue, index: number): string {
-    const obj = this.toFieldErrorObj(err);
-    if (this.indexFieldMessages) {
-      return `${index + 1}. ${this.fieldName(obj)}: ${this.fieldMessage(obj)}`;
-    }
-    return `${this.fieldName(obj)}: ${this.fieldMessage(obj)}`;
+  private get indexFieldMessages(): boolean {
+    return this.options?.indexFieldMessages ?? true;
   }
 
   public get message(): string {
     if (this.options?.message) {
       return this.options.message(this.errors);
     }
-    const message = this.errors.map((err, i) => this.formatLineItem(err, i)).join("\n");
-    const divider = "-".repeat(32);
-    return "\n" + [divider, `${this.title}:`, message, divider].join("\n");
+    const message = this.errors.map((err, i) => this.formatLineItem(err, i)).join('\n');
+    const divider = '-'.repeat(32);
+    return '\n' + [divider, `${this.title}:`, message, divider].join('\n');
+  }
+
+  private get title(): string {
+    return this.options?.title ?? 'Configuration Error';
   }
 }
 
@@ -166,6 +155,6 @@ export class ConfigurationError<
   constructor(error: ConfiguredError<R, V>, options?: ConfigurationErrorFormattingOptions<R, V>) {
     const err = new _ConfigurationError(error, options);
     super(err.message);
-    this.name = "ConfigurationError";
+    this.name = 'ConfigurationError';
   }
 }

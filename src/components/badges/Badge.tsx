@@ -1,67 +1,65 @@
-import React, { type ReactNode, type JSX } from "react";
+import { type JSX, type MouseEvent, type ReactNode } from 'react';
 
-import { IconButton } from "~/components/buttons";
-import { type IconProp, type IconName, isIconProp } from "~/components/icons";
-import { Icon } from "~/components/icons/Icon";
+import { IconButton } from '~/components/buttons';
+import { type IconName, type IconProp, isIconProp } from '~/components/icons';
+import { Icon } from '~/components/icons/Icon';
 import {
-  type ComponentProps,
   type BorderRadius,
   classNames,
+  type ComponentProps,
   parseDataAttributes,
-} from "~/components/types";
-import { BaseTypography, type BaseTypographyProps } from "~/components/typography/BaseTypography";
+} from '~/components/types';
+import { BaseTypography, type BaseTypographyProps } from '~/components/typography/BaseTypography';
 
-import { type BadgeSize, BadgeSizes } from "./types";
+import { type BadgeSize, BadgeSizes } from './types';
 
-export interface BadgeProps extends Omit<BaseTypographyProps<"div">, "lineClamp" | "component"> {
+export interface BadgeProps extends Omit<BaseTypographyProps<'div'>, 'component' | 'lineClamp'> {
   readonly children: ReactNode;
-  readonly iconClassName?: ComponentProps["className"];
-  readonly icon?: IconProp | IconName | JSX.Element | null;
+  readonly icon?: IconName | IconProp | JSX.Element | null;
+  readonly iconClassName?: ComponentProps['className'];
+  readonly onClose?: (e: MouseEvent<HTMLButtonElement>) => void;
   readonly radius?: BorderRadius;
   readonly size?: BadgeSize;
-  readonly onClose?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export const Badge = ({
   children,
-  size = BadgeSizes.SM,
   icon,
   iconClassName,
-  radius,
   onClose,
+  radius,
+  size = BadgeSizes.SM,
   ...props
 }: BadgeProps): JSX.Element => (
-  <BaseTypography<"div">
+  <BaseTypography<'div'>
     {...props}
-    component="div"
-    {...parseDataAttributes({ size, radius })}
+    component='div'
+    {...parseDataAttributes({ radius, size })}
     className={classNames(
-      "badge",
-      { "pointer-events-auto cursor-pointer": props.onClick !== undefined },
+      'badge',
+      { 'pointer-events-auto cursor-pointer': props.onClick !== undefined },
       props.className,
     )}
   >
-    <div className="badge__content">
-      {typeof icon === "string" || isIconProp(icon) ? (
-        <Icon className={classNames("badge__icon", iconClassName)} icon={icon} />
+    <div className='badge__content'>
+      {typeof icon === 'string' || isIconProp(icon) ? (
+        <Icon className={classNames('badge__icon', iconClassName)} icon={icon} />
       ) : (
         icon
       )}
-      <div className="badge__text">{children}</div>
+      <div className='badge__text'>{children}</div>
       {onClose && (
         <IconButton.Transparent
-          className="badge__close-button hover:bg-transparent"
-          scheme="light"
-          icon="xmark"
-          element="button"
+          className='badge__close-button hover:bg-transparent'
+          element='button'
+          icon='xmark'
           onClick={e => {
             e.stopPropagation();
             onClose(e);
           }}
+          scheme='light'
         />
       )}
     </div>
   </BaseTypography>
 );
-
-export default Badge;

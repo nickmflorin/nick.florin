@@ -1,71 +1,71 @@
-import { type JSX } from "react";
+import { type JSX } from 'react';
 
-import { Controller, type ControllerRenderProps } from "react-hook-form";
+import { Controller, type ControllerRenderProps } from 'react-hook-form';
 
 import {
+  classNames,
   type ComponentProps,
   type QuantitativeSize,
-  classNames,
   sizeToString,
-} from "~/components/types";
-import { Text, Description, Label, type LabelProps } from "~/components/typography";
-import { ShowHide } from "~/components/util";
+} from '~/components/types';
+import { Description, Label, type LabelProps, Text } from '~/components/typography';
+import { ShowHide } from '~/components/util';
 
 import {
-  type FormInstance,
   type BaseFormValues,
-  type FieldError,
-  FieldConditions,
   type FieldCondition,
+  FieldConditions,
+  type FieldError,
   type FieldName,
-} from "../types";
+  type FormInstance,
+} from '../types';
 
-import { FormFieldErrors } from "./FieldErrors";
+import { FormFieldErrors } from './FieldErrors';
 
-const ConditionLabels: { [key in FieldCondition]: string } = {
-  [FieldConditions.OPTIONAL]: "optional",
-  [FieldConditions.REQUIRED]: "required",
+const ConditionLabels: Record<FieldCondition, string> = {
+  [FieldConditions.OPTIONAL]: 'optional',
+  [FieldConditions.REQUIRED]: 'required',
 };
 
-const FieldConditionText = ({ condition }: { condition: FieldCondition }): JSX.Element => (
-  <div className="flex grow justify-end">
-    <Text fontSize="sm" className="text-gray-700 leading-[20px] mr-[1px]">
+const FieldConditionText = ({ condition }: { readonly condition: FieldCondition }): JSX.Element => (
+  <div className='flex grow justify-end'>
+    <Text className='text-gray-700 leading-[20px] mr-[1px]' fontSize='sm'>
       (
     </Text>
-    <Text fontSize="sm" className="text-gray-600 leading-[20px]">
+    <Text className='text-gray-600 leading-[20px]' fontSize='sm'>
       {ConditionLabels[condition]}
     </Text>
-    <Text fontSize="sm" className="text-gray-700 ml-[1px] leading-[20px]">
+    <Text className='text-gray-700 ml-[1px] leading-[20px]' fontSize='sm'>
       )
     </Text>
   </div>
 );
 
-type BaseAbstractFieldProps<T> = T &
-  ComponentProps & {
-    readonly children: JSX.Element | JSX.Element[];
-    readonly label?: string;
-    readonly autoRenderErrors?: boolean;
-    readonly condition?: FieldCondition;
-    readonly labelSeparation?: QuantitativeSize<"px">;
-    readonly errorSeparation?: QuantitativeSize<"px">;
-    readonly description?: string;
-    readonly descriptionSeparation?: QuantitativeSize<"px">;
-    readonly descriptionClassName?: ComponentProps["className"];
-    readonly helpText?: string;
-    readonly helpTextSeparation?: QuantitativeSize<"px">;
-    readonly helpTextClassName?: ComponentProps["className"];
-    readonly labelProps?: Omit<LabelProps<"label">, "children" | keyof ComponentProps>;
-    readonly labelClassName?: ComponentProps["className"];
-  };
+type BaseAbstractFieldProps<T> = {
+  readonly autoRenderErrors?: boolean;
+  readonly children: JSX.Element | JSX.Element[];
+  readonly condition?: FieldCondition;
+  readonly description?: string;
+  readonly descriptionClassName?: ComponentProps['className'];
+  readonly descriptionSeparation?: QuantitativeSize<'px'>;
+  readonly errorSeparation?: QuantitativeSize<'px'>;
+  readonly helpText?: string;
+  readonly helpTextClassName?: ComponentProps['className'];
+  readonly helpTextSeparation?: QuantitativeSize<'px'>;
+  readonly label?: string;
+  readonly labelClassName?: ComponentProps['className'];
+  readonly labelProps?: Omit<LabelProps<'label'>, 'children' | keyof ComponentProps>;
+  readonly labelSeparation?: QuantitativeSize<'px'>;
+} & ComponentProps &
+  T;
 
 type ConnectedAbstractFieldProps<
   N extends FieldName<I>,
   I extends BaseFormValues,
 > = BaseAbstractFieldProps<{
+  readonly errors?: never;
   readonly form: FormInstance<I>;
   readonly name: N;
-  readonly errors?: never;
 }>;
 
 type UnconnectedAbstractFieldProps = BaseAbstractFieldProps<{
@@ -75,36 +75,35 @@ type UnconnectedAbstractFieldProps = BaseAbstractFieldProps<{
 }>;
 
 export type FieldProps<N extends FieldName<I>, I extends BaseFormValues> =
-  | UnconnectedAbstractFieldProps
-  | ConnectedAbstractFieldProps<N, I>;
+  ConnectedAbstractFieldProps<N, I> | UnconnectedAbstractFieldProps;
 
 export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
-  children,
-  name,
-  label,
-  form,
-  errors: _errors = [],
   autoRenderErrors = true,
-  labelSeparation = "6px",
-  helpTextSeparation = "4px",
-  descriptionSeparation = "8px",
-  errorSeparation = "6px",
-  labelClassName,
-  labelProps,
+  children,
   condition,
   description,
+  descriptionSeparation = '8px',
+  errors: _errors = [],
+  errorSeparation = '6px',
+  form,
   helpText,
   helpTextClassName,
+  helpTextSeparation = '4px',
+  label,
+  labelClassName,
+  labelProps,
+  labelSeparation = '6px',
+  name,
   ...props
 }: FieldProps<N, I>): JSX.Element => (
-  <div {...props} className={classNames("flex flex-col w-full", props.className)}>
+  <div {...props} className={classNames('flex flex-col w-full', props.className)}>
     {(condition !== undefined || label !== undefined) && (
       <div
-        className="w-full flex h-[20px]"
-        style={{ marginBottom: sizeToString(labelSeparation, "px") }}
+        className='w-full flex h-[20px]'
+        style={{ marginBottom: sizeToString(labelSeparation, 'px') }}
       >
         {label && (
-          <Label fontSize="sm" fontWeight="medium" {...labelProps} className={labelClassName}>
+          <Label fontSize='sm' fontWeight='medium' {...labelProps} className={labelClassName}>
             {label}
           </Label>
         )}
@@ -113,19 +112,19 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
     )}
     {description !== undefined && (
       <Description
-        fontSize="xs"
-        className={classNames("leading-[14px] text-gray-500 pl-[1px]", helpTextClassName)}
-        style={{ marginBottom: sizeToString(descriptionSeparation, "px") }}
+        className={classNames('leading-[14px] text-gray-500 pl-[1px]', helpTextClassName)}
+        fontSize='xs'
+        style={{ marginBottom: sizeToString(descriptionSeparation, 'px') }}
       >
         {description}
       </Description>
     )}
-    <div className="form-field-content">{children}</div>
+    <div className='form-field-content'>{children}</div>
     {helpText !== undefined && (
       <Text
-        fontSize="xs"
-        className={classNames("leading-[14px] text-gray-500 pl-[1px]", helpTextClassName)}
-        style={{ marginTop: sizeToString(helpTextSeparation, "px") }}
+        className={classNames('leading-[14px] text-gray-500 pl-[1px]', helpTextClassName)}
+        fontSize='xs'
+        style={{ marginTop: sizeToString(helpTextSeparation, 'px') }}
       >
         {helpText}
       </Text>
@@ -135,24 +134,21 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
         <FormFieldErrors
           form={form}
           name={name}
-          style={{ marginTop: sizeToString(errorSeparation, "px") }}
+          style={{ marginTop: sizeToString(errorSeparation, 'px') }}
         />
       ) : (
         <FormFieldErrors
           errors={_errors}
-          style={{ marginTop: sizeToString(errorSeparation, "px") }}
+          style={{ marginTop: sizeToString(errorSeparation, 'px') }}
         />
       )}
     </ShowHide>
   </div>
 );
 
-export type ControlledFieldProps<N extends FieldName<I>, I extends BaseFormValues> = Omit<
-  ConnectedAbstractFieldProps<N, I>,
-  "children"
-> & {
+export type ControlledFieldProps<N extends FieldName<I>, I extends BaseFormValues> = {
   readonly children: (params: ControllerRenderProps<I, N>) => JSX.Element;
-};
+} & Omit<ConnectedAbstractFieldProps<N, I>, 'children'>;
 
 export const ControlledField = <N extends FieldName<I>, I extends BaseFormValues>({
   children,

@@ -1,22 +1,23 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { ResponsiveBar, type BarDatum } from "@nivo/bar";
+import { type BarDatum, ResponsiveBar } from '@nivo/bar';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-import { generateChartColors } from "~/lib/charts";
+import { generateChartColors } from '~/lib/charts';
 
-import { THEME } from "./theme";
+import { THEME } from './theme';
 
 /* eslint-disable no-console */
-/* This is a hack to suppress a warning from @nivo/bar charts:
-   Support for defaultProps will be removed from function components in a future major release.
-   Use JavaScript default parameters instead. */
+/**
+ * Suppresses the "Support for defaultProps will be removed from function components in a future
+ * major release" warning logged by `@nivo/bar` charts, until the library replaces its use of
+ * `defaultProps` with JavaScript default parameters.
+ */
 const error = console.error;
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-console.error = (...args: any) => {
-  if (/defaultProps/.test(args[0])) {
+console.error = (...args: unknown[]) => {
+  if (typeof args[0] === 'string' && args[0].includes('defaultProps')) {
     return;
   }
   error(...args);
@@ -28,16 +29,14 @@ export const BarChart = <D extends BarDatum>({
   ...props
 }: types.BarChartProps<D>): JSX.Element => (
   <ResponsiveBar<D>
+    axisRight={null}
+    axisTop={null}
+    colors={generateChartColors((data ?? []).length)}
     data={data ?? []}
     padding={0.3}
-    colors={generateChartColors((data ?? []).length)}
-    valueScale={{ type: "linear" }}
-    axisTop={null}
-    axisRight={null}
+    valueScale={{ type: 'linear' }}
     {...props}
-    margin={{ top: 10, right: 10, bottom: 10, left: 20 }}
+    margin={{ bottom: 10, left: 20, right: 10, top: 10 }}
     theme={THEME}
   />
 );
-
-export default BarChart;

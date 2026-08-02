@@ -1,122 +1,121 @@
-"use client";
-import dynamic from "next/dynamic";
-import { type ReactNode, useState, type JSX } from "react";
+'use client';
+import dynamic from 'next/dynamic';
+import { type ComponentType, type JSX, type ReactNode, useState } from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-import { type MutationActionResponse } from "~/actions";
+import { type MutationActionResponse } from '~/actions';
 
-import { DeleteButton } from "~/components/buttons/DeleteButton";
-import { Tooltip } from "~/components/floating/Tooltip";
-import { Checkbox } from "~/components/input/Checkbox";
-import { Actions, type Action } from "~/components/structural/Actions";
-import { ColumnSelect } from "~/components/tables/ColumnSelect";
-import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
-import { Text } from "~/components/typography";
+import { DeleteButton } from '~/components/buttons/DeleteButton';
+import { Tooltip } from '~/components/floating/Tooltip';
+import { Checkbox } from '~/components/input/Checkbox';
+import { type Action, Actions } from '~/components/structural/Actions';
+import { ColumnSelect } from '~/components/tables/ColumnSelect';
+import { classNames, type ComponentProps } from '~/components/types';
+import { Text } from '~/components/typography';
 
-import { TableControlBarAction, type TableControlBarActionConfig } from "./TableControlBarAction";
-import { TableControlBarPortal } from "./TableControlBarPortal";
+import { TableControlBarAction, type TableControlBarActionConfig } from './TableControlBarAction';
+import { TableControlBarPortal } from './TableControlBarPortal';
 
 const DeleteConfirmationDialog = dynamic(() =>
-  import("~/components/dialogs/DeleteConfirmationDialog").then(mod => mod.DeleteConfirmationDialog),
+  import('~/components/dialogs/DeleteConfirmationDialog').then(mod => mod.DeleteConfirmationDialog),
 );
 
 interface TableControlBarDeleteConfirmationRenderProps<T> {
-  readonly isOpen: boolean;
   readonly data: T[];
+  readonly isOpen: boolean;
+  readonly onCancel: () => void;
   readonly onClose: () => void;
   readonly onSuccess: () => void;
-  readonly onCancel: () => void;
 }
 
-const DefaultDeleteConfirmationModal = () => <></>;
+const DefaultDeleteConfirmationModal = () => null;
 
 export interface TableControlBarProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 > extends ComponentProps {
-  readonly children?: ReactNode;
-  readonly tooltipsInPortal?: boolean;
-  readonly allRowsAreSelected?: boolean;
-  readonly isDisabled?: boolean;
-  readonly selectedRows: D[];
-  readonly rowsAreDeletable?: boolean;
-  readonly targetId: string | null;
   readonly actions?: TableControlBarActionConfig<D>[];
-  readonly extra?: Action[];
-  readonly deleteTooltipContent?: string | ((numRows: number) => string);
-  readonly columnsSelect?: JSX.Element;
+  readonly areAllRowsSelected?: boolean;
+  readonly areRowsDeletable?: boolean;
+  readonly areTooltipsInPortal?: boolean;
+  readonly children?: ReactNode;
   readonly columns?: C[];
-  readonly visibleColumns?: C["id"][];
-  readonly modelName?: string;
-  readonly onSelectAllRows?: (v: boolean) => void;
-  readonly onVisibleColumnsChange?: (v: C["id"][]) => void;
+  readonly columnsSelect?: JSX.Element;
+  readonly confirmationModal?:
+    | ((props: TableControlBarDeleteConfirmationRenderProps<D>) => JSX.Element)
+    | ComponentType<TableControlBarDeleteConfirmationRenderProps<D>>;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   readonly deleteAction?: (ids: string[]) => Promise<MutationActionResponse<any>>;
-  readonly confirmationModal?:
-    | React.ComponentType<TableControlBarDeleteConfirmationRenderProps<D>>
-    | ((props: TableControlBarDeleteConfirmationRenderProps<D>) => JSX.Element);
+  readonly deleteTooltipContent?: ((numRows: number) => string) | string;
+  readonly extra?: Action[];
+  readonly isDisabled?: boolean;
+  readonly modelName?: string;
+  readonly onSelectAllRows?: (v: boolean) => void;
+  readonly onVisibleColumnsChange?: (v: C['id'][]) => void;
+  readonly selectedRows: D[];
+  readonly targetId: null | string;
+  readonly visibleColumns?: C['id'][];
 }
 
 export const TableControlBar = <
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 >({
-  children,
   actions,
+  areAllRowsSelected = false,
+  areRowsDeletable = false,
+  areTooltipsInPortal = false,
+  children,
+  columns,
+  columnsSelect,
+  confirmationModal = DefaultDeleteConfirmationModal,
+  deleteAction,
+  deleteTooltipContent = (numRows: number) => `Delete ${numRows} selected rows.`,
   extra,
-  allRowsAreSelected = false,
-  tooltipsInPortal = false,
+  isDisabled = false,
+  modelName,
+  onSelectAllRows,
+  onVisibleColumnsChange,
   selectedRows,
   targetId,
-  isDisabled = false,
-  rowsAreDeletable = false,
-  confirmationModal = DefaultDeleteConfirmationModal,
-  columns,
   visibleColumns,
-  columnsSelect,
-  modelName,
-  deleteAction,
-  onVisibleColumnsChange,
-  deleteTooltipContent = (numRows: number) => `Delete ${numRows} selected rows.`,
-  onSelectAllRows,
   ...props
 }: TableControlBarProps<D, C>): JSX.Element => {
-  const [confirmationModalIsOpen, setConfirmationModelIsOpen] = useState(false);
+  const [confirmationModalIsOpen, setConfirmationModalIsOpen] = useState(false);
 
   const ConfirmationModal = confirmationModal;
 
   return (
     <>
       <TableControlBarPortal targetId={targetId}>
-        <div {...props} className={classNames("table-view__control-bar", props.className)}>
-          <div className="table-view__control-bar__left">
-            <div className="table-view__control-bar__checkbox-wrapper">
+        <div {...props} className={classNames('table-view__control-bar', props.className)}>
+          <div className='table-view__control-bar__left'>
+            <div className='table-view__control-bar__checkbox-wrapper'>
               <Checkbox
-                readOnly
-                value={allRowsAreSelected}
+                isChecked={areAllRowsSelected}
                 isDisabled={isDisabled}
                 onChange={e => onSelectAllRows?.(e.target.checked)}
+                readOnly
               />
             </div>
-            <div className="table-view__control-bar-actions">
-              {rowsAreDeletable && (
+            <div className='table-view__control-bar-actions'>
+              {areRowsDeletable && (
                 <Tooltip
-                  placement="top-start"
-                  inPortal={tooltipsInPortal}
-                  offset={{ mainAxis: 6 }}
+                  className='text-sm'
                   content={
-                    typeof deleteTooltipContent === "string"
+                    typeof deleteTooltipContent === 'string'
                       ? deleteTooltipContent
                       : deleteTooltipContent(selectedRows.length)
                   }
-                  className="text-sm"
                   isDisabled={selectedRows.length === 0 || isDisabled}
+                  isInPortal={areTooltipsInPortal}
+                  offset={{ mainAxis: 6 }}
+                  placement='top-start'
                 >
                   <DeleteButton
                     isDisabled={selectedRows.length === 0}
-                    onClick={() => setConfirmationModelIsOpen(true)}
+                    onClick={() => setConfirmationModalIsOpen(true)}
                   />
                 </Tooltip>
               )}
@@ -124,39 +123,34 @@ export const TableControlBar = <
                 actions.map((action, i) => (
                   <TableControlBarAction
                     {...action}
-                    key={i}
+                    areTooltipsInPortal={areTooltipsInPortal}
                     isDisabled={isDisabled}
-                    tooltipsInPortal={tooltipsInPortal}
+                    key={i}
                     rows={selectedRows}
                   />
                 ))
               ) : (
                 <>{children}</>
               )}
-              {selectedRows.length !== 0 ? (
-                <Text fontWeight="medium">
-                  {selectedRows.length}{" "}
-                  <Text component="span" fontWeight="regular">
+              {selectedRows.length === 0 ? null : (
+                <Text fontWeight='medium'>
+                  {selectedRows.length}{' '}
+                  <Text component='span' fontWeight='regular'>
                     Selected Rows
                   </Text>
                 </Text>
-              ) : (
-                <></>
               )}
             </div>
           </div>
-          <div className="table-view__control-bar__right">
-            {columnsSelect ? (
-              columnsSelect
-            ) : columns !== undefined ? (
-              <ColumnSelect<D, C>
-                columns={columns}
-                value={visibleColumns}
-                onChange={onVisibleColumnsChange}
-              />
-            ) : (
-              <></>
-            )}
+          <div className='table-view__control-bar__right'>
+            {columnsSelect ??
+              (columns === undefined ? null : (
+                <ColumnSelect<D, C>
+                  columns={columns}
+                  onChange={onVisibleColumnsChange}
+                  value={visibleColumns}
+                />
+              ))}
             <Actions>{extra}</Actions>
           </div>
         </div>
@@ -165,21 +159,21 @@ export const TableControlBar = <
         <>
           {deleteAction ? (
             <DeleteConfirmationDialog
-              isOpen
-              modelName={modelName}
               action={deleteAction}
               data={selectedRows}
-              onClose={() => setConfirmationModelIsOpen(false)}
-              onCancel={() => setConfirmationModelIsOpen(false)}
-              onSuccess={() => setConfirmationModelIsOpen(false)}
+              isOpen
+              modelName={modelName}
+              onCancel={() => setConfirmationModalIsOpen(false)}
+              onClose={() => setConfirmationModalIsOpen(false)}
+              onSuccess={() => setConfirmationModalIsOpen(false)}
             />
           ) : (
             <ConfirmationModal
-              isOpen
               data={selectedRows}
-              onClose={() => setConfirmationModelIsOpen(false)}
-              onCancel={() => setConfirmationModelIsOpen(false)}
-              onSuccess={() => setConfirmationModelIsOpen(false)}
+              isOpen
+              onCancel={() => setConfirmationModalIsOpen(false)}
+              onClose={() => setConfirmationModalIsOpen(false)}
+              onSuccess={() => setConfirmationModalIsOpen(false)}
             />
           )}
         </>

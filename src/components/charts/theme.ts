@@ -1,111 +1,111 @@
 /* As of nivo 0.99, theme types live in '@nivo/theming' rather than '@nivo/core'.  The type accepted
    by a chart's "theme" prop is 'PartialTheme'; 'Theme' now denotes a fully resolved theme. */
-import { type PartialTheme } from "@nivo/theming";
+import { type PartialTheme } from '@nivo/theming';
 
 export const THEME: PartialTheme = {
-  background: "transparent",
-  text: {
-    fontSize: 11,
-    fill: "#333333",
-    outlineWidth: 0,
-    outlineColor: "transparent",
+  annotations: {
+    link: {
+      outlineColor: '#ffffff',
+      outlineOpacity: 1,
+      outlineWidth: 2,
+      stroke: '#000000',
+      strokeWidth: 1,
+    },
+    outline: {
+      outlineColor: '#ffffff',
+      outlineOpacity: 1,
+      outlineWidth: 2,
+      stroke: '#000000',
+      strokeWidth: 2,
+    },
+    symbol: {
+      fill: '#000000',
+      outlineColor: '#ffffff',
+      outlineOpacity: 1,
+      outlineWidth: 2,
+    },
+    text: {
+      fill: '#333333',
+      fontSize: 13,
+      outlineColor: '#ffffff',
+      outlineOpacity: 1,
+      outlineWidth: 2,
+    },
   },
   axis: {
     domain: {
       line: {
-        stroke: "#777777",
+        stroke: '#777777',
         strokeWidth: 1,
       },
     },
     legend: {
       text: {
+        fill: '#333333',
         fontSize: 10,
-        fill: "#333333",
+        outlineColor: 'transparent',
         outlineWidth: 0,
-        outlineColor: "transparent",
       },
     },
     ticks: {
       line: {
-        stroke: "#777777",
+        stroke: '#777777',
         strokeWidth: 1,
       },
       text: {
+        fill: '#333333',
         fontSize: 10,
-        fill: "#333333",
+        outlineColor: 'transparent',
         outlineWidth: 0,
-        outlineColor: "transparent",
       },
     },
   },
+  background: 'transparent',
   grid: {
     line: {
-      stroke: "#F1F3F5",
+      stroke: '#F1F3F5',
       strokeWidth: 1,
     },
   },
   legends: {
-    title: {
-      text: {
-        fontSize: 11,
-        fill: "#333333",
-        outlineWidth: 0,
-        outlineColor: "transparent",
-      },
-    },
     text: {
+      fill: '#333333',
       fontSize: 11,
-      fill: "#333333",
+      outlineColor: 'transparent',
       outlineWidth: 0,
-      outlineColor: "transparent",
     },
     ticks: {
       line: {},
       text: {
+        fill: '#333333',
         fontSize: 10,
-        fill: "#333333",
+        outlineColor: 'transparent',
         outlineWidth: 0,
-        outlineColor: "transparent",
+      },
+    },
+    title: {
+      text: {
+        fill: '#333333',
+        fontSize: 11,
+        outlineColor: 'transparent',
+        outlineWidth: 0,
       },
     },
   },
-  annotations: {
-    text: {
-      fontSize: 13,
-      fill: "#333333",
-      outlineWidth: 2,
-      outlineColor: "#ffffff",
-      outlineOpacity: 1,
-    },
-    link: {
-      stroke: "#000000",
-      strokeWidth: 1,
-      outlineWidth: 2,
-      outlineColor: "#ffffff",
-      outlineOpacity: 1,
-    },
-    outline: {
-      stroke: "#000000",
-      strokeWidth: 2,
-      outlineWidth: 2,
-      outlineColor: "#ffffff",
-      outlineOpacity: 1,
-    },
-    symbol: {
-      fill: "#000000",
-      outlineWidth: 2,
-      outlineColor: "#ffffff",
-      outlineOpacity: 1,
-    },
+  text: {
+    fill: '#333333',
+    fontSize: 11,
+    outlineColor: 'transparent',
+    outlineWidth: 0,
   },
   tooltip: {
+    basic: {},
+    chip: {},
     container: {
-      background: "#ffffff",
+      background: '#ffffff',
       fontSize: 12,
       zIndex: 1000,
     },
-    basic: {},
-    chip: {},
     table: {},
     tableCell: {},
     tableCellValue: {},

@@ -1,14 +1,14 @@
-import { type NextRequest } from "next/server";
+import { type NextRequest } from 'next/server';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import type { ProjectIncludes } from "~/database/model";
-import { db } from "~/database/prisma";
+import { type ProjectIncludes } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { ProjectIncludesSchema } from "~/actions";
-import { fetchProject } from "~/actions/projects/fetch-project";
-import { ClientResponse } from "~/api";
-import { parseQueryParams } from "~/integrations/http";
+import { ProjectIncludesSchema } from '~/actions';
+import { fetchProject } from '~/actions/projects/fetch-project';
+import { ClientResponse } from '~/api';
+import { parseQueryParams } from '~/integrations/http';
 
 export async function generateStaticParams() {
   const projects = await db.project.findMany();
@@ -31,12 +31,12 @@ export const GET = async (request: NextRequest, props: { params: Promise<{ id: s
 
   const visibility =
     z
-      .union([z.literal("admin"), z.literal("public")])
-      .default("public")
-      .safeParse(query.visibility).data ?? "public";
+      .union([z.literal('admin'), z.literal('public')])
+      .default('public')
+      .safeParse(query.visibility).data ?? 'public';
 
   const fetcher = fetchProject(includes);
-  const { error, data } = await fetcher(params.id, { visibility }, { scope: "api" });
+  const { data, error } = await fetcher(params.id, { visibility }, { scope: 'api' });
   if (error) {
     return error.response;
   }

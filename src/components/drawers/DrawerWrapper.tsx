@@ -1,27 +1,44 @@
-import { type ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from 'react';
 
-import { useClickOutside } from "@mantine/hooks";
-import { motion, AnimatePresence } from "framer-motion";
+import { useClickOutside } from '@mantine/hooks';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import { sizeToString } from "~/components/types";
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
+import { type QuantitativeSize, type ScreenSize, sizeToString } from '~/components/types';
+import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
-import { getDrawerWidth } from "./drawers";
-import { type DrawerId } from "./types";
+import { getDrawerWidth } from './drawers';
+import { type DrawerId } from './types';
 
 export interface DrawerWrapperProps {
-  readonly drawerId: DrawerId | null;
   readonly children?: ReactNode;
+  readonly drawerId: DrawerId | null;
   readonly onClose: () => void;
 }
 
-export const DrawerWrapper = ({ drawerId, children, onClose }: DrawerWrapperProps) => {
+/**
+ * Returns the inline width style for the drawer, or an empty style object if the screen size is
+ * less than or equal to "sm", in which case the width is instead set in SCSS based on the content
+ * viewport width.
+ */
+const getDrawerWrapperWidthStyle = (
+  isGreaterThan: (sz: ScreenSize) => boolean,
+  width: QuantitativeSize<'px'> | undefined,
+): CSSProperties =>
+  isGreaterThan('sm') && width !== undefined
+    ? {
+        maxWidth: sizeToString(width, 'px'),
+        minWidth: sizeToString(width, 'px'),
+        width: sizeToString(width, 'px'),
+      }
+    : {};
+
+export const DrawerWrapper = ({ children, drawerId, onClose }: DrawerWrapperProps) => {
   const { isGreaterThan } = useScreenSizes();
 
-  /* See note in MenuItem.tsx regarding the event propogation of touch start and mouse down events
+  /* See note in MenuItem.tsx regarding the event propagation of touch start and mouse down events
      causing drawers to close for Select's that render their popover content in a portal. */
   const ref = useClickOutside(() => {
-    if (!isGreaterThan("sm")) {
+    if (!isGreaterThan('sm')) {
       onClose();
     }
   });
@@ -31,23 +48,13 @@ export const DrawerWrapper = ({ drawerId, children, onClose }: DrawerWrapperProp
     <AnimatePresence>
       {children && (
         <motion.div
-          ref={ref}
-          transition={{ type: "spring", bounce: 0 }}
-          className="drawer-wrapper"
-          initial={{ x: "100%" }}
           animate={{ x: 0 }}
-          exit={{ x: "100%" }}
-          style={
-            /* If the size is less than or equal to "sm", the width is set in SCSS based on the
-               content viewport width. */
-            isGreaterThan("sm") && width !== undefined
-              ? {
-                  width: sizeToString(width, "px"),
-                  maxWidth: sizeToString(width, "px"),
-                  minWidth: sizeToString(width, "px"),
-                }
-              : {}
-          }
+          className='drawer-wrapper'
+          exit={{ x: '100%' }}
+          initial={{ x: '100%' }}
+          ref={ref}
+          style={getDrawerWrapperWidthStyle(isGreaterThan, width)}
+          transition={{ bounce: 0, type: 'spring' }}
         >
           {children}
         </motion.div>

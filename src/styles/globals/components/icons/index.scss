@@ -1,12 +1,12 @@
-@use "sass:map";
+@use 'sass:map';
 
-@use "partials";
+@use 'partials';
 
-@forward "./sizing";
+@forward './sizing';
 
-@use "./sizing" as sizing;
-@use "./base" as *;
-@use "./constants" as constants;
+@use './sizing' as sizing;
+@use './base' as *;
+@use './constants' as constants;
 
 .icon {
   @include icon-svg-base();
@@ -16,7 +16,7 @@
   color: inherit;
 
   @include partials.disabled {
-    color: theme("colors.disabled");
+    color: theme('colors.disabled');
   }
 
   > svg {
@@ -127,34 +127,34 @@
     display: inherit !important;
   }
 
-  &[data-attr-fit="square"] {
-    @include sizing.icon-fit("square");
+  &[data-attr-fit='square'] {
+    @include sizing.icon-fit('square');
   }
 
-  &[data-attr-fit="fit"] {
-    @include sizing.icon-fit("fit");
+  &[data-attr-fit='fit'] {
+    @include sizing.icon-fit('fit');
   }
 
-  &:not([data-attr-fit="fit"], [data-attr-fit="square"]) {
+  &:not([data-attr-fit='fit'], [data-attr-fit='square']) {
     @include sizing.icon-fit(constants.$default-icon-size-fit);
   }
 
-  &[data-attr-dimension="height"] {
-    @include sizing.icon-size-classes("height");
+  &[data-attr-dimension='height'] {
+    @include sizing.icon-size-classes('height');
   }
 
-  &[data-attr-dimension="width"] {
-    @include sizing.icon-size-classes("width");
+  &[data-attr-dimension='width'] {
+    @include sizing.icon-size-classes('width');
   }
 
-  &:not([data-attr-dimension="height"], [data-attr-dimension="width"]) {
+  &:not([data-attr-dimension='height'], [data-attr-dimension='width']) {
     @include sizing.icon-size-classes(constants.$default-icon-size-dimension);
   }
 }
 
 .spinner {
   // The default color, unless overridden via Tailwind classes or elsewhere in the SASS files.
-  color: theme("colors.blue.700");
+  color: theme('colors.blue.700');
   -webkit-animation: spin 1s infinite linear;
   animation: spin 1s infinite linear;
   z-index: 100;

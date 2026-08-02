@@ -1,25 +1,25 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import { parseOrdering } from "~/lib/ordering";
+import { parseOrdering } from '~/lib/ordering';
 
-import { CoursesDefaultOrdering, CoursesFiltersObj } from "~/actions";
+import { CoursesDefaultOrdering, CoursesFiltersObj } from '~/actions';
 
-import { Loading } from "~/components/loading/Loading";
-import { columnIsOrderable } from "~/components/tables";
-import { CoursesTableColumns } from "~/features/courses";
-import { CoursesTableControlBarPlaceholder } from "~/features/courses/components/tables/CoursesTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { columnIsOrderable } from '~/components/tables';
+import { CoursesTableColumns } from '~/features/courses';
+import { CoursesTableControlBarPlaceholder } from '~/features/courses/components/tables/CoursesTableControlBarPlaceholder';
 
-import { CoursesTableBody } from "./CoursesTableBody";
+import { CoursesTableBody } from './CoursesTableBody';
 
 export interface CoursesTablePageProps {
   readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function CoursesTablePage(props: CoursesTablePageProps) {
+const CoursesTablePage = async (props: CoursesTablePageProps) => {
   const searchParams = await props.searchParams;
-  const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
+  const page = z.coerce.number().int().positive().min(1).safeParse(searchParams.page).data ?? 1;
 
   const filters = CoursesFiltersObj.parse(searchParams);
 
@@ -30,15 +30,17 @@ export default async function CoursesTablePage(props: CoursesTablePageProps) {
 
   return (
     <Suspense
-      key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
       fallback={
         <>
           <CoursesTableControlBarPlaceholder />
-          <Loading isLoading component="tbody" />
+          <Loading component='tbody' isLoading />
         </>
       }
+      key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
     >
-      <CoursesTableBody filters={filters} page={page} ordering={ordering} />
+      <CoursesTableBody filters={filters} ordering={ordering} page={page} />
     </Suspense>
   );
-}
+};
+
+export default CoursesTablePage;

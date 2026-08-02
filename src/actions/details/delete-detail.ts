@@ -1,15 +1,15 @@
-"use server";
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { calculateSkillsExperience } from "~/database/model";
-import { db } from "~/database/prisma";
+'use server';
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { calculateSkillsExperience } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const deleteDetail = async (
   id: string,
 ): Promise<MutationActionResponse<{ message: string }>> => {
-  const { error, user, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -18,8 +18,8 @@ export const deleteDetail = async (
     };
   }
   const detail = await db.detail.findUnique({
+    include: { nestedDetails: { include: { skills: true } }, skills: true },
     where: { id },
-    include: { skills: true, nestedDetails: { include: { skills: true } } },
   });
   if (!detail) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -32,6 +32,6 @@ export const deleteDetail = async (
     await tx.nestedDetail.deleteMany({ where: { detailId: detail.id } });
     await tx.detail.delete({ where: { id: detail.id } });
     await calculateSkillsExperience(tx, sks, { user });
-    return { data: { message: "Success" } };
+    return { data: { message: 'Success' } };
   });
 };

@@ -1,85 +1,79 @@
-import { useRouter } from "next/navigation";
-import { useEffect, type JSX } from "react";
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import type { ApiClientErrorJson } from "~/api";
-import { isApiClientErrorJson } from "~/api";
+import { type ApiClientErrorJson, isApiClientErrorJson } from '~/api';
 
-import { ReadWriteTextInput, useReadWriteTextInput } from "~/components/input/ReadWriteTextInput";
-import type * as types from "~/components/tables/types";
+import { ReadWriteTextInput, useReadWriteTextInput } from '~/components/input/ReadWriteTextInput';
+import type * as types from '~/components/tables/types';
 
 /**
- * @deprecated
- * Keeping this around just for reference, even though it is not used.
+ * @deprecated Keeping this around just for reference, even though it is not used.
  */
 export interface EditableStringCellProps<
-  M extends { id: string } & { [key in K]: string | null },
+  M extends { id: string } & Record<K, null | string>,
   K extends keyof M,
-  P extends { [key in K]: string },
+  P extends Record<K, string>,
   T,
 > {
-  readonly model: M;
-  readonly field: K;
-  readonly table: types.CellDataTableInstance<M>;
+  readonly action: (data: P) => Promise<ApiClientErrorJson | T>;
   readonly errorMessage: string;
-  readonly action: (data: P) => Promise<T | ApiClientErrorJson>;
+  readonly field: K;
+  readonly model: M;
+  readonly table: types.CellDataTableInstance<M>;
 }
 
 /**
- * @deprecated
- * Keeping this around just for reference, even though it is not used.
+ * @deprecated Keeping this around just for reference, even though it is not used.
  */
-export type EditableStringCellComponent = {
-  <
-    M extends { id: string } & { [key in K]: string | null },
-    K extends keyof M,
-    P extends { [key in K]: string },
-    T,
-  >(
-    props: EditableStringCellProps<M, K, P, T>,
-  ): JSX.Element;
-};
+export type EditableStringCellComponent = <
+  M extends { id: string } & Record<K, null | string>,
+  K extends keyof M,
+  P extends Record<K, string>,
+  T,
+>(
+  props: EditableStringCellProps<M, K, P, T>,
+) => JSX.Element;
 
 /**
- * @deprecated
- * Keeping this around just for reference, even though it is not used.
+ * @deprecated Keeping this around just for reference, even though it is not used.
  */
 export const EditableStringCell = <
-  M extends { id: string } & { [key in K]: string | null },
+  M extends { id: string } & Record<K, null | string>,
   K extends keyof M,
-  P extends { [key in K]: string },
+  P extends Record<K, string>,
   T,
 >({
-  model,
-  field,
-  errorMessage,
-  table,
   action,
+  errorMessage,
+  field,
+  model,
+  table,
 }: EditableStringCellProps<M, K, P, T>): JSX.Element => {
   const router = useRouter();
 
   const input = useReadWriteTextInput();
 
   useEffect(() => {
-    input.current.setValue(model[field] ?? "");
+    input.current.setValue(model[field] ?? '');
   }, [model, field, input]);
 
   return (
     <ReadWriteTextInput
-      ref={input}
-      initialValue={model[field] ?? ""}
+      initialValue={model[field] ?? ''}
       onPersist={async value => {
-        table.setRowLoading(model.id as M["id"], true);
+        table.setRowLoading(model.id, true);
 
-        let response: T | ApiClientErrorJson | null = null;
+        let response: ApiClientErrorJson | null | T = null;
         try {
           response = await action({ [field]: value } as P);
         } catch (e) {
           logger.error(
-            `There was a server error updating the field '${String(field)}' for the model:\n${e}`,
+            `There was a server error updating the field '${String(field)}' for the model:\n` +
+              String(e),
             {
               error: e,
               field,
@@ -88,15 +82,15 @@ export const EditableStringCell = <
           );
           toast.error(errorMessage);
         } finally {
-          table.setRowLoading(model.id as M["id"], false);
+          table.setRowLoading(model.id, false);
         }
         if (isApiClientErrorJson(response)) {
           logger.error(
             `There was a client error updating the field '${String(field)}' for the model.`,
             {
-              response,
               field,
               model,
+              response,
             },
           );
           toast.error(errorMessage);
@@ -106,8 +100,7 @@ export const EditableStringCell = <
            original state. */
         router.refresh();
       }}
+      ref={input}
     />
   );
 };
-
-export default EditableStringCell;

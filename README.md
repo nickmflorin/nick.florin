@@ -4,7 +4,7 @@ This repository contains a web application that supports my personal resume, por
 
 &copy; Nick Florin, 2024
 
-### System Requirements
+## System Requirements
 
 The contents of this document assume that you are using a MacOS machine. If you are not, steps
 outlined for setting up and running the application locally will be similar, but not exactly the
@@ -195,7 +195,7 @@ $ pnpm -v
 The [`pnpm`][pnpm] version should be 8.x.x. If it is not, refer to the next section, "Managing PNPM
 Version".
 
-###### Managing PNPM Version
+#### Managing PNPM Version
 
 [`pnpm`][pnpm] uses [corepack] to manage versions on your local machine. [corepack] can be installed
 on your machine via [homebrew]:
@@ -523,16 +523,21 @@ file:
 $ pnpm build-local
 ```
 
-**Note**: [NextJS][nextjs] will also automatically perform linting checks during the `build`
-process - any linting errors will result in the build failing automatically but linting warnings
-will not. This includes linting performed by [ESLint][eslint] and [Prettier][prettier].
+**Note**: As of [NextJS][nextjs] 16, the `build` process no longer runs [ESLint][eslint] - the
+built-in lint step was removed along with `next lint`. Linting must be run separately, via the
+commands described in section 2.4, "Linting".
 
 ### 2.4 Linting
 
-This project uses [ESLint][eslint] and [Prettier][prettier] inside of the [ESLint][eslint]
-configuration. [ESLint][eslint] is configured to automatically format the file when the file is
-saved (a configuration that is defined in `./vscode/settings.json`). If that is not desirable, you
-can easily turn that setting off in your local [VSCode][vscode] settings.
+This project uses [ESLint][eslint] and [Prettier][prettier], with [Prettier][prettier] run from
+inside of the [ESLint][eslint] configuration via `eslint-plugin-prettier`. Every fixable violation,
+formatting included, is applied by [ESLint][eslint]'s `source.fixAll.eslint` code action when a file
+is saved (a configuration that is defined in `./.vscode/settings.json`). If that is not desirable,
+you can turn that setting off in your local [VSCode][vscode] settings.
+
+Because that code action already applies the same fixes [ESLint][eslint] applies on the command
+line, `editor.formatOnSave` is deliberately disabled for JS/TS files so that a second, near
+identical formatting pass does not run on every save.
 
 #### 2.4.a Formatting & Code Style
 
@@ -545,43 +550,76 @@ In other words, many formatting rules were not chosen for a specific reason othe
 decision. It is better to rely on the available formatting tools to remove as much ambiguity as
 possible, rather than spending time debating or arguing the rules themselves.
 
-#### 2.4.b Performing Linting Checks
+#### 2.4.b The [ESLint][eslint] Configuration
 
-[NextJS][nextjs] will automatically perform linting checks during the `build` process, but it is
-desired that they be performed independently without performing the entire `build` process, use the
-following command:
+The [ESLint][eslint] configuration is isolated inside of the `tooling/eslint-config-web` directory,
+which is a private, local package that the root `package.json` depends on via a `link:` dependency
+(`@nickflorin/eslint-config-web`). Isolating it this way keeps the individual concerns of the
+configuration - TypeScript, imports, React, Jest, stylistic rules, etc. - in separate, individually
+readable modules rather than in one monolithic file:
+
+| File                  | Responsibility                                                   |
+| :-------------------- | :--------------------------------------------------------------- |
+| `config.mjs`          | The barrel that composes every configuration module, in order.   |
+| `configs/*.mjs`       | The individual, concern-scoped rule sets.                        |
+| `support.mjs`         | Helpers that construct the composite rules (restricted imports). |
+| `constants.mjs`       | Shared constants (rule severities, first-party module groups).   |
+| `fast-formatting.mjs` | Derives a format-only configuration from the full configuration. |
+| `eslint-progress.mjs` | An [ESLint][eslint] CLI wrapper that prints live file progress.  |
+
+The root `eslint.config.mjs` extends that package and layers the project-specific concerns on top of
+it. The root `eslint.config.format.mjs` derives a format-only variant of it, described below.
+
+**Note**: The order in which the configuration modules are composed in `config.mjs` matters. In
+particular, the Prettier configuration must come after the configurations whose rules it is
+responsible for turning off.
+
+#### 2.4.c Performing Linting Checks
+
+To run both [ESLint][eslint] and [Prettier][prettier] over the project:
 
 ```bash
 $ pnpm lint
 ```
 
-This will run [ESLint][eslint] and [Prettier][prettier] (via [ESLint][eslint]) on the project.
-
-With that being said, the project's [Jest][jest] testing suite is configured to perform linting and
-formatting checks via [ESLint][eslint] and [Prettier][prettier] as well. This is the recommended way
-to perform the checks, because the output is much, much more suitable for debugging and the hot
-reloading feature of [Jest][jest] will save you a lot of time.
-
-This can be done simply as:
+To run only the checks that are reported as errors, ignoring warnings:
 
 ```bash
-$ pnpm test
+$ pnpm lint:errors
 ```
 
-For more information related to [Jest][jest] and the linting checks it performs, please see the
-section further down in this documentation, "Testing".
-
-#### 2.4.c Automatically Fixing [ESLint][eslint] Violations
-
-Some [ESLint][eslint] violations can be automatically fixed by [ESLint][eslint] itself. This can be
-performed via the `eslint-fix` command, which is defined in the `package.json` file:
+The two halves can also be run independently, via `pnpm eslint` and `pnpm prettier`. Spelling is
+checked separately, by [cspell][cspell]:
 
 ```bash
-$ pnpm eslint-fix
+$ pnpm spellcheck
 ```
 
-This command will automatically fix and format all [ESLint][eslint] and [Prettier][prettier]
-violations in the repository that are capable of being auto-fixed.
+#### 2.4.d Automatically Fixing Violations
+
+Many [ESLint][eslint] violations - and every [Prettier][prettier] violation - can be fixed
+automatically. To format the entire project with both:
+
+```bash
+$ pnpm format
+```
+
+A full [ESLint][eslint] fix pass evaluates the type-aware rules, which is slow. When
+[ESLint][eslint] is only needed as a _formatter_ - most commonly after a large, generated change - a
+format-only pass that strips every rule that is not auto-fixable is dramatically faster:
+
+```bash
+$ pnpm eslint:format:fast
+```
+
+To lint only the files that differ from `HEAD`, fixing what can be fixed:
+
+```bash
+$ pnpm eslint:changed
+```
+
+**Note**: `eslint:format:fast` is a local development convenience only. It is not a source of
+correctness and must never be relied on in a CI or production environment.
 
 ### 2.5 Environment
 
@@ -644,42 +682,18 @@ up into [projects](https://jestjs.io/docs/configuration#projects-arraystring--pr
 that certain tests can use different sets of configuration parameters that would not otherwise be
 possible with a single configuration.
 
-The [Jest][jest] testing suite is broken down into 5
-"[projects](https://jestjs.io/docs/configuration#projects-arraystring--projectconfig)":
-
-1. **Functional Unit Tests**: Unit tests that are run against functional utilities or logic in
-   `src/lib`.
-2. **Component Tests**: Both unit tests & snapshot tests that are run against components in
-   `src/components`.
-3. **Prettier**: Prettier checks that are performed against relevant files in the project.
-4. **ESLint**: ESLint checks that are performed against non `.scss` files in the project.
-
 The following table describes the various aspects of each individual
 [Jest](https://jestjs.io/docs/getting-started) project in the application:
 
-|        Project        |              Config File              |       Files Tested        | Test Files Located |
-| :-------------------: | :-----------------------------------: | :-----------------------: | :----------------: |
-| Functional Unit Tests |    `src/tests/unit/jest.config.ts`    |           `.ts`           | `!src/components`  |
-|    Component Tests    | `src/tests/components/jest.config.ts` |          `.tsx`           |  `src/components`  |
-|       Prettier        |       `jest.config.prettier.ts`       |       All Relevant        |        N/A         |
-|        ESLint         |        `jest.config.eslint.ts`        | All Relevant, non `.scss` |        N/A         |
+|        Project        |             Config File             | Files Tested |  Test Files Located  |
+| :-------------------: | :---------------------------------: | :----------: | :------------------: |
+| Functional Unit Tests | `src/__tests__/unit/jest.config.ts` |    `.ts`     | `src/__tests__/unit` |
 
 #### 2.6.b Linting
 
-Linting checks from [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) can be
-performed both via the `pnpm lint` command or simply the command that runs the test suite:
-
-```bash
-$ pnpm test
-```
-
-However, it is highly recommended that the [Jest](https://jestjs.io/docs/getting-started) test suite
-is used when performing linting checks locally, because
-[Jest](https://jestjs.io/docs/getting-started) does a phenomenal job providing clearer, more
-detailed and more readable debugging information when the checks fail. Additionally,
-[Jest](https://jestjs.io/docs/getting-started) provides the benefit of "watch mode" - which allows
-you to dynamically make the changes and immediately see the checks pass as a result of the changes
-that were made.
+Linting is not part of the [Jest](https://jestjs.io/docs/getting-started) test suite - it is run
+directly through [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/). See section
+2.4, "Linting", for the full set of commands.
 
 ### 2.7 Database
 
@@ -772,8 +786,9 @@ $ pnpm seeddb
 
 That being said, this seed process _only_ works when the database state is empty - if the database
 state is not empty, unique constraint violations will be triggered when adding data to the database.
-Therefore, in order to run the [`./src/prisma/seed.ts](./src/prisma/seed.ts) script, it must be done
-as a part of [prisma]'s `reset` flow:
+Therefore, in order to run the
+[`./src/prisma/seed.ts](./src/prisma/seed.ts) script, it must be done as a part of [prisma]'s `reset`
+flow:
 
 ```bash
 $ pnpm migrate-reset
@@ -843,6 +858,7 @@ $ git push origin master
 [prettier]: https://prettier.io/
 [vscode]: https://code.visualstudio.com/
 [eslint]: https://eslint.org/
+[cspell]: https://cspell.org/
 [jest]: https://jestjs.io/docs/getting-started
 [sass]: https://sass-lang.com/
 [prisma]: https://www.prisma.io/

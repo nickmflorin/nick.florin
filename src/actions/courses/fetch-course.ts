@@ -1,34 +1,33 @@
-import type { ApiCourse, CourseIncludes } from "~/database/model";
-import { fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
+import { type ApiCourse, type CourseIncludes, fieldIsIncluded } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { standardDetailFetchAction, type StandardFetchActionReturn } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { standardDetailFetchAction, type StandardFetchActionReturn } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const fetchCourse = <I extends CourseIncludes>(includes: I) =>
   standardDetailFetchAction(
     async (id, _, { isAdmin, isVisible }): StandardFetchActionReturn<ApiCourse<I>> => {
       const course = (await db.course.findUnique({
-        where: { id },
         include: {
-          education: fieldIsIncluded("education", includes)
+          education: fieldIsIncluded('education', includes)
             ? { include: { school: true } }
             : undefined,
-          skills: fieldIsIncluded("skills", includes)
+          skills: fieldIsIncluded('skills', includes)
             ? { where: { visible: isVisible } }
             : undefined,
         },
-      })) as ApiCourse<I>;
+        where: { id },
+      })) as ApiCourse<I> | null;
       if (!course) {
         return ApiClientGlobalError.NotFound({
-          message: "The course could not be found.",
+          message: 'The course could not be found.',
         });
       } else if (!isAdmin && !course.visible) {
         ApiClientGlobalError.Forbidden({
-          message: "The user does not have permission to access this data.",
+          message: 'The user does not have permission to access this data.',
         });
       }
-      return course as ApiCourse<I>;
+      return course;
     },
-    { authenticated: false, adminOnly: false },
+    { adminOnly: false, authenticated: false },
   );

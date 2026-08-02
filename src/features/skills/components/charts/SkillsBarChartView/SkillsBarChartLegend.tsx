@@ -1,11 +1,10 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { ApiSkill } from "~/database/model";
-import { generateChartColors } from "~/lib/charts";
+import { type ApiSkill } from '~/database/model';
+import { generateChartColors } from '~/lib/charts';
 
-import { Legend } from "~/components/charts/Legend";
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { Legend } from '~/components/charts/Legend';
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface SkillsBarChartLegendProps extends ComponentProps {
   readonly skills: ApiSkill[];
@@ -14,22 +13,20 @@ export interface SkillsBarChartLegendProps extends ComponentProps {
 export const SkillsBarChartLegend = ({
   skills,
   ...props
-}: SkillsBarChartLegendProps): JSX.Element => {
+}: SkillsBarChartLegendProps): JSX.Element | null => {
   if (skills.length === 0) {
-    return <></>;
+    return null;
   }
   const colors = generateChartColors(skills.length);
   return (
-    <div className={classNames("px-[10px] max-w-full")}>
+    <div className={classNames('px-[10px] max-w-full')}>
       <Legend
         {...props}
         items={skills.map((skill, index) => ({
-          label: skill.label,
           color: colors[index],
+          label: skill.label,
         }))}
       />
     </div>
   );
 };
-
-export default SkillsBarChartLegend;

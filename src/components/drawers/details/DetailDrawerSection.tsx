@@ -1,24 +1,22 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { Label } from "~/components/typography";
+import { Label } from '~/components/typography';
 
 interface DetailDrawerSectionProps {
-  readonly label: string;
   readonly children: JSX.Element | JSX.Element[];
+  readonly label: string;
 }
 
-export const DetailDrawerSection = ({ label, children }: DetailDrawerSectionProps) =>
-  Array.isArray(children) && children.length === 0 ? (
-    <></>
-  ) : (
-    <div className="flex flex-col gap-[8px] pr-[12px]">
-      <hr className="w-full border-t border-gray-200" />
-      <div className="flex flex-col gap-[12px]">
-        <Label fontSize="sm" fontWeight="medium">
+export const DetailDrawerSection = ({ children, label }: DetailDrawerSectionProps) =>
+  Array.isArray(children) && children.length === 0 ? null : (
+    <div className='flex flex-col gap-[8px] pr-[12px]'>
+      <hr className='w-full border-t border-gray-200' />
+      <div className='flex flex-col gap-[12px]'>
+        <Label fontSize='sm' fontWeight='medium'>
           {label}
         </Label>
         {Array.isArray(children) ? (
-          <div className="flex flex-col gap-[12px]">{children}</div>
+          <div className='flex flex-col gap-[12px]'>{children}</div>
         ) : (
           children
         )}

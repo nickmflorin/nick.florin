@@ -1,7 +1,7 @@
-import { db } from "~/database/prisma";
-import { cli } from "~/scripts";
+import { db } from '~/database/prisma';
+import { cli } from '~/scripts';
 
-import { githubClient } from "~/integrations/github";
+import { githubClient } from '~/integrations/github';
 
 const script: cli.Script = async ctx => {
   await db.$transaction(
@@ -12,4 +12,4 @@ const script: cli.Script = async ctx => {
   );
 };
 
-cli.runScript(script, { upsertUser: false, devOnly: false });
+void cli.runScript(script, { devOnly: false, upsertUser: false });

@@ -1,19 +1,21 @@
-import { ReadonlyURLSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams } from 'next/navigation';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import { parseQueryParams } from "~/integrations/http";
+import { parseQueryParams } from '~/integrations/http';
 
-export const Orders = ["asc", "desc"] as const;
+export const Orders = ['asc', 'desc'] as const;
 
 export type Order = (typeof Orders)[number];
 
-// Right now, we are only supporting single field ordering.
-export type Ordering<I extends string = string, O extends Order = Order> = { orderBy: I; order: O };
+/**
+ * Represents an ordering by a single field; ordering by multiple fields is not supported.
+ */
+export type Ordering<I extends string = string, O extends Order = Order> = { order: O; orderBy: I };
 
 type ParseOrderingOptions<F extends string> = {
-  readonly fields: F[];
   readonly defaultOrdering: Ordering<F>;
+  readonly fields: F[];
 };
 
 const OrderingSchema = <F extends string>(options: ParseOrderingOptions<F>) =>
@@ -34,15 +36,15 @@ const OrderingSchema = <F extends string>(options: ParseOrderingOptions<F>) =>
     );
 
 export const parseOrdering = <F extends string>(
-  params: ReadonlyURLSearchParams | URLSearchParams | Record<string, string | string[] | undefined>,
-  { fields, defaultOrdering }: ParseOrderingOptions<F>,
+  params: ReadonlyURLSearchParams | Record<string, string | string[] | undefined> | URLSearchParams,
+  { defaultOrdering, fields }: ParseOrderingOptions<F>,
 ): Ordering<F> => {
   const parsed =
     params instanceof ReadonlyURLSearchParams || params instanceof URLSearchParams
       ? parseQueryParams(params.toString())
       : params;
 
-  const parsedData = OrderingSchema({ fields, defaultOrdering }).safeParse(parsed);
+  const parsedData = OrderingSchema({ defaultOrdering, fields }).safeParse(parsed);
   if (parsedData.success) {
     return parsedData.data;
   }

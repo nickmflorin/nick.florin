@@ -2,10 +2,10 @@
   > .mantine-Radio-body {
     > .mantine-Radio-inner {
       > .mantine-Radio-radio:checked {
-        background-color: theme("colors.blue.900");
+        background-color: theme('colors.blue.900');
       }
       > .mantine-Radio-radio:not(:checked) {
-        border: 1px solid theme("colors.gray.400");
+        border: 1px solid theme('colors.gray.400');
       }
     }
   }

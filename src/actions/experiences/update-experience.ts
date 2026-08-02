@@ -1,19 +1,19 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandExperience, calculateSkillsExperience, type Company } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandExperience, calculateSkillsExperience, type Company } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { ExperienceSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { ExperienceSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 const UpdateExperienceSchema = ExperienceSchema.partial();
 
@@ -21,7 +21,7 @@ export const updateExperience = async (
   experienceId: string,
   data: z.infer<typeof UpdateExperienceSchema>,
 ): Promise<MutationActionResponse<BrandExperience>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -31,8 +31,8 @@ export const updateExperience = async (
   }
 
   const experience = await db.experience.findUnique({
-    where: { id: experienceId },
     include: { company: true, skills: true },
+    where: { id: experienceId },
   });
   if (!experience) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -44,17 +44,17 @@ export const updateExperience = async (
     };
   }
 
-  const { company: companyId, title, skills: _skills, ...rest } = parsed.data;
+  const { company: companyId, skills: _skills, title, ...rest } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
   let company: Company = experience.company;
   if (companyId) {
-    /* Note: We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so
-       we do not need to worry about checking isPrismaInvalidIdError here. */
+    /* We are already guaranteed to be dealing with UUIDs due to the Zod schema check, so we do not
+       need to worry about checking isPrismaInvalidIdError here. */
     const c = await db.company.findUnique({ where: { id: companyId } });
     if (!c) {
       return {
-        error: ApiClientFieldErrors.doesNotExist("company", "The company does not exist.").json,
+        error: ApiClientFieldErrors.doesNotExist('company', 'The company does not exist.').json,
       };
     }
     company = c;
@@ -62,28 +62,28 @@ export const updateExperience = async (
   if (
     title &&
     (await db.experience.count({
-      where: { companyId: company.id, title, id: { notIn: [experience.id] } },
+      where: { companyId: company.id, id: { notIn: [experience.id] }, title },
     }))
   ) {
-    fieldErrors.addUnique("title", "The title must be unique for a given company.");
+    fieldErrors.addUnique('title', 'The title must be unique for a given company.');
   }
   if (
     rest.shortTitle &&
     (await db.experience.count({
       where: {
         companyId: company.id,
-        shortTitle: rest.shortTitle,
         id: { notIn: [experience.id] },
+        shortTitle: rest.shortTitle,
       },
     }))
   ) {
-    fieldErrors.addUnique("shortTitle", "The 'shortTitle' must be unique for a given company.");
+    fieldErrors.addUnique('shortTitle', "The 'shortTitle' must be unique for a given company.");
   }
 
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
 
   if (fieldErrors.hasErrors) {
@@ -92,10 +92,10 @@ export const updateExperience = async (
   const sks = [...experience.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
   let updateData = {
     ...rest,
-    title,
     companyId: company.id,
-    updatedById: user.id,
     skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+    title,
+    updatedById: user.id,
   };
   if (updateData.visible === false && updateData.highlighted === undefined) {
     updateData = { ...updateData, highlighted: false };
@@ -104,9 +104,9 @@ export const updateExperience = async (
   }
   return await db.$transaction(async tx => {
     const updated = await tx.experience.update({
-      where: { id: experience.id },
       data: updateData,
       include: { company: true },
+      where: { id: experience.id },
     });
     await calculateSkillsExperience(tx, sks, { user });
     return { data: convertToPlainObject(updated) };

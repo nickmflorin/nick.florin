@@ -1,10 +1,9 @@
-import type { ReactNode } from "react";
-import { Suspense } from "react";
+import { type ReactNode, Suspense } from 'react';
 
-import { DataTableProvider } from "~/components/tables/DataTableProvider";
-import { ProjectsTableColumns, type ProjectsTableColumnId } from "~/features/projects";
+import { DataTableProvider } from '~/components/tables/DataTableProvider';
+import { type ProjectsTableColumnId, ProjectsTableColumns } from '~/features/projects';
 
-import { ProjectsDataTableWrapper } from "./ProjectsDataTableWrapper";
+import { ProjectsDataTableWrapper } from './ProjectsDataTableWrapper';
 
 export interface ProjectsTableWrapperProps {
   readonly children: ReactNode;
@@ -13,13 +12,13 @@ export interface ProjectsTableWrapperProps {
 
 export const ProjectsTableWrapper = ({ children, ...props }: ProjectsTableWrapperProps) => (
   <DataTableProvider
+    areRowsDeletable
+    areRowsSelectable
     columns={ProjectsTableColumns}
-    controlBarTargetId="projects-admin-table-control-bar"
-    rowsAreDeletable
-    rowsAreSelectable
-    rowsHaveActions
+    controlBarTargetId='projects-admin-table-control-bar'
+    hasRowActions
   >
-    <Suspense fallback={<></>}>
+    <Suspense fallback={null}>
       <ProjectsDataTableWrapper {...props}>{children}</ProjectsDataTableWrapper>
     </Suspense>
   </DataTableProvider>

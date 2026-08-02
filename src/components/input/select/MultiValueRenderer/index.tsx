@@ -1,78 +1,78 @@
-import React, { useMemo, memo, type ReactNode, type JSX } from "react";
+import { Fragment, type JSX, memo, type ReactNode, useMemo } from 'react';
 
-import { Badge, type BadgeProps } from "~/components/badges/Badge";
-import { type IconProp, type IconName } from "~/components/icons";
+import { Badge, type BadgeProps } from '~/components/badges/Badge';
+import { type IconName, type IconProp } from '~/components/icons';
 
-import { MultiValueRendererContainer } from "./MultiValueRendererContainer";
-import { TruncatedMultiValueRenderer } from "./TruncatedMultiValueRenderer";
+import { MultiValueRendererContainer } from './MultiValueRendererContainer';
+import { TruncatedMultiValueRenderer } from './TruncatedMultiValueRenderer';
 
-type MultiValueRendererChild = string | number | JSX.Element;
+type MultiValueRendererChild = JSX.Element | number | string;
 
 type MultiValueRendererModel = {
-  readonly id?: string | number;
-  readonly icon?: IconProp | IconName | JSX.Element;
-  readonly label?: ReactNode;
   readonly content?: ReactNode;
+  readonly icon?: IconName | IconProp | JSX.Element;
+  readonly id?: number | string;
+  readonly label?: ReactNode;
 };
 
 interface MultiValueRendererBaseProps {
+  readonly hasDynamicHeight?: boolean;
   readonly maximumValuesToRender?: number;
-  readonly dynamicHeight?: boolean;
 }
 
-export interface MultiValueRendererCallbackProps<T extends MultiValueRendererModel>
-  extends MultiValueRendererBaseProps {
-  readonly data: T[];
+export interface MultiValueRendererCallbackProps<
+  T extends MultiValueRendererModel,
+> extends MultiValueRendererBaseProps {
+  readonly badgeProps?: Omit<BadgeProps, 'children' | 'icon' | 'onClose' | 'size'>;
   readonly children?: never;
-  readonly summarizeValueAfter?: number;
-  readonly summarizeValue?: boolean;
-  readonly valueSummary?: ReactNode | ((params: { count: number }) => ReactNode);
-  readonly chipClassName?: BadgeProps["className"];
-  readonly chipSize?: BadgeProps["size"];
-  readonly badgeProps?: Omit<BadgeProps, "children" | "icon" | "size" | "onClose">;
-  readonly onBadgeClose?: (m: T) => void;
+  readonly chipClassName?: BadgeProps['className'];
+  readonly chipSize?: BadgeProps['size'];
+  readonly data: T[];
+  readonly getBadgeIcon?: (m: T) => IconName | IconProp | JSX.Element | undefined;
   readonly getBadgeLabel?: (m: T) => ReactNode;
-  readonly getBadgeIcon?: (m: T) => IconProp | IconName | JSX.Element | undefined;
   readonly getBadgeProps?: (
     m: T,
-  ) => Partial<Omit<BadgeProps, "children" | "icon" | "onClose">> | undefined;
+  ) => Partial<Omit<BadgeProps, 'children' | 'icon' | 'onClose'>> | undefined;
+  readonly onBadgeClose?: (m: T) => void;
   readonly renderer?: (m: T) => JSX.Element;
+  readonly summarizeValue?: boolean;
+  readonly summarizeValueAfter?: number;
+  readonly valueSummary?: ((params: { count: number }) => ReactNode) | ReactNode;
 }
 
 export interface MultiValueRendererChildrenProps extends MultiValueRendererBaseProps {
+  readonly badgeProps?: never;
+  readonly children: MultiValueRendererChild | MultiValueRendererChild[];
   readonly chipClassName?: never;
   readonly chipSize?: never;
-  readonly badgeProps?: never;
-  readonly summarizeValueAfter?: number;
-  readonly summarizeValue?: boolean;
-  readonly valueSummary?: ReactNode | ((params: { count: number }) => ReactNode);
-  readonly children: MultiValueRendererChild | MultiValueRendererChild[];
   readonly data?: never;
-  readonly getBadgeLabel?: never;
   readonly getBadgeIcon?: never;
-  readonly renderer?: never;
-  readonly onBadgeClose?: never;
+  readonly getBadgeLabel?: never;
   readonly getBadgeProps?: never;
+  readonly onBadgeClose?: never;
+  readonly renderer?: never;
+  readonly summarizeValue?: boolean;
+  readonly summarizeValueAfter?: number;
+  readonly valueSummary?: ((params: { count: number }) => ReactNode) | ReactNode;
 }
 
 export type MultiValueRendererProps<T extends MultiValueRendererModel> =
-  | MultiValueRendererChildrenProps
-  | MultiValueRendererCallbackProps<T>;
+  MultiValueRendererCallbackProps<T> | MultiValueRendererChildrenProps;
 
 export const MultiValueRenderer = memo(
   <T extends MultiValueRendererModel>({
-    maximumValuesToRender,
-    dynamicHeight = true,
-    data,
-    children,
-    chipSize = "sm",
-    chipClassName,
     badgeProps,
+    children,
+    chipClassName,
+    chipSize = 'sm',
+    data,
+    getBadgeIcon,
+    getBadgeLabel,
+    getBadgeProps,
+    hasDynamicHeight = true,
+    maximumValuesToRender,
     onBadgeClose,
     renderer,
-    getBadgeLabel,
-    getBadgeIcon,
-    getBadgeProps,
     ...props
   }: MultiValueRendererProps<T>) => {
     const content = useMemo<MultiValueRendererChild[]>(() => {
@@ -86,24 +86,24 @@ export const MultiValueRenderer = memo(
           let label: ReactNode | undefined = undefined;
           if (getBadgeLabel) {
             label = getBadgeLabel(model);
-          } else if ("valueLabel" in model && model.label !== undefined) {
+          } else if ('valueLabel' in model && model.label !== undefined) {
             label = model.label;
           }
-          let icon: IconProp | IconName | JSX.Element | undefined = undefined;
+          let icon: IconName | IconProp | JSX.Element | undefined = undefined;
           if (getBadgeIcon) {
             icon = getBadgeIcon(model);
           }
-          if (!icon && "icon" in model && model.icon !== undefined) {
+          if (!icon && 'icon' in model && model.icon !== undefined) {
             icon = model.icon;
           }
           return (
             <Badge
               {...badgeProps}
-              size={chipSize}
               className={chipClassName}
+              size={chipSize}
               {...getBadgeProps?.(model)}
-              key={i}
               icon={icon}
+              key={i}
               onClose={onBadgeClose ? () => onBadgeClose(model) : undefined}
             >
               {label}
@@ -132,17 +132,13 @@ export const MultiValueRenderer = memo(
         maximumValuesToRender={maximumValuesToRender}
       >
         {({ children: _children }) => (
-          <MultiValueRendererContainer dynamicHeight={dynamicHeight}>
+          <MultiValueRendererContainer hasDynamicHeight={hasDynamicHeight}>
             {_children.map((child, i) => (
-              <React.Fragment key={i}>{child}</React.Fragment>
+              <Fragment key={i}>{child}</Fragment>
             ))}
           </MultiValueRendererContainer>
         )}
       </TruncatedMultiValueRenderer>
     );
   },
-) as {
-  <T extends MultiValueRendererModel>(props: MultiValueRendererProps<T>): JSX.Element;
-};
-
-export default MultiValueRenderer;
+) as <T extends MultiValueRendererModel>(props: MultiValueRendererProps<T>) => JSX.Element;

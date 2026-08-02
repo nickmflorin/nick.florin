@@ -1,15 +1,15 @@
-import { type DateTime } from "luxon";
+import { type DateTime } from 'luxon';
 
 export function minDate<T extends Date | DateTime>(arg0: T, ...rest: (T | undefined)[]): T;
-export function minDate<T extends Date | DateTime>(arg0: T | null | undefined, ...rest: T[]): T;
+export function minDate<T extends Date | DateTime>(arg0: null | T | undefined, ...rest: T[]): T;
 export function minDate<T extends Date | DateTime>(arg0: T, ...rest: T[]): T;
 export function minDate<T extends Date | DateTime>(
-  arg0: T | null | undefined,
-  ...rest: (T | null | undefined)[]
-): T | null;
+  arg0: null | T | undefined,
+  ...rest: (null | T | undefined)[]
+): null | T;
 export function minDate<T extends Date | DateTime>(
-  arg0: T | null | undefined,
-  ...rest: (T | null | undefined)[]
+  arg0: null | T | undefined,
+  ...rest: (null | T | undefined)[]
 ) {
   if (arg0 === null || arg0 === undefined) {
     const filteredRest = rest.filter((v): v is T => v !== null && v !== undefined);
@@ -27,15 +27,15 @@ export function minDate<T extends Date | DateTime>(
 }
 
 export function maxDate<T extends Date | DateTime>(arg0: T, ...rest: (T | undefined)[]): T;
-export function maxDate<T extends Date | DateTime>(arg0: T | null | undefined, ...rest: T[]): T;
+export function maxDate<T extends Date | DateTime>(arg0: null | T | undefined, ...rest: T[]): T;
 export function maxDate<T extends Date | DateTime>(arg0: T, ...rest: T[]): T;
 export function maxDate<T extends Date | DateTime>(
-  arg0: T | null | undefined,
-  ...rest: (T | null | undefined)[]
-): T | null;
+  arg0: null | T | undefined,
+  ...rest: (null | T | undefined)[]
+): null | T;
 export function maxDate<T extends Date | DateTime>(
-  arg0: T | null | undefined,
-  ...rest: (T | null | undefined)[]
+  arg0: null | T | undefined,
+  ...rest: (null | T | undefined)[]
 ) {
   if (arg0 === null || arg0 === undefined) {
     const filteredRest = rest.filter((v): v is T => v !== null && v !== undefined);

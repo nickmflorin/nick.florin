@@ -1,31 +1,30 @@
-"use client";
-import { Skeleton } from "~/components/loading/Skeleton";
-import { type ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
-import { DescriptionSkeleton } from "~/components/typography/DescriptionSkeleton";
+'use client';
+import { Skeleton } from '~/components/loading/Skeleton';
+import { classNames, type ComponentProps } from '~/components/types';
+import { DescriptionSkeleton } from '~/components/typography/DescriptionSkeleton';
 
-import { ResumeModelHeaderScaffold } from "./ResumeModelHeaderScaffold";
-import { ResumeModelTile } from "./ResumeModelTile";
+import { ResumeModelHeaderScaffold } from './ResumeModelHeaderScaffold';
+import { ResumeModelTile } from './ResumeModelTile';
 
 export interface ResumeModelCondensedTileSkeletonProps extends ComponentProps {
-  readonly showTags?: boolean;
+  readonly areTagsVisible?: boolean;
   readonly numDescriptionLines?: number;
 }
 
 export const ResumeModelCondensedTileSkeleton = ({
-  showTags = true,
+  areTagsVisible = true,
   numDescriptionLines = 2,
   ...props
 }: ResumeModelCondensedTileSkeletonProps) => (
   <ResumeModelTile {...props}>
     <ResumeModelHeaderScaffold
-      size="small"
-      showTags={showTags}
+      areTagsVisible={areTagsVisible}
+      image={({ size }) => <Skeleton height={size} width={size} />}
+      size='small'
+      subTitle={<Skeleton className='w-[40%]' height={14} />}
+      tags={ps => <Skeleton {...ps} className={classNames('w-[40%]', ps.className)} height={12} />}
+      title={<Skeleton className='w-[30%]' height={18} />}
       titleSectionGap={8}
-      tags={ps => <Skeleton {...ps} height={12} className={classNames("w-[40%]", ps.className)} />}
-      title={<Skeleton height={18} className="w-[30%]" />}
-      subTitle={<Skeleton height={14} className="w-[40%]" />}
-      image={({ size }) => <Skeleton width={size} height={size} />}
     >
       <DescriptionSkeleton numLines={numDescriptionLines} />
     </ResumeModelHeaderScaffold>

@@ -1,37 +1,33 @@
-import nextJest from "next/jest.js";
+import nextJest from 'next/jest.js';
 
-import type { Config } from "jest";
+import { type Config } from 'jest';
 
-// Jest configuration options that are allowed to be overridden on a per-project basis.
+/**
+ * Jest configuration options that are allowed to be overridden on a per-project basis.
+ */
 type AllowedConfig = Omit<
   Config,
-  | "rootDir"
-  | "prettierPath"
-  | "globalSetup"
-  | "preset"
-  | "transform"
-  | "moduleDirectories"
-  | "moduleFileExtensions"
+  | 'globalSetup'
+  | 'moduleDirectories'
+  | 'moduleFileExtensions'
+  | 'preset'
+  | 'prettierPath'
+  | 'rootDir'
+  | 'transform'
 >;
 
 const createNextJestConfig = nextJest({
-  /*
-  Provide the path to your Next.js app to load next.config.js and .env files in your test
-  environment
-  */
-  dir: "./",
+  /* Provide the path to your Next.js app to load next.config.js and .env files in your test
+     environment. */
+  dir: './',
 });
 
 export enum TestModule {
-  unit = "unit",
-  prettier = "prettier",
-  eslint = "eslint",
+  unit = 'unit',
 }
 
-const TestModuleDisplayNames: { [key in TestModule]: string } = {
-  [TestModule.unit]: "unit-tests",
-  [TestModule.eslint]: "eslint-tests",
-  [TestModule.prettier]: "prettier-tests",
+const TestModuleDisplayNames: Record<TestModule, string> = {
+  [TestModule.unit]: 'unit-tests',
 };
 
 /**
@@ -39,11 +35,9 @@ const TestModuleDisplayNames: { [key in TestModule]: string } = {
  * the application with project-scoped overrides included.
  *
  * A Jest "project" is defined as a subset of tests that require separate or modified
- * configurations.  These projects are associated with scoped configuration files, with are denoted
- * as either jest-*.config.ts or jest.config.ts.
+ * configurations.  These projects are associated with scoped configuration files, which are
+ * denoted as either jest-*.config.ts or jest.config.ts.
  *
- * Note: Root Dir
- * --------------
  * The Jest configuration string placeholder, <rootDir>, refers to the root directory where the
  * project's Jest configuration file (jest-*.config.ts or jest.config.ts) is located - not the root
  * directory of the repository or the root directory that Jest is configured with via the `rootDir`
@@ -55,8 +49,7 @@ const TestModuleDisplayNames: { [key in TestModule]: string } = {
  *
  * @param {string} rootDir
  *   The root directory of the project which contains the tests it is responsible for.  This should
- * be provided by the  __dirname variable inside of the project's `jest.config.ts`.
- *
+ *   be provided by the __dirname variable inside of the project's `jest.config.ts`.
  * @param {AllowedConfig} config
  *   Optional, additional Jest configuration options (or a function returning additional Jest
  *   configuration options) specific to that project.
@@ -72,14 +65,13 @@ export const withBaseConfig = (rootDir: string, config: AllowedConfig): Config =
  * This function should not be used for establishing the configuration of individual "projects" in
  * the application.
  *
- * @see withModuleConfig
- *
  * @param {string} rootDir
  *   The root directory of the project which contains the tests it is responsible for.  This should
  *   be provided by the __dirname variable inside of the project's `jest.config.ts`.
- *
  * @param {string[]} projects
  *   The Jest "projects" for the application.
+ *
+ * @see {@link withModuleConfig}
  */
 export const withApplicationConfig = (rootDir: string, projects: string[]) =>
   createNextJestConfig(
@@ -88,9 +80,9 @@ export const withApplicationConfig = (rootDir: string, projects: string[]) =>
     }),
   );
 
-export type ModuleConfig = Omit<AllowedConfig, "displayName"> & {
+export type ModuleConfig = {
   readonly module: TestModule;
-};
+} & Omit<AllowedConfig, 'displayName'>;
 
 /**
  * Returns an async function that Jest will use to establish the configuration for a given "module"
@@ -100,7 +92,6 @@ export type ModuleConfig = Omit<AllowedConfig, "displayName"> & {
  *   The root directory of the project which contains the tests that the returned configuration is
  *   responsible for.  This should be provided as the __dirname variable inside of the project's
  *   `jest.config.ts`.
- *
  * @param {ModuleConfig} config
  *   Optional, additional Jest configuration options for the specific module.
  */
@@ -109,11 +100,7 @@ export const withModuleConfig = (rootDir: string, { module, ...config }: ModuleC
     withBaseConfig(rootDir, {
       ...config,
       displayName: TestModuleDisplayNames[module],
-      setupFilesAfterEnv: [
-        ...(config?.setupFilesAfterEnv ?? []),
-        // `${__dirname}/src/support/global-ts-test-setup.ts`,
-        "jest-expect-message",
-      ],
+      setupFilesAfterEnv: [...(config.setupFilesAfterEnv ?? []), 'jest-expect-message'],
     }),
   );
   return resulting;

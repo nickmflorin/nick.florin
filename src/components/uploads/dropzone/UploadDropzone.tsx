@@ -1,39 +1,38 @@
-"use client";
-import React from "react";
+'use client';
 
-import { Dropzone } from "@mantine/dropzone";
+import { Dropzone } from '@mantine/dropzone';
 
-import type * as types from "../types";
+import type * as types from '../types';
 
-import { Loading } from "~/components/loading/Loading";
-import { classNames } from "~/components/types";
+import { Loading } from '~/components/loading/Loading';
+import { classNames } from '~/components/types';
 
-import { UploadDropzoneContent } from "./UploadDropzoneContent";
+import { UploadDropzoneContent } from './UploadDropzoneContent';
 
 const DEFAULT_MAX_FILE_UPLOAD_SIZE_MB = 15;
 const DEFAULT_MAX_UPLOAD_SIZE = DEFAULT_MAX_FILE_UPLOAD_SIZE_MB * 1048 ** 2;
 
 export const UploadDropzone = ({
-  multiple = true,
-  isLoading = false,
   isDisabled = false,
+  isLoading = false,
   maxUploadSize = DEFAULT_MAX_UPLOAD_SIZE,
+  multiple = true,
   ...props
 }: types.UploadDropzoneProps) => (
   <Dropzone
     {...props}
     className={classNames(
-      "relative w-full min-h-[60px] h-[60px] border border-dashed rounded-md",
-      "flex flex-col justify-center items-center hover:border-blue-600",
-      { "pointer-events-none": isDisabled },
+      'relative w-full min-h-[60px] h-[60px] border border-dashed rounded-md',
+      'flex flex-col justify-center items-center hover:border-blue-600',
+      { 'pointer-events-none': isDisabled },
       props.className,
     )}
-    multiple={multiple}
-    maxSize={maxUploadSize}
     disabled={isLoading}
+    maxSize={maxUploadSize}
+    multiple={multiple}
     onDrop={(...args) => {
       if (!isDisabled) {
-        props.onDrop?.(...args);
+        props.onDrop(...args);
       }
     }}
   >
@@ -42,5 +41,3 @@ export const UploadDropzone = ({
     </Loading>
   </Dropzone>
 );
-
-export default UploadDropzone;

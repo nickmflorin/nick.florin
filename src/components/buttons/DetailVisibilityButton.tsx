@@ -1,37 +1,49 @@
-import { useRouter } from "next/navigation";
-import { useTransition, useState, useCallback, useEffect, useMemo } from "react";
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type ApiDetail, type ApiNestedDetail, isNestedDetail } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { updateDetail } from "~/actions/details/update-detail";
-import { updateNestedDetail } from "~/actions/details/update-nested-detail";
+import { updateDetail } from '~/actions/details/update-detail';
+import { updateNestedDetail } from '~/actions/details/update-nested-detail';
 
-import { IconButton } from "~/components/buttons";
-import { Icon } from "~/components/icons/Icon";
-import { classNames } from "~/components/types";
+import { IconButton } from '~/components/buttons';
+import { Icon } from '~/components/icons/Icon';
+import { classNames } from '~/components/types';
 
 export interface DetailVisibilityButtonProps<D extends ApiDetail<[]> | ApiNestedDetail<[]>> {
   readonly detail: D;
 }
 
+/**
+ * Tracks the visibility of a detail separately from its `visible` attribute, so that the icon
+ * rendered by {@link DetailVisibilityButton} can update optimistically after a request to update
+ * the detail succeeds, but before the router refresh completes and the server component re-renders
+ * with a new batch of details.
+ *
+ * Without this, there is an unattractive lag between the time the spinner finishes loading and the
+ * time the button's icon actually changes, caused by the time it takes for the server component to
+ * re-request the details and propagate them through to the client components.
+ *
+ * The returned state is kept in sync with the detail's actual visibility - which remains the source
+ * of truth - via an effect that runs whenever it changes.
+ */
+const useOptimisticVisibility = (visible: boolean) => {
+  const [optimisticIsVisible, setOptimisticIsVisible] = useState(visible);
+
+  useEffect(() => {
+    setOptimisticIsVisible(visible);
+  }, [visible]);
+
+  return [optimisticIsVisible, setOptimisticIsVisible] as const;
+};
+
 export const DetailVisibilityButton = <D extends ApiDetail<[]> | ApiNestedDetail<[]>>({
   detail,
 }: DetailVisibilityButtonProps<D>) => {
-  /* We keep track of the visibility of the detail in state, separately from the visible attribute
-     on the detail, for purposes of optimistic updates after the API request to update the detail
-     succeeds, but before the router is refreshed and a new batch of details are rendered in the
-     original server component.  If we didn't do this, there is an unattractive lag between the
-     time that the spinner finishes loading and the time that the button's icon actually changes.
-     This lag is caused by the time that it takes for the server component to re-request the
-     details and propogate them through to the client components.
-
-     An effect is used to ensure that the actual visibility of the detail - which is still the
-     source of truth - is in sync with the button icon.  This state variable is simply used to
-     update the icon immediately. */
-  const [optimisticIsVisible, setOptimisticIsVisible] = useState(detail.visible);
+  const [optimisticIsVisible, setOptimisticIsVisible] = useOptimisticVisibility(detail.visible);
 
   const updateDetailWithId = useMemo(
     () =>
@@ -43,7 +55,7 @@ export const DetailVisibilityButton = <D extends ApiDetail<[]> | ApiNestedDetail
 
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, transition] = useTransition();
-  const { refresh } = useRouter();
+  const router = useRouter();
 
   const onVisibilityChange = useCallback(async () => {
     setIsLoading(true);
@@ -57,8 +69,7 @@ export const DetailVisibilityButton = <D extends ApiDetail<[]> | ApiNestedDetail
         { detail, visible: !detail.visible },
       );
       setIsLoading(false);
-      // TODO: Consider using a global form error here instead.
-      return toast.error("There was an error updating the detail.");
+      return toast.error('There was an error updating the detail.');
     }
     const { error } = response;
     if (error) {
@@ -68,40 +79,35 @@ export const DetailVisibilityButton = <D extends ApiDetail<[]> | ApiNestedDetail
         { detail, visible: !detail.visible },
       );
       setIsLoading(false);
-      // TODO: Consider using a global form error here instead.
-      return toast.error("There was an error updating the detail.");
+      return toast.error('There was an error updating the detail.');
     }
     setOptimisticIsVisible(!detail.visible);
     transition(() => {
-      refresh();
+      router.refresh();
       setIsLoading(false);
     });
-  }, [refresh, updateDetailWithId, detail]);
-
-  useEffect(() => {
-    setOptimisticIsVisible(detail.visible);
-  }, [detail.visible]);
+  }, [router, updateDetailWithId, detail, setOptimisticIsVisible]);
 
   return (
     <IconButton.Transparent
-      className="text-gray-600 hover:text-gray-700"
+      className='text-gray-600 hover:text-gray-700'
       icon={
         <>
           <Icon
-            icon="eye-slash"
-            iconStyle="solid"
             className={classNames({ hidden: optimisticIsVisible })}
+            icon='eye-slash'
+            iconStyle='solid'
           />
           <Icon
-            icon="eye"
-            iconStyle="solid"
             className={classNames({ hidden: !optimisticIsVisible })}
+            icon='eye'
+            iconStyle='solid'
           />
         </>
       }
-      size="xsmall"
       isLoading={isLoading || isPending}
       onClick={() => onVisibilityChange()}
+      size='xsmall'
     />
   );
 };

@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import { use } from 'react';
 
-import { NavigationContext } from "~/components/config/context";
+import { NavigationContext } from '~/components/config/context';
 
 export const useNavigation = () => {
-  const ctx = useContext(NavigationContext);
+  const ctx = use(NavigationContext);
   if (!ctx.isInScope) {
     throw new Error("The 'useNavigation' hook must be called within the 'NavigationProvider'!");
   }

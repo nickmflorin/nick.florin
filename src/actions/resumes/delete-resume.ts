@@ -1,15 +1,25 @@
-"use server";
-import { del } from "@vercel/blob";
+'use server';
+import { del } from '@vercel/blob';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandResume } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandResume } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { getResumesOrdering } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { getResumesOrdering, type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
-import { setResumesPrimaryFlag } from "./fetch-resumes";
+import { setResumesPrimaryFlag } from './fetch-resumes';
+
+/**
+ * Fetches all resumes with the `primary` flag reconciled via {@link setResumesPrimaryFlag}.
+ *
+ * This is used after a resume is deleted, because deleting a resume can require a different
+ * resume to be flagged as primary.
+ */
+const getResumesWithPrimaryFlag = async (): Promise<BrandResume[]> => {
+  const resumes = await db.resume.findMany({ orderBy: getResumesOrdering() });
+  return setResumesPrimaryFlag(resumes);
+};
 
 export const deleteResume = async (id: string): Promise<MutationActionResponse<BrandResume[]>> => {
   const { error, isAdmin } = await getAuthedUser();
@@ -26,13 +36,7 @@ export const deleteResume = async (id: string): Promise<MutationActionResponse<B
   }
   return await db.$transaction(async tx => {
     await tx.resume.delete({ where: { id: resume.id } });
-    /* TODO: We may want to log a warning if we are deleing a resume that exists in the DB but not
-       in the blob storage... We would have to use the 'list' method. */
     await del(resume.url);
-
-    /* Deleting a resume can cause the prioritization flag to switch if there were multiple resumes
-       with 'primary' set to 'true'. */
-    const resumes = await db.resume.findMany({ orderBy: getResumesOrdering() });
-    return { data: setResumesPrimaryFlag(resumes) };
+    return { data: await getResumesWithPrimaryFlag() };
   });
 };

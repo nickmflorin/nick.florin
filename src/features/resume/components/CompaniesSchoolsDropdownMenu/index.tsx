@@ -1,10 +1,10 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { Loading } from "~/components/loading/Loading";
+import { Loading } from '~/components/loading/Loading';
 
-import { CompaniesSchoolsMenuContent } from "./CompaniesSchoolsMenuContent";
-import { CompaniesSchoolsFloating } from "./DynamicCompaniesSchoolsFloating";
-import { type ModelType } from "./types";
+import { CompaniesSchoolsMenuContent } from './CompaniesSchoolsMenuContent';
+import { CompaniesSchoolsFloating } from './DynamicCompaniesSchoolsFloating';
+import { type ModelType } from './types';
 
 export interface CompaniesSchoolsDropdownMenuProps {
   readonly modelType: ModelType;
@@ -12,11 +12,11 @@ export interface CompaniesSchoolsDropdownMenuProps {
 
 export const CompaniesSchoolsDropdownMenu = ({ modelType }: CompaniesSchoolsDropdownMenuProps) => (
   <CompaniesSchoolsFloating
-    modelType={modelType}
     content={
-      <Suspense fallback={<Loading isLoading={true} />}>
+      <Suspense fallback={<Loading isLoading />}>
         <CompaniesSchoolsMenuContent modelType={modelType} />
       </Suspense>
     }
+    modelType={modelType}
   />
 );

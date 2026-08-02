@@ -1,8 +1,7 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
-import { Label } from "~/components/typography";
+import { classNames, type ComponentProps } from '~/components/types';
+import { Label } from '~/components/typography';
 
 export interface ResumeModelSectionProps extends ComponentProps {
   readonly children: JSX.Element;
@@ -14,8 +13,8 @@ export const ResumeModelSection = ({
   label,
   ...props
 }: ResumeModelSectionProps): JSX.Element => (
-  <div {...props} className={classNames("flex flex-col gap-[10px]", props.className)}>
-    <Label className="text-sm max-md:text-xs">{label}</Label>
+  <div {...props} className={classNames('flex flex-col gap-[10px]', props.className)}>
+    <Label className='text-sm max-md:text-xs'>{label}</Label>
     {children}
   </div>
 );

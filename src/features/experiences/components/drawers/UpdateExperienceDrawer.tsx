@@ -1,37 +1,37 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandExperience } from "~/database/model";
+import { type BrandExperience } from '~/database/model';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { useExperienceForm } from "~/features/experiences/components/forms/hooks";
-import { UpdateExperienceForm } from "~/features/experiences/components/forms/UpdateExperienceForm";
-import { useExperience } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { DrawerForm } from '~/components/drawers/DrawerForm';
+import { useExperienceForm } from '~/features/experiences/components/forms/hooks';
+import { UpdateExperienceForm } from '~/features/experiences/components/forms/UpdateExperienceForm';
+import { useExperience } from '~/hooks/api';
 
 interface UpdateExperienceDrawerProps extends ExtendingDrawerProps {
+  readonly eager: Pick<BrandExperience, 'title'>;
   readonly experienceId: string;
-  readonly eager: Pick<BrandExperience, "title">;
 }
 
 export const UpdateExperienceDrawer = ({
-  experienceId,
   eager,
+  experienceId,
   onClose,
 }: UpdateExperienceDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useExperience(experienceId, {
+  const { data, error, isLoading, isValidating } = useExperience(experienceId, {
     keepPreviousData: true,
-    query: { visibility: "admin", includes: ["skills"] },
+    query: { includes: ['skills'], visibility: 'admin' },
   });
   const form = useExperienceForm({ experience: data });
 
   return (
-    <DrawerForm form={form} titleField="title" eagerTitle={eager.title}>
-      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+    <DrawerForm eagerTitle={eager.title} form={form} titleField='title'>
+      <ApiResponseState data={data} error={error} isLoading={isLoading || isValidating}>
         {experience => (
           <UpdateExperienceForm
-            form={form}
             experience={experience}
+            form={form}
             onCancel={() => onClose()}
             onSuccess={() => onClose()}
           />
@@ -40,5 +40,3 @@ export const UpdateExperienceDrawer = ({
     </DrawerForm>
   );
 };
-
-export default UpdateExperienceDrawer;

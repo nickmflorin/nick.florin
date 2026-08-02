@@ -1,32 +1,32 @@
-import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
 export const ApiClientGlobalErrorCodes = enumeratedLiterals(
   [
     {
-      value: "NOT_AUTHENTICATED",
+      message: 'You must be authenticated to perform this action.',
       status: 401,
-      message: "You must be authenticated to perform this action.",
+      value: 'NOT_AUTHENTICATED',
     },
     {
-      value: "NOT_FOUND",
+      message: 'The requested resource could not be found.',
       status: 404,
-      message: "The requested resource could not be found.",
+      value: 'NOT_FOUND',
     },
-    { value: "BAD_REQUEST", status: 400, message: "Bad request." },
+    { message: 'Bad request.', status: 400, value: 'BAD_REQUEST' },
     {
-      value: "FORBIDDEN",
+      message: 'You do not have permission to perform this action.',
       status: 403,
-      message: "You do not have permission to perform this action.",
+      value: 'FORBIDDEN',
     },
     {
-      value: "INTERNAL_SERVER",
+      message: 'There was an internal server error.',
       status: 500,
-      message: "There was an internal server error.",
+      value: 'INTERNAL_SERVER',
     },
     {
-      value: "UNKNOWN",
+      message: 'There was an unknown error.',
       status: null,
-      message: "There was an unknown error.",
+      value: 'UNKNOWN',
     },
   ] as const,
   {},
@@ -34,24 +34,29 @@ export const ApiClientGlobalErrorCodes = enumeratedLiterals(
 
 export type ApiClientGlobalErrorCode = EnumeratedLiteralsMember<typeof ApiClientGlobalErrorCodes>;
 
+/**
+ * The user-facing message associated with the 'does_not_exist' error code. Since the message is
+ * user facing, it does not give specific information about why the field is invalid - just that
+ * it is invalid.
+ */
+const DoesNotExistUserFacingMessage = (field: string) => `The field ${field} is invalid.`;
+
 export const ApiClientFieldErrorCodes = enumeratedLiterals(
   [
     {
-      value: "unique",
-      message: (field: string) => `The field ${field} must be unique.`,
       internalMessage: (field: string) => `The field ${field} must be unique.`,
+      message: (field: string) => `The field ${field} must be unique.`,
+      value: 'unique',
     },
     {
-      value: "invalid",
-      message: (field: string) => `The field ${field} is invalid.`,
       internalMessage: (field: string) => `The field ${field} is invalid.`,
+      message: (field: string) => `The field ${field} is invalid.`,
+      value: 'invalid',
     },
     {
-      value: "does_not_exist",
-      /* This message is user facing, so we do not want to give specific information about why the
-         field is invalid - just that it is invalid. */
-      message: (field: string) => `The field ${field} is invalid.`,
       internalMessage: (field: string) => `The field ${field} is invalid.`,
+      message: DoesNotExistUserFacingMessage,
+      value: 'does_not_exist',
     },
   ] as const,
   {},

@@ -1,6 +1,6 @@
-import { type z } from "zod";
+import { type z } from 'zod';
 
-import { EducationSchema } from "~/actions/schemas";
+import { EducationSchema } from '~/actions/schemas';
 
 export const EducationFormSchema = EducationSchema.required();
 

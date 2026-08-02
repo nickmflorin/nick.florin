@@ -20,13 +20,11 @@ const globalData = globalThis as unknown as Record<string, unknown>;
  * situation where initialization of the Prisma Client during hot reloading can lead to a large
  * number of connection pools to the database being opened.
  *
- * See: https://www.prisma.io/docs/guides/performance-and-optimization/connection-management
- *      #prevent-hot-reloading-from-creating-new-instances-of-prismaclient
- *
  * @param {string} varName The name of the global variable that the instance should be stored with.
- *
  * @param {GlobalVariableInitializer<T>} initializer
  *   The initializer function that returns the instance being stored globally.
+ *
+ * @see https://www.prisma.io/docs/guides/performance-and-optimization/connection-management#prevent-hot-reloading-from-creating-new-instances-of-prismaclient
  *
  * @returns {T}
  *   The initialized or globally stored instance.
@@ -36,7 +34,7 @@ export function isolateVariableFromHotReload<T>(
   initializer: GlobalVariableInitializer<T>,
 ): T {
   let cachedInitialized = globalData[varName];
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     if (cachedInitialized === undefined) {
       cachedInitialized = initializer();
     }

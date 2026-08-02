@@ -1,8 +1,20 @@
 {
   "recommendations": [
+    "anthropics.claude-code",
+    "bradlc.vscode-tailwindcss",
     "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
     "esbenp.prettier-vscode",
-    "Orta.vscode-jest",
-    "Prisma.prisma"
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "mattpocock.ts-error-translator",
+    "mikestead.dotenv",
+    "naumovs.color-highlight",
+    "orta.vscode-jest",
+    "planbcoding.vscode-react-refactor",
+    "prisma.prisma",
+    "redhat.vscode-yaml",
+    "streetsidesoftware.code-spell-checker",
+    "vstirbu.vscode-mermaid-preview"
   ]
 }

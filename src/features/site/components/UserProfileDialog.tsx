@@ -1,7 +1,7 @@
-import { UserProfile } from "@clerk/nextjs";
+import { UserProfile } from '@clerk/nextjs';
 
-import { Dialog } from "~/components/dialogs/Dialog";
-import { useUserProfile } from "~/hooks";
+import { Dialog } from '~/components/dialogs/Dialog';
+import { useUserProfile } from '~/hooks';
 
 export interface UserProfileDialogProps {
   readonly isOpen: boolean;
@@ -11,15 +11,13 @@ export const UserProfileDialog = ({ isOpen }: UserProfileDialogProps) => {
   const { close } = useUserProfile();
 
   return (
-    <Dialog.Provider isOpen={isOpen} onClose={() => close()}>
-      <Dialog className="user-profile-dialog">
+    <Dialog.Root isOpen={isOpen} onClose={() => close()}>
+      <Dialog className='user-profile-dialog'>
         <Dialog.Close />
         <Dialog.Content>
-          <UserProfile routing="hash" />
+          <UserProfile routing='hash' />
         </Dialog.Content>
       </Dialog>
-    </Dialog.Provider>
+    </Dialog.Root>
   );
 };
-
-export default UserProfileDialog;

@@ -1,20 +1,13 @@
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
 export type JsonValue =
-  | JsonObject
-  | JsonObject[]
-  | JsonValue[]
-  | boolean
-  | number
-  | string
-  | readonly JsonValue[]
-  | null;
+  boolean | JsonObject | JsonObject[] | JsonValue[] | null | number | readonly JsonValue[] | string;
 
 export type JsonObject = Partial<{
   [k: string]: JsonValue;
 }>;
 
-export const HttpMethods = enumeratedLiterals(["GET", "POST", "PATCH", "DELETE"] as const, {});
+export const HttpMethods = enumeratedLiterals(['GET', 'POST', 'PATCH', 'DELETE'] as const, {});
 export type HttpMethod = EnumeratedLiteralsMember<typeof HttpMethods>;
 
 export enum STATUS_CODES {

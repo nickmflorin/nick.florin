@@ -1,18 +1,18 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const StringBooleanFlagSchema = z.union([
   z
-    .custom<true>(val => typeof val === "string" && val.toLowerCase() === "true")
+    .custom<true>(val => typeof val === 'string' && val.toLowerCase() === 'true')
     .transform(() => true),
   z
-    .custom<false>(val => typeof val === "string" && val.toLowerCase() === "false")
+    .custom<false>(val => typeof val === 'string' && val.toLowerCase() === 'false')
     .transform(() => false),
   z.boolean(),
 ]);
 
 type CommaSeparatedArraySchemaOptions<V extends readonly string[]> = {
-  readonly partTransformer: (v: string) => string;
   readonly options: V;
+  readonly partTransformer: (v: string) => string;
 };
 
 export const createCommaSeparatedArraySchema = <V extends readonly string[]>(
@@ -22,18 +22,18 @@ export const createCommaSeparatedArraySchema = <V extends readonly string[]>(
     .string()
     .transform((value, ctx): V[number][] => {
       const parsed: string[] = value
-        .split(",")
+        .split(',')
         .map(v => v.trim())
-        .map(v => (params?.partTransformer ? params.partTransformer(v) : v));
+        .map(v => params.partTransformer(v));
 
       const invalid = parsed.filter(vi => !params.options.includes(vi));
       if (invalid.length !== 0) {
         invalid.map(inv => {
           ctx.addIssue({
-            message: `The value '${inv}' is invalid. Must be one of ${params.options.join(",")}`,
             code: z.ZodIssueCode.invalid_enum_value,
-            received: inv,
+            message: `The value '${inv}' is invalid. Must be one of ${params.options.join(',')}`,
             options: [...params.options],
+            received: inv,
           });
         });
         return z.NEVER;

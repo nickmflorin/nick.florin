@@ -1,5 +1,5 @@
-@use "partials";
-@use "./constants" as constants;
+@use 'partials';
+@use './constants' as constants;
 
 @mixin drawer-container {
   max-height: 100%;
@@ -12,16 +12,16 @@
   // This width may be overridden by props provided to the DrawerWrapper component.
   @include partials.fully-constrained-dimension(width, constants.$drawer-width);
   position: relative;
-  background-color: theme("colors.white");
-  border-left: 1px solid theme("colors.border");
+  background-color: theme('colors.white');
+  border-left: 1px solid theme('colors.border');
   // z-index: 100;
 
-  @media (max-width: theme("screens.lg")) and (min-width: theme("screens.sm")) {
+  @media (max-width: theme('screens.lg')) and (min-width: theme('screens.sm')) {
     position: absolute;
     right: 0;
   }
 
-  @media (max-width: theme("screens.sm")) and (min-width: theme("screens.xs")) {
+  @media (max-width: theme('screens.sm')) and (min-width: theme('screens.xs')) {
     // This width will not be overridden by props provided to the DrawerWrapper component.
     @include partials.fully-constrained-dimension(width, calc(100% - constants.$sidebar-width));
     position: absolute;
@@ -33,7 +33,7 @@
     border-left: none !important;
   }
 
-  @media (max-width: theme("screens.xs")) {
+  @media (max-width: theme('screens.xs')) {
     // This width will not be overridden by props provided to the DrawerWrapper component.
     @include partials.fully-constrained-dimension(width, 100%);
     left: 0;

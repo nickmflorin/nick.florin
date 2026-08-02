@@ -1,27 +1,26 @@
-import type { ApiSchool, SchoolIncludes } from "~/database/model";
-import { fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
+import { type ApiSchool, fieldIsIncluded, type SchoolIncludes } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { standardDetailFetchAction, type StandardFetchActionReturn } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { standardDetailFetchAction, type StandardFetchActionReturn } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const fetchSchool = <I extends SchoolIncludes>(includes: I) =>
   standardDetailFetchAction(
     async (id, _, { isVisible }): StandardFetchActionReturn<ApiSchool<I>> => {
       const school = (await db.school.findUnique({
-        where: { id },
         include: {
-          educations: fieldIsIncluded("educations", includes)
+          educations: fieldIsIncluded('educations', includes)
             ? { where: { visible: isVisible } }
             : undefined,
         },
-      })) as ApiSchool<I>;
+        where: { id },
+      })) as ApiSchool<I> | null;
       if (!school) {
         return ApiClientGlobalError.NotFound({
-          message: "The school could not be found.",
+          message: 'The school could not be found.',
         });
       }
-      return school as ApiSchool<I>;
+      return school;
     },
-    { authenticated: true, adminOnly: true },
+    { adminOnly: true, authenticated: true },
   );

@@ -1,40 +1,40 @@
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-import { type SkillsControls, type SkillsFilters } from "~/actions";
-import { fetchSkills } from "~/actions/skills/fetch-skills";
+import { type SkillsControls, type SkillsFilters } from '~/actions';
+import { fetchSkills } from '~/actions/skills/fetch-skills';
 
-import { Loading } from "~/components/loading/Loading";
-import { SkillsTableControlBarPlaceholder } from "~/features/skills/components/tables/SkillsTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { SkillsTableControlBarPlaceholder } from '~/features/skills/components/tables/SkillsTableControlBarPlaceholder';
 
 const ClientSkillsTableBody = dynamic(
   () =>
-    import("~/features/skills/components/tables/SkillsTableBody").then(mod => mod.SkillsTableBody),
+    import('~/features/skills/components/tables/SkillsTableBody').then(mod => mod.SkillsTableBody),
   {
     loading: () => (
       <>
         <SkillsTableControlBarPlaceholder />
-        <Loading isLoading component="tbody" />
+        <Loading component='tbody' isLoading />
       </>
     ),
   },
 );
 
 const getSkills = async ({
-  page,
   filters,
   ordering,
+  page,
 }: {
   readonly filters: SkillsFilters;
+  readonly ordering: SkillsControls['ordering'];
   readonly page: number;
-  readonly ordering: SkillsControls["ordering"];
 }) => {
-  const fetcher = fetchSkills(["projects", "educations", "experiences", "repositories"]);
+  const fetcher = fetchSkills(['projects', 'educations', 'experiences', 'repositories']);
   const { data: skills } = await fetcher(
     {
       filters,
       ordering,
       page,
-      visibility: "admin",
+      visibility: 'admin',
     },
     { strict: true },
   );
@@ -43,11 +43,11 @@ const getSkills = async ({
 
 export interface SkillsTableBodyProps {
   readonly filters: SkillsFilters;
+  readonly ordering: SkillsControls['ordering'];
   readonly page: number;
-  readonly ordering: SkillsControls["ordering"];
 }
 
-export const SkillsTableBody = async ({ filters, page, ordering }: SkillsTableBodyProps) => {
-  const skills = await getSkills({ page, filters, ordering });
+export const SkillsTableBody = async ({ filters, ordering, page }: SkillsTableBodyProps) => {
+  const skills = await getSkills({ filters, ordering, page });
   return <ClientSkillsTableBody data={skills} />;
 };

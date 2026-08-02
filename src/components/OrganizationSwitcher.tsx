@@ -1,10 +1,12 @@
-"use client";
-import { useAuth, OrganizationSwitcher as RootOrganizationSwitcher } from "@clerk/nextjs";
+'use client';
+import { OrganizationSwitcher as RootOrganizationSwitcher, useAuth } from '@clerk/nextjs';
 
-/* Clerk v7 removed the <SignedIn> control component.  Its replacement, <Show>, is only exported
-   from '@clerk/nextjs' as an async server component, so it cannot be used from a client component.
-   The signed-in check is instead done through the hook, which also matches how the rest of the
-   application reads Clerk state on the client. */
+/**
+ * The signed-in check is performed with {@link useAuth} rather than Clerk's `<Show>` control
+ * component because `<Show>` is only exported from `@clerk/nextjs` as an async server component, so
+ * it cannot be used from a client component.  The hook also matches how the rest of the application
+ * reads Clerk state on the client.
+ */
 export const OrganizationSwitcher = () => {
   const { isSignedIn } = useAuth();
   if (!isSignedIn) {
@@ -12,17 +14,16 @@ export const OrganizationSwitcher = () => {
   }
   return (
     <RootOrganizationSwitcher
-      hidePersonal={true}
       appearance={{
-        // hide the "Create Organization" button
         elements: {
+          /* eslint-disable-next-line camelcase -- The identifier is an appearance element key
+             defined by Clerk's API. */
           organizationSwitcherPopoverActionButton__createOrganization: {
-            display: "none",
+            display: 'none',
           },
         },
       }}
+      hidePersonal
     />
   );
 };
-
-export default OrganizationSwitcher;

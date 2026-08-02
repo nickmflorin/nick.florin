@@ -1,79 +1,79 @@
-import { type ApiProject } from "~/database/model";
+import { type ApiProject } from '~/database/model';
 
-import type {
-  DataTableColumnConfig,
-  OrderableTableColumnId,
-  TableColumnId,
-} from "~/components/tables";
+import {
+  type DataTableColumnConfig,
+  type OrderableTableColumnId,
+  type TableColumnId,
+} from '~/components/tables';
 
-export type ProjectsTableModel = ApiProject<["skills", "repositories"]>;
+export type ProjectsTableModel = ApiProject<['skills', 'repositories']>;
 
 export const ProjectsTableColumns = [
   {
-    id: "name",
-    label: "Name",
-    width: 260,
+    id: 'name',
     isOrderable: true,
+    label: 'Name',
+    width: 260,
   },
   {
-    id: "shortName",
-    label: "Name (Abbv.)",
+    id: 'shortName',
+    isOrderable: true,
+    label: 'Name (Abbv.)',
     width: 200,
-    isOrderable: true,
   },
   {
-    id: "repositories",
-    label: "Repositories",
-    minWidth: 200,
-    width: 260,
+    id: 'repositories',
+    label: 'Repositories',
     maxWidth: 320,
-  },
-  {
-    id: "skills",
-    label: "Skills",
     minWidth: 200,
     width: 260,
+  },
+  {
+    id: 'skills',
+    label: 'Skills',
     maxWidth: 320,
-  },
-  {
-    id: "startDate",
-    label: "Start Date",
-    align: "right",
-    width: 200,
     minWidth: 200,
-    isOrderable: true,
+    width: 260,
   },
   {
-    id: "createdAt",
-    label: "Created",
-    align: "right",
-    width: 200,
+    align: 'right',
+    id: 'startDate',
+    isOrderable: true,
+    label: 'Start Date',
     minWidth: 200,
-    isOrderable: true,
-  },
-  {
-    id: "updatedAt",
-    label: "Updated",
-    align: "right",
     width: 200,
-    minWidth: 200,
-    isOrderable: true,
   },
   {
-    id: "highlighted",
-    label: "Highlight",
-    align: "center",
-    width: 105,
+    align: 'right',
+    id: 'createdAt',
+    isOrderable: true,
+    label: 'Created',
+    minWidth: 200,
+    width: 200,
+  },
+  {
+    align: 'right',
+    id: 'updatedAt',
+    isOrderable: true,
+    label: 'Updated',
+    minWidth: 200,
+    width: 200,
+  },
+  {
+    align: 'center',
+    id: 'highlighted',
+    label: 'Highlight',
     maxWidth: 105,
     minWidth: 105,
+    width: 105,
   },
   {
-    id: "visible",
-    label: "Visible",
-    width: 80,
+    align: 'center',
+    id: 'visible',
+    label: 'Visible',
     maxWidth: 80,
     minWidth: 80,
-    align: "center",
+    width: 80,
   },
 ] as const satisfies DataTableColumnConfig<ProjectsTableModel>[];
 

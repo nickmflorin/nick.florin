@@ -1,19 +1,19 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandNestedDetail, calculateSkillsExperience, type Project } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandNestedDetail, calculateSkillsExperience, type Project } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { DetailSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { DetailSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 const UpdateNestedDetailSchema = DetailSchema.partial();
 
@@ -21,7 +21,7 @@ export const updateNestedDetail = async (
   nestedDetailId: string,
   data: z.infer<typeof UpdateNestedDetailSchema>,
 ): Promise<MutationActionResponse<BrandNestedDetail>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -31,8 +31,8 @@ export const updateNestedDetail = async (
   }
 
   const nestedDetail = await db.nestedDetail.findUnique({
+    include: { detail: true, skills: true },
     where: { id: nestedDetailId },
-    include: { skills: true, detail: true },
   });
   if (!nestedDetail) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -47,13 +47,13 @@ export const updateNestedDetail = async (
   const { label, project: _project, skills: _skills, ...rest } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  let project: Project | null = null;
+  let project: null | Project = null;
   if (_project) {
     project = await db.project.findUnique({ where: { id: _project } });
     if (!project) {
-      fieldErrors.addDoesNotExist("project", {
-        message: "The project does not exist.",
+      fieldErrors.addDoesNotExist('project', {
         internalMessage: `The project with ID '${_project}' does not exist.`,
+        message: 'The project does not exist.',
       });
     }
   }
@@ -62,20 +62,20 @@ export const updateNestedDetail = async (
     (await db.nestedDetail.count({
       where: {
         detailId: nestedDetail.detail.id,
-        label,
         id: { notIn: [nestedDetail.id] },
+        label,
       },
     }))
   ) {
-    fieldErrors.addUnique("label", {
+    fieldErrors.addUnique('label', {
       message: "The 'label' must be unique for a given parent.",
     });
   }
 
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
 
   if (!fieldErrors.isEmpty) {
@@ -83,14 +83,14 @@ export const updateNestedDetail = async (
   }
   return await db.$transaction(async tx => {
     const updated = await tx.nestedDetail.update({
-      where: { id: nestedDetail.id },
       data: {
         ...rest,
-        projectId: project?.id,
         label,
-        updatedById: user.id,
+        projectId: project?.id,
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+        updatedById: user.id,
       },
+      where: { id: nestedDetail.id },
     });
     const sks = [...nestedDetail.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
     await calculateSkillsExperience(tx, sks, { user });

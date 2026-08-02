@@ -1,8 +1,8 @@
-import { type useUser } from "@clerk/nextjs";
+import { type useUser } from '@clerk/nextjs';
 
-import * as constants from "./constants";
+import * as constants from './constants';
 
-export type UserResource = NonNullable<ReturnType<typeof useUser>["user"]>;
+export type UserResource = NonNullable<ReturnType<typeof useUser>['user']>;
 
 export const clerkUserIsAdmin = (user: UserResource): boolean => {
   const memberships = user.organizationMemberships.filter(

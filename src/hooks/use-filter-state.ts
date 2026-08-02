@@ -1,10 +1,10 @@
-import { type Dispatch, type SetStateAction, useMemo } from "react";
+import { type Dispatch, type SetStateAction, useMemo } from 'react';
 
-import { isEqual, uniq } from "lodash-es";
+import { isEqual, uniq } from 'lodash-es';
 
-import { useResettableState } from "./use-resettable-state";
+import { useResettableState } from './use-resettable-state';
 
-type InitialState<S extends Record<string, unknown>> = S | (() => S);
+type InitialState<S extends Record<string, unknown>> = (() => S) | S;
 
 /**
  * @deprecated
@@ -18,11 +18,10 @@ export const useFilterState = <S extends Record<string, unknown>>(
   const [state, setState, reset, hasChanged, initial] = useResettableState(initialState);
 
   const differingFilters = useMemo(() => {
-    const keys = uniq([...Object.keys(state), ...Object.keys(initial.current)]) as Array<keyof S>;
-    const current = typeof initial.current === "function" ? initial.current() : initial.current;
+    const keys = uniq([...Object.keys(state), ...Object.keys(initial)]) as (keyof S)[];
     return keys.filter(k => {
       const comparator = comparators?.[k] ?? isEqual;
-      return !comparator(state[k], current[k]);
+      return !comparator(state[k], initial[k]);
     });
   }, [state, comparators, initial]);
 

@@ -1,21 +1,23 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { ProjectsFiltersObj } from "~/actions";
+import { ProjectsFiltersObj } from '~/actions';
 
-import { LoadingText } from "~/components/loading/LoadingText";
+import { LoadingText } from '~/components/loading/LoadingText';
 
-import { ProjectsTitle } from "./ProjectsTitle";
+import { ProjectsTitle } from './ProjectsTitle';
 
 export interface ProjectsTitlePageProps {
   readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function ProjectsTitlePage(props: ProjectsTitlePageProps) {
+const ProjectsTitlePage = async (props: ProjectsTitlePageProps) => {
   const searchParams = await props.searchParams;
   const filters = ProjectsFiltersObj.parse(searchParams);
   return (
-    <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>
+    <Suspense fallback={<LoadingText />} key={JSON.stringify(filters)}>
       <ProjectsTitle filters={filters} />
     </Suspense>
   );
-}
+};
+
+export default ProjectsTitlePage;

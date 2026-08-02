@@ -1,27 +1,27 @@
-import { Degree, type ApiEducation } from "~/database/model";
+import { type ApiEducation, Degree } from '~/database/model';
 
-import { useForm } from "~/components/forms-v2/hooks/use-form";
+import { useForm } from '~/components/forms-v2/hooks/use-form';
 
-import { EducationFormSchema } from "./schema";
+import { EducationFormSchema } from './schema';
 
 interface UseEducationFormConfig {
-  readonly education?: ApiEducation<["skills"]>;
+  readonly education?: ApiEducation<['skills']>;
 }
 
 export const useEducationForm = ({ education }: UseEducationFormConfig) =>
   useForm({
-    schema: EducationFormSchema,
     defaultValues: {
-      major: education?.major ?? "",
+      concentration: education?.concentration ?? '',
       degree: Degree.BACHELORS_OF_SCIENCE,
-      concentration: education?.concentration ?? "",
-      note: education?.note ?? "",
-      minor: education?.minor ?? "",
-      description: education?.description ?? "",
+      description: education?.description ?? '',
+      endDate: education?.endDate ?? null,
+      highlighted: education?.highlighted ?? false,
+      major: education?.major ?? '',
+      minor: education?.minor ?? '',
+      note: education?.note ?? '',
       postPoned: education?.postPoned ?? false,
       startDate: education?.startDate ?? new Date(),
-      endDate: education?.endDate ?? null,
       visible: education?.visible ?? true,
-      highlighted: education?.highlighted ?? false,
     },
+    schema: EducationFormSchema,
   });

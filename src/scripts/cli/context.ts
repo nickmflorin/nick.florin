@@ -1,17 +1,17 @@
 import {
+  type User as ClerkUser,
   createClerkClient,
   type OrganizationMembership,
-  type User as ClerkUser,
-} from "@clerk/backend";
+} from '@clerk/backend';
 
-import { CMS_USER_ORG_ROLE, CMS_USER_ORG_SLUG, USER_ADMIN_ROLE } from "~/application/auth";
-import { type PrismaClient, type User } from "~/database/model";
-import { upsertUserFromClerk } from "~/database/model/user";
-import { db, type Transaction } from "~/database/prisma";
+import { CMS_USER_ORG_ROLE, CMS_USER_ORG_SLUG, USER_ADMIN_ROLE } from '~/application/auth';
+import { type PrismaClient, type User } from '~/database/model';
+import { upsertUserFromClerk } from '~/database/model/user';
+import { db, type Transaction } from '~/database/prisma';
 
-import { environment } from "~/environment";
+import { environment } from '~/environment';
 
-import * as errors from "./errors";
+import * as errors from './errors';
 
 export type ScriptContext = {
   readonly clerkUser: ClerkUser;
@@ -24,7 +24,7 @@ type ScriptContextOptions = {
 
 const membershipHasAdminAccess = (membership: OrganizationMembership) =>
   membership.organization.slug === CMS_USER_ORG_SLUG &&
-  [USER_ADMIN_ROLE, CMS_USER_ORG_ROLE].includes(membership.role);
+  [CMS_USER_ORG_ROLE, USER_ADMIN_ROLE].includes(membership.role);
 
 export async function getScriptContext(
   tx: Transaction,
@@ -34,10 +34,10 @@ export async function getScriptContext(
 export async function getScriptContext(opts?: ScriptContextOptions): Promise<ScriptContext>;
 
 export async function getScriptContext(
-  arg0?: Transaction | ScriptContextOptions,
+  arg0?: ScriptContextOptions | Transaction,
   arg1?: ScriptContextOptions,
 ): Promise<ScriptContext> {
-  let tx: Transaction | PrismaClient;
+  let tx: PrismaClient | Transaction;
   let upsertUser: boolean;
   if (arg1) {
     tx = arg0 as Transaction;
@@ -46,23 +46,23 @@ export async function getScriptContext(
     tx = db;
     upsertUser = (arg0 as ScriptContextOptions).upsertUser ?? true;
   }
-  const { NODE_ENV, VERCEL_ENV, CLERK_SECRET_KEY } = environment.pick([
-    "NODE_ENV",
-    "VERCEL_ENV",
-    "CLERK_SECRET_KEY",
+  const { CLERK_SECRET_KEY, NODE_ENV, VERCEL_ENV } = environment.pick([
+    'NODE_ENV',
+    'VERCEL_ENV',
+    'CLERK_SECRET_KEY',
   ]);
   /* This will only ever be undefined in a test environment, but we must safely perform the check
      here regardless. */
   if (CLERK_SECRET_KEY === undefined) {
     return environment.throwConfigurationError(
-      "CLERK_SECRET_KEY",
-      "The Clerk secret key is required to seed the database.",
+      'CLERK_SECRET_KEY',
+      'The Clerk secret key is required to seed the database.',
     );
   } else if (
-    NODE_ENV === "production" &&
-    (VERCEL_ENV === "development" || CLERK_SECRET_KEY.startsWith("sk_test_"))
+    NODE_ENV === 'production' &&
+    (VERCEL_ENV === 'development' || CLERK_SECRET_KEY.startsWith('sk_test_'))
   ) {
-    /* When execuding the seed command locally, against the production database, it is important
+    /* When executing the seed command locally, against the production database, it is important
        that the environment values pulled from Vercel are in fact for the production environment,
        not the default development environment.  Otherwise, we can accidentally store the personal
        Clerk user as the development Clerk user, not the production one.
@@ -83,7 +83,7 @@ export async function getScriptContext(
 
        However, the '.env' file may contain development values for the Clerk tokens, if the
        '.env' file wasn't populated via Vercel's CLI with the production flag (e.g. the last time
-        the environment was pulled it was done with 'pullenv' instead of 'pullenv-prod').
+       the environment was pulled it was done with 'pullenv' instead of 'pullenv-prod').
 
        This means that the Clerk tokens in the '.env' file may be development tokens, while the
        database parameters are for the production database.  This means that we could incidentally
@@ -98,34 +98,32 @@ export async function getScriptContext(
 
        To prevent errors from happening due to this mismatch, we have to perform this check. */
     throw new errors.CommandLineEnvironmentError(
-      "There seems to be a configuration mismatch that may incidentally cause development " +
-        "Clerk data to be used to run this script.",
+      'There seems to be a configuration mismatch that may incidentally cause development ' +
+        'Clerk data to be used to run this script.',
     );
   }
   const personalClerkId = process.env.SCRIPT_CONTEXT_CLERK_USER_ID;
   if (personalClerkId === undefined) {
-    /* The only reason this value can be undefined is because is for the test environment - so as
-       long as we are not running the script in a test environment, this check is just to satisfy
-       TS. */
+    /* The only reason this value can be undefined is for the test environment, so as long as the
+       script is not running in a test environment, this check is just to satisfy TS. */
     throw new errors.CommandLineEnvironmentError(
       "Cannot access script context without the 'SCRIPT_CONTEXT_CLERK_USER_ID' as an " +
-        "environment variable.",
+        'environment variable.',
     );
   }
-  /* The singleton default export of the (now discontinued) '@clerk/clerk-sdk-node' package has been
-     replaced by an explicitly constructed client.  The secret key is passed directly, rather than
-     being read from the environment implicitly, so that the validation performed above applies. */
+  /* The secret key is passed to the explicitly constructed client directly, rather than being read
+     from the environment implicitly, so that the validation performed above applies. */
   const clerk = createClerkClient({ secretKey: CLERK_SECRET_KEY });
 
   const clerkUser = await clerk.users.getUser(personalClerkId);
-  /* This endpoint returns a paginated response - not a bare array, as it did in v4 of the Clerk SDK
-     - so the memberships must be read off of the 'data' property. */
+  /* This endpoint returns a paginated response rather than a bare array, so the memberships must
+     be read off of the 'data' property. */
   const { data: memberships } = await clerk.users.getOrganizationMembershipList({
     userId: clerkUser.id,
   });
   if (memberships.filter(m => membershipHasAdminAccess(m)).length === 0) {
     throw new errors.CommandLineEnvironmentError(
-      "The Clerk user must be an admin to run this script.",
+      'The Clerk user must be an admin to run this script.',
     );
   }
   if (upsertUser) {

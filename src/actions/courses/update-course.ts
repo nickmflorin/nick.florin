@@ -1,20 +1,20 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandCourse, calculateSkillsExperience, type Education } from "~/database/model";
-import { db } from "~/database/prisma";
-import { slugify } from "~/lib/formatters";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandCourse, calculateSkillsExperience, type Education } from '~/database/model';
+import { db } from '~/database/prisma';
+import { slugify } from '~/lib/formatters';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { CourseSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { CourseSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 const UpdateCourseSchema = CourseSchema.partial();
 
@@ -22,7 +22,7 @@ export const updateCourse = async (
   courseId: string,
   data: z.infer<typeof UpdateCourseSchema>,
 ): Promise<MutationActionResponse<BrandCourse>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -32,8 +32,8 @@ export const updateCourse = async (
   }
 
   const course = await db.course.findUnique({
-    where: { id: courseId },
     include: { education: true, skills: true },
+    where: { id: courseId },
   });
   if (!course) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -46,56 +46,55 @@ export const updateCourse = async (
   }
 
   const fieldErrors = new ApiClientFieldErrors();
-  const { slug: _slug, skills: _skills, name: _name, education: _education, ...rest } = parsed.data;
+  const { education: _education, name: _name, skills: _skills, slug: _slug, ...rest } = parsed.data;
 
-  const name = _name !== undefined ? _name : course.name;
+  const name = _name ?? course.name;
 
   if (_name !== undefined && _name.trim() !== course.name.trim()) {
-    if (await db.course.count({ where: { name: _name, id: { notIn: [course.id] } } })) {
-      fieldErrors.addUnique("name", "The name must be unique.");
+    if (await db.course.count({ where: { id: { notIn: [course.id] }, name: _name } })) {
+      fieldErrors.addUnique('name', 'The name must be unique.');
       /* If the slug is being cleared, we have to make sure that the slugified version of the new
          name is still unique. */
     } else if (
       _slug === null &&
       (await db.course.count({
-        where: { slug: slugify(_name), id: { notIn: [course.id] } },
+        where: { id: { notIn: [course.id] }, slug: slugify(_name) },
       }))
     ) {
-      // Here, the slug should be provided explicitly, rather than cleared.
-      fieldErrors.addUnique("name", "The name does not generate a unique slug.");
+      fieldErrors.addUnique('name', 'The name does not generate a unique slug.');
     }
   } else if (
     _slug === null &&
     (await db.course.count({
-      where: { slug: slugify(name), id: { notIn: [course.id] } },
+      where: { id: { notIn: [course.id] }, slug: slugify(name) },
     }))
   ) {
     /* Here, the slug should be provided explicitly, rather than cleared.  The error is shown in
-         regard to the slug, not the name, because the slug is what is being cleared whereas the
-         name remains unchanged. */
+       regard to the slug, not the name, because the slug is what is being cleared whereas the name
+       remains unchanged. */
     fieldErrors.addUnique(
-      "slug",
-      "The name generates a non-unique slug, so the slug must be provided.",
+      'slug',
+      'The name generates a non-unique slug, so the slug must be provided.',
     );
   } else if (
     _slug !== null &&
     _slug !== undefined &&
-    (await db.course.count({ where: { slug: _slug, id: { notIn: [course.id] } } }))
+    (await db.course.count({ where: { id: { notIn: [course.id] }, slug: _slug } }))
   ) {
-    fieldErrors.addUnique("slug", "The slug must be unique.");
+    fieldErrors.addUnique('slug', 'The slug must be unique.');
   }
 
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
 
   let education: Education | null = null;
   if (_education) {
     education = await db.education.findUnique({ where: { id: _education } });
     if (!education) {
-      fieldErrors.addDoesNotExist("education", "The education does not exist.");
+      fieldErrors.addDoesNotExist('education', 'The education does not exist.');
     }
   }
 
@@ -106,15 +105,15 @@ export const updateCourse = async (
   const sks = [...course.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
   return await db.$transaction(async tx => {
     const updated = await tx.course.update({
-      where: { id: course.id },
       data: {
         ...rest,
         educationId: education ? education.id : undefined,
-        slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
         name: _name === undefined || _name.trim() === course.name.trim() ? undefined : _name.trim(),
-        updatedById: user.id,
         skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+        slug: _slug === undefined ? undefined : _slug === null ? slugify(name) : _slug.trim(),
+        updatedById: user.id,
       },
+      where: { id: course.id },
     });
     await calculateSkillsExperience(tx, sks, { user });
     return { data: convertToPlainObject(updated) };

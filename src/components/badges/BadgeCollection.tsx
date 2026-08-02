@@ -1,58 +1,63 @@
-"use client";
-import React, { useState, type JSX } from "react";
+'use client';
+import { Fragment, type JSX, useState } from 'react';
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from 'framer-motion';
 
-import type { BadgeSize } from "./types";
-
-import { AnimateChangeInHeight } from "~/components/animations/AnimateChangeInHeight";
-import { ShowMoreLink } from "~/components/buttons/ShowMoreLink";
+import { AnimateChangeInHeight } from '~/components/animations/AnimateChangeInHeight';
+import { ShowMoreLink } from '~/components/buttons/ShowMoreLink';
 import {
-  type TypographyVisibilityState,
   classNames,
-  type ScreenSizeRangeMap,
   type ComponentProps,
   type ContainerSizeRangeMap,
   getFromContainerSizeRangeMap,
   parseDataAttributes,
-} from "~/components/types";
-import { BaseTypography, type BaseTypographyProps } from "~/components/typography/BaseTypography";
-import { useContainerSizes } from "~/hooks/use-screen-sizes";
+  type ScreenSizeRangeMap,
+  type TypographyVisibilityState,
+} from '~/components/types';
+import { BaseTypography, type BaseTypographyProps } from '~/components/typography/BaseTypography';
+import { useContainerSizes } from '~/hooks/use-screen-sizes';
+
+import { type BadgeSize } from './types';
 
 export interface BadgeCollectionChildrenProps
-  extends ComponentProps,
+  extends
+    ComponentProps,
     Omit<
-      BaseTypographyProps<"div">,
-      "lineClamp" | "align" | "truncate" | "component" | "children"
+      BaseTypographyProps<'div'>,
+      'align' | 'children' | 'component' | 'lineClamp' | 'truncate'
     > {
   readonly children: JSX.Element[];
-  readonly size?: BadgeSize;
   readonly data?: never;
-  readonly maximumBadges?: number | ContainerSizeRangeMap<number>;
+  readonly maximumBadges?: ContainerSizeRangeMap<number> | number;
+  readonly size?: BadgeSize;
 }
 
 export interface BadgeCollectionCallbackProps<M>
-  extends ComponentProps,
+  extends
+    ComponentProps,
     Omit<
-      BaseTypographyProps<"div">,
-      "lineClamp" | "align" | "truncate" | "children" | "component"
+      BaseTypographyProps<'div'>,
+      'align' | 'children' | 'component' | 'lineClamp' | 'truncate'
     > {
-  readonly data: M[];
-  readonly size?: BadgeSize;
-  readonly maximumBadges?: number | ScreenSizeRangeMap<number>;
   readonly children: (model: M) => JSX.Element;
+  readonly data: M[];
+  readonly maximumBadges?: number | ScreenSizeRangeMap<number>;
+  readonly size?: BadgeSize;
 }
 
 const partitionChildren = ({
+  children,
   containerSize,
   maximumBadges,
-  children,
-}: Pick<BadgeCollectionChildrenProps, "maximumBadges" | "children"> & {
-  readonly containerSize: number | null;
-}): [JSX.Element[], JSX.Element[]] => {
+}: {
+  readonly containerSize: null | number;
+} & Pick<BadgeCollectionChildrenProps, 'children' | 'maximumBadges'>): [
+  JSX.Element[],
+  JSX.Element[],
+] => {
   if (maximumBadges !== undefined && containerSize !== null) {
     const maxBadges =
-      typeof maximumBadges === "number"
+      typeof maximumBadges === 'number'
         ? maximumBadges
         : getFromContainerSizeRangeMap(containerSize, maximumBadges);
     if (maxBadges !== null) {
@@ -63,54 +68,49 @@ const partitionChildren = ({
 };
 
 export type BadgeCollectionProps<M> =
-  | BadgeCollectionCallbackProps<M>
-  | BadgeCollectionChildrenProps;
+  BadgeCollectionCallbackProps<M> | BadgeCollectionChildrenProps;
 
 export const BadgeCollection = <M,>({
-  data,
   children,
+  data,
   ...props
-}: BadgeCollectionProps<M>): JSX.Element => {
-  const [state, setState] = useState<TypographyVisibilityState>("collapsed");
+}: BadgeCollectionProps<M>): JSX.Element | null => {
+  const [state, setState] = useState<TypographyVisibilityState>('collapsed');
   const { ref, size: containerSize } = useContainerSizes<HTMLDivElement>();
 
   if (data !== undefined) {
     return (
       <BadgeCollection {...props}>
         {data.map((datum, i) => (
-          <React.Fragment key={i}>{children(datum)}</React.Fragment>
+          <Fragment key={i}>{children(datum)}</Fragment>
         ))}
       </BadgeCollection>
     );
-  } else if (typeof children === "function") {
-    throw new TypeError("Invalid function implementation!");
+  } else if (typeof children === 'function') {
+    throw new TypeError('Invalid function implementation!');
   } else if (children.length === 0) {
-    return <></>;
+    return null;
   }
-  const { size, maximumBadges, ...rest } = props;
+  const { maximumBadges, size, ...rest } = props;
   const partition = partitionChildren({
     children,
-    maximumBadges,
     containerSize,
+    maximumBadges,
   });
   return (
     <BaseTypography
       {...rest}
       {...parseDataAttributes({ size })}
+      className={classNames('badge-collection', props.className)}
+      component='div'
       ref={ref}
-      component="div"
-      className={classNames("badge-collection", props.className)}
     >
-      <AnimateChangeInHeight className="badge-collection__badges">
+      <AnimateChangeInHeight className='badge-collection__badges'>
         {partition[0]}
         {partition[1].map((child, i) => (
           <AnimatePresence key={i}>
-            {state === "expanded" && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={state === "expanded" ? { opacity: 1 } : { opacity: 0 }}
-                exit={{ opacity: 0 }}
-              >
+            {state === 'expanded' && (
+              <motion.div animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
                 {child}
               </motion.div>
             )}
@@ -119,8 +119,8 @@ export const BadgeCollection = <M,>({
       </AnimateChangeInHeight>
       {partition[1].length !== 0 && (
         <ShowMoreLink
+          onClick={() => setState(curr => (curr === 'collapsed' ? 'expanded' : 'collapsed'))}
           state={state}
-          onClick={() => setState(curr => (curr === "collapsed" ? "expanded" : "collapsed"))}
         />
       )}
     </BaseTypography>

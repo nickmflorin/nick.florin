@@ -1,29 +1,29 @@
 import {
   View,
-  type ViewSizeProps,
   type ViewFillProps,
   type ViewPositionProps,
-} from "~/components/structural/View";
-import { type ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
+  type ViewSizeProps,
+} from '~/components/structural/View';
+import { classNames, type ComponentProps } from '~/components/types';
 
-import { ErrorDetail, type ErrorDetailProps } from "./ErrorDetail";
+import { ErrorDetail, type ErrorDetailProps } from './ErrorDetail';
 
 export interface ErrorViewProps
-  extends ComponentProps,
+  extends
+    ComponentProps,
     ViewSizeProps,
     ViewPositionProps,
     ViewFillProps,
     Omit<ErrorDetailProps, keyof ComponentProps> {}
 
-export const ErrorView = ({ children, fill = "parent", ...props }: ErrorViewProps) => (
+export const ErrorView = ({ children, fill = 'parent', ...props }: ErrorViewProps) => (
   <View
     {...props}
-    fill={fill}
+    __default_position__='relative'
     centerChildren
-    overflow="hidden"
-    __default_position__="relative"
-    className={classNames("p-2", props.className)}
+    className={classNames('p-2', props.className)}
+    fill={fill}
+    overflow='hidden'
   >
     <ErrorDetail {...props}>{children}</ErrorDetail>
   </View>

@@ -1,23 +1,23 @@
-@use "sass:list";
-@use "sass:map";
+@use 'sass:list';
+@use 'sass:map';
 
-@use "partials";
+@use 'partials';
 
-@use "../typography" as typography;
-@use "../radii" as radii;
+@use '../typography' as typography;
+@use '../radii' as radii;
 
-@use "./base" as *;
-@use "./constants" as constants;
-@use "./fonts" as fonts;
-@use "./sizing" as sizing;
-@use "./colors" as colors;
+@use './base' as *;
+@use './constants' as constants;
+@use './fonts' as fonts;
+@use './sizing' as sizing;
+@use './colors' as colors;
 
 @mixin button-properties($type, $tight-fit: false) {
   @include button-base;
   @include colors.button-colors($type);
   @include sizing.button-sizes($type, $tight-fit: $tight-fit);
 
-  @if $type != "icon-button" {
+  @if $type != 'icon-button' {
     @include fonts.button-fonts($type);
   }
 }
@@ -78,7 +78,7 @@
 }
 
 @mixin button-type($type) {
-  &[data-attr-type="#{$type}"] {
+  &[data-attr-type='#{$type}'] {
     @include button-properties($type);
     @content;
   }
@@ -101,12 +101,12 @@
   @include partials.border-radius(constants.$button-default-border-radius);
 
   @include radii.with-radius() using ($radii, $value) {
-    &[data-attr-radius="#{$radii}"] {
+    &[data-attr-radius='#{$radii}'] {
       @include partials.border-radius($value);
     }
   }
 
-  @include button-type("button") {
+  @include button-type('button') {
     @include button-structure();
 
     white-space: nowrap;
@@ -115,7 +115,7 @@
     text-align: center;
   }
 
-  @include button-type("link") {
+  @include button-type('link') {
     @include button-structure();
     @include fit-content();
 
@@ -125,7 +125,7 @@
     vertical-align: middle;
   }
 
-  @include button-type("inline-link") {
+  @include button-type('inline-link') {
     @include inherit-properties();
 
     text-decoration: none;
@@ -133,7 +133,7 @@
     vertical-align: baseline;
   }
 
-  @include button-type("icon-button") {
+  @include button-type('icon-button') {
     @include button-structure();
 
     min-width: fit-content;
@@ -142,9 +142,9 @@
     aspect-ratio: 1;
     padding: 0;
 
-    &[data-attr-tight="true"] {
+    &[data-attr-tight='true'] {
       overflow: visible;
-      @include button-properties("icon-button", $tight-fit: true);
+      @include button-properties('icon-button', $tight-fit: true);
     }
   }
 }

@@ -2,11 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -22,18 +18,14 @@
     "pretty": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "~/*": [
-        "./src/*"
-      ]
+      "~/*": ["./src/*"]
     },
     "isolatedModules": true
   },
@@ -44,17 +36,19 @@
          ts-node uses has to fall back to the Node resolution algorithm. */
       "moduleResolution": "node"
     },
-    "require": [
-      "tsconfig-paths/register"
-    ]
+    "require": ["tsconfig-paths/register"]
   },
-  "exclude": [
-    "node_modules"
-  ],
+  "exclude": ["node_modules"],
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "src",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    /* The root-level configuration files are included so that typescript-eslint's project service
+       can resolve them to a TypeScript program.  Without this, the type-aware lint rules fail
+       outright on them with "was not found by the project service". */
+    "jest.config.ts",
+    "jest.config.base.ts",
+    "tailwind.config.ts"
   ]
 }

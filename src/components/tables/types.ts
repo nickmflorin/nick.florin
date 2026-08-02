@@ -1,18 +1,18 @@
-import type { ReactNode, JSX } from "react";
+import { type JSX, type MouseEvent, type ReactNode } from 'react';
 
-import { type EnumeratedLiteralsMember, enumeratedLiterals } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
-import { type ExtractValues } from "~/lib/types";
+import { type ExtractValues } from '~/lib/types';
 
-import { type PopoverRenderProps } from "~/components/floating";
-import { type IconProp, type IconName } from "~/components/icons";
-import { type MenuItemInstance } from "~/components/menus";
-import type { QuantitativeSize, ComponentProps } from "~/components/types";
+import { type PopoverRenderProps } from '~/components/floating';
+import { type IconName, type IconProp } from '~/components/icons';
+import { type MenuItemInstance } from '~/components/menus';
+import { type ComponentProps, type QuantitativeSize } from '~/components/types';
 
-import { type TableBodyCellProps } from "./generic/TableBodyCell";
-import { type TableHeaderCellProps } from "./generic/TableHeaderCell";
+import { type TableBodyCellProps } from './generic/TableBodyCell';
+import { type TableHeaderCellProps } from './generic/TableHeaderCell';
 
-export type TableLoadingIndicatorType = "spinner" | "fade-rows" | "skeleton";
+export type TableLoadingIndicatorType = 'fade-rows' | 'skeleton' | 'spinner';
 export type TableLoadingIndicator = TableLoadingIndicatorType | TableLoadingIndicatorType[];
 
 export const tableHasLoadingIndicator = (
@@ -20,63 +20,58 @@ export const tableHasLoadingIndicator = (
   indicatorType: TableLoadingIndicatorType,
 ) => (Array.isArray(indicator) ? indicator.includes(indicatorType) : indicator === indicatorType);
 
-export const TableSizes = enumeratedLiterals(["small", "medium", "large"] as const, {});
+export const TableSizes = enumeratedLiterals(['small', 'medium', 'large'] as const, {});
 export type TableSize = EnumeratedLiteralsMember<typeof TableSizes>;
 
 export interface DataTableDatum {
-  readonly id: string;
   [key: string]: unknown;
+  readonly id: string;
 }
 
 export type DataTableRowAction = {
-  readonly isVisible?: boolean;
+  readonly className?: ComponentProps['className'];
   readonly content: ReactNode;
-  readonly loadingText?: string;
-  readonly className?: ComponentProps["className"];
-  readonly icon?: IconProp | IconName | JSX.Element;
+  readonly icon?: IconName | IconProp | JSX.Element;
   readonly isLoading?: boolean;
-  readonly onClick: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    instance: MenuItemInstance,
-  ) => void;
+  readonly isVisible?: boolean;
+  readonly loadingText?: string;
+  readonly onClick: (e: MouseEvent<HTMLDivElement>, instance: MenuItemInstance) => void;
 };
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type DataTableColumnConfig<D extends DataTableDatum = any, I extends string = string> = {
+  readonly accessor?: Exclude<keyof D, 'id'>;
+  readonly align?: TableHeaderCellProps['align'];
+  readonly bodyCellClassName?: ComponentProps['className'];
+  readonly columnCellClassName?: ComponentProps['className'];
+  readonly headerCellClassName?: ComponentProps['className'];
+  readonly icon?: IconName | IconProp;
   readonly id: I;
-  readonly icon?: IconProp | IconName;
-  readonly label?: string;
-  readonly isOrderable?: boolean;
-  readonly isHideable?: boolean;
   readonly isHiddenByDefault?: boolean;
-  readonly columnCellClassName?: ComponentProps["className"];
-  readonly headerCellClassName?: ComponentProps["className"];
-  readonly bodyCellClassName?: ComponentProps["className"];
+  readonly isHideable?: boolean;
+  readonly isOrderable?: boolean;
+  readonly label?: string;
+  readonly maxWidth?: QuantitativeSize<'px'>;
+  readonly minWidth?: QuantitativeSize<'px'>;
   readonly props?: Omit<
     TableHeaderCellProps,
-    "children" | "align" | "id" | "icon" | "isOrderable" | "className"
+    'align' | 'children' | 'className' | 'icon' | 'id' | 'isOrderable'
   >;
-  readonly align?: TableHeaderCellProps["align"];
-  readonly accessor?: Exclude<keyof D, "id">;
-  readonly width?: QuantitativeSize<"px">;
-  readonly minWidth?: QuantitativeSize<"px">;
-  readonly maxWidth?: QuantitativeSize<"px">;
   readonly skeleton?: ReactNode;
+  readonly width?: QuantitativeSize<'px'>;
 };
 
 export interface DataTableColumn<D extends DataTableDatum, C extends DataTableColumnConfig<D>> {
-  readonly id: C["id"];
-  readonly config: C;
-  readonly cellProps?: (datum: D) => Omit<TableBodyCellProps, "children">;
+  readonly cellProps?: (datum: D) => Omit<TableBodyCellProps, 'children'>;
   readonly cellRenderer?: (datum: D) => ReactNode;
+  readonly config: C;
+  readonly id: C['id'];
 }
 
 export type DataTableColumnProperties<
   D extends DataTableDatum,
   C extends DataTableColumnConfig<D>,
-> = Partial<{
-  [key in C["id"]]: Pick<DataTableColumn<D, C>, "cellProps" | "cellRenderer">;
-}>;
+> = Partial<Record<C['id'], Pick<DataTableColumn<D, C>, 'cellProps' | 'cellRenderer'>>>;
 
 export const convertConfigsToColumns = <
   D extends DataTableDatum,
@@ -85,32 +80,30 @@ export const convertConfigsToColumns = <
   configs: C[],
   properties: DataTableColumnProperties<D, C>,
 ): DataTableColumn<D, C>[] =>
-  configs.map(
-    (config): DataTableColumn<D, C> => ({
-      id: config.id,
-      config: config,
-      cellProps: properties[config.id as C["id"]]?.cellProps,
-      cellRenderer: properties[config.id as C["id"]]?.cellRenderer,
-    }),
-  );
+  configs.map((config): DataTableColumn<D, C> => ({
+    cellProps: properties[config.id as C['id']]?.cellProps,
+    cellRenderer: properties[config.id as C['id']]?.cellRenderer,
+    config,
+    id: config.id,
+  }));
 
-export type TableColumnId<C extends DataTableColumnConfig> = C["id"];
+export type TableColumnId<C extends DataTableColumnConfig> = C['id'];
 
 export type OrderableTableColumn<
   C extends DataTableColumnConfig,
   I extends string = string,
-> = Extract<C, { isOrderable: true; id: I }>;
+> = Extract<C, { id: I; isOrderable: true }>;
 
 export const columnIsOrderable = <C extends DataTableColumnConfig>(
   col: C,
-): col is OrderableTableColumn<C> => (col as OrderableTableColumn<C>).isOrderable === true;
+): col is OrderableTableColumn<C> => col.isOrderable === true;
 
-export type OrderableTableColumnId<C extends DataTableColumnConfig> = OrderableTableColumn<C>["id"];
+export type OrderableTableColumnId<C extends DataTableColumnConfig> = OrderableTableColumn<C>['id'];
 
 export type HideableTableColumn<
   C extends DataTableColumnConfig,
   I extends string = string,
-> = Extract<C, { isHideable?: true; id: I }>;
+> = Extract<C, { id: I; isHideable?: true }>;
 
 export type DataTableColumns<
   D extends DataTableDatum,
@@ -126,54 +119,52 @@ export interface DataTableInstance<
   D extends DataTableDatum,
   C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
 > {
-  readonly isInScope: boolean;
-  readonly selectedRows: D[];
-  readonly rowsHaveActions: boolean;
-  readonly rowsAreSelectable: boolean;
-  readonly rowsAreDeletable: boolean;
-  readonly columns: C[];
-  readonly orderableColumns: OrderableTableColumn<C>[];
-  readonly hideableColumns: HideableTableColumn<C>[];
-  readonly visibleColumns: C[];
-  readonly controlBarTargetId: string | null;
   readonly canToggleColumnVisibility: boolean;
-  readonly columnIsHideable: (id: string) => id is HideableTableColumn<C>["id"];
-  readonly columnIsVisible: (id: string) => boolean;
+  readonly changeRowSelection: (row: D, isSelected: boolean) => void;
   readonly columnIsHidden: (id: string) => boolean;
+  readonly columnIsHideable: (id: string) => id is HideableTableColumn<C>['id'];
+  readonly columnIsVisible: (id: string) => boolean;
+  readonly columns: C[];
+  readonly controlBarTargetId: null | string;
+  readonly deselectRows: (rows: D | D[] | string | string[]) => void;
+  readonly hideableColumns: HideableTableColumn<C>[];
+  readonly hideColumn: (id: string) => void;
+  readonly isInScope: boolean;
+  readonly orderableColumns: OrderableTableColumn<C>[];
   readonly rowIsLoading: (id: D | string) => boolean;
   readonly rowIsLocked: (id: D | string) => boolean;
-  readonly syncSelectedRows: (data: D[]) => void;
-  readonly setSelectedRows: (selected: D[]) => void;
-  readonly selectRows: (rows: D[] | D) => void;
-  readonly deselectRows: (rows: D[] | D | string | string[]) => void;
-  readonly changeRowSelection: (row: D, isSelected: boolean) => void;
-  readonly toggleRowSelection: (row: D) => void;
   readonly rowIsSelected: (row: D | string) => boolean;
+  readonly rowsAreDeletable: boolean;
+  readonly rowsAreSelectable: boolean;
+  readonly rowsHaveActions: boolean;
+  readonly selectedRows: D[];
+  readonly selectRows: (rows: D | D[]) => void;
   readonly setRowLoading: (id: string, loading: boolean, opts?: { locked?: boolean }) => void;
-  readonly hideColumn: (id: string) => void;
-  readonly showColumn: (id: string) => void;
+  readonly setSelectedRows: (selected: D[]) => void;
   readonly setVisibleColumns: (m: string[]) => void;
+  readonly showColumn: (id: string) => void;
+  readonly syncSelectedRows: (data: D[]) => void;
   readonly toggleColumnVisibility: (id: string) => void;
+  readonly toggleRowSelection: (row: D) => void;
+  readonly visibleColumns: C[];
 }
 
 export interface CellDataTableInstance<
   D extends DataTableDatum,
   C extends DataTableColumnConfig<D> = DataTableColumnConfig<D>,
-> extends Pick<DataTableInstance<D, C>, "setRowLoading"> {}
-
-// Note: This will be updated to conform with the new Filters class.
+> extends Pick<DataTableInstance<D, C>, 'setRowLoading'> {}
 
 export type TableFilterWTooltip<
   F extends TableFilters = TableFilters,
   I extends TableFilterId<F> = TableFilterId<F>,
 > = {
   readonly id: I;
-  readonly placeholder?: string;
-  readonly label: string;
   readonly isHiddenByDefault?: boolean;
   readonly isHideable?: boolean;
-  readonly tooltipLabel: string | ((value: F[I]) => ReactNode);
+  readonly label: string;
+  readonly placeholder?: string;
   readonly renderer: (value: F[I], params: Partial<PopoverRenderProps>) => JSX.Element;
+  readonly tooltipLabel: ((value: F[I]) => ReactNode) | string;
 };
 
 export type TableFilterWoTooltip<
@@ -181,12 +172,12 @@ export type TableFilterWoTooltip<
   I extends TableFilterId<F> = TableFilterId<F>,
 > = {
   readonly id: I;
-  readonly placeholder?: string;
-  readonly label: string;
   readonly isHiddenByDefault?: boolean;
-  readonly tooltipLabel?: never;
   readonly isHideable?: boolean;
+  readonly label: string;
+  readonly placeholder?: string;
   readonly renderer: (value: F[I]) => JSX.Element;
+  readonly tooltipLabel?: never;
 };
 
 export type TableFilter<
@@ -206,6 +197,6 @@ export type TableFilterConfiguration<
 }>;
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type TableFilters = { [key in string]: any };
+export type TableFilters = Record<string, any>;
 
 export type TableFilterId<F extends TableFilters> = keyof F & string;

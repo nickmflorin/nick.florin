@@ -1,13 +1,13 @@
-@use "./tailwind";
+@use './tailwind';
 
-@use "partials";
+@use 'partials';
 
-@use "./components";
-@use "./public";
+@use './components';
+@use './public';
 
 /* Turbopack - the default bundler as of Next 16 - resolves node_modules imports directly and does
    not support the legacy webpack tilde ("~") prefix. */
-@import "normalize.css/normalize.css";
+@import 'normalize.css/normalize.css';
 
 // This is temporary - or at least until we incorporate dark mode.
 :root {
@@ -31,9 +31,9 @@ body {
   overflow: hidden;
   touch-action: none;
   min-height: -webkit-fill-available;
-  background-color: theme("colors.app-background");
+  background-color: theme('colors.app-background');
 
   @media (prefers-color-scheme: dark) {
-    background-color: theme("colors.app-background");
+    background-color: theme('colors.app-background');
   }
 }

@@ -1,13 +1,13 @@
-@use "sass:list";
-@use "sass:map";
-@use "sass:meta";
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
 
-@use "partials";
-@use "../typography" as typography;
+@use 'partials';
+@use '../typography' as typography;
 
-@use "./constants" as constants;
-@use "./mixins" as mixins;
-@use "./sizing" as sizing;
+@use './constants' as constants;
+@use './mixins' as mixins;
+@use './sizing' as sizing;
 
 @mixin button-font-base($type) {
   font-family: constants.$button-default-font-family;
@@ -31,7 +31,7 @@
   line-height: $height - 2 * list.nth($padding, 1);
 
   // Allow the font size to be overridden for a Button independently of the Button's size.
-  @include typography.use-fonts("body") using ($font-size, $data) {
+  @include typography.use-fonts('body') using ($font-size, $data) {
     &.#{typography.get-font-size-class($font-size)} {
       font-size: partials.mapget($data, font-size);
     }
@@ -39,7 +39,7 @@
 }
 
 @mixin btn-fonts() {
-  @include button-font-base("button");
+  @include button-font-base('button');
 
   @include btn-size-fonts(constants.$button-default-size);
   @each $size in map.keys(constants.$button-sizes) {
@@ -50,13 +50,13 @@
 }
 
 @mixin link-fonts() {
-  @include button-font-base("link");
+  @include button-font-base('link');
 
-  $properties: typography.get-font("body", constants.$link-default-font-size);
+  $properties: typography.get-font('body', constants.$link-default-font-size);
   font-size: partials.mapget($properties, font-size);
   line-height: partials.mapget($properties, line-height);
 
-  @include typography.use-fonts("body") using ($size, $data) {
+  @include typography.use-fonts('body') using ($size, $data) {
     &.#{typography.get-font-size-class($size)} {
       font-size: partials.mapget($data, font-size);
       line-height: partials.mapget($data, line-height);
@@ -65,12 +65,12 @@
 }
 
 @mixin inline-link-fonts() {
-  @include button-font-base("inline-link");
+  @include button-font-base('inline-link');
 
   font-size: inherit;
   line-height: inherit;
 
-  @include typography.use-fonts("body") using ($size, $data) {
+  @include typography.use-fonts('body') using ($size, $data) {
     &.#{typography.get-font-size-class($size)} {
       font-size: partials.mapget($data, font-size);
       line-height: partials.mapget($data, line-height);
@@ -79,11 +79,11 @@
 }
 
 @mixin button-fonts($type) {
-  @if $type == "button" {
+  @if $type == 'button' {
     @include btn-fonts();
-  } @else if $type == "link" {
+  } @else if $type == 'link' {
     @include link-fonts();
-  } @else if $type == "inline-link" {
+  } @else if $type == 'inline-link' {
     @include inline-link-fonts();
   }
 }

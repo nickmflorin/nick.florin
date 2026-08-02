@@ -1,16 +1,15 @@
 export type BaseErrorConfig = {
-  readonly message?: string;
   readonly internalMessage?: string;
+  readonly message?: string;
 };
 
 export type DefaultErrorMessage<C extends BaseErrorConfig = BaseErrorConfig> =
-  | string
-  | ((e: C) => string);
+  ((e: C) => string) | string;
 
 export abstract class BaseError<C extends BaseErrorConfig = BaseErrorConfig> extends Error {
-  protected abstract readonly defaultMessage: DefaultErrorMessage<C>;
-  protected readonly defaultInternalMessage?: DefaultErrorMessage<C>;
   protected readonly _config: C;
+  protected readonly defaultInternalMessage?: DefaultErrorMessage<C>;
+  protected abstract readonly defaultMessage: DefaultErrorMessage<C>;
 
   constructor(config: C) {
     super();
@@ -19,14 +18,14 @@ export abstract class BaseError<C extends BaseErrorConfig = BaseErrorConfig> ext
 
   /**
    * An internal message that is used for logging or other internal protocols.  This message will
-   * never be displayed to a user, and can contain more contextual information than the 'message'
-   * attribute.
+   * never be displayed to a user, and can contain more contextual information than
+   * {@link BaseError.message}.
    */
   public get internalMessage(): string {
-    if (this._config["internalMessage"]) {
-      return this._config["internalMessage"];
+    if (this._config.internalMessage) {
+      return this._config.internalMessage;
     }
-    return typeof this.defaultInternalMessage === "function"
+    return typeof this.defaultInternalMessage === 'function'
       ? this.defaultInternalMessage(this._config)
       : (this.defaultInternalMessage ?? this.message);
   }
@@ -37,10 +36,10 @@ export abstract class BaseError<C extends BaseErrorConfig = BaseErrorConfig> ext
    * should be assumed that they are safe to display to a user in the application.
    */
   public get message(): string {
-    if (this._config["message"]) {
-      return this._config["message"];
+    if (this._config.message) {
+      return this._config.message;
     }
-    return typeof this.defaultMessage === "function"
+    return typeof this.defaultMessage === 'function'
       ? this.defaultMessage(this._config)
       : this.defaultMessage;
   }

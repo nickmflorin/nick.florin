@@ -1,12 +1,12 @@
 .select__dates-content {
   padding: 8px;
 
-  > div[data-calendar="true"] {
+  > div[data-calendar='true'] {
     > .mantine-DatePicker-levelsGroup {
       width: 100%;
 
-      > div[data-month-level="true"],
-      > div[data-year-level="true"] {
+      > div[data-month-level='true'],
+      > div[data-year-level='true'] {
         width: 100%;
 
         > .mantine-DatePicker-calendarHeader {

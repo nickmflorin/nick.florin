@@ -1,25 +1,25 @@
-import { forwardRef, type JSX } from "react";
+import { type ForwardedRef, type JSX } from 'react';
 
-import { classNames } from "~/components/types";
+import { classNames } from '~/components/types';
 
-import { IconButton, type IconButtonProps } from "./generic";
+import { IconButton, type IconButtonProps } from './generic';
 
-export interface DialogCloseButtonProps
-  extends Omit<IconButtonProps<"button">, "icon" | "options" | "iconSize" | "size"> {}
+export interface DialogCloseButtonProps extends Omit<
+  IconButtonProps<'button'>,
+  'icon' | 'iconSize' | 'options' | 'size'
+> {
+  readonly ref?: ForwardedRef<HTMLButtonElement>;
+}
 
-export const DialogCloseButton = forwardRef<HTMLButtonElement, DialogCloseButtonProps>(
-  (props: DialogCloseButtonProps, ref): JSX.Element => (
-    <IconButton.Transparent
-      {...props}
-      ref={ref}
-      element="button"
-      scheme="light"
-      size="xsmall"
-      iconSize="large"
-      icon={{ name: "xmark", iconStyle: "solid" }}
-      className={classNames("dialog__close-button", props.className)}
-    />
-  ),
+export const DialogCloseButton = ({ ref, ...props }: DialogCloseButtonProps): JSX.Element => (
+  <IconButton.Transparent
+    {...props}
+    className={classNames('dialog__close-button', props.className)}
+    element='button'
+    icon={{ iconStyle: 'solid', name: 'xmark' }}
+    iconSize='large'
+    ref={ref}
+    scheme='light'
+    size='xsmall'
+  />
 );
-
-export default DialogCloseButton;

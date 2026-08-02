@@ -1,386 +1,382 @@
-@use "sass:map";
-@use "sass:meta";
-@use "sass:list";
+@use 'sass:map';
+@use 'sass:meta';
+@use 'sass:list';
 
-@use "partials";
+@use 'partials';
 
-@use "./constants" as constants;
-@use "./mixins" as mixins;
+@use './constants' as constants;
+@use './mixins' as mixins;
 
 $button-solid-colors: (
-  "primary": (
-    background-color: theme("colors.blue.800"),
-    color: theme("colors.white"),
-    outline-color: theme("colors.blue.800"),
+  'primary': (
+    background-color: theme('colors.blue.800'),
+    color: theme('colors.white'),
+    outline-color: theme('colors.blue.800'),
     hovered: (
-      background-color: theme("colors.blue.900"),
-      outline-color: theme("colors.blue.900"),
+      background-color: theme('colors.blue.900'),
+      outline-color: theme('colors.blue.900'),
     ),
     focused: (
-      background-color: theme("colors.blue.900"),
-      outline-color: theme("colors.blue.900"),
+      background-color: theme('colors.blue.900'),
+      outline-color: theme('colors.blue.900'),
     ),
     disabled: (
-      background-color: theme("colors.disabled-background"),
-      outline-color: theme("colors.disabled-border"),
+      background-color: theme('colors.disabled-background'),
+      outline-color: theme('colors.disabled-border'),
     ),
     active: (
-      background-color: theme("colors.blue.900"),
-      outline-color: theme("colors.blue.900"),
+      background-color: theme('colors.blue.900'),
+      outline-color: theme('colors.blue.900'),
     ),
   ),
-  "secondary": (
-    background-color: theme("colors.gray.200"),
-    color: theme("colors.gray.700"),
-    outline-color: theme("colors.gray.200"),
+  'secondary': (
+    background-color: theme('colors.gray.200'),
+    color: theme('colors.gray.700'),
+    outline-color: theme('colors.gray.200'),
     hovered: (
-      background-color: theme("colors.gray.300"),
-      outline-color: theme("colors.gray.300"),
+      background-color: theme('colors.gray.300'),
+      outline-color: theme('colors.gray.300'),
       active: (
-        background-color: theme("colors.gray.400"),
-        outline-color: theme("colors.gray.400"),
+        background-color: theme('colors.gray.400'),
+        outline-color: theme('colors.gray.400'),
       ),
     ),
     focused: (
-      background-color: theme("colors.gray.300"),
-      outline-color: theme("colors.gray.300"),
+      background-color: theme('colors.gray.300'),
+      outline-color: theme('colors.gray.300'),
       active: (
-        background-color: theme("colors.gray.400"),
-        outline-color: theme("colors.gray.400"),
+        background-color: theme('colors.gray.400'),
+        outline-color: theme('colors.gray.400'),
       ),
     ),
     active: (
-      background-color: theme("colors.gray.400"),
-      outline-color: theme("colors.gray.400"),
+      background-color: theme('colors.gray.400'),
+      outline-color: theme('colors.gray.400'),
     ),
     disabled: (
-      background-color: theme("colors.disabled-background"),
-      outline-color: theme("colors.disabled-border"),
+      background-color: theme('colors.disabled-background'),
+      outline-color: theme('colors.disabled-border'),
     ),
   ),
-  "success": (
-    background-color: theme("colors.green.500"),
-    color: theme("colors.white"),
-    outline-color: theme("colors.green.500"),
+  'success': (
+    background-color: theme('colors.green.500'),
+    color: theme('colors.white'),
+    outline-color: theme('colors.green.500'),
     hovered: (
-      background-color: theme("colors.green.600"),
-      outline-color: theme("colors.green.600"),
+      background-color: theme('colors.green.600'),
+      outline-color: theme('colors.green.600'),
     ),
     focused: (
-      background-color: theme("colors.green.600"),
-      outline-color: theme("colors.green.600"),
+      background-color: theme('colors.green.600'),
+      outline-color: theme('colors.green.600'),
     ),
     disabled: (
-      background-color: theme("colors.disabled-background"),
-      outline-color: theme("colors.disabled-border"),
+      background-color: theme('colors.disabled-background'),
+      outline-color: theme('colors.disabled-border'),
     ),
   ),
-  "danger": (
-    background-color: theme("colors.red.500"),
-    color: theme("colors.white"),
-    outline-color: theme("colors.red.500"),
+  'danger': (
+    background-color: theme('colors.red.500'),
+    color: theme('colors.white'),
+    outline-color: theme('colors.red.500'),
     hovered: (
-      background-color: theme("colors.red.600"),
-      outline-color: theme("colors.red.600"),
+      background-color: theme('colors.red.600'),
+      outline-color: theme('colors.red.600'),
     ),
     focused: (
-      background-color: theme("colors.red.600"),
-      outline-color: theme("colors.red.600"),
+      background-color: theme('colors.red.600'),
+      outline-color: theme('colors.red.600'),
     ),
     disabled: (
-      background-color: theme("colors.red.200"),
-      outline-color: theme("colors.red.200"),
+      background-color: theme('colors.red.200'),
+      outline-color: theme('colors.red.200'),
     ),
   ),
-  "light": (
-    background-color: theme("colors.gray.600"),
-    color: theme("colors.white"),
-    outline-color: theme("colors.gray.600"),
+  'light': (
+    background-color: theme('colors.gray.600'),
+    color: theme('colors.white'),
+    outline-color: theme('colors.gray.600'),
     hovered: (
-      background-color: theme("colors.gray.700"),
-      outline-color: theme("colors.gray.700"),
+      background-color: theme('colors.gray.700'),
+      outline-color: theme('colors.gray.700'),
     ),
     focused: (
-      background-color: theme("colors.gray.700"),
-      outline-color: theme("colors.gray.700"),
+      background-color: theme('colors.gray.700'),
+      outline-color: theme('colors.gray.700'),
     ),
     disabled: (
-      background-color: theme("colors.disabled-background"),
-      outline-color: theme("colors.disabled-border"),
+      background-color: theme('colors.disabled-background'),
+      outline-color: theme('colors.disabled-border'),
     ),
   ),
 );
 
 $button-outlined-colors: (
-  "primary": (
-    outline-color: theme("colors.blue.800"),
-    background-color: theme("colors.white"),
-    color: theme("colors.blue.800"),
+  'primary': (
+    outline-color: theme('colors.blue.800'),
+    background-color: theme('colors.white'),
+    color: theme('colors.blue.800'),
     hovered: (
-      color: theme("colors.blue.900"),
-      background-color: theme("colors.gray.50"),
-      outline-color: theme("colors.blue.900"),
+      color: theme('colors.blue.900'),
+      background-color: theme('colors.gray.50'),
+      outline-color: theme('colors.blue.900'),
     ),
     focused: (
-      color: theme("colors.blue.900"),
-      background-color: theme("colors.gray.50"),
-      outline-color: theme("colors.blue.900"),
+      color: theme('colors.blue.900'),
+      background-color: theme('colors.gray.50'),
+      outline-color: theme('colors.blue.900'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
-      outline-color: theme("colors.disabled-border"),
+      color: theme('colors.disabled'),
+      outline-color: theme('colors.disabled-border'),
     ),
   ),
-  "secondary": (
-    outline-color: theme("colors.gray.700"),
-    background-color: theme("colors.white"),
-    color: theme("colors.gray.700"),
+  'secondary': (
+    outline-color: theme('colors.gray.700'),
+    background-color: theme('colors.white'),
+    color: theme('colors.gray.700'),
     hovered: (
-      color: theme("colors.gray.800"),
-      background-color: theme("colors.gray.50"),
-      outline-color: theme("colors.gray.800"),
+      color: theme('colors.gray.800'),
+      background-color: theme('colors.gray.50'),
+      outline-color: theme('colors.gray.800'),
     ),
     focused: (
-      color: theme("colors.gray.800"),
-      background-color: theme("colors.gray.50"),
-      outline-color: theme("colors.gray.800"),
+      color: theme('colors.gray.800'),
+      background-color: theme('colors.gray.50'),
+      outline-color: theme('colors.gray.800'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
-      outline-color: theme("colors.disabled-border"),
+      color: theme('colors.disabled'),
+      outline-color: theme('colors.disabled-border'),
     ),
   ),
-  "danger": (
-    outline-color: theme("colors.red.500"),
-    background-color: theme("colors.transparent"),
-    color: theme("colors.red.500"),
+  'danger': (
+    outline-color: theme('colors.red.500'),
+    background-color: theme('colors.transparent'),
+    color: theme('colors.red.500'),
     hovered: (
-      outline-color: theme("colors.red.600"),
-      color: theme("colors.red.600"),
-      background-color: theme("colors.gray.50"),
+      outline-color: theme('colors.red.600'),
+      color: theme('colors.red.600'),
+      background-color: theme('colors.gray.50'),
     ),
     focused: (
-      outline-color: theme("colors.red.600"),
-      color: theme("colors.red.600"),
-      background-color: theme("colors.gray.50"),
+      outline-color: theme('colors.red.600'),
+      color: theme('colors.red.600'),
+      background-color: theme('colors.gray.50'),
     ),
     disabled: (
-      color: theme("colors.red.200"),
-      outline-color: theme("colors.red.200"),
+      color: theme('colors.red.200'),
+      outline-color: theme('colors.red.200'),
     ),
   ),
-  "success": (
-    outline-color: theme("colors.green.500"),
-    background-color: theme("colors.white"),
-    color: theme("colors.green.500"),
+  'success': (
+    outline-color: theme('colors.green.500'),
+    background-color: theme('colors.white'),
+    color: theme('colors.green.500'),
     hovered: (
-      outline-color: theme("colors.green.600"),
-      color: theme("colors.green.600"),
+      outline-color: theme('colors.green.600'),
+      color: theme('colors.green.600'),
     ),
     focused: (
-      outline-color: theme("colors.green.600"),
-      color: theme("colors.green.600"),
+      outline-color: theme('colors.green.600'),
+      color: theme('colors.green.600'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
-      outline-color: theme("colors.disabled-border"),
+      color: theme('colors.disabled'),
+      outline-color: theme('colors.disabled-border'),
     ),
   ),
-  "light": (
-    background-color: theme("colors.white"),
-    color: theme("colors.gray.600"),
-    outline-color: theme("colors.gray.600"),
+  'light': (
+    background-color: theme('colors.white'),
+    color: theme('colors.gray.600'),
+    outline-color: theme('colors.gray.600'),
     hovered: (
-      outline-color: theme("colors.gray.700"),
-      color: theme("colors.gray.700"),
+      outline-color: theme('colors.gray.700'),
+      color: theme('colors.gray.700'),
     ),
     focused: (
-      outline-color: theme("colors.gray.700"),
-      color: theme("colors.gray.700"),
+      outline-color: theme('colors.gray.700'),
+      color: theme('colors.gray.700'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
-      outline-color: theme("colors.disabled-border"),
+      color: theme('colors.disabled'),
+      outline-color: theme('colors.disabled-border'),
     ),
   ),
 );
 
 $button-transparent-colors: (
-  "primary": (
-    outline-color: theme("colors.transparent"),
-    background-color: theme("colors.transparent"),
-    color: theme("colors.blue.700"),
+  'primary': (
+    outline-color: theme('colors.transparent'),
+    background-color: theme('colors.transparent'),
+    color: theme('colors.blue.700'),
     hovered: (
-      color: theme("colors.blue.800"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.blue.800'),
+      background-color: theme('colors.gray.50'),
     ),
     focused: (
-      color: theme("colors.blue.800"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.blue.800'),
+      background-color: theme('colors.gray.50'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
-  "secondary": (
-    outline-color: theme("colors.transparent"),
-    background-color: theme("colors.transparent"),
-    color: theme("colors.gray.700"),
+  'secondary': (
+    outline-color: theme('colors.transparent'),
+    background-color: theme('colors.transparent'),
+    color: theme('colors.gray.700'),
     hovered: (
-      color: theme("colors.gray.800"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.gray.800'),
+      background-color: theme('colors.gray.50'),
     ),
     focused: (
-      color: theme("colors.gray.800"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.gray.800'),
+      background-color: theme('colors.gray.50'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
-  "danger": (
-    outline-color: theme("colors.transparent"),
-    background-color: theme("colors.transparent"),
-    color: theme("colors.red.500"),
+  'danger': (
+    outline-color: theme('colors.transparent'),
+    background-color: theme('colors.transparent'),
+    color: theme('colors.red.500'),
     hovered: (
-      color: theme("colors.red.600"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.red.600'),
+      background-color: theme('colors.gray.50'),
     ),
     focused: (
-      color: theme("colors.red.600"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.red.600'),
+      background-color: theme('colors.gray.50'),
     ),
     disabled: (
-      color: theme("colors.red.200"),
+      color: theme('colors.red.200'),
     ),
   ),
-  "success": (
-    outline-color: theme("colors.transparent"),
-    background-color: theme("colors.transparent"),
-    color: theme("colors.green.500"),
+  'success': (
+    outline-color: theme('colors.transparent'),
+    background-color: theme('colors.transparent'),
+    color: theme('colors.green.500'),
     hovered: (
-      color: theme("colors.green.600"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.green.600'),
+      background-color: theme('colors.gray.50'),
     ),
     focused: (
-      color: theme("colors.green.600"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.green.600'),
+      background-color: theme('colors.gray.50'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
-  "light": (
-    color: theme("colors.gray.600"),
-    outline-color: theme("colors.transparent"),
-    background-color: theme("colors.transparent"),
+  'light': (
+    color: theme('colors.gray.600'),
+    outline-color: theme('colors.transparent'),
+    background-color: theme('colors.transparent'),
     hovered: (
-      color: theme("colors.gray.700"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.gray.700'),
+      background-color: theme('colors.gray.50'),
     ),
     focused: (
-      color: theme("colors.gray.700"),
-      background-color: theme("colors.gray.50"),
+      color: theme('colors.gray.700'),
+      background-color: theme('colors.gray.50'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
 );
 
 $link-colors: (
-  "primary": (
-    background-color: theme("colors.transparent"),
-    color: theme("colors.blue.800"),
+  'primary': (
+    background-color: theme('colors.transparent'),
+    color: theme('colors.blue.800'),
     hovered: (
-      color: theme("colors.blue.900"),
+      color: theme('colors.blue.900'),
     ),
     focused: (
-      color: theme("colors.blue.900"),
+      color: theme('colors.blue.900'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
-  "secondary": (
-    background-color: theme("colors.transparent"),
-    color: theme("colors.gray.700"),
+  'secondary': (
+    background-color: theme('colors.transparent'),
+    color: theme('colors.gray.700'),
     hovered: (
-      color: theme("colors.gray.800"),
+      color: theme('colors.gray.800'),
     ),
     focused: (
-      color: theme("colors.gray.800"),
+      color: theme('colors.gray.800'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
-  "light": (
-    background-color: theme("colors.transparent"),
-    color: theme("colors.gray.600"),
+  'light': (
+    background-color: theme('colors.transparent'),
+    color: theme('colors.gray.600'),
     hovered: (
-      color: theme("colors.gray.700"),
+      color: theme('colors.gray.700'),
     ),
     focused: (
-      color: theme("colors.gray.700"),
+      color: theme('colors.gray.700'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
-  "danger": (
-    background-color: theme("colors.transparent"),
-    color: theme("colors.red.700"),
+  'danger': (
+    background-color: theme('colors.transparent'),
+    color: theme('colors.red.700'),
     hovered: (
-      color: theme("colors.red.800"),
+      color: theme('colors.red.800'),
     ),
     focused: (
-      color: theme("colors.red.800"),
+      color: theme('colors.red.800'),
     ),
     disabled: (
-      color: theme("colors.red.200"),
+      color: theme('colors.red.200'),
     ),
   ),
-  "success": (
-    background-color: theme("colors.transparent"),
-    color: theme("colors.green.700"),
+  'success': (
+    background-color: theme('colors.transparent'),
+    color: theme('colors.green.700'),
     hovered: (
-      color: theme("colors.green.800"),
+      color: theme('colors.green.800'),
     ),
     focused: (
-      color: theme("colors.green.800"),
+      color: theme('colors.green.800'),
     ),
     disabled: (
-      color: theme("colors.disabled"),
+      color: theme('colors.disabled'),
     ),
   ),
 );
 
 $button-color-properties: (
-  "button": (
-    "solid": $button-solid-colors,
-    "outlined": $button-outlined-colors,
-    "transparent": $button-transparent-colors,
+  'button': (
+    'solid': $button-solid-colors,
+    'outlined': $button-outlined-colors,
+    'transparent': $button-transparent-colors,
   ),
-  "icon-button": (
-    "solid": $button-solid-colors,
-    "outlined": $button-outlined-colors,
-    "transparent": $button-transparent-colors,
+  'icon-button': (
+    'solid': $button-solid-colors,
+    'outlined': $button-outlined-colors,
+    'transparent': $button-transparent-colors,
   ),
-  "link": $link-colors,
-  "inline-link": $link-colors,
+  'link': $link-colors,
+  'inline-link': $link-colors,
 );
 
 $fallbacks: (
-  "hovered": (
-    "focused",
-  ),
-  "focused": (
-    "hovered",
-  ),
-  "active": (
-    "focused",
-    "hovered",
+  'hovered': ('focused'),
+  'focused': ('hovered'),
+  'active': (
+    'focused',
+    'hovered',
   ),
 );
 
@@ -421,11 +417,11 @@ $fallbacks: (
   $state: null
 ) {
   @if $identifiers {
-    $variant: map.get($identifiers, "variant");
-    $type: partials.mapget($identifiers, "type");
-    $scheme: partials.mapget($identifiers, "scheme");
+    $variant: map.get($identifiers, 'variant');
+    $type: partials.mapget($identifiers, 'type');
+    $scheme: partials.mapget($identifiers, 'scheme');
 
-    @if $type == "button" or $type == "icon-button" {
+    @if $type == 'button' or $type == 'icon-button' {
       @if not $variant {
         @error "The variant must be provided for buttons and icon buttons.";
       }
@@ -447,7 +443,7 @@ $fallbacks: (
        index nested mappings of properties that should take precedence when the button is in the
        corresponding state. */
     $base-attributes: ();
-    @if $type == "button" or $type == "icon-button" {
+    @if $type == 'button' or $type == 'icon-button' {
       $base-attributes: partials.mapget($button-color-properties, $type, $variant, $scheme);
     } @else {
       $base-attributes: partials.mapget($button-color-properties, $type, $scheme);
@@ -493,10 +489,9 @@ $fallbacks: (
     @return get-button-color-properties($core-attributes...);
   }
   @return (
-    background-color: if($background-color, $background-color, theme("colors.transparent")),
+    background-color: if($background-color, $background-color, theme('colors.transparent')),
     outline-color: $outline-color,
-    outline:
-      if(
+    outline: if(
         $outline,
         $outline,
         if($outline-color, constants.$button-outline-width solid $outline-color, null)
@@ -517,30 +512,30 @@ $fallbacks: (
   @include button-color-properties($identifiers);
 
   @include partials.hovered {
-    @include button-color-properties($identifiers, $state: "hovered");
+    @include button-color-properties($identifiers, $state: 'hovered');
     @include partials.active() {
-      @include button-color-properties($identifiers, $state: ("focused", "active"));
+      @include button-color-properties($identifiers, $state: ('focused', 'active'));
     }
   }
 
   @include partials.focused {
-    @include button-color-properties($identifiers, $state: "focused");
+    @include button-color-properties($identifiers, $state: 'focused');
     @include partials.active() {
-      @include button-color-properties($identifiers, $state: ("focused", "active"));
+      @include button-color-properties($identifiers, $state: ('focused', 'active'));
     }
   }
 
   @include partials.disabled {
-    @include button-color-properties($identifiers, $state: "disabled");
+    @include button-color-properties($identifiers, $state: 'disabled');
   }
 
   @include partials.active() {
-    @include button-color-properties($identifiers, $state: "active");
+    @include button-color-properties($identifiers, $state: 'active');
   }
 }
 
 @mixin button-colors($type) {
-  @if $type == "icon-button" or $type == "button" {
+  @if $type == 'icon-button' or $type == 'button' {
     $default-variant: partials.mapget(constants.$button-default-variants, $type);
     @include button-color(
       (

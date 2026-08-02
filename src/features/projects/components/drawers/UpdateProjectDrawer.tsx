@@ -1,51 +1,56 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandProject } from "~/database/model";
+import { type BrandProject, type ProjectIncludes } from '~/database/model';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { useProjectForm } from "~/features/projects/components/forms/hooks";
-import UpdateProjectForm from "~/features/projects/components/forms/UpdateProjectForm";
-import { useProject } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { DrawerForm } from '~/components/drawers/DrawerForm';
+import { useProjectForm } from '~/features/projects/components/forms/hooks';
+import { UpdateProjectForm } from '~/features/projects/components/forms/UpdateProjectForm';
+import { useProject } from '~/hooks/api';
 
 interface UpdateProjectDrawerProps extends ExtendingDrawerProps {
+  readonly eager: Pick<BrandProject, 'name'>;
   readonly projectId: string;
-  readonly eager: Pick<BrandProject, "name">;
 }
 
+/**
+ * The relations included when fetching the project being updated.
+ *
+ * The form does not yet expose inputs for skills, details or nested details, but the update
+ * action already persists them, so they must still be included in the fetched project data (not
+ * the form's inputs) to avoid wiping them out on every update.
+ */
+const UpdateProjectDrawerIncludes = [
+  'skills',
+  'repositories',
+  'details',
+  'nestedDetails',
+] satisfies ProjectIncludes;
+
 export const UpdateProjectDrawer = ({
-  projectId,
   eager,
   onClose,
+  projectId,
 }: UpdateProjectDrawerProps): JSX.Element => {
-  const { data, isLoading, error, isValidating } = useProject(projectId, {
+  const { data, error, isLoading, isValidating } = useProject(projectId, {
     keepPreviousData: true,
-    query: {
-      /* Note: We are not using skills, details or nested details in the Form yet, but since the
-         action to update the project is already implemented, we need to include those in the
-         Form data (not the Form inputs) so that they are not wiped everytime a project is
-         updated. */
-      includes: ["skills", "repositories", "details", "nestedDetails"],
-      visibility: "admin",
-    },
+    query: { includes: UpdateProjectDrawerIncludes, visibility: 'admin' },
   });
   const form = useProjectForm();
 
   return (
-    <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
-      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+    <DrawerForm eagerTitle={eager.name} form={form} titleField='name'>
+      <ApiResponseState data={data} error={error} isLoading={isLoading || isValidating}>
         {project => (
           <UpdateProjectForm
             form={form}
-            project={project}
-            onSuccess={() => onClose()}
             onCancel={() => onClose()}
+            onSuccess={() => onClose()}
+            project={project}
           />
         )}
       </ApiResponseState>
     </DrawerForm>
   );
 };
-
-export default UpdateProjectDrawer;

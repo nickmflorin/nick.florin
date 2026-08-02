@@ -1,27 +1,25 @@
-"use client";
-import { type LabeledNavItem } from "~/application/pages";
+'use client';
+import { type LabeledNavItem } from '~/application/pages';
 
-import { TabButton } from "~/components/buttons/TabButton";
-import { useNavigationItem } from "~/hooks";
+import { TabButton } from '~/components/buttons/TabButton';
+import { useNavigationItem } from '~/hooks';
 
 export interface TabProps {
   readonly item: LabeledNavItem;
 }
 
 export const Tab = ({ item }: TabProps) => {
-  const { isActive, isPending, setNavigating, href } = useNavigationItem(item);
+  const { href, isActive, isPending, setNavigating } = useNavigationItem(item);
   return (
     <TabButton
+      element='link'
       href={href}
-      element="link"
       icon={item.icon}
-      isPending={isPending}
       isActive={isActive}
+      isPending={isPending}
       onClick={() => setNavigating()}
     >
       {item.label}
     </TabButton>
   );
 };
-
-export default Tab;

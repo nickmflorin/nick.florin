@@ -1,5 +1,5 @@
-@use "partials";
-@use "../radii" as radii;
+@use 'partials';
+@use '../radii' as radii;
 
 @mixin avatar-radius($value) {
   @include partials.border-radius($value);
@@ -20,9 +20,9 @@
   aspect-ratio: 1;
   flex-shrink: 0;
   user-select: none;
-  font-size: theme("fontSize.sm.0");
-  font-weight: theme("fontWeight.medium");
-  color: theme("colors.body");
+  font-size: theme('fontSize.sm.0');
+  font-weight: theme('fontWeight.medium');
+  color: theme('colors.body');
 
   -webkit-box-align: center;
   -webkit-box-pack: center;
@@ -34,7 +34,7 @@
   }
 
   @include radii.with-radius using ($size, $value) {
-    &[data-attr-radius="#{$size}"] {
+    &[data-attr-radius='#{$size}'] {
       @include avatar-radius($value);
       > .avatar__image {
         @include avatar-radius($value);
@@ -42,8 +42,8 @@
     }
   }
 
-  &[data-attr-without-image="true"] {
-    background-color: theme("colors.gray.200");
+  &[data-attr-without-image='true'] {
+    background-color: theme('colors.gray.200');
     color: inherit;
     font-size: inherit;
     font-weight: inherit;
@@ -51,7 +51,7 @@
 
     @include radii.with-radius using ($size, $value) {
       @include avatar-radius($value);
-      &[data-attr-radius="#{$size}"] {
+      &[data-attr-radius='#{$size}'] {
         @include avatar-radius($value);
       }
     }

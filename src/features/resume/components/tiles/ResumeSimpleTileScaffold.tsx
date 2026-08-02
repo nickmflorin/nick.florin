@@ -1,36 +1,36 @@
-import type { ReactNode, JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
 import {
   classNames,
-  type QuantitativeSize,
   type ComponentProps,
+  type QuantitativeSize,
   sizeToString,
-} from "~/components/types";
+} from '~/components/types';
 
-const TileInner = ({ children }: { children: ReactNode }) => (
-  <div className="flex flex-row items-center justify-between">{children}</div>
+const TileInner = ({ children }: { readonly children: ReactNode }) => (
+  <div className='flex flex-row items-center justify-between'>{children}</div>
 );
 
 export interface ResumeSimpleTileScaffoldProps extends ComponentProps {
-  readonly icon: JSX.Element;
-  readonly description?: JSX.Element | null;
-  readonly descriptionGap?: QuantitativeSize<"px">;
   readonly children: ReactNode;
+  readonly description?: JSX.Element | null;
+  readonly descriptionGap?: QuantitativeSize<'px'>;
+  readonly icon: JSX.Element;
   readonly numDescriptionLines?: number;
 }
 
 export const ResumeSimpleTileScaffold = ({
-  icon,
-  description,
-  descriptionGap = "2px",
   children,
+  description,
+  descriptionGap = '2px',
+  icon,
   ...props
 }: ResumeSimpleTileScaffoldProps) => (
   <div
     {...props}
     className={classNames(
-      "flex flex-row gap-[12px] max-w-full w-full overflow-hidden",
-      { "items-center": description === null, "items-start": description !== null },
+      'flex flex-row gap-[12px] max-w-full w-full overflow-hidden',
+      { 'items-center': description === null, 'items-start': description !== null },
       props.className,
     )}
   >
@@ -39,8 +39,8 @@ export const ResumeSimpleTileScaffold = ({
       <TileInner>{children}</TileInner>
     ) : (
       <div
-        className={classNames("flex flex-col overflow-hidden w-full max-w-full")}
-        style={{ gap: sizeToString(descriptionGap, "px") }}
+        className={classNames('flex flex-col overflow-hidden w-full max-w-full')}
+        style={{ gap: sizeToString(descriptionGap, 'px') }}
       >
         <TileInner>{children}</TileInner>
         {description}

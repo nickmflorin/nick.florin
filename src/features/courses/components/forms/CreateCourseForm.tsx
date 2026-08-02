@@ -1,39 +1,36 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type Course } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type Course } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { createCourse } from "~/actions/courses/create-course";
+import { createCourse } from '~/actions/courses/create-course';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { CourseForm, type CourseFormProps } from "./CourseForm";
+import { CourseForm, type CourseFormProps } from './CourseForm';
 
-export interface CreateCourseFormProps extends Omit<CourseFormProps, "action"> {
-  readonly onSuccess?: (m: Course) => void;
+export interface CreateCourseFormProps extends Omit<CourseFormProps, 'action'> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: Course) => void;
 }
 
 export const CreateCourseForm = ({
+  form,
   onCancel,
   onSuccess,
-  form,
   ...props
 }: CreateCourseFormProps): JSX.Element => {
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
   return (
     <CourseForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
-      form={form}
-      action={async (data, form) => {
+      action={async (data, formInstance) => {
         let response: Awaited<ReturnType<typeof createCourse>> | null = null;
         try {
           response = await createCourse(data);
@@ -41,20 +38,20 @@ export const CreateCourseForm = ({
           logger.errorUnsafe(e, "There was an error creating the course'.", {
             data,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error creating the course.");
+          return toast.error('There was an error creating the course.');
         }
-        const { error, data: course } = response;
+        const { data: course, error } = response;
         if (error) {
-          return form.handleApiError(error);
+          return formInstance.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.(course);
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      form={form}
+      isLoading={pending}
     />
   );
 };
-
-export default CreateCourseForm;

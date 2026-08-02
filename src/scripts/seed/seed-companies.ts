@@ -1,11 +1,11 @@
-import { json } from "~/database/fixtures";
-import { DetailEntityType, type Company } from "~/database/model";
-import { type Transaction } from "~/database/prisma";
-import { type cli } from "~/scripts";
-import { stdout } from "~/support";
+import { json } from '~/database/fixtures';
+import { type Company, DetailEntityType } from '~/database/model';
+import { type Transaction } from '~/database/prisma';
+import { type cli } from '~/scripts';
+import { stdout } from '~/support';
 
-import { createDetail } from "./seed-details";
-import { findCorresponding } from "./util";
+import { createDetail } from './seed-details';
+import { findCorresponding } from './util';
 
 export async function seedCompanies(tx: Transaction, ctx: cli.ScriptContext) {
   if (json.companies.length !== 0) {
@@ -14,10 +14,12 @@ export async function seedCompanies(tx: Transaction, ctx: cli.ScriptContext) {
     const output = stdout.begin(`Generating ${json.companies.length} Companies...`);
     const allSkills = await tx.skill.findMany({});
 
-    /* This is simply for debugging, since in the case that the slug does not correspond to an
-       actual skill, the Prisma error is not super descriptive. */
+    /**
+     * This is simply for debugging, since in the case that the slug does not correspond to an
+     * actual skill, the Prisma error is not super descriptive.
+     */
     const checkSkill = (skill: string) => {
-      const sk = allSkills.find(sk => sk.slug === skill);
+      const sk = allSkills.find(candidate => candidate.slug === skill);
       if (sk === undefined) {
         throw new Error(`Invalid slug: ${skill}`);
       }
@@ -29,35 +31,37 @@ export async function seedCompanies(tx: Transaction, ctx: cli.ScriptContext) {
       output.begin(
         `Generating Company ${jsonCompany.name} with ${jsonExperiences.length} Experiences...`,
       );
+      /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+         order, against a shared transaction client. */
       const company = await tx.company.create({
-        include: { experiences: { include: { skills: true } } },
         data: {
           ...jsonCompany,
           createdBy: { connect: { id: ctx.user.id } },
-          updatedBy: { connect: { id: ctx.user.id } },
           experiences: {
             create: [
               /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-              ...jsonExperiences.map(({ skills = [], details, ...jsonExperience }) => ({
+              ...jsonExperiences.map(({ details, skills = [], ...jsonExperience }) => ({
                 ...jsonExperience,
-                startDate: new Date(jsonExperience.startDate),
-                endDate: jsonExperience.endDate ? new Date(jsonExperience.endDate) : undefined,
                 createdById: ctx.user.id,
-                updatedById: ctx.user.id,
+                endDate: jsonExperience.endDate ? new Date(jsonExperience.endDate) : undefined,
                 skills: {
                   connect: skills.map(sk => ({ slug: checkSkill(sk) })),
                 },
+                startDate: new Date(jsonExperience.startDate),
+                updatedById: ctx.user.id,
               })),
             ],
           },
+          updatedBy: { connect: { id: ctx.user.id } },
         },
+        include: { experiences: { include: { skills: true } } },
       });
       companies = [...companies, company];
 
       for (const experience of company.experiences) {
         const jsonExperience = findCorresponding(jsonExperiences, experience, {
-          field: "title",
-          reference: "experience",
+          field: 'title',
+          reference: 'experience',
           strict: true,
         });
         const jsonDetails = jsonExperience.details ?? [];
@@ -65,13 +69,15 @@ export async function seedCompanies(tx: Transaction, ctx: cli.ScriptContext) {
           output.begin(
             `Generating ${jsonDetails.length} Detail(s) for Experience: ${experience.title}...`,
           );
+          /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+             order, against a shared transaction client. */
           const details = await Promise.all(
             jsonDetails.map(jsonDetail =>
               createDetail(tx, ctx, {
+                detail: jsonDetail,
                 entityId: experience.id,
                 entityType: DetailEntityType.EXPERIENCE,
                 skills: allSkills,
-                detail: jsonDetail,
               }),
             ),
           );
@@ -82,23 +88,23 @@ export async function seedCompanies(tx: Transaction, ctx: cli.ScriptContext) {
         }
       }
 
-      output.complete("Successfully Generated Company", {
+      output.complete('Successfully Generated Company', {
         count: [i, json.companies.length],
         lineItems: [
-          { label: "Name", value: company.name },
+          { label: 'Name', value: company.name },
           {
-            label: "Experiences",
             items: company.experiences.map(experience => [
               {
-                label: "Title",
+                label: 'Title',
                 value: experience.title,
               },
               {
-                label: "Skills",
-                items: experience.skills.map(skill => ({ label: "Slug", value: skill.slug })),
                 index: true,
+                items: experience.skills.map(skill => ({ label: 'Slug', value: skill.slug })),
+                label: 'Skills',
               },
             ]),
+            label: 'Experiences',
           },
         ],
       });

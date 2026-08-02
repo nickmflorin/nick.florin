@@ -1,44 +1,57 @@
-"use client";
-import dynamic from "next/dynamic";
-import React, { type ReactNode } from "react";
+'use client';
+import dynamic from 'next/dynamic';
+import { type ReactNode } from 'react';
 
-import { SWRConfig } from "./SWRConfig";
+import { SWRConfig } from './SWRConfig';
 
-const DrawersProvider = dynamic(() => import("~/components/drawers/DrawersProvider"), {
+const DrawersProvider = dynamic(
+  () => import('~/components/drawers/DrawersProvider').then(mod => mod.DrawersProvider),
+  {
+    ssr: false,
+  },
+);
+const MantineProvider = dynamic(
+  () => import('./MantineProvider').then(mod => mod.MantineProvider),
+  { ssr: false },
+);
+const TourProvider = dynamic(() => import('./TourProvider').then(mod => mod.TourProvider), {
   ssr: false,
 });
-const MantineProvider = dynamic(() => import("./MantineProvider"), { ssr: false });
-const TourProvider = dynamic(() => import("./TourProvider"), { ssr: false });
-const NavigationProvider = dynamic(() => import("./NavigationProvider"), {
-  ssr: false,
-});
-const NavMenuProvider = dynamic(() => import("./NavMenuProvider"), {
-  ssr: false,
-});
-const UserProfileProvider = dynamic(() => import("./UserProfileProvider"), {
-  ssr: false,
-});
+const NavigationProvider = dynamic(
+  () => import('./NavigationProvider').then(mod => mod.NavigationProvider),
+  {
+    ssr: false,
+  },
+);
+const NavMenuProvider = dynamic(
+  () => import('./NavMenuProvider').then(mod => mod.NavMenuProvider),
+  {
+    ssr: false,
+  },
+);
+const UserProfileProvider = dynamic(
+  () => import('./UserProfileProvider').then(mod => mod.UserProfileProvider),
+  {
+    ssr: false,
+  },
+);
 
 export interface ClientConfigProps {
   readonly children: ReactNode;
 }
 
-function ClientConfig(props: ClientConfigProps) {
-  return (
-    <SWRConfig>
-      <MantineProvider>
-        <NavigationProvider>
-          <NavMenuProvider>
-            <UserProfileProvider>
-              <DrawersProvider>
-                <TourProvider>{props.children}</TourProvider>
-              </DrawersProvider>
-            </UserProfileProvider>
-          </NavMenuProvider>
-        </NavigationProvider>
-      </MantineProvider>
-    </SWRConfig>
-  );
-}
-
-export default ClientConfig;
+export const ClientConfig = (props: ClientConfigProps) => (
+  <SWRConfig>
+    <MantineProvider>
+      <NavigationProvider>
+        <NavMenuProvider>
+          <UserProfileProvider>
+            <DrawersProvider>
+              <TourProvider>{props.children}</TourProvider>
+            </DrawersProvider>
+          </UserProfileProvider>
+        </NavMenuProvider>
+      </NavigationProvider>
+    </MantineProvider>
+  </SWRConfig>
+);

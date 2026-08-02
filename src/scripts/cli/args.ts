@@ -1,19 +1,21 @@
-import * as errors from "./errors";
+import * as errors from './errors';
 
 const splitCliNamedArgument = (name: string, value: string) => {
-  if (!value.includes("=")) {
+  if (!value.includes('=')) {
     throw new errors.InvalidCommandLineArgumentError(
       name,
       value,
-      "The named argument must define a value!",
+      'The named argument must define a value!',
     );
   }
-  const parsed = value.split("=")[1];
+  const parsed = value.split('=')[1];
+  /* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Indexed access is
+     typed as non-nullable, but the element is absent when the value has no assignment. */
   if (parsed === undefined) {
     throw new errors.InvalidCommandLineArgumentError(
       name,
       value,
-      "The named argument must define a value!",
+      'The named argument must define a value!',
     );
   }
   return parsed.trim();
@@ -23,7 +25,7 @@ export const getPositionalArgument = (index: number): string | undefined => {
   const args = process.argv.slice(2);
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg.startsWith("--")) {
+    if (arg.startsWith('--')) {
       return undefined;
     } else if (i === index) {
       return arg;
@@ -32,14 +34,14 @@ export const getPositionalArgument = (index: number): string | undefined => {
   return undefined;
 };
 
-type CliPrimitive = string | number | boolean;
+type CliPrimitive = boolean | number | string;
 
 type NamedArgumentParser<V extends CliPrimitive> = (value: string) => V;
 
 interface GetNamedArgumentOptions<V extends CliPrimitive = CliPrimitive> {
-  readonly required?: boolean;
   readonly defaultValue: V;
   readonly parser: NamedArgumentParser<V>;
+  readonly required?: boolean;
 }
 
 type VOrUndefined<T, O extends Partial<GetNamedArgumentOptions>> = O extends { required: true }
@@ -50,7 +52,7 @@ type NamedArgumentRT<O extends Partial<GetNamedArgumentOptions>> =
   O extends GetNamedArgumentOptions<infer V extends CliPrimitive>
     ? V
     : O extends { defaultValue: infer D extends CliPrimitive }
-      ? string | D
+      ? D | string
       : O extends { parser: NamedArgumentParser<infer V extends CliPrimitive> }
         ? VOrUndefined<V, O>
         : VOrUndefined<string, O>;
@@ -65,11 +67,11 @@ export const getNamedArgument = <O extends Partial<GetNamedArgumentOptions>>(
       return options.defaultValue as NamedArgumentRT<O>;
     }
     return value as NamedArgumentRT<O>;
-  } else if (!value.includes("=")) {
+  } else if (!value.includes('=')) {
     throw new errors.InvalidCommandLineArgumentError(
       name,
       value,
-      "The named argument must define a value!",
+      'The named argument must define a value!',
     );
   }
   const parsed = splitCliNamedArgument(name, value);
@@ -80,45 +82,45 @@ export const getNamedArgument = <O extends Partial<GetNamedArgumentOptions>>(
 };
 
 type GetBooleanCliArgumentOptions = {
-  readonly required?: boolean;
   readonly defaultValue?: boolean;
+  readonly required?: boolean;
 };
 
 export const getBooleanCliArgument = <O extends GetBooleanCliArgumentOptions>(
   name: string,
   options: O,
 ): NamedArgumentRT<
-  O & {
+  {
     parser: (v: string) => boolean;
-  }
+  } & O
 > =>
-  getNamedArgument<O & { parser: (v: string) => boolean }>(name, {
+  getNamedArgument<{ parser: (v: string) => boolean } & O>(name, {
     ...options,
     parser: value => {
-      if (!["true", "false"].includes(value.trim().toLowerCase())) {
+      if (!['false', 'true'].includes(value.trim().toLowerCase())) {
         throw new errors.InvalidCommandLineArgumentError(name, value);
       }
-      return value.trim().toLowerCase() === "true";
+      return value.trim().toLowerCase() === 'true';
     },
   });
 
 type GetIntegerCliArgumentOptions = {
-  readonly required?: boolean;
   readonly defaultValue?: number;
+  readonly required?: boolean;
 };
 
 export const getIntegerCliArgument = <O extends GetIntegerCliArgumentOptions>(
   name: string,
   options: O,
 ): NamedArgumentRT<
-  O & {
+  {
     parser: (v: string) => number;
-  }
+  } & O
 > =>
   getNamedArgument<
-    O & {
+    {
       parser: (v: string) => number;
-    }
+    } & O
   >(name, {
     ...options,
     parser: value => {

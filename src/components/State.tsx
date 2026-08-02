@@ -1,26 +1,26 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
-import { type ErrorType } from "./errors";
-import { Error } from "./errors/Error";
-import { Loading, type LoadingProps } from "./loading/Loading";
+import { type ErrorType } from './errors';
+import { Error } from './errors/Error';
+import { Loading, type LoadingProps } from './loading/Loading';
 
 export interface StateProps {
-  readonly isLoading?: boolean;
-  readonly loadingProps?: LoadingProps<"div">;
-  readonly error?: ErrorType;
+  readonly areChildrenHiddenOnError?: boolean;
   readonly children: ReactNode;
-  readonly hideChildrenOnError?: boolean;
+  readonly error?: ErrorType;
+  readonly isLoading?: boolean;
+  readonly loadingProps?: LoadingProps<'div'>;
 }
 
 export const State = ({
+  areChildrenHiddenOnError,
   children,
-  isLoading,
-  hideChildrenOnError,
-  loadingProps,
   error,
+  isLoading,
+  loadingProps,
 }: StateProps) => (
   <Loading isLoading={isLoading} {...loadingProps}>
-    <Error error={error} hideChildrenOnError={hideChildrenOnError}>
+    <Error areChildrenHiddenOnError={areChildrenHiddenOnError} error={error}>
       {children}
     </Error>
   </Loading>

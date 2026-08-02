@@ -1,27 +1,32 @@
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from 'next/server';
 
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-import { CMS_USER_ORG_SLUG, CMS_USER_ORG_ROLE, USER_ADMIN_ROLE } from "~/application/auth";
+import { CMS_USER_ORG_ROLE, CMS_USER_ORG_SLUG, USER_ADMIN_ROLE } from '~/application/auth';
 
-const isProtectedRoute = createRouteMatcher(["/admin(.*)"]);
+const isProtectedRoute = createRouteMatcher(['/admin(.*)']);
+
+/**
+ * Returns the URL that a signed-in user without CMS access is redirected to.
+ *
+ * The redirect targets the 404 page rather than the dashboard because a server-side redirect back
+ * to the dashboard is not observed by the `useNavigationItem` hook, which leaves the navigation
+ * button showing a loading indicator indefinitely.
+ *
+ * @param {NextRequest} req The request that the redirect URL is constructed relative to.
+ *
+ * @returns {URL} The URL that the user should be redirected to.
+ */
+const getUnauthorizedRedirectUrl = (req: NextRequest): URL => new URL('/404', req.url);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { has, redirectToSignIn, userId, orgSlug } = await auth();
+  const { has, orgSlug, redirectToSignIn, userId } = await auth();
   if (isProtectedRoute(req)) {
     const hasAdminCmsAccess =
       (has({ role: USER_ADMIN_ROLE }) || has({ role: CMS_USER_ORG_ROLE })) &&
       orgSlug === CMS_USER_ORG_SLUG;
     if (userId && !hasAdminCmsAccess) {
-      /* If there is a signed in user, but the user does not have explicit access to the CMS,
-         redirect them to a 404 page.
-
-         Note: Redirecting back to the dashboard can cause issues with the 'useNavigationItem' hook
-         and loading indicators on the navigation button, because if the navigation button is
-         clicked while on the dashboard, and we redirect to the dashboard, this redirect will
-         happen server side, and the page change will not be detected by the hook and the
-         navigation button will show a loading indicator indefinitely. */
-      return NextResponse.redirect(new URL("/404", req.url));
+      return NextResponse.redirect(getUnauthorizedRedirectUrl(req));
     } else if (!userId) {
       return redirectToSignIn({ returnBackUrl: req.url });
     }
@@ -31,5 +36,5 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };

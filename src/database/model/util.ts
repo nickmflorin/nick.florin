@@ -1,4 +1,4 @@
-import { Prisma } from "./generated";
+import { Prisma } from './prisma-client';
 
 export const getModel = (name: Prisma.ModelName): Prisma.DMMF.Model => {
   const model = Prisma.dmmf.datamodel.models.find(m => m.name === name);
@@ -8,8 +8,8 @@ export const getModel = (name: Prisma.ModelName): Prisma.DMMF.Model => {
   return model;
 };
 
-export const modelHasField = (name: Prisma.ModelName | Prisma.DMMF.Model, field: string) => {
-  const m = typeof name === "string" ? getModel(name) : name;
+export const modelHasField = (name: Prisma.DMMF.Model | Prisma.ModelName, field: string) => {
+  const m = typeof name === 'string' ? getModel(name) : name;
   return m.fields.find(f => f.name === field) !== undefined;
 };
 
@@ -18,11 +18,11 @@ export const safeEnumValue = <E extends Record<string, string>>(
   prismaEnum: E,
 ): E[keyof E] => {
   const v = value.toUpperCase();
-  if (prismaEnum[v] === undefined) {
+  if (!(v in prismaEnum)) {
     throw new TypeError(
       `Invalid enum value '${value}' detected for enum, must be one of ${Object.values(
         prismaEnum,
-      ).join(", ")}'`,
+      ).join(', ')}'`,
     );
   }
   return v as E[keyof E];

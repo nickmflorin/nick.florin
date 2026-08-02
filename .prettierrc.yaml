@@ -1,9 +1,13 @@
 arrowParens: avoid
 tabWidth: 2
 semi: true
-singleQuote: false
+singleQuote: true
 useTabs: false
-trailingComma: "all"
+trailingComma: all
 printWidth: 100
 bracketSpacing: true
 proseWrap: always
+quoteProps: as-needed
+jsxSingleQuote: true
+bracketSameLine: false
+singleAttributePerLine: false

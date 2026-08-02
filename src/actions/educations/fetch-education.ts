@@ -1,96 +1,94 @@
 import {
   type ApiEducation,
-  removeRedundantTopLevelSkills,
-  type EducationIncludes,
   DetailEntityType,
+  type EducationIncludes,
   fieldIsIncluded,
-} from "~/database/model";
-import { db } from "~/database/prisma";
+  removeRedundantTopLevelSkills,
+} from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { standardDetailFetchAction, type StandardFetchActionReturn } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { standardDetailFetchAction, type StandardFetchActionReturn } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const fetchEducation = <I extends EducationIncludes>(includes: I) =>
   standardDetailFetchAction(
     async (id, _, { isAdmin, isVisible }): StandardFetchActionReturn<ApiEducation<I>> => {
-      const education = await db.education.findUnique({
-        where: { id },
+      const education = (await db.education.findUnique({
         include: {
-          school: true,
-          skills: fieldIsIncluded("skills", includes)
-            ? { where: { visible: isVisible } }
-            : undefined,
-          courses: fieldIsIncluded("courses", includes)
+          courses: fieldIsIncluded('courses', includes)
             ? {
-                where: { visible: isVisible },
                 include: {
-                  skills: fieldIsIncluded("skills", includes)
+                  skills: fieldIsIncluded('skills', includes)
                     ? { where: { visible: isVisible } }
                     : undefined,
                 },
+                where: { visible: isVisible },
               }
             : undefined,
+          school: true,
+          skills: fieldIsIncluded('skills', includes)
+            ? { where: { visible: isVisible } }
+            : undefined,
         },
-      });
+        where: { id },
+      })) as ApiEducation<I> | null;
 
       if (!education) {
         return ApiClientGlobalError.NotFound({
-          message: "The education could not be found.",
+          message: 'The education could not be found.',
         });
       } else if (!isAdmin && !education.visible) {
         ApiClientGlobalError.Forbidden({
-          message: "The user does not have permission to access this data.",
+          message: 'The user does not have permission to access this data.',
         });
       }
-      if (fieldIsIncluded("details", includes)) {
+      if (fieldIsIncluded('details', includes)) {
         const e = {
           ...education,
           details: await db.detail.findMany({
-            where: {
-              entityType: DetailEntityType.EDUCATION,
-              entityId: { in: [education.id] },
-              visible: isVisible,
-            },
             include: {
-              project: {
-                include: {
-                  skills: fieldIsIncluded("skills", includes)
-                    ? { where: { visible: isVisible } }
-                    : undefined,
-                },
-              },
-              skills: fieldIsIncluded("skills", includes)
-                ? { where: { visible: isVisible } }
-                : undefined,
               nestedDetails: {
-                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-                where: {
-                  visible: isVisible,
-                },
                 include: {
-                  skills: fieldIsIncluded("skills", includes)
-                    ? { where: { visible: isVisible } }
-                    : undefined,
                   project: {
                     include: {
-                      skills: fieldIsIncluded("skills", includes)
+                      skills: fieldIsIncluded('skills', includes)
                         ? { where: { visible: isVisible } }
                         : undefined,
                     },
                   },
+                  skills: fieldIsIncluded('skills', includes)
+                    ? { where: { visible: isVisible } }
+                    : undefined,
+                },
+                orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+                where: {
+                  visible: isVisible,
                 },
               },
+              project: {
+                include: {
+                  skills: fieldIsIncluded('skills', includes)
+                    ? { where: { visible: isVisible } }
+                    : undefined,
+                },
+              },
+              skills: fieldIsIncluded('skills', includes)
+                ? { where: { visible: isVisible } }
+                : undefined,
+            },
+            where: {
+              entityId: { in: [education.id] },
+              entityType: DetailEntityType.EDUCATION,
+              visible: isVisible,
             },
           }),
-        } as ApiEducation<I>;
-        if (fieldIsIncluded("skills", includes)) {
-          return removeRedundantTopLevelSkills(
-            e as ApiEducation<["skills", "details"]>,
-          ) as ApiEducation<I>;
+        };
+        if (fieldIsIncluded('skills', includes)) {
+          return removeRedundantTopLevelSkills(e);
         }
         return e;
       }
-      return education as ApiEducation<I>;
+      return education;
     },
-    { authenticated: false, adminOnly: false },
+    { adminOnly: false, authenticated: false },
   );

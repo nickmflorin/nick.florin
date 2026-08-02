@@ -1,45 +1,47 @@
-import { useCallback, useMemo, useState, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { omit, uniq } from "lodash-es";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { uniq } from 'lodash-es';
 import {
-  useForm as useReactHookForm,
+  type FieldErrors as NativeFieldErrors,
   type Path,
   type PathValue,
-  type UseFormRegisterReturn,
-  type FieldErrors as NativeFieldErrors,
   type RegisterOptions,
-  type SubmitHandler,
   type SubmitErrorHandler,
-} from "react-hook-form";
-import { z } from "zod";
+  type SubmitHandler,
+  type UseFormRegisterReturn,
+  useForm as useReactHookForm,
+} from 'react-hook-form';
+import { z } from 'zod';
 
-import { logger } from "~/internal/logger";
-import { humanizeList } from "~/lib/formatters";
-import { flattenObjectPaths, type IterablePathObj } from "~/lib/objects";
+import { logger } from '~/internal/logger';
+import { humanizeList } from '~/lib/formatters';
+import { flattenObjectPaths, type IterablePathObj } from '~/lib/objects';
 
-import { ApiClientFormError, isApiError } from "~/api";
 import {
-  type ApiError,
   type ApiClientErrorJson,
-  type ApiClientFieldErrorsObj,
   ApiClientFieldErrorCodes,
+  type ApiClientFieldErrorsObj,
+  ApiClientFormError,
+  type ApiError,
   isApiClientFormErrorJson,
-} from "~/api";
+  isApiError,
+} from '~/api';
 
 import {
-  type FormInstance,
   type BaseFormValues,
-  type FieldName,
-  type FormConfig,
   type ControlledFieldChangeHandler,
   type FieldErrors,
+  type FieldName,
+  type FieldValue,
+  type FormConfig,
+  type FormInstance,
   type SetFormErrors,
-} from "../types";
+} from '../types';
 
 const ReactHookFormFieldErrorObjectSchema = z.object({
-  type: z.string().optional(),
   message: z.string(),
+  type: z.string().optional(),
 });
 
 type FieldErrorObj = z.infer<typeof ReactHookFormFieldErrorObjectSchema>;
@@ -49,6 +51,16 @@ const isReactHookFormFieldErrorObject = (obj: unknown): obj is FieldErrorObj =>
 
 const isInternalFieldErrors = (obj: unknown): obj is string[] =>
   z.array(z.string()).safeParse(obj).success;
+
+/**
+ * Sets a global form error from `e.message`, used when an {@link ApiClientErrorJson} or
+ * {@link ApiError} does not contain errors for individual fields, and should instead be treated
+ * globally.
+ */
+const setGlobalErrorFromMessage = <I extends BaseFormValues>(
+  setErrors: SetFormErrors<I>,
+  e: { message: string },
+) => setErrors(e.message);
 
 function mergeIntoFieldErrors<I extends BaseFormValues>(
   a: FieldErrors<I>,
@@ -63,12 +75,12 @@ function mergeIntoFieldErrors<I extends BaseFormValues>(
 
 function mergeIntoFieldErrors<I extends BaseFormValues>(
   arg0: FieldErrors<I>,
-  arg1: FieldName<I> | FieldErrors<I> | NativeFieldErrors,
+  arg1: FieldErrors<I> | FieldName<I> | NativeFieldErrors,
   arg2?: string | string[],
 ): FieldErrors<I> {
   if (arg2) {
-    if (typeof arg1 !== "string") {
-      throw new TypeError("Invalid method implementation.");
+    if (typeof arg1 !== 'string') {
+      throw new TypeError('Invalid method implementation.');
     }
     return {
       ...arg0,
@@ -82,48 +94,52 @@ function mergeIntoFieldErrors<I extends BaseFormValues>(
         return [...prev, curr];
       }, arg0[arg1] ?? []),
     };
-  } else if (typeof arg1 === "string") {
-    throw new TypeError("Invalid method implementation.");
+  } else if (typeof arg1 === 'string') {
+    throw new TypeError('Invalid method implementation.');
   }
   const flattened = flattenObjectPaths<FieldErrorObj | string[]>(
     arg1 as IterablePathObj<FieldErrorObj | string[]>,
     {
       continueOn: (v): v is IterablePathObj<FieldErrorObj | string[]> =>
         !isReactHookFormFieldErrorObject(v) && !isInternalFieldErrors(v),
-      formatter: path => path.join("."),
+      formatter: path => path.join('.'),
     },
   );
   return Object.keys(flattened).reduce((prev, key) => {
     const errs = flattened[key as FieldName<I>];
+    /* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Indexing into a
+       'Record' does not produce a possibly undefined type because 'noUncheckedIndexedAccess' is
+       not enabled. */
     if (errs !== undefined) {
       if (isInternalFieldErrors(errs)) {
         return mergeIntoFieldErrors(prev, key as FieldName<I>, errs);
       } else if (isReactHookFormFieldErrorObject(errs)) {
         return mergeIntoFieldErrors(prev, key as FieldName<I>, errs.message);
-      } else {
-        throw new Error("Unexpectedly encountered malformed value in flattened errors object!");
       }
+      throw new Error('Unexpectedly encountered malformed value in flattened errors object!');
     }
     return prev;
   }, arg0);
 }
 
 export const useForm = <I extends BaseFormValues, IN = I>({
-  schema,
   onChange,
+  schema,
   ...options
 }: FormConfig<I, IN>): FormInstance<I> => {
-  const [internalFieldErrors, _setInternalFieldErrors] = useState<FieldErrors<I>>({});
+  const [storedFieldErrors, setStoredFieldErrors] = useState<FieldErrors<I>>({});
   const [globalErrors, setGlobalErrors] = useState<string[]>([]);
   const registeredFields = useRef<FieldName<I>[]>([]);
 
   const {
-    setValue,
+    clearErrors: clearNativeErrors,
+    formState,
     getValues,
     handleSubmit: _handleSubmit,
-    clearErrors: clearNativeErrors,
     register: _register,
-    formState,
+    setError: _setError,
+    setValue,
+    setValues: _setValues,
     ...form
   } = useReactHookForm<I>({
     ...options,
@@ -146,18 +162,18 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     () =>
       <N extends FieldName<I>>(
         name: N,
-        options?: RegisterOptions<I, N>,
+        registerOptions?: RegisterOptions<I, N>,
       ): UseFormRegisterReturn<N> => {
         registeredFields.current = uniq([...registeredFields.current, name]);
-        const registration = _register(name, options);
+        const registration = _register(name, registerOptions);
         return {
           ...registration,
           onChange: (...args) => {
-            onChange?.({
-              name,
-              value: args[0].target.value,
-              values: { ...getValues(), [name]: args[0].target.value },
-            });
+            /* React Hook Form types the change event's target as 'any'.  The event is dispatched
+               by the native form control that the field was registered with, so the target's
+               value is the value of that field. */
+            const { value } = args[0].target as { value: FieldValue<N, I> };
+            onChange?.({ name, value, values: { ...getValues(), [name]: value } });
             return registration.onChange(...args);
           },
         };
@@ -191,16 +207,16 @@ export const useForm = <I extends BaseFormValues, IN = I>({
     }, [] as string[]);
     if (invalidFields.length !== 0) {
       const humanized = humanizeList(registeredFields.current, {
-        conjunction: "and",
+        conjunction: 'and',
         formatter: v => `'${v}'`,
       });
       logger.warn(
-        "The form received field errors for fields that are not registered with the form! " +
+        'The form received field errors for fields that are not registered with the form! ' +
           `Current fields registered with the form are: ${humanized}.`,
         { invalidFields, registered: registeredFields.current },
       );
     }
-    return _setInternalFieldErrors(fieldErrors);
+    return setStoredFieldErrors(fieldErrors);
   }, []);
 
   const clearErrors = useCallback(() => {
@@ -210,48 +226,50 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   }, [clearNativeErrors, setInternalFieldErrors]);
 
   const setErrors: SetFormErrors<I> = useCallback(
-    (arg0: FieldName<I> | FieldErrors<I> | string | string[], arg1?: string | string[]) => {
+    (arg0: FieldErrors<I> | FieldName<I> | string | string[], arg1?: string | string[]) => {
       if (arg1) {
-        if (typeof arg0 !== "string") {
-          throw new TypeError("Invalid method implementation!");
+        if (typeof arg0 !== 'string') {
+          throw new TypeError('Invalid method implementation!');
         }
         return setInternalFieldErrors({
           [arg0 as FieldName<I>]: Array.isArray(arg1) ? arg1 : [arg1],
         } as FieldErrors<I>);
-      } else if (typeof arg0 === "string" || Array.isArray(arg0)) {
+      } else if (typeof arg0 === 'string' || Array.isArray(arg0)) {
         return setGlobalErrors(Array.isArray(arg0) ? arg0 : [arg0]);
-      } else {
-        setInternalFieldErrors(arg0);
       }
+      setInternalFieldErrors(arg0);
     },
     [setInternalFieldErrors],
   );
 
   const setInternalFieldErrorsFromResponse = useCallback(
-    (e: ApiClientFormError | ApiClientErrorJson, errs: ApiClientFieldErrorsObj) => {
+    (e: ApiClientErrorJson | ApiClientFormError, errs: ApiClientFieldErrorsObj) => {
       // If this happens, it means the API incorrectly returned an error response.
       if (Object.keys(errs).length === 0) {
         logger.warn(
-          "The form received an ApiClientFieldErrorsObj object with an empty set of errors!",
+          'The form received an ApiClientFieldErrorsObj object with an empty set of errors!',
           { error: e },
         );
       }
       return setInternalFieldErrors(
         Object.keys(errs).reduce((prev: FieldErrors<I>, key): FieldErrors<I> => {
-          const _details = (errs as ApiClientFieldErrorsObj)[key];
+          const _details = errs[key];
           const details = _details ? (Array.isArray(_details) ? _details : [_details]) : _details;
           if (details && details.length !== 0) {
             return {
               ...prev,
               [key as FieldName<I>]: details.map(detail => {
-                const fn = ApiClientFieldErrorCodes.getAttribute(detail.code, "message");
+                const fn = ApiClientFieldErrorCodes.getAttribute(detail.code, 'message');
+                /* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- The
+                   errors can originate from a deserialized API response, in which case the
+                   message is not guaranteed to be present at runtime. */
                 return detail.message ?? fn(key);
               }),
             };
           }
           // If this happens, it means the API incorrectly returned an error response.
           logger.warn(
-            "The form received an ApiClientFieldErrorsObj object with an error " +
+            'The form received an ApiClientFieldErrorsObj object with an error ' +
               `key '${key}' that does not contain any errors!`,
             { error: e, key },
           );
@@ -263,34 +281,29 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   const handleApiError = useCallback(
-    (e: ApiError | ApiClientErrorJson) => {
+    (e: ApiClientErrorJson | ApiError) => {
       if (isApiError(e)) {
         if (e instanceof ApiClientFormError) {
           return setInternalFieldErrorsFromResponse(e, e.errors);
         }
-        /* In this case, the ApiClientError does not contain errors for individual fields, and
-           should be treated globally. */
-        return setErrors(e.message);
+        return setGlobalErrorFromMessage(setErrors, e);
       } else if (isApiClientFormErrorJson(e)) {
         return setInternalFieldErrorsFromResponse(e, e.errors);
-      } else {
-        /* In this case, the ApiClientError does not contain errors for individual fields, and
-           should be treated globally. */
-        return setErrors(e.message);
       }
+      return setGlobalErrorFromMessage(setErrors, e);
     },
     [setErrors, setInternalFieldErrorsFromResponse],
   );
 
   const fieldErrors = useMemo(
-    () => mergeIntoFieldErrors(internalFieldErrors, formState.errors),
-    [formState.errors, internalFieldErrors],
+    () => mergeIntoFieldErrors(storedFieldErrors, formState.errors),
+    [formState.errors, storedFieldErrors],
   );
 
   /* React Hook Form's 'handleSubmit' is now generic over the result of the submit handler, so this
      wrapper has to thread that type parameter through in order to remain assignable to it. */
   const handleSubmit = useCallback(
-    <TResult>(fn: SubmitHandler<I, TResult>, onError?: SubmitErrorHandler<I> | undefined) =>
+    <TResult>(fn: SubmitHandler<I, TResult>, onError?: SubmitErrorHandler<I>) =>
       _handleSubmit<TResult>((data: I) => {
         clearErrors();
         return fn(data);
@@ -299,21 +312,18 @@ export const useForm = <I extends BaseFormValues, IN = I>({
   );
 
   return {
-    formState,
+    clearErrors,
     errors: globalErrors,
     fieldErrors,
-    handleSubmit,
+    formState,
+    getValues,
     handleApiError,
+    handleSubmit,
+    register,
+    registerChangeHandler,
+    setErrors,
     setValue,
     setValues,
-    register,
-    getValues,
-    registerChangeHandler,
-    clearErrors,
-    setErrors,
-    /* React Hook Form added its own 'setValues' in v7.84.  It has different semantics to this
-       form's - it merges a partial object, rather than assigning each field individually via
-       'setValue' - so it is excluded here to keep the existing behavior for consumers. */
-    ...omit(form, ["setError", "setValues"]),
+    ...form,
   };
 };

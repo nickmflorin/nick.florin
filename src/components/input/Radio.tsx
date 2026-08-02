@@ -1,58 +1,74 @@
-"use client";
+'use client';
 
-import { useRef, forwardRef } from "react";
+import { type Ref, useRef } from 'react';
 
-import { Radio as RootRadio, type RadioProps as RootRadioProps } from "@mantine/core";
+import { Radio as RootRadio, type RadioProps as RootRadioProps } from '@mantine/core';
 
-import { classNames } from "~/components/types";
-import { Label } from "~/components/typography";
-
-import { type ComponentProps } from "../types";
+import { classNames, type ComponentProps } from '~/components/types';
+import { Label } from '~/components/typography';
 
 export interface RadioProps
-  extends ComponentProps,
-    Omit<RootRadioProps, "className" | "style" | "children" | "onChange" | "onClick"> {
+  extends
+    ComponentProps,
+    Omit<RootRadioProps, 'children' | 'className' | 'onChange' | 'onClick' | 'style'> {
   readonly children?: string;
   readonly onClick?: (checked: boolean) => void;
+  readonly ref?: Ref<HTMLDivElement>;
 }
 
-export const Radio = forwardRef<HTMLDivElement, RadioProps>(
-  ({ children, className, style, onClick, ...props }: RadioProps, rootRef) => {
-    const ref = useRef<HTMLDivElement | null>(null);
+export const Radio = ({
+  children,
+  className,
+  onClick,
+  ref: rootRef,
+  style,
+  ...props
+}: RadioProps) => {
+  const ref = useRef<HTMLDivElement | null>(null);
 
-    if (children) {
-      return (
-        <div
-          style={style}
-          className={classNames("flex flex-row gap-[4px] h-[20px]", className)}
-          onClick={() => {
-            if (ref.current) {
-              /* eslint-disable-next-line quotes */
-              const d = ref.current.querySelector('input[type="radio"]');
-              if (d && d instanceof HTMLInputElement) {
-                onClick?.(d.checked);
-              }
+  const toggle = () => {
+    if (ref.current) {
+      const input = ref.current.querySelector('input[type="radio"]');
+      if (input && input instanceof HTMLInputElement) {
+        onClick?.(input.checked);
+      }
+    }
+  };
+
+  if (children) {
+    return (
+      <div
+        aria-checked={props.checked}
+        className={classNames('flex flex-row gap-[4px] h-[20px]', className)}
+        onClick={toggle}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle();
+          }
+        }}
+        role='radio'
+        style={style}
+        tabIndex={0}
+      >
+        <Radio
+          readOnly
+          ref={instance => {
+            ref.current = instance;
+            if (typeof rootRef === 'function') {
+              rootRef(instance);
+            } else if (rootRef) {
+              rootRef.current = instance;
             }
           }}
-        >
-          <Radio
-            readOnly
-            ref={instance => {
-              ref.current = instance;
-              if (typeof rootRef === "function") {
-                rootRef(instance);
-              } else if (rootRef) {
-                rootRef.current = instance;
-              }
-            }}
-            {...props}
-          />
-          <Label fontSize="sm" fontWeight="medium" className="leading-[20px]">
-            {children}
-          </Label>
-        </div>
-      );
-    }
-    return <RootRadio {...props} rootRef={rootRef} className="radio" />;
-  },
-);
+          {...props}
+          tabIndex={-1}
+        />
+        <Label className='leading-[20px]' fontSize='sm' fontWeight='medium'>
+          {children}
+        </Label>
+      </div>
+    );
+  }
+  return <RootRadio {...props} className='radio' rootRef={rootRef} />;
+};

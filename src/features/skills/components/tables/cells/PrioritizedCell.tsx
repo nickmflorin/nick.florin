@@ -1,11 +1,11 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { updateSkill } from "~/actions/skills/update-skill";
+import { updateSkill } from '~/actions/skills/update-skill';
 
-import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";
-import type * as types from "~/components/tables/types";
-import { type SkillsTableModel, type SkillsTableColumn } from "~/features/skills/types";
+import { CheckboxCell } from '~/components/tables/cells/CheckboxCell';
+import type * as types from '~/components/tables/types';
+import { type SkillsTableColumn, type SkillsTableModel } from '~/features/skills/types';
 
 interface PrioritizedCellProps {
   readonly skill: SkillsTableModel;
@@ -14,10 +14,10 @@ interface PrioritizedCellProps {
 
 export const PrioritizedCell = ({ skill, table }: PrioritizedCellProps): JSX.Element => (
   <CheckboxCell
-    attribute="prioritized"
+    action={async (id, value) => await updateSkill(id, { prioritized: value })}
+    attribute='prioritized'
+    errorMessage='There was an error updating the skill.'
     model={skill}
     table={table}
-    errorMessage="There was an error updating the skill."
-    action={async (id, value) => await updateSkill(id, { prioritized: value })}
   />
 );

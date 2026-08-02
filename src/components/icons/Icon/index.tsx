@@ -1,14 +1,14 @@
-import Image from "next/image";
-import { forwardRef, type JSX } from "react";
+import Image from 'next/image';
+import { type JSX, type Ref } from 'react';
 
-import { type IconProps, isSvgIconProp } from "~/components/icons";
-import { classNames } from "~/components/types";
+import { type IconProps, isSvgIconProp } from '~/components/icons';
+import { classNames } from '~/components/types';
 
-import { Spinner } from "../Spinner";
+import { Spinner } from '../Spinner';
 
-import { FontAwesomeIcon } from "./FontAwesomeIcon";
-import { NativeIcon } from "./NativeIcon";
-import { getNativeIconStyle } from "./util";
+import { FontAwesomeIcon } from './FontAwesomeIcon';
+import { NativeIcon } from './NativeIcon';
+import { getNativeIconStyle } from './util';
 
 /**
  * Renders an icon element, <i>, with the appropriate class name, style and data-attributes.
@@ -21,44 +21,43 @@ import { getNativeIconStyle } from "./util";
  * element will allow the FontAwesome package to nest an <svg> element corresponding to the
  * appropriate Font Awesome icon inside of the <i> element.
  */
-export const Icon = forwardRef<HTMLElement, IconProps>(
-  (
-    { icon, children, isLoading, style, spinnerClassName, spinnerSize, ...props },
-    ref,
-  ): JSX.Element => {
-    if (isLoading) {
-      /* If the Icon is in a loading state, render the <Spinner /> animated SVG component with the
-         exact same size as the <Icon /> component. */
+export const Icon = ({
+  children,
+  icon,
+  isLoading,
+  ref,
+  spinnerClassName,
+  spinnerSize,
+  style,
+  ...props
+}: { readonly ref?: Ref<HTMLElement> } & IconProps): JSX.Element => {
+  if (isLoading) {
+    return (
+      <Spinner
+        className={classNames(props.className, spinnerClassName)}
+        isLoading
+        size={spinnerSize ?? props.size}
+        style={style}
+      />
+    );
+  } else if (icon !== undefined) {
+    if (isSvgIconProp(icon)) {
       return (
-        <Spinner
-          isLoading
-          size={spinnerSize ?? props.size}
-          style={style}
-          className={classNames(props.className, spinnerClassName)}
+        <Image
+          alt='Icon'
+          className={classNames('icon', props.className)}
+          height={typeof props.size === 'number' ? props.size : 16}
+          src={icon}
+          style={{ ...style, ...getNativeIconStyle(props) }}
+          width={typeof props.size === 'number' ? props.size : 16}
         />
       );
-    } else if (icon !== undefined) {
-      if (isSvgIconProp(icon)) {
-        return (
-          <Image
-            className={classNames("icon", props.className)}
-            style={{ ...style, ...getNativeIconStyle(props) }}
-            src={icon}
-            height={typeof props.size === "number" ? props.size : 16}
-            width={typeof props.size === "number" ? props.size : 16}
-            alt="Icon"
-          />
-        );
-      }
-      return <FontAwesomeIcon {...props} ref={ref} style={style} icon={icon} />;
     }
-    // Here, the icon is an internal SVG component that is provided via the 'children' prop.
-    return (
-      <NativeIcon {...props} ref={ref} style={style}>
-        {children}
-      </NativeIcon>
-    );
-  },
-);
-
-export default Icon;
+    return <FontAwesomeIcon {...props} icon={icon} ref={ref} style={style} />;
+  }
+  return (
+    <NativeIcon {...props} ref={ref} style={style}>
+      {children}
+    </NativeIcon>
+  );
+};

@@ -1,21 +1,23 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { RepositoriesFiltersObj } from "~/actions";
+import { RepositoriesFiltersObj } from '~/actions';
 
-import { LoadingText } from "~/components/loading/LoadingText";
+import { LoadingText } from '~/components/loading/LoadingText';
 
-import { RepositoriesTitle } from "./RepositoriesTitle";
+import { RepositoriesTitle } from './RepositoriesTitle';
 
 export interface RepositoriesTitlePageProps {
   readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function RepositoriesTitlePage(props: RepositoriesTitlePageProps) {
+const RepositoriesTitlePage = async (props: RepositoriesTitlePageProps) => {
   const searchParams = await props.searchParams;
   const filters = RepositoriesFiltersObj.parse(searchParams);
   return (
-    <Suspense key={JSON.stringify(filters)} fallback={<LoadingText />}>
+    <Suspense fallback={<LoadingText />} key={JSON.stringify(filters)}>
       <RepositoriesTitle filters={filters} />
     </Suspense>
   );
-}
+};
+
+export default RepositoriesTitlePage;

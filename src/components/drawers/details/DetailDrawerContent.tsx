@@ -1,38 +1,37 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
-import { Title, Description } from "~/components/typography";
+import { classNames, type ComponentProps } from '~/components/types';
+import { Description, Title } from '~/components/typography';
 
-import { ContextDrawer } from "../ContextDrawer";
+import { ContextDrawer } from '../ContextDrawer';
 
 export interface DetailDrawerContentProps extends ComponentProps {
   readonly badge?: JSX.Element;
   readonly children: JSX.Element[];
-  readonly description: string | null;
+  readonly description: null | string;
   readonly title: string;
 }
 
 export const DetailDrawerContent = ({
   badge,
   children,
-  title,
   description,
+  title,
   ...props
 }: DetailDrawerContentProps) => (
   <ContextDrawer.Content
     {...props}
-    className={classNames("gap-[14px] overflow-y-hidden", props.className)}
+    className={classNames('gap-[14px] overflow-y-hidden', props.className)}
   >
-    <div className="flex flex-col gap-[8px]">
-      <div className="flex flex-col gap-[6px]">
-        <Title component="h2" className="text-gray-700 max-w-fit">
+    <div className='flex flex-col gap-[8px]'>
+      <div className='flex flex-col gap-[6px]'>
+        <Title className='text-gray-700 max-w-fit' component='h2'>
           {title}
         </Title>
         {badge}
       </div>
       <Description>{description}</Description>
     </div>
-    <div className="flex flex-col gap-[14px] overflow-y-auto">{children}</div>
+    <div className='flex flex-col gap-[14px] overflow-y-auto'>{children}</div>
   </ContextDrawer.Content>
 );

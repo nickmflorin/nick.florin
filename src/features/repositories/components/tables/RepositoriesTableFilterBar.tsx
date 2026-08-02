@@ -1,27 +1,27 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { type ApiSkill, type ApiProject } from "~/database/model";
-import { type FilterFieldName } from "~/lib/filters";
+import { type ApiProject, type ApiSkill } from '~/database/model';
+import { type FilterFieldName } from '~/lib/filters';
 
-import { RepositoriesFiltersObj } from "~/actions";
+import { RepositoriesFiltersObj } from '~/actions';
 
-import { HighlightedFilterButton } from "~/components/buttons/HighlightedFilterButton";
-import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
-import { DrawerIds } from "~/components/drawers";
-import { TableView } from "~/components/tables/TableView";
-import { type ComponentProps } from "~/components/types";
-import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters, useFilterRef } from "~/hooks";
+import { HighlightedFilterButton } from '~/components/buttons/HighlightedFilterButton';
+import { VisibleFilterButton } from '~/components/buttons/VisibleFilterButton';
+import { DrawerIds } from '~/components/drawers';
+import { TableView } from '~/components/tables/TableView';
+import { type ComponentProps } from '~/components/types';
+import { ProjectSelect } from '~/features/projects/components/input/ProjectSelect';
+import { SkillsSelect } from '~/features/skills/components/input/SkillsSelect';
+import { useFilterRef, useFilters } from '~/hooks';
 
-import { SyncRepositoriesButton } from "./SyncRepositoriesButton";
+import { SyncRepositoriesButton } from './SyncRepositoriesButton';
 
 export interface RepositoriesTableFilterBarProps extends ComponentProps {
-  readonly isSearchable?: boolean;
-  readonly skills: ApiSkill<[]>[];
-  readonly projects: ApiProject<[]>[];
   readonly excludeFilters?: FilterFieldName<typeof RepositoriesFiltersObj>[];
+  readonly isSearchable?: boolean;
+  readonly projects: ApiProject<[]>[];
+  readonly skills: ApiSkill<[]>[];
 }
 
 export const RepositoriesTableFilterBar = ({
@@ -30,117 +30,119 @@ export const RepositoriesTableFilterBar = ({
   skills,
   ...props
 }: RepositoriesTableFilterBarProps): JSX.Element => {
-  const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(
+  const { clear, filters, pendingFilters, refs, updateFilters } = useFilters(
     RepositoriesFiltersObj,
     {
-      projects: useFilterRef<"projects", typeof RepositoriesFiltersObj>(),
-      skills: useFilterRef<"skills", typeof RepositoriesFiltersObj>(),
-      search: useFilterRef<"search", typeof RepositoriesFiltersObj>(),
-      visible: useFilterRef<"visible", typeof RepositoriesFiltersObj>(),
-      highlighted: useFilterRef<"highlighted", typeof RepositoriesFiltersObj>(),
+      highlighted: useFilterRef<'highlighted', typeof RepositoriesFiltersObj>(),
+      projects: useFilterRef<'projects', typeof RepositoriesFiltersObj>(),
+      search: useFilterRef<'search', typeof RepositoriesFiltersObj>(),
+      skills: useFilterRef<'skills', typeof RepositoriesFiltersObj>(),
+      visible: useFilterRef<'visible', typeof RepositoriesFiltersObj>(),
     },
   );
 
   return (
     <TableView.FilterBar
       {...props}
-      excludeFilters={excludeFilters}
-      searchPending={Object.keys(pendingFilters).includes("search")}
-      searchInputRef={refs.search}
-      searchPlaceholder="Search repositories..."
-      onSearch={v => updateFilters({ search: v })}
-      newDrawerId={DrawerIds.CREATE_REPOSITORY}
-      search={filters.search}
-      filters={filters}
-      onClear={() => clear()}
       configuration={[
         {
-          id: "skills",
-          label: "Skills",
+          id: 'skills',
+          label: 'Skills',
           renderer: v => (
             <SkillsSelect
-              ref={refs.skills}
-              popoverClassName="z-50"
-              inputClassName="max-w-[320px]"
-              placeholder="Skills"
-              inputIsLoading={Object.keys(pendingFilters).includes("skills")}
+              behavior='multi'
               data={skills}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(skills: string[]) => updateFilters({ skills })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('skills')}
+              maximumValuesToRender={1}
+              onChange={(selectedSkills: string[]) => updateFilters({ skills: selectedSkills })}
               onClear={() => updateFilters({ skills: [] })}
-              popoverPlacement="bottom"
+              placeholder='Skills'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.skills}
             />
           ),
         },
         {
-          id: "projects",
-          label: "Projects",
+          id: 'projects',
+          label: 'Projects',
           renderer: v => (
             <ProjectSelect
-              ref={refs.projects}
-              popoverClassName="z-50"
-              inputClassName="max-w-[320px]"
-              placeholder="Projects"
-              inputIsLoading={Object.keys(pendingFilters).includes("projects")}
+              behavior='multi'
               data={projects}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(projects: string[]) => updateFilters({ projects })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('projects')}
+              maximumValuesToRender={1}
+              onChange={(selectedProjects: string[]) =>
+                updateFilters({ projects: selectedProjects })
+              }
               onClear={() => updateFilters({ projects: [] })}
-              popoverPlacement="bottom"
+              placeholder='Projects'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.projects}
             />
           ),
         },
         {
-          id: "highlighted",
-          label: "Highlighted",
+          id: 'highlighted',
           isHiddenByDefault: false,
-          tooltipLabel: v =>
-            ({
-              null: "Show Highlighted",
-              true: "Show Unhighlighted",
-              false: "Show All",
-            })[String(v)],
+          label: 'Highlighted',
           renderer: (v: boolean | null, { params, ref }) => (
             <HighlightedFilterButton
               {...params}
+              initialValue={v}
+              onChange={highlighted => updateFilters({ highlighted })}
               ref={instance => {
                 refs.highlighted.current = instance;
                 ref?.(instance);
               }}
-              initialValue={v}
-              onChange={highlighted => updateFilters({ highlighted })}
             />
           ),
-        },
-        {
-          id: "visible",
-          label: "Visible",
-          isHiddenByDefault: false,
           tooltipLabel: v =>
             ({
-              null: "Show Visible",
-              true: "Show Invisible",
-              false: "Show All",
+              false: 'Show All',
+              null: 'Show Highlighted',
+              true: 'Show Unhighlighted',
             })[String(v)],
+        },
+        {
+          id: 'visible',
+          isHiddenByDefault: false,
+          label: 'Visible',
           renderer: (v: boolean | null, { params, ref }) => (
             <VisibleFilterButton
               {...params}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
               ref={instance => {
                 refs.visible.current = instance;
                 ref?.(instance);
               }}
-              initialValue={v}
-              onChange={visible => updateFilters({ visible })}
             />
           ),
+          tooltipLabel: v =>
+            ({
+              false: 'Show All',
+              null: 'Show Visible',
+              true: 'Show Invisible',
+            })[String(v)],
         },
       ]}
+      excludeFilters={excludeFilters}
+      filters={filters}
+      isSearchPending={Object.keys(pendingFilters).includes('search')}
+      newDrawerId={DrawerIds.CREATE_REPOSITORY}
+      onClear={() => clear()}
+      onSearch={v => updateFilters({ search: v })}
+      search={filters.search}
+      searchInputRef={refs.search}
+      searchPlaceholder='Search repositories...'
     >
       <SyncRepositoriesButton />
     </TableView.FilterBar>

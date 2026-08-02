@@ -1,47 +1,50 @@
-import { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { isFragment } from "react-is";
+import { isFragment } from 'react-is';
 
-import type { ComponentProps, Breakpoint, QuantitativeSize } from "~/components/types";
-import { classNames, sizeToString } from "~/components/types";
-import { ShowHide } from "~/components/util";
-import type * as types from "~/features/resume/types";
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
+import {
+  type Breakpoint,
+  classNames,
+  type ComponentProps,
+  type QuantitativeSize,
+  sizeToString,
+} from '~/components/types';
+import { ShowHide } from '~/components/util';
+import type * as types from '~/features/resume/types';
+import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
-export const ImageSizes: {
-  [key in types.ResumeModelSize]: { [key in Breakpoint | "0"]: number };
-} = {
-  small: { "0": 42, xxs: 42, xs: 42, sm: 42, md: 42, lg: 42, xl: 42, "2xl": 42 },
-  medium: { "0": 42, xxs: 42, xs: 44, sm: 44, md: 44, lg: 44, xl: 44, "2xl": 44 },
-  large: { "0": 42, xxs: 42, xs: 44, sm: 48, md: 72, lg: 72, xl: 72, "2xl": 72 },
+export const ImageSizes: Record<types.ResumeModelSize, Record<'0' | Breakpoint, number>> = {
+  large: { '0': 42, '2xl': 72, lg: 72, md: 72, sm: 48, xl: 72, xs: 44, xxs: 42 },
+  medium: { '0': 42, '2xl': 44, lg: 44, md: 44, sm: 44, xl: 44, xs: 44, xxs: 42 },
+  small: { '0': 42, '2xl': 42, lg: 42, md: 42, sm: 42, xl: 42, xs: 42, xxs: 42 },
 };
 
 export interface ResumeModelHeaderScaffoldProps extends ComponentProps {
-  readonly title: JSX.Element;
-  readonly subTitle: JSX.Element;
-  readonly size: types.ResumeModelSize;
-  readonly showTags?: boolean;
+  readonly areTagsVisible?: boolean;
   readonly children?: ReactNode;
-  readonly titleSectionGap?: QuantitativeSize<"px">;
-  readonly tags: (props: ComponentProps) => JSX.Element;
   readonly image: (params: { size: number }) => JSX.Element;
+  readonly size: types.ResumeModelSize;
+  readonly subTitle: JSX.Element;
+  readonly tags: (props: ComponentProps) => JSX.Element;
+  readonly title: JSX.Element;
+  readonly titleSectionGap?: QuantitativeSize<'px'>;
 }
 
-const ImageGaps: { [key in types.ResumeModelSize]: { [key in Breakpoint | "0"]: number } } = {
-  small: { "0": 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-  medium: { "0": 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
-  large: { "0": 8, xxs: 8, xs: 8, sm: 8, md: 8, lg: 8, xl: 8, "2xl": 8 },
+const ImageGaps: Record<types.ResumeModelSize, Record<'0' | Breakpoint, number>> = {
+  large: { '0': 8, '2xl': 8, lg: 8, md: 8, sm: 8, xl: 8, xs: 8, xxs: 8 },
+  medium: { '0': 8, '2xl': 8, lg: 8, md: 8, sm: 8, xl: 8, xs: 8, xxs: 8 },
+  small: { '0': 8, '2xl': 8, lg: 8, md: 8, sm: 8, xl: 8, xs: 8, xxs: 8 },
 };
 
 export const ResumeModelHeaderScaffold = ({
-  title,
-  subTitle,
-  size,
+  areTagsVisible = true,
   children,
-  showTags = true,
-  titleSectionGap,
-  tags,
   image,
+  size,
+  subTitle,
+  tags,
+  title,
+  titleSectionGap,
   ...props
 }: ResumeModelHeaderScaffoldProps) => {
   const { breakpoint, isLessThanOrEqualTo } = useScreenSizes();
@@ -52,56 +55,56 @@ export const ResumeModelHeaderScaffold = ({
     <div
       {...props}
       className={classNames(
-        "flex flex-col gap-[8px] @sm/resume-model-tile:gap-[6px]",
+        'flex flex-col gap-[8px] @sm/resume-model-tile:gap-[6px]',
         props.className,
       )}
     >
       <div
-        className={classNames("flex flex-row max-w-full w-full overflow-x-hidden")}
+        className={classNames('flex flex-row max-w-full w-full overflow-x-hidden')}
         style={{ gap: `${imageGap}px` }}
       >
         {image({ size: imageSize })}
         <div
-          className={classNames("flex flex-col grow gap-[6px] max-md:gap-[4px]", {
-            "pt-[2px] max-sm:pt-[0px]": size === "large",
+          className={classNames('flex flex-col grow gap-[6px] max-md:gap-[4px]', {
+            'pt-[2px] max-sm:pt-[0px]': size === 'large',
           })}
           style={{ maxWidth: `calc(100% - ${imageSize}px - ${imageGap}px)` }}
         >
           <div
-            style={
-              titleSectionGap !== undefined ? { gap: sizeToString(titleSectionGap, "px") } : {}
-            }
-            className={classNames("flex flex-col", {
-              "gap-[4px] max-md:gap-[2px]":
-                ["large", "medium"].includes(size) && titleSectionGap === undefined,
-              "gap-[2px]": size === "small" && titleSectionGap === undefined,
+            className={classNames('flex flex-col', {
+              'gap-[2px]': size === 'small' && titleSectionGap === undefined,
+              'gap-[4px] max-md:gap-[2px]':
+                ['large', 'medium'].includes(size) && titleSectionGap === undefined,
             })}
+            style={
+              titleSectionGap === undefined ? {} : { gap: sizeToString(titleSectionGap, 'px') }
+            }
           >
             {title}
             {subTitle}
           </div>
-          <ShowHide show={showTags}>
+          <ShowHide show={areTagsVisible}>
             {tags({
-              className: "hidden @sm/resume-model-tile:flex @sm/resume-model-tile::gap-[2px]",
+              className: 'hidden @sm/resume-model-tile:flex @sm/resume-model-tile::gap-[2px]',
             })}
           </ShowHide>
         </div>
       </div>
-      <ShowHide show={showTags}>
-        {tags({ className: "flex @sm/resume-model-tile:hidden" })}
+      <ShowHide show={areTagsVisible}>
+        {tags({ className: 'flex @sm/resume-model-tile:hidden' })}
       </ShowHide>
       <ShowHide show={Boolean(children) && !isFragment(children)}>
         <div
           className={classNames({
-            "@sm/resume-model-tile:pl-[50px]":
-              size === "small" ||
-              (size === "medium" && isLessThanOrEqualTo("xxs")) ||
-              (size === "large" && isLessThanOrEqualTo("xxs")),
-            "@sm/resume-model-tile:pl-[52px]":
-              (size === "medium" && !isLessThanOrEqualTo("xxs")) ||
-              (size === "large" && breakpoint === "xs"),
-            "@sm/resume-model-tile:pl-[56px]": size === "large" && breakpoint === "sm",
-            "@sm/resume-model-tile:pl-[80px]": size === "large" && !isLessThanOrEqualTo("sm"),
+            '@sm/resume-model-tile:pl-[50px]':
+              size === 'small' ||
+              (size === 'medium' && isLessThanOrEqualTo('xxs')) ||
+              (size === 'large' && isLessThanOrEqualTo('xxs')),
+            '@sm/resume-model-tile:pl-[52px]':
+              (size === 'medium' && !isLessThanOrEqualTo('xxs')) ||
+              (size === 'large' && breakpoint === 'xs'),
+            '@sm/resume-model-tile:pl-[56px]': size === 'large' && breakpoint === 'sm',
+            '@sm/resume-model-tile:pl-[80px]': size === 'large' && !isLessThanOrEqualTo('sm'),
           })}
         >
           {children}

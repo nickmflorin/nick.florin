@@ -1,17 +1,17 @@
-"use client";
-import dynamic from "next/dynamic";
-import type { JSX } from "react";
+'use client';
+import dynamic from 'next/dynamic';
+import { type JSX } from 'react';
 
-import { MobileNavigationCutoff } from "~/components/constants";
-import { type ISidebarItem } from "~/components/layout/types";
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
+import { MobileNavigationCutoff } from '~/components/constants';
+import { type ISidebarItem } from '~/components/layout/types';
+import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
 const SiteNavMenuWrapper = dynamic(
-  () => import("~/features/site/components/SiteNavMenuWrapper").then(mod => mod.SiteNavMenuWrapper),
+  () => import('~/features/site/components/SiteNavMenuWrapper').then(mod => mod.SiteNavMenuWrapper),
   { ssr: false },
 );
 
-const Sidebar = dynamic(() => import("./Sidebar").then(mod => mod.Sidebar));
+const Sidebar = dynamic(() => import('./Sidebar').then(mod => mod.Sidebar));
 
 export interface LayoutNavigationProps {
   readonly children: JSX.Element;

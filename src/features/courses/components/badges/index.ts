@@ -1,2 +1,2 @@
-export * from "./Courses";
-export * from "./CourseBadge";
+export * from './CourseBadge';
+export * from './Courses';

@@ -1,12 +1,12 @@
-@use "partials";
+@use 'partials';
 
-@use "../screen" as screen;
-@use "./constants" as constants;
+@use '../screen' as screen;
+@use './constants' as constants;
 
 .layout {
   @include screen.screen();
 
-  background-color: theme("colors.app-background");
+  background-color: theme('colors.app-background');
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -47,11 +47,11 @@
           flex-direction: column;
           flex-grow: 100;
 
-          @media (max-width: theme("screens.md")) {
+          @media (max-width: theme('screens.md')) {
             padding: 12px 0px 0px 12px;
           }
 
-          @media (max-width: theme("screens.sm")) {
+          @media (max-width: theme('screens.sm')) {
             padding: 8px 0px 0px 8px;
           }
 
@@ -59,11 +59,11 @@
             position: relative;
             padding-right: 16px;
 
-            @media (max-width: theme("screens.md")) {
+            @media (max-width: theme('screens.md')) {
               padding-right: 12px;
             }
 
-            @media (max-width: theme("screens.sm")) {
+            @media (max-width: theme('screens.sm')) {
               overflow-x: hidden;
             }
           }

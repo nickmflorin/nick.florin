@@ -1,9 +1,9 @@
-@use "sass:map";
+@use 'sass:map';
 
-@use "partials";
+@use 'partials';
 
-@use "./radii" as radii;
-@use "./typography" as typography;
+@use './radii' as radii;
+@use './typography' as typography;
 
 $badge-vertical-padding: 2px;
 $badge-horizontal-padding: 6px;
@@ -30,12 +30,12 @@ $badge-sizes: (
   vertical-align: middle;
 }
 
-$badge-default-radius: theme("borderRadius.md");
-$badge-default-size: "sm";
+$badge-default-radius: theme('borderRadius.md');
+$badge-default-size: 'sm';
 
 @mixin badge-size($size) {
-  font-size: typography.get-font-size("body", $size);
-  line-height: typography.get-line-height("body", $size);
+  font-size: typography.get-font-size('body', $size);
+  line-height: typography.get-line-height('body', $size);
   $height: partials.mapget($badge-sizes, $size);
   height: $height;
 
@@ -57,7 +57,7 @@ $badge-default-size: "sm";
 
   // Allow the font-size to be overridden directly, independently of the height and line-height,
   // for each badge size.
-  @include typography.with-font-sizes("body");
+  @include typography.with-font-sizes('body');
 }
 
 @mixin badge-and-tag() {
@@ -101,24 +101,24 @@ $badge-default-size: "sm";
 // cascade unchanged.
 .badge {
   @include badge-and-tag();
-  color: theme("colors.body");
+  color: theme('colors.body');
   padding: $badge-vertical-padding $badge-horizontal-padding;
-  background-color: theme("colors.gray.200");
+  background-color: theme('colors.gray.200');
   letter-spacing: 0.0156em;
   outline: 0.0625rem solid transparent;
   @include partials.border-radius($badge-default-radius);
 
   // Allow the font weight to be overridden with a prop.
-  font-weight: theme("fontWeight.medium");
+  font-weight: theme('fontWeight.medium');
 
   // Allow the font family to be overridden with a prop.
-  font-family: typography.get-font-family("body");
+  font-family: typography.get-font-family('body');
 
   @include badge-size($badge-default-size);
 
   > .badge__content {
     gap: 6px;
-    @include badge-and-tag-content("badge");
+    @include badge-and-tag-content('badge');
 
     > .badge__close-button {
       color: inherit;
@@ -127,7 +127,7 @@ $badge-default-size: "sm";
   }
 
   @include radii.with-radius() using ($radii, $value) {
-    &[data-attr-radius="#{$radii}"] {
+    &[data-attr-radius='#{$radii}'] {
       @include partials.border-radius($value);
     }
   }
@@ -136,7 +136,7 @@ $badge-default-size: "sm";
   @include typography.with-font-families();
 
   @each $size in map.keys($badge-sizes) {
-    &[data-attr-size="#{$size}"] {
+    &[data-attr-size='#{$size}'] {
       @include badge-size($size);
     }
   }
@@ -145,28 +145,28 @@ $badge-default-size: "sm";
 .tag {
   @include badge-and-tag();
   height: 18px;
-  color: theme("colors.description");
+  color: theme('colors.description');
   letter-spacing: -0.01em;
 
   // Allow the font weight to be overridden with a prop.
-  font-weight: theme("fontWeight.medium");
+  font-weight: theme('fontWeight.medium');
 
   // Allow the font family to be overridden with a prop.
-  font-family: typography.get-font-family("label");
+  font-family: typography.get-font-family('label');
 
   @include typography.with-font-weights();
   @include typography.with-font-families();
   @include typography.with-font-transforms();
-  @include typography.with-font-sizes("label");
+  @include typography.with-font-sizes('label');
 
   > .tag__content {
     gap: 4px;
-    @include badge-and-tag-content("tag");
+    @include badge-and-tag-content('tag');
   }
 }
 
 .badge-collection {
-  font-family: typography.get-font-family("body");
+  font-family: typography.get-font-family('body');
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -184,8 +184,8 @@ $badge-default-size: "sm";
     }
   }
 
-  @include typography.use-fonts("body") using ($size, $data) {
-    &[data-attr-size="#{$size}"] {
+  @include typography.use-fonts('body') using ($size, $data) {
+    &[data-attr-size='#{$size}'] {
       $height: partials.mapget($badge-sizes, $size);
       font-weight: partials.mapget($data, font-weight);
 

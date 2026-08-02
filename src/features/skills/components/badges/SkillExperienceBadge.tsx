@@ -1,13 +1,15 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { type ApiSkill } from "~/database/model";
+import { type ApiSkill } from '~/database/model';
 
-import { Badge, type BadgeProps } from "~/components/badges/Badge";
+import { Badge, type BadgeProps } from '~/components/badges/Badge';
 
-export interface SkillExperienceBadgeProps
-  extends Omit<BadgeProps, "children" | "icon" | "iconClassName"> {
-  readonly skill: Pick<ApiSkill, "calculatedExperience">;
+export interface SkillExperienceBadgeProps extends Omit<
+  BadgeProps,
+  'children' | 'icon' | 'iconClassName'
+> {
+  readonly skill: Pick<ApiSkill, 'calculatedExperience'>;
 }
 
 export const SkillExperienceBadge = ({
@@ -15,6 +17,6 @@ export const SkillExperienceBadge = ({
   ...props
 }: SkillExperienceBadgeProps): JSX.Element => (
   <Badge {...props}>
-    {`${skill.calculatedExperience} year${skill.calculatedExperience === 1 ? "" : "s"}`}
+    {`${skill.calculatedExperience} year${skill.calculatedExperience === 1 ? '' : 's'}`}
   </Badge>
 );

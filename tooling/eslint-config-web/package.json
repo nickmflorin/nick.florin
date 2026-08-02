@@ -1,0 +1,13 @@
+{
+  "name": "@nickflorin/eslint-config-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./config.mjs",
+    "./configs/*": "./configs/*.mjs",
+    "./constants": "./constants.mjs",
+    "./fast-formatting": "./fast-formatting.mjs",
+    "./support": "./support.mjs"
+  }
+}

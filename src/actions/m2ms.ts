@@ -1,33 +1,33 @@
-"use server";
-import { uniq } from "lodash-es";
+'use server';
+import { uniq } from 'lodash-es';
 
-import { UnreachableCaseError } from "~/application/errors";
-import { type Brand, type BrandModel, type PluralBrand } from "~/database/model";
-import { type Transaction } from "~/database/prisma";
+import { UnreachableCaseError } from '~/application/errors';
+import { type Brand, type BrandModel, type PluralBrand } from '~/database/model';
+import { type Transaction } from '~/database/prisma';
 
-import { ApiClientFieldErrors } from "~/api";
+import { ApiClientFieldErrors } from '~/api';
 
 type DynamicModel = Extract<
   Brand,
-  | "experience"
-  | "education"
-  | "project"
-  | "detail"
-  | "skill"
-  | "nestedDetail"
-  | "repository"
-  | "course"
+  | 'course'
+  | 'detail'
+  | 'education'
+  | 'experience'
+  | 'nestedDetail'
+  | 'project'
+  | 'repository'
+  | 'skill'
 >;
 
 const FieldErrorKeys = {
-  experience: "experiences",
-  education: "educations",
-  project: "projects",
-  detail: "details",
-  skill: "skills",
-  nestedDetail: "nestedDetails",
-  repository: "repositories",
-  course: "courses",
+  course: 'courses',
+  detail: 'details',
+  education: 'educations',
+  experience: 'experiences',
+  nestedDetail: 'nestedDetails',
+  project: 'projects',
+  repository: 'repositories',
+  skill: 'skills',
 } as const satisfies { [key in DynamicModel]: PluralBrand<key> };
 
 export const queryIdsDynamically = async <T extends DynamicModel>(
@@ -36,26 +36,26 @@ export const queryIdsDynamically = async <T extends DynamicModel>(
   ids: string[],
 ): Promise<BrandModel<T>[]> => {
   switch (model) {
-    case "experience":
+    case 'course':
+      return (await tx.course.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
+    case 'detail':
+      return (await tx.detail.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
+    case 'education':
+      return (await tx.education.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
+    case 'experience':
       return (await tx.experience.findMany({
         where: { id: { in: ids } },
       })) as BrandModel<T>[];
-    case "education":
-      return (await tx.education.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
-    case "project":
-      return (await tx.project.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
-    case "detail":
-      return (await tx.detail.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
-    case "nestedDetail":
+    case 'nestedDetail':
       return (await tx.nestedDetail.findMany({
         where: { id: { in: ids } },
       })) as BrandModel<T>[];
-    case "skill":
-      return (await tx.skill.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
-    case "repository":
+    case 'project':
+      return (await tx.project.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
+    case 'repository':
       return (await tx.repository.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
-    case "course":
-      return (await tx.course.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
+    case 'skill':
+      return (await tx.skill.findMany({ where: { id: { in: ids } } })) as BrandModel<T>[];
     default:
       throw new UnreachableCaseError();
   }
@@ -68,13 +68,20 @@ export type QueryM2MDynamicallyRT<
   ? [undefined, ApiClientFieldErrors]
   : [BrandModel<T>[], ApiClientFieldErrors];
 
+/**
+ * Returns the {@link ApiClientFieldErrors} instance that new violations should be added to.
+ *
+ * The provided instance is reused, rather than a new one always being created, so that a caller
+ * can mutate it in place instead of having to thread the return value back through its own logic.
+ */
+const resolveFieldErrors = (fieldErrors?: ApiClientFieldErrors): ApiClientFieldErrors =>
+  fieldErrors ?? new ApiClientFieldErrors();
+
 export const queryM2MsDynamically = async <I extends string[] | undefined, T extends DynamicModel>(
   tx: Transaction,
-  { model, ids, fieldErrors }: { model: T; ids: I; fieldErrors?: ApiClientFieldErrors },
+  { fieldErrors, ids, model }: { fieldErrors?: ApiClientFieldErrors; ids: I; model: T },
 ): Promise<QueryM2MDynamicallyRT<I, T>> => {
-  /* If the field errors are passed in, we want to just mutate them in place to allow handling of
-     the return type of this method to be less cumbersome. */
-  const flds = fieldErrors ?? new ApiClientFieldErrors();
+  const flds = resolveFieldErrors(fieldErrors);
   if (ids) {
     const models = await queryIdsDynamically(tx, model, ids);
     if (models.length !== uniq(ids).length) {

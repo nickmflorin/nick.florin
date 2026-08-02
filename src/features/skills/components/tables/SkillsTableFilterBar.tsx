@@ -1,277 +1,285 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import type {
-  ApiEducation,
-  ApiExperience,
-  ApiProject,
-  ApiRepository,
-  SkillCategory,
-  ProgrammingDomain,
-  ProgrammingLanguage,
-} from "~/database/model";
-import type { FilterFieldName } from "~/lib/filters";
+import {
+  type ApiEducation,
+  type ApiExperience,
+  type ApiProject,
+  type ApiRepository,
+  type ProgrammingDomain,
+  type ProgrammingLanguage,
+  type SkillCategory,
+} from '~/database/model';
+import { type FilterFieldName } from '~/lib/filters';
 
-import { SkillsFiltersObj } from "~/actions";
+import { SkillsFiltersObj } from '~/actions';
 
-import { HighlightedFilterButton } from "~/components/buttons/HighlightedFilterButton";
-import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
-import { DrawerIds } from "~/components/drawers";
-import { TableView } from "~/components/tables/TableView";
-import { type ComponentProps } from "~/components/types";
-import { EducationSelect } from "~/features/educations/components/input/EducationSelect";
-import { ExperienceSelect } from "~/features/experiences/components/input/ExperienceSelect";
-import { ProjectSelect } from "~/features/projects/components/input/ProjectSelect";
-import { RepositorySelect } from "~/features/repositories/components/input/RepositorySelect";
-import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
-import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
-import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
-import { useFilters, useFilterRef } from "~/hooks";
+import { HighlightedFilterButton } from '~/components/buttons/HighlightedFilterButton';
+import { VisibleFilterButton } from '~/components/buttons/VisibleFilterButton';
+import { DrawerIds } from '~/components/drawers';
+import { TableView } from '~/components/tables/TableView';
+import { type ComponentProps } from '~/components/types';
+import { EducationSelect } from '~/features/educations/components/input/EducationSelect';
+import { ExperienceSelect } from '~/features/experiences/components/input/ExperienceSelect';
+import { ProjectSelect } from '~/features/projects/components/input/ProjectSelect';
+import { RepositorySelect } from '~/features/repositories/components/input/RepositorySelect';
+import { ProgrammingDomainSelect } from '~/features/skills/components/input/ProgrammingDomainSelect';
+import { ProgrammingLanguageSelect } from '~/features/skills/components/input/ProgrammingLanguageSelect';
+import { SkillCategorySelect } from '~/features/skills/components/input/SkillCategorySelect';
+import { useFilterRef, useFilters } from '~/hooks';
 
 export interface SkillsTableFilterBarProps extends ComponentProps {
-  readonly isSearchable?: boolean;
   readonly educations: ApiEducation<[]>[];
+  readonly excludeFilters?: FilterFieldName<typeof SkillsFiltersObj>[];
   readonly experiences: ApiExperience<[]>[];
+  readonly isSearchable?: boolean;
   readonly projects: ApiProject<[]>[];
   readonly repositories: ApiRepository<[]>[];
-  readonly excludeFilters?: FilterFieldName<typeof SkillsFiltersObj>[];
 }
 
 export const SkillsTableFilterBar = ({
+  educations,
   excludeFilters = [],
   experiences,
-  educations,
   projects,
   repositories,
   ...props
 }: SkillsTableFilterBarProps): JSX.Element => {
-  const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(SkillsFiltersObj, {
-    experiences: useFilterRef<"experiences", typeof SkillsFiltersObj>(),
-    educations: useFilterRef<"educations", typeof SkillsFiltersObj>(),
-    projects: useFilterRef<"projects", typeof SkillsFiltersObj>(),
-    repositories: useFilterRef<"repositories", typeof SkillsFiltersObj>(),
-    programmingDomains: useFilterRef<"programmingDomains", typeof SkillsFiltersObj>(),
-    programmingLanguages: useFilterRef<"programmingLanguages", typeof SkillsFiltersObj>(),
-    categories: useFilterRef<"categories", typeof SkillsFiltersObj>(),
-    search: useFilterRef<"search", typeof SkillsFiltersObj>(),
-    visible: useFilterRef<"visible", typeof SkillsFiltersObj>(),
-    highlighted: useFilterRef<"highlighted", typeof SkillsFiltersObj>(),
-    prioritized: useFilterRef<"prioritized", typeof SkillsFiltersObj>(),
+  const { clear, filters, pendingFilters, refs, updateFilters } = useFilters(SkillsFiltersObj, {
+    categories: useFilterRef<'categories', typeof SkillsFiltersObj>(),
+    educations: useFilterRef<'educations', typeof SkillsFiltersObj>(),
+    experiences: useFilterRef<'experiences', typeof SkillsFiltersObj>(),
+    highlighted: useFilterRef<'highlighted', typeof SkillsFiltersObj>(),
+    prioritized: useFilterRef<'prioritized', typeof SkillsFiltersObj>(),
+    programmingDomains: useFilterRef<'programmingDomains', typeof SkillsFiltersObj>(),
+    programmingLanguages: useFilterRef<'programmingLanguages', typeof SkillsFiltersObj>(),
+    projects: useFilterRef<'projects', typeof SkillsFiltersObj>(),
+    repositories: useFilterRef<'repositories', typeof SkillsFiltersObj>(),
+    search: useFilterRef<'search', typeof SkillsFiltersObj>(),
+    visible: useFilterRef<'visible', typeof SkillsFiltersObj>(),
   });
 
   return (
     <TableView.FilterBar
       {...props}
-      excludeFilters={excludeFilters}
-      searchInputRef={refs.search}
-      searchPlaceholder="Search skills..."
-      searchPending={Object.keys(pendingFilters).includes("search")}
-      onSearch={v => updateFilters({ search: v })}
-      newDrawerId={DrawerIds.CREATE_SKILL}
-      search={filters.search}
-      filters={filters}
-      onClear={() => clear()}
       configuration={[
         {
-          id: "projects",
-          label: "Projects",
+          id: 'projects',
+          label: 'Projects',
           renderer: v => (
             <ProjectSelect
-              ref={refs.projects}
-              popoverClassName="z-50"
-              inputClassName="max-w-[320px]"
-              placeholder="Projects"
+              behavior='multi'
               data={projects}
-              inputIsLoading={Object.keys(pendingFilters).includes("projects")}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(projects: string[]) => updateFilters({ projects })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('projects')}
+              maximumValuesToRender={1}
+              onChange={(selectedProjects: string[]) =>
+                updateFilters({ projects: selectedProjects })
+              }
               onClear={() => updateFilters({ projects: [] })}
-              popoverPlacement="bottom"
+              placeholder='Projects'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.projects}
             />
           ),
         },
         {
-          id: "repositories",
-          label: "Repositories",
+          id: 'repositories',
+          label: 'Repositories',
           renderer: v => (
             <RepositorySelect
-              ref={refs.repositories}
-              popoverClassName="z-50"
-              inputClassName="max-w-[320px]"
-              placeholder="Repositories"
-              inputIsLoading={Object.keys(pendingFilters).includes("repositories")}
+              behavior='multi'
               data={repositories}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(repositories: string[]) => updateFilters({ repositories })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('repositories')}
+              maximumValuesToRender={1}
+              onChange={(selectedRepositories: string[]) =>
+                updateFilters({ repositories: selectedRepositories })
+              }
               onClear={() => updateFilters({ repositories: [] })}
-              popoverPlacement="bottom"
+              placeholder='Repositories'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.repositories}
             />
           ),
         },
         {
-          id: "experiences",
-          label: "Experiences",
+          id: 'experiences',
+          label: 'Experiences',
           renderer: v => (
             <ExperienceSelect
-              ref={refs.experiences}
-              popoverClassName="z-50"
-              inputClassName="max-w-[320px]"
-              placeholder="Experiences"
-              inputIsLoading={Object.keys(pendingFilters).includes("experiences")}
+              behavior='multi'
               data={experiences}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(experiences: string[]) => updateFilters({ experiences })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('experiences')}
+              maximumValuesToRender={1}
+              onChange={(selectedExperiences: string[]) =>
+                updateFilters({ experiences: selectedExperiences })
+              }
               onClear={() => updateFilters({ experiences: [] })}
-              popoverPlacement="bottom"
+              placeholder='Experiences'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.experiences}
             />
           ),
         },
         {
-          id: "educations",
-          label: "Educations",
+          id: 'educations',
+          label: 'Educations',
           renderer: v => (
             <EducationSelect
-              ref={refs.educations}
-              popoverClassName="z-50"
-              placeholder="Educations"
-              inputIsLoading={Object.keys(pendingFilters).includes("educations")}
+              behavior='multi'
               data={educations}
-              behavior="multi"
-              isClearable
+              hasDynamicHeight={false}
               initialValue={v}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('educations')}
               maximumValuesToRender={1}
-              dynamicHeight={false}
-              inputClassName="max-w-[320px]"
-              onChange={(educations: string[]) => updateFilters({ educations })}
+              onChange={(selectedEducations: string[]) =>
+                updateFilters({ educations: selectedEducations })
+              }
               onClear={() => updateFilters({ educations: [] })}
-              popoverPlacement="bottom"
+              placeholder='Educations'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.educations}
             />
           ),
         },
         {
-          id: "programmingLanguages",
-          label: "Programming Languages",
+          id: 'programmingLanguages',
           isHiddenByDefault: true,
+          label: 'Programming Languages',
           renderer: v => (
             <ProgrammingLanguageSelect
-              ref={refs.programmingLanguages}
-              popoverClassName="z-50"
-              placeholder="Prog. Languages"
-              inputIsLoading={Object.keys(pendingFilters).includes("programmingLanguages")}
-              behavior="multi"
-              isClearable
+              behavior='multi'
+              hasDynamicHeight={false}
               initialValue={v}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('programmingLanguages')}
               maximumValuesToRender={1}
-              dynamicHeight={false}
-              inputClassName="max-w-[320px]"
               onChange={(programmingLanguages: ProgrammingLanguage[]) =>
                 updateFilters({ programmingLanguages })
               }
               onClear={() => updateFilters({ programmingLanguages: [] })}
-              popoverPlacement="bottom"
+              placeholder='Prog. Languages'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.programmingLanguages}
             />
           ),
         },
         {
-          id: "programmingDomains",
-          label: "Programming Domains",
+          id: 'programmingDomains',
           isHiddenByDefault: true,
+          label: 'Programming Domains',
           renderer: v => (
             <ProgrammingDomainSelect
-              ref={refs.programmingDomains}
-              popoverClassName="z-50"
-              placeholder="Prog. Domains"
-              inputIsLoading={Object.keys(pendingFilters).includes("programmingDomains")}
-              behavior="multi"
-              isClearable
+              behavior='multi'
+              hasDynamicHeight={false}
               initialValue={v}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('programmingDomains')}
               maximumValuesToRender={1}
-              dynamicHeight={false}
-              inputClassName="max-w-[320px]"
               onChange={(programmingDomains: ProgrammingDomain[]) =>
                 updateFilters({ programmingDomains })
               }
               onClear={() => updateFilters({ programmingDomains: [] })}
-              popoverPlacement="bottom"
+              placeholder='Prog. Domains'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.programmingDomains}
             />
           ),
         },
         {
-          id: "categories",
-          label: "Categories",
+          id: 'categories',
           isHiddenByDefault: true,
+          label: 'Categories',
           renderer: v => (
             <SkillCategorySelect
-              ref={refs.categories}
-              popoverClassName="z-50"
-              placeholder="Categories"
-              behavior="multi"
-              isClearable
+              behavior='multi'
+              hasDynamicHeight={false}
               initialValue={v}
-              inputIsLoading={Object.keys(pendingFilters).includes("categories")}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('categories')}
               maximumValuesToRender={1}
-              dynamicHeight={false}
-              inputClassName="max-w-[320px]"
               onChange={(categories: SkillCategory[]) => updateFilters({ categories })}
               onClear={() => updateFilters({ categories: [] })}
-              popoverPlacement="bottom"
+              placeholder='Categories'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.categories}
             />
           ),
         },
         {
-          id: "highlighted",
-          label: "Highlighted",
+          id: 'highlighted',
           isHiddenByDefault: false,
-          tooltipLabel: v =>
-            ({
-              null: "Show Highlighted",
-              true: "Show Unhighlighted",
-              false: "Show All",
-            })[String(v)],
+          label: 'Highlighted',
           renderer: (v: boolean | null, { params, ref }) => (
             <HighlightedFilterButton
               {...params}
+              initialValue={v}
+              onChange={highlighted => updateFilters({ highlighted })}
               ref={instance => {
                 refs.highlighted.current = instance;
                 ref?.(instance);
               }}
-              initialValue={v}
-              onChange={highlighted => updateFilters({ highlighted })}
             />
           ),
-        },
-        {
-          id: "visible",
-          label: "Visible",
-          isHiddenByDefault: false,
           tooltipLabel: v =>
             ({
-              null: "Show Visible",
-              true: "Show Invisible",
-              false: "Show All",
+              false: 'Show All',
+              null: 'Show Highlighted',
+              true: 'Show Unhighlighted',
             })[String(v)],
+        },
+        {
+          id: 'visible',
+          isHiddenByDefault: false,
+          label: 'Visible',
           renderer: (v: boolean | null, { params, ref }) => (
             <VisibleFilterButton
               {...params}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
               ref={instance => {
                 refs.visible.current = instance;
                 ref?.(instance);
               }}
-              initialValue={v}
-              onChange={visible => updateFilters({ visible })}
             />
           ),
+          tooltipLabel: v =>
+            ({
+              false: 'Show All',
+              null: 'Show Visible',
+              true: 'Show Invisible',
+            })[String(v)],
         },
       ]}
+      excludeFilters={excludeFilters}
+      filters={filters}
+      isSearchPending={Object.keys(pendingFilters).includes('search')}
+      newDrawerId={DrawerIds.CREATE_SKILL}
+      onClear={() => clear()}
+      onSearch={v => updateFilters({ search: v })}
+      search={filters.search}
+      searchInputRef={refs.search}
+      searchPlaceholder='Search skills...'
     />
   );
 };

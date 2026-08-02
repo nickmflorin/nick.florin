@@ -1,14 +1,8 @@
-import qs, { type ParsedUrlQuery } from "querystring";
-import urlModule from "url";
+import qs, { type ParsedUrlQuery, type ParsedUrlQueryInput } from 'querystring';
+import urlModule from 'url';
 
 export type QueryParamValue =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | QueryParamObj
-  | QueryParamValue[];
+  boolean | null | number | QueryParamObj | QueryParamValue[] | string | undefined;
 
 export type QueryParamObj = {
   [k: string]: QueryParamValue;
@@ -16,8 +10,10 @@ export type QueryParamObj = {
 
 export const parseQueryParams = (value: string) => qs.parse(value);
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const stringifyQueryParams = (query: any) => qs.stringify(query);
+/* The 'querystring' module types its input more narrowly than the query parameter objects that the
+   application constructs, all of which it still serializes correctly. */
+export const stringifyQueryParams = (query: object): string =>
+  qs.stringify(query as ParsedUrlQueryInput);
 
 /**
  * Parses the query parameters from the provided URL and returns the query parameters as an object.
@@ -25,7 +21,7 @@ export const stringifyQueryParams = (query: any) => qs.stringify(query);
  * @param {string} url The URL that the query parameters should be parsed from.
  *
  * @returns {Record<string, string>}
- * 	 An object that represents the parameter names and values that are in the URL.
+ *   An object that represents the parameter names and values that are in the URL.
  */
 export const getQueryParams = (url: string): ParsedUrlQuery => {
   const queryString = urlModule.parse(url).query;
@@ -44,9 +40,7 @@ export function addQueryParamsToUrl(url: string, query: URLSearchParams): string
  * parameters that may already exist on the provided URL or path.
  *
  * @param {string} url The URL or path that the query parameters should be added to.
- *
  * @param {QueryParamObj} query The query parameters that should be added to the URL or path.
- *
  * @param {AddQueryParamsToUrlOptions} options
  *   The options that dictate how the query parameters should be pruned before being included in
  *   the resulting URL.
@@ -57,12 +51,12 @@ export function addQueryParamsToUrl(
   url: string,
   query?: QueryParamObj | string | URLSearchParams,
 ): string {
-  if (typeof query === "string" || query instanceof URLSearchParams) {
-    const q = typeof query === "string" ? query : query.toString();
-    if (q.startsWith("?")) {
-      return url.split("?")[0] + q;
+  if (typeof query === 'string' || query instanceof URLSearchParams) {
+    const q = typeof query === 'string' ? query : query.toString();
+    if (q.startsWith('?')) {
+      return url.split('?')[0] + q;
     } else if (q.length !== 0) {
-      return url.split("?")[0] + "?" + q;
+      return url.split('?')[0] + '?' + q;
     }
     return url;
   } else if (!query) {

@@ -1,146 +1,148 @@
-"use client";
-import { type ReactNode, type JSX } from "react";
+'use client';
+import { type JSX, type ReactNode } from 'react';
 
-import type { ApiSkill, ApiCompany } from "~/database/model";
-import type { FilterFieldName } from "~/lib/filters";
+import { type ApiCompany, type ApiSkill } from '~/database/model';
+import { type FilterFieldName } from '~/lib/filters';
 
-import { ExperiencesFiltersObj } from "~/actions";
+import { ExperiencesFiltersObj } from '~/actions';
 
-import { HighlightedFilterButton } from "~/components/buttons/HighlightedFilterButton";
-import { VisibleFilterButton } from "~/components/buttons/VisibleFilterButton";
-import { DrawerIds } from "~/components/drawers";
-import { TableView } from "~/components/tables/TableView";
-import { type ComponentProps } from "~/components/types";
-import { CompanySelect } from "~/features/companies/components/input/CompanySelect";
-import { SkillsSelect } from "~/features/skills/components/input/SkillsSelect";
-import { useFilters, useFilterRef } from "~/hooks";
+import { HighlightedFilterButton } from '~/components/buttons/HighlightedFilterButton';
+import { VisibleFilterButton } from '~/components/buttons/VisibleFilterButton';
+import { DrawerIds } from '~/components/drawers';
+import { TableView } from '~/components/tables/TableView';
+import { type ComponentProps } from '~/components/types';
+import { CompanySelect } from '~/features/companies/components/input/CompanySelect';
+import { SkillsSelect } from '~/features/skills/components/input/SkillsSelect';
+import { useFilterRef, useFilters } from '~/hooks';
 
 export interface ExperiencesTableFilterBarProps extends ComponentProps {
   readonly children?: ReactNode;
-  readonly isSearchable?: boolean;
-  readonly skills: ApiSkill<[]>[];
   readonly companies: ApiCompany<[]>[];
   readonly excludeFilters?: FilterFieldName<typeof ExperiencesFiltersObj>[];
+  readonly isSearchable?: boolean;
+  readonly skills: ApiSkill<[]>[];
 }
 
 export const ExperiencesTableFilterBar = ({
-  excludeFilters = [],
   children,
   companies,
+  excludeFilters = [],
   skills,
   ...props
 }: ExperiencesTableFilterBarProps): JSX.Element => {
-  const { filters, refs, pendingFilters, clear, updateFilters } = useFilters(
+  const { clear, filters, pendingFilters, refs, updateFilters } = useFilters(
     ExperiencesFiltersObj,
     {
-      companies: useFilterRef<"companies", typeof ExperiencesFiltersObj>(),
-      skills: useFilterRef<"skills", typeof ExperiencesFiltersObj>(),
-      search: useFilterRef<"search", typeof ExperiencesFiltersObj>(),
-      visible: useFilterRef<"visible", typeof ExperiencesFiltersObj>(),
-      highlighted: useFilterRef<"highlighted", typeof ExperiencesFiltersObj>(),
+      companies: useFilterRef<'companies', typeof ExperiencesFiltersObj>(),
+      highlighted: useFilterRef<'highlighted', typeof ExperiencesFiltersObj>(),
+      search: useFilterRef<'search', typeof ExperiencesFiltersObj>(),
+      skills: useFilterRef<'skills', typeof ExperiencesFiltersObj>(),
+      visible: useFilterRef<'visible', typeof ExperiencesFiltersObj>(),
     },
   );
 
   return (
     <TableView.FilterBar
       {...props}
-      excludeFilters={excludeFilters}
-      searchInputRef={refs.search}
-      searchPending={Object.keys(pendingFilters).includes("search")}
-      searchPlaceholder="Search experiences..."
-      onSearch={v => updateFilters({ search: v })}
-      newDrawerId={DrawerIds.CREATE_EXPERIENCE}
-      search={filters.search}
-      filters={filters}
-      onClear={() => clear()}
       configuration={[
         {
-          id: "skills",
-          label: "Skills",
+          id: 'skills',
+          label: 'Skills',
           renderer: v => (
             <SkillsSelect
-              ref={refs.skills}
-              popoverClassName="z-50"
-              inputIsLoading={Object.keys(pendingFilters).includes("skills")}
-              inputClassName="max-w-[320px]"
-              placeholder="Skills"
+              behavior='multi'
               data={skills}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(skills: string[]) => updateFilters({ skills })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('skills')}
+              maximumValuesToRender={1}
+              onChange={(selectedSkills: string[]) => updateFilters({ skills: selectedSkills })}
               onClear={() => updateFilters({ skills: [] })}
-              popoverPlacement="bottom"
+              placeholder='Skills'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.skills}
             />
           ),
         },
         {
-          id: "companies",
-          label: "Companies",
+          id: 'companies',
+          label: 'Companies',
           renderer: v => (
             <CompanySelect
-              ref={refs.companies}
-              inputIsLoading={Object.keys(pendingFilters).includes("companies")}
-              popoverClassName="z-50"
-              inputClassName="max-w-[320px]"
-              placeholder="Companies"
+              behavior='multi'
               data={companies}
-              behavior="multi"
-              isClearable
-              maximumValuesToRender={1}
               initialValue={v}
-              onChange={(companies: string[]) => updateFilters({ companies })}
+              inputClassName='max-w-[320px]'
+              isClearable
+              isInputLoading={Object.keys(pendingFilters).includes('companies')}
+              maximumValuesToRender={1}
+              onChange={(selectedCompanies: string[]) =>
+                updateFilters({ companies: selectedCompanies })
+              }
               onClear={() => updateFilters({ companies: [] })}
-              popoverPlacement="bottom"
+              placeholder='Companies'
+              popoverClassName='z-50'
+              popoverPlacement='bottom'
+              ref={refs.companies}
             />
           ),
         },
         {
-          id: "highlighted",
-          label: "Highlighted",
+          id: 'highlighted',
           isHiddenByDefault: false,
-          tooltipLabel: v =>
-            ({
-              null: "Show Highlighted",
-              true: "Show Unhighlighted",
-              false: "Show All",
-            })[String(v)],
+          label: 'Highlighted',
           renderer: (v: boolean | null, { params, ref }) => (
             <HighlightedFilterButton
               {...params}
+              initialValue={v}
+              onChange={highlighted => updateFilters({ highlighted })}
               ref={instance => {
                 refs.highlighted.current = instance;
                 ref?.(instance);
               }}
-              initialValue={v}
-              onChange={highlighted => updateFilters({ highlighted })}
             />
           ),
-        },
-        {
-          id: "visible",
-          label: "Visible",
-          isHiddenByDefault: false,
           tooltipLabel: v =>
             ({
-              null: "Show Visible",
-              true: "Show Invisible",
-              false: "Show All",
+              false: 'Show All',
+              null: 'Show Highlighted',
+              true: 'Show Unhighlighted',
             })[String(v)],
+        },
+        {
+          id: 'visible',
+          isHiddenByDefault: false,
+          label: 'Visible',
           renderer: (v: boolean | null, { params, ref }) => (
             <VisibleFilterButton
               {...params}
+              initialValue={v}
+              onChange={visible => updateFilters({ visible })}
               ref={instance => {
                 refs.visible.current = instance;
                 ref?.(instance);
               }}
-              initialValue={v}
-              onChange={visible => updateFilters({ visible })}
             />
           ),
+          tooltipLabel: v =>
+            ({
+              false: 'Show All',
+              null: 'Show Visible',
+              true: 'Show Invisible',
+            })[String(v)],
         },
       ]}
+      excludeFilters={excludeFilters}
+      filters={filters}
+      isSearchPending={Object.keys(pendingFilters).includes('search')}
+      newDrawerId={DrawerIds.CREATE_EXPERIENCE}
+      onClear={() => clear()}
+      onSearch={v => updateFilters({ search: v })}
+      search={filters.search}
+      searchInputRef={refs.search}
+      searchPlaceholder='Search experiences...'
     >
       {children}
     </TableView.FilterBar>

@@ -1,20 +1,20 @@
-import { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { classNames, type ComponentProps } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface EmphasizeProps extends ComponentProps {
   readonly children: ReactNode;
 }
 
 const LocalEmphasize = ({ children, ...props }: EmphasizeProps): JSX.Element => (
-  <span {...props} className={classNames("font-medium text-body", props.className)}>
+  <span {...props} className={classNames('font-medium text-body', props.className)}>
     {children}
   </span>
 );
 
 export const Emphasize = Object.assign(LocalEmphasize, {
   Caption: ({ children, ...props }: EmphasizeProps): JSX.Element => (
-    <LocalEmphasize {...props} className={classNames("text-[#7f7f7f]", props.className)}>
+    <LocalEmphasize {...props} className={classNames('text-[#7f7f7f]', props.className)}>
       {children}
     </LocalEmphasize>
   ),

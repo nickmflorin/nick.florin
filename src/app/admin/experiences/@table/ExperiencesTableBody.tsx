@@ -1,43 +1,43 @@
-import dynamic from "next/dynamic";
-import type { JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX } from 'react';
 
-import { type ExperiencesControls, type ExperiencesFilters } from "~/actions";
-import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
+import { type ExperiencesControls, type ExperiencesFilters } from '~/actions';
+import { fetchExperiences } from '~/actions/experiences/fetch-experiences';
 
-import { Loading } from "~/components/loading/Loading";
-import { ExperiencesTableControlBarPlaceholder } from "~/features/experiences/components/tables/ExperiencesTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { ExperiencesTableControlBarPlaceholder } from '~/features/experiences/components/tables/ExperiencesTableControlBarPlaceholder';
 
 const ClientExperiencesTableBody = dynamic(
   () =>
-    import("~/features/experiences/components/tables/ExperiencesTableBody").then(
+    import('~/features/experiences/components/tables/ExperiencesTableBody').then(
       mod => mod.ExperiencesTableBody,
     ),
   {
     loading: () => (
       <>
         <ExperiencesTableControlBarPlaceholder />
-        <Loading isLoading component="tbody" />
+        <Loading component='tbody' isLoading />
       </>
     ),
   },
 );
 
 const getExperiences = async ({
-  page,
   filters,
   ordering,
+  page,
 }: {
   readonly filters: ExperiencesFilters;
+  readonly ordering: ExperiencesControls['ordering'];
   readonly page: number;
-  readonly ordering: ExperiencesControls["ordering"];
 }) => {
-  const fetcher = fetchExperiences(["skills", "details"]);
+  const fetcher = fetchExperiences(['skills', 'details']);
   const { data: experiences } = await fetcher(
     {
       filters,
       ordering,
       page,
-      visibility: "admin",
+      visibility: 'admin',
     },
     { strict: true },
   );
@@ -46,15 +46,15 @@ const getExperiences = async ({
 
 export interface ExperiencesTableBodyProps {
   readonly filters: ExperiencesFilters;
+  readonly ordering: ExperiencesControls['ordering'];
   readonly page: number;
-  readonly ordering: ExperiencesControls["ordering"];
 }
 
 export const ExperiencesTableBody = async ({
   filters,
-  page,
   ordering,
+  page,
 }: ExperiencesTableBodyProps): Promise<JSX.Element> => {
-  const experiences = await getExperiences({ page, filters, ordering });
+  const experiences = await getExperiences({ filters, ordering, page });
   return <ClientExperiencesTableBody data={experiences} />;
 };

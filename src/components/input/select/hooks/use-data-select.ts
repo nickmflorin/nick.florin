@@ -1,65 +1,69 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import { isEqual, uniqBy } from "lodash-es";
+import { isEqual, uniqBy } from 'lodash-es';
 
-import { UnreachableCaseError } from "~/application/errors";
-import { logger } from "~/internal/logger";
+import { UnreachableCaseError } from '~/application/errors';
+import { logger } from '~/internal/logger';
 
-import * as types from "~/components/input/select/types";
+import * as types from '~/components/input/select/types';
 
-import { useDataSelectOptions } from "./use-data-select-options";
-import { useSelect, type UseSelectParams } from "./use-select";
+import { useDataSelectOptions } from './use-data-select-options';
+import { useSelect, type UseSelectParams } from './use-select';
 
 export interface UseDataSelectParams<
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > extends Omit<
-    UseSelectParams<types.InferV<{ model: M; options: O }>, types.InferB<{ model: M; options: O }>>,
-    "onChange" | "behavior"
-  > {
+  UseSelectParams<types.InferV<{ model: M; options: O }>, types.InferB<{ model: M; options: O }>>,
+  'behavior' | 'onChange'
+> {
   readonly data: M[];
-  readonly options: O;
+  readonly hasStrictValueLookup?: boolean;
   readonly isReady?: boolean;
-  readonly strictValueLookup?: boolean;
-  readonly onChange?: {
-    <E extends types.SelectEvent>(
-      value: types.SelectValue<{ model: M; options: O }>,
-      params: types.SelectChangeEventParams<E, { model: M; options: O }, { modelValue: true }>,
-    ): void;
-  };
+  readonly onChange?: <E extends types.SelectEvent>(
+    value: types.SelectValue<{ model: M; options: O }>,
+    params: types.SelectChangeEventParams<E, { model: M; options: O }, { modelValue: true }>,
+  ) => void;
+  readonly options: O;
 }
+
+/**
+ * Logs that no model could be found in the Select's data for the given initial value.
+ *
+ * This can occur if there is no model associated with the value in the Select's data, which can
+ * happen if the 'isReady' flag is not initially set to 'false' for asynchronously loaded data.
+ *
+ * @param {unknown} value The value that could not be matched to a model.
+ */
+const logMissingInitialModelError = (value: unknown) =>
+  logger.error(
+    `Could not find a model associated with select's initial value '${String(value)}' in the ` +
+      'data. This may lead to buggy behavior.',
+  );
 
 const getInitialModelValue = <
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 >({
+  getModel,
   options,
   value,
-  getModel,
-}: Pick<UseDataSelectParams<M, O>, "options"> & {
-  readonly value: types.SelectNullableValue<{ model: M; options: O }>;
+}: {
   readonly getModel: (v: types.InferV<{ model: M; options: O }>) => M | null;
-}): types.DataSelectNullableModelValue<M, O> => {
+  readonly value: types.SelectNullableValue<{ model: M; options: O }>;
+} & Pick<UseDataSelectParams<M, O>, 'options'>): types.DataSelectNullableModelValue<M, O> => {
   const v = value as
-    | types.InferV<{ model: M; options: O }>
-    | null
-    | types.InferV<{ model: M; options: O }>[];
+    null | types.InferV<{ model: M; options: O }> | types.InferV<{ model: M; options: O }>[];
   if (Array.isArray(v)) {
     if (options.behavior !== types.SelectBehaviorTypes.MULTI) {
-      throw new Error("Encountered an iterable value for a single select!");
+      throw new Error('Encountered an iterable value for a single select!');
     }
     return v.reduce((prev, vi) => {
       const m = getModel(vi);
       if (m !== null) {
         return [...prev, m];
       }
-      /* This can occur if there is no model associated with the value in the Select's data -
-         which can happen if the 'isReady' flag is not initially set to 'false' for asynchronously
-         loaded data. */
-      logger.error(
-        `Could not find a model associated with select's initial value '${vi}' in the data. ` +
-          "This may lead to buggy behavior.",
-      );
+      logMissingInitialModelError(vi);
       return prev;
     }, [] as M[]) as types.DataSelectModelValue<M, O>;
   } else if (v !== null) {
@@ -67,18 +71,12 @@ const getInitialModelValue = <
       options.behavior !== types.SelectBehaviorTypes.SINGLE &&
       options.behavior !== types.SelectBehaviorTypes.SINGLE_NULLABLE
     ) {
-      throw new Error("Encountered a non-iterable value for a multi-select!");
+      throw new Error('Encountered a non-iterable value for a multi-select!');
     }
     const m = getModel(v);
     if (m === null) {
-      /* This can occur if there is no model associated with the value in the Select's data -
-         which can happen if the 'isReady' flag is not initially set to 'false' for asynchronously
-         loaded data. */
       if (options.behavior === types.SelectBehaviorTypes.SINGLE_NULLABLE) {
-        logger.error(
-          `Could not find a model associated with select's initial value '${value}' ` +
-            "in the data. This may lead to buggy behavior.",
-        );
+        logMissingInitialModelError(value);
         return null as types.DataSelectNullableModelValue<M, O>;
       }
       throw new Error("The select's initial value is not associated with any model in the data!");
@@ -92,17 +90,17 @@ const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOpt
   v: types.InferV<{ model: M; options: O }>,
   {
     data,
-    strictValueLookup,
     getModelValue,
+    hasStrictValueLookup,
   }: {
-    strictValueLookup: boolean;
-    getModelValue: (m: M) => types.InferV<{ model: M; options: O }>;
     data: M[];
+    getModelValue: (m: M) => types.InferV<{ model: M; options: O }>;
+    hasStrictValueLookup: boolean;
   },
 ): M | null => {
   const ms = data.filter(m => isEqual(getModelValue(m), v));
   if (ms.length === 0) {
-    if (strictValueLookup) {
+    if (hasStrictValueLookup) {
       throw new Error(
         `The value, '${v}', does not match any of the models in the data. ` +
           "Did you forget to set the 'isReady' flag to false, until the data has been loaded?",
@@ -116,7 +114,7 @@ const getModel = <M extends types.DataSelectModel, O extends types.DataSelectOpt
   } else if (ms.length > 1) {
     logger.error(
       `The value, '${v}', points to multiple models in the Select's data.  This is ` +
-        "likely a bug, and will lead to unexpected behavior.",
+        'likely a bug, and will lead to unexpected behavior.',
       { v },
     );
   }
@@ -127,58 +125,50 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
   curr: types.DataSelectNullableModelValue<M, O>,
   value: types.SelectNullableValue<{ model: M; options: O }>,
   {
-    getModelValue,
-    strictValueLookup,
-    options,
     data,
+    getModelValue,
+    hasStrictValueLookup,
+    options,
   }: {
-    strictValueLookup: boolean;
-    getModelValue: (m: M) => types.InferV<{ model: M; options: O }>;
-    options: O;
     data: M[];
+    getModelValue: (m: M) => types.InferV<{ model: M; options: O }>;
+    hasStrictValueLookup: boolean;
+    options: O;
   },
 ): types.DataSelectNullableModelValue<M, O> | types.DoNothing => {
   // Distribute/flatten the conditional type to a union of its potential values.
   const selectValue = value as
-    | types.InferV<{ model: M; options: O }>
-    | types.InferV<{ model: M; options: O }>[]
-    | null;
+    null | types.InferV<{ model: M; options: O }> | types.InferV<{ model: M; options: O }>[];
 
   // Distribute/flatten the conditional type to a union of its potential values.
-  const existing = curr as M | M[] | types.NotSet | null;
+  const existing = curr as M | M[] | null | types.NotSet;
 
   switch (options.behavior) {
     case types.SelectBehaviorTypes.MULTI: {
       if (!Array.isArray(selectValue)) {
         logger.error(
-          "Corrupted State: Detected non-array state value for multi-select! " +
+          'Corrupted State: Detected non-array state value for multi-select! ' +
             "The select's behavior may be compromised.",
           { value: selectValue },
         );
         return types.DONOTHING;
       } else if (!Array.isArray(curr)) {
         logger.error(
-          "Corrupted State: Detected non-array state model value for multi-select! " +
+          'Corrupted State: Detected non-array state model value for multi-select! ' +
             "The select's behavior may be compromised.",
           { curr },
         );
         return types.DONOTHING;
       }
-      /* Lookup the model in the combined set of models provided to the Select via the 'data'
-         prop and the models corresponding to the previous Select's value that are already
-         maintained in state.  This guarantees that the model can be found in the set in
-         the case that the data provided to the Select is filtered.
-
-         See the docstring on the hook for more information. */
       let validValueElements: types.InferV<{ model: M; options: O }>[] = [];
       const modelValue = selectValue.reduce((prev, vi) => {
         const m = getModel(vi, {
-          strictValueLookup,
-          data: uniqBy([...data, ...curr], m => getModelValue(m)),
+          data: uniqBy([...data, ...curr], datum => getModelValue(datum)),
           getModelValue,
+          hasStrictValueLookup,
         });
         /* The model, 'm', will be 'null' if the value does not match any of the models in the data
-           and 'strictValueLookup' is not 'false'. */
+           and 'hasStrictValueLookup' is not 'false'. */
         if (m !== null) {
           validValueElements = [...validValueElements, vi];
           return [...prev, m];
@@ -191,32 +181,29 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
       return modelValue;
     }
     case types.SelectBehaviorTypes.SINGLE: {
+      /* Each corrupted-state branch below returns DONOTHING rather than resetting to null,
+         because the select is not nullable; ignoring the change is the only available
+         recourse. */
       if (Array.isArray(selectValue)) {
         logger.error(
-          "Corrupted State: Detected an array state value for a single-select! " +
+          'Corrupted State: Detected an array state value for a single-select! ' +
             "The select's behavior may be compromised.",
           { value: selectValue },
         );
-        /* Here, we cannot reset the state to a null value because the select is not nullable.
-           Our only form of recourse is to ignore the change. */
         return types.DONOTHING;
       } else if (existing === types.NOTSET) {
         logger.error(
-          "Corrupted State: Detected an unset model value for an initialized select!" +
+          'Corrupted State: Detected an unset model value for an initialized select!' +
             "The select's model value should be set if the select has been initialized.",
           { existing },
         );
-        /* Here, we cannot reset the state to a null value because the select is not nullable.
-           Our only form of recourse is to ignore the change. */
         return types.DONOTHING;
       } else if (Array.isArray(existing)) {
         logger.error(
-          "Corrupted State: Detected an array state model value for a single-select! " +
+          'Corrupted State: Detected an array state model value for a single-select! ' +
             "The select's behavior may be compromised.",
           { existing },
         );
-        /* Here, we cannot reset the state to a null value because the select is not nullable.
-           Our only form of recourse is to ignore the change. */
         return types.DONOTHING;
       } else if (selectValue === null) {
         /* Even though the select behavior is single, non-nullable, the initial value of the select
@@ -224,19 +211,13 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
            must also be null. */
         return null as types.DataSelectNullableModelValue<M, O>;
       }
-      /* Lookup the model in the combined set of models provided to the Select via the 'data'
-         prop and the models corresponding to the previous Select's value that are already
-         maintained in state.  This guarantees that the model can be found in the set in
-         the case that the data provided to the Select is filtered.
-
-         See the docstring on the hook for more information. */
       const m = getModel(selectValue, {
-        strictValueLookup,
         data:
           existing === null
-            ? uniqBy(data, m => getModelValue(m))
-            : uniqBy([...data, existing], m => getModelValue(m)),
+            ? uniqBy(data, datum => getModelValue(datum))
+            : uniqBy([...data, existing], datum => getModelValue(datum)),
         getModelValue,
+        hasStrictValueLookup,
       });
       /* If the model, 'm', cannot be found in the data - then our only form of recourse is to
          ignore the change. */
@@ -248,21 +229,21 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
     case types.SelectBehaviorTypes.SINGLE_NULLABLE: {
       if (Array.isArray(selectValue)) {
         logger.error(
-          "Corrupted State: Detected an array state value for a single-select! " +
+          'Corrupted State: Detected an array state value for a single-select! ' +
             "The select's behavior may be compromised.",
           { value: selectValue },
         );
         return types.DONOTHING;
       } else if (existing === types.NOTSET) {
         logger.error(
-          "Corrupted State: Detected an unset model value for an initialized select!" +
+          'Corrupted State: Detected an unset model value for an initialized select!' +
             "The select's model value should be set if the select has been initialized.",
           { existing },
         );
         return types.DONOTHING;
       } else if (Array.isArray(existing)) {
         logger.error(
-          "Corrupted State: Detected an array state model value for a single-select! " +
+          'Corrupted State: Detected an array state model value for a single-select! ' +
             "The select's behavior may be compromised.",
           { existing },
         );
@@ -270,16 +251,10 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
       } else if (selectValue === null) {
         return null as types.DataSelectNullableModelValue<M, O>;
       }
-      /* Lookup the model in the combined set of models provided to the Select via the 'data'
-         prop and the models corresponding to the previous Select's value that are already
-         maintained in state.  This guarantees that the model can be found in the set in
-         the case that the data provided to the Select is filtered.
-
-         See the docstring on the hook for more information. */
       const model = getModel(selectValue, {
-        strictValueLookup,
         data: existing ? uniqBy([...data, existing], m => getModelValue(m)) : data,
         getModelValue,
+        hasStrictValueLookup,
       });
       if (!model) {
         return types.DONOTHING;
@@ -290,6 +265,26 @@ const reduceModelValue = <M extends types.DataSelectModel, O extends types.DataS
       throw new UnreachableCaseError();
   }
 };
+
+/**
+ * Throws because `onChange` should never be invoked from inside {@link useSelect}.
+ *
+ * The `onChange` callback is fired directly from inside of {@link useDataSelect} rather than being
+ * passed through to {@link useSelect}, which would otherwise cause it to fire twice per change
+ * event.
+ */
+const throwIfSelectOnChangeCalled = (): never => {
+  throw new Error(
+    "The 'onChange' callback should not be called from inside the 'useSelect' hook! " +
+      'It is overridden and called directly in this hook instead.',
+  );
+};
+
+/**
+ * Passed to the underlying {@link useSelect} handlers so that they do not dispatch a change event
+ * themselves; the change event is dispatched by the callback provided to those handlers instead.
+ */
+const SuppressUseSelectChangeEvent: types.SelectEventPublicArgs = { dispatchChangeEvent: false };
 
 /**
  * A hook that is responsible for maintaining both the value of a Select component and the data
@@ -392,13 +387,13 @@ export const useDataSelect = <
   O extends types.DataSelectOptions<M>,
 >({
   data,
-  options,
+  hasStrictValueLookup = true,
   isReady = true,
-  strictValueLookup = true,
   onChange,
-  onSelect,
-  onDeselect,
   onClear,
+  onDeselect,
+  onSelect,
+  options,
   ...params
 }: UseDataSelectParams<M, O>): types.ManagedDataSelect<
   M,
@@ -408,60 +403,49 @@ export const useDataSelect = <
   const { getModelValue } = useDataSelectOptions<M, O>({ options });
 
   const {
-    isSelected: _isSelected,
-    toggle: _toggle,
-    select: _select,
-    deselect: _deselect,
-    value,
-    setValue: _setValue,
     clear: _clear,
+    deselect: _deselect,
+    isSelected: _isSelected,
+    select: _select,
+    setValue: _setValue,
+    toggle: _toggle,
+    value,
     ...rest
-  } = useSelect<types.InferV<{ model: M; options: O }>, O["behavior"]>({
+  } = useSelect<types.InferV<{ model: M; options: O }>, O['behavior']>({
     ...params,
-    isReady,
     behavior: options.behavior,
-    onChange: () => {
-      /* The 'onChange' callback is fired directly from inside of this hook, and not the 'useSelect'
-         hook.  If the 'onChange' callback were provided to the 'useSelect' hook, it would result
-         in the callback being fired twice per change event. */
-      throw new Error(
-        "The 'onChange' callback should not be called from inside the 'useSelect' hook! " +
-          "It is overridden and called directly in this hook instead.",
-      );
-    },
-    onSelect,
+    isReady,
+    onChange: throwIfSelectOnChangeCalled,
     onClear,
     onDeselect,
+    onSelect,
   });
 
   const getInitializedModelValue = useCallback(
     (v: types.SelectNullableValue<{ model: M; options: O }>) =>
       getInitialModelValue({
+        getModel: selectValue =>
+          getModel(selectValue, { data, getModelValue, hasStrictValueLookup }),
         options,
         value: v,
-        getModel: v => getModel(v, { data, strictValueLookup, getModelValue }),
       }),
-    [data, strictValueLookup, options, getModelValue],
+    [data, hasStrictValueLookup, options, getModelValue],
   );
 
-  /* Manage the Select's model value in state in parallel to the Select's value.  See docstring
-     on hook for more information. */
   const [modelValue, setModelValue] = useState<
     types.DataSelectNullableModelValue<M, O> | types.NotSet
   >(() => (isReady && value !== types.NOTSET ? getInitializedModelValue(value) : types.NOTSET));
 
   const setValue = useCallback(
     (v: types.SelectValue<{ model: M; options: O }>) => {
-      /* If the 'modelValue' has not yet been set/initialized, then we need to initialize it before
-         we can apply the reducer to the value. */
       const mv: types.DataSelectNullableModelValue<M, O> =
         modelValue === types.NOTSET ? getInitializedModelValue(v) : modelValue;
 
       const reduced = reduceModelValue(mv, v, {
-        strictValueLookup,
-        options,
         data,
         getModelValue,
+        hasStrictValueLookup,
+        options,
       });
       if (
         reduced === types.DONOTHING ||
@@ -469,6 +453,8 @@ export const useDataSelect = <
       ) {
         return;
       }
+      /* eslint-disable-next-line camelcase -- The underscores intentionally mark this as an
+         internal, non-public prop. */
       _setValue(v, { __private_ignore_controlled_state__: true });
       setModelValue(reduced);
     },
@@ -476,7 +462,7 @@ export const useDataSelect = <
       modelValue,
       data,
       options,
-      strictValueLookup,
+      hasStrictValueLookup,
       getInitializedModelValue,
       _setValue,
       getModelValue,
@@ -485,35 +471,41 @@ export const useDataSelect = <
 
   useEffect(() => {
     if (isReady && value !== types.NOTSET) {
+      /* eslint-disable-next-line react-hooks/set-state-in-effect -- This is not a safe disable
+         and this needs to be fixed! It is only being disabled to complete the ESLint migration for
+         now. */
       setValue(value as types.SelectValue<{ model: M; options: O }>);
     }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [value, isReady]);
+    /* eslint-disable-next-line @eslint-react/exhaustive-deps -- This is a bad pattern and is only
+       being disabled to support the legacy bad pattern I just called a bad pattern. This needs to
+       be refactored in the future for better control of a uncontrolled vs. controlled Select value
+       that doesn't rely on effects like this. */
+  }, [isReady]);
 
   const handleEvent = useCallback(
     <E extends types.SelectEvent>(
       updated: types.SelectValue<{ model: M; options: O }>,
       {
-        dispatchChangeEvent = true,
         data: _data,
-        ...params
-      }: types.SelectChangeEventParams<E, { model: M; options: O }> & {
-        readonly dispatchChangeEvent?: boolean;
+        dispatchChangeEvent = true,
+        ...eventParams
+      }: {
         readonly data?: M[];
-      },
+        readonly dispatchChangeEvent?: boolean;
+      } & types.SelectChangeEventParams<E, { model: M; options: O }>,
       cb?: types.SelectEventChangeHandler<E, { model: M; options: O }, { modelValue: true }>,
     ) => {
       if (modelValue === types.NOTSET) {
         logger.error(
-          "Detected a change event in the select when the model value has not yet been set!",
+          'Detected a change event in the select when the model value has not yet been set!',
         );
         return;
       }
       const reduced = reduceModelValue(modelValue, updated, {
-        strictValueLookup,
-        options,
         data: _data ?? data,
         getModelValue,
+        hasStrictValueLookup,
+        options,
       });
       if (
         reduced === types.DONOTHING ||
@@ -523,7 +515,7 @@ export const useDataSelect = <
       }
       setModelValue(reduced);
       const r = {
-        ...params,
+        ...eventParams,
         modelValue: reduced as types.DataSelectModelValue<M, O>,
       } as types.SelectChangeEventParams<E, { model: M; options: O }, { modelValue: true }>;
       cb?.(updated, r);
@@ -533,7 +525,7 @@ export const useDataSelect = <
         onChange?.(updated, r);
       }
     },
-    [data, modelValue, options, strictValueLookup, getModelValue, onChange],
+    [data, modelValue, options, hasStrictValueLookup, getModelValue, onChange],
   );
 
   const deselect = useCallback(
@@ -547,11 +539,9 @@ export const useDataSelect = <
       >,
     ) =>
       _deselect(
-        typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M),
-        /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
-           will be dispatched in the above 'callback' function instead. */
-        { dispatchChangeEvent: false },
-        (updated, params) => handleEvent(updated, { ...p, ...params }, cb),
+        typeof v === 'string' || typeof v === 'number' ? v : getModelValue(v as M),
+        SuppressUseSelectChangeEvent,
+        (updated, eventParams) => handleEvent(updated, { ...p, ...eventParams }, cb),
       ),
     [_deselect, handleEvent, getModelValue],
   );
@@ -559,7 +549,7 @@ export const useDataSelect = <
   const select = useCallback(
     (
       v: M | types.InferV<{ model: M; options: O }>,
-      p?: types.SelectEventPublicArgs & { readonly optimisticModels?: M[] },
+      p?: { readonly optimisticModels?: M[] } & types.SelectEventPublicArgs,
       cb?: types.SelectEventChangeHandler<
         typeof types.SelectEvents.SELECT,
         { model: M; options: O },
@@ -567,18 +557,14 @@ export const useDataSelect = <
       >,
     ) =>
       _select(
-        typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M),
-        /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
-           will be dispatched in the above 'callback' function instead. */
-        { dispatchChangeEvent: false },
-        (updated, params) =>
+        typeof v === 'string' || typeof v === 'number' ? v : getModelValue(v as M),
+        SuppressUseSelectChangeEvent,
+        (updated, eventParams) =>
           handleEvent(
             updated,
             {
-              ...params,
+              ...eventParams,
               ...p,
-              /* Add any additional, potentially optimistically added models to the data that is
-                 used to lookup the value. */
               data: uniqBy([...data, ...(p?.optimisticModels ?? [])], getModelValue),
             },
             cb,
@@ -596,17 +582,15 @@ export const useDataSelect = <
         { modelValue: true }
       >,
     ) =>
-      /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
-         will be dispatched in the above 'callback' function instead. */
-      _clear({ dispatchChangeEvent: false }, (updated, params) =>
-        handleEvent(updated, { ...params, ...p }, cb),
+      _clear(SuppressUseSelectChangeEvent, (updated, eventParams) =>
+        handleEvent(updated, { ...eventParams, ...p }, cb),
       ),
     [_clear, handleEvent],
   );
 
   const toggle = useCallback(
     (
-      v: types.InferV<{ model: M; options: O }> | M,
+      v: M | types.InferV<{ model: M; options: O }>,
       p?: types.SelectEventPublicArgs,
       cb?: types.SelectEventChangeHandler<
         typeof types.SelectEvents.DESELECT | typeof types.SelectEvents.SELECT,
@@ -615,25 +599,23 @@ export const useDataSelect = <
       >,
     ) =>
       _toggle(
-        typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M),
-        /* Do not dispatch the change event in the underlying 'useSelect' hook.  The change event
-           will be dispatched in the above 'callback' function instead. */
-        { dispatchChangeEvent: false },
-        (updated, params) => handleEvent(updated, { ...params, ...p }, cb),
+        typeof v === 'string' || typeof v === 'number' ? v : getModelValue(v as M),
+        SuppressUseSelectChangeEvent,
+        (updated, eventParams) => handleEvent(updated, { ...eventParams, ...p }, cb),
       ),
     [_toggle, handleEvent, getModelValue],
   );
 
   return {
     ...rest,
-    value,
-    modelValue,
-    setValue,
-    isSelected: (v: M | types.InferV<{ model: M; options: O }>) =>
-      _isSelected(typeof v === "string" || typeof v === "number" ? v : getModelValue(v as M)),
-    select,
-    deselect: types.ifDeselectable(deselect, { options }),
-    toggle,
     clear: types.ifClearable(clear, { options }),
+    deselect: types.ifDeselectable(deselect, { options }),
+    isSelected: (v: M | types.InferV<{ model: M; options: O }>) =>
+      _isSelected(typeof v === 'string' || typeof v === 'number' ? v : getModelValue(v as M)),
+    modelValue,
+    select,
+    setValue,
+    toggle,
+    value,
   };
 };

@@ -1,7 +1,7 @@
-"use client";
-import { type ReactNode } from "react";
+'use client';
+import { type ReactNode } from 'react';
 
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps } from '~/components/types';
 
 export interface TimelineProps extends ComponentProps {
   readonly children: ReactNode[];

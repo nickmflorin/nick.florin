@@ -1,25 +1,29 @@
-import type { ApiEducation, EducationIncludes } from "~/database/model";
-import { DetailEntityType, fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
-import { conditionalFilters } from "~/database/util";
+import {
+  type ApiEducation,
+  DetailEntityType,
+  type EducationIncludes,
+  fieldIsIncluded,
+} from '~/database/model';
+import { db } from '~/database/prisma';
+import { conditionalFilters } from '~/database/util';
 
 import {
-  constructTableSearchClause,
-  PAGE_SIZES,
-  type ServerSidePaginationParams,
+  type ActionCountParams,
+  type ActionFilterParams,
+  type ActionPaginationParams,
   clampPagination,
+  constructTableSearchClause,
   type EducationsControls,
   getEducationsOrdering,
-  standardListFetchAction,
+  PAGE_SIZES,
+  type ServerSidePaginationParams,
   type StandardFetchActionReturn,
-  type ActionFilterParams,
-  type ActionCountParams,
-  type ActionPaginationParams,
-} from "~/actions";
+  standardListFetchAction,
+} from '~/actions';
 
-const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<EducationsControls>) =>
+const filtersClause = ({ filterIsVisible, filters }: ActionFilterParams<EducationsControls>) =>
   conditionalFilters([
-    filters.search ? constructTableSearchClause("education", filters.search) : undefined,
+    filters.search ? constructTableSearchClause('education', filters.search) : undefined,
     filters.schools && filters.schools.length !== 0
       ? { schoolId: { in: filters.schools } }
       : undefined,
@@ -41,8 +45,8 @@ const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<Educatio
     { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<EducationsControls>) => {
-  const clause = filtersClause({ filters, filterIsVisible });
+const whereClause = ({ filterIsVisible, filters }: ActionFilterParams<EducationsControls>) => {
+  const clause = filtersClause({ filterIsVisible, filters });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -56,10 +60,10 @@ export const fetchEducationsCount = standardListFetchAction(
   ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    const count = await db.education.count({ where: whereClause({ filters, filterIsVisible }) });
+    const count = await db.education.count({ where: whereClause({ filterIsVisible, filters }) });
     return { count };
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchEducationsPagination = standardListFetchAction(
@@ -68,20 +72,20 @@ export const fetchEducationsPagination = standardListFetchAction(
     { filterIsVisible },
   ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.education.count({
-      where: whereClause({ filters, filterIsVisible }),
+      where: whereClause({ filterIsVisible, filters }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.education });
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchEducations = <I extends EducationIncludes>(includes: I) =>
   standardListFetchAction(
     async (
-      { filters, ordering, page, limit, visibility }: Omit<EducationsControls<I>, "includes">,
+      { filters, limit, ordering, page, visibility }: Omit<EducationsControls<I>, 'includes'>,
       { filterIsVisible },
     ): StandardFetchActionReturn<ApiEducation<I>[]> => {
-      let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
+      let pagination: null | Omit<ServerSidePaginationParams, 'count'> = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchEducationsPagination(
           { filters, page, visibility },
@@ -89,73 +93,73 @@ export const fetchEducations = <I extends EducationIncludes>(includes: I) =>
         ));
       }
 
-      const educations = await db.education.findMany({
-        where: whereClause({ filters, filterIsVisible }),
+      const educations = (await db.education.findMany({
         include: {
-          school: true,
-          skills: fieldIsIncluded("skills", includes)
-            ? { where: { visible: filterIsVisible(filters.visible) } }
-            : undefined,
-          courses: fieldIsIncluded("courses", includes)
+          courses: fieldIsIncluded('courses', includes)
             ? {
-                where: { visible: filterIsVisible(filters.visible) },
                 include: {
-                  skills: fieldIsIncluded("skills", includes)
+                  skills: fieldIsIncluded('skills', includes)
                     ? { where: { visible: filterIsVisible(filters.visible) } }
                     : undefined,
                 },
+                where: { visible: filterIsVisible(filters.visible) },
               }
+            : undefined,
+          school: true,
+          skills: fieldIsIncluded('skills', includes)
+            ? { where: { visible: filterIsVisible(filters.visible) } }
             : undefined,
         },
         orderBy: getEducationsOrdering(ordering),
         skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
         take: pagination ? pagination.pageSize : limit,
-      });
+        where: whereClause({ filterIsVisible, filters }),
+      })) as ApiEducation<I>[];
 
-      if (fieldIsIncluded("details", includes)) {
+      if (fieldIsIncluded('details', includes)) {
         const details = await db.detail.findMany({
-          where: {
-            entityType: DetailEntityType.EDUCATION,
-            entityId: { in: educations.map(e => e.id) },
-            visible: filterIsVisible(filters.visible),
-          },
           include: {
-            project: {
-              include: {
-                skills: fieldIsIncluded("skills", includes)
-                  ? { where: { visible: filterIsVisible(filters.visible) } }
-                  : undefined,
-              },
-            },
-            skills: fieldIsIncluded("skills", includes)
-              ? { where: { visible: filterIsVisible(filters.visible) } }
-              : undefined,
             nestedDetails: {
-              orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-              where: {
-                visible: filterIsVisible(filters.visible),
-              },
               include: {
-                skills: fieldIsIncluded("skills", includes)
-                  ? { where: { visible: filterIsVisible(filters.visible) } }
-                  : undefined,
                 project: {
                   include: {
-                    skills: fieldIsIncluded("skills", includes)
+                    skills: fieldIsIncluded('skills', includes)
                       ? { where: { visible: filterIsVisible(filters.visible) } }
                       : undefined,
                   },
                 },
+                skills: fieldIsIncluded('skills', includes)
+                  ? { where: { visible: filterIsVisible(filters.visible) } }
+                  : undefined,
+              },
+              orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+              where: {
+                visible: filterIsVisible(filters.visible),
               },
             },
+            project: {
+              include: {
+                skills: fieldIsIncluded('skills', includes)
+                  ? { where: { visible: filterIsVisible(filters.visible) } }
+                  : undefined,
+              },
+            },
+            skills: fieldIsIncluded('skills', includes)
+              ? { where: { visible: filterIsVisible(filters.visible) } }
+              : undefined,
+          },
+          where: {
+            entityId: { in: educations.map(e => e.id) },
+            entityType: DetailEntityType.EDUCATION,
+            visible: filterIsVisible(filters.visible),
           },
         });
-        return educations.map(
-          (edu): ApiEducation<I> =>
-            ({ ...edu, details: details.filter(d => d.entityId === edu.id) }) as ApiEducation<I>,
-        );
+        return educations.map((edu): ApiEducation<I> => ({
+          ...edu,
+          details: details.filter(d => d.entityId === edu.id),
+        }));
       }
-      return educations as ApiEducation<I>[];
+      return educations;
     },
-    { authenticated: false, adminOnly: false },
+    { adminOnly: false, authenticated: false },
   );

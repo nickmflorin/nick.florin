@@ -1,11 +1,11 @@
-@use "sass:list";
-@use "sass:map";
-@use "sass:meta";
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:meta';
 
-@use "partials";
+@use 'partials';
 
-@use "./constants" as constants;
-@use "./mixins" as mixins;
+@use './constants' as constants;
+@use './mixins' as mixins;
 
 @mixin button-icon-size-properties($type, $size) {
   .icon {
@@ -22,10 +22,10 @@
 }
 
 @mixin button-size-properties($type, $size, $tight-fit: false) {
-  @if $type == "icon-button" or $type == "button" {
+  @if $type == 'icon-button' or $type == 'button' {
     // If the 'no-padding' flag is set, the size of the icon button should be the same as the size
     // of the icon it contains.
-    @if $type == "icon-button" and $tight-fit {
+    @if $type == 'icon-button' and $tight-fit {
       $height: partials.mapget(constants.$button-icon-sizes, $type, $size);
 
       height: $height;
@@ -37,7 +37,7 @@
       height: $height;
       min-height: $height;
 
-      @if $type == "icon-button" {
+      @if $type == 'icon-button' {
         width: $height;
       } @else {
         padding: partials.mapget(constants.$button-padding, $size);
@@ -51,21 +51,22 @@
     @include button-icon-sizes($type);
   }
   // Inline links do not have icons.
-  @if $type != "inline-link" {
+  @if $type != 'inline-link' {
     @include button-icon-size-properties($type: $type, $size: $size);
   }
 }
 
 @mixin button-sizes($type, $tight-fit: false) {
-  // Links do not have sizes, their size is determined from the line-height of the text they contain.
-  @if $type != "link" and $type != "inline-link" {
+  // Links do not have sizes, their size is determined from the line-height of the text they
+  // contain.
+  @if $type != 'link' and $type != 'inline-link' {
     @include button-size-properties($type, constants.$button-default-size, $tight-fit: $tight-fit);
     @each $size in map.keys(constants.$button-sizes) {
       @include mixins.button-size($size) {
         @include button-size-properties($type, $size, $tight-fit: $tight-fit);
       }
     }
-  } @else if $type == "link" {
+  } @else if $type == 'link' {
     // Apply a default icon size just in case the class name is not present.
     @include button-icon-size-properties($type: $type, $size: constants.$link-default-icon-size);
     /* The Link is sized based on the line height of its text, but it still can have icons - which

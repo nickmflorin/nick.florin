@@ -1,54 +1,52 @@
-import { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type JSX, type Ref } from 'react';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import type { ActionVisibility } from "~/actions";
-import { type ApiError } from "~/api";
+import { type ActionVisibility } from '~/actions';
+import { type ApiError } from '~/api';
 
-import type { SelectBehaviorType } from "~/components/input/select";
-import { useRepositories } from "~/hooks/api";
+import { type SelectBehaviorType } from '~/components/input/select';
+import { useRepositories } from '~/hooks/api';
 
 import {
   RepositorySelect,
   type RepositorySelectInstance,
   type RepositorySelectProps,
-} from "./RepositorySelect";
+} from './RepositorySelect';
 
-export interface ClientRepositorySelectProps<B extends SelectBehaviorType>
-  extends Omit<RepositorySelectProps<B>, "data"> {
-  readonly visibility: ActionVisibility;
+export interface ClientRepositorySelectProps<B extends SelectBehaviorType> extends Omit<
+  RepositorySelectProps<B>,
+  'data'
+> {
   readonly onError?: (e: ApiError) => void;
+  readonly visibility: ActionVisibility;
 }
 
-export const ClientRepositorySelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { visibility, onError, ...props }: ClientRepositorySelectProps<B>,
-    ref: ForwardedRef<RepositorySelectInstance<B>>,
-  ): JSX.Element => {
-    const { data, isLoading, error } = useRepositories({
-      query: { includes: [], visibility },
-      onError: e => {
-        logger.error(e, "There was an error loading the repositories via the API.");
-        onError?.(e);
-      },
-    });
-
-    return (
-      <RepositorySelect<B>
-        {...props}
-        ref={ref}
-        isReady={data !== undefined && props.isReady !== false}
-        data={data ?? []}
-        isDisabled={error !== undefined || props.isDisabled}
-        isLocked={isLoading || props.isLocked}
-        isLoading={isLoading || props.isLoading}
-      />
-    );
-  },
-) as {
-  <B extends SelectBehaviorType>(
-    props: ClientRepositorySelectProps<B> & {
-      readonly ref?: ForwardedRef<RepositorySelectInstance<B>>;
+export const ClientRepositorySelect = <B extends SelectBehaviorType>({
+  onError,
+  ref,
+  visibility,
+  ...props
+}: {
+  readonly ref?: Ref<RepositorySelectInstance<B>>;
+} & ClientRepositorySelectProps<B>): JSX.Element => {
+  const { data, error, isLoading } = useRepositories({
+    onError: e => {
+      logger.error(e, 'There was an error loading the repositories via the API.');
+      onError?.(e);
     },
-  ): JSX.Element;
+    query: { includes: [], visibility },
+  });
+
+  return (
+    <RepositorySelect<B>
+      {...props}
+      data={data ?? []}
+      isDisabled={error !== undefined || props.isDisabled}
+      isLoading={isLoading || props.isLoading}
+      isLocked={isLoading || props.isLocked}
+      isReady={data !== undefined && props.isReady !== false}
+      ref={ref}
+    />
+  );
 };

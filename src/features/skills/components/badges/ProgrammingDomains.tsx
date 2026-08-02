@@ -1,11 +1,11 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type ProgrammingDomain } from "~/database/model";
+import { type ProgrammingDomain } from '~/database/model';
 
-import { BadgeCollection } from "~/components/badges/BadgeCollection";
-import { type ComponentProps } from "~/components/types";
+import { BadgeCollection } from '~/components/badges/BadgeCollection';
+import { type ComponentProps } from '~/components/types';
 
-import { ProgrammingDomainBadge } from "./ProgrammingDomainBadge";
+import { ProgrammingDomainBadge } from './ProgrammingDomainBadge';
 
 export interface ProgrammingDomainsProps extends ComponentProps {
   readonly domains: ProgrammingDomain[];
@@ -14,7 +14,7 @@ export interface ProgrammingDomainsProps extends ComponentProps {
 export const ProgrammingDomains = ({ domains, ...props }: ProgrammingDomainsProps): JSX.Element => (
   <BadgeCollection {...props}>
     {domains.map(d => (
-      <ProgrammingDomainBadge key={d.toLowerCase()} domain={d} />
+      <ProgrammingDomainBadge domain={d} key={d.toLowerCase()} />
     ))}
   </BadgeCollection>
 );

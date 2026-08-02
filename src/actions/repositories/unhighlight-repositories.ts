@@ -1,19 +1,19 @@
-"use server";
-import { difference, uniq } from "lodash-es";
+'use server';
+import { difference, uniq } from 'lodash-es';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { db } from "~/database/prisma";
-import { logger } from "~/internal/logger";
-import { humanizeList } from "~/lib/formatters";
-import { isUuid } from "~/lib/typeguards";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
+import { humanizeList } from '~/lib/formatters';
+import { isUuid } from '~/lib/typeguards';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const unhighlightRepositories = async (
   _ids: string[],
 ): Promise<MutationActionResponse<{ message: string }>> => {
-  const { error, user, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -28,7 +28,7 @@ export const unhighlightRepositories = async (
   if (invalidUUIDs.length > 0) {
     const err = ApiClientGlobalError.BadRequest({
       message: `The id(s) ${humanizeList(invalidUUIDs, {
-        conjunction: "and",
+        conjunction: 'and',
         formatter: v => `'${v}'`,
       })} are not valid UUID(s).`,
     });
@@ -43,7 +43,7 @@ export const unhighlightRepositories = async (
     repositories.map(s => s.id),
   );
   if (invalidIds.length !== 0) {
-    const humanized = humanizeList(invalidIds, { conjunction: "and", formatter: v => `'${v}'` });
+    const humanized = humanizeList(invalidIds, { conjunction: 'and', formatter: v => `'${v}'` });
     logger.error(
       `Encountered invalid repository ID(s) when unhighlighting repositories: ${humanized}.`,
       {
@@ -52,24 +52,24 @@ export const unhighlightRepositories = async (
       },
     );
     const err = ApiClientGlobalError.BadRequest({
-      message: "Request contained repository ID(s) that do not exist.",
+      message: 'Request contained repository ID(s) that do not exist.',
     });
     return { error: err.json };
   }
   if (repositories.some(proj => !proj.highlighted)) {
     const humanized = humanizeList(
       repositories.filter(proj => !proj.highlighted).map(proj => proj.id),
-      { conjunction: "and", formatter: v => `'${v}'` },
+      { conjunction: 'and', formatter: v => `'${v}'` },
     );
     logger.warn(
-      `A request to unhighlight repositories contained repository ID(s) ${humanized} associated with ` +
-        "repositories that are already unhighlighted.",
+      `A request to unhighlight repositories contained repository ID(s) ${humanized} associated ` +
+        'with repositories that are already unhighlighted.',
       { ids: repositories.filter(proj => !proj.highlighted).map(proj => proj.id) },
     );
   }
   await db.repository.updateMany({
-    where: { id: { in: ids } },
     data: { highlighted: false, updatedById: user.id },
+    where: { id: { in: ids } },
   });
-  return { data: { message: "Success" } };
+  return { data: { message: 'Success' } };
 };

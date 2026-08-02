@@ -1,43 +1,43 @@
-import dynamic from "next/dynamic";
-import type { JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX } from 'react';
 
-import { type ProjectsControls, type ProjectsFilters } from "~/actions";
-import { fetchProjects } from "~/actions/projects/fetch-projects";
+import { type ProjectsControls, type ProjectsFilters } from '~/actions';
+import { fetchProjects } from '~/actions/projects/fetch-projects';
 
-import { Loading } from "~/components/loading/Loading";
-import { ProjectsTableControlBarPlaceholder } from "~/features/projects/components/tables/ProjectsTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { ProjectsTableControlBarPlaceholder } from '~/features/projects/components/tables/ProjectsTableControlBarPlaceholder';
 
 const ClientProjectsTableBody = dynamic(
   () =>
-    import("~/features/projects/components/tables/ProjectsTableBody").then(
+    import('~/features/projects/components/tables/ProjectsTableBody').then(
       mod => mod.ProjectsTableBody,
     ),
   {
     loading: () => (
       <>
         <ProjectsTableControlBarPlaceholder />
-        <Loading isLoading component="tbody" />
+        <Loading component='tbody' isLoading />
       </>
     ),
   },
 );
 
 const getProjects = async ({
-  page,
   filters,
   ordering,
+  page,
 }: {
   readonly filters: ProjectsFilters;
+  readonly ordering: ProjectsControls['ordering'];
   readonly page: number;
-  readonly ordering: ProjectsControls["ordering"];
 }) => {
-  const fetcher = fetchProjects(["skills", "repositories"]);
+  const fetcher = fetchProjects(['skills', 'repositories']);
   const { data: projects } = await fetcher(
     {
       filters,
       ordering,
       page,
-      visibility: "admin",
+      visibility: 'admin',
     },
     { strict: true },
   );
@@ -46,15 +46,15 @@ const getProjects = async ({
 
 export interface ProjectsTableBodyProps {
   readonly filters: ProjectsFilters;
+  readonly ordering: ProjectsControls['ordering'];
   readonly page: number;
-  readonly ordering: ProjectsControls["ordering"];
 }
 
 export const ProjectsTableBody = async ({
   filters,
-  page,
   ordering,
+  page,
 }: ProjectsTableBodyProps): Promise<JSX.Element> => {
-  const projects = await getProjects({ page, filters, ordering });
+  const projects = await getProjects({ filters, ordering, page });
   return <ClientProjectsTableBody data={projects} />;
 };

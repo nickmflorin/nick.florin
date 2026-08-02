@@ -1,31 +1,29 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { ContextDrawer } from "~/components/drawers/ContextDrawer";
-import { useExperience } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { ContextDrawer } from '~/components/drawers/ContextDrawer';
+import { useExperience } from '~/hooks/api';
 
-import { ExperienceDrawerContent } from "./ExperienceDrawerContent";
+import { ExperienceDrawerContent } from './ExperienceDrawerContent';
 
 export interface SkillDrawerProps extends ExtendingDrawerProps {
   readonly experienceId: string;
 }
 
 export const ExperienceDrawer = ({ experienceId }: SkillDrawerProps): JSX.Element => {
-  const { data, isLoading, error } = useExperience(experienceId, {
-    query: {
-      includes: ["skills", "details"],
-      visibility: "public",
-    },
+  const { data, error, isLoading } = useExperience(experienceId, {
     keepPreviousData: true,
+    query: {
+      includes: ['skills', 'details'],
+      visibility: 'public',
+    },
   });
   return (
     <ContextDrawer>
-      <ApiResponseState error={error} isLoading={isLoading} data={data}>
+      <ApiResponseState data={data} error={error} isLoading={isLoading}>
         {experience => <ExperienceDrawerContent experience={experience} />}
       </ApiResponseState>
     </ContextDrawer>
   );
 };
-
-export default ExperienceDrawer;

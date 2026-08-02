@@ -1,21 +1,21 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type Company } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type Company } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { createCompany } from "~/actions/companies/create-company";
+import { createCompany } from '~/actions/companies/create-company';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { CompanyForm, type CompanyFormProps } from "./CompanyForm";
+import { CompanyForm, type CompanyFormProps } from './CompanyForm';
 
-export interface CreateCompanyFormProps extends Omit<CompanyFormProps, "action"> {
-  readonly onSuccess?: (m: Company) => void;
+export interface CreateCompanyFormProps extends Omit<CompanyFormProps, 'action'> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: Company) => void;
 }
 
 export const CreateCompanyForm = ({
@@ -23,14 +23,12 @@ export const CreateCompanyForm = ({
   onSuccess,
   ...props
 }: CreateCompanyFormProps): JSX.Element => {
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
   return (
     <CompanyForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof createCompany>> | null = null;
         try {
@@ -39,20 +37,19 @@ export const CreateCompanyForm = ({
           logger.errorUnsafe(e, "There was an error creating the company'.", {
             data,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error creating the company.");
+          return toast.error('There was an error creating the company.');
         }
-        const { error, data: company } = response;
+        const { data: company, error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.(company);
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default CreateCompanyForm;

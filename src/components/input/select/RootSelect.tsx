@@ -1,118 +1,108 @@
-"use client";
-import React, {
-  type ReactNode,
-  forwardRef,
-  useState,
-  type ForwardedRef,
-  useRef,
-  useImperativeHandle,
-  type JSX,
-} from "react";
+'use client';
+import { type JSX, type ReactNode, type Ref, useImperativeHandle, useRef, useState } from 'react';
 
-import { type Optional } from "utility-types";
+import { type Optional } from 'utility-types';
 
-import type { FloatingContentRenderProps } from "~/components/floating";
-import type * as types from "~/components/input/select/types";
-import { type ComponentProps } from "~/components/types";
+import { type FloatingContentRenderProps } from '~/components/floating';
+import type * as types from '~/components/input/select/types';
+import { type ComponentProps } from '~/components/types';
 
 import {
   RootSelectInput,
-  type RootSelectInputProps,
   type RootSelectInputInstance,
-} from "./RootSelectInput";
+  type RootSelectInputProps,
+} from './RootSelectInput';
 import {
-  SelectPopover,
-  type SelectPopoverProps,
-  pickSelectPopoverProps,
   omitSelectPopoverProps,
+  pickSelectPopoverProps,
+  SelectPopover,
   type SelectPopoverInstance,
-} from "./SelectPopover";
-import { SelectPopoverContent } from "./SelectPopoverContent";
+  type SelectPopoverProps,
+} from './SelectPopover';
+import { SelectPopoverContent } from './SelectPopoverContent';
 
 export interface RootSelectProps
-  extends Omit<Optional<SelectPopoverProps, "children">, "content" | "isLoading">,
+  extends
+    Omit<Optional<SelectPopoverProps, 'children'>, 'content' | 'isLoading'>,
     Omit<
       RootSelectInputProps,
-      keyof ComponentProps | "isOpen" | "children" | "value" | "isLoading"
+      'children' | 'isLoading' | 'isOpen' | 'value' | keyof ComponentProps
     > {
-  readonly popoverClassName?: ComponentProps["className"];
-  readonly inputClassName?: ComponentProps["className"];
-  readonly inputIsLoading?: boolean;
-  readonly popoverIsLoading?: boolean;
-  readonly renderedValue?: ReactNode;
   readonly content:
-    | JSX.Element
-    | ((params: Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">) => JSX.Element);
+    | ((params: Pick<FloatingContentRenderProps, 'isOpen' | 'setIsOpen'>) => JSX.Element | null)
+    | JSX.Element;
+  readonly inputClassName?: ComponentProps['className'];
+  readonly isInputLoading?: boolean;
+  readonly isPopoverLoading?: boolean;
+  readonly popoverClassName?: ComponentProps['className'];
+  readonly ref?: Ref<types.RootSelectInstance>;
+  readonly renderedValue?: ReactNode;
 }
 
-export const RootSelect = forwardRef(
-  (
-    {
-      popoverIsLoading: _propPopoverIsLoading,
-      inPortal,
-      popoverClassName,
-      inputClassName,
-      dynamicHeight = true,
-      content,
-      renderedValue,
-      inputIsLoading,
-      children,
-      ...props
-    }: RootSelectProps,
-    ref: ForwardedRef<types.RootSelectInstance>,
-  ): JSX.Element => {
-    const [_popoverIsLoading, setPopoverIsLoading] = useState(false);
+export const RootSelect = ({
+  children,
+  content,
+  hasDynamicHeight = true,
+  inputClassName,
+  isInPortal,
+  isInputLoading,
+  isPopoverLoading: _propPopoverIsLoading,
+  popoverClassName,
+  ref,
+  renderedValue,
+  ...props
+}: RootSelectProps): JSX.Element => {
+  const [internalPopoverIsLoading, setInternalPopoverIsLoading] = useState(false);
 
-    const popoverRef = useRef<SelectPopoverInstance | null>(null);
-    const inputRef = useRef<RootSelectInputInstance | null>(null);
+  const popoverRef = useRef<null | SelectPopoverInstance>(null);
+  const inputRef = useRef<null | RootSelectInputInstance>(null);
 
-    const popoverIsLoading = _propPopoverIsLoading || _popoverIsLoading;
+  const isPopoverLoading = (_propPopoverIsLoading ?? false) || internalPopoverIsLoading;
 
-    useImperativeHandle(ref, () => ({
-      focusInput: () => inputRef.current?.focus(),
-      setOpen: (v: boolean) => popoverRef.current?.setOpen(v),
-      setPopoverLoading: (v: boolean) => setPopoverIsLoading(v),
-      setInputLoading: (v: boolean) => inputRef.current?.setLoading(v),
-    }));
+  useImperativeHandle(ref, () => ({
+    focusInput: () => inputRef.current?.focus(),
+    setInputLoading: (v: boolean) => inputRef.current?.setLoading(v),
+    setOpen: (v: boolean) => popoverRef.current?.setOpen(v),
+    setPopoverLoading: (v: boolean) => setInternalPopoverIsLoading(v),
+  }));
 
-    return (
-      <SelectPopover
-        {...pickSelectPopoverProps(props)}
-        ref={popoverRef}
-        inPortal={inPortal}
-        content={({ params, ref: _ref, styles, isOpen, setIsOpen }) => (
-          <SelectPopoverContent
+  return (
+    <SelectPopover
+      {...pickSelectPopoverProps(props)}
+      content={({ isOpen, params, ref: _ref, setIsOpen, styles }) => (
+        <SelectPopoverContent
+          {...params}
+          className={popoverClassName}
+          isInPortal={isInPortal}
+          isLoading={isPopoverLoading}
+          ref={_ref}
+          style={styles}
+        >
+          {typeof content === 'function' ? content({ isOpen, setIsOpen }) : content}
+        </SelectPopoverContent>
+      )}
+      isInPortal={isInPortal}
+      ref={popoverRef}
+    >
+      {children ??
+        (({ isOpen, params, ref: _ref }) => (
+          <RootSelectInput
             {...params}
-            style={styles}
-            ref={_ref}
-            className={popoverClassName}
-            inPortal={inPortal}
-            isLoading={popoverIsLoading}
+            {...omitSelectPopoverProps(props)}
+            className={inputClassName}
+            hasDynamicHeight={hasDynamicHeight}
+            isLoading={isInputLoading}
+            isOpen={isOpen}
+            ref={instance => {
+              _ref(instance);
+              if (instance) {
+                inputRef.current = instance;
+              }
+            }}
           >
-            {typeof content === "function" ? content({ isOpen, setIsOpen }) : content}
-          </SelectPopoverContent>
-        )}
-      >
-        {children ??
-          (({ ref: _ref, params, isOpen }) => (
-            <RootSelectInput
-              {...params}
-              {...omitSelectPopoverProps(props)}
-              dynamicHeight={dynamicHeight}
-              isOpen={isOpen}
-              isLoading={inputIsLoading}
-              ref={instance => {
-                _ref(instance);
-                if (instance) {
-                  inputRef.current = instance;
-                }
-              }}
-              className={inputClassName}
-            >
-              {renderedValue}
-            </RootSelectInput>
-          ))}
-      </SelectPopover>
-    );
-  },
-);
+            {renderedValue}
+          </RootSelectInput>
+        ))}
+    </SelectPopover>
+  );
+};

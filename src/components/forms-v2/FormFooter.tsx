@@ -1,21 +1,21 @@
-import { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { type ComponentProps, classNames } from "~/components/types";
+import { classNames, type ComponentProps } from '~/components/types';
 
-import { FormErrors } from "./FormErrors";
-import { type BaseFormValues, type FormInstance } from "./types";
+import { FormErrors } from './FormErrors';
+import { type BaseFormValues, type FormInstance } from './types';
 
 export interface FormFooterProps<I extends BaseFormValues> extends ComponentProps {
-  readonly footer?: JSX.Element;
   readonly children?: ReactNode;
+  readonly footer?: JSX.Element;
   readonly form: FormInstance<I>;
   readonly isScrollable?: boolean;
 }
 
 export const FormFooter = <I extends BaseFormValues>({
   footer,
-  isScrollable = true,
   form,
+  isScrollable = true,
   ...props
 }: FormFooterProps<I>) => (
   <>
@@ -23,12 +23,12 @@ export const FormFooter = <I extends BaseFormValues>({
       <div
         {...props}
         className={classNames(
-          "flex flex-col mt-[16px]",
-          { "pr-[18px]": isScrollable },
+          'flex flex-col mt-[16px]',
+          { 'pr-[18px]': isScrollable },
           props.className,
         )}
       >
-        <FormErrors form={form} className="my-[4px]" />
+        <FormErrors className='my-[4px]' form={form} />
         {footer}
       </div>
     )}

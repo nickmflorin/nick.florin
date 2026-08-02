@@ -1,22 +1,22 @@
-import { IconButton } from "~/components/buttons";
+import { type MouseEventHandler } from 'react';
+
+import { IconButton } from '~/components/buttons';
 
 export interface SaveActionProps {
   readonly id?: string;
-  readonly isVisible?: boolean;
   readonly isDisabled?: boolean;
-  readonly onClick: React.MouseEventHandler<HTMLButtonElement>;
+  readonly isVisible?: boolean;
+  readonly onClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-export const SaveAction = ({ onClick, isVisible = true, ...props }: SaveActionProps) =>
+export const SaveAction = ({ isVisible = true, onClick, ...props }: SaveActionProps) =>
   isVisible ? (
     <IconButton.Transparent
       {...props}
-      className="text-green-600 hover:text-green-700 disabled:text-gray-400"
-      icon={{ name: "circle-check", iconStyle: "solid" }}
+      className='text-green-600 hover:text-green-700 disabled:text-gray-400'
+      icon={{ iconStyle: 'solid', name: 'circle-check' }}
+      iconSize='16px'
       onClick={onClick}
-      size="24px"
-      iconSize="16px"
+      size='24px'
     />
-  ) : (
-    <></>
-  );
+  ) : null;

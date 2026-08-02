@@ -1,13 +1,13 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-export const toDateTime = (v: Date | DateTime | string | null): DateTime | null => {
+export const toDateTime = (v: Date | DateTime | null | string): DateTime | null => {
   if (v instanceof Date) {
     return DateTime.fromJSDate(v);
   } else if (v instanceof DateTime) {
     return v;
-  } else if (typeof v === "string") {
+  } else if (typeof v === 'string') {
     const dt = DateTime.fromISO(v);
     if (!dt.isValid) {
       logger.error(`The date string '${v}' is not valid!`);

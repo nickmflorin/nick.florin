@@ -1,25 +1,25 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import { parseOrdering } from "~/lib/ordering";
+import { parseOrdering } from '~/lib/ordering';
 
-import { ExperiencesDefaultOrdering, ExperiencesFiltersObj } from "~/actions";
+import { ExperiencesDefaultOrdering, ExperiencesFiltersObj } from '~/actions';
 
-import { Loading } from "~/components/loading/Loading";
-import { columnIsOrderable } from "~/components/tables";
-import { ExperiencesTableColumns } from "~/features/experiences";
-import { ExperiencesTableControlBarPlaceholder } from "~/features/experiences/components/tables/ExperiencesTableControlBarPlaceholder";
+import { Loading } from '~/components/loading/Loading';
+import { columnIsOrderable } from '~/components/tables';
+import { ExperiencesTableColumns } from '~/features/experiences';
+import { ExperiencesTableControlBarPlaceholder } from '~/features/experiences/components/tables/ExperiencesTableControlBarPlaceholder';
 
-import { ExperiencesTableBody } from "./ExperiencesTableBody";
+import { ExperiencesTableBody } from './ExperiencesTableBody';
 
 export interface ExperiencesTablePageProps {
   readonly searchParams: Promise<Record<string, string>>;
 }
 
-export default async function ExperiencesTablePage(props: ExperiencesTablePageProps) {
+const ExperiencesTablePage = async (props: ExperiencesTablePageProps) => {
   const searchParams = await props.searchParams;
-  const page = z.coerce.number().int().positive().min(1).safeParse(searchParams?.page).data ?? 1;
+  const page = z.coerce.number().int().positive().min(1).safeParse(searchParams.page).data ?? 1;
 
   const filters = ExperiencesFiltersObj.parse(searchParams);
 
@@ -30,15 +30,17 @@ export default async function ExperiencesTablePage(props: ExperiencesTablePagePr
 
   return (
     <Suspense
-      key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
       fallback={
         <>
           <ExperiencesTableControlBarPlaceholder />
-          <Loading isLoading component="tbody" />
+          <Loading component='tbody' isLoading />
         </>
       }
+      key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
     >
-      <ExperiencesTableBody filters={filters} page={page} ordering={ordering} />
+      <ExperiencesTableBody filters={filters} ordering={ordering} page={page} />
     </Suspense>
   );
-}
+};
+
+export default ExperiencesTablePage;

@@ -1,12 +1,12 @@
-import { json } from "~/database/fixtures";
-import { DetailEntityType, type School } from "~/database/model";
-import { type Transaction } from "~/database/prisma";
-import { type cli } from "~/scripts";
-import { stdout } from "~/support";
+import { json } from '~/database/fixtures';
+import { DetailEntityType, type School } from '~/database/model';
+import { type Transaction } from '~/database/prisma';
+import { type cli } from '~/scripts';
+import { stdout } from '~/support';
 
-import { seedCourses } from "./seed-courses";
-import { createDetail } from "./seed-details";
-import { findCorresponding } from "./util";
+import { seedCourses } from './seed-courses';
+import { createDetail } from './seed-details';
+import { findCorresponding } from './util';
 
 export async function seedSchools(tx: Transaction, ctx: cli.ScriptContext) {
   if (json.schools.length !== 0) {
@@ -14,10 +14,12 @@ export async function seedSchools(tx: Transaction, ctx: cli.ScriptContext) {
 
     const allSkills = await tx.skill.findMany({});
 
-    /* This is simply for debugging, since in the case that the slug does not correspond to an
-       actual skill, the Prisma error is not super descriptive. */
+    /**
+     * This is simply for debugging, since in the case that the slug does not correspond to an
+     * actual skill, the Prisma error is not super descriptive.
+     */
     const checkSkill = (skill: string) => {
-      const sk = allSkills.find(sk => sk.slug === skill);
+      const sk = allSkills.find(existingSkill => existingSkill.slug === skill);
       if (sk === undefined) {
         throw new Error(`Invalid slug: ${skill}`);
       }
@@ -31,36 +33,40 @@ export async function seedSchools(tx: Transaction, ctx: cli.ScriptContext) {
       output.begin(
         `Generating School ${jsonSchool.name} with ${jsonEducations.length} Educations...`,
       );
+      /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+         order, against a shared transaction client. */
       const school = await tx.school.create({
-        include: { educations: { include: { skills: true } } },
         data: {
           ...jsonSchool,
           createdBy: { connect: { id: ctx.user.id } },
-          updatedBy: { connect: { id: ctx.user.id } },
           educations: {
             create: [
               /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-              ...jsonEducations.map(({ skills = [], details, courses, ...jsonEducation }) => ({
+              ...jsonEducations.map(({ courses, details, skills = [], ...jsonEducation }) => ({
                 ...jsonEducation,
-                startDate: new Date(jsonEducation.startDate),
-                endDate: jsonEducation.endDate ? new Date(jsonEducation.endDate) : undefined,
                 createdById: ctx.user.id,
-                updatedById: ctx.user.id,
+                endDate: jsonEducation.endDate ? new Date(jsonEducation.endDate) : undefined,
                 skills: {
                   connect: skills.map(sk => ({ slug: checkSkill(sk) })),
                 },
+                startDate: new Date(jsonEducation.startDate),
+                updatedById: ctx.user.id,
               })),
             ],
           },
+          updatedBy: { connect: { id: ctx.user.id } },
         },
+        include: { educations: { include: { skills: true } } },
       });
       schools = [...schools, school];
       for (const education of school.educations) {
         const jsonEducation = findCorresponding(jsonEducations, education, {
-          field: "major",
-          reference: "education",
+          field: 'major',
+          reference: 'education',
           strict: true,
         });
+        /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+           order, against a shared transaction client. */
         await seedCourses(tx, ctx, education, jsonEducation, output);
 
         const jsonDetails = jsonEducation.details ?? [];
@@ -68,13 +74,15 @@ export async function seedSchools(tx: Transaction, ctx: cli.ScriptContext) {
           output.begin(
             `Generating ${jsonDetails.length} Detail(s) for Education: ${education.major}...`,
           );
+          /* eslint-disable-next-line no-await-in-loop -- The queries are issued sequentially, in
+             order, against a shared transaction client. */
           const details = await Promise.all(
             jsonDetails.map(jsonDetail =>
               createDetail(tx, ctx, {
+                detail: jsonDetail,
                 entityId: education.id,
                 entityType: DetailEntityType.EDUCATION,
                 skills: allSkills,
-                detail: jsonDetail,
               }),
             ),
           );
@@ -85,23 +93,23 @@ export async function seedSchools(tx: Transaction, ctx: cli.ScriptContext) {
         }
       }
 
-      output.complete("Successfully Generated School", {
+      output.complete('Successfully Generated School', {
         count: [i, json.schools.length],
         lineItems: [
-          { label: "Name", value: school.name },
+          { label: 'Name', value: school.name },
           {
-            label: "Educations",
             items: school.educations.map(education => [
               {
-                label: "Major",
+                label: 'Major',
                 value: education.major,
               },
               {
-                label: "Skills",
-                items: education.skills.map(skill => ({ label: "Slug", value: skill.slug })),
                 index: true,
+                items: education.skills.map(skill => ({ label: 'Slug', value: skill.slug })),
+                label: 'Skills',
               },
             ]),
+            label: 'Educations',
           },
         ],
       });

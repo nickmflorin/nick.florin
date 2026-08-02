@@ -1,17 +1,19 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { HideButton } from "~/components/buttons/HideButton";
-import { HighlightButton } from "~/components/buttons/HighlightButton";
-import { ShowButton } from "~/components/buttons/ShowButton";
-import { UnhighlightButton } from "~/components/buttons/UnhighlightButton";
+import { HideButton } from '~/components/buttons/HideButton';
+import { HighlightButton } from '~/components/buttons/HighlightButton';
+import { ShowButton } from '~/components/buttons/ShowButton';
+import { UnhighlightButton } from '~/components/buttons/UnhighlightButton';
 import {
   ConnectedTableControlBarPlaceholder,
   type ConnectedTableControlBarPlaceholderProps,
-} from "~/components/tables/ConnectedTableControlBarPlaceholder";
+} from '~/components/tables/ConnectedTableControlBarPlaceholder';
 
-export interface ExperiencesTableControlBarPlaceholderProps
-  extends Omit<ConnectedTableControlBarPlaceholderProps, "children"> {}
+export interface ExperiencesTableControlBarPlaceholderProps extends Omit<
+  ConnectedTableControlBarPlaceholderProps,
+  'children'
+> {}
 
 export const ExperiencesTableControlBarPlaceholder = (
   props: ExperiencesTableControlBarPlaceholderProps,

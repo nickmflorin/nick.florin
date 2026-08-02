@@ -1,20 +1,19 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandRepository } from "~/database/model";
-import { calculateSkillsExperience } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandRepository, calculateSkillsExperience } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { RepositorySchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { RepositorySchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 const UpdateRepositorySchema = RepositorySchema.partial();
 
@@ -22,7 +21,7 @@ export const updateRepository = async (
   experienceId: string,
   data: z.infer<typeof UpdateRepositorySchema>,
 ): Promise<MutationActionResponse<BrandRepository>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -32,8 +31,8 @@ export const updateRepository = async (
   }
 
   const repository = await db.repository.findUnique({
-    where: { id: experienceId },
     include: { skills: true },
+    where: { id: experienceId },
   });
   if (!repository) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -46,33 +45,33 @@ export const updateRepository = async (
   }
 
   const fieldErrors = new ApiClientFieldErrors();
-  const { skills: _skills, projects: _projects, ...rest } = parsed.data;
+  const { projects: _projects, skills: _skills, ...rest } = parsed.data;
 
   if (
     rest.slug &&
-    (await db.repository.count({ where: { slug: rest.slug, id: { notIn: [repository.id] } } }))
+    (await db.repository.count({ where: { id: { notIn: [repository.id] }, slug: rest.slug } }))
   ) {
-    fieldErrors.addUnique("slug", "The slug must be unique.");
+    fieldErrors.addUnique('slug', 'The slug must be unique.');
   }
 
   if (
     rest.npmPackageName &&
     (await db.repository.count({
-      where: { npmPackageName: rest.npmPackageName, id: { notIn: [repository.id] } },
+      where: { id: { notIn: [repository.id] }, npmPackageName: rest.npmPackageName },
     }))
   ) {
-    fieldErrors.addUnique("npmPackageName", "The npm package name must be unique.");
+    fieldErrors.addUnique('npmPackageName', 'The npm package name must be unique.');
   }
 
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
   const [projects] = await queryM2MsDynamically(db, {
-    model: "project",
-    ids: _projects,
     fieldErrors,
+    ids: _projects,
+    model: 'project',
   });
 
   if (!fieldErrors.isEmpty) {
@@ -83,9 +82,9 @@ export const updateRepository = async (
 
   let updateData = {
     ...rest,
-    updatedById: user.id,
     projects: projects ? { set: projects.map(proj => ({ id: proj.id })) } : undefined,
     skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+    updatedById: user.id,
   };
   if (updateData.visible === false && updateData.highlighted === undefined) {
     updateData = { ...updateData, highlighted: false };
@@ -95,8 +94,8 @@ export const updateRepository = async (
 
   return await db.$transaction(async tx => {
     const updated = await tx.repository.update({
-      where: { id: repository.id },
       data: updateData,
+      where: { id: repository.id },
     });
     await calculateSkillsExperience(tx, sks, { user });
     return { data: convertToPlainObject(updated) };

@@ -1,5 +1,5 @@
-import { SkillsChartModule } from "~/features/skills/components/SkillsChartModule";
+import { SkillsChartModule } from '~/features/skills/components/SkillsChartModule';
 
-export default async function ChartPage() {
-  return <SkillsChartModule />;
-}
+const ChartPage = () => <SkillsChartModule />;
+
+export default ChartPage;

@@ -1,9 +1,9 @@
-"use client";
-import React, { Component, type ReactNode } from "react";
+'use client';
+import { Component, type ReactNode } from 'react';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { ErrorView } from "./ErrorView";
+import { ErrorView } from './ErrorView';
 
 interface Props {
   readonly children?: ReactNode;
@@ -24,19 +24,17 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true };
   }
 
-  public async componentDidCatch(error: Error) {
-    logger.error(error, "Uncaught Error");
+  public componentDidCatch(error: Error) {
+    logger.error(error, 'Uncaught Error');
   }
 
   public render() {
     if (this.state.hasError) {
       const message =
         this.props.message ??
-        "An unknown error occurred. We will get to the bottom of it, your patience is appreciated!";
-      return <ErrorView title={this.props.title ?? "Error"}>{message}</ErrorView>;
+        'An unknown error occurred. We will get to the bottom of it, your patience is appreciated!';
+      return <ErrorView title={this.props.title ?? 'Error'}>{message}</ErrorView>;
     }
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;

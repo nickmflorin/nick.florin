@@ -1,17 +1,17 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { BrandCompany } from "~/database/model";
+import { type BrandCompany } from '~/database/model';
 
-import { ApiResponseState } from "~/components/ApiResponseState";
-import { type ExtendingDrawerProps } from "~/components/drawers";
-import { DrawerForm } from "~/components/drawers/DrawerForm";
-import { useCompanyForm } from "~/features/companies/components/forms/hooks";
-import { UpdateCompanyForm } from "~/features/companies/components/forms/UpdateCompanyForm";
-import { useCompany } from "~/hooks/api";
+import { ApiResponseState } from '~/components/ApiResponseState';
+import { type ExtendingDrawerProps } from '~/components/drawers';
+import { DrawerForm } from '~/components/drawers/DrawerForm';
+import { useCompanyForm } from '~/features/companies/components/forms/hooks';
+import { UpdateCompanyForm } from '~/features/companies/components/forms/UpdateCompanyForm';
+import { useCompany } from '~/hooks/api';
 
 interface UpdateCompanyDrawerProps extends ExtendingDrawerProps {
   readonly companyId: string;
-  readonly eager: Pick<BrandCompany, "name">;
+  readonly eager: Pick<BrandCompany, 'name'>;
 }
 
 export const UpdateCompanyDrawer = ({
@@ -21,17 +21,17 @@ export const UpdateCompanyDrawer = ({
 }: UpdateCompanyDrawerProps): JSX.Element => {
   const form = useCompanyForm();
 
-  const { data, isLoading, error, isValidating } = useCompany(companyId, {
+  const { data, error, isLoading, isValidating } = useCompany(companyId, {
     keepPreviousData: true,
-    query: { visibility: "admin", includes: [] },
+    query: { includes: [], visibility: 'admin' },
   });
   return (
-    <DrawerForm form={form} titleField="name" eagerTitle={eager.name}>
-      <ApiResponseState error={error} isLoading={isLoading || isValidating} data={data}>
+    <DrawerForm eagerTitle={eager.name} form={form} titleField='name'>
+      <ApiResponseState data={data} error={error} isLoading={isLoading || isValidating}>
         {company => (
           <UpdateCompanyForm
-            form={form}
             company={company}
+            form={form}
             onCancel={() => onClose()}
             onSuccess={() => onClose()}
           />
@@ -40,5 +40,3 @@ export const UpdateCompanyDrawer = ({
     </DrawerForm>
   );
 };
-
-export default UpdateCompanyDrawer;

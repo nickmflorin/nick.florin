@@ -1,64 +1,62 @@
-"use client";
+'use client';
 /* This component uses hooks, so it was already only ever rendered inside a client boundary.  The
    directive is now required explicitly, because Next does not allow 'ssr: false' with next/dynamic
    outside of a Client Component. */
-import dynamic from "next/dynamic";
-import { useState, type JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX, useState } from 'react';
 
-import { type ApiSkill } from "~/database/model";
+import { type ApiSkill } from '~/database/model';
 
-import { ChartFilterButton } from "~/components/buttons/ChartFilterButton";
-import { DrawerIds } from "~/components/drawers";
-// TODO: Dynamically load me, set loading indicator in filter button when loading.
-import { PortalDrawerWrapper } from "~/components/drawers/PortalDrawerWrapper";
-import { Tooltip } from "~/components/floating/Tooltip";
-import { Loading } from "~/components/loading/Loading";
-import { type SkillsChartFilterFormValues } from "~/features/skills/components/forms/SkillsChartFilterForm";
-import { useScreenSizes } from "~/hooks";
+import { ChartFilterButton } from '~/components/buttons/ChartFilterButton';
+import { DrawerIds } from '~/components/drawers';
+import { PortalDrawerWrapper } from '~/components/drawers/PortalDrawerWrapper';
+import { Tooltip } from '~/components/floating/Tooltip';
+import { Loading } from '~/components/loading/Loading';
+import { type SkillsChartFilterFormValues } from '~/features/skills/components/forms/SkillsChartFilterForm';
+import { useScreenSizes } from '~/hooks';
 
 const SkillsFilterPopover = dynamic(
-  () => import("./SkillsFilterPopover").then(mod => mod.SkillsFilterPopover),
+  () => import('./SkillsFilterPopover').then(mod => mod.SkillsFilterPopover),
   { ssr: false },
 );
 
 const SkillsFilterDrawer = dynamic(
-  () => import("./drawers/SkillsFilterDrawer").then(mod => mod.SkillsFilterDrawer),
-  { ssr: false, loading: () => <Loading isLoading /> },
+  () => import('./drawers/SkillsFilterDrawer').then(mod => mod.SkillsFilterDrawer),
+  { loading: () => <Loading isLoading />, ssr: false },
 );
 
 export interface SkillsFilterDropdownMenuProps {
-  readonly isLoading: boolean;
   readonly filters: SkillsChartFilterFormValues;
-  readonly filtersHaveChanged: boolean;
-  readonly skills: ApiSkill<[]>[];
-  readonly onClear: () => void;
+  readonly hasFiltersChanged: boolean;
+  readonly isLoading: boolean;
   readonly onChange: (values: SkillsChartFilterFormValues) => void;
+  readonly onClear: () => void;
+  readonly skills: ApiSkill<[]>[];
 }
 
 export const SkillsFilterDropdownMenu = ({
   filters,
+  hasFiltersChanged,
   isLoading,
-  filtersHaveChanged,
-  skills,
-  onClear,
   onChange,
+  onClear,
+  skills,
 }: SkillsFilterDropdownMenuProps): JSX.Element => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
-
   const { isLessThan } = useScreenSizes();
 
-  /* We do not want to show the chart filters on mobile devices until we figure out how to more
-     cleanly integrate them into the mobile experience with a drawer instead of a popover. */
-  if (isLessThan("md")) {
+  const shouldUseMobileFiltersDrawer = isLessThan('md');
+
+  if (shouldUseMobileFiltersDrawer) {
     return (
       <>
-        <Tooltip content="Filters" inPortal offset={{ mainAxis: 4 }}>
-          {({ ref, params }) => (
+        <Tooltip content='Filters' isInPortal offset={{ mainAxis: 4 }}>
+          {({ params, ref }) => (
             <ChartFilterButton
               {...params}
-              ref={ref}
-              size={isLessThan("md") ? "xsmall" : "small"}
               onClick={() => setDrawerIsOpen(true)}
+              ref={ref}
+              size={isLessThan('md') ? 'xsmall' : 'small'}
             />
           )}
         </Tooltip>
@@ -69,12 +67,12 @@ export const SkillsFilterDropdownMenu = ({
           >
             <SkillsFilterDrawer
               filters={filters}
-              onChange={onChange}
+              hasFiltersChanged={hasFiltersChanged}
               isLoading={isLoading}
-              filtersHaveChanged={filtersHaveChanged}
-              skills={skills}
-              onClose={() => setDrawerIsOpen(false)}
+              onChange={onChange}
               onClear={onClear}
+              onClose={() => setDrawerIsOpen(false)}
+              skills={skills}
             />
           </PortalDrawerWrapper>
         )}
@@ -84,12 +82,10 @@ export const SkillsFilterDropdownMenu = ({
   return (
     <SkillsFilterPopover
       filters={filters}
-      skills={skills}
-      filtersHaveChanged={filtersHaveChanged}
+      hasFiltersChanged={hasFiltersChanged}
       onChange={onChange}
-      onClear={() => onClear()}
+      onClear={onClear}
+      skills={skills}
     />
   );
 };
-
-export default SkillsFilterDropdownMenu;

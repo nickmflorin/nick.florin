@@ -1,21 +1,21 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type School } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type School } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { createSchool } from "~/actions/schools/create-school";
+import { createSchool } from '~/actions/schools/create-school';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { SchoolForm, type SchoolFormProps } from "./SchoolForm";
+import { SchoolForm, type SchoolFormProps } from './SchoolForm';
 
-export interface CreateSchoolFormProps extends Omit<SchoolFormProps, "action"> {
-  readonly onSuccess?: (m: School) => void;
+export interface CreateSchoolFormProps extends Omit<SchoolFormProps, 'action'> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: School) => void;
 }
 
 export const CreateSchoolForm = ({
@@ -23,14 +23,12 @@ export const CreateSchoolForm = ({
   onSuccess,
   ...props
 }: CreateSchoolFormProps): JSX.Element => {
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
   return (
     <SchoolForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof createSchool>> | null = null;
         try {
@@ -39,21 +37,20 @@ export const CreateSchoolForm = ({
           logger.errorUnsafe(e, "There was an error creating the school'.", {
             data,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error creating the school.");
+          return toast.error('There was an error creating the school.');
         }
-        const { error, data: school } = response;
+        const { data: school, error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
           form.reset();
-          refresh();
+          router.refresh();
           onSuccess?.(school);
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default CreateSchoolForm;

@@ -1,4 +1,4 @@
-import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
+import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect';
 
 export const useWindowResize = (fn: (w: Window) => void) => {
   useIsomorphicLayoutEffect(() => {
@@ -8,9 +8,9 @@ export const useWindowResize = (fn: (w: Window) => void) => {
       fn(window);
     };
 
-    window.addEventListener("resize", listener, false);
+    window.addEventListener('resize', listener, false);
     return () => {
-      window.removeEventListener("resize", listener);
+      window.removeEventListener('resize', listener);
     };
   }, [fn]);
 };

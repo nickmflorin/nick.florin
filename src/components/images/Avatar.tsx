@@ -1,50 +1,60 @@
-"use client";
-import Image from "next/image";
-import { useState, type ReactNode, type JSX } from "react";
+'use client';
+import Image from 'next/image';
+import { type JSX, type ReactNode, useState } from 'react';
 
-import { type IconProp, type IconName } from "~/components/icons";
-import { Icon } from "~/components/icons/Icon";
-import { Loading } from "~/components/loading/Loading";
+import { type IconName, type IconProp } from '~/components/icons';
+import { Icon } from '~/components/icons/Icon';
+import { Loading } from '~/components/loading/Loading';
 import {
-  type ComponentProps,
-  type QuantitativeSize,
-  classNames,
-  sizeToString,
-  inferQuantitativeSizeValue,
   type BorderRadius,
+  classNames,
+  type ComponentProps,
+  inferQuantitativeSizeValue,
   parseDataAttributes,
-} from "~/components/types";
+  type QuantitativeSize,
+  sizeToString,
+} from '~/components/types';
+
+/**
+ * Returns the numeric dimension passed to `next/image`'s `height` and `width` props for the
+ * avatar image.
+ *
+ * The image is constrained to expand to fill its container in SASS, so this value is mostly to
+ * satisfy Next.js's image optimization requirements and will not actually be used in practice.
+ */
+const getAvatarImageDimension = (size: QuantitativeSize<'px'> | undefined): number =>
+  size ? inferQuantitativeSizeValue(size) : 24;
 
 export interface AvatarProps extends ComponentProps {
-  readonly src?: string | null;
-  readonly size?: QuantitativeSize<"px">;
-  readonly radius?: BorderRadius;
-  readonly icon?: IconProp | IconName;
-  readonly iconClassName?: ComponentProps["className"];
-  readonly iconSize?: QuantitativeSize<"px">;
   readonly alt?: string;
-  readonly isLoading?: boolean;
-  readonly priority?: boolean;
-  readonly imageClassName?: ComponentProps["className"];
   readonly children?: ReactNode;
+  readonly fallbackIcon?: IconName | IconProp;
   readonly fallbackText?: string;
-  readonly fallbackIcon?: IconProp | IconName;
+  readonly hasPriority?: boolean;
+  readonly icon?: IconName | IconProp;
+  readonly iconClassName?: ComponentProps['className'];
+  readonly iconSize?: QuantitativeSize<'px'>;
+  readonly imageClassName?: ComponentProps['className'];
+  readonly isLoading?: boolean;
+  readonly radius?: BorderRadius;
+  readonly size?: QuantitativeSize<'px'>;
+  readonly src?: null | string;
 }
 
 export const Avatar = ({
-  src,
-  size,
-  radius = "full",
-  icon = { name: "image" },
   alt,
-  isLoading,
-  fallbackText,
-  iconClassName,
-  fallbackIcon,
-  priority,
   children,
+  fallbackIcon,
+  fallbackText,
+  hasPriority,
+  icon = { name: 'image' },
+  iconClassName,
+  iconSize = '24px',
   imageClassName,
-  iconSize = "24px",
+  isLoading,
+  radius = 'full',
+  size,
+  src,
   ...props
 }: AvatarProps): JSX.Element => {
   const [failed, setFailed] = useState(false);
@@ -52,43 +62,40 @@ export const Avatar = ({
   return (
     <div
       {...props}
-      {...parseDataAttributes({ radius, withoutImage: failed || !src || src.trim() === "" })}
-      className={classNames("avatar", props.className)}
+      {...parseDataAttributes({ radius, withoutImage: failed || !src || src.trim() === '' })}
+      className={classNames('avatar', props.className)}
       style={
         size
-          ? { ...props.style, height: sizeToString(size, "px"), width: sizeToString(size, "px") }
+          ? { ...props.style, height: sizeToString(size, 'px'), width: sizeToString(size, 'px') }
           : props.style
       }
     >
       <Loading isLoading={isLoading} />
-      {!failed && src && src.trim() !== "" ? (
+      {!failed && src && src.trim() !== '' ? (
         <Image
-          /* The image is constrained to expand to fill the container in SASS - so the numbers here
-             are mostly to satisfy NetJS for image optimization - but won't actually be used in
-             practice. */
-          height={size ? inferQuantitativeSizeValue(size) : 24}
-          width={size ? inferQuantitativeSizeValue(size) : 24}
-          src={src}
-          alt={alt ?? ""}
-          priority={priority}
-          className={classNames("avatar__image", imageClassName)}
+          alt={alt ?? ''}
+          className={classNames('avatar__image', imageClassName)}
+          height={getAvatarImageDimension(size)}
           onError={() => setFailed(true)}
+          priority={hasPriority}
+          src={src}
+          width={getAvatarImageDimension(size)}
         />
       ) : failed && fallbackText ? (
         fallbackText
       ) : failed && fallbackIcon ? (
         <Icon
+          className={classNames('icon text-gray-700', iconClassName)}
           icon={fallbackIcon}
-          className={classNames("icon text-gray-700", iconClassName)}
-          size={iconSize ? sizeToString(iconSize, "px") : undefined}
+          size={iconSize ? sizeToString(iconSize, 'px') : undefined}
         />
       ) : children ? (
         children
       ) : (
         <Icon
-          icon={icon}
           className={classNames(iconClassName)}
-          size={iconSize ? sizeToString(iconSize, "px") : undefined}
+          icon={icon}
+          size={iconSize ? sizeToString(iconSize, 'px') : undefined}
         />
       )}
     </div>

@@ -1,11 +1,11 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
-import { updateEducation } from "~/actions/educations/update-education";
+import { updateEducation } from '~/actions/educations/update-education';
 
-import { CheckboxCell } from "~/components/tables/cells/CheckboxCell";
-import type * as types from "~/components/tables/types";
-import type { EducationsTableModel, EducationsTableColumn } from "~/features/educations/types";
+import { CheckboxCell } from '~/components/tables/cells/CheckboxCell';
+import type * as types from '~/components/tables/types';
+import { type EducationsTableColumn, type EducationsTableModel } from '~/features/educations/types';
 
 interface RemoteCellProps {
   readonly education: EducationsTableModel;
@@ -14,10 +14,10 @@ interface RemoteCellProps {
 
 export const PostPonedCell = ({ education, table }: RemoteCellProps): JSX.Element => (
   <CheckboxCell
-    attribute="postPoned"
+    action={async (id, value) => await updateEducation(id, { postPoned: value })}
+    attribute='postPoned'
+    errorMessage='There was an error updating the education.'
     model={education}
     table={table}
-    errorMessage="There was an error updating the education."
-    action={async (id, value) => await updateEducation(id, { postPoned: value })}
   />
 );

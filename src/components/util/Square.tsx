@@ -1,26 +1,35 @@
-import type { ReactNode, JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import type { ComponentProps, QuantitativeSize } from "~/components/types";
-import { classNames, sizeToString } from "~/components/types";
+import {
+  classNames,
+  type ComponentProps,
+  type QuantitativeSize,
+  sizeToString,
+} from '~/components/types';
 
 export interface SquareProps extends ComponentProps {
-  readonly size?: QuantitativeSize<"px">;
+  readonly areChildrenContained?: boolean;
   readonly children: ReactNode;
-  readonly contain?: boolean;
+  readonly size?: QuantitativeSize<'px'>;
 }
 
-export const Square = ({ size, children, contain, ...props }: SquareProps): JSX.Element => (
+export const Square = ({
+  areChildrenContained,
+  children,
+  size,
+  ...props
+}: SquareProps): JSX.Element => (
   <div
     {...props}
     className={classNames(
-      "flex flex-col h-full w-auto aspect-square justify-center items-center",
-      { "[&>*]:max-h-full [&>*]:max-w-full": contain },
+      'flex flex-col h-full w-auto aspect-square justify-center items-center',
+      { '[&>*]:max-h-full [&>*]:max-w-full': areChildrenContained },
       props.className,
     )}
     style={{
       ...props.style,
-      width: size ? sizeToString(size, "px") : props.style?.width,
-      height: size ? sizeToString(size, "px") : props.style?.height,
+      height: size ? sizeToString(size, 'px') : props.style?.height,
+      width: size ? sizeToString(size, 'px') : props.style?.width,
     }}
   >
     {children}

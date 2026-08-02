@@ -1,16 +1,16 @@
-"use client";
-import { useState, type JSX } from "react";
+'use client';
+import { type JSX, useState } from 'react';
 
-import { type ApiDetail, type ApiNestedDetail, type DetailEntityType } from "~/database/model";
+import { type ApiDetail, type ApiNestedDetail, type DetailEntityType } from '~/database/model';
 
-import { Link } from "~/components/buttons";
-import { type ComponentProps } from "~/components/types";
-import { Text } from "~/components/typography";
+import { Link } from '~/components/buttons';
+import { type ComponentProps } from '~/components/types';
+import { Text } from '~/components/typography';
 
-import { ModifyDetailsTimeline } from "./ModifyDetailsTimeline";
+import { ModifyDetailsTimeline } from './ModifyDetailsTimeline';
 
 export interface ModifyDetailsViewProps extends ComponentProps {
-  readonly details: ApiDetail<["nestedDetails", "skills"]>[];
+  readonly details: ApiDetail<['nestedDetails', 'skills']>[];
   readonly entityId: string;
   readonly entityType: DetailEntityType;
   readonly onExpand: (detail: ApiDetail<[]> | ApiNestedDetail<[]>) => void;
@@ -20,13 +20,13 @@ export const ModifyDetailsView = (props: ModifyDetailsViewProps): JSX.Element =>
   const [createFormVisible, setCreateFormVisible] = useState(false);
 
   return (
-    <div className="flex flex-col gap-[12px]">
-      <div className="flex flex-row justify-between items-center">
-        <Text fontSize="sm" fontWeight="medium">{`${props.details.length} Details`}</Text>
+    <div className='flex flex-col gap-[12px]'>
+      <div className='flex flex-row justify-between items-center'>
+        <Text fontSize='sm' fontWeight='medium'>{`${props.details.length} Details`}</Text>
         <Link.Primary
-          className="text-blue-800 hover:text-blue-900"
-          fontSize="sm"
-          fontWeight="regular"
+          className='text-blue-800 hover:text-blue-900'
+          fontSize='sm'
+          fontWeight='regular'
           isDisabled={createFormVisible}
           onClick={() => setCreateFormVisible(true)}
         >
@@ -35,12 +35,10 @@ export const ModifyDetailsView = (props: ModifyDetailsViewProps): JSX.Element =>
       </div>
       <ModifyDetailsTimeline
         {...props}
-        createFormVisible={createFormVisible}
+        isCreateFormVisible={createFormVisible}
         onCancel={() => setCreateFormVisible(false)}
         onCreated={() => setCreateFormVisible(false)}
       />
     </div>
   );
 };
-
-export default ModifyDetailsView;

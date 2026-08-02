@@ -1,65 +1,66 @@
-import type { ReactNode, JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-import { arraysHaveSameElements } from "~/lib";
+import { arraysHaveSameElements } from '~/lib';
 
-import { ConnectedColumnSelect } from "./ConnectedColumnSelect";
-import { useDataTable } from "./hooks";
-import { TableControlBar, type TableControlBarProps } from "./TableControlBar";
+import { ConnectedColumnSelect } from './ConnectedColumnSelect';
+import { useDataTable } from './hooks';
+import { TableControlBar, type TableControlBarProps } from './TableControlBar';
 
 export interface ConnectedTableControlBarProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 > extends Omit<
-    TableControlBarProps<D, C>,
-    | "selectedRows"
-    | "allRowsAreSelected"
-    | "onSelectAllRows"
-    | "rowsAreDeletable"
-    | "targetId"
-    | "columns"
-    | "onVisibleColumnsChange"
-    | "visibleColumns"
-    | "children"
-  > {
+  TableControlBarProps<D, C>,
+  | 'areAllRowsSelected'
+  | 'areRowsDeletable'
+  | 'children'
+  | 'columns'
+  | 'onSelectAllRows'
+  | 'onVisibleColumnsChange'
+  | 'selectedRows'
+  | 'targetId'
+  | 'visibleColumns'
+> {
+  readonly children?: ((props: { readonly selectedRows: D[] }) => ReactNode) | ReactNode;
   readonly data: D[];
-  readonly children?: ReactNode | ((props: { readonly selectedRows: D[] }) => ReactNode);
 }
 
 export const ConnectedTableControlBar = <
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 >({
-  data,
   children,
+  data,
   ...props
 }: ConnectedTableControlBarProps<D, C>): JSX.Element => {
-  const { controlBarTargetId, selectedRows, rowsAreDeletable, setSelectedRows } = useDataTable<D>();
+  const { controlBarTargetId, rowsAreDeletable, selectedRows, setSelectedRows } = useDataTable<D>();
 
   return (
     <TableControlBar
       {...props}
-      targetId={controlBarTargetId}
-      selectedRows={selectedRows}
-      rowsAreDeletable={rowsAreDeletable}
-      columnsSelect={<ConnectedColumnSelect />}
-      onSelectAllRows={v => setSelectedRows(v ? data : [])}
-      allRowsAreSelected={
+      areAllRowsSelected={
         data.length !== 0 &&
         arraysHaveSameElements(
           selectedRows.map(r => r.id),
           data.map(datum => datum.id),
         )
       }
+      areRowsDeletable={rowsAreDeletable}
+      columnsSelect={<ConnectedColumnSelect />}
+      onSelectAllRows={v => setSelectedRows(v ? data : [])}
+      selectedRows={selectedRows}
+      targetId={controlBarTargetId}
     >
-      {typeof children === "function" ? children({ selectedRows }) : children}
+      {typeof children === 'function' ? children({ selectedRows }) : children}
     </TableControlBar>
   );
 };
 
-export type ConnectedTableControlBarComponent = {
-  <D extends types.DataTableDatum, C extends types.DataTableColumnConfig<D>>(
-    props: ConnectedTableControlBarProps<D, C>,
-  ): JSX.Element;
-};
+export type ConnectedTableControlBarComponent = <
+  D extends types.DataTableDatum,
+  C extends types.DataTableColumnConfig<D>,
+>(
+  props: ConnectedTableControlBarProps<D, C>,
+) => JSX.Element;

@@ -1,9 +1,7 @@
-import { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { CookiesProvider as RootCookiesProvider } from "next-client-cookies/server";
+import { CookiesProvider as RootCookiesProvider } from 'next-client-cookies/server';
 
-export const CookiesProvider = ({ children }: { children: ReactNode }): JSX.Element => (
+export const CookiesProvider = ({ children }: { readonly children: ReactNode }): JSX.Element => (
   <RootCookiesProvider>{children}</RootCookiesProvider>
 );
-
-export default CookiesProvider;

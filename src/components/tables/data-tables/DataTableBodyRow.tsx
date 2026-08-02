@@ -1,70 +1,69 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type FloatingContentRenderProps } from "~/components/floating";
-import Spinner from "~/components/icons/Spinner";
-import type { TableBodyRowProps } from "~/components/tables/generic/TableBodyRow";
-import { TableBodyRow } from "~/components/tables/generic/TableBodyRow";
-import type * as types from "~/components/tables/types";
+import { type FloatingContentRenderProps } from '~/components/floating';
+import { Spinner } from '~/components/icons/Spinner';
+import { TableBodyRow, type TableBodyRowProps } from '~/components/tables/generic/TableBodyRow';
+import type * as types from '~/components/tables/types';
 
-import { ActionsCell, type ActionsCellProps } from "../cells/ActionsCell";
-import { RowSelectCell } from "../cells/RowSelectCell";
-import { TableBodyCell } from "../generic/TableBodyCell";
+import { ActionsCell, type ActionsCellProps } from '../cells/ActionsCell';
+import { RowSelectCell } from '../cells/RowSelectCell';
+import { TableBodyCell } from '../generic/TableBodyCell';
 
-import { DataTableBodyCell } from "./DataTableBodyCell";
+import { DataTableBodyCell } from './DataTableBodyCell';
 
 export interface DataTableBodyRowProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
-> extends Omit<TableBodyRowProps, "children"> {
-  readonly datum: D;
+> extends Omit<TableBodyRowProps, 'children'> {
+  readonly actionMenuWidth?: ActionsCellProps['menuWidth'];
   readonly columns: types.DataTableColumn<D, C>[];
-  readonly actionMenuWidth?: ActionsCellProps["menuWidth"];
+  readonly datum: D;
   readonly excludeColumns?: types.TableColumnId<C>[];
-  readonly isSelected?: boolean;
-  readonly performSelectionWhenClicked?: boolean;
-  readonly onRowSelected?: (datum: D, isSelected: boolean) => void;
   readonly getRowActions?: (
     datum: D,
-    params: Pick<FloatingContentRenderProps, "setIsOpen">,
+    params: Pick<FloatingContentRenderProps, 'setIsOpen'>,
   ) => types.DataTableRowAction[];
+  readonly isSelected?: boolean;
+  readonly onRowSelected?: (datum: D, isSelected: boolean) => void;
+  readonly shouldPerformSelectionWhenClicked?: boolean;
 }
 
 export const DataTableBodyRow = <
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 >({
-  datum,
-  columns,
   actionMenuWidth,
+  columns,
+  datum,
   excludeColumns = [],
-  isSelected,
-  performSelectionWhenClicked = false,
-  onRowSelected,
   getRowActions,
+  isSelected,
+  onRowSelected,
+  shouldPerformSelectionWhenClicked = false,
   ...props
 }: DataTableBodyRowProps<D, C>): JSX.Element => (
   <TableBodyRow
     {...props}
     onClick={e => {
       e.stopPropagation();
-      if (performSelectionWhenClicked) {
+      if (shouldPerformSelectionWhenClicked) {
         onRowSelected?.(datum, !isSelected);
       }
       props.onClick?.(e);
     }}
   >
     {isSelected === undefined && (
-      <TableBodyCell align="center" className="loading-cell p-0">
-        <div className="flex flex-col h-full w-full justify-center items-center">
-          <Spinner isLoading={props.isLoading} size="18px" />
+      <TableBodyCell align='center' className='loading-cell p-0'>
+        <div className='flex flex-col h-full w-full justify-center items-center'>
+          <Spinner isLoading={props.isLoading} size='18px' />
         </div>
       </TableBodyCell>
     )}
     {isSelected !== undefined && (
-      <TableBodyCell align="center" className="loading-cell select-cell p-0">
-        <div className="flex flex-col h-full w-full justify-center items-center">
+      <TableBodyCell align='center' className='loading-cell select-cell p-0'>
+        <div className='flex flex-col h-full w-full justify-center items-center'>
           {props.isLoading ? (
-            <Spinner isLoading={props.isLoading} size="18px" />
+            <Spinner isLoading={props.isLoading} size='18px' />
           ) : (
             <RowSelectCell
               isSelected={isSelected}
@@ -77,11 +76,11 @@ export const DataTableBodyRow = <
     {columns
       .filter(col => !excludeColumns.includes(col.id))
       .map(col => (
-        <DataTableBodyCell<D, C> key={`${col.id}-${datum.id}`} column={col} datum={datum} />
+        <DataTableBodyCell<D, C> column={col} datum={datum} key={`${col.id}-${datum.id}`} />
       ))}
     {getRowActions && (
-      <TableBodyCell align="center">
-        <ActionsCell menuWidth={actionMenuWidth} actions={params => getRowActions(datum, params)} />
+      <TableBodyCell align='center'>
+        <ActionsCell actions={params => getRowActions(datum, params)} menuWidth={actionMenuWidth} />
       </TableBodyCell>
     )}
   </TableBodyRow>

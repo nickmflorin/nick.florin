@@ -1,44 +1,44 @@
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
 export const NodeEnvironmentNames = enumeratedLiterals(
-  ["development", "test", "production"] as const,
+  ['development', 'test', 'production'] as const,
   {},
 );
 
 export type NodeEnvironmentName = EnumeratedLiteralsMember<typeof NodeEnvironmentNames>;
 
 export const VercelEnvironmentNames = enumeratedLiterals(
-  ["development", "preview", "production"] as const,
+  ['development', 'preview', 'production'] as const,
   {},
 );
 
 export type VercelEnvironmentName = EnumeratedLiteralsMember<typeof VercelEnvironmentNames>;
 
 export const EnvironmentNames = enumeratedLiterals(
-  ["test", "local", "production", "preview"] as const,
+  ['test', 'local', 'production', 'preview'] as const,
   {},
 );
 
 export type EnvironmentName = EnumeratedLiteralsMember<typeof EnvironmentNames>;
 
 export const LogLevels = enumeratedLiterals(
-  ["error", "warn", "info", "debug", "silent"] as const,
+  ['error', 'warn', 'info', 'debug', 'silent'] as const,
   {},
 );
 export type LogLevel = EnumeratedLiteralsMember<typeof LogLevels>;
 
-export const DEFAULT_LOG_LEVELS: { [key in EnvironmentName]: LogLevel } = {
-  [EnvironmentNames.PRODUCTION]: LogLevels.INFO,
-  [EnvironmentNames.TEST]: LogLevels.DEBUG,
+export const DEFAULT_LOG_LEVELS: Record<EnvironmentName, LogLevel> = {
   [EnvironmentNames.LOCAL]: LogLevels.DEBUG,
   [EnvironmentNames.PREVIEW]: LogLevels.INFO,
+  [EnvironmentNames.PRODUCTION]: LogLevels.INFO,
+  [EnvironmentNames.TEST]: LogLevels.DEBUG,
 };
 
 export const getEnvironmentName = ({
   nodeEnvironment,
   vercelEnvironment,
 }: {
-  nodeEnvironment: "test" | "development" | "production";
+  nodeEnvironment: 'development' | 'production' | 'test';
   vercelEnvironment?: VercelEnvironmentName;
 }): EnvironmentName => {
   if (nodeEnvironment === NodeEnvironmentNames.TEST) {
@@ -61,7 +61,7 @@ export const getEnvironmentNameUnsafe = ({
   nodeEnvironment,
   vercelEnvironment,
 }: {
-  nodeEnvironment: "test" | "development" | "production";
+  nodeEnvironment: 'development' | 'production' | 'test';
   vercelEnvironment?: string;
 }): EnvironmentName => {
   if (vercelEnvironment !== undefined && !VercelEnvironmentNames.contains(vercelEnvironment)) {

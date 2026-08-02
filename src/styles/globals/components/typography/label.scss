@@ -1,13 +1,13 @@
-@use "partials";
+@use 'partials';
 
-@use "./base" as *;
-@use "./constants" as constants;
-@use "./mixins" as mixins;
+@use './base' as *;
+@use './constants' as constants;
+@use './mixins' as mixins;
 
 @mixin label-base() {
   @include typography-base();
-  @include mixins.font-family("label");
-  @include mixins.font("label", constants.get-default-size("label"));
+  @include mixins.font-family('label');
+  @include mixins.font('label', constants.get-default-size('label'));
 }
 
 label {
@@ -21,5 +21,5 @@ label {
   @include mixins.with-font-weights();
   @include mixins.with-font-transforms();
   @include mixins.with-font-families();
-  @include mixins.with-font-sizes("label");
+  @include mixins.with-font-sizes('label');
 }

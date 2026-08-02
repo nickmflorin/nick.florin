@@ -1,9 +1,9 @@
-"use client";
-import type { ReactNode } from "react";
+'use client';
+import { type ReactNode } from 'react';
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from 'framer-motion';
 
-import { useNavMenu } from "~/hooks";
+import { useNavMenu } from '~/hooks';
 
 export interface SiteMenuWrapperProps {
   readonly children: ReactNode;
@@ -16,13 +16,13 @@ export const SiteNavMenuWrapper = ({ children }: SiteMenuWrapperProps) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          transition={{ type: "spring", bounce: 0 }}
-          className="site-nav-menu-wrapper"
-          initial={{ x: "100%" }}
           animate={{ x: 0 }}
-          exit={{ x: "100%" }}
+          className='site-nav-menu-wrapper'
+          exit={{ x: '100%' }}
+          initial={{ x: '100%' }}
+          transition={{ bounce: 0, type: 'spring' }}
         >
-          <div className="site-nav-menu-container">{children}</div>
+          <div className='site-nav-menu-container'>{children}</div>
         </motion.div>
       )}
     </AnimatePresence>

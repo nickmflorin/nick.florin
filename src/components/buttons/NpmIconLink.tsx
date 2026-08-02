@@ -1,27 +1,24 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { getNpmPackageUrl } from "~/database/model";
+import { getNpmPackageUrl } from '~/database/model';
 
-import { classNames } from "~/components/types";
+import { classNames } from '~/components/types';
 
-import { IconButton, type IconButtonProps } from "./generic";
+import { IconButton, type IconButtonProps } from './generic';
 
-export type NpmIconLinkProps = Omit<
-  IconButtonProps<"a">,
-  "children" | "href" | "icon" | "target" | "rel"
-> & {
+export type NpmIconLinkProps = {
   readonly npmPackageName: string;
-};
+} & Omit<IconButtonProps<'a'>, 'children' | 'href' | 'icon' | 'rel' | 'target'>;
 
 export const NpmIconLink = ({ npmPackageName, ...props }: NpmIconLinkProps): JSX.Element => (
   <IconButton.Transparent
-    size="24px"
-    iconSize="24px"
+    iconSize='24px'
+    size='24px'
     {...props}
-    element="a"
-    className={classNames("text-npm-red", props.className)}
-    icon={{ name: "npm", iconStyle: "brands" }}
+    className={classNames('text-npm-red', props.className)}
+    element='a'
     href={getNpmPackageUrl(npmPackageName)}
+    icon={{ iconStyle: 'brands', name: 'npm' }}
     openInNewTab
   />
 );

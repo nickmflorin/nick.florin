@@ -1,44 +1,64 @@
-"use client";
-import { cloneElement, useMemo, useCallback, type JSX } from "react";
+'use client';
+import {
+  cloneElement,
+  type CSSProperties,
+  type JSX,
+  type ReactElement,
+  type ReactNode,
+  useCallback,
+  useMemo,
+} from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-import { type ComponentProps } from "~/components/types";
+import { type ComponentProps } from '~/components/types';
 
-import { Arrow } from "./Arrow";
-import { ConditionalPortal } from "./ConditionalPortal";
+import { Arrow } from './Arrow';
+import { ConditionalPortal } from './ConditionalPortal';
+
+/**
+ * The props of the element that the popover's floating content is cloned from.
+ *
+ * React types the props of a `JSX.Element` as `any`, so the props that this component reads off of
+ * the element have to be described explicitly. The index signature preserves the arbitrary other
+ * props that the element being cloned may define.
+ */
+interface ClonedElementProps {
+  readonly children?: ReactNode;
+  readonly [prop: string]: unknown;
+  readonly style?: CSSProperties;
+}
 
 export interface PopoverContentWrapperProps {
-  /**
-   * The content that appears inside of the floating element.
-   */
+  readonly arrowClassName?: ComponentProps['className'];
   readonly children: types.PopoverContent;
-  readonly inPortal?: boolean;
-  readonly isDisabled?: boolean;
-  readonly withArrow?: boolean;
-  readonly arrowClassName?: ComponentProps["className"];
   readonly context: types.PopoverContext;
+  readonly hasArrow?: boolean;
+  readonly isDisabled?: boolean;
+  readonly isInPortal?: boolean;
   readonly outerContent?: types.PopoverOuterContent;
 }
 
 export const PopoverContentWrapper = ({
-  children: _children,
-  outerContent,
-  inPortal,
-  isDisabled,
-  withArrow = true,
   arrowClassName,
-  context: { floatingProps, floatingStyles, refs, arrowRef, context, isOpen, setIsOpen },
+  children: _children,
+  context: { arrowRef, context, floatingProps, floatingStyles, isOpen, refs, setIsOpen },
+  hasArrow = true,
+  isDisabled,
+  isInPortal,
+  outerContent,
 }: PopoverContentWrapperProps) => {
+  const setFloatingRef = useCallback((node: HTMLElement | null) => refs.setFloating(node), [refs]);
+
   const cloneAndRender = useCallback(
     (element: JSX.Element) => {
-      const ele = outerContent
+      const ele: ReactElement<ClonedElementProps> = outerContent
         ? outerContent({
             children: element,
-            ref: refs.setFloating,
             isOpen,
-            setIsOpen,
             params: floatingProps,
+            ref: setFloatingRef,
+            setIsOpen,
             styles: floatingStyles,
           })
         : element;
@@ -46,23 +66,21 @@ export const PopoverContentWrapper = ({
         ele,
         {
           ...floatingProps,
-          ref: refs.setFloating,
+          ref: setFloatingRef,
           style: { ...ele.props.style, ...floatingStyles },
         },
         <>
           {ele.props.children}
-          {context && withArrow && (
-            <Arrow ref={arrowRef} context={context} className={arrowClassName} />
-          )}
+          {hasArrow && <Arrow className={arrowClassName} context={context} ref={arrowRef} />}
         </>,
       );
     },
     [
       arrowRef,
       context,
-      withArrow,
+      hasArrow,
       floatingProps,
-      refs,
+      setFloatingRef,
       floatingStyles,
       arrowClassName,
       isOpen,
@@ -73,33 +91,31 @@ export const PopoverContentWrapper = ({
 
   const children = useMemo(() => {
     if (isOpen && !isDisabled) {
-      if (typeof _children === "function") {
+      if (typeof _children === 'function') {
         return _children({
-          ref: refs.setFloating,
           isOpen,
-          setIsOpen,
           params: floatingProps,
+          ref: setFloatingRef,
+          setIsOpen,
           styles: floatingStyles,
         });
       }
       return cloneAndRender(_children);
     }
-    return <></>;
+    return null;
   }, [
     _children,
     isOpen,
     isDisabled,
     floatingProps,
     floatingStyles,
-    refs,
+    setFloatingRef,
     setIsOpen,
     cloneAndRender,
   ]);
 
   if (isOpen && !isDisabled) {
-    return <ConditionalPortal inPortal={inPortal}>{children}</ConditionalPortal>;
+    return <ConditionalPortal inPortal={isInPortal}>{children}</ConditionalPortal>;
   }
-  return <></>;
+  return null;
 };
-
-export default PopoverContentWrapper;

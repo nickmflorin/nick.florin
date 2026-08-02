@@ -1,15 +1,15 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import type { EnumeratedLiteralsModel } from "enumerated-literals";
+import { type EnumeratedLiteralsModel } from 'enumerated-literals';
 
-import { type BrandSkill, type ProgrammingDomains, type ProgrammingDomain } from "~/database/model";
+import { type BrandSkill, type ProgrammingDomain, type ProgrammingDomains } from '~/database/model';
 
-import { updateSkill } from "~/actions/skills/update-skill";
+import { updateSkill } from '~/actions/skills/update-skill';
 
-import { SelectCell } from "~/components/tables/cells/SelectCell";
-import type * as types from "~/components/tables/types";
-import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
-import type { SkillsTableModel, SkillsTableColumn } from "~/features/skills/types";
+import { SelectCell } from '~/components/tables/cells/SelectCell';
+import type * as types from '~/components/tables/types';
+import { ProgrammingDomainSelect } from '~/features/skills/components/input/ProgrammingDomainSelect';
+import { type SkillsTableColumn, type SkillsTableModel } from '~/features/skills/types';
 
 interface ProgrammingDomainsCellProps {
   readonly skill: SkillsTableModel;
@@ -21,19 +21,19 @@ export const ProgrammingDomainsCell = ({
   table,
 }: ProgrammingDomainsCellProps): JSX.Element => (
   <SelectCell<
-    "multi",
+    'multi',
     EnumeratedLiteralsModel<typeof ProgrammingDomains>,
     SkillsTableModel,
     ProgrammingDomain,
     BrandSkill
   >
-    component={ProgrammingDomainSelect}
-    table={table}
-    behavior="multi"
-    attribute="programmingDomains"
-    value={skill.programmingDomains}
-    row={skill}
     action={async v => await updateSkill(skill.id, { programmingDomains: v })}
-    errorMessage="There was an error updating the skill."
+    attribute='programmingDomains'
+    behavior='multi'
+    component={ProgrammingDomainSelect}
+    errorMessage='There was an error updating the skill.'
+    row={skill}
+    table={table}
+    value={skill.programmingDomains}
   />
 );

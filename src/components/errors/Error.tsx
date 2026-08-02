@@ -1,18 +1,18 @@
-import type { ReactNode, JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import { ShowHide } from "~/components/util";
+import { ShowHide } from '~/components/util';
 
-import { ErrorView, type ErrorViewProps } from "./ErrorView";
+import { ErrorView, type ErrorViewProps } from './ErrorView';
 
 export interface ErrorProps extends ErrorViewProps {
-  readonly hideChildrenOnError?: boolean;
+  readonly areChildrenHiddenOnError?: boolean;
   readonly message?: ReactNode | ReactNode[];
 }
 
 export const Error = ({
-  error,
-  hideChildrenOnError = true,
+  areChildrenHiddenOnError = true,
   children,
+  error,
   message,
   ...props
 }: ErrorProps): JSX.Element => {
@@ -24,7 +24,7 @@ export const Error = ({
             {message}
           </ErrorView>
         </ShowHide>
-        <ShowHide hide={error !== undefined && error !== null && hideChildrenOnError}>
+        <ShowHide hide={error !== undefined && error !== null && areChildrenHiddenOnError}>
           {children}
         </ShowHide>
       </>

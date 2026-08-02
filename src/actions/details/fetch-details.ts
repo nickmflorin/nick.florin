@@ -1,26 +1,25 @@
-import type { ApiDetail, DetailIncludes } from "~/database/model";
-import { fieldIsIncluded } from "~/database/model";
-import { db } from "~/database/prisma";
-import { conditionalFilters } from "~/database/util";
-import { isUuid } from "~/lib/typeguards";
+import { type ApiDetail, type DetailIncludes, fieldIsIncluded } from '~/database/model';
+import { db } from '~/database/prisma';
+import { conditionalFilters } from '~/database/util';
+import { isUuid } from '~/lib/typeguards';
 
 import {
-  constructTableSearchClause,
-  getDetailsOrdering,
-  PAGE_SIZES,
-  type ServerSidePaginationParams,
-  clampPagination,
-  type DetailsControls,
-  standardListFetchAction,
-  type StandardFetchActionReturn,
   type ActionCountParams,
   type ActionFilterParams,
   type ActionPaginationParams,
-} from "~/actions";
+  clampPagination,
+  constructTableSearchClause,
+  type DetailsControls,
+  getDetailsOrdering,
+  PAGE_SIZES,
+  type ServerSidePaginationParams,
+  type StandardFetchActionReturn,
+  standardListFetchAction,
+} from '~/actions';
 
-const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<DetailsControls>) =>
+const filtersClause = ({ filterIsVisible, filters }: ActionFilterParams<DetailsControls>) =>
   conditionalFilters([
-    filters.search ? constructTableSearchClause("detail", filters.search) : undefined,
+    filters.search ? constructTableSearchClause('detail', filters.search) : undefined,
     filters.skills && filters.skills.length !== 0
       ? { skills: { some: { id: { in: filters.skills } } } }
       : undefined,
@@ -33,8 +32,8 @@ const filtersClause = ({ filters, filterIsVisible }: ActionFilterParams<DetailsC
     { visible: filterIsVisible(filters.visible) },
   ] as const);
 
-const whereClause = ({ filters, filterIsVisible }: ActionFilterParams<DetailsControls>) => {
-  const clause = filtersClause({ filters, filterIsVisible });
+const whereClause = ({ filterIsVisible, filters }: ActionFilterParams<DetailsControls>) => {
+  const clause = filtersClause({ filterIsVisible, filters });
   if (clause.length !== 0) {
     return { AND: [...clause] };
   }
@@ -48,10 +47,10 @@ export const fetchDetailsCount = standardListFetchAction(
   ): StandardFetchActionReturn<{
     count: number;
   }> => {
-    const count = await db.skill.count({ where: whereClause({ filters, filterIsVisible }) });
+    const count = await db.skill.count({ where: whereClause({ filterIsVisible, filters }) });
     return { count };
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchDetailsPagination = standardListFetchAction(
@@ -60,20 +59,20 @@ export const fetchDetailsPagination = standardListFetchAction(
     { filterIsVisible },
   ): StandardFetchActionReturn<ServerSidePaginationParams> => {
     const count = await db.skill.count({
-      where: whereClause({ filters, filterIsVisible }),
+      where: whereClause({ filterIsVisible, filters }),
     });
     return clampPagination({ count, page, pageSize: PAGE_SIZES.skill });
   },
-  { authenticated: true, adminOnly: true },
+  { adminOnly: true, authenticated: true },
 );
 
 export const fetchDetails = <I extends DetailIncludes>(includes: I) =>
   standardListFetchAction(
     async (
-      { filters, ordering, page, limit, visibility }: Omit<DetailsControls<I>, "includes">,
+      { filters, limit, ordering, page, visibility }: Omit<DetailsControls<I>, 'includes'>,
       { filterIsVisible },
     ): StandardFetchActionReturn<ApiDetail<I>[]> => {
-      let pagination: Omit<ServerSidePaginationParams, "count"> | null = null;
+      let pagination: null | Omit<ServerSidePaginationParams, 'count'> = null;
       if (page !== undefined) {
         ({ data: pagination } = await fetchDetailsPagination(
           { filters, page, visibility },
@@ -82,42 +81,42 @@ export const fetchDetails = <I extends DetailIncludes>(includes: I) =>
       }
 
       const details = await db.detail.findMany({
-        where: whereClause({ filters, filterIsVisible }),
-        orderBy: getDetailsOrdering(ordering),
-        skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
-        take: pagination ? pagination.pageSize : limit,
         include: {
-          project: {
-            include: {
-              skills: fieldIsIncluded("skills", includes)
-                ? { where: { visible: filterIsVisible(filters.visible) } }
-                : undefined,
-            },
-          },
-          skills: fieldIsIncluded("skills", includes)
-            ? { where: { visible: filterIsVisible(filters.visible) } }
-            : undefined,
-          nestedDetails: fieldIsIncluded("nestedDetails", includes)
+          nestedDetails: fieldIsIncluded('nestedDetails', includes)
             ? {
-                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-                where: { visible: filterIsVisible(filters.visible) },
                 include: {
-                  skills: fieldIsIncluded("skills", includes)
-                    ? { where: { visible: filterIsVisible(filters.visible) } }
-                    : undefined,
                   project: {
                     include: {
-                      skills: fieldIsIncluded("skills", includes)
+                      skills: fieldIsIncluded('skills', includes)
                         ? { where: { visible: filterIsVisible(filters.visible) } }
                         : undefined,
                     },
                   },
+                  skills: fieldIsIncluded('skills', includes)
+                    ? { where: { visible: filterIsVisible(filters.visible) } }
+                    : undefined,
                 },
+                orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+                where: { visible: filterIsVisible(filters.visible) },
               }
             : undefined,
+          project: {
+            include: {
+              skills: fieldIsIncluded('skills', includes)
+                ? { where: { visible: filterIsVisible(filters.visible) } }
+                : undefined,
+            },
+          },
+          skills: fieldIsIncluded('skills', includes)
+            ? { where: { visible: filterIsVisible(filters.visible) } }
+            : undefined,
         },
+        orderBy: getDetailsOrdering(ordering),
+        skip: pagination ? pagination.pageSize * (pagination.page - 1) : undefined,
+        take: pagination ? pagination.pageSize : limit,
+        where: whereClause({ filterIsVisible, filters }),
       });
       return details as ApiDetail<I>[];
     },
-    { authenticated: false, adminOnly: false },
+    { adminOnly: false, authenticated: false },
   );

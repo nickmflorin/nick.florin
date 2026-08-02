@@ -1,30 +1,34 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type ApiDetail, type Project, type DetailEntityType } from "~/database/model";
-import { calculateSkillsExperience } from "~/database/model";
-import { db } from "~/database/prisma";
-import { logger } from "~/internal/logger";
-import { isUuid } from "~/lib/typeguards";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import {
+  type ApiDetail,
+  calculateSkillsExperience,
+  type DetailEntityType,
+  type Project,
+} from '~/database/model';
+import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
+import { isUuid } from '~/lib/typeguards';
 
-import { type MutationActionResponse } from "~/actions";
-import { getEntity } from "~/actions/get-entity";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { DetailSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { getEntity } from '~/actions/get-entity';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { DetailSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 export const createDetail = async (
   entityId: string,
   entityType: DetailEntityType,
   data: z.infer<typeof DetailSchema>,
-): Promise<MutationActionResponse<ApiDetail<["skills"]>>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+): Promise<MutationActionResponse<ApiDetail<['skills']>>> => {
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -37,7 +41,7 @@ export const createDetail = async (
     });
     return {
       error: ApiClientGlobalError.NotFound({
-        message: "The requested entity resource could not be found.",
+        message: 'The requested entity resource could not be found.',
       }).json,
     };
   }
@@ -45,7 +49,7 @@ export const createDetail = async (
   if (!entity) {
     return {
       error: ApiClientGlobalError.NotFound({
-        message: "The requested entity resource could not be found.",
+        message: 'The requested entity resource could not be found.',
       }).json,
     };
   }
@@ -60,13 +64,13 @@ export const createDetail = async (
   const { label, project: _project, skills: _skills, ...rest } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  let project: Project | null = null;
+  let project: null | Project = null;
   if (_project) {
     project = await db.project.findUnique({ where: { id: _project } });
     if (!project) {
-      fieldErrors.addDoesNotExist("project", {
-        message: "The project does not exist.",
+      fieldErrors.addDoesNotExist('project', {
         internalMessage: `The project with ID '${_project}' does not exist.`,
+        message: 'The project does not exist.',
       });
     }
   }
@@ -76,13 +80,13 @@ export const createDetail = async (
       where: { entityId, entityType, label },
     }))
   ) {
-    fieldErrors.addUnique("label", "The 'label' must be unique for a given parent.");
+    fieldErrors.addUnique('label', "The 'label' must be unique for a given parent.");
   }
 
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
 
   if (!fieldErrors.isEmpty) {
@@ -93,13 +97,13 @@ export const createDetail = async (
     const detail = await tx.detail.create({
       data: {
         ...rest,
-        projectId: project?.id,
+        createdById: user.id,
         entityId: entity.id,
         entityType,
         label,
-        createdById: user.id,
-        updatedById: user.id,
+        projectId: project?.id,
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+        updatedById: user.id,
       },
       include: { project: { include: { skills: true } }, skills: true },
     });

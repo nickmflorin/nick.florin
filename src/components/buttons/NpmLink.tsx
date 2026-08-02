@@ -1,26 +1,26 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { getNpmPackageUrl } from "~/database/model";
+import { getNpmPackageUrl } from '~/database/model';
 
-import { classNames } from "~/components/types";
+import { classNames } from '~/components/types';
 
-import { Link, type LinkProps } from "./generic";
+import { Link, type LinkProps } from './generic';
 
-export type NpmLinkProps = Omit<LinkProps<"link">, "children" | "href" | "icon"> & {
+export type NpmLinkProps = {
   readonly npmPackageName: string;
-};
+} & Omit<LinkProps<'link'>, 'children' | 'href' | 'icon'>;
 
 export const NpmLink = ({ npmPackageName, ...props }: NpmLinkProps): JSX.Element => (
   <Link
-    fontWeight="medium"
-    fontSize="xs"
+    fontSize='xs'
+    fontWeight='medium'
     {...props}
-    element="a"
-    className={classNames("font-mono tracking-tight text-github-black", props.className)}
-    icon={{ name: "npm", iconStyle: "brands" }}
-    iconSize="24px"
-    iconClassName="text-npm-red"
+    className={classNames('font-mono tracking-tight text-github-black', props.className)}
+    element='a'
     href={getNpmPackageUrl(npmPackageName)}
+    icon={{ iconStyle: 'brands', name: 'npm' }}
+    iconClassName='text-npm-red'
+    iconSize='24px'
     openInNewTab
   >
     {npmPackageName}

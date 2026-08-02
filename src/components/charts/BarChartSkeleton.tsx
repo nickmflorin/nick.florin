@@ -1,25 +1,24 @@
-import { clamp } from "lodash-es";
+import { clamp } from 'lodash-es';
 
-import { Skeleton } from "~/components/loading/Skeleton";
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { Skeleton } from '~/components/loading/Skeleton';
+import { classNames, type ComponentProps } from '~/components/types';
 
 export interface BarChartSkeletonProps extends ComponentProps {
   readonly gap?: number;
-  readonly numBars?: number;
   readonly heightStep?: number;
-  readonly minBarHeight?: number;
   readonly maxBarHeight?: number;
+  readonly minBarHeight?: number;
+  readonly numBars?: number;
 }
 
 const generateHeights = ({
-  numBars = 10,
   heightStep,
-  minBarHeight = 30,
   maxBarHeight = 100,
+  minBarHeight = 30,
+  numBars = 10,
 }: Pick<
   BarChartSkeletonProps,
-  "numBars" | "minBarHeight" | "maxBarHeight" | "heightStep"
+  'heightStep' | 'maxBarHeight' | 'minBarHeight' | 'numBars'
 >): `${number}%`[] => {
   const heights: number[] = [];
   const step = heightStep
@@ -32,20 +31,20 @@ const generateHeights = ({
 };
 
 export const BarChartSkeleton = ({
-  numBars = 10,
+  gap = 4,
+  heightStep,
   maxBarHeight,
   minBarHeight,
-  heightStep,
-  gap = 4,
+  numBars = 10,
   ...props
 }: BarChartSkeletonProps) => (
   <div
     {...props}
-    className={classNames("flex flex-row h-full w-full items-end px-4", props.className)}
+    className={classNames('flex flex-row h-full w-full items-end px-4', props.className)}
     style={{ ...props.style, gap }}
   >
-    {generateHeights({ numBars, minBarHeight, maxBarHeight, heightStep }).map((height, i) => (
-      <Skeleton key={i} className="flex-1" height={height} />
+    {generateHeights({ heightStep, maxBarHeight, minBarHeight, numBars }).map((height, i) => (
+      <Skeleton className='flex-1' height={height} key={i} />
     ))}
   </div>
 );

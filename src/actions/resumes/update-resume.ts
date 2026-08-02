@@ -1,16 +1,15 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandResume } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandResume } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { getResumesOrdering } from "~/actions";
-import { ResumeSchema } from "~/actions/schemas";
-import { ApiClientGlobalError, ApiClientFormError } from "~/api";
+import { getResumesOrdering, type MutationActionResponse } from '~/actions';
+import { ResumeSchema } from '~/actions/schemas';
+import { ApiClientFormError, ApiClientGlobalError } from '~/api';
 
-import { setResumesPrimaryFlag } from "./fetch-resumes";
+import { setResumesPrimaryFlag } from './fetch-resumes';
 
 const UpdateResumeSchema = ResumeSchema.partial();
 
@@ -18,7 +17,7 @@ export const updateResume = async (
   resumeId: string,
   data: z.infer<typeof UpdateResumeSchema>,
 ): Promise<MutationActionResponse<{ resume: BrandResume; resumes: BrandResume[] }>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -41,11 +40,11 @@ export const updateResume = async (
   }
 
   const updated = await db.resume.update({
-    where: { id: resume.id },
     data: {
       ...data,
       updatedById: user.id,
     },
+    where: { id: resume.id },
   });
   const resumes = await db.resume.findMany({ orderBy: getResumesOrdering() });
   return {

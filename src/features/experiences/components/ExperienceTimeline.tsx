@@ -1,28 +1,28 @@
-import dynamic from "next/dynamic";
-import type { JSX } from "react";
+import dynamic from 'next/dynamic';
+import { type JSX } from 'react';
 
-import { removeRedundantTopLevelSkills } from "~/database/model";
+import { removeRedundantTopLevelSkills } from '~/database/model';
 
-import { fetchExperiences } from "~/actions/experiences/fetch-experiences";
+import { fetchExperiences } from '~/actions/experiences/fetch-experiences';
 
-import { TimelineIcon } from "~/components/icons/TimelineIcon";
-import { Loading } from "~/components/loading/Loading";
-import { CommitTimeline } from "~/components/timelines/CommitTimeline";
-import { type ComponentProps } from "~/components/types";
-import { ResumeModelPageTile } from "~/features/resume/components/tiles/ResumeModelPageTile";
+import { TimelineIcon } from '~/components/icons/TimelineIcon';
+import { Loading } from '~/components/loading/Loading';
+import { CommitTimeline } from '~/components/timelines/CommitTimeline';
+import { type ComponentProps } from '~/components/types';
+import { ResumeModelPageTile } from '~/features/resume/components/tiles/ResumeModelPageTile';
 
-const TimelineItem = dynamic(() => import("@mantine/core").then(mod => mod.TimelineItem), {
-  loading: () => <Loading isLoading={true} />,
+const TimelineItem = dynamic(() => import('@mantine/core').then(mod => mod.TimelineItem), {
+  loading: () => <Loading isLoading />,
 });
 
 export type ExperienceTimelineProps = ComponentProps;
 
 export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promise<JSX.Element> => {
-  const fetcher = fetchExperiences(["skills", "details"]);
+  const fetcher = fetchExperiences(['skills', 'details']);
   const { data: _experiences } = await fetcher(
     {
-      visibility: "public",
       filters: { visible: true },
+      visibility: 'public',
     },
     { strict: true },
   );
@@ -32,12 +32,10 @@ export const ExperienceTimeline = async (props: ExperienceTimelineProps): Promis
   return (
     <CommitTimeline {...props}>
       {experiences.map(experience => (
-        <TimelineItem key={experience.id} bullet={<TimelineIcon />}>
+        <TimelineItem bullet={<TimelineIcon />} key={experience.id}>
           <ResumeModelPageTile model={experience} />
         </TimelineItem>
       ))}
     </CommitTimeline>
   );
 };
-
-export default ExperienceTimeline;

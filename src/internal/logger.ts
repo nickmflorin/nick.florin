@@ -1,9 +1,9 @@
-import { NextLogger } from "./loggers/next-logger";
+import { NextLogger } from './loggers/next-logger';
 
-const initializeLogger = () => NextLogger.create("main");
+const initializeLogger = () => NextLogger.create('main');
 
 let _logger: NextLogger;
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === 'production') {
   _logger = initializeLogger();
 } else {
   if (!(globalThis as unknown as { logger?: NextLogger }).logger) {

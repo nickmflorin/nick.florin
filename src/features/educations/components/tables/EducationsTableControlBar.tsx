@@ -1,36 +1,35 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useState, useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useState, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { deleteEducations } from "~/actions/educations/delete-educations";
-import { hideEducations } from "~/actions/educations/hide-educations";
-import { highlightEducations } from "~/actions/educations/highlight-educations";
-import { showEducations } from "~/actions/educations/show-educations";
-import { unhighlightEducations } from "~/actions/educations/unhighlight-educations";
+import { deleteEducations } from '~/actions/educations/delete-educations';
+import { hideEducations } from '~/actions/educations/hide-educations';
+import { highlightEducations } from '~/actions/educations/highlight-educations';
+import { showEducations } from '~/actions/educations/show-educations';
+import { unhighlightEducations } from '~/actions/educations/unhighlight-educations';
 
-import { HideButton } from "~/components/buttons/HideButton";
-import { HighlightButton } from "~/components/buttons/HighlightButton";
-import { ShowButton } from "~/components/buttons/ShowButton";
-import { UnhighlightButton } from "~/components/buttons/UnhighlightButton";
-import { Tooltip } from "~/components/floating/Tooltip";
+import { HideButton } from '~/components/buttons/HideButton';
+import { HighlightButton } from '~/components/buttons/HighlightButton';
+import { ShowButton } from '~/components/buttons/ShowButton';
+import { UnhighlightButton } from '~/components/buttons/UnhighlightButton';
+import { Tooltip } from '~/components/floating/Tooltip';
 import {
   ConnectedTableControlBar,
   type ConnectedTableControlBarProps,
-} from "~/components/tables/ConnectedTableControlBar";
-import { type EducationsTableColumn, type EducationsTableModel } from "~/features/educations";
+} from '~/components/tables/ConnectedTableControlBar';
+import { type EducationsTableColumn, type EducationsTableModel } from '~/features/educations';
 
-export interface EducationsTableControlBarProps
-  extends Omit<
-    ConnectedTableControlBarProps<EducationsTableModel, EducationsTableColumn>,
-    "children" | "confirmationModal" | "deleteAction" | "modelName"
-  > {}
+export interface EducationsTableControlBarProps extends Omit<
+  ConnectedTableControlBarProps<EducationsTableModel, EducationsTableColumn>,
+  'children' | 'confirmationModal' | 'deleteAction' | 'modelName'
+> {}
 
 export const EducationsTableControlBar = (props: EducationsTableControlBarProps): JSX.Element => {
-  const { refresh } = useRouter();
+  const router = useRouter();
 
   const [isHiding, setIsHiding] = useState(false);
   const [isShowing, setIsShowing] = useState(false);
@@ -44,7 +43,7 @@ export const EducationsTableControlBar = (props: EducationsTableControlBarProps)
       {...props}
       data={props.data}
       deleteAction={deleteEducations}
-      modelName="education"
+      modelName='education'
     >
       {({ selectedRows }) => {
         const numVisible = selectedRows.filter(row => row.visible).length;
@@ -54,12 +53,12 @@ export const EducationsTableControlBar = (props: EducationsTableControlBarProps)
         return (
           <>
             <Tooltip
-              placement="top-start"
-              inPortal={props.tooltipsInPortal}
-              offset={{ mainAxis: 6 }}
-              content={`Show ${numHidden} selected experience${numHidden <= 1 ? "" : "s"}.`}
-              className="text-sm"
+              className='text-sm'
+              content={`Show ${numHidden} selected experience${numHidden <= 1 ? '' : 's'}.`}
               isDisabled={numHidden === 0 || props.isDisabled === true}
+              isInPortal={props.areTooltipsInPortal}
+              offset={{ mainAxis: 6 }}
+              placement='top-start'
             >
               <ShowButton
                 isDisabled={numHidden === 0 || props.isDisabled}
@@ -72,35 +71,35 @@ export const EducationsTableControlBar = (props: EducationsTableControlBarProps)
                       selectedRows.filter(row => !row.visible).map(row => row.id),
                     );
                   } catch (e) {
-                    logger.errorUnsafe(e, "There was an error showing the educations.", {
+                    logger.errorUnsafe(e, 'There was an error showing the educations.', {
                       educations: selectedRows.filter(row => !row.visible).map(row => row.id),
                     });
                     setIsShowing(false);
-                    return toast.error("There was an error updaitng the educations.");
+                    return toast.error('There was an error updating the educations.');
                   }
                   const { error } = response;
                   if (error) {
-                    logger.error(error, "There was an error showing the educations.", {
+                    logger.error(error, 'There was an error showing the educations.', {
                       educations: selectedRows.filter(row => !row.visible).map(row => row.id),
                     });
                     setIsShowing(false);
-                    return toast.error("There was an updating the educations.");
+                    return toast.error('There was an updating the educations.');
                   }
                   transition(() => {
-                    refresh();
+                    router.refresh();
                     setIsShowing(false);
-                    toast.success("The educations have been made visible.");
+                    toast.success('The educations have been made visible.');
                   });
                 }}
               />
             </Tooltip>
             <Tooltip
-              placement="top-start"
-              inPortal={props.tooltipsInPortal}
-              offset={{ mainAxis: 6 }}
-              content={`Hide ${numVisible} selected experience${numVisible <= 1 ? "" : "s"}.`}
-              className="text-sm"
+              className='text-sm'
+              content={`Hide ${numVisible} selected experience${numVisible <= 1 ? '' : 's'}.`}
               isDisabled={numVisible === 0 || props.isDisabled === true}
+              isInPortal={props.areTooltipsInPortal}
+              offset={{ mainAxis: 6 }}
+              placement='top-start'
             >
               <HideButton
                 isDisabled={numVisible === 0 || props.isDisabled}
@@ -113,35 +112,38 @@ export const EducationsTableControlBar = (props: EducationsTableControlBarProps)
                       selectedRows.filter(row => row.visible).map(row => row.id),
                     );
                   } catch (e) {
-                    logger.errorUnsafe(e, "There was an error hiding the educations.", {
+                    logger.errorUnsafe(e, 'There was an error hiding the educations.', {
                       educations: selectedRows.filter(row => row.visible).map(row => row.id),
                     });
                     setIsHiding(false);
-                    return toast.error("There was an updating the educations.");
+                    return toast.error('There was an updating the educations.');
                   }
                   const { error } = response;
                   if (error) {
-                    logger.error(error, "There was an error hiding the educations.", {
+                    logger.error(error, 'There was an error hiding the educations.', {
                       educations: selectedRows.filter(row => row.visible).map(row => row.id),
                     });
                     setIsHiding(false);
-                    return toast.error("There was an updating the educations.");
+                    return toast.error('There was an updating the educations.');
                   }
                   transition(() => {
-                    refresh();
+                    router.refresh();
                     setIsHiding(false);
-                    toast.success("The educations have been hidden.");
+                    toast.success('The educations have been hidden.');
                   });
                 }}
               />
             </Tooltip>
             <Tooltip
-              placement="top-start"
-              inPortal={props.tooltipsInPortal}
-              offset={{ mainAxis: 6 }}
-              content={`Highlight ${numNotHighlighted} selected experience${numNotHighlighted <= 1 ? "" : "s"}.`}
-              className="text-sm"
+              className='text-sm'
+              content={
+                `Highlight ${numNotHighlighted} selected experience` +
+                `${numNotHighlighted <= 1 ? '' : 's'}.`
+              }
               isDisabled={numNotHighlighted === 0 || props.isDisabled === true}
+              isInPortal={props.areTooltipsInPortal}
+              offset={{ mainAxis: 6 }}
+              placement='top-start'
             >
               <HighlightButton
                 isDisabled={numNotHighlighted === 0 || props.isDisabled}
@@ -154,35 +156,38 @@ export const EducationsTableControlBar = (props: EducationsTableControlBarProps)
                       selectedRows.filter(row => !row.highlighted).map(row => row.id),
                     );
                   } catch (e) {
-                    logger.errorUnsafe(e, "There was an error highlighting the educations.", {
+                    logger.errorUnsafe(e, 'There was an error highlighting the educations.', {
                       educations: selectedRows.filter(row => !row.highlighted).map(row => row.id),
                     });
                     setIsHighlighting(false);
-                    return toast.error("There was an error updating the educations.");
+                    return toast.error('There was an error updating the educations.');
                   }
                   const { error } = response;
                   if (error) {
-                    logger.error(error, "There was an error highlighting the educations.", {
+                    logger.error(error, 'There was an error highlighting the educations.', {
                       educations: selectedRows.filter(row => !row.highlighted).map(row => row.id),
                     });
                     setIsHighlighting(false);
-                    return toast.error("There was an error updating the educations.");
+                    return toast.error('There was an error updating the educations.');
                   }
                   transition(() => {
-                    refresh();
+                    router.refresh();
                     setIsHighlighting(false);
-                    toast.success("The educations have been highlighted.");
+                    toast.success('The educations have been highlighted.');
                   });
                 }}
               />
             </Tooltip>
             <Tooltip
-              placement="top-start"
-              inPortal={props.tooltipsInPortal}
-              offset={{ mainAxis: 6 }}
-              content={`Unhighlight ${numHighlighted} selected experience${numHighlighted <= 1 ? "" : "s"}.`}
-              className="text-sm"
+              className='text-sm'
+              content={
+                `Unhighlight ${numHighlighted} selected experience` +
+                `${numHighlighted <= 1 ? '' : 's'}.`
+              }
               isDisabled={numHighlighted === 0 || props.isDisabled === true}
+              isInPortal={props.areTooltipsInPortal}
+              offset={{ mainAxis: 6 }}
+              placement='top-start'
             >
               <UnhighlightButton
                 isDisabled={numHighlighted === 0 || props.isDisabled}
@@ -195,24 +200,24 @@ export const EducationsTableControlBar = (props: EducationsTableControlBarProps)
                       selectedRows.filter(row => row.highlighted).map(row => row.id),
                     );
                   } catch (e) {
-                    logger.errorUnsafe(e, "There was an error unhighlighting the educations.", {
+                    logger.errorUnsafe(e, 'There was an error unhighlighting the educations.', {
                       educations: selectedRows.filter(row => row.highlighted).map(row => row.id),
                     });
                     setIsUnhighlighting(false);
-                    return toast.error("There was an error updating the educations.");
+                    return toast.error('There was an error updating the educations.');
                   }
                   const { error } = response;
                   if (error) {
-                    logger.error(error, "There was an error unhighlighting the educations.", {
+                    logger.error(error, 'There was an error unhighlighting the educations.', {
                       educations: selectedRows.filter(row => row.highlighted).map(row => row.id),
                     });
                     setIsUnhighlighting(false);
-                    return toast.error("There was an error updating the educations.");
+                    return toast.error('There was an error updating the educations.');
                   }
                   transition(() => {
-                    refresh();
+                    router.refresh();
                     setIsUnhighlighting(false);
-                    toast.success("The educations have been unhighlighted.");
+                    toast.success('The educations have been unhighlighted.');
                   });
                 }}
               />

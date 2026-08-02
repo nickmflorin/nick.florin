@@ -1,11 +1,11 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type ProgrammingLanguage } from "~/database/model";
+import { type ProgrammingLanguage } from '~/database/model';
 
-import { BadgeCollection } from "~/components/badges/BadgeCollection";
-import { type ComponentProps } from "~/components/types";
+import { BadgeCollection } from '~/components/badges/BadgeCollection';
+import { type ComponentProps } from '~/components/types';
 
-import { ProgrammingLanguageBadge } from "./ProgrammingLanguageBadge";
+import { ProgrammingLanguageBadge } from './ProgrammingLanguageBadge';
 
 export interface ProgrammingLanguagesProps extends ComponentProps {
   readonly languages: ProgrammingLanguage[];

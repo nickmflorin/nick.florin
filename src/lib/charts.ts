@@ -1,38 +1,38 @@
-import resolveConfig from "tailwindcss/resolveConfig";
+import resolveConfig from 'tailwindcss/resolveConfig';
 
-import tailwindConfig from "~/tailwind.config";
+import tailwindConfig from '~/tailwind.config';
 
-import { tupleCycle } from "./arrays";
-import { hexToRgb } from "./colors";
-import { isRecordType } from "./typeguards";
+import { tupleCycle } from './arrays';
+import { hexToRgb } from './colors';
+import { isRecordType } from './typeguards';
 
 const resolvedConfig = resolveConfig(tailwindConfig);
 
 const CHART_COLORS = [
-  "blue",
-  "gray",
-  "green",
-  "yellow",
-  "orange",
-  "red",
-  "sky",
-  "rose",
-  "purple",
-  "cyan",
-  "emerald",
-  "fuchsia",
-  "indigo",
-  "lime",
-  "pink",
-  "sky",
-  "slate",
-  "stone",
-  "teal",
-  "violet",
-  "zinc",
+  'blue',
+  'gray',
+  'green',
+  'yellow',
+  'orange',
+  'red',
+  'sky',
+  'rose',
+  'purple',
+  'cyan',
+  'emerald',
+  'fuchsia',
+  'indigo',
+  'lime',
+  'pink',
+  'sky',
+  'slate',
+  'stone',
+  'teal',
+  'violet',
+  'zinc',
 ] as const;
 
-const CHART_COLOR_SHADES = ["500", "600", "700", "800"] as const;
+const CHART_COLOR_SHADES = ['500', '600', '700', '800'] as const;
 
 type Color = string;
 
@@ -50,9 +50,10 @@ export const generateChartColors = (count: number, alpha = 0.6): Color[] => {
       );
     }
     const tailwindHex = tailwindShades[shade];
-    if (typeof tailwindHex !== "string" || tailwindHex[0] !== "#") {
+    if (typeof tailwindHex !== 'string' || !tailwindHex.startsWith('#')) {
       throw new Error(
-        `The shade '${shade}' of color '${color}' does not correspond to a hex value in the Tailwind config!`,
+        `The shade '${shade}' of color '${color}' does not correspond to a hex value in the ` +
+          'Tailwind config!',
       );
     }
     colors = [...colors, hexToRgb(tailwindHex as `#${string}`, { alpha })];

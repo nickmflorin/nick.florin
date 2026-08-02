@@ -1,26 +1,25 @@
-"use client";
-import type { JSX } from "react";
+'use client';
+import { type JSX } from 'react';
 
 import {
-  type ConnectedDataTableBodyProps,
   ConnectedDataTableBody,
-} from "~/components/tables/data-tables/ConnectedDataTableBody";
-import { type ExperiencesTableColumn, type ExperiencesTableModel } from "~/features/experiences";
+  type ConnectedDataTableBodyProps,
+} from '~/components/tables/data-tables/ConnectedDataTableBody';
+import { type ExperiencesTableColumn, type ExperiencesTableModel } from '~/features/experiences';
 
-import { ExperiencesTableControlBar } from "./ExperiencesTableControlBar";
-import { useExperiencesTableColumnProperties } from "./hooks/use-column-properties";
-import { useExperiencesTableRowActions } from "./hooks/use-row-actions";
+import { ExperiencesTableControlBar } from './ExperiencesTableControlBar';
+import { useExperiencesTableColumnProperties } from './hooks/use-column-properties';
+import { useExperiencesTableRowActions } from './hooks/use-row-actions';
 
-export interface ExperiencesTableBodyProps
-  extends Omit<
-    ConnectedDataTableBodyProps<ExperiencesTableModel, ExperiencesTableColumn>,
-    "rowIsSelected" | "onRowSelected" | "getRowActions" | "columns" | "columnProperties"
-  > {
-  readonly controlBarTooltipsInPortal?: boolean;
+export interface ExperiencesTableBodyProps extends Omit<
+  ConnectedDataTableBodyProps<ExperiencesTableModel, ExperiencesTableColumn>,
+  'columnProperties' | 'columns' | 'getRowActions' | 'onRowSelected' | 'rowIsSelected'
+> {
+  readonly areControlBarTooltipsInPortal?: boolean;
 }
 
 export const ExperiencesTableBody = ({
-  controlBarTooltipsInPortal,
+  areControlBarTooltipsInPortal,
   ...props
 }: ExperiencesTableBodyProps): JSX.Element => {
   const columnProperties = useExperiencesTableColumnProperties();
@@ -29,14 +28,14 @@ export const ExperiencesTableBody = ({
   return (
     <>
       <ExperiencesTableControlBar
+        areTooltipsInPortal={areControlBarTooltipsInPortal}
         data={props.data}
         isDisabled={props.isEmpty}
-        tooltipsInPortal={controlBarTooltipsInPortal}
       />
       <ConnectedDataTableBody<ExperiencesTableModel, ExperiencesTableColumn>
-        performSelectionWhenClicked
-        emptyContent="There are no experiences."
-        noResultsContent="No experiences found for search criteria."
+        emptyContent='There are no experiences.'
+        noResultsContent='No experiences found for search criteria.'
+        shouldPerformSelectionWhenClicked
         {...props}
         columnProperties={columnProperties}
         getRowActions={(experience, { setIsOpen }) =>

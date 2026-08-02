@@ -1,50 +1,44 @@
-import React, { forwardRef, type ForwardedRef, type JSX } from "react";
+import { type ForwardedRef, type JSX } from 'react';
 
-import type * as types from "~/components/menus";
+import type * as types from '~/components/menus';
 
-import { useProcessedData } from "./hooks";
+import { useProcessedData } from './hooks';
 import {
   ProcessedDataMenuContent,
   type ProcessedDataMenuContentProps,
-} from "./ProcessedDataMenuContent";
+} from './ProcessedDataMenuContent';
 
 export interface DataMenuContentProps<
   M extends types.DataMenuModel,
   O extends types.DataMenuOptions<M>,
-> extends Omit<ProcessedDataMenuContentProps<M, O>, "processedData">,
+>
+  extends
+    Omit<ProcessedDataMenuContentProps<M, O>, 'processedData'>,
     types.DataMenuGroupProps<M>,
-    Pick<types.DataMenuItemFlagProps<M>, "itemIsVisible"> {
+    Pick<types.DataMenuItemFlagProps<M>, 'itemIsVisible'> {
+  readonly customItems?: (JSX.Element | Omit<types.DataMenuCustomModel, 'isCustom'>)[];
   readonly data: M[];
-  readonly customItems?: (Omit<types.DataMenuCustomModel, "isCustom"> | JSX.Element)[];
 }
 
-export const DataMenuContent = forwardRef(
-  <M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>(
-    {
-      data,
-      hideEmptyGroups,
-      hideGrouplessItems,
-      customItems,
-      groups,
-      itemIsVisible,
-      ...props
-    }: DataMenuContentProps<M, O>,
-    ref: ForwardedRef<types.DataMenuContentInstance<M, O>>,
-  ): JSX.Element => {
-    const processedData = useProcessedData({
-      data,
-      groups,
-      customItems,
-      hideEmptyGroups,
-      hideGrouplessItems,
-      itemIsVisible,
-    });
-    return <ProcessedDataMenuContent<M, O> ref={ref} {...props} processedData={processedData} />;
-  },
-) as {
-  <M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>(
-    props: DataMenuContentProps<M, O> & {
-      readonly ref?: ForwardedRef<types.DataMenuContentInstance<M, O>>;
-    },
-  ): JSX.Element;
+export const DataMenuContent = <M extends types.DataMenuModel, O extends types.DataMenuOptions<M>>({
+  customItems,
+  data,
+  groups,
+  hideEmptyGroups,
+  hideGrouplessItems,
+  itemIsVisible,
+  ref,
+  ...props
+}: {
+  readonly ref?: ForwardedRef<types.DataMenuContentInstance<M, O>>;
+} & DataMenuContentProps<M, O>): JSX.Element => {
+  const processedData = useProcessedData({
+    customItems,
+    data,
+    groups,
+    hideEmptyGroups,
+    hideGrouplessItems,
+    itemIsVisible,
+  });
+  return <ProcessedDataMenuContent<M, O> ref={ref} {...props} processedData={processedData} />;
 };

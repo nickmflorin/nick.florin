@@ -1,7 +1,7 @@
-@use "sass:list";
+@use 'sass:list';
 
-@use "partials";
-@use "./typography" as typography;
+@use 'partials';
+@use './typography' as typography;
 
 $menu-item-padding: 6px 10px;
 
@@ -21,7 +21,7 @@ $menu-item-padding: 6px 10px;
 
 @mixin menu-item-hovered() {
   @include partials.hovered {
-    &[data-attr-highlight-on-hover="true"] {
+    &[data-attr-highlight-on-hover='true'] {
       @content;
     }
   }
@@ -29,7 +29,7 @@ $menu-item-padding: 6px 10px;
 
 @mixin menu-item-navigated() {
   @include partials.not-disabled() {
-    &[data-attr-navigated="true"] {
+    &[data-attr-navigated='true'] {
       @content;
     }
   }
@@ -53,10 +53,10 @@ $menu-item-padding: 6px 10px;
 
       > .menu__item-group__label {
         @include typography.font(
-          $type: "label",
-          $size: "xs",
-          $weight: "medium",
-          $color: theme("colors.gray.600")
+          $type: 'label',
+          $size: 'xs',
+          $weight: 'medium',
+          $color: theme('colors.gray.600')
         );
       }
     }
@@ -66,7 +66,7 @@ $menu-item-padding: 6px 10px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: theme("spacing.3");
+    gap: theme('spacing.3');
     width: 100%;
 
     > .checkbox {
@@ -81,7 +81,7 @@ $menu-item-padding: 6px 10px;
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: theme("spacing.2");
+      gap: theme('spacing.2');
       @include typography.truncate();
     }
   }
@@ -92,60 +92,61 @@ $menu-item-padding: 6px 10px;
     flex-direction: row;
     align-items: flex-start;
     padding: $menu-item-padding;
-    gap: theme("spacing.2");
-    color: theme("colors.body");
-    transition-property: background-color, background, border-color, color, fill, stroke, opacity,
-      box-shadow, transform;
+    gap: theme('spacing.2');
+    color: theme('colors.body');
+    transition-property:
+      background-color, background, border-color, color, fill, stroke, opacity, box-shadow,
+      transform;
     transition-duration: 100ms;
 
     // The line height may be overridden in the component if the height is specified as a prop.
-    @include typography.font($type: "body", $line-height: 28px, $size: "xs");
+    @include typography.font($type: 'body', $line-height: 28px, $size: 'xs');
 
     @include partials.disabled {
-      color: theme("colors.disabled");
+      color: theme('colors.disabled');
     }
 
     @include partials.locked();
     @include partials.loading();
 
     @include partials.focused {
-      background-color: theme("colors.gray.100");
+      background-color: theme('colors.gray.100');
     }
 
     @include menu-item-navigated() {
-      background-color: theme("colors.gray.100");
+      background-color: theme('colors.gray.100');
       @include partials.focused {
-        background-color: theme("colors.gray.200");
+        background-color: theme('colors.gray.200');
       }
     }
 
     @include menu-item-hovered() {
-      background-color: theme("colors.gray.100");
+      background-color: theme('colors.gray.100');
       @include partials.focused {
-        background-color: theme("colors.gray.200");
+        background-color: theme('colors.gray.200');
       }
       @include menu-item-navigated() {
-        background-color: theme("colors.gray.200");
+        background-color: theme('colors.gray.200');
         @include partials.focused {
-          background-color: theme("colors.gray.300");
+          background-color: theme('colors.gray.300');
         }
       }
     }
 
     @include partials.selected() {
-      background-color: theme("colors.gray.100");
+      background-color: theme('colors.gray.100');
       @include menu-item-hovered() {
-        background-color: theme("colors.gray.200");
+        background-color: theme('colors.gray.200');
         @include partials.focused {
-          background-color: theme("colors.gray.300");
+          background-color: theme('colors.gray.300');
         }
       }
       @include menu-item-navigated() {
-        background-color: theme("colors.gray.200");
+        background-color: theme('colors.gray.200');
         @include menu-item-hovered() {
-          background-color: theme("colors.gray.300");
+          background-color: theme('colors.gray.300');
           @include partials.focused {
-            background-color: theme("colors.gray.300");
+            background-color: theme('colors.gray.300');
           }
         }
       }
@@ -159,40 +160,40 @@ $menu-item-padding: 6px 10px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: theme("spacing.1");
+      gap: theme('spacing.1');
 
       > .menu__item__content {
         @include menu-item-content();
       }
 
       > .menu__item__description {
-        @include typography.font($type: "description", $size: "xs");
+        @include typography.font($type: 'description', $size: 'xs');
         padding-left: 24px;
       }
     }
   }
 
-  &[data-attr-bordered="true"] {
+  &[data-attr-bordered='true'] {
     .menu__item {
       &:not(:last-of-type) {
-        border-bottom: 1px solid theme("colors.border");
+        border-bottom: 1px solid theme('colors.border');
       }
     }
     .menu__item-group:not(:last-of-type) {
       > .menu__item-group__content {
         > .menu__item {
           &:last-of-type {
-            border-bottom: 1px solid theme("colors.border");
+            border-bottom: 1px solid theme('colors.border');
           }
         }
       }
     }
   }
 
-  &[data-attr-bordered-groups="true"]:not([data-attr-bordered="true"]) {
+  &[data-attr-bordered-groups='true']:not([data-attr-bordered='true']) {
     .menu__item-group {
       &:not(:first-of-type) {
-        border-top: 1px solid theme("colors.border");
+        border-top: 1px solid theme('colors.border');
       }
     }
   }
@@ -221,10 +222,10 @@ $menu-item-padding: 6px 10px;
         @include content-disabled();
       }
 
-      &[data-attr-bordered="true"] {
+      &[data-attr-bordered='true'] {
         .menu__item {
           &:not(:last-of-type) {
-            border-bottom: 1px solid theme("colors.border");
+            border-bottom: 1px solid theme('colors.border');
           }
         }
       }
@@ -239,10 +240,10 @@ $menu-item-padding: 6px 10px;
 .menu {
   display: flex;
   flex-direction: column;
-  gap: theme("spacing.1");
+  gap: theme('spacing.1');
   overflow: hidden;
   max-height: 100%;
-  border: 1px solid theme("colors.border");
+  border: 1px solid theme('colors.border');
 
   @include partials.focused() {
     outline: none !important;
@@ -251,8 +252,8 @@ $menu-item-padding: 6px 10px;
   > .menu__header {
     display: flex;
     flex-direction: column;
-    gap: theme("spacing.1");
-    padding: theme("spacing.2");
+    gap: theme('spacing.1');
+    padding: theme('spacing.2');
   }
 
   > .menu__content {

@@ -1,21 +1,21 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type Repository } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type Repository } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { createRepository } from "~/actions/repositories/create-repository";
+import { createRepository } from '~/actions/repositories/create-repository';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { RepositoryForm, type RepositoryFormProps } from "./RepositoryForm";
+import { RepositoryForm, type RepositoryFormProps } from './RepositoryForm';
 
-export interface CreateRepositoryFormProps extends Omit<RepositoryFormProps, "action"> {
-  readonly onSuccess?: (m: Repository) => void;
+export interface CreateRepositoryFormProps extends Omit<RepositoryFormProps, 'action'> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: Repository) => void;
 }
 
 export const CreateRepositoryForm = ({
@@ -23,14 +23,12 @@ export const CreateRepositoryForm = ({
   onSuccess,
   ...props
 }: CreateRepositoryFormProps): JSX.Element => {
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
   return (
     <RepositoryForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof createRepository>> | null = null;
         try {
@@ -39,20 +37,19 @@ export const CreateRepositoryForm = ({
           logger.errorUnsafe(e, "There was an error creating the repository'.", {
             data,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error creating the repository.");
+          return toast.error('There was an error creating the repository.');
         }
-        const { error, data: repository } = response;
+        const { data: repository, error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.(repository);
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default CreateRepositoryForm;

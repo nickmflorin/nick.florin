@@ -1,116 +1,115 @@
-"use client";
-import { forwardRef, type ForwardedRef, useState, type JSX } from "react";
+'use client';
+import { type ForwardedRef, type JSX, useState } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import { type ActionVisibility } from "~/actions";
-import { createSkill } from "~/actions/skills/create-skill";
-import { type ApiError } from "~/api";
+import { type ActionVisibility } from '~/actions';
+import { createSkill } from '~/actions/skills/create-skill';
+import { type ApiError } from '~/api';
 
-import type { SelectBehaviorType } from "~/components/input/select";
-import { Text } from "~/components/typography";
-import { useDebounceCallback } from "~/hooks";
-import { useSkills } from "~/hooks/api";
+import { type SelectBehaviorType } from '~/components/input/select';
+import { Text } from '~/components/typography';
+import { useDebounceCallback } from '~/hooks';
+import { useSkills } from '~/hooks/api';
 
-import { SkillsSelect, type SkillsSelectInstance, type SkillsSelectProps } from "./SkillsSelect";
+import { SkillsSelect, type SkillsSelectInstance, type SkillsSelectProps } from './SkillsSelect';
 
-export interface ClientSkillsSelectProps<B extends SelectBehaviorType>
-  extends Omit<SkillsSelectProps<B>, "data" | "onSearch" | "search"> {
-  readonly visibility: ActionVisibility;
+export interface ClientSkillsSelectProps<B extends SelectBehaviorType> extends Omit<
+  SkillsSelectProps<B>,
+  'data' | 'onSearch' | 'search'
+> {
   readonly onError?: (e: ApiError) => void;
+  readonly visibility: ActionVisibility;
 }
 
-export const ClientSkillsSelect = forwardRef(
-  <B extends SelectBehaviorType>(
-    { visibility, onError, ...props }: ClientSkillsSelectProps<B>,
-    ref: ForwardedRef<SkillsSelectInstance<B>>,
-  ): JSX.Element => {
-    const [localSearch, setLocalSearch] = useState("");
-    const [debouncedSearch, setDebouncedSearch] = useState("");
-    const setSearch = useDebounceCallback((v: string) => setDebouncedSearch(v), 300);
+export const ClientSkillsSelect = <B extends SelectBehaviorType>({
+  onError,
+  ref,
+  visibility,
+  ...props
+}: {
+  readonly ref?: ForwardedRef<SkillsSelectInstance<B>>;
+} & ClientSkillsSelectProps<B>): JSX.Element => {
+  const [localSearch, setLocalSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const setSearch = useDebounceCallback((v: string) => setDebouncedSearch(v), 300);
 
-    /* const [isLoading, setIsLoading] = useState(false);
-       const [error, setError] = useState<ApiError | string | undefined>(undefined);
-       const [data, setData] = useState<ApiSkill<[]>[] | undefined>(undefined); */
+  const { data, error, isLoading } = useSkills({
+    onError: e => {
+      logger.error(e, 'There was an error loading the repositories via the API.');
+      onError?.(e);
+    },
+    query: { includes: [], order: 'asc', orderBy: 'label', search: debouncedSearch, visibility },
+  });
 
-    const { data, isLoading, error } = useSkills({
-      query: { includes: [], visibility, orderBy: "label", order: "asc", search: debouncedSearch },
-      onError: e => {
-        logger.error(e, "There was an error loading the repositories via the API.");
-        onError?.(e);
-      },
-    });
-
-    return (
-      <SkillsSelect
-        summarizeValueAfter={2}
-        {...props}
-        ref={ref}
-        search={localSearch}
-        isReady={data !== undefined && props.isReady !== false}
-        data={data ?? []}
-        isDisabled={error !== undefined || props.isDisabled}
-        isLocked={isLoading || props.isLocked}
-        inputIsLoading={isLoading || props.inputIsLoading}
-        onSearch={e => {
-          setLocalSearch(e.target.value);
-          setSearch(e.target.value);
-        }}
-        customItems={[
-          {
-            id: "add-skill",
-            label: (
-              <Text fontSize="sm" truncate fontWeight="medium">
-                Add Skill
-              </Text>
-            ),
-            iconSize: "18px",
-            isLoading: true,
-            icon: { name: "plus-circle", iconStyle: "solid" },
-            iconClassName: "text-green-700",
-            spinnerClassName: "text-gray-600",
-            spinnerSize: "16px",
-            isVisible:
-              localSearch.trim().length >= 3 &&
-              (data ?? []).filter(sk => sk.label === localSearch).length === 0,
-            onClick: async (e, item, select) => {
+  return (
+    <SkillsSelect
+      summarizeValueAfter={2}
+      {...props}
+      customItems={[
+        {
+          icon: { iconStyle: 'solid', name: 'plus-circle' },
+          iconClassName: 'text-green-700',
+          iconSize: '18px',
+          id: 'add-skill',
+          isLoading: true,
+          isVisible:
+            localSearch.trim().length >= 3 &&
+            (data ?? []).filter(sk => sk.label === localSearch).length === 0,
+          label: (
+            <Text fontSize='sm' fontWeight='medium' truncate>
+              Add Skill
+            </Text>
+          ),
+          onClick: (e, item, select) => {
+            void (async () => {
               item.setLoading(true);
               let response: Awaited<ReturnType<typeof createSkill>>;
               try {
                 response = await createSkill({ label: localSearch });
-              } catch (e) {
+              } catch (createSkillError) {
                 logger.errorUnsafe(
-                  e,
+                  createSkillError,
                   `There was an error creating the skill with label '${localSearch}'.`,
                   { label: localSearch },
                 );
-                toast.error("There was an error creating the skill.");
+                toast.error('There was an error creating the skill.');
                 return item.setLoading(false);
               }
-              const { error, data } = response;
-              if (error) {
+              const { data: createdSkill, error: createdSkillError } = response;
+              if (createdSkillError) {
                 logger.error(
-                  error,
+                  createdSkillError,
                   `There was an error creating the skill with label '${localSearch}'.`,
                   { label: localSearch },
                 );
-                toast.error("There was an error creating the skill.");
+                toast.error('There was an error creating the skill.');
                 return item.setLoading(false);
               }
               item.setLoading(false);
-              select.addOptimisticModel(data, { select: true, dispatchChangeEvent: true });
-            },
+              select.addOptimisticModel(createdSkill, {
+                dispatchChangeEvent: true,
+                select: true,
+              });
+            })();
           },
-        ]}
-      />
-    );
-  },
-) as {
-  <B extends SelectBehaviorType>(
-    props: ClientSkillsSelectProps<B> & {
-      readonly ref?: ForwardedRef<SkillsSelectInstance<B>>;
-    },
-  ): JSX.Element;
+          spinnerClassName: 'text-gray-600',
+          spinnerSize: '16px',
+        },
+      ]}
+      data={data ?? []}
+      isDisabled={error !== undefined || props.isDisabled}
+      isInputLoading={isLoading || props.isInputLoading}
+      isLocked={isLoading || props.isLocked}
+      isReady={data !== undefined && props.isReady !== false}
+      onSearch={e => {
+        setLocalSearch(e.target.value);
+        setSearch(e.target.value);
+      }}
+      ref={ref}
+      search={localSearch}
+    />
+  );
 };

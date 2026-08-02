@@ -1,20 +1,20 @@
-"use server";
-import { difference, uniq } from "lodash-es";
+'use server';
+import { difference, uniq } from 'lodash-es';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { calculateSkillsExperience, DetailEntityType } from "~/database/model";
-import { db } from "~/database/prisma";
-import { logger } from "~/internal/logger";
-import { humanizeList } from "~/lib/formatters";
-import { isUuid } from "~/lib/typeguards";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { calculateSkillsExperience, DetailEntityType } from '~/database/model';
+import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
+import { humanizeList } from '~/lib/formatters';
+import { isUuid } from '~/lib/typeguards';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const deleteExperiences = async (
   _ids: string[],
 ): Promise<MutationActionResponse<{ message: string }>> => {
-  const { error, user, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -29,7 +29,7 @@ export const deleteExperiences = async (
   if (invalidUUIDs.length > 0) {
     const err = ApiClientGlobalError.BadRequest({
       message: `The id(s) ${humanizeList(invalidUUIDs, {
-        conjunction: "and",
+        conjunction: 'and',
         formatter: v => `'${v}'`,
       })} are not valid UUID(s).`,
     });
@@ -37,61 +37,61 @@ export const deleteExperiences = async (
   }
 
   const experiences = await db.experience.findMany({
-    where: { id: { in: ids } },
     include: { skills: true },
+    where: { id: { in: ids } },
   });
   const invalidIds = difference(
     ids,
     experiences.map(s => s.id),
   );
   if (invalidIds.length !== 0) {
-    const humanized = humanizeList(invalidIds, { conjunction: "and", formatter: v => `'${v}'` });
+    const humanized = humanizeList(invalidIds, { conjunction: 'and', formatter: v => `'${v}'` });
     logger.error(`Encountered invalid experience ID(s) when deleting experiences: ${humanized}.`, {
       ids,
       invalidIds,
     });
     const err = ApiClientGlobalError.BadRequest({
-      message: "Request contained experience ID(s) that do not exist.",
+      message: 'Request contained experience ID(s) that do not exist.',
     });
     return { error: err.json };
   }
   return await db.$transaction(async tx => {
     const details = await tx.detail.findMany({
-      where: {
-        entityType: DetailEntityType.EXPERIENCE,
-        entityId: { in: experiences.map(e => e.id) },
-      },
       include: { nestedDetails: true, skills: true },
+      where: {
+        entityId: { in: experiences.map(e => e.id) },
+        entityType: DetailEntityType.EXPERIENCE,
+      },
     });
     const nestedDetails = await tx.nestedDetail.findMany({
-      where: { detailId: { in: details.map(d => d.id) } },
       include: { skills: true },
+      where: { detailId: { in: details.map(d => d.id) } },
     });
 
     if (details.length !== 0) {
       logger.info(
         `The experience(s) being deleted are associated with ${details.length} detail(s), which ` +
-          "will also be deleted.",
-        { experienceIds: experiences.map(e => e.id), details: details.map(d => d.id) },
+          'will also be deleted.',
+        { details: details.map(d => d.id), experienceIds: experiences.map(e => e.id) },
       );
       const result = await tx.detail.deleteMany({
         where: {
-          entityType: DetailEntityType.EXPERIENCE,
           entityId: { in: experiences.map(e => e.id) },
+          entityType: DetailEntityType.EXPERIENCE,
         },
       });
       logger.info(
         `Deleted ${result.count} detail(s) associated with the experience(s) being deleted.`,
         {
-          experienceIds: experiences.map(e => e.id),
           details: details.map(d => d.id),
+          experienceIds: experiences.map(e => e.id),
         },
       );
     }
     if (nestedDetails.length !== 0) {
       logger.info(
         `The experience(s) being deleted are associated with ${details.length} nested ` +
-          "detail(s), which will also be deleted.",
+          'detail(s), which will also be deleted.',
         { experienceIds: experiences.map(e => e.id), nestedDetails: nestedDetails.map(d => d.id) },
       );
       const nestedResult = await tx.nestedDetail.deleteMany({
@@ -99,7 +99,7 @@ export const deleteExperiences = async (
       });
       logger.info(
         `Deleted ${nestedResult.count} nested detail(s) associated with the experience(s) ` +
-          "being deleted.",
+          'being deleted.',
         { experienceIds: experiences.map(e => e.id) },
       );
     }
@@ -111,6 +111,6 @@ export const deleteExperiences = async (
     ];
     await tx.experience.deleteMany({ where: { id: { in: ids } } });
     await calculateSkillsExperience(tx, skillIds, { user });
-    return { data: { message: "Success" } };
+    return { data: { message: 'Success' } };
   });
 };

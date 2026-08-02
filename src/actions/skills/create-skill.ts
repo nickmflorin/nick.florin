@@ -1,28 +1,25 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandSkill } from "~/database/model";
-import { calculateSkillsExperience } from "~/database/model";
-import { db } from "~/database/prisma";
-import { slugify } from "~/lib/formatters";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandSkill, calculateSkillsExperience } from '~/database/model';
+import { db } from '~/database/prisma';
+import { slugify } from '~/lib/formatters';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { SkillSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { SkillSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
-
-const UpdateSkillSchema = SkillSchema.partial();
+} from '~/api';
 
 export const createSkill = async (
-  data: z.infer<typeof UpdateSkillSchema>,
+  data: Partial<z.infer<typeof SkillSchema>>,
 ): Promise<MutationActionResponse<BrandSkill>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -38,12 +35,12 @@ export const createSkill = async (
     };
   }
   const {
-    slug: _slug,
-    experiences: _experiences,
+    courses: _courses,
     educations: _educations,
+    experiences: _experiences,
     projects: _projects,
     repositories: _repositories,
-    courses: _courses,
+    slug: _slug,
     ...rest
   } = parsed.data;
 
@@ -52,44 +49,43 @@ export const createSkill = async (
   const fieldErrors = new ApiClientFieldErrors();
 
   if (await db.skill.count({ where: { label: rest.label } })) {
-    fieldErrors.addUnique("label", "The label must be unique.");
-    /* If the slug is not explicitly provided and the label does not violate the unique
-       constraint, but the slugified form of the label does, this should be a more specific error
-       message. */
+    fieldErrors.addUnique('label', 'The label must be unique.');
+    /* If the slug is not explicitly provided and the label does not violate the unique constraint,
+       but the slugified form of the label does, this should be a more specific error message. */
   } else if (!_slug && (await db.skill.count({ where: { slug } }))) {
     fieldErrors.addUnique(
-      "label",
-      "The auto-generated slug for the label is not unique. Please either provide a unique " +
+      'label',
+      'The auto-generated slug for the label is not unique. Please either provide a unique ' +
         "slug or change the label such that it's slug is unique.",
     );
   }
   if (_slug && (await db.skill.count({ where: { slug: _slug } }))) {
-    fieldErrors.addUnique("slug", "The slug must be unique.");
+    fieldErrors.addUnique('slug', 'The slug must be unique.');
   }
   const [experiences] = await queryM2MsDynamically(db, {
-    model: "experience",
-    ids: _experiences,
     fieldErrors,
+    ids: _experiences,
+    model: 'experience',
   });
   const [educations] = await queryM2MsDynamically(db, {
-    model: "education",
-    ids: _educations,
     fieldErrors,
+    ids: _educations,
+    model: 'education',
   });
   const [projects] = await queryM2MsDynamically(db, {
-    model: "project",
-    ids: _projects,
     fieldErrors,
+    ids: _projects,
+    model: 'project',
   });
   const [repositories] = await queryM2MsDynamically(db, {
-    model: "repository",
-    ids: _repositories,
     fieldErrors,
+    ids: _repositories,
+    model: 'repository',
   });
   const [courses] = await queryM2MsDynamically(db, {
-    model: "course",
-    ids: _courses,
     fieldErrors,
+    ids: _courses,
+    model: 'course',
   });
   if (!fieldErrors.isEmpty) {
     return { error: fieldErrors.json };
@@ -99,20 +95,20 @@ export const createSkill = async (
     const skill = await tx.skill.create({
       data: {
         ...rest,
-        slug,
+        calculatedExperience: 0,
+        courses: courses ? { connect: courses.map(e => ({ id: e.id })) } : undefined,
         createdById: user.id,
-        updatedById: user.id,
+        educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
         experiences: experiences ? { connect: experiences.map(e => ({ id: e.id })) } : undefined,
         projects: projects ? { connect: projects.map(e => ({ id: e.id })) } : undefined,
-        educations: educations ? { connect: educations.map(e => ({ id: e.id })) } : undefined,
         repositories: repositories ? { connect: repositories.map(e => ({ id: e.id })) } : undefined,
-        courses: courses ? { connect: courses.map(e => ({ id: e.id })) } : undefined,
-        calculatedExperience: 0,
+        slug,
+        updatedById: user.id,
       },
     });
     const calculatedExperience = await calculateSkillsExperience(tx, skill.id, {
+      returnAs: 'experience',
       user,
-      returnAs: "experience",
     });
     return { data: convertToPlainObject({ ...skill, calculatedExperience }) };
   });

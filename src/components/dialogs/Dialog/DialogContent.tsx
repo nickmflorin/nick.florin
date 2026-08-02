@@ -1,38 +1,47 @@
-"use client";
-import { forwardRef, useId, useLayoutEffect, type ReactNode } from "react";
+'use client';
+import {
+  type Dispatch,
+  type HTMLProps,
+  type ReactNode,
+  type SetStateAction,
+  useId,
+  useLayoutEffect,
+} from 'react';
 
-import { useDialogContext } from "~/components/dialogs/hooks/use-dialog-context";
-import { classNames } from "~/components/types";
-import { type ComponentProps } from "~/components/types";
+import { useDialogContext } from '~/components/dialogs/hooks/use-dialog-context';
+import { classNames, type ComponentProps } from '~/components/types';
 
-import { DialogDescription } from "./DialogDescription";
+import { DialogDescription } from './DialogDescription';
 
 export interface DialogContentProps
-  extends ComponentProps,
-    Omit<React.HTMLProps<HTMLDivElement>, keyof ComponentProps> {
+  extends ComponentProps, Omit<HTMLProps<HTMLDivElement>, keyof ComponentProps> {
   readonly children?: ReactNode;
 }
 
-export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
-  ({ children, ...props }, ref) => {
-    const { setContentId } = useDialogContext();
-    const id = useId();
+/**
+ * Registers `id` as the Dialog's content id via `setContentId` for as long as the calling
+ * component remains mounted, so that the Dialog root only sets `aria-describedby` when
+ * {@link DialogContent} is mounted inside of it.
+ */
+const useRegisterDialogContentId = (
+  id: string,
+  setContentId: Dispatch<SetStateAction<string | undefined>>,
+) => {
+  useLayoutEffect(() => {
+    setContentId(id);
+    return () => setContentId(undefined);
+  }, [id, setContentId]);
+};
 
-    /* Only set 'aria-labeledby' on the Dialog root element if this component is mounted inside of
-       it. */
-    useLayoutEffect(() => {
-      setContentId(id);
-      return () => setContentId(undefined);
-    }, [id, setContentId]);
+export const DialogContent = ({ children, ref, ...props }: DialogContentProps) => {
+  const { setContentId } = useDialogContext();
+  const id = useId();
 
-    return (
-      <div {...props} ref={ref} className={classNames("dialog__content", props.className)}>
-        {typeof children === "string" ? (
-          <DialogDescription>{children}</DialogDescription>
-        ) : (
-          children
-        )}
-      </div>
-    );
-  },
-);
+  useRegisterDialogContentId(id, setContentId);
+
+  return (
+    <div {...props} className={classNames('dialog__content', props.className)} ref={ref}>
+      {typeof children === 'string' ? <DialogDescription>{children}</DialogDescription> : children}
+    </div>
+  );
+};

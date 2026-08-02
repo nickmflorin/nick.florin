@@ -1,51 +1,51 @@
-import React, { type JSX } from "react";
+import { type JSX } from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
 import {
-  type ComponentProps,
   classNames,
+  type ComponentProps,
+  type QuantitativeSize,
   sizeToString,
   type TypographyCharacteristics,
-  type QuantitativeSize,
-} from "~/components/types";
+} from '~/components/types';
 
-import { ErrorContent } from "./ErrorContent";
-import { ErrorTitle } from "./ErrorTitle";
+import { ErrorContent } from './ErrorContent';
+import { ErrorTitle } from './ErrorTitle';
 
 export interface ErrorDetailProps extends ComponentProps {
-  readonly gap?: QuantitativeSize<"px">;
-  readonly title?: string;
   readonly children?: types.ErrorContentType;
   readonly error?: types.ErrorType;
-  readonly titleClassName?: ComponentProps["className"];
-  readonly titleFontSize?: TypographyCharacteristics["fontSize"];
-  readonly titleFontWeight?: TypographyCharacteristics["fontWeight"];
-  readonly titleFontFamily?: TypographyCharacteristics["fontFamily"];
+  readonly gap?: QuantitativeSize<'px'>;
+  readonly title?: string;
+  readonly titleClassName?: ComponentProps['className'];
+  readonly titleFontFamily?: TypographyCharacteristics['fontFamily'];
+  readonly titleFontSize?: TypographyCharacteristics['fontSize'];
+  readonly titleFontWeight?: TypographyCharacteristics['fontWeight'];
 }
 
 export const ErrorDetail = ({
-  style,
-  className,
-  gap = 12,
-  title = "Error",
-  titleClassName = "text-text",
-  titleFontFamily,
-  titleFontWeight = "medium",
-  titleFontSize = "lg",
   children,
+  className,
   error,
+  gap = 12,
+  style,
+  title = 'Error',
+  titleClassName = 'text-text',
+  titleFontFamily,
+  titleFontSize = 'lg',
+  titleFontWeight = 'medium',
 }: ErrorDetailProps): JSX.Element => (
   <div
-    style={{ ...style, gap: sizeToString(gap, "px") }}
-    className={classNames("flex flex-col justify-center max-w-[90%]", className)}
+    className={classNames('flex flex-col justify-center max-w-[90%]', className)}
+    style={{ ...style, gap: sizeToString(gap, 'px') }}
   >
     <ErrorTitle
+      className={titleClassName}
       error={error}
+      fontFamily={titleFontFamily}
       fontSize={titleFontSize}
       fontWeight={titleFontWeight}
-      fontFamily={titleFontFamily}
-      className={titleClassName}
     >
       {title}
     </ErrorTitle>

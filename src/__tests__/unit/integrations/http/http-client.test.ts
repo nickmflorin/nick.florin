@@ -1,381 +1,440 @@
 import {
-  HttpNetworkError,
-  HttpClientError,
   HttpClient,
+  HttpClientError,
   type HttpMethod,
-  STATUS_CODES,
   HttpMethods,
-} from "~/integrations/http";
+  HttpNetworkError,
+  STATUS_CODES,
+} from '~/integrations/http';
 
 type MockFetchOptions = {
   readonly json: Record<string, unknown>;
-  readonly status?: number;
-  readonly ok?: boolean;
   readonly method?: HttpMethod;
+  readonly ok?: boolean;
+  readonly status?: number;
   readonly url: string;
 };
 
+/* The client only ever reads these fields off the Response and Request it is handed, so the mocks
+   implement just those and are widened to the full DOM interfaces here rather than at each call
+   site.  Constructing real Response and Request objects would pull the rest of the fetch machinery
+   into tests that are only exercising the client's own behavior. */
+const mockResponse = (fields: Pick<Response, 'json' | 'ok' | 'status' | 'url'>) =>
+  fields as Response;
+const mockRequest = (fields: Pick<Request, 'method' | 'url'>) => fields as Request;
+
 const mockFetchResponse = ({
   json,
-  url,
-  status = STATUS_CODES.HTTP_200_OK,
-  ok = true,
   method = HttpMethods.GET,
+  ok = true,
+  status = STATUS_CODES.HTTP_200_OK,
+  url,
 }: MockFetchOptions) => {
-  global.fetch = jest.fn().mockImplementation(
-    () =>
-      new Promise(resolve =>
-        resolve({
-          url,
-          ok,
-          status,
-          json: async () => json,
-        }),
-      ),
-  );
-  global.Request = jest.fn().mockImplementation(() => ({ method, url }));
+  jest
+    .spyOn(global, 'fetch')
+    .mockResolvedValue(mockResponse({ json: async () => json, ok, status, url }));
+  jest.spyOn(global, 'Request').mockImplementation(() => mockRequest({ method, url }));
 };
 
 const mockFetchNetworkError = ({
-  url,
   method = HttpMethods.GET,
-}: Pick<MockFetchOptions, "url" | "method">) => {
-  global.fetch = jest.fn().mockImplementation(
+  url,
+}: Pick<MockFetchOptions, 'method' | 'url'>) => {
+  jest.spyOn(global, 'fetch').mockImplementation(
     () =>
       new Promise(() => {
-        throw new Error("The request failed.");
+        throw new Error('The request failed.');
       }),
   );
-  global.Request = jest.fn().mockImplementation(() => ({ method, url }));
+  jest.spyOn(global, 'Request').mockImplementation(() => mockRequest({ method, url }));
 };
 
 const mockFetchClientError = ({
-  url,
-  status = STATUS_CODES.HTTP_400_BAD_REQUEST,
   method = HttpMethods.GET,
-}: MockFetchOptions) => mockFetchResponse({ json: {}, ok: false, url, method, status });
+  status = STATUS_CODES.HTTP_400_BAD_REQUEST,
+  url,
+}: MockFetchOptions) => mockFetchResponse({ json: {}, method, ok: false, status, url });
 
-describe("HTTP Client properly functions", () => {
+describe('hTTP Client properly functions', () => {
   const client = new HttpClient({
     NetworkErrorClass: HttpNetworkError,
-    processors: { okayResponseProcessor: async response => ({ data: await response.json() }) },
+    processors: {
+      okayResponseProcessor: async (response): Promise<{ data: unknown }> => {
+        const data: unknown = await response.json();
+        return { data };
+      },
+    },
   });
 
-  describe("GET request properly returns", () => {
-    const URL = "https://app.txelects.com/api/bills/5/";
+  describe('gET request properly returns', () => {
+    const URL = 'https://app.txelects.com/api/bills/5/';
     const MOCK = {
-      url: URL,
-      method: HttpMethods.GET,
       json: {
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       },
+      method: HttpMethods.GET,
+      url: URL,
     };
-    it("properly returns successful response when not strict", async () => {
+
+    it('properly returns successful response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.get("/api/bills/5");
+      const result = await client.get('/api/bills/5');
       expect(result).toStrictEqual({
-        response: { data: { id: "5", name: "Bill A", description: "Bill Description" } },
         meta: {
           method: HttpMethods.GET,
-          url: "https://app.txelects.com/api/bills/5/",
           status: 200,
+          url: 'https://app.txelects.com/api/bills/5/',
         },
+        response: { data: { description: 'Bill Description', id: '5', name: 'Bill A' } },
       });
     });
-    it("properly returns successful raw response when not strict", async () => {
+
+    it('properly returns successful raw response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
-      const { response } = await client.get("/api/bills/5/", {}, { processed: false });
+      const { response } = await client.get('/api/bills/5/', {}, { processed: false });
       expect(response).toBeDefined();
       expect(response?.url).toBe(URL);
     });
-    it("properly returns successful response when strict", async () => {
+
+    it('properly returns successful response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.get("/api/bills/5", {}, { strict: true });
+      const result = await client.get('/api/bills/5', {}, { strict: true });
       expect(result).toStrictEqual({
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       });
     });
-    it("properly returns successful raw response when strict", async () => {
+
+    it('properly returns successful raw response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
-      const response = await client.get("/api/bills/", {}, { processed: false, strict: true });
+      const response = await client.get('/api/bills/', {}, { processed: false, strict: true });
       expect(response).toBeDefined();
-      expect(response?.url).toBe(URL);
+      expect(response.url).toBe(URL);
     });
-    it("properly returns a network error when not strict", async () => {
+
+    it('properly returns a network error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const { error } = await client.get("/api/bills/5", {}, { strict: false });
+      const { error } = await client.get('/api/bills/5', {}, { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpNetworkError);
-      expect(error?.method).toEqual(HttpMethods.GET);
-      expect(error?.message).toEqual(
-        "[GET] There was a network error making a request to " +
-          "https://app.txelects.com/api/bills/5/: Error: The request failed.",
+      expect(error?.method).toStrictEqual(HttpMethods.GET);
+      expect(error?.message).toStrictEqual(
+        '[GET] There was a network error making a request to ' +
+          'https://app.txelects.com/api/bills/5/: Error: The request failed.',
       );
     });
-    it("properly returns a client error when not strict", async () => {
+
+    it('properly returns a client error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const { error } = await client.get("/api/bills/5", {}, { strict: false });
+      const { error } = await client.get('/api/bills/5', {}, { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpClientError);
-      expect(error?.method).toEqual(HttpMethods.GET);
-      expect(error?.message).toEqual(
-        "[GET] [400] There was a client error making a request to " +
-          "https://app.txelects.com/api/bills/5/.",
+      expect(error?.method).toStrictEqual(HttpMethods.GET);
+      expect(error?.message).toStrictEqual(
+        '[GET] [400] There was a client error making a request to ' +
+          'https://app.txelects.com/api/bills/5/.',
       );
     });
-    it("properly throws a network error when strict", async () => {
+
+    it('properly throws a network error when strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const fn = async () => await client.get("/api/bills/5", {}, { strict: true });
-      expect(fn).rejects.toThrow(HttpNetworkError);
+      const fn = async () => await client.get('/api/bills/5', {}, { strict: true });
+      await expect(fn).rejects.toThrow(HttpNetworkError);
     });
-    it("properly throws a client error when strict", async () => {
+
+    it('properly throws a client error when strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const fn = async () => await client.get("/api/bills/5", {}, { strict: true });
-      expect(fn).rejects.toThrow(HttpClientError);
+      const fn = async () => await client.get('/api/bills/5', {}, { strict: true });
+      await expect(fn).rejects.toThrow(HttpClientError);
     });
   });
 
-  describe("POST request properly returns", () => {
-    const URL = "https://app.txelects.com/api/bills/";
+  describe('pOST request properly returns', () => {
+    const URL = 'https://app.txelects.com/api/bills/';
     const MOCK = {
-      url: URL,
-      method: HttpMethods.POST,
       json: {
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       },
+      method: HttpMethods.POST,
+      url: URL,
     };
 
-    it("properly returns successful response when not strict", async () => {
+    it('properly returns successful response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.post("/api/bills/", { name: "Bill A" });
+      const result = await client.post('/api/bills/', { name: 'Bill A' });
       expect(result).toStrictEqual({
-        response: { data: { id: "5", name: "Bill A", description: "Bill Description" } },
-        meta: { method: HttpMethods.POST, url: "https://app.txelects.com/api/bills/", status: 200 },
+        meta: { method: HttpMethods.POST, status: 200, url: 'https://app.txelects.com/api/bills/' },
+        response: { data: { description: 'Bill Description', id: '5', name: 'Bill A' } },
       });
     });
-    it("properly returns successful raw response when not strict", async () => {
+
+    it('properly returns successful raw response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
       const { response } = await client.post(
-        "/api/bills/",
-        { name: "Bill A" },
+        '/api/bills/',
+        { name: 'Bill A' },
         { processed: false },
       );
       expect(response).toBeDefined();
       expect(response?.url).toBe(URL);
     });
-    it("properly returns successful response when strict", async () => {
+
+    it('properly returns successful response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.post("/api/bills/", { name: "Bill A" }, { strict: true });
+      const result = await client.post('/api/bills/', { name: 'Bill A' }, { strict: true });
       expect(result).toStrictEqual({
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       });
     });
-    it("properly returns successful raw response when strict", async () => {
+
+    it('properly returns successful raw response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
       const response = await client.post(
-        "/api/bills/",
-        { name: "Bill A" },
+        '/api/bills/',
+        { name: 'Bill A' },
         { processed: false, strict: true },
       );
       expect(response).toBeDefined();
-      expect(response?.url).toBe(URL);
+      expect(response.url).toBe(URL);
     });
-    it("properly returns a network error when not strict", async () => {
+
+    it('properly returns a network error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const { error } = await client.post("/api/bills/", {}, { strict: false });
+      const { error } = await client.post('/api/bills/', {}, { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpNetworkError);
-      expect(error?.method).toEqual(HttpMethods.POST);
-      expect(error?.message).toEqual(
-        "[POST] There was a network error making a request to " +
-          "https://app.txelects.com/api/bills/: Error: The request failed.",
+      expect(error?.method).toStrictEqual(HttpMethods.POST);
+      expect(error?.message).toStrictEqual(
+        '[POST] There was a network error making a request to ' +
+          'https://app.txelects.com/api/bills/: Error: The request failed.',
       );
     });
-    it("properly returns a client error when not strict", async () => {
+
+    it('properly returns a client error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const { error } = await client.post("/api/bills/5", {}, { strict: false });
+      const { error } = await client.post('/api/bills/5', {}, { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpClientError);
-      expect(error?.method).toEqual(HttpMethods.POST);
-      expect(error?.message).toEqual(
-        "[POST] [400] There was a client error making a request to " +
-          "https://app.txelects.com/api/bills/.",
+      expect(error?.method).toStrictEqual(HttpMethods.POST);
+      expect(error?.message).toStrictEqual(
+        '[POST] [400] There was a client error making a request to ' +
+          'https://app.txelects.com/api/bills/.',
       );
     });
-    it("properly throws a network error when strict", async () => {
+
+    it('properly throws a network error when strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const fn = async () => await client.post("/api/bills/", {}, { strict: true });
-      expect(fn).rejects.toThrow(HttpNetworkError);
+      const fn = async () => await client.post('/api/bills/', {}, { strict: true });
+      await expect(fn).rejects.toThrow(HttpNetworkError);
     });
-    it("properly throws a client error when strict", async () => {
+
+    it('properly throws a client error when strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const fn = async () => await client.post("/api/bills", {}, { strict: true });
-      expect(fn).rejects.toThrow(HttpClientError);
+      const fn = async () => await client.post('/api/bills', {}, { strict: true });
+      await expect(fn).rejects.toThrow(HttpClientError);
     });
   });
 
-  describe("PATCH request properly returns", () => {
-    const URL = "https://app.txelects.com/api/bills/5/";
+  describe('pATCH request properly returns', () => {
+    const URL = 'https://app.txelects.com/api/bills/5/';
     const MOCK = {
-      url: URL,
-      method: HttpMethods.PATCH,
       json: {
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       },
+      method: HttpMethods.PATCH,
+      url: URL,
     };
-    it("properly returns successful response when not strict", async () => {
+
+    it('properly returns successful response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.patch("/api/bills/5/", { name: "Bill A" });
+      const result = await client.patch('/api/bills/5/', { name: 'Bill A' });
       expect(result).toStrictEqual({
-        response: { data: { id: "5", name: "Bill A", description: "Bill Description" } },
         meta: {
           method: HttpMethods.PATCH,
-          url: "https://app.txelects.com/api/bills/5/",
           status: 200,
+          url: 'https://app.txelects.com/api/bills/5/',
         },
+        response: { data: { description: 'Bill Description', id: '5', name: 'Bill A' } },
       });
     });
-    it("properly returns successful raw response when not strict", async () => {
+
+    it('properly returns successful raw response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
       const { response } = await client.patch(
-        "/api/bills/5/",
-        { name: "Bill A" },
+        '/api/bills/5/',
+        { name: 'Bill A' },
         { processed: false },
       );
       expect(response).toBeDefined();
       expect(response?.url).toBe(URL);
     });
-    it("properly returns successful response when strict", async () => {
+
+    it('properly returns successful response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.patch("/api/bills/5/", { name: "Bill A" }, { strict: true });
+      const result = await client.patch('/api/bills/5/', { name: 'Bill A' }, { strict: true });
       expect(result).toStrictEqual({
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       });
     });
-    it("properly returns successful raw response when strict", async () => {
+
+    it('properly returns successful raw response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
       const response = await client.patch(
-        "/api/bills/5/",
-        { name: "Bill A" },
+        '/api/bills/5/',
+        { name: 'Bill A' },
         { processed: false, strict: true },
       );
       expect(response).toBeDefined();
-      expect(response?.url).toBe(URL);
+      expect(response.url).toBe(URL);
     });
-    it("properly returns a network error when not strict", async () => {
+
+    it('properly returns a network error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const { error } = await client.patch("/api/bills/5", {}, { strict: false });
+      const { error } = await client.patch('/api/bills/5', {}, { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpNetworkError);
-      expect(error?.method).toEqual(HttpMethods.PATCH);
-      expect(error?.message).toEqual(
-        "[PATCH] There was a network error making a request to " +
-          "https://app.txelects.com/api/bills/5/: Error: The request failed.",
+      expect(error?.method).toStrictEqual(HttpMethods.PATCH);
+      expect(error?.message).toStrictEqual(
+        '[PATCH] There was a network error making a request to ' +
+          'https://app.txelects.com/api/bills/5/: Error: The request failed.',
       );
     });
-    it("properly returns a client error when not strict", async () => {
+
+    it('properly returns a client error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const { error } = await client.patch("/api/bills/5", {}, { strict: false });
+      const { error } = await client.patch('/api/bills/5', {}, { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpClientError);
-      expect(error?.method).toEqual(HttpMethods.PATCH);
-      expect(error?.message).toEqual(
-        "[PATCH] [400] There was a client error making a request to " +
-          "https://app.txelects.com/api/bills/5/.",
+      expect(error?.method).toStrictEqual(HttpMethods.PATCH);
+      expect(error?.message).toStrictEqual(
+        '[PATCH] [400] There was a client error making a request to ' +
+          'https://app.txelects.com/api/bills/5/.',
       );
     });
-    it("properly throws a network error when strict", async () => {
+
+    it('properly throws a network error when strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const fn = async () => await client.patch("/api/bills/5", {}, { strict: true });
-      expect(fn).rejects.toThrow(HttpNetworkError);
+      const fn = async () => await client.patch('/api/bills/5', {}, { strict: true });
+      await expect(fn).rejects.toThrow(HttpNetworkError);
     });
-    it("properly throws a client error when strict", async () => {
+
+    it('properly throws a client error when strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const fn = async () => await client.patch("/api/bills/5", {}, { strict: true });
-      expect(fn).rejects.toThrow(HttpClientError);
+      const fn = async () => await client.patch('/api/bills/5', {}, { strict: true });
+      await expect(fn).rejects.toThrow(HttpClientError);
     });
   });
 
-  describe("DELETE request properly returns", () => {
-    const URL = "https://app.txelects.com/api/bills/5/";
+  describe('dELETE request properly returns', () => {
+    const URL = 'https://app.txelects.com/api/bills/5/';
     const MOCK = {
-      url: URL,
-      method: HttpMethods.DELETE,
       json: {
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       },
+      method: HttpMethods.DELETE,
+      url: URL,
     };
 
-    it("properly returns successful response when not strict", async () => {
+    it('properly returns successful response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.delete("/api/bills/5/", { processed: true });
+      const result = await client.delete('/api/bills/5/', { processed: true });
       expect(result).toStrictEqual({
-        response: { data: { id: "5", name: "Bill A", description: "Bill Description" } },
         meta: {
           method: HttpMethods.DELETE,
-          url: "https://app.txelects.com/api/bills/5/",
           status: 200,
+          url: 'https://app.txelects.com/api/bills/5/',
         },
+        response: { data: { description: 'Bill Description', id: '5', name: 'Bill A' } },
       });
     });
-    it("properly returns successful raw response when not strict", async () => {
+
+    it('properly returns successful raw response when not strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
-      const { response } = await client.delete("/api/bills/5/");
+      const { response } = await client.delete('/api/bills/5/');
       expect(response).toBeDefined();
       expect(response?.url).toBe(URL);
     });
-    it("properly returns successful response when strict", async () => {
+
+    it('properly returns successful response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      const result = await client.delete("/api/bills/5/", { strict: true, processed: true });
+      const result = await client.delete('/api/bills/5/', { processed: true, strict: true });
       expect(result).toStrictEqual({
-        data: { id: "5", name: "Bill A", description: "Bill Description" },
+        data: { description: 'Bill Description', id: '5', name: 'Bill A' },
       });
     });
-    it("properly returns successful raw response when strict", async () => {
+
+    it('properly returns successful raw response when strict', async () => {
+      expect.hasAssertions();
       mockFetchResponse(MOCK);
-      // Here, the response is the raw Response object.
-      const response = await client.delete("/api/bills/5/", { strict: true });
+      const response = await client.delete('/api/bills/5/', { strict: true });
       expect(response).toBeDefined();
-      expect(response?.url).toBe(URL);
+      expect(response.url).toBe(URL);
     });
-    it("properly returns a network error when not strict", async () => {
+
+    it('properly returns a network error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const { error } = await client.delete("/api/bills/5", { strict: false });
+      const { error } = await client.delete('/api/bills/5', { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpNetworkError);
-      expect(error?.method).toEqual(HttpMethods.DELETE);
-      expect(error?.message).toEqual(
-        "[DELETE] There was a network error making a request to " +
-          "https://app.txelects.com/api/bills/5/: Error: The request failed.",
+      expect(error?.method).toStrictEqual(HttpMethods.DELETE);
+      expect(error?.message).toStrictEqual(
+        '[DELETE] There was a network error making a request to ' +
+          'https://app.txelects.com/api/bills/5/: Error: The request failed.',
       );
     });
-    it("properly returns a client error when not strict", async () => {
+
+    it('properly returns a client error when not strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const { error } = await client.delete("/api/bills/5", { strict: false });
+      const { error } = await client.delete('/api/bills/5', { strict: false });
       expect(error).toBeDefined();
       expect(error).toBeInstanceOf(HttpClientError);
-      expect(error?.method).toEqual(HttpMethods.DELETE);
-      expect(error?.message).toEqual(
-        "[DELETE] [400] There was a client error making a request to " +
-          "https://app.txelects.com/api/bills/5/.",
+      expect(error?.method).toStrictEqual(HttpMethods.DELETE);
+      expect(error?.message).toStrictEqual(
+        '[DELETE] [400] There was a client error making a request to ' +
+          'https://app.txelects.com/api/bills/5/.',
       );
     });
-    it("properly throws a network error when strict", async () => {
+
+    it('properly throws a network error when strict', async () => {
+      expect.hasAssertions();
       mockFetchNetworkError(MOCK);
-      const fn = async () => await client.delete("/api/bills/5", { strict: true });
-      expect(fn).rejects.toThrow(HttpNetworkError);
+      const fn = async () => await client.delete('/api/bills/5', { strict: true });
+      await expect(fn).rejects.toThrow(HttpNetworkError);
     });
-    it("properly throws a client error when strict", async () => {
+
+    it('properly throws a client error when strict', async () => {
+      expect.hasAssertions();
       mockFetchClientError(MOCK);
-      const fn = async () => await client.delete("/api/bills/5", { strict: true });
-      expect(fn).rejects.toThrow(HttpClientError);
+      const fn = async () => await client.delete('/api/bills/5', { strict: true });
+      await expect(fn).rejects.toThrow(HttpClientError);
     });
   });
 });

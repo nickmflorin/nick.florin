@@ -1,10 +1,10 @@
-"use client";
-import type { ReactNode } from "react";
+'use client';
+import { type ReactNode } from 'react';
 
-import { MobileNavigationCutoff } from "~/components/constants";
-import { Loading } from "~/components/loading/Loading";
-import { useNavigation } from "~/hooks";
-import { useScreenSizes } from "~/hooks/use-screen-sizes";
+import { MobileNavigationCutoff } from '~/components/constants';
+import { Loading } from '~/components/loading/Loading';
+import { useNavigation } from '~/hooks';
+import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
 export interface NavigatingProps {
   readonly children: ReactNode;

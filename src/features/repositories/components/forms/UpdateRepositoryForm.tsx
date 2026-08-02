@@ -1,50 +1,53 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect, useEffectEvent, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type ApiRepository } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type ApiRepository } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { updateRepository } from "~/actions/repositories/update-repository";
+import { updateRepository } from '~/actions/repositories/update-repository';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { useDeepEqualEffect } from "~/hooks";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { RepositoryForm, type RepositoryFormProps } from "./RepositoryForm";
+import { RepositoryForm, type RepositoryFormProps } from './RepositoryForm';
 
-export interface UpdateRepositoryFormProps extends Omit<RepositoryFormProps, "action"> {
-  readonly repository: ApiRepository<["projects", "skills"]>;
+export interface UpdateRepositoryFormProps extends Omit<RepositoryFormProps, 'action'> {
   readonly onCancel?: () => void;
   readonly onSuccess?: () => void;
+  readonly repository: ApiRepository<['projects', 'skills']>;
 }
 
 export const UpdateRepositoryForm = ({
-  repository,
   onCancel,
   onSuccess,
+  repository,
   ...props
 }: UpdateRepositoryFormProps): JSX.Element => {
   const updateRepositoryWithId = updateRepository.bind(null, repository.id);
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
-  // Prevents the form from resetting when an error occurs.
-  useDeepEqualEffect(() => {
+  /* The form is repopulated only when a different repository is being edited.  Keying the effect on
+     the identifier rather than the repository itself means a background revalidation of the same
+     repository never discards values the user is in the middle of editing. */
+  const setRepositoryFormValues = useEffectEvent(() => {
     props.form.setValues({
       ...repository,
-      slug: repository.slug,
       projects: repository.projects.map(p => p.id),
       skills: repository.skills.map(sk => sk.id),
+      slug: repository.slug,
     });
-  }, [repository, props.form.setValues]);
+  });
+
+  useEffect(() => {
+    setRepositoryFormValues();
+  }, [repository.id]);
 
   return (
     <RepositoryForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof updateRepositoryWithId>> | null = null;
         try {
@@ -53,22 +56,21 @@ export const UpdateRepositoryForm = ({
           logger.errorUnsafe(
             e,
             `There was an error updating the repository with ID '${repository.id}'.`,
-            { repository, data },
+            { data, repository },
           );
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error updating the repository.");
+          return toast.error('There was an error updating the repository.');
         }
         const { error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.();
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default UpdateRepositoryForm;

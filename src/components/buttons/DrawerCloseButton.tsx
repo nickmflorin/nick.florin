@@ -1,19 +1,19 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { IconButton, type IconButtonProps } from "./generic";
+import { IconButton, type IconButtonProps } from './generic';
 
-export interface DrawerCloseButtonProps
-  extends Omit<IconButtonProps<"button">, "icon" | "options" | "iconSize" | "size"> {}
+export interface DrawerCloseButtonProps extends Omit<
+  IconButtonProps<'button'>,
+  'icon' | 'iconSize' | 'options' | 'size'
+> {}
 
 export const DrawerCloseButton = (props: DrawerCloseButtonProps): JSX.Element => (
   <IconButton.Transparent
     {...props}
-    element="button"
-    scheme="light"
-    size="xsmall"
-    iconSize="large"
-    icon={{ name: "xmark", iconStyle: "solid" }}
+    element='button'
+    icon={{ iconStyle: 'solid', name: 'xmark' }}
+    iconSize='large'
+    scheme='light'
+    size='xsmall'
   />
 );
-
-export default DrawerCloseButton;

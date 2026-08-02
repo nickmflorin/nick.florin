@@ -1,34 +1,34 @@
-import React, { type JSX } from "react";
+import { type JSX, memo } from 'react';
 
-import type { ComponentProps } from "~/components/types";
+import { type ComponentProps } from '~/components/types';
 
-import { TableControlBar } from "./TableControlBar";
-import { TableFilterBar } from "./TableFilterBar";
-import { TableViewContainer } from "./TableViewContainer";
-import { TableViewContent } from "./TableViewContent";
-import { TableViewFooter } from "./TableViewFooter";
-import { TableViewHeader } from "./TableViewHeader";
+import { TableControlBar } from './TableControlBar';
+import { TableFilterBar } from './TableFilterBar';
+import { TableViewContainer } from './TableViewContainer';
+import { TableViewContent } from './TableViewContent';
+import { TableViewFooter } from './TableViewFooter';
+import { TableViewHeader } from './TableViewHeader';
 
 export interface TableViewProps extends ComponentProps {
   readonly children: JSX.Element;
-  readonly headerProps?: ComponentProps;
-  readonly isLoading?: boolean;
-  readonly contentClassName?: ComponentProps["className"];
+  readonly contentClassName?: ComponentProps['className'];
+  readonly controlBarTargetId?: null | string;
   readonly footer?: JSX.Element;
   readonly footerProps?: ComponentProps;
   readonly header?: JSX.Element;
-  readonly controlBarTargetId?: string | null;
+  readonly headerProps?: ComponentProps;
+  readonly isLoading?: boolean;
 }
 
 const LocalTableView = ({
   children,
   contentClassName,
-  isLoading = false,
+  controlBarTargetId,
   footer,
-  headerProps,
   footerProps,
   header,
-  controlBarTargetId,
+  headerProps,
+  isLoading = false,
   ...props
 }: TableViewProps): JSX.Element => (
   <TableViewContainer {...props}>
@@ -42,9 +42,9 @@ const LocalTableView = ({
   </TableViewContainer>
 );
 
-export const TableView = Object.assign(React.memo(LocalTableView), {
-  FilterBar: TableFilterBar,
-  ControlBar: TableControlBar,
-  Content: TableViewContent,
+export const TableView = Object.assign(memo(LocalTableView), {
   Container: TableViewContainer,
+  Content: TableViewContent,
+  ControlBar: TableControlBar,
+  FilterBar: TableFilterBar,
 });

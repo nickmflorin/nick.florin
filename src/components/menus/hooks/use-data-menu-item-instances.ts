@@ -1,11 +1,11 @@
-import { useRef, useCallback } from "react";
+import { useCallback, useRef } from 'react';
 
-import { cloneDeep } from "lodash-es";
+import { cloneDeep } from 'lodash-es';
 
-import { logger } from "~/internal/logger";
+import { logger } from '~/internal/logger';
 
-import * as types from "~/components/menus/types";
-import { useDeepEqualEffect } from "~/hooks";
+import * as types from '~/components/menus/types';
+import { useDeepEqualEffect } from '~/hooks';
 
 export interface UseMenuItemInstancesParams<
   M extends types.DataMenuModel,
@@ -20,19 +20,19 @@ const createInitialMenuItemInstance = (): types.DisconnectedMenuItemInstance => 
   setDisabled: () => {
     logger.warn(
       "The method 'setDisabled' will not have an affect because the menu item instance " +
-        "is not yet attached to the UI.",
+        'is not yet attached to the UI.',
     );
   },
   setLoading: () => {
     logger.warn(
       "The method 'setLoading' will not have an affect because the menu item instance " +
-        "is not yet attached to the UI.",
+        'is not yet attached to the UI.',
     );
   },
   setLocked: () => {
     logger.warn(
       "The method 'setLocked' will not have an affect because the menu item instance is " +
-        "not yet attached to the UI.",
+        'not yet attached to the UI.',
     );
   },
 });
@@ -44,7 +44,10 @@ export const useDataMenuItemInstances = <
   data,
   options,
 }: UseMenuItemInstancesParams<M, O>): types.MenuModelInstancesManager<M, O> => {
-  const refs = useRef<types.DataMenuItemInstances<M, O>>({} as types.DataMenuItemInstances<M, O>);
+  /* The instances are created lazily, as the menu items they correspond to are attached to the UI,
+     which means that a given ref key will not have an instance associated with it until that point
+     in time. */
+  const refs = useRef<Partial<types.DataMenuItemInstances<M, O>>>({});
 
   const getKey = useCallback(
     (m: types.DataMenuItemInstanceLookupArg<M, O>) => {
@@ -76,7 +79,7 @@ export const useDataMenuItemInstances = <
   );
 
   const createIfNecessary = useCallback(
-    (m: types.DataMenuItemInstanceLookupArg<M, O>): types.DisconnectedMenuItemInstance | null => {
+    (m: types.DataMenuItemInstanceLookupArg<M, O>): null | types.DisconnectedMenuItemInstance => {
       const instance = get(m);
       if (!instance) {
         const result = set(m, createInitialMenuItemInstance());
@@ -88,27 +91,24 @@ export const useDataMenuItemInstances = <
   );
 
   const sync = useCallback(
-    (data: (M | types.DataMenuCustomModel)[]) => {
+    (nextData: (M | types.DataMenuCustomModel)[]) => {
       const cloned = cloneDeep(refs.current);
-      refs.current = data.reduce(
-        (acc, m) => {
-          const k = getKey(m);
-          const r = cloned[k];
-          if (acc[k] !== undefined) {
-            logger.error(
-              `Encountered a duplicate menu item ref key '${k}'!  The 'getRefKey' ` +
-                "function should point to a unique key for each model in the data! The behavior " +
-                "of the menu may be compromised.",
-              { key: k },
-            );
-            return acc;
-          } else if (r === undefined) {
-            return { ...acc, [k]: createInitialMenuItemInstance() };
-          }
-          return { ...acc, [k]: r };
-        },
-        {} as types.DataMenuItemInstances<M, O>,
-      );
+      refs.current = nextData.reduce<Partial<types.DataMenuItemInstances<M, O>>>((acc, m) => {
+        const k = getKey(m);
+        const r = cloned[k];
+        if (acc[k] !== undefined) {
+          logger.error(
+            `Encountered a duplicate menu item ref key '${k}'!  The 'getRefKey' ` +
+              'function should point to a unique key for each model in the data! The behavior ' +
+              'of the menu may be compromised.',
+            { key: k },
+          );
+          return acc;
+        } else if (r === undefined) {
+          return { ...acc, [k]: createInitialMenuItemInstance() };
+        }
+        return { ...acc, [k]: r };
+      }, {});
     },
     [getKey],
   );
@@ -122,11 +122,6 @@ export const useDataMenuItemInstances = <
       m: types.DataMenuItemInstanceLookupArg<M, O>,
       instance: types.ConnectedMenuItemInstance,
     ) => set(m, instance),
-    getKey: <A extends types.DataMenuItemInstanceLookupArg<M, O>>(m: A) =>
-      getKey(m) as types.MenuModelInstancesManagerGetKeyRT<A, M, O>,
-    exists: (m: types.DataMenuItemInstanceLookupArg<M, O>) => get(m) !== null,
-    get,
-    createIfNecessary,
     create: <CO extends types.CreateDataMenuItemInstanceOptions>(
       m: types.DataMenuItemInstanceLookupArg<M, O>,
       opts?: CO,
@@ -135,10 +130,15 @@ export const useDataMenuItemInstances = <
       if (!ref) {
         return set(m, createInitialMenuItemInstance());
       } else if (opts?.strict) {
-        throw new Error(`A menu item ref object already exists for key '${m}'!`);
+        throw new Error(`A menu item ref object already exists for key '${getKey(m)}'!`);
       }
       return null as types.CreateDataMenuItemInstanceRT<CO>;
     },
+    createIfNecessary,
+    exists: (m: types.DataMenuItemInstanceLookupArg<M, O>) => get(m) !== null,
+    get,
+    getKey: <A extends types.DataMenuItemInstanceLookupArg<M, O>>(m: A) =>
+      getKey(m) as types.MenuModelInstancesManagerGetKeyRT<A, M, O>,
     getOrCreate: (m: types.DataMenuItemInstanceLookupArg<M, O>): types.MenuItemInstance => {
       const ref = get(m);
       if (!ref) {

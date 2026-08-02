@@ -1,18 +1,18 @@
-import type { HttpMethod } from "./types";
+import { isError } from '~/application/errors';
 
-import { isError } from "~/application/errors";
+import { type HttpMethod } from './types';
 
 export interface HttpErrorConfig {
   readonly message?: string;
-  readonly url?: string;
   readonly method?: HttpMethod;
+  readonly url?: string;
 }
 
 export abstract class BaseHttpError extends Error {
-  protected readonly url: string | null = null;
+  protected readonly url: null | string = null;
   public readonly method: HttpMethod | null = null;
 
-  constructor({ url, message, method }: HttpErrorConfig) {
+  constructor({ message, method, url }: HttpErrorConfig) {
     super(
       message
         ? method
@@ -22,17 +22,18 @@ export abstract class BaseHttpError extends Error {
           ? `[${method}] There was an error making a request to ${url}.`
           : url
             ? `There was an error making a request to ${url}.`
-            : "There was an error with the request.",
+            : 'There was an error with the request.',
     );
-    this.name = "HttpError";
+    this.name = 'HttpError';
     this.url = url ?? null;
     this.method = method ?? null;
   }
 }
 
-export type NetworkErrorClass<C extends HttpNetworkError> = {
-  new (error: Error, config: HttpErrorConfig): C;
-};
+export type NetworkErrorClass<C extends HttpNetworkError> = new (
+  error: Error,
+  config: HttpErrorConfig,
+) => C;
 
 export class HttpNetworkError extends BaseHttpError {
   public readonly error: Error;
@@ -47,15 +48,15 @@ export class HttpNetworkError extends BaseHttpError {
           : `There was a network error with the request: ${error}`),
     });
     this.error = error;
-    this.name = "HttpNetworkError";
+    this.name = 'HttpNetworkError';
   }
 
   public get logData() {
     return {
-      url: this.url,
-      method: this.method,
       error: this.error,
       message: this.message,
+      method: this.method,
+      url: this.url,
     };
   }
 }
@@ -64,9 +65,7 @@ export interface HttpClientErrorConfig extends HttpErrorConfig {
   readonly status: number;
 }
 
-export type ClientErrorClass<C extends HttpClientError> = {
-  new (config: HttpClientErrorConfig): C;
-};
+export type ClientErrorClass<C extends HttpClientError> = new (config: HttpClientErrorConfig) => C;
 
 export class HttpClientError extends BaseHttpError {
   public readonly status: number;
@@ -81,22 +80,22 @@ export class HttpClientError extends BaseHttpError {
           : `[${status}] There was a client error with the request.`,
     });
     this.status = status;
-    this.name = "HttpClientError";
+    this.name = 'HttpClientError';
   }
 
   public get logData() {
     return {
-      url: this.url,
+      message: this.message,
       method: this.method,
       status: this.status,
-      message: this.message,
+      url: this.url,
     };
   }
 }
 
-export type SerializationErrorClass<C extends HttpSerializationError> = {
-  new (config: HttpClientErrorConfig): C;
-};
+export type SerializationErrorClass<C extends HttpSerializationError> = new (
+  config: HttpClientErrorConfig,
+) => C;
 
 export class HttpSerializationError extends HttpClientError {
   constructor(config: HttpClientErrorConfig) {
@@ -105,14 +104,16 @@ export class HttpSerializationError extends HttpClientError {
       message: config.message
         ? `[${config.status}] ${config.message}`
         : config.url
-          ? `[${config.status}] There was an error serializing/processing the response for the request to ${config.url}.`
-          : `[${config.status}] There was an error serializing/processing the response from the request.`,
+          ? `[${config.status}] There was an error serializing/processing the response for the ` +
+            `request to ${config.url}.`
+          : `[${config.status}] There was an error serializing/processing the response from the ` +
+            'request.',
     });
-    this.name = "HttpSerializationError";
+    this.name = 'HttpSerializationError';
   }
 }
 
-export type HttpError = HttpNetworkError | HttpClientError | HttpSerializationError;
+export type HttpError = HttpClientError | HttpNetworkError | HttpSerializationError;
 
 export const isHttpError = (e: unknown): e is HttpError =>
   isError(e) &&

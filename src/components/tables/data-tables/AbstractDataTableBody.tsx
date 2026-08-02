@@ -1,52 +1,51 @@
-import React, { useMemo, type JSX } from "react";
+import { Fragment, type JSX, useMemo } from 'react';
 
-import { type FloatingContentRenderProps } from "~/components/floating";
-import { type ActionsCellProps } from "~/components/tables/cells/ActionsCell";
-import type { TableBodyProps } from "~/components/tables/generic/TableBody";
-import { TableBody } from "~/components/tables/generic/TableBody";
-import * as types from "~/components/tables/types";
-import { type ClassName, type QuantitativeSize } from "~/components/types";
+import { type FloatingContentRenderProps } from '~/components/floating';
+import { type ActionsCellProps } from '~/components/tables/cells/ActionsCell';
+import { TableBody, type TableBodyProps } from '~/components/tables/generic/TableBody';
+import * as types from '~/components/tables/types';
+import { type ClassName, type QuantitativeSize } from '~/components/types';
 
-import { type DataTableBodyRowProps } from "./DataTableBodyRow";
+import { type DataTableBodyRowProps } from './DataTableBodyRow';
 
 export interface AbstractDataTableBodyProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
-> extends Omit<TableBodyProps, "cellSkeletons" | "numSkeletonColumns" | "children"> {
-  readonly data: D[];
-  readonly columns: C[];
-  readonly columnProperties: types.DataTableColumnProperties<D, C>;
-  readonly excludeColumns?: types.TableColumnId<C>[];
-  readonly rowHoveredClassName?: ClassName;
-  readonly highlightRowOnHover?: boolean;
-  readonly scrollable?: boolean;
-  readonly rowHeight?: QuantitativeSize<"px">;
-  readonly actionMenuWidth?: ActionsCellProps["menuWidth"];
+> extends Omit<TableBodyProps, 'cellSkeletons' | 'children' | 'numSkeletonColumns'> {
+  readonly actionMenuWidth?: ActionsCellProps['menuWidth'];
   readonly children: (
-    props: Omit<DataTableBodyRowProps<D, C>, "rowIsSelected" | "onRowSelected">,
+    props: Omit<DataTableBodyRowProps<D, C>, 'onRowSelected' | 'rowIsSelected'>,
   ) => JSX.Element;
-  readonly onRowClick?: (id: string, datum: D) => void;
+  readonly columnProperties: types.DataTableColumnProperties<D, C>;
+  readonly columns: C[];
+  readonly data: D[];
+  readonly excludeColumns?: types.TableColumnId<C>[];
   readonly getRowActions?: (
     datum: D,
-    params: Pick<FloatingContentRenderProps, "setIsOpen">,
+    params: Pick<FloatingContentRenderProps, 'setIsOpen'>,
   ) => types.DataTableRowAction[];
+  readonly isScrollable?: boolean;
+  readonly onRowClick?: (id: string, datum: D) => void;
+  readonly rowHeight?: QuantitativeSize<'px'>;
+  readonly rowHoveredClassName?: ClassName;
+  readonly shouldHighlightRowOnHover?: boolean;
 }
 
 export const AbstractDataTableBody = <
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 >({
-  data,
-  rowHoveredClassName,
-  highlightRowOnHover,
-  rowHeight,
-  columns: _columns,
-  columnProperties,
   actionMenuWidth,
-  excludeColumns = [],
   children,
-  onRowClick,
+  columnProperties,
+  columns: _columns,
+  data,
+  excludeColumns = [],
   getRowActions,
+  onRowClick,
+  rowHeight,
+  rowHoveredClassName,
+  shouldHighlightRowOnHover,
   ...props
 }: AbstractDataTableBodyProps<D, C>): JSX.Element => {
   const columns = useMemo(
@@ -56,30 +55,28 @@ export const AbstractDataTableBody = <
   return (
     <TableBody
       {...props}
-      skeletonRowHeight={props.skeletonRowHeight ?? rowHeight}
-      /* Note: We are not currently using this component, so we have a dummy
-         '<div className="skeleton" />' as the skeleton for each cell - although the 'skeleton'
-         class name and associated component is not yet built.  This was done so we can preemptively
-         remove @mui from the application in its entirety - and since we are currently not using
-         skeletons *anywhere*, this was a lazy stop-gap for now. */
+      /* A plain '<div className="skeleton" />' is used as the fallback skeleton for each cell
+         because no 'skeleton' class name or component exists in the design system yet; this
+         avoids depending on '@mui' for skeletons anywhere in the application. */
       cellSkeletons={columns.map(
-        ({ config: { skeleton } }, i) => skeleton ?? <div key={i} className="skeleton" />,
+        ({ config: { skeleton } }, i) => skeleton ?? <div className='skeleton' key={i} />,
       )}
+      skeletonRowHeight={props.skeletonRowHeight ?? rowHeight}
     >
       {data.map(datum => (
-        <React.Fragment key={datum.id}>
+        <Fragment key={datum.id}>
           {children({
-            datum,
+            actionMenuWidth,
             columns,
+            datum,
+            excludeColumns,
+            getRowActions,
             height: rowHeight,
             hoveredClassName: rowHoveredClassName,
-            highlightOnHover: highlightRowOnHover,
-            actionMenuWidth,
-            excludeColumns,
             onClick: () => onRowClick?.(datum.id, datum),
-            getRowActions,
+            shouldHighlightOnHover: shouldHighlightRowOnHover,
           })}
-        </React.Fragment>
+        </Fragment>
       ))}
     </TableBody>
   );

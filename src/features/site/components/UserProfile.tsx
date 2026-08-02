@@ -1,12 +1,15 @@
-"use client";
-import dynamic from "next/dynamic";
+'use client';
+import dynamic from 'next/dynamic';
 
-import { useUserProfile } from "~/hooks";
+import { useUserProfile } from '~/hooks';
 
-const UserProfileDialog = dynamic(() => import("./UserProfileDialog"), { ssr: false });
+const UserProfileDialog = dynamic(
+  () => import('./UserProfileDialog').then(mod => mod.UserProfileDialog),
+  { ssr: false },
+);
 
 export const UserProfile = () => {
   const { isOpen } = useUserProfile();
 
-  return <>{isOpen && <UserProfileDialog isOpen={true} />}</>;
+  return <>{isOpen && <UserProfileDialog isOpen />}</>;
 };

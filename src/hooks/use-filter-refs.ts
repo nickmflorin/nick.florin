@@ -1,37 +1,39 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from 'react';
 
 import {
-  type Filters,
   type FilterFieldName,
-  type FiltersValues,
   type FilterRefs,
-} from "~/lib/filters";
+  type Filters,
+  type FiltersValues,
+} from '~/lib/filters';
 
 export interface UseFilterRefsParams<F extends Filters> {
-  readonly values: FiltersValues<F>;
   readonly filters: F;
+  readonly values: FiltersValues<F>;
 }
 
 export const useFilterRefs = <F extends Filters>(
   fieldRefs: FilterRefs<F>,
-  { values, filters }: UseFilterRefsParams<F>,
+  { filters, values }: UseFilterRefsParams<F>,
 ) => {
   const refs = useRef<FilterRefs<F>>(fieldRefs);
 
+  /* The refs the callbacks below operate on are refreshed after every commit, so that the callbacks
+     can stay referentially stable without going stale. */
+  useEffect(() => {
+    refs.current = fieldRefs;
+  });
+
   const clear = useCallback(() => {
     for (const field in refs.current) {
-      filters.clearFieldRefValue(field as FilterFieldName<F>, refs.current);
+      filters.clearFieldRefValue(field, refs.current);
     }
   }, [filters]);
 
   const sync = useCallback(
     (filts: FiltersValues<F>) => {
       for (const field in refs.current) {
-        filters.setFieldRefValue(
-          field as FilterFieldName<F>,
-          filts[field as FilterFieldName<F>],
-          refs.current,
-        );
+        filters.setFieldRefValue(field, filts[field as FilterFieldName<F>], refs.current);
       }
     },
     [filters],
@@ -39,8 +41,7 @@ export const useFilterRefs = <F extends Filters>(
 
   useEffect(() => {
     sync(values);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [values]);
+  }, [values, sync]);
 
-  return { refs: refs.current, clear, sync };
+  return { clear, refs: fieldRefs, sync };
 };

@@ -1,59 +1,57 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type FloatingContentRenderProps } from "~/components/floating";
-import { Popover, type PopoverProps } from "~/components/floating/Popover";
-import { PopoverContent } from "~/components/floating/PopoverContent";
-import type { ComponentProps } from "~/components/types";
-import { classNames } from "~/components/types";
+import { type FloatingContentRenderProps } from '~/components/floating';
+import { Popover, type PopoverProps } from '~/components/floating/Popover';
+import { PopoverContent } from '~/components/floating/PopoverContent';
+import { classNames, type ComponentProps } from '~/components/types';
 
-export interface DropdownMenuProps
-  extends Pick<
-    PopoverProps,
-    | "placement"
-    | "allowedPlacements"
-    | "inPortal"
-    | "autoUpdate"
-    | "middleware"
-    | "offset"
-    | "width"
-    | "withArrow"
-    | "isDisabled"
-    | "maxHeight"
-    | "triggers"
-    | "children"
-  > {
-  readonly contentClassName?: ComponentProps["className"];
-  readonly contentStyle?: ComponentProps["style"];
+export interface DropdownMenuProps extends Pick<
+  PopoverProps,
+  | 'allowedPlacements'
+  | 'autoUpdate'
+  | 'children'
+  | 'hasArrow'
+  | 'isDisabled'
+  | 'isInPortal'
+  | 'maxHeight'
+  | 'middleware'
+  | 'offset'
+  | 'placement'
+  | 'triggers'
+  | 'width'
+> {
   readonly content:
-    | JSX.Element
-    | ((params: Pick<FloatingContentRenderProps, "isOpen" | "setIsOpen">) => JSX.Element);
+    | ((params: Pick<FloatingContentRenderProps, 'isOpen' | 'setIsOpen'>) => JSX.Element)
+    | JSX.Element;
+  readonly contentClassName?: ComponentProps['className'];
+  readonly contentStyle?: ComponentProps['style'];
 }
 
 export const DropdownMenu = ({
   children,
+  content,
   contentClassName,
   contentStyle,
-  content,
-  placement = "bottom",
   offset = { mainAxis: 4 },
-  triggers = ["click"],
+  placement = 'bottom',
+  triggers = ['click'],
   ...props
 }: DropdownMenuProps) => (
   <Popover
     {...props}
-    placement={placement}
-    offset={offset}
-    triggers={triggers}
-    content={({ ref, params, styles, isOpen, setIsOpen }) => (
+    content={({ isOpen, params, ref, setIsOpen, styles }) => (
       <PopoverContent
         ref={ref}
         {...params}
+        className={classNames('p-[0px] rounded-md overflow-hidden', contentClassName)}
         style={{ ...contentStyle, ...styles }}
-        className={classNames("p-[0px] rounded-md overflow-hidden", contentClassName)}
       >
-        {typeof content === "function" ? content({ isOpen, setIsOpen }) : content}
+        {typeof content === 'function' ? content({ isOpen, setIsOpen }) : content}
       </PopoverContent>
     )}
+    offset={offset}
+    placement={placement}
+    triggers={triggers}
   >
     {children}
   </Popover>

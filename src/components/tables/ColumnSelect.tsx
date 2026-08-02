@@ -1,20 +1,20 @@
-import type * as types from "./types";
+import type * as types from './types';
 
-import { Button } from "~/components/buttons";
-import { CaretIcon } from "~/components/icons/CaretIcon";
-import { DataSelect, type DataSelectProps } from "~/components/input/select/DataSelect";
+import { Button } from '~/components/buttons';
+import { CaretIcon } from '~/components/icons/CaretIcon';
+import { DataSelect, type DataSelectProps } from '~/components/input/select/DataSelect';
 
 const getModelValue = <D extends types.DataTableDatum, C extends types.DataTableColumnConfig<D>>(
   m: C,
-): C["id"] => m.id;
+): C['id'] => m.id;
 
 export interface ColumnSelectProps<
   D extends types.DataTableDatum,
   C extends types.DataTableColumnConfig<D>,
 > extends Omit<
-    DataSelectProps<C, { behavior: "multi"; getModelValue: typeof getModelValue<D, C> }>,
-    "options" | "data"
-  > {
+  DataSelectProps<C, { behavior: 'multi'; getModelValue: typeof getModelValue<D, C> }>,
+  'data' | 'options'
+> {
   readonly columns: C[];
 }
 
@@ -25,24 +25,24 @@ export const ColumnSelect = <
   columns,
   ...props
 }: ColumnSelectProps<D, C>) => (
-  <DataSelect<C, { behavior: "multi"; getModelValue: typeof getModelValue<D, C> }>
+  <DataSelect<C, { behavior: 'multi'; getModelValue: typeof getModelValue<D, C> }>
     {...props}
-    options={{ getModelValue: getModelValue as typeof getModelValue<D, C>, behavior: "multi" }}
-    getModelValueLabel={(m: C) => m.label ?? ""}
     data={columns.filter(c => c.isHideable !== false)}
-    inputClassName="w-[240px]"
-    popoverClassName="z-50"
-    popoverOffset={{ mainAxis: 4, crossAxis: -50 }}
-    popoverWidth="available"
+    getModelValueLabel={(m: C) => m.label ?? ''}
+    inputClassName='w-[240px]'
+    itemRenderer={m => m.label ?? ''}
+    options={{ behavior: 'multi', getModelValue: getModelValue as typeof getModelValue<D, C> }}
+    popoverClassName='z-50'
     popoverMaxHeight={260}
-    itemRenderer={m => m.label ?? ""}
+    popoverOffset={{ crossAxis: -50, mainAxis: 4 }}
+    popoverWidth='available'
   >
-    {({ ref, params, isOpen }) => (
+    {({ isOpen, params, ref }) => (
       <Button.Solid
         {...params}
-        scheme="secondary"
+        icon={{ right: <CaretIcon isOpen={isOpen} /> }}
         ref={ref}
-        icon={{ right: <CaretIcon open={isOpen} /> }}
+        scheme='secondary'
       >
         Columns
       </Button.Solid>

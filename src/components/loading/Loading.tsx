@@ -1,17 +1,17 @@
-import React, { type ReactNode, type JSX } from "react";
+import { type JSX, type ReactNode } from 'react';
 
-import type { ViewComponent } from "~/components/structural/View";
-import { ShowHide } from "~/components/util";
+import { type ViewComponent } from '~/components/structural/View';
+import { ShowHide } from '~/components/util';
 
-import { LoadingView, type LoadingViewProps } from "./LoadingView";
+import { LoadingView, type LoadingViewProps } from './LoadingView';
 
 export interface LoadingProps<C extends ViewComponent> extends LoadingViewProps<C> {
   readonly children?: ReactNode;
 }
 
 export const Loading = <C extends ViewComponent>({
-  isLoading = false,
   children,
+  isLoading = false,
   ...props
 }: LoadingProps<C>): JSX.Element => {
   if (children) {

@@ -1,19 +1,19 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandDetail, calculateSkillsExperience, type Project } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandDetail, calculateSkillsExperience, type Project } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { DetailSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { DetailSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 const UpdateDetailSchema = DetailSchema.partial();
 
@@ -21,7 +21,7 @@ export const updateDetail = async (
   detailId: string,
   data: z.infer<typeof UpdateDetailSchema>,
 ): Promise<MutationActionResponse<BrandDetail>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -31,8 +31,8 @@ export const updateDetail = async (
   }
 
   const detail = await db.detail.findUnique({
-    where: { id: detailId },
     include: { skills: true },
+    where: { id: detailId },
   });
   if (!detail) {
     return { error: ApiClientGlobalError.NotFound({}).json };
@@ -47,13 +47,13 @@ export const updateDetail = async (
   const { label, project: _project, skills: _skills, ...rest } = parsed.data;
   const fieldErrors = new ApiClientFieldErrors();
 
-  let project: Project | null = null;
+  let project: null | Project = null;
   if (_project) {
     project = await db.project.findUnique({ where: { id: _project } });
     if (!project) {
-      fieldErrors.addDoesNotExist("project", {
-        message: "The project does not exist.",
+      fieldErrors.addDoesNotExist('project', {
         internalMessage: `The project with ID '${_project}' does not exist.`,
+        message: 'The project does not exist.',
       });
     }
   }
@@ -63,18 +63,18 @@ export const updateDetail = async (
       where: {
         entityId: detail.entityId,
         entityType: detail.entityType,
-        label,
         id: { notIn: [detail.id] },
+        label,
       },
     }))
   ) {
-    fieldErrors.addUnique("label", "The 'label' must be unique for a given parent.");
+    fieldErrors.addUnique('label', "The 'label' must be unique for a given parent.");
   }
 
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
 
   if (!fieldErrors.isEmpty) {
@@ -83,14 +83,14 @@ export const updateDetail = async (
 
   return await db.$transaction(async tx => {
     const updated = await tx.detail.update({
-      where: { id: detail.id },
       data: {
         ...rest,
-        projectId: project?.id,
         label,
-        updatedById: user.id,
+        projectId: project?.id,
         skills: skills ? { set: skills.map(skill => ({ id: skill.id })) } : undefined,
+        updatedById: user.id,
       },
+      where: { id: detail.id },
     });
     const sks = [...detail.skills.map(sk => sk.id), ...(skills ?? []).map(sk => sk.id)];
     await calculateSkillsExperience(tx, sks, { user });

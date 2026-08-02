@@ -1,27 +1,26 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandCourse, type BrandEducation } from "~/database/model";
-import { calculateSkillsExperience } from "~/database/model";
-import { db } from "~/database/prisma";
-import { logger } from "~/internal/logger";
-import { slugify } from "~/lib/formatters";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandCourse, type BrandEducation, calculateSkillsExperience } from '~/database/model';
+import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
+import { slugify } from '~/lib/formatters';
 
-import { type MutationActionResponse } from "~/actions";
-import { queryM2MsDynamically } from "~/actions/m2ms";
-import { CourseSchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { queryM2MsDynamically } from '~/actions/m2ms';
+import { CourseSchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 export const createCourse = async (
   data: z.infer<typeof CourseSchema>,
 ): Promise<MutationActionResponse<BrandCourse>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -37,35 +36,34 @@ export const createCourse = async (
     };
   }
 
-  const { slug: _slug, skills: _skills, education: _education, ...rest } = parsed.data;
+  const { education: _education, skills: _skills, slug: _slug, ...rest } = parsed.data;
 
   const slug = _slug ?? slugify(rest.name);
   const fieldErrors = new ApiClientFieldErrors();
 
   if (await db.course.count({ where: { name: rest.name } })) {
-    fieldErrors.addUnique("name", "The name must be unique.");
-    /* If the slug is not explicitly provided and the name does not violate the unique
-       constraint, but the slugified form of the name does, this should be a more specific error
-       message. */
+    fieldErrors.addUnique('name', 'The name must be unique.');
+    /* If the slug is not explicitly provided and the name does not violate the unique constraint,
+       but the slugified form of the name does, this should be a more specific error message. */
   } else if (!_slug && (await db.course.count({ where: { slug } }))) {
     fieldErrors.addUnique(
-      "slug",
-      "The auto-generated slug for the name is not unique. Please provide a unique slug.",
+      'slug',
+      'The auto-generated slug for the name is not unique. Please provide a unique slug.',
     );
   }
   if (_slug && (await db.course.count({ where: { slug: _slug } }))) {
-    fieldErrors.addUnique("slug", "The slug must be unique.");
+    fieldErrors.addUnique('slug', 'The slug must be unique.');
   }
 
   const education = await db.education.findUnique({ where: { id: _education } });
   if (!education) {
-    fieldErrors.addDoesNotExist("education", "The education does not exist.");
+    fieldErrors.addDoesNotExist('education', 'The education does not exist.');
   }
 
   const [skills] = await queryM2MsDynamically(db, {
-    model: "skill",
-    ids: _skills,
     fieldErrors,
+    ids: _skills,
+    model: 'skill',
   });
 
   if (!fieldErrors.isEmpty) {
@@ -75,13 +73,13 @@ export const createCourse = async (
     const course = await tx.course.create({
       data: {
         ...rest,
-        slug,
-        /* Type coercion is safe because if the education is null, the field errors object will
-           not be empty. */
-        educationId: (education as BrandEducation).id,
         createdById: user.id,
-        updatedById: user.id,
+        /* Type coercion is safe because if the education is null, the field errors object will not
+           be empty. */
+        educationId: (education as BrandEducation).id,
         skills: skills ? { connect: skills.map(skill => ({ id: skill.id })) } : undefined,
+        slug,
+        updatedById: user.id,
       },
     });
     if (skills && skills.length !== 0) {

@@ -1,19 +1,19 @@
-"use server";
-import { difference, uniq } from "lodash-es";
+'use server';
+import { difference, uniq } from 'lodash-es';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { db } from "~/database/prisma";
-import { logger } from "~/internal/logger";
-import { humanizeList } from "~/lib/formatters";
-import { isUuid } from "~/lib/typeguards";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
+import { humanizeList } from '~/lib/formatters';
+import { isUuid } from '~/lib/typeguards';
 
-import { type MutationActionResponse } from "~/actions";
-import { ApiClientGlobalError } from "~/api";
+import { type MutationActionResponse } from '~/actions';
+import { ApiClientGlobalError } from '~/api';
 
 export const makeExperiencesRemote = async (
   _ids: string[],
 ): Promise<MutationActionResponse<{ message: string }>> => {
-  const { error, user, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -28,7 +28,7 @@ export const makeExperiencesRemote = async (
   if (invalidUUIDs.length > 0) {
     const err = ApiClientGlobalError.BadRequest({
       message: `The id(s) ${humanizeList(invalidUUIDs, {
-        conjunction: "and",
+        conjunction: 'and',
         formatter: v => `'${v}'`,
       })} are not valid UUID(s).`,
     });
@@ -43,31 +43,31 @@ export const makeExperiencesRemote = async (
     experiences.map(s => s.id),
   );
   if (invalidIds.length !== 0) {
-    const humanized = humanizeList(invalidIds, { conjunction: "and", formatter: v => `'${v}'` });
+    const humanized = humanizeList(invalidIds, { conjunction: 'and', formatter: v => `'${v}'` });
     logger.error(
       `Encountered invalid experience ID(s) when making experiences remote: ${humanized}.`,
       { ids, invalidIds },
     );
     const err = ApiClientGlobalError.BadRequest({
-      message: "Request contained experience ID(s) that do not exist.",
+      message: 'Request contained experience ID(s) that do not exist.',
     });
     return { error: err.json };
   }
   if (experiences.some(exp => exp.isRemote)) {
     const humanized = humanizeList(
       experiences.filter(exp => exp.isRemote).map(exp => exp.id),
-      { conjunction: "and", formatter: v => `'${v}'` },
+      { conjunction: 'and', formatter: v => `'${v}'` },
     );
     logger.warn(
       `A request to make experiences remote contained experience ID(s) ${humanized} ` +
-        "associated with experiences that are already remote.",
+        'associated with experiences that are already remote.',
       { ids: experiences.filter(exp => exp.isRemote).map(exp => exp.id) },
     );
   }
 
   await db.experience.updateMany({
-    where: { id: { in: ids } },
     data: { isRemote: true, updatedById: user.id },
+    where: { id: { in: ids } },
   });
-  return { data: { message: "Success" } };
+  return { data: { message: 'Success' } };
 };

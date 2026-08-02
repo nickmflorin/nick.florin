@@ -1,88 +1,211 @@
 {
+  "editor.rulers": [100],
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.rulers": [100],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-  "files.associations": {
-    "*.tsx": "typescriptreact",
-    "*.ts": "typescript"
+  /* Shows the suggestion details bar at the bottom of the completion popup, which exposes the
+     source module of an auto-import candidate before it is accepted. */
+  "editor.suggest.showStatusBar": true,
+  /* Auto-closes an editor tab when its underlying file is deleted by an external process, such as
+     a `git checkout` to a branch where the file does not exist. This clears the orphaned ESLint
+     and tsserver diagnostics that would otherwise linger in the Problems panel for a stale tab. */
+  "workbench.editor.closeOnFileDelete": true,
+  /* Triggers the completion popup automatically while typing in code contexts, which is the
+     mechanism through which auto-import suggestions appear without an explicit shortcut.
+     Suppressed inside comments and string literals to avoid noise during prose or path entry. */
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "off"
   },
+
+  /* Formatting for JS/TS is applied by the ESLint "source.fixAll.eslint" code action on explicit
+     saves (see "editor.codeActionsOnSave" above). That code action applies the same autofixes as
+     ESLint (including "prettier/prettier"). "editor.formatOnSave" is disabled for these languages
+     so the ESLint formatter does not run a second, near-identical pass on every save;
+     "defaultFormatter" is kept so manual "Format Document" still routes through ESLint, matching
+     CI. */
   "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnSave": false
   },
   "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnSave": false
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnSave": false
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnSave": false
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  /* SCSS is formatted by Prettier rather than ESLint - the shared ESLint configuration globally
+     ignores "*.scss" because there is no stylesheet-aware ESLint language plugin wired up. */
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
-  "eslint.probe": [
-    "typescript",
-    "typescriptreact",
-    "html",
-    "markdown",
-    "scss",
-    "json",
-    "javascript",
-    "javscriptreact"
-  ],
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+
   "eslint.format.enable": true,
-  "eslint.useFlatConfig": false,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.rules.customizations": [{ "rule": "*", "fixable": true, "severity": "upgrade" }],
+  /* Disables "import/no-cycle" for in-editor lint runs only. The rule remains enabled in the
+     shared ESLint configuration so that CI and command-line lint runs continue to enforce it.
+     Unlike "eslint.rules.customizations", which only suppresses the diagnostic after the rule
+     has already executed, this override is applied at configuration resolution time and
+     therefore prevents the import graph traversal entirely, eliminating the associated
+     latency. */
+  "eslint.options": {
+    "overrideConfig": {
+      "rules": {
+        "import/no-cycle": "off"
+      }
+    }
+  },
+  "eslint.useFlatConfig": true,
+  "eslint.problems.shortenToSingleLine": true,
+  "eslint.codeActionsOnSave.mode": "all",
+  "eslint.run": "onSave",
+  /* Turns off verbose ESLint extension logging to its Output channel. Only enable when actively
+     debugging the ESLint extension itself; otherwise it adds non-trivial overhead per lint
+     pass. */
   "eslint.debug": false,
-  "eslint.codeActionsOnSave.rules": [
-    "prettier/prettier",
-    "import/*",
-    "quotes",
-    "@typescript-eslint/indent",
-    "arrow-body-style",
-    "multiline-comment-style",
-    "prefer-const",
-    "react/jsx-curly-brace-presence",
-    "@typescript-eslint/consistent-type-imports"
-  ],
 
-  "typescript.tsdk": "./node_modules/typescript/lib",
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.format.enable": false,
-  "typescript.preferences.preferTypeOnlyAutoImports": true,
-  "typescript.preferences.renameMatchingJsxTags": true,
-  "typescript.format.semicolons": "insert",
-  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
-  "typescript.preferences.quoteStyle": "double",
-  "typescript.preferences.autoImportFileExcludePatterns": ["@mantine/*"],
-
-  "javascript.format.enable": false,
-  "javascript.preferences.importModuleSpecifier": "non-relative",
-
+  /* Delays auto-save to 30s so that file-change events do not race with in-flight parsers in
+     other extensions (vscode-jest test discovery, tsserver). */
+  "files.autoSaveDelay": 30000,
+  "files.autoSave": "afterDelay",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    "*.ts": "typescript"
+  },
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/tmp": true,
-    "**/node_modules": true,
     "**/bower_components": true,
-    "**/dist": true,
-    "**/.next": true,
     "**/.swc": true
   },
+  /* Excludes high-churn directories from the file watcher to prevent the OS-level watch
+     budget from being saturated, which manifests as missed file events and editor lag. */
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
     "**/node_modules/**": true,
-    "**/tmp/**": true,
-    "**/bower_components/**": true,
     "**/dist/**": true,
+    "**/build/**": true,
     "**/.next/**": true,
     "**/.swc/**": true,
-    "**/database/prisma/migrations/**": true,
-    "**/database/model/generated/**": true
-  }
+    "**/coverage/**": true,
+    "**/src/database/prisma/migrations/**": true,
+    "**/src/database/model/generated/**": true
+  },
+  /* Excludes generated and vendored directories from workspace search to keep results focused
+     on first-party source and to reduce indexing cost. */
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/.swc": true,
+    "**/coverage": true,
+    "**/pnpm-lock.yaml": true,
+    "**/*.tsbuildinfo": true,
+    "**/src/database/model/generated": true
+  },
+
+  "npm.packageManager": "pnpm",
+  "npm.scriptRunner": "pnpm",
+
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  /* Switches tsserver from polling-based file watching to native OS file events (FSEvents on
+     macOS). Drops idle CPU usage and makes save-to-diagnostic latency sub-second instead of
+     depending on the next polling tick. "dynamicPriorityPolling" is the fallback only for paths
+     where fsEvents cannot be subscribed (some bind mounts, NFS), prioritizing recently-touched
+     files over cold ones. */
+  "js/ts.tsserver.watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriorityPolling"
+  },
+  "js/ts.preferences.preferTypeOnlyAutoImports": true,
+  "js/ts.preferences.quoteStyle": "single",
+  "js/ts.preferences.renameMatchingJsxTags": true,
+  "js/ts.format.enabled": false,
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  /* Only scans direct dependencies for auto imports listed in nearest package.json. This avoids
+     scanning every package in the "node_modules" folder. */
+  "js/ts.preferences.includePackageJsonAutoImports": "auto",
+  // Surfaces auto-import candidates in the completion popup as identifiers are typed.
+  "js/ts.suggest.autoImports": true,
+  /* Disables whole-project diagnostic passes on every edit, which are expensive and rarely
+     surface issues that the per-file diagnostics miss. */
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
+  /* Disables Automatic Type Acquisition, which fetches "@types/*" packages for untyped
+     JavaScript. All first-party code is TypeScript, so this work is unnecessary and slows
+     down the language server on startup. */
+  "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
+  "js/ts.preferences.autoImportSpecifierExcludeRegexes": [
+    "^lodash(\/.*)?$",
+    /* We import indirectly from @prisma/client via the generated model types, which are
+       re-exported from "~/database/model". */
+    "^@prisma\/client(\/.*)?$",
+    "^~\/database\/model\/generated(\/.*)?$"
+  ],
+  "js/ts.preferences.autoImportFileExcludePatterns": [
+    "@prisma/client",
+    "@prisma/client/*",
+    "@mantine/*",
+    /* NextJS internals (e.g. "next/dist/lib/metadata/...") export symbols with common names that
+       pollute auto-import suggestions; the public "next/*" entry points remain importable. */
+    "next/dist/**"
+  ],
+
+  /* TSLint will conflict with ESLint.  This is turned off just in case a developer has it installed
+     and enabled locally. */
+  "tslint.enable": false,
+
+  "jest.enable": true,
+  "jest.runMode": {
+    "type": "on-demand",
+    /* When false, runs test-tree discovery on startup and after edits instead of lazily waiting
+       for first activity, which frequently causes CodeLens decorations (play buttons) to drop
+       when a file changes before the first run. */
+    "deferred": false,
+    // When true, surfaces failures next to the failing assertion in the editor.
+    "showInlineError": true
+  },
+  "jest.jestCommandLine": "pnpm exec jest --config jest.config.ts",
+
+  "markdown.preview.mermaid": true
 }

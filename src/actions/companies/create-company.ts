@@ -1,23 +1,23 @@
-"use server";
-import { type z } from "zod";
+'use server';
+import { type z } from 'zod';
 
-import { getAuthedUser } from "~/application/auth/server-v2";
-import { type BrandCompany } from "~/database/model";
-import { db } from "~/database/prisma";
+import { getAuthedUser } from '~/application/auth/server-v2';
+import { type BrandCompany } from '~/database/model';
+import { db } from '~/database/prisma';
 
-import { type MutationActionResponse } from "~/actions";
-import { CompanySchema } from "~/actions/schemas";
+import { type MutationActionResponse } from '~/actions';
+import { CompanySchema } from '~/actions/schemas';
 import {
   ApiClientFieldErrors,
-  ApiClientGlobalError,
   ApiClientFormError,
+  ApiClientGlobalError,
   convertToPlainObject,
-} from "~/api";
+} from '~/api';
 
 export const createCompany = async (
   data: z.infer<typeof CompanySchema>,
 ): Promise<MutationActionResponse<BrandCompany>> => {
-  const { user, error, isAdmin } = await getAuthedUser();
+  const { error, isAdmin, user } = await getAuthedUser();
   if (error) {
     return { error: error.json };
   } else if (!isAdmin) {
@@ -35,10 +35,10 @@ export const createCompany = async (
   const fieldErrors = new ApiClientFieldErrors();
 
   if (await db.company.count({ where: { name } })) {
-    fieldErrors.addUnique("name", "The 'name' must be unique for a given company.");
+    fieldErrors.addUnique('name', "The 'name' must be unique for a given company.");
   }
   if (await db.company.count({ where: { shortName } })) {
-    fieldErrors.addUnique("shortName", "The 'shortName' must be unique for a given company.");
+    fieldErrors.addUnique('shortName', "The 'shortName' must be unique for a given company.");
   }
   if (!fieldErrors.isEmpty) {
     return { error: fieldErrors.json };
@@ -46,9 +46,9 @@ export const createCompany = async (
   const company = await db.company.create({
     data: {
       ...rest,
+      createdById: user.id,
       name,
       shortName,
-      createdById: user.id,
       updatedById: user.id,
     },
   });

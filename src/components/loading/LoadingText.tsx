@@ -1,7 +1,7 @@
-"use client";
-import { useState, type JSX } from "react";
+'use client';
+import { type JSX, useState } from 'react';
 
-import { useInterval } from "usehooks-ts";
+import { useInterval } from 'usehooks-ts';
 
 export interface LoadingTextProps {
   readonly children?: string;
@@ -10,7 +10,7 @@ export interface LoadingTextProps {
 }
 
 export const LoadingText = ({
-  children = "",
+  children = '',
   interval = 500,
   isLoading = true,
 }: LoadingTextProps): JSX.Element => {
@@ -23,5 +23,5 @@ export const LoadingText = ({
     isLoading ? interval : null,
   );
 
-  return <>{isLoading ? children + ".".repeat(numDots) : children}</>;
+  return <>{isLoading ? children + '.'.repeat(numDots) : children}</>;
 };

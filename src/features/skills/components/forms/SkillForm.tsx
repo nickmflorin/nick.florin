@@ -1,187 +1,186 @@
-"use client";
-import { useEffect, type JSX } from "react";
+'use client';
+import { type JSX, useEffect } from 'react';
 
-import { useWatch } from "react-hook-form";
-import { type z } from "zod";
+import { useWatch } from 'react-hook-form';
+import { type z } from 'zod';
 
-import { slugify } from "~/lib/formatters";
+import { slugify } from '~/lib/formatters';
 
-import { SkillSchema } from "~/actions/schemas";
+import { SkillSchema } from '~/actions/schemas';
 
-import { Checkboxes } from "~/components/forms-v2/fields/Checkboxes";
-import { CheckboxField } from "~/components/forms-v2/fields/CheckboxField";
-import { Form, type FormProps } from "~/components/forms-v2/Form";
-import { TextArea } from "~/components/input/TextArea";
-import { TextInput } from "~/components/input/TextInput";
-import { ClientCourseSelect } from "~/features/courses/components/input/ClientCourseSelect";
-import { ClientEducationSelect } from "~/features/educations/components/input/ClientEducationSelect";
-import { ClientExperienceSelect } from "~/features/experiences/components/input/ClientExperienceSelect";
-import { ClientProjectSelect } from "~/features/projects/components/input/ClientProjectSelect";
-import { ClientRepositorySelect } from "~/features/repositories/components/input/ClientRepositorySelect";
-import { ProgrammingDomainSelect } from "~/features/skills/components/input/ProgrammingDomainSelect";
-import { ProgrammingLanguageSelect } from "~/features/skills/components/input/ProgrammingLanguageSelect";
-import { SkillCategorySelect } from "~/features/skills/components/input/SkillCategorySelect";
+import { Checkboxes } from '~/components/forms-v2/fields/Checkboxes';
+import { CheckboxField } from '~/components/forms-v2/fields/CheckboxField';
+import { Form, type FormProps } from '~/components/forms-v2/Form';
+import { TextArea } from '~/components/input/TextArea';
+import { TextInput } from '~/components/input/TextInput';
+import { ClientCourseSelect } from '~/features/courses/components/input/ClientCourseSelect';
+import { ClientEducationSelect } from '~/features/educations/components/input/ClientEducationSelect';
+import { ClientExperienceSelect } from '~/features/experiences/components/input/ClientExperienceSelect';
+import { ClientProjectSelect } from '~/features/projects/components/input/ClientProjectSelect';
+import { ClientRepositorySelect } from '~/features/repositories/components/input/ClientRepositorySelect';
+import { ProgrammingDomainSelect } from '~/features/skills/components/input/ProgrammingDomainSelect';
+import { ProgrammingLanguageSelect } from '~/features/skills/components/input/ProgrammingLanguageSelect';
+import { SkillCategorySelect } from '~/features/skills/components/input/SkillCategorySelect';
 
 export const SkillFormSchema = SkillSchema.required();
 
 export type SkillFormValues = z.infer<typeof SkillFormSchema>;
 
-export interface SkillFormProps
-  extends Omit<FormProps<SkillFormValues>, "children" | "onSubmit" | "contentClassName"> {}
+export interface SkillFormProps extends Omit<
+  FormProps<SkillFormValues>,
+  'children' | 'contentClassName' | 'onSubmit'
+> {}
 
 export const SkillForm = (props: SkillFormProps): JSX.Element => {
-  const _labelValue = useWatch({ control: props.form.control, name: "label" });
+  const _labelValue = useWatch({ control: props.form.control, name: 'label' });
 
   useEffect(() => {
-    props.form.setValue("slug", slugify(_labelValue));
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [_labelValue]);
+    props.form.setValue('slug', slugify(_labelValue));
+  }, [_labelValue, props.form]);
 
   return (
-    <Form {...props} contentClassName="gap-[12px]">
-      <Form.Field name="label" label="Label" form={props.form} condition="required">
-        <TextInput className="w-full" {...props.form.register("label")} />
+    <Form {...props} contentClassName='gap-[12px]'>
+      <Form.Field condition='required' form={props.form} label='Label' name='label'>
+        <TextInput className='w-full' {...props.form.register('label')} />
       </Form.Field>
       <Form.Field
-        name="slug"
-        label="Slug"
         form={props.form}
-        helpText="If left blank, the slug will be automatically generated based on the label."
+        helpText='If left blank, the slug will be automatically generated based on the label.'
+        label='Slug'
+        name='slug'
       >
-        <TextInput className="w-full" {...props.form.register("slug")} />
+        <TextInput className='w-full' {...props.form.register('slug')} />
       </Form.Field>
-      <Form.Field name="description" label="Description" form={props.form}>
-        <TextArea className="w-full" {...props.form.register("description")} rows={4} />
+      <Form.Field form={props.form} label='Description' name='description'>
+        <TextArea className='w-full' {...props.form.register('description')} rows={4} />
       </Form.Field>
       <Form.Field
-        name="experience"
-        label="Experience"
         form={props.form}
-        helpText="If left blank, the experience will be automatically calculated."
+        helpText='If left blank, the experience will be automatically calculated.'
+        label='Experience'
+        name='experience'
       >
-        <TextInput className="w-full" {...props.form.register("experience")} />
+        <TextInput className='w-full' {...props.form.register('experience')} />
       </Form.Field>
-      <Form.ControlledField name="experiences" label="Experiences" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Experiences' name='experiences'>
+        {({ onChange, value }) => (
           <ClientExperienceSelect
-            visibility="admin"
-            inputClassName="w-full"
+            behavior='multi'
             includes={[]}
-            behavior="multi"
+            inputClassName='w-full'
             isClearable
-            value={value}
+            isInPortal
             onChange={onChange}
-            inPortal
             onError={() =>
-              props.form.setErrors("educations", "There was an error loading the data.")
+              props.form.setErrors('educations', 'There was an error loading the data.')
             }
+            value={value}
+            visibility='admin'
           />
         )}
       </Form.ControlledField>
-      <Form.ControlledField name="educations" label="Educations" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Educations' name='educations'>
+        {({ onChange, value }) => (
           <ClientEducationSelect
-            visibility="admin"
+            behavior='multi'
             includes={[]}
-            inputClassName="w-full"
-            behavior="multi"
+            inputClassName='w-full'
             isClearable
-            value={value}
+            isInPortal
             onChange={onChange}
-            inPortal
             onError={() =>
-              props.form.setErrors("educations", "There was an error loading the data.")
+              props.form.setErrors('educations', 'There was an error loading the data.')
             }
+            value={value}
+            visibility='admin'
           />
         )}
       </Form.ControlledField>
-      <Form.ControlledField name="projects" label="Projects" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Projects' name='projects'>
+        {({ onChange, value }) => (
           <ClientProjectSelect
-            inputClassName="w-full"
-            visibility="admin"
-            behavior="multi"
+            behavior='multi'
+            inputClassName='w-full'
             isClearable
-            value={value}
+            isInPortal
             onChange={onChange}
-            inPortal
-            onError={() => props.form.setErrors("projects", "There was an error loading the data.")}
+            onError={() => props.form.setErrors('projects', 'There was an error loading the data.')}
+            value={value}
+            visibility='admin'
           />
         )}
       </Form.ControlledField>
-      <Form.ControlledField name="repositories" label="Repositories" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Repositories' name='repositories'>
+        {({ onChange, value }) => (
           <ClientRepositorySelect
-            visibility="admin"
-            inputClassName="w-full"
-            behavior="multi"
+            behavior='multi'
+            inputClassName='w-full'
             isClearable
-            value={value}
+            isInPortal
             onChange={onChange}
-            inPortal
             onError={() =>
-              props.form.setErrors("repositories", "There was an error loading the data.")
+              props.form.setErrors('repositories', 'There was an error loading the data.')
             }
+            value={value}
+            visibility='admin'
           />
         )}
       </Form.ControlledField>
-      <Form.ControlledField name="courses" label="Courses" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Courses' name='courses'>
+        {({ onChange, value }) => (
           <ClientCourseSelect
-            inputClassName="w-full"
-            visibility="admin"
-            behavior="multi"
+            behavior='multi'
+            inputClassName='w-full'
             isClearable
-            value={value}
+            isInPortal
             onChange={onChange}
-            inPortal
-            onError={() => props.form.setErrors("courses", "There was an error loading the data.")}
+            onError={() => props.form.setErrors('courses', 'There was an error loading the data.')}
+            value={value}
+            visibility='admin'
           />
         )}
       </Form.ControlledField>
-      <Checkboxes className="mt-[8px] mb-[8px]">
-        <CheckboxField name="visible" form={props.form} label="Visible" />
-        <CheckboxField name="highlighted" form={props.form} label="Top Skill" />
-        <CheckboxField name="prioritized" form={props.form} label="Prioritized" />
+      <Checkboxes className='mt-[8px] mb-[8px]'>
+        <CheckboxField form={props.form} label='Visible' name='visible' />
+        <CheckboxField form={props.form} label='Top Skill' name='highlighted' />
+        <CheckboxField form={props.form} label='Prioritized' name='prioritized' />
       </Checkboxes>
-      <Form.ControlledField name="programmingDomains" label="Domains" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Domains' name='programmingDomains'>
+        {({ onChange, value }) => (
           <ProgrammingDomainSelect
-            inputClassName="w-full"
-            value={value}
-            behavior="multi"
+            behavior='multi'
+            inputClassName='w-full'
             isClearable
-            popoverPlacement="top"
             onChange={onChange}
+            popoverPlacement='top'
+            value={value}
           />
         )}
       </Form.ControlledField>
-      <Form.ControlledField name="programmingLanguages" label="Languages" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Languages' name='programmingLanguages'>
+        {({ onChange, value }) => (
           <ProgrammingLanguageSelect
-            inputClassName="w-full"
-            value={value}
-            behavior="multi"
+            behavior='multi'
+            inputClassName='w-full'
             isClearable
-            popoverPlacement="top"
             onChange={onChange}
+            popoverPlacement='top'
+            value={value}
           />
         )}
       </Form.ControlledField>
-      <Form.ControlledField name="categories" label="Categories" form={props.form}>
-        {({ value, onChange }) => (
+      <Form.ControlledField form={props.form} label='Categories' name='categories'>
+        {({ onChange, value }) => (
           <SkillCategorySelect
-            inputClassName="w-full"
-            value={value}
-            behavior="multi"
+            behavior='multi'
+            inputClassName='w-full'
             isClearable
-            popoverPlacement="top"
             onChange={onChange}
+            popoverPlacement='top'
+            value={value}
           />
         )}
       </Form.ControlledField>
     </Form>
   );
 };
-
-export default SkillForm;

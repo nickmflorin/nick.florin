@@ -1,21 +1,21 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type Project } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type Project } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { createProject } from "~/actions/projects/create-project";
+import { createProject } from '~/actions/projects/create-project';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { ProjectForm, type ProjectFormProps } from "./ProjectForm";
+import { ProjectForm, type ProjectFormProps } from './ProjectForm';
 
-export interface CreateProjectFormProps extends Omit<ProjectFormProps, "action"> {
-  readonly onSuccess?: (m: Project) => void;
+export interface CreateProjectFormProps extends Omit<ProjectFormProps, 'action'> {
   readonly onCancel?: () => void;
+  readonly onSuccess?: (m: Project) => void;
 }
 
 export const CreateProjectForm = ({
@@ -23,14 +23,12 @@ export const CreateProjectForm = ({
   onSuccess,
   ...props
 }: CreateProjectFormProps): JSX.Element => {
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
   return (
     <ProjectForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof createProject>> | null = null;
         try {
@@ -39,20 +37,19 @@ export const CreateProjectForm = ({
           logger.errorUnsafe(e, "There was an error creating the project'.", {
             data,
           });
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error creating the project.");
+          return toast.error('There was an error creating the project.');
         }
-        const { error, data: project } = response;
+        const { data: project, error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.(project);
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default CreateProjectForm;

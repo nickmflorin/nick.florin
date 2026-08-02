@@ -1,27 +1,28 @@
-import { parseDataAttributes } from "~/components/types";
+import { parseDataAttributes } from '~/components/types';
 
-type Case = [Record<string, string | boolean | undefined>, Record<string, true | string>];
+type Case = [Record<string, boolean | string | undefined>, Record<string, string | true>];
 
 const Cases: Case[] = [
   [
-    { isLoading: true, isDisabled: false, isHidden: true, variant: "", size: " ", radius: "lg" },
-    { "data-attr-loading": true, "data-attr-hidden": true, "data-attr-radius": "lg" },
+    { isDisabled: false, isHidden: true, isLoading: true, radius: 'lg', size: ' ', variant: '' },
+    { 'data-attr-hidden': true, 'data-attr-loading': true, 'data-attr-radius': 'lg' },
   ],
   [
-    { loading: true, disabled: false, hidden: true, isReadOnly: true },
-    { "data-attr-loading": true, "data-attr-hidden": true, "data-attr-read-only": true },
+    { disabled: false, hidden: true, isReadOnly: true, loading: true },
+    { 'data-attr-hidden': true, 'data-attr-loading': true, 'data-attr-read-only': true },
   ],
   [{}, {}],
-  [{ loading: false, isDisabled: false, hidden: false }, {}],
+  [{ hidden: false, isDisabled: false, loading: false }, {}],
 ];
 
-describe("parseDataAttributes()", () => {
-  describe("parseDataAttributes() properly returns data attributes", () => {
-    test.each(Cases)("(input = %s)", (input, expected) => {
-      expect(parseDataAttributes(input)).toEqual(expected);
+describe('parseDataAttributes()', () => {
+  describe('parseDataAttributes() properly returns data attributes', () => {
+    it.each(Cases)('(input = %s)', (input, expected) => {
+      expect(parseDataAttributes(input)).toStrictEqual(expected);
     });
   });
-  it("toDataAttributes() properly throws an error for invalid attributes", () => {
+
+  it('toDataAttributes() properly throws an error for invalid attributes', () => {
     expect(() => parseDataAttributes({ is9Loading: true })).toThrow(TypeError);
   });
 });

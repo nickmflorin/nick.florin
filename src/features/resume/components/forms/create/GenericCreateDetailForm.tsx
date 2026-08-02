@@ -1,58 +1,57 @@
-import { useRouter } from "next/navigation";
-import React, { useState, useTransition, type JSX } from "react";
+import { useRouter } from 'next/navigation';
+import { type JSX, useState, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type ApiDetail, type ApiNestedDetail } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type ApiDetail, type ApiNestedDetail } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { type MutationActionResponse } from "~/actions";
+import { type MutationActionResponse } from '~/actions';
 
-import { Link } from "~/components/buttons";
-import { FormFieldErrors } from "~/components/forms-v2/Field/FieldErrors";
-import { Form, type FormProps } from "~/components/forms-v2/Form";
-import { useForm } from "~/components/forms-v2/hooks/use-form";
-import { TextInput } from "~/components/input/TextInput";
+import { Link } from '~/components/buttons';
+import { FormFieldErrors } from '~/components/forms-v2/Field/FieldErrors';
+import { Form, type FormProps } from '~/components/forms-v2/Form';
+import { useForm } from '~/components/forms-v2/hooks/use-form';
+import { TextInput } from '~/components/input/TextInput';
 
-import { type DetailFormValues, DetailFormSchema } from "../types";
+import { DetailFormSchema, type DetailFormValues } from '../types';
 
 export interface GenericCreateDetailFormProps<
-  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
+  D extends ApiDetail<['skills']> | ApiNestedDetail<['skills']>,
 > extends Omit<
-    FormProps<Pick<DetailFormValues, "label">>,
-    "children" | "contentClassName" | "action" | "form"
-  > {
-  readonly onCreated: (detail: D) => void;
-  readonly onCancel: () => void;
+  FormProps<Pick<DetailFormValues, 'label'>>,
+  'action' | 'children' | 'contentClassName' | 'form'
+> {
   readonly action: (
-    data: Pick<DetailFormValues, "label"> & { readonly visible: boolean },
+    data: { readonly visible: boolean } & Pick<DetailFormValues, 'label'>,
   ) => Promise<MutationActionResponse<D>>;
+  readonly onCancel: () => void;
+  readonly onCreated: (detail: D) => void;
 }
 
 export const GenericCreateDetailForm = <
-  D extends ApiDetail<["skills"]> | ApiNestedDetail<["skills"]>,
+  D extends ApiDetail<['skills']> | ApiNestedDetail<['skills']>,
 >({
-  onCreated,
-  onCancel,
   action,
+  onCancel,
+  onCreated,
   ...props
 }: GenericCreateDetailFormProps<D>): JSX.Element => {
   const [_, transition] = useTransition();
   const [isCreating, setIsCreating] = useState(false);
 
-  const { refresh } = useRouter();
-  const form = useForm<Pick<DetailFormValues, "label">>({
-    schema: DetailFormSchema.pick({ label: true }),
+  const router = useRouter();
+  const form = useForm<Pick<DetailFormValues, 'label'>>({
     defaultValues: {
-      label: "",
+      label: '',
     },
+    schema: DetailFormSchema.pick({ label: true }),
   });
 
   return (
     <Form
       {...props}
-      form={form}
-      action={async (data, form) => {
+      action={async (data, formInstance) => {
         setIsCreating(true);
         let response: MutationActionResponse<D> | null = null;
         try {
@@ -61,40 +60,40 @@ export const GenericCreateDetailForm = <
           logger.errorUnsafe(e, "There was an error creating the detail'.", {
             data,
           });
-          // TODO: Consider using a global form error here instead.
           setIsCreating(false);
-          return toast.error("There was an error creating the detail.");
+          return toast.error('There was an error creating the detail.');
         }
-        const { error, data: detail } = response;
+        const { data: detail, error } = response;
         if (error) {
           setIsCreating(false);
-          return form.handleApiError(error);
+          return formInstance.handleApiError(error);
         }
-        form.reset();
+        formInstance.reset();
         transition(() => {
-          refresh();
+          router.refresh();
           setIsCreating(false);
           onCreated(detail);
         });
       }}
-      contentClassName="gap-[12px]"
+      contentClassName='gap-[12px]'
+      form={form}
       structure={({ footer }) => (
-        <div className="flex flex-col">
-          <div className="flex flex-row justify-between items-center">
-            <Form.Field name="label" form={form} className="mr-[12px]" autoRenderErrors={false}>
+        <div className='flex flex-col'>
+          <div className='flex flex-row justify-between items-center'>
+            <Form.Field autoRenderErrors={false} className='mr-[12px]' form={form} name='label'>
               <TextInput
-                className="w-full p-0 outline-none"
-                {...form.register("label")}
-                placeholder="Label"
-                fontWeight="medium"
-                size="small"
+                className='w-full p-0 outline-none'
+                {...form.register('label')}
+                fontWeight='medium'
+                placeholder='Label'
+                size='small'
               />
             </Form.Field>
-            <div className="flex flex-row gap-[6px] items-center">
+            <div className='flex flex-row gap-[6px] items-center'>
               <Link.Secondary
-                element="button"
-                fontWeight="regular"
-                fontSize="xs"
+                element='button'
+                fontSize='xs'
+                fontWeight='regular'
                 onClick={() => {
                   form.reset();
                   onCancel();
@@ -103,19 +102,19 @@ export const GenericCreateDetailForm = <
                 Cancel
               </Link.Secondary>
               <Link.Primary
-                element="button"
-                fontWeight="regular"
-                type="submit"
-                fontSize="xs"
-                loadingLocation="over"
+                element='button'
+                fontSize='xs'
+                fontWeight='regular'
                 isLoading={isCreating}
+                loadingLocation='over'
+                type='submit'
               >
                 Create
               </Link.Primary>
             </div>
           </div>
-          <FormFieldErrors form={form} name="label" />
-          <div className="flex flex-col mt-[4px]">{footer}</div>
+          <FormFieldErrors form={form} name='label' />
+          <div className='flex flex-col mt-[4px]'>{footer}</div>
         </div>
       )}
     />

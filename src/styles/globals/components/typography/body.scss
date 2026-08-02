@@ -1,11 +1,11 @@
-@use "partials";
+@use 'partials';
 
-@use "./base" as *;
-@use "./constants" as constants;
-@use "./mixins" as mixins;
+@use './base' as *;
+@use './constants' as constants;
+@use './mixins' as mixins;
 
 @mixin body-base() {
-  @include mixins.font("body", constants.get-default-size("body"));
+  @include mixins.font('body', constants.get-default-size('body'));
 }
 
 html,
@@ -25,7 +25,7 @@ p {
   }
 }
 
-p:not([data-attr-inherit="true"]) {
+p:not([data-attr-inherit='true']) {
   @include body-base();
 }
 
@@ -34,20 +34,20 @@ p:not([data-attr-inherit="true"]) {
 }
 
 span.body,
-div.body[data-attr-inherit="true"],
-p.body[data-attr-inherit="true"] {
+div.body[data-attr-inherit='true'],
+p.body[data-attr-inherit='true'] {
   @include mixins.inherit-font-properties();
 
   @include mixins.with-font-weights();
   @include mixins.with-font-transforms();
-  @include mixins.with-fonts("body");
+  @include mixins.with-fonts('body');
 }
 
-div.body:not([data-attr-inherit="true"]),
-p.body:not([data-attr-inherit="true"]) {
+div.body:not([data-attr-inherit='true']),
+p.body:not([data-attr-inherit='true']) {
   @include body-base();
 
   @include mixins.with-font-weights();
   @include mixins.with-font-transforms();
-  @include mixins.with-fonts("body");
+  @include mixins.with-fonts('body');
 }

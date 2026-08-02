@@ -1,27 +1,26 @@
-import React, { useMemo, type JSX } from "react";
+import { type JSX, useMemo } from 'react';
 
-import type * as types from "./types";
+import type * as types from './types';
 
-import { isApiError } from "~/api";
-import { HttpNetworkError } from "~/integrations/http";
+import { isApiError } from '~/api';
+import { HttpNetworkError } from '~/integrations/http';
 
-import { type ComponentProps, classNames } from "~/components/types";
-import { type TypographyCharacteristics } from "~/components/types/typography";
-import { Text } from "~/components/typography/Text";
+import { classNames, type ComponentProps } from '~/components/types';
+import { type TypographyCharacteristics } from '~/components/types/typography';
+import { Text } from '~/components/typography/Text';
 
 export interface ErrorTitleProps
-  extends Omit<TypographyCharacteristics, "lineClamp" | "truncate">,
-    ComponentProps {
+  extends Omit<TypographyCharacteristics, 'lineClamp' | 'truncate'>, ComponentProps {
   readonly children?: string;
   readonly error?: types.ErrorType;
 }
 
 export const ErrorTitle = ({
   children,
+  className = 'text-text',
   error,
-  className = "text-text",
-  fontWeight = "medium",
-  fontSize = "lg",
+  fontSize = 'lg',
+  fontWeight = 'medium',
   ...props
 }: ErrorTitleProps): JSX.Element => {
   const title = useMemo(() => {
@@ -30,15 +29,15 @@ export const ErrorTitle = ({
     } else if (isApiError(error) && !(error instanceof HttpNetworkError)) {
       return `${error.status}`;
     }
-    return "Error";
+    return 'Error';
   }, [children, error]);
 
   return (
     <Text
       {...props}
+      className={classNames('text-center', className)}
       fontSize={fontSize}
       fontWeight={fontWeight}
-      className={classNames("text-center", className)}
     >
       {title}
     </Text>

@@ -1,41 +1,74 @@
-import { useState, useCallback } from "react";
+import { type RefObject, useCallback, useState } from 'react';
 
-import { logger } from "~/internal/logger";
+import { isEqual } from 'lodash-es';
 
-import type * as types from "~/components/input/select/types";
-import { useDeepEqualEffect } from "~/hooks";
+import { logger } from '~/internal/logger';
+
+import type * as types from '~/components/input/select/types';
 
 export interface UseSelectDataParams<
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 > {
+  readonly base: RefObject<null | types.DataSelectBaseInstance<M, O>>;
   readonly data: types.ConnectedDataSelectModel<M, O>[];
-  readonly base: types.DataSelectBaseInstance<M, O> | null;
 }
+
+/**
+ * Selects the given model on the base Select instance, including it among the optimistic models
+ * used to resolve the corresponding value.
+ *
+ * The recently added model must be included in the optimistic models that {@link
+ * types.DataSelectBaseInstance.select} accepts so that 'select' can determine the underlying value
+ * from both the provided optimistic models and the models already in state.
+ *
+ * Without it, 'select' may fail to find the model in 'data', because React batches state updates:
+ * the instruction to add the model to the 'data' state is dispatched in the same batch as the
+ * select call, so 'data' has not yet updated by the time 'select' looks up the model that
+ * corresponds to the Select's new value.
+ *
+ * @param {types.DataSelectBaseInstance<M, O>} base The Select instance the model is selected on.
+ * @param {types.ConnectedDataSelectModel<M, O>} model The model that was added, to be selected.
+ * @param {boolean} dispatchChangeEvent Whether a change event should be dispatched for the select.
+ */
+const selectOptimisticModel = <
+  M extends types.DataSelectModel,
+  O extends types.DataSelectOptions<M>,
+>(
+  base: types.DataSelectBaseInstance<M, O>,
+  model: types.ConnectedDataSelectModel<M, O>,
+  dispatchChangeEvent: boolean | undefined,
+) => base.select(model, { dispatchChangeEvent, optimisticModels: [model] });
 
 export const useSelectData = <
   M extends types.DataSelectModel,
   O extends types.DataSelectOptions<M>,
 >({
-  data,
   base,
+  data,
 }: UseSelectDataParams<M, O>) => {
   const [optimisticData, setOptimisticData] =
     useState<types.ConnectedDataSelectModel<M, O>[]>(data);
+  const [syncedData, setSyncedData] = useState<types.ConnectedDataSelectModel<M, O>[]>(data);
 
-  useDeepEqualEffect(() => {
+  /* The optimistic data is re-seeded during render, rather than from an effect, whenever the data
+     provided to the hook changes.  React applies a state update performed during render before it
+     commits, so this avoids the additional committed render that an effect would cause.  The
+     comparison is by value because the data is re-created on each render of the caller. */
+  if (!isEqual(data, syncedData)) {
+    setSyncedData(data);
     setOptimisticData(data);
-  }, [data]);
+  }
 
   const _addOptimisticModel = useCallback(
     (
       m:
-        | types.ConnectedDataSelectModel<M, O>
         | ((
             curr: types.ConnectedDataSelectModel<M, O>[],
-          ) => [types.ConnectedDataSelectModel<M, O>, types.ConnectedDataSelectModel<M, O>[]]),
+          ) => [types.ConnectedDataSelectModel<M, O>, types.ConnectedDataSelectModel<M, O>[]])
+        | types.ConnectedDataSelectModel<M, O>,
     ): types.ConnectedDataSelectModel<M, O> => {
-      if (typeof m === "function") {
+      if (typeof m === 'function') {
         const [model, population] = m(optimisticData);
         setOptimisticData(population);
         return model;
@@ -47,47 +80,25 @@ export const useSelectData = <
   );
 
   return {
-    data: optimisticData,
     addOptimisticModel: (
       m:
-        | types.ConnectedDataSelectModel<M, O>
         | ((
             curr: types.ConnectedDataSelectModel<M, O>[],
-          ) => [types.ConnectedDataSelectModel<M, O>, types.ConnectedDataSelectModel<M, O>[]]),
-      { select: shouldSelect, dispatchChangeEvent }: types.AddOptimisticModelParams,
+          ) => [types.ConnectedDataSelectModel<M, O>, types.ConnectedDataSelectModel<M, O>[]])
+        | types.ConnectedDataSelectModel<M, O>,
+      { dispatchChangeEvent, select: shouldSelect }: types.AddOptimisticModelParams,
     ) => {
-      if (base) {
+      if (base.current) {
         const model = _addOptimisticModel(m);
-        if (shouldSelect && model) {
-          /* Include the recently added model to the set of optimistic models that the 'select'
-             method accepts.  This allows the 'select' method to determine what the underlying
-             value should be, based on both the provided optimistic models and the models already
-             in state.
-
-             If we do not include the 'optimisticModels' here, then the 'select' method may issue
-             an error when it tries to find the models in the 'data' that correspond to it's
-             updated value that is updated inside the 'select' method.  This is because React
-             batches state updates, and we both (a) add the model to the 'data' state array and
-             (b) perform the select inside the same batch.
-
-             In other words, we have already dispatched an instruction to add the model 'm' to
-             the 'data' state variable via the '_addOptimisticModel' function.  However, the
-             'data' state variable has not yet updated at the point in time in which this code
-             block is reached - it's state value will not update until after this function closure
-             exits.
-
-             This means that when the 'select' method is called, it will still be looking at the
-             stale 'data' state array - which doesn't include the added optimistic model 'm'.
-             This will lead to an error as the 'select' method will attempt to find the models
-             in the 'data' state that correspond to the updated value of the Select, which is
-             updated inside the 'select' method. */
-          base.select(model, { optimisticModels: [model], dispatchChangeEvent });
+        if (shouldSelect) {
+          selectOptimisticModel(base.current, model, dispatchChangeEvent);
         }
       } else {
         logger.error(
-          "The base instance is not available in the UI - an optimistic model cannot be selected.",
+          'The base instance is not available in the UI - an optimistic model cannot be selected.',
         );
       }
     },
+    data: optimisticData,
   };
 };

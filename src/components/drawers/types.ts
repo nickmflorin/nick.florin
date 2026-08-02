@@ -1,35 +1,35 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { enumeratedLiterals, type EnumeratedLiteralsMember } from "enumerated-literals";
+import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 
-import type { DrawerDynamicProps } from "./drawers";
+import { type DrawerDynamicProps } from './drawers';
 
 export const DrawerIds = enumeratedLiterals(
   [
-    "create-education",
-    "create-skill",
-    "create-experience",
-    "create-company",
-    "create-school",
-    "update-education-details",
-    "update-education",
-    "update-experience-details",
-    "update-experience",
-    "update-skill",
-    "update-company",
-    "update-school",
-    "view-skill",
-    "view-course",
-    "create-project",
-    "update-project",
-    "update-course",
-    "create-course",
-    "view-resumes",
-    "update-repository",
-    "create-repository",
-    "view-education",
-    "view-experience",
-    "skills-filters",
+    'create-education',
+    'create-skill',
+    'create-experience',
+    'create-company',
+    'create-school',
+    'update-education-details',
+    'update-education',
+    'update-experience-details',
+    'update-experience',
+    'update-skill',
+    'update-company',
+    'update-school',
+    'view-skill',
+    'view-course',
+    'create-project',
+    'update-project',
+    'update-course',
+    'create-course',
+    'view-resumes',
+    'update-repository',
+    'create-repository',
+    'view-education',
+    'view-experience',
+    'skills-filters',
   ] as const,
   {},
 );
@@ -41,10 +41,10 @@ export type DrawerIdPropsPair<I extends DrawerId = DrawerId> = I extends DrawerI
   : never;
 
 export interface DrawersManager {
-  readonly isInScope: boolean;
-  readonly drawerId: DrawerId | null;
-  readonly drawer: JSX.Element | null;
   readonly close: () => void;
+  readonly drawer: JSX.Element | null;
+  readonly drawerId: DrawerId | null;
+  readonly isInScope: boolean;
   readonly open: <D extends DrawerId>(id: D, props: DrawerDynamicProps<D>) => void;
 }
 

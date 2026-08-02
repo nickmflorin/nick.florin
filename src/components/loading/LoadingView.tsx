@@ -1,51 +1,41 @@
-import { type SpinnerProps } from "~/components/icons";
-import { Spinner } from "~/components/icons/Spinner";
-import { View, type ViewComponent, type ViewProps } from "~/components/structural/View";
-import type { ComponentProps } from "~/components/types";
-import { classNames, parseDataAttributes } from "~/components/types";
+import { type SpinnerProps } from '~/components/icons';
+import { Spinner } from '~/components/icons/Spinner';
+import { View, type ViewComponent, type ViewProps } from '~/components/structural/View';
+import { classNames, type ComponentProps, parseDataAttributes } from '~/components/types';
 
-export interface LoadingViewProps<C extends ViewComponent>
-  extends Pick<
-    ViewProps<C>,
-    | "fillScreen"
-    | "fill"
-    | "component"
-    | "isDisabled"
-    | "dim"
-    | keyof ComponentProps
-    | "position"
-    | "component"
-  > {
+/**
+ * The class name applied to the loading view while the spinner is displayed, so that the spinner
+ * appears above the content and the content's scroll behavior is prevented, but only while the
+ * spinner is present.
+ */
+const LoadingViewActiveClassName = 'z-10';
+
+export interface LoadingViewProps<C extends ViewComponent> extends Pick<
+  ViewProps<C>,
+  'component' | 'dim' | 'fill' | 'fillScreen' | 'isDisabled' | 'position' | keyof ComponentProps
+> {
   readonly isLoading?: boolean;
-  readonly spinnerSize?: SpinnerProps["size"];
-  readonly spinnerProps?: Omit<SpinnerProps, "size" | "isLoading">;
+  readonly spinnerProps?: Omit<SpinnerProps, 'isLoading' | 'size'>;
+  readonly spinnerSize?: SpinnerProps['size'];
 }
 
 export const LoadingView = <C extends ViewComponent>({
-  spinnerSize = "24px",
-  spinnerProps,
-  isLoading,
-  fill = "parent",
+  fill = 'parent',
   fillScreen,
+  isLoading,
+  spinnerProps,
+  spinnerSize = '24px',
   ...props
 }: LoadingViewProps<C>) => (
   <View
     {...props}
     {...parseDataAttributes({ isLoading, loadingView: true })}
-    __default_position__="absolute"
-    fill={fillScreen ? "screen" : fill}
-    overflow="hidden"
+    __default_position__='absolute'
     centerChildren
-    className={classNames(
-      {
-        /* If the spinner is being displayed, the view needs to have a higher z-index than it other
-           wise would.  This is such that the spinner appears over the content.  This will prevent
-           scroll behavior on the content, but only when the spinner is present. */
-        "z-10": isLoading,
-      },
-      props.className,
-    )}
+    className={classNames({ [LoadingViewActiveClassName]: isLoading }, props.className)}
+    fill={fillScreen ? 'screen' : fill}
+    overflow='hidden'
   >
-    <Spinner {...spinnerProps} size={spinnerSize} isLoading={isLoading} />
+    <Spinner {...spinnerProps} isLoading={isLoading} size={spinnerSize} />
   </View>
 );

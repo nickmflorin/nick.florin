@@ -1,11 +1,11 @@
-import type { JSX } from "react";
+import { type JSX } from 'react';
 
-import { type ProgrammingDomain, ProgrammingDomains } from "~/database/model";
+import { type ProgrammingDomain, ProgrammingDomains } from '~/database/model';
 
-import { Badge, type BadgeProps } from "~/components/badges/Badge";
-import { classNames } from "~/components/types";
+import { Badge, type BadgeProps } from '~/components/badges/Badge';
+import { classNames } from '~/components/types';
 
-export interface ProgrammingDomainBadgeProps extends Omit<BadgeProps, "children"> {
+export interface ProgrammingDomainBadgeProps extends Omit<BadgeProps, 'children'> {
   readonly domain: ProgrammingDomain;
 }
 
@@ -13,7 +13,7 @@ export const ProgrammingDomainBadge = ({
   domain,
   ...props
 }: ProgrammingDomainBadgeProps): JSX.Element => (
-  <Badge {...props} className={classNames("bg-yellow-100 text-yellow-800", props.className)}>
+  <Badge {...props} className={classNames('bg-yellow-100 text-yellow-800', props.className)}>
     {ProgrammingDomains.getModel(domain).label}
   </Badge>
 );

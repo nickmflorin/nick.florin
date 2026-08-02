@@ -1,52 +1,55 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useTransition, type JSX } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { type JSX, useEffect, useEffectEvent, useTransition } from 'react';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-import { type ApiProject } from "~/database/model";
-import { logger } from "~/internal/logger";
+import { type ApiProject } from '~/database/model';
+import { logger } from '~/internal/logger';
 
-import { updateProject } from "~/actions/projects/update-project";
+import { updateProject } from '~/actions/projects/update-project';
 
-import { ButtonFooter } from "~/components/structural/ButtonFooter";
-import { useDeepEqualEffect } from "~/hooks";
+import { ButtonFooter } from '~/components/structural/ButtonFooter';
 
-import { ProjectForm, type ProjectFormProps } from "./ProjectForm";
+import { ProjectForm, type ProjectFormProps } from './ProjectForm';
 
-export interface UpdateProjectFormProps extends Omit<ProjectFormProps, "action"> {
-  readonly project: ApiProject<["skills", "repositories", "nestedDetails", "details"]>;
+export interface UpdateProjectFormProps extends Omit<ProjectFormProps, 'action'> {
   readonly onCancel?: () => void;
   readonly onSuccess?: () => void;
+  readonly project: ApiProject<['skills', 'repositories', 'nestedDetails', 'details']>;
 }
 
 export const UpdateProjectForm = ({
-  project,
   onCancel,
   onSuccess,
+  project,
   ...props
 }: UpdateProjectFormProps): JSX.Element => {
   const updateProjectWithId = updateProject.bind(null, project.id);
-  const { refresh } = useRouter();
+  const router = useRouter();
   const [pending, transition] = useTransition();
 
-  // Prevents the form from resetting when an error occurs.
-  useDeepEqualEffect(() => {
+  /* The form is repopulated only when a different project is being edited.  Keying the effect on
+     the identifier rather than the project itself means a background revalidation of the same
+     project never discards values the user is in the middle of editing. */
+  const setProjectFormValues = useEffectEvent(() => {
     props.form.setValues({
       ...project,
-      shortName: project.shortName ?? "",
-      repositories: project.repositories.map(r => r.id),
-      skills: project.skills.map(sk => sk.id),
       details: project.details.map(d => d.id),
       nestedDetails: project.nestedDetails.map(d => d.id),
+      repositories: project.repositories.map(r => r.id),
+      shortName: project.shortName ?? '',
+      skills: project.skills.map(sk => sk.id),
     });
-  }, [project, props.form.setValues]);
+  });
+
+  useEffect(() => {
+    setProjectFormValues();
+  }, [project.id]);
 
   return (
     <ProjectForm
       {...props}
-      footer={<ButtonFooter submitText="Save" onCancel={onCancel} />}
-      isLoading={pending}
       action={async (data, form) => {
         let response: Awaited<ReturnType<typeof updateProjectWithId>> | null = null;
         try {
@@ -55,22 +58,21 @@ export const UpdateProjectForm = ({
           logger.errorUnsafe(
             e,
             `There was an error updating the project with ID '${project.id}'.`,
-            { project, data },
+            { data, project },
           );
-          // TODO: Consider using a global form error here instead.
-          return toast.error("There was an error updating the project.");
+          return toast.error('There was an error updating the project.');
         }
         const { error } = response;
         if (error) {
           return form.handleApiError(error);
         }
         transition(() => {
-          refresh();
+          router.refresh();
           onSuccess?.();
         });
       }}
+      footer={<ButtonFooter onCancel={onCancel} submitText='Save' />}
+      isLoading={pending}
     />
   );
 };
-
-export default UpdateProjectForm;
