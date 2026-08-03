@@ -1,15 +1,16 @@
 # Project Status
 
-_Last updated: 2026-08-02_
+_Last updated: 2026-08-03_
 
 ## Phase
 
-**Phase 1 — Research & Discussion.** Phase 0 (discovery & foundation setup) is complete: both repos
-are mapped, project context is established, and the backlog is seeded. We are now in groundwork
-mode: **no schema or implementation work yet** — the Research & Discussion items at the top of
-[backlog.md](./backlog.md) (repo structure, Astro vs. React, PDF pipeline,
-`Detail.shortDescription`, sync design, LinkedIn feasibility) come first and are worked as concrete
-tasks: research → written recommendation → discussion → entry in [decisions.md](./decisions.md).
+**Phase 1 — Research & Discussion (with structural stubs).** Phase 0 (discovery & foundation setup)
+is complete. The repo-structure and renderer questions are now decided (in-app port, React, no
+monorepo — see [decisions.md](./decisions.md)) and the document-route shell is stubbed in the app.
+Still groundwork mode otherwise: **no schema/modeling work yet** — the remaining Research &
+Discussion items in [backlog.md](./backlog.md) (`Detail.shortDescription`, PDF tooling spike, sync
+design, LinkedIn feasibility) are worked as concrete tasks: research → written recommendation →
+discussion → entry in [decisions.md](./decisions.md).
 
 ## Done
 
@@ -19,6 +20,12 @@ tasks: research → written recommendation → discussion → entry in [decision
   [context/resume-gen.md](./context/resume-gen.md).
 - 2026-08-02: Backlog seeded from discovery findings, organized by domain:
   [backlog.md](./backlog.md).
+- 2026-08-03: Repo-structure and renderer decisions made (in-app port, React, no monorepo;
+  `/documents/resume` under a separate `(document)` root layout, auth-gated, UI in
+  `src/documents/`).
+- 2026-08-03: Document shell stubbed: `(site)`/`(document)` route-group split (URLs unchanged), stub
+  pages and components, style-entry stub, Clerk protection for `/documents(.*)`. No styles, types or
+  functionality yet. Uncommitted as of this entry.
 
 ### Key discovery findings
 
@@ -42,16 +49,17 @@ tasks: research → written recommendation → discussion → entry in [decision
 
 ## Next Up
 
-Work through the Research & Discussion section of [backlog.md](./backlog.md), starting with the four
-**(blocker)** items:
+Work through the remaining Research & Discussion items in [backlog.md](./backlog.md):
 
-1. Repo/app structure for automated resume generation (monorepo? separate app? this app?).
-2. Astro vs. React for the resume renderer.
-3. PDF pipeline options (deployable vs. local-only script).
-4. `Detail.shortDescription` disposition.
+1. `Detail.shortDescription` disposition (**blocker** for the schema).
+2. PDF pipeline tooling spike (Playwright vs. puppeteer-core; `pdf-lib` merge) — direction is
+   already set (local script v1 printing served sheet routes).
+3. Fixture ⇄ DB sync design; LinkedIn feasibility; GitHub sync design; syndication modeling beyond
+   Detail-replacement.
 
-Schema and implementation work is deliberately deferred until these are decided (see decision dated
-2026-08-02 in [decisions.md](./decisions.md)).
+The un-gated Resume Generation items (Tailwind/preflight spike, style port, component port) can also
+proceed when desired. Schema/modeling work remains deferred (see decision dated 2026-08-02 in
+[decisions.md](./decisions.md)).
 
 ## Blockers / Waiting On
 

@@ -1,0 +1,8 @@
+/*
+  The style entry for the print-form document route group. It is imported exclusively by the
+  document root layout so that document styling never reaches the site routes, and the site's
+  global styles (imported through the site layout tree) never reach the document routes.
+
+  The print styles themselves (page geometry, typography, fonts) land here when the renderer is
+  ported from the resume-gen repository.
+*/

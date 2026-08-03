@@ -16,7 +16,42 @@ Format:
 
 ---
 
-## 2026-08-02 — New-model naming: `Competency`, `Role`, `Degree`
+## 2026-08-03 — Resume generation lives in this app; no monorepo
+
+**Decision:** Resume generation is ported into this Next.js app as a self-contained feature area. No
+monorepo, no shared package, no separate generator app. The renderer is React (Server Components);
+`~/repos/resume-gen` stays untouched as the working reference until the in-app version reaches
+parity, then retires. Its content is frozen once the in-app renderer starts, so parity has a fixed
+target. PDF generation v1 is a local script (headless browser printing the served sheet routes,
+TS-native merge); the deployed on-demand route comes later once content is DB-backed.
+
+**Why:** The end state requires generation from the live database on demand, which a static Astro
+app cannot do. The port is near-mechanical (resume-gen's model layer has zero Astro imports; its
+components have no client JS). A monorepo's shared-package benefit is temporary — it evaporates when
+the Astro app retires — while converting this repo's single-package tooling (client patching, ESLint
+tooling, env layering, Vercel config) to workspaces is a large diversion.
+
+**Alternatives considered:** Turborepo monorepo with a shared content package (rejected: temporary
+benefit, high conversion cost); keeping resume-gen as a separately deployed SSR app (rejected:
+recreates two sources of truth). Would revisit monorepo only if the generator becomes an
+independently deployable product.
+
+## 2026-08-03 — Document routes: `/documents/resume`, separate root layout, auth-gated, UI in `src/documents/`
+
+**Decision:** The print-form resume lives at `/documents/resume` (stacked browsing view) and
+`/documents/resume/[sheet]` (per-sheet printable pages), inside a `(document)` route group with its
+own bare root layout — all existing routes moved into a `(site)` route group (URLs unchanged). The
+document layout imports only `src/styles/document/index.scss`; site styles enter via `AppConfig` in
+the site layout, so isolation is structural in both directions. The routes are protected in
+`src/proxy.ts` by the same Clerk admin matcher as `/admin` (auth-only — no environment gating, so
+the routes are deployable for the future on-demand PDF feature). Document UI components live in a
+dedicated `src/documents/` folder (e.g. `src/documents/resume/`), not under `src/features/`.
+
+**Why:** CSS imported in a root layout only loads for routes under it, which gives complete two-way
+style isolation without hacks — required for print fidelity. `/documents/...` was chosen over
+`/resume-doc` to namespace future document types, and because sharing the existing `/resume` segment
+across two root layouts invites route-resolution conflicts. Auth-gating (rather than dev-only) keeps
+the live-preview iteration loop in dev while leaving the routes deployable.
 
 **Decision:** The new parallel models are named as follows: the successor to `Skill` is
 **`Competency`** (plural "competencies" — from here on, project discussion says "competencies", not

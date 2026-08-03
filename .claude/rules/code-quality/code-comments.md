@@ -58,10 +58,16 @@ documentation simply because it was not required.
 
 ## Components and Props
 
-Do not add JSDoc to a React component, or to its props type or interface, by default. A block that
-only restates what the component renders, or that says the props are "the props for `X`", carries no
-information and must be omitted. Document a component or its props type only when what the component
-is for is genuinely unclear, or when the component is non-standard or obscure.
+Do not add JSDoc to a React component, or to its props type or interface, by default, and never
+document every component mechanically just because it exists. A block that only restates what the
+component renders, or that says the props are "the props for `X`", carries no information and must
+be omitted.
+
+A UI component earns JSDoc only when explicitly requested, or when the component carries business
+context or abstract concepts that the code alone does not convey: contextual information that is
+necessary to understand the component's purpose, or an explanation of behavior that is non-obvious
+or non-standard. If everything a JSDoc block would say is already apparent from reading the
+component's code, the block must be omitted.
 
 The useful place for documentation is above an individual prop whose purpose or usage is not obvious
 from its name and type, or a prop whose default value is applied implicitly inside the component.

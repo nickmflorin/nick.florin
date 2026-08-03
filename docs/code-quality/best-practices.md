@@ -153,10 +153,16 @@ export const InvalidDateRangeErrorMessage = 'The start date must come before the
 
 #### Documenting Components and Props
 
-React components and their props types are not documented by default. A JSDoc block that only
-restates what a component renders, or that says a props type holds "the props for `X`", adds nothing
-and should be left off. A component or its props type earns documentation only when what it is for
-is genuinely unclear, or when the component is non-standard or obscure.
+React components and their props types are not documented by default, and documenting every
+component mechanically is exactly the wrong instinct. A JSDoc block that only restates what a
+component renders, or that says a props type holds "the props for `X`", adds nothing and should be
+left off.
+
+A UI component earns documentation only when it is explicitly requested, or when the component
+carries business context or abstract concepts that the code alone does not convey: contextual
+information necessary to understand its purpose, or an explanation of behavior that is non-obvious
+or non-standard. If everything the block would say is already apparent from reading the component's
+code, leave the block off.
 [`DynamicLoading`](../../src/components/loading/dynamic-loading/dynamic-loading.tsx) is an example
 of a component that clears that bar.
 

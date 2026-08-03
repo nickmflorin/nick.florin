@@ -19,18 +19,15 @@ Within a section, keep rough priority order (top = sooner). Tag items that block
 These are worked like any other task: gather the options, write up a recommendation with trade-offs,
 discuss together, then record the outcome in `decisions.md`.
 
-- [ ] **(blocker)** Repo/app structure for automated resume generation: keep everything in this
-      single Next.js app, break into a monorepo (e.g. Turborepo with a shared content package), or
-      keep a separate generator app. Research what each means for deploys, dependency weight, and
-      the fixture-driven iteration loop.
-- [ ] **(blocker)** Astro vs. React for the resume renderer: ditch Astro and port to React
-      (near-mechanical — resume-gen has no client JS), or keep resume-gen as-is longer. Tied to, but
-      distinct from, the repo-structure question.
-- [ ] **(blocker)** PDF pipeline research: options for generating the PDF in a deployable way
-      (puppeteer-core + `@sparticuz/chromium`, Playwright, a render service, or keeping a local-only
-      script). Today's pipeline is a macOS-hardcoded Chrome CLI + pypdf merge and cannot run on
-      Vercel. Includes: does browser-based printing even need to run in the deployed app, or is a
-      local/CI script acceptable for v1?
+- [x] **(blocker)** Repo/app structure for automated resume generation — resolved 2026-08-03: port
+      into this app, no monorepo, resume-gen retires at parity (see decisions.md).
+- [x] **(blocker)** Astro vs. React for the resume renderer — resolved 2026-08-03: React Server
+      Components in this app (see decisions.md).
+- [ ] **(blocker)** PDF pipeline research — direction set 2026-08-03 (v1 is a local script printing
+      the served sheet routes with a TS-native merge; deployed on-demand route later), but the
+      tooling choice still needs a spike: Playwright vs. puppeteer-core + `@sparticuz/chromium`, and
+      the merge library (`pdf-lib`). Today's pipeline is a macOS-hardcoded Chrome CLI + pypdf merge
+      and cannot run on Vercel.
 - [ ] **(blocker)** `Detail.shortDescription` disposition — the one open question in resume-gen's
       `docs/content-model.md` that changes the schema shape (candidate: a `ContentVariant` table
       keyed by node + channel, which would also solve per-medium content overrides generally).
@@ -96,10 +93,22 @@ _Gated on the Research & Discussion items above — no schema work until those a
 
 ## Resume Generation
 
-_Gated on the repo-structure, Astro-vs-React, and PDF-pipeline research above._
+_The repo-structure and renderer decisions are made (2026-08-03, see decisions.md); remaining items
+are gated only on the PDF-pipeline spike where noted._
 
-- [ ] Port the resume rendering (Sheet/Role/Education/Sidebar/SkillBar/Pills components) per the
-      renderer decision.
+- [x] Stub the in-app document shell (done 2026-08-03): moved all existing routes into a `(site)`
+      route group (URLs unchanged); added the `(document)` route group with its own bare root layout
+      importing only the new `src/styles/document/index.scss` stub; allocated `/documents/resume`
+      and `/documents/resume/[sheet]` pages rendering stub components in `src/documents/resume/`;
+      protected `/documents(.*)` via the Clerk admin matcher in `src/proxy.ts`. No styles, types,
+      modeling or functionality yet.
+- [ ] Spike: verify the app's PostCSS/Tailwind pipeline does not process the document SCSS in a way
+      that reintroduces preflight on document routes — do this before porting the style partials.
+- [ ] Port the document styles from resume-gen (SCSS partials near-verbatim; `@theme static`
+      variables become a plain `:root` block — no Tailwind in document styles) into
+      `src/styles/document/`, including the vendored Mona Sans fonts.
+- [ ] Port the resume rendering (Sheet/Role/Education/Sidebar/SkillBar/Pills components) into
+      `src/documents/resume/` as React Server Components.
 - [ ] Implement the deployable PDF pipeline per the research outcome.
 - [ ] Expose generation as a programmatic script that can run against fixture files (no DB).
 - [ ] Expose generation in the browser (button → on-the-fly PDF from live DB content).

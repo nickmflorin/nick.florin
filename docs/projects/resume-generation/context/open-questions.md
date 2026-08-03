@@ -3,21 +3,12 @@
 Unresolved questions that need discussion or a decision. When one is resolved, move the outcome to
 [decisions.md](../decisions.md) and delete it from here.
 
-## Application structure: where does resume generation live?
+## PDF pipeline tooling (direction decided, details open)
 
-Raised in [initial-project.md](../initial-project.md). The `resume-gen` Astro app currently
-generates the PDF/HTML resumes. Options on the table:
-
-- Port the Astro components to React inside this Next.js app (the likely direction per the project
-  doc) and generate PDFs from a route/script here.
-- Keep a separate app (possibly in a monorepo) that consumes the shared content source.
-- Something hybrid (shared content package, separate renderers).
-
-Discovery (2026-08-02) sharpened this: resume-gen's model layer has zero Astro coupling and its
-components have no client JS, so a React port is near-mechanical. The real decision is the PDF
-pipeline — today it is a macOS-hardcoded headless-Chrome CLI + pypdf merge, which cannot deploy to
-Vercel as-is. A port means puppeteer-core/`@sparticuz/chromium` or Playwright printing served
-per-sheet routes.
+The overall approach is decided (2026-08-03, see decisions.md: in-app port, local script v1 printing
+served sheet routes). Still open, pending a spike: Playwright vs. puppeteer-core +
+`@sparticuz/chromium` for printing, and `pdf-lib` (or an alternative) for the TS-native merge that
+replaces pypdf.
 
 ## `Detail.shortDescription` disposition (blocks the schema)
 

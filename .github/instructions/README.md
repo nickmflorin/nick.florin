@@ -37,14 +37,16 @@ Unlike the human-readable documentation in [docs/](../../docs/index.md), these i
 
 ## Instruction Files
 
-| File                                             | Purpose                                                | Applies To                  |
-| ------------------------------------------------ | ------------------------------------------------------ | --------------------------- |
-| `code-quality/code-comments.instructions.md`     | JSDoc and commenting standards                         | TypeScript/JavaScript files |
-| `code-quality/eslint.instructions.md`            | ESLint usage and rule-disable policy                   | TypeScript/JavaScript files |
-| `code-quality/file-naming.instructions.md`       | File/folder casing: PascalCase components, hyphen-case | TS/JS + Markdown files      |
-| `code-quality/spelling.instructions.md`          | cspell handling: fix, add to dictionary, or disable    | TS/JS + Markdown files      |
-| `code-quality/strings.instructions.md`           | String quoting, line length, and `+` wrapping          | TypeScript/JavaScript files |
-| `workflow/verification-commands.instructions.md` | Which checkers may be run automatically                | All files                   |
+| File                                             | Purpose                                                 | Applies To                  |
+| ------------------------------------------------ | ------------------------------------------------------- | --------------------------- |
+| `codebase-index.instructions.md`                 | Codebase map: routes, APIs, actions, domains, placement | All files                   |
+| `discovery.instructions.md`                      | Discovery and context loading policy for AI agents      | All files                   |
+| `code-quality/code-comments.instructions.md`     | JSDoc and commenting standards                          | TypeScript/JavaScript files |
+| `code-quality/eslint.instructions.md`            | ESLint usage and rule-disable policy                    | TypeScript/JavaScript files |
+| `code-quality/file-naming.instructions.md`       | File/folder casing: PascalCase components, hyphen-case  | TS/JS + Markdown files      |
+| `code-quality/spelling.instructions.md`          | cspell handling: fix, add to dictionary, or disable     | TS/JS + Markdown files      |
+| `code-quality/strings.instructions.md`           | String quoting, line length, and `+` wrapping           | TypeScript/JavaScript files |
+| `workflow/verification-commands.instructions.md` | Which checkers may be run automatically                 | All files                   |
 
 Both Claude Code and Copilot discover instruction files recursively, so the `code-quality/` and
 `workflow/` subdirectories do not affect which files load or when.
