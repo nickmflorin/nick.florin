@@ -17,11 +17,15 @@ export interface SheetProps {
  * One physical 8.5x11 sheet: the sidebar, then the main column's blocks in order. A sheet is
  * fixed-size and clips its overflow, so content that does not fit is visibly cut off rather than
  * silently reflowed onto another page.
+ *
+ * The main column is a plain element rather than a `main` landmark because a document may contain
+ * several sheets. The landmark is declared once, by whichever top-level component owns the
+ * document.
  */
 export const Sheet = ({ sheet }: SheetProps) => (
   <div className='page'>
     <Sidebar isIntroVisible={sheet.isIntroVisible} sections={sheet.sections} />
-    <main className='main'>
+    <div className='main'>
       {sheet.main.map((block, index) => (
         <Fragment key={block.file}>
           <DevHeader file={block.file} isSpaced={index > 0} />
@@ -32,6 +36,6 @@ export const Sheet = ({ sheet }: SheetProps) => (
               ))}
         </Fragment>
       ))}
-    </main>
+    </div>
   </div>
 );

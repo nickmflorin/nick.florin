@@ -17,6 +17,7 @@ Guides covering the code quality standards, conventions and tooling used in this
 | Organize code modules             | [Best Practices → Code Organization](./best-practices.md#code-organization)      |
 | Name files and folders            | [Best Practices → File & Folder Naming](./best-practices.md#file--folder-naming) |
 | Declare types and interfaces      | [TypeScript → Types & Interfaces](./typescript/types-interfaces.md)              |
+| Name a module-scope constant      | [TypeScript → Variable Naming](./typescript/variable-naming.md)                  |
 
 ## Document Overview
 
@@ -53,6 +54,8 @@ Conventions specific to TypeScript declarations:
 
 - [Types & Interfaces](./typescript/types-interfaces.md): the `readonly` modifier on every type and
   interface property, what the convention governs, and when omitting it is justified
+- [Variable Naming](./typescript/variable-naming.md): PascalCase for module-scope constants rather
+  than `SCREAMING_SNAKE_CASE`, and what the convention does not cover
 
 ### [Markdown Formatting](./markdown-formatting.md)
 
@@ -76,7 +79,7 @@ Detailed guide for markdown documentation:
 2. **No type errors**: `pnpm tsc`
 3. **No linting errors**: `pnpm lint`
 4. **Formatted code**: `pnpm format`
-5. **No spelling errors**: `pnpm spellcheck`
+5. **No spelling errors**: `pnpm cspell`
 
 ## Common Commands
 
@@ -86,7 +89,7 @@ pnpm lint                # Run ESLint and check Prettier formatting
 pnpm lint:errors         # Run ESLint with warnings suppressed
 pnpm format              # Fix formatting with Prettier and ESLint
 pnpm eslint:changed      # Lint and fix only the changed files
-pnpm spellcheck          # Run cspell across the repository
+pnpm cspell              # Run cspell across the repository
 pnpm tsc                 # Type check the project
 
 # Testing
@@ -126,6 +129,8 @@ The prescriptive, agent-facing versions of these standards live alongside the hu
 - [Strings](../../.claude/rules/code-quality/strings.md) - String quoting, line length and wrapping
 - [Types & Interfaces](../../.claude/rules/code-quality/typescript/types-interfaces.md) - Readonly
   modifiers on type and interface properties
+- [Variable Naming](../../.claude/rules/code-quality/typescript/variable-naming.md) - PascalCase for
+  module-scope constants, camelCase for locals and functions
 
 Each of these has a GitHub Copilot counterpart in
 [.github/instructions/code-quality/](../../.github/instructions/README.md).

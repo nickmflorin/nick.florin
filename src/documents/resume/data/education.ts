@@ -6,7 +6,7 @@ import { ContentOwnerType, type Degree, type ResolvedDegree, SyndicationChannel 
  * Every degree. A degree's prose is one summary node — the same content tree a role has, used at
  * its simplest — so a line can be withheld from a channel exactly the way a role's can.
  */
-export const DEGREES: Degree[] = [
+export const Degrees: Degree[] = [
   {
     content: {
       summary: [
@@ -54,7 +54,7 @@ export const DEGREES: Degree[] = [
   },
 ];
 
-const BY_KEY = new Map(DEGREES.map(degree => [degree.key, degree]));
+const ByKey = new Map(Degrees.map(degree => [degree.key, degree]));
 
 /**
  * Look up degrees by key, in the order given, failing loudly on a typo in `pages.ts`, and hand back
@@ -62,9 +62,9 @@ const BY_KEY = new Map(DEGREES.map(degree => [degree.key, degree]));
  */
 export function degreesByKey(keys: string[]): ResolvedDegree[] {
   const degrees = keys.map(key => {
-    const degree = BY_KEY.get(key);
+    const degree = ByKey.get(key);
     if (!degree) {
-      throw new Error(`No degree with key '${key}'. Known keys: ${[...BY_KEY.keys()].join(', ')}.`);
+      throw new Error(`No degree with key '${key}'. Known keys: ${[...ByKey.keys()].join(', ')}.`);
     }
     return degree;
   });

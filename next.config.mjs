@@ -39,7 +39,7 @@ const SilencedSassDeprecations = ['mixed-decls'];
  * The bundle analyzer injects a "webpack" option into the configuration. Because Next 16 builds
  * with Turbopack by default - and fails the build outright when it encounters a webpack
  * configuration it did not expect - the analyzer is only applied when it is actually in use, via
- * the "analyze-build" script, which opts back into webpack with the "--webpack" flag.
+ * the "build:analyze" script, which opts back into webpack with the "--webpack" flag.
  */
 const ShouldAnalyzeBundle = process.env.ANALYZE_BUNDLE === 'true';
 

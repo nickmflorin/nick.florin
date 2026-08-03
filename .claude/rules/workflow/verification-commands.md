@@ -18,7 +18,7 @@ the work is otherwise complete. Run them only when the developer explicitly asks
 - **TypeScript**: `tsc`, `pnpm tsc`, `pnpm tsc:watch`, or any other invocation of the compiler.
 - **ESLint**: `eslint`, `pnpm lint`, `pnpm lint:errors`, `eslint --fix`, and the `eslint:format`,
   `eslint:format:fast`, `eslint:cached` and `eslint:changed` scripts.
-- **Spellcheck**: `cspell`, `pnpm spellcheck`.
+- **Spellcheck**: `cspell`, `pnpm cspell`.
 - **Tests**: `jest`, `pnpm test`, `pnpm test:ci`, or a run scoped to a single suite or test file.
 
 An explicit request covers only the request it was made in. Being asked to run one of these commands

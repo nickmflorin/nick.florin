@@ -363,7 +363,7 @@ than for it.
 Spelling is checked separately from linting, using [cspell](https://cspell.org). The configuration
 lives in [`cspell.config.mjs`](../../cspell.config.mjs), and project-specific terms are kept in
 [`dictionary.txt`](../../dictionary.txt), a lowercase, one-word-per-line list that cspell treats as
-an additional dictionary. Run it with `pnpm spellcheck`.
+an additional dictionary. Run it with `pnpm cspell`.
 
 When cspell flags a word, resolve it deliberately rather than ignoring the warning. There are three
 distinct cases, and the right response depends on what the word actually is:

@@ -51,11 +51,11 @@ migration table: `label`→`title`, `description`→`content`, `entityId/entityT
   courses/details), `projects.json` (4), `repositories.json` (22), `profiles.json` (1). Relations
   are expressed as **slug references**, resolved fuzzily at seed time (`src/scripts/seed/util.ts`).
   `Resume` has no fixture (seeded from blob storage listing).
-- **DB → JSON**: `src/scripts/jsonify/index.ts`; only `jsonify-prod` is wired up in package.json
-  (`--live=true` + Prettier). No dev-DB jsonify script exists — a gap.
+- **DB → JSON**: `src/scripts/jsonify/index.ts`; only `fixtures:jsonify:prod` is wired up in
+  package.json (`--live=true` + Prettier). No dev-DB jsonify script exists — a gap.
 - **JSON → DB**: `prisma db seed` → `src/scripts/seed/index.ts`; one transaction, strict order
   (profile → resumes → skills → repositories → projects → schools → companies →
-  calculate-skill-experiences). Seed assumes an **empty DB** (run via `pnpm migrate-reset`).
+  calculate-skill-experiences). Seed assumes an **empty DB** (run via `pnpm prisma:migrate:reset`).
   Seed-repositories fetches live GitHub first and diffs against fixtures.
 - So today's "sync" is one-directional-pair: full dump (jsonify) / full reload (reset+seed). The
   project's bidirectional incremental sync requirement is a generalization of this pair.
@@ -64,7 +64,7 @@ migration table: `label`→`title`, `description`→`content`, `entityId/entityT
 
 - **GitHub only.** `src/integrations/github/client.ts` — unauthenticated fetch of
   `users/{GITHUB_USERNAME}/repos`; `syncRepositories` creates missing `Repository` rows
-  (`visible:false`), never updates existing ones. Consumers: `pnpm sync-repositories[-prod]` script,
+  (`visible:false`), never updates existing ones. Consumers: `pnpm repositories:sync[-prod]` script,
   an admin server action, and the seed step.
 - **No LinkedIn integration exists** — `linkedinUrl` is just a string on `Profile`.
 - Generic `HttpClient` exists at `src/integrations/http/` but the GitHub client doesn't use it.
@@ -88,8 +88,8 @@ migration table: `label`→`title`, `description`→`content`, `entityId/entityT
 - `.env` is always written by `vercel env pull` and always holds **production** Postgres params
   (single-DB Vercel plan). Committed `.env.development` overrides `POSTGRES_*` with local values —
   that override is the only thing keeping dev off the prod DB.
-- Every DB script has a dev variant (via `manual-dev-env-setup`) and a `-prod` variant. CLI scripts
-  run through `src/scripts/cli/` harness which hard-fails on a prod-DB + test-Clerk-key mismatch.
+- Every DB script has a dev variant (via `env:setup:dev`) and a `:prod` variant. CLI scripts run
+  through `src/scripts/cli/` harness which hard-fails on a prod-DB + test-Clerk-key mismatch.
 - `src/environment/index.ts` Zod-validates all env vars per environment name ({test, local, preview,
   production}).
 
@@ -106,6 +106,6 @@ migration table: `label`→`title`, `description`→`content`, `entityId/entityT
 4. Fixtures don't cover all models independently; `Detail`/`Experience`/`Education`/`Course` exist
    only nested; `Resume` not at all.
 5. `Skill.calculatedExperience` is a persisted derived column needing post-seed recalculation
-   (`src/database/model/skill-experience.ts`, `pnpm calculate-experience`).
+   (`src/database/model/skill-experience.ts`, `pnpm experience:calculate`).
 6. `prisma-client.ts` needs manual edits for every new enum; `patch-generated-client.mjs` must keep
    working after any Prisma schema/codegen change — both are taxes on schema evolution.

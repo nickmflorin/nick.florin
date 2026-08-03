@@ -1,15 +1,15 @@
 import {
-  AI_TOOLING_AND_AUTOMATION,
-  ARCHITECTURAL_PATTERNS,
-  CICD_AND_AUTOMATION,
-  CLOUD_AND_DATABASES,
-  CODE_QUALITY_AND_DX,
-  KEY_STRENGTHS,
-  LANGUAGES_AND_FRAMEWORKS,
-  MONOREPO_AND_BUILD,
-  TESTING,
-  TOP_SKILLS,
-  UI_AND_COMPONENT_LIBRARIES,
+  AiToolingAndAutomation,
+  ArchitecturalPatterns,
+  CicdAndAutomation,
+  CloudAndDatabases,
+  CodeQualityAndDx,
+  KeyStrengths,
+  LanguagesAndFrameworks,
+  MonorepoAndBuild,
+  Testing,
+  TopSkills,
+  UiAndComponentLibraries,
 } from './skills';
 import { type Sheet } from './types';
 
@@ -23,12 +23,12 @@ import { type Sheet } from './types';
  * content that runs past the bottom edge of a sheet is clipped rather than pushed onto a new
  * page.
  */
-export const SHEETS: Sheet[] = [
+export const Sheets: Sheet[] = [
   {
     id: 'page-1',
     isIntroVisible: true,
     main: [{ file: 'experience.ts', kind: 'roles', roles: ['craft'] }],
-    sections: [LANGUAGES_AND_FRAMEWORKS, TOP_SKILLS, KEY_STRENGTHS],
+    sections: [LanguagesAndFrameworks, TopSkills, KeyStrengths],
   },
   {
     id: 'page-2',
@@ -41,13 +41,13 @@ export const SHEETS: Sheet[] = [
       },
     ],
     sections: [
-      AI_TOOLING_AND_AUTOMATION,
-      CLOUD_AND_DATABASES,
-      ARCHITECTURAL_PATTERNS,
-      UI_AND_COMPONENT_LIBRARIES,
-      TESTING,
-      MONOREPO_AND_BUILD,
-      CICD_AND_AUTOMATION,
+      AiToolingAndAutomation,
+      CloudAndDatabases,
+      ArchitecturalPatterns,
+      UiAndComponentLibraries,
+      Testing,
+      MonorepoAndBuild,
+      CicdAndAutomation,
     ],
   },
   {
@@ -68,6 +68,6 @@ export const SHEETS: Sheet[] = [
     /* The build/tooling groups live here rather than on page 2: they read as one family
        (build -> quality -> automation), and page 2's sidebar is the tightest of the three while
        this one has the most room. */
-    sections: [CODE_QUALITY_AND_DX],
+    sections: [CodeQualityAndDx],
   },
 ];

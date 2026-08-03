@@ -21,7 +21,7 @@ import {
  * website is a matter of adding `excludedChannels` to it; see the `resume-gen` repository's
  * `docs/content-model.md`.
  */
-export const ROLES: Role[] = [
+export const Roles: Role[] = [
   {
     company: 'Craft Education System',
     content: {
@@ -479,7 +479,7 @@ export const ROLES: Role[] = [
   },
 ];
 
-const BY_KEY = new Map(ROLES.map(role => [role.key, role]));
+const ByKey = new Map(Roles.map(role => [role.key, role]));
 
 /**
  * Look up roles by key, in the order given, failing loudly on a typo in `pages.ts`, and hand back
@@ -488,9 +488,9 @@ const BY_KEY = new Map(ROLES.map(role => [role.key, role]));
  */
 export function rolesByKey(keys: string[]): ResolvedRole[] {
   const roles = keys.map(key => {
-    const role = BY_KEY.get(key);
+    const role = ByKey.get(key);
     if (!role) {
-      throw new Error(`No role with key '${key}'. Known keys: ${[...BY_KEY.keys()].join(', ')}.`);
+      throw new Error(`No role with key '${key}'. Known keys: ${[...ByKey.keys()].join(', ')}.`);
     }
     return role;
   });

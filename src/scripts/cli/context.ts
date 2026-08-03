@@ -67,13 +67,13 @@ export async function getScriptContext(
        not the default development environment.  Otherwise, we can accidentally store the personal
        Clerk user as the development Clerk user, not the production one.
 
-       When the script(s) 'seeddb-prod' or 'migrate-reset-prod' are run, this script will get
+       When the script(s) 'prisma:seed:prod' or 'prisma:migrate:reset:prod' are run, this script will get
        executed using production environment variables that are found locally in the repository,
        in the '.env' file.
 
        In this case, the database connection parameters are pulled from '.env', which contains the
-       environment variables pulled via Vercel's CLI, via either the 'pullenv' script (for
-       the development environment variables) or 'pullenv-prod' (for the production environment
+       environment variables pulled via Vercel's CLI, via either the 'env:pull' script (for
+       the development environment variables) or 'env:pull:prod' (for the production environment
        variables).  In both cases, however, the '.env' file contains connection parameters for the
        production database, NOT the development database...
 
@@ -83,7 +83,7 @@ export async function getScriptContext(
 
        However, the '.env' file may contain development values for the Clerk tokens, if the
        '.env' file wasn't populated via Vercel's CLI with the production flag (e.g. the last time
-       the environment was pulled it was done with 'pullenv' instead of 'pullenv-prod').
+       the environment was pulled it was done with 'env:pull' instead of 'env:pull:prod').
 
        This means that the Clerk tokens in the '.env' file may be development tokens, while the
        database parameters are for the production database.  This means that we could incidentally
@@ -92,9 +92,9 @@ export async function getScriptContext(
 
        If seeding the production database, it is important that the command
 
-       $ pnpm pullenv-prod
+       $ pnpm env:pull:prod
 
-       be run, not the 'pnpm pullenv' command.
+       be run, not the 'pnpm env:pull' command.
 
        To prevent errors from happening due to this mismatch, we have to perform this check. */
     throw new errors.CommandLineEnvironmentError(

@@ -3,13 +3,6 @@
 Unresolved questions that need discussion or a decision. When one is resolved, move the outcome to
 [decisions.md](../decisions.md) and delete it from here.
 
-## PDF pipeline tooling (direction decided, details open)
-
-The overall approach is decided (2026-08-03, see decisions.md: in-app port, local script v1 printing
-served sheet routes). Still open, pending a spike: Playwright vs. puppeteer-core +
-`@sparticuz/chromium` for printing, and `pdf-lib` (or an alternative) for the TS-native merge that
-replaces pypdf.
-
 ## `Detail.shortDescription` disposition (blocks the schema)
 
 The one open question flagged in resume-gen's `docs/content-model.md` that changes the shape of

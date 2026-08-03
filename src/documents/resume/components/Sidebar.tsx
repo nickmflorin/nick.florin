@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import { ABOUT, CONTACT, HIGHLIGHTS, PROFILE } from '../data/profile';
+import { About, Contact, Highlights, Profile } from '../data/profile';
 import { type SidebarSection } from '../data/types';
 import { icon, logo } from '../lib/assets';
 
@@ -20,15 +20,15 @@ export interface SidebarProps {
 export const Sidebar = ({ isIntroVisible, sections }: SidebarProps) => (
   <aside className='sidebar'>
     <div className='profile'>
-      <img alt={PROFILE.name} className='profile-photo' src={logo(PROFILE.photo)} />
-      <div className='profile-name'>{PROFILE.name}</div>
-      <div className='profile-role'>{PROFILE.title}</div>
-      <div className='profile-handle'>{PROFILE.handle}</div>
+      <img alt={Profile.name} className='profile-photo' src={logo(Profile.photo)} />
+      <div className='profile-name'>{Profile.name}</div>
+      <div className='profile-role'>{Profile.title}</div>
+      <div className='profile-handle'>{Profile.handle}</div>
     </div>
     {isIntroVisible && (
       <>
         <p className='s-heading'>About</p>
-        {ABOUT.map(paragraph => (
+        {About.map(paragraph => (
           <p
             className='about'
             dangerouslySetInnerHTML={{ __html: collapse(paragraph) }}
@@ -36,7 +36,7 @@ export const Sidebar = ({ isIntroVisible, sections }: SidebarProps) => (
           />
         ))}
         <ul className='bullets'>
-          {HIGHLIGHTS.map(highlight => (
+          {Highlights.map(highlight => (
             <li key={highlight}>
               <span className='dot'>
                 <img alt='' src={icon('Plus')} />
@@ -48,7 +48,7 @@ export const Sidebar = ({ isIntroVisible, sections }: SidebarProps) => (
         <hr className='sdiv' />
         <p className='s-heading'>Contact</p>
         <ul className='contact-list'>
-          {CONTACT.map(entry => (
+          {Contact.map(entry => (
             <li key={entry.text}>
               <span className='ci'>
                 <img alt='' src={icon(entry.icon)} />

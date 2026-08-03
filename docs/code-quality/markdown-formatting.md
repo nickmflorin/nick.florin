@@ -49,7 +49,7 @@ Prettier handles:
 Prettier is a formatter, not a linter. It doesn't check for:
 
 - Broken links
-- Spelling errors (those are covered separately by `pnpm spellcheck` - see
+- Spelling errors (those are covered separately by `pnpm cspell` - see
   [Best Practices → Spelling](./best-practices.md#spelling))
 - Markdown syntax errors (beyond what affects formatting)
 - Accessibility issues in markdown

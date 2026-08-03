@@ -30,7 +30,7 @@
      "defaultFormatter" is kept so manual "Format Document" still routes through ESLint, matching
      CI. */
   "[typescript]": {
-    "editor.defaultFormatter": "TypeScriptTeam.native-preview",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.formatOnSave": false
   },
   "[typescriptreact]": {
@@ -147,6 +147,12 @@
   "npm.packageManager": "pnpm",
   "npm.scriptRunner": "pnpm",
 
+  /* Opts this workspace out of the Go-native TypeScript preview ("tsgo", the TypeScript 7 line),
+     which may be enabled globally in user settings. "tsgo" ships its own bundled compiler and
+     ignores "js/ts.tsdk.path" below, so leaving it on would give the editor diagnostics from a
+     different compiler than "pnpm tsc" and CI, both of which use the version pinned in
+     "package.json". Remove this once the pinned TypeScript and the native compiler agree. */
+  "js/ts.experimental.useTsgo": false,
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
   /* Switches tsserver from polling-based file watching to native OS file events (FSEvents on
      macOS). Drops idle CPU usage and makes save-to-diagnostic latency sub-second instead of

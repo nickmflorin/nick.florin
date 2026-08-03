@@ -1,6 +1,6 @@
 import { type ContactEntry } from './types';
 
-export const PROFILE = {
+export const Profile = {
   handle: '@nickmflorin',
   name: 'Nick Florin',
   photo: 'Headshot.jpeg',
@@ -10,7 +10,7 @@ export const PROFILE = {
 /**
  * The "About" paragraphs in the sidebar of the opening sheet. Inline HTML is allowed.
  */
-export const ABOUT: string[] = [
+export const About: string[] = [
   `A detail-obsessed, ownership-driven, product-first engineer who goes well beyond closing
    tickets. Deeply invested in the <em>why</em> behind every feature, proactively identifying
    architectural gaps, raising engineering standards, and driving meaningful improvements across
@@ -24,13 +24,13 @@ export const ABOUT: string[] = [
 /**
  * The plus-marked one-liners directly beneath the About block.
  */
-export const HIGHLIGHTS: string[] = [
+export const Highlights: string[] = [
   '11 years of software engineering',
   'M.S. in Financial Mathematics, JHU',
   'B.S. in Electrical Engineering, RPI',
 ];
 
-export const CONTACT: ContactEntry[] = [
+export const Contact: ContactEntry[] = [
   { icon: 'At', text: 'nickmflorin@gmail.com' },
   { icon: 'LinkedIn', text: 'in/nick-florin-5046063b/' },
   { icon: 'GitHub', text: 'github.com/nickmflorin' },

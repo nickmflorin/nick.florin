@@ -187,9 +187,9 @@ folders) is hyphen-case. Next.js reserved files (`page`, `layout`, `route`, `def
 | DB access          | Import extended client from `src/database/prisma`                                                                                             |
 | Logging            | `src/internal/logger.ts` (Pino; per-runtime writers in `src/internal/loggers/`)                                                               |
 | Env config         | `src/environment/` (typed, validated)                                                                                                         |
-| GitHub sync        | `src/integrations/github/` + `pnpm sync-repositories`                                                                                         |
+| GitHub sync        | `src/integrations/github/` + `pnpm repositories:sync`                                                                                         |
 | Redirects          | Defined in `next.config.mjs`: `/`→`/dashboard`, `/admin`→`/admin/skills`, `/resume`→`/resume/experience`, `/projects`→`/projects/greenbudget` |
-| Seeding            | `pnpm seeddb` → `src/scripts/seed/index.ts`                                                                                                   |
+| Seeding            | `pnpm prisma:seed` → `src/scripts/seed/index.ts`                                                                                              |
 | Testing            | Jest (`jest.config.ts`); tests in `src/__tests__/`; setup in `src/support/global-test-setup.ts`                                               |
 | Lint/format        | ESLint flat config (`eslint.config.mjs`) + Prettier; custom plugin in `tooling/eslint-config-web/`                                            |
 

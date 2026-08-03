@@ -27,8 +27,9 @@ discuss together, then record the outcome in `decisions.md`.
       served-routes direction): generation is a browserless-HTML static pipeline
       (`renderToStaticMarkup` + programmatic `sass` → static files), with headless Chrome used
       strictly as a file-to-file `--print-to-pdf` converter and `pdf-lib` for the merge — no running
-      app, no browser automation (see decisions.md). Remaining detail (not a blocker): how the
-      Chrome binary is located portably (`puppeteer-core` locator vs. `CHROME_PATH` override).
+      app, no browser automation (see decisions.md). The remaining detail — how the Chrome binary is
+      located portably — was settled 2026-08-03 when the script was built: candidate paths with a
+      `CHROME_PATH` override, no `puppeteer-core` dependency.
 - [ ] **(blocker)** `Detail.shortDescription` disposition — the one open question in resume-gen's
       `docs/content-model.md` that changes the schema shape (candidate: a `ContentVariant` table
       keyed by node + channel, which would also solve per-medium content overrides generally).
@@ -87,8 +88,8 @@ _Gated on the Research & Discussion items above — no schema work until those a
 
 - [ ] Implement the bidirectional fixture ⇄ DB sync per the research outcome.
 - [ ] Add fixtures for the new content models once they exist.
-- [ ] Add a dev-DB `jsonify` script to `package.json` (only `jsonify-prod` exists today). Not gated
-      — small standalone improvement.
+- [ ] Add a dev-DB `jsonify` script to `package.json` (only `fixtures:jsonify:prod` exists today).
+      Not gated — small standalone improvement.
 - [ ] Close fixture coverage gaps: `Detail`/`Experience`/`Education`/`Course` exist only nested
       inside `companies.json`/`schools.json`; `Resume` has no fixture at all.
 
@@ -134,14 +135,20 @@ components must stay pure (no Next-coupled APIs) so they serve both._
       `skills`, `pages`) copied into `src/documents/resume/{data,lib}/` — unchanged relative import
       structure, Prettier-clean as copied, content frozen as of resume-gen commit `bb6f5fd`.
       TypeScript only — no Prisma models.
-- [ ] Build the static HTML emission script (`pnpm generate-resume`, phase 1): render sheets with
-      `renderToStaticMarkup`, compile the document SCSS with the `sass` API, emit
-      `page-N.html`/stacked `index.html`/assets with relative URLs.
-- [ ] Build the PDF step (phase 2): headless Chrome `--print-to-pdf` per emitted sheet file, merged
-      with `pdf-lib`; locate the Chrome binary portably (`puppeteer-core` locator or `CHROME_PATH`
-      override) with a timestamped output filename.
-- [ ] Build the single-file HTML artifact step (TS port of resume-gen's `build_artifact.py`: inline
-      CSS, data-URI assets, fail hard on unresolvable refs).
+- [x] Build the static HTML emission script (`pnpm resume:generate:html`, phase 1, done 2026-08-03):
+      renders the sheets with `renderToStaticMarkup`, compiles the document SCSS with the `sass`
+      API, and emits `page-N.html`/stacked `index.html`/`assets/` with relative URLs, failing the
+      run if any root-absolute reference survives.
+- [x] Build the PDF step (`pnpm resume:generate:pdf`, phase 2, done 2026-08-03): headless Chrome
+      `--print-to-pdf` per emitted sheet, merged with `pdf-lib`, into a timestamped
+      `Resume-<Mon>-<DD>-<YYYY>-<h:mm><am|pm>.pdf`. Chrome is located by candidate path with a
+      `CHROME_PATH` override. Verified: three pages, each exactly 8.5in x 11in.
+- [x] Build the single-file HTML artifact step (`pnpm resume:generate:artifact`, done 2026-08-03):
+      TS port of resume-gen's `build_artifact.py` — inlines the stylesheet, its fonts and every
+      image as data URIs, and fails hard both on an unresolvable reference and on any surviving
+      pointer to a sibling file.
+- [ ] Compare the generated PDF against resume-gen's output for parity, then retire resume-gen (the
+      content is frozen at `bb6f5fd`, so the target does not move).
 - [ ] Later: expose generation in the browser (button → on-the-fly PDF from live DB content) — this
       is where server-side Chromium against served routes and a render-token auth bypass in
       `src/proxy.ts` come back into scope.

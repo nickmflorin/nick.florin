@@ -4,7 +4,7 @@
  */
 import { type SidebarSection } from './types';
 
-export const LANGUAGES_AND_FRAMEWORKS: SidebarSection = {
+export const LanguagesAndFrameworks: SidebarSection = {
   bars: [
     { level: 'expert', name: 'Python' },
     { level: 'expert', name: 'TypeScript' },
@@ -28,7 +28,7 @@ export const LANGUAGES_AND_FRAMEWORKS: SidebarSection = {
   kind: 'bars',
 };
 
-export const TOP_SKILLS: SidebarSection = {
+export const TopSkills: SidebarSection = {
   heading: 'Top Skills',
   kind: 'pills',
   pills: [
@@ -51,7 +51,7 @@ export const TOP_SKILLS: SidebarSection = {
   ],
 };
 
-export const KEY_STRENGTHS: SidebarSection = {
+export const KeyStrengths: SidebarSection = {
   heading: 'Key Strengths',
   kind: 'pills',
   pills: [
@@ -65,7 +65,7 @@ export const KEY_STRENGTHS: SidebarSection = {
   ],
 };
 
-export const CLOUD_AND_DATABASES: SidebarSection = {
+export const CloudAndDatabases: SidebarSection = {
   bars: [
     { level: 'advanced', name: 'PostgreSQL' },
     { level: 'advanced', name: 'AWS' },
@@ -79,7 +79,7 @@ export const CLOUD_AND_DATABASES: SidebarSection = {
   kind: 'bars',
 };
 
-export const ARCHITECTURAL_PATTERNS: SidebarSection = {
+export const ArchitecturalPatterns: SidebarSection = {
   heading: 'Architectural Patterns',
   kind: 'pills',
   pills: [
@@ -104,13 +104,13 @@ export const ARCHITECTURAL_PATTERNS: SidebarSection = {
   ],
 };
 
-export const UI_AND_COMPONENT_LIBRARIES: SidebarSection = {
+export const UiAndComponentLibraries: SidebarSection = {
   heading: 'UI & Component Libraries',
   kind: 'pills',
   pills: ['MUI (Material UI)', 'Mantine', 'shadcn/ui', 'Styled Components', 'Emotion', 'Radix UI'],
 };
 
-export const TESTING: SidebarSection = {
+export const Testing: SidebarSection = {
   heading: 'Testing',
   kind: 'pills',
   pills: [
@@ -128,7 +128,7 @@ export const TESTING: SidebarSection = {
   ],
 };
 
-export const MONOREPO_AND_BUILD: SidebarSection = {
+export const MonorepoAndBuild: SidebarSection = {
   heading: 'Monorepo & Build',
   kind: 'pills',
   pills: [
@@ -144,7 +144,7 @@ export const MONOREPO_AND_BUILD: SidebarSection = {
   ],
 };
 
-export const CODE_QUALITY_AND_DX: SidebarSection = {
+export const CodeQualityAndDx: SidebarSection = {
   heading: 'Code Quality & DX',
   kind: 'pills',
   pills: [
@@ -165,7 +165,7 @@ export const CODE_QUALITY_AND_DX: SidebarSection = {
   ],
 };
 
-export const AI_TOOLING_AND_AUTOMATION: SidebarSection = {
+export const AiToolingAndAutomation: SidebarSection = {
   heading: 'AI Tooling & Automation',
   kind: 'pills',
   pills: [
@@ -184,7 +184,7 @@ export const AI_TOOLING_AND_AUTOMATION: SidebarSection = {
   ],
 };
 
-export const CICD_AND_AUTOMATION: SidebarSection = {
+export const CicdAndAutomation: SidebarSection = {
   heading: 'CI/CD & Automation',
   kind: 'pills',
   pills: [

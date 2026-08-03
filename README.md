@@ -11,11 +11,16 @@ outlined for setting up and running the application locally will be similar, but
 same.
 
 - [nvm]: A [node] version manager.
-- [Node][node] v20.x
+- [Node][node] v22.x (pinned to v22.22.0 by the `.nvmrc` file)
 - [homebrew]: A MacOSX package manager.
 - [postgresql] (a [homebrew] package)
-- [pnpm]: A [node] package manager.
+- [pnpm]: A [node] package manager (pinned to v9.15.9 by the `packageManager` field).
 - [Vercel CLI][vercel-cli]: [Vercel][vercel]'s command line utility.
+
+Both the [node] and [`pnpm`][pnpm] versions are pinned by the repository, and both pins are
+enforced: the `engines` field combined with `engineStrict` rejects an incorrect [node] version, and
+the `packageManager` field instructs [corepack] to select the correct [`pnpm`][pnpm] version. Do not
+work around either pin - see Section 1.2 for how to satisfy them.
 
 ## 1. Getting Started
 
@@ -42,10 +47,16 @@ this project.
 
 #### 1.2.a [Node][node]
 
-[Node][node] is the engine that supports the application. This project uses [node] v20.0.0. Your
+[Node][node] is the engine that supports the application. This project uses [node] v22.22.0. Your
 machine will most likely already have a system installation of [node], but even if it does not -
 that is okay, we will not be using the system installation of [node] but will rather isolate the
 version of [node] being used for this project to this repository using [nvm].
+
+The required version is declared in two places, and they must agree: the `.nvmrc` file pins the
+exact version [nvm] installs, and the `engines` field of the `package.json` file declares the range
+(`>=22`) that the application will accept. Because the `.npmrc` file sets `engine-strict=true`,
+[`pnpm`][pnpm] refuses to install against a [node] version outside that range rather than warning
+and continuing.
 
 **Important**: _Do not use a system installation of [node]. It will complicate your development
 environment. Instead, see the next section for details about usage of [nvm]._
@@ -99,7 +110,7 @@ $ nvm
 
 ##### 1.2.a.ii Node Version
 
-Now that [nvm] is installed, we need to use it to establish the correct version of [node], 20, that
+Now that [nvm] is installed, we need to use it to establish the correct version of [node], 22, that
 is suitable for this project. This project's repository comes equipped with a `.nvmrc` file that
 automatically tells [nvm] what version of [node] to use - but that version may still need to be
 installed.
@@ -114,21 +125,21 @@ $ nvm use
 If you see an output similar to the following:
 
 ```bash
-Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v20.0.0>
-Now using node v20.0.0 (npm v8.6.0)
+Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v22.22.0>
+Now using node v22.22.0 (npm v10.9.4)
 ```
 
 It means that the correct version of [node] that is required for this project is already installed
 with [nvm] and that version of [node] is active for this project's directory. The rest of this step
-can be skipped and you can proceed to the next step, "1.2.a.iii: Homebrew".
+can be skipped and you can proceed to the next step, "1.2.b: Homebrew".
 
 On the other hand, if you see an error similar to the following:
 
 ```bash
-Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v20.0.0>
-N/A: version "v20.0.0 -> N/A" is not yet installed.
+Found '/<path-to-repository>/nick.florin/.nvmrc' with version <v22.22.0>
+N/A: version "v22.22.0 -> N/A" is not yet installed.
 
-You need to run "nvm install v20.0.0" to install it before using it.
+You need to run "nvm install v22.22.0" to install it before using it.
 ```
 
 It means that the correct version of [node] that is required for this project is not already
@@ -159,71 +170,88 @@ $ nvm current
 The output of this command should be similar to the following:
 
 ```bash
-$ v20.x.x
+$ v22.x.x
 ```
 
 At this point, if [nvm] is not pointing at the correct version of [node] or is pointing at a system
 installation of [node], something went awry - consult a team member before proceeding.
 
-### 1.2.b: Homebrew
+**Important**: _[nvm] only applies the version for the current shell session. A new terminal will
+revert to your default [node] version, so `nvm use` must be run whenever you return to the project
+directory. If a command fails with a syntax error, an `engine-strict` rejection, or the
+`enforce-node-version` script reporting an unsatisfied version, `nvm use` is almost always the fix._
+
+#### 1.2.b: Homebrew
 
 If on MacOSX, you will need to install [homebrew], which is a MacOSX package manager.
 
-### 1.2.c: pnpm
+#### 1.2.c: pnpm
 
-This application uses [`pnpm`][pnpm] to manage dependencies. Before installing the project's
-dependencies, [pnpm] must be downloaded and setup on your machine. To download [`pnpm`][pnpm],
-simply execute the following `curl` command:
+This application uses [`pnpm`][pnpm] to manage dependencies. The exact version is pinned by the
+`packageManager` field of the `package.json` file, and that pin is the single source of truth:
 
-```bash
-$ curl -fsSL https://get.pnpm.io/install.sh | sh -
+```json
+"packageManager": "pnpm@9.15.9"
 ```
 
-After downloading [`pnpm`][pnpm], make sure to source your machine's shell profile script (here, we
-assume that is `~/.zshrc`):
+The pin is not cosmetic. The `pnpm-lock.yaml` file is written in `lockfileVersion` 9.0, which only
+[`pnpm`][pnpm] v9 and above can read. Installing with an older [`pnpm`][pnpm] does not fail loudly -
+it silently discards the committed lockfile and resolves the entire dependency tree from scratch,
+producing a different set of installed versions than the ones the application is tested and deployed
+with. See Section 1.5.b for how to recognize this.
+
+##### 1.2.c.i Installing [`pnpm`][pnpm] via [corepack]
+
+[corepack] ships with [node], reads the `packageManager` field, and downloads and runs the pinned
+version automatically. It is the only installation method that keeps your [`pnpm`][pnpm] version in
+step with the repository, so install [`pnpm`][pnpm] this way rather than through a standalone
+installer or [homebrew].
+
+Because [nvm] is being used, [corepack] comes from the active [node] installation - so run `nvm use`
+first, then enable it:
 
 ```bash
-$ . ~/.zshrc
+$ nvm use
+$ corepack enable pnpm
 ```
 
-Finally, ensure that the `pnpm` command is recognized by your machine:
+Then confirm that the `pnpm` command resolves to the pinned version. Run this from the root of the
+project repository, since [corepack] reads the version out of the nearest `package.json` file:
 
 ```bash
 $ pnpm -v
+9.15.9
 ```
 
-The [`pnpm`][pnpm] version should be 8.x.x. If it is not, refer to the next section, "Managing PNPM
-Version".
+##### 1.2.c.ii Conflicts With an Existing [`pnpm`][pnpm] Installation
 
-#### Managing PNPM Version
+`corepack enable` installs its shim into the active [node] installation's `bin` directory. If you
+previously installed [`pnpm`][pnpm] through the standalone installer at `get.pnpm.io`, that
+installation lives in `$PNPM_HOME` (typically `~/Library/pnpm`), and most shell profiles prepend
+`$PNPM_HOME` to the `PATH` _after_ [nvm] has been loaded. The standalone binary therefore shadows
+the [corepack] shim, and `pnpm -v` continues to report the old version no matter how many times
+`corepack enable` is run.
 
-[`pnpm`][pnpm] uses [corepack] to manage versions on your local machine. [corepack] can be installed
-on your machine via [homebrew]:
+The fix is to install the shim into `$PNPM_HOME` itself, so that it occupies the entry in the `PATH`
+that wins. Preserve the old binary first, in case you need to fall back to it:
 
 ```bash
-$ brew install corepack
+$ mv "$PNPM_HOME/pnpm" "$PNPM_HOME/pnpm.bak"
+$ corepack enable --install-directory "$PNPM_HOME" pnpm
 ```
 
-Once [corepack] is installed, activate it as follows:
+Verify with `which pnpm` (it should resolve to a symlink into [corepack]) and `pnpm -v` (it should
+report the pinned version). Once confirmed, `$PNPM_HOME/pnpm.bak` can be deleted.
 
-```bash
-$ corepack enable
-```
+##### 1.2.c.iii Changing the Pinned Version
 
-Now you should be able to manage your [`pnpm`][pnpm] version for this project independently of the
-system installation:
+To move the project to a different [`pnpm`][pnpm] version, edit the `packageManager` field and
+commit the change. Every machine and the [Vercel][vercel] build will pick it up on the next install;
+no developer needs to run an installation command. Do not use `corepack prepare --activate` to set a
+version locally, as it puts your machine out of step with the repository - the very problem the pin
+exists to prevent.
 
-```bash
-$ corepack prepare pnpm@<version> --activate
-```
-
-or
-
-```bash
-$ corepack prepare pnpm@latest --activate
-```
-
-### 1.2.d: Vercel CLI
+#### 1.2.d: Vercel CLI
 
 Once [`pnpm`][pnpm] is installed, [Vercel]'s [CLI][vercel-cli] needs to be installed. This
 application uses [Vercel]'s [CLI][vercel-cli] to manage environment variables in both production and
@@ -235,13 +263,19 @@ To install [Vercel]'s [CLI][vercel-cli], simply use [`pnpm`][pnpm] to install th
 $ pnpm i -g vercel
 ```
 
+**Important**: _The `-g` flag is required. Without it, [`pnpm`][pnpm] installs the [CLI][vercel-cli]
+as a project dependency, adding a `vercel` entry to the `package.json` file and several thousand
+lines to the `pnpm-lock.yaml` file. The [CLI][vercel-cli] is a developer tool, not something the
+application imports, so it must never appear in the `package.json` file. If it does, remove it with
+`pnpm remove vercel` and reinstall it globally._
+
 If you notice an error similar to the following:
 
 ```
 Error: Cannot find module 'stream/web'
 ```
 
-It means that you are not using the correct version of [node] (v20.x.x). Simply execute `nvm use` to
+It means that you are not using the correct version of [node] (v22.x.x). Simply execute `nvm use` to
 ensure your [node] version is correct, and then try to run the installation command again.
 
 Once the [CLI][vercel-cli] is installed, you must login with your [Vercel][vercel] credentials:
@@ -287,7 +321,7 @@ To populate your local environment with the required environment variables neces
 application locally, simply execute the following command:
 
 ```bash
-pnpm pullenv
+pnpm env:pull
 ```
 
 This command will pull the sensitive environment variables for the development environment from
@@ -298,7 +332,7 @@ environment variables that are defined in any other environment file (`.env.loca
 
 **Note:** Currently, we are using the free version of Vercel, which only supports one production
 database at a time, and does not allow us to define database parameters for just the development
-environment. This means that the `pullenv` command will populate the `.env` file with database
+environment. This means that the `env:pull` command will populate the `.env` file with database
 environment variables pertaining to the production database. However, these are overridden with
 local, non-production values in the `.env.development` file - preventing incidental or dangerous
 changes from occurring with the production database when developing locally. _For more information
@@ -312,31 +346,44 @@ When setting up the environment for the first time, you must do a fresh install 
 
 ##### 1.3.b.i Font Awesome
 
-Before installing the dependencies, you will need to be given an environment variable,
-`FONT_AWESOME_AUTH_TOKEN`, that is required to install certain dependencies. Currently, this
-application uses a "pro" license for [FontAwesome][fontawesome] to support the icons in the
-application. There are [FontAwesome][fontawesome]-related packages in the `package.json` file that
-require an authenticated, "pro" license key to be in the environment when installing the packages.
+The `.npmrc` file routes the `@fortawesome` and `@awesome.me` scopes to [FontAwesome][fontawesome]'s
+private registry and authenticates against it with a `FONT_AWESOME_AUTH_TOKEN` environment variable,
+which supports the "pro" license the application's icons are drawn from. Consult a team member for
+the value of that token.
 
-**Note**: This authentication token is only required if the [FontAwesome][fontawesome]-related
-packages have not already been installed to your `./node_modules` folder - which will likely only
-ever be when setting up the environment for the first time or after deleting the `./node_modules`
-folder manually.
+**Important**: _[`pnpm`][pnpm] expands `${FONT_AWESOME_AUTH_TOKEN}` out of the shell environment
+when it reads the `.npmrc` file. It does not read the `.env` files, so defining the token in
+`.env.local` or `.env.development.local` has no effect on installation - it must be exported by your
+shell profile._
 
-Consult a team member for the `FONT_AWESOME_AUTH_TOKEN` environment variable, and add it to your
-`.env.local` or `.env.development.local` file. Once that environment variable is defined, you can do
-a fresh install of the dependencies:
+```bash
+$ export FONT_AWESOME_AUTH_TOKEN=<token>
+```
+
+When the token is missing from the shell environment, [`pnpm`][pnpm] emits the following warning on
+every install:
+
+```
+WARN  Issue while reading ".npmrc". Failed to replace env in config: ${FONT_AWESOME_AUTH_TOKEN}
+```
+
+This warning is not currently fatal. The only [FontAwesome][fontawesome] package the `package.json`
+file depends on today is `@fortawesome/fontawesome-svg-core`, which resolves without
+authentication - so the install completes despite the warning. It becomes a hard `401` failure the
+moment a licensed package under either scope is added to the `package.json` file, so the token is
+still worth exporting before you hit that.
+
+##### 1.3.b.ii Installing
+
+Once the token is exported, install the dependencies from the root of the project repository:
 
 ```bash
 $ pnpm install
 ```
 
-This will install the project dependencies in the `package.json` file.
-
-##### FontAwesome Caveat
-
-Currently, this application uses a "pro" license for [FontAwesome][fontawesome] to support the icons
-in the application. There
+This will install the project dependencies in the `package.json` file, and then run the project's
+`postinstall` script, which generates the [Prisma][prisma] client. See Section 2.7.a for details on
+the generated client.
 
 ### 1.4: Database
 
@@ -381,7 +428,7 @@ POSTGRES_PASSWORD="..."
 POSTGRES_DATABASE="..."
 ```
 
-While the `pullenv` command will populate the `.env` file environment variables used to connect to
+While the `env:pull` command will populate the `.env` file environment variables used to connect to
 the production database, they will always be overridden by the `.env.development` file - which is
 committed to source control.
 
@@ -468,6 +515,65 @@ $ \q
 
 The application should now be ready to connect to the database for local development.
 
+### 1.5: Troubleshooting
+
+The failures below all stem from the local toolchain being out of step with what the repository
+pins, which is the usual outcome of setting up a second machine or returning to the project after a
+long absence. Each is silent or misleadingly reported, so they are collected here.
+
+#### 1.5.a `Cannot find module 'tsconfig-paths/register'`
+
+```
+Error: Cannot find module 'tsconfig-paths/register'
+Require stack:
+- .../node_modules/.pnpm/ts-node@.../node_modules/ts-node/dist/util.js
+```
+
+The `ts-node` block of the `tsconfig.json` file registers `tsconfig-paths` so that scripts run
+through [`ts-node`][ts-node] can resolve the `~/*` path alias. The package must therefore be present
+in the `devDependencies` of the `package.json` file. If this error appears, confirm that it is, and
+reinstall.
+
+Because the `preinstall` script runs [`ts-node`][ts-node], this failure blocks `pnpm install`
+itself. Break the cycle by installing once with the lifecycle scripts suppressed, then installing
+normally:
+
+```bash
+$ pnpm install --ignore-scripts
+$ pnpm install
+```
+
+#### 1.5.b An Install That Rewrites the Entire `pnpm-lock.yaml` File
+
+If `git status` reports the `pnpm-lock.yaml` file as modified after an install you expected to be a
+no-op, and the diff is many thousands of lines, check the first line of the file:
+
+```bash
+$ head -1 pnpm-lock.yaml
+lockfileVersion: '9.0'
+```
+
+If that version changed, your [`pnpm`][pnpm] is older than the pinned version. [`pnpm`][pnpm] v8 and
+below cannot read a `lockfileVersion` 9.0 file and, rather than failing, discard it and re-resolve
+every dependency from scratch - which quietly changes the versions you are developing against.
+Discard the damage and fix the [`pnpm`][pnpm] version per Section 1.2.c:
+
+```bash
+$ git checkout -- pnpm-lock.yaml
+```
+
+#### 1.5.c Node Version Failures
+
+The `preinstall` script and most of the scripts in the `package.json` file run
+`src/support/enforce-node-version.ts` first, which reports the mismatch plainly:
+
+```
+Your current node version, v16.0.0, does not satisfy the project's required version, >=22.
+```
+
+A syntax error thrown from inside a dependency, or an `ERR_PNPM_UNSUPPORTED_ENGINE` failure, has the
+same cause. Run `nvm use` from the root of the project repository; see Section 1.2.a.ii.
+
 ## 2. Local Development
 
 This section of the documentation describes various interactions that you will need to understand in
@@ -516,11 +622,11 @@ $ rm -rf ./.next
 $ pnpm build
 ```
 
-You can also accomplish this via the `build-local` command, which is defined in the `package.json`
+You can also accomplish this via the `build:local` command, which is defined in the `package.json`
 file:
 
 ```bash
-$ pnpm build-local
+$ pnpm build:local
 ```
 
 **Note**: As of [NextJS][nextjs] 16, the `build` process no longer runs [ESLint][eslint] - the
@@ -592,7 +698,7 @@ The two halves can also be run independently, via `pnpm eslint` and `pnpm pretti
 checked separately, by [cspell][cspell]:
 
 ```bash
-$ pnpm spellcheck
+$ pnpm cspell
 ```
 
 #### 2.4.d Automatically Fixing Violations
@@ -739,7 +845,7 @@ digest those changes and make the appropriate updates to the database structure.
 follows:
 
 ```bash
-$ pnpm db-migrate-dev
+$ pnpm prisma:migrate
 ```
 
 This command will prompt [prisma] to update the database structure if changes were detected. If
@@ -752,7 +858,7 @@ If it is desired that just the migration file is created (without actually updat
 the `--create-only` flag can be used:
 
 ```bash
-$ pnpm create-migrations
+$ pnpm prisma:migrate:create
 ```
 
 This will create the migration file, but will not apply it.
@@ -768,7 +874,7 @@ until the [`PrismaClient`](./src/server/db/index.ts) is regenerated.
 This can be done as follows:
 
 ```bash
-$ pnpm pushdb
+$ pnpm prisma:push
 ```
 
 Note that when running the `reset` command (discussed below), the
@@ -781,7 +887,7 @@ The application comes equipped with a databae seed file
 data/fixtures for development. This script can be run as:
 
 ```bash
-$ pnpm seeddb
+$ pnpm prisma:seed
 ```
 
 That being said, this seed process _only_ works when the database state is empty - if the database
@@ -791,7 +897,7 @@ Therefore, in order to run the
 flow:
 
 ```bash
-$ pnpm migrate-reset
+$ pnpm prisma:migrate:reset
 ```
 
 This command will wipe the current database, run all migrations and _then_ run the
@@ -865,5 +971,6 @@ $ git push origin master
 [fontawesome]: https://fontawesome.com/docs
 [pnpm]: https://pnpm.io/installation
 [corepack]: https://nodejs.org/api/corepack.html
+[ts-node]: https://typestrong.org/ts-node/
 [vercel]: https://vercel.com/
 [vercel-cli]: https://vercel.com/docs/cli

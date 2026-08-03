@@ -19,6 +19,8 @@ Setup, local development, database and deployment instructions live in the
   and checked
 - [TypeScript: Types & Interfaces](./code-quality/typescript/types-interfaces.md) - Readonly
   modifiers on type and interface properties
+- [TypeScript: Variable Naming](./code-quality/typescript/variable-naming.md) - PascalCase for
+  module-scope constants, camelCase for locals and functions
 
 ### 🗂️ Projects
 

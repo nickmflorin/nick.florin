@@ -18,6 +18,39 @@ const NextDefaultExportFiles = [
   'src/instrumentation.ts',
 ];
 
+/**
+ * The files that must not be linted against Next's conventions, because framework APIs are exactly
+ * what they are required to avoid.
+ *
+ * The print-form resume document is rendered by two consumers: the app's '(document)' routes, and
+ * a standalone generation script that renders the same components with 'renderToStaticMarkup' and
+ * writes static HTML that is opened over 'file://'. That second consumer is what forces the
+ * constraint. The components may only use semantic HTML and class names, so images are plain 'img'
+ * elements rather than 'next/image'; the script supplies the surrounding document itself, so it
+ * declares 'html', 'head' and 'link' and loads its stylesheet with a plain tag.
+ *
+ * Next's rules argue for the framework APIs that both are deliberately not using, so the preset is
+ * switched off across these trees rather than suppressed line by line.
+ */
+const NonNextFiles = [
+  'src/documents/**/*.ts',
+  'src/documents/**/*.tsx',
+  'src/scripts/generate-resume/**/*.ts',
+  'src/scripts/generate-resume/**/*.tsx',
+];
+
+/**
+ * Every rule that Next's 'core-web-vitals' preset enables, turned off.
+ *
+ * The preset is composed into the configuration below without a 'files' restriction, so it applies
+ * to every file in the repository and has to be switched off explicitly where it does not belong.
+ * The rules are derived from the preset rather than listed by hand so that this cannot fall out of
+ * date as the plugin adds or removes them.
+ */
+const DisabledNextRules = Object.fromEntries(
+  Object.keys(nextPlugin.configs['core-web-vitals'].rules).map(rule => [rule, 'off']),
+);
+
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   ...config,
@@ -52,6 +85,10 @@ export default [
     rules: {
       'import/no-default-export': 'off',
     },
+  },
+  {
+    files: NonNextFiles,
+    rules: DisabledNextRules,
   },
   {
     /* Every module in the ESLint config package is consumed by composing its default export into

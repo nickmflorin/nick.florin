@@ -16,6 +16,42 @@ Format:
 
 ---
 
+## 2026-08-03 — Generation script implementation details
+
+**Decision:** Settles the details left open when the browserless-pipeline decision below was made,
+now that the script is built and working (`pnpm resume:generate`, in
+`src/scripts/generate-resume/`):
+
+1. **Chrome is located by candidate path, not by `puppeteer-core`.** A `CHROME_PATH` environment
+   variable wins if set; otherwise the standard macOS and Linux install locations are probed in
+   order. `puppeteer-core`'s locator was rejected because it resolves browsers that _it_ downloaded,
+   which would mean adding a dependency and a browser download to find a Chrome that is already
+   installed.
+2. **Assets are emitted under a single `assets/` directory** beside the pages, and every reference
+   to them is relative. The stylesheet's root-absolute `url()` targets are resolved against
+   `public/`, copied in under the same path, and rewritten by dropping the leading slash; the
+   components' asset URLs are pointed at the same directory through `DOCUMENT_ASSET_BASE_PATH`. Both
+   are then verified: an emitted page carrying a root-absolute `src`/`href` fails the run, which is
+   the TypeScript equivalent of resume-gen's `postbuild_relativize.py` straggler check.
+3. **Pages are derived from `Sheets`, not globbed off disk.** resume-gen globbed `page-*.html` and
+   sorted numerically to keep page 10 from landing before page 2; deriving the list from the content
+   removes the filename-sorting concern entirely.
+4. **React's automatic image preload hints are stripped from the emitted markup.** Nothing an
+   emitted page references is fetched over a network, so the hints save nothing, and leaving them in
+   would make the single-file artifact inline every image a second time.
+5. **`tsx` and `pdf-lib` are now pinned devDependencies.** `tsx` was previously invoked through
+   `npx` without being installed, which silently broke every script that used it.
+6. **Next's `core-web-vitals` ESLint preset is switched off across `src/documents/` and
+   `src/scripts/generate-resume/`** in `eslint.config.mjs`, via a `NonNextFiles` override whose rule
+   list is derived from the preset so it cannot drift. The preset is composed in without a `files`
+   restriction, so it otherwise applies everywhere — and its advice is precisely what the purity
+   constraint forbids: `no-img-element` argues for `next/image` in components that may not import
+   it, and `no-head-element`/`no-css-tags` argue against the document shell the generation script
+   must emit itself. Suppressing it per line would have meant a disable directive on every image.
+
+**Why:** These were the last unresolved details of an otherwise settled design; recording them keeps
+the reasoning attached to the code rather than to a single session.
+
 ## 2026-08-03 — Generation is a browserless static pipeline; the app routes are a second consumer
 
 **Decision:** Supersedes the "printing the served sheet routes" portion of the earlier

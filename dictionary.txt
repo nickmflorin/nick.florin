@@ -3,7 +3,9 @@ agentic
 astro
 asyncio
 axe
+browserless
 bunx
+chromium
 cicd
 codecov
 commitlint
@@ -26,6 +28,9 @@ filts
 flds
 greenbudget
 headshot
+inlined
+inlines
+inlining
 iteree
 jhu
 jsonifiable
@@ -38,10 +43,12 @@ kwargs
 lege
 lerna
 linkedin
+lockfile
 luxon
 meteorjs
 microfrontend
 microfrontends
+mkdtemp
 mona
 mongoosejs
 monorepo
@@ -76,6 +83,7 @@ pytest
 qube
 rdimascio
 rebranded
+relativize
 rensselaer
 rockcreek
 rpi
@@ -99,6 +107,7 @@ syndicated
 syndication
 tailwindcss
 termx
+tmpdir
 toastify
 trpc
 turborepo
@@ -113,8 +122,10 @@ vite
 vitest
 wcag
 wgu
+woff
 wordmark
 xlarge
 xmark
 xsmall
 xxxs
+pdfs

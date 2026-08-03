@@ -45,6 +45,7 @@ Unlike the human-readable documentation in [docs/](../../docs/index.md), these i
 | `code-quality/eslint.instructions.md`                      | ESLint usage and rule-disable policy                         | TypeScript/JavaScript files |
 | `code-quality/file-naming.instructions.md`                 | File/folder casing: PascalCase components, hyphen-case       | TS/JS + Markdown files      |
 | `code-quality/typescript/types-interfaces.instructions.md` | Type/interface declaration conventions (readonly properties) | TypeScript files            |
+| `code-quality/typescript/variable-naming.instructions.md`  | PascalCase module-scope constants, camelCase locals          | TypeScript files            |
 | `code-quality/spelling.instructions.md`                    | cspell handling: fix, add to dictionary, or disable          | TS/JS + Markdown files      |
 | `code-quality/strings.instructions.md`                     | String quoting, line length, and `+` wrapping                | TypeScript/JavaScript files |
 | `workflow/verification-commands.instructions.md`           | Which checkers may be run automatically                      | All files                   |

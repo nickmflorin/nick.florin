@@ -7,10 +7,10 @@ _Last updated: 2026-08-03_
 **Phase 1 — Research & Discussion (with structural stubs).** Phase 0 (discovery & foundation setup)
 is complete. The repo-structure and renderer questions are now decided (in-app port, React, no
 monorepo — see [decisions.md](./decisions.md)) and the document-route shell is stubbed in the app.
-Still groundwork mode otherwise: **no schema/modeling work yet** — the remaining Research &
-Discussion items in [backlog.md](./backlog.md) (`Detail.shortDescription`, PDF tooling spike, sync
-design, LinkedIn feasibility) are worked as concrete tasks: research → written recommendation →
-discussion → entry in [decisions.md](./decisions.md).
+The generation pipeline is now built and working. Still groundwork mode otherwise: **no
+schema/modeling work yet** — the remaining Research & Discussion items in [backlog.md](./backlog.md)
+(`Detail.shortDescription`, sync design, LinkedIn feasibility) are worked as concrete tasks:
+research → written recommendation → discussion → entry in [decisions.md](./decisions.md).
 
 ## Done
 
@@ -25,7 +25,7 @@ discussion → entry in [decisions.md](./decisions.md).
   `src/documents/`).
 - 2026-08-03: Document shell stubbed: `(site)`/`(document)` route-group split (URLs unchanged), stub
   pages and components, style-entry stub, Clerk protection for `/documents(.*)`. No styles, types or
-  functionality yet. Uncommitted as of this entry.
+  functionality yet.
 - 2026-08-03: Document styles ported from resume-gen into `src/styles/document/` per the
   style-organization decision (disjoint trees, no Tailwind, idiomatic SCSS); Mona Sans vendored at
   `public/fonts/mona-sans/`; PostCSS/preflight spike passed at config level; stub components render
@@ -39,6 +39,13 @@ discussion → entry in [decisions.md](./decisions.md).
   `src/documents/resume/{data,lib}/` (content frozen at resume-gen commit `bb6f5fd`), logos vendored
   at `public/documents/logos/`, pages wired with `generateStaticParams`. Not yet verified in a
   running app or compile (per the no-auto-verification rule).
+- 2026-08-03: Generation script built and working end to end: `pnpm resume:generate` in
+  `src/scripts/generate-resume/`, with per-phase variants (`:html`, `:pdf`, `:artifact`) and a
+  `--steps` argument. All three phases verified by running them — the emitted sheets render with the
+  correct fonts, logos and skill-bar fills, and the PDF is three pages at exactly 8.5in x 11in.
+- 2026-08-03: Module-scope constants convention adopted (PascalCase, not `SCREAMING_SNAKE_CASE`);
+  documented in the code-quality rules and applied across `src/documents/resume/` and
+  `src/scripts/generate-resume/`.
 
 ### Key discovery findings
 
@@ -69,8 +76,12 @@ in-app embedding.** The pipeline design is settled — browserless static HTML v
 
 1. ~~Port the rendering components as pure React~~ (done 2026-08-03).
 2. ~~Port resume-gen's content types/libraries and data modules~~ (done 2026-08-03).
-3. Build the generation script: static HTML emission, PDF conversion, single-file artifact.
-4. Verify the document render in the running app (`/documents/resume`).
+3. ~~Build the generation script: static HTML emission, PDF conversion, single-file artifact~~ (done
+   2026-08-03).
+4. Verify the document render in the running app (`/documents/resume`). The script proves the
+   components and styles are correct; what remains unverified is Next's own handling of them —
+   route-group style isolation and font serving from `public/`.
+5. Compare the generated PDF against resume-gen's output for parity, then retire resume-gen.
 
 Remaining Research & Discussion items in parallel: `Detail.shortDescription` (**blocker** for the
 schema), fixture ⇄ DB sync design, LinkedIn feasibility, GitHub sync design, syndication modeling.
