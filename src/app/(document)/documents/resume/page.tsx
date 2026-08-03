@@ -1,4 +1,4 @@
-import { ResumeDocument } from '~/documents/resume/ResumeDocument';
+import { ResumeDocument } from '~/documents/resume/components/ResumeDocument';
 
 const ResumeDocumentPage = () => <ResumeDocument />;
 

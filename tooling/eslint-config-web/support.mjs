@@ -1,36 +1,3 @@
-import { ModuleGroups } from './constants.mjs';
-
-/**
- * The maximum number of parent directory levels that parent-relative import restrictions are
- * generated for.  A relative import that reaches further up the tree than this is vanishingly rare
- * and generating patterns for every conceivable depth is not worth the cost.
- */
-const MaxParentRelativeImportDepth = 5;
-
-/**
- * Generates the glob patterns that match parent-relative imports of a given module name, for every
- * parent directory level up to {@link MaxParentRelativeImportDepth}.
- *
- * @param {string} name The name of the module that parent-relative imports should be generated for.
- * @param {number} [level]
- *   The specific parent directory level to generate patterns for.  When omitted, patterns are
- *   generated for every level up to {@link MaxParentRelativeImportDepth}.
- *
- * @returns {string[]} The glob patterns matching parent-relative imports of the module.
- */
-export const generateParentRelativeImports = (name, level) => {
-  if (level && level < 1) {
-    throw new Error("The 'level' must be larger than 1.");
-  } else if (!level) {
-    return Array.from({ length: MaxParentRelativeImportDepth }).reduce(
-      (prev, _, index) => [...prev, ...generateParentRelativeImports(name, index + 1)],
-      [],
-    );
-  }
-  const pathPrefix = '../'.repeat(level);
-  return [`${pathPrefix}${name}`, `${pathPrefix}${name}/*`];
-};
-
 /**
  * Generates the glob patterns that match absolute, alias-based imports of a given module name.
  *
@@ -39,12 +6,6 @@ export const generateParentRelativeImports = (name, level) => {
  * @returns {string[]} The glob patterns matching absolute imports of the module.
  */
 export const generateAbsoluteImports = name => [`~/${name}`, `~/${name}/**`];
-
-/**
- * The module names, flattened from {@link ModuleGroups}, that may only ever be imported absolutely
- * via the '~/' alias.
- */
-const AbsolutelyImportedModules = ModuleGroups.flat();
 
 /**
  * @typedef {{
@@ -65,7 +26,6 @@ const AbsolutelyImportedModules = ModuleGroups.flat();
  * @typedef {{
  *   readonly paths?: RestrictedImportPath[];
  *   readonly patterns?: RestrictedImportPattern[];
- *   readonly restrictParentRelativeImportsFrom?: string[];
  *   readonly severity?: 'error' | 'warn';
  * }} ConstructRestrictedImportsRuleOptions
  */
@@ -83,9 +43,6 @@ const AbsolutelyImportedModules = ModuleGroups.flat();
  *   Paths that should be inserted directly into the rule's 'paths' option.
  * @param {RestrictedImportPattern[]} [config.patterns]
  *   Patterns that should be inserted directly into the rule's 'patterns' option.
- * @param {string[]} [config.restrictParentRelativeImportsFrom]
- *   Additional module names that parent-relative imports should be restricted from, on top of the
- *   modules in {@link ModuleGroups}.
  * @param {'error'|'warn'} [config.severity='error']
  *   The severity that the 'no-restricted-imports' rule should be treated as.  Defaults to 'error'.
  *
@@ -103,15 +60,6 @@ export const constructRestrictedImportsRule = config => [
       ...(config?.paths ?? []),
     ],
     patterns: [
-      ...[
-        ...AbsolutelyImportedModules,
-        ...(config?.restrictParentRelativeImportsFrom ?? []),
-      ].flatMap(name => ({
-        group: generateParentRelativeImports(name),
-        message:
-          `Parent relative imports of '${name}' are restricted - please use absolute imports ` +
-          'instead.',
-      })),
       {
         group: ['clsx'],
         message: "Please import 'classNames' from '~/components/types' instead.",

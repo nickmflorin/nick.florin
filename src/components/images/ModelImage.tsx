@@ -60,7 +60,9 @@ const getImageVar = <K extends keyof ImageProp>(
   return props[k] as ImageProp[K];
 };
 
-/** @deprecated */
+/**
+ * @deprecated
+ */
 export const ModelImage = ({
   alt = '',
   className,

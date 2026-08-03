@@ -35,6 +35,15 @@ export default [
           },
         },
       ],
+      'jsdoc/multiline-blocks': [
+        'error',
+        {
+          noFinalLineText: true,
+          noSingleLineBlocks: true,
+          noZeroLineText: true,
+          singleLineTags: ['type'],
+        },
+      ],
       'jsdoc/no-blank-blocks': ['error', { enableFixer: true }],
       'jsdoc/no-multi-asterisks': [
         'error',

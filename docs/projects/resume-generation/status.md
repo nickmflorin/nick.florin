@@ -30,6 +30,15 @@ discussion → entry in [decisions.md](./decisions.md).
   style-organization decision (disjoint trees, no Tailwind, idiomatic SCSS); Mona Sans vendored at
   `public/fonts/mona-sans/`; PostCSS/preflight spike passed at config level; stub components render
   `.stacked`/`.page` shells. Standalone `sass` compile passes; in-app render not yet verified.
+- 2026-08-03: Generation pipeline decision superseded the served-routes approach: browserless static
+  HTML via `renderToStaticMarkup` + programmatic `sass`, headless Chrome strictly as a file-to-file
+  print converter, `pdf-lib` merge. Script pipeline prioritized over in-app embedding.
+- 2026-08-03: Renderer and content ported from resume-gen: pure React components in
+  `src/documents/resume/components/` (Sheet, Role, Education, Sidebar, SkillBar, Pills, DevHeader,
+  ResumeDocument, ResumeDocumentSheet), content types/libraries/data copied to
+  `src/documents/resume/{data,lib}/` (content frozen at resume-gen commit `bb6f5fd`), logos vendored
+  at `public/documents/logos/`, pages wired with `generateStaticParams`. Not yet verified in a
+  running app or compile (per the no-auto-verification rule).
 
 ### Key discovery findings
 
@@ -58,10 +67,10 @@ in-app embedding.** The pipeline design is settled — browserless static HTML v
 `renderToStaticMarkup` + programmatic `sass`, then headless Chrome as a file-to-file
 `--print-to-pdf` converter merged with `pdf-lib` (see decisions.md). In order:
 
-1. Port the rendering components as pure React (serves both the script and the app routes).
-2. Port resume-gen's content types/libraries and data modules as the fixture content source
-   (TypeScript only — still no Prisma work).
+1. ~~Port the rendering components as pure React~~ (done 2026-08-03).
+2. ~~Port resume-gen's content types/libraries and data modules~~ (done 2026-08-03).
 3. Build the generation script: static HTML emission, PDF conversion, single-file artifact.
+4. Verify the document render in the running app (`/documents/resume`).
 
 Remaining Research & Discussion items in parallel: `Detail.shortDescription` (**blocker** for the
 schema), fixture ⇄ DB sync design, LinkedIn feasibility, GitHub sync design, syndication modeling.

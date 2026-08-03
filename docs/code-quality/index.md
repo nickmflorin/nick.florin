@@ -16,6 +16,7 @@ Guides covering the code quality standards, conventions and tooling used in this
 | Name props and state variables    | [Best Practices → Props & State](./best-practices.md#props--state-conventions)   |
 | Organize code modules             | [Best Practices → Code Organization](./best-practices.md#code-organization)      |
 | Name files and folders            | [Best Practices → File & Folder Naming](./best-practices.md#file--folder-naming) |
+| Declare types and interfaces      | [TypeScript → Types & Interfaces](./typescript/types-interfaces.md)              |
 
 ## Document Overview
 
@@ -45,6 +46,13 @@ Quick reference for code quality tooling:
 - Prettier formatting standards
 - IDE integration
 - The policy for disabling rules
+
+### [TypeScript](./typescript/index.md)
+
+Conventions specific to TypeScript declarations:
+
+- [Types & Interfaces](./typescript/types-interfaces.md): the `readonly` modifier on every type and
+  interface property, what the convention governs, and when omitting it is justified
 
 ### [Markdown Formatting](./markdown-formatting.md)
 
@@ -116,6 +124,8 @@ The prescriptive, agent-facing versions of these standards live alongside the hu
   hyphen-case everything else
 - [Spelling](../../.claude/rules/code-quality/spelling.md) - Resolving cspell flags
 - [Strings](../../.claude/rules/code-quality/strings.md) - String quoting, line length and wrapping
+- [Types & Interfaces](../../.claude/rules/code-quality/typescript/types-interfaces.md) - Readonly
+  modifiers on type and interface properties
 
 Each of these has a GitHub Copilot counterpart in
 [.github/instructions/code-quality/](../../.github/instructions/README.md).

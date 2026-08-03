@@ -17,6 +17,8 @@ Setup, local development, database and deployment instructions live in the
   and rule-disable policy
 - [Markdown Formatting](./code-quality/markdown-formatting.md) - How Markdown files are formatted
   and checked
+- [TypeScript: Types & Interfaces](./code-quality/typescript/types-interfaces.md) - Readonly
+  modifiers on type and interface properties
 
 ### 🗂️ Projects
 

@@ -86,6 +86,27 @@ interface ProgressBarProps {
 
 A prop whose meaning is clear from its name and type needs no JSDoc.
 
+## File-Level Comments
+
+A file does not receive a file-level or module-level JSDoc block by default. For most files the
+name, the exports, and their individual JSDoc are the documentation; a header that restates them
+(for example "This file contains the components used by the resume document") carries no information
+and must be omitted.
+
+A file-level block is justified only when every one of the following holds:
+
+- The file carries complexity or context that is genuinely necessary to work with it correctly.
+- That context is not obvious to a developer reading the contents of the file.
+- The context applies to the file as a whole. Context that belongs to a single declaration is
+  documented on that declaration instead, never hoisted to the top of the file.
+
+When a file-level block is justified, it obeys the same content and style rules as any other
+comment: it describes the current state of the code, opens with what the module is before the
+context that follows, and respects the line-length limit. The block at the top of
+`src/documents/resume/lib/normalize.ts` is a justified example — the module is the single boundary
+between authoring input and the content model, a contract that no individual declaration in the file
+could carry on its own — and can be used as a reference.
+
 ## JSDoc Format
 
 The following block satisfies every JSDoc rule in `jsdoc.mjs`:
@@ -105,6 +126,11 @@ The following block satisfies every JSDoc rule in `jsdoc.mjs`:
 
 The linter enforces the structure below, so match it exactly:
 
+- A JSDoc block is always multi-line — at least three lines: `/**` on its own line, each description
+  line prefixed with an aligned `*`, and `*/` on its own line. Single-line blocks
+  (`/** The user's name. */`) are forbidden, and text never shares a line with the opening `/**` or
+  the closing `*/` (`jsdoc/multiline-blocks` with `noSingleLineBlocks`, auto-fixable). The one
+  exception is an inline `/** @type {T} */` cast, which stays on a single line (`singleLineTags`).
 - The description lives in the comment body, never a `@description` tag (`jsdoc/require-description`
   with `descriptionStyle: 'body'`).
 - The description begins with a capital letter and ends with `.`, `?`, `!` or a backtick. Every

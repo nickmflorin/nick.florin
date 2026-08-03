@@ -120,6 +120,15 @@ much as the fact that it exists:
    enum), document each one with its own JSDoc block directly above it, not with `@property` tags or
    a bulleted list on the root block. Per-member JSDoc is what IntelliSense surfaces at each
    member's use site.
+7. **Always write the block as multiple lines.** A JSDoc block spans at least three lines: `/**` on
+   its own line, each description line prefixed with an aligned `*`, and `*/` on its own line.
+   Single-line blocks (`/** The user's name. */`) are not allowed, no matter how short the
+   description is; the linter enforces and auto-fixes this (`jsdoc/multiline-blocks`). The one
+   exception is an inline `/** @type {T} */` cast, which stays on one line.
+8. **Skip file-level headers by default.** A file- or module-level JSDoc block is justified only
+   when the file carries necessary context that is not obvious from reading its contents and that
+   applies to the file as a whole. Context that belongs to one declaration is documented on that
+   declaration, never hoisted to the top of the file.
 
 For example, a constant whose documentation spans several concerns leads with what it is, then gives
 each concern its own paragraph. The opening paragraph defines what the value represents; the
@@ -605,9 +614,9 @@ The benefits of improved modularization are as follows:
 
 ### Import/Export Patterns
 
-Every first-party module is addressed through the `~/` alias, which maps to the `src` directory.
-Parent-relative imports (`../`) of a top-level module are prohibited by ESLint and must always be
-performed absolutely:
+Every first-party module is addressed through the `~/` alias, which maps to the `src` directory. By
+convention, an import that crosses into another top-level module is performed absolutely via the
+alias:
 
 ```ts
 // Inside of the file src/components/buttons/generic/Button.tsx
@@ -615,11 +624,16 @@ import { capitalize } from '~/lib/formatters';
 import { getButtonSizeStyle } from '~/components/buttons/util';
 ```
 
-Sibling imports inside the same directory remain relative:
+Imports within a module remain relative — siblings in the same directory, and nearby parent
+directories, including module-local folders that happen to share a name with a top-level module (for
+example a feature's own `../lib/`):
 
 ```ts
 // Inside of the file src/components/buttons/TabButton.tsx
 import { Button, type ButtonProps } from './generic';
+
+// Inside of the file src/documents/resume/components/Role.tsx
+import { logo } from '../lib/assets';
 ```
 
 This has the following benefits:

@@ -118,16 +118,22 @@ components must stay pure (no Next-coupled APIs) so they serve both._
       `public/fonts/mona-sans/`; `body.stacked` adapted to a `.stacked` wrapper; stub components now
       render `.stacked`/`.page` shells so sheet geometry is verifiable. Standalone `sass` compile
       passes; not yet verified in the running app.
-- [ ] Verify the document styles in the running app: `/documents/resume` shows the stacked gray
-      backdrop with one white 8.5in × 11in sheet, fonts load, and the site's styles are absent from
-      the document routes (and vice versa).
-- [ ] Port the resume rendering (Sheet/Role/Education/Sidebar/SkillBar/Pills components) into
-      `src/documents/resume/` as pure React components — semantic HTML + classNames only, no
-      Next-coupled APIs, renderable by both `renderToStaticMarkup` and the app routes.
-- [ ] Port resume-gen's content types and resolution libraries (`types.ts`, `normalize.ts`,
-      `syndication.ts`) and its data modules as the fixture content source for generation.
-      TypeScript only — no Prisma models; this is the content the script renders until the DB slots
-      in behind the same content-source layer.
+- [ ] Verify the document render in the running app: `/documents/resume` shows the full stacked
+      resume (all sheets with real content) on the gray backdrop, fonts load, and the site's styles
+      are absent from the document routes (and vice versa).
+- [x] Port the resume rendering into `src/documents/resume/components/` (done 2026-08-03): Sheet,
+      Role, Education, Sidebar, SkillBar, Pills, DevHeader plus the top-level ResumeDocument
+      (stacked view) and ResumeDocumentSheet (single printable sheet) — all pure React (semantic
+      HTML + classNames, `dangerouslySetInnerHTML` for the HTML content, no Next-coupled APIs).
+      Pages wired: `/documents/resume` renders the stack; `/documents/resume/[sheet]` resolves from
+      `SHEETS` with `generateStaticParams` + `notFound()`. Logos/photo/icons vendored at
+      `public/documents/logos/`; `lib/assets.ts` base path is overridable via
+      `DOCUMENT_ASSET_BASE_PATH` for relative-URL static emission.
+- [x] Port resume-gen's content types and resolution libraries (done 2026-08-03): `types.ts`,
+      `normalize.ts`, `syndication.ts` and all data modules (`profile`, `experience`, `education`,
+      `skills`, `pages`) copied into `src/documents/resume/{data,lib}/` — unchanged relative import
+      structure, Prettier-clean as copied, content frozen as of resume-gen commit `bb6f5fd`.
+      TypeScript only — no Prisma models.
 - [ ] Build the static HTML emission script (`pnpm generate-resume`, phase 1): render sheets with
       `renderToStaticMarkup`, compile the document SCSS with the `sass` API, emit
       `page-N.html`/stacked `index.html`/assets with relative URLs.
