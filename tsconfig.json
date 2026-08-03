@@ -44,9 +44,6 @@
     ".next/types/**/*.ts",
     "src",
     ".next/dev/types/**/*.ts",
-    /* The root-level configuration files are included so that typescript-eslint's project service
-       can resolve them to a TypeScript program.  Without this, the type-aware lint rules fail
-       outright on them with "was not found by the project service". */
     "jest.config.ts",
     "jest.config.base.ts",
     "tailwind.config.ts"
