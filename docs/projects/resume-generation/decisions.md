@@ -16,6 +16,23 @@ Format:
 
 ---
 
+## 2026-08-02 — New-model naming: `Competency`, `Role`, `Degree`
+
+**Decision:** The new parallel models are named as follows: the successor to `Skill` is
+**`Competency`** (plural "competencies" — from here on, project discussion says "competencies", not
+"skills", when referring to the new modeling); the successor to `Experience` is **`Role`**; the
+successor to `Education` is **`Degree`**.
+
+**Why:** The old and new models must coexist during the parallel period, so the new names cannot
+collide with existing Prisma models. `Competency` reads naturally in schema and prose, collides with
+nothing in either repo, and is semantically broader than `Skill`, fitting the added configurability.
+`Role` and `Degree` are already the names of resume-gen's presentation types, so this aligns the two
+vocabularies.
+
+**Alternatives considered:** `Capability` (overloaded in software contexts) and `Expertise` (awkward
+as a countable row) for the `Skill` successor; `Proficiency` was unavailable — resume-gen already
+uses it for the familiarity-bucket enum (`FAMILIAR | PROFICIENT | ADVANCED | EXPERT`).
+
 ## 2026-08-02 — Schema/implementation work deferred until research phase concludes
 
 **Decision:** No new Prisma models or implementation work yet, even though resume-gen's

@@ -30,9 +30,10 @@ on the PDF than the website). Needs a decision before the Prisma schema lands.
 
 resume-gen's `docs/content-model.md` fully designs the `Detail`/`NestedDetail` →
 `ContentNode`/`NestedContentNode` replacement, including the `Syndicated` shape (`visible` +
-`excludedChannels[]`). Still undesigned: how the other models (`Experience`, `Education`, `Project`,
-`Repository`, `Skill`, `Company`, `School`) participate in channels, per-channel ordering, and
-whether presentation constructs (sheets/pagination, skill bars, pill sections) are content or
+`excludedChannels[]`). Still undesigned: how the other new/parallel models (`Role`, `Degree`,
+`Competency` — successors to `Experience`, `Education`, `Skill`; see decisions.md 2026-08-02) and
+`Project`, `Repository`, `Company`, `School` participate in channels, per-channel ordering, and
+whether presentation constructs (sheets/pagination, competency bars, pill sections) are content or
 per-medium presentation config.
 
 ## Fixture ⇄ DB sync semantics

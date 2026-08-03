@@ -34,9 +34,10 @@ discuss together, then record the outcome in `decisions.md`.
 - [ ] **(blocker)** `Detail.shortDescription` disposition — the one open question in resume-gen's
       `docs/content-model.md` that changes the schema shape (candidate: a `ContentVariant` table
       keyed by node + channel, which would also solve per-medium content overrides generally).
-- [ ] Syndication modeling beyond Detail-replacement: how do `Experience`, `Education`, `Project`,
-      `Repository`, `Skill`, `Company`, `School` participate in channels (owner-level `Syndicated`
-      fields, per-channel ordering, presentation config like sheets/skill bars)?
+- [ ] Syndication modeling beyond Detail-replacement: how do the other new/parallel models — `Role`
+      (succeeds `Experience`), `Degree` (succeeds `Education`), `Competency` (succeeds `Skill`) —
+      and `Project`, `Repository`, `Company`, `School` participate in channels (owner-level
+      `Syndicated` fields, per-channel ordering, presentation config like sheets/competency bars)?
 - [ ] Fixture ⇄ DB sync design: incremental vs. full dump/reload, conflict handling, id/slug
       stability across environments (resume-gen's deterministic path ids vs. this app's uuids), and
       whether fixtures become the canonical editing surface for Claude-driven iteration.
@@ -53,12 +54,33 @@ _Gated on the Research & Discussion items above — no schema work until those a
 - [ ] Land the new content model (`ContentNode`, `NestedContentNode`, syndication enums) in
       `schema.prisma` as parallel models — steps 2–6 of the migration plan in resume-gen's
       `docs/content-model.md`.
+- [ ] Design the `Competency` model — the parallel successor to `Skill` (added 2026-08-02; named
+      2026-08-02, see decisions.md). Requirements:
+  - More control and output configurability than the current `Skill` model.
+  - Same visibility flags as `Role`/`Degree` get in the new model (the `Syndicated` shape:
+    `visible` + `excludedChannels[]`).
+  - Short label and full label (vs. today's single `label`).
+  - Links to other models the same way the current `Skill` does (m2m to `Role`, `Degree`, Course,
+    Project, Repository, and the Detail successor `ContentNode`/`NestedContentNode`).
+  - Years-of-experience metric (like today's `experience`/`calculatedExperience`), **plus** a
+    bucketed familiarity enum that becomes the primary metric going forward — values from
+    resume-gen's `Proficiency` type: `FAMILIAR | PROFICIENT | ADVANCED | EXPERT`.
+- [ ] Design the `Role` and `Degree` models — parallel successors to `Experience` and `Education`
+      (added 2026-08-02, see decisions.md). resume-gen's `Role`/`Degree` types are the starting
+      point; decide whether `ContentOwnerType` enum values follow the rename
+      (`EXPERIENCE | EDUCATION` → `ROLE | DEGREE`) before the content model lands, since
+      resume-gen's target schema currently uses the old names.
+- [ ] Model resume sidebar sections (a PDF/HTML-resume-only concept) as a distinct model with
+      `name`, `slug`, and competencies — where each `Competency` carries an **optional FK** pointing
+      at its resume sidebar section (added 2026-08-02). Maps to resume-gen's `SidebarSection`
+      (bars/pills groupings in `src/data/skills.ts`).
 - [ ] Replace display-string fields from resume-gen types with real modeling on the way in:
       `dates`/`location` as columns, `logo` → `Company`/`School` relations.
 - [ ] Rationalize visibility defaults across existing models (`Company`/`School` have no flag;
       `Project`/`Repository` default hidden; others default visible).
-- [ ] Model the sidebar/presentation constructs (`SkillBar` proficiency levels, pill sections,
-      `Sheet` pagination) per the syndication-modeling research outcome.
+- [ ] Model the remaining presentation constructs (`Sheet` pagination, pill vs. bar rendering) per
+      the syndication-modeling research outcome — sidebar sections themselves are covered by the
+      item above.
 - [ ] Port resume-gen's cascade resolution (`normalize.ts`, `syndication.ts`) into this app's model
       layer — remember channel eligibility is not a row predicate (`WHERE visible = true` is wrong;
       resolution happens in application code).
