@@ -16,6 +16,29 @@ Format:
 
 ---
 
+## 2026-08-03 — Document style organization: disjoint trees, no Tailwind, idiomatic SCSS
+
+**Decision:** Document styles live in `src/styles/document/` as a second, fully disjoint tree next
+to the site styles — one styles root, two trees, mirroring the `(site)`/`(document)` route-group
+split. Standing rules: (1) no cross-imports between the trees in either direction, even at the cost
+of duplicating a value — the document's values are print-tuned constants, not shared theme tokens;
+(2) no Tailwind syntax (`@tailwind`, `@apply`, `theme()`) anywhere in the document tree —
+resume-gen's `@theme static` block becomes a plain `:root` custom-property block in
+`_variables.scss` with identical variable names; (3) resume-gen's global element selectors
+(`html`/`body` in `_base.scss`) port as-is, relying on route-group isolation rather than defensive
+class wrappers; (4) Mona Sans is vendored at `public/fonts/mona-sans/` (with its OFL license) and
+declared only in the document tree, `font-display: block` preserved for print fidelity. Values port
+verbatim, but the SCSS is restructured idiomatically (nesting, `&`-suffix patterns, maps) rather
+than kept diff-identical to resume-gen, and comments are rewritten to this repo's comment and
+line-length rules. One behavioral adaptation: resume-gen's `body.stacked` browsing-view hook becomes
+a `.stacked` wrapper element rendered by the stacked page, since a per-page body class is not
+available from a shared root layout.
+
+**Why:** Route-group CSS loading gives structural isolation; the standing rules keep it from eroding
+(a shared partial or site token change must never reflow the printed sheets). Idiomatic SCSS was
+chosen over byte-level parity with resume-gen because the tree is the long-term home of these styles
+and repo conventions win over temporary diff-ability.
+
 ## 2026-08-03 — Resume generation lives in this app; no monorepo
 
 **Decision:** Resume generation is ported into this Next.js app as a self-contained feature area. No

@@ -26,6 +26,10 @@ discussion → entry in [decisions.md](./decisions.md).
 - 2026-08-03: Document shell stubbed: `(site)`/`(document)` route-group split (URLs unchanged), stub
   pages and components, style-entry stub, Clerk protection for `/documents(.*)`. No styles, types or
   functionality yet. Uncommitted as of this entry.
+- 2026-08-03: Document styles ported from resume-gen into `src/styles/document/` per the
+  style-organization decision (disjoint trees, no Tailwind, idiomatic SCSS); Mona Sans vendored at
+  `public/fonts/mona-sans/`; PostCSS/preflight spike passed at config level; stub components render
+  `.stacked`/`.page` shells. Standalone `sass` compile passes; in-app render not yet verified.
 
 ### Key discovery findings
 

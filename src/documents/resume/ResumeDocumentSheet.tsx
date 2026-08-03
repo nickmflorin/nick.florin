@@ -4,7 +4,8 @@ export interface ResumeDocumentSheetProps {
 
 export const ResumeDocumentSheet = ({ sheet }: ResumeDocumentSheetProps) => (
   <main>
-    <h1>Resume Document Sheet</h1>
-    <p>{`The standalone printable sheet '${sheet}' of the generated resume will render here.`}</p>
+    <div className='page'>
+      <p>{`Content for sheet '${sheet}' renders here once the renderer components are ported.`}</p>
+    </div>
   </main>
 );

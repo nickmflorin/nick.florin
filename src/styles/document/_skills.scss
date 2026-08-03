@@ -1,0 +1,67 @@
+@use 'sass:map';
+
+.skill {
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 3px;
+  }
+
+  &-name {
+    font-size: 8px;
+    color: var(--color-text-dark);
+    font-weight: 500;
+    width: 72px;
+    flex-shrink: 0;
+  }
+
+  &-track {
+    flex: 1;
+    height: 3px;
+    background: var(--color-border-soft);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  &-badge {
+    font-size: 7px;
+    color: var(--color-text-secondary);
+    width: 42px;
+    text-align: right;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+}
+
+// One fill rule per proficiency tier; the tier name comes straight from the data.
+$proficiency-fills: (
+  'expert': (
+    'color': var(--color-accent-magenta),
+    'width': 100%,
+  ),
+  'advanced': (
+    'color': var(--color-accent-blue),
+    'width': 78%,
+  ),
+  'proficient': (
+    'color': var(--color-accent-brown),
+    'width': 55%,
+  ),
+  'familiar': (
+    'color': var(--color-accent-orange),
+    'width': 35%,
+  ),
+);
+
+@each $tier, $fill in $proficiency-fills {
+  .fill-#{$tier} {
+    background: map.get($fill, 'color');
+    width: map.get($fill, 'width');
+  }
+}

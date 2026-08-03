@@ -1,0 +1,39 @@
+// Sidebar (`s-`) and main-column (`m-`) chips are visually identical and differ only in the
+// spacing above the row, so the chip and row are each defined once and extended.
+%pill {
+  background: var(--color-chip-bg);
+  border: 1px solid var(--color-chip-border);
+  color: var(--color-chip-text);
+  border-radius: 3px;
+  padding: 2px 5px;
+  font-size: 7.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+%pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.s-pill {
+  @extend %pill;
+}
+
+.m-pill {
+  @extend %pill;
+}
+
+.s-pills {
+  @extend %pills;
+
+  margin-top: 0;
+}
+
+.m-pills {
+  @extend %pills;
+
+  margin-top: 5px;
+}

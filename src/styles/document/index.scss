@@ -1,8 +1,19 @@
-/*
-  The style entry for the print-form document route group. It is imported exclusively by the
-  document root layout so that document styling never reaches the site routes, and the site's
-  global styles (imported through the site layout tree) never reach the document routes.
+// The style tree for the print-form resume document, imported exclusively by the document root
+// layout (`src/app/(document)/layout.tsx`) so that it only ever loads on document routes.
+//
+// This tree is fully isolated from the site styles: nothing in `src/styles/document/` may import
+// from the site trees (`globals/`, `partials/`), the site trees may not import from here, and no
+// Tailwind syntax may appear in this tree: not `@tailwind`, `@apply`, nor the `theme` function.
+// The document's typography is tuned to fractions of a pixel for print, and a base reset or
+// shared token changing underneath it would silently reflow the printed sheets.
 
-  The print styles themselves (page geometry, typography, fonts) land here when the renderer is
-  ported from the resume-gen repository.
-*/
+@use 'variables';
+@use 'fonts';
+@use 'base';
+@use 'page';
+@use 'sidebar';
+@use 'skills';
+@use 'pills';
+@use 'dev-header';
+@use 'role';
+@use 'education';

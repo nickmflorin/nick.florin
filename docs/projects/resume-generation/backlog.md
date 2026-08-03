@@ -102,11 +102,22 @@ are gated only on the PDF-pipeline spike where noted._
       and `/documents/resume/[sheet]` pages rendering stub components in `src/documents/resume/`;
       protected `/documents(.*)` via the Clerk admin matcher in `src/proxy.ts`. No styles, types,
       modeling or functionality yet.
-- [ ] Spike: verify the app's PostCSS/Tailwind pipeline does not process the document SCSS in a way
-      that reintroduces preflight on document routes — do this before porting the style partials.
-- [ ] Port the document styles from resume-gen (SCSS partials near-verbatim; `@theme static`
-      variables become a plain `:root` block — no Tailwind in document styles) into
-      `src/styles/document/`, including the vendored Mona Sans fonts.
+- [x] Spike: verify the app's PostCSS/Tailwind pipeline does not process the document SCSS in a way
+      that reintroduces preflight on document routes (done 2026-08-03, config-level: the global
+      PostCSS chain is `tailwindcss` v3 + `autoprefixer`; the v3 plugin only transforms its own
+      directives, and preflight enters only via the site's own Tailwind entry, which never loads on
+      document routes. Runtime confirmation happens the first time the dev server renders
+      `/documents/resume`).
+- [x] Port the document styles from resume-gen (done 2026-08-03): full tree in
+      `src/styles/document/` (`_variables`, `_fonts`, `_base`, `_page`, `_sidebar`, `_skills`,
+      `_pills`, `_role`, `_education`, `_dev-header`), values verbatim but restructured as idiomatic
+      SCSS per the 2026-08-03 style-organization decision; Mona Sans vendored at
+      `public/fonts/mona-sans/`; `body.stacked` adapted to a `.stacked` wrapper; stub components now
+      render `.stacked`/`.page` shells so sheet geometry is verifiable. Standalone `sass` compile
+      passes; not yet verified in the running app.
+- [ ] Verify the document styles in the running app: `/documents/resume` shows the stacked gray
+      backdrop with one white 8.5in × 11in sheet, fonts load, and the site's styles are absent from
+      the document routes (and vice versa).
 - [ ] Port the resume rendering (Sheet/Role/Education/Sidebar/SkillBar/Pills components) into
       `src/documents/resume/` as React Server Components.
 - [ ] Implement the deployable PDF pipeline per the research outcome.

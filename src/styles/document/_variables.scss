@@ -1,0 +1,41 @@
+// The single source of truth for the document's palette, fonts and sheet geometry: to recolor or
+// resize anything, edit the value here and nowhere else. Declaring the tokens on :root is safe
+// despite being global because this tree only loads on document routes.
+//
+// The palette was extracted from Branding2.sketch.
+
+:root {
+  // Text.
+  --color-text-primary: #272727;
+  --color-text-secondary: #565f6a;
+  --color-text-dark: #23282e;
+  --color-text-body: #2a2d31;
+  --color-text-muted: #3b3b3b;
+
+  // Lines, links and chips.
+  --color-link: #0869da;
+  --color-border-strong: #969696;
+  --color-border-soft: #d8dee4;
+  --color-chip-bg: #f5f7f9;
+  --color-chip-border: rgba(27, 30, 35, 0.15);
+  --color-chip-text: #23282e;
+
+  // Accents. The skill-bar fills read from these in tier order.
+  --color-accent-magenta: #c5528b;
+  --color-accent-blue: #2f78c5;
+  --color-accent-yellow: #f0df59;
+  --color-accent-red: #ef5038;
+  --color-accent-brown: #a5835a;
+  --color-accent-orange: #e69e35;
+  --color-accent-green: #0eb768;
+  --color-accent-lime: #77bf43;
+
+  --font-sans:
+    'Mona Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: 'SF Mono', Monaco, Consolas, monospace;
+
+  // Sheet geometry: US Letter at exactly one sheet per page.
+  --spacing-sheet-width: 8.5in;
+  --spacing-sheet-height: 11in;
+  --spacing-sidebar: 2.42in;
+}
