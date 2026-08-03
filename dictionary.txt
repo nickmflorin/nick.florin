@@ -1,4 +1,5 @@
 actuals
+astro
 asyncio
 bunx
 cplusplus
@@ -25,6 +26,7 @@ kwargs
 lege
 luxon
 meteorjs
+mona
 mongoosejs
 mult
 navigatable
@@ -40,10 +42,12 @@ pebl
 pgsql
 prismajs
 projs
+psql
 pullenv
 pushdb
 pyenv
 pylint
+pypdf
 pytest
 qube
 rdimascio
@@ -55,10 +59,12 @@ slugified
 smplus
 snuggly
 sonarqube
+sparticuz
 standardizer
 storybookjs
 termx
 toastify
+turborepo
 unhighlighted
 unhighlighting
 unpersist
@@ -68,4 +74,3 @@ xlarge
 xmark
 xsmall
 xxxs
-psql

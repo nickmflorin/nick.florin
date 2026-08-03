@@ -18,6 +18,14 @@ Setup, local development, database and deployment instructions live in the
 - [Markdown Formatting](./code-quality/markdown-formatting.md) - How Markdown files are formatted
   and checked
 
+### 🗂️ Projects
+
+Long-running project working context (status, decisions, codebase maps) lives under
+[projects/](./projects/):
+
+- [Resume Generation](./projects/resume-generation/README.md) - Centralizing all portfolio/resume
+  content under a single source of truth with per-medium distribution
+
 ## AI Instructions vs Human Documentation
 
 This repository separates AI-focused instructions from human-readable documentation.
