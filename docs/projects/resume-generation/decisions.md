@@ -16,6 +16,39 @@ Format:
 
 ---
 
+## 2026-08-03 — Generation is a browserless static pipeline; the app routes are a second consumer
+
+**Decision:** Supersedes the "printing the served sheet routes" portion of the earlier
+repo-structure decision (below). The generation script mirrors resume-gen's build architecture,
+translated to TypeScript, and does NOT depend on a running app, a session, or browser automation:
+
+1. **HTML (pure Node, no browser):** a `tsx` script renders the document components from
+   `src/documents/resume/` with `renderToStaticMarkup` from `react-dom/server`, compiles
+   `src/styles/document/index.scss` with the `sass` API, and emits static files (`page-N.html`,
+   stacked `index.html`, assets) using relative URLs from the start — no equivalent of resume-gen's
+   `postbuild_relativize.py` is needed. The single-file `resume.html` artifact is a TS port of
+   `build_artifact.py` (inline CSS, data-URI assets, fail hard on unresolvable refs).
+2. **PDF (Chrome as a pure print engine):** headless Chrome `--print-to-pdf` per emitted
+   `page-N.html` file — exactly resume-gen's converter — merged with `pdf-lib` (replacing pypdf and
+   the Python venv). The binary is located portably (`puppeteer-core` locator or `CHROME_PATH`
+   override) instead of a hard-coded macOS path. Browserless HTML-to-PDF libraries were rejected:
+   the styles depend on Chrome-grade flexbox/variable-font/`@page` support, and
+   `@react-pdf/renderer`-style libraries would be a second renderer, breaking the single source of
+   truth.
+3. **Hard constraint this imposes:** the document components must stay pure — semantic HTML +
+   classNames only; no `next/font`, `next/image`, server actions, or any Next-coupled API — so the
+   same components serve both the standalone script and the app routes. The in-app `(document)`
+   routes are the live preview / future on-demand surface, not a dependency of the script. The
+   render-token auth bypass idea is deferred until deployed on-demand generation.
+4. **Priority:** getting this script pipeline working outranks embedding the resume in the app.
+   Content comes from fixture data modules first; the DB slots in later behind the same content
+   source.
+
+**Why:** The script must be deterministic and self-contained (file-in → file-out), matching how
+resume-gen's `dist` flow worked. What made that flow clean was not the absence of a browser
+(resume-gen used headless Chrome too) but the absence of a running app and automation framework —
+Chrome is used strictly as a file-to-file print converter.
+
 ## 2026-08-03 — Document style organization: disjoint trees, no Tailwind, idiomatic SCSS
 
 **Decision:** Document styles live in `src/styles/document/` as a second, fully disjoint tree next

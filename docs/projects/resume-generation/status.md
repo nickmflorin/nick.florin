@@ -53,16 +53,19 @@ discussion → entry in [decisions.md](./decisions.md).
 
 ## Next Up
 
-Work through the remaining Research & Discussion items in [backlog.md](./backlog.md):
+Priority (decided 2026-08-03): **get the standalone generation script working before finishing the
+in-app embedding.** The pipeline design is settled — browserless static HTML via
+`renderToStaticMarkup` + programmatic `sass`, then headless Chrome as a file-to-file
+`--print-to-pdf` converter merged with `pdf-lib` (see decisions.md). In order:
 
-1. `Detail.shortDescription` disposition (**blocker** for the schema).
-2. PDF pipeline tooling spike (Playwright vs. puppeteer-core; `pdf-lib` merge) — direction is
-   already set (local script v1 printing served sheet routes).
-3. Fixture ⇄ DB sync design; LinkedIn feasibility; GitHub sync design; syndication modeling beyond
-   Detail-replacement.
+1. Port the rendering components as pure React (serves both the script and the app routes).
+2. Port resume-gen's content types/libraries and data modules as the fixture content source
+   (TypeScript only — still no Prisma work).
+3. Build the generation script: static HTML emission, PDF conversion, single-file artifact.
 
-The un-gated Resume Generation items (Tailwind/preflight spike, style port, component port) can also
-proceed when desired. Schema/modeling work remains deferred (see decision dated 2026-08-02 in
+Remaining Research & Discussion items in parallel: `Detail.shortDescription` (**blocker** for the
+schema), fixture ⇄ DB sync design, LinkedIn feasibility, GitHub sync design, syndication modeling.
+Schema/modeling work remains deferred (see decision dated 2026-08-02 in
 [decisions.md](./decisions.md)).
 
 ## Blockers / Waiting On

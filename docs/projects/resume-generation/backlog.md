@@ -23,11 +23,12 @@ discuss together, then record the outcome in `decisions.md`.
       into this app, no monorepo, resume-gen retires at parity (see decisions.md).
 - [x] **(blocker)** Astro vs. React for the resume renderer — resolved 2026-08-03: React Server
       Components in this app (see decisions.md).
-- [ ] **(blocker)** PDF pipeline research — direction set 2026-08-03 (v1 is a local script printing
-      the served sheet routes with a TS-native merge; deployed on-demand route later), but the
-      tooling choice still needs a spike: Playwright vs. puppeteer-core + `@sparticuz/chromium`, and
-      the merge library (`pdf-lib`). Today's pipeline is a macOS-hardcoded Chrome CLI + pypdf merge
-      and cannot run on Vercel.
+- [x] **(blocker)** PDF pipeline research — resolved 2026-08-03 (superseding the earlier
+      served-routes direction): generation is a browserless-HTML static pipeline
+      (`renderToStaticMarkup` + programmatic `sass` → static files), with headless Chrome used
+      strictly as a file-to-file `--print-to-pdf` converter and `pdf-lib` for the merge — no running
+      app, no browser automation (see decisions.md). Remaining detail (not a blocker): how the
+      Chrome binary is located portably (`puppeteer-core` locator vs. `CHROME_PATH` override).
 - [ ] **(blocker)** `Detail.shortDescription` disposition — the one open question in resume-gen's
       `docs/content-model.md` that changes the schema shape (candidate: a `ContentVariant` table
       keyed by node + channel, which would also solve per-medium content overrides generally).
@@ -93,8 +94,10 @@ _Gated on the Research & Discussion items above — no schema work until those a
 
 ## Resume Generation
 
-_The repo-structure and renderer decisions are made (2026-08-03, see decisions.md); remaining items
-are gated only on the PDF-pipeline spike where noted._
+_All three generation decisions are made (2026-08-03, see decisions.md): in-app port, React
+renderer, browserless static pipeline with Chrome as a file-to-file print converter. Priority within
+this section: the standalone generation script outranks the in-app embedding — the document
+components must stay pure (no Next-coupled APIs) so they serve both._
 
 - [x] Stub the in-app document shell (done 2026-08-03): moved all existing routes into a `(site)`
       route group (URLs unchanged); added the `(document)` route group with its own bare root layout
@@ -119,11 +122,23 @@ are gated only on the PDF-pipeline spike where noted._
       backdrop with one white 8.5in × 11in sheet, fonts load, and the site's styles are absent from
       the document routes (and vice versa).
 - [ ] Port the resume rendering (Sheet/Role/Education/Sidebar/SkillBar/Pills components) into
-      `src/documents/resume/` as React Server Components.
-- [ ] Implement the deployable PDF pipeline per the research outcome.
-- [ ] Expose generation as a programmatic script that can run against fixture files (no DB).
-- [ ] Expose generation in the browser (button → on-the-fly PDF from live DB content).
-- [ ] Single-file HTML artifact generation (the emailable `resume.html` equivalent).
+      `src/documents/resume/` as pure React components — semantic HTML + classNames only, no
+      Next-coupled APIs, renderable by both `renderToStaticMarkup` and the app routes.
+- [ ] Port resume-gen's content types and resolution libraries (`types.ts`, `normalize.ts`,
+      `syndication.ts`) and its data modules as the fixture content source for generation.
+      TypeScript only — no Prisma models; this is the content the script renders until the DB slots
+      in behind the same content-source layer.
+- [ ] Build the static HTML emission script (`pnpm generate-resume`, phase 1): render sheets with
+      `renderToStaticMarkup`, compile the document SCSS with the `sass` API, emit
+      `page-N.html`/stacked `index.html`/assets with relative URLs.
+- [ ] Build the PDF step (phase 2): headless Chrome `--print-to-pdf` per emitted sheet file, merged
+      with `pdf-lib`; locate the Chrome binary portably (`puppeteer-core` locator or `CHROME_PATH`
+      override) with a timestamped output filename.
+- [ ] Build the single-file HTML artifact step (TS port of resume-gen's `build_artifact.py`: inline
+      CSS, data-URI assets, fail hard on unresolvable refs).
+- [ ] Later: expose generation in the browser (button → on-the-fly PDF from live DB content) — this
+      is where server-side Chromium against served routes and a render-token auth bypass in
+      `src/proxy.ts` come back into scope.
 - [ ] Revisit hand-assigned pagination (`Sheet`/`pages.ts`) — keep manual, or automate fit detection
       (resume-gen clips overflow silently; nothing checks it).
 
