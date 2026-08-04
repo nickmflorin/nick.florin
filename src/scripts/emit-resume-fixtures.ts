@@ -52,7 +52,7 @@ const compact = (record: YamlRecord): YamlRecord =>
 
 const collapse = (text: string): string => text.replace(/\s+/g, ' ').trim();
 
-const orNothing = <T>(value: null | T): T | undefined => (value === null ? undefined : value);
+const orNothing = <T>(value: null | T): T | undefined => value ?? undefined;
 
 /**
  * Elides a boolean whose default is `false`, so that only affirmative flags are authored.

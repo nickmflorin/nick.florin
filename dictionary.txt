@@ -143,3 +143,4 @@ contentful
 tabler
 tosorted
 dedup
+shadcn
