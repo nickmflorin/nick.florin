@@ -46,7 +46,7 @@ export const DrawerWrapper = ({ children, drawerId, onClose }: DrawerWrapperProp
 
   return (
     <AnimatePresence>
-      {children && (
+      {children ? (
         <motion.div
           animate={{ x: 0 }}
           className='drawer-wrapper'
@@ -58,7 +58,7 @@ export const DrawerWrapper = ({ children, drawerId, onClose }: DrawerWrapperProp
         >
           {children}
         </motion.div>
-      )}
+      ) : null}
     </AnimatePresence>
   );
 };

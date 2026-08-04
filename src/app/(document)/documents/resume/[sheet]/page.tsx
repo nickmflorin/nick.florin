@@ -7,11 +7,11 @@ interface ResumeDocumentSheetPageProps {
   readonly params: Promise<{ sheet: string }>;
 }
 
-export const generateStaticParams = () => Sheets.map(sheet => ({ sheet: sheet.id }));
+export const generateStaticParams = () => Sheets.map(sheet => ({ sheet: sheet.slug }));
 
 const ResumeDocumentSheetPage = async ({ params }: ResumeDocumentSheetPageProps) => {
   const { sheet: sheetId } = await params;
-  const sheet = Sheets.find(({ id }) => id === sheetId);
+  const sheet = Sheets.find(({ slug }) => slug === sheetId);
   if (sheet === undefined) {
     notFound();
   }

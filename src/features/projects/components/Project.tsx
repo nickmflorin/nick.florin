@@ -50,21 +50,20 @@ export const Project = ({
         <Title className='max-md:text-title-sm max-w-fit' component='h3'>
           {title}
         </Title>
-        {isUnderConstruction && (
+        {isUnderConstruction ? (
           <Badge className='bg-yellow-100 border-yellow-400'>Page Under Construction</Badge>
-        )}
+        ) : null}
       </div>
       <div className='flex flex-col gap-[16px] max-md:gap-[12px]'>
         {description}
-        {project.repositories.length !== 0 && (
-          // In actuality, there will only ever be 1 repository per project.
+        {project.repositories.length === 0 ? null : (
           <div className='flex flex-row gap-[10px] mb-2 max-sm:flex-col'>
             {project.repositories.map((repo, index) => (
               <RepositoryTile key={index} repository={repo} />
             ))}
           </div>
         )}
-        {disclaimer && <Disclaimer className='mb-2'>{disclaimer}</Disclaimer>}
+        {disclaimer ? <Disclaimer className='mb-2'>{disclaimer}</Disclaimer> : null}
         <Skills className='mb-2' skills={project.skills} />
       </div>
     </div>

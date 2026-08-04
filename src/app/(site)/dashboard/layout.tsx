@@ -1,16 +1,12 @@
 import dynamic from 'next/dynamic';
 import { type JSX, type ReactNode } from 'react';
 
-import { type LinkComponent } from '~/components/buttons';
+import { Link } from '~/components/buttons/generic/Link';
 import { Content } from '~/components/layout/Content';
 import { Module } from '~/components/structural/Module';
 import { classNames, type ComponentProps } from '~/components/types';
 
 const Tour = dynamic(() => import('~/components/tours/Tour').then(mod => mod.Tour));
-
-const Link = dynamic(() =>
-  import('~/components/buttons/generic/Link').then(mod => mod.Link),
-) as LinkComponent;
 
 /**
  * The minimum width applied to the chart module between the 'md' and 'lg' breakpoints.  The 652px

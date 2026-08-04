@@ -300,11 +300,11 @@ const MenuItemContent = ({
   return (
     <div className={classNames('menu__item__content', contentClassName)}>
       <MenuItemLeftAffix {...rest} />
-      {children !== null && children !== undefined && (
+      {children !== null && children !== undefined ? (
         <div className='menu__item__inner-content'>
           {rest.isLoading && loadingText ? <LoadingText>{loadingText}</LoadingText> : children}
         </div>
-      )}
+      ) : null}
       <Actions actions={rest.actions ?? []} />
     </div>
   );

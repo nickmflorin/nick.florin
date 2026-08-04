@@ -1,5 +1,6 @@
 import { type ResolvedDegree } from '../data/types';
 import { logo } from '../lib/assets';
+import { formatDateRange, formatDegreeTitle } from '../lib/formatters';
 
 export interface EducationProps {
   readonly degree: ResolvedDegree;
@@ -17,15 +18,17 @@ export const Education = ({ degree }: EducationProps) => {
   return (
     <div className='edu'>
       <div className='edu-logo'>
-        <img alt={degree.school} src={logo(degree.logo)} />
+        {degree.school.logoFileName === null ? null : (
+          <img alt={degree.school.name} src={logo(degree.school.logoFileName)} />
+        )}
       </div>
       <div className='edu-body'>
-        <p className='edu-degree'>{degree.degree}</p>
-        <div className='edu-school'>{degree.school}</div>
+        <p className='edu-degree'>{formatDegreeTitle(degree)}</p>
+        <div className='edu-school'>{degree.school.name}</div>
         <div className='edu-meta'>
-          <span>{degree.dates}</span>
-          <span>{degree.location}</span>
-          {degree.gpa !== undefined && <span>{degree.gpa}</span>}
+          <span>{formatDateRange(degree)}</span>
+          <span>{`${degree.school.city}, ${degree.school.state}`}</span>
+          {degree.gpa === null ? null : <span>{`GPA ${degree.gpa}`}</span>}
         </div>
         <div className='edu-desc' dangerouslySetInnerHTML={{ __html: description }} />
       </div>

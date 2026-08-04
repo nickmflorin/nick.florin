@@ -38,11 +38,11 @@ export const CompanySelect = <B extends SelectBehaviorType>({
         <Text fontSize='sm' fontWeight='medium'>
           {hasAbbreviatedLabels ? (m.shortName ?? m.name) : m.name}
         </Text>
-        {shouldIncludeDescriptions && (
+        {shouldIncludeDescriptions ? (
           <Description fontSize='xs'>
             {stringifyLocation({ city: m.city, state: m.state })}
           </Description>
-        )}
+        ) : null}
       </div>
     )}
     options={{ behavior, getModelValue }}

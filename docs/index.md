@@ -21,6 +21,28 @@ Setup, local development, database and deployment instructions live in the
   modifiers on type and interface properties
 - [TypeScript: Variable Naming](./code-quality/typescript/variable-naming.md) - PascalCase for
   module-scope constants, camelCase for locals and functions
+- [TypeScript: Exhaustive Type Checking](./code-quality/typescript/exhaustiveness.md) - Handling
+  every member of a union or enum in a form the compiler verifies
+- [TypeScript: Type Guards & Assertions](./code-quality/typescript/type-guards.md) - Type
+  predicates, finite unions derived from arrays, and `asserts value is X` functions
+- [TypeScript: Indexed Access](./code-quality/typescript/indexed-access.md) - Indexing arrays and
+  records safely while `noUncheckedIndexedAccess` is off
+- [TypeScript: Unsafe Type Coercion](./code-quality/typescript/type-coercion.md) - `unknown` over
+  `any`, validating untrusted data, and the narrow cases where an `as` assertion is legitimate
+
+- [React: Overview](./code-quality/react/index.md) - Quick navigation for the React conventions, and
+  how the vendored Vercel skills relate to them
+- [React: Performance](./code-quality/react/performance.md) - Waterfalls, bundle size, the
+  server/client boundary, and re-renders
+- [React: Composition](./code-quality/react/composition.md) - Boolean props, explicit variants,
+  children over render props, and lifting state into a provider
+
+### ✍️ Documentation
+
+- [Overview](./documentation/index.md) - Quick navigation for the documentation-authoring
+  conventions
+- [Code Examples](./documentation/code-examples.md) - Illustrating documented code concepts with
+  fenced code blocks rather than prose alone
 
 ### 🗂️ Projects
 

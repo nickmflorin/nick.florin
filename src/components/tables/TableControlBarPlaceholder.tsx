@@ -39,7 +39,7 @@ export const TableControlBarPlaceholder = ({
           <Checkbox isChecked={false} isDisabled readOnly />
         </div>
         <div className='table-view__control-bar-actions'>
-          {areRowsDeletable && <DeleteButton isDisabled />}
+          {areRowsDeletable ? <DeleteButton isDisabled /> : null}
           {actions !== undefined && actions.length !== 0 ? (
             actions.map((action, i) => <TableControlBarPlaceholderAction {...action} key={i} />)
           ) : (

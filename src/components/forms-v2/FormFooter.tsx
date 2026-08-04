@@ -19,7 +19,7 @@ export const FormFooter = <I extends BaseFormValues>({
   ...props
 }: FormFooterProps<I>) => (
   <>
-    {(form.errors.length !== 0 || footer) && (
+    {form.errors.length !== 0 || footer ? (
       <div
         {...props}
         className={classNames(
@@ -31,6 +31,6 @@ export const FormFooter = <I extends BaseFormValues>({
         <FormErrors className='my-[4px]' form={form} />
         {footer}
       </div>
-    )}
+    ) : null}
   </>
 );

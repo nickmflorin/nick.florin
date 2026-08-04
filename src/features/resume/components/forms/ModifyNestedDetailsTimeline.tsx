@@ -43,7 +43,7 @@ export const ModifyNestedDetailsTimeline = ({
 
   return (
     <DetailsTimeline {...props} className={classNames('h-full max-h-full w-full', props.className)}>
-      {isCreating && (
+      {isCreating ? (
         <Timeline.Item bullet={<TimelineIcon />} hidden={!isCreating} key='0'>
           <CreateNestedDetailForm
             detailId={detailId}
@@ -55,7 +55,7 @@ export const ModifyNestedDetailsTimeline = ({
             }}
           />
         </Timeline.Item>
-      )}
+      ) : null}
       {...optimisticDetails.map((detail, i) => (
         <Timeline.Item bullet={<TimelineIcon />} key={i + 1}>
           <CollapsedUpdateDetailForm

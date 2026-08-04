@@ -131,9 +131,9 @@ export const UploadTile = <M extends types.BaseUploadModel>({
             </Text>
           ) : null}
         </PipedText>
-        {types.isUploadOfState(upload, ['failed', 'rejected']) && (
+        {types.isUploadOfState(upload, ['failed', 'rejected']) ? (
           <UploadTileError error={upload.errors} />
-        )}
+        ) : null}
       </div>
     </div>
   </div>

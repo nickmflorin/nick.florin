@@ -109,15 +109,15 @@ export const BadgeCollection = <M,>({
         {partition[0]}
         {partition[1].map((child, i) => (
           <AnimatePresence key={i}>
-            {state === 'expanded' && (
+            {state === 'expanded' ? (
               <motion.div animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
                 {child}
               </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
         ))}
       </AnimateChangeInHeight>
-      {partition[1].length !== 0 && (
+      {partition[1].length === 0 ? null : (
         <ShowMoreLink
           onClick={() => setState(curr => (curr === 'collapsed' ? 'expanded' : 'collapsed'))}
           state={state}

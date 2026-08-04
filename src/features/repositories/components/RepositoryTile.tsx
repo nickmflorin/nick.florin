@@ -38,8 +38,8 @@ export const RepositoryTile = ({
     ) : (
       <RepositoryText className='leading-[24px]' repository={repository} />
     )}
-    {repository.npmPackageName && isNpmLinkVisible && (
+    {repository.npmPackageName && isNpmLinkVisible ? (
       <NpmIconLink iconSize='24px' npmPackageName={repository.npmPackageName} size='24px' />
-    )}
+    ) : null}
   </ResumeSimpleTile>
 );

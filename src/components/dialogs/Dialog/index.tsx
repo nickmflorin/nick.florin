@@ -55,9 +55,9 @@ const LocalDialog = ({
             ref={ref}
             {...floatingProps}
           >
-            {title && <DialogTitle>{title}</DialogTitle>}
+            {title ? <DialogTitle>{title}</DialogTitle> : null}
             {props.children}
-            {footer && <DialogFooter>{footer}</DialogFooter>}
+            {footer ? <DialogFooter>{footer}</DialogFooter> : null}
           </div>
         </FloatingFocusManager>
       </FloatingOverlay>

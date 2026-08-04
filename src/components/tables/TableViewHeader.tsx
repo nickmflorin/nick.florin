@@ -15,7 +15,7 @@ export const TableViewHeader = ({
   children || controlBarTargetId ? (
     <div {...props} className={classNames('table-view__header', props.className)}>
       {children}
-      {controlBarTargetId && <div id={controlBarTargetId} />}
+      {controlBarTargetId ? <div id={controlBarTargetId} /> : null}
     </div>
   ) : controlBarTargetId ? (
     <div id={controlBarTargetId} />

@@ -80,7 +80,7 @@ export const Collapse = ({
         </div>
       </div>
       <AnimatePresence>
-        {isOpen && (
+        {isOpen ? (
           <motion.div
             animate={{ height: 'auto', opacity: 1 }}
             className={classNames('collapse__content', contentClassName)}
@@ -89,7 +89,7 @@ export const Collapse = ({
           >
             {children}
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
     </div>
   );

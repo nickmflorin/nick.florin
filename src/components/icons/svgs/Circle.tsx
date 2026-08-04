@@ -23,7 +23,7 @@ export const Circle = ({
     className={classNames('icon', props.className)}
     style={{ ...props.style, height: `${size}px`, width: `${size}px` }}
   >
-    {(isSelectable || isSelected !== undefined) && (
+    {isSelectable || isSelected !== undefined ? (
       <rect
         fill={isSelected ? selectedColor : 'transparent'}
         height={size}
@@ -31,7 +31,7 @@ export const Circle = ({
         ry={size / 2}
         width={size}
       />
-    )}
+    ) : null}
     <circle cx={size / 2} cy={size / 2} fill={color} r={size / 2 - 1} />
   </svg>
 );

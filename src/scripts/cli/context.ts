@@ -67,9 +67,9 @@ export async function getScriptContext(
        not the default development environment.  Otherwise, we can accidentally store the personal
        Clerk user as the development Clerk user, not the production one.
 
-       When the script(s) 'prisma:seed:prod' or 'prisma:migrate:reset:prod' are run, this script will get
-       executed using production environment variables that are found locally in the repository,
-       in the '.env' file.
+       When the script(s) 'prisma:seed:prod' or 'prisma:migrate:reset:prod' are run, this script
+       will get executed using production environment variables that are found locally in the
+       repository, in the '.env' file.
 
        In this case, the database connection parameters are pulled from '.env', which contains the
        environment variables pulled via Vercel's CLI, via either the 'env:pull' script (for

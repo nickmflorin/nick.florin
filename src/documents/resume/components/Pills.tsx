@@ -1,23 +1,29 @@
+import { type Competency } from '../data/types';
+
 export interface PillsProps {
   /**
-   * The label of each chip, in render order. The type is a readonly array because a role's chips
-   * arrive as the `skills` of a resolved content owner.
+   * The competencies to render as chips, in order.
    */
-  readonly pills: readonly string[];
+  readonly competencies: readonly Competency[];
   readonly where?: 'main' | 'sidebar';
 }
 
 /**
- * A wrapped row of technology chips. `where` selects the sidebar variant (`s-pill`, used for
- * skill groups) or the main-column variant (`m-pill`, used under a role).
+ * A wrapped row of competency chips. `where` selects the sidebar variant (`s-pill`, used for
+ * competency groups) or the main-column variant (`m-pill`, used under a role).
+ *
+ * The two columns render different labels. The sidebar is a little over two hundred pixels wide, so
+ * it takes the short label whenever a competency has one; the main column has room for the full
+ * name. That is what lets two spellings of the same competency collapse into one record without
+ * either surface losing the wording it needs.
  */
-export const Pills = ({ pills, where = 'main' }: PillsProps) => {
+export const Pills = ({ competencies, where = 'main' }: PillsProps) => {
   const prefix = where === 'sidebar' ? 's' : 'm';
   return (
     <div className={`${prefix}-pills`}>
-      {pills.map(pill => (
-        <span className={`${prefix}-pill`} key={pill}>
-          {pill}
+      {competencies.map(competency => (
+        <span className={`${prefix}-pill`} key={competency.slug}>
+          {where === 'sidebar' ? (competency.shortLabel ?? competency.label) : competency.label}
         </span>
       ))}
     </div>

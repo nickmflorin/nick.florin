@@ -37,21 +37,44 @@ Unlike the human-readable documentation in [docs/](../../docs/index.md), these i
 
 ## Instruction Files
 
-| File                                                       | Purpose                                                      | Applies To                  |
-| ---------------------------------------------------------- | ------------------------------------------------------------ | --------------------------- |
-| `codebase-index.instructions.md`                           | Codebase map: routes, APIs, actions, domains, placement      | All files                   |
-| `discovery.instructions.md`                                | Discovery and context loading policy for AI agents           | All files                   |
-| `code-quality/code-comments.instructions.md`               | JSDoc and commenting standards                               | TypeScript/JavaScript files |
-| `code-quality/eslint.instructions.md`                      | ESLint usage and rule-disable policy                         | TypeScript/JavaScript files |
-| `code-quality/file-naming.instructions.md`                 | File/folder casing: PascalCase components, hyphen-case       | TS/JS + Markdown files      |
-| `code-quality/typescript/types-interfaces.instructions.md` | Type/interface declaration conventions (readonly properties) | TypeScript files            |
-| `code-quality/typescript/variable-naming.instructions.md`  | PascalCase module-scope constants, camelCase locals          | TypeScript files            |
-| `code-quality/spelling.instructions.md`                    | cspell handling: fix, add to dictionary, or disable          | TS/JS + Markdown files      |
-| `code-quality/strings.instructions.md`                     | String quoting, line length, and `+` wrapping                | TypeScript/JavaScript files |
-| `workflow/verification-commands.instructions.md`           | Which checkers may be run automatically                      | All files                   |
+| File                                                       | Purpose                                                         | Applies To                  |
+| ---------------------------------------------------------- | --------------------------------------------------------------- | --------------------------- |
+| `codebase-index.instructions.md`                           | Codebase map: routes, APIs, actions, domains, placement         | All files                   |
+| `discovery.instructions.md`                                | Discovery and context loading policy for AI agents              | All files                   |
+| `code-quality/code-comments.instructions.md`               | JSDoc and commenting standards                                  | TypeScript/JavaScript files |
+| `code-quality/eslint.instructions.md`                      | ESLint usage and rule-disable policy                            | TypeScript/JavaScript files |
+| `code-quality/file-naming.instructions.md`                 | File/folder casing: PascalCase components, hyphen-case          | TS/JS + Markdown files      |
+| `code-quality/react/composition.instructions.md`           | Boolean props, explicit variants, children over render props    | TSX files                   |
+| `code-quality/react/performance.instructions.md`           | Waterfalls, bundle size, server/client boundary, re-renders     | TypeScript files            |
+| `code-quality/typescript/exhaustiveness.instructions.md`   | Exhaustive handling of union/enum types; no fallthrough         | TypeScript files            |
+| `code-quality/typescript/indexed-access.instructions.md`   | Safe array/record indexing without unchecked indexed access     | TypeScript files            |
+| `code-quality/typescript/type-coercion.instructions.md`    | Unsafe coercion: `unknown` over `any`, validating at boundaries | TypeScript files            |
+| `code-quality/typescript/type-guards.instructions.md`      | Type predicates, finite unions, and assertion functions         | TypeScript files            |
+| `code-quality/typescript/types-interfaces.instructions.md` | Type/interface declaration conventions (readonly properties)    | TypeScript files            |
+| `code-quality/typescript/variable-naming.instructions.md`  | PascalCase module-scope constants, camelCase locals             | TypeScript files            |
+| `code-quality/spelling.instructions.md`                    | cspell handling: fix, add to dictionary, or disable             | TS/JS + Markdown files      |
+| `code-quality/strings.instructions.md`                     | String quoting, line length, and `+` wrapping                   | TypeScript/JavaScript files |
+| `documentation/code-examples.instructions.md`              | Illustrating documented code concepts with code blocks          | Markdown files              |
+| `workflow/agent-behavior.instructions.md`                  | Blast radius, pattern mining, and escalation thresholds         | Source + tooling files      |
+| `workflow/verification-commands.instructions.md`           | Which checkers may be run automatically                         | All files                   |
 
-Both Claude Code and Copilot discover instruction files recursively, so the `code-quality/` and
-`workflow/` subdirectories do not affect which files load or when.
+Both Claude Code and Copilot discover instruction files recursively, so the `code-quality/`,
+`documentation/` and `workflow/` subdirectories do not affect which files load or when.
+
+## Skills Are Not Instructions
+
+Claude Code also loads **skills** from `.claude/skills/`, which have no Copilot counterpart and are
+therefore exempt from the parity requirement above. The distinction is about how they load:
+
+- An **instruction/rule** loads automatically on every file matching its glob, so it must stay small
+  enough to be worth its permanent context cost, and it must exist in both locations.
+- A **skill** is invoked on demand when its description matches the task, so it can be an exhaustive
+  reference corpus. `vercel-react-best-practices` (72 rules) and `vercel-composition-patterns` are
+  vendored from [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) on that
+  basis.
+
+Rules that only bite occasionally belong in a skill. When something in a skill turns out to bite
+repeatedly, it gets promoted into a rule — which is what `code-quality/react/` holds.
 
 ## How AI Tools Use These Files
 

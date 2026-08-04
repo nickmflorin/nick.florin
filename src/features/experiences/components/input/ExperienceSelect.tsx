@@ -41,7 +41,9 @@ export const ExperienceSelect = <B extends SelectBehaviorType, I extends Experie
         <Text fontSize='sm' fontWeight='medium'>
           {hasAbbreviatedLabels ? (m.shortTitle ?? m.title) : m.shortTitle}
         </Text>
-        {shouldIncludeDescriptions && <Description fontSize='xs'>{m.company.name}</Description>}
+        {shouldIncludeDescriptions ? (
+          <Description fontSize='xs'>{m.company.name}</Description>
+        ) : null}
       </div>
     )}
     options={{ behavior, getModelValue }}

@@ -17,6 +17,7 @@ deprioritize
 deprioritized
 deprioritizing
 deque
+derivable
 dmmf
 donothing
 edus
@@ -26,6 +27,7 @@ expressjs
 fgrep
 filts
 flds
+granularity
 greenbudget
 headshot
 inlined
@@ -42,6 +44,7 @@ kwarg
 kwargs
 lege
 lerna
+lexicographically
 linkedin
 lockfile
 luxon
@@ -64,6 +67,7 @@ numpy
 nums
 olney
 opengraph
+pdfs
 pebl
 pgsql
 pianalytics
@@ -75,12 +79,14 @@ prismajs
 projs
 psql
 pullenv
+puppeteer
 pushdb
 pyenv
 pylint
 pypdf
 pytest
 qube
+rasterization
 rdimascio
 rebranded
 relativize
@@ -115,6 +121,7 @@ unhighlighted
 unhighlighting
 unpersist
 unsteered
+unvalidated
 uslege
 uuid
 venv
@@ -128,4 +135,11 @@ xlarge
 xmark
 xsmall
 xxxs
-pdfs
+vercel
+jank
+laggy
+prefs
+contentful
+tabler
+tosorted
+dedup

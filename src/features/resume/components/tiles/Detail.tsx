@@ -61,7 +61,7 @@ export const Detail = <
       ) : (
         <Label className='text-sm max-sm:text-xs'>{detail.label}</Label>
       )}
-      {detail.description && (
+      {detail.description ? (
         <Description
           className={classNames({
             'pl-[16px]': index !== undefined && isNested,
@@ -69,14 +69,16 @@ export const Detail = <
         >
           {detail.description}
         </Description>
-      )}
+      ) : null}
     </div>
-    {detail.skills.length !== 0 && (
+    {detail.skills.length === 0 ? null : (
       <Skills
         className={classNames('sm:max-w-[800px]', { 'pl-[16px]': index !== undefined })}
         skills={detail.skills}
       />
     )}
-    {!isNestedDetail(detail) && <Details details={detail.nestedDetails} isNested size={size} />}
+    {isNestedDetail(detail) ? null : (
+      <Details details={detail.nestedDetails} isNested size={size} />
+    )}
   </div>
 );

@@ -47,7 +47,7 @@ export const ClientExperienceSelect = <B extends SelectBehaviorType, I extends E
       isDisabled={error !== undefined || props.isDisabled}
       isLoading={isLoading || props.isLoading}
       isLocked={isLoading || props.isLocked}
-      isReady={data !== undefined && props.isReady !== false}
+      isReady={data === undefined ? false : props.isReady !== false}
       ref={ref}
     />
   );

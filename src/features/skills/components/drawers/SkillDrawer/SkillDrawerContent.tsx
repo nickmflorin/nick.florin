@@ -99,7 +99,7 @@ export const SkillDrawerContent = ({
       ))}
     </DetailDrawerSection>
     <>
-      {courses.length !== 0 && (
+      {courses.length === 0 ? null : (
         <DetailDrawerSection label='Courses'>
           <Courses courses={courses} />
         </DetailDrawerSection>

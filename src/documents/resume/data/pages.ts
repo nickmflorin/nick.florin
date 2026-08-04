@@ -10,37 +10,35 @@ import {
   Testing,
   TopSkills,
   UiAndComponentLibraries,
-} from './skills';
-import { type Sheet } from './types';
+} from './competency-groups';
+import { degreesBySlug } from './degrees';
+import { rolesBySlug } from './roles';
+import { type ResumeSheetInput } from './types';
 
 /**
  * THE PAGE LAYOUT. Page breaks are assigned here by hand, not flowed by CSS: each sheet is a
  * standalone 8.5x11 document, which is what guarantees a role is never split across a page
  * boundary in the PDF.
  *
+ * A sheet names the roles and degrees it carries and nothing else about them. Their order within
+ * the sheet is derived from their start dates, and the header drawn above each run is derived from
+ * whether the run is roles or degrees, so neither can drift from the underlying records.
+ *
  * Adding content therefore means rebalancing sheets by hand. The stacked browsing view
  * (`/documents/resume`) renders every sheet with a visible boundary so overflow is obvious;
- * content that runs past the bottom edge of a sheet is clipped rather than pushed onto a new
- * page.
+ * content that runs past the bottom edge of a sheet is clipped rather than pushed onto a new page.
  */
-export const Sheets: Sheet[] = [
+export const Sheets: ResumeSheetInput[] = [
   {
-    id: 'page-1',
+    competencyGroups: [LanguagesAndFrameworks, TopSkills, KeyStrengths],
+    degrees: [],
     isIntroVisible: true,
-    main: [{ file: 'experience.ts', kind: 'roles', roles: ['craft'] }],
-    sections: [LanguagesAndFrameworks, TopSkills, KeyStrengths],
+    order: 0,
+    roles: rolesBySlug(['craft']),
+    slug: 'page-1',
   },
   {
-    id: 'page-2',
-    isIntroVisible: false,
-    main: [
-      {
-        file: 'experience.ts',
-        kind: 'roles',
-        roles: ['northbeam', 'shelfcycle', 'corsha', 'greenbudget', 'nirveda', 'saracen'],
-      },
-    ],
-    sections: [
+    competencyGroups: [
       AiToolingAndAutomation,
       CloudAndDatabases,
       ArchitecturalPatterns,
@@ -49,25 +47,21 @@ export const Sheets: Sheet[] = [
       MonorepoAndBuild,
       CicdAndAutomation,
     ],
+    degrees: [],
+    isIntroVisible: false,
+    order: 1,
+    roles: rolesBySlug(['northbeam', 'shelfcycle', 'corsha', 'greenbudget', 'nirveda', 'saracen']),
+    slug: 'page-2',
   },
   {
-    id: 'page-3',
-    isIntroVisible: false,
-    main: [
-      {
-        file: 'experience.ts',
-        kind: 'roles',
-        roles: ['atlantic', 'rockcreek', 'pianalytics'],
-      },
-      {
-        degrees: ['jhu-computational', 'jhu-financial', 'rpi'],
-        file: 'education.ts',
-        kind: 'education',
-      },
-    ],
-    /* The build/tooling groups live here rather than on page 2: they read as one family
+    /* The build and tooling groups live here rather than on page 2: they read as one family
        (build -> quality -> automation), and page 2's sidebar is the tightest of the three while
        this one has the most room. */
-    sections: [CodeQualityAndDx],
+    competencyGroups: [CodeQualityAndDx],
+    degrees: degreesBySlug(['jhu-computational', 'jhu-financial', 'rpi']),
+    isIntroVisible: false,
+    order: 2,
+    roles: rolesBySlug(['atlantic', 'rockcreek', 'pianalytics']),
+    slug: 'page-3',
   },
 ];

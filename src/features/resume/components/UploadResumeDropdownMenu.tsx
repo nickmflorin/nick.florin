@@ -23,7 +23,7 @@ export const UploadResumeDropdownMenu = ({ manager, resume }: UploadResumeDropdo
     // Force lazy/dynamic loading of the content with the boolean toggle.
     content={({ isOpen, setIsOpen }) => (
       <>
-        {isOpen && (
+        {isOpen ? (
           <div className='flex flex-col relative min-h-[60px]'>
             <UploadResumeMenu
               manager={manager}
@@ -31,7 +31,7 @@ export const UploadResumeDropdownMenu = ({ manager, resume }: UploadResumeDropdo
               resume={resume}
             />
           </div>
-        )}
+        ) : null}
       </>
     )}
     placement='bottom-end'

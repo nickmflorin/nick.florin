@@ -1,9 +1,9 @@
-import { type Sheet as ResumeSheet } from '../data/types';
+import { type ResumeSheetInput } from '../data/types';
 
 import { Sheet } from './Sheet';
 
 export interface ResumeDocumentSheetProps {
-  readonly sheet: ResumeSheet;
+  readonly sheet: ResumeSheetInput;
 }
 
 /**

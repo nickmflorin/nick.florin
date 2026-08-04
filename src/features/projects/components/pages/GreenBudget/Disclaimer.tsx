@@ -23,7 +23,7 @@ export const Disclaimer = () => {
         <DescriptionGroup>
           <DisclaimerIntro />
           <AnimatePresence>
-            {disclaimerState === 'expanded' && (
+            {disclaimerState === 'expanded' ? (
               <MotionDescriptionGroup
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
@@ -31,7 +31,7 @@ export const Disclaimer = () => {
               >
                 <DisclaimerContent />
               </MotionDescriptionGroup>
-            )}
+            ) : null}
           </AnimatePresence>
         </DescriptionGroup>
         <ShowMoreLink

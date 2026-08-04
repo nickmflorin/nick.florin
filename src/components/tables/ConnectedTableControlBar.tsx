@@ -41,11 +41,12 @@ export const ConnectedTableControlBar = <
     <TableControlBar
       {...props}
       areAllRowsSelected={
-        data.length !== 0 &&
-        arraysHaveSameElements(
-          selectedRows.map(r => r.id),
-          data.map(datum => datum.id),
-        )
+        data.length === 0
+          ? false
+          : arraysHaveSameElements(
+              selectedRows.map(r => r.id),
+              data.map(datum => datum.id),
+            )
       }
       areRowsDeletable={rowsAreDeletable}
       columnsSelect={<ConnectedColumnSelect />}

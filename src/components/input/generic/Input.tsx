@@ -62,7 +62,7 @@ export const Input = ({
   ...props
 }: InputProps) => (
   <InputWrapper {...props} component='div' ref={ref}>
-    {icon && <Icon icon={icon} />}
+    {icon ? <Icon icon={icon} /> : null}
     <div className='input__content'>
       <InputPlaceholder isPlaceholderVisible={isPlaceholderVisible} placeholder={placeholder}>
         {children}

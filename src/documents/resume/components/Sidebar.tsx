@@ -1,72 +1,90 @@
 import { Fragment } from 'react';
 
-import { About, Contact, Highlights, Profile } from '../data/profile';
-import { type SidebarSection } from '../data/types';
+import { NickFlorin } from '../data/profile';
+import { type ResumeCompetenciesGroup, ResumeCompetenciesGroupDisplay } from '../data/types';
 import { icon, logo } from '../lib/assets';
 
+import { CompetencyBar } from './CompetencyBar';
 import { Pills } from './Pills';
-import { SkillBar } from './SkillBar';
 
 const collapse = (text: string): string => text.replace(/\s+/g, ' ').trim();
 
+/**
+ * The icon file each contact entry renders, keyed by the enum rather than by a stored filename so
+ * that the icon set is closed and a typo cannot silently render a missing image.
+ */
+const ContactIcons: Record<string, string> = {
+  AT: 'At',
+  GITHUB: 'GitHub',
+  GLOBE: 'Globe',
+  LINKEDIN: 'LinkedIn',
+};
+
 export interface SidebarProps {
+  readonly competencyGroups: readonly ResumeCompetenciesGroup[];
   /**
-   * Whether the about/highlights/contact block renders. True on the opening sheet only.
+   * Whether the about, highlights and contact blocks render. True on the opening sheet only.
    */
   readonly isIntroVisible: boolean;
-  readonly sections: readonly SidebarSection[];
 }
 
-export const Sidebar = ({ isIntroVisible, sections }: SidebarProps) => (
+export const Sidebar = ({ competencyGroups, isIntroVisible }: SidebarProps) => (
   <aside className='sidebar'>
     <div className='profile'>
-      <img alt={Profile.name} className='profile-photo' src={logo(Profile.photo)} />
-      <div className='profile-name'>{Profile.name}</div>
-      <div className='profile-role'>{Profile.title}</div>
-      <div className='profile-handle'>{Profile.handle}</div>
+      {NickFlorin.photoFileName === null ? null : (
+        <img
+          alt={NickFlorin.displayName}
+          className='profile-photo'
+          src={logo(NickFlorin.photoFileName)}
+        />
+      )}
+      <div className='profile-name'>{NickFlorin.displayName}</div>
+      <div className='profile-role'>{NickFlorin.tagline}</div>
+      <div className='profile-handle'>{NickFlorin.handle}</div>
     </div>
-    {isIntroVisible && (
+    {isIntroVisible ? (
       <>
         <p className='s-heading'>About</p>
-        {About.map(paragraph => (
+        {NickFlorin.aboutParagraphs.map(paragraph => (
           <p
             className='about'
-            dangerouslySetInnerHTML={{ __html: collapse(paragraph) }}
-            key={paragraph}
+            dangerouslySetInnerHTML={{ __html: collapse(paragraph.content) }}
+            key={paragraph.slug}
           />
         ))}
         <ul className='bullets'>
-          {Highlights.map(highlight => (
-            <li key={highlight}>
+          {NickFlorin.highlights.map(highlight => (
+            <li key={highlight.slug}>
               <span className='dot'>
                 <img alt='' src={icon('Plus')} />
               </span>
-              {highlight}
+              {highlight.text}
             </li>
           ))}
         </ul>
         <hr className='sdiv' />
         <p className='s-heading'>Contact</p>
         <ul className='contact-list'>
-          {Contact.map(entry => (
-            <li key={entry.text}>
+          {NickFlorin.contactEntries.map(entry => (
+            <li key={entry.slug}>
               <span className='ci'>
-                <img alt='' src={icon(entry.icon)} />
+                <img alt='' src={icon(ContactIcons[entry.icon])} />
               </span>
               {entry.text}
             </li>
           ))}
         </ul>
       </>
-    )}
-    {sections.map((section, index) => (
-      <Fragment key={section.heading}>
-        {(isIntroVisible || index > 0) && <hr className='sdiv' />}
-        <p className='s-heading'>{section.heading}</p>
-        {section.kind === 'bars' ? (
-          section.bars.map(bar => <SkillBar key={bar.name} level={bar.level} name={bar.name} />)
+    ) : null}
+    {competencyGroups.map(group => (
+      <Fragment key={group.slug}>
+        <p className='s-heading'>{group.heading}</p>
+        {group.display === ResumeCompetenciesGroupDisplay.Bars ? (
+          group.competencies.map(competency => (
+            <CompetencyBar competency={competency} key={competency.slug} />
+          ))
         ) : (
-          <Pills pills={section.pills} where='sidebar' />
+          <Pills competencies={group.competencies} where='sidebar' />
         )}
       </Fragment>
     ))}

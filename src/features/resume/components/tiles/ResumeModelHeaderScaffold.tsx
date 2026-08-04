@@ -93,7 +93,7 @@ export const ResumeModelHeaderScaffold = ({
       <ShowHide show={areTagsVisible}>
         {tags({ className: 'flex @sm/resume-model-tile:hidden' })}
       </ShowHide>
-      <ShowHide show={Boolean(children) && !isFragment(children)}>
+      <ShowHide show={children ? !isFragment(children) : false}>
         <div
           className={classNames({
             '@sm/resume-model-tile:pl-[50px]':

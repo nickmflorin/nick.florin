@@ -59,6 +59,6 @@ export const ArtifactPath = path.join(OutputDir, 'resume.html');
  */
 export const SheetPages = Sheets.map((sheet, index) => ({
   number: index + 1,
-  path: path.join(HtmlDir, `${sheet.id}.html`),
+  path: path.join(HtmlDir, `${sheet.slug}.html`),
   sheet,
 }));

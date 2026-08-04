@@ -37,7 +37,9 @@ export const DataTableHeaderRow = <
   ...props
 }: DataTableHeaderRowProps<D, C>): JSX.Element => (
   <TableHeaderRow {...props}>
-    {areRowsSelectable && <TableHeaderCell align='center' maxWidth={40} minWidth={40} width={40} />}
+    {areRowsSelectable ? (
+      <TableHeaderCell align='center' maxWidth={40} minWidth={40} width={40} />
+    ) : null}
     {columns
       .filter(col => !excludeColumns.includes(col.id))
       .map(column => (
@@ -53,6 +55,8 @@ export const DataTableHeaderRow = <
           order={ordering?.orderBy === column.id ? ordering.order : null}
         />
       ))}
-    {hasRowActions && <TableHeaderCell align='center' maxWidth={60} minWidth={60} width={60} />}
+    {hasRowActions ? (
+      <TableHeaderCell align='center' maxWidth={60} minWidth={60} width={60} />
+    ) : null}
   </TableHeaderRow>
 );

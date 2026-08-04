@@ -96,7 +96,7 @@ export const ResumeModelHeader = <M extends BrandModel<T>, T extends ResumeBrand
       <ShowHide show={areTagsVisible}>
         <ResumeModelTags className='flex @sm/resume-model-tile:hidden' model={model} />
       </ShowHide>
-      <ShowHide show={Boolean(children) && !isFragment(children)}>
+      <ShowHide show={children ? !isFragment(children) : false}>
         <div
           className={classNames({
             '@sm/resume-model-tile:pl-[50px]':

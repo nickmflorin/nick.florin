@@ -60,7 +60,7 @@ export const SkillsFilterDropdownMenu = ({
             />
           )}
         </Tooltip>
-        {drawerIsOpen && (
+        {drawerIsOpen ? (
           <PortalDrawerWrapper
             drawerId={DrawerIds.SKILLS_FILTERS}
             onClose={() => setDrawerIsOpen(false)}
@@ -75,7 +75,7 @@ export const SkillsFilterDropdownMenu = ({
               skills={skills}
             />
           </PortalDrawerWrapper>
-        )}
+        ) : null}
       </>
     );
   }

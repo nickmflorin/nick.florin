@@ -97,20 +97,20 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
   ...props
 }: FieldProps<N, I>): JSX.Element => (
   <div {...props} className={classNames('flex flex-col w-full', props.className)}>
-    {(condition !== undefined || label !== undefined) && (
+    {condition !== undefined || label !== undefined ? (
       <div
         className='w-full flex h-[20px]'
         style={{ marginBottom: sizeToString(labelSeparation, 'px') }}
       >
-        {label && (
+        {label ? (
           <Label fontSize='sm' fontWeight='medium' {...labelProps} className={labelClassName}>
             {label}
           </Label>
-        )}
-        {condition && <FieldConditionText condition={condition} />}
+        ) : null}
+        {condition ? <FieldConditionText condition={condition} /> : null}
       </div>
-    )}
-    {description !== undefined && (
+    ) : null}
+    {description === undefined ? null : (
       <Description
         className={classNames('leading-[14px] text-gray-500 pl-[1px]', helpTextClassName)}
         fontSize='xs'
@@ -120,7 +120,7 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
       </Description>
     )}
     <div className='form-field-content'>{children}</div>
-    {helpText !== undefined && (
+    {helpText === undefined ? null : (
       <Text
         className={classNames('leading-[14px] text-gray-500 pl-[1px]', helpTextClassName)}
         fontSize='xs'

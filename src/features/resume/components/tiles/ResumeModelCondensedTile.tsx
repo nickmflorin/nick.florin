@@ -32,7 +32,7 @@ export const ResumeModelCondensedTile = <M extends BrandModel<T>, T extends Resu
       model={model}
       size='small'
     >
-      <ShowHide show={types.hasDescription(model) && isDescriptionVisible}>
+      <ShowHide show={types.hasDescription(model) ? isDescriptionVisible : false}>
         <ResumeModelTile.ModelDescription
           isShowMoreLinkVisible={isDescriptionShowMoreLinkVisible}
           lineClamp={3}

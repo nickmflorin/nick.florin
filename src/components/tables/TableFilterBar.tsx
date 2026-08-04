@@ -104,7 +104,7 @@ export const TableFilterBar = <F extends types.TableFilters>({
 
   return (
     <div {...props} className={classNames('flex flex-row items-center gap-2', props.className)}>
-      {isSearchable && (
+      {isSearchable ? (
         <TextInput
           className='grow'
           defaultValue={isControlled ? undefined : search}
@@ -120,8 +120,8 @@ export const TableFilterBar = <F extends types.TableFilters>({
           ref={inputRef}
           value={isControlled ? search : undefined}
         />
-      )}
-      {filters && (
+      ) : null}
+      {filters ? (
         <>
           {(configuration ?? []).map(filter => (
             <TableFilterRenderer
@@ -133,7 +133,7 @@ export const TableFilterBar = <F extends types.TableFilters>({
             />
           ))}
         </>
-      )}
+      ) : null}
       <Tooltip content='Clear filters'>
         {({ params, ref }) => (
           <IconButton.Transparent
@@ -155,15 +155,15 @@ export const TableFilterBar = <F extends types.TableFilters>({
           />
         )}
       </Tooltip>
-      {configuration && (
+      {configuration ? (
         <FiltersSelect
           configuration={configuration}
           excludeFilters={excludeFilters}
           onChange={f => setVisibleFilters(f)}
           value={visibleFilters}
         />
-      )}
-      {newDrawerId && <NewButton drawerId={newDrawerId} />}
+      ) : null}
+      {newDrawerId ? <NewButton drawerId={newDrawerId} /> : null}
       {children}
     </div>
   );

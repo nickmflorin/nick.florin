@@ -22,29 +22,28 @@ export const ResumeModelPageTile = <M extends types.ApiModel<T>, T extends Resum
   <ResumeModelTile {...props} className={classNames('gap-[10px] max-md:gap-[8px]')}>
     <ResumeModelTile.Header model={model} size='large'>
       <div className='flex flex-col gap-[10px] max-md:gap-[8px]'>
-        {(types.hasDescription(model) || model.details.length !== 0) && (
+        {types.hasDescription(model) || model.details.length !== 0 ? (
           <div className='flex flex-col gap-[10px] max-w-[700px]'>
             <ResumeModelTile.ModelDescription model={model} />
             <ResumeModelTile.Details details={model.details} size='large' />
           </div>
-        )}
-        {model.$kind === 'education' && model.courses.length !== 0 && (
+        ) : null}
+        {model.$kind === 'education' && model.courses.length !== 0 ? (
           <ResumeModelTile.Section className='gap-[6px]' label='Coursework'>
             <Description className='max-w-[800px]'>
               <HumanizedCourses courses={model.courses} />
             </Description>
           </ResumeModelTile.Section>
+        ) : null}
+        {model.skills.length === 0 ? null : model.$kind === 'experience' ? (
+          <ResumeModelTile.Section label='Other Skills'>
+            <Skills className='max-w-[800px]' skills={model.skills} />
+          </ResumeModelTile.Section>
+        ) : (
+          <ResumeModelTile.Section label='Skills'>
+            <Skills className='max-w-[800px]' skills={model.skills} />
+          </ResumeModelTile.Section>
         )}
-        {model.skills.length !== 0 &&
-          (model.$kind === 'experience' ? (
-            <ResumeModelTile.Section label='Other Skills'>
-              <Skills className='max-w-[800px]' skills={model.skills} />
-            </ResumeModelTile.Section>
-          ) : (
-            <ResumeModelTile.Section label='Skills'>
-              <Skills className='max-w-[800px]' skills={model.skills} />
-            </ResumeModelTile.Section>
-          ))}
       </div>
     </ResumeModelTile.Header>
   </ResumeModelTile>

@@ -63,7 +63,10 @@ export default [
       'no-multi-assign': 'error',
       'no-multi-str': 'error',
       'no-multiple-empty-lines': 'error',
-      'no-negated-condition': 'error',
+      /* Superseded by 'unicorn/no-negated-condition' (unicorn.mjs): the core rule reports the same
+         violations but does not support autofix, while the unicorn implementation is auto-fixable.
+         Kept explicitly 'off' so the two implementations are never enabled together. */
+      'no-negated-condition': 'off',
       'no-param-reassign': 'error',
       'no-restricted-imports': constructRestrictedImportsRule(),
       'no-restricted-properties': [

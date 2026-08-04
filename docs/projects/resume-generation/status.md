@@ -83,10 +83,28 @@ in-app embedding.** The pipeline design is settled — browserless static HTML v
    route-group style isolation and font serving from `public/`.
 5. Compare the generated PDF against resume-gen's output for parity, then retire resume-gen.
 
+Newly open, and worth settling before any more generation work: **how a generated resume actually
+reaches a reader** (see [context/open-questions.md](./context/open-questions.md)). The original
+sketch assumed server-side PDF generation on demand; two cheaper candidates are now on the table —
+browser-native printing of the in-app view, and serving a pre-generated artifact through the
+`Resume`/Vercel Blob path that already exists. The answer determines whether server-side Chromium is
+ever needed at all.
+
+Also newly open, all raised 2026-08-03 while building the model rehearsal and all detailed in
+[context/open-questions.md](./context/open-questions.md): the **fixture format and round-trip
+design** (blocker for any fixture work — format, optional identity fields, destructive-change
+confirmation), **contextual representation of labels and content** (generalizing `shortLabel` past
+two contexts, and letting one record render as several strings), **per-medium display configuration
+beyond visibility**, and **competency categorization** (whether the legacy `Skill` category fields
+come forward, and whether a category and a sidebar group are the same thing).
+
+Three of those cluster: `Detail.shortDescription`, contextual representation, and per-medium display
+are the same question at three granularities, and settling them separately would leave three
+mechanisms for one idea.
+
 Remaining Research & Discussion items in parallel: `Detail.shortDescription` (**blocker** for the
-schema), fixture ⇄ DB sync design, LinkedIn feasibility, GitHub sync design, syndication modeling.
-Schema/modeling work remains deferred (see decision dated 2026-08-02 in
-[decisions.md](./decisions.md)).
+schema), LinkedIn feasibility, GitHub sync design, syndication modeling. Schema/modeling work
+remains deferred (see decision dated 2026-08-02 in [decisions.md](./decisions.md)).
 
 ## Blockers / Waiting On
 

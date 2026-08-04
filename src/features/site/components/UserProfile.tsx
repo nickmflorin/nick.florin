@@ -11,5 +11,5 @@ const UserProfileDialog = dynamic(
 export const UserProfile = () => {
   const { isOpen } = useUserProfile();
 
-  return <>{isOpen && <UserProfileDialog isOpen />}</>;
+  return <>{isOpen ? <UserProfileDialog isOpen /> : null}</>;
 };

@@ -58,11 +58,11 @@ export const WelcomeDialog = ({
                 Next
               </Button.Solid>
             </div>
-            {error && (
+            {error ? (
               <Text className='text-danger-700' fontSize='xs'>
                 {error}
               </Text>
-            )}
+            ) : null}
           </div>
         </Dialog.Footer>
       </Dialog>

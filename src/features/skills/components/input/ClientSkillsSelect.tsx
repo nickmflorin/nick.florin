@@ -103,7 +103,7 @@ export const ClientSkillsSelect = <B extends SelectBehaviorType>({
       isDisabled={error !== undefined || props.isDisabled}
       isInputLoading={isLoading || props.isInputLoading}
       isLocked={isLoading || props.isLocked}
-      isReady={data !== undefined && props.isReady !== false}
+      isReady={data === undefined ? false : props.isReady !== false}
       onSearch={e => {
         setLocalSearch(e.target.value);
         setSearch(e.target.value);

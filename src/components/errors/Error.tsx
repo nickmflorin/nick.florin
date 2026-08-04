@@ -19,19 +19,19 @@ export const Error = ({
   if (children) {
     return (
       <>
-        <ShowHide show={error !== undefined && error !== null}>
+        <ShowHide show={error === undefined ? false : error !== null}>
           <ErrorView {...props} error={error}>
             {message}
           </ErrorView>
         </ShowHide>
-        <ShowHide hide={error !== undefined && error !== null && areChildrenHiddenOnError}>
+        <ShowHide hide={error !== undefined && error !== null ? areChildrenHiddenOnError : false}>
           {children}
         </ShowHide>
       </>
     );
   }
   return (
-    <ShowHide show={error !== undefined && error !== null}>
+    <ShowHide show={error === undefined ? false : error !== null}>
       <ErrorView {...props} error={error}>
         {message}
       </ErrorView>

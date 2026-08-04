@@ -100,7 +100,7 @@ export const TableControlBar = <
               />
             </div>
             <div className='table-view__control-bar-actions'>
-              {areRowsDeletable && (
+              {areRowsDeletable ? (
                 <Tooltip
                   className='text-sm'
                   content={
@@ -118,7 +118,7 @@ export const TableControlBar = <
                     onClick={() => setConfirmationModalIsOpen(true)}
                   />
                 </Tooltip>
-              )}
+              ) : null}
               {actions !== undefined && actions.length !== 0 ? (
                 actions.map((action, i) => (
                   <TableControlBarAction
@@ -155,7 +155,7 @@ export const TableControlBar = <
           </div>
         </div>
       </TableControlBarPortal>
-      {confirmationModalIsOpen && selectedRows.length !== 0 && (
+      {confirmationModalIsOpen && selectedRows.length !== 0 ? (
         <>
           {deleteAction ? (
             <DeleteConfirmationDialog
@@ -177,7 +177,7 @@ export const TableControlBar = <
             />
           )}
         </>
-      )}
+      ) : null}
     </>
   );
 };

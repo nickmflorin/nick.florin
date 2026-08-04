@@ -1,5 +1,11 @@
 import fs from 'fs';
 
+/**
+ * Matches all-caps AWS service acronyms, such as `AWSEC2` or `AWSCLI`, so that each one does not
+ * have to be added to `dictionary.txt` individually.
+ */
+const AwsAcronymPattern = /\bAWS[A-Z0-9]+\b/g;
+
 const DefaultGlobs = [
   '**/node_modules/**',
   '**/generated/**',
@@ -62,6 +68,7 @@ const config = async () => {
     ],
     ignorePaths,
     ignoreRandomStrings: true,
+    ignoreRegExpList: [AwsAcronymPattern],
     language: 'en',
     version: '0.2',
   };

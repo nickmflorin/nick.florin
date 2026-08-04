@@ -27,7 +27,7 @@ export const Tag = ({
     style={{ ...props.style, gap: sizeToString(gap, 'px' as const) }}
   >
     <div className='tag__content'>
-      {icon && <Icon className={classNames('tag__icon', iconClassName)} icon={icon} />}
+      {icon ? <Icon className={classNames('tag__icon', iconClassName)} icon={icon} /> : null}
       <div className='tag__text'>{children}</div>
     </div>
   </BaseTypography>

@@ -903,6 +903,97 @@ $ pnpm prisma:migrate:reset
 This command will wipe the current database, run all migrations and _then_ run the
 [`./src/prisma/seed.ts](./src/prisma/seed.ts) script.
 
+### 2.8 Content & Tooling Scripts
+
+Beyond the build, lint, test and database commands described above, the `package.json` exposes a
+handful of scripts that generate or synchronize content. Scripts that touch the database generally
+have a `:prod` variant that loads the production environment instead of the development one; the
+base form always targets the local development database.
+
+#### 2.8.a Resume Generation
+
+The print-form resume is generated from the content modules in
+[`./src/documents/resume/data`](./src/documents/resume/data) and the React components in
+[`./src/documents/resume/components`](./src/documents/resume/components). Generation is entirely
+self-contained: it requires no database, no running application and no network.
+
+```bash
+$ pnpm resume:generate
+```
+
+This runs three phases in order, each of which is also available on its own:
+
+| Command                         | Phase                                                                                                          |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `pnpm resume:generate:html`     | Renders the sheets to static HTML and compiles the document stylesheet, emitting both with relative asset URLs |
+| `pnpm resume:generate:pdf`      | Prints each emitted sheet with headless Chrome and merges the results into one PDF                             |
+| `pnpm resume:generate:artifact` | Bundles the stacked view into a single self-contained HTML file with every asset inlined                       |
+
+Everything is written to `./build/documents/resume`, which is ignored by git:
+
+```
+build/documents/resume/
+├── html/                                 # Static pages, openable directly off disk
+│   ├── index.html                        # Every sheet stacked, for reading on screen
+│   ├── page-1.html                       # One standalone document per sheet
+│   └── assets/                           # Compiled stylesheet, fonts, logos
+├── resume.html                           # Single self-contained file, fully inlined
+└── Resume-Aug-03-2026-5:12pm.pdf         # Timestamped, so exports are never overwritten
+```
+
+The PDF phase is the only one with an external requirement: it needs a Chrome-family browser, which
+it looks for in the standard install locations. If Chrome lives somewhere else, point `CHROME_PATH`
+at it:
+
+```bash
+$ CHROME_PATH="/path/to/chrome" pnpm resume:generate:pdf
+```
+
+The `:pdf` and `:artifact` phases both read the files that `:html` emits, so run `:html` at least
+once before either of them on a clean checkout.
+
+#### 2.8.b Repository Synchronization
+
+Pulls the repositories from the GitHub API and stores any that are not yet present in the database.
+Repositories that already exist are left untouched — the sync only ever creates — and newly created
+rows are hidden (`visible: false`) so that they can be reviewed in the admin CMS before they appear
+on the site.
+
+```bash
+$ pnpm repositories:sync
+```
+
+#### 2.8.c Experience Calculation
+
+Recalculates the derived `calculatedExperience` value for every skill from the oldest course,
+project and repository it is associated with, and writes the result back where it differs from what
+is stored. It also acts as a check: if a skill carries a manually overridden `experience` value that
+disagrees with the calculation, the script fails rather than writing over it.
+
+```bash
+$ pnpm experience:calculate
+```
+
+This script is restricted to the development environment. An `experience:calculate:prod` variant is
+defined, but the script refuses to run outside of `development` and so it exits without doing any
+work.
+
+#### 2.8.d Fixtures
+
+Dumps the contents of the production database to the JSON fixtures in
+[`./src/database/fixtures/json`](./src/database/fixtures/json), which are what the seed process
+reads. The dump is formatted with [prettier][prettier] as part of the same command.
+
+```bash
+$ pnpm fixtures:jsonify:prod
+```
+
+The formatting step can also be run on its own, which is useful after editing a fixture by hand:
+
+```bash
+$ pnpm fixtures:format
+```
+
 ## 3. Production
 
 This section of the documentation describes how to work with the application in a production

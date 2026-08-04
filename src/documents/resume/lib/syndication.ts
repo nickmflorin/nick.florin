@@ -1,7 +1,7 @@
 /**
  * Resolving a content tree for one syndication channel.
  *
- * THIS IS THE ONLY PLACE THE CASCADE RULE LIVES. Nothing else should read `visible` or
+ * THIS IS THE ONLY PLACE THE CASCADE RULE LIVES. Nothing else should read `isVisible` or
  * `excludedChannels` directly; render from the `Resolved*` types this module returns. The rule is
  * specified in the `resume-gen` repository's `docs/content-model.md` and summarized here.
  *
@@ -37,7 +37,7 @@ import {
  * Whether a single level permits the channel, ignoring ancestors and descendants.
  */
 function permits(node: Syndicated, channel: SyndicationChannel): boolean {
-  return node.visible && !node.excludedChannels.includes(channel);
+  return node.isVisible && !node.excludedChannels.includes(channel);
 }
 
 /**
@@ -78,7 +78,7 @@ function resolveNested(
   if (isEmpty(node.content, 0)) {
     return null;
   }
-  const { excludedChannels: _excluded, visible: _visible, ...rest } = node;
+  const { excludedChannels: _excluded, isVisible: _isVisible, ...rest } = node;
   return { ...rest, titleLayout: resolveTitleLayout(node.titleLayout, parentType) };
 }
 
@@ -102,8 +102,8 @@ function resolveNode(node: ContentNode, channel: SyndicationChannel): null | Res
   const {
     children: _children,
     excludedChannels: _excluded,
+    isVisible: _isVisible,
     type: _type,
-    visible: _visible,
     ...rest
   } = node;
   return {
@@ -141,7 +141,7 @@ export function resolveSyndication(
       .map(entry => entry.node)
       .sort((a, b) => a.order - b.order);
 
-  const { excludedChannels: _excluded, nodes: _nodes, visible: _visible, ...rest } = owner;
+  const { excludedChannels: _excluded, isVisible: _isVisible, nodes: _nodes, ...rest } = owner;
   return {
     ...rest,
     content: byKind(NodeKind.Content),

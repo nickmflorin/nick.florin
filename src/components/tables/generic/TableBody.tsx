@@ -69,7 +69,7 @@ export const TableBody = ({
     ) : (
       <Loading
         component='tr'
-        isLoading={isLoading && tableHasLoadingIndicator(loadingIndicator, 'spinner')}
+        isLoading={isLoading ? tableHasLoadingIndicator(loadingIndicator, 'spinner') : false}
       >
         {isError ? (
           <TableFeedbackState

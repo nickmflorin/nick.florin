@@ -167,7 +167,7 @@ export const ProcessedDataMenuContent = <
                 <ProcessedDataMenuItem<M, O>
                   {...props}
                   datum={d}
-                  isCurrentNavigation={hasKeyboardInteractions && navigatedIndex === d.index}
+                  isCurrentNavigation={hasKeyboardInteractions ? navigatedIndex === d.index : false}
                   isDescriptionVisible={shouldIncludeDescriptions}
                   key={`${i}-${j}`}
                   ref={instance => {
@@ -190,7 +190,7 @@ export const ProcessedDataMenuContent = <
           <ProcessedDataMenuItem
             {...props}
             datum={datum}
-            isCurrentNavigation={hasKeyboardInteractions && navigatedIndex === datum.index}
+            isCurrentNavigation={hasKeyboardInteractions ? navigatedIndex === datum.index : false}
             isDescriptionVisible={shouldIncludeDescriptions}
             key={i}
             ref={instance => {

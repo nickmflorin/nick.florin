@@ -52,14 +52,14 @@ export const DataTableBodyRow = <
       props.onClick?.(e);
     }}
   >
-    {isSelected === undefined && (
+    {isSelected === undefined ? (
       <TableBodyCell align='center' className='loading-cell p-0'>
         <div className='flex flex-col h-full w-full justify-center items-center'>
           <Spinner isLoading={props.isLoading} size='18px' />
         </div>
       </TableBodyCell>
-    )}
-    {isSelected !== undefined && (
+    ) : null}
+    {isSelected === undefined ? null : (
       <TableBodyCell align='center' className='loading-cell select-cell p-0'>
         <div className='flex flex-col h-full w-full justify-center items-center'>
           {props.isLoading ? (
@@ -78,10 +78,10 @@ export const DataTableBodyRow = <
       .map(col => (
         <DataTableBodyCell<D, C> column={col} datum={datum} key={`${col.id}-${datum.id}`} />
       ))}
-    {getRowActions && (
+    {getRowActions ? (
       <TableBodyCell align='center'>
         <ActionsCell actions={params => getRowActions(datum, params)} menuWidth={actionMenuWidth} />
       </TableBodyCell>
-    )}
+    ) : null}
   </TableBodyRow>
 );

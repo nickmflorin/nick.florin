@@ -48,7 +48,7 @@ export const Badge = ({
         icon
       )}
       <div className='badge__text'>{children}</div>
-      {onClose && (
+      {onClose ? (
         <IconButton.Transparent
           className='badge__close-button hover:bg-transparent'
           element='button'
@@ -59,7 +59,7 @@ export const Badge = ({
           }}
           scheme='light'
         />
-      )}
+      ) : null}
     </div>
   </BaseTypography>
 );

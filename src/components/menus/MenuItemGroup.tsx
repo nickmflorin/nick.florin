@@ -35,7 +35,7 @@ export const MenuItemGroup = ({
   }
   return (
     <div className={classNames('menu__item-group', className)} style={style}>
-      {label && !isFragment(label) && (
+      {label && !isFragment(label) ? (
         <div className={classNames('menu__item-group__label-container', labelContainerClassName)}>
           {typeof label === 'string' ? (
             <Label
@@ -49,7 +49,7 @@ export const MenuItemGroup = ({
             label
           )}
         </div>
-      )}
+      ) : null}
       <MenuContent __private_parent_prop__='group' {...props} className={contentClassName}>
         {validChildren}
       </MenuContent>

@@ -65,6 +65,7 @@ export default [
       'react/jsx-filename-extension': [2, { allow: 'as-needed', extensions: ['.jsx', '.tsx'] }],
       'react/jsx-newline': [1, { prevent: true }],
       'react/jsx-no-duplicate-props': 'error',
+      'react/jsx-no-leaked-render': ['error', { validStrategies: ['ternary'] }],
       'react/jsx-no-target-blank': 'warn',
       'react/jsx-no-useless-fragment': ['error', { allowExpressions: true }],
       'react/jsx-pascal-case': ['error', { ignore: JsxPascalCaseIgnore }],

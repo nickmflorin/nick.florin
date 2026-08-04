@@ -18,6 +18,14 @@ Guides covering the code quality standards, conventions and tooling used in this
 | Name files and folders            | [Best Practices → File & Folder Naming](./best-practices.md#file--folder-naming) |
 | Declare types and interfaces      | [TypeScript → Types & Interfaces](./typescript/types-interfaces.md)              |
 | Name a module-scope constant      | [TypeScript → Variable Naming](./typescript/variable-naming.md)                  |
+| Branch on a union or enum         | [TypeScript → Exhaustive Type Checking](./typescript/exhaustiveness.md)          |
+| Write a type guard or assertion   | [TypeScript → Type Guards & Assertions](./typescript/type-guards.md)             |
+| Index an array or record safely   | [TypeScript → Indexed Access](./typescript/indexed-access.md)                    |
+| Know whether an `as` cast is okay | [TypeScript → Unsafe Type Coercion](./typescript/type-coercion.md)               |
+| Validate untrusted data with Zod  | [TypeScript → Unsafe Type Coercion](./typescript/type-coercion.md)               |
+| Avoid a data-fetching waterfall   | [React → Performance](./react/performance.md)                                    |
+| Reduce the client bundle          | [React → Performance](./react/performance.md)                                    |
+| Design a component's props        | [React → Composition](./react/composition.md)                                    |
 
 ## Document Overview
 
@@ -56,6 +64,28 @@ Conventions specific to TypeScript declarations:
   interface property, what the convention governs, and when omitting it is justified
 - [Variable Naming](./typescript/variable-naming.md): PascalCase for module-scope constants rather
   than `SCREAMING_SNAKE_CASE`, and what the convention does not cover
+- [Exhaustive Type Checking](./typescript/exhaustiveness.md): handling every member of a union or
+  enum in a compiler-verified form, `assertNever`, and slicing unions with `Extract`/`Exclude`
+- [Type Guards & Assertions](./typescript/type-guards.md): type predicates, deriving finite unions
+  from `readonly` arrays, cast direction inside a guard, and `asserts value is X` functions
+- [Indexed Access](./typescript/indexed-access.md): indexing safely without
+  `noUncheckedIndexedAccess`, and the `no-unnecessary-condition` interaction
+- [Unsafe Type Coercion](./typescript/type-coercion.md): `unknown` over `any`, the type-level cases
+  where an `as` assertion is legitimate, `as const` versus `satisfies`, Zod at trust boundaries, and
+  the `Response.json()` pattern
+
+### [React](./react/index.md)
+
+Conventions specific to React and Next.js:
+
+- [Performance](./react/performance.md): eliminating `await` waterfalls, keeping barrel imports out
+  of client code, dynamic imports for heavy components, minimizing what crosses the server/client
+  boundary, and using a ternary rather than `&&` in JSX
+- [Composition](./react/composition.md): boolean props describe state rather than identity, explicit
+  variant components, `children` over markup-only render props, and lifting state into a provider
+
+Both are deliberate subsets of Vercel Engineering's agent skills, which are vendored into
+`.claude/skills/` and consulted on demand — see [React → The Vercel Skills](./react/index.md).
 
 ### [Markdown Formatting](./markdown-formatting.md)
 
@@ -131,9 +161,25 @@ The prescriptive, agent-facing versions of these standards live alongside the hu
   modifiers on type and interface properties
 - [Variable Naming](../../.claude/rules/code-quality/typescript/variable-naming.md) - PascalCase for
   module-scope constants, camelCase for locals and functions
+- [Exhaustive Type Checking](../../.claude/rules/code-quality/typescript/exhaustiveness.md) - No
+  fallthrough or value-producing `default` clauses over finite types
+- [Type Guards](../../.claude/rules/code-quality/typescript/type-guards.md) - Type predicates,
+  finite unions derived from arrays, and assertion functions
+- [Indexed Access](../../.claude/rules/code-quality/typescript/indexed-access.md) - Safe array and
+  record indexing while `noUncheckedIndexedAccess` is off
+- [Unsafe Type Coercion](../../.claude/rules/code-quality/typescript/type-coercion.md) - `unknown`
+  over `any`, validation at boundaries, and the narrow cases where an assertion is legitimate
+- [React Performance](../../.claude/rules/code-quality/react/performance.md) - Waterfalls, bundle
+  size, the server/client boundary, and re-renders
+- [React Composition](../../.claude/rules/code-quality/react/composition.md) - Boolean props,
+  explicit variants, children over render props, and lifting state
 
 Each of these has a GitHub Copilot counterpart in
 [.github/instructions/code-quality/](../../.github/instructions/README.md).
+
+Claude Code additionally loads on-demand **skills** from `.claude/skills/`, which have no Copilot
+counterpart: `vercel-react-best-practices` and `vercel-composition-patterns` hold the full Vercel
+corpora that the two React rules above are subsets of.
 
 ## Contributing
 

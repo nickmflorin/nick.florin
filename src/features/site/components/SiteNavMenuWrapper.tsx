@@ -14,7 +14,7 @@ export const SiteNavMenuWrapper = ({ children }: SiteMenuWrapperProps) => {
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isOpen ? (
         <motion.div
           animate={{ x: 0 }}
           className='site-nav-menu-wrapper'
@@ -24,7 +24,7 @@ export const SiteNavMenuWrapper = ({ children }: SiteMenuWrapperProps) => {
         >
           <div className='site-nav-menu-container'>{children}</div>
         </motion.div>
-      )}
+      ) : null}
     </AnimatePresence>
   );
 };

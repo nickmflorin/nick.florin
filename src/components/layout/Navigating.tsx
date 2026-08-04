@@ -14,7 +14,7 @@ export const Navigating = ({ children }: NavigatingProps) => {
   const { isLessThanOrEqualTo } = useScreenSizes();
   const { pendingItem } = useNavigation();
   return (
-    <Loading isLoading={pendingItem !== null && isLessThanOrEqualTo(MobileNavigationCutoff)}>
+    <Loading isLoading={pendingItem === null ? false : isLessThanOrEqualTo(MobileNavigationCutoff)}>
       {children}
     </Loading>
   );

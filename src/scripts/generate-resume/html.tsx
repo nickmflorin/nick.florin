@@ -10,7 +10,6 @@ import { stdout } from '~/support';
 
 import { ResumeDocument } from '~/documents/resume/components/ResumeDocument';
 import { ResumeDocumentSheet } from '~/documents/resume/components/ResumeDocumentSheet';
-import { Profile } from '~/documents/resume/data/profile';
 
 import {
   AssetsDir,
@@ -107,7 +106,7 @@ const emitPages = async (): Promise<void> => {
   await fs.writeFile(
     StackedPagePath,
     renderDocument(
-      <ResumeStaticDocument title={`${Profile.name} - Resume`}>
+      <ResumeStaticDocument title=' - Resume'>
         <ResumeDocument />
       </ResumeStaticDocument>,
     ),
@@ -119,7 +118,7 @@ const emitPages = async (): Promise<void> => {
       fs.writeFile(
         page.path,
         renderDocument(
-          <ResumeStaticDocument title={`${Profile.name} - Resume - Page ${page.number}`}>
+          <ResumeStaticDocument title={` - Resume - Page ${page.number}`}>
             <ResumeDocumentSheet sheet={page.sheet} />
           </ResumeStaticDocument>,
         ),

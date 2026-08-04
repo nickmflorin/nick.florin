@@ -33,7 +33,7 @@ export const ModifyDetailView = ({ detail, onDeleted, onExpand }: ModifyDetailVi
         onDeleted={onDeleted}
         onExpand={() => onExpand(detail)}
       />
-      {(createFormVisible || detail.nestedDetails.length > 0) && (
+      {createFormVisible || detail.nestedDetails.length > 0 ? (
         <ModifyNestedDetailsTimeline
           detailId={detail.id}
           details={detail.nestedDetails}
@@ -42,7 +42,7 @@ export const ModifyDetailView = ({ detail, onDeleted, onExpand }: ModifyDetailVi
           onCreated={() => setCreateFormVisible(false)}
           onExpand={nestedDetail => onExpand(nestedDetail)}
         />
-      )}
+      ) : null}
     </div>
   );
 };

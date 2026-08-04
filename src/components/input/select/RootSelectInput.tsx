@@ -92,7 +92,7 @@ export const RootSelectInput = ({
       isPlaceholderVisible={
         onSearch === undefined ? props.isPlaceholderVisible : !isOpen && props.isPlaceholderVisible
       }
-      onClear={onClear && (() => onClear())}
+      onClear={onClear ? () => onClear() : undefined}
       ref={outerRef}
     >
       {onSearch && isOpen ? (

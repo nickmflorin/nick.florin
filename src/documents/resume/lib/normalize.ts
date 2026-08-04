@@ -1,24 +1,25 @@
 /**
  * Normalization: authoring input in, content model out.
  *
- * The model types in `src/documents/resume/data/types.ts` mirror Prisma exactly — non-null `id`,
- * `slug`, `order`, `visible`, and `excludedChannels` on every node — which is correct for a
- * database and miserable to write by hand. The data files are therefore authored against the `*Input` types, and this
- * module is the single boundary that turns them into `ContentOwner`s: it assigns ids, generates
- * slugs, stamps `order` from array position, applies the defaults, and collapses the whitespace of
- * copy authored as indented template literals.
+ * The model types in `src/documents/resume/data/types.ts` are shaped as Prisma models, which means
+ * a non-null `slug`, `order`, `isVisible` and `excludedChannels` on every node: correct for a
+ * database and miserable to write by hand. The data files are therefore authored against the
+ * `*Input` types, and this module is the single boundary that turns them into `ContentOwner`s. It
+ * generates slugs, stamps `order` from array position, applies the defaults, and collapses the
+ * whitespace of copy authored as indented template literals.
  *
  * It also enforces the invariants Postgres cannot (see the `resume-gen` repository's
  * `docs/content-model.md`), loudly. A data file that violates one fails the build rather than
  * rendering something subtly wrong.
  *
- * This module WRITES `visible` and `excludedChannels`; it never reads them to decide anything. That
- * decision lives in exactly one place, `resolveSyndication` in `./syndication.ts`.
+ * This module WRITES `isVisible` and `excludedChannels`; it never reads them to decide anything.
+ * That decision lives in exactly one place, `resolveSyndication` in `./syndication.ts`.
  */
 import {
   type ContentInput,
   type ContentNode,
   type ContentOwner,
+  type ContentOwnerInput,
   type ContentOwnerType,
   type NestedContentNode,
   type NestedNodeInput,
@@ -28,6 +29,7 @@ import {
   type SyndicationChannel,
 } from '../data/types';
 
+import { slugify } from './slugs';
 import { resolveSyndication } from './syndication';
 
 /* Copy carries inline HTML (<em>, <strong>, <code>) and is authored as indented template literals
@@ -36,23 +38,10 @@ import { resolveSyndication } from './syndication';
 const collapse = (text: string): string => text.replace(/\s+/g, ' ').trim();
 
 /**
- * A slug from a title. Titles are HTML, so tags and entities come out before the text is
- * kebab-cased: `Bundle Size &amp; First Load Performance` becomes `bundle-size-first-load-
- * performance`.
- */
-function slugify(title: string): string {
-  return title
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&[#0-9a-z]+;/gi, ' ')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-/**
- * A slug unique within one parent — not globally. A generated slug for an arbitrary paragraph is
- * only meaningful in the context of the thing it hangs off, so collisions across different roles
- * are fine and expected; collisions within one are de-duplicated with a numeric suffix.
+ * A slug unique within one parent, which is the grain the model's unique constraints are declared
+ * at. A generated slug for an arbitrary paragraph is only meaningful in the context of the thing it
+ * hangs off, so collisions across different roles are fine and expected; collisions within one are
+ * de-duplicated with a numeric suffix.
  *
  * Untitled nodes (every summary paragraph, for instance) fall back to a positional slug.
  */
@@ -99,14 +88,14 @@ function assertNoRedundantExclusions(
 function normalizeNested(
   input: NestedNodeInput,
   order: number,
-  parentId: string,
+  parentPath: string,
   inherited: readonly SyndicationChannel[],
   taken: Set<string>,
 ): NestedContentNode {
   const title = input.title === undefined ? null : collapse(input.title);
   const content = input.content === undefined ? null : collapse(input.content);
   const slug = uniqueSlug(title, `item-${order + 1}`, taken);
-  const where = `${parentId}/${slug}`;
+  const where = `${parentPath}/${slug}`;
 
   if (content !== null) {
     assertSingleParagraph(content, where);
@@ -115,16 +104,14 @@ function normalizeNested(
   assertNoRedundantExclusions(excludedChannels, inherited, where);
 
   return {
+    competencies: input.competencies ?? [],
     content,
     excludedChannels,
-    id: `${parentId}/${slug}`,
+    isVisible: input.isVisible ?? true,
     order,
-    parentId,
-    skills: input.skills ?? [],
     slug,
     title,
     titleLayout: input.titleLayout ?? null,
-    visible: input.visible ?? true,
   };
 }
 
@@ -132,7 +119,7 @@ function normalizeNode(
   input: NodeInput,
   order: number,
   kind: NodeKind,
-  ownerId: string,
+  ownerSlug: string,
   ownerType: ContentOwnerType,
   inherited: readonly SyndicationChannel[],
   taken: Set<string>,
@@ -141,54 +128,50 @@ function normalizeNode(
   const content = input.content === undefined ? null : collapse(input.content);
   const fallback = `${kind === NodeKind.Summary ? 'summary' : 'content'}-${order + 1}`;
   const slug = uniqueSlug(title, fallback, taken);
-  const where = `${ownerId}/${slug}`;
+  const path = `${ownerSlug}/${slug}`;
 
   /* Invariants 2 and 3: a summary is always standalone prose. This is the guarantee given up by
      folding summaries into `ContentNode` instead of a third model, and this is where it is paid
      back. */
   if (kind === NodeKind.Summary && input.type !== undefined) {
-    throw new Error(`${where}: a summary never carries a type; it is always standalone prose.`);
+    throw new Error(`${path}: a summary never carries a type; it is always standalone prose.`);
   }
   if (kind === NodeKind.Summary && input.children !== undefined) {
-    throw new Error(`${where}: a summary never has children; author it as content instead.`);
+    throw new Error(`${path}: a summary never has children; author it as content instead.`);
   }
   if (content !== null) {
-    assertSingleParagraph(content, where);
+    assertSingleParagraph(content, path);
   }
   const excludedChannels = input.excludedChannels ?? [];
-  assertNoRedundantExclusions(excludedChannels, inherited, where);
+  assertNoRedundantExclusions(excludedChannels, inherited, path);
 
-  const id = `${ownerId}/${slug}`;
   const childInherited = [...inherited, ...excludedChannels];
   const childSlugs = new Set<string>();
 
   return {
     children: (input.children ?? []).map((child, index) =>
-      normalizeNested(child, index, id, childInherited, childSlugs),
+      normalizeNested(child, index, path, childInherited, childSlugs),
     ),
+    competencies: input.competencies ?? [],
     content,
     excludedChannels,
-    id,
+    isVisible: input.isVisible ?? true,
     kind,
     order,
-    ownerId,
     ownerType,
-    skills: input.skills ?? [],
     slug,
     title,
     titleLayout: input.titleLayout ?? null,
     type: input.type ?? null,
-    visible: input.visible ?? true,
   };
 }
 
 /**
- * Turn one role's or degree's authored content into a `ContentOwner`.
+ * Turn one role's or degree's authored content into a {@link ContentOwner}.
  *
- * `slug` doubles as the owner id: the keys in `experience.ts` and `education.ts` are already stable
- * and unique, which is exactly what an id has to be. Node ids are paths beneath it, so every id in
- * the tree is deterministic and reproducible across builds — a generated uuid would churn the whole
- * tree on every run.
+ * Node slugs are generated as paths beneath the owner's authored slug, so every slug in the tree is
+ * deterministic and reproducible across builds. A generated uuid would churn the whole tree on
+ * every run, which is exactly why the database id is not what anything is keyed off.
  */
 export function normalizeOwner(
   slug: string,
@@ -207,38 +190,29 @@ export function normalizeOwner(
   );
 
   return {
+    competencies: input.competencies ?? [],
     excludedChannels,
-    id: slug,
+    isVisible: input.isVisible ?? true,
     nodes: [...summary, ...content],
     ownerType,
-    skills: input.skills ?? [],
     slug,
-    visible: input.visible ?? true,
   };
-}
-
-/**
- * Anything authored with a stable key and a content tree: a `Role` or a `Degree`.
- */
-interface Authored {
-  readonly content: ContentInput;
-  readonly key: string;
 }
 
 /**
  * Normalize and resolve a list of roles or degrees for one channel, dropping any withheld from it.
  *
  * This is the whole pipeline in one call, and the only way content reaches a component: the
- * authored `ContentInput` is replaced by a `ResolvedOwner`, so an unresolved tree cannot be
+ * authored {@link ContentInput} is replaced by a resolved tree, so an unresolved one cannot be
  * rendered by accident.
  */
-export function resolveContent<T extends Authored>(
+export function resolveContent<T extends ContentOwnerInput>(
   items: readonly T[],
   ownerType: ContentOwnerType,
   channel: SyndicationChannel,
 ): Resolved<T>[] {
   return items.flatMap(item => {
-    const owner = resolveSyndication(normalizeOwner(item.key, ownerType, item.content), channel);
+    const owner = resolveSyndication(normalizeOwner(item.slug, ownerType, item.content), channel);
     if (owner === null) {
       return [];
     }

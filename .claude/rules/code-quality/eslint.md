@@ -33,6 +33,44 @@ autofix (`eslint --fix`, the `eslint:format`/`format` scripts, or any other "esl
 Run ESLint only when explicitly asked to do so. This keeps the inner loop fast and leaves linting to
 the developer or CI.
 
+## Warnings and Grandfathered Rules
+
+A rule set to `warn` is not a rule that may be ignored. `pnpm lint:errors` suppresses warnings so
+that CI is not blocked by them, which means a warning is invisible in the one place most people
+look. Treating it as noise is therefore how it survives.
+
+Some rules sit at `warn` specifically because they were enabled against code that already violated
+them. That is the **grandfathered** case, and it is marked in the configuration by the shared
+`GrandfatheredSeverity` constant rather than by a bare `'warn'`, so that the intent is legible at
+the rule and a reader can tell a deliberate migration from an ordinary warning:
+
+```javascript
+/* Grandfathered because components across the codebase still render with '&&'; promote to 'error'
+   once every occurrence uses a ternary. */
+'react/jsx-no-leaked-render': [GrandfatheredSeverity, { validStrategies: ['ternary'] }],
+```
+
+The contract for a grandfathered rule:
+
+- **New and modified code satisfies it as though it were an error.** The lowered severity exists to
+  keep an existing backlog from failing CI, never to make the rule optional for code being written
+  now.
+- **A violation reported on code already being touched is fixed as part of that change**, exactly as
+  the other conventions in this directory are applied.
+- **Violations elsewhere are not swept** as a side effect of unrelated work.
+- **The rule carries a comment** recording what remains to be migrated and what promotes it.
+- **The rule is promoted to `error`** once the last violation is resolved, and stops using the
+  constant at that point.
+
+A grandfathered warning is never resolved by disabling the rule, by setting it to `off`, or by
+writing the violating form and leaving it. Those defeat the only purpose the severity has.
+
+### Currently Grandfathered
+
+| Rule                         | What remains                                                       | Promotes when                   |
+| ---------------------------- | ------------------------------------------------------------------ | ------------------------------- |
+| `react/jsx-no-leaked-render` | Components rendering conditionally with `&&` rather than a ternary | Every occurrence uses a ternary |
+
 ## Disabling Rules
 
 Disabling an ESLint rule is a true last resort, used only when there is literally no other option.
@@ -101,6 +139,46 @@ output, but it cannot always be used: early bootstrap and environment modules th
 depends on, build scripts, and standalone CLI tooling are the common cases. In those contexts
 `no-console` may be disabled without meeting the strict bar. It is already turned off in test files
 via `jest.mjs`, so a disable is only ever needed in non-test code.
+
+### `@typescript-eslint/no-unnecessary-condition`: fix the type, never the check
+
+`no-unnecessary-condition` is in the `Limited` category, but a report from it is almost never a
+false positive. The rule is type-driven: it fires precisely because the declared type says the check
+cannot matter. When the check does matter at runtime, the defect is in the **type**, and the type is
+what gets fixed. Disabling the rule freezes the wrong type in place and blinds that site to every
+future violation, and deleting the condition removes a guard the runtime still needs. Both are
+disallowed.
+
+There is essentially always a type-level way out, and it must be taken before a disable is
+considered:
+
+- **Index access.** Because `noUncheckedIndexedAccess` is off, `rows[0]` is typed as the element
+  type rather than `element | undefined`, so a guard on it is reported as unnecessary whenever the
+  element type has no falsy values. Widen the value through the reference type:
+
+  ```typescript
+  const first: (typeof rows)[number] | undefined = rows[0];
+  if (first) {
+    return first.id;
+  }
+  ```
+
+- **A value the type claims is always defined** that in fact arrives from an API response,
+  `JSON.parse`, or a database query. Narrow it with a type guard or a schema at the boundary rather
+  than checking a type nothing ever verified.
+- **An optional chain or `??` applied to a non-nullable value.** Either the operator is genuinely
+  redundant and comes out, or the value really can be absent and the type has to say so.
+- **A comparison against a value the union does not contain.** Either the union is missing a member
+  or the comparison is dead code; both are resolved by editing the code, not by a directive.
+
+A disable is warranted only where the type cannot be corrected from within this repository — a
+third-party declaration that overstates its guarantees, or a generic position where the checker
+resolves a type parameter more narrowly than a caller can. The explanation must name which of those
+applies and why the type could not be fixed.
+
+The index-access case is covered in full by the indexed-access rule in the `typescript/`
+subdirectory of this same `code-quality/` directory (`indexed-access.md` for Claude Code,
+`indexed-access.instructions.md` for Copilot).
 
 ### `react-hooks/refs`: only for cross-module false positives
 

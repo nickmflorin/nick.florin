@@ -24,25 +24,24 @@ export const ResumeModelDrawerTile = <M extends types.ApiModel<T>, T extends Res
   <ResumeModelTile {...props} className={classNames('gap-[10px]', props.className)}>
     <ResumeModelTile.Header model={model} size='medium' titleProps={titleProps} />
     <div className='flex flex-col gap-[12px] overflow-y-auto'>
-      {(types.hasDescription(model) || model.details.length !== 0) && (
+      {types.hasDescription(model) || model.details.length !== 0 ? (
         <div className='flex flex-col gap-[10px] max-w-[700px]'>
           <ResumeModelTile.ModelDescription model={model} />
           <ResumeModelTile.Details details={model.details} size='medium' />
         </div>
-      )}
-      {model.$kind === 'education' && model.courses.length !== 0 && (
+      ) : null}
+      {model.$kind === 'education' && model.courses.length !== 0 ? (
         <Description className='max-w-[800px]'>
           <HumanizedCourses courses={model.courses} />
         </Description>
-      )}
-      {model.skills.length !== 0 &&
-        (model.$kind === 'experience' ? (
-          <ResumeModelTile.Section label='Other Skills'>
-            <Skills className='max-w-[800px]' skills={model.skills} />
-          </ResumeModelTile.Section>
-        ) : (
+      ) : null}
+      {model.skills.length === 0 ? null : model.$kind === 'experience' ? (
+        <ResumeModelTile.Section label='Other Skills'>
           <Skills className='max-w-[800px]' skills={model.skills} />
-        ))}
+        </ResumeModelTile.Section>
+      ) : (
+        <Skills className='max-w-[800px]' skills={model.skills} />
+      )}
     </div>
   </ResumeModelTile>
 );

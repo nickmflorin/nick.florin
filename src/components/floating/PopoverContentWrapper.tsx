@@ -71,7 +71,7 @@ export const PopoverContentWrapper = ({
         },
         <>
           {ele.props.children}
-          {hasArrow && <Arrow className={arrowClassName} context={context} ref={arrowRef} />}
+          {hasArrow ? <Arrow className={arrowClassName} context={context} ref={arrowRef} /> : null}
         </>,
       );
     },

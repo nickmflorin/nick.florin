@@ -91,7 +91,7 @@ const ContentIcon = ({
     dimension='height'
     fit='square'
     icon={icon}
-    isLoading={isLoading && loadingLocation === location}
+    isLoading={isLoading ? loadingLocation === location : false}
     size={toIconSize(iconSize)}
     spinnerClassName={classNames(iconClassName, spinnerClassName)}
   />
@@ -158,7 +158,7 @@ export const ButtonContent = ({
       </div>
       <Spinner
         className={classNames('absolute mx-auto', iconClassName, spinnerClassName)}
-        isLoading={isLoading && loadingLocation === 'over'}
+        isLoading={isLoading ? loadingLocation === 'over' : false}
         size={spinnerSize ?? toIconSize(iconSize)}
       />
       {rightIcon && (isIconProp(rightIcon) || typeof rightIcon === 'string') ? (

@@ -84,18 +84,18 @@ Mutations and server-side fetches are server actions, organized per domain in
 `src/actions/{domain}/` with `verb-noun.ts` naming (e.g. `create-skill.ts`, `fetch-skills.ts`,
 `hide-projects.ts`).
 
-| Directory                | Contents                                                                            |
-| ------------------------ | ----------------------------------------------------------------------------------- |
-| `skills/`                | CRUD + fetch + visibility (show/hide) + highlight + prioritize actions              |
-| `projects/`              | CRUD + fetch + visibility + highlight actions                                       |
-| `experiences/`           | CRUD + fetch + visibility + highlight actions                                       |
-| `educations/`            | CRUD + fetch + visibility + highlight actions                                       |
-| `courses/`               | CRUD + fetch actions                                                                |
-| `repositories/`          | CRUD + fetch + visibility actions                                                   |
-| `companies/`, `schools/` | CRUD only (no visibility toggles)                                                   |
-| `resumes/`               | `fetch-resumes.ts`, `upload-resume.ts`, `delete-resume.ts`, `set-primary-resume.ts` |
-| `details/`               | Detail/nested-detail management for experiences and educations                      |
-| `types/`                 | Per-domain action types + `search.ts`, `controls.ts`                                |
+| Directory                | Contents                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| `skills/`                | CRUD + fetch + visibility (show/hide) + highlight + prioritize actions         |
+| `projects/`              | CRUD + fetch + visibility + highlight actions                                  |
+| `experiences/`           | CRUD + fetch + visibility + highlight actions                                  |
+| `educations/`            | CRUD + fetch + visibility + highlight actions                                  |
+| `courses/`               | CRUD + fetch actions                                                           |
+| `repositories/`          | CRUD + fetch + visibility actions                                              |
+| `companies/`, `schools/` | CRUD only (no visibility toggles)                                              |
+| `resumes/`               | `fetch-resumes.ts`, `upload-resume.ts`, `update-resume.ts`, `delete-resume.ts` |
+| `details/`               | Detail/nested-detail management for experiences and educations                 |
+| `types/`                 | Per-domain action types + `search.ts`, `controls.ts`                           |
 
 Shared top-level modules: `fetches.ts`, `mutations.ts`, `get-entity.ts`, `get-profile.ts`,
 `m2ms.ts`, `visibility.ts`, `pagination.ts`, `schemas.ts`.
@@ -204,4 +204,21 @@ folders) is hyphen-case. Next.js reserved files (`page`, `layout`, `route`, `def
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docs/index.md`                    | Documentation index                                                                                                                                                           |
 | `docs/code-quality/`               | Best practices, linting rules, markdown formatting standards                                                                                                                  |
+| `docs/code-quality/typescript/`    | Types and interfaces, variable naming, exhaustiveness, type guards, indexed access, type coercion                                                                             |
+| `docs/code-quality/react/`         | React and Next.js performance and composition conventions                                                                                                                     |
+| `docs/documentation/`              | How documentation itself is written (code examples in docs)                                                                                                                   |
 | `docs/projects/resume-generation/` | Active project: content centralization + resume generation. Read `README.md` + `status.md` first; context in `context/`, decisions in `decisions.md`, backlog in `backlog.md` |
+
+## Agent Skills (`.claude/skills/`)
+
+Skills are invoked on demand rather than loaded automatically, so they hold large reference corpora
+that would be too expensive to keep in context permanently.
+
+| Skill                         | Contents                                                                      |
+| ----------------------------- | ----------------------------------------------------------------------------- |
+| `sync-ai-config`              | Audits or reconciles the `.claude/rules/` ↔ `.github/instructions/` parity    |
+| `vercel-react-best-practices` | 72 React/Next performance rules from Vercel Engineering (vendored, MIT)       |
+| `vercel-composition-patterns` | 8 component-composition and React 19 rules from Vercel Engineering (vendored) |
+
+The repo-local subsets of the two Vercel skills — only the rules that bite in this codebase — live
+in `.claude/rules/code-quality/react/` and load automatically.

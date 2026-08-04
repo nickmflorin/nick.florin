@@ -1,5 +1,6 @@
 import { NodeType, type ResolvedNode, type ResolvedRole, TitleLayout } from '../data/types';
 import { logo } from '../lib/assets';
+import { formatDateRange, formatRoleLocation } from '../lib/formatters';
 
 import { Pills } from './Pills';
 
@@ -47,45 +48,47 @@ export interface RoleProps {
 
 /**
  * One role. The prose arrives already normalized and resolved for the resume channel (see
- * `rolesByKey`), so this component never decides what is published — only how it looks.
+ * `Sheet`), so this component never decides what is published — only how it looks.
  */
 export const Role = ({ role }: RoleProps) => {
-  const { content, skills, summary } = role.content;
+  const { competencies, content, summary } = role.content;
   return (
     <div className='role'>
       <div className='role-logo'>
-        <img alt={role.company} src={logo(role.logo)} />
+        {role.company.logoFileName === null ? null : (
+          <img alt={role.company.name} src={logo(role.company.logoFileName)} />
+        )}
       </div>
       <div className='role-body'>
         <p className='role-title'>{role.title}</p>
-        <div className='role-company'>{role.company}</div>
+        <div className='role-company'>{role.company.name}</div>
         <div className='role-meta'>
-          <span>{role.dates}</span>
-          <span>{role.location}</span>
+          <span>{formatDateRange(role)}</span>
+          <span>{formatRoleLocation(role)}</span>
         </div>
         {summary.map(node => (
           <p
             className='role-summary'
             dangerouslySetInnerHTML={{ __html: titled(node) }}
-            key={node.id}
+            key={node.slug}
           />
         ))}
         {toSections(content).map(({ list: List, node, prose }) => (
-          <div className='sub' key={node.id}>
-            {node.title !== null && node.titleLayout === TitleLayout.Stacked && (
+          <div className='sub' key={node.slug}>
+            {node.title !== null && node.titleLayout === TitleLayout.Stacked ? (
               <h4 dangerouslySetInnerHTML={{ __html: node.title }} />
-            )}
-            {prose !== '' && <p dangerouslySetInnerHTML={{ __html: prose }} />}
-            {List !== null && (
+            ) : null}
+            {prose === '' ? null : <p dangerouslySetInnerHTML={{ __html: prose }} />}
+            {List === null ? null : (
               <List>
                 {node.children.map(child => (
-                  <li dangerouslySetInnerHTML={{ __html: titled(child) }} key={child.id} />
+                  <li dangerouslySetInnerHTML={{ __html: titled(child) }} key={child.slug} />
                 ))}
               </List>
             )}
           </div>
         ))}
-        <Pills pills={skills} where='main' />
+        <Pills competencies={competencies} where='main' />
       </div>
     </div>
   );

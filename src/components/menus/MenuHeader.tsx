@@ -20,9 +20,9 @@ export const MenuHeader = ({
   if ((children && !isFragment(children)) || search || onSearch) {
     return (
       <div {...props} className={classNames('menu__header', props.className)}>
-        {onSearch && (
+        {onSearch ? (
           <TextInput onChange={e => onSearch(e, e.target.value)} size='small' value={search} />
-        )}
+        ) : null}
         {children}
       </div>
     );

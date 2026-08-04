@@ -13,7 +13,7 @@ import { Sheet } from './Sheet';
 export const ResumeDocument = () => (
   <main className='stacked'>
     {Sheets.map(sheet => (
-      <Sheet key={sheet.id} sheet={sheet} />
+      <Sheet key={sheet.slug} sheet={sheet} />
     ))}
   </main>
 );

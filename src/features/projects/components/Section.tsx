@@ -40,7 +40,7 @@ export const Section = ({
     {...props}
     className={classNames('flex flex-col gap-[12px] max-md:gap-[8px]', props.className)}
   >
-    {(title || description) && (
+    {title || description ? (
       <div className={classNames('flex flex-col gap-[4px]', { 'mb-[4px]': hasMarginBottom })}>
         {typeof title === 'string' ? (
           <SectionTitle isSubSection={isSubSection}>{title}</SectionTitle>
@@ -49,7 +49,7 @@ export const Section = ({
         )}
         {typeof description === 'string' ? <Description>{description}</Description> : description}
       </div>
-    )}
+    ) : null}
     {children}
   </div>
 );

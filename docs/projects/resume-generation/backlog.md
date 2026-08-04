@@ -43,6 +43,29 @@ discuss together, then record the outcome in `decisions.md`.
 - [ ] LinkedIn API feasibility: what profile-update surfaces are actually available (official API
       access model, scopes, approval process) — determines how much LinkedIn syndication can be
       automated vs. assisted.
+- [ ] **(blocker for the fixture work)** Fixture format and round-trip design — see
+      [context/open-questions.md](./context/open-questions.md). Covers three coupled decisions: what
+      file format the fixtures live in (JSON round-trips but authors badly; TypeScript authors well
+      but does not machine-write), how `id`/`createdAt`/`updatedAt` are carried optionally so a
+      newly authored record lets Prisma populate them while a pulled one keeps what it had, and how
+      a destructive change is surfaced. The candidate for the last is a diff-style flow that prints
+      the change set and requires confirmation for deletions and overwrites unless a flag opts out.
+- [ ] Contextual representation of labels and content — see
+      [context/open-questions.md](./context/open-questions.md). Generalizes the `label`/`shortLabel`
+      split beyond two contexts, and asks how one record can render as several strings in a context
+      (the three `Accessibility` competencies are the motivating case). Should be settled together
+      with `Detail.shortDescription` above, since both are the same problem at different
+      granularity.
+- [ ] Per-medium display configuration beyond visibility — see
+      [context/open-questions.md](./context/open-questions.md). Syndication answers whether a record
+      appears on a channel and nothing about how it is displayed there. Decide whether display
+      config lives on per-medium presentation models (the `Resume*` precedent) or as per-channel
+      configuration on the shared records.
+- [ ] Competency categorization — see [context/open-questions.md](./context/open-questions.md).
+      Whether to carry the legacy `Skill.categories` / `programmingLanguages` / `programmingDomains`
+      forward onto `Competency`, collapse them into one tagging mechanism, or model categories as
+      their own table — and whether a category and a `ResumeCompetenciesGroup` are the same thing,
+      in which case the sidebar groups become derivable rather than authored.
 - [ ] GitHub-driven content sync design: the deterministic flows (projects, job info, skills) and
       the Claude-assisted skill-inference flow.
 
@@ -50,6 +73,24 @@ discuss together, then record the outcome in `decisions.md`.
 
 _Gated on the Research & Discussion items above — no schema work until those are settled._
 
+- [x] Merge duplicate competencies (done 2026-08-03): 144 records down to 133. What made this
+      lossless was giving the two surfaces different labels — the sidebar (a little over 200px wide)
+      renders `shortLabel ?? label` while main-column role chips render `label` — so a competency
+      can read `Nx` in a sidebar pill and `Monorepo (Nx)` on a chip from one record. Merged:
+      `SASS`/`SCSS` into `SASS / SCSS`; `SSR` into `SSR / RSC`; `Django / DRF` into
+      `Django REST Framework`; `Nx`/`Nx Monorepo`/`Monorepo (Nx, lerna)` into `Monorepo (Nx)`;
+      `CI/CD` into `CI/CD Pipeline Design`; `pnpm` into `pnpm workspaces`; `Bundle Analyzer` into
+      `Bundle Analysis`; `Component Development` into `Component Architecture`. `AWS S3 / EC2` was
+      **split** into `AWS S3` plus a new `AWS EC2` rather than merged. Left distinct by decision:
+      the three `Accessibility` variants (the `WCAG` and `axe-core` tokens are worth keeping
+      scannable), `Django` and `Django Channels`, `AWS` vs `AWS Lambda`, `React` vs `React Native`,
+      `Redux` vs `Redux-Sagas`, and the category labels `Testing (RTL, Jest, Playwright)` and
+      `Unit / Integration / E2E`.
+- [ ] **(immediate follow-up to the types migration)** Assign proficiencies.
+      `Competency.proficiency` is nullable because only 24 of the 145 had a level authored — those
+      were the sidebar bars. The remaining 121 appeared only as pills or role chips and were never
+      rated. A competency rendered in a `BARS` group must have one, which is currently an
+      application-level invariant rather than a schema constraint.
 - [ ] Land the new content model (`ContentNode`, `NestedContentNode`, syndication enums) in
       `schema.prisma` as parallel models — steps 2–6 of the migration plan in resume-gen's
       `docs/content-model.md`.
@@ -86,7 +127,9 @@ _Gated on the Research & Discussion items above — no schema work until those a
 
 ## Fixtures & DB Sync
 
-- [ ] Implement the bidirectional fixture ⇄ DB sync per the research outcome.
+- [ ] Implement the bidirectional fixture ⇄ DB sync per the research outcome, including the optional
+      identity fields, the merge strategy when both sides changed, and the destructive- change
+      confirmation flow with a flag to bypass it for scripted runs.
 - [ ] Add fixtures for the new content models once they exist.
 - [ ] Add a dev-DB `jsonify` script to `package.json` (only `fixtures:jsonify:prod` exists today).
       Not gated — small standalone improvement.
@@ -149,9 +192,30 @@ components must stay pure (no Next-coupled APIs) so they serve both._
       pointer to a sibling file.
 - [ ] Compare the generated PDF against resume-gen's output for parity, then retire resume-gen (the
       content is frozen at `bb6f5fd`, so the target does not move).
-- [ ] Later: expose generation in the browser (button → on-the-fly PDF from live DB content) — this
-      is where server-side Chromium against served routes and a render-token auth bypass in
-      `src/proxy.ts` come back into scope.
+- [ ] **(blocker for the rest of this group)** Decide how a generated resume actually reaches a
+      reader — see [context/open-questions.md](./context/open-questions.md). Three candidates:
+      server-side generation on demand, browser-native printing of an in-app view, or serving a
+      pre-generated artifact. They are not mutually exclusive, and the third is mostly built
+      already.
+- [ ] Automate the existing upload path: have `pnpm resume:generate` hand its PDF to `uploadResume`
+      rather than requiring a manual upload through the admin CMS. The `Resume` model, the Vercel
+      Blob integration and the `primary` flag all exist today — this closes the loop with no new
+      infrastructure and no server-side Chromium.
+- [ ] Make the generated filename sortable before anything selects "the newest" by name.
+      `Resume-Aug-03-2026-5:12pm.pdf` does not sort lexicographically by date (abbreviated month
+      name, non-padded hour) and the colon is illegal on Windows and awkward in a URL. An ISO-8601
+      stem (`Resume-2026-08-03T17-12.pdf`) sorts correctly and travels anywhere.
+- [ ] Add a download control to `/documents/resume`, once the delivery question is settled. The
+      cheap version is `window.print()` against the stacked view, which already carries
+      `@page { size: Letter; margin: 0 }` and `print-color-adjust: exact`; the honest version serves
+      a canonical artifact so that what a reader receives is what was reviewed.
+- [ ] Only if server-side generation wins: replace the Chrome CLI spawn in
+      `src/scripts/generate-resume/pdf.ts` with `puppeteer-core` + `@sparticuz/chromium`, driving
+      one browser instance instead of one process per sheet, and ensure the fonts, logos and
+      compiled stylesheet reach the function bundle (`outputFileTracingIncludes`, or precompiled at
+      build time). This is also where a render-token auth bypass in `src/proxy.ts` would come back
+      into scope — though feeding the inlined single-file artifact to `page.setContent` avoids
+      serving a route to the printer at all.
 - [ ] Revisit hand-assigned pagination (`Sheet`/`pages.ts`) — keep manual, or automate fit detection
       (resume-gen clips overflow silently; nothing checks it).
 
