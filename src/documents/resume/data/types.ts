@@ -265,13 +265,13 @@ export interface School {
  *
  * Prisma Additional Fields: the standard audit set, plus:
  *
- * - `aboutParagraphs` — `ProfileAboutParagraph[] @relation("aboutParagraphs")`
+ * - `about` — `ProfileAboutParagraph[] @relation("about")`
  * - `highlights` — `ProfileHighlight[] @relation("highlights")`
- * - `contactEntries` — `ProfileContactEntry[] @relation("contactEntries")`
+ * - `contacts` — `ProfileContactEntry[] @relation("contacts")`
  */
 export interface Profile {
-  readonly aboutParagraphs: readonly ProfileAboutParagraph[];
-  readonly contactEntries: readonly ProfileContactEntry[];
+  readonly about: readonly ProfileAboutParagraph[];
+  readonly contacts: readonly ProfileContactEntry[];
   readonly displayName: string;
   readonly emailAddress: string;
   readonly firstName: string;
@@ -284,7 +284,7 @@ export interface Profile {
   readonly highlights: readonly ProfileHighlight[];
   /**
    * Nullable here although the legacy column is required. The paragraphs in
-   * {@link Profile.aboutParagraphs} supersede it for the resume, and duplicating the first of them
+   * {@link Profile.about} supersede it for the resume, and duplicating the first of them
    * into a second field would create two sources for one fact.
    */
   readonly intro: null | string;
@@ -479,6 +479,12 @@ export interface Competency extends Syndicated {
    * `Skill.experience`.
    */
   readonly experience: null | number;
+  /**
+   * Whether the competency appears on the website's dashboard page.
+   *
+   * Subordinate to syndication: meaningful only when the record syndicates to the `WEBSITE`
+   * channel, and inert otherwise — a record withheld from the website never has this read.
+   */
   readonly isHighlighted: boolean;
   readonly isPrioritized: boolean;
   readonly label: string;
@@ -521,6 +527,10 @@ export interface Role extends ContentOwner {
   readonly company: Company;
   readonly endDate: Date | null;
   readonly isCurrent: boolean;
+  /**
+   * Whether the role appears on the website's dashboard page. Subordinate to syndication;
+   * see {@link Competency.isHighlighted}.
+   */
   readonly isHighlighted: boolean;
   /**
    * When true the role renders as `Remote` and carries no city or state at all, rather than
@@ -551,6 +561,10 @@ export interface Degree extends ContentOwner {
   readonly endDate: Date | null;
   readonly gpa: null | string;
   readonly isCurrent: boolean;
+  /**
+   * Whether the degree appears on the website's dashboard page. Subordinate to syndication;
+   * see {@link Competency.isHighlighted}.
+   */
   readonly isHighlighted: boolean;
   /**
    * A degree begun and deliberately paused. Renders in place of an end date.

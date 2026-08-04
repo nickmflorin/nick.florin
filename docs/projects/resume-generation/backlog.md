@@ -43,13 +43,13 @@ discuss together, then record the outcome in `decisions.md`.
 - [ ] LinkedIn API feasibility: what profile-update surfaces are actually available (official API
       access model, scopes, approval process) — determines how much LinkedIn syndication can be
       automated vs. assisted.
-- [ ] **(blocker for the fixture work)** Fixture format and round-trip design — see
-      [context/open-questions.md](./context/open-questions.md). Covers three coupled decisions: what
-      file format the fixtures live in (JSON round-trips but authors badly; TypeScript authors well
-      but does not machine-write), how `id`/`createdAt`/`updatedAt` are carried optionally so a
-      newly authored record lets Prisma populate them while a pulled one keeps what it had, and how
-      a destructive change is surfaced. The candidate for the last is a diff-style flow that prints
-      the change set and requires confirmation for deletions and overwrites unless a flag opts out.
+- [x] **(blocker for the fixture work)** Fixture format and round-trip design — resolved 2026-08-04
+      (see decisions.md): YAML, one file per model in `src/documents/resume/fixtures/`, authoring
+      shape (array position derives `order`, defaults omitted, slug references, Prisma enum
+      identifiers), slugs as the correlation key with `id`/`createdAt`/`updatedAt` carried as an
+      optional `meta:` block written back by the first push, and sticky generated node slugs. The
+      third coupled decision — how a destructive change is surfaced (the diff-style confirmation
+      flow) — remains open and is covered by the fixture ⇄ DB sync design item above.
 - [ ] Contextual representation of labels and content — see
       [context/open-questions.md](./context/open-questions.md). Generalizes the `label`/`shortLabel`
       split beyond two contexts, and asks how one record can render as several strings in a context
@@ -60,7 +60,9 @@ discuss together, then record the outcome in `decisions.md`.
       [context/open-questions.md](./context/open-questions.md). Syndication answers whether a record
       appears on a channel and nothing about how it is displayed there. Decide whether display
       config lives on per-medium presentation models (the `Resume*` precedent) or as per-channel
-      configuration on the shared records.
+      configuration on the shared records. Already settled outside this item (2026-08-04, see
+      decisions.md): `isHighlighted` stays a plain boolean meaning dashboard presence, subordinate
+      to website syndication.
 - [ ] Competency categorization — see [context/open-questions.md](./context/open-questions.md).
       Whether to carry the legacy `Skill.categories` / `programmingLanguages` / `programmingDomains`
       forward onto `Competency`, collapse them into one tagging mechanism, or model categories as
@@ -94,6 +96,18 @@ _Gated on the Research & Discussion items above — no schema work until those a
 - [ ] Land the new content model (`ContentNode`, `NestedContentNode`, syndication enums) in
       `schema.prisma` as parallel models — steps 2–6 of the migration plan in resume-gen's
       `docs/content-model.md`.
+- [ ] Correlate content and sub-content to competencies (added 2026-08-04). `ContentNode` and
+      `NestedContentNode` already carry a competencies relation in the rehearsal types, but the
+      correlations are not authored anywhere yet. A content or sub-content node must be able to tag
+      the specific competencies it relates to — and tagging is available **only** on the content
+      items of a `Role` or `Degree`, never on other prose rows (profile about paragraphs,
+      highlights, contact entries).
+- [ ] Add competency-pill display controls to every model with associated competencies (added
+      2026-08-04): a `competenciesVisible` flag toggling whether the pills render at all, plus a
+      competencies syndication-channels enum array controlling which mediums the pills render on.
+      Applies uniformly to `ContentNode`, `NestedContentNode`, `Role`, `Degree` and any other
+      competency-bearing model — the pills' visibility is controllable both overall and
+      per-syndication, independently of the owning record's own syndication.
 - [ ] Design the `Competency` model — the parallel successor to `Skill` (added 2026-08-02; named
       2026-08-02, see decisions.md). Requirements:
   - More control and output configurability than the current `Skill` model.
@@ -127,10 +141,20 @@ _Gated on the Research & Discussion items above — no schema work until those a
 
 ## Fixtures & DB Sync
 
+- [x] Establish the YAML fixture files for the new models (done 2026-08-04): one file per model in
+      `src/documents/resume/fixtures/` (`competencies`, `companies`, `schools`, `profile`, `roles`,
+      `degrees`, `resume-sheets`), emitted from the TS data modules by `pnpm resume:fixtures`
+      (`src/scripts/emit-resume-fixtures.ts`, Prettier as the canonical formatter). Until the sync
+      tooling lands the data modules remain the operative source; parity is maintained by
+      regenerating.
+- [ ] Update project context, skills and agent instructions to require parity between the TS data
+      modules and the YAML fixtures whenever content is added, removed or modified in the interim.
+- [ ] Add zod schemas for the YAML fixtures (parse on read, validate on write, fail hard on
+      anomalies such as duplicate slugs) — the entry point for the sync tooling below.
 - [ ] Implement the bidirectional fixture ⇄ DB sync per the research outcome, including the optional
-      identity fields, the merge strategy when both sides changed, and the destructive- change
-      confirmation flow with a flag to bypass it for scripted runs.
-- [ ] Add fixtures for the new content models once they exist.
+      `meta:` identity block, sticky node-slug write-back, the merge strategy when both sides
+      changed, and the destructive-change confirmation flow with a flag to bypass it for scripted
+      runs.
 - [ ] Add a dev-DB `jsonify` script to `package.json` (only `fixtures:jsonify:prod` exists today).
       Not gated — small standalone improvement.
 - [ ] Close fixture coverage gaps: `Detail`/`Experience`/`Education`/`Course` exist only nested
@@ -218,6 +242,10 @@ components must stay pure (no Next-coupled APIs) so they serve both._
       serving a route to the printer at all.
 - [ ] Revisit hand-assigned pagination (`Sheet`/`pages.ts`) — keep manual, or automate fit detection
       (resume-gen clips overflow silently; nothing checks it).
+- [ ] **(deliberately last — do not prioritize)** Keep a fixture-only generation mode: once the
+      generation script sources content from the database, it must still be able to run from the
+      YAML fixture data alone — no database queries — for local development, so the resume output
+      can be tested before the fixtures are written to the database (added 2026-08-04).
 
 ## Content
 

@@ -91,19 +91,13 @@ full-dump; fixture → DB exists only as a full reload into an empty DB via `pri
 fixtures are also meant to be the surface Claude iterates on without a database running, which is
 what makes this more than a seeding concern.
 
-**Round-tripping identity.** Writing back to the database has to preserve the rows that already
-exist rather than recreating them. That means the fixture format has to carry `id`, `createdAt` and
-`updatedAt` — but _optionally_, so that a record Claude just authored has none and lets Prisma
-populate them, while a record that came from a previous pull keeps the ones it had. The rehearsal
-types deliberately omit these fields (see `src/documents/resume/data/types.ts`); the fixture format
-is where they have to come back.
-
-**Format.** Undecided. The existing fixtures are JSON, which round-trips cleanly and diffs per-line,
-but is poor to author by hand and cannot carry a comment explaining why a record is the way it is.
-TypeScript modules — what `src/documents/resume/data/` uses today — are far better to author and can
-express a shared record as a constant referenced from several places, but are not straightforwardly
-writable by a machine pulling from the database. A hybrid (author in TypeScript, sync through JSON)
-is a third option and needs its own answer for how a pull merges into authored code.
+**Format and round-tripping identity — resolved 2026-08-04** (see the fixture-format entry in
+[decisions.md](../decisions.md)): YAML, one file per model in `src/documents/resume/fixtures/`,
+authoring shape with defaults omitted, slugs as the correlation key. Database identity (`id`,
+`createdAt`, `updatedAt`) is carried as an optional `meta:` block that the first push writes back
+and a newly authored record omits, and generated content-node slugs are stamped into the fixture
+once created (sticky), so a title edit never changes identity. The fixtures are bootstrapped from
+the TS data modules by `pnpm resume:fixtures`, which is also the interim parity mechanism.
 
 **Destructive-change safety.** A pull that silently drops a record someone added on the other side,
 or a push that overwrites a field edited in the admin CMS, is the failure mode that matters. The
@@ -158,6 +152,10 @@ set of models per medium; or whether it becomes per-channel configuration hangin
 records. The first duplicates structure per medium, the second puts medium-specific columns on
 models that are supposed to be medium-agnostic. This is the same tension the pagination decision
 resolved in favor of the presentation model, and that precedent may or may not generalize.
+
+Settled 2026-08-04 and out of scope here: `isHighlighted` stays a plain boolean meaning presence on
+the website's dashboard page, subordinate to `WEBSITE` syndication — inert for any record that does
+not syndicate there (see decisions.md). It does not become per-channel display configuration.
 
 ## Competency categorization
 

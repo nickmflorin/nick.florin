@@ -327,6 +327,9 @@ importers:
       utility-types:
         specifier: ^3.10.0
         version: 3.11.0
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
       yaml-eslint-parser:
         specifier: ^1.2.3
         version: 1.3.2

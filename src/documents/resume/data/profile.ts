@@ -8,7 +8,7 @@ import { ContactIcon, type Profile } from './types';
  * printed page than on the website costs nothing.
  */
 export const NickFlorin: Profile = {
-  aboutParagraphs: [
+  about: [
     {
       content: `A detail-obsessed, ownership-driven, product-first engineer who goes well beyond
         closing tickets. Deeply invested in the <em>why</em> behind every feature, proactively
@@ -40,7 +40,7 @@ export const NickFlorin: Profile = {
       slug: 'track-record',
     },
   ],
-  contactEntries: [
+  contacts: [
     {
       excludedChannels: [],
       icon: ContactIcon.At,

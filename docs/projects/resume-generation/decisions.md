@@ -16,6 +16,77 @@ Format:
 
 ---
 
+## 2026-08-04 — `isHighlighted` stays a boolean: dashboard presence, subordinate to website syndication
+
+**Decision:** `isHighlighted` on the new models (`Competency`, `Role`, `Degree`, and the successor
+of any other legacy model carrying `highlighted`) remains a plain boolean with a single meaning:
+whether the record appears on the website's dashboard page. It is subordinate to syndication — it
+has meaning only when the record actually syndicates to the `WEBSITE` channel (`isVisible: true`
+and `WEBSITE` not excluded). For a record withheld from the website the flag is simply inert: never
+read, not an anomaly, and nothing (including the data-cleanup warnings) treats it as one. It does
+not become per-channel display configuration.
+
+**Why:** The flag has exactly one consumer — the dashboard parallel-route slots fetch with
+`filters: { highlighted: true }` — and a boolean answers that consumer completely. Folding it into
+the open per-medium display-configuration question would generalize a mechanism with a single,
+working use. Making it subordinate to syndication preserves the invariant that syndication alone
+decides channel presence; `isHighlighted` only curates within the website channel, never into it.
+
+## 2026-08-04 — Fixture format: YAML, one file per model, authoring shape
+
+**Decision:** The new-model content fixtures are YAML files, one per model, in
+`src/documents/resume/fixtures/`: `competencies.yaml`, `companies.yaml`, `schools.yaml`,
+`profile.yaml`, `roles.yaml`, `degrees.yaml` and `resume-sheets.yaml` (a competency group belongs
+to exactly one sheet, so groups nest inside the sheets file). The settled details:
+
+1. **YAML as the serialization format.** The content is prose-dominant, and YAML's folded scalars
+   store a paragraph as wrapped plain lines, so a one-word edit diffs as prose rather than as one
+   enormous escaped JSON line. YAML also carries comments, and the `yaml` package (now a pinned
+   devDependency) can rewrite a document by mutating values in place should comment preservation
+   ever be needed on a machine rewrite.
+2. **One file per model, not one file per record.** Array position within a file derives the
+   Prisma `order` value (see 3), and separate per-record files have no inherent order, which would
+   reintroduce explicit `order:` fields or a manifest. Scoped diffs — the per-record layout's main
+   draw — already fall out of YAML's line-based prose. Revisit only if a file becomes unwieldy.
+3. **Fixtures store the authoring shape, not the normalized shape.** `order` is implied by array
+   position; fields carrying their default are omitted entirely (`isVisible: true`,
+   `excludedChannels: []`, `false`-valued flags, `null`s); relations are slug references; enum
+   values are the SCREAMING_SNAKE strings that become Prisma enum identifiers verbatim, so no
+   mapping layer sits between fixture, zod schema and Prisma.
+4. **Slug is the correlation key.** Database identity (`id`, `createdAt`, `updatedAt`) surfaces
+   only as metadata — an optional `meta:` block that the first push writes back and a newly
+   authored record simply omits — while sync correlation relies on slugs above all else.
+   Content-node slugs, derived from titles by normalization today, become **sticky**: stamped into
+   the fixture once generated, so a later title edit never silently changes identity into a
+   delete-plus-create.
+5. **Comments stay minimal.** The explanatory comments in the TS data modules mostly do not carry
+   over — the YAML and the Prisma schema make them redundant. Anything that must survive a machine
+   rewrite belongs in a `notes:` data field, which round-trips as data; each generated file
+   otherwise carries only a three-line provenance banner.
+6. **Prettier is the canonical formatter.** `pnpm resume:fixtures` ends with a Prettier pass over
+   the fixtures (mirroring the `fixtures:jsonify:prod` → `fixtures:format` precedent), so emitter
+   style never disagrees with a committed file.
+7. **The TS data modules are the bootstrap and the interim source of truth.**
+   `src/scripts/emit-resume-fixtures.ts` (`pnpm resume:fixtures`) emits the fixtures from
+   `src/documents/resume/data/`; until the sync tooling lands, content edits happen in the data
+   modules and are re-emitted. The data modules retire together with the old fixture layout once
+   the Prisma migration is complete, at which point the YAML files become the authored surface.
+
+**Why:** The fixture format has to satisfy four pulls at once — machine-writable (DB pull),
+machine-readable (DB push), pleasant for Claude to iterate on without a database, and readable in
+a git diff — and prose-heavy content is where JSON fails the last two hardest. Authoring shape
+was chosen over normalized shape because the fixtures are an editing surface first: explicit
+`order` columns are renumbering noise a human will get wrong, while array order cannot be wrong.
+
+**Alternatives considered:** JSON (round-trips cleanly and the existing machinery exists, but no
+comments and paragraph edits diff as one line); TypeScript modules (best authoring ergonomics, but
+not machine-writable in any principled way); a TS-authoring/JSON-sync hybrid (a pull can only
+update the generated artifact, leaving the authored TS stale — two sources of truth inside the
+fixture layer itself); Markdown with YAML frontmatter (per-node syndication flags and identity
+cannot attach to markdown sections, so the frontmatter swallows the document); JSON5/JSONC
+(comments, but the prose problem remains and no mature comment-preserving writer); per-record
+files (rejected per 2 — deletion visibility is the sync tool's diff output instead).
+
 ## 2026-08-03 — Generation script implementation details
 
 **Decision:** Settles the details left open when the browserless-pipeline decision below was made,

@@ -45,7 +45,7 @@ export const Sidebar = ({ competencyGroups, isIntroVisible }: SidebarProps) => (
     {isIntroVisible ? (
       <>
         <p className='s-heading'>About</p>
-        {NickFlorin.aboutParagraphs.map(paragraph => (
+        {NickFlorin.about.map(paragraph => (
           <p
             className='about'
             dangerouslySetInnerHTML={{ __html: collapse(paragraph.content) }}
@@ -65,7 +65,7 @@ export const Sidebar = ({ competencyGroups, isIntroVisible }: SidebarProps) => (
         <hr className='sdiv' />
         <p className='s-heading'>Contact</p>
         <ul className='contact-list'>
-          {NickFlorin.contactEntries.map(entry => (
+          {NickFlorin.contacts.map(entry => (
             <li key={entry.slug}>
               <span className='ci'>
                 <img alt='' src={icon(ContactIcons[entry.icon])} />

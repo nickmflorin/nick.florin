@@ -1,0 +1,299 @@
+# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
+# Until the fixture <-> database sync tooling lands, those modules are the operative source:
+# edit them and regenerate rather than editing this file directly.
+competencies:
+  - label: Accessibility
+    slug: accessibility
+  - label: Accessibility (axe-core)
+    slug: accessibility-axe-core
+  - label: Accessibility (WCAG)
+    slug: accessibility-wcag
+  - label: Affected-task Pipelines
+    slug: affected-task-pipelines
+  - label: Agent Guardrails (ESLint, CI)
+    slug: agent-guardrails-eslint-ci
+  - label: Agentic Workflows
+    slug: agentic-workflows
+  - label: AI Code Review Automation
+    slug: ai-code-review-automation
+  - label: Apollo Server
+    slug: apollo-server
+  - label: Auth0
+    slug: auth0
+  - label: AWS
+    proficiency: ADVANCED
+    slug: aws
+  - label: AWS EC2
+    slug: aws-ec2
+  - label: AWS Elastic Beanstalk
+    slug: aws-elastic-beanstalk
+  - label: AWS Lambda
+    slug: aws-lambda
+  - label: AWS S3
+    slug: aws-s3
+  - label: black
+    slug: black
+  - label: Bundle Analysis
+    slug: bundle-analysis
+  - label: C++
+    proficiency: FAMILIAR
+    slug: c
+  - label: Celery
+    slug: celery
+  - label: CI/CD Pipeline Design
+    shortLabel: CI/CD
+    slug: ci-cd-pipeline-design
+  - label: CircleCI
+    slug: circleci
+  - label: Claude Code
+    slug: claude-code
+  - label: Claude Design
+    slug: claude-design
+  - label: codecov
+    slug: codecov
+  - label: Commitlint
+    slug: commitlint
+  - label: Component Architecture
+    slug: component-architecture
+  - label: Context Engineering
+    slug: context-engineering
+  - label: Credit Default Risk Modeling
+    slug: credit-default-risk-modeling
+  - label: Cross-Functional Delivery
+    slug: cross-functional-delivery
+  - label: Cursor
+    slug: cursor
+  - label: Custom Agents & Skills
+    slug: custom-agents-skills
+  - label: Cypress
+    slug: cypress
+  - label: d3.js
+    slug: d3-js
+  - label: Datadog
+    slug: datadog
+  - label: Dependabot
+    slug: dependabot
+  - label: Design Systems
+    slug: design-systems
+  - label: Design / UX Partnership
+    slug: design-ux-partnership
+  - label: Developer Experience
+    slug: developer-experience
+  - label: Django
+    slug: django
+  - label: Django Channels
+    slug: django-channels
+  - label: Django REST Framework
+    proficiency: EXPERT
+    shortLabel: Django / DRF
+    slug: django-rest-framework
+  - label: Docker
+    proficiency: ADVANCED
+    slug: docker
+  - label: ElasticSearch
+    slug: elasticsearch
+  - label: Emotion
+    slug: emotion
+  - label: Engineering Leadership
+    slug: engineering-leadership
+  - label: ESLint
+    slug: eslint
+  - label: Event-Driven Architecture
+    slug: event-driven-architecture
+  - label: Express.js
+    proficiency: PROFICIENT
+    slug: express-js
+  - label: flake8
+    slug: flake8
+  - label: Flask
+    proficiency: EXPERT
+    slug: flask
+  - label: Full-Stack Ownership
+    slug: full-stack-ownership
+  - label: GCP
+    proficiency: PROFICIENT
+    slug: gcp
+  - label: GitHub Actions
+    slug: github-actions
+  - label: GitHub Copilot
+    slug: github-copilot
+  - label: Go
+    proficiency: FAMILIAR
+    slug: go
+  - label: GraphQL
+    proficiency: ADVANCED
+    slug: graphql
+  - label: GraphQL Schema Design
+    slug: graphql-schema-design
+  - label: Husky
+    slug: husky
+  - label: JavaScript
+    proficiency: EXPERT
+    slug: javascript
+  - label: Jenkins
+    slug: jenkins
+  - label: Jest
+    slug: jest
+  - label: Lerna
+    slug: lerna
+  - label: lint-staged
+    slug: lint-staged
+  - label: Mantine
+    slug: mantine
+  - label: MCP Integrations
+    slug: mcp-integrations
+  - label: Mesh-Style Architecture
+    slug: mesh-style-architecture
+  - label: Microfrontends
+    slug: microfrontends
+  - label: Microservices
+    slug: microservices
+  - label: MongoDB
+    slug: mongodb
+  - label: Monorepo (Nx)
+    shortLabel: Nx
+    slug: monorepo-nx
+  - label: Monte Carlo Methods
+    slug: monte-carlo-methods
+  - label: MUI (Material UI)
+    slug: mui-material-ui
+  - label: mypy
+    slug: mypy
+  - label: mySQL
+    slug: mysql
+  - label: Next.js
+    proficiency: EXPERT
+    slug: next-js
+  - label: Node.js
+    proficiency: ADVANCED
+    slug: node-js
+  - label: NoSQL Databases
+    proficiency: FAMILIAR
+    slug: nosql-databases
+  - label: Numerical Computation
+    slug: numerical-computation
+  - label: Observability
+    slug: observability
+  - label: pandas
+    slug: pandas
+  - label: Performance Engineering
+    slug: performance-engineering
+  - label: Playwright
+    slug: playwright
+  - label: pnpm workspaces
+    shortLabel: pnpm
+    slug: pnpm-workspaces
+  - label: Poetry
+    slug: poetry
+  - label: PostgreSQL
+    proficiency: ADVANCED
+    slug: postgresql
+  - label: Prettier
+    slug: prettier
+  - label: Prisma
+    proficiency: ADVANCED
+    slug: prisma
+  - label: Prompt Engineering
+    slug: prompt-engineering
+  - label: pylint
+    slug: pylint
+  - label: pytest
+    slug: pytest
+  - label: Python
+    proficiency: EXPERT
+    slug: python
+  - label: RabbitMQ
+    slug: rabbitmq
+  - label: Radix UI
+    slug: radix-ui
+  - label: React
+    proficiency: EXPERT
+    slug: react
+  - label: React Native
+    slug: react-native
+  - label: React-Redux
+    slug: react-redux
+  - label: React Testing Library
+    slug: react-testing-library
+  - label: Redis
+    proficiency: FAMILIAR
+    slug: redis
+  - label: Redux
+    proficiency: ADVANCED
+    slug: redux
+  - label: Redux-Sagas
+    slug: redux-sagas
+  - label: Remote Build Caching
+    slug: remote-build-caching
+  - label: Renovate
+    slug: renovate
+  - label: Responsive Design
+    slug: responsive-design
+  - label: REST API Design
+    slug: rest-api-design
+  - label: Reusable Workflows
+    slug: reusable-workflows
+  - label: SASS / SCSS
+    shortLabel: SASS
+    slug: sass-scss
+  - label: Server-Oriented Frontend
+    slug: server-oriented-frontend
+  - label: Service-Oriented Arch
+    slug: service-oriented-arch
+  - label: shadcn/ui
+    slug: shadcn-ui
+  - label: SonarQube
+    slug: sonarqube
+  - label: Spec-Driven Development
+    slug: spec-driven-development
+  - label: SQLAlchemy
+    slug: sqlalchemy
+  - label: SSR / RSC
+    shortLabel: SSR
+    slug: ssr-rsc
+  - label: Storybook
+    slug: storybook
+  - label: Structured Logging
+    slug: structured-logging
+  - label: Styled Components
+    slug: styled-components
+  - label: Stylelint
+    slug: stylelint
+  - label: Swift
+    proficiency: PROFICIENT
+    slug: swift
+  - label: Systems Architecture
+    slug: systems-architecture
+  - label: TailwindCSS
+    proficiency: ADVANCED
+    slug: tailwindcss
+  - label: Testing (RTL, Jest, Playwright)
+    slug: testing-rtl-jest-playwright
+  - label: tox
+    slug: tox
+  - label: Tree-shaking
+    slug: tree-shaking
+  - label: TRPC
+    slug: trpc
+  - label: Turborepo
+    slug: turborepo
+  - label: TypeScript
+    proficiency: EXPERT
+    slug: typescript
+  - label: TypeScript Strict
+    slug: typescript-strict
+  - label: Unit / Integration / E2E
+    slug: unit-integration-e2e
+  - label: Vercel
+    proficiency: PROFICIENT
+    slug: vercel
+  - label: Visual Regression
+    slug: visual-regression
+  - label: vitest
+    slug: vitest
+  - label: WebSockets
+    slug: websockets
+  - label: yarn workspaces
+    slug: yarn-workspaces
+  - label: Zod
+    slug: zod

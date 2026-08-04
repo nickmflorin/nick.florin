@@ -1,0 +1,52 @@
+# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
+# Until the fixture <-> database sync tooling lands, those modules are the operative source:
+# edit them and regenerate rather than editing this file directly.
+companies:
+  - city: Vienna
+    logoFileName: Corsha.svg
+    name: Corsha
+    slug: corsha
+    state: VA
+  - logoFileName: Craft.svg
+    name: Craft Education System
+    slug: craft-education-system
+  - city: Los Angeles
+    logoFileName: GreenBudget.svg
+    name: GreenBudget
+    slug: greenbudget
+    state: VA
+  - city: Los Angeles
+    logoFileName: Nirveda.svg
+    name: Nirveda Cognition
+    slug: nirveda-cognition
+    state: VA
+  - city: San Francisco
+    logoFileName: NorthBeam.svg
+    name: Northbeam
+    slug: northbeam
+    state: CA
+  - city: Olney
+    logoFileName: PIAnalytics.svg
+    name: PI Analytics
+    slug: pi-analytics
+    state: MD
+  - city: Houston
+    logoFileName: Saracen.svg
+    name: Saracen Energy
+    slug: saracen-energy
+    state: TX
+  - city: Washington
+    logoFileName: ShelfCycle.svg
+    name: ShelfCycle
+    slug: shelfcycle
+    state: DC
+  - city: Washington
+    logoFileName: TheAtlantic.png
+    name: The Atlantic
+    slug: the-atlantic
+    state: DC
+  - city: Washington
+    logoFileName: RockCreek.svg
+    name: The Rock Creek Group
+    slug: the-rock-creek-group
+    state: DC

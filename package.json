@@ -55,7 +55,9 @@
     "resume:generate": "pnpm run node:validate && pnpm exec tsx --tsconfig ./tsconfig.json src/scripts/generate-resume/index.ts",
     "resume:generate:html": "pnpm run resume:generate --steps=html",
     "resume:generate:pdf": "pnpm run resume:generate --steps=pdf",
-    "resume:generate:artifact": "pnpm run resume:generate --steps=artifact"
+    "resume:generate:artifact": "pnpm run resume:generate --steps=artifact",
+    "resume:fixtures": "pnpm run node:validate && pnpm exec tsx --tsconfig ./tsconfig.json src/scripts/emit-resume-fixtures.ts && pnpm run resume:fixtures:format",
+    "resume:fixtures:format": "pnpm exec prettier ./src/documents/resume/fixtures/*.yaml --write --ignore-path=./.prettierignore"
   },
   "dependencies": {
     "@clerk/backend": "^3.15.0",
@@ -166,6 +168,7 @@
     "typescript": "~5.5.4",
     "typescript-eslint": "^8.59.3",
     "utility-types": "^3.10.0",
+    "yaml": "^2.9.0",
     "yaml-eslint-parser": "^1.2.3"
   },
   "prisma": {

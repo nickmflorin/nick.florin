@@ -1,0 +1,196 @@
+# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
+# Until the fixture <-> database sync tooling lands, those modules are the operative source:
+# edit them and regenerate rather than editing this file directly.
+sheets:
+  - competencyGroups:
+      - competencies:
+          - python
+          - typescript
+          - javascript
+          - react
+          - next-js
+          - django-rest-framework
+          - flask
+          - node-js
+          - express-js
+          - graphql
+          - redux
+          - tailwindcss
+          - prisma
+          - sass-scss
+          - swift
+          - go
+          - c
+        display: BARS
+        heading: Languages & Frameworks
+        slug: languages-frameworks
+      - competencies:
+          - python
+          - typescript
+          - react
+          - django-rest-framework
+          - next-js
+          - graphql
+          - flask
+          - node-js
+          - aws
+          - postgresql
+          - rest-api-design
+          - ssr-rsc
+          - microfrontends
+          - testing-rtl-jest-playwright
+          - monorepo-nx
+          - accessibility-axe-core
+        display: PILLS
+        heading: Top Skills
+        slug: top-skills
+      - competencies:
+          - full-stack-ownership
+          - systems-architecture
+          - performance-engineering
+          - developer-experience
+          - design-ux-partnership
+          - engineering-leadership
+          - cross-functional-delivery
+        display: PILLS
+        heading: Key Strengths
+        slug: key-strengths
+    isIntroVisible: true
+    roles:
+      - craft
+    slug: page-1
+  - competencyGroups:
+      - competencies:
+          - claude-code
+          - claude-design
+          - cursor
+          - github-copilot
+          - agentic-workflows
+          - mcp-integrations
+          - ai-code-review-automation
+          - context-engineering
+          - custom-agents-skills
+          - agent-guardrails-eslint-ci
+          - spec-driven-development
+          - prompt-engineering
+        display: PILLS
+        heading: AI Tooling & Automation
+        slug: ai-tooling-automation
+      - competencies:
+          - postgresql
+          - aws
+          - docker
+          - redis
+          - gcp
+          - vercel
+          - nosql-databases
+        display: BARS
+        heading: Cloud & Databases
+        slug: cloud-databases
+      - competencies:
+          - service-oriented-arch
+          - microservices
+          - microfrontends
+          - mesh-style-architecture
+          - monorepo-nx
+          - server-oriented-frontend
+          - ssr-rsc
+          - graphql-schema-design
+          - rest-api-design
+          - component-architecture
+          - design-systems
+          - ci-cd-pipeline-design
+          - event-driven-architecture
+          - bundle-analysis
+          - performance-engineering
+          - structured-logging
+          - accessibility-wcag
+          - observability
+        display: PILLS
+        heading: Architectural Patterns
+        slug: architectural-patterns
+      - competencies:
+          - mui-material-ui
+          - mantine
+          - shadcn-ui
+          - styled-components
+          - emotion
+          - radix-ui
+        display: PILLS
+        heading: UI & Component Libraries
+        slug: ui-component-libraries
+      - competencies:
+          - jest
+          - vitest
+          - react-testing-library
+          - playwright
+          - cypress
+          - pytest
+          - storybook
+          - visual-regression
+          - tox
+          - codecov
+          - unit-integration-e2e
+        display: PILLS
+        heading: Testing
+        slug: testing
+      - competencies:
+          - monorepo-nx
+          - turborepo
+          - lerna
+          - pnpm-workspaces
+          - yarn-workspaces
+          - bundle-analysis
+          - tree-shaking
+          - remote-build-caching
+          - affected-task-pipelines
+        display: PILLS
+        heading: Monorepo & Build
+        slug: monorepo-build
+      - competencies:
+          - github-actions
+          - circleci
+          - jenkins
+          - docker
+          - reusable-workflows
+          - poetry
+          - pnpm-workspaces
+        display: PILLS
+        heading: CI/CD & Automation
+        slug: ci-cd-automation
+    roles:
+      - northbeam
+      - shelfcycle
+      - corsha
+      - greenbudget
+      - nirveda
+      - saracen
+    slug: page-2
+  - competencyGroups:
+      - competencies:
+          - eslint
+          - prettier
+          - stylelint
+          - typescript-strict
+          - zod
+          - mypy
+          - pylint
+          - flake8
+          - black
+          - husky
+          - lint-staged
+          - commitlint
+          - dependabot
+          - renovate
+        display: PILLS
+        heading: Code Quality & DX
+        slug: code-quality-dx
+    degrees:
+      - jhu-computational
+      - jhu-financial
+      - rpi
+    roles:
+      - atlantic
+      - rockcreek
+      - pianalytics
+    slug: page-3

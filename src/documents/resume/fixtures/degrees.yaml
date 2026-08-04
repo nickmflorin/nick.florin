@@ -1,0 +1,40 @@
+# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
+# Until the fixture <-> database sync tooling lands, those modules are the operative source:
+# edit them and regenerate rather than editing this file directly.
+degrees:
+  - content:
+      summary:
+        - content: Ongoing coursework toward an additional degree, temporarily postponed.
+    degree: MASTERS_OF_SCIENCE
+    gpa: 3.70 / 4.00
+    isHighlighted: true
+    isPostponed: true
+    major: Computational Mathematics
+    school: the-johns-hopkins-university
+    slug: jhu-computational
+    startDate: 2016-01-01
+  - content:
+      summary:
+        - content:
+            Advanced coursework in Applied Mathematics, Statistics &amp; Numerical Computation.
+    degree: MASTERS_OF_SCIENCE_IN_ENGINEERING
+    endDate: 2016-01-01
+    gpa: 3.85 / 4.00
+    isHighlighted: true
+    major: Financial Mathematics
+    school: the-johns-hopkins-university
+    slug: jhu-financial
+    startDate: 2014-08-01
+  - concentration: Robotics & Control Systems
+    content:
+      summary:
+        - content: Minor in Economics; Concentration in Robotics &amp; Control Systems.
+    degree: BACHELORS_OF_SCIENCE
+    endDate: 2014-05-01
+    gpa: 3.50 / 4.00
+    isHighlighted: true
+    major: Electrical Engineering
+    minor: Economics
+    school: rensselaer-polytechnic-institute
+    slug: rpi
+    startDate: 2010-08-01

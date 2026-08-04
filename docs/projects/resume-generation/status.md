@@ -1,16 +1,18 @@
 # Project Status
 
-_Last updated: 2026-08-03_
+_Last updated: 2026-08-04_
 
 ## Phase
 
-**Phase 1 — Research & Discussion (with structural stubs).** Phase 0 (discovery & foundation setup)
-is complete. The repo-structure and renderer questions are now decided (in-app port, React, no
-monorepo — see [decisions.md](./decisions.md)) and the document-route shell is stubbed in the app.
-The generation pipeline is now built and working. Still groundwork mode otherwise: **no
-schema/modeling work yet** — the remaining Research & Discussion items in [backlog.md](./backlog.md)
-(`Detail.shortDescription`, sync design, LinkedIn feasibility) are worked as concrete tasks:
-research → written recommendation → discussion → entry in [decisions.md](./decisions.md).
+**Phase 2 — Data Management (begun 2026-08-04).** Phase 0 (discovery & foundation setup) and
+Phase 1 (research & discussion, with structural stubs) are complete — the generation pipeline is
+built and working. This phase's charter is [data-management.md](./data-management.md): Prisma
+models for the new schema, YAML fixture files, and the scripts that move content between the two.
+The fixture format is decided (YAML — see [decisions.md](./decisions.md)) and the YAML fixtures
+exist; per the reordered sequencing, the Prisma schema work comes next. The remaining Research &
+Discussion items in [backlog.md](./backlog.md) (`Detail.shortDescription`, sync/destructive-change
+design, LinkedIn feasibility) are still worked as concrete tasks: research → written recommendation
+→ discussion → entry in [decisions.md](./decisions.md).
 
 ## Done
 
@@ -46,6 +48,20 @@ research → written recommendation → discussion → entry in [decisions.md](.
 - 2026-08-03: Module-scope constants convention adopted (PascalCase, not `SCREAMING_SNAKE_CASE`);
   documented in the code-quality rules and applied across `src/documents/resume/` and
   `src/scripts/generate-resume/`.
+- 2026-08-04: Fixture format decided — YAML, one file per model, authoring shape, slugs as the
+  correlation key with an optional `meta:` identity block and sticky node slugs (see
+  [decisions.md](./decisions.md)) — and the YAML fixture files established in
+  `src/documents/resume/fixtures/` (`competencies`, `companies`, `schools`, `profile`, `roles`,
+  `degrees`, `resume-sheets`), emitted from the TS data modules by `pnpm resume:fixtures`
+  (`src/scripts/emit-resume-fixtures.ts`; `yaml` pinned as a devDependency; Prettier is the
+  canonical fixture formatter). The sequencing in [data-management.md](./data-management.md) was
+  reordered so the YAML definitions precede the Prisma work.
+- 2026-08-04: `isHighlighted` semantics decided (see [decisions.md](./decisions.md)): stays a plain
+  boolean meaning presence on the website's dashboard page, subordinate to `WEBSITE` syndication —
+  inert for records that do not syndicate there. Documented on the rehearsal types
+  (`src/documents/resume/data/types.ts`); excluded from the open per-medium display-configuration
+  question. Profile field renames also landed: `aboutParagraphs` → `about`, `contactEntries` →
+  `contacts` (types, data, renderer, emitter, fixtures).
 
 ### Key discovery findings
 
@@ -90,13 +106,19 @@ browser-native printing of the in-app view, and serving a pre-generated artifact
 `Resume`/Vercel Blob path that already exists. The answer determines whether server-side Chromium is
 ever needed at all.
 
-Also newly open, all raised 2026-08-03 while building the model rehearsal and all detailed in
-[context/open-questions.md](./context/open-questions.md): the **fixture format and round-trip
-design** (blocker for any fixture work — format, optional identity fields, destructive-change
-confirmation), **contextual representation of labels and content** (generalizing `shortLabel` past
-two contexts, and letting one record render as several strings), **per-medium display configuration
-beyond visibility**, and **competency categorization** (whether the legacy `Skill` category fields
-come forward, and whether a category and a sidebar group are the same thing).
+In the data-management phase itself, next in the reordered sequencing (see
+[data-management.md](./data-management.md)): update agent-facing context so content edits keep the
+TS data modules and the YAML fixtures in parity; then fine-tune the `types.ts` models and land the
+initial Prisma schema definitions and migrations; then the sync scripts (zod schemas on every
+boundary, update-vs-delete recognition, stdout logging for v1).
+
+Also open, raised 2026-08-03 while building the model rehearsal and detailed in
+[context/open-questions.md](./context/open-questions.md): **destructive-change confirmation** (the
+one piece of the fixture question left open by the 2026-08-04 format decision), **contextual
+representation of labels and content** (generalizing `shortLabel` past two contexts, and letting
+one record render as several strings), **per-medium display configuration beyond visibility**, and
+**competency categorization** (whether the legacy `Skill` category fields come forward, and whether
+a category and a sidebar group are the same thing).
 
 Three of those cluster: `Detail.shortDescription`, contextual representation, and per-medium display
 are the same question at three granularities, and settling them separately would leave three

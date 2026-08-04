@@ -1,0 +1,14 @@
+# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
+# Until the fixture <-> database sync tooling lands, those modules are the operative source:
+# edit them and regenerate rather than editing this file directly.
+schools:
+  - city: Troy
+    logoFileName: RPI.svg
+    name: Rensselaer Polytechnic Institute
+    slug: rensselaer-polytechnic-institute
+    state: NY
+  - city: Baltimore
+    logoFileName: JHU.svg
+    name: The Johns Hopkins University
+    slug: the-johns-hopkins-university
+    state: MD

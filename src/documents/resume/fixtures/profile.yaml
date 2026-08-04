@@ -1,0 +1,50 @@
+# Generated from the data modules in src/documents/resume/data/ by `pnpm resume:fixtures`.
+# Until the fixture <-> database sync tooling lands, those modules are the operative source:
+# edit them and regenerate rather than editing this file directly.
+profile:
+  about:
+    - content:
+        A detail-obsessed, ownership-driven, product-first engineer who goes well beyond closing
+        tickets. Deeply invested in the <em>why</em> behind every feature, proactively identifying
+        architectural gaps, raising engineering standards, and driving meaningful improvements
+        across the product and the team, end-to-end, pushing the user experience forward at every
+        turn.
+      slug: beyond-tickets
+    - content:
+        'Proactive by default: He proposes the fix before being asked, carries features from
+        ambiguous scope to production polish.'
+      slug: proactive-by-default
+    - content:
+        Has a proven track record of leading cross-functional pods, delivering high-impact features,
+        and elevating the engineering bar at every stage of a company's growth.
+      slug: track-record
+  contacts:
+    - icon: AT
+      slug: email
+      text: nickmflorin@gmail.com
+    - icon: LINKEDIN
+      slug: linkedin
+      text: in/nick-florin-5046063b/
+    - icon: GITHUB
+      slug: github
+      text: github.com/nickmflorin
+    - icon: GLOBE
+      slug: website
+      text: www.nickflorin.com
+  displayName: Nick Florin
+  emailAddress: nickmflorin@gmail.com
+  firstName: Nick
+  githubUrl: https://github.com/nickmflorin
+  handle: '@nickmflorin'
+  highlights:
+    - slug: years-of-experience
+      text: 11 years of software engineering
+    - slug: masters
+      text: M.S. in Financial Mathematics, JHU
+    - slug: bachelors
+      text: B.S. in Electrical Engineering, RPI
+  lastName: Florin
+  linkedinUrl: https://www.linkedin.com/in/nick-florin-5046063b/
+  photoFileName: Headshot.jpeg
+  slug: nick-florin
+  tagline: Senior Software Engineer
