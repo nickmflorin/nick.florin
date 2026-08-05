@@ -1,7 +1,6 @@
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
 import { type Required } from 'utility-types';
 
-import { clerkUserIsAdmin, type UserResource } from '~/application/auth/roles';
 import { type LabeledNavItem } from '~/application/pages';
 
 export const SidebarItemAccessTypes = enumeratedLiterals(['admin'] as const, {});
@@ -62,16 +61,24 @@ export const flattenSidebarItems = (
     [] as Exclude<ISidebarItem, IInternalGroupedSidebarItem>[],
   );
 
-export const sidebarItemIsVisible = (
-  item: ISidebarItem,
-  user: null | undefined | UserResource,
-): boolean => {
+/**
+ * Returns whether a sidebar item should be rendered for the current visitor.
+ *
+ * @param {ISidebarItem} item The sidebar item whose visibility is being determined.
+ * @param {boolean} isAdmin
+ *   Whether the current visitor has admin CMS access.  This is derived on the server (via Clerk's
+ *   `auth()` helper) rather than from client-side Clerk context, so that rendering the sidebar
+ *   does not require `<ClerkProvider />` to be mounted — anonymous visitors never load Clerk.
+ *
+ * @returns {boolean} Whether the item should be rendered.
+ */
+export const sidebarItemIsVisible = (item: ISidebarItem, isAdmin = false): boolean => {
   if (sidebarItemIsExternal(item)) {
     return item.visible ?? true;
   } else if (item.visible === false) {
     return false;
   } else if (item.accessType === SidebarItemAccessTypes.ADMIN) {
-    return user !== null && user !== undefined && clerkUserIsAdmin(user);
+    return isAdmin;
   }
   return true;
 };

@@ -1,6 +1,5 @@
 /* eslint-disable import/order */
 import { type JSX, type ReactNode } from 'react';
-import { ClerkLoaded, ClerkLoading, ClerkProvider } from '@clerk/nextjs';
 
 /*
 One of the breaking changes in Mantine V7 is the migration to native CSS.  The styling is no longer
@@ -23,33 +22,18 @@ import '@mantine/dates/styles.css';
 
 import '~/styles/globals/index.scss';
 
-// Import this last.
-
-import { Loading } from '~/components/loading/Loading';
 import { CookiesProvider } from './CookiesProvider';
 import { ClientConfig } from './ClientConfig';
+import { SessionClerkProvider } from './SessionClerkProvider';
 
 export interface AppConfigProps {
   readonly children: ReactNode;
 }
 
-/**
- * The URL that a user is redirected to after signing out.
- *
- * Clerk no longer accepts `afterSignOutUrl` on `<UserButton />`; it is now applied as global
- * configuration on `<ClerkProvider />` instead.
- */
-const AfterSignOutUrl = '/';
-
 export const AppConfig = ({ children }: AppConfigProps): JSX.Element => (
-  <ClerkProvider afterSignOutUrl={AfterSignOutUrl}>
-    <ClerkLoading>
-      <Loading fillScreen isLoading />
-    </ClerkLoading>
-    <ClerkLoaded>
-      <CookiesProvider>
-        <ClientConfig>{children}</ClientConfig>
-      </CookiesProvider>
-    </ClerkLoaded>
-  </ClerkProvider>
+  <SessionClerkProvider>
+    <CookiesProvider>
+      <ClientConfig>{children}</ClientConfig>
+    </CookiesProvider>
+  </SessionClerkProvider>
 );

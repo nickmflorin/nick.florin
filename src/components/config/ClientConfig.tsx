@@ -2,39 +2,21 @@
 import dynamic from 'next/dynamic';
 import { type ReactNode } from 'react';
 
-import { SWRConfig } from './SWRConfig';
+import { DrawersProvider } from '~/components/drawers/DrawersProvider';
 
-const DrawersProvider = dynamic(
-  () => import('~/components/drawers/DrawersProvider').then(mod => mod.DrawersProvider),
-  {
-    ssr: false,
-  },
-);
-const MantineProvider = dynamic(
-  () => import('./MantineProvider').then(mod => mod.MantineProvider),
-  { ssr: false },
-);
-const TourProvider = dynamic(() => import('./TourProvider').then(mod => mod.TourProvider), {
-  ssr: false,
-});
-const NavigationProvider = dynamic(
-  () => import('./NavigationProvider').then(mod => mod.NavigationProvider),
-  {
-    ssr: false,
-  },
-);
-const NavMenuProvider = dynamic(
-  () => import('./NavMenuProvider').then(mod => mod.NavMenuProvider),
-  {
-    ssr: false,
-  },
-);
-const UserProfileProvider = dynamic(
-  () => import('./UserProfileProvider').then(mod => mod.UserProfileProvider),
-  {
-    ssr: false,
-  },
-);
+import { MantineProvider } from './MantineProvider';
+import { NavigationProvider } from './NavigationProvider';
+import { NavMenuProvider } from './NavMenuProvider';
+import { SWRConfig } from './SWRConfig';
+import { UserProfileProvider } from './UserProfileProvider';
+
+/*
+The tour provider is the one provider that warrants code-splitting: it pulls in '@reactour/tour'
+and the tour's step content (skill badges included), which the initial bundle should not pay for.
+It is deliberately NOT loaded with `ssr: false` — a provider excluded from server rendering
+excludes everything nested under it (the entire page) from the server-rendered HTML.
+*/
+const TourProvider = dynamic(() => import('./TourProvider').then(mod => mod.TourProvider));
 
 export interface ClientConfigProps {
   readonly children: ReactNode;

@@ -1,5 +1,3 @@
-import { useUser } from '@clerk/nextjs';
-
 import { SidebarAnchor } from '~/components/buttons/SidebarAnchor';
 import { classNames } from '~/components/types';
 
@@ -22,26 +20,23 @@ export const SidebarItem = <I extends ISidebarItem>({
   isOpen,
   item,
   onOpen,
-}: SidebarItemProps<I>) => {
-  const { user } = useUser();
-  return (
-    <SidebarAnchor
-      className={classNames({
-        'mb-[6px] last:mb-0':
-          isOpen !== undefined &&
-          (item.children === undefined ||
-            item.children.filter(c => sidebarItemIsVisible(c, user)).length === 0),
-        'mb-[6px] z-10':
-          isOpen !== undefined &&
-          item.children !== undefined &&
-          item.children.filter(c => sidebarItemIsVisible(c, user)).length !== 0 &&
-          isOpen,
-        'z-10':
-          item.children !== undefined &&
-          item.children.filter(c => sidebarItemIsVisible(c, user)).length !== 0,
-      })}
-      item={item}
-      onMouseEnter={() => onOpen?.()}
-    />
-  );
-};
+}: SidebarItemProps<I>) => (
+  <SidebarAnchor
+    className={classNames({
+      'mb-[6px] last:mb-0':
+        isOpen !== undefined &&
+        (item.children === undefined ||
+          item.children.filter(c => sidebarItemIsVisible(c)).length === 0),
+      'mb-[6px] z-10':
+        isOpen !== undefined &&
+        item.children !== undefined &&
+        item.children.filter(c => sidebarItemIsVisible(c)).length !== 0 &&
+        isOpen,
+      'z-10':
+        item.children !== undefined &&
+        item.children.filter(c => sidebarItemIsVisible(c)).length !== 0,
+    })}
+    item={item}
+    onMouseEnter={() => onOpen?.()}
+  />
+);

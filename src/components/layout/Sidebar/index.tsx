@@ -1,10 +1,8 @@
 'use client';
 import { Fragment, useState } from 'react';
 
-import { useUser } from '@clerk/nextjs';
 import { motion } from 'framer-motion';
 
-import { type UserResource } from '~/application/auth/roles';
 import { type NavItem } from '~/application/pages';
 
 import { classNames } from '~/components/types';
@@ -55,15 +53,10 @@ const getAnimatedOffset = (params: {
   readonly groupOpenIndex: null | number;
   readonly pendingItem: null | Pick<NavItem, 'activePaths' | 'path'>;
   readonly previousItems: ISidebarItem[];
-  readonly user: null | undefined | UserResource;
 }) => {
   const previousOpenedGroup = getPreviousOpenedGroup(params);
   if (previousOpenedGroup) {
-    return (
-      (previousOpenedGroup.item.children.filter(c => sidebarItemIsVisible(c, params.user)).length -
-        1) *
-      48
-    );
+    return (previousOpenedGroup.item.children.filter(c => sidebarItemIsVisible(c)).length - 1) * 48;
   }
   return 0;
 };
@@ -75,13 +68,12 @@ export interface LayoutNavProps {
 export const Sidebar = ({ items }: LayoutNavProps) => {
   const [groupOpenIndex, setGroupOpenIndex] = useState<null | number>(null);
   const { pendingItem } = useNavigation();
-  const { user } = useUser();
 
   return (
     <div className='sidebar' onMouseLeave={() => setGroupOpenIndex(null)} role='presentation'>
       <div className='flex flex-col gap-[8px] items-center' role='navigation'>
         {items
-          .filter(item => sidebarItemIsVisible(item, user))
+          .filter(item => sidebarItemIsVisible(item))
           .map((item, i) => {
             if (!sidebarItemIsExternal(item) && sidebarItemHasChildren(item)) {
               const offset = getAnimatedOffset({
@@ -90,7 +82,6 @@ export const Sidebar = ({ items }: LayoutNavProps) => {
                 previousItems: items
                   .filter(precedingItem => precedingItem.visible !== false)
                   .slice(0, i),
-                user,
               });
               /* For smaller screens, we want to render the children of the group outside of the
                  group - and hide the group nav item itself. */
@@ -133,9 +124,8 @@ export const Sidebar = ({ items }: LayoutNavProps) => {
               groupOpenIndex,
               pendingItem,
               previousItems: items
-                .filter(precedingItem => sidebarItemIsVisible(precedingItem, user))
+                .filter(precedingItem => sidebarItemIsVisible(precedingItem))
                 .slice(0, i),
-              user,
             });
             return (
               <motion.div

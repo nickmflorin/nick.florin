@@ -15,15 +15,20 @@ export interface ClientSiteDropdownMenuProps extends Omit<
   DropdownMenuProps,
   'children' | 'content' | 'placement' | 'triggers' | 'width'
 > {
+  readonly isSignedIn: boolean;
   readonly resume: BrandResume | null;
 }
 
-export const ClientSiteDropdownMenu = ({ resume, ...props }: ClientSiteDropdownMenuProps) => (
+export const ClientSiteDropdownMenu = ({
+  isSignedIn,
+  resume,
+  ...props
+}: ClientSiteDropdownMenuProps) => (
   <DropdownMenu
     {...props}
     content={({ setIsOpen }) => (
       <div className='flex flex-col relative min-h-[40px] p-[8px]'>
-        <SiteMenu onClose={e => setIsOpen(false, e)} resume={resume} />
+        <SiteMenu isSignedIn={isSignedIn} onClose={e => setIsOpen(false, e)} resume={resume} />
       </div>
     )}
     contentClassName='z-50'

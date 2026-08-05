@@ -1,3 +1,5 @@
+import { auth } from '@clerk/nextjs/server';
+
 import { type BrandResume } from '~/database/model';
 import { db } from '~/database/prisma';
 
@@ -12,6 +14,8 @@ export interface SiteNavMenuProps {
 }
 
 export const SiteNavMenu = async ({ nav }: SiteNavMenuProps) => {
+  const { userId } = await auth();
+
   let resume: BrandResume | null = null;
   const resumes = await db.resume.findMany({
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
@@ -20,5 +24,5 @@ export const SiteNavMenu = async ({ nav }: SiteNavMenuProps) => {
   if (resumes.length !== 0) {
     resume = convertToPlainObject(resumes[0]);
   }
-  return <ClientSiteNavMenu nav={nav} resume={resume} />;
+  return <ClientSiteNavMenu isSignedIn={userId !== null} nav={nav} resume={resume} />;
 };

@@ -7,11 +7,12 @@ import { useNavMenu } from '~/hooks';
 import { SiteMenu } from './SiteMenu';
 
 export interface ClientSiteNavMenuProps {
+  readonly isSignedIn: boolean;
   readonly nav: ISidebarItem[];
   readonly resume: BrandResume | null;
 }
 
-export const ClientSiteNavMenu = ({ nav, resume }: ClientSiteNavMenuProps) => {
+export const ClientSiteNavMenu = ({ isSignedIn, nav, resume }: ClientSiteNavMenuProps) => {
   const { close } = useNavMenu();
-  return <SiteMenu nav={nav} onClose={() => close()} resume={resume} />;
+  return <SiteMenu isSignedIn={isSignedIn} nav={nav} onClose={() => close()} resume={resume} />;
 };

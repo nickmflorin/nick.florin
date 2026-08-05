@@ -23,12 +23,23 @@ const Comparators: Record<Comparison, (actual: number, compare: number) => boole
   lessThanOrEqualTo: (actual, compare) => actual <= compare,
 };
 
-export const useScreenSizes = () => {
-  const [size, setSize] = useState<number>(window.innerWidth);
+/**
+ * The viewport width (and matching breakpoint) assumed on the server and for the initial
+ * hydration render, where the actual window cannot be measured.
+ *
+ * A desktop viewport is assumed so that the server-rendered HTML carries the desktop chrome (the
+ * sidebar rather than the mobile menu) for the common case. {@link useWindowResize} invokes its
+ * handler once on mount inside a layout effect, so the assumption is corrected from the real
+ * window before the browser paints the hydrated tree.
+ */
+const SsrFallbackWindowWidth = 1440;
 
-  const [breakpoint, setBreakpoint] = useState<'0' | Breakpoint>(() =>
-    getBreakpointFromWindow(window),
-  );
+const SsrFallbackBreakpoint: Breakpoint = 'xl';
+
+export const useScreenSizes = () => {
+  const [size, setSize] = useState<number>(SsrFallbackWindowWidth);
+
+  const [breakpoint, setBreakpoint] = useState<'0' | Breakpoint>(SsrFallbackBreakpoint);
 
   useWindowResize(w => {
     const bk = getBreakpointFromWindow(window);
