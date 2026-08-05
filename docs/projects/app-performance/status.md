@@ -4,11 +4,12 @@ _Last updated: 2026-08-04_
 
 ## Phase
 
-**Phase 0 — Audit & project setup (complete 2026-08-04).** The full performance audit of the app
-shell, providers, and the dashboard/resume/projects routes is recorded in
-[findings.md](./findings.md). No implementation has started. The next step is resolving the blocking
-entries in [open-questions.md](./open-questions.md) (none block Phase 1) and starting Phase 1 of
-[backlog.md](./backlog.md) — restoring SSR — on a dedicated branch.
+**Phase 1 — Restore SSR (started 2026-08-04).** Phase 0 (audit & project setup) is complete and all
+six open questions were resolved on 2026-08-04 — see [decisions.md](./decisions.md). Headline
+decisions: Clerk is scoped to authenticated routes entirely (Option B), FontAwesome migrates off the
+CDN kit (its own phase), layout fetches get cross-request caching, and project images are
+pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per the
+[backlog.md](./backlog.md) phases.
 
 ## Done
 
@@ -17,19 +18,21 @@ entries in [open-questions.md](./open-questions.md) (none block Phase 1) and sta
   resume + projects routes. Headline findings: the `<ClerkLoaded>` gate makes every route's initial
   HTML a full-screen spinner, and the `ssr: false` dynamic provider chain in `ClientConfig` disables
   SSR for the entire page subtree. Full record in [findings.md](./findings.md).
-- 2026-08-04: Project scaffolding created at `docs/projects/app-performance/` (`README.md`,
-  `findings.md`, `status.md`, `decisions.md`, `backlog.md`, `open-questions.md`) and registered in
+- 2026-08-04: Project scaffolding created at `docs/projects/app-performance/` and registered in
   `docs/index.md`.
 - 2026-08-04: Fix sequencing decided — SSR restoration first; see [decisions.md](./decisions.md).
+- 2026-08-04: All six open questions resolved and recorded in [decisions.md](./decisions.md);
+  [backlog.md](./backlog.md) restructured accordingly (Option B reshapes Phase 1; the FontAwesome
+  migration became Phase 5).
 
 ## In Progress
 
-- Nothing. Implementation has not started.
+- Phase 1 of [backlog.md](./backlog.md): baseline capture, Clerk scoping (Option B), and static
+  provider imports, on the working branch.
 
 ## Next
 
-1. Discuss [open-questions.md](./open-questions.md) — at minimum #5 (chart `fallbackData`) and #6
-   (tour loading), which gate Phase 2 items; #1 Option B, #2, #3, and #4 gate later phases.
-2. Create the working branch and start Phase 1 of [backlog.md](./backlog.md): capture the baseline
-   HTML/Lighthouse numbers, remove the `ClerkLoaded` gate, statically import the cheap providers,
-   and verify the server HTML contains page content.
+1. Capture the baseline server HTML (`/dashboard`, `/resume/experience`, one `/projects/*` page) and
+   a Lighthouse run before any code changes.
+2. Land the Clerk scoping and provider changes; verify the server HTML contains page content and
+   record the result here.
