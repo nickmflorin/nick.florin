@@ -1,7 +1,7 @@
 'use client';
 import { type JSX, type ReactNode } from 'react';
 
-import { type ApiCourse, type ApiSchool, type ApiSkill, type Degree } from '~/database/model';
+import { type ApiCourse, type ApiSchool, type ApiSkill, type DegreeType } from '~/database/model';
 
 import { type EducationsFilters, EducationsFiltersObj } from '~/actions';
 
@@ -125,7 +125,7 @@ export const EducationsTableFilterBar = ({
               inputClassName='max-w-[320px]'
               isClearable
               maximumValuesToRender={1}
-              onChange={(degrees: Degree[]) => updateFilters({ degrees })}
+              onChange={(degrees: DegreeType[]) => updateFilters({ degrees })}
               onClear={() => updateFilters({ degrees: [] })}
               placeholder='Degrees'
               popoverClassName='z-50'

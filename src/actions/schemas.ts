@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-import { Degree, ProgrammingDomain, ProgrammingLanguage, SkillCategory } from '~/database/model';
+import {
+  DegreeType,
+  ProgrammingDomain,
+  ProgrammingLanguage,
+  SkillCategory,
+} from '~/database/model';
 import { NonNullableStringField, NullableStringField } from '~/lib/schemas';
 
 export const SkillSchema = z.object({
@@ -64,7 +69,7 @@ export const ExperienceSchema = z.object({
 
 export const EducationSchema = z.object({
   concentration: z.string().optional(),
-  degree: z.nativeEnum(Degree),
+  degree: z.nativeEnum(DegreeType),
   description: z.string().optional(),
   endDate: z.date().nullable().optional(),
   highlighted: z.boolean().optional(),

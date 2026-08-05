@@ -1,4 +1,4 @@
-import { type ApiEducation, Degree } from '~/database/model';
+import { type ApiEducation, DegreeType } from '~/database/model';
 
 import { useForm } from '~/components/forms-v2/hooks/use-form';
 
@@ -12,7 +12,7 @@ export const useEducationForm = ({ education }: UseEducationFormConfig) =>
   useForm({
     defaultValues: {
       concentration: education?.concentration ?? '',
-      degree: Degree.BACHELORS_OF_SCIENCE,
+      degree: DegreeType.BACHELORS_OF_SCIENCE,
       description: education?.description ?? '',
       endDate: education?.endDate ?? null,
       highlighted: education?.highlighted ?? false,

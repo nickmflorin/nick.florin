@@ -24,11 +24,19 @@
 export type * from './generated';
 export {
   $Enums,
-  Degree,
+  ContactIcon,
+  ContentOwnerType,
+  DegreeType,
   DetailEntityType,
+  NodeKind,
+  NodeType,
   Prisma,
   PrismaClient,
+  Proficiency,
   ProgrammingDomain,
   ProgrammingLanguage,
+  ResumeCompetenciesGroupDisplay,
   SkillCategory,
+  SyndicationChannel,
+  TitleLayout,
 } from './generated';

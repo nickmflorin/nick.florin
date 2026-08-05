@@ -67,12 +67,11 @@ Whether the canonical artifact is a file produced ahead of time and reviewed (3)
 generated per request (1), with (2) layered on either as a convenience. The answer determines
 whether server-side Chromium is ever needed at all.
 
-## `Detail.shortDescription` disposition (blocks the schema)
+## `Detail.shortDescription` disposition — resolved 2026-08-04
 
-The one open question flagged in resume-gen's `docs/content-model.md` that changes the shape of
-`ContentNode`. Three options are laid out there; option 1 (a `ContentVariant` table keyed by node +
-channel) would also answer the broader "medium-specific content overrides" need (e.g. shorter text
-on the PDF than the website). Needs a decision before the Prisma schema lands.
+See the per-context text decision in [decisions.md](../decisions.md): one variant table (owner +
+field + context) serving prose and labels alike, built when the first third context arrives;
+`ContentNode` deliberately carries no `shortDescription` column and nothing waits on this.
 
 ## Syndication modeling beyond Detail-replacement
 
@@ -99,12 +98,10 @@ and a newly authored record omits, and generated content-node slugs are stamped 
 once created (sticky), so a title edit never changes identity. The fixtures are bootstrapped from
 the TS data modules by `pnpm resume:fixtures`, which is also the interim parity mechanism.
 
-**Destructive-change safety.** A pull that silently drops a record someone added on the other side,
-or a push that overwrites a field edited in the admin CMS, is the failure mode that matters. The
-candidate is a diff-style flow: compute the change set, print it, and require confirmation for
-anything destructive — deletions and overwrites of non-empty values — unless a flag opts out for
-scripted runs. Open: what counts as destructive, whether confirmation is per-record or per-batch,
-and whether the two sides can be merged field-by-field rather than record-wise when both changed.
+**Destructive-change safety — resolved 2026-08-04** (see decisions.md): destructive = deletions
+plus any change to a non-empty value; confirmation is per-batch with one itemized git-style diff
+and a `--yes` bypass, growing into a navigable terminal viewer (summary line per change, arrow
+keys to reveal each diff); conflicts are atomic per record in v1, with field-level merge deferred.
 
 ## LinkedIn & GitHub integration scope
 
@@ -114,30 +111,12 @@ surfaces are actually available for profile updates, and what the deterministic 
 GitHub sync flows look like. The existing GitHub client is create-only and does not validate API
 responses.
 
-## Contextual representation of labels and content
+## Contextual representation of labels and content — resolved 2026-08-04 (direction)
 
-A competency, a degree major, a role title and a content node all render in more than one place, and
-the right string is not always the same one. The current answer is a single nullable short form —
-`label`/`shortLabel`, `major`/`shortMajor` — with the surface choosing: the resume sidebar takes the
-short form, the main column takes the full one. That covers two contexts and no more.
-
-Open questions, in rough order of how far they push the model:
-
-1. **More than two contexts.** LinkedIn, the website and a tailored per-application resume each want
-   their own wording. Does that become one nullable column per context (does not scale), a
-   `SyndicationChannel`-keyed variant table (scales, and is the same shape the
-   `Detail.shortDescription` question above is circling), or something keyed by a finer-grained
-   "surface" than a channel — since the sidebar and the main column are two surfaces of the _same_
-   channel?
-2. **One record rendering as several things.** The three `Accessibility` competencies were kept
-   separate specifically because collapsing them would have dropped the `WCAG` and `axe-core`
-   tokens. The better model may be one `Accessibility` competency that a given context can render as
-   several pills — meaning a context needs to select not just a _string_ but a _set of strings_ from
-   one record. Nothing in the current shape can express that.
-3. **Relationship to the content tree.** Whatever answers this should almost certainly also answer
-   `Detail.shortDescription`, since "a shorter version of this prose on the PDF than on the website"
-   and "a shorter version of this label in the sidebar" are the same problem at different
-   granularity. Solving them separately would leave two mechanisms for one idea.
+Resolved together with `Detail.shortDescription` above — see the per-context text decision in
+[decisions.md](../decisions.md). Two design details are recorded there as deferred to the variant
+table's build: channel-vs-surface keying, and one record rendering as a set of strings per context
+(the three `Accessibility` competencies case).
 
 ## Per-medium display configuration beyond visibility
 
@@ -171,3 +150,9 @@ that adding one is a row rather than a migration. Also open is whether a categor
 as a `ResumeCompetenciesGroup`: the sidebar groups today are hand-authored and resume-specific, but
 several of them ("Testing", "Cloud & Databases") read exactly like categories, and if categories
 existed the groups might be derivable rather than authored.
+
+**Current lean (2026-08-04, not yet decided):** do NOT carry the three legacy enum-array fields
+forward onto `Competency` — but some way to bucket or tag competencies for grouping is still wanted
+eventually, so the question stays open as "design a future bucketing/tagging mechanism" rather than
+"port the legacy fields". The legacy columns stay untouched on `Skill` (the site's chart and admin
+filters keep working) until that mechanism exists.

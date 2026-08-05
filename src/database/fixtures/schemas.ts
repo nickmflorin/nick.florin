@@ -2,7 +2,12 @@ import { z } from 'zod';
 
 import type * as types from './types';
 
-import { Degree, ProgrammingDomain, ProgrammingLanguage, SkillCategory } from '~/database/model';
+import {
+  DegreeType,
+  ProgrammingDomain,
+  ProgrammingLanguage,
+  SkillCategory,
+} from '~/database/model';
 import { NonNullableStringField, NullableStringField } from '~/lib/schemas';
 
 const SkillReferenceJsonSchema = z.string();
@@ -98,7 +103,7 @@ export const ExperienceJsonSchema = MetaSchema.extend({
 export const EducationJsonSchema = MetaSchema.extend({
   concentration: NullableStringField({}).optional(),
   courses: z.array(CourseJsonSchema).optional(),
-  degree: z.nativeEnum(Degree),
+  degree: z.nativeEnum(DegreeType),
   description: NullableStringField({}).optional(),
   details: z.array(DetailJsonSchema).optional(),
   endDate: z.coerce.date().nullable().optional(),

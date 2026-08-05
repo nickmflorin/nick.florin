@@ -4,15 +4,15 @@ _Last updated: 2026-08-04_
 
 ## Phase
 
-**Phase 2 — Data Management (begun 2026-08-04).** Phase 0 (discovery & foundation setup) and
-Phase 1 (research & discussion, with structural stubs) are complete — the generation pipeline is
-built and working. This phase's charter is [data-management.md](./data-management.md): Prisma
-models for the new schema, YAML fixture files, and the scripts that move content between the two.
-The fixture format is decided (YAML — see [decisions.md](./decisions.md)) and the YAML fixtures
-exist; per the reordered sequencing, the Prisma schema work comes next. The remaining Research &
-Discussion items in [backlog.md](./backlog.md) (`Detail.shortDescription`, sync/destructive-change
-design, LinkedIn feasibility) are still worked as concrete tasks: research → written recommendation
-→ discussion → entry in [decisions.md](./decisions.md).
+**Phase 2 — Data Management (begun 2026-08-04).** Phase 0 (discovery & foundation setup) and Phase 1
+(research & discussion, with structural stubs) are complete — the generation pipeline is built and
+working. This phase's charter is [data-management.md](./data-management.md): Prisma models for the
+new schema, YAML fixture files, and the scripts that move content between the two. The fixture
+format is decided (YAML — see [decisions.md](./decisions.md)) and the YAML fixtures exist; per the
+reordered sequencing, the Prisma schema work comes next. The remaining Research & Discussion items
+in [backlog.md](./backlog.md) (`Detail.shortDescription`, sync/destructive-change design, LinkedIn
+feasibility) are still worked as concrete tasks: research → written recommendation → discussion →
+entry in [decisions.md](./decisions.md).
 
 ## Done
 
@@ -56,6 +56,43 @@ design, LinkedIn feasibility) are still worked as concrete tasks: research → w
   (`src/scripts/emit-resume-fixtures.ts`; `yaml` pinned as a devDependency; Prettier is the
   canonical fixture formatter). The sequencing in [data-management.md](./data-management.md) was
   reordered so the YAML definitions precede the Prisma work.
+- 2026-08-04: Parallel Prisma schema landed and migrated (see [decisions.md](./decisions.md)): the
+  new-model enums and the `Competency`, `Role`, `Degree`, `ContentNode`, `NestedContentNode`,
+  `ProfileAboutParagraph`, `ProfileHighlight`, `ProfileContactEntry`, `ResumeSheet` and
+  `ResumeCompetenciesGroup` models in `schema.prisma`, transcribed from the rehearsal types;
+  additive `slug`/`logoFileName`/`handle`/`photoFileName` columns and reverse relations on
+  `Company`/`School`/`Profile`; migration `20260804145452_parallel_content_models` applied to the
+  dev database (no drift); client regenerated. The legacy `Degree` enum was renamed `DegreeType`
+  (metadata-only `ALTER TYPE` — Postgres shares the type namespace between enums and table row
+  types), with the site's seven reference sites mechanically renamed and the new enums added to the
+  `prisma-client.ts` re-export list.
+- 2026-08-04: Transfer architecture landed in `src/database/content/` (see
+  [decisions.md](./decisions.md)): field codecs (validation-only zod schemas + paired
+  decode/encode), `RecordCodec`/`PrismaCodec` around a canonical form, one `ContentBinding` class
+  per aggregate for all seven entities, the `ContentStore` port with `YamlFixtureStore` and
+  `PrismaContentStore` adapters, a dependency-ordered registry, and set-level validation (duplicate
+  slugs, cross-references, entity invariants). Verified by round-tripping all seven real fixture
+  files: `parse(serialize(x))` deep-equals `x` for every entity, zero validation issues. Database
+  writes are create-only; the sync engine (diff, updates, confirmation, script entry point) is the
+  next layer. Found and logged: implicit m2m relations lose authored competency ordering (backlog).
+- 2026-08-04: Open-question walkthrough (paused partway, resumable): settled destructive-change
+  safety (deletes + non-empty overwrites confirm per-batch with a `--yes` bypass and an eventual
+  navigable terminal diff viewer; conflicts atomic in v1), sync parity (no soft delete between
+  source and target — hard delete with confirmation; `isVisible` is authored state only), and
+  per-context text (one variant table for prose + labels, built when the first third context
+  arrives). Still unaddressed, in walkthrough order: per-medium display configuration,
+  the `competenciesVisible`/pill-syndication flag shape, syndication participation of
+  `Project`/`Repository`/`Company`/`School` + `Competency`'s legacy m2m links, the competency
+  bucketing/tagging design, resume delivery to readers, LinkedIn feasibility, and GitHub sync
+  design.
+- 2026-08-04: Slug authoring made optional across the transfer layer (see
+  [decisions.md](./decisions.md)): bindings derive a missing slug from the entity's natural name
+  at parse time (deterministic, so fixture-only generation and the sync push always agree),
+  serialization writes it back (sticky), and `parse` returns a `ParsedRecord` with the slug
+  guaranteed. `ResumeSheet` slugs stay required (filename, no natural name). Competency ordering
+  also decided the same day: derived per surface (prioritized + `createdAt`; sidebar via the
+  generation-time spacing optimization), never stored — pull queries emit competency lists in
+  deterministic slug order.
 - 2026-08-04: `isHighlighted` semantics decided (see [decisions.md](./decisions.md)): stays a plain
   boolean meaning presence on the website's dashboard page, subordinate to `WEBSITE` syndication —
   inert for records that do not syndicate there. Documented on the rehearsal types
@@ -107,16 +144,17 @@ browser-native printing of the in-app view, and serving a pre-generated artifact
 ever needed at all.
 
 In the data-management phase itself, next in the reordered sequencing (see
-[data-management.md](./data-management.md)): update agent-facing context so content edits keep the
-TS data modules and the YAML fixtures in parity; then fine-tune the `types.ts` models and land the
-initial Prisma schema definitions and migrations; then the sync scripts (zod schemas on every
-boundary, update-vs-delete recognition, stdout logging for v1).
+[data-management.md](./data-management.md)): the Prisma models and migration landed 2026-08-04, so
+what remains is updating agent-facing context so content edits keep the TS data modules and the YAML
+fixtures in parity, and then the sync scripts (zod schemas on every boundary, slug-based
+update-vs-delete recognition, stdout logging for v1) that move the fixture content into the new
+tables.
 
 Also open, raised 2026-08-03 while building the model rehearsal and detailed in
 [context/open-questions.md](./context/open-questions.md): **destructive-change confirmation** (the
 one piece of the fixture question left open by the 2026-08-04 format decision), **contextual
-representation of labels and content** (generalizing `shortLabel` past two contexts, and letting
-one record render as several strings), **per-medium display configuration beyond visibility**, and
+representation of labels and content** (generalizing `shortLabel` past two contexts, and letting one
+record render as several strings), **per-medium display configuration beyond visibility**, and
 **competency categorization** (whether the legacy `Skill` category fields come forward, and whether
 a category and a sidebar group are the same thing).
 

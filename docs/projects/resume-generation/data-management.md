@@ -65,8 +65,8 @@ To start, let's keep this simple. Let's not worry about the bells and whistles o
 focus on the core functionality and mechanics that a script would expose as a v1 prototype and the
 modeling/scaffolding necessary for this to work.
 
-This is what I am thinking in terms of sequencing (reordered 2026-08-04 so the YAML definitions
-come first, ahead of any Prisma work):
+This is what I am thinking in terms of sequencing (reordered 2026-08-04 so the YAML definitions come
+first, ahead of any Prisma work):
 
 1. ~~Research, discuss and decide on an approach for data storage in fixture files that is amenable
    to reading and writing programatically, iterating on with Claude, and being easy to read and
@@ -75,13 +75,16 @@ come first, ahead of any Prisma work):
 2. ~~Establish the data fixture files in their new forms, maintaining the old data folder for
    backwards compatibility, so resume generation remains in tact but we have a parallel definition
    for data.~~ Done 2026-08-04: the YAML fixtures live in `src/documents/resume/fixtures/`, emitted
-   from the TS data modules by `pnpm resume:fixtures` (`src/scripts/emit-resume-fixtures.ts`).
-   Until the sync tooling lands, the data modules remain the operative source and parity is
-   maintained by regenerating. Still open from this step: update all context, skills, etc. to
-   instruct ai agents to maintain parity between the two when we are adding, removing or modifying
-   content in the interim.
-3. Fine tune the models in the current resume type generation (types.ts) and generate the initial
-   Prisma schema model definitions for those models, establishing data migrations for them as well.
+   from the TS data modules by `pnpm resume:fixtures` (`src/scripts/emit-resume-fixtures.ts`). Until
+   the sync tooling lands, the data modules remain the operative source and parity is maintained by
+   regenerating. Still open from this step: update all context, skills, etc. to instruct ai agents
+   to maintain parity between the two when we are adding, removing or modifying content in the
+   interim.
+3. ~~Fine tune the models in the current resume type generation (types.ts) and generate the initial
+   Prisma schema model definitions for those models, establishing data migrations for them as
+   well.~~ Done 2026-08-04: the parallel models and enums are in `schema.prisma`, migration
+   `20260804145452_parallel_content_models` is applied to the dev database, and the legacy `Degree`
+   enum became `DegreeType` (see decisions.md).
 4. DO NOT DELETE THE types.ts file and the fixture data until we are fully migrated to the Prisma
    models. The resume generation via the current script still needs to function based on the data
    fixtures as they exist today - so we will again be doing this in parallel.

@@ -4,7 +4,7 @@ import { type JSX, useOptimistic, useTransition } from 'react';
 
 import { toast } from 'react-toastify';
 
-import { type Degree } from '~/database/model';
+import { type DegreeType } from '~/database/model';
 import { logger } from '~/internal/logger';
 
 import { updateEducation } from '~/actions/educations/update-education';
@@ -19,7 +19,7 @@ interface DegreeCellProps {
 }
 
 export const DegreeCell = ({ education, table }: DegreeCellProps): JSX.Element => {
-  const [value, setValue] = useOptimistic<Degree>(education.degree);
+  const [value, setValue] = useOptimistic<DegreeType>(education.degree);
   const router = useRouter();
   const [_, transition] = useTransition();
 

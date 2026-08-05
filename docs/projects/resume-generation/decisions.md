@@ -16,13 +16,198 @@ Format:
 
 ---
 
+## 2026-08-04 — Per-context text: one variant table, built when the third context arrives
+
+**Decision:** Per-context text variation — both prose (the `Detail.shortDescription` successor
+question) and labels (`label`/`shortLabel` generalization) — is one mechanism, not two: a single
+variant table keyed by owner + field + context resolving to a string. The direction is committed
+now, but the table is **built only when the first real third context arrives** (LinkedIn wording
+or tailored per-application resumes); the existing nullable `shortX` columns remain the fast path
+for the two contexts that exist today. This resolves the standing "blocks the schema" flag:
+`ContentNode` deliberately carries no `shortDescription` column, and nothing else waits on this.
+
+Deferred to the table's design, recorded here so they are not lost: whether the key is a
+`SyndicationChannel` or a finer-grained *surface* (the sidebar and main column are two surfaces
+of one channel), and whether a context can select a **set** of strings from one record — the
+three `Accessibility` competencies were kept separate precisely because one record cannot yet
+render as several pills.
+
+**Why:** Solving prose and label variation separately would leave two mechanisms for one idea,
+and building the table before any third context exists would be speculative schema with nothing
+to exercise it.
+
+## 2026-08-04 — Sync safety: what is destructive, how it is confirmed, atomic conflicts
+
+**Decision:** The three open sub-questions of destructive-change safety are settled:
+
+1. **Destructive** means record deletions and any change to a non-empty value, including clearing
+   it. Filling an empty/null field is additive and applies without confirmation.
+2. **Confirmation is per-batch and itemized.** A run prints one git-style diff of the whole change
+   set, with destructive changes in their own section, confirmed once as a group; a script
+   argument (`--yes`) bypasses confirmation globally for scripted runs. The review surface should
+   grow into a **navigable terminal viewer**: every change rendered as a single summary line, with
+   arrow-key navigation selecting a line to reveal that change's full diff. Per the charter's
+   keep-it-simple note, v1 is the plain printed diff plus a single confirmation; the navigable
+   viewer layers on after.
+3. **Conflicts are atomic per record in v1.** When both sides changed a record since the last
+   sync, the record's diff is shown and one side is chosen whole. Field-level merging is deferred
+   until real usage shows it is needed.
+
+**Why:** Deletions and overwrites of authored values are exactly the two failure modes the sync
+exists to prevent happening silently; per-record prompting does not scale to 150+ records, while
+one itemized batch diff keeps the whole change set reviewable; and atomic conflict resolution
+keeps the v1 engine simple enough to trust.
+
+## 2026-08-04 — Sync parity is absolute: no soft delete between source and target
+
+**Decision:** The sync's invariant is **100% parity** between the fixture data and the database.
+The source of a run is the source of truth: a record present on the target but missing from the
+source — of ANY type, top-level or nested — is **hard deleted**, gated by the destructive-change
+confirmation above. There is no soft delete in the sync, ever. `isVisible: false` is exclusively
+an *authored* content state — used to hide content deliberately, temporarily or to keep it
+without displaying it — and is never written by the sync as a stand-in for deletion. (This
+clarifies the charter's "avoid hard deleting, hide visibility instead" line: that describes
+authoring practice — prefer hiding content in the data over removing it — not sync mechanics.)
+
+One caveat of the parallel period: deleting a reused legacy row (`Company`, `School`, `Profile`)
+that legacy relations still reference will be blocked by foreign-key constraints; the attempted
+delete appears in the diff, and the constraint failure surfaces as a run error rather than being
+silently skipped.
+
+**Why:** A sync that translates "delete" into "hide" leaves the two representations permanently
+disagreeing about what exists, which defeats the correlation the whole system is built on — and
+quietly redefines an authored, meaningful flag as transfer bookkeeping.
+
+## 2026-08-04 — Slugs are optional to author; derived at parse time, sticky thereafter
+
+**Decision:** Authoring a slug in a fixture is optional for every entity that has a natural name.
+`ContentBinding.parse` fills a missing slug deterministically via a per-binding `deriveSlug` —
+`Competency` from its label, `Company`/`School` from their name, `Profile` from its display name,
+`Role` from company + title, `Degree` from school + major — and serialization writes the derived
+slug back into the fixture, making it sticky exactly like content-node slugs. `ResumeSheet` is the
+one exception: its slug doubles as the emitted filename and has no natural name, so it stays
+required (parse fails loudly without it).
+
+The load-bearing detail is **where** derivation happens: at parse time, not at database-write
+time. Every fixture consumer — the sync push *and* a fixture-only resume generation run — parses
+through the same binding and therefore sees the same slug for the same record, with no database
+involved. A generation run before the write-back has happened still agrees with what the push will
+eventually persist, because the derivation is deterministic. Type-wise, `parse` returns a
+`ParsedRecord` (slug guaranteed present), so nothing downstream ever handles a missing slug.
+
+**Why:** Slugs are the correlation key, but requiring one on every hand-authored record is
+friction with no information content when the record already has a name. Duplicate-derived slugs
+are caught by the set-level duplicate validation, and referencing a new record from elsewhere in
+the fixtures is still predictable, since the derived slug is just the slugified name.
+
+Derivations deliberately favor **collision resistance over brevity**: `Role` and `Degree` prefix
+their parent's slug (`craft-education-system-staff-engineer`, not `staff-engineer`) so that the
+same title at two companies, or the same major at two schools, can never derive the same slug. A
+longer slug costs nothing; a collision costs a hard failure and a manual rename. Short slugs
+remain available by simply authoring one.
+
+## 2026-08-04 — Competency ordering is derived, never stored
+
+**Decision:** No competency (successor to skill) ever carries a stored order, anywhere — the
+implicit m2m join tables stay as they are, with no `order` column and no ordered scalar lists.
+Ordering is derived per surface:
+
+1. **Website:** prioritized competencies first (`isPrioritized: true`), then the rest — each group
+   ordered by `createdAt`.
+2. **Resume body** (a role's or degree's chip row): the same rule as the website — prioritized, then
+   `createdAt`.
+3. **Resume sidebar** (bars/pills groups): the generation build step derives the order by optimizing
+   pill spacing/size within the sidebar's width; it is a layout computation, not data.
+
+Consequently a fixture's competency lists are **membership sets, not sequences**: pulls emit them
+sorted by slug for deterministic diffs, and the order they happen to hold in a fixture carries no
+meaning. The first pull will normalize the bootstrapped lists (which retain the TS data modules'
+authoring order) to slug order — an expected one-time diff.
+
+**Why:** Maintaining an authored position for every competency across every group, chip row and node
+(140+ records, many memberships each) is exactly the kind of bookkeeping that rots. The two signals
+the ordering actually needs — deliberate emphasis and recency — already exist as `isPrioritized` and
+`createdAt`, and the one surface where geometry matters (the printed sidebar) is better served by
+computing fit than by hand-maintaining positions. Supersedes the "preserve authored m2m ordering"
+backlog item raised while building the transfer layer.
+
+## 2026-08-04 — Transfer architecture: bindings and codecs in `src/database/content/`
+
+**Decision:** The fixture ⇄ database transfer mechanics are an object-oriented module at
+`src/database/content/`, structured around three ideas:
+
+1. **Two codecs, not two directions.** A canonical in-memory form sits between the representations;
+   each representation gets one codec (`RecordCodec` for the fixture side, `PrismaCodec` for the
+   database side), and a sync direction is just composition — push is fixture-decode then
+   database-create, pull is database-read then fixture-encode. Elision rules and representation
+   rules are stated once per field and cannot drift between directions.
+2. **Field codecs as the atomic unit.** An entity is defined by a record of `FieldCodec`s — a
+   validation-only zod schema plus explicit `decode`/`encode` halves per field. The entity's strict
+   fixture schema, its fixture type, and its canonical type all derive from that one record
+   (`CanonicalRecord<typeof XFields>`); the Prisma side is compile-checked against the generated
+   client, so a schema change breaks the codec at build time. Nested shapes compose through
+   `recordField`/`recordListField`, which is how aggregates (a role and its content tree) are one
+   fixture record but many rows.
+3. **One `ContentBinding` class per aggregate** (`CompetencyBinding`, `CompanyBinding`,
+   `SchoolBinding`, `ProfileBinding`, `RoleBinding`, `DegreeBinding`, `ResumeSheetBinding`): a
+   stateless descriptor holding the field record, both codecs, the fixture file identity, dependency
+   keys, entity invariants (`validate`), and canonicalization hooks (`finalize` — where sticky
+   content-node slugs are stamped). Ports and adapters appear exactly once: the `ContentStore`
+   interface with `YamlFixtureStore` (constructor-injected directory) and `PrismaContentStore`
+   (constructor-injected transaction + write-context) adapters. The registry (`ContentBindings`) is
+   dependency-ordered, and `validateContentSet` fails hard on duplicate slugs and unresolvable slug
+   references before anything is written.
+
+Settled semantics along the way: database writes are **create-only** for the empty parallel tables
+(update/diff belongs to the sync engine); the reused legacy models (`Company`, `School`, `Profile`)
+get **create-or-link** semantics — an existing row matched by slug-then-unique-name has only the
+additive columns written, and destructive prose-row replacement is refused with a warning; a pull of
+a legacy row without a slug derives one from its name and warns.
+
+**Why:** Verified by round-tripping all seven real fixture files through the bindings —
+`parse(serialize(x))` is deep-equal to `x` for every entity, and the cross-reference validation of
+the full set passes. Naming: `*Binding` was chosen over `*Entity`/`*Transfer`/`*Mapper`/
+`*Bridge`/`*Gateway` because "binding" is the established term for tying one system's representation
+to another's.
+
+## 2026-08-04 — Parallel Prisma schema landed; legacy `Degree` enum renamed to `DegreeType`
+
+**Decision:** The parallel new-model foundation now exists in `schema.prisma` and is migrated
+(`20260804145452_parallel_content_models`, applied to the dev database): the syndication/content
+enums (`SyndicationChannel`, `ContentOwnerType`, `NodeKind`, `NodeType`, `TitleLayout`,
+`Proficiency`, `ContactIcon`, `ResumeCompetenciesGroupDisplay`) and the models `Competency`, `Role`,
+`Degree`, `ContentNode`, `NestedContentNode`, `ProfileAboutParagraph`, `ProfileHighlight`,
+`ProfileContactEntry`, `ResumeSheet` and `ResumeCompetenciesGroup`, mirroring the rehearsal types in
+`src/documents/resume/data/types.ts` field for field. Legacy models gain only additive columns:
+`Company`/`School` a nullable unique `slug`, `logoFileName` and the new reverse relations; `Profile`
+a nullable unique `slug`, `handle`, `photoFileName` and the `about`/`highlights`/ `contacts`
+relations. The slugs stay nullable until the fixture sync backfills them. Settled along the way:
+
+1. **The legacy `Degree` enum is renamed `DegreeType`, in the database too.** The rehearsal plan
+   ("the enum is the one that moves") anticipated the Prisma-namespace collision with the new
+   `Degree` model; what `@@map` could not hide is that in Postgres a table's row type shares the
+   type namespace with enums, so the old type name could not survive alongside a `Degree` table. The
+   migration performs a metadata-only `ALTER TYPE "Degree" RENAME TO "DegreeType"`, and the site's
+   references were mechanically renamed (seven files, no behavior change).
+2. **`ContentOwnerType` values are `ROLE | DEGREE`**, following the new model names rather than
+   resume-gen's `EXPERIENCE | EDUCATION` — settling the question flagged in the backlog.
+3. **Competency ↔ sidebar-group is many-to-many** (`groupCompetencies`), as the rehearsal types
+   model it — superseding the earlier backlog sketch of an optional FK on `Competency`.
+4. **Not yet modeled:** `Competency`'s links to the legacy `Course`/`Project`/`Repository` models
+   (the analogue of `Skill`'s m2m set) — deferred to the syndication-modeling research item.
+
+**Why:** Step 3 of the data-management sequencing. Landing the schema as a faithful transcription of
+the rehearsal types keeps one design in two representations rather than two designs; anything the
+rehearsal has not settled (per-medium display, `shortDescription` variants, categorization) lands
+later as follow-up migrations, which the parallel-model approach makes cheap.
+
 ## 2026-08-04 — `isHighlighted` stays a boolean: dashboard presence, subordinate to website syndication
 
 **Decision:** `isHighlighted` on the new models (`Competency`, `Role`, `Degree`, and the successor
 of any other legacy model carrying `highlighted`) remains a plain boolean with a single meaning:
 whether the record appears on the website's dashboard page. It is subordinate to syndication — it
-has meaning only when the record actually syndicates to the `WEBSITE` channel (`isVisible: true`
-and `WEBSITE` not excluded). For a record withheld from the website the flag is simply inert: never
+has meaning only when the record actually syndicates to the `WEBSITE` channel (`isVisible: true` and
+`WEBSITE` not excluded). For a record withheld from the website the flag is simply inert: never
 read, not an anomaly, and nothing (including the data-cleanup warnings) treats it as one. It does
 not become per-channel display configuration.
 
@@ -36,16 +221,16 @@ decides channel presence; `isHighlighted` only curates within the website channe
 
 **Decision:** The new-model content fixtures are YAML files, one per model, in
 `src/documents/resume/fixtures/`: `competencies.yaml`, `companies.yaml`, `schools.yaml`,
-`profile.yaml`, `roles.yaml`, `degrees.yaml` and `resume-sheets.yaml` (a competency group belongs
-to exactly one sheet, so groups nest inside the sheets file). The settled details:
+`profile.yaml`, `roles.yaml`, `degrees.yaml` and `resume-sheets.yaml` (a competency group belongs to
+exactly one sheet, so groups nest inside the sheets file). The settled details:
 
 1. **YAML as the serialization format.** The content is prose-dominant, and YAML's folded scalars
    store a paragraph as wrapped plain lines, so a one-word edit diffs as prose rather than as one
    enormous escaped JSON line. YAML also carries comments, and the `yaml` package (now a pinned
    devDependency) can rewrite a document by mutating values in place should comment preservation
    ever be needed on a machine rewrite.
-2. **One file per model, not one file per record.** Array position within a file derives the
-   Prisma `order` value (see 3), and separate per-record files have no inherent order, which would
+2. **One file per model, not one file per record.** Array position within a file derives the Prisma
+   `order` value (see 3), and separate per-record files have no inherent order, which would
    reintroduce explicit `order:` fields or a manifest. Scoped diffs — the per-record layout's main
    draw — already fall out of YAML's line-based prose. Revisit only if a file becomes unwieldy.
 3. **Fixtures store the authoring shape, not the normalized shape.** `order` is implied by array
@@ -53,12 +238,11 @@ to exactly one sheet, so groups nest inside the sheets file). The settled detail
    `excludedChannels: []`, `false`-valued flags, `null`s); relations are slug references; enum
    values are the SCREAMING_SNAKE strings that become Prisma enum identifiers verbatim, so no
    mapping layer sits between fixture, zod schema and Prisma.
-4. **Slug is the correlation key.** Database identity (`id`, `createdAt`, `updatedAt`) surfaces
-   only as metadata — an optional `meta:` block that the first push writes back and a newly
-   authored record simply omits — while sync correlation relies on slugs above all else.
-   Content-node slugs, derived from titles by normalization today, become **sticky**: stamped into
-   the fixture once generated, so a later title edit never silently changes identity into a
-   delete-plus-create.
+4. **Slug is the correlation key.** Database identity (`id`, `createdAt`, `updatedAt`) surfaces only
+   as metadata — an optional `meta:` block that the first push writes back and a newly authored
+   record simply omits — while sync correlation relies on slugs above all else. Content-node slugs,
+   derived from titles by normalization today, become **sticky**: stamped into the fixture once
+   generated, so a later title edit never silently changes identity into a delete-plus-create.
 5. **Comments stay minimal.** The explanatory comments in the TS data modules mostly do not carry
    over — the YAML and the Prisma schema make them redundant. Anything that must survive a machine
    rewrite belongs in a `notes:` data field, which round-trips as data; each generated file
@@ -69,23 +253,23 @@ to exactly one sheet, so groups nest inside the sheets file). The settled detail
 7. **The TS data modules are the bootstrap and the interim source of truth.**
    `src/scripts/emit-resume-fixtures.ts` (`pnpm resume:fixtures`) emits the fixtures from
    `src/documents/resume/data/`; until the sync tooling lands, content edits happen in the data
-   modules and are re-emitted. The data modules retire together with the old fixture layout once
-   the Prisma migration is complete, at which point the YAML files become the authored surface.
+   modules and are re-emitted. The data modules retire together with the old fixture layout once the
+   Prisma migration is complete, at which point the YAML files become the authored surface.
 
 **Why:** The fixture format has to satisfy four pulls at once — machine-writable (DB pull),
-machine-readable (DB push), pleasant for Claude to iterate on without a database, and readable in
-a git diff — and prose-heavy content is where JSON fails the last two hardest. Authoring shape
-was chosen over normalized shape because the fixtures are an editing surface first: explicit
-`order` columns are renumbering noise a human will get wrong, while array order cannot be wrong.
+machine-readable (DB push), pleasant for Claude to iterate on without a database, and readable in a
+git diff — and prose-heavy content is where JSON fails the last two hardest. Authoring shape was
+chosen over normalized shape because the fixtures are an editing surface first: explicit `order`
+columns are renumbering noise a human will get wrong, while array order cannot be wrong.
 
 **Alternatives considered:** JSON (round-trips cleanly and the existing machinery exists, but no
 comments and paragraph edits diff as one line); TypeScript modules (best authoring ergonomics, but
-not machine-writable in any principled way); a TS-authoring/JSON-sync hybrid (a pull can only
-update the generated artifact, leaving the authored TS stale — two sources of truth inside the
-fixture layer itself); Markdown with YAML frontmatter (per-node syndication flags and identity
-cannot attach to markdown sections, so the frontmatter swallows the document); JSON5/JSONC
-(comments, but the prose problem remains and no mature comment-preserving writer); per-record
-files (rejected per 2 — deletion visibility is the sync tool's diff output instead).
+not machine-writable in any principled way); a TS-authoring/JSON-sync hybrid (a pull can only update
+the generated artifact, leaving the authored TS stale — two sources of truth inside the fixture
+layer itself); Markdown with YAML frontmatter (per-node syndication flags and identity cannot attach
+to markdown sections, so the frontmatter swallows the document); JSON5/JSONC (comments, but the
+prose problem remains and no mature comment-preserving writer); per-record files (rejected per 2 —
+deletion visibility is the sync tool's diff output instead).
 
 ## 2026-08-03 — Generation script implementation details
 

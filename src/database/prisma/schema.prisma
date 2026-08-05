@@ -43,6 +43,27 @@ model User {
   createdRepositories  Repository[]   @relation("createdRepositories")
   updatedResumes       Resume[]       @relation("updatedResumes")
   createdResumes       Resume[]       @relation("createdResumes")
+
+  updatedCompetencies             Competency[]              @relation("updatedCompetencies")
+  createdCompetencies             Competency[]              @relation("createdCompetencies")
+  updatedRoles                    Role[]                    @relation("updatedRoles")
+  createdRoles                    Role[]                    @relation("createdRoles")
+  updatedDegrees                  Degree[]                  @relation("updatedDegrees")
+  createdDegrees                  Degree[]                  @relation("createdDegrees")
+  updatedContentNodes             ContentNode[]             @relation("updatedContentNodes")
+  createdContentNodes             ContentNode[]             @relation("createdContentNodes")
+  updatedNestedContentNodes       NestedContentNode[]       @relation("updatedNestedContentNodes")
+  createdNestedContentNodes       NestedContentNode[]       @relation("createdNestedContentNodes")
+  updatedProfileAboutParagraphs   ProfileAboutParagraph[]   @relation("updatedProfileAboutParagraphs")
+  createdProfileAboutParagraphs   ProfileAboutParagraph[]   @relation("createdProfileAboutParagraphs")
+  updatedProfileHighlights        ProfileHighlight[]        @relation("updatedProfileHighlights")
+  createdProfileHighlights        ProfileHighlight[]        @relation("createdProfileHighlights")
+  updatedProfileContactEntries    ProfileContactEntry[]     @relation("updatedProfileContactEntries")
+  createdProfileContactEntries    ProfileContactEntry[]     @relation("createdProfileContactEntries")
+  updatedResumeSheets             ResumeSheet[]             @relation("updatedResumeSheets")
+  createdResumeSheets             ResumeSheet[]             @relation("createdResumeSheets")
+  updatedResumeCompetenciesGroups ResumeCompetenciesGroup[] @relation("updatedResumeCompetenciesGroups")
+  createdResumeCompetenciesGroups ResumeCompetenciesGroup[] @relation("createdResumeCompetenciesGroups")
 }
 
 model NestedDetail {
@@ -259,6 +280,13 @@ model Company {
   experiences  Experience[] @relation("experiences")
   city         String
   state        String
+
+  // Additive columns for the parallel new-model foundation. `slug` is nullable until existing
+  // rows are backfilled by the fixture sync; `logoFileName` is the locally vendored logo the
+  // generated resume prints from, distinct from the remote `logoImageUrl`.
+  slug         String? @unique
+  logoFileName String?
+  roles        Role[]  @relation("roles")
 }
 
 model School {
@@ -277,6 +305,11 @@ model School {
   educations   Education[] @relation("educations")
   city         String
   state        String
+
+  // Additive columns for the parallel new-model foundation; see `Company`.
+  slug         String?  @unique
+  logoFileName String?
+  degrees      Degree[] @relation("degrees")
 }
 
 model Experience {
@@ -303,36 +336,40 @@ model Experience {
   @@unique([title, companyId])
 }
 
-enum Degree {
+// Renamed from `Degree` so that name is free for the parallel `Degree` model (the successor to
+// `Education`) — in Postgres a table's row type shares the type namespace with enums, so the enum
+// had to move in the database as well (an `ALTER TYPE ... RENAME`, metadata-only). The new
+// `Degree` model uses this same enum for its academic level.
+enum DegreeType {
   BACHELORS_OF_SCIENCE
   MASTERS_OF_SCIENCE_IN_ENGINEERING
   MASTERS_OF_SCIENCE
 }
 
 model Education {
-  id            String    @id @default(uuid()) @db.Uuid
-  createdAt     DateTime  @default(now())
-  createdBy     User      @relation("createdEducations", fields: [createdById], references: [id])
-  createdById   String    @db.Uuid
-  updatedAt     DateTime  @updatedAt
-  updatedBy     User      @relation("updatedEducations", fields: [updatedById], references: [id])
-  updatedById   String    @db.Uuid
-  skills        Skill[]   @relation("educationSkills")
+  id            String     @id @default(uuid()) @db.Uuid
+  createdAt     DateTime   @default(now())
+  createdBy     User       @relation("createdEducations", fields: [createdById], references: [id])
+  createdById   String     @db.Uuid
+  updatedAt     DateTime   @updatedAt
+  updatedBy     User       @relation("updatedEducations", fields: [updatedById], references: [id])
+  updatedById   String     @db.Uuid
+  skills        Skill[]    @relation("educationSkills")
   startDate     DateTime
   endDate       DateTime?
   note          String?
-  degree        Degree
+  degree        DegreeType
   description   String?
   major         String
   shortMajor    String?
   minor         String?
   concentration String?
-  school        School    @relation("educations", fields: [schoolId], references: [id])
-  schoolId      String    @db.Uuid
-  postPoned     Boolean   @default(false)
-  visible       Boolean   @default(true)
-  highlighted   Boolean   @default(true)
-  courses       Course[]  @relation("courses")
+  school        School     @relation("educations", fields: [schoolId], references: [id])
+  schoolId      String     @db.Uuid
+  postPoned     Boolean    @default(false)
+  visible       Boolean    @default(true)
+  highlighted   Boolean    @default(true)
+  courses       Course[]   @relation("courses")
 
   @@unique([major, schoolId])
   @@unique([shortMajor, schoolId])
@@ -357,4 +394,351 @@ model Profile {
   tagline         String?
   githubUrl       String?
   linkedinUrl     String?
+
+  // Additive columns for the parallel new-model foundation. `slug` is nullable until backfilled;
+  // `handle` is the social handle rendered beneath the name; `photoFileName` is the locally
+  // vendored headshot the generated resume prints from.
+  slug          String?                 @unique
+  handle        String?
+  photoFileName String?
+  about         ProfileAboutParagraph[] @relation("about")
+  highlights    ProfileHighlight[]      @relation("highlights")
+  contacts      ProfileContactEntry[]   @relation("contacts")
+}
+
+// ---------------------------------------------------------------------------------------------
+// Parallel new-model foundation (content centralization / resume generation).
+//
+// Successors to the legacy content models, built alongside them so nothing existing breaks:
+// `Competency` succeeds `Skill`, `Role` succeeds `Experience`, `Degree` succeeds `Education`, and
+// `ContentNode`/`NestedContentNode` succeed `Detail`/`NestedDetail`. The field-level reasoning
+// lives in the TypeScript rehearsal of these models (`src/documents/resume/data/types.ts`) and in
+// `docs/projects/resume-generation/`. Nothing in the site application reads these models yet.
+// ---------------------------------------------------------------------------------------------
+
+// A medium content can be published through. An enum rather than one boolean column per channel so
+// adding a channel is a new value, not a migration on every syndicated table.
+enum SyndicationChannel {
+  LINKEDIN
+  RESUME
+  WEBSITE
+}
+
+// The polymorphic discriminator for `ContentNode.ownerType`. Lives on the child pointing up so
+// roles and degrees stay separate models sharing one content tree.
+enum ContentOwnerType {
+  DEGREE
+  ROLE
+}
+
+// Summaries sort as a set above content, so the sort key for top-level nodes is `(kind, order)`
+// with `SUMMARY` ordering before `CONTENT`.
+enum NodeKind {
+  CONTENT
+  SUMMARY
+}
+
+// How a top-level content node presents its children; null on the model means `PARAGRAPH`.
+enum NodeType {
+  BULLETED_LIST
+  NUMBERED_LIST
+  PARAGRAPH
+}
+
+// Where a node's title sits relative to its content. The default is derived from context at render
+// time (inside a list: inline; otherwise stacked) and never persisted.
+enum TitleLayout {
+  INLINE
+  STACKED
+}
+
+// How well a `Competency` is known. The primary metric going forward, replacing the derived year
+// count the legacy `Skill` leans on.
+enum Proficiency {
+  ADVANCED
+  EXPERT
+  FAMILIAR
+  PROFICIENT
+}
+
+// The icon beside a `ProfileContactEntry`. An enum rather than a filename so the icon set is
+// closed; the mapping to a file lives in the renderer.
+enum ContactIcon {
+  AT
+  GITHUB
+  GLOBE
+  LINKEDIN
+}
+
+// Whether a `ResumeCompetenciesGroup` renders its members as proficiency bars or bare pills.
+enum ResumeCompetenciesGroupDisplay {
+  BARS
+  PILLS
+}
+
+// The successor to `Skill`. The proficiency tier is the primary metric going forward; the year
+// counts are carried across so nothing is lost, but nothing renders from them.
+model Competency {
+  id                   String                    @id @default(uuid()) @db.Uuid
+  createdAt            DateTime                  @default(now())
+  createdBy            User                      @relation("createdCompetencies", fields: [createdById], references: [id])
+  createdById          String                    @db.Uuid
+  updatedAt            DateTime                  @updatedAt
+  updatedBy            User                      @relation("updatedCompetencies", fields: [updatedById], references: [id])
+  updatedById          String                    @db.Uuid
+  slug                 String                    @unique
+  label                String                    @unique
+  shortLabel           String?
+  description          String?
+  shortDescription     String?
+  proficiency          Proficiency?
+  experience           Int?
+  calculatedExperience Int?
+  isHighlighted        Boolean                   @default(false)
+  isPrioritized        Boolean                   @default(false)
+  isVisible            Boolean                   @default(true)
+  excludedChannels     SyndicationChannel[]      @default([])
+  roles                Role[]                    @relation("roleCompetencies")
+  degrees              Degree[]                  @relation("degreeCompetencies")
+  contentNodes         ContentNode[]             @relation("contentNodeCompetencies")
+  nestedContentNodes   NestedContentNode[]       @relation("nestedContentNodeCompetencies")
+  competencyGroups     ResumeCompetenciesGroup[] @relation("groupCompetencies")
+}
+
+// The successor to `Experience`. Its content tree attaches polymorphically through
+// `ContentNode.ownerId`/`ownerType`, so no `nodes` relation appears here.
+model Role {
+  id               String               @id @default(uuid()) @db.Uuid
+  createdAt        DateTime             @default(now())
+  createdBy        User                 @relation("createdRoles", fields: [createdById], references: [id])
+  createdById      String               @db.Uuid
+  updatedAt        DateTime             @updatedAt
+  updatedBy        User                 @relation("updatedRoles", fields: [updatedById], references: [id])
+  updatedById      String               @db.Uuid
+  slug             String               @unique
+  title            String
+  shortTitle       String?
+  company          Company              @relation("roles", fields: [companyId], references: [id])
+  companyId        String               @db.Uuid
+  startDate        DateTime
+  endDate          DateTime?
+  isCurrent        Boolean              @default(false)
+  isRemote         Boolean              @default(false)
+  isHighlighted    Boolean              @default(false)
+  // Where the work was done, not the company's location; null whenever `isRemote` is true.
+  city             String?
+  state            String?
+  isVisible        Boolean              @default(true)
+  excludedChannels SyndicationChannel[] @default([])
+  competencies     Competency[]         @relation("roleCompetencies")
+  resumeSheet      ResumeSheet?         @relation("resumeSheetRoles", fields: [resumeSheetId], references: [id])
+  resumeSheetId    String?              @db.Uuid
+
+  @@unique([title, companyId])
+}
+
+// The successor to `Education`; see `Role` for why there is no `nodes` relation.
+model Degree {
+  id                 String               @id @default(uuid()) @db.Uuid
+  createdAt          DateTime             @default(now())
+  createdBy          User                 @relation("createdDegrees", fields: [createdById], references: [id])
+  createdById        String               @db.Uuid
+  updatedAt          DateTime             @updatedAt
+  updatedBy          User                 @relation("updatedDegrees", fields: [updatedById], references: [id])
+  updatedById        String               @db.Uuid
+  slug               String               @unique
+  school             School               @relation("degrees", fields: [schoolId], references: [id])
+  schoolId           String               @db.Uuid
+  degree             DegreeType
+  major              String
+  shortMajor         String?
+  minor              String?
+  shortMinor         String?
+  concentration      String?
+  shortConcentration String?
+  gpa                String?
+  note               String?
+  shortNote          String?
+  startDate          DateTime
+  endDate            DateTime?
+  isCurrent          Boolean              @default(false)
+  isHighlighted      Boolean              @default(false)
+  // A degree begun and deliberately paused; renders in place of an end date.
+  isPostponed        Boolean              @default(false)
+  isVisible          Boolean              @default(true)
+  excludedChannels   SyndicationChannel[] @default([])
+  competencies       Competency[]         @relation("degreeCompetencies")
+  resumeSheet        ResumeSheet?         @relation("resumeSheetDegrees", fields: [resumeSheetId], references: [id])
+  resumeSheetId      String?              @db.Uuid
+
+  @@unique([major, schoolId])
+  @@unique([shortMajor, schoolId])
+}
+
+// A top-level node of the two-level content tree: the opening summary prose of a role or degree,
+// or a titled body section beneath it. Attaches to its owner polymorphically through
+// `ownerId` + `ownerType`, which carries no database-level foreign key — the accepted cost of one
+// content tree serving both roles and degrees.
+model ContentNode {
+  id               String               @id @default(uuid()) @db.Uuid
+  createdAt        DateTime             @default(now())
+  createdBy        User                 @relation("createdContentNodes", fields: [createdById], references: [id])
+  createdById      String               @db.Uuid
+  updatedAt        DateTime             @updatedAt
+  updatedBy        User                 @relation("updatedContentNodes", fields: [updatedById], references: [id])
+  updatedById      String               @db.Uuid
+  // Generated rather than authored (a paragraph has no natural name), then sticky once stamped.
+  slug             String
+  ownerId          String               @db.Uuid
+  ownerType        ContentOwnerType
+  kind             NodeKind
+  // Null means `PARAGRAPH`; meaningless when `kind` is `SUMMARY`.
+  type             NodeType?
+  // A short bold lead-in, as HTML. A node is never rendered as a title alone.
+  title            String?
+  // A SINGLE paragraph of HTML; several paragraphs are several nodes, one row each, because
+  // syndication is decided per paragraph.
+  content          String?
+  titleLayout      TitleLayout?
+  order            Int
+  isVisible        Boolean              @default(true)
+  excludedChannels SyndicationChannel[] @default([])
+  children         NestedContentNode[]  @relation("children")
+  competencies     Competency[]         @relation("contentNodeCompetencies")
+
+  @@unique([slug, ownerId, ownerType])
+}
+
+// The second and final level of the content tree. Carries no `type` and no children: depth is
+// capped at two by the schema itself, which is why this is a separate model rather than a
+// self-referential `parentId` on one table.
+model NestedContentNode {
+  id               String               @id @default(uuid()) @db.Uuid
+  createdAt        DateTime             @default(now())
+  createdBy        User                 @relation("createdNestedContentNodes", fields: [createdById], references: [id])
+  createdById      String               @db.Uuid
+  updatedAt        DateTime             @updatedAt
+  updatedBy        User                 @relation("updatedNestedContentNodes", fields: [updatedById], references: [id])
+  updatedById      String               @db.Uuid
+  slug             String
+  parent           ContentNode          @relation("children", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId         String               @db.Uuid
+  title            String?
+  content          String?
+  titleLayout      TitleLayout?
+  order            Int
+  isVisible        Boolean              @default(true)
+  excludedChannels SyndicationChannel[] @default([])
+  competencies     Competency[]         @relation("nestedContentNodeCompetencies")
+
+  @@unique([slug, parentId])
+}
+
+// One paragraph of the "About" block. Modeled as rows rather than a string array so each
+// paragraph has stable identity, explicit order, and its own syndication decision.
+model ProfileAboutParagraph {
+  id               String               @id @default(uuid()) @db.Uuid
+  createdAt        DateTime             @default(now())
+  createdBy        User                 @relation("createdProfileAboutParagraphs", fields: [createdById], references: [id])
+  createdById      String               @db.Uuid
+  updatedAt        DateTime             @updatedAt
+  updatedBy        User                 @relation("updatedProfileAboutParagraphs", fields: [updatedById], references: [id])
+  updatedById      String               @db.Uuid
+  slug             String
+  profile          Profile              @relation("about", fields: [profileId], references: [id])
+  profileId        String               @db.Uuid
+  content          String
+  shortContent     String?
+  order            Int
+  isVisible        Boolean              @default(true)
+  excludedChannels SyndicationChannel[] @default([])
+
+  @@unique([slug, profileId])
+}
+
+// One plus-marked one-liner beneath the "About" block.
+model ProfileHighlight {
+  id               String               @id @default(uuid()) @db.Uuid
+  createdAt        DateTime             @default(now())
+  createdBy        User                 @relation("createdProfileHighlights", fields: [createdById], references: [id])
+  createdById      String               @db.Uuid
+  updatedAt        DateTime             @updatedAt
+  updatedBy        User                 @relation("updatedProfileHighlights", fields: [updatedById], references: [id])
+  updatedById      String               @db.Uuid
+  slug             String
+  profile          Profile              @relation("highlights", fields: [profileId], references: [id])
+  profileId        String               @db.Uuid
+  text             String
+  shortText        String?
+  order            Int
+  isVisible        Boolean              @default(true)
+  excludedChannels SyndicationChannel[] @default([])
+
+  @@unique([slug, profileId])
+}
+
+// One icon-labelled row of the contact block.
+model ProfileContactEntry {
+  id               String               @id @default(uuid()) @db.Uuid
+  createdAt        DateTime             @default(now())
+  createdBy        User                 @relation("createdProfileContactEntries", fields: [createdById], references: [id])
+  createdById      String               @db.Uuid
+  updatedAt        DateTime             @updatedAt
+  updatedBy        User                 @relation("updatedProfileContactEntries", fields: [updatedById], references: [id])
+  updatedById      String               @db.Uuid
+  slug             String
+  profile          Profile              @relation("contacts", fields: [profileId], references: [id])
+  profileId        String               @db.Uuid
+  icon             ContactIcon
+  text             String
+  shortText        String?
+  order            Int
+  isVisible        Boolean              @default(true)
+  excludedChannels SyndicationChannel[] @default([])
+
+  @@unique([slug, profileId])
+}
+
+// One physical 8.5x11 sheet of the printed resume. Page breaks are assigned here by hand; the
+// sheet names the roles and degrees it carries and nothing else about them (their order within
+// the sheet derives from their start dates). Resume-only presentation — nothing here syndicates.
+model ResumeSheet {
+  id               String                    @id @default(uuid()) @db.Uuid
+  createdAt        DateTime                  @default(now())
+  createdBy        User                      @relation("createdResumeSheets", fields: [createdById], references: [id])
+  createdById      String                    @db.Uuid
+  updatedAt        DateTime                  @updatedAt
+  updatedBy        User                      @relation("updatedResumeSheets", fields: [updatedById], references: [id])
+  updatedById      String                    @db.Uuid
+  // Doubles as the emitted filename: `page-1` becomes `page-1.html`.
+  slug             String                    @unique
+  order            Int
+  // Whether the profile's about/highlights/contact blocks render above this sheet's competency
+  // groups; true on the opening sheet only.
+  isIntroVisible   Boolean                   @default(false)
+  roles            Role[]                    @relation("resumeSheetRoles")
+  degrees          Degree[]                  @relation("resumeSheetDegrees")
+  competencyGroups ResumeCompetenciesGroup[] @relation("resumeSheetCompetencyGroups")
+}
+
+// A titled grouping of competencies in a sheet's sidebar. The bars/pills variance is a display
+// flag rather than two shapes: what differs is only whether each member's proficiency is drawn.
+model ResumeCompetenciesGroup {
+  id            String                         @id @default(uuid()) @db.Uuid
+  createdAt     DateTime                       @default(now())
+  createdBy     User                           @relation("createdResumeCompetenciesGroups", fields: [createdById], references: [id])
+  createdById   String                         @db.Uuid
+  updatedAt     DateTime                       @updatedAt
+  updatedBy     User                           @relation("updatedResumeCompetenciesGroups", fields: [updatedById], references: [id])
+  updatedById   String                         @db.Uuid
+  slug          String
+  heading       String
+  shortHeading  String?
+  display       ResumeCompetenciesGroupDisplay
+  order         Int
+  resumeSheet   ResumeSheet                    @relation("resumeSheetCompetencyGroups", fields: [resumeSheetId], references: [id])
+  resumeSheetId String                         @db.Uuid
+  competencies  Competency[]                   @relation("groupCompetencies")
+
+  @@unique([slug, resumeSheetId])
 }

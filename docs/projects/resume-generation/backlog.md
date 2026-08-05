@@ -30,9 +30,10 @@ discuss together, then record the outcome in `decisions.md`.
       app, no browser automation (see decisions.md). The remaining detail — how the Chrome binary is
       located portably — was settled 2026-08-03 when the script was built: candidate paths with a
       `CHROME_PATH` override, no `puppeteer-core` dependency.
-- [ ] **(blocker)** `Detail.shortDescription` disposition — the one open question in resume-gen's
-      `docs/content-model.md` that changes the schema shape (candidate: a `ContentVariant` table
-      keyed by node + channel, which would also solve per-medium content overrides generally).
+- [x] **(blocker)** `Detail.shortDescription` disposition — resolved 2026-08-04 (see decisions.md):
+      one variant table (owner + field + context) serving prose and labels alike, committed as the
+      direction but built only when the first third context arrives; `shortX` columns remain the
+      fast path meanwhile. No longer blocks anything.
 - [ ] Syndication modeling beyond Detail-replacement: how do the other new/parallel models — `Role`
       (succeeds `Experience`), `Degree` (succeeds `Education`), `Competency` (succeeds `Skill`) —
       and `Project`, `Repository`, `Company`, `School` participate in channels (owner-level
@@ -50,12 +51,10 @@ discuss together, then record the outcome in `decisions.md`.
       optional `meta:` block written back by the first push, and sticky generated node slugs. The
       third coupled decision — how a destructive change is surfaced (the diff-style confirmation
       flow) — remains open and is covered by the fixture ⇄ DB sync design item above.
-- [ ] Contextual representation of labels and content — see
-      [context/open-questions.md](./context/open-questions.md). Generalizes the `label`/`shortLabel`
-      split beyond two contexts, and asks how one record can render as several strings in a context
-      (the three `Accessibility` competencies are the motivating case). Should be settled together
-      with `Detail.shortDescription` above, since both are the same problem at different
-      granularity.
+- [x] Contextual representation of labels and content — resolved 2026-08-04 together with
+      `Detail.shortDescription` (see decisions.md): same variant table, same timing. The
+      channel-vs-surface keying and the set-of-strings-per-context questions are recorded in the
+      decision as design inputs for when the table is built.
 - [ ] Per-medium display configuration beyond visibility — see
       [context/open-questions.md](./context/open-questions.md). Syndication answers whether a record
       appears on a channel and nothing about how it is displayed there. Decide whether display
@@ -64,10 +63,12 @@ discuss together, then record the outcome in `decisions.md`.
       decisions.md): `isHighlighted` stays a plain boolean meaning dashboard presence, subordinate
       to website syndication.
 - [ ] Competency categorization — see [context/open-questions.md](./context/open-questions.md).
-      Whether to carry the legacy `Skill.categories` / `programmingLanguages` / `programmingDomains`
-      forward onto `Competency`, collapse them into one tagging mechanism, or model categories as
-      their own table — and whether a category and a `ResumeCompetenciesGroup` are the same thing,
-      in which case the sidebar groups become derivable rather than authored.
+      Current lean (2026-08-04): do not carry the legacy `Skill.categories` / `programmingLanguages`
+      / `programmingDomains` forward onto `Competency`; instead, design a future bucketing/tagging
+      mechanism for grouping competencies when the need firms up. Still open alongside it: whether a
+      bucket and a `ResumeCompetenciesGroup` are the same thing, in which case the sidebar groups
+      become derivable rather than authored. The legacy columns stay on `Skill` untouched in the
+      interim.
 - [ ] GitHub-driven content sync design: the deterministic flows (projects, job info, skills) and
       the Claude-assisted skill-inference flow.
 
@@ -93,9 +94,9 @@ _Gated on the Research & Discussion items above — no schema work until those a
       were the sidebar bars. The remaining 121 appeared only as pills or role chips and were never
       rated. A competency rendered in a `BARS` group must have one, which is currently an
       application-level invariant rather than a schema constraint.
-- [ ] Land the new content model (`ContentNode`, `NestedContentNode`, syndication enums) in
-      `schema.prisma` as parallel models — steps 2–6 of the migration plan in resume-gen's
-      `docs/content-model.md`.
+- [x] Land the new content model (`ContentNode`, `NestedContentNode`, syndication enums) in
+      `schema.prisma` as parallel models (done 2026-08-04: migration
+      `20260804145452_parallel_content_models`, applied to the dev database — see decisions.md).
 - [ ] Correlate content and sub-content to competencies (added 2026-08-04). `ContentNode` and
       `NestedContentNode` already carry a competencies relation in the rehearsal types, but the
       correlations are not authored anywhere yet. A content or sub-content node must be able to tag
@@ -108,8 +109,10 @@ _Gated on the Research & Discussion items above — no schema work until those a
       Applies uniformly to `ContentNode`, `NestedContentNode`, `Role`, `Degree` and any other
       competency-bearing model — the pills' visibility is controllable both overall and
       per-syndication, independently of the owning record's own syndication.
-- [ ] Design the `Competency` model — the parallel successor to `Skill` (added 2026-08-02; named
-      2026-08-02, see decisions.md). Requirements:
+- [x] Design the `Competency` model — landed 2026-08-04 in the parallel schema per the rehearsal
+      types (see decisions.md). Remaining from the requirements below: the m2m links to the legacy
+      `Course`/`Project`/`Repository` models (deferred to the syndication-modeling research item).
+      Original requirements (added 2026-08-02):
   - More control and output configurability than the current `Skill` model.
   - Same visibility flags as `Role`/`Degree` get in the new model (the `Syndicated` shape:
     `visible` + `excludedChannels[]`).
@@ -119,22 +122,22 @@ _Gated on the Research & Discussion items above — no schema work until those a
   - Years-of-experience metric (like today's `experience`/`calculatedExperience`), **plus** a
     bucketed familiarity enum that becomes the primary metric going forward — values from
     resume-gen's `Proficiency` type: `FAMILIAR | PROFICIENT | ADVANCED | EXPERT`.
-- [ ] Design the `Role` and `Degree` models — parallel successors to `Experience` and `Education`
-      (added 2026-08-02, see decisions.md). resume-gen's `Role`/`Degree` types are the starting
-      point; decide whether `ContentOwnerType` enum values follow the rename
-      (`EXPERIENCE | EDUCATION` → `ROLE | DEGREE`) before the content model lands, since
-      resume-gen's target schema currently uses the old names.
-- [ ] Model resume sidebar sections (a PDF/HTML-resume-only concept) as a distinct model with
-      `name`, `slug`, and competencies — where each `Competency` carries an **optional FK** pointing
-      at its resume sidebar section (added 2026-08-02). Maps to resume-gen's `SidebarSection`
-      (bars/pills groupings in `src/data/skills.ts`).
-- [ ] Replace display-string fields from resume-gen types with real modeling on the way in:
-      `dates`/`location` as columns, `logo` → `Company`/`School` relations.
+- [x] Design the `Role` and `Degree` models — landed 2026-08-04 in the parallel schema per the
+      rehearsal types. `ContentOwnerType` values follow the rename (`ROLE | DEGREE`), and the legacy
+      `Degree` enum became `DegreeType` to free the model name (see decisions.md).
+- [x] Model resume sidebar sections — landed 2026-08-04 as `ResumeCompetenciesGroup` (heading, slug,
+      bars/pills display flag, owned by a `ResumeSheet`), with competency membership as a
+      **many-to-many** per the rehearsal types, superseding the optional-FK sketch originally
+      recorded here (see decisions.md).
+- [x] Replace display-string fields from resume-gen types with real modeling on the way in (done
+      2026-08-04): `startDate`/`endDate`/`city`/`state` are real columns on `Role`/`Degree`, and
+      logos resolve through the `Company`/`School` relations (`logoFileName`).
 - [ ] Rationalize visibility defaults across existing models (`Company`/`School` have no flag;
       `Project`/`Repository` default hidden; others default visible).
-- [ ] Model the remaining presentation constructs (`Sheet` pagination, pill vs. bar rendering) per
-      the syndication-modeling research outcome — sidebar sections themselves are covered by the
-      item above.
+- [x] Model the remaining presentation constructs — landed 2026-08-04: `ResumeSheet` (hand-assigned
+      pagination, `isIntroVisible`) and the bars/pills display flag on `ResumeCompetenciesGroup`.
+      Whether presentation modeling generalizes per-medium remains with the syndication-modeling
+      research item.
 - [ ] Port resume-gen's cascade resolution (`normalize.ts`, `syndication.ts`) into this app's model
       layer — remember channel eligibility is not a row predicate (`WHERE visible = true` is wrong;
       resolution happens in application code).
@@ -149,12 +152,22 @@ _Gated on the Research & Discussion items above — no schema work until those a
       regenerating.
 - [ ] Update project context, skills and agent instructions to require parity between the TS data
       modules and the YAML fixtures whenever content is added, removed or modified in the interim.
-- [ ] Add zod schemas for the YAML fixtures (parse on read, validate on write, fail hard on
-      anomalies such as duplicate slugs) — the entry point for the sync tooling below.
-- [ ] Implement the bidirectional fixture ⇄ DB sync per the research outcome, including the optional
-      `meta:` identity block, sticky node-slug write-back, the merge strategy when both sides
-      changed, and the destructive-change confirmation flow with a flag to bypass it for scripted
-      runs.
+- [x] Add zod schemas for the YAML fixtures (done 2026-08-04 as part of the transfer architecture in
+      `src/database/content/` — see decisions.md): strict per-entity schemas derived from field
+      codecs, duplicate-slug and cross-reference validation over the whole set, entity invariants
+      (content-tree shape, remote-role location), verified by round-tripping all seven fixture
+      files.
+- [ ] Implement the bidirectional fixture ⇄ DB sync per the research outcome, including the merge
+      strategy when both sides changed and the destructive-change confirmation flow with a flag to
+      bypass it for scripted runs. The structural layer exists (`ContentStore` port with YAML and
+      Prisma adapters, dependency-ordered registry, create-only writes); what remains is the sync
+      engine itself — diff canonical-vs-canonical, update writes, `meta:`/sticky-slug write-back to
+      fixtures after a push, and the script entry point.
+- [x] ~~Preserve authored competency ordering across the m2m relations~~ — resolved 2026-08-04 the
+      other way (see decisions.md): competency order is derived, never stored. Website and resume
+      body chips sort by `isPrioritized` then `createdAt`; the resume sidebar's pill order comes
+      from the generation build step's spacing/size optimization. Fixture competency lists are
+      membership sets emitted in slug order.
 - [ ] Add a dev-DB `jsonify` script to `package.json` (only `fixtures:jsonify:prod` exists today).
       Not gated — small standalone improvement.
 - [ ] Close fixture coverage gaps: `Detail`/`Experience`/`Education`/`Course` exist only nested
@@ -242,6 +255,9 @@ components must stay pure (no Next-coupled APIs) so they serve both._
       serving a route to the printer at all.
 - [ ] Revisit hand-assigned pagination (`Sheet`/`pages.ts`) — keep manual, or automate fit detection
       (resume-gen clips overflow silently; nothing checks it).
+- [ ] When generation is DB-backed, derive competency order at build time per the 2026-08-04
+      ordering decision (see decisions.md): sidebar bars/pills via the spacing/size optimization
+      step, body chip rows via prioritized-then-`createdAt`. Nothing persists a competency order.
 - [ ] **(deliberately last — do not prioritize)** Keep a fixture-only generation mode: once the
       generation script sources content from the database, it must still be able to run from the
       YAML fixture data alone — no database queries — for local development, so the resume output
