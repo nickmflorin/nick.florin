@@ -38,11 +38,23 @@
  * On a project of this size this will still take a handful of seconds, but that is dramatically
  * better than a full type-aware fix pass.
  *
+ * Type-Aware Mode
+ * ---------------
+ * {@link toFormatOnlyConfig} accepts an `includeTypeAware` option that additionally retains the
+ * auto-fixable rules requiring type information, along with the type-aware parser options they
+ * need. The consuming eslint.config.format.mjs can key the option off of the
+ * 'ESLINT_FORMAT_TYPE_AWARE' environment variable, which the sibling 'eslint-progress.mjs' wrapper
+ * sets when it is invoked with the '--type-aware' flag, so the mode is selectable per run from the
+ * command line (e.g. `pnpm eslint:format:fast --type-aware`). This mode is substantially slower —
+ * it builds a full TypeScript program — but still excludes every non-fixable rule.
+ *
  * @example
  * ```ts
  * import { toFormatOnlyConfig } from '@nickflorin/eslint-config-web/fast-formatting';
  * import config from './eslint.config.mjs';
- * export default toFormatOnlyConfig(config);
+ * export default toFormatOnlyConfig(config, {
+ *   includeTypeAware: process.env.ESLINT_FORMAT_TYPE_AWARE === '1',
+ * });
  * ```
  */
 import { builtinRules } from 'eslint/use-at-your-own-risk';
@@ -51,7 +63,8 @@ import { builtinRules } from 'eslint/use-at-your-own-risk';
  * The 'parserOptions' keys that activate typescript-eslint's type-aware linting by instructing the
  * parser to build a full TypeScript program. They are stripped when deriving a format-only
  * configuration so that the parser performs a purely syntactic parse, which is what makes the
- * format-only pass fast and low-memory.
+ * format-only pass fast and low-memory. When the configuration is derived with `includeTypeAware`,
+ * they are left in place instead, because the retained type-aware rules throw without a program.
  */
 const TypeAwareParserOptionKeys = ['project', 'projectService', 'EXPERIMENTAL_useProjectService'];
 
@@ -101,21 +114,46 @@ const collectRuleMeta = config => {
 };
 
 /**
- * Determines whether a rule is a "formatting" rule that is safe to run in a format-only, type-free
+ * Determines whether a rule is a "formatting" rule that is safe to run in a format-only
  * configuration.
  *
- * A rule qualifies only when it is auto-fixable and does not require type information. Auto-fixable
- * rules that are type-aware (for example '@typescript-eslint/prefer-optional-chain') are excluded
- * because they throw when run without a TypeScript program, while fixable syntactic rules (for
- * example '@typescript-eslint/consistent-type-imports') are retained because they operate on the
- * AST alone.
+ * A rule qualifies only when it is auto-fixable. By default, auto-fixable rules that are type-aware
+ * (for example '@typescript-eslint/prefer-optional-chain') are additionally excluded because they
+ * throw when run without a TypeScript program, while fixable syntactic rules (for example
+ * '@typescript-eslint/consistent-type-imports') are retained because they operate on the AST
+ * alone. When `includeTypeAware` is set, type-aware auto-fixable rules qualify as well — the
+ * derived configuration then retains the type-aware parser options so a TypeScript program is
+ * available to them.
  *
  * @param {import('eslint').Rule.RuleMetaData | undefined} meta The rule metadata to evaluate.
+ * @param {boolean} includeTypeAware
+ *   Whether auto-fixable rules that require type information also qualify as formatting rules.
  *
  * @returns {boolean} Whether the rule should be retained in a format-only configuration.
  */
-const isFormattingRule = meta =>
-  Boolean(meta?.fixable) && meta?.docs?.requiresTypeChecking !== true;
+const isFormattingRule = (meta, includeTypeAware) =>
+  Boolean(meta?.fixable) && (includeTypeAware || meta?.docs?.requiresTypeChecking !== true);
+
+/**
+ * Determines whether a rule entry explicitly disables its rule, in either the bare severity form
+ * ('off' or 0) or the array form (['off', ...options]).
+ *
+ * Explicitly disabled entries are always retained in a format-only configuration, whether or not
+ * the rule they disable qualifies as a formatting rule. An 'off' entry commonly exists to override
+ * a rule enabled by an earlier (often preset) configuration entry; if the 'off' entry were dropped
+ * while the enabling entry survived the formatting filter, the format-only pass would run — and
+ * auto-fix under — a rule the real configuration has deliberately turned off, producing output the
+ * full lint then rejects. Retaining every disabled entry is free, since ESLint never executes a
+ * rule that resolves to 'off'.
+ *
+ * @param {import('eslint').Linter.RuleEntry} entry The configured rule entry to evaluate.
+ *
+ * @returns {boolean} Whether the entry explicitly disables its rule.
+ */
+const isDisabledEntry = entry => {
+  const severity = Array.isArray(entry) ? entry[0] : entry;
+  return severity === 'off' || severity === 0;
+};
 
 /**
  * Removes the type-aware {@link TypeAwareParserOptionKeys} from a 'parserOptions' object, returning
@@ -152,15 +190,28 @@ const usesPluginAsParser = entry => {
  * auto-fixable routines so that the resulting configuration can be used to simply run ESLint as
  * a formatter in a significantly faster way.
  *
+ * Rule entries that explicitly disable their rule are always retained (see
+ * {@link isDisabledEntry}), so an override that turns off a preset-enabled rule keeps doing so in
+ * the derived configuration.
+ *
+ * By default the derived configuration is fully type-free: type-aware auto-fixable rules are
+ * dropped and the type-aware parser options are stripped, which is what makes the format-only pass
+ * fast and low-memory. Setting `includeTypeAware` retains the auto-fixable type-aware rules — and
+ * with them the type-aware parser options they need — trading speed for a more complete fix pass;
+ * non-fixable rules remain excluded either way.
+ *
  * This should *never* be used in production or CI environments.
  *
  * @param {import('eslint').Linter.Config[]} config The source flat configuration to derive from.
+ * @param {{ includeTypeAware?: boolean }} [options]
+ *   Options controlling the derivation, currently limited to `includeTypeAware` (defaulting to
+ *   `false`).
  *
  * @see {@link toFormatOnlyConfig}
  *
  * @returns {import('eslint').Linter.Config[]} The derived format-only flat configuration.
  */
-export const toFormatOnlyConfig = config => {
+export const toFormatOnlyConfig = (config, { includeTypeAware = false } = {}) => {
   const metaById = collectRuleMeta(config);
   const derived = config.flatMap(entry => {
     if (!entry || typeof entry !== 'object') {
@@ -172,7 +223,7 @@ export const toFormatOnlyConfig = config => {
     return [
       {
         ...entry,
-        ...(entry.languageOptions?.parserOptions
+        ...(entry.languageOptions?.parserOptions && !includeTypeAware
           ? {
               languageOptions: {
                 ...entry.languageOptions,
@@ -183,8 +234,10 @@ export const toFormatOnlyConfig = config => {
         ...(entry.rules
           ? {
               rules: Object.fromEntries(
-                Object.entries(entry.rules).filter(([ruleId]) =>
-                  isFormattingRule(metaById.get(ruleId)),
+                Object.entries(entry.rules).filter(
+                  ([ruleId, ruleEntry]) =>
+                    isDisabledEntry(ruleEntry) ||
+                    isFormattingRule(metaById.get(ruleId), includeTypeAware),
                 ),
               ),
             }

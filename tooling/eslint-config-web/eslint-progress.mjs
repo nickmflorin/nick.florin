@@ -26,8 +26,9 @@
  *    unresolved errors.
  *
  * Usage: `ESLINT_PROGRESS_LABEL=formatting node path/to/eslint-progress.mjs <eslint args...>`.
- * Every argument is forwarded verbatim to ESLint. The label defaults to 'linting', and the rolling
- * window size defaults to 10, overridable via 'ESLINT_PROGRESS_MAX_LINES'.
+ * Every argument is forwarded verbatim to ESLint, with the exception of the wrapper-only
+ * '--type-aware' flag (see {@link TypeAwareFlag}). The label defaults to 'linting', and the
+ * rolling window size defaults to 10, overridable via 'ESLINT_PROGRESS_MAX_LINES'.
  */
 import { spawn } from 'node:child_process';
 import { statSync } from 'node:fs';
@@ -83,14 +84,61 @@ const RendersInPlaceWindow = process.stderr.isTTY === true;
 const ClearToScreenEnd = '[0J';
 
 /**
+ * The wrapper-only flag that opts a formatting run into type-aware mode. It is not an ESLint flag:
+ * the wrapper strips it from the forwarded arguments and instead sets the
+ * 'ESLINT_FORMAT_TYPE_AWARE' environment variable for the child process, which the project's
+ * eslint.config.format.mjs reads to derive its format-only configuration with the auto-fixable
+ * type-aware rules (and the type-aware parser options they need) retained.
+ */
+const TypeAwareFlag = '--type-aware';
+
+/**
+ * Whether the run was opted into type-aware formatting via the {@link TypeAwareFlag}.
+ */
+const IsTypeAware = process.argv.slice(2).includes(TypeAwareFlag);
+
+/**
+ * Rewrites the value of ESLint's '--cache-location' argument, in either its space-separated or its
+ * '=' form, with a '.type-aware' suffix so a type-aware run keeps its own cache file. The two
+ * modes resolve different configurations, and ESLint discards a cached result whenever the
+ * configuration that produced it changes, so sharing one cache file would have each mode wipe out
+ * the other's cache every time the flag is toggled.
+ *
+ * @param {string[]} args The arguments being forwarded to ESLint.
+ *
+ * @returns {string[]} The arguments with any '--cache-location' value suffixed.
+ */
+const withTypeAwareCacheLocation = args =>
+  args.map((arg, index) => {
+    if (args[index - 1] === '--cache-location' || arg.startsWith('--cache-location=')) {
+      return `${arg}.type-aware`;
+    }
+    return arg;
+  });
+
+/**
+ * The arguments forwarded to the ESLint CLI: everything the wrapper received, minus the
+ * wrapper-only {@link TypeAwareFlag}, with the cache location suffixed via
+ * {@link withTypeAwareCacheLocation} when the flag was provided.
+ */
+const ForwardedArgs = IsTypeAware
+  ? withTypeAwareCacheLocation(process.argv.slice(2).filter(arg => arg !== TypeAwareFlag))
+  : process.argv.slice(2);
+
+/**
  * ESLint is launched through 'pnpm exec' so the binary resolves the same way the bare scripts
  * resolved it, rather than depending on ESLint's package 'exports' map (which does not expose the
  * 'bin/eslint.js' entry point for direct resolution). The single 'eslint:linter' debug namespace is
  * enabled so each file emits a progress line as it is processed; every other namespace stays off to
  * keep the stream limited to the per-file markers this wrapper rewrites.
  */
-const child = spawn('pnpm', ['exec', 'eslint', ...process.argv.slice(2)], {
-  env: Object.assign({}, process.env, { DEBUG: 'eslint:linter' }),
+const child = spawn('pnpm', ['exec', 'eslint', ...ForwardedArgs], {
+  env: Object.assign(
+    {},
+    process.env,
+    { DEBUG: 'eslint:linter' },
+    IsTypeAware ? { ESLINT_FORMAT_TYPE_AWARE: '1' } : {},
+  ),
   stdio: ['inherit', 'inherit', 'pipe'],
 });
 
@@ -99,7 +147,7 @@ const child = spawn('pnpm', ['exec', 'eslint', ...process.argv.slice(2)], {
  * is invoked with '--fix'. For a lint-only pass nothing is written, so the tracking and its
  * per-file 'statSync' calls are skipped entirely.
  */
-const CollectsChangedFiles = process.argv.slice(2).includes('--fix');
+const CollectsChangedFiles = ForwardedArgs.includes('--fix');
 
 /**
  * A map of the absolute path of each file ESLint has processed to a 'mtime:size' signature captured
