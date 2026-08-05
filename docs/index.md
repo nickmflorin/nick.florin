@@ -51,6 +51,8 @@ Long-running project working context (status, decisions, codebase maps) lives un
 
 - [Resume Generation](./projects/resume-generation/README.md) - Centralizing all portfolio/resume
   content under a single source of truth with per-medium distribution
+- [App Performance](./projects/app-performance/README.md) - Restoring SSR of page content,
+  maximizing first paint, eliminating load flicker, and cutting bundle/payload size
 
 ## AI Instructions vs Human Documentation
 
