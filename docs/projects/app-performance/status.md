@@ -24,15 +24,36 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
 - 2026-08-04: All six open questions resolved and recorded in [decisions.md](./decisions.md);
   [backlog.md](./backlog.md) restructured accordingly (Option B reshapes Phase 1; the FontAwesome
   migration became Phase 5).
+- 2026-08-04: Baseline captured on `perf/restore-ssr` (dev server, anonymous requests): the
+  server-rendered HTML for `/dashboard`, `/resume/experience`, and `/projects/greenbudget`
+  contained **zero visible text** — no `<main>`, no headings, only the full-screen spinner markup.
+- 2026-08-04: Phase 1 landed on `perf/restore-ssr`: Clerk scoped via the session-conditional
+  `SessionClerkProvider` (plus a sign-in-layout provider for the signed-out sign-in flow), the
+  `ClerkLoading`/`ClerkLoaded` gate removed, the five cheap providers statically imported in
+  `ClientConfig` (`TourProvider` stays split, now without `ssr: false`), `Sidebar`/`SiteMenu`
+  refactored off client-side Clerk (server-threaded `isSignedIn`; `SignInButton` is a plain link),
+  and `useScreenSizes` made SSR-safe (desktop-assumed fallback corrected pre-paint on mount, which
+  the newly server-rendered `LayoutNavigation` surfaced).
+- 2026-08-04: Phase 1 verified against the dev server (anonymous requests): all three routes now
+  render 4k–14k characters of visible text with `<main>`, the sidebar, and all five dashboard
+  module headers present in the server HTML; no `@reactour` or Nivo chunks in the initial script
+  list; `ClerkProvider` is not rendered for anonymous visitors. A production build compiled and
+  type-checked cleanly.
 
 ## In Progress
 
-- Phase 1 of [backlog.md](./backlog.md): baseline capture, Clerk scoping (Option B), and static
-  provider imports, on the working branch.
+- Phase 1 wrap-up: two verification items remain open (see Next).
 
 ## Next
 
-1. Capture the baseline server HTML (`/dashboard`, `/resume/experience`, one `/projects/*` page) and
-   a Lighthouse run before any code changes.
-2. Land the Clerk scoping and provider changes; verify the server HTML contains page content and
-   record the result here.
+1. **Production-build chunk verification is blocked** on unrelated schema drift: `next build`
+   fails during page-data collection because `.env.production` points builds at the remote
+   database, which does not yet have the resume-generation migration (`Company.slug`). Until a
+   production build passes, the three `@clerk/*` wrapper chunks that appear in the dev script list
+   (dev serves the whole static module graph) cannot be confirmed pruned for anonymous visitors.
+2. Manual signed-in verification: sign-in flow, the account section of the site menu, sign-out,
+   admin CMS, tour/drawers/toasts — best done in a browser session.
+3. Cleanup candidates left orphaned by the scoping (not yet removed): `clerkUserIsAdmin` and
+   `UserResource` in `src/application/auth/roles.ts`, `src/components/buttons/UserButton.tsx`,
+   and `src/components/OrganizationSwitcher.tsx` (no importers).
+4. Then Phase 2 of [backlog.md](./backlog.md) (chart `fallbackData`, skeletons, conditional tour).
