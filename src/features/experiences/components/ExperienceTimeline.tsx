@@ -1,19 +1,15 @@
-import dynamic from 'next/dynamic';
 import { type JSX } from 'react';
+
+import { TimelineItem } from '@mantine/core';
 
 import { removeRedundantTopLevelSkills } from '~/database/model';
 
 import { fetchExperiences } from '~/actions/experiences/fetch-experiences';
 
 import { TimelineIcon } from '~/components/icons/TimelineIcon';
-import { Loading } from '~/components/loading/Loading';
 import { CommitTimeline } from '~/components/timelines/CommitTimeline';
 import { type ComponentProps } from '~/components/types';
 import { ResumeModelPageTile } from '~/features/resume/components/tiles/ResumeModelPageTile';
-
-const TimelineItem = dynamic(() => import('@mantine/core').then(mod => mod.TimelineItem), {
-  loading: () => <Loading isLoading />,
-});
 
 export type ExperienceTimelineProps = ComponentProps;
 

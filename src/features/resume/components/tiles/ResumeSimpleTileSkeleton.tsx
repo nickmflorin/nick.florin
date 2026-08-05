@@ -8,12 +8,20 @@ import { ResumeSimpleTileScaffold } from './ResumeSimpleTileScaffold';
 
 export interface ResumeSimpleTileSkeletonProps extends ComponentProps {
   readonly children?: ReactNode;
+  /**
+   * The rendered size of the icon placeholder, matching the `iconSize` the corresponding real
+   * tile renders with so that the skeleton and the tile occupy the same space.
+   *
+   * @default 22
+   */
+  readonly iconSize?: number;
   readonly isDescriptionVisible?: boolean;
   readonly numDescriptionLines?: number;
 }
 
 export const ResumeSimpleTileSkeleton = ({
   children,
+  iconSize = 22,
   isDescriptionVisible = true,
   numDescriptionLines = 2,
   ...props
@@ -24,7 +32,7 @@ export const ResumeSimpleTileSkeleton = ({
       isDescriptionVisible ? <DescriptionSkeleton numLines={numDescriptionLines} /> : null
     }
     descriptionGap={8}
-    icon={<Skeleton height={22} width={22} />}
+    icon={<Skeleton height={iconSize} width={iconSize} />}
   >
     {children}
   </ResumeSimpleTileScaffold>

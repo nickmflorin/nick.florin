@@ -8,8 +8,8 @@ export interface ShowMoreLinkProps extends Omit<LinkProps<'button'>, 'children' 
 }
 
 const LinkText: Record<TypographyVisibilityState, string> = {
-  collapsed: 'Show more',
-  expanded: 'Show less',
+  collapsed: 'more',
+  expanded: 'less',
 };
 
 export const ShowMoreLink = ({ state, ...props }: ShowMoreLinkProps) => (

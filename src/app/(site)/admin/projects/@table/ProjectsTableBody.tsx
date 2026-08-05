@@ -1,26 +1,9 @@
-import dynamic from 'next/dynamic';
 import { type JSX } from 'react';
 
 import { type ProjectsControls, type ProjectsFilters } from '~/actions';
 import { fetchProjects } from '~/actions/projects/fetch-projects';
 
-import { Loading } from '~/components/loading/Loading';
-import { ProjectsTableControlBarPlaceholder } from '~/features/projects/components/tables/ProjectsTableControlBarPlaceholder';
-
-const ClientProjectsTableBody = dynamic(
-  () =>
-    import('~/features/projects/components/tables/ProjectsTableBody').then(
-      mod => mod.ProjectsTableBody,
-    ),
-  {
-    loading: () => (
-      <>
-        <ProjectsTableControlBarPlaceholder />
-        <Loading component='tbody' isLoading />
-      </>
-    ),
-  },
-);
+import { ProjectsTableBody as ClientProjectsTableBody } from '~/features/projects/components/tables/ProjectsTableBody';
 
 const getProjects = async ({
   filters,

@@ -1,30 +1,49 @@
 'use client';
 import dynamic from 'next/dynamic';
 
+import { type ApiSkill } from '~/database/model';
 import { arraysHaveSameElements } from '~/lib';
 
 import { Button } from '~/components/buttons';
 import { ErrorView } from '~/components/errors/ErrorView';
 import { Empty } from '~/components/feedback/Empty';
 import { CircleNumber } from '~/components/icons/CircleNumber';
-import { DynamicLoader, DynamicLoading } from '~/components/loading/dynamic-loading';
 import { Loading } from '~/components/loading/Loading';
 import { Module } from '~/components/structural/Module';
 import { useFilterState } from '~/hooks';
 import { useSkills } from '~/hooks/api';
 import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
+import { SkillsBarChartSkeleton } from './charts/SkillsBarChartSkeleton';
 import { type SkillsChartFilterFormValues } from './forms/SkillsChartFilterForm';
 import { SkillsFilterDropdownMenu } from './SkillsFilterDropdownMenu';
 
+const loadSkillsBarChartView = () => import('./charts/SkillsBarChartView');
+
+/* The chart chunk (Nivo included) is kicked off as soon as this module evaluates on the client —
+   in parallel with hydration — rather than when the dynamic component first renders, which
+   shortens the time until the chart can draw. */
+void loadSkillsBarChartView();
+
+/* The chunk-loading fallback is the same skeleton the view renders until it has mounted, so every
+   pre-chart state — streamed slot fallback, chunk load, pre-mount render — is pixel-identical. */
 const SkillsBarChartView = dynamic(
-  () => import('./charts/SkillsBarChartView').then(mod => mod.SkillsBarChartView),
+  () => loadSkillsBarChartView().then(mod => mod.SkillsBarChartView),
   {
-    loading: () => <DynamicLoader />,
+    loading: () => <SkillsBarChartSkeleton />,
   },
 );
 
-export const SkillsChartModule = () => {
+export interface SkillsChartModuleProps {
+  /**
+   * The skills matching the module's default (unmodified) filters, fetched on the server so that
+   * the chart is present in the server-rendered HTML rather than popping in after hydration and
+   * the initial SWR fetch. Seeds SWR as `fallbackData`; filter changes refetch client-side.
+   */
+  readonly initialSkills: ApiSkill<[]>[];
+}
+
+export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => {
   const { isLessThan } = useScreenSizes();
 
   const [filters, setFilters, resetFilters, filtersHaveChanged, differingFilters] =
@@ -50,7 +69,9 @@ export const SkillsChartModule = () => {
     data: skills,
     error,
     isLoading,
+    isRefetching,
   } = useSkills({
+    fallbackData: initialSkills,
     keepPreviousData: true,
     query: {
       ...filters,
@@ -96,27 +117,26 @@ export const SkillsChartModule = () => {
       >
         Skills Overview
       </Module.Header>
-      <Module.Content className='xl:overflow-y-auto xl:pr-[16px]'>
-        <DynamicLoading>
-          {({ isLoading: isLazyLoadingComponent }) => (
-            <Loading isLoading={isLoading || isLazyLoadingComponent}>
-              <Empty
-                content={
-                  differingFilters.length === 0
-                    ? 'No skills exist.'
-                    : 'No skills match the search criteria.'
-                }
-                isEmpty={skills?.length === 0}
-              >
-                {error ? (
-                  <ErrorView error={error} />
-                ) : skills === undefined ? null : (
-                  <SkillsBarChartView skills={skills} />
-                )}
-              </Empty>
-            </Loading>
-          )}
-        </DynamicLoading>
+      <Module.Content className='xl:overflow-y-auto min-h-0 pr-[16px]'>
+        {/* The overlay spinner is gated on refetches (filter changes), not the initial load: SWR
+            reports `isLoading` while revalidating the server-seeded fallback data on mount, and a
+            spinner over the skeleton would double up the loading indication. */}
+        <Loading isLoading={isRefetching}>
+          <Empty
+            content={
+              differingFilters.length === 0
+                ? 'No skills exist.'
+                : 'No skills match the search criteria.'
+            }
+            isEmpty={skills?.length === 0}
+          >
+            {error ? (
+              <ErrorView error={error} />
+            ) : skills === undefined ? null : (
+              <SkillsBarChartView skills={skills} />
+            )}
+          </Empty>
+        </Loading>
       </Module.Content>
     </>
   );

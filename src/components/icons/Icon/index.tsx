@@ -17,9 +17,8 @@ import { getNativeIconStyle } from './util';
  * or the 'name', {@link IconName}, 'family', {@link IconFamily}, and 'style', {@link IconStyle}
  * props), or a more general SVG component - provided as a child to the component.
  *
- * When the icon being rendered is a Font Awesome icon, the class names attributed to the <i>
- * element will allow the FontAwesome package to nest an <svg> element corresponding to the
- * appropriate Font Awesome icon inside of the <i> element.
+ * When the icon being rendered is a Font Awesome icon, the corresponding <svg> is rendered from
+ * the bundled icon registry (`~/components/icons/registry.ts`), nested inside the <i> element.
  */
 export const Icon = ({
   children,

@@ -7,7 +7,7 @@ export interface RepositoryTileSkeletonProps extends ComponentProps {
 }
 
 export const RepositoryTileSkeleton = (props: RepositoryTileSkeletonProps) => (
-  <ResumeSimpleTileSkeleton numDescriptionLines={2} {...props}>
+  <ResumeSimpleTileSkeleton iconSize={28} numDescriptionLines={2} {...props}>
     <Skeleton height={16} width='40%' />
   </ResumeSimpleTileSkeleton>
 );

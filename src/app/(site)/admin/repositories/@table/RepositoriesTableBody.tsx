@@ -1,26 +1,9 @@
-import dynamic from 'next/dynamic';
 import { type JSX } from 'react';
 
 import { type RepositoriesControls, type RepositoriesFilters } from '~/actions';
 import { fetchRepositories } from '~/actions/repositories/fetch-repositories';
 
-import { Loading } from '~/components/loading/Loading';
-import { RepositoriesTableControlBarPlaceholder } from '~/features/repositories/components/tables/RepositoriesTableControlBarPlaceholder';
-
-const ClientRepositoriesTableBody = dynamic(
-  () =>
-    import('~/features/repositories/components/tables/RepositoriesTableBody').then(
-      mod => mod.RepositoriesTableBody,
-    ),
-  {
-    loading: () => (
-      <>
-        <RepositoriesTableControlBarPlaceholder />
-        <Loading component='tbody' isLoading />
-      </>
-    ),
-  },
-);
+import { RepositoriesTableBody as ClientRepositoriesTableBody } from '~/features/repositories/components/tables/RepositoriesTableBody';
 
 const getRepositories = async ({
   filters,

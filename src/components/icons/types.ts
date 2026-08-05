@@ -2,7 +2,6 @@ import { type JSX } from 'react';
 
 import {
   type IconFamily as RootIconFamily,
-  type IconName as RootIconName,
   type IconStyle as RootIconStyle,
 } from '@fortawesome/fontawesome-svg-core';
 import { enumeratedLiterals, type EnumeratedLiteralsMember } from 'enumerated-literals';
@@ -11,7 +10,16 @@ import { z } from 'zod';
 import { type ComponentProps } from '~/components/types';
 import { type QuantitativeSize } from '~/components/types/sizes';
 
-export type IconName = RootIconName;
+import { type RegisteredIconName } from './registry';
+
+/**
+ * The names of the Font Awesome icons that can be rendered in the application.
+ *
+ * The union is derived from the icon registries in `./registry.ts`, which bundle the icon SVGs
+ * directly (there is no kit script loading icons at runtime), so a name outside the registries is
+ * a compile error at the call site rather than an icon that silently fails to render.
+ */
+export type IconName = RegisteredIconName;
 
 export const IconDimensions = enumeratedLiterals(['height', 'width'] as const, {});
 export type IconDimension = EnumeratedLiteralsMember<typeof IconDimensions>;
@@ -34,11 +42,6 @@ export enum IconFamilies {
   SHARP = 'sharp',
 }
 
-export const IconFamilyClassNameMap: Record<IconFamily, string> = {
-  classic: '',
-  sharp: 'fa-sharp',
-};
-
 export const DEFAULT_ICON_FAMILY = IconFamilies.CLASSIC;
 
 export type IconStyle = Exclude<RootIconStyle, 'duotone' | 'light' | 'thin'>;
@@ -50,12 +53,6 @@ export enum IconStyles {
 }
 
 export const DEFAULT_ICON_STYLE = IconStyles.REGULAR;
-
-export const IconStyleClassNameMap: Record<IconStyle, string> = {
-  brands: 'fa-brands',
-  regular: 'fa-regular',
-  solid: 'fa-solid',
-};
 
 export type FontAwesomeIconProp = {
   readonly family?: IconFamily;

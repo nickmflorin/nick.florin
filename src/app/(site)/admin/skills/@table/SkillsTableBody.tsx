@@ -1,23 +1,7 @@
-import dynamic from 'next/dynamic';
-
 import { type SkillsControls, type SkillsFilters } from '~/actions';
 import { fetchSkills } from '~/actions/skills/fetch-skills';
 
-import { Loading } from '~/components/loading/Loading';
-import { SkillsTableControlBarPlaceholder } from '~/features/skills/components/tables/SkillsTableControlBarPlaceholder';
-
-const ClientSkillsTableBody = dynamic(
-  () =>
-    import('~/features/skills/components/tables/SkillsTableBody').then(mod => mod.SkillsTableBody),
-  {
-    loading: () => (
-      <>
-        <SkillsTableControlBarPlaceholder />
-        <Loading component='tbody' isLoading />
-      </>
-    ),
-  },
-);
+import { SkillsTableBody as ClientSkillsTableBody } from '~/features/skills/components/tables/SkillsTableBody';
 
 const getSkills = async ({
   filters,

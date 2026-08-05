@@ -11,7 +11,11 @@ export const useControlledTypographyVisibility = ({
 }: ControlledTypographyVisibilityConfig) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
-  const [isTruncated, setIsTruncated] = useState(true);
+  /* Truncation starts false — not because the text is assumed to fit, but because the server (and
+     the client's first, hydration render) cannot measure it, and the truncation affordance must
+     be absent at first paint rather than appearing and then retracting. The observer below
+     reports the real answer as soon as the element mounts. */
+  const [isTruncated, setIsTruncated] = useState(false);
   const [state, setState] = useState<types.TypographyVisibilityState>(initialState);
 
   useEffect(() => {

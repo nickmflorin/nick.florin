@@ -271,6 +271,34 @@ Placement and styling are enforced by ESLint:
   (`@stylistic/multiline-comment-style`). A space always follows the `//` or `/*` opener
   (`@stylistic/spaced-comment`).
 
+### Block Comment Shape
+
+The delimiters of a bare-block comment hug the text. ESLint's `bare-block` setting does not police
+where the delimiters sit, so this is applied while writing the comment, exactly like line-length
+wrapping:
+
+- The text always starts on the same line as the `/*` opener. A `/*` sitting alone on its own line
+  is disallowed.
+- Continuation lines are indented three spaces, so that their text aligns with the text following
+  the `/* ` opener.
+- The closing `*/` sits at the end of the last line of text. It moves to a line of its own only
+  when appending ` */` would push that line past the 100-character limit; it is never given its own
+  line by default.
+
+```typescript
+/* Correct: the text opens beside the opening delimiter, the continuation lines align with it, and
+   the closing delimiter ends the final line of text. */
+
+/*
+Disallowed: both delimiters occupy lines of their own even though the text fits beside the opener
+and the closer fits at the end of the line above.
+*/
+```
+
+This shape applies only to non-JSDoc block comments. JSDoc blocks keep the opposite shape — `/**`
+and `*/` each on their own line, text never sharing a line with either — as required by
+`jsdoc/multiline-blocks` (see "JSDoc Format").
+
 ## Extract Instead of Commenting
 
 When a value or piece of logic can be named and documented, you must extract it rather than leave it

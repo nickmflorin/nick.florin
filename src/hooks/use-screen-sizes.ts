@@ -1,11 +1,13 @@
-import { useCallback, useRef, useState } from 'react';
+import { use, useCallback, useRef, useState } from 'react';
 
+import { ScreenSizeSeedContext } from '~/components/config/context';
 import {
   type Breakpoint,
   Breakpoints,
   type ContainerBreakpoint,
   ContainerBreakpoints,
   type ContainerSize,
+  getBreakpointFromWidth,
   getBreakpointFromWindow,
   getLowerRangeContainerBreakpoint,
   inferQuantitativeSizeValue,
@@ -23,23 +25,19 @@ const Comparators: Record<Comparison, (actual: number, compare: number) => boole
   lessThanOrEqualTo: (actual, compare) => actual <= compare,
 };
 
-/**
- * The viewport width (and matching breakpoint) assumed on the server and for the initial
- * hydration render, where the actual window cannot be measured.
- *
- * A desktop viewport is assumed so that the server-rendered HTML carries the desktop chrome (the
- * sidebar rather than the mobile menu) for the common case. {@link useWindowResize} invokes its
- * handler once on mount inside a layout effect, so the assumption is corrected from the real
- * window before the browser paints the hydrated tree.
- */
-const SsrFallbackWindowWidth = 1440;
-
-const SsrFallbackBreakpoint: Breakpoint = 'xl';
-
 export const useScreenSizes = () => {
-  const [size, setSize] = useState<number>(SsrFallbackWindowWidth);
+  /* The seed is the viewport width the server assumed for this request (derived from the
+     User-Agent's device class by the middleware), so the server render and the client's first,
+     hydration render agree on the responsive variant. `useWindowResize` invokes its handler once on
+     mount inside a layout effect, replacing the seeded values with the real window measurements
+     before the browser paints the hydrated tree. */
+  const seedWidth = use(ScreenSizeSeedContext);
 
-  const [breakpoint, setBreakpoint] = useState<'0' | Breakpoint>(SsrFallbackBreakpoint);
+  const [size, setSize] = useState<number>(seedWidth);
+
+  const [breakpoint, setBreakpoint] = useState<'0' | Breakpoint>(() =>
+    getBreakpointFromWidth(seedWidth),
+  );
 
   useWindowResize(w => {
     const bk = getBreakpointFromWindow(window);

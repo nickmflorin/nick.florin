@@ -11,11 +11,10 @@ import { isUuid } from '~/lib/typeguards';
 
 import { type Controls, type FlattenedControls } from './controls';
 
-/*
-Note: Currently, the ordering and filtering aspects of data manipulation for NestedDetails are not
-used by the client (even though the fetch actions support them).  However, these are left here so
-we can eventually incorporate a nested details table similarly to the other tables in the admin.
-*/
+/* Note: Currently, the ordering and filtering aspects of data manipulation for NestedDetails are
+   not used by the client (even though the fetch actions support them). However, these are left here
+   so we can eventually incorporate a nested details table similarly to the other tables in the
+   admin. */
 export const NestedDetailOrderableFields = ['label', 'createdAt', 'updatedAt'] as const;
 
 export type NestedDetailOrderableField = (typeof NestedDetailOrderableFields)[number];

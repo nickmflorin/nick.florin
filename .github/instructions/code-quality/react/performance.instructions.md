@@ -121,6 +121,33 @@ const SkillsBarChart = dynamic(
 Use `ssr: false` only for components that genuinely cannot render on the server. It suppresses
 server rendering, which costs first paint if the component is above the fold.
 
+### `dynamic()` Never Appears in a Server Component
+
+A client component imported by a server component is already code-split per route, so `dynamic()`
+adds nothing there — and it breaks hydration. In a server component, `dynamic()` wraps the target in
+a Suspense layer whose boundary markers are written into the server HTML; the client resolves the
+module synchronously, renders no boundary, and every sibling that follows shifts position.
+
+```tsx
+// Disallowed: the server HTML carries a Suspense boundary the client never renders, and
+// hydration fails at the sibling that follows.
+const Tour = dynamic(() => import('~/components/tours/Tour').then(mod => mod.Tour));
+
+// Correct: a static import of a client component is code-split per route by the framework.
+import { Tour } from '~/components/tours/Tour';
+```
+
+The failure is visible in the hydration error's diff as a boundary only one side rendered:
+
+```text
+<Content>
++  <div className="content overflow-y-auto">
+-  <Suspense>
+```
+
+`dynamic()` belongs inside client components only — the charts, drawers, and dialogs above — where
+it performs real intra-route splitting.
+
 ## The Server/Client Boundary — HIGH
 
 ### Serialize the Minimum

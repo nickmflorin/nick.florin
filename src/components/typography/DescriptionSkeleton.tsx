@@ -13,7 +13,7 @@ export const DescriptionSkeleton = ({ numLines = 2, ...props }: DescriptionSkele
           'w-[50%]': i === numLines - 1 && numLines > 2,
           'w-[80%]': i !== numLines - 1 || numLines <= 2,
         })}
-        height={8}
+        height={12}
         key={i}
       />
     ))}

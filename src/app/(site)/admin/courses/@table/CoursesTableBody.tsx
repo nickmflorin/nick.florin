@@ -1,26 +1,9 @@
-import dynamic from 'next/dynamic';
 import { type JSX } from 'react';
 
 import { type CoursesControls, type CoursesFilters } from '~/actions';
 import { fetchCourses } from '~/actions/courses/fetch-courses';
 
-import { Loading } from '~/components/loading/Loading';
-import { CoursesTableControlBarPlaceholder } from '~/features/courses/components/tables/CoursesTableControlBarPlaceholder';
-
-const ClientCoursesTableBody = dynamic(
-  () =>
-    import('~/features/courses/components/tables/CoursesTableBody').then(
-      mod => mod.CoursesTableBody,
-    ),
-  {
-    loading: () => (
-      <>
-        <CoursesTableControlBarPlaceholder />
-        <Loading component='tbody' isLoading />
-      </>
-    ),
-  },
-);
+import { CoursesTableBody as ClientCoursesTableBody } from '~/features/courses/components/tables/CoursesTableBody';
 
 const getCourses = async ({
   filters,

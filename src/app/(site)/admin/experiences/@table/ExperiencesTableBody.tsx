@@ -1,26 +1,9 @@
-import dynamic from 'next/dynamic';
 import { type JSX } from 'react';
 
 import { type ExperiencesControls, type ExperiencesFilters } from '~/actions';
 import { fetchExperiences } from '~/actions/experiences/fetch-experiences';
 
-import { Loading } from '~/components/loading/Loading';
-import { ExperiencesTableControlBarPlaceholder } from '~/features/experiences/components/tables/ExperiencesTableControlBarPlaceholder';
-
-const ClientExperiencesTableBody = dynamic(
-  () =>
-    import('~/features/experiences/components/tables/ExperiencesTableBody').then(
-      mod => mod.ExperiencesTableBody,
-    ),
-  {
-    loading: () => (
-      <>
-        <ExperiencesTableControlBarPlaceholder />
-        <Loading component='tbody' isLoading />
-      </>
-    ),
-  },
-);
+import { ExperiencesTableBody as ClientExperiencesTableBody } from '~/features/experiences/components/tables/ExperiencesTableBody';
 
 const getExperiences = async ({
   filters,

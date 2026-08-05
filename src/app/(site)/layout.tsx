@@ -1,9 +1,12 @@
 import { type Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { headers } from 'next/headers';
 import { type ReactNode } from 'react';
 
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+
+import { isDeviceClass, ViewportDeviceHeader, ViewportSeedWidths } from '~/application/viewport';
 
 import { environment } from '~/environment';
 
@@ -11,29 +14,15 @@ import { AppConfig } from '~/components/config/AppConfig';
 import { Layout } from '~/components/layout/Layout';
 
 /**
- * The value applied to the font-awesome script's `data-auto-replace-svg` attribute.
- *
- * Using "nest" instead of "replace" avoids errors related to `NotFoundError: Failed to execute
- * 'removeChild' on 'Node': The node to be removed is not a child of this node`.
+ * Resolves the viewport width that server rendering should assume for the current request, from
+ * the device class the middleware inferred from the User-Agent. An absent or unrecognized header
+ * value is treated as a desktop request.
  */
-const FontAwesomeAutoReplaceSvgStrategy = 'nest';
-
-/**
- * Loads the FontAwesome kit script in the document head.
- *
- * Renders a plain `<script>` rather than `next/script`. The latter is a client component that
- * reads `HeadManagerContext`, which is unavailable while a route is being statically prerendered
- * under Next 16, and fails the build with "Cannot read properties of null (reading
- * 'useContext')". React 19 hoists a plain async script into the head on its own.
- */
-const FontAwesomeScript = () => (
-  <script
-    async
-    data-auto-replace-svg={FontAwesomeAutoReplaceSvgStrategy}
-    src={`https://kit.fontawesome.com/${environment.get('FONT_AWESOME_KIT_TOKEN')}.js`}
-    type='text/javascript'
-  />
-);
+const getInitialViewportWidth = async (): Promise<number> => {
+  const headerStore = await headers();
+  const deviceHeader = headerStore.get(ViewportDeviceHeader);
+  return ViewportSeedWidths[isDeviceClass(deviceHeader) ? deviceHeader : 'desktop'];
+};
 
 const InterFont = Inter({
   display: 'swap',
@@ -52,14 +41,13 @@ interface RootLayoutProps {
   readonly children: ReactNode;
 }
 
-const RootLayout = ({ children }: RootLayoutProps) => (
+const RootLayout = async ({ children }: RootLayoutProps) => (
   <html lang='en'>
     <head>
       <link href='/favicon.ico' rel='icon' sizes='48x48' type='image/x-icon' />
-      <FontAwesomeScript />
     </head>
     <body className={InterFont.className}>
-      <AppConfig>
+      <AppConfig initialViewportWidth={await getInitialViewportWidth()}>
         <Layout
           nav={[
             {

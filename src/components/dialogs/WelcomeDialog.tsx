@@ -1,6 +1,7 @@
 import { useCookies } from 'next-client-cookies';
 
 import { Button } from '~/components/buttons';
+import { SuppressTourCookie } from '~/components/tours/use-tour';
 import { Text } from '~/components/typography';
 
 import { Dialog } from './Dialog';
@@ -39,7 +40,7 @@ export const WelcomeDialog = ({
               <Button.Solid
                 className='flex-1'
                 onClick={() => {
-                  cookies.set('nick.florin:suppress-tour', 'true');
+                  cookies.set(SuppressTourCookie, 'true');
                   onClose();
                 }}
                 scheme='secondary'

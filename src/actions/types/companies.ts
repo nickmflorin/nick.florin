@@ -11,11 +11,9 @@ import { isUuid } from '~/lib/typeguards';
 
 import { type Controls, type FlattenedControls } from './controls';
 
-/*
-Note: Currently, the ordering and filtering aspects of data manipulation for Companies are not used
-by the client (even though the fetch actions support them).  However, these are left here so we can
-eventually incorporate a companies table similarly to the other tables in the admin.
-*/
+/* Note: Currently, the ordering and filtering aspects of data manipulation for Companies are not
+   used by the client (even though the fetch actions support them). However, these are left here so
+   we can eventually incorporate a companies table similarly to the other tables in the admin. */
 export const CompanyOrderableFields = [
   'name',
   'shortName',

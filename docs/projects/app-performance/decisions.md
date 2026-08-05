@@ -16,6 +16,149 @@ Format:
 
 ---
 
+## 2026-08-05 — The show-more link is an overlay on the clamped text, not a flow element
+
+**Decision:** `WithShowMore` no longer decides the link row's _existence_ from the truncation
+measurement. While collapsed, the link is absolutely positioned over the end of the description's
+last visible line with a gradient fade masking the text beneath (the Instagram/YouTube "… more"
+pattern); the post-mount `ResizeObserver` measurement toggles only its visibility, which has no
+layout consequence. Expanded state (always a user action, never first paint) renders "Show less" in
+normal flow beneath the text.
+
+**Refinement (same day):** the overlay is additionally hover-gated so it is _never_ present at first
+paint (the initial appear-then-retract flash was still visible on non-truncated text): truncation
+now initializes `false` in `useControlledTypographyVisibility`, and once the measurement confirms
+truncation the link reveals on hover or focus of the description (`group-hover`/`focus-within`, with
+an opacity transition). Hover-incapable (touch) devices show the confirmed link outright via
+`@media (hover: none)`, since they can never hover it into view.
+
+**Why:** Truncation is a rendered-layout fact the server cannot compute, so the server must assume
+it — and any solution where the measurement's answer affects layout shifts the page after hydration.
+An overlay owns no vertical space, so the answer cannot move anything, and no blank row is reserved
+(the objection to the interim reserved-row fix).
+
+**Alternatives considered:** Reserving the link's row and toggling `invisible` (implemented first;
+rejected for its spacing/rhythm cost on non-truncated descriptions). Data-driven truncation
+(LinkedIn/Twitter-style character budgets, SSR-exact but heuristic near the wrap boundary) — viable
+fallback if the overlay proves fiddly. CSS `scroll-state()` container queries (pure-CSS overflow
+detection) — Chromium-only (~68.5% support, no Safari/Firefox), revisit later.
+
+**Follow-ups:** the fade is hard-coded `from-white`; it should become a surface token if
+descriptions ever render on non-white backgrounds or a dark theme lands. If the clamp's native
+ellipsis doubles up visually with the fade, suppress it and let the fade carry that meaning.
+
+## 2026-08-05 — The dashboard layout is a deterministic grid: viewport decides sizes, content never does
+
+**Decision:** The dashboard's flex layout (content-driven sizing bounded by min/max ranges —
+`min-w-[652px]`, `xl:max-w-[1000px]`, `min-h-[200px]`, `grow`) was replaced with a CSS grid whose
+tracks are fixed per breakpoint: at `xl`+ the grid fills the viewport-derived content area with
+fixed fractional columns (`2fr 1fr 1fr`) and per-column row fractions (`3fr 2fr` / `2fr 3fr`); below
+`xl` every module has a fixed pixel height (`420px`; chart `560px`/`440px`) and the page scrolls.
+Module frames carry `min-h-0 min-w-0 overflow-hidden` and module content scrolls internally at every
+breakpoint. Requirement set by the developer: module sizes must be deterministic for a given
+viewport — known at first paint, responsive across viewports, and independent of the content inside
+adjacent modules.
+
+**Why:** With flex distribution, every streamed slot re-negotiated sizes with its siblings (skeleton
+→ content → chart mount produced multi-step layout jumps on wide screens). Fixed tracks make it
+structurally impossible for content to move a module border, which also obsoletes skeleton-height
+matching for the dashboard: fallbacks render inside frames that cannot resize.
+
+**Alternatives considered:** Matching every slot's skeleton dimensions to its streamed content
+(fragile — content heights vary with data) was superseded by this approach for the dashboard.
+
+**Refinement (2026-08-05, same day):** the education/repositories column uses
+`fit-content(50%) minmax(0, 1fr)` instead of `2fr 3fr` — the education module's content is short and
+stable, and the fixed fraction left dead space beneath its last item while repositories scrolled.
+This is the one deliberate content-dependency in the grid: the shared row edge settles where
+education's content ends (capped at half the column), which is acceptable because the education
+slot's skeleton renders the same tile count as the real data, so the streamed swap barely moves it.
+
+## 2026-08-05 — `next/dynamic` is not used in server components; static imports replace it
+
+**Decision:** Every `dynamic()` call that lived in a **server** component was converted to a static
+import: the dashboard layout's `Tour`, `TimelineItem` in both resume timelines, `Timeline` in
+`CommitTimeline`/`DetailsTimeline`, and the six admin `@table` body wrappers. The error's hydration
+diff identified the mechanism precisely: in an RSC, `dynamic()` wraps the component in a
+`PreloadChunks` + `Suspense` layer whose boundary markers land in the server HTML; on the client the
+module resolves synchronously, no boundary renders, sibling positions shift, and React reports a
+mismatch at the next sibling (observed as `+ <div className="content ...">` vs `- <Suspense>` under
+the dashboard layout).
+
+**Why:** In server components `dynamic()` buys nothing — a client component imported by an RSC is
+automatically code-split per route — and costs this mismatch class. `dynamic()` remains correct
+_inside client components_ (the chart, drawers, dialogs, the tour subtree), where it performs real
+intra-route splitting.
+
+**Consequence worth keeping:** the registry's runtime guard immediately caught a real bug during
+verification — `TimelineIcon` requests `code-commit` in the `solid` style, which the inventory had
+attributed to `regular`; `check`, `eye`, and `eye-slash` had the same dual-style usage. All four
+were added to the solid registry.
+
+## 2026-08-05 — The tour provider is scoped to the tour UI, not the application
+
+**Decision:** `TourProvider` no longer wraps the page tree in `ClientConfig`. Its only context
+consumer is the dashboard's tour UI, so it mounts there instead: `Tour` is a gate (suppress cookie +
+screen size, both deterministic between the server render and the client's first render) that
+renders a client-only (`ssr: false`) `TourRoot`, which mounts `TourProvider` around `TourFlow` (the
+former `Tour` body). This also implements the earlier skip-when-seen decision: a visitor who
+dismissed the tour, or a mobile visitor, never downloads the `@reactour/tour` chunk.
+
+**Why:** Keeping the provider as a lazily-loaded ancestor of the whole page made every page's
+hydration depend on that chunk resolving before React hydrates the boundary — when it lost the race,
+React reported hydration mismatches at the page content (observed in `Content`). A lazy boundary
+that wraps no page content cannot cause that class of error, and `ssr: false` is justified there
+because the subtree is interactive tour UI only.
+
+**Alternatives considered:** Keeping the provider app-wide but statically imported would fix the
+hydration race while putting `@reactour/tour` and the tour's step content in the main bundle for
+every visitor; rejected.
+
+## 2026-08-04 — FontAwesome migration (Phase 5) pulled forward and executed in-house
+
+**Decision:** The FontAwesome migration was executed immediately on `perf/restore-ssr` rather than
+waiting its turn in the phase order, because restoring SSR surfaced a hydration error the kit script
+cannot avoid: with real `<i>` tags now in the server HTML, the async kit script races React's
+hydration, and whenever it wins it injects `<svg>` children into DOM React is about to hydrate. The
+replacement renders SVGs in React from typed per-style registries
+(`src/components/icons/registry.ts` — 43 regular, 5 solid, 4 brands definitions from
+`@fortawesome/pro-regular-svg-icons`, `pro-solid-svg-icons`, and `free-brands-svg-icons` at 6.7.2),
+keeping the kit's `<i class="icon"><svg/></i>` markup shape so the existing icon SCSS applies
+unchanged. `IconName` is now derived from the registry keys, so an unregistered icon name is a
+compile error. No `@fortawesome/react-fontawesome` dependency was added — the SVG render is ~15
+lines against the definition tuple.
+
+**Why:** Fixes the hydration error at its root, removes the render-critical CDN dependency,
+eliminates icon pop-in (icons are in the server HTML at first paint), and obsoletes the
+double-render `display: none` icon-toggle workaround documented in
+`src/styles/globals/components/icons/index.scss` (React re-renders the SVG when the icon prop
+changes, which the kit's injected SVGs never did).
+
+**Alternatives considered:** Deferring the kit script until after hydration (a ~15-line stopgap that
+restores the pre-SSR status quo, pop-in included) was offered and declined in favor of the terminal
+fix.
+
+**Deployment note:** Installing dependencies now requires `FONT_AWESOME_AUTH_TOKEN` (the Pro
+registry token already configured in `.npmrc`) to be present at install time — including in
+Vercel/CI build environments. `FONT_AWESOME_KIT_TOKEN` is no longer used at runtime and can be
+retired from the environment config.
+
+## 2026-08-04 — SSR viewport state is seeded from the request User-Agent (ported from craft)
+
+**Decision:** The fixed desktop assumption briefly used to make `useScreenSizes` SSR-safe was
+replaced with the craft repo's approach: the middleware infers a coarse device class
+(desktop/mobile/tablet) from the request User-Agent via Next's `userAgent` helper and stamps it on a
+forwarded request header (`x-viewport-device`); the `(site)` layout maps the class to a
+representative width (1440/390/820 — `src/application/viewport.ts`); `ScreenSizeProvider` seeds a
+context with it; and `useScreenSizes` initializes from that context, deriving the breakpoint with
+the new width-based `getBreakpointFromWidth`. The server render and the client's first render use
+the same seed (no hydration mismatch), and the mount-time resize listener replaces it with the real
+window measurements pre-paint.
+
+**Why:** Mobile devices now get the mobile chrome (nav variant) server-rendered instead of a
+desktop-assumed render corrected after hydration — verified by curling with an iPhone User-Agent (no
+sidebar in the HTML) versus a desktop one (sidebar present).
+
 ## 2026-08-04 — Clerk is scoped to authenticated routes (Option B), not just un-gated
 
 **Decision:** `ClerkProvider` moves off the public pages entirely: it wraps only the authenticated

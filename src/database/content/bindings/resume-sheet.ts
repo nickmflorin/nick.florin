@@ -36,8 +36,8 @@ export const ResumeSheetFields = {
   degrees: slugRefListField('degree'),
   isIntroVisible: flagField(),
   roles: slugRefListField('role'),
-  // A sheet's slug doubles as the emitted filename and has no natural name to derive from, so it
-  // must be authored even though the field itself is the optional slug codec.
+  /* A sheet's slug doubles as the emitted filename and has no natural name to derive from, so it
+     must be authored even though the field itself is the optional slug codec. */
   slug: slugField(),
 } satisfies FieldCodecRecord;
 

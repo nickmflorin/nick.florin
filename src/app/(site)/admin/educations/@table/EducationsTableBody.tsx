@@ -1,26 +1,9 @@
-import dynamic from 'next/dynamic';
 import { type JSX } from 'react';
 
 import { type EducationsControls, type EducationsFilters } from '~/actions';
 import { fetchEducations } from '~/actions/educations/fetch-educations';
 
-import { Loading } from '~/components/loading/Loading';
-import { EducationsTableControlBarPlaceholder } from '~/features/educations/components/tables/EducationsTableControlBarPlaceholder';
-
-const ClientEducationsTableBody = dynamic(
-  () =>
-    import('~/features/educations/components/tables/EducationsTableBody').then(
-      mod => mod.EducationsTableBody,
-    ),
-  {
-    loading: () => (
-      <>
-        <EducationsTableControlBarPlaceholder />
-        <Loading component='tbody' isLoading />
-      </>
-    ),
-  },
-);
+import { EducationsTableBody as ClientEducationsTableBody } from '~/features/educations/components/tables/EducationsTableBody';
 
 const getEducations = async ({
   filters,

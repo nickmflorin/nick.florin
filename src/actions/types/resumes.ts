@@ -3,11 +3,9 @@ import { type Order, type Ordering } from '~/lib/ordering';
 
 import { type ActionVisibility } from '~/actions/visibility';
 
-/*
-Note: Currently, the ordering and filtering aspects of data manipulation for Resumes are not used
-by the client (even though the fetch actions support them).  However, these are left here so we can
-eventually incorporate a resumes table similarly to the other tables in the admin.
-*/
+/* Note: Currently, the ordering and filtering aspects of data manipulation for Resumes are not used
+   by the client (even though the fetch actions support them). However, these are left here so we
+   can eventually incorporate a resumes table similarly to the other tables in the admin. */
 export const ResumeOrderableFields = [
   'filename',
   'pathname',

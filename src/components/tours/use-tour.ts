@@ -10,8 +10,14 @@ import { useScreenSizes } from '~/hooks/use-screen-sizes';
 /**
  * The cookie that records that the user has dismissed the tour and does not want to be shown it
  * again.
+ *
+ * The name must contain only RFC 6265 token characters. The client writes cookies through
+ * js-cookie, which URL-encodes disallowed name characters (the previous name's ':' was stored as
+ * '%3A'), while the server looks the name up raw from the request — so a name with special
+ * characters is found on the client but missed on the server, and the two disagree about whether
+ * the tour is suppressed (a hydration mismatch in the tour gate).
  */
-const SuppressTourCookie = 'nick.florin:suppress-tour';
+export const SuppressTourCookie = 'nick-florin-suppress-tour';
 
 export const useTour = () => {
   const cookies = useCookies();

@@ -12,11 +12,9 @@ import { Menu } from '~/components/menus/Menu';
 import { ShowHide } from '~/components/util';
 import { useUserProfile } from '~/hooks';
 
-/*
-The Clerk-dependent pieces of the menu are split into lazily-loaded modules and only rendered when
-the server has established that a session exists. Anonymous visitors never fetch these chunks —
-or clerk-js — at all.
-*/
+/* The Clerk-dependent pieces of the menu are split into lazily-loaded modules and only rendered
+   when the server has established that a session exists. Anonymous visitors never fetch these
+   chunks — or clerk-js — at all. */
 const SiteMenuUserSection = dynamic(
   () => import('./SiteMenuUserSection').then(mod => mod.SiteMenuUserSection),
   { loading: () => <Loading isLoading /> },

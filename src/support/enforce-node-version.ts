@@ -1,7 +1,5 @@
-/*
-This script is intended to ensure that the node version that is running the application is correct
-before allowing execution to continue.
-*/
+/* This script is intended to ensure that the node version that is running the application is
+   correct before allowing execution to continue. */
 import semver from 'semver';
 
 import { engines } from '../../package.json';

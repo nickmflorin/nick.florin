@@ -6,6 +6,7 @@ export * from './use-filter-refs';
 export * from './use-filter-state';
 export * from './use-filters';
 export * from './use-id';
+export * from './use-is-hydrated';
 export * from './use-nav-menu';
 export * from './use-navigation';
 export * from './use-navigation-item';

@@ -62,6 +62,24 @@ export type BreakpointSize<B extends Breakpoint = Breakpoint> = Extract<
 
 export type ScreenSize = Breakpoint | QuantitativeSize<'px'>;
 
+/**
+ * Returns the {@link Breakpoint} that a viewport of the provided width falls into, or `'0'` when
+ * the width is below the smallest breakpoint.
+ *
+ * Unlike {@link getBreakpointFromWindow}, this derives the breakpoint purely from a numeric
+ * width, so it can run on the server (and during the client's first render) where no `window`
+ * exists to match media queries against.
+ */
+export const getBreakpointFromWidth = (width: number): '0' | Breakpoint => {
+  let breakpoint: '0' | Breakpoint = '0';
+  for (const model of Breakpoints.models) {
+    if (width >= model.size) {
+      breakpoint = model.value;
+    }
+  }
+  return breakpoint;
+};
+
 export const isScreenSize = (value: unknown): value is ScreenSize => {
   if (typeof value === 'string') {
     return isQuantitativeSizeOfUnit(value, 'px') || Breakpoints.contains(value);

@@ -217,6 +217,26 @@ Multi-line block comments use the `bare-block` style enforced by
 `@stylistic/multiline-comment-style` (no aligned `*` prefix on each line), and a comment must never
 share a line with code (`no-inline-comments`, `@stylistic/line-comment-position`).
 
+The delimiters of a bare-block comment hug the text, as the earlier redirect example shows: the
+text starts on the same line as the `/*` opener, continuation lines are indented three spaces to
+align with it, and the closing `*/` ends the last line of text rather than sitting on its own line.
+The closer only drops to its own line when appending ` */` would push the last line past the
+100-character limit. ESLint does not police delimiter placement, so this is applied while writing
+the comment:
+
+```typescript
+/* Correct: the text opens beside the opening delimiter, the continuation line aligns with it, and
+   the closing delimiter ends the final line of text. */
+
+/*
+Disallowed: both delimiters occupy lines of their own even though the text fits beside the opener
+and the closer fits at the end of the line above.
+*/
+```
+
+This shape is the opposite of a JSDoc block, where `/**` and `*/` each keep their own line and text
+never shares a line with either delimiter.
+
 #### Extracting to Document Instead of Commenting
 
 When a value or piece of logic can be named and documented, extracting it is required rather than

@@ -7,6 +7,7 @@ import type * as types from './types';
 
 import { generateChartColors } from '~/lib/charts';
 
+import { BarChartBandPadding, BarChartMargins } from './constants';
 import { THEME } from './theme';
 
 /* eslint-disable no-console */
@@ -33,10 +34,10 @@ export const BarChart = <D extends BarDatum>({
     axisTop={null}
     colors={generateChartColors((data ?? []).length)}
     data={data ?? []}
-    padding={0.3}
+    padding={BarChartBandPadding}
     valueScale={{ type: 'linear' }}
     {...props}
-    margin={{ bottom: 10, left: 20, right: 10, top: 10 }}
+    margin={BarChartMargins}
     theme={THEME}
   />
 );

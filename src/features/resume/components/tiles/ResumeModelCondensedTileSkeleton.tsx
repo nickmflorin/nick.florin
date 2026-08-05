@@ -21,9 +21,9 @@ export const ResumeModelCondensedTileSkeleton = ({
       areTagsVisible={areTagsVisible}
       image={({ size }) => <Skeleton height={size} width={size} />}
       size='small'
-      subTitle={<Skeleton className='w-[40%]' height={14} />}
+      subTitle={<Skeleton className='w-[30%]' height={14} />}
       tags={ps => <Skeleton {...ps} className={classNames('w-[40%]', ps.className)} height={12} />}
-      title={<Skeleton className='w-[30%]' height={18} />}
+      title={<Skeleton className='w-[55%]' height={18} />}
       titleSectionGap={8}
     >
       <DescriptionSkeleton numLines={numDescriptionLines} />
