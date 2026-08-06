@@ -43,10 +43,22 @@ const SilencedSassDeprecations = ['mixed-decls'];
  */
 const ShouldAnalyzeBundle = process.env.ANALYZE_BUNDLE === 'true';
 
+/**
+ * The maximum request body size accepted by server actions.
+ *
+ * Resume uploads stream the selected file through a server action's FormData body, and Next's
+ * default limit of 1mb rejects any realistically sized resume PDF. The limit is sized to cover
+ * the 15mb cap the upload dropzone enforces client-side, plus multipart encoding overhead.
+ */
+const ServerActionBodySizeLimit = '16mb';
+
 /** @type {import("next").NextConfig} */
 const config = {
   experimental: {
     optimizePackageImports: ['@mantine/core', 'zod', '@mantine/dropzone', '@mantine/dates'],
+    serverActions: {
+      bodySizeLimit: ServerActionBodySizeLimit,
+    },
   },
   images: {
     remotePatterns: [
