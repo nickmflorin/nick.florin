@@ -10,6 +10,8 @@
       "websiteUrl": "https://www.jhu.edu/",
       "city": "Baltimore",
       "state": "MD",
+      "slug": null,
+      "logoFileName": null,
       "educations": [
         {
           "createdAt": "2024-04-16T23:25:00.483Z",
@@ -18,7 +20,7 @@
           "endDate": "2016-01-01T00:00:00.000Z",
           "note": null,
           "degree": "MASTERS_OF_SCIENCE_IN_ENGINEERING",
-          "description": null,
+          "description": "Advanced coursework in Applied Mathematics, Statistics & Numerical Computation.",
           "major": "Financial Mathematics",
           "shortMajor": "Fin. Math",
           "minor": null,
@@ -26,20 +28,6 @@
           "postPoned": false,
           "visible": true,
           "highlighted": true,
-          "skills": [
-            "data-visualizations",
-            "matlab",
-            "django",
-            "optimization-methods",
-            "numerical-computation",
-            "python",
-            "vba",
-            "r",
-            "scipy",
-            "pandas",
-            "numpy",
-            "scikit-learn"
-          ],
           "courses": [
             {
               "name": "Advanced Equity Derivatives",
@@ -132,6 +120,20 @@
               "skills": ["matlab", "optimization-methods", "numerical-computation", "python"]
             }
           ],
+          "skills": [
+            "data-visualizations",
+            "matlab",
+            "django",
+            "optimization-methods",
+            "numerical-computation",
+            "python",
+            "vba",
+            "r",
+            "scipy",
+            "pandas",
+            "numpy",
+            "scikit-learn"
+          ],
           "details": []
         },
         {
@@ -149,18 +151,6 @@
           "postPoned": true,
           "visible": true,
           "highlighted": true,
-          "skills": [
-            "data-visualizations",
-            "matlab",
-            "django",
-            "optimization-methods",
-            "numerical-computation",
-            "python",
-            "scipy",
-            "pandas",
-            "numpy",
-            "scikit-learn"
-          ],
           "courses": [
             {
               "name": "Probabalistic Models in Computer Science",
@@ -210,6 +200,18 @@
               "skills": ["data-visualizations", "python"]
             }
           ],
+          "skills": [
+            "data-visualizations",
+            "matlab",
+            "django",
+            "optimization-methods",
+            "numerical-computation",
+            "python",
+            "scipy",
+            "pandas",
+            "numpy",
+            "scikit-learn"
+          ],
           "details": []
         }
       ]
@@ -224,6 +226,8 @@
       "websiteUrl": "https://www.rpi.edu/",
       "city": "Troy",
       "state": "NY",
+      "slug": null,
+      "logoFileName": null,
       "educations": [
         {
           "createdAt": "2024-04-16T23:25:04.647Z",
@@ -240,7 +244,6 @@
           "postPoned": false,
           "visible": true,
           "highlighted": true,
-          "skills": ["matlab", "numerical-computation", "python", "c-plus-plus"],
           "courses": [
             {
               "name": "Computer Science",
@@ -353,6 +356,7 @@
               "skills": ["matlab", "numerical-computation", "python"]
             }
           ],
+          "skills": ["matlab", "numerical-computation", "python", "c-plus-plus"],
           "details": []
         }
       ]

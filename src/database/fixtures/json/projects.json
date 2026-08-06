@@ -10,6 +10,7 @@
       "startDate": "2024-05-01T04:00:00.000Z",
       "highlighted": true,
       "visible": true,
+      "repositories": ["tooltrack"],
       "skills": [
         "eslint",
         "logging-monitoring-infrastructure",
@@ -46,8 +47,7 @@
         "swr",
         "svgs",
         "relational-databases"
-      ],
-      "repositories": ["tooltrack"]
+      ]
     },
     {
       "name": "nick.florin",
@@ -59,6 +59,7 @@
       "startDate": "2024-01-15T00:00:00.000Z",
       "highlighted": true,
       "visible": true,
+      "repositories": ["nick.florin"],
       "skills": [
         "eslint",
         "logging-monitoring-infrastructure",
@@ -94,8 +95,7 @@
         "swr",
         "svgs",
         "relational-databases"
-      ],
-      "repositories": ["nick.florin"]
+      ]
     },
     {
       "name": "GreenBudget",
@@ -107,10 +107,12 @@
       "startDate": "2021-03-01T05:00:00.000Z",
       "highlighted": true,
       "visible": true,
+      "repositories": ["happybudget", "happybudget-api"],
       "skills": [
         "eslint",
         "npm",
         "django",
+        "react-pdf",
         "aws-elastic-beanstalk",
         "logging-monitoring-infrastructure",
         "python",
@@ -179,8 +181,7 @@
         "relational-databases",
         "aws-amplify",
         "aws-certificate-manager"
-      ],
-      "repositories": ["happybudget", "happybudget-api"]
+      ]
     },
     {
       "name": "n-Dimensional Charting Library for Asset Management",
@@ -192,6 +193,7 @@
       "startDate": "2017-11-01T00:00:00.000Z",
       "highlighted": true,
       "visible": true,
+      "repositories": [],
       "skills": [
         "data-visualizations",
         "html",
@@ -200,8 +202,7 @@
         "aws-lambdas",
         "d3js",
         "svgs"
-      ],
-      "repositories": []
+      ]
     }
   ]
 }

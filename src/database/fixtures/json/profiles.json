@@ -11,9 +11,12 @@
       "emailAddress": "nickmflorin@gmail.com",
       "phoneNumber": null,
       "intro": "A passionate engineer that thrives on solving complex problems - the more complex the problem, the more I am drawn to it.  I love to build things, and sometimes break them as well.",
-      "tagline": null,
+      "tagline": "Senior Software Engineer",
       "githubUrl": "https://github.com/nickmflorin",
-      "linkedinUrl": "https://www.linkedin.com/in/nick-florin-5046063b"
+      "linkedinUrl": "https://www.linkedin.com/in/nick-florin-5046063b",
+      "slug": null,
+      "handle": null,
+      "photoFileName": null
     }
   ]
 }
