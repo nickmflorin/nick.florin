@@ -8,10 +8,6 @@ import {
   ChartFilterButton,
   type ChartFilterButtonProps,
 } from '~/components/buttons/ChartFilterButton';
-
-/* Imported statically, not with next/dynamic: this module is itself a lazily-loaded chunk that is
-   only fetched on intent, and a nested dynamic import would render the popover's trigger as null
-   while the inner chunk resolves - the exact flash the lazy mounting exists to prevent. */
 import { Popover } from '~/components/floating/Popover';
 import { PopoverContent } from '~/components/floating/PopoverContent';
 import { Tooltip } from '~/components/floating/Tooltip';

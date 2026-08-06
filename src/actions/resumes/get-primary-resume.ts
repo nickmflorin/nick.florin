@@ -12,9 +12,9 @@ import { convertToPlainObject, deserializeFromCache, serializeForCache } from '~
  * The cache tag under which the primary-resume read is stored cross-request.
  *
  * Every mutation that can change which resume is primary — upload, update and delete — must call
- * `revalidateTag` with this tag so the header's resume menu reflects the change on the next
- * request. The time-based revalidation window below additionally bounds staleness against
- * out-of-band writes (seeds, scripts).
+ * `updateTag` with this tag so the header's resume menu reflects the change on the next request.
+ * The time-based revalidation window below additionally bounds staleness against out-of-band
+ * writes (seeds, scripts).
  */
 export const PrimaryResumeCacheTag = 'primary-resume';
 

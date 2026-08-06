@@ -1,5 +1,5 @@
 'use server';
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import { del } from '@vercel/blob';
 
@@ -40,7 +40,7 @@ export const deleteResume = async (id: string): Promise<MutationActionResponse<B
   return await db.$transaction(async tx => {
     await tx.resume.delete({ where: { id: resume.id } });
     await del(resume.url);
-    revalidateTag(PrimaryResumeCacheTag);
+    updateTag(PrimaryResumeCacheTag);
     return { data: await getResumesWithPrimaryFlag() };
   });
 };

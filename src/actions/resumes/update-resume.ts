@@ -1,5 +1,5 @@
 'use server';
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import { type z } from 'zod';
 
@@ -50,7 +50,7 @@ export const updateResume = async (
     where: { id: resume.id },
   });
   const resumes = await db.resume.findMany({ orderBy: getResumesOrdering() });
-  revalidateTag(PrimaryResumeCacheTag);
+  updateTag(PrimaryResumeCacheTag);
   return {
     data: {
       resume: updated,

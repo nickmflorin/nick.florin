@@ -1,5 +1,5 @@
 'use server';
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import { del, put, type PutBlobResult } from '@vercel/blob';
 
@@ -88,7 +88,7 @@ export const uploadResume = async (
         }).json,
       };
     }
-    revalidateTag(PrimaryResumeCacheTag);
+    updateTag(PrimaryResumeCacheTag);
     return { data: convertToPlainObject(resume) };
   });
 };

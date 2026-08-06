@@ -14,7 +14,7 @@ import { convertToPlainObject, deserializeFromCache, serializeForCache } from '~
  *
  * No CMS mutation writes the profile today (it changes through seeding and scripts), so nothing
  * revalidates the tag on demand — the time-based revalidation window below bounds the staleness
- * instead. Any future profile mutation must call `revalidateTag` with this tag.
+ * instead. Any future profile mutation must call `updateTag` with this tag.
  */
 export const ProfileCacheTag = 'profile';
 
