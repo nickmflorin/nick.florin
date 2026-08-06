@@ -233,9 +233,9 @@ competencies:
     slug: rest-api-design
   - label: Reusable Workflows
     slug: reusable-workflows
-  - label: SASS / SCSS
-    shortLabel: SASS
-    slug: sass-scss
+  - label: Sass
+    proficiency: ADVANCED
+    slug: sass
   - label: Server-Oriented Frontend
     slug: server-oriented-frontend
   - label: Service-Oriented Arch

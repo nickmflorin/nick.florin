@@ -2,7 +2,7 @@
   flex: 1;
   // Top padding is deliberately tighter than the sides and bottom: it pulls the dev-header,
   // always the first child, closer to the page edge so the column does not open with a gap.
-  padding: 10px 18px 22px 13px;
+  padding: 10px 18px 22px 9px;
   background: #fff;
   min-width: 0;
 }
@@ -65,21 +65,23 @@
     gap: 14px;
     font-size: 8px;
     color: var(--color-text-secondary);
-    margin-bottom: 5px;
+    margin-bottom: 3px;
   }
 
   &-summary {
     font-size: 8.5px;
     color: var(--color-text-body);
     line-height: 1.55;
-    margin-bottom: 4px;
+    // Explicit zero top margin: the document reset leaves the browser's default 1em block-start
+    // margin in place, which collapses over any bottom margin and inflates the paragraph gap.
+    margin: 0 0 6px 0;
     font-weight: 400;
   }
 }
 
 // A titled subsection within a role.
 .sub {
-  margin-top: 4px;
+  margin-top: 6px;
 
   h4 {
     font-size: 8.5px;
@@ -104,9 +106,9 @@
 
     li {
       margin-bottom: 2px;
-      color: var(--color-text-muted);
+      color: var(--color-text-body);
       font-size: 8.5px;
-      font-weight: 500;
+      font-weight: 400;
 
       strong {
         color: var(--color-text-primary);

@@ -58,7 +58,7 @@ export const Sidebar = ({ competencyGroups, isIntroVisible }: SidebarProps) => (
               <span className='dot'>
                 <img alt='' src={icon('Plus')} />
               </span>
-              {highlight.text}
+              <span dangerouslySetInnerHTML={{ __html: highlight.text }} />
             </li>
           ))}
         </ul>
@@ -76,8 +76,9 @@ export const Sidebar = ({ competencyGroups, isIntroVisible }: SidebarProps) => (
         </ul>
       </>
     ) : null}
-    {competencyGroups.map(group => (
+    {competencyGroups.map((group, index) => (
       <Fragment key={group.slug}>
+        {isIntroVisible || index > 0 ? <hr className='sdiv' /> : null}
         <p className='s-heading'>{group.heading}</p>
         {group.display === ResumeCompetenciesGroupDisplay.Bars ? (
           group.competencies.map(competency => (

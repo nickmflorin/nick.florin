@@ -191,8 +191,8 @@ export const Renovate = competency('Renovate');
 export const ResponsiveDesign = competency('Responsive Design');
 export const RESTAPIDesign = competency('REST API Design');
 export const ReusableWorkflows = competency('Reusable Workflows');
-export const SASS = competency('SASS / SCSS', {
-  shortLabel: 'SASS',
+export const SASS = competency('Sass', {
+  proficiency: Proficiency.Advanced,
 });
 export const ServerOrientedFrontend = competency('Server-Oriented Frontend');
 export const ServiceOrientedArch = competency('Service-Oriented Arch');

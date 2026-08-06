@@ -90,7 +90,7 @@ export const NickFlorin: Profile = {
       order: 0,
       shortText: null,
       slug: 'years-of-experience',
-      text: '11 years of software engineering',
+      text: '<strong>11 years</strong> of software engineering',
     },
     {
       excludedChannels: [],
@@ -98,7 +98,7 @@ export const NickFlorin: Profile = {
       order: 1,
       shortText: null,
       slug: 'masters',
-      text: 'M.S. in Financial Mathematics, JHU',
+      text: '<strong>M.S. in Financial Mathematics</strong>, JHU',
     },
     {
       excludedChannels: [],
@@ -106,7 +106,7 @@ export const NickFlorin: Profile = {
       order: 2,
       shortText: null,
       slug: 'bachelors',
-      text: 'B.S. in Electrical Engineering, RPI',
+      text: '<strong>B.S. in Electrical Engineering</strong>, RPI',
     },
   ],
   intro: null,

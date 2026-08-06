@@ -21,7 +21,6 @@ roles:
         - playwright
         - github-actions
         - aws
-        - ci-cd-pipeline-design
       content:
         - children:
             - content:
@@ -47,6 +46,8 @@ roles:
                 tailor how learners tracked time - daily vs. monthly entry cadence, minimum time per
                 activity, whether learners could log above the target, and other per-program
                 constraints - without requiring engineering changes.'
+              excludedChannels:
+                - RESUME
               title: Time Tracking
             - content:
                 'New product surface for defining skill taxonomies, attaching them to activities,
@@ -55,6 +56,8 @@ roles:
                 platform/per-customer boundary so the feature could be reused across future products
                 on the monorepo. Organized and planned the work based on dependencies to maximize
                 parallel efforts across multiple engineers.'
+              excludedChannels:
+                - RESUME
               title: Skills Tracking
           content:
             Led a cross-functional pod from the ground up, starting as a 2-engineer team alongside a
@@ -65,26 +68,63 @@ roles:
           type: NUMBERED_LIST
         - children:
             - content:
-                Led the shift from a client-heavy waterfall rendering model to a server-oriented
-                architecture, bootstrapping client-side service providers on the server to unlock
-                SSR caching and page-level prerendering. Reduced average TTI ~60% and LCP ~50% on
-                high-traffic pages.
+                'Owned the platform upgrade that had stalled repeatedly: a legacy, client-bound
+                Auth0 integration pinned the app to React 18 and blocked the Next.js upgrade path
+                entirely. Re-architected authentication around edge middleware and server-side
+                session management on Auth0 v4, then landed Auth0 v4, Next.js 16, React 19, and
+                Turbopack as a coordinated three-stage rollout - a net deletion of code - with zero
+                customer-facing downtime.'
+              title: Auth0 v4 &amp; Next.js 16 Replatform
+            - content:
+                "Led a sustained, incremental migration - building team buy-in and driving a
+                rethinking of the app's client/server boundaries over many months - to dismantle the
+                client-side waterfall behind every cold page load: a ~1 MB bundle download followed
+                by serial session, user, environment, and feature-flag requests that produced 3-4
+                seconds of blank screen before first paint and defeated Next.js page caching
+                entirely. Progressively moved session validation into edge middleware, feature-flag
+                evaluation to server startup, and provider bootstrapping onto the server - so pages
+                fully pre-render, previously-visited pages return near-instantly from the restored
+                page cache, and the app's third-party browser exposure collapses to a single
+                first-party origin, eliminating a class of customer-firewall outages."
               title: Server-Oriented Frontend Migration
             - content:
                 Diagnosed the root causes behind a bloated shared bundle - barrel-export fan-out, a
-                large generated GraphQL document, a non-lazy provider cascade, and a UI package
-                exports map silently pointing to CJS output that defeated tree-shaking downstream.
-                Authored the remediation plan and shipped the fixes incrementally.
+                525 kB generated GraphQL document, a non-lazy provider cascade, and a UI package
+                exports map silently pointing to CJS output that defeated tree-shaking - then
+                authored the remediation roadmap and led its incremental delivery across the team
+                over successive releases, cutting the app-wide first-load JavaScript baseline 62%
+                (1.01 MB to 383 kB) and the shared app chunk 68% (921 kB to under 300 kB).
               title: Bundle Size &amp; First Load Performance
             - content:
-                Decoupled the frontend into business-logic and presentation-layer modules with clean
-                microfrontend boundaries, and drove Nx monorepo adoption to support the company's
-                expansion from a single-product codebase to a scalable, multi-product mesh.
+                Combined, the architectural unlock and bundle work improved FCP/LCP ~50% and TTI
+                ~60% on high-traffic pages and cut cold-load times by 2-4 seconds on slower and
+                corporate-throttled networks; non-critical client work (session replay, analytics
+                boot, background refreshes) now defers until the browser is idle, keeping the main
+                thread free for first paint.
+              title: Core Web Vitals &amp; Loading Performance
+            - content:
+                "Co-architected the company's embedded-analytics integration (ThoughtSpot) around a
+                deliberate licensing constraint: rather than provisioning per-user service accounts,
+                all reporting is served through one service account with requests proxied through
+                the app - saving the company roughly $50k per year. Uncovered the critical
+                report-loading bottlenecks that were overwhelming the client and freezing browsers,
+                then designed and implemented the remedy - per-user liveboard preloading under the
+                shared account plus streamed, cached proxy assets - making report loads
+                near-instantaneous."
+              title: Embedded Analytics Proxy &amp; Report Performance
+            - content:
+                "Championed and led a long-term restructuring of the platform around scalable
+                monorepo patterns: spearheaded Nx adoption, reoriented engineering efforts toward
+                decoupled, independently-owned modules with clean microfrontend boundaries, and
+                steered the company's expansion from a single-product codebase toward a scalable,
+                multi-product mesh."
               title: Monorepo &amp; Microfrontend Decoupling
             - content:
                 Designed and rolled out a unified, namespaced structured-logging architecture
                 spanning every service - replacing scattered ad-hoc logging with a single queryable
                 observability surface wired into Datadog.
+              excludedChannels:
+                - RESUME
               title: Structured Logging &amp; Observability
           title: Architecture
           type: NUMBERED_LIST
@@ -106,6 +146,8 @@ roles:
             incremental migration. Enforced type-checking across test files in CI, fixed long-broken
             IDE ESLint integration, and created an internal documentation app covering contributing
             guides, React patterns, and architectural decisions.
+          excludedChannels:
+            - RESUME
           title: Developer Experience &amp; Code Quality
       summary:
         - content:
@@ -117,6 +159,12 @@ roles:
             unified monorepo. Championed the underlying monorepo strategy and Nx adoption as the
             structural foundation for that transition, establishing shared tooling, independent
             product surfaces, and scalable team ownership within one cohesive engineering platform.
+        - content:
+            "Most recently, drove the platform's most consequential frontend effort since the
+            monorepo: a coordinated Auth0 v4, Next.js 16, and React 19 replatform paired with a
+            months-long performance program that unwound a client-bound rendering architecture and
+            restored server-side rendering, page caching, and healthy Core Web Vitals across the
+            product."
         - content:
             Operated consistently above title - writing code, authoring architectural specs,
             producing technical analyses, and unblocking teammates across the engineering
@@ -137,7 +185,7 @@ roles:
         - typescript
         - graphql
         - tailwindcss
-        - sass-scss
+        - sass
         - react-native
         - gcp
         - storybook
@@ -196,7 +244,7 @@ roles:
         - next-js
         - typescript
         - react
-        - sass-scss
+        - sass
         - prisma
         - postgresql
         - node-js
@@ -355,7 +403,7 @@ roles:
         - react
         - react-redux
         - node-js
-        - sass-scss
+        - sass
         - mysql
         - mongodb
         - d3-js

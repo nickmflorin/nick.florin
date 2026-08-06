@@ -144,3 +144,8 @@ tabler
 tosorted
 dedup
 shadcn
+replatform
+turbopack
+thoughtspot
+liveboard
+liveboards

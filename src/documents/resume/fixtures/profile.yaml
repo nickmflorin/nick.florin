@@ -38,11 +38,11 @@ profile:
   handle: '@nickmflorin'
   highlights:
     - slug: years-of-experience
-      text: 11 years of software engineering
+      text: <strong>11 years</strong> of software engineering
     - slug: masters
-      text: M.S. in Financial Mathematics, JHU
+      text: <strong>M.S. in Financial Mathematics</strong>, JHU
     - slug: bachelors
-      text: B.S. in Electrical Engineering, RPI
+      text: <strong>B.S. in Electrical Engineering</strong>, RPI
   lastName: Florin
   linkedinUrl: https://www.linkedin.com/in/nick-florin-5046063b/
   photoFileName: Headshot.jpeg
