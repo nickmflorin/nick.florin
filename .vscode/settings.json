@@ -117,13 +117,15 @@
     "**/.swc": true
   },
   /* Excludes high-churn directories from the file watcher to prevent the OS-level watch
-     budget from being saturated, which manifests as missed file events and editor lag. */
+     budget from being saturated, which manifests as missed file events and editor lag. "build/"
+     is deliberately NOT excluded: it only holds the generated resume documents (a handful of
+     files per "resume:generate" run), and watching it is what makes new PDFs appear in the
+     explorer immediately. */
   "files.watcherExclude": {
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
     "**/node_modules/**": true,
     "**/dist/**": true,
-    "**/build/**": true,
     "**/.next/**": true,
     "**/.swc/**": true,
     "**/coverage/**": true,

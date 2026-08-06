@@ -9,4 +9,21 @@ items in [backlog.md](./backlog.md).
 chart initial data (server-fetched `fallbackData`), and tour loading (skip when seen). See
 [decisions.md](./decisions.md) for each outcome and its reasoning.
 
-Nothing is currently open. Add new questions here as they come up during implementation.
+## 1. Chart filters: URL-driven state with server-side fetching? (added 2026-08-06)
+
+Proposed by the developer while testing the popover restructure: wire the filter form so changes
+apply to the URL's search parameters (uncontrolled fields), and let the `@chart` server page derive
+its skills fetch from those parameters — replacing the client-side SWR refetch cycle. Points to
+weigh before deciding:
+
+- The admin tables already follow this pattern (`use-filters.ts`, filters derived from URL search
+  params), so it would make the chart consistent with the rest of the app.
+- It composes naturally with debounced application: batch changes client-side, flush to the URL on
+  close (or after a threshold), and the RSC refresh re-renders the chart server-side.
+- It addresses the chart-data flow, but **not** the select-option loading burst — the selects'
+  own educations/experiences/etc. queries still load on popover open and would still need the
+  prefetch/eager-open fix.
+- Each URL update triggers an RSC round trip for the slot; needs the deterministic skeleton /
+  `keepPreviousData`-equivalent story so the chart does not flash to a fallback on every change.
+
+Decision pending — do not implement without explicit confirmation.

@@ -150,6 +150,13 @@ export const DataSelectBase = <
   const defaultChipsCanDeselect = options.behavior === types.SelectBehaviorTypes.MULTI;
   const chipsCanDeselect = _chipsCanDeselect ?? defaultChipsCanDeselect;
 
+  /* While the select's data is still loading, the not-ready state must not make the select
+     inert: the trigger stays clickable and the popover can open, showing the menu's loading
+     indicator until the data arrives. The hard gates below are preserved for not-ready states
+     that carry no loading signal, where opening would present an empty menu with no
+     explanation. */
+  const isAwaitingData = isReady === false && isInputLoading === true;
+
   const onClear = useMemo(() => {
     if ((_onClear || isClearable) && value !== types.NOTSET) {
       return () => {
@@ -175,7 +182,7 @@ export const DataSelectBase = <
       isInPortal={isInPortal}
       isInputLoading={isInputLoading}
       isPopoverLoading={isPopoverLoading}
-      isReady={isReady}
+      isReady={isAwaitingData ? true : isReady}
       onClose={onClose}
       onOpen={onOpen}
       onOpenChange={onOpenChange}
@@ -196,7 +203,10 @@ export const DataSelectBase = <
             className={inputClassName}
             getBadgeIcon={shouldShowIconsInChips ? getBadgeIcon : undefined}
             getItemLabel={getModelValueLabel}
-            isDisabled={(props.isDisabled ?? false) || managed.modelValue === types.NOTSET}
+            isDisabled={
+              (props.isDisabled ?? false) ||
+              (managed.modelValue === types.NOTSET && !isAwaitingData)
+            }
             isLoading={isInputLoading}
             isOpen={isOpen}
             modelValue={managed.modelValue}

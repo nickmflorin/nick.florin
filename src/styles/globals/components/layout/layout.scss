@@ -59,6 +59,15 @@
             position: relative;
             padding-right: 16px;
 
+            /* The scroll viewport is a height-clamped (100% min/max) flex column, so without
+               this its children are eligible to be compressed to the scrollport's own height.
+               Whether that happens hinges on the flex "automatic minimum size", which engines
+               resolve differently for grid/flex children — where it resolves near zero, page
+               content (the dashboard grid included) collapses to the window height, squashing
+               charts and overlapping modules instead of scrolling. Scroll content must lay out
+               at its natural height and overflow the scrollport, never shrink to it. */
+            flex-shrink: 0;
+
             @media (max-width: theme('screens.md')) {
               padding-right: 12px;
             }

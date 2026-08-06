@@ -9,6 +9,13 @@ import { SignIn } from '@clerk/nextjs';
  */
 const SignInFallbackRedirectUrl = '/admin/skills';
 
-const Page = () => <SignIn fallbackRedirectUrl={SignInFallbackRedirectUrl} />;
+/* The centering container is what the widget occupies at first paint: without it, the
+   server-rendered widget sits in-flow at the top-left of the content area until Clerk's client
+   code takes over, and the jump between the two positions reads as a flash. */
+const Page = () => (
+  <div className='flex h-full w-full grow items-center justify-center'>
+    <SignIn fallbackRedirectUrl={SignInFallbackRedirectUrl} />
+  </div>
+);
 
 export default Page;

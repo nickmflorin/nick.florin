@@ -42,7 +42,10 @@ export const SkillsBarChartView = ({ skills, ...props }: SkillsBarChartViewProps
       )}
     >
       <div
-        className={classNames('relative', SkillsBarChartHeightClassNames)}
+        /* 'shrink-0' holds the bars at their fixed band height even when an ancestor is
+           height-clamped - without it the bars row is the flex item that gives, compressing the
+           chart toward zero while the legend keeps its content height. */
+        className={classNames('relative shrink-0', SkillsBarChartHeightClassNames)}
         id='skills-bar-chart-element'
       >
         <ClientSkillsBarChart skills={skills} />

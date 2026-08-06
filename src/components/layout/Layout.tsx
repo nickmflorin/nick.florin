@@ -10,6 +10,7 @@ import {
   UserProfile,
 } from './DynamicOverlays';
 import { Header } from './Header';
+import { HeaderSkeleton } from './Header/HeaderSkeleton';
 import { LayoutNavigation } from './LayoutNavigation';
 import { Navigating } from './Navigating';
 import { type ISidebarItem } from './types';
@@ -22,7 +23,7 @@ export interface LayoutProps {
 export const Layout = ({ children, nav }: LayoutProps): JSX.Element => (
   <div className='layout'>
     <header className='header'>
-      <Suspense fallback={null}>
+      <Suspense fallback={<HeaderSkeleton />}>
         <Header />
       </Suspense>
     </header>

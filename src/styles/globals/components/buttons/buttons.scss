@@ -52,17 +52,28 @@
     vertical-align: middle;
     max-width: 100%;
     flex-grow: 100;
+    // Flex items refuse to shrink below their content's intrinsic width without this, which is
+    // what kept ellipsis truncation from ever engaging inside buttons.
+    min-width: 0;
     gap: 8px;
     @include inherit-properties();
+
+    // A long label squeezes the text, never the icons beside it.
+    > .icon {
+      flex-shrink: 0;
+    }
 
     > .button__sub-content {
       text-decoration: none;
       max-width: 100%;
       flex-grow: 100;
+      min-width: 0;
       // This padding prevents the right side of italic text from being cut off.
       padding-right: 1px;
-      // @include typography.truncate();
       @include inherit-properties();
+      // Applied after inherit-properties() so the truncation's overflow/white-space/text-overflow
+      // win over the inherited values; labels never wrap, they ellipsize.
+      @include typography.truncate();
     }
   }
 }

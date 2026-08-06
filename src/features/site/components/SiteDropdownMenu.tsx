@@ -1,9 +1,6 @@
 import { auth } from '@clerk/nextjs/server';
 
-import { type BrandResume } from '~/database/model';
-import { db } from '~/database/prisma';
-
-import { convertToPlainObject } from '~/api/serialization';
+import { getPrimaryResume } from '~/actions/resumes/get-primary-resume';
 
 import { type ComponentProps } from '~/components/types';
 
@@ -12,16 +9,12 @@ import { ClientSiteDropdownMenu } from './ClientSiteDropdownMenu';
 export interface SiteDropdownMenuProps extends ComponentProps {}
 
 export const SiteDropdownMenu = async (props: SiteDropdownMenuProps) => {
+  /* Started before the session check so the two do not serialize; the read itself is cached
+     cross-request (see get-primary-resume.ts), which is what lets the header render in the
+     initial HTML flush instead of streaming in after a database round trip. */
+  const resumePromise = getPrimaryResume();
   const { userId } = await auth();
-
-  let resume: BrandResume | null = null;
-  const resumes = await db.resume.findMany({
-    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-    where: { primary: true },
-  });
-  if (resumes.length !== 0) {
-    resume = convertToPlainObject(resumes[0]);
-  }
-
-  return <ClientSiteDropdownMenu {...props} isSignedIn={userId !== null} resume={resume} />;
+  return (
+    <ClientSiteDropdownMenu {...props} isSignedIn={userId !== null} resume={await resumePromise} />
+  );
 };

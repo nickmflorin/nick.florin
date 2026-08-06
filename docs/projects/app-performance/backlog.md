@@ -87,13 +87,28 @@ today, established by reading the floating primitives:
   `isOpen`), and `Popover` forwards its config through `usePopover` to `useFloating` — no new
   floating capability is required.
 
-- [ ] **Restructure the filters trigger/popover** (design ready, unimplemented): render a plain,
-      SSR'd `ChartFilterButton` at first paint; the first click flips local state to lazily mount
-      `SkillsFilterPopover` with a new pass-through `initiallyIsOpen` prop so it opens on mount (no
-      second click); preload the chunk on the button's hover/focus (module-scope import kick, as the
-      chart chunk does); give the `dynamic()` a `loading` fallback that renders a disabled
-      `ChartFilterButton` so the button never flashes away while the chunk resolves. The mobile
-      drawer branch already follows this shape (state-gated, on-open chunk) and needs no change.
+- [x] **Restructure the filters trigger/popover** — implemented 2026-08-05 in
+      `SkillsFilterDropdownMenu`: a plain, SSR'd `ChartFilterButton` renders at first paint; the
+      first click flips local state to lazily mount `SkillsFilterPopover` with the new pass-through
+      `initiallyIsOpen` prop so it opens on mount (no second click); hover/focus on the button kicks
+      the chunk load via a module-scope `loadSkillsFilterPopover`, and the `dynamic()` `loading`
+      fallback renders a disabled `ChartFilterButton` so the button never flashes away while the
+      chunk resolves. One addition to the design: the popover's own inner
+      `dynamic(() => import('Popover'))` became a static import, because the module is now only
+      fetched on intent and a nested lazy chunk would have rendered the trigger as `null` (the exact
+      flash being removed) while it resolved. The mobile drawer branch was unchanged.
+- [x] **Sidebar/nav presence must not depend on the User-Agent viewport seed** (diagnosed and fixed
+      2026-08-06): when the UA-seeded viewport band disagreed with the real width — devtools device
+      emulation, a desktop browser resized narrow, iPads with desktop UAs — the server rendered the
+      wrong navigation variant and the client corrected it ~1s after paint, mounting (or removing)
+      the rail late and pushing the entire content area sideways (mid-correction frames looked like
+      overlapping modules). Fixed in `LayoutNavigation`: both variants render unconditionally and
+      CSS decides — the rail hides at `max-[450px]` (mirroring `MobileNavigationCutoff`, as
+      `LayoutMenuButton` already does) and the slide-out menu renders nothing until the cutoff-gated
+      hamburger opens it. `Sidebar` also became a static import so the rail is never a lazily-loaded
+      hydration ancestor. Verified headlessly: mobile-UA at 677px now paints the 60px rail in the
+      first frame with no subsequent horizontal shift, and 390px keeps the rail `display: none`
+      throughout. Trade-off: phones now download the small sidebar chunk and carry its hidden DOM.
 - [ ] **Audit and align the other floating triggers to the same convention** — "the trigger renders
       eagerly and server-side; the floating content is a lazily-loaded chunk fetched on intent and
       mounted open" :
@@ -107,12 +122,39 @@ today, established by reading the floating primitives:
   - `Tooltip` lazily imports `Popover` _without_ `ssr: false`, so tooltip triggers still SSR —
     acceptable as-is; note the chunk is a lazy ancestor of the trigger during hydration, which has
     been benign because the chunk is tiny.
-- [ ] **Filters popover select-data performance** — the on-open burst of SWR requests (educations,
-      experiences, categories, …). Investigate the React 19 promise-streaming pattern: the `@chart`
-      server page starts these fetches **without awaiting** and passes the promises as props across
-      the client boundary; the popover's selects `use()` them inside a `Suspense` boundary so the
-      data resolves in the background (started at request time, ahead of any interaction) and is
-      awaited only when the popover actually opens. Considerations: promise props must be started
+- [x] **Fix the frozen selects / stray clear icon on first popover open** (diagnosed and fixed
+      2026-08-05): until a data-backed select's SWR response arrived, three separate mechanisms made
+      it inert — `SelectPopover` hard-disabled its `Popover` when `isReady === false`,
+      `DataSelectBase` disabled the input while `modelValue === NOTSET`, and
+      `ClientEducationSelect`/`ClientExperienceSelect` passed `isLocked={isLoading}` (locked removes
+      pointer events). The same pre-data window showed a stray clear `xmark` because `NOTSET` failed
+      `DataSelectInput`'s `showPlaceholder` check. Fixed by: (a) treating `NOTSET` as
+      placeholder-visible in `DataSelectInput`; (b) an `isAwaitingData` state in `DataSelectBase`
+      (`isReady === false && isInputLoading`) that lifts the popover and input gates while the data
+      is visibly loading — the menu shows its loading indicator when opened pre-data — while
+      preserving the hard gates for not-ready states with no loading signal; (c) un-tying `isLocked`
+      from `isLoading` in the two selects the filter form uses; and (d)
+      `preloadSkillsChartFilterData()` — SWR `preload` of the educations/experiences keys — fired on
+      the filter trigger's hover/focus/click so the data is cached or in flight before the form
+      mounts.
+- [ ] Follow-up to the select fix: the other data-backed selects (`ClientCourseSelect`,
+      `ClientSkillsSelect`, `ClientSchoolSelect`, `ClientProjectSelect`, `ClientRepositorySelect`,
+      `ClientCompanySelect`) still pass `isLocked={isLoading}` and so still freeze pre-data in the
+      admin forms; align them with the same pattern when convenient.
+- [ ] **Debounce filter form changes** (added 2026-08-05, developer request): apply select changes
+      to the chart only after a debounce threshold (they currently fire a refetch per change), and
+      flush any pending changes when the popover closes. Interacts with the URL-driven-filters
+      question in [open-questions.md](./open-questions.md) — if filters move to the URL, the
+      debounce becomes "batch locally, flush to the URL".
+- [ ] **Filters popover select-data performance** — deferred 2026-08-06 (investigation item): the
+      trigger's hover/focus/click preload now warms the SWR keys, which covers the popover's own
+      needs in practice; revisit the promise-streaming pattern below together with the URL-driven
+      filters question in [open-questions.md](./open-questions.md), since both reshape the same data
+      flow. Original investigation: the React 19 promise-streaming pattern — the `@chart` server
+      page starts these fetches **without awaiting** and passes the promises as props across the
+      client boundary; the popover's selects `use()` them inside a `Suspense` boundary so the data
+      resolves in the background (started at request time, ahead of any interaction) and is awaited
+      only when the popover actually opens. Considerations: promise props must be started
       per-request (no module-level caching), rejected promises need an error boundary in the
       popover, and the win should be measured against simply prefetching the SWR keys on trigger
       hover/focus (a much smaller change that composes with the restructure above).
@@ -122,11 +164,27 @@ today, established by reading the floating primitives:
 Cross-request caching with CMS revalidation for both fetches (decided 2026-08-04).
 
 - [ ] Inventory the CMS mutation actions that can change the cached data: project
-      create/update/delete/visibility (nav) and resume upload/update/delete (menu).
+      create/update/delete/visibility (nav) — the resume side (upload/update/delete) was inventoried
+      and wired 2026-08-06.
 - [ ] `/projects/*` layout: cache the nav/slug-validation `fetchProjects` call with
       `unstable_cache` + `revalidateTag`, revalidated by the project mutations.
-- [ ] Header `SiteDropdownMenu`: cache the resumes query the same way, revalidated by the resume
-      mutations.
+- [x] Header `SiteDropdownMenu` + `ProfileSection` — done 2026-08-06: `getPrimaryResume`
+      (`src/actions/resumes/get-primary-resume.ts`) and `getProfile` now read through
+      `unstable_cache` (tags `primary-resume` / `profile`, 1h safety TTL), storing superjson payload
+      strings so `Date` fields survive the JSON-serializing cache
+      (`serializeForCache`/`deserializeFromCache` in `src/api/serialization.ts`). The resume
+      mutations (upload/update/delete) call `revalidateTag('primary-resume')`. The header's Suspense
+      fallback is now a dimensionally-matched `HeaderSkeleton` (was `null`, which made the header
+      content "disappear and reappear" on refresh), and `SiteDropdownMenu` starts the cached read
+      before awaiting `auth()`.
+
+## Phase 3b — De-Clerk the Header (added 2026-08-06, developer request)
+
+- [ ] Remove auth awareness and Clerk entirely from the header and its dropdown: no sign-in button,
+      no org view, no profile popover/hamburger dropdown. Replace with an icon button and a button
+      (or two icon buttons) that view/download the primary resume directly. Restrict Clerk usage
+      entirely to the admin CMS routes. (Supersedes most of `ClientSiteDropdownMenu`/`SiteMenu`; the
+      cached `getPrimaryResume` read carries over.)
 
 ## Phase 4 — Bundle & Payload
 
@@ -151,7 +209,8 @@ restoring SSR surfaced a kit-vs-hydration race that made this urgent.
 - [x] Remove the kit `<script>` from the `(site)` layout.
 - [x] Verify icons are present in the server HTML at first paint (no post-load swap) — confirmed via
       curl on the dev server.
-- [ ] Retire `FONT_AWESOME_KIT_TOKEN` from the environment config (no longer read anywhere).
+- [x] Retire `FONT_AWESOME_KIT_TOKEN` from the environment config — removed 2026-08-05 from the
+      runtime map and validators in `src/environment/index.ts` and from `.env`.
 - [ ] Ensure `FONT_AWESOME_AUTH_TOKEN` is present in the Vercel/CI build environment — installs now
       pull `@fortawesome/pro-*` packages from the Pro registry.
 - [ ] Manual browser check: icon rendering parity across the app (sizes, colors, admin tables,

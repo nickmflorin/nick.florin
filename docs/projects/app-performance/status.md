@@ -122,11 +122,90 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
   corrected; and the educations slot skeleton only gives its first tile a description, mirroring the
   real data (relevant because that module's row is content-fitted).
 
+- 2026-08-06: Filters trigger/popover restructured to the "eager trigger, lazy content" convention
+  (the Phase 2b design): `SkillsFilterDropdownMenu` renders a plain, SSR'd `ChartFilterButton` at
+  first paint; the first click mounts `SkillsFilterPopover` with the new pass-through
+  `initiallyIsOpen` prop (opens on mount, no second click); hover/focus preloads the chunk via a
+  module-scope `loadSkillsFilterPopover`; the `dynamic()` `loading` fallback renders a disabled
+  `ChartFilterButton` so the button never flashes away. The popover's inner lazy `Popover` import
+  became static — the module is now fetched on intent only, and a nested lazy chunk would render the
+  trigger as `null` while resolving. The mobile drawer branch was unchanged.
+
+- 2026-08-06: Clerk-scoping cleanup landed: deleted the orphaned `src/application/auth/roles.ts`
+  (`clerkUserIsAdmin`, `UserResource`), `src/components/buttons/UserButton.tsx`, and
+  `src/components/OrganizationSwitcher.tsx` (no importers; the org-role constants remain in use by
+  `proxy.ts` and `server-v2.ts`). `FONT_AWESOME_KIT_TOKEN` was retired from
+  `src/environment/index.ts` and `.env` (no longer read anywhere since the kit-script removal).
+
+- 2026-08-06: Frozen-selects-on-first-open fixed (the popover's selects ignored clicks and showed a
+  stray clear icon until their data arrived, self-resolving on close/reopen via the warm SWR cache).
+  Three gates were involved: `SelectPopover`'s `isReady` disable, `DataSelectBase`'s `NOTSET` input
+  disable, and `isLocked={isLoading}` (pointer-events removal) in
+  `ClientEducationSelect`/`ClientExperienceSelect`. The selects now stay interactive while their
+  data loads (menu shows its loading state), `NOTSET` renders the placeholder instead of a phantom
+  clearable value, and `preloadSkillsChartFilterData()` warms the educations/experiences SWR keys on
+  filter-trigger hover/focus/click. See backlog Phase 2b for the follow-up covering the remaining
+  `Client*Select`s.
+
+- 2026-08-06: The "random chart/button flicker" was pinned by browser instrumentation (headless
+  Chrome with layout-shift and mutation observers), superseding the earlier HMR hypothesis: every
+  cold open of a floating element swapped the nearest route Suspense boundary to its fallback.
+  `ConditionalPortal` mounted a `dynamic()`-wrapped `FloatingPortal` only at open time, and in the
+  App Router `dynamic()` without a `loading` option renders a bare `React.lazy` with no local
+  Suspense boundary — so the suspension escaped to the `@chart` slot and blinked the entire module
+  (header actions included) to its skeleton on tooltip/popover opens. Fixed with a static import:
+  `@floating-ui/react` was already in the client bundle via the floating hooks, so the lazy wrapper
+  saved nothing. Verified headlessly: chart-module DOM mutations per hover went from 8 (fallback
+  in/out) to 0, with zero layout-shift entries. The fix is global — every `ConditionalPortal`
+  consumer (tooltips, popovers, select menus) stops blinking its surrounding boundary.
+
+- 2026-08-06: The "janky dashboard on mobile screens" report was reproduced and pinned: with a
+  mobile User-Agent at a 677px viewport (devtools device emulation), the first paint has no sidebar
+  (mobile-seeded layout) and the 60px rail mounts ~1.2s later, shifting every module's position and
+  size — the screenshotted "overlapping modules" state is the mid-correction paint. Clean loads at
+  677px/900px, desktop→mobile resizes, DPR 2, and cookie-less profiles all measure perfectly (no
+  overlap, rows sized to content), so the CSS grid itself is sound; the defect is the JS-gated
+  navigation presence keyed off the UA-seeded viewport. Fix direction (pending decision) recorded in
+  backlog Phase 2.
+
+- 2026-08-06: The seeded-navigation jank was fixed by making the nav variants CSS-driven
+  (`LayoutNavigation` renders both; the rail hides at `max-[450px]`; `Sidebar` statically imported).
+  Verified headlessly: the mismatch case (mobile UA at 677px) now paints the rail in the first frame
+  with zero horizontal shift; true mobile (390px) keeps it hidden throughout. The remaining
+  early→settled deltas at narrow widths are vertical streamed-skeleton swaps, tracked by the
+  existing Phase 2 skeleton-fidelity items.
+
+- 2026-08-06: The persistent stacked-view collapse (squashed chart bars tracking window height,
+  modules overlapping beneath) was the scroll viewport's flex layout, not the grid: the
+  `content__scroll-viewport` is a height-clamped (100% min/max) flex column, so its children were
+  eligible to be compressed to the scrollport's own height — gated only by the flex "automatic
+  minimum size", which engines resolve differently for grid children (headless Chrome held the
+  content size, which is why earlier reproductions measured clean; the developer's browsers
+  collapsed it). Proven by forcing `min-height: 0` on the dashboard grid: 2314px → 554px with the
+  chart bars at 0px — the exact reported symptom. Fixed with `flex-shrink: 0` on all scroll viewport
+  children in `layout.scss` (scroll content must overflow the scrollport, never shrink to it —
+  protects every route) plus `shrink-0` on the chart's and skeleton's fixed-height bars rows.
+  Verified: with the minimum forced to zero the grid now holds 2314px and the bars 340px.
+
+- 2026-08-06: The header's disappear-and-reappear on refresh was resolved on both ends: the profile
+  and primary-resume reads now go through `unstable_cache` (superjson-wrapped so `Date` fields
+  survive; tags `profile`/`primary-resume`, with the resume mutations revalidating), and the
+  header's Suspense fallback became a dimensionally-matched `HeaderSkeleton` instead of `null`, so
+  the residual stream gap paints as a loading header rather than an empty bar. Verified: the initial
+  HTML flush carries the skeleton in the header and the streamed content follows.
+
+- 2026-08-06: The Clerk sign-in widget's left-then-center flash was fixed by centering it at the
+  page level: `/sign-in` now renders `<SignIn />` inside a full-height flex container
+  (`items-center justify-center`), so the widget mounts centered instead of jumping from its in-flow
+  top-left position when Clerk's client code takes over.
+
 ## In Progress
 
-- Phase 1 + pulled-forward Phase 5 + Phase 6 + the tour restructure + the RSC-`dynamic()`
-  conversion + the tour-cookie rename are implemented and dev-verified on `perf/restore-ssr`, **all
-  uncommitted** pending the developer's review (explicit hold).
+- The 2026-08-06 batch — filters popover restructure, frozen-selects fix, `ConditionalPortal`
+  Suspense-blink fix, button truncation, CSS-driven nav presence, scroll-viewport collapse fix,
+  header caching + skeleton, sign-in centering, and the orphan/env cleanups — is committed to
+  `master`. Remaining work (Phase 3b de-Clerk'd header, debounce, drawer animation, URL-driven
+  filters decision) continues on a follow-up branch.
 
 ## Next
 
@@ -137,7 +216,7 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
    whole static module graph) cannot be confirmed pruned for anonymous visitors.
 2. Manual signed-in verification: sign-in flow, the account section of the site menu, sign-out,
    admin CMS, tour/drawers/toasts — best done in a browser session.
-3. Cleanup candidates left orphaned by the scoping (not yet removed): `clerkUserIsAdmin` and
-   `UserResource` in `src/application/auth/roles.ts`, `src/components/buttons/UserButton.tsx`, and
-   `src/components/OrganizationSwitcher.tsx` (no importers).
-4. Then Phase 2 of [backlog.md](./backlog.md) (chart `fallbackData`, skeletons, conditional tour).
+3. Confirm `FONT_AWESOME_AUTH_TOKEN` is present in the Vercel/CI build environment (installs pull
+   `@fortawesome/pro-*` from the Pro registry) — requires the Vercel dashboard, not the repo.
+4. Then the rest of Phase 2 of [backlog.md](./backlog.md): non-dashboard skeletons, the
+   `CompaniesSchoolsDropdownMenu` trigger alignment, and the select-data prefetch investigation.

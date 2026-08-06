@@ -91,7 +91,7 @@ const LocalIconButton = <E extends types.ButtonElement>({
       })}
       style={{ ...props.style, ...getButtonSizeStyle({ size }) }}
     >
-      <div className='button__content'>
+      <span className='button__content'>
         {children ? (
           <WithLoading
             iconClassName={iconClassName}
@@ -128,7 +128,7 @@ const LocalIconButton = <E extends types.ButtonElement>({
             {icon}
           </WithLoading>
         )}
-      </div>
+      </span>
     </AbstractButton>
   );
 };

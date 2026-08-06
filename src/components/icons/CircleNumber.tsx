@@ -42,6 +42,8 @@ export const CircleNumber = ({
     style={{
       ...props.style,
       aspectRatio: '1/1',
+      fontSize: '0.825rem',
+      fontWeight: 700,
       height: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), 'px'),
       lineHeight: sizeToString(inferQuantitativeSizeValue(size) - 4, 'px'),
       width: sizeToString(clamp(inferQuantitativeSizeValue(size), 12, 64), 'px'),

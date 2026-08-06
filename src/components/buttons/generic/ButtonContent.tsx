@@ -137,7 +137,7 @@ export const ButtonContent = ({
   };
 
   return (
-    <div
+    <span
       {...props}
       className={classNames('button__content', props.className)}
       style={{ ...props.style, gap: gap === undefined ? undefined : sizeToString(gap, 'px') }}
@@ -149,13 +149,13 @@ export const ButtonContent = ({
           {leftIcon}
         </RenderOrSpinner>
       )}
-      <div
+      <span
         className={classNames('button__sub-content', {
           'opacity-0': isLoading && loadingLocation === 'over',
         })}
       >
         {children}
-      </div>
+      </span>
       <Spinner
         className={classNames('absolute mx-auto', iconClassName, spinnerClassName)}
         isLoading={isLoading ? loadingLocation === 'over' : false}
@@ -168,6 +168,6 @@ export const ButtonContent = ({
           {rightIcon}
         </RenderOrSpinner>
       ) : null}
-    </div>
+    </span>
   );
 };

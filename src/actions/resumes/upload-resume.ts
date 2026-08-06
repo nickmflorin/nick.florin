@@ -1,4 +1,6 @@
 'use server';
+import { revalidateTag } from 'next/cache';
+
 import { del, put, type PutBlobResult } from '@vercel/blob';
 
 import { getAuthedUser } from '~/application/auth/server-v2';
@@ -9,6 +11,8 @@ import { logger } from '~/internal/logger';
 import { type MutationActionResponse } from '~/actions/mutations';
 import { ApiClientGlobalError } from '~/api';
 import { convertToPlainObject } from '~/api/serialization';
+
+import { PrimaryResumeCacheTag } from './get-primary-resume';
 
 const resumeFilePath = (name: string) => `resumes/${name}`;
 
@@ -84,6 +88,7 @@ export const uploadResume = async (
         }).json,
       };
     }
+    revalidateTag(PrimaryResumeCacheTag);
     return { data: convertToPlainObject(resume) };
   });
 };

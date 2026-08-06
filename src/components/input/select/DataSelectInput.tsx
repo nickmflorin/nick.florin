@@ -71,7 +71,13 @@ export const DataSelectInput = <
   const { getModelId } = useDataSelectOptions<M, O>({ options });
 
   const showPlaceholder = useMemo(
-    () => (Array.isArray(modelValue) && modelValue.length === 0) || modelValue === null,
+    () =>
+      /* The NOTSET sentinel means the select's data - and therefore its model value - has not
+         resolved yet. The placeholder stands in for that state so the input does not present as
+         holding a value (which would also surface the clear button) before any data exists. */
+      modelValue === types.NOTSET ||
+      (Array.isArray(modelValue) && modelValue.length === 0) ||
+      modelValue === null,
     [modelValue],
   );
 
@@ -89,7 +95,7 @@ export const DataSelectInput = <
   );
 
   const renderedValue = useMemo(() => {
-    if (showPlaceholder || modelValue === types.NOTSET || value === types.NOTSET) {
+    if (showPlaceholder || value === types.NOTSET) {
       // This value will be hidden in favor of the placeholder anyways.
       return null;
     } else if (Array.isArray(modelValue)) {

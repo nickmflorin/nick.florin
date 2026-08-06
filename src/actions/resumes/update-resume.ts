@@ -1,4 +1,6 @@
 'use server';
+import { revalidateTag } from 'next/cache';
+
 import { type z } from 'zod';
 
 import { getAuthedUser } from '~/application/auth/server-v2';
@@ -10,6 +12,7 @@ import { ResumeSchema } from '~/actions/schemas';
 import { ApiClientFormError, ApiClientGlobalError } from '~/api';
 
 import { setResumesPrimaryFlag } from './fetch-resumes';
+import { PrimaryResumeCacheTag } from './get-primary-resume';
 
 const UpdateResumeSchema = ResumeSchema.partial();
 
@@ -47,6 +50,7 @@ export const updateResume = async (
     where: { id: resume.id },
   });
   const resumes = await db.resume.findMany({ orderBy: getResumesOrdering() });
+  revalidateTag(PrimaryResumeCacheTag);
   return {
     data: {
       resume: updated,

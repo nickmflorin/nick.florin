@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import { type JSX, useEffect } from 'react';
 
 import { flip } from '@floating-ui/react';
@@ -9,6 +8,11 @@ import {
   ChartFilterButton,
   type ChartFilterButtonProps,
 } from '~/components/buttons/ChartFilterButton';
+
+/* Imported statically, not with next/dynamic: this module is itself a lazily-loaded chunk that is
+   only fetched on intent, and a nested dynamic import would render the popover's trigger as null
+   while the inner chunk resolves - the exact flash the lazy mounting exists to prevent. */
+import { Popover } from '~/components/floating/Popover';
 import { PopoverContent } from '~/components/floating/PopoverContent';
 import { Tooltip } from '~/components/floating/Tooltip';
 import { mergeFloatingEventHandlers } from '~/components/floating/util';
@@ -20,12 +24,17 @@ import {
 } from '~/features/skills/components/forms/SkillsChartFilterForm';
 import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
-const Popover = dynamic(() => import('~/components/floating/Popover').then(mod => mod.Popover));
-
 export interface SkillsFilterPopoverProps {
   readonly buttonProps?: Omit<ChartFilterButtonProps, 'isDisabled'>;
   readonly filters: SkillsChartFilterFormValues;
   readonly hasFiltersChanged: boolean;
+  /**
+   * Whether the popover should be open as soon as it mounts.
+   *
+   * Used when the component is mounted lazily in response to the trigger button already having
+   * been clicked, so the popover opens without requiring a second click.
+   */
+  readonly initiallyIsOpen?: boolean;
   readonly isDisabled?: boolean;
   readonly onChange: (values: SkillsChartFilterFormValues) => void;
   readonly onClear: () => void;
@@ -36,6 +45,7 @@ export const SkillsFilterPopover = ({
   buttonProps,
   filters,
   hasFiltersChanged,
+  initiallyIsOpen = false,
   isDisabled = false,
   onChange,
   onClear,
@@ -70,6 +80,7 @@ export const SkillsFilterPopover = ({
         </PopoverContent>
       }
       hasArrow={false}
+      initiallyIsOpen={initiallyIsOpen}
       isDisabled={isDisabled}
       isInPortal
       middleware={[flip({})]}

@@ -42,7 +42,9 @@ const BarWidthPercentage = `${(1 - BarChartBandPadding) * 100}%`;
 export const SkillsBarChartSkeleton = () => (
   <div className='flex flex-col gap-[8px] h-full w-full max-h-full max-w-full'>
     <div
-      className={classNames('flex flex-row', SkillsBarChartHeightClassNames)}
+      /* 'shrink-0' mirrors the real chart's bars row: the placeholder must hold the same fixed
+         band height under a height-clamped ancestor, or the skeleton and chart would disagree. */
+      className={classNames('flex flex-row shrink-0', SkillsBarChartHeightClassNames)}
       style={{
         paddingBottom: BarChartMargins.bottom,
         paddingLeft: BarChartMargins.left,

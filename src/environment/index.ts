@@ -36,7 +36,6 @@ export const environment = NextEnvironment.create(
       BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
       CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
       DATABASE_LOG_LEVEL: process.env.DATABASE_LOG_LEVEL,
-      FONT_AWESOME_KIT_TOKEN: process.env.FONT_AWESOME_KIT_TOKEN,
       GITHUB_USERNAME: process.env.GITHUB_USERNAME,
       LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY,
       LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
@@ -70,7 +69,6 @@ export const environment = NextEnvironment.create(
         test: z.literal('').optional(),
       }[environmentName],
       DATABASE_LOG_LEVEL: PrismaLogLevelSchema.optional(),
-      FONT_AWESOME_KIT_TOKEN: z.string(),
       GITHUB_USERNAME: z.string(),
       LOGFLARE_API_KEY: {
         development: z.string(),

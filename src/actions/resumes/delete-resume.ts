@@ -1,4 +1,6 @@
 'use server';
+import { revalidateTag } from 'next/cache';
+
 import { del } from '@vercel/blob';
 
 import { getAuthedUser } from '~/application/auth/server-v2';
@@ -9,6 +11,7 @@ import { getResumesOrdering, type MutationActionResponse } from '~/actions';
 import { ApiClientGlobalError } from '~/api';
 
 import { setResumesPrimaryFlag } from './fetch-resumes';
+import { PrimaryResumeCacheTag } from './get-primary-resume';
 
 /**
  * Fetches all resumes with the `primary` flag reconciled via {@link setResumesPrimaryFlag}.
@@ -37,6 +40,7 @@ export const deleteResume = async (id: string): Promise<MutationActionResponse<B
   return await db.$transaction(async tx => {
     await tx.resume.delete({ where: { id: resume.id } });
     await del(resume.url);
+    revalidateTag(PrimaryResumeCacheTag);
     return { data: await getResumesWithPrimaryFlag() };
   });
 };
