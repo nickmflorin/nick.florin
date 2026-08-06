@@ -24,14 +24,14 @@ export interface SkillsFilterPopoverProps {
   readonly buttonProps?: Omit<ChartFilterButtonProps, 'isDisabled'>;
   readonly filters: SkillsChartFilterFormValues;
   readonly hasFiltersChanged: boolean;
+  readonly isDisabled?: boolean;
   /**
    * Whether the popover should be open as soon as it mounts.
    *
    * Used when the component is mounted lazily in response to the trigger button already having
    * been clicked, so the popover opens without requiring a second click.
    */
-  readonly initiallyIsOpen?: boolean;
-  readonly isDisabled?: boolean;
+  readonly isInitiallyOpen?: boolean;
   readonly onChange: (values: SkillsChartFilterFormValues) => void;
   readonly onClear: () => void;
   readonly skills: ApiSkill<[]>[];
@@ -41,8 +41,8 @@ export const SkillsFilterPopover = ({
   buttonProps,
   filters,
   hasFiltersChanged,
-  initiallyIsOpen = false,
   isDisabled = false,
+  isInitiallyOpen = false,
   onChange,
   onClear,
   skills,
@@ -76,7 +76,7 @@ export const SkillsFilterPopover = ({
         </PopoverContent>
       }
       hasArrow={false}
-      initiallyIsOpen={initiallyIsOpen}
+      initiallyIsOpen={isInitiallyOpen}
       isDisabled={isDisabled}
       isInPortal
       middleware={[flip({})]}

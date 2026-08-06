@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as unstableCache } from 'next/cache';
 import { cache } from 'react';
 
 import { type Profile } from '~/database/model';
@@ -29,7 +29,7 @@ const ProfileCacheRevalidateSeconds = 3600;
 /* The cached layer stores a superjson payload string rather than the profile itself, because
    `unstable_cache` JSON-serializes stored values - a `Date` field would silently come back as a
    string on a cache hit while the `Profile` type continued to claim `Date`. */
-const readProfilePayload = unstable_cache(
+const readProfilePayload = unstableCache(
   async (): Promise<null | string> => {
     const profiles = await db.profile.findMany({ orderBy: { createdAt: 'desc' }, take: 1 });
     const profile = profiles.at(0);

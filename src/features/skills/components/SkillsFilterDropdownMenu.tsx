@@ -101,7 +101,7 @@ export const SkillsFilterDropdownMenu = ({
   }
   /* The trigger button renders eagerly - and server-side - while the popover chunk and the
      select data are only fetched on intent: preloaded when the button is hovered or focused, and
-     mounted on the first click. Mounting with 'initiallyIsOpen' opens the popover immediately, so
+     mounted on the first click. Mounting with 'isInitiallyOpen' opens the popover immediately, so
      the click that mounted it does not need to be repeated. */
   if (!popoverIsMounted) {
     return (
@@ -127,7 +127,7 @@ export const SkillsFilterDropdownMenu = ({
     <SkillsFilterPopover
       filters={filters}
       hasFiltersChanged={hasFiltersChanged}
-      initiallyIsOpen
+      isInitiallyOpen
       onChange={onChange}
       onClear={onClear}
       skills={skills}

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { unstable_cache } from 'next/cache';
+import { unstable_cache as unstableCache } from 'next/cache';
 import { cache } from 'react';
 
 import { type BrandResume } from '~/database/model';
@@ -27,7 +27,7 @@ const PrimaryResumeCacheRevalidateSeconds = 3600;
 /* The cached layer stores a superjson payload string rather than the resume itself, because
    `unstable_cache` JSON-serializes stored values - a `Date` field would silently come back as a
    string on a cache hit while the `BrandResume` type continued to claim `Date`. */
-const readPrimaryResumePayload = unstable_cache(
+const readPrimaryResumePayload = unstableCache(
   async (): Promise<null | string> => {
     const resumes = await db.resume.findMany({
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
