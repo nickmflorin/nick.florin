@@ -10,7 +10,7 @@ import { classNames } from '~/components/types';
 import { UploadDropzoneContent } from './UploadDropzoneContent';
 
 const DEFAULT_MAX_FILE_UPLOAD_SIZE_MB = 15;
-const DEFAULT_MAX_UPLOAD_SIZE = DEFAULT_MAX_FILE_UPLOAD_SIZE_MB * 1048 ** 2;
+const DEFAULT_MAX_UPLOAD_SIZE = DEFAULT_MAX_FILE_UPLOAD_SIZE_MB * 1024 ** 2;
 
 export const UploadDropzone = ({
   isDisabled = false,

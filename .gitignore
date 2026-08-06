@@ -55,3 +55,6 @@ yarn-error.log*
 # query engine binary (~16MB, and wrong for any platform other than the one that generated it) out
 # of the repository.
 /src/database/model/generated/
+
+# Claude Code worktrees.
+.claude/worktrees/

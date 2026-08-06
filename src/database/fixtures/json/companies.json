@@ -1,6 +1,221 @@
 {
   "companies": [
     {
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z",
+      "name": "Craft Education System",
+      "shortName": "Craft",
+      "description": null,
+      "logoImageUrl": "/experience/craft.png",
+      "websiteUrl": "https://www.crafteducation.com/",
+      "city": "Nashville",
+      "state": "TN",
+      "slug": null,
+      "logoFileName": "Craft.svg",
+      "experiences": [
+        {
+          "createdAt": "2026-08-06T00:00:00.000Z",
+          "updatedAt": "2026-08-06T00:00:00.000Z",
+          "startDate": "2024-10-01T00:00:00.000Z",
+          "endDate": null,
+          "title": "Senior Software Engineer",
+          "shortTitle": "S. Software Eng.",
+          "description": "Engineering Lead of a cross-functional product pod, responsible for leading the development of large, customer-facing features. Played a central role in the company's architectural evolution following its acquisition by WGU (Western Governors University), driving the transition from a single-product engineering organization - operating out of one product codebase - to an enterprise-grade, multi-product platform organized as a unified monorepo. Championed the underlying monorepo strategy and Nx adoption as the structural foundation for that transition, establishing shared tooling, independent product surfaces, and scalable team ownership within one cohesive engineering platform.",
+          "isCurrent": true,
+          "isRemote": true,
+          "visible": true,
+          "highlighted": true,
+          "skills": [
+            "typescript",
+            "react",
+            "nextjs",
+            "graphql",
+            "apollo-server",
+            "prismajs",
+            "postgresql",
+            "monorepo-nx",
+            "microfrontends",
+            "ssr",
+            "performance-engineering",
+            "accessibility-axe-core",
+            "datadog",
+            "playwright",
+            "github-actions",
+            "aws"
+          ],
+          "details": [
+            {
+              "createdAt": "2026-08-06T00:00:00.000Z",
+              "updatedAt": "2026-08-06T00:00:00.000Z",
+              "entityType": "EXPERIENCE",
+              "label": "Leadership",
+              "description": "Led a cross-functional pod from the ground up, starting as a 2-engineer team alongside a PM and rotating designer, then expanding into a 5-engineer pod with a dedicated PM. Served as Engineering Lead throughout, owning feature scoping, technical planning, sprint execution, and delivery end-to-end. Operated consistently above title - writing code, authoring architectural specs, producing technical analyses, and unblocking teammates across the engineering organization.",
+              "shortDescription": null,
+              "visible": true,
+              "nestedDetails": [
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Segmented Learner Cohorts",
+                  "description": "Tenant-aware membership and access-control system gating content, assessments, and activity visibility across nested customer cohorts. Drove the architectural call: landed on policy-based authorization with hierarchical permission scoping and modeled cohort membership as a composable relationship graph - enabling nested inheritance and cross-organizational sharing.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["graphql", "prismajs", "postgresql"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Rubrics",
+                  "description": "Grading surface for instructors, evaluators, and admins to design, attach, and score configurable rubrics; now the most-used feature in the product. Led the redesign after the original implementation accumulated unfixable state-management bugs - aligning product, design, and engineering on a four-mode provider pattern (view/edit/attach/score) and a schema-driven form architecture unifying every surface behind one rendering pipeline.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["react", "typescript", "component-development"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Time Tracking",
+                  "description": "Activity-logging and approval workflow for learners, instructors, evaluators, and admins, with program-specific validation and submit-on-behalf-of flows. Kept it extensible without per-customer forks: modeled approval as a state machine with pluggable rules. Exposed program-level configuration so instructors and admins could tailor how learners tracked time - daily vs. monthly entry cadence, minimum time per activity, whether learners could log above the target, and other per-program constraints - without requiring engineering changes.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["typescript", "react"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Skills Tracking",
+                  "description": "New product surface for defining skill taxonomies, attaching them to activities, and tracking learner progress. Led end-to-end from discovery through rollout: authored the taxonomy and progress-aggregation data model, and drew the platform/per-customer boundary so the feature could be reused across future products on the monorepo. Organized and planned the work based on dependencies to maximize parallel efforts across multiple engineers.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["prismajs", "postgresql", "monorepo-nx"]
+                }
+              ],
+              "skills": ["agile-software-development", "project-planning-roadmapping"]
+            },
+            {
+              "createdAt": "2026-08-06T00:00:00.000Z",
+              "updatedAt": "2026-08-06T00:00:00.000Z",
+              "entityType": "EXPERIENCE",
+              "label": "Architecture",
+              "description": "Most recently, drove the platform's most consequential frontend effort since the monorepo: a coordinated Auth0 v4, Next.js 16, and React 19 replatform paired with a months-long performance program that unwound a client-bound rendering architecture and restored server-side rendering, page caching, and healthy Core Web Vitals across the product.",
+              "shortDescription": null,
+              "visible": true,
+              "nestedDetails": [
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Auth0 v4 & Next.js 16 Replatform",
+                  "description": "Owned the platform upgrade that had stalled repeatedly: a legacy, client-bound Auth0 integration pinned the app to React 18 and blocked the Next.js upgrade path entirely. Re-architected authentication around edge middleware and server-side session management on Auth0 v4, then landed Auth0 v4, Next.js 16, React 19, and Turbopack as a coordinated three-stage rollout - a net deletion of code - with zero customer-facing downtime.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["auth0", "nextjs", "react"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Server-Oriented Frontend Migration",
+                  "description": "Led a sustained, incremental migration - building team buy-in and driving a rethinking of the app's client/server boundaries over many months - to dismantle the client-side waterfall behind every cold page load: a ~1 MB bundle download followed by serial session, user, environment, and feature-flag requests that produced 3-4 seconds of blank screen before first paint and defeated Next.js page caching entirely. Progressively moved session validation into edge middleware, feature-flag evaluation to server startup, and provider bootstrapping onto the server - so pages fully pre-render, previously-visited pages return near-instantly from the restored page cache, and the app's third-party browser exposure collapses to a single first-party origin, eliminating a class of customer-firewall outages.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["nextjs", "ssr", "performance-engineering"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Bundle Size & First Load Performance",
+                  "description": "Diagnosed the root causes behind a bloated shared bundle - barrel-export fan-out, a 525 kB generated GraphQL document, a non-lazy provider cascade, and a UI package exports map silently pointing to CJS output that defeated tree-shaking - then authored the remediation roadmap and led its incremental delivery across the team over successive releases, cutting the app-wide first-load JavaScript baseline 62% (1.01 MB to 383 kB) and the shared app chunk 68% (921 kB to under 300 kB).",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["performance-engineering", "nextjs"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Core Web Vitals & Loading Performance",
+                  "description": "Combined, the architectural unlock and bundle work improved FCP/LCP ~50% and TTI ~60% on high-traffic pages and cut cold-load times by 2-4 seconds on slower and corporate-throttled networks; non-critical client work (session replay, analytics boot, background refreshes) now defers until the browser is idle, keeping the main thread free for first paint.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["performance-engineering"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Embedded Analytics Proxy & Report Performance",
+                  "description": "Co-architected the company's embedded-analytics integration (ThoughtSpot) around a deliberate licensing constraint: rather than provisioning per-user service accounts, all reporting is served through one service account with requests proxied through the app - saving the company roughly $50k per year. Uncovered the critical report-loading bottlenecks that were overwhelming the client and freezing browsers, then designed and implemented the remedy - per-user liveboard preloading under the shared account plus streamed, cached proxy assets - making report loads near-instantaneous.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["performance-engineering", "rest-api-design"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Monorepo & Microfrontend Decoupling",
+                  "description": "Championed and led a long-term restructuring of the platform around scalable monorepo patterns: spearheaded Nx adoption, reoriented engineering efforts toward decoupled, independently-owned modules with clean microfrontend boundaries, and steered the company's expansion from a single-product codebase toward a scalable, multi-product mesh.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["monorepo-nx", "microfrontends"]
+                },
+                {
+                  "createdAt": "2026-08-06T00:00:00.000Z",
+                  "updatedAt": "2026-08-06T00:00:00.000Z",
+                  "label": "Structured Logging & Observability",
+                  "description": "Designed and rolled out a unified, namespaced structured-logging architecture spanning every service - replacing scattered ad-hoc logging with a single queryable observability surface wired into Datadog.",
+                  "shortDescription": null,
+                  "visible": true,
+                  "skills": ["datadog", "logging-monitoring-infrastructure"]
+                }
+              ],
+              "skills": ["nextjs", "performance-engineering", "monorepo-nx"]
+            },
+            {
+              "createdAt": "2026-08-06T00:00:00.000Z",
+              "updatedAt": "2026-08-06T00:00:00.000Z",
+              "entityType": "EXPERIENCE",
+              "label": "Mentoring",
+              "description": "Invested heavily in the growth of junior and mid-level engineers through structured PR reviews, pair programming, and 1:1 mentoring focused on TypeScript, React, Next.js, and GraphQL. Acted as a consistent technical resource and escalation point for the broader engineering organization.",
+              "shortDescription": null,
+              "visible": true,
+              "nestedDetails": [],
+              "skills": ["typescript", "react", "nextjs", "graphql"]
+            },
+            {
+              "createdAt": "2026-08-06T00:00:00.000Z",
+              "updatedAt": "2026-08-06T00:00:00.000Z",
+              "entityType": "EXPERIENCE",
+              "label": "Design & UX Coordination",
+              "description": "Primary liaison between Design/UX and Engineering; established structured handoff and feedback processes that reduced ambiguity, shortened iteration cycles, and produced measurably better user experiences. Spearheaded integration of Deque axe-core accessibility checks into CI/CD pipelines for automated WCAG enforcement.",
+              "shortDescription": null,
+              "visible": true,
+              "nestedDetails": [],
+              "skills": ["ui-ux", "accessibility-axe-core", "ci-cd"]
+            },
+            {
+              "createdAt": "2026-08-06T00:00:00.000Z",
+              "updatedAt": "2026-08-06T00:00:00.000Z",
+              "entityType": "EXPERIENCE",
+              "label": "Developer Experience & Code Quality",
+              "description": "Established a monorepo-wide TypeScript and ESLint quality program, systematically adopting 20+ rules via a grandfathering strategy that kept new code clean while enabling incremental migration. Enforced type-checking across test files in CI, fixed long-broken IDE ESLint integration, and created an internal documentation app covering contributing guides, React patterns, and architectural decisions.",
+              "shortDescription": null,
+              "visible": true,
+              "nestedDetails": [],
+              "skills": ["eslint", "typescript", "ci-cd"]
+            },
+            {
+              "createdAt": "2026-08-06T00:00:00.000Z",
+              "updatedAt": "2026-08-06T00:00:00.000Z",
+              "entityType": "EXPERIENCE",
+              "label": "Impact",
+              "description": "The pod's output was directly instrumental in attracting and onboarding new enterprise accounts and qualifying the company for several public-sector grants.",
+              "shortDescription": null,
+              "visible": true,
+              "nestedDetails": [],
+              "skills": []
+            }
+          ]
+        }
+      ]
+    },
+    {
       "createdAt": "2024-04-16T23:25:08.650Z",
       "updatedAt": "2024-04-16T23:25:08.650Z",
       "name": "Northbeam",
@@ -10,6 +225,8 @@
       "websiteUrl": "https://www.northbeam.io/",
       "city": "San Francisco",
       "state": "CA",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:08.650Z",
@@ -18,7 +235,7 @@
           "endDate": "2024-06-01T04:00:00.000Z",
           "title": "Senior Software Engineer",
           "shortTitle": "S. Software Eng.",
-          "description": "As a member of the Product Development Team, I contributed to the ongoing development of the company's flagship web-based and mobile products.",
+          "description": "Contributed to the ongoing development of Northbeam's flagship marketing analytics platform across web and mobile surfaces.",
           "isCurrent": false,
           "isRemote": true,
           "visible": true,
@@ -81,21 +298,22 @@
               "createdAt": "2024-04-16T23:25:09.294Z",
               "updatedAt": "2024-04-27T01:01:23.229Z",
               "entityType": "EXPERIENCE",
-              "label": "Foreign Currencies",
-              "description": "Created the system that allowed all marketing analytics in the application to be quoted in a currency configurable by the user, attracting additional international customers to the platform and improving existing customers' usage of the product.",
+              "label": "Multi-Currency Analytics",
+              "description": "Designed and implemented a currency localization system enabling all marketing analytics to be denominated in a user-configurable currency, directly expanding the platform's addressable market to international customers.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["react", "graphql"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["react", "graphql"]
             },
             {
               "createdAt": "2024-09-18T13:46:30.786Z",
               "updatedAt": "2024-09-18T15:08:12.713Z",
               "entityType": "EXPERIENCE",
               "label": "Component Library",
-              "description": "Developed a well-tested, flexible and dynamic internal component library using SASS, Tailwind & React that allowed the company to develop large features more quickly with less repetition while also making it easier to rapidly adjust to changes in design or feature scope.",
+              "description": "Architected a well-tested, flexible internal component library built on React, SASS, and TailwindCSS. Enabled significantly faster feature development, reduced UI inconsistency across the product, and made design-scope changes far easier to absorb throughout the codebase.",
               "shortDescription": null,
               "visible": true,
+              "nestedDetails": [],
               "skills": [
                 "floating-ui",
                 "storybookjs",
@@ -112,8 +330,7 @@
                 "react-native",
                 "tailwindcss",
                 "unit-testing"
-              ],
-              "nestedDetails": []
+              ]
             }
           ]
         }
@@ -129,6 +346,8 @@
       "websiteUrl": "https://shelfcycle.com/",
       "city": "Washington",
       "state": "DC",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:09.504Z",
@@ -137,7 +356,7 @@
           "endDate": "2023-08-01T00:00:00.000Z",
           "title": "Founding Engineer",
           "shortTitle": "Founding Eng.",
-          "description": "Contributed to the early development of the platform's MVP, building a web-based inventory management, order management and accounting system for the chemical supply chain industry.",
+          "description": "Contributed to early MVP development of a web-based inventory management, order management, and accounting platform for the chemical supply chain industry. Organized Agile workflows, led team meetings, and mentored engineers less familiar with the stack built on Next.js, TRPC, Prisma, and Vercel.",
           "isCurrent": false,
           "isRemote": true,
           "visible": true,
@@ -205,6 +424,8 @@
       "websiteUrl": "https://corsha.com/",
       "city": "Vienna",
       "state": "VA",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:10.175Z",
@@ -213,7 +434,7 @@
           "endDate": "2023-03-01T00:00:00.000Z",
           "title": "Software Engineer",
           "shortTitle": "Software Eng.",
-          "description": "Team lead for the \"Corsha Console\" team, responsible for building a modern, customer facing, web-based  platform that allows customers to manage, monitor, configure and interact with proprietary security technology running on their network.",
+          "description": "Team lead for the \"Corsha Console,\" a modern customer-facing web platform enabling customers to manage, monitor, and configure proprietary network security technology. Owned the product roadmap from initial planning through delivery: scoped the system architecture, established Agile workflows, coordinated with an external UI/UX design firm on the full UX and user flow, and led the engineering team through implementation. Maintained high code quality through rigorous PR review and active mentoring of less experienced engineers.",
           "isCurrent": false,
           "isRemote": false,
           "visible": true,
@@ -286,7 +507,6 @@
               "description": null,
               "shortDescription": null,
               "visible": true,
-              "skills": [],
               "nestedDetails": [
                 {
                   "createdAt": "2024-04-16T23:25:10.871Z",
@@ -306,7 +526,8 @@
                   "visible": true,
                   "skills": ["error-handling", "error-monitoring-alerting", "rest-api-design"]
                 }
-              ]
+              ],
+              "skills": []
             },
             {
               "createdAt": "2024-04-16T23:25:10.872Z",
@@ -316,8 +537,8 @@
               "description": "Organized workflows and Agile processes for the team, lead team meetings and planned each step of the product's implementation.  Worked closely with engineers who were less familiar with the technologies being used to help teach, guide and improve their understanding.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["agile-software-development", "project-planning-roadmapping"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["agile-software-development", "project-planning-roadmapping"]
             },
             {
               "createdAt": "2024-04-16T23:25:10.871Z",
@@ -327,8 +548,8 @@
               "description": "Responsible for establishing and coordinating relationships with external UI/UX design firms for purposes of designing the Corsha Console.  Worked with a UI/UX design firm between Aug 2022 and late Nov 2022 on the product’s UI/UX, design, user flow and structure of the application.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["ui-ux", "jira", "project-planning-roadmapping"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["ui-ux", "jira", "project-planning-roadmapping"]
             },
             {
               "createdAt": "2024-04-16T23:25:10.871Z",
@@ -338,8 +559,8 @@
               "description": "Planned and organized the future development of the Corsha Console product between June 2022 and late November 2022, when actual development began.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["jira", "project-planning-roadmapping"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["jira", "project-planning-roadmapping"]
             }
           ]
         }
@@ -355,6 +576,8 @@
       "websiteUrl": "https://saturation.io/",
       "city": "Los Angeles",
       "state": "VA",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:11.270Z",
@@ -363,7 +586,7 @@
           "endDate": "2022-05-01T00:00:00.000Z",
           "title": "Co-Founder & Creator",
           "shortTitle": "Co-Founder",
-          "description": "Architected, built and lead the development of a web-based platform with the purpose of modernizing and streamlining budgeting, payroll and other production flows in the film industry.",
+          "description": "Architected and led development of GreenBudget, a real-time, multi-user collaborative budgeting and payroll platform for the film production industry, addressing a gap where producers relied on cumbersome spreadsheets and outdated tools. Launched February 2022; by May 2022, the platform had grown to over 1,000 users with approximately 40-50% on paid subscriptions and had been adopted by several film studios for beta testing (now operating as Saturation at saturation.io).",
           "isCurrent": false,
           "isRemote": true,
           "visible": true,
@@ -372,6 +595,7 @@
             "eslint",
             "npm",
             "django",
+            "react-pdf",
             "aws-elastic-beanstalk",
             "logging-monitoring-infrastructure",
             "python",
@@ -444,6 +668,17 @@
           ],
           "details": [
             {
+              "createdAt": "2026-08-06T00:00:00.000Z",
+              "updatedAt": "2026-08-06T00:00:00.000Z",
+              "entityType": "EXPERIENCE",
+              "label": "Testing & CI/CD",
+              "description": "Spearheaded a comprehensive automated testing suite and CI/CD integration that increased test coverage by approximately 70%, meaningfully improving platform stability and release confidence.",
+              "shortDescription": null,
+              "visible": true,
+              "nestedDetails": [],
+              "skills": ["pytest", "ci-cd", "circleci", "codecov"]
+            },
+            {
               "createdAt": "2024-04-16T23:25:11.936Z",
               "updatedAt": "2024-09-10T00:50:13.843Z",
               "entityType": "EXPERIENCE",
@@ -452,8 +687,8 @@
               "shortDescription": null,
               "visible": true,
               "project": "greenbudget",
-              "skills": [],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": []
             }
           ]
         }
@@ -469,6 +704,8 @@
       "websiteUrl": null,
       "city": "Los Angeles",
       "state": "VA",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:12.192Z",
@@ -477,7 +714,7 @@
           "endDate": "2021-03-01T00:00:00.000Z",
           "title": "Technical Lead",
           "shortTitle": "Tech Lead",
-          "description": "At Nirveda Cognition, I was responsible for the development of the entire consumer facing product.  This included the development of the application infrastructure/architecture and leading smaller teams of developers to reach our product goals.",
+          "description": "Responsible for the full consumer-facing product: infrastructure architecture, feature development, and technical leadership of a small engineering team. Managed task allocation, conducted all code reviews, and led feature initiatives from planning through delivery. Spearheaded an automated testing and CI/CD initiative that increased test coverage by approximately 70%.",
           "isCurrent": false,
           "isRemote": true,
           "visible": true,
@@ -561,13 +798,13 @@
               "description": "I was brought on at Nirveda at a time when significant parts of the code application(s) had to be re-designed to support the size and scale of current and future customers.  I led the architecture re-design and implementation, addressing scalability and maintainability concerns while simultaneously onboarding new customers.  As a direct result of my contributions, the sales team was able to onboard several new top-tier Enterprise level customers.",
               "shortDescription": null,
               "visible": true,
+              "nestedDetails": [],
               "skills": [
                 "integration-testing",
                 "django-rest-framework",
                 "typescript",
                 "unit-testing"
-              ],
-              "nestedDetails": []
+              ]
             },
             {
               "createdAt": "2024-04-16T23:25:12.899Z",
@@ -577,8 +814,8 @@
               "description": "Spearheaded the implementation of our entire automated testing suite and ci-cd pipeline, which increased test coverage by roughly 70% and improved the stability of the development of new features.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["pytest", "ci-cd", "codecov", "tox"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["pytest", "ci-cd", "codecov", "tox"]
             },
             {
               "createdAt": "2024-04-16T23:25:12.899Z",
@@ -588,8 +825,8 @@
               "description": "Organized, managed and led large scale initiatives around the development of new features, improvement of existing functionality and re-architecting of the application.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["agile-software-development", "jira", "clubhouse"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["agile-software-development", "jira", "clubhouse"]
             }
           ]
         }
@@ -605,17 +842,19 @@
       "websiteUrl": "http://www.saracenenergy.com/",
       "city": "Houston",
       "state": "TX",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:13.238Z",
           "updatedAt": "2024-06-04T18:24:33.204Z",
           "startDate": "2020-04-01T00:00:00.000Z",
           "endDate": "2020-09-01T00:00:00.000Z",
-          "title": "Full Stack Software Engineer",
-          "shortTitle": "Full Stack Eng.",
-          "description": "My responsibilities at Saracen involved the front end and backend development of internal analytical tools that the firm uses to make trading decisions.",
+          "title": "Full Stack Software Developer",
+          "shortTitle": "Full Stack Dev.",
+          "description": "Developed front-end and back-end analytical tooling used by the trading desk to inform investment decisions, bridging the gap between quantitative analysis and software development teams.",
           "isCurrent": false,
-          "isRemote": true,
+          "isRemote": false,
           "visible": true,
           "highlighted": false,
           "skills": [
@@ -682,8 +921,8 @@
               "description": "Created a sub-application used daily by traders that allowed them to analyze the differences, modifications and frequencies of changes between electricity grid data at different points in time.  With this application, traders were able to more efficiently track outages and other important events in different electrical grids.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["react", "react-redux", "redux-sagas"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["react", "react-redux", "redux-sagas"]
             }
           ]
         }
@@ -699,6 +938,8 @@
       "websiteUrl": "http://www.theatlantic.com/",
       "city": "Washington",
       "state": "DC",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:14.114Z",
@@ -707,7 +948,7 @@
           "endDate": "2020-04-01T00:00:00.000Z",
           "title": "Platform Developer",
           "shortTitle": "Platform Dev",
-          "description": "Responsibilities centered around the backend python development that supported the Content Management System (CMS), accounts and subscriptions, and the wide range of digital products offered by the company.",
+          "description": "Backend Python developer supporting The Atlantic's CMS, subscriptions, and digital products. Designed and implemented the Apple News syndication pipeline, opening a new digital distribution channel and directly contributing an additional revenue stream for the company.",
           "isCurrent": false,
           "isRemote": false,
           "visible": true,
@@ -787,6 +1028,7 @@
               "description": "Spent a year overhauling the entire revenue/subscription model and its applicable services as a decoupled REST API using django-rest-framework that could independently support subscriptions and memberships at The Atlantic.",
               "shortDescription": null,
               "visible": true,
+              "nestedDetails": [],
               "skills": [
                 "django",
                 "python",
@@ -798,8 +1040,7 @@
                 "unit-testing",
                 "microservices-architecture",
                 "rest-api-design"
-              ],
-              "nestedDetails": []
+              ]
             },
             {
               "createdAt": "2024-04-16T23:25:14.822Z",
@@ -809,6 +1050,7 @@
               "description": "Created the Apple News syndication platform supporting the syndication of digital content through Apple News at company, directly contributing another source of revenue and increased visibility of the company's content.",
               "shortDescription": null,
               "visible": true,
+              "nestedDetails": [],
               "skills": [
                 "django",
                 "python",
@@ -818,8 +1060,7 @@
                 "unit-testing",
                 "django-admin",
                 "rest-api-design"
-              ],
-              "nestedDetails": []
+              ]
             }
           ]
         }
@@ -835,15 +1076,17 @@
       "websiteUrl": "https://therockcreekgroup.com/",
       "city": "Washington",
       "state": "DC",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:15.135Z",
           "updatedAt": "2024-06-04T18:24:39.250Z",
           "startDate": "2016-07-01T00:00:00.000Z",
           "endDate": "2018-04-01T00:00:00.000Z",
-          "title": "Quantitative Analyst: Investment Analytics & Data",
+          "title": "Quantitative Analyst, Investment Analytics & Data",
           "shortTitle": "Quant Analyst",
-          "description": "My responsibilities involved building internal analytical tools around the massive sets of financial data the firm had assembled.",
+          "description": "Built internal analytical tooling and data infrastructure supporting investment decision-making at a multi-billion dollar asset management firm. Regularly bridged quantitative analysis and software development teams, formalizing and automating previously manual analytical workflows through Python-based tooling. This role marks the foundation of my professional software engineering practice.",
           "isCurrent": false,
           "isRemote": false,
           "visible": true,
@@ -911,8 +1154,8 @@
               "description": "Rebuilt the firm's primary internal analytical tool into a more interactive/dynamical tool using a react/Redux front-end consuming an API built using django-rest-framework.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["django-rest-framework", "react", "react-redux", "django-admin"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["django-rest-framework", "react", "react-redux", "django-admin"]
             },
             {
               "createdAt": "2024-04-16T23:25:15.812Z",
@@ -922,8 +1165,8 @@
               "description": "Constructed an application, Rock Creek Insights, using MeteorJS that the firm uses to provide client risk reporting, monitor risk and compare performances of managed pension funds.",
               "shortDescription": null,
               "visible": true,
-              "skills": ["meteorjs", "nodejs", "css", "javascript", "r", "html-templating"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["meteorjs", "nodejs", "css", "javascript", "r", "html-templating"]
             },
             {
               "createdAt": "2024-04-16T23:25:15.964Z",
@@ -934,8 +1177,8 @@
               "shortDescription": null,
               "visible": true,
               "project": "asset-visualizations",
-              "skills": ["html", "javascript", "d3js"],
-              "nestedDetails": []
+              "nestedDetails": [],
+              "skills": ["html", "javascript", "d3js"]
             }
           ]
         }
@@ -951,6 +1194,8 @@
       "websiteUrl": null,
       "city": "Olney",
       "state": "MD",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-04-16T23:25:16.287Z",
@@ -959,7 +1204,7 @@
           "endDate": "2016-07-01T00:00:00.000Z",
           "title": "Quantitative Research Analyst",
           "shortTitle": "Quant Research Analyst",
-          "description": "Responsibilities involved the research and implementation of complex models for credit default risk in a variety of exotic derivatives and structured products.",
+          "description": "Researched and implemented complex models for credit default risk across exotic derivatives and structured products, using Python for numerical computation and Monte Carlo simulation.",
           "isCurrent": false,
           "isRemote": false,
           "visible": true,
@@ -1000,6 +1245,8 @@
       "websiteUrl": "https://uslege.ai/",
       "city": "Austin",
       "state": "TX",
+      "slug": null,
+      "logoFileName": null,
       "experiences": [
         {
           "createdAt": "2024-06-03T20:40:32.962Z",
@@ -1015,6 +1262,7 @@
           "highlighted": false,
           "skills": [
             "eslint",
+            "react-pdf",
             "logging-monitoring-infrastructure",
             "zod",
             "client-side-rendering",
