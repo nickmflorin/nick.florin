@@ -6,7 +6,7 @@
       "name": "Craft Education System",
       "shortName": "Craft",
       "description": null,
-      "logoImageUrl": "/experience/craft.png",
+      "logoImageUrl": "/experience/craft.svg",
       "websiteUrl": "https://www.crafteducation.com/",
       "city": "Nashville",
       "state": "TN",
@@ -25,24 +25,7 @@
           "isRemote": true,
           "visible": true,
           "highlighted": true,
-          "skills": [
-            "typescript",
-            "react",
-            "nextjs",
-            "graphql",
-            "apollo-server",
-            "prismajs",
-            "postgresql",
-            "monorepo-nx",
-            "microfrontends",
-            "ssr",
-            "performance-engineering",
-            "accessibility-axe-core",
-            "datadog",
-            "playwright",
-            "github-actions",
-            "aws"
-          ],
+          "skills": [],
           "details": [
             {
               "createdAt": "2026-08-06T00:00:00.000Z",
@@ -60,7 +43,7 @@
                   "description": "Tenant-aware membership and access-control system gating content, assessments, and activity visibility across nested customer cohorts. Drove the architectural call: landed on policy-based authorization with hierarchical permission scoping and modeled cohort membership as a composable relationship graph - enabling nested inheritance and cross-organizational sharing.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["graphql", "prismajs", "postgresql"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -69,7 +52,7 @@
                   "description": "Grading surface for instructors, evaluators, and admins to design, attach, and score configurable rubrics; now the most-used feature in the product. Led the redesign after the original implementation accumulated unfixable state-management bugs - aligning product, design, and engineering on a four-mode provider pattern (view/edit/attach/score) and a schema-driven form architecture unifying every surface behind one rendering pipeline.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["react", "typescript", "component-development"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -78,7 +61,7 @@
                   "description": "Activity-logging and approval workflow for learners, instructors, evaluators, and admins, with program-specific validation and submit-on-behalf-of flows. Kept it extensible without per-customer forks: modeled approval as a state machine with pluggable rules. Exposed program-level configuration so instructors and admins could tailor how learners tracked time - daily vs. monthly entry cadence, minimum time per activity, whether learners could log above the target, and other per-program constraints - without requiring engineering changes.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["typescript", "react"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -87,10 +70,10 @@
                   "description": "New product surface for defining skill taxonomies, attaching them to activities, and tracking learner progress. Led end-to-end from discovery through rollout: authored the taxonomy and progress-aggregation data model, and drew the platform/per-customer boundary so the feature could be reused across future products on the monorepo. Organized and planned the work based on dependencies to maximize parallel efforts across multiple engineers.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["prismajs", "postgresql", "monorepo-nx"]
+                  "skills": []
                 }
               ],
-              "skills": ["agile-software-development", "project-planning-roadmapping"]
+              "skills": []
             },
             {
               "createdAt": "2026-08-06T00:00:00.000Z",
@@ -108,7 +91,7 @@
                   "description": "Owned the platform upgrade that had stalled repeatedly: a legacy, client-bound Auth0 integration pinned the app to React 18 and blocked the Next.js upgrade path entirely. Re-architected authentication around edge middleware and server-side session management on Auth0 v4, then landed Auth0 v4, Next.js 16, React 19, and Turbopack as a coordinated three-stage rollout - a net deletion of code - with zero customer-facing downtime.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["auth0", "nextjs", "react"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -117,7 +100,7 @@
                   "description": "Led a sustained, incremental migration - building team buy-in and driving a rethinking of the app's client/server boundaries over many months - to dismantle the client-side waterfall behind every cold page load: a ~1 MB bundle download followed by serial session, user, environment, and feature-flag requests that produced 3-4 seconds of blank screen before first paint and defeated Next.js page caching entirely. Progressively moved session validation into edge middleware, feature-flag evaluation to server startup, and provider bootstrapping onto the server - so pages fully pre-render, previously-visited pages return near-instantly from the restored page cache, and the app's third-party browser exposure collapses to a single first-party origin, eliminating a class of customer-firewall outages.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["nextjs", "ssr", "performance-engineering"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -126,7 +109,7 @@
                   "description": "Diagnosed the root causes behind a bloated shared bundle - barrel-export fan-out, a 525 kB generated GraphQL document, a non-lazy provider cascade, and a UI package exports map silently pointing to CJS output that defeated tree-shaking - then authored the remediation roadmap and led its incremental delivery across the team over successive releases, cutting the app-wide first-load JavaScript baseline 62% (1.01 MB to 383 kB) and the shared app chunk 68% (921 kB to under 300 kB).",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["performance-engineering", "nextjs"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -135,7 +118,7 @@
                   "description": "Combined, the architectural unlock and bundle work improved FCP/LCP ~50% and TTI ~60% on high-traffic pages and cut cold-load times by 2-4 seconds on slower and corporate-throttled networks; non-critical client work (session replay, analytics boot, background refreshes) now defers until the browser is idle, keeping the main thread free for first paint.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["performance-engineering"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -144,7 +127,7 @@
                   "description": "Co-architected the company's embedded-analytics integration (ThoughtSpot) around a deliberate licensing constraint: rather than provisioning per-user service accounts, all reporting is served through one service account with requests proxied through the app - saving the company roughly $50k per year. Uncovered the critical report-loading bottlenecks that were overwhelming the client and freezing browsers, then designed and implemented the remedy - per-user liveboard preloading under the shared account plus streamed, cached proxy assets - making report loads near-instantaneous.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["performance-engineering", "rest-api-design"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -153,7 +136,7 @@
                   "description": "Championed and led a long-term restructuring of the platform around scalable monorepo patterns: spearheaded Nx adoption, reoriented engineering efforts toward decoupled, independently-owned modules with clean microfrontend boundaries, and steered the company's expansion from a single-product codebase toward a scalable, multi-product mesh.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["monorepo-nx", "microfrontends"]
+                  "skills": []
                 },
                 {
                   "createdAt": "2026-08-06T00:00:00.000Z",
@@ -162,10 +145,10 @@
                   "description": "Designed and rolled out a unified, namespaced structured-logging architecture spanning every service - replacing scattered ad-hoc logging with a single queryable observability surface wired into Datadog.",
                   "shortDescription": null,
                   "visible": true,
-                  "skills": ["datadog", "logging-monitoring-infrastructure"]
+                  "skills": []
                 }
               ],
-              "skills": ["nextjs", "performance-engineering", "monorepo-nx"]
+              "skills": []
             },
             {
               "createdAt": "2026-08-06T00:00:00.000Z",
@@ -176,7 +159,7 @@
               "shortDescription": null,
               "visible": true,
               "nestedDetails": [],
-              "skills": ["typescript", "react", "nextjs", "graphql"]
+              "skills": []
             },
             {
               "createdAt": "2026-08-06T00:00:00.000Z",
@@ -187,7 +170,7 @@
               "shortDescription": null,
               "visible": true,
               "nestedDetails": [],
-              "skills": ["ui-ux", "accessibility-axe-core", "ci-cd"]
+              "skills": []
             },
             {
               "createdAt": "2026-08-06T00:00:00.000Z",
@@ -198,7 +181,7 @@
               "shortDescription": null,
               "visible": true,
               "nestedDetails": [],
-              "skills": ["eslint", "typescript", "ci-cd"]
+              "skills": []
             },
             {
               "createdAt": "2026-08-06T00:00:00.000Z",
