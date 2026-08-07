@@ -1,33 +1,39 @@
 'use client';
 import { type JSX } from 'react';
 
-import { Button } from '~/components/buttons';
 import { DrawerIds } from '~/components/drawers';
 import { useDrawers } from '~/components/drawers/hooks/use-drawers';
 import { Popover } from '~/components/floating/Popover';
 import { PopoverContent } from '~/components/floating/PopoverContent';
-import { CaretIcon } from '~/components/icons/CaretIcon';
 import { Menu } from '~/components/menus/Menu';
 
 import { CompaniesSchoolsMenuFooter } from './CompaniesSchoolsMenuFooter';
+import { CompaniesSchoolsTrigger } from './CompaniesSchoolsTrigger';
 import { type ModelType } from './types';
-
-const ButtonContent: Record<ModelType, string> = {
-  company: 'Companies',
-  school: 'Schools',
-};
 
 export interface CompaniesSchoolsFloatingProps {
   readonly content: JSX.Element;
+  /**
+   * Whether the menu should be open as soon as it mounts.
+   *
+   * Used when the component is mounted lazily in response to its trigger already having been
+   * clicked, so that the menu opens without requiring a second click.
+   */
+  readonly isInitiallyOpen?: boolean;
   readonly modelType: ModelType;
 }
 
-export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchoolsFloatingProps) => {
+export const CompaniesSchoolsFloating = ({
+  content,
+  isInitiallyOpen = false,
+  modelType,
+}: CompaniesSchoolsFloatingProps) => {
   const { open } = useDrawers();
   return (
     <Popover
       content={content}
       hasArrow={false}
+      initiallyIsOpen={isInitiallyOpen}
       maxHeight={400}
       offset={{ mainAxis: 4 }}
       outerContent={({ children, setIsOpen }) => (
@@ -52,16 +58,7 @@ export const CompaniesSchoolsFloating = ({ content, modelType }: CompaniesSchool
       width={400}
     >
       {({ isOpen, params, ref }) => (
-        <Button.Solid
-          ref={ref}
-          {...params}
-          icon={{
-            right: <CaretIcon isOpen={isOpen} />,
-          }}
-          scheme='secondary'
-        >
-          {ButtonContent[modelType]}
-        </Button.Solid>
+        <CompaniesSchoolsTrigger {...params} isOpen={isOpen} modelType={modelType} ref={ref} />
       )}
     </Popover>
   );

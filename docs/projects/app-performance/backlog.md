@@ -119,13 +119,21 @@ today, established by reading the floating primitives:
       hydration ancestor. Verified headlessly: mobile-UA at 677px now paints the 60px rail in the
       first frame with no subsequent horizontal shift, and 390px keeps the rail `display: none`
       throughout. Trade-off: phones now download the small sidebar chunk and carry its hidden DOM.
-- [ ] **Audit and align the other floating triggers to the same convention** — "the trigger renders
+- [x] **Audit and align the other floating triggers to the same convention** — "the trigger renders
       eagerly and server-side; the floating content is a lazily-loaded chunk fetched on intent and
-      mounted open" :
-  - `CompaniesSchoolsDropdownMenu` (`DynamicCompaniesSchoolsFloating`, resume pages): the whole
-    floating **including its trigger button** is `ssr: false` — same late-trigger defect as the
-    filters button. Its disabled-button `loading` fallback is a good precedent for the fallback
-    pattern, but it only covers chunk resolution, not SSR.
+      mounted open" — done 2026-08-06:
+  - `CompaniesSchoolsDropdownMenu` **turned out to be dead code**: all of its files have zero
+    importers anywhere in `src/`, so it reaches no page and is tree-shaken out of every bundle.
+    The recorded defect (the whole floating, trigger included, behind `ssr: false`) was therefore
+    real but had no user-facing cost, and the "resume pages" attribution was wrong —
+    `/resume/experience` renders only `ExperienceTimeline`. Aligned anyway, at the developer's
+    direction, so the module is ready if it is ever wired up: a new `CompaniesSchoolsTrigger` is
+    shared between the eager pre-mount render and the popover-anchored one, a new client
+    `CompaniesSchoolsMenu` owns the trigger and lazily mounts the floating with a new
+    `isInitiallyOpen` pass-through on first click (preloading the chunk on hover/focus), and the
+    now-redundant `DynamicCompaniesSchoolsFloating` was removed. `index.tsx` carries a docstring
+    recording that nothing currently renders it. Not runtime-verifiable for the same reason it is
+    dead.
   - Already conforming (trigger outside the lazy module): `ClientSiteDropdownMenu` (eager
     `IconButton`, lazy `SiteMenu`), `UploadResumeDropdownMenu` (eager `DropdownMenu` + trigger, lazy
     `UploadResumeMenu` content behind the open toggle).
