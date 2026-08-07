@@ -181,11 +181,21 @@ today, established by reading the floating primitives:
 
 Cross-request caching with CMS revalidation for both fetches (decided 2026-08-04).
 
-- [ ] Inventory the CMS mutation actions that can change the cached data: project
-      create/update/delete/visibility (nav) — the resume side (upload/update/delete) was inventoried
-      and wired 2026-08-06.
-- [ ] `/projects/*` layout: cache the nav/slug-validation `fetchProjects` call with
-      `unstable_cache` + `revalidateTag`, revalidated by the project mutations.
+- [x] Inventory the CMS mutation actions that can change the cached data — done 2026-08-06. Resume
+      side: upload/update/delete. Project side: `createProject`, `updateProject`, `deleteProject`,
+      `deleteProjects`, `showProjects`, `hideProjects`, `highlightProjects`, `unhighlightProjects`
+      — all eight invalidate, including the two highlight toggles, which the navigation does not
+      actually read. Over-invalidating on a rare admin action costs one query; maintaining an
+      exclusion list costs a correctness bug the first time the projection changes.
+- [x] `/projects/*` layout — done 2026-08-06, using `updateTag` rather than `revalidateTag`, whose
+      Next 16 signature now requires a cache-life profile. The layout's per-request
+      `fetchProjects` call became `getNavigationProjects`
+      (`src/actions/projects/get-navigation-projects.ts`): an `unstable_cache` read tagged
+      `navigation-projects` with a 1h safety TTL, projected down to the four fields the navigation
+      and the slug reconciliation actually use (`name`, `shortName`, `slug`, `visible`). The
+      projection is deliberately free of `Date` fields, so unlike the resume and profile reads it
+      needs no superjson round trip through the JSON-serializing cache. Every `/projects/*` route
+      previously paid a blocking database round trip in its layout before rendering.
 - [x] Header `SiteDropdownMenu` + `ProfileSection` — done 2026-08-06: `getPrimaryResume`
       (`src/actions/resumes/get-primary-resume.ts`) and `getProfile` now read through
       `unstable_cache` (tags `primary-resume` / `profile`, 1h safety TTL), storing superjson payload

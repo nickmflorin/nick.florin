@@ -1,4 +1,6 @@
 'use server';
+import { updateTag } from 'next/cache';
+
 import { difference, uniq } from 'lodash-es';
 
 import { getAuthedUser } from '~/application/auth/server-v2';
@@ -9,6 +11,8 @@ import { isUuid } from '~/lib/typeguards';
 
 import { type MutationActionResponse } from '~/actions';
 import { ApiClientGlobalError } from '~/api';
+
+import { NavigationProjectsCacheTag } from './get-navigation-projects';
 
 export const unhighlightProjects = async (
   _ids: string[],
@@ -68,5 +72,6 @@ export const unhighlightProjects = async (
     data: { highlighted: false, updatedById: user.id },
     where: { id: { in: ids } },
   });
+  updateTag(NavigationProjectsCacheTag);
   return { data: { message: 'Success' } };
 };
