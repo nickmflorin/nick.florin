@@ -20,8 +20,8 @@ weigh before deciding:
   params), so it would make the chart consistent with the rest of the app.
 - It composes naturally with debounced application: batch changes client-side, flush to the URL on
   close (or after a threshold), and the RSC refresh re-renders the chart server-side.
-- It addresses the chart-data flow, but **not** the select-option loading burst — the selects'
-  own educations/experiences/etc. queries still load on popover open and would still need the
+- It addresses the chart-data flow, but **not** the select-option loading burst — the selects' own
+  educations/experiences/etc. queries still load on popover open and would still need the
   prefetch/eager-open fix.
 - Each URL update triggers an RSC round trip for the slot; needs the deterministic skeleton /
   `keepPreviousData`-equivalent story so the chart does not flash to a fallback on every change.

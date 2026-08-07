@@ -1,10 +1,14 @@
 'use server';
+import { updateTag } from 'next/cache';
+
 import { getAuthedUser } from '~/application/auth/server-v2';
 import { calculateSkillsExperience } from '~/database/model';
 import { db } from '~/database/prisma';
 
 import { type MutationActionResponse } from '~/actions';
 import { ApiClientGlobalError } from '~/api';
+
+import { NavigationProjectsCacheTag } from './get-navigation-projects';
 
 export const deleteProject = async (
   id: string,
@@ -28,6 +32,7 @@ export const deleteProject = async (
     const skillIds = project.skills.map(s => s.id);
     await tx.project.delete({ where: { id: project.id } });
     await calculateSkillsExperience(tx, skillIds, { user });
+    updateTag(NavigationProjectsCacheTag);
     return { data: { message: 'Success' } };
   });
 };

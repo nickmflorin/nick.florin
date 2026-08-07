@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="Craft Education System">
+  <g stroke="#E3E3E3" stroke-width="10" stroke-linecap="round">
+    <line x1="119.3" y1="204.2" x2="233.3" y2="87.5" />
+    <line x1="316.4" y1="214.6" x2="368.0" y2="90.4" />
+    <line x1="253.5" y1="206.0" x2="253.5" y2="118.0" />
+    <line x1="273.9" y1="420.7" x2="386.1" y2="305.3" />
+    <line x1="139.7" y1="369.5" x2="203.3" y2="306.5" />
+    <line x1="253.5" y1="305.0" x2="253.5" y2="393.0" />
+  </g>
+  <rect x="33" y="182" width="109" height="110" rx="12" fill="#0070F0" />
+  <rect x="213" y="62" width="81" height="81" rx="8" fill="#46B1EF" />
+  <rect x="346" y="104" width="58" height="59" rx="7" fill="#97E152" />
+  <rect x="180" y="182" width="147" height="148" rx="17" fill="#002855" />
+  <rect x="365" y="215" width="114" height="115" rx="14" fill="#0070F0" />
+  <rect x="103" y="349" width="58" height="59" rx="7" fill="#97E152" />
+  <rect x="213" y="369" width="81" height="81" rx="8" fill="#46B1EF" />
+</svg>

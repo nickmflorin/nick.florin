@@ -1,4 +1,6 @@
 'use server';
+import { updateTag } from 'next/cache';
+
 import { difference, uniq } from 'lodash-es';
 
 import { getAuthedUser } from '~/application/auth/server-v2';
@@ -10,6 +12,8 @@ import { isUuid } from '~/lib/typeguards';
 
 import { type MutationActionResponse } from '~/actions';
 import { ApiClientGlobalError } from '~/api';
+
+import { NavigationProjectsCacheTag } from './get-navigation-projects';
 
 export const deleteProjects = async (
   _ids: string[],
@@ -59,6 +63,7 @@ export const deleteProjects = async (
     const skillIds = projects.flatMap(r => r.skills.map(s => s.id));
     await tx.project.deleteMany({ where: { id: { in: ids } } });
     await calculateSkillsExperience(tx, skillIds, { user });
+    updateTag(NavigationProjectsCacheTag);
     return { data: { message: 'Success' } };
   });
 };

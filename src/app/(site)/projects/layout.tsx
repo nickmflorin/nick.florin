@@ -5,7 +5,7 @@ import { ProjectSlugs } from '~/database/model';
 import { logger } from '~/internal/logger';
 import { humanizeList } from '~/lib/formatters';
 
-import { fetchProjects } from '~/actions/projects/fetch-projects';
+import { getNavigationProjects } from '~/actions/projects/get-navigation-projects';
 
 import { TabbedContent } from '~/components/layout/TabbedContent';
 
@@ -13,17 +13,18 @@ interface AdminLayoutProps {
   readonly children: ReactNode;
 }
 
-/**
- * Fetches all projects, regardless of visibility, so that a log can be issued when a hard-coded
- * project slug in {@link ProjectSlugs} does not have a corresponding project in the database.  A
- * project that is in the database but not visible does not need a warning, since its slug is
- * expected to be absent from the navigation items.
- */
-const fetchAllProjectsForSlugValidation = () =>
-  fetchProjects([])({ filters: {}, forceVisibility: true, visibility: 'admin' }, { strict: true });
+/* The projects are read through a cross-request cache rather than fetched per request: the
+   navigation is identical for every visitor and changes only when a project is mutated, at which
+   point those actions invalidate the tag. Reading it per request made this layout a blocking
+   database round trip in front of every '/projects/*' route.
+
+   The read returns every project regardless of visibility, so that a log can be issued when a
+   hard-coded project slug in ProjectSlugs has no corresponding project in the database. A project
+   that is in the database but not visible needs no warning, since its slug is expected to be
+   absent from the navigation items. */
 
 const ProjectsLayout = async ({ children }: AdminLayoutProps): Promise<JSX.Element> => {
-  const { data: projects } = await fetchAllProjectsForSlugValidation();
+  const projects = await getNavigationProjects();
   const missingProjs = projects.filter(project => !ProjectSlugs.contains(project.slug));
   if (missingProjs.length !== 0) {
     const missingSlugs = missingProjs.map(project => project.slug);

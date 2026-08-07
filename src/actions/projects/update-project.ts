@@ -1,4 +1,6 @@
 'use server';
+import { updateTag } from 'next/cache';
+
 import { type z } from 'zod';
 
 import { getAuthedUser } from '~/application/auth/server-v2';
@@ -22,6 +24,8 @@ import {
   ApiClientGlobalError,
   convertToPlainObject,
 } from '~/api';
+
+import { NavigationProjectsCacheTag } from './get-navigation-projects';
 
 const UpdateProjectSchema = ProjectSchema.partial();
 
@@ -254,6 +258,7 @@ export const updateProject = async (
       await syncDetails(tx, { details, project, user });
     }
     await calculateSkillsExperience(tx, sks, { user });
+    updateTag(NavigationProjectsCacheTag);
     return { data: convertToPlainObject(updated) };
   });
 };

@@ -13,19 +13,19 @@ Implementation happens on a dedicated branch, not `master`.
 The two shell fixes from [findings.md](./findings.md) #1–2, with Clerk handled per the Option B
 decision: scoped to authenticated routes, not merely un-gated.
 
-- [ ] Capture the baseline: save the server-rendered HTML (`curl`/view-source) for `/dashboard`,
+- [x] Capture the baseline: save the server-rendered HTML (`curl`/view-source) for `/dashboard`,
       `/resume/experience`, and one `/projects/*` page, plus a Lighthouse run, so the after-state
       has something to be compared against.
-- [ ] Scope `ClerkProvider` to the authenticated areas (`/admin/*`, `/sign-in`) and remove the
+- [x] Scope `ClerkProvider` to the authenticated areas (`/admin/*`, `/sign-in`) and remove the
       `ClerkLoading`/`ClerkLoaded` gate entirely. Public pages ship no Clerk JS.
-- [ ] Refactor the shell components off client-side Clerk on public pages: `Sidebar` and `SiteMenu`
+- [x] Refactor the shell components off client-side Clerk on public pages: `Sidebar` and `SiteMenu`
       currently call `useUser`. Auth-derived UI (the admin nav item, user menu content) comes from
       the server (`auth()` in server components, passed down) or renders a public fallback, without
       layout shift.
-- [ ] Statically import `MantineProvider`, `NavigationProvider`, `NavMenuProvider`,
+- [x] Statically import `MantineProvider`, `NavigationProvider`, `NavMenuProvider`,
       `UserProfileProvider`, and `DrawersProvider` in `ClientConfig` (drop `next/dynamic` and
       `ssr: false`). `TourProvider` stays split (conditional mounting lands in Phase 2).
-- [ ] Verify: server HTML now contains real page content for all three captured routes; no
+- [x] Verify: server HTML now contains real page content for all three captured routes; no
       hydration-mismatch warnings in the console; admin UI still appears for a signed-in admin;
       sign-in and the admin CMS still work; tour, drawers, and toasts still function. Record results
       in [status.md](./status.md).
@@ -60,6 +60,16 @@ decision: scoped to authenticated routes, not merely un-gated.
       seen — implemented 2026-08-05 by scoping the provider to the tour UI itself (`Tour` gate →
       client-only `TourRoot` → `TourProvider` + `TourFlow`), removing it from `ClientConfig`
       entirely. See [decisions.md](./decisions.md).
+- [x] **Smooth the drawer close animation** — fixed 2026-08-06. The close was not janky so much as
+      absent: `SkillsFilterDropdownMenu` rendered `PortalDrawerWrapper` behind a `drawerIsOpen ?`
+      ternary, so closing unmounted the wrapper — and the `AnimatePresence` inside it — in the same
+      commit, and `AnimatePresence` cannot animate its own unmount. The wrapper now stays mounted
+      and only its children toggle (rendering nothing until hydrated, so the portal's
+      `document.getElementById` container stays off the server), which also brings the
+      `contextDrawerId` takeover path through the same animation instead of blinking it away. The
+      context-drawer path was already correct and was left alone. Separately, the undamped
+      `{ bounce: 0, type: 'spring' }` transition became two explicitly-timed ones — a 250ms
+      decelerating entrance and a shorter 200ms accelerating exit — which applies to every drawer.
 - [x] Page-scroll bands size to content (2026-08-05, generalized same day from the mobile-only
       version): fixed module frames and internal scrolling now exist **only at `xl`+**, where the
       grid fits the viewport. In every band where the page scrolls (below `xl` — two-column and
@@ -109,13 +119,20 @@ today, established by reading the floating primitives:
       hydration ancestor. Verified headlessly: mobile-UA at 677px now paints the 60px rail in the
       first frame with no subsequent horizontal shift, and 390px keeps the rail `display: none`
       throughout. Trade-off: phones now download the small sidebar chunk and carry its hidden DOM.
-- [ ] **Audit and align the other floating triggers to the same convention** — "the trigger renders
+- [x] **Audit and align the other floating triggers to the same convention** — "the trigger renders
       eagerly and server-side; the floating content is a lazily-loaded chunk fetched on intent and
-      mounted open" :
-  - `CompaniesSchoolsDropdownMenu` (`DynamicCompaniesSchoolsFloating`, resume pages): the whole
-    floating **including its trigger button** is `ssr: false` — same late-trigger defect as the
-    filters button. Its disabled-button `loading` fallback is a good precedent for the fallback
-    pattern, but it only covers chunk resolution, not SSR.
+      mounted open" — done 2026-08-06:
+  - `CompaniesSchoolsDropdownMenu` **turned out to be dead code**: all of its files have zero
+    importers anywhere in `src/`, so it reaches no page and is tree-shaken out of every bundle. The
+    recorded defect (the whole floating, trigger included, behind `ssr: false`) was therefore real
+    but had no user-facing cost, and the "resume pages" attribution was wrong — `/resume/experience`
+    renders only `ExperienceTimeline`. Aligned anyway, at the developer's direction, so the module
+    is ready if it is ever wired up: a new `CompaniesSchoolsTrigger` is shared between the eager
+    pre-mount render and the popover-anchored one, a new client `CompaniesSchoolsMenu` owns the
+    trigger and lazily mounts the floating with a new `isInitiallyOpen` pass-through on first click
+    (preloading the chunk on hover/focus), and the now-redundant `DynamicCompaniesSchoolsFloating`
+    was removed. `index.tsx` carries a docstring recording that nothing currently renders it. Not
+    runtime-verifiable for the same reason it is dead.
   - Already conforming (trigger outside the lazy module): `ClientSiteDropdownMenu` (eager
     `IconButton`, lazy `SiteMenu`), `UploadResumeDropdownMenu` (eager `DropdownMenu` + trigger, lazy
     `UploadResumeMenu` content behind the open toggle).
@@ -137,10 +154,10 @@ today, established by reading the floating primitives:
       `preloadSkillsChartFilterData()` — SWR `preload` of the educations/experiences keys — fired on
       the filter trigger's hover/focus/click so the data is cached or in flight before the form
       mounts.
-- [ ] Follow-up to the select fix: the other data-backed selects (`ClientCourseSelect`,
-      `ClientSkillsSelect`, `ClientSchoolSelect`, `ClientProjectSelect`, `ClientRepositorySelect`,
-      `ClientCompanySelect`) still pass `isLocked={isLoading}` and so still freeze pre-data in the
-      admin forms; align them with the same pattern when convenient.
+- [x] Follow-up to the select fix — done 2026-08-06: the other six data-backed selects
+      (`ClientCourseSelect`, `ClientSkillsSelect`, `ClientSchoolSelect`, `ClientProjectSelect`,
+      `ClientRepositorySelect`, `ClientCompanySelect`) were aligned with the same pattern, so
+      `isLocked` is no longer tied to `isLoading` in any data-backed select.
 - [ ] **Debounce filter form changes** (added 2026-08-05, developer request): apply select changes
       to the chart only after a debounce threshold (they currently fire a refetch per change), and
       flush any pending changes when the popover closes. Interacts with the URL-driven-filters
@@ -163,11 +180,21 @@ today, established by reading the floating primitives:
 
 Cross-request caching with CMS revalidation for both fetches (decided 2026-08-04).
 
-- [ ] Inventory the CMS mutation actions that can change the cached data: project
-      create/update/delete/visibility (nav) — the resume side (upload/update/delete) was inventoried
-      and wired 2026-08-06.
-- [ ] `/projects/*` layout: cache the nav/slug-validation `fetchProjects` call with
-      `unstable_cache` + `revalidateTag`, revalidated by the project mutations.
+- [x] Inventory the CMS mutation actions that can change the cached data — done 2026-08-06. Resume
+      side: upload/update/delete. Project side: `createProject`, `updateProject`, `deleteProject`,
+      `deleteProjects`, `showProjects`, `hideProjects`, `highlightProjects`, `unhighlightProjects` —
+      all eight invalidate, including the two highlight toggles, which the navigation does not
+      actually read. Over-invalidating on a rare admin action costs one query; maintaining an
+      exclusion list costs a correctness bug the first time the projection changes.
+- [x] `/projects/*` layout — done 2026-08-06, using `updateTag` rather than `revalidateTag`, whose
+      Next 16 signature now requires a cache-life profile. The layout's per-request `fetchProjects`
+      call became `getNavigationProjects` (`src/actions/projects/get-navigation-projects.ts`): an
+      `unstable_cache` read tagged `navigation-projects` with a 1h safety TTL, projected down to the
+      four fields the navigation and the slug reconciliation actually use (`name`, `shortName`,
+      `slug`, `visible`). The projection is deliberately free of `Date` fields, so unlike the resume
+      and profile reads it needs no superjson round trip through the JSON-serializing cache. Every
+      `/projects/*` route previously paid a blocking database round trip in its layout before
+      rendering.
 - [x] Header `SiteDropdownMenu` + `ProfileSection` — done 2026-08-06: `getPrimaryResume`
       (`src/actions/resumes/get-primary-resume.ts`) and `getProfile` now read through
       `unstable_cache` (tags `primary-resume` / `profile`, 1h safety TTL), storing superjson payload

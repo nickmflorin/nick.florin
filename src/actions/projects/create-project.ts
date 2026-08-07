@@ -1,4 +1,6 @@
 'use server';
+import { updateTag } from 'next/cache';
+
 import { type z } from 'zod';
 
 import { getAuthedUser } from '~/application/auth/server-v2';
@@ -16,6 +18,8 @@ import {
   ApiClientGlobalError,
   convertToPlainObject,
 } from '~/api';
+
+import { NavigationProjectsCacheTag } from './get-navigation-projects';
 
 export const createProject = async (
   data: z.infer<typeof ProjectSchema>,
@@ -153,6 +157,7 @@ export const createProject = async (
         { projectId: project.id, skills: skills.map(s => s.id) },
       );
     }
+    updateTag(NavigationProjectsCacheTag);
     return { data: convertToPlainObject(project) };
   });
 };
