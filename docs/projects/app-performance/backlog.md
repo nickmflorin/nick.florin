@@ -60,14 +60,14 @@ decision: scoped to authenticated routes, not merely un-gated.
       seen — implemented 2026-08-05 by scoping the provider to the tour UI itself (`Tour` gate →
       client-only `TourRoot` → `TourProvider` + `TourFlow`), removing it from `ClientConfig`
       entirely. See [decisions.md](./decisions.md).
-- [x] **Smooth the drawer close animation** — fixed 2026-08-06. The close was not janky so much
-      as absent: `SkillsFilterDropdownMenu` rendered `PortalDrawerWrapper` behind a
-      `drawerIsOpen ?` ternary, so closing unmounted the wrapper — and the `AnimatePresence`
-      inside it — in the same commit, and `AnimatePresence` cannot animate its own unmount. The
-      wrapper now stays mounted and only its children toggle (rendering nothing until hydrated, so
-      the portal's `document.getElementById` container stays off the server), which also brings
-      the `contextDrawerId` takeover path through the same animation instead of blinking it away.
-      The context-drawer path was already correct and was left alone. Separately, the undamped
+- [x] **Smooth the drawer close animation** — fixed 2026-08-06. The close was not janky so much as
+      absent: `SkillsFilterDropdownMenu` rendered `PortalDrawerWrapper` behind a `drawerIsOpen ?`
+      ternary, so closing unmounted the wrapper — and the `AnimatePresence` inside it — in the same
+      commit, and `AnimatePresence` cannot animate its own unmount. The wrapper now stays mounted
+      and only its children toggle (rendering nothing until hydrated, so the portal's
+      `document.getElementById` container stays off the server), which also brings the
+      `contextDrawerId` takeover path through the same animation instead of blinking it away. The
+      context-drawer path was already correct and was left alone. Separately, the undamped
       `{ bounce: 0, type: 'spring' }` transition became two explicitly-timed ones — a 250ms
       decelerating entrance and a shorter 200ms accelerating exit — which applies to every drawer.
 - [x] Page-scroll bands size to content (2026-08-05, generalized same day from the mobile-only
@@ -123,17 +123,16 @@ today, established by reading the floating primitives:
       eagerly and server-side; the floating content is a lazily-loaded chunk fetched on intent and
       mounted open" — done 2026-08-06:
   - `CompaniesSchoolsDropdownMenu` **turned out to be dead code**: all of its files have zero
-    importers anywhere in `src/`, so it reaches no page and is tree-shaken out of every bundle.
-    The recorded defect (the whole floating, trigger included, behind `ssr: false`) was therefore
-    real but had no user-facing cost, and the "resume pages" attribution was wrong —
-    `/resume/experience` renders only `ExperienceTimeline`. Aligned anyway, at the developer's
-    direction, so the module is ready if it is ever wired up: a new `CompaniesSchoolsTrigger` is
-    shared between the eager pre-mount render and the popover-anchored one, a new client
-    `CompaniesSchoolsMenu` owns the trigger and lazily mounts the floating with a new
-    `isInitiallyOpen` pass-through on first click (preloading the chunk on hover/focus), and the
-    now-redundant `DynamicCompaniesSchoolsFloating` was removed. `index.tsx` carries a docstring
-    recording that nothing currently renders it. Not runtime-verifiable for the same reason it is
-    dead.
+    importers anywhere in `src/`, so it reaches no page and is tree-shaken out of every bundle. The
+    recorded defect (the whole floating, trigger included, behind `ssr: false`) was therefore real
+    but had no user-facing cost, and the "resume pages" attribution was wrong — `/resume/experience`
+    renders only `ExperienceTimeline`. Aligned anyway, at the developer's direction, so the module
+    is ready if it is ever wired up: a new `CompaniesSchoolsTrigger` is shared between the eager
+    pre-mount render and the popover-anchored one, a new client `CompaniesSchoolsMenu` owns the
+    trigger and lazily mounts the floating with a new `isInitiallyOpen` pass-through on first click
+    (preloading the chunk on hover/focus), and the now-redundant `DynamicCompaniesSchoolsFloating`
+    was removed. `index.tsx` carries a docstring recording that nothing currently renders it. Not
+    runtime-verifiable for the same reason it is dead.
   - Already conforming (trigger outside the lazy module): `ClientSiteDropdownMenu` (eager
     `IconButton`, lazy `SiteMenu`), `UploadResumeDropdownMenu` (eager `DropdownMenu` + trigger, lazy
     `UploadResumeMenu` content behind the open toggle).
@@ -183,19 +182,19 @@ Cross-request caching with CMS revalidation for both fetches (decided 2026-08-04
 
 - [x] Inventory the CMS mutation actions that can change the cached data — done 2026-08-06. Resume
       side: upload/update/delete. Project side: `createProject`, `updateProject`, `deleteProject`,
-      `deleteProjects`, `showProjects`, `hideProjects`, `highlightProjects`, `unhighlightProjects`
-      — all eight invalidate, including the two highlight toggles, which the navigation does not
+      `deleteProjects`, `showProjects`, `hideProjects`, `highlightProjects`, `unhighlightProjects` —
+      all eight invalidate, including the two highlight toggles, which the navigation does not
       actually read. Over-invalidating on a rare admin action costs one query; maintaining an
       exclusion list costs a correctness bug the first time the projection changes.
 - [x] `/projects/*` layout — done 2026-08-06, using `updateTag` rather than `revalidateTag`, whose
-      Next 16 signature now requires a cache-life profile. The layout's per-request
-      `fetchProjects` call became `getNavigationProjects`
-      (`src/actions/projects/get-navigation-projects.ts`): an `unstable_cache` read tagged
-      `navigation-projects` with a 1h safety TTL, projected down to the four fields the navigation
-      and the slug reconciliation actually use (`name`, `shortName`, `slug`, `visible`). The
-      projection is deliberately free of `Date` fields, so unlike the resume and profile reads it
-      needs no superjson round trip through the JSON-serializing cache. Every `/projects/*` route
-      previously paid a blocking database round trip in its layout before rendering.
+      Next 16 signature now requires a cache-life profile. The layout's per-request `fetchProjects`
+      call became `getNavigationProjects` (`src/actions/projects/get-navigation-projects.ts`): an
+      `unstable_cache` read tagged `navigation-projects` with a 1h safety TTL, projected down to the
+      four fields the navigation and the slug reconciliation actually use (`name`, `shortName`,
+      `slug`, `visible`). The projection is deliberately free of `Date` fields, so unlike the resume
+      and profile reads it needs no superjson round trip through the JSON-serializing cache. Every
+      `/projects/*` route previously paid a blocking database round trip in its layout before
+      rendering.
 - [x] Header `SiteDropdownMenu` + `ProfileSection` — done 2026-08-06: `getPrimaryResume`
       (`src/actions/resumes/get-primary-resume.ts`) and `getProfile` now read through
       `unstable_cache` (tags `primary-resume` / `profile`, 1h safety TTL), storing superjson payload

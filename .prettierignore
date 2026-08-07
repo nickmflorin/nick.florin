@@ -15,3 +15,6 @@ src/database/model/generated/**
 src/database/prisma/migrations/**
 .eslintcache
 .eslintcache.*
+
+# Claude Code worktrees, which are ignored by git and are copies of files checked elsewhere.
+.claude/worktrees/**
