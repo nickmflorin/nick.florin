@@ -42,20 +42,37 @@ decision: scoped to authenticated routes, not merely un-gated.
       matching for the dashboard (see [decisions.md](./decisions.md)). Visual tuning of the chosen
       fractions/heights (`1.5fr 1fr 1fr` at `xl`+, `3fr 2fr`/`fit-content(50%) minmax(0,1fr)` column
       rows) is open to developer review.
-- [ ] Bring skeleton loading states to every non-dashboard page, with the same fidelity bar the
+- [x] Bring skeleton loading states to every non-dashboard page, with the same fidelity bar the
       dashboard now meets (skeletons dimensionally match the content they stand in for, so the swap
-      does not shift layout):
-  - [ ] `/resume/experience` and `/resume/education` — replace the generic `<Loading />` fallbacks
+      does not shift layout) — implemented 2026-08-08:
+  - [x] `/resume/experience` and `/resume/education` — replace the generic `<Loading />` fallbacks
         (both the `loading.tsx` files and the in-page `Suspense` fallbacks) with timeline-shaped
-        skeletons: commit-line bullets plus `ResumeModelPageTile`-shaped tile skeletons.
-  - [ ] `/projects/*` — audit the per-project `loading.tsx` files and replace generic spinners with
+        skeletons: commit-line bullets plus `ResumeModelPageTile`-shaped tile skeletons. Three
+        `loading.tsx` files and both `Suspense` fallbacks now render `ResumeTimelineSkeleton`.
+  - [x] `/projects/*` — audit the per-project `loading.tsx` files and replace generic spinners with
         page-shaped skeletons (title/description blocks, section headings, and `ProjectImage`-sized
-        placeholders so the large screenshots reserve their space).
-  - [ ] `/admin/*` — verify the `@table` slot fallbacks (control-bar placeholder + `tbody` loading)
+        placeholders so the large screenshots reserve their space). All four render
+        `ProjectPageSkeleton`, driven by a per-page `sections` descriptor.
+  - [x] `/admin/*` — verify the `@table` slot fallbacks (control-bar placeholder + `tbody` loading)
         still hold up now that the table bodies are statically imported, and upgrade them to
-        row-shaped skeletons where they are still spinner-based.
-  - [ ] Reuse the dashboard's fidelity fixes where applicable (`DescriptionSkeleton` line metrics,
-        `iconSize`-matched icon placeholders) rather than re-deriving per page.
+        row-shaped skeletons where they are still spinner-based. All twelve were spinner-based
+        (`<Loading component='tbody' />`) and now use `ConnectedDataTableBodySkeleton`, which reads
+        `visibleColumns`/`rowsAreSelectable`/`rowsHaveActions` off `useDataTable()`. The control-bar
+        placeholders were already correct; `admin/educations/@table/loading.tsx` was importing the
+        _courses_ placeholder and was fixed.
+  - [x] Reuse the dashboard's fidelity fixes where applicable (`DescriptionSkeleton` line metrics,
+        `iconSize`-matched icon placeholders) rather than re-deriving per page. `Skeleton`,
+        `DescriptionSkeleton`, `RepositoryTileSkeleton`, `ResumeModelHeaderScaffold` (with its
+        per-breakpoint `ImageSizes`), `CommitTimeline`/`TimelineIcon` and the generic table body
+        components were all reused; one primitive was added (`SkeletonLineOffset`, the `my-[2px]`
+        that lifts a font-sized bar to the line box text actually occupies).
+
+**Open:** the description and detail _line counts_ for the resume tiles and project sections are
+estimated from the fixture prose (`roles.yaml`, `degrees.yaml`, `projects.json`) at the ~884px
+content width, not measured against live content. Every other dimension is derived from the real
+components, typography scale, and SCSS. If the live DB content differs materially from the fixtures,
+those count props are the one place to adjust.
+
 - [x] Tour: skip mounting `TourProvider` (and its chunk) when the tour cookie says the tour has been
       seen — implemented 2026-08-05 by scoping the provider to the tour UI itself (`Tour` gate →
       client-only `TourRoot` → `TourProvider` + `TourFlow`), removing it from `ClientConfig`
@@ -207,21 +224,47 @@ Cross-request caching with CMS revalidation for both fetches (decided 2026-08-04
 
 ## Phase 3b — De-Clerk the Header (added 2026-08-06, developer request)
 
-- [ ] Remove auth awareness and Clerk entirely from the header and its dropdown: no sign-in button,
+- [x] Remove auth awareness and Clerk entirely from the header and its dropdown: no sign-in button,
       no org view, no profile popover/hamburger dropdown. Replace with an icon button and a button
       (or two icon buttons) that view/download the primary resume directly. Restrict Clerk usage
       entirely to the admin CMS routes. (Supersedes most of `ClientSiteDropdownMenu`/`SiteMenu`; the
-      cached `getPrimaryResume` read carries over.)
+      cached `getPrimaryResume` read carries over.) Implemented 2026-08-08: new server component
+      `SiteResumeActions` (view button + download icon button) in the header and the slide-out
+      `SiteMenu`, which is now server-rendered; `SessionClerkProvider` unmounted from `AppConfig`,
+      so no `(site)` route pulls clerk-js. Twelve components/providers/hooks deleted.
+
+**Follow-up opened by this change — there is now no sign-out anywhere in the app.** `SignOutButton`
+was only ever rendered in the site menu, and the item above did not ask for a replacement. Putting
+one in the admin CMS needs a new tab component, a registry icon, and a `ClerkProvider` on
+`/admin/*`. Session refresh is unaffected — `clerkMiddleware` handles it server-side, so the CMS
+works without clerk-js. Awaiting a developer decision.
+
+**Collateral:** the site tour hard-depended on the removed dropdown (it clicked
+`#site-dropdown-menu-button` and ran a `MutationObserver` for `#site-dropdown-menu-resume-item`).
+`use-tour.ts` is now a presence check on `#site-resume-actions`, with the observer, `waitingForTour`
+state, and the 1s/2s timeouts removed; `TourProvider`'s first step retargeted with new copy.
 
 ## Phase 4 — Bundle & Payload
 
-- [ ] `GreenBudget`: remove `'use client'` from the page component (push the forcing hook into a
-      leaf), matching the `Website` page's server-component pattern.
-- [ ] Trim server→client serialization on project pages: pass only the fields the components read
-      instead of the full project record with relations.
-- [ ] Project images: pre-convert the `public/projects/` PNGs to WebP/AVIF (decided 2026-08-04) and
-      update the `ProjectImage` call sites.
-- [ ] Project images: `priority` only on the first above-fold image per page; lazy-load the rest.
+- [x] `GreenBudget`: remove `'use client'` from the page component (push the forcing hook into a
+      leaf), matching the `Website` page's server-component pattern. Done 2026-08-08 — no hook
+      needed moving; the forcing hooks already lived in the leaf `Disclaimer.tsx`, so the directive
+      was vestigial and was dragging the whole GreenBudget subtree into the client bundle.
+- [x] Trim server→client serialization on project pages: pass only the fields the components read
+      instead of the full project record with relations. Done 2026-08-08 — new
+      `src/actions/projects/get-page-project.ts` (modeled on `get-navigation-projects.ts`) replaces
+      the four pages' shared `include: { repositories: true, skills: true }` read: project columns
+      12→3, repositories 11→3, and skills 20→3. Skills were the real cost, being the only relation
+      that crosses into a client component. `convertToPlainObject` dropped from all four pages.
+- [x] Project images: pre-convert the `public/projects/` PNGs to WebP/AVIF (decided 2026-08-04) and
+      update the `ProjectImage` call sites — **superseded 2026-08-08**. The screen recordings were
+      transcoded off animated GIF to `.mp4`/`.webm` (commit `87d31b65`), and the remaining PNGs go
+      through `next/image`, which serves WebP from the optimizer by default (`next.config.mjs`
+      declares no `images.formats` override). `ProjectImage` now declares its layout width so the
+      optimizer can pick a `srcset` entry on merit (commit `f605f402`). Pre-converting the source
+      files would not change what the browser receives.
+- [x] Project images: `priority` only on the first above-fold image per page; lazy-load the rest —
+      done 2026-08-08 (commit `284a4777`).
 
 ## Phase 5 — FontAwesome Migration
 
@@ -238,10 +281,12 @@ restoring SSR surfaced a kit-vs-hydration race that made this urgent.
       curl on the dev server.
 - [x] Retire `FONT_AWESOME_KIT_TOKEN` from the environment config — removed 2026-08-05 from the
       runtime map and validators in `src/environment/index.ts` and from `.env`.
-- [ ] Ensure `FONT_AWESOME_AUTH_TOKEN` is present in the Vercel/CI build environment — installs now
-      pull `@fortawesome/pro-*` packages from the Pro registry.
-- [ ] Manual browser check: icon rendering parity across the app (sizes, colors, admin tables,
-      toggled icons) and confirmation the hydration error is gone.
+- [x] Ensure `FONT_AWESOME_AUTH_TOKEN` is present in the Vercel/CI build environment — installs now
+      pull `@fortawesome/pro-*` packages from the Pro registry. Confirmed 2026-08-08.
+- [x] Manual browser check: icon rendering parity across the app (sizes, colors, admin tables,
+      toggled icons) and confirmation the hydration error is gone. Confirmed 2026-08-08.
+
+Phase 5 is complete as of 2026-08-08.
 
 ## Phase 6 — SSR Viewport Seeding (added 2026-08-04, done with Phase 1)
 
@@ -252,5 +297,8 @@ restoring SSR surfaced a kit-vs-hydration race that made this urgent.
 
 ## Phase 7 — Final Verification
 
-- [ ] Re-run Lighthouse/Speed Insights across the audited routes and record the final before/after
-      comparison in [status.md](./status.md).
+**Dropped 2026-08-08 (developer decision).** The closing Lighthouse/Speed Insights pass will not be
+run; the phase is not being deferred, it is out of scope.
+
+- [~] ~~Re-run Lighthouse/Speed Insights across the audited routes and record the final before/after
+  comparison in [status.md](./status.md).~~

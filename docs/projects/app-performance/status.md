@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-08-05_
+_Last updated: 2026-08-08_
 
 ## Phase
 
@@ -204,19 +204,30 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
 - The 2026-08-06 batch — filters popover restructure, frozen-selects fix, `ConditionalPortal`
   Suspense-blink fix, button truncation, CSS-driven nav presence, scroll-viewport collapse fix,
   header caching + skeleton, sign-in centering, and the orphan/env cleanups — is committed to
-  `master`. Remaining work (Phase 3b de-Clerk'd header, debounce, drawer animation, URL-driven
-  filters decision) continues on a follow-up branch.
+  `master`, along with the drawer exit animation and the `CompaniesSchoolsDropdownMenu` trigger
+  alignment.
+- The 2026-08-08 batch is **uncommitted in the working tree** on `perf/skeletons`: the de-Clerk'd
+  header (Phase 3b), non-dashboard skeletons (Phase 2), and the GreenBudget server-component fix
+  plus project-page payload trim (Phase 4). None of it has been type-checked, linted, or run in a
+  browser yet.
 
 ## Next
 
-1. **Production-build chunk verification is blocked** on unrelated schema drift: `next build` fails
+1. Review and verify the 2026-08-08 batch: `pnpm tsc`, `pnpm lint`, and a browser pass over
+   `/resume/*`, `/projects/*`, `/admin/*`, the header, and the site tour (whose first step was
+   retargeted from the removed dropdown onto `#site-resume-actions`).
+2. **Decide on sign-out.** De-Clerking the header removed the only sign-out affordance in the app;
+   see the follow-up note under Phase 3b in [backlog.md](./backlog.md).
+3. **Production-build chunk verification is blocked** on unrelated schema drift: `next build` fails
    during page-data collection because `.env.production` points builds at the remote database, which
    does not yet have the resume-generation migration (`Company.slug`). Until a production build
    passes, the three `@clerk/*` wrapper chunks that appear in the dev script list (dev serves the
-   whole static module graph) cannot be confirmed pruned for anonymous visitors.
-2. Manual signed-in verification: sign-in flow, the account section of the site menu, sign-out,
-   admin CMS, tour/drawers/toasts — best done in a browser session.
-3. Confirm `FONT_AWESOME_AUTH_TOKEN` is present in the Vercel/CI build environment (installs pull
-   `@fortawesome/pro-*` from the Pro registry) — requires the Vercel dashboard, not the repo.
-4. Then the rest of Phase 2 of [backlog.md](./backlog.md): non-dashboard skeletons, the
-   `CompaniesSchoolsDropdownMenu` trigger alignment, and the select-data prefetch investigation.
+   whole static module graph) cannot be confirmed pruned for anonymous visitors. The de-Clerk'd
+   header should make this moot for anonymous visitors, but it is still unconfirmed.
+4. Manual signed-in verification: sign-in flow, admin CMS, tour/drawers/toasts — best done in a
+   browser session. (The account section of the site menu no longer exists.)
+
+Everything else in [backlog.md](./backlog.md) is closed except the Phase 2b filters cluster —
+debounced filter changes, the select-data performance investigation, and the URL-driven filters
+question in [open-questions.md](./open-questions.md) — which the developer has deferred and does not
+want started. Phase 5 is complete; Phase 7 (the closing Lighthouse pass) was dropped 2026-08-08.
