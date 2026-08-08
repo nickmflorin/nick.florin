@@ -3,7 +3,7 @@ import { Description } from '~/components/typography';
 import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
 import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
 import { Emphasize } from '~/features/projects/components/Emphasize';
-import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { ProjectVideo } from '~/features/projects/components/ProjectVideo';
 import { Section } from '~/features/projects/components/Section';
 
 export const ReorderingSection = () => (
@@ -34,8 +34,7 @@ export const ReorderingSection = () => (
         determined, among other things.
       </Description>
     </DescriptionGroup>
-    <ProjectImage
-      alt='GreenBudget Reordering'
+    <ProjectVideo
       caption={
         <CaptionDescription>
           An example of a user moving a row in a given table view inside of a&nbsp;
@@ -46,8 +45,8 @@ export const ReorderingSection = () => (
           moved.
         </CaptionDescription>
       }
-      isUnoptimized
-      src='/projects/greenbudget/reordering.gif'
+      label='GreenBudget Reordering'
+      src='/projects/greenbudget/reordering'
     />
   </Section>
 );

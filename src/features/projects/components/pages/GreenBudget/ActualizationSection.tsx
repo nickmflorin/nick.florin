@@ -2,7 +2,7 @@ import { Description } from '~/components/typography';
 import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
 import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
 import { Emphasize } from '~/features/projects/components/Emphasize';
-import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { ProjectVideo } from '~/features/projects/components/ProjectVideo';
 import { Section } from '~/features/projects/components/Section';
 
 export const ActualizationSection = () => (
@@ -24,8 +24,7 @@ export const ActualizationSection = () => (
         for instance, the receipts that were used to justify the actual cost of a line item.
       </Description>
     </DescriptionGroup>
-    <ProjectImage
-      alt='GreenBudget Actualization'
+    <ProjectVideo
       caption={
         <CaptionDescription>
           An example of a user creating a new <Emphasize.Caption>Actual</Emphasize.Caption>, &nbsp;
@@ -36,8 +35,8 @@ export const ActualizationSection = () => (
           <Emphasize.Caption>Hotel Stay</Emphasize.Caption> costs in the budget.
         </CaptionDescription>
       }
-      isUnoptimized
-      src='/projects/greenbudget/actualization.gif'
+      label='GreenBudget Actualization'
+      src='/projects/greenbudget/actualization'
     />
   </Section>
 );

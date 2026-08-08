@@ -2,7 +2,7 @@ import { Description } from '~/components/typography';
 import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
 import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
 import { Emphasize } from '~/features/projects/components/Emphasize';
-import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { ProjectVideo } from '~/features/projects/components/ProjectVideo';
 import { Section } from '~/features/projects/components/Section';
 
 export const RecursiveTreeStructureSection = () => (
@@ -37,8 +37,7 @@ export const RecursiveTreeStructureSection = () => (
         after a change occurred.
       </Description>
     </DescriptionGroup>
-    <ProjectImage
-      alt='GreenBudget Top Sheet'
+    <ProjectVideo
       caption={
         <CaptionDescription>
           An example of a user expanding 3 layers deep in a budget, to the second layer of&nbsp;
@@ -50,8 +49,8 @@ export const RecursiveTreeStructureSection = () => (
           <Emphasize.Caption>Sub Account</Emphasize.Caption> view.
         </CaptionDescription>
       }
-      isUnoptimized
-      src='/projects/greenbudget/expanding.gif'
+      label='A user expanding three layers deep into a GreenBudget budget'
+      src='/projects/greenbudget/expanding'
     />
     <Description>
       Luckily, I developed a solution for this problem - which allowed us to both load and render
