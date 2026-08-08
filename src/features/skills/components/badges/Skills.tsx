@@ -3,7 +3,7 @@ import { type JSX } from 'react';
 
 import { clamp } from 'lodash-es';
 
-import { type BrandSkill } from '~/database/model';
+import { type Skill } from '~/database/model';
 
 import {
   BadgeCollection,
@@ -17,7 +17,7 @@ export interface SkillsProps extends Omit<
   BadgeCollectionChildrenProps,
   'children' | 'maximumBadges'
 > {
-  readonly skills: BrandSkill[];
+  readonly skills: Pick<Skill, 'id' | 'label' | 'prioritized'>[];
 }
 
 export const Skills = ({ skills, ...props }: SkillsProps): JSX.Element => {

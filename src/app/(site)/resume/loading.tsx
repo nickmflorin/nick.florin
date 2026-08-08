@@ -1,5 +1,7 @@
-import { Loading as LoadingComponent } from '~/components/loading/Loading';
+import { ResumeTimelineSkeleton } from '~/features/resume/components/ResumeTimelineSkeleton';
 
-const Loading = () => <LoadingComponent isLoading />;
+/* '/resume' redirects to '/resume/experience', so the segment's fallback is shaped like the
+   experience timeline. */
+const Loading = () => <ResumeTimelineSkeleton numDetails={4} numItems={4} numSkills={12} />;
 
 export default Loading;

@@ -19,8 +19,3 @@ export const SiteNavMenuOverlay = dynamic(
   () => import('~/features/site/components/SiteNavMenuOverlay').then(mod => mod.SiteNavMenuOverlay),
   { ssr: false },
 );
-
-export const UserProfile = dynamic(
-  () => import('~/features/site/components/UserProfile').then(mod => mod.UserProfile),
-  { ssr: false },
-);

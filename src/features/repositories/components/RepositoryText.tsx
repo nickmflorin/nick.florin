@@ -6,7 +6,7 @@ import { classNames } from '~/components/types';
 import { Text, type TextProps } from '~/components/typography';
 
 export type RepositoryTextProps = {
-  readonly repository: BrandRepository;
+  readonly repository: Pick<BrandRepository, 'slug'>;
 } & Omit<TextProps<'div'>, 'children'>;
 
 export const RepositoryText = ({ repository, ...props }: RepositoryTextProps): JSX.Element => (

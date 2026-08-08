@@ -9,18 +9,11 @@ import { Dialog } from './Dialog';
 export interface WelcomeDialogProps {
   readonly error: null | string;
   readonly isOpen: boolean;
-  readonly isWaitingForTour: boolean;
   readonly onClose: () => void;
   readonly onStart: () => void;
 }
 
-export const WelcomeDialog = ({
-  error,
-  isOpen,
-  isWaitingForTour,
-  onClose,
-  onStart,
-}: WelcomeDialogProps) => {
+export const WelcomeDialog = ({ error, isOpen, onClose, onStart }: WelcomeDialogProps) => {
   const cookies = useCookies();
 
   return (
@@ -50,12 +43,7 @@ export const WelcomeDialog = ({
               <Button.Solid className='flex-1' onClick={onClose} scheme='secondary'>
                 Skip for now
               </Button.Solid>
-              <Button.Solid
-                className='flex-1'
-                isLoading={isWaitingForTour}
-                onClick={() => onStart()}
-                scheme='primary'
-              >
+              <Button.Solid className='flex-1' onClick={() => onStart()} scheme='primary'>
                 Next
               </Button.Solid>
             </div>

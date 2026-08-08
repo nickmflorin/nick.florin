@@ -4,10 +4,10 @@ import { z } from 'zod';
 
 import { parseOrdering } from '~/lib/ordering';
 
-import { SkillsDefaultOrdering, SkillsFiltersObj } from '~/actions';
+import { PAGE_SIZES, SkillsDefaultOrdering, SkillsFiltersObj } from '~/actions';
 
-import { Loading } from '~/components/loading/Loading';
 import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableBodySkeleton } from '~/components/tables/data-tables/ConnectedDataTableBodySkeleton';
 import { SkillsTableColumns } from '~/features/skills';
 import { SkillsTableControlBarPlaceholder } from '~/features/skills/components/tables/SkillsTableControlBarPlaceholder';
 
@@ -33,7 +33,7 @@ const SkillsTablePage = async (props: SkillsTablePageProps) => {
       fallback={
         <>
           <SkillsTableControlBarPlaceholder />
-          <Loading component='tbody' isLoading />
+          <ConnectedDataTableBodySkeleton numRows={PAGE_SIZES.skill} />
         </>
       }
       key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}

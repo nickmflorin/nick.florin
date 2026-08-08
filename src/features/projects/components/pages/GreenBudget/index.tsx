@@ -1,4 +1,3 @@
-'use client';
 import { type JSX } from 'react';
 
 import { Project, type ProjectProps } from '~/features/projects/components/Project';

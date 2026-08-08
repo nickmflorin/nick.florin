@@ -15,5 +15,4 @@ export * from './use-referential-callback';
 export * from './use-resettable-state';
 export * from './use-screen-sizes';
 export * from './use-unmount';
-export * from './use-user-profile';
 export * from './use-window-resize';

@@ -1,10 +1,12 @@
-import { Loading } from '~/components/loading/Loading';
-import { CoursesTableControlBarPlaceholder } from '~/features/courses/components/tables/CoursesTableControlBarPlaceholder';
+import { PAGE_SIZES } from '~/actions';
+
+import { ConnectedDataTableBodySkeleton } from '~/components/tables/data-tables/ConnectedDataTableBodySkeleton';
+import { EducationsTableControlBarPlaceholder } from '~/features/educations/components/tables/EducationsTableControlBarPlaceholder';
 
 const LoadingPage = () => (
   <>
-    <CoursesTableControlBarPlaceholder />
-    <Loading component='tbody' isLoading />
+    <EducationsTableControlBarPlaceholder />
+    <ConnectedDataTableBodySkeleton numRows={PAGE_SIZES.education} />
   </>
 );
 

@@ -16,10 +16,3 @@ export interface INavMenuContext {
   readonly setIsOpen: (v: boolean) => void;
   readonly toggle: () => void;
 }
-
-export interface IUserProfileContext {
-  readonly close: () => void;
-  readonly isInScope: boolean;
-  readonly isOpen: boolean;
-  readonly open: () => void;
-}

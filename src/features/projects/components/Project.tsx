@@ -1,6 +1,6 @@
 import { type JSX } from 'react';
 
-import { type ApiProject } from '~/database/model';
+import { type PageProject } from '~/actions/projects/get-page-project';
 
 import { Badge } from '~/components/badges/Badge';
 import { classNames, type ComponentProps } from '~/components/types';
@@ -15,7 +15,7 @@ export interface ProjectProps extends ComponentProps {
   readonly description: JSX.Element;
   readonly disclaimer?: JSX.Element;
   readonly isUnderConstruction?: boolean;
-  readonly project: ApiProject<['skills', 'repositories']>;
+  readonly project: Pick<PageProject, 'name' | 'repositories' | 'skills'>;
   readonly title: string;
 }
 

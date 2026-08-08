@@ -1,28 +1,13 @@
-import { auth } from '@clerk/nextjs/server';
-
-import { type BrandResume } from '~/database/model';
-import { db } from '~/database/prisma';
-
-import { convertToPlainObject } from '~/api/serialization';
+import { getPrimaryResume } from '~/actions/resumes/get-primary-resume';
 
 import { type ISidebarItem } from '~/components/layout';
 
-import { ClientSiteNavMenu } from './ClientSiteNavMenu';
+import { SiteMenu } from './SiteMenu';
 
 export interface SiteNavMenuProps {
   readonly nav: ISidebarItem[];
 }
 
-export const SiteNavMenu = async ({ nav }: SiteNavMenuProps) => {
-  const { userId } = await auth();
-
-  let resume: BrandResume | null = null;
-  const resumes = await db.resume.findMany({
-    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-    where: { primary: true },
-  });
-  if (resumes.length !== 0) {
-    resume = convertToPlainObject(resumes[0]);
-  }
-  return <ClientSiteNavMenu isSignedIn={userId !== null} nav={nav} resume={resume} />;
-};
+export const SiteNavMenu = async ({ nav }: SiteNavMenuProps) => (
+  <SiteMenu nav={nav} resume={await getPrimaryResume()} />
+);

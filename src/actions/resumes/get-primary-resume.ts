@@ -27,19 +27,30 @@ const PrimaryResumeCacheRevalidateSeconds = 3600;
 /* The cached layer stores a superjson payload string rather than the resume itself, because
    `unstable_cache` JSON-serializes stored values - a `Date` field would silently come back as a
    string on a cache hit while the `BrandResume` type continued to claim `Date`. */
+/* Ordering by `primary` before `createdAt` is what makes the flag an override rather than a
+   requirement: a flagged resume always wins, and the most recently uploaded one stands in when no
+   resume carries the flag. Restricting the read to `primary: true` instead meant that a database
+   with no flag set - which is the state a fresh seed or a cleared flag leaves behind - silently
+   removed the resume actions from the header entirely. */
 const readPrimaryResumePayload = unstableCache(
   async (): Promise<null | string> => {
-    const resumes = await db.resume.findMany({
-      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-      where: { primary: true },
+    const resume = await db.resume.findFirst({
+      orderBy: [{ primary: 'desc' }, { createdAt: 'desc' }, { id: 'desc' }],
     });
-    const resume = resumes.at(0);
-    return resume === undefined ? null : serializeForCache(convertToPlainObject(resume));
+    return resume === null ? null : serializeForCache(convertToPlainObject(resume));
   },
   ['primary-resume'],
   { revalidate: PrimaryResumeCacheRevalidateSeconds, tags: [PrimaryResumeCacheTag] },
 );
 
+/**
+ * Returns the resume the site surfaces publicly — the one flagged `primary`, or the most recently
+ * uploaded resume when no resume is flagged — and `null` only when no resumes exist at all.
+ *
+ * The fallback exists because the header and the mobile navigation menu both render their resume
+ * actions from this read and show nothing when it resolves to `null`. Treating the flag as
+ * required made an unset flag indistinguishable from having no resume at all.
+ */
 export const getPrimaryResume = cache(async (): Promise<BrandResume | null> => {
   const payload = await readPrimaryResumePayload();
   return payload === null ? null : deserializeFromCache<BrandResume>(payload);

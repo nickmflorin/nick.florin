@@ -1,10 +1,12 @@
-import { Loading } from '~/components/loading/Loading';
+import { PAGE_SIZES } from '~/actions';
+
+import { ConnectedDataTableBodySkeleton } from '~/components/tables/data-tables/ConnectedDataTableBodySkeleton';
 import { ProjectsTableControlBarPlaceholder } from '~/features/projects/components/tables/ProjectsTableControlBarPlaceholder';
 
 const LoadingPage = () => (
   <>
     <ProjectsTableControlBarPlaceholder />
-    <Loading component='tbody' isLoading />
+    <ConnectedDataTableBodySkeleton numRows={PAGE_SIZES.project} />
   </>
 );
 

@@ -4,10 +4,10 @@ import { z } from 'zod';
 
 import { parseOrdering } from '~/lib/ordering';
 
-import { ProjectsDefaultOrdering, ProjectsFiltersObj } from '~/actions';
+import { PAGE_SIZES, ProjectsDefaultOrdering, ProjectsFiltersObj } from '~/actions';
 
-import { Loading } from '~/components/loading/Loading';
 import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableBodySkeleton } from '~/components/tables/data-tables/ConnectedDataTableBodySkeleton';
 import { ProjectsTableColumns } from '~/features/projects';
 import { ProjectsTableControlBarPlaceholder } from '~/features/projects/components/tables/ProjectsTableControlBarPlaceholder';
 
@@ -33,7 +33,7 @@ const ProjectsTablePage = async (props: ProjectsTablePageProps) => {
       fallback={
         <>
           <ProjectsTableControlBarPlaceholder />
-          <Loading component='tbody' isLoading />
+          <ConnectedDataTableBodySkeleton numRows={PAGE_SIZES.project} />
         </>
       }
       key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
