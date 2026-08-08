@@ -15,14 +15,13 @@ const WelcomeDialog = dynamic(
  * rendered inside the tour provider, which the {@link Tour} gate mounts around it.
  */
 export const TourFlow = () => {
-  const { error, modalIsOpen, setModalIsOpen, setTourIsOpen, waitingForTour } = useTour();
+  const { error, modalIsOpen, setModalIsOpen, setTourIsOpen } = useTour();
 
   if (modalIsOpen) {
     return (
       <WelcomeDialog
         error={error}
         isOpen
-        isWaitingForTour={waitingForTour}
         onClose={() => setModalIsOpen(false)}
         onStart={() => setTourIsOpen(true)}
       />

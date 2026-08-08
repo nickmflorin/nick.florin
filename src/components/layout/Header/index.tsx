@@ -3,7 +3,7 @@ import { type JSX } from 'react';
 import { preloadProfile } from '~/actions/get-profile';
 
 import { LayoutMenuButton } from '~/components/buttons/LayoutMenuButton';
-import { SiteDropdownMenu } from '~/features/site/components/SiteDropdownMenu';
+import { SiteResumeActions } from '~/features/site/components/SiteResumeActions';
 
 import { ProfileSection } from './ProfileSection';
 
@@ -13,7 +13,7 @@ export const Header = (): JSX.Element => {
     <>
       <ProfileSection />
       <div className='header__right'>
-        <SiteDropdownMenu />
+        <SiteResumeActions className='max-[450px]:hidden' />
         <LayoutMenuButton />
       </div>
     </>

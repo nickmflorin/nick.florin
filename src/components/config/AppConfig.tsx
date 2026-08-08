@@ -22,7 +22,6 @@ import '~/styles/globals/index.scss';
 
 import { CookiesProvider } from './CookiesProvider';
 import { ClientConfig } from './ClientConfig';
-import { SessionClerkProvider } from './SessionClerkProvider';
 
 export interface AppConfigProps {
   readonly children: ReactNode;
@@ -30,9 +29,7 @@ export interface AppConfigProps {
 }
 
 export const AppConfig = ({ children, initialViewportWidth }: AppConfigProps): JSX.Element => (
-  <SessionClerkProvider>
-    <CookiesProvider>
-      <ClientConfig initialViewportWidth={initialViewportWidth}>{children}</ClientConfig>
-    </CookiesProvider>
-  </SessionClerkProvider>
+  <CookiesProvider>
+    <ClientConfig initialViewportWidth={initialViewportWidth}>{children}</ClientConfig>
+  </CookiesProvider>
 );

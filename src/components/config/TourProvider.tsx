@@ -4,8 +4,7 @@ import { type ReactNode } from 'react';
 import { TourProvider as RootTourProvider } from '@reactour/tour';
 import { useCookies } from 'next-client-cookies';
 
-import { logger } from '~/internal/logger';
-
+import { SiteResumeActionsElementId } from '~/components/constants';
 import { useDrawers } from '~/components/drawers/hooks/use-drawers';
 import { TourContent } from '~/components/tours/TourContent';
 import { TourPopoverContainer } from '~/components/tours/TourPopoverContainer';
@@ -24,25 +23,14 @@ export const TourProvider = ({ children }: TourProviderProps) => {
       ContentComponent={TourPopoverContainer}
       steps={[
         {
-          actionAfter: () => {
-            const button = document.getElementById('site-dropdown-menu-button');
-            if (button) {
-              button.blur();
-            } else {
-              logger.error(
-                "Could not find button with ID 'site-dropdown-menu-button' in DOM.  The site " +
-                  'dropdown menu cannot be closed.',
-              );
-            }
-          },
           content: (
             <TourContent label='Resume'>
-              You can find my resume here, after opening the site dropdown menu.
+              You can view or download my resume here, at any time.
             </TourContent>
           ),
           mutationObservables: ['.header__right'],
           position: 'left',
-          selector: '#site-dropdown-menu-resume-item',
+          selector: `#${SiteResumeActionsElementId}`,
         },
         {
           content: (

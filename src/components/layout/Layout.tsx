@@ -3,12 +3,7 @@ import { type JSX, type ReactNode, Suspense } from 'react';
 import { Loading } from '~/components/loading/Loading';
 import { SiteNavMenu } from '~/features/site/components/SiteNavMenu';
 
-import {
-  ContextDrawerWrapper,
-  SiteNavMenuOverlay,
-  ToastContainer,
-  UserProfile,
-} from './DynamicOverlays';
+import { ContextDrawerWrapper, SiteNavMenuOverlay, ToastContainer } from './DynamicOverlays';
 import { Header } from './Header';
 import { HeaderSkeleton } from './Header/HeaderSkeleton';
 import { LayoutNavigation } from './LayoutNavigation';
@@ -37,7 +32,6 @@ export const Layout = ({ children, nav }: LayoutProps): JSX.Element => (
         <Navigating>{children}</Navigating>
         <SiteNavMenuOverlay />
         <ToastContainer />
-        <UserProfile />
       </main>
       <ContextDrawerWrapper />
       <div id='drawer-target' />
