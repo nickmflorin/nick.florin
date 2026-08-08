@@ -245,8 +245,8 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
 1. Review and verify the 2026-08-08 batch: `pnpm tsc`, `pnpm lint`, and a browser pass over
    `/resume/*`, `/projects/*`, `/admin/*`, the header, and the site tour (whose first step was
    retargeted from the removed dropdown onto `#site-resume-actions`).
-2. **Decide on sign-out.** De-Clerking the header removed the only sign-out affordance in the app;
-   see the follow-up note under Phase 3b in [backlog.md](./backlog.md).
+2. Sign-out: decided 2026-08-08 — not needed for now, and filed as an unscheduled follow-up under
+   Phase 3b in [backlog.md](./backlog.md), to be picked up when the admin CMS is next worked on.
 3. **Production-build chunk verification is blocked** on unrelated schema drift: `next build` fails
    during page-data collection because `.env.production` points builds at the remote database, which
    does not yet have the resume-generation migration (`Company.slug`). Until a production build

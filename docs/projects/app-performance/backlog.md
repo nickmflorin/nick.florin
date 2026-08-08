@@ -296,10 +296,14 @@ an override rather than a requirement and the most recent resume stands in when 
 It returns `null` only when no resumes exist at all.
 
 **Follow-up opened by this change — there is now no sign-out anywhere in the app.** `SignOutButton`
-was only ever rendered in the site menu, and the item above did not ask for a replacement. Putting
-one in the admin CMS needs a new tab component, a registry icon, and a `ClerkProvider` on
-`/admin/*`. Session refresh is unaffected — `clerkMiddleware` handles it server-side, so the CMS
-works without clerk-js. Awaiting a developer decision.
+was only ever rendered in the site menu, and the item above did not ask for a replacement.
+
+- [ ] **Later — restore a sign-out affordance.** Deferred 2026-08-08 (developer decision: not needed
+      for now). Deliberately not scheduled against any phase; pick it up when the admin CMS is next
+      worked on. It needs a new tab component, a registry icon, and a `ClerkProvider` on `/admin/*`,
+      which is why it is not a one-line addition. Nothing is broken in the meantime: session refresh
+      is handled server-side by `clerkMiddleware`, so the CMS works without clerk-js, and signing
+      out can be done through Clerk directly.
 
 **Collateral:** the site tour hard-depended on the removed dropdown (it clicked
 `#site-dropdown-menu-button` and ran a `MutationObserver` for `#site-dropdown-menu-resume-item`).
