@@ -469,18 +469,25 @@ export const useDataSelect = <
     ],
   );
 
+  /* Initializes the model value once both the readiness flag and the select's value are available.
+     For asynchronously loaded data the two do not arrive together: the render that flips 'isReady'
+     to 'true' still sees 'value' as NOTSET, because the value is set by an effect in 'useSelect'
+     that commits in the same pass. Keying this effect on 'isReady' alone therefore left the model
+     value stuck at NOTSET for the lifetime of the select, which disables it permanently. The
+     NOTSET guard on the model value keeps this to initialization only, so a 'value' prop that is
+     rebuilt on every render cannot drive a render loop through 'setValue'. */
   useEffect(() => {
-    if (isReady && value !== types.NOTSET) {
+    if (isReady && value !== types.NOTSET && modelValue === types.NOTSET) {
       /* eslint-disable-next-line react-hooks/set-state-in-effect -- This is not a safe disable
          and this needs to be fixed! It is only being disabled to complete the ESLint migration for
          now. */
       setValue(value as types.SelectValue<{ model: M; options: O }>);
     }
-    /* eslint-disable-next-line @eslint-react/exhaustive-deps -- This is a bad pattern and is only
-       being disabled to support the legacy bad pattern I just called a bad pattern. This needs to
-       be refactored in the future for better control of a uncontrolled vs. controlled Select value
-       that doesn't rely on effects like this. */
-  }, [isReady]);
+    /* eslint-disable-next-line @eslint-react/exhaustive-deps -- 'setValue' is deliberately omitted:
+       it is rebuilt whenever 'modelValue' changes, so including it would re-run this effect on its
+       own result. This needs to be refactored in the future for better control of an uncontrolled
+       vs. controlled Select value that doesn't rely on effects like this. */
+  }, [isReady, value, modelValue]);
 
   const handleEvent = useCallback(
     <E extends types.SelectEvent>(
