@@ -76,7 +76,7 @@ export const SkillsFilterDropdownMenu = ({
                 setDrawerIsOpen(true);
               }}
               ref={ref}
-              size={isLessThan('md') ? 'xsmall' : 'small'}
+              size={{ base: 'xsmall', md: 'small' }}
             />
           )}
         </Tooltip>
@@ -117,7 +117,7 @@ export const SkillsFilterDropdownMenu = ({
               setPopoverIsMounted(true);
             }}
             ref={ref}
-            size={isLessThan('md') ? 'xsmall' : 'small'}
+            size={{ base: 'xsmall', md: 'small' }}
           />
         )}
       </Tooltip>

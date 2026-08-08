@@ -66,6 +66,15 @@
         @include button-size-properties($type, $size, $tight-fit: $tight-fit);
       }
     }
+    /* The responsive rules come after the base ones so that, at a width where both match, the
+       breakpoint wins on order rather than on specificity. */
+    @each $breakpoint in mixins.$button-responsive-breakpoints {
+      @each $size in map.keys(constants.$button-sizes) {
+        @include mixins.button-size-at($breakpoint, $size) {
+          @include button-size-properties($type, $size, $tight-fit: $tight-fit);
+        }
+      }
+    }
   } @else if $type == 'link' {
     // Apply a default icon size just in case the class name is not present.
     @include button-icon-size-properties($type: $type, $size: constants.$link-default-icon-size);

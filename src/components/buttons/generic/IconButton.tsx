@@ -5,6 +5,7 @@ import { capitalize } from '~/lib/formatters';
 import * as types from '~/components/buttons';
 import {
   getButtonSizeStyle,
+  getResponsiveButtonSizeAttributes,
   toDiscreteIconSize,
   toDiscreteSize,
   toIconSize,
@@ -84,6 +85,7 @@ const LocalIconButton = <E extends types.ButtonElement>({
     <AbstractButton
       {...ps}
       {...parseDataAttributes({
+        ...getResponsiveButtonSizeAttributes(size),
         iconSize: toDiscreteIconSize(iconSize),
         size: toDiscreteSize(size),
         tight: isTight,

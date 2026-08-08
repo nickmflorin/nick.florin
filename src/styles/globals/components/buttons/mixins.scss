@@ -16,6 +16,22 @@
   }
 }
 
+// The breakpoints a button may change size at, mirroring `ButtonResponsiveBreakpoints` in
+// `src/components/buttons/types.ts`. Each entry multiplies the generated size rules, so the list is
+// kept short on purpose.
+$button-responsive-breakpoints: ('sm', 'md', 'lg');
+
+/* Matches a button that was given a responsive size, from the named breakpoint upward. The
+   attribute is emitted per breakpoint by `getResponsiveButtonSizeAttributes`, and the width comes
+   from the Tailwind theme so the two never describe different breakpoints. */
+@mixin button-size-at($breakpoint, $size) {
+  @media (min-width: theme('screens.#{$breakpoint}')) {
+    &[data-attr-size-#{$breakpoint}='#{$size}'] {
+      @content;
+    }
+  }
+}
+
 @mixin button-icon-size($size) {
   &[data-attr-icon-size='#{$size}'] {
     @content;
