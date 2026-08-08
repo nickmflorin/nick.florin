@@ -1,18 +1,11 @@
-import { db } from '~/database/prisma';
-
-import { convertToPlainObject } from '~/api/serialization';
+import { getPageProject } from '~/actions/projects/get-page-project';
 
 import { GreenBudget } from '~/features/projects/components/pages/GreenBudget';
 
 import { RedirectIfNotVisible } from '../RedirectIfNotVisible';
 
 const GreenBudgetPage = async () => {
-  const project = convertToPlainObject(
-    await db.project.findUniqueOrThrow({
-      include: { repositories: true, skills: true },
-      where: { slug: 'greenbudget' },
-    }),
-  );
+  const project = await getPageProject('greenbudget');
   return (
     <RedirectIfNotVisible project={project}>
       <GreenBudget project={project} />

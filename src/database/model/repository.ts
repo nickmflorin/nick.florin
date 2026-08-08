@@ -6,7 +6,7 @@ import { type BrandProject, type BrandRepository } from './brand';
 import { type ConditionallyInclude } from './inclusion';
 import { type ApiSkill } from './skills';
 
-export const getRepositoryGithubUrl = (repository: BrandRepository): string => {
+export const getRepositoryGithubUrl = (repository: Pick<BrandRepository, 'slug'>): string => {
   let basePath = environment.get('NEXT_PUBLIC_GITHUB_PROFILE_PREFIX');
   if (!basePath.endsWith('/')) {
     basePath = `${basePath}/`;

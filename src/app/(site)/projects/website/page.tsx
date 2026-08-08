@@ -1,18 +1,11 @@
-import { db } from '~/database/prisma';
-
-import { convertToPlainObject } from '~/api/serialization';
+import { getPageProject } from '~/actions/projects/get-page-project';
 
 import { Website } from '~/features/projects/components/pages/Website';
 
 import { RedirectIfNotVisible } from '../RedirectIfNotVisible';
 
 const WebsitePage = async () => {
-  const project = convertToPlainObject(
-    await db.project.findUniqueOrThrow({
-      include: { repositories: true, skills: true },
-      where: { slug: 'website' },
-    }),
-  );
+  const project = await getPageProject('website');
 
   return (
     <RedirectIfNotVisible project={project}>

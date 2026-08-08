@@ -29,12 +29,13 @@ const getProjectTabOrderIndex = (slug: ProjectSlug): number => {
 
 export interface RedirectIfNotVisibleProps {
   readonly children: ReactNode;
-  readonly project: Project;
+  readonly project: Pick<Project, 'id' | 'visible'>;
 }
 
 export const RedirectIfNotVisible = async ({ children, project }: RedirectIfNotVisibleProps) => {
   if (!project.visible) {
     const otherProjects = await db.project.findMany({
+      select: { slug: true },
       where: { id: { notIn: [project.id] }, visible: true },
     });
 

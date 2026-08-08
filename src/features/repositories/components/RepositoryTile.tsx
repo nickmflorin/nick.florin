@@ -16,7 +16,7 @@ export interface RepositoryTileProps extends Pick<
   readonly isDescriptionVisible?: boolean;
   readonly isLinkVisible?: boolean;
   readonly isNpmLinkVisible?: boolean;
-  readonly repository: BrandRepository;
+  readonly repository: Pick<BrandRepository, 'description' | 'npmPackageName' | 'slug'>;
 }
 
 export const RepositoryTile = ({
