@@ -102,8 +102,8 @@ export const ClientSkillsSelect = <B extends SelectBehaviorType>({
       data={data ?? []}
       isDisabled={error !== undefined || props.isDisabled}
       isInputLoading={isLoading || props.isInputLoading}
-      /* Loading does not lock the select ('locked' removes pointer events): it stays interactive
-         so it can be opened before the data arrives, with the menu showing its loading state. */
+      /* Loading does not lock the select: it stays interactive so it can be opened before the data
+         arrives, with the menu showing its loading state. */
       isLocked={props.isLocked}
       isReady={data === undefined ? false : props.isReady !== false}
       onSearch={e => {

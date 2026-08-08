@@ -34,8 +34,14 @@
 .input {
   @include base.input-base;
   @include partials.locked();
-  @include partials.loading();
   @include partials.disabled();
+
+  /* A select is exempt because it shows the loading state for its options inside its own menu, so
+     it has to stay clickable while that request is in flight - otherwise the menu can never be
+     opened to reach the indicator. Every other input has nothing to offer mid-load. */
+  &:not(.select) {
+    @include partials.loading();
+  }
 
   display: flex;
   flex-direction: row;

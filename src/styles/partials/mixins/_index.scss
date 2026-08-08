@@ -74,7 +74,7 @@ $visited-selectors: (':visited');
 }
 
 @mixin locked($args...) {
-  @include selectors.with-selectors($loading-selectors, $args...) {
+  @include selectors.with-selectors($locked-selectors, $args...) {
     pointer-events: none !important;
     @content;
   }
