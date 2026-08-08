@@ -136,6 +136,7 @@ export const SkillsChartFilterForm = ({
           includes={['skills']}
           inputClassName='w-full'
           isClearable
+          isInPortal
           onChange={onChange}
           onError={() => form.setErrors('educations', 'There was an error loading the data.')}
           popoverPlacement='bottom'
