@@ -4,10 +4,10 @@ import { z } from 'zod';
 
 import { parseOrdering } from '~/lib/ordering';
 
-import { RepositoriesDefaultOrdering, RepositoriesFiltersObj } from '~/actions';
+import { PAGE_SIZES, RepositoriesDefaultOrdering, RepositoriesFiltersObj } from '~/actions';
 
-import { Loading } from '~/components/loading/Loading';
 import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableBodySkeleton } from '~/components/tables/data-tables/ConnectedDataTableBodySkeleton';
 import { RepositoriesTableColumns } from '~/features/repositories';
 import { RepositoriesTableControlBarPlaceholder } from '~/features/repositories/components/tables/RepositoriesTableControlBarPlaceholder';
 
@@ -33,7 +33,7 @@ const RepositoriesTablePage = async (props: RepositoriesTablePageProps) => {
       fallback={
         <>
           <RepositoriesTableControlBarPlaceholder />
-          <Loading component='tbody' isLoading />
+          <ConnectedDataTableBodySkeleton numRows={PAGE_SIZES.repository} />
         </>
       }
       key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}

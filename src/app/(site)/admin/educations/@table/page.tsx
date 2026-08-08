@@ -4,10 +4,10 @@ import { z } from 'zod';
 
 import { parseOrdering } from '~/lib/ordering';
 
-import { EducationsDefaultOrdering, EducationsFiltersObj } from '~/actions';
+import { EducationsDefaultOrdering, EducationsFiltersObj, PAGE_SIZES } from '~/actions';
 
-import { Loading } from '~/components/loading/Loading';
 import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableBodySkeleton } from '~/components/tables/data-tables/ConnectedDataTableBodySkeleton';
 import { EducationsTableColumns } from '~/features/educations';
 import { EducationsTableControlBarPlaceholder } from '~/features/educations/components/tables/EducationsTableControlBarPlaceholder';
 
@@ -33,7 +33,7 @@ const EducationsTablePage = async (props: EducationsTablePageProps) => {
       fallback={
         <>
           <EducationsTableControlBarPlaceholder />
-          <Loading component='tbody' isLoading />
+          <ConnectedDataTableBodySkeleton numRows={PAGE_SIZES.education} />
         </>
       }
       key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}

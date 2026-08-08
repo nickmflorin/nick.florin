@@ -4,10 +4,10 @@ import { z } from 'zod';
 
 import { parseOrdering } from '~/lib/ordering';
 
-import { ExperiencesDefaultOrdering, ExperiencesFiltersObj } from '~/actions';
+import { ExperiencesDefaultOrdering, ExperiencesFiltersObj, PAGE_SIZES } from '~/actions';
 
-import { Loading } from '~/components/loading/Loading';
 import { columnIsOrderable } from '~/components/tables';
+import { ConnectedDataTableBodySkeleton } from '~/components/tables/data-tables/ConnectedDataTableBodySkeleton';
 import { ExperiencesTableColumns } from '~/features/experiences';
 import { ExperiencesTableControlBarPlaceholder } from '~/features/experiences/components/tables/ExperiencesTableControlBarPlaceholder';
 
@@ -33,7 +33,7 @@ const ExperiencesTablePage = async (props: ExperiencesTablePageProps) => {
       fallback={
         <>
           <ExperiencesTableControlBarPlaceholder />
-          <Loading component='tbody' isLoading />
+          <ConnectedDataTableBodySkeleton numRows={PAGE_SIZES.experience} />
         </>
       }
       key={JSON.stringify(filters) + JSON.stringify(ordering) + JSON.stringify(page)}
