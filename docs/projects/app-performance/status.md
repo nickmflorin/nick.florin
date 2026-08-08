@@ -140,12 +140,12 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
 - 2026-08-06: Frozen-selects-on-first-open fixed (the popover's selects ignored clicks and showed a
   stray clear icon until their data arrived, self-resolving on close/reopen via the warm SWR cache).
   Three gates were involved: `SelectPopover`'s `isReady` disable, `DataSelectBase`'s `NOTSET` input
-  disable, and `isLocked={isLoading}` (pointer-events removal) in
-  `ClientEducationSelect`/`ClientExperienceSelect`. The selects now stay interactive while their
-  data loads (menu shows its loading state), `NOTSET` renders the placeholder instead of a phantom
-  clearable value, and `preloadSkillsChartFilterData()` warms the educations/experiences SWR keys on
-  filter-trigger hover/focus/click. See backlog Phase 2b for the follow-up covering the remaining
-  `Client*Select`s.
+  disable, and `isLocked={isLoading}` in `ClientEducationSelect`/`ClientExperienceSelect`. The third
+  was a misdiagnosis and left the selects frozen; see the 2026-08-08 entry. The selects now stay
+  interactive while their data loads (menu shows its loading state), `NOTSET` renders the
+  placeholder instead of a phantom clearable value, and `preloadSkillsChartFilterData()` warms the
+  educations/experiences SWR keys on filter-trigger hover/focus/click. See backlog Phase 2b for the
+  follow-up covering the remaining `Client*Select`s.
 
 - 2026-08-06: The "random chart/button flicker" was pinned by browser instrumentation (headless
   Chrome with layout-shift and mutation observers), superseding the earlier HMR hypothesis: every
@@ -199,6 +199,28 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
   (`items-center justify-center`), so the widget mounts centered instead of jumping from its in-flow
   top-left position when Clerk's client code takes over.
 
+- 2026-08-08: The permanently frozen selects were fixed at the root. The symptom the 2026-08-05 and
+  2026-08-06 passes never addressed is that the freeze **outlives the request** — on a first open
+  the selects stay inert indefinitely, with no spinner and no error, and only recover on
+  close/reopen. Console instrumentation cleared the data path outright: both preloaded requests
+  resolve, `error` stays `undefined`, `isLoading` goes `false`. The cause is a latched effect in
+  `use-data-select.ts` keyed on `[isReady]` alone. When `isReady` flips true, `useSelect` sets the
+  value in the same commit, so the effect still reads `NOTSET`, skips, and never re-runs — leaving
+  `modelValue` at `NOTSET`, which is what `DataSelectBase` disables the input on. Fixed by keying
+  the effect on `[isReady, value, modelValue]` behind a `modelValue === NOTSET` guard, which
+  confines it to initialization and cannot loop on a `value` prop rebuilt each render.
+
+- 2026-08-08: The `locked()` mixin was found to target `$loading-selectors` rather than
+  `$locked-selectors`, so `isLocked` had no CSS effect on inputs while `[data-attr-loading="true"]`
+  carried the `pointer-events: none !important` — inverting the premise the 2026-08-05 fix and its
+  comments were written against. Real defect, but not the cause of the freeze above, which outlives
+  the loading window. Fixed by pointing `locked()` at `$locked-selectors` and exempting `.select`
+  from the loading gate, since a select must be openable mid-load; its menu is where the loading
+  state lives. This makes `isLocked` live for the first time across menus, tables, buttons and
+  inputs, which is worth a browser pass. Also fixed: `ClientEducationSelect` in
+  `SkillsChartFilterForm` was missing `isInPortal`, so its menu was clipped by the popover's
+  `overflow-y-auto`.
+
 ## In Progress
 
 - The 2026-08-06 batch — filters popover restructure, frozen-selects fix, `ConditionalPortal`
@@ -213,6 +235,13 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
 
 ## Next
 
+0. **Phase 8 — static shell: `cacheComponents` and viewport seed removal.** The immediate priority,
+   ahead of the Phase 2b filters cluster. `await headers()` in `src/app/(site)/layout.tsx` is the
+   only dynamic-API call under `src/app` and forces every `(site)` route to render dynamically;
+   removing it unlocks `cacheComponents`, which is the only thing that will stop the header's
+   Suspense fallback flashing on refresh (caching shortens the boundary's life, it cannot remove
+   it). Full scope, the four SSR-divergent seed consumers, and the ordered items are in
+   [backlog.md](./backlog.md). Starts on its own branch.
 1. Review and verify the 2026-08-08 batch: `pnpm tsc`, `pnpm lint`, and a browser pass over
    `/resume/*`, `/projects/*`, `/admin/*`, the header, and the site tour (whose first step was
    retargeted from the removed dropdown onto `#site-resume-actions`).
@@ -227,7 +256,8 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
 4. Manual signed-in verification: sign-in flow, admin CMS, tour/drawers/toasts — best done in a
    browser session. (The account section of the site menu no longer exists.)
 
-Everything else in [backlog.md](./backlog.md) is closed except the Phase 2b filters cluster —
-debounced filter changes, the select-data performance investigation, and the URL-driven filters
-question in [open-questions.md](./open-questions.md) — which the developer has deferred and does not
-want started. Phase 5 is complete; Phase 7 (the closing Lighthouse pass) was dropped 2026-08-08.
+Everything else in [backlog.md](./backlog.md) is closed except Phase 8 (above) and the Phase 2b
+filters cluster — debounced filter changes, the select-data performance investigation, and the
+URL-driven filters question in [open-questions.md](./open-questions.md). The developer ranked Phase
+8 above that cluster on 2026-08-08; the cluster stays deferred until Phase 8 lands. Phase 5 is
+complete; Phase 7 (the closing Lighthouse pass) was dropped 2026-08-08.
