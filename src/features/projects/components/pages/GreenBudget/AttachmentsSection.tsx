@@ -2,7 +2,7 @@ import { Description } from '~/components/typography';
 import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
 import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
 import { Emphasize } from '~/features/projects/components/Emphasize';
-import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { ProjectVideo } from '~/features/projects/components/ProjectVideo';
 import { Section } from '~/features/projects/components/Section';
 
 export const AttachmentsSection = () => (
@@ -13,8 +13,7 @@ export const AttachmentsSection = () => (
       feature, as it allowed users to keep a record of receipts, invoices and contracts directly in
       the budget itself.
     </Description>
-    <ProjectImage
-      alt='GreenBudget Attachments'
+    <ProjectVideo
       caption={
         <DescriptionGroup>
           <CaptionDescription>
@@ -27,8 +26,8 @@ export const AttachmentsSection = () => (
           </CaptionDescription>
         </DescriptionGroup>
       }
-      isUnoptimized
-      src='/projects/greenbudget/attachments.gif'
+      label='GreenBudget Attachments'
+      src='/projects/greenbudget/attachments'
     />
   </Section>
 );

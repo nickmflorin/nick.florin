@@ -150,3 +150,17 @@ thoughtspot
 liveboard
 liveboards
 svgs
+faststart
+ffmpeg
+gifs
+libvpx
+libx
+movflags
+nostats
+playsinline
+transcode
+transcoded
+transcodes
+transcoding
+webm
+janky

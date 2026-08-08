@@ -2,7 +2,7 @@ import { Description } from '~/components/typography';
 import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
 import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
 import { Emphasize } from '~/features/projects/components/Emphasize';
-import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { ProjectVideo } from '~/features/projects/components/ProjectVideo';
 import { Section } from '~/features/projects/components/Section';
 
 export const SubTotalingSection = () => (
@@ -33,8 +33,7 @@ export const SubTotalingSection = () => (
         to be solved in order to support both features in tandem.
       </Description>
     </DescriptionGroup>
-    <ProjectImage
-      alt='GreenBudget Grouping'
+    <ProjectVideo
       caption={[
         <CaptionDescription key='0'>
           An example of a user creating a new <Emphasize.Caption>Group</Emphasize.Caption>
@@ -57,31 +56,29 @@ export const SubTotalingSection = () => (
           <Emphasize.Caption>Group</Emphasize.Caption> total to.
         </CaptionDescription>,
       ]}
-      isUnoptimized
-      src='/projects/greenbudget/grouping.gif'
+      label='GreenBudget Grouping'
+      src='/projects/greenbudget/grouping'
     />
     <Description>
       <Emphasize>Group</Emphasize>(s) can also be created by selecting (checking) individual rows in
       the table.
     </Description>
-    <ProjectImage
-      alt='GreenBudget Checkbox Grouping'
+    <ProjectVideo
       caption={
         <CaptionDescription isCentered>
           An example of a user creating a new <Emphasize.Caption>Group</Emphasize.Caption>
           &nbsp;from the 3 checked rows in the table.
         </CaptionDescription>
       }
-      isUnoptimized
-      src='/projects/greenbudget/grouping-from-checkboxes.gif'
+      label='GreenBudget Checkbox Grouping'
+      src='/projects/greenbudget/grouping-from-checkboxes'
     />
     <Description>
       Rows of the table can be removed from the <Emphasize>Group</Emphasize> they belong to by
       either dragging the row out of the <Emphasize>Group</Emphasize> or by right-clicking the row
       and selecting the &quot;Remove from Group&quot; option in the context menu.
     </Description>
-    <ProjectImage
-      alt='GreenBudget Removing From Group'
+    <ProjectVideo
       caption={
         <CaptionDescription>
           An example of a user removing a row from the&nbsp;
@@ -91,8 +88,8 @@ export const SubTotalingSection = () => (
           <Emphasize.Caption>Group</Emphasize.Caption>&nbsp;in the table.
         </CaptionDescription>
       }
-      isUnoptimized
-      src='/projects/greenbudget/removing-from-group.gif'
+      label='GreenBudget Removing From Group'
+      src='/projects/greenbudget/removing-from-group'
     />
   </Section>
 );

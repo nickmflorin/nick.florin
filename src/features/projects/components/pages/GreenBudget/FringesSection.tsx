@@ -1,7 +1,7 @@
 import { Description } from '~/components/typography';
 import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
 import { Emphasize } from '~/features/projects/components/Emphasize';
-import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { ProjectVideo } from '~/features/projects/components/ProjectVideo';
 import { Section } from '~/features/projects/components/Section';
 
 export const FringesSection = () => (
@@ -14,8 +14,7 @@ export const FringesSection = () => (
       <Emphasize>estimated</Emphasize> value of any line item it is applied to (assuming it has a
       non-zero percentage or flat rate value).
     </Description>
-    <ProjectImage
-      alt='GreenBudget Fringes'
+    <ProjectVideo
       caption={[
         <CaptionDescription key='0'>
           An example of a user creating a new <Emphasize.Caption>Fringe</Emphasize.Caption>, &nbsp;
@@ -37,8 +36,8 @@ export const FringesSection = () => (
           <Emphasize.Caption>Fringe</Emphasize.Caption> is applied in the above image.
         </CaptionDescription>,
       ]}
-      isUnoptimized
-      src='/projects/greenbudget/fringes.gif'
+      label='GreenBudget Fringes'
+      src='/projects/greenbudget/fringes'
     />
   </Section>
 );

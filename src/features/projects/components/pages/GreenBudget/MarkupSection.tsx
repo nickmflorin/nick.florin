@@ -2,7 +2,7 @@ import { Description } from '~/components/typography';
 import { CaptionDescription } from '~/features/projects/components/CaptionDescription';
 import { DescriptionGroup } from '~/features/projects/components/DescriptionGroup';
 import { Emphasize } from '~/features/projects/components/Emphasize';
-import { ProjectImage } from '~/features/projects/components/ProjectImage';
+import { ProjectVideo } from '~/features/projects/components/ProjectVideo';
 import { Section } from '~/features/projects/components/Section';
 
 export const MarkupSection = () => (
@@ -27,8 +27,7 @@ export const MarkupSection = () => (
         the table.
       </Description>
     </DescriptionGroup>
-    <ProjectImage
-      alt='GreenBudget Markup'
+    <ProjectVideo
       caption={
         <CaptionDescription>
           An example of a user creating a <Emphasize.Caption>Markup</Emphasize.Caption> and applying
@@ -38,8 +37,8 @@ export const MarkupSection = () => (
           the table&apos;s parent.
         </CaptionDescription>
       }
-      isUnoptimized
-      src='/projects/greenbudget/markup.gif'
+      label='GreenBudget Markup'
+      src='/projects/greenbudget/markup'
     />
   </Section>
 );
