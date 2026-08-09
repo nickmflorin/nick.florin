@@ -65,6 +65,9 @@ Long-running project working context (status, decisions, codebase maps) lives un
 - [Skills Enhancements](./projects/skills-enhancements/README.md) - Improving how skills are
   displayed and discovered: a proficiency-bucketed chart, tag-only skill views, a searchable master
   skills page, and a global portfolio search bar
+- [Rebrand](./projects/rebrand/README.md) - A new style guide and visual identity for the site, and
+  the infrastructure to support it — starting with light/dark/system theme support built on
+  cookie-persisted preference and CSS custom-property color tokens
 
 ## AI Instructions vs Human Documentation
 
