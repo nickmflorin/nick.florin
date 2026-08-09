@@ -4,15 +4,17 @@ Guides covering the React and Next.js conventions used in this repository.
 
 ## Quick Navigation
 
-| I want to...                                  | Go to                                                        |
-| --------------------------------------------- | ------------------------------------------------------------ |
-| Avoid a data-fetching waterfall               | [Performance → Waterfalls](./performance.md)                 |
-| Decide whether to import through a barrel     | [Performance → Bundle Size](./performance.md)                |
-| Pass data from a server to a client component | [Performance → Server/Client Boundary](./performance.md)     |
-| Render conditionally in JSX                   | [Performance → Re-renders and Rendering](./performance.md)   |
-| Decide whether a boolean prop is justified    | [Composition → Booleans](./composition.md)                   |
-| Replace a `renderX` prop                      | [Composition → Children Over Render Props](./composition.md) |
-| Share state between sibling components        | [Composition → Lift State Into a Provider](./composition.md) |
+| I want to...                                  | Go to                                                                    |
+| --------------------------------------------- | ------------------------------------------------------------------------ |
+| Avoid a data-fetching waterfall               | [Performance → Waterfalls](./performance.md)                             |
+| Decide whether to import through a barrel     | [Performance → Bundle Size](./performance.md)                            |
+| Pass data from a server to a client component | [Performance → Server/Client Boundary](./performance.md)                 |
+| Render conditionally in JSX                   | [Performance → Re-renders and Rendering](./performance.md)               |
+| Decide whether a boolean prop is justified    | [Composition → Booleans](./composition.md)                               |
+| Replace a `renderX` prop                      | [Composition → Children Over Render Props](./composition.md)             |
+| Share state between sibling components        | [Composition → Lift State Into a Provider](./composition.md)             |
+| Declare a new component and its props         | [Component Definitions](./component-definitions.md)                      |
+| Type a component with generic type arguments  | [Component Definitions → Generic Components](./component-definitions.md) |
 
 ## Document Overview
 
@@ -29,10 +31,18 @@ Designing component APIs that survive growth: boolean props describe state rathe
 variants are written out as explicit components, `children` replaces markup-only render props, and
 shared state lifts into a provider.
 
+### [Component Definitions](./component-definitions.md)
+
+The shape of a component's declaration: props are an exported `interface` named after the component
+with a `Props` suffix, the component is a `const` arrow function typed with `FC` from `react`, and
+components with generic type arguments — which `FC` cannot express — inline the props annotation
+instead.
+
 ## The Vercel Skills
 
-Both documents are deliberate subsets. The full corpora are Vercel Engineering's agent skills,
-vendored into this repository and consulted on demand rather than loaded on every file:
+The performance and composition documents are deliberate subsets. The full corpora are Vercel
+Engineering's agent skills, vendored into this repository and consulted on demand rather than loaded
+on every file:
 
 | Skill                         | Contents                                     | Location                                      |
 | ----------------------------- | -------------------------------------------- | --------------------------------------------- |

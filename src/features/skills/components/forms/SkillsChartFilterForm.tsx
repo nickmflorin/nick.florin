@@ -12,16 +12,10 @@ import {
 import { Form, type FormProps } from '~/components/forms-v2/Form';
 import { RadioGroup } from '~/components/input/RadioGroup';
 import { ButtonFooter } from '~/components/structural/ButtonFooter';
-import {
-  EducationSelect,
-  type EducationSelectModel,
-} from '~/features/educations/components/input/EducationSelect';
-import { StreamedEducationSelect } from '~/features/educations/components/input/StreamedEducationSelect';
-import {
-  ExperienceSelect,
-  type ExperienceSelectModel,
-} from '~/features/experiences/components/input/ExperienceSelect';
-import { StreamedExperienceSelect } from '~/features/experiences/components/input/StreamedExperienceSelect';
+import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
+import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
+import { SkillsChartEducationsField } from '~/features/skills/components/forms/SkillsChartEducationsField';
+import { SkillsChartExperiencesField } from '~/features/skills/components/forms/SkillsChartExperiencesField';
 import { ProgrammingDomainSelect } from '~/features/skills/components/input/ProgrammingDomainSelect';
 import { ProgrammingLanguageSelect } from '~/features/skills/components/input/ProgrammingLanguageSelect';
 import { SkillCategorySelect } from '~/features/skills/components/input/SkillCategorySelect';
@@ -48,6 +42,16 @@ export const SkillsChartFilterFormSchema = z.object({
 });
 
 export type SkillsChartFilterFormValues = z.infer<typeof SkillsChartFilterFormSchema>;
+
+/**
+ * The pause in filter form activity after which pending changes are applied to the chart, so a
+ * burst of select toggles produces a single refetch rather than one per change.
+ *
+ * Both surfaces that render the form (`SkillsFilterPopover` and `SkillsFilterDrawer`) debounce
+ * their change propagation by this delay, and each flushes whatever is pending when it closes so
+ * no change is ever lost to the pause.
+ */
+export const SkillsChartFilterDebounceDelay = 500;
 
 const ShowTopSkillsLabels: Record<ShowTopSkillsString, string> = {
   '5': '5',
@@ -123,86 +127,16 @@ export const SkillsChartFilterForm = ({
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField
-      form={form}
-      helpText='The professional experience(s) where the skills were acquired or used.'
-      label='Experiences'
-      name='experiences'
-    >
-      {({ onChange, value }) => (
-        /* The fallback is the select in its awaiting-data state, so an open that beats the
-           promise's resolution shows the menu's loading indicator instead of an inert input. */
-        <Suspense
-          fallback={
-            <ExperienceSelect
-              behavior='multi'
-              data={[]}
-              hasAbbreviatedLabels={false}
-              inputClassName='w-full'
-              isClearable
-              isInPortal
-              isInputLoading
-              isReady={false}
-              onChange={onChange}
-              popoverPlacement='bottom'
-              value={value}
-            />
-          }
-        >
-          <StreamedExperienceSelect
-            behavior='multi'
-            dataPromise={experiencesPromise}
-            hasAbbreviatedLabels={false}
-            inputClassName='w-full'
-            isClearable
-            isInPortal
-            onChange={onChange}
-            onError={() => form.setErrors('experiences', 'There was an error loading the data.')}
-            popoverPlacement='bottom'
-            value={value}
-          />
-        </Suspense>
-      )}
-    </Form.ControlledField>
-    <Form.ControlledField
-      form={form}
-      helpText='The academic experience(s) where the skills were acquired or used.'
-      label='Educations'
-      name='educations'
-    >
-      {({ onChange, value }) => (
-        <Suspense
-          fallback={
-            <EducationSelect
-              behavior='multi'
-              data={[]}
-              hasAbbreviatedLabels={false}
-              inputClassName='w-full'
-              isClearable
-              isInPortal
-              isInputLoading
-              isReady={false}
-              onChange={onChange}
-              popoverPlacement='bottom'
-              value={value}
-            />
-          }
-        >
-          <StreamedEducationSelect
-            behavior='multi'
-            dataPromise={educationsPromise}
-            hasAbbreviatedLabels={false}
-            inputClassName='w-full'
-            isClearable
-            isInPortal
-            onChange={onChange}
-            onError={() => form.setErrors('educations', 'There was an error loading the data.')}
-            popoverPlacement='bottom'
-            value={value}
-          />
-        </Suspense>
-      )}
-    </Form.ControlledField>
+    {/* Each field owns the resolution of its streamed options, so the whole field — label,
+        select and error slot — is the unit that suspends, and the fallback is the same field in
+        its awaiting-data variant: an open that beats the promise's resolution shows the menu's
+        loading indicator instead of an inert input. */}
+    <Suspense fallback={<SkillsChartExperiencesField form={form} />}>
+      <SkillsChartExperiencesField dataPromise={experiencesPromise} form={form} />
+    </Suspense>
+    <Suspense fallback={<SkillsChartEducationsField form={form} />}>
+      <SkillsChartEducationsField dataPromise={educationsPromise} form={form} />
+    </Suspense>
     <Form.ControlledField
       form={form}
       helpText='The specific development stack(s) that the skill pertains to, if applicable.'

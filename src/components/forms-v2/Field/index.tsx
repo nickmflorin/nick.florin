@@ -63,7 +63,11 @@ type ConnectedAbstractFieldProps<
   N extends FieldName<I>,
   I extends BaseFormValues,
 > = BaseAbstractFieldProps<{
-  readonly errors?: never;
+  /**
+   * Errors provided directly as props, rendered in addition to the errors the form holds for the
+   * field.
+   */
+  readonly errors?: FieldError[];
   readonly form: FormInstance<I>;
   readonly name: N;
 }>;
@@ -132,6 +136,7 @@ export const Field = <N extends FieldName<I>, I extends BaseFormValues>({
     <ShowHide show={autoRenderErrors}>
       {form ? (
         <FormFieldErrors
+          errors={_errors}
           form={form}
           name={name}
           style={{ marginTop: sizeToString(errorSeparation, 'px') }}

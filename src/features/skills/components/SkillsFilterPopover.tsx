@@ -16,10 +16,12 @@ import { useForm } from '~/components/forms-v2/hooks/use-form';
 import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
 import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
 import {
+  SkillsChartFilterDebounceDelay,
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
 } from '~/features/skills/components/forms/SkillsChartFilterForm';
+import { useDebounceCallback } from '~/hooks';
 
 export interface SkillsFilterPopoverProps {
   readonly buttonProps?: Omit<ChartFilterButtonProps, 'isDisabled'>;
@@ -52,17 +54,25 @@ export const SkillsFilterPopover = ({
   onClear,
   skills,
 }: SkillsFilterPopoverProps): JSX.Element => {
+  /* Form changes reach the chart only after a pause in activity, so a burst of select toggles
+     produces one refetch; closing the popover flushes whatever is pending. */
+  const debouncedOnChange = useDebounceCallback(onChange, SkillsChartFilterDebounceDelay);
+
   const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({
     defaultValues: { showTopSkills: 'all' },
     onChange: ({ values }) => {
-      onChange(values);
+      debouncedOnChange(values);
     },
     schema: SkillsChartFilterFormSchema,
   });
 
+  /* An externally-driven filters change (the module header's Clear button, or a change flushed by
+     the drawer) supersedes anything pending here, so the pending call is cancelled before the form
+     is synced - otherwise its stale values would apply on top of the external update. */
   useEffect(() => {
+    debouncedOnChange.cancel();
     setValues(filters);
-  }, [filters, setValues]);
+  }, [filters, setValues, debouncedOnChange]);
 
   return (
     <Popover
@@ -75,7 +85,10 @@ export const SkillsFilterPopover = ({
             form={{ ...form, setValues }}
             isClearDisabled={!hasFiltersChanged}
             isScrollable={false}
-            onClear={onClear}
+            onClear={() => {
+              debouncedOnChange.cancel();
+              onClear();
+            }}
             skills={skills}
           />
         </PopoverContent>
@@ -86,6 +99,7 @@ export const SkillsFilterPopover = ({
       isInPortal
       middleware={[flip({})]}
       offset={{ mainAxis: 4 }}
+      onClose={() => debouncedOnChange.flush()}
       placement='bottom-end'
       triggers={['click']}
       width={400}

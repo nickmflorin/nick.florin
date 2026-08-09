@@ -15,7 +15,12 @@ import {
 import { FormFieldError } from './FieldError';
 
 type FieldFormErrorsProps<N extends FieldName<I>, I extends BaseFormValues> = {
-  readonly errors?: never;
+  /**
+   * Errors provided directly by the caller, rendered after (and in addition to) whatever errors
+   * the form holds for the field. Lets render-derived errors — e.g. a failed data load resolved
+   * during render — display on the field without being imperatively written into form state.
+   */
+  readonly errors?: FieldError[];
   readonly form: FormInstance<I>;
   readonly name: N;
 } & ComponentProps;
@@ -40,7 +45,7 @@ export const FormFieldErrors = <N extends FieldName<I>, I extends BaseFormValues
   const errors = useMemo(() => {
     if (fieldErrors) {
       const _name = ensuresDefinedValue(name);
-      return fieldErrors[_name as keyof FieldErrors<I>] ?? [];
+      return [...(fieldErrors[_name as keyof FieldErrors<I>] ?? []), ..._errors];
     }
     return _errors;
   }, [_errors, name, fieldErrors]);

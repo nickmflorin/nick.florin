@@ -229,11 +229,19 @@ today, established by reading the floating primitives:
       one select in `SkillsChartFilterForm` without `isInPortal`, so its menu was clipped by the
       popover's `overflow-y-auto`.
 
-- [ ] **Debounce filter form changes** (added 2026-08-05, developer request): apply select changes
+- [x] **Debounce filter form changes** (added 2026-08-05, developer request): apply select changes
       to the chart only after a debounce threshold (they currently fire a refetch per change), and
       flush any pending changes when the popover closes. Interacts with the URL-driven-filters
       question in [open-questions.md](./open-questions.md) — if filters move to the URL, the
-      debounce becomes "batch locally, flush to the URL".
+      debounce becomes "batch locally, flush to the URL". Done 2026-08-09, applied to the existing
+      filter-state flow at the developer's direction (the URL question stays open but no longer
+      gates anything): both surfaces wrap their change propagation in `useDebounceCallback` at a
+      shared `SkillsChartFilterDebounceDelay` (500ms), the popover flushes pending changes through
+      `Popover`'s `onClose`, the drawer flushes in a `useUnmount` cleanup (it unmounts on close
+      through several paths), and both cancel their pending call on an external `filters` change or
+      a form Clear so stale values can never apply on top of a reset. Browser-verified: a
+      three-toggle burst produced one `/api/skills` refetch carrying all three ids, and closing the
+      popover mid-window flushed immediately.
 - [x] **Promise-stream the popover's select options** — decided and implemented 2026-08-09
       (supersedes the 2026-08-06 deferred investigation, and no longer gated on the URL-driven
       filters question): implement the React 19 promise-streaming pattern for the chart filter
@@ -256,7 +264,13 @@ today, established by reading the floating primitives:
       `StreamedEducationSelect`/`StreamedExperienceSelect` wrappers behind per-select `Suspense`,
       and minimal `EducationSelectModel`/`ExperienceSelectModel` types on the base selects; the SWR
       preload shim was deleted. Browser-verified on desktop and 390px — no
-      `/api/educations`/`/api/experiences` requests remain. Details in [status.md](./status.md).
+      `/api/educations`/`/api/experiences` requests remain. Refined the same day: the
+      `Streamed*Select` wrappers became field-level
+      `SkillsChartExperiencesField`/`SkillsChartEducationsField` components (the field is the
+      suspending unit; load failures render through the connected field's new direct `errors` prop
+      instead of `form.setErrors`), and `SkillsChartModule` gained
+      `useTransition`/`useDeferredValue`/`memo` so filter interactions stay urgent while chart
+      redraws are deferred. Details in [status.md](./status.md).
 
 - [ ] **Later — admin table filter bar select data.** Filed 2026-08-09 under the standing direction
       to leave the admin CMS alone and record admin-side candidates as follow-up tasks rather than
@@ -547,6 +561,10 @@ suggests nothing will need it.
 
 ### Cleanup to fold in
 
-`MobileNavigationCutoff = 450` in `src/components/constants.ts` is duplicated as bare `max-[450px]`
-literals in `LayoutNavigation.tsx` and `LayoutMenuButton.tsx`. 450px is already the Tailwind `xs`
-breakpoint, so `max-xs:` expresses the same thing and cannot drift.
+Done 2026-08-09: the bare `max-[450px]` literals duplicating `MobileNavigationCutoff = 450`
+(`src/components/constants.ts`) were replaced with `max-xs:` — 450px is the Tailwind `xs`
+breakpoint, so the variant cannot drift. Three occurrences, not the two originally noted:
+`LayoutNavigation.tsx`, `LayoutMenuButton.tsx`, and `Header/index.tsx` (`SiteResumeActions`).
+Verified at an emulated 390px: the rail and resume actions hide, the hamburger shows. The constant
+itself remains, as its JS consumers (`NavMenuProvider`, `Navigating`, `SiteNavMenuOverlay`) compare
+against measured widths.

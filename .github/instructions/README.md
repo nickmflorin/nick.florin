@@ -44,6 +44,7 @@ Unlike the human-readable documentation in [docs/](../../docs/index.md), these i
 | `code-quality/code-comments.instructions.md`               | JSDoc and commenting standards                                  | TypeScript/JavaScript files |
 | `code-quality/eslint.instructions.md`                      | ESLint usage and rule-disable policy                            | TypeScript/JavaScript files |
 | `code-quality/file-naming.instructions.md`                 | File/folder casing: PascalCase components, hyphen-case          | TS/JS + Markdown files      |
+| `code-quality/react/component-definitions.instructions.md` | `FC`-typed const components, interface props named `{X}Props`   | TSX files                   |
 | `code-quality/react/composition.instructions.md`           | Boolean props, explicit variants, children over render props    | TSX files                   |
 | `code-quality/react/performance.instructions.md`           | Waterfalls, bundle size, server/client boundary, re-renders     | TypeScript files            |
 | `code-quality/typescript/exhaustiveness.instructions.md`   | Exhaustive handling of union/enum types; no fallthrough         | TypeScript files            |

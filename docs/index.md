@@ -36,6 +36,8 @@ Setup, local development, database and deployment instructions live in the
   server/client boundary, and re-renders
 - [React: Composition](./code-quality/react/composition.md) - Boolean props, explicit variants,
   children over render props, and lifting state into a provider
+- [React: Component Definitions](./code-quality/react/component-definitions.md) - `FC`-typed `const`
+  arrow functions, interface props named after the component, and generic components
 
 ### ✍️ Documentation
 
@@ -55,8 +57,14 @@ Long-running project working context (status, decisions, codebase maps) lives un
   maximizing first paint, eliminating load flicker, and cutting bundle/payload size
 - [Repo Cleanup](./projects/repo-cleanup/README.md) - General repository maintenance: dependency
   upgrades, tooling modernization, and convention simplification
+- [Select Simplification](./projects/select-simplification/README.md) - Simplifying the select
+  component stack: separating popover content from the input to support deferred data, collapsing
+  per-domain wrapper variants, and shrinking the readiness/loading state machinery
 - [UX Enhancements](./projects/ux-enhancements/README.md) - An umbrella for small, independent
   user-facing polish items: visual refinements, sizing, and interaction improvements
+- [Skills Enhancements](./projects/skills-enhancements/README.md) - Improving how skills are
+  displayed and discovered: a proficiency-bucketed chart, tag-only skill views, a searchable master
+  skills page, and a global portfolio search bar
 
 ## AI Instructions vs Human Documentation
 
