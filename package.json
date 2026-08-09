@@ -20,7 +20,7 @@
     "build:local": "pnpm run prisma:generate && rm -rf ./.next && next build",
     "build:analyze": "pnpm run node:validate && cross-env ANALYZE_BUNDLE=true next build --webpack",
     "dev": "pnpm run node:validate && next dev --port 3006",
-    "start": "pnpm run node:validate && next start",
+    "start": "pnpm run node:validate && next start --port 3006",
     "lint": "pnpm run eslint && pnpm run prettier",
     "lint:errors": "pnpm exec eslint --quiet --no-error-on-unmatched-pattern . && pnpm run prettier",
     "format": "pnpm run prettier:format && pnpm run eslint:format",
