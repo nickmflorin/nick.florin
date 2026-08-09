@@ -53,8 +53,10 @@ Long-running project working context (status, decisions, codebase maps) lives un
   content under a single source of truth with per-medium distribution
 - [App Performance](./projects/app-performance/README.md) - Restoring SSR of page content,
   maximizing first paint, eliminating load flicker, and cutting bundle/payload size
-- [Monorepo Cleanup](./projects/monorepo-cleanup/README.md) - General repository maintenance:
-  dependency upgrades, tooling modernization, and convention simplification
+- [Repo Cleanup](./projects/repo-cleanup/README.md) - General repository maintenance: dependency
+  upgrades, tooling modernization, and convention simplification
+- [UX Enhancements](./projects/ux-enhancements/README.md) - An umbrella for small, independent
+  user-facing polish items: visual refinements, sizing, and interaction improvements
 
 ## AI Instructions vs Human Documentation
 

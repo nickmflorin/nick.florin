@@ -9,25 +9,24 @@ export const BackgroundSection = () => (
   <Section hasMarginBottom={false} title='Background'>
     <DescriptionGroup>
       <Description>
-        The way that film producers manage budgets is different than how people in any other
-        industry manage budgets - standard, general accounting/budgeting tools do not work. The
-        majority of (if not all) producers relied on a combination of internal, overly-complicated
-        spreadsheets with custom macros, third-party Excel integrations and/or the popular
-        MovieMagic budgeting software - which is a desktop-only, single tenant, expensive and
-        severely outdated piece of software.
+        Film producers do not manage budgets the way people in other industries do, and standard
+        accounting and budgeting tools do not work for them. Most producers relied on some
+        combination of overly complicated internal spreadsheets with custom macros, third-party
+        Excel integrations and the popular MovieMagic budgeting software, a desktop-only,
+        single-tenant, expensive and severely outdated product.
       </Description>
       <Description>
-        When I was approached by a film producer out in Los Angeles, CA with an idea to modernize
-        film budgeting with a web-based, mult-user, collaborative solution tailored specifically
-        towards film production, I thought it was a great idea - and we began working together on
-        what would eventually become <Emphasize>GreenBudget</Emphasize>.
+        When a film producer in Los Angeles approached me with an idea to modernize film budgeting
+        with a web-based, multi-user, collaborative solution built specifically for film production,
+        I thought it was a great one. We began working together on what would eventually become{' '}
+        <Emphasize>GreenBudget</Emphasize>.
       </Description>
     </DescriptionGroup>
     <ProjectImage
       alt='GreenBudget Landing Page'
       caption={
         <CaptionDescription isCentered>
-          <Emphasize.Caption>GreenBudget</Emphasize.Caption>&apos;s original landing/slash page.
+          <Emphasize.Caption>GreenBudget</Emphasize.Caption>&apos;s original landing page.
         </CaptionDescription>
       }
       src='/projects/greenbudget/landing.png'

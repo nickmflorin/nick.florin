@@ -16,10 +16,9 @@ import { SubTotalingSection } from './SubTotalingSection';
 export const FeaturesSection = () => (
   <Section hasMarginBottom={false} title='Features'>
     <Description>
-      Even when in its infancy, <Emphasize>GreenBudget</Emphasize> was packed with features that
-      were not available in any other production budgeting tool on the market. It is impossible to
-      describe each and every feature on this page - so the following represents a brief summary of
-      just <i>some</i> of the features that were available.
+      Even in its infancy, <Emphasize>GreenBudget</Emphasize> was packed with features that no other
+      production budgeting tool on the market offered. Describing all of them here would be
+      impractical, so what follows is a brief look at <i>some</i> of them.
     </Description>
     <ActualizationSection />
     <FringesSection />

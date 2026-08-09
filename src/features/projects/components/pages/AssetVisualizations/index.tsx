@@ -20,34 +20,34 @@ export const AssetVisualizations = (props: AssetVisualizationsProps): JSX.Elemen
   <ProjectComponent
     description={
       <Description>
-        A JavaScript charting library written in&nbsp;
+        A JavaScript charting library written in{' '}
         <InlineLink element='a' href='https://d3js.org'>
           d3.js
-        </InlineLink>
-        &nbsp;that can be used to visualize data in either 4 or 5 dimensions (depending on the chart
-        type), including time.
+        </InlineLink>{' '}
+        that visualizes data in four or five dimensions, depending on the chart type, one of which
+        can be time.
       </Description>
     }
     title='n-Dimensional Charting Library for Asset Management'
     {...props}
   >
-    <Description key='0'>The package supported the following chart types:</Description>
+    <Description key='0'>The package supports the following chart types:</Description>
     <BubbleChart />
     <BarChart />
     <ProjectImage
-      alt='Bubble Chart'
+      alt='Changing Chart Parameters'
       caption={[
-        'For all chart types, the metrics that each dimension represent can be changed using a ' +
-          'dropdown menu embedded in the canvas view.  The manner in which this is done is ' +
-          'completely configurable during instantiation of the JavaScript chart instance.',
+        'For every chart type, the metric that each dimension represents can be changed with a ' +
+          'dropdown menu embedded in the canvas view. How this behaves is fully configurable ' +
+          'when the chart instance is created.',
       ]}
       src='/projects/asset-visualizations/changing-parameters.png'
     />
     <ProjectImage
-      alt='Bubble Chart'
+      alt='Hiding and Showing Data Points'
       caption={[
-        'Individual data points can be dynamically hidden and shown, allowing the user to ' +
-          'focus on certain data points of interest over time.',
+        'Individual data points can be hidden and shown on the fly, letting the user focus on ' +
+          'the data points they care about over time.',
       ]}
       src='/projects/asset-visualizations/hiding-showing.png'
     />

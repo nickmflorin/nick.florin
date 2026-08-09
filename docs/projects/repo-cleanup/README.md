@@ -1,6 +1,6 @@
-# Monorepo Cleanup Project — Working Context
+# Repo Cleanup Project — Working Context
 
-This folder is the persistent working context for the monorepo-cleanup project: a running program of
+This folder is the persistent working context for the repo-cleanup project: a running program of
 general repository maintenance — dependency upgrades, tooling modernization, convention
 simplification, and the removal of dependencies that no longer earn their keep. It exists so that
 any session (human or AI) can pick up exactly where the last one left off. **Read this file first,

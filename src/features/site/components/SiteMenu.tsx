@@ -14,7 +14,7 @@ export interface SiteMenuProps {
 export const SiteMenu = ({ nav, resume }: SiteMenuProps) => (
   <Menu className='site-menu'>
     <Menu.Content className='flex flex-col justify-between gap-[8px]'>
-      {nav.length !== 0 ? (
+      {nav.length === 0 ? null : (
         <div className='flex flex-col gap-[4px]'>
           {flattenSidebarItems(nav).map((item, index) => (
             <Menu.Item className='p-0' key={index} shouldHighlightOnHover={false}>
@@ -22,7 +22,7 @@ export const SiteMenu = ({ nav, resume }: SiteMenuProps) => (
             </Menu.Item>
           ))}
         </div>
-      ) : null}
+      )}
       {resume ? (
         <Menu.Item
           className='flex flex-row items-center gap-[8px] p-0'

@@ -8,41 +8,40 @@ export const BarChart = () => (
   <Section
     description={
       <Description>
-        In the case of a Bar Chart, data can be simultaneously visualized in 3 different dimensions
-        (excluding time), which are represented by the following characteristics of the chart:
+        A Bar Chart can visualize data in three dimensions at once (excluding time), each
+        represented by one of the following characteristics of the chart:
       </Description>
     }
     title='Bar Chart'
   >
     <Series>
       <SeriesItem title='X-Axis'>
-        The x-axis can be configured with a dropdown menu to represent the desired metric. When
-        hovering over a bar in the chart, a dotted line will indicate exactly where that data point
-        sits on the x-axis.
+        The x-axis can be configured with a dropdown menu to represent the desired metric. When a
+        bar in the chart is hovered, a dotted line indicates exactly where that data point sits on
+        the x-axis.
       </SeriesItem>
       <SeriesItem title='Y-Axis'>
-        The y-axis can be configured with a dropdown menu to represent the desired metric. When
-        hovering over a bar in the chart, a dotted line will indicate exactly where that data point
-        sits on the x-axis.
+        The y-axis can be configured with a dropdown menu to represent the desired metric. When a
+        bar in the chart is hovered, a dotted line indicates exactly where that data point sits on
+        the y-axis.
       </SeriesItem>
       <SeriesItem title='Color'>
-        The color of the bar itself can be used to represent a dimension of the data. For discrete,
-        string values, the color can be used to group bars together that share the same value. For
-        continuous, numeric values, shades of the color can be used to represent the magnitude of
-        the value.
+        The color of the bar itself can represent a dimension of the data. For discrete, string
+        values, color can group bars that share the same value. For continuous, numeric values,
+        shades of a color can represent the magnitude of the value.
       </SeriesItem>
       <SeriesItem title='Time'>
-        If the data is provided as a time-series, the chart will include an animation play button
-        that, when clicked, will animate the dimensions of the chart changing over time.
+        If the data is provided as a time series, the chart includes a play button that animates the
+        dimensions of the chart changing over time.
       </SeriesItem>
     </Series>
     <ProjectImage
-      alt='Bubble Chart'
+      alt='Bar Chart'
       caption={[
-        'In this example, the color dimension is used to represent each distinct data point. ' +
-          'The exact x and y coordinates of each bubble are shown when the bar is hovered.',
-        'Clicking on a bar causes a draggable tag to appear in the chart view, which can be ' +
-          'hidden by clicking on the bar a second time.',
+        'In this example, the color dimension identifies each distinct data point. The exact x ' +
+          'and y coordinates of a bar are shown when it is hovered.',
+        'Clicking a bar pins a draggable tag to the chart view, which can be hidden by clicking ' +
+          'the bar a second time.',
       ]}
       src='/projects/asset-visualizations/bar-chart.png'
     />

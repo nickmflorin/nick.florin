@@ -8,20 +8,19 @@ import { Section } from '~/features/projects/components/Section';
 export const AttachmentsSection = () => (
   <Section hasMarginBottom={false} isSubSection title='Attachments'>
     <Description>
-      <Emphasize>Greenbudget</Emphasize> allowed users to upload files and associate those files
-      with individual rows of both the budget and the actuals tables. This was a very popular
-      feature, as it allowed users to keep a record of receipts, invoices and contracts directly in
-      the budget itself.
+      <Emphasize>GreenBudget</Emphasize> let users upload files and attach them to individual rows
+      of both the budget and the actuals tables. This was a very popular feature, because it kept
+      receipts, invoices and contracts on record directly inside the budget itself.
     </Description>
     <ProjectVideo
       caption={
         <DescriptionGroup>
           <CaptionDescription>
-            An example of user uploading an attachment for a row in the &nbsp;
-            <Emphasize>Sub Account</Emphasize>(s) table view inside of a budget.
+            A user uploading an attachment for a row in the <Emphasize>Sub Account</Emphasize> view
+            of a budget.
           </CaptionDescription>
           <CaptionDescription>
-            Just like all other cells, attachment cells could be copy/pasted and copied over a range
+            Like any other cell, attachment cells could be copied, pasted and filled across a range
             of cells with a simple drag and drop.
           </CaptionDescription>
         </DescriptionGroup>

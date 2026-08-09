@@ -9,32 +9,29 @@ export const MarkupSection = () => (
   <Section hasMarginBottom={false} isSubSection title='Markup'>
     <DescriptionGroup>
       <Description>
-        The <Emphasize>Markup</Emphasize> feature can be used to apply percentage or flat rate
-        markups to certain rows in a table view. <Emphasize>Markup</Emphasize>(s) - which are
-        treated as separate <Emphasize>Sub Account</Emphasize>(s) in the table, just without all the
-        characteristics of a traditional <Emphasize>Sub Account</Emphasize> - appear as rows in the
-        table with special indicators that aid users in differentiating them from other, non-
-        <Emphasize>Markup</Emphasize> rows.
+        The <Emphasize>Markup</Emphasize> feature applies percentage or flat-rate markups to chosen
+        rows in a table view. A <Emphasize>Markup</Emphasize> is treated as its own{' '}
+        <Emphasize>Sub Account</Emphasize>, just without all the characteristics of a traditional
+        one, and appears as a row in the table with special indicators that help users distinguish
+        it from ordinary rows.
       </Description>
       <Description>
-        Since <Emphasize>Markup</Emphasize>(s) are treated as a pseudo-
-        <Emphasize>Sub Account</Emphasize>, they contribute to the overall values of the parent
+        Because a <Emphasize>Markup</Emphasize> behaves as a pseudo{' '}
+        <Emphasize>Sub Account</Emphasize>, it contributes to the overall values of the parent
         table.
       </Description>
       <Description>
-        <Emphasize>Markup</Emphasize>(s) can be applied to rows in the table in a variety of
-        different ways, including checkbox selection of rows and highlighting certain portions of
-        the table.
+        <Emphasize>Markups</Emphasize> can be applied to rows in several ways, including checking
+        individual rows and highlighting a portion of the table.
       </Description>
     </DescriptionGroup>
     <ProjectVideo
       caption={
         <CaptionDescription>
-          An example of a user creating a <Emphasize.Caption>Markup</Emphasize.Caption> and applying
-          it to the selected rows in the table. The&nbsp;
-          <Emphasize.Caption>Markup</Emphasize.Caption> applies a 15% multiplier to the first 4 rows
-          of the table, contributing (roughly) an additional ~$800,000.00 to the estimated value of
-          the table&apos;s parent.
+          A user creating a <Emphasize.Caption>Markup</Emphasize.Caption> and applying it to the
+          selected rows in the table. The <Emphasize.Caption>Markup</Emphasize.Caption> applies a
+          15% multiplier to the first four rows, contributing roughly an additional $800,000.00 to
+          the estimated value of the table&apos;s parent.
         </CaptionDescription>
       }
       label='GreenBudget Markup'
