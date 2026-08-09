@@ -16,8 +16,6 @@ export function convertToPlainObject<T>(value: T): T {
   return superjson.parse<T>(superjson.stringify(value));
 }
 
-
-
 const SuperJSONResultSchema = z.object({
   json: z.union([z.record(z.any()), z.array(z.any())]),
   meta: z.record(z.any()).optional(),

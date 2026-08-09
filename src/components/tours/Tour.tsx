@@ -1,8 +1,9 @@
 'use client';
 import dynamic from 'next/dynamic';
 
-import { useCookies } from 'next-client-cookies';
+import { getCookie } from '~/lib/cookies';
 
+import { useIsHydrated } from '~/hooks/use-is-hydrated';
 import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
 import { SuppressTourCookie } from './use-tour';
@@ -19,13 +20,17 @@ const TourRoot = dynamic(() => import('./TourRoot').then(mod => mod.TourRoot), {
  * previously dismissed the tour and the screen is large enough for the tour to run.
  */
 export const Tour = () => {
-  const cookies = useCookies();
+  const isHydrated = useIsHydrated();
   const { isLessThanOrEqualTo } = useScreenSizes();
 
-  if (
-    isLessThanOrEqualTo('md') ||
-    cookies.get(SuppressTourCookie)?.toLocaleLowerCase() === 'true'
-  ) {
+  /* The gate is only evaluated once the document exists, because both of its inputs - the
+     suppression cookie and the measured viewport - are readable in the browser and nowhere else.
+     The subtree this guards is `ssr: false` regardless, so deferring the decision costs nothing
+     and keeps the server's output and the first client render trivially in agreement. */
+  if (!isHydrated) {
+    return null;
+  }
+  if (isLessThanOrEqualTo('md') || getCookie(SuppressTourCookie)?.toLocaleLowerCase() === 'true') {
     return null;
   }
   return <TourRoot />;

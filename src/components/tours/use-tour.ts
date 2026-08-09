@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 
 import { useTour as useRootTour } from '@reactour/tour';
-import { useCookies } from 'next-client-cookies';
 
 import { logger } from '~/internal/logger';
+import { getCookie } from '~/lib/cookies';
 
 import { SiteResumeActionsElementId } from '~/components/constants';
 import { useScreenSizes } from '~/hooks/use-screen-sizes';
@@ -12,16 +12,14 @@ import { useScreenSizes } from '~/hooks/use-screen-sizes';
  * The cookie that records that the user has dismissed the tour and does not want to be shown it
  * again.
  *
- * The name must contain only RFC 6265 token characters. The client writes cookies through
- * js-cookie, which URL-encodes disallowed name characters (the previous name's ':' was stored as
- * '%3A'), while the server looks the name up raw from the request — so a name with special
- * characters is found on the client but missed on the server, and the two disagree about whether
- * the tour is suppressed (a hydration mismatch in the tour gate).
+ * The name contains only RFC 6265 token characters, so that it is stored and looked up under the
+ * same spelling by every client that touches it. An earlier name used a ':', which some writers
+ * percent-encode and others do not, leaving the cookie written under one name and read under
+ * another.
  */
 export const SuppressTourCookie = 'nick-florin-suppress-tour';
 
 export const useTour = () => {
-  const cookies = useCookies();
   const { setIsOpen: setRootTourIsOpen } = useRootTour();
   const { isLessThanOrEqualTo } = useScreenSizes();
   const [error, setError] = useState<null | string>(null);
@@ -32,7 +30,7 @@ export const useTour = () => {
      with afterwards, and deciding up front avoids showing the dialog a render late. */
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(
     () =>
-      !isLessThanOrEqualTo('md') && cookies.get(SuppressTourCookie)?.toLocaleLowerCase() !== 'true',
+      !isLessThanOrEqualTo('md') && getCookie(SuppressTourCookie)?.toLocaleLowerCase() !== 'true',
   );
 
   const setTourIsOpen = useCallback(

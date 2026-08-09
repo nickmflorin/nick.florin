@@ -2,12 +2,14 @@
 import { type ReactNode } from 'react';
 
 import { TourProvider as RootTourProvider } from '@reactour/tour';
-import { useCookies } from 'next-client-cookies';
+
+import { setCookie } from '~/lib/cookies';
 
 import { SiteResumeActionsElementId } from '~/components/constants';
 import { useDrawers } from '~/components/drawers/hooks/use-drawers';
 import { TourContent } from '~/components/tours/TourContent';
 import { TourPopoverContainer } from '~/components/tours/TourPopoverContainer';
+import { SuppressTourCookie } from '~/components/tours/use-tour';
 import { Description, Text } from '~/components/typography';
 import { SkillBadge } from '~/features/skills/components/badges';
 
@@ -17,7 +19,6 @@ export interface TourProviderProps {
 
 export const TourProvider = ({ children }: TourProviderProps) => {
   const { close } = useDrawers();
-  const cookies = useCookies();
   return (
     <RootTourProvider
       ContentComponent={TourPopoverContainer}
@@ -90,7 +91,7 @@ export const TourProvider = ({ children }: TourProviderProps) => {
         {
           actionAfter: () => {
             close();
-            cookies.set('nick.florin:suppress-tour', 'true');
+            setCookie(SuppressTourCookie, 'true');
           },
           content: (
             <TourContent label='Skills'>
