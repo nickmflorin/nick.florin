@@ -19,7 +19,7 @@ export const ResumeModelCondensedTileSkeleton = ({
   <ResumeModelTile {...props}>
     <ResumeModelHeaderScaffold
       areTagsVisible={areTagsVisible}
-      image={({ size }) => <Skeleton height={size} width={size} />}
+      image={({ className }) => <Skeleton className={classNames('aspect-square', className)} />}
       size='small'
       subTitle={<Skeleton className='w-[30%]' height={14} />}
       tags={ps => <Skeleton {...ps} className={classNames('w-[40%]', ps.className)} height={12} />}

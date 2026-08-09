@@ -9,35 +9,32 @@ import { RecursiveTreeStructureSection } from './RecursiveTreeStructureSection';
 export const ConceptsSection = () => (
   <Section hasMarginBottom={false} title='Concepts'>
     <Description>
-      In production budgeting, the <Emphasize>Top Sheet</Emphasize> represents the top level line
-      items, or <Emphasize>Account</Emphasize>(s) in the budget. The estimated, actual and variance
-      values for each <Emphasize>Account</Emphasize> are determined based on the accumulation of
-      related values on each <Emphasize>Sub Account</Emphasize> it contains.
+      In production budgeting, the <Emphasize>Top Sheet</Emphasize> holds the top-level line items
+      in the budget, called <Emphasize>Accounts</Emphasize>. The estimated, actual and variance
+      values for each <Emphasize>Account</Emphasize> are determined by accumulating the
+      corresponding values on each <Emphasize>Sub Account</Emphasize> it contains.
     </Description>
     <ProjectImage
       alt='GreenBudget Top Sheet'
       caption={
         <CaptionDescription isCentered>
-          An example of a <Emphasize.Caption>Top Sheet</Emphasize.Caption> in&nbsp;
+          An example of a <Emphasize.Caption>Top Sheet</Emphasize.Caption> in{' '}
           <Emphasize.Caption>GreenBudget</Emphasize.Caption>.
         </CaptionDescription>
       }
       src='/projects/greenbudget/topsheet.png'
     />
     <Description>
-      When an <Emphasize>Account</Emphasize> is &quot;expanded&quot;, the&nbsp;
-      <Emphasize>Account</Emphasize>&nbsp;row expands into a new table showing all of the&nbsp;
-      <Emphasize>Sub Account</Emphasize>(s) that it contains. The metrics for each row (i.e.&nbsp;
-      <Emphasize>Sub Account</Emphasize>(s)) funnel upwards to the associated&nbsp;
-      <Emphasize>Account</Emphasize> row in the&nbsp;
-      <Emphasize>Top Sheet</Emphasize>.
+      When an <Emphasize>Account</Emphasize> is expanded, its row opens into a new table showing the{' '}
+      <Emphasize>Sub Accounts</Emphasize> it contains. The metrics for each{' '}
+      <Emphasize>Sub Account</Emphasize> funnel upwards into the associated{' '}
+      <Emphasize>Account</Emphasize> row of the <Emphasize>Top Sheet</Emphasize>.
     </Description>
     <ProjectImage
       alt='GreenBudget Nested Accounts'
       caption={
         <CaptionDescription isCentered>
-          An example of the expanded <Emphasize.Caption>Sub Account</Emphasize.Caption>(s) view
-          for&nbsp;
+          The expanded <Emphasize.Caption>Sub Account</Emphasize.Caption> view for{' '}
           <Emphasize.Caption>Account 1001; Construction Contracts for Set</Emphasize.Caption>.
         </CaptionDescription>
       }

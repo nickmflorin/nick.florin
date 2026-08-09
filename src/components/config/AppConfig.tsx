@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import { type JSX, type ReactNode } from 'react';
 
 /* One of the breaking changes in Mantine V7 is the migration to native CSS. The styling is no
@@ -20,16 +19,12 @@ import '@mantine/dates/styles.css';
 
 import '~/styles/globals/index.scss';
 
-import { CookiesProvider } from './CookiesProvider';
 import { ClientConfig } from './ClientConfig';
 
 export interface AppConfigProps {
   readonly children: ReactNode;
-  readonly initialViewportWidth: number;
 }
 
-export const AppConfig = ({ children, initialViewportWidth }: AppConfigProps): JSX.Element => (
-  <CookiesProvider>
-    <ClientConfig initialViewportWidth={initialViewportWidth}>{children}</ClientConfig>
-  </CookiesProvider>
+export const AppConfig = ({ children }: AppConfigProps): JSX.Element => (
+  <ClientConfig>{children}</ClientConfig>
 );

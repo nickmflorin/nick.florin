@@ -296,10 +296,14 @@ an override rather than a requirement and the most recent resume stands in when 
 It returns `null` only when no resumes exist at all.
 
 **Follow-up opened by this change — there is now no sign-out anywhere in the app.** `SignOutButton`
-was only ever rendered in the site menu, and the item above did not ask for a replacement. Putting
-one in the admin CMS needs a new tab component, a registry icon, and a `ClerkProvider` on
-`/admin/*`. Session refresh is unaffected — `clerkMiddleware` handles it server-side, so the CMS
-works without clerk-js. Awaiting a developer decision.
+was only ever rendered in the site menu, and the item above did not ask for a replacement.
+
+- [ ] **Later — restore a sign-out affordance.** Deferred 2026-08-08 (developer decision: not needed
+      for now). Deliberately not scheduled against any phase; pick it up when the admin CMS is next
+      worked on. It needs a new tab component, a registry icon, and a `ClerkProvider` on `/admin/*`,
+      which is why it is not a one-line addition. Nothing is broken in the meantime: session refresh
+      is handled server-side by `clerkMiddleware`, so the CMS works without clerk-js, and signing
+      out can be done through Clerk directly.
 
 **Collateral:** the site tour hard-depended on the removed dropdown (it clicked
 `#site-dropdown-menu-button` and ran a `MutationObserver` for `#site-dropdown-menu-resume-item`).
@@ -405,40 +409,109 @@ column's `calc()` and an 80px→50px padding swing.
 
 ### Items
 
-- [ ] Convert `ResumeModelHeader` and `ResumeModelHeaderScaffold` off `useScreenSizes` to Tailwind
-      responsive/container variants: `ImageSizes`/`ImageGaps` become utility sets, and
-      `maxWidth: calc(100% - Npx - Mpx)` becomes `min-w-0 flex-1`. Both already use container
-      queries (`@sm/resume-model-tile:pl-[50px]`), so this finishes a conversion that is half done.
-      Highest value — do this first.
-- [ ] Replace the `isLessThan('md') ? 'xsmall' : 'small'` button sizing in `SkillsChartModule`,
-      `SkillsFilterDropdownMenu` and `SkillsFilterPopover` with responsive classes.
-- [ ] Move `SkillsFilterDropdownMenu`'s drawer-vs-popover branch behind hydration and read
-      `window.innerWidth` directly. The drawer half is already client-only (`PortalDrawerWrapper`
-      returns `null` until hydrated), so once the trigger's `size` is CSS-driven the branch
-      contributes nothing to server HTML.
-- [ ] Decide and implement the `Disclaimer` approach: render both subtrees and CSS-toggle them
-      (costs a duplicated `useState` + `AnimatePresence`), or restructure the collapse to be
-      CSS-driven (`line-clamp` plus a `<details>`-style toggle) so one tree serves both widths.
-      Requires reading the actual copy before choosing.
-- [ ] Delete the seed: `getInitialViewportWidth` in `src/app/(site)/layout.tsx`, the
-      `x-viewport-device` header in `src/proxy.ts`, `ViewportSeedWidths`/`ViewportDeviceHeader` in
-      `src/application/viewport.ts`, and the `seedWidth` prop threaded through `AppConfig` →
-      `ClientConfig` → `ScreenSizeProvider`. `useScreenSizes` then starts from a real measurement.
-      The remaining readers (`Tour`'s chunk-download gate, `DrawerWrapper`'s click-outside gate) are
-      client-only and post-hydration, so `window` serves them directly.
-- [ ] Enable `cacheComponents: true` — **top-level** in `next.config.mjs`, not under `experimental`
-      (`experimental.cacheComponents` and `experimental.ppr` are both deprecated in 16.2).
-- [ ] Migrate the three `unstable_cache` modules to `"use cache"` + `cacheTag` + `cacheLife`:
-      `src/actions/get-profile.ts`, `src/actions/resumes/get-primary-resume.ts`, and
-      `src/actions/projects/get-navigation-projects.ts`. The superjson round trip
-      (`serializeForCache`/`deserializeFromCache`, which exists only because `unstable_cache`
-      JSON-serializes and would return `Date` as a string) and the `React.cache` wrapper both come
-      out — `"use cache"` uses React serialization and dedupes within a request already. Existing
-      `updateTag` calls in the resume mutations keep working unchanged.
-- [ ] Remove the header's Suspense boundary in `src/components/layout/Layout.tsx` and delete
-      `HeaderSkeleton`, once the header prerenders into the shell.
-- [ ] Verify: `next build` reports the `(site)` routes as prerendered rather than dynamic, and the
-      header no longer flashes a skeleton on refresh.
+- [x] Convert `ResumeModelHeader` and `ResumeModelHeaderScaffold` off `useScreenSizes` to Tailwind
+      responsive/container variants — done 2026-08-08. `ImageSizes` became the class maps in
+      `src/features/resume/components/tiles/image-sizes.ts`; `ImageGaps` held `8` at every
+      breakpoint for every size and collapsed to a static gap outright. The image slot moved from
+      the deprecated `ModelImage` to `Avatar`, which had been written as its replacement and had no
+      callers: its `flex-shrink: 0` is what retired the `maxWidth: calc(100% - Npx - 8px)` on the
+      sibling column, which existed only because `ModelImage` had no shrink guard. With the hook
+      gone the header, title, subtitle and tag components no longer need a client boundary.
+- [x] Replace the `isLessThan('md') ? 'xsmall' : 'small'` button sizing in `SkillsChartModule`,
+      `SkillsFilterDropdownMenu` and `SkillsFilterPopover` — done 2026-08-08. A button size is a
+      design token rather than a set of pixel values, so it could not move to a utility class
+      without restating what `$button-sizes` owns. A size may now be given per breakpoint
+      (`size={{ base: 'xsmall', md: 'small' }}`), carried by one data attribute per entry, with the
+      stylesheet generating the rules from the same map inside media queries whose widths come from
+      the Tailwind theme. Costs 3.2kb gzipped across the three supported breakpoints. Also corrected
+      `getButtonSizeStyle`, which tested the size against the icon-size literals.
+- [x] Move `SkillsFilterDropdownMenu`'s drawer-vs-popover branch behind hydration — done
+      2026-08-08, and it turned out the two branches rendered the same trigger and the drawer
+      mounts nothing until opened, so the branch never reached server output at all. Deciding on
+      click reads a measured viewport and collapses the duplicated trigger markup. Intent-preloading
+      now fetches the popover chunk only where the popover is what would open.
+- [x] Decide and implement the `Disclaimer` approach — done 2026-08-08 with the CSS collapse. The
+      content is always rendered; the stylesheet collapses it below the cutoff and hides the toggle
+      above it. Animating grid rows between `0fr` and `1fr` collapses to the content's own height,
+      so nothing is measured and no `max-height` is invented — and the component no longer needs
+      framer-motion. The intro-to-content gap is a margin inside the clipped element rather than a
+      flex gap outside it, so a collapsed disclaimer leaves no space behind. A
+      `prefers-reduced-motion` opt-out was added, which the framer-motion version did not have.
+- [x] Delete the seed — done 2026-08-08. `getInitialViewportWidth`, the `x-viewport-device` header
+      and the middleware's device-class inference, `src/application/viewport.ts` entirely,
+      `ScreenSizeProvider`, `ScreenSizeSeedContext`, and the `initialViewportWidth` prop. The site
+      layout is no longer `async`. `useScreenSizes` starts from a documented `AssumedViewportWidth`
+      and corrects in a layout effect before paint; the constraint that nothing affecting
+      server-rendered output may read it is written into the hook.
+- [x] Enable `cacheComponents: true` — done 2026-08-08, top-level as expected.
+- [x] Migrate the three `unstable_cache` modules to `"use cache"` — done 2026-08-08. The migration
+      made them smaller: React's serialization preserves `Date`, so the superjson round trip came
+      out along with `serializeForCache`/`deserializeFromCache`, which had no other callers, and the
+      `React.cache` wrappers went too. Tag invalidation is unchanged.
+- [x] Remove the header's Suspense boundary and delete `HeaderSkeleton` — done 2026-08-08.
+
+#### Blockers `cacheComponents` surfaced that were not in the original plan
+
+Enabling the flag turned two silent conditions into build errors. Both were real, and neither was
+visible before, because the old defaults degraded the route to dynamic rather than complaining.
+
+- [x] **The root `CookiesProvider` made every route dynamic.** `next-client-cookies/server` reads
+      Next's `cookies()` on the server to serialize them to the client, and it wrapped the entire
+      application from `AppConfig`. All 15 routes failed to prerender with a single identical
+      stack. Every consumer of cookies is the tour (`Tour`, `use-tour`, `TourProvider`,
+      `WelcomeDialog`), and the tour is client-only — `TourRoot` is `ssr: false` — so no cookie
+      value was ever used to produce server output. Replaced with a two-function client helper,
+      `src/lib/cookies.ts`; `CookiesProvider` deleted and the root layout now reads no request data
+      at all. `Tour` gained a `useIsHydrated()` gate so the server and the first client render
+      agree. Fixed in passing: `TourProvider` wrote `'nick.florin:suppress-tour'` while everything
+      else reads `'nick-florin-suppress-tour'`, so dismissing the tour from that step never
+      suppressed it.
+- [x] **The sign-in catch-all could not be prerendered.** `NavigationProvider` reads `usePathname()`
+      at the root, which is knowable at build time for a static route but not for
+      `[[...sign-in]]` — the app's only dynamic route. Route segment config is not an escape hatch:
+      `Route segment config "dynamic" is not compatible with nextConfig.cacheComponents`. Moving
+      sign-in to its own route group was considered and rejected, because it would have cost the
+      page the app chrome. Clerk needs a catch-all only for path-based routing of its sub-steps, so
+      `<SignIn routing='hash' />` on a plain `/sign-in` route resolves it: the route is static, the
+      chrome is preserved, and nothing had to be restructured. Note the sub-step URLs move from
+      `/sign-in/factor-one` to `/sign-in#/factor-one`.
+- [x] **The admin `@pagination` slots had no boundary.** Each reads `searchParams` and queries a
+      count with nothing to defer behind — `@title` and `@table` had `loading.tsx` files and these
+      did not. Added six, backed by a new `PaginatorSkeleton` matching the paginator's own `small`
+      button token (32px, 6px gaps). This was not the cause of the first build failure, but the
+      slots did need it.
+- [x] Remove the now-unused `next-client-cookies` dependency from `package.json` — removed
+      2026-08-09.
+
+#### Remaining
+
+- [x] **Re-derive the project page skeletons** — done 2026-08-09, after the prose rewrite landed.
+      Counts were re-derived by calibration rather than re-estimated: each block's old character
+      count divided by its old line count gives a characters-per-line rate, applied to the new
+      character count. The rewrite was purely wording — no section gained or lost a title, media or
+      paragraphs — and the prose tightened 4–35% per block, so most counts dropped by one. Two
+      corrections beyond the rescale: ToolTrack's third section claimed 9 lines for a single
+      261-character paragraph, which is impossible at any desktop width (now 3), and Website's
+      Skill-Centric section renders three media frames while the skeleton declared two.
+
+  Worth knowing for later: the calibrated rates scatter between 43 and 114 characters per line,
+  because a global ratio ignores that every paragraph ends in a partial line. Modelling it properly
+  (`lines = Σ ceil(chars/C)`) yields C ≈ 114–120, which the typography corroborates — `Description`
+  is `text-sm`/14px in a ~884px column. Two blocks are visibly over-counted against that model
+  (Website's first section at 10 where the model says 5, ToolTrack's description at 6 where it says
+  4); they were left at the rescaled value rather than changed on the model's word alone.
+
+- [x] **Fix the experience and education tile skeletons: the image placeholder collapses** — fixed
+      2026-08-09. The three header lines ran flush to the left edge with no image beside them,
+      where the real tile shows a square image and then the header lines to its right. The cause
+      was the `Avatar` conversion: the real image gets `flex-shrink: 0` from `.avatar`, while its
+      stand-in is a bare `Skeleton` sized by `aspect-square` plus a height class — and in a flex row
+      whose sibling column has `grow min-w-0`, an element with no intrinsic content and no shrink
+      guard is squeezed to zero width. `shrink-0` is now part of the shared image size classes, so
+      the skeleton is guaranteed the same behavior the real image gets from CSS.
+- [x] Verify: `next build` reports the `(site)` routes as prerendered rather than dynamic — done
+      2026-08-09. Every `(site)` route now builds as `○` (static) or `◐` (partially prerendered);
+      all of them were `ƒ` before this phase.
 
 ### Escape hatch, if some consumer genuinely needs a pre-paint width
 

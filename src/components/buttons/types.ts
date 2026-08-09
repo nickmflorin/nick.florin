@@ -54,7 +54,34 @@ export const ButtonDiscreteSizes = enumeratedLiterals(
 );
 export type ButtonDiscreteSize = EnumeratedLiteralsMember<typeof ButtonDiscreteSizes>;
 
-export type ButtonSize = ButtonDiscreteSize | QuantitativeSize<'px'>;
+/**
+ * The breakpoints at which a button may change size.
+ *
+ * Deliberately a subset of the theme's screens. Each entry multiplies the size rules the stylesheet
+ * generates, and a button that restyles itself at more than a couple of widths is usually two
+ * different buttons wearing one name.
+ */
+export const ButtonResponsiveBreakpoints = enumeratedLiterals(['sm', 'md', 'lg'] as const, {});
+export type ButtonResponsiveBreakpoint = EnumeratedLiteralsMember<
+  typeof ButtonResponsiveBreakpoints
+>;
+
+/**
+ * A size that changes with the viewport: `base` applies below the smallest breakpoint given, and
+ * each breakpoint applies from its own minimum width upward.
+ *
+ * Only discrete sizes participate, so that every dimension the size implies keeps being derived
+ * from the `$button-sizes` map rather than restated as pixels at the call site.
+ */
+export type ButtonResponsiveSize = {
+  readonly base: ButtonDiscreteSize;
+} & Partial<Record<ButtonResponsiveBreakpoint, ButtonDiscreteSize>>;
+
+export type ButtonSize = ButtonDiscreteSize | ButtonResponsiveSize | QuantitativeSize<'px'>;
+
+export const isResponsiveButtonSize = (
+  size: ButtonSize | undefined,
+): size is ButtonResponsiveSize => typeof size === 'object';
 
 export const ButtonDiscreteIconSizes = enumeratedLiterals(
   ['xsmall', 'small', 'medium', 'large', 'xlarge', 'full'] as const,

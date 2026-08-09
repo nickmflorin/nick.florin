@@ -10,10 +10,10 @@ import { db } from '~/database/prisma';
  * component: every column of every related skill the query returns is serialized into the RSC
  * payload, whether or not anything reads it.
  */
-export type PageProject = Pick<Project, 'id' | 'name' | 'visible'> & {
+export type PageProject = {
   readonly repositories: Pick<Repository, 'description' | 'npmPackageName' | 'slug'>[];
   readonly skills: Pick<Skill, 'id' | 'label' | 'prioritized'>[];
-};
+} & Pick<Project, 'id' | 'name' | 'visible'>;
 
 /**
  * Reads the project identified by the provided slug, projected down to {@link PageProject}.

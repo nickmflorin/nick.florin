@@ -1,6 +1,5 @@
-import { use, useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-import { ScreenSizeSeedContext } from '~/components/config/context';
 import {
   type Breakpoint,
   Breakpoints,
@@ -16,6 +15,16 @@ import {
 
 import { useWindowResize } from './use-window-resize';
 
+/**
+ * The viewport width assumed until the window has been measured, on the server and on the client's
+ * first render.
+ *
+ * A desktop width is the safe assumption for the consumers that remain: each of them either mounts
+ * only after hydration or reads the width in an event handler, by which point the measured value
+ * has replaced this one.
+ */
+const AssumedViewportWidth = 1440;
+
 type Comparison = 'greaterThan' | 'greaterThanOrEqualTo' | 'lessThan' | 'lessThanOrEqualTo';
 
 const Comparators: Record<Comparison, (actual: number, compare: number) => boolean> = {
@@ -26,17 +35,19 @@ const Comparators: Record<Comparison, (actual: number, compare: number) => boole
 };
 
 export const useScreenSizes = () => {
-  /* The seed is the viewport width the server assumed for this request (derived from the
-     User-Agent's device class by the middleware), so the server render and the client's first,
-     hydration render agree on the responsive variant. `useWindowResize` invokes its handler once on
-     mount inside a layout effect, replacing the seeded values with the real window measurements
-     before the browser paints the hydrated tree. */
-  const seedWidth = use(ScreenSizeSeedContext);
+  /* The window cannot be measured while rendering - not on the server, and not on the client's
+     first render, which has to produce the same markup for hydration to succeed. The hook therefore
+     starts from an assumed width and corrects it in `useWindowResize`, whose handler runs once on
+     mount inside a layout effect, before the browser paints the hydrated tree.
 
-  const [size, setSize] = useState<number>(seedWidth);
+     Nothing that affects server-rendered output may read this value, because the assumption is
+     wrong for every visitor it does not describe. Responsive markup belongs in CSS; this hook is
+     for behavior that cannot be expressed there, and every such consumer either mounts after
+     hydration or reads the value only in an event handler. */
+  const [size, setSize] = useState<number>(AssumedViewportWidth);
 
   const [breakpoint, setBreakpoint] = useState<'0' | Breakpoint>(() =>
-    getBreakpointFromWidth(seedWidth),
+    getBreakpointFromWidth(AssumedViewportWidth),
   );
 
   useWindowResize(w => {

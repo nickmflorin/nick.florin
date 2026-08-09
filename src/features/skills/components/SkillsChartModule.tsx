@@ -12,7 +12,6 @@ import { Loading } from '~/components/loading/Loading';
 import { Module } from '~/components/structural/Module';
 import { useFilterState } from '~/hooks';
 import { useSkills } from '~/hooks/api';
-import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
 import { SkillsBarChartSkeleton } from './charts/SkillsBarChartSkeleton';
 import { type SkillsChartFilterFormValues } from './forms/SkillsChartFilterForm';
@@ -44,8 +43,6 @@ export interface SkillsChartModuleProps {
 }
 
 export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => {
-  const { isLessThan } = useScreenSizes();
-
   const [filters, setFilters, resetFilters, filtersHaveChanged, differingFilters] =
     useFilterState<SkillsChartFilterFormValues>(
       {
@@ -108,7 +105,7 @@ export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => 
             key='1'
             onClick={() => resetFilters()}
             scheme='secondary'
-            size={isLessThan('md') ? 'xsmall' : 'small'}
+            size={{ base: 'xsmall', md: 'small' }}
           >
             Clear
           </Button.Solid>,

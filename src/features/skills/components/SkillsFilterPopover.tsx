@@ -18,7 +18,6 @@ import {
   SkillsChartFilterFormSchema,
   type SkillsChartFilterFormValues,
 } from '~/features/skills/components/forms/SkillsChartFilterForm';
-import { useScreenSizes } from '~/hooks/use-screen-sizes';
 
 export interface SkillsFilterPopoverProps {
   readonly buttonProps?: Omit<ChartFilterButtonProps, 'isDisabled'>;
@@ -47,8 +46,6 @@ export const SkillsFilterPopover = ({
   onClear,
   skills,
 }: SkillsFilterPopoverProps): JSX.Element => {
-  const { isLessThan } = useScreenSizes();
-
   const { setValues, ...form } = useForm<SkillsChartFilterFormValues>({
     defaultValues: { showTopSkills: 'all' },
     onChange: ({ values }) => {
@@ -90,7 +87,7 @@ export const SkillsFilterPopover = ({
           {({ params: _params, ref: _ref }) => (
             <ChartFilterButton
               {...mergeFloatingEventHandlers(params, _params)}
-              size={isLessThan('md') ? 'xsmall' : 'small'}
+              size={{ base: 'xsmall', md: 'small' }}
               {...buttonProps}
               isDisabled={isDisabled}
               ref={instance => {

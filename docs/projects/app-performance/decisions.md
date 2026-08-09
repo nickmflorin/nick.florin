@@ -16,6 +16,28 @@ Format:
 
 ---
 
+## 2026-08-09 — Skeletons approximate; they never query to become exact
+
+**Decision:** A loading skeleton reserves the shape of what it replaces only as far as that shape is
+derivable for free — from the components it stands in for, the typography scale, and the
+stylesheet. It never reads data in order to be accurate, and it is not expected to model a page in
+full. The `/projects/*` skeletons in particular model a prefix of each page (GreenBudget 2 of 3
+top-level sections, ToolTrack 3 of 6, Website 2 of 4) and flatten prose/media interleaving into all
+prose then all media; both are accepted, not defects to be fixed.
+
+**Why:** A skeleton exists so that the page can be painted before its data arrives. A skeleton
+accurate enough to require that data would have to wait for it, which forfeits the only thing it is
+for. Past that point, fidelity trades against the very latency the fallback was introduced to hide.
+The reserved height being approximately right is what prevents the shift that matters; the residual
+reflow below the modeled prefix costs less than a round trip would.
+
+**Alternatives considered:** Deriving the counts from the rendered content — rejected, it makes the
+fallback depend on the data. Measuring the real page once and hard-coding exact per-page geometry —
+rejected, it is a second copy of the layout that drifts silently the moment the copy changes, which
+is precisely what the 2026-08-09 re-derivation had to repair after a prose rewrite.
+
+---
+
 ## 2026-08-05 — The show-more link is an overlay on the clamped text, not a flow element
 
 **Decision:** `WithShowMore` no longer decides the link row's _existence_ from the truncation

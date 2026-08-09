@@ -3,7 +3,12 @@ import { type JSX, type ReactNode } from 'react';
 import { capitalize } from '~/lib/formatters';
 
 import * as types from '~/components/buttons';
-import { getButtonSizeStyle, toDiscreteIconSize, toDiscreteSize } from '~/components/buttons/util';
+import {
+  getButtonSizeStyle,
+  getResponsiveButtonSizeAttributes,
+  toDiscreteIconSize,
+  toDiscreteSize,
+} from '~/components/buttons/util';
 import {
   classNames,
   type ComponentProps,
@@ -64,6 +69,7 @@ const LocalButton: LocalButtonType = <E extends types.ButtonElement>({
     <AbstractButton
       {...ps}
       {...parseDataAttributes({
+        ...getResponsiveButtonSizeAttributes(size),
         iconSize: toDiscreteIconSize(iconSize),
         size: toDiscreteSize(size),
         variant: variant ?? 'solid',

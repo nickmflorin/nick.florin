@@ -7,18 +7,17 @@ import { Section } from '~/features/projects/components/Section';
 export const IntelligentAutocompleteSection = () => (
   <Section hasMarginBottom={false} isSubSection title='Intelligent Autocomplete'>
     <Description>
-      <Emphasize>Greenbudget</Emphasize> incorporated an intelligent system of deterministic
-      algorithms for making education guesses about what the values of newly created rows might be
-      based on patterns that it detects in previously created rows.
+      <Emphasize>GreenBudget</Emphasize> included a system of deterministic algorithms that make
+      educated guesses about the values of newly created rows, based on patterns detected in the
+      rows created before them.
     </Description>
     <ProjectVideo
       caption={
         <CaptionDescription>
-          An example of <Emphasize.Caption>Greenbudget</Emphasize.Caption>&apos;s autocomplete
-          algorithms at work. When the user double-clicks&nbsp;
-          <Emphasize.Caption>Enter</Emphasize.Caption> while at the bottom of the table,&nbsp;
-          <Emphasize.Caption>Greenbudget</Emphasize.Caption> automatically creates a new row and
-          makes education guesses as to what certain values in the new row should be.
+          <Emphasize.Caption>GreenBudget</Emphasize.Caption>&apos;s autocomplete algorithms at work.
+          When the user presses <Emphasize.Caption>Enter</Emphasize.Caption> twice at the bottom of
+          the table, <Emphasize.Caption>GreenBudget</Emphasize.Caption> automatically creates a new
+          row and fills in educated guesses for several of its values.
         </CaptionDescription>
       }
       label='GreenBudget Autocomplete'

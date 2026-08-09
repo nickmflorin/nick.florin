@@ -15,7 +15,7 @@ export const Website = (props: WebsiteProps): JSX.Element => (
   <Project
     description={
       <Description>
-        A CMS-powered, interactive and dynamic personal portfolio/website written using&nbsp;
+        A CMS-powered, interactive personal portfolio and website written in{' '}
         <InlineLink element='a' href='https://nextjs.org/'>
           NextJS
         </InlineLink>
@@ -28,75 +28,71 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     <Section hasMarginBottom={false} title='Internal Component Library'>
       <DescriptionGroup>
         <Description>
-          The application does not rely on any third-party component library. Instead, it leverages
-          an internal component library developed using frameworks like&nbsp;
+          The application does not rely on a third-party component library. Instead, it uses an
+          internal component library built with{' '}
           <InlineLink element='a' href='https://sass-lang.com/'>
             SASS
-          </InlineLink>
-          &nbsp;and&nbsp;
+          </InlineLink>{' '}
+          and{' '}
           <InlineLink element='a' href='https://tailwindcss.com/'>
             TailwindCSS
           </InlineLink>
-          ,&nbsp;along with tooling libraries such as&nbsp;
+          , along with tooling libraries such as{' '}
           <InlineLink element='a' href='https://floating-ui.com/'>
             Floating UI
-          </InlineLink>
-          &nbsp;and&nbsp;
+          </InlineLink>{' '}
+          and{' '}
           <InlineLink element='a' href='https://www.framer.com/motion/'>
             Framer Motion
           </InlineLink>
           .
         </Description>
         <Description>
-          This choice was made primarily as an experiment - to gauge the difficulty, feasibility,
-          limitations and benefits of avoiding a third-party component library like&nbsp;
+          This choice was primarily an experiment, meant to gauge the difficulty, limitations and
+          benefits of forgoing a third-party component library like{' '}
           <InlineLink element='a' href='https://mantine.dev/'>
             Mantine
-          </InlineLink>
-          &nbsp;or&nbsp;
+          </InlineLink>{' '}
+          or{' '}
           <InlineLink element='a' href='https://chakra-ui.com/'>
             Chakra UI
           </InlineLink>
           .
         </Description>
         <Description className='italic'>
-          Disclosure:&nbsp;
+          Disclosure:{' '}
           <InlineLink element='a' href='https://mantine.dev/'>
             Mantine
-          </InlineLink>
-          &nbsp;was used to a minimal extent in a couple of places where it did not make any sense
-          to develop the component internally.
+          </InlineLink>{' '}
+          is used in a couple of places where building the component internally made no sense.
         </Description>
       </DescriptionGroup>
     </Section>
     <Section hasMarginBottom={false} title={<SectionTitle>Skill-Centric Design</SectionTitle>}>
       <DescriptionGroup>
         <Description>
-          The application was designed with the concept of a <Emphasize>Skill</Emphasize> at its
-          core. A&nbsp;
-          <Emphasize>Skill</Emphasize>&nbsp;represents a particular ability or expertise learned
-          throughout an academic and/or professional career, such as&nbsp;
+          The application is designed around the concept of a <Emphasize>Skill</Emphasize>: a
+          particular ability or expertise developed over an academic or professional career, such as{' '}
           <InlineLink element='a' href='https://nextjs.org/'>
             NextJS
           </InlineLink>
           .
         </Description>
         <Description>
-          <Emphasize>Skill</Emphasize>(s) can then be associated with all other models in the
-          application via the admin-only CMS, such as an <Emphasize>Experience</Emphasize> or&nbsp;
-          <Emphasize>Project</Emphasize>. The dates for which the associated models were relevant
-          can then be used to dynamically reconstruct experience metrics (usually in years) for
-          every <Emphasize>Skill</Emphasize> in the application.
+          A <Emphasize>Skill</Emphasize> can be associated with any other model in the application,
+          such as an <Emphasize>Experience</Emphasize> or a <Emphasize>Project</Emphasize>, via the
+          admin-only CMS. The dates during which those associated models were relevant are then used
+          to dynamically reconstruct experience metrics, usually in years, for every{' '}
+          <Emphasize>Skill</Emphasize> in the application.
         </Description>
       </DescriptionGroup>
       <ProjectImage
         alt='Modifying Skills'
         caption={
           <CaptionDescription>
-            <Emphasize.Caption>Skill</Emphasize.Caption>(s) can be modified, deleted and/or created
-            via the admin-only CMS. Skill(s) can then be associated with other models in the
-            application, which factor into the calculation of experience metrics for each Skill it
-            relates to.
+            <Emphasize.Caption>Skills</Emphasize.Caption> can be created, modified and deleted in
+            the admin-only CMS. Associating a <Emphasize.Caption>Skill</Emphasize.Caption> with
+            other models in the application factors into the experience metrics calculated for it.
           </CaptionDescription>
         }
         src='/projects/website/modifying-skills.png'
@@ -105,36 +101,31 @@ export const Website = (props: WebsiteProps): JSX.Element => (
         alt='Modifying Courses'
         caption={
           <CaptionDescription>
-            The relationship between <Emphasize.Caption>Skill</Emphasize.Caption>(s) and associated
-            models can also be modified in the reverse direction. Here, the&nbsp;
-            <Emphasize.Caption>Skill</Emphasize.Caption>(s) associated with a&nbsp;
-            <Emphasize.Caption>Course</Emphasize.Caption> are being modified. This will affect the
-            academic experience metrics for each <Emphasize.Caption>Skill</Emphasize.Caption> that
-            is added to or removed from the
-            <Emphasize.Caption>Course</Emphasize.Caption>, since each&nbsp;
-            <Emphasize.Caption>Course</Emphasize.Caption> is tied to an&nbsp;
-            <Emphasize.Caption>Education</Emphasize.Caption> model with a specific start and end
-            date.
+            The relationship can also be edited in the other direction. Here, the{' '}
+            <Emphasize.Caption>Skills</Emphasize.Caption> associated with a{' '}
+            <Emphasize.Caption>Course</Emphasize.Caption> are being modified, which affects the
+            academic experience metrics of each <Emphasize.Caption>Skill</Emphasize.Caption> that is
+            added or removed, since every <Emphasize.Caption>Course</Emphasize.Caption> is tied to
+            an <Emphasize.Caption>Education</Emphasize.Caption> with a specific start and end date.
           </CaptionDescription>
         }
         src='/projects/website/modifying-courses.png'
       />
       <Description>
-        All of the content of the application can be dynamically modified directly via the
-        admin-only CMS. This includes the ability to modify, create, delete and update the
-        experience history viewable on the&nbsp;
+        All of the application&apos;s content can be modified directly in the admin-only CMS,
+        including the experience history shown on the{' '}
         <InlineLink element='link' href='/'>
           Dashboard
-        </InlineLink>
-        &nbsp;or&nbsp;
+        </InlineLink>{' '}
+        and{' '}
         <InlineLink element='link' href='/resume/experience'>
           Resume
-        </InlineLink>
-        &nbsp;pages.
+        </InlineLink>{' '}
+        pages.
       </Description>
       <ProjectImage
         alt='Modifying Experience'
-        caption={['Modifying experience history via the admin-only CMS.']}
+        caption={['Modifying experience history in the admin-only CMS.']}
         isCaptionCentered
         src='/projects/website/modifying-experience.png'
       />
@@ -142,22 +133,21 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     <Section hasMarginBottom={false} title='Integrations'>
       <DescriptionGroup>
         <Description>
-          The application integrates directly with APIs from sources such as&nbsp;
+          The application integrates directly with APIs from sources such as{' '}
           <InlineLink element='a' href='https://linkedin.com/'>
             LinkedIn
-          </InlineLink>
-          &nbsp;and&nbsp;
+          </InlineLink>{' '}
+          and{' '}
           <InlineLink element='a' href='https://github.com/'>
             GitHub
           </InlineLink>
-          ,&nbsp;allowing relevant data to be prepopulated or imported directly from these sources,
-          and then reconciled with internal data.
+          , so relevant data can be imported from those sources and reconciled with internal data.
         </Description>
         <ProjectImage
-          alt='Modifying Experience'
+          alt='Modifying Repositories'
           caption={[
-            'Modifying the repositories visible in the application after they are imported via ' +
-              "GitHub's API.",
+            'Choosing which repositories are visible in the application after they are ' +
+              "imported via GitHub's API.",
           ]}
           isCaptionCentered
           src='/projects/website/modifying-repositories.png'
@@ -167,20 +157,20 @@ export const Website = (props: WebsiteProps): JSX.Element => (
     <Section hasMarginBottom={false} title='Resume Management'>
       <DescriptionGroup>
         <Description>
-          The application offers the ability to manage resume(s) directly in the admin-only CMS.
-          Resumes can be uploaded, deleted and toggled between, with the ability to expose a
-          specific, most up-to-date resume for public download and viewing in the application.
+          Resumes can be managed directly in the admin-only CMS. They can be uploaded, deleted and
+          toggled between, with a single, most up-to-date resume exposed for public viewing and
+          download in the application.
         </Description>
         <div className='flex flex-row gap-[24px]'>
           <ProjectImage
             alt='Uploading Resumes'
-            caption={['Uploading resumes via the admin-only CMS.']}
+            caption={['Uploading resumes in the admin-only CMS.']}
             isCaptionCentered
             src='/projects/website/uploading-resumes.png'
           />
           <ProjectImage
             alt='Modifying Resumes'
-            caption={['Modifying resumes via the admin-only CMS.']}
+            caption={['Modifying resumes in the admin-only CMS.']}
             isCaptionCentered
             src='/projects/website/modifying-resumes.png'
           />

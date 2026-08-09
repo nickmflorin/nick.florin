@@ -47,6 +47,14 @@
       @include btn-size-fonts($size);
     }
   }
+  // Ordered after the base rules for the same reason the sizing rules are.
+  @each $breakpoint in mixins.$button-responsive-breakpoints {
+    @each $size in map.keys(constants.$button-sizes) {
+      @include mixins.button-size-at($breakpoint, $size) {
+        @include btn-size-fonts($size);
+      }
+    }
+  }
 }
 
 @mixin link-fonts() {

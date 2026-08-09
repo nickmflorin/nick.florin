@@ -22,7 +22,6 @@ interface AdminLayoutProps {
    hard-coded project slug in ProjectSlugs has no corresponding project in the database. A project
    that is in the database but not visible needs no warning, since its slug is expected to be
    absent from the navigation items. */
-
 const ProjectsLayout = async ({ children }: AdminLayoutProps): Promise<JSX.Element> => {
   const projects = await getNavigationProjects();
   const missingProjs = projects.filter(project => !ProjectSlugs.contains(project.slug));

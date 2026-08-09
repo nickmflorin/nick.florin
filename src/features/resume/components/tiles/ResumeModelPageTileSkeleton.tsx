@@ -33,7 +33,7 @@ export const ResumeModelPageTileSkeleton = ({
     className={classNames('gap-[10px] max-md:gap-[8px]', props.className)}
   >
     <ResumeModelHeaderScaffold
-      image={({ size }) => <Skeleton height={size} width={size} />}
+      image={({ className }) => <Skeleton className={classNames('aspect-square', className)} />}
       size='large'
       subTitle={<Skeleton className={classNames('w-[30%]', SkeletonLineOffset)} height={14} />}
       tags={ps => <Skeleton {...ps} className={classNames('w-[35%]', ps.className)} height={16} />}

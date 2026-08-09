@@ -9,29 +9,25 @@ export const ActualizationSection = () => (
   <Section hasMarginBottom={false} isSubSection title='Actualization'>
     <DescriptionGroup>
       <Description>
-        In film production, an <Emphasize>Actual</Emphasize> is a term that is used to describe
-        the&#32;<i>actual</i>, realized cost of a given line item in a budget. Sometimes (more often
-        than not) the actual cost of a given line item differs from the line item&apos;s
-        original&#32;<Emphasize>estimated</Emphasize> value, and the difference is referred to as
-        the&nbsp;
-        <Emphasize>variance</Emphasize>.
+        In film production, an <Emphasize>Actual</Emphasize> is the <i>actual</i>, realized cost of
+        a line item in a budget. More often than not, the actual cost of a line item differs from
+        its original <Emphasize>estimated</Emphasize> value, and the difference between the two is
+        called the <Emphasize>variance</Emphasize>.
       </Description>
       <Description>
-        In a production budget, <Emphasize>Actual</Emphasize>(s) are stored in separate tables - and
-        then tied to individual line items of the budget through foreign-key relationships. This
-        allows other information to be stored alongside the <Emphasize>Actual</Emphasize>, such as
-        attachments, notes, etc. It is often the case that a producer will want to keep a record of,
-        for instance, the receipts that were used to justify the actual cost of a line item.
+        In a production budget, <Emphasize>Actuals</Emphasize> are stored in separate tables and
+        tied to individual line items through foreign-key relationships. This allows other
+        information to be stored alongside each <Emphasize>Actual</Emphasize>, such as attachments
+        and notes. A producer will often want to keep, for instance, the receipts that justify the
+        actual cost of a line item.
       </Description>
     </DescriptionGroup>
     <ProjectVideo
       caption={
         <CaptionDescription>
-          An example of a user creating a new <Emphasize.Caption>Actual</Emphasize.Caption>, &nbsp;
-          <Emphasize.Caption>1001-A-7</Emphasize.Caption>, and associating the&nbsp;
-          <Emphasize.Caption>Actual</Emphasize.Caption>
-          &nbsp;with the&nbsp;
-          <Emphasize.Caption>Sub Account</Emphasize.Caption> for&nbsp;
+          A user creating a new <Emphasize.Caption>Actual</Emphasize.Caption>,{' '}
+          <Emphasize.Caption>1001-A-7</Emphasize.Caption>, and associating it with the{' '}
+          <Emphasize.Caption>Sub Account</Emphasize.Caption> for{' '}
           <Emphasize.Caption>Hotel Stay</Emphasize.Caption> costs in the budget.
         </CaptionDescription>
       }

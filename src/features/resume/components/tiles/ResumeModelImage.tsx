@@ -1,26 +1,29 @@
 import { type BrandModel, type ResumeBrand } from '~/database/model';
 
-import { ModelImage, type ModelImageSpreadProps } from '~/components/images/ModelImage';
+import { type IconProp } from '~/components/icons';
+import { Avatar, type AvatarProps } from '~/components/images/Avatar';
 
 export interface ResumeModelImageProps<M extends BrandModel<T>, T extends ResumeBrand> extends Omit<
-  ModelImageSpreadProps,
-  'fallbackIcon' | 'size' | 'url'
+  AvatarProps,
+  'fallbackIcon' | 'icon' | 'src'
 > {
   readonly model: M;
-  readonly size: number;
 }
 
 export const ResumeModelImage = <M extends BrandModel<T>, T extends ResumeBrand>({
   model,
-  size,
   ...props
-}: ResumeModelImageProps<M, T>) => (
-  <ModelImage
-    {...props}
-    fallbackIcon={
-      model.$kind === 'experience' ? { name: 'briefcase' } : { name: 'building-columns' }
-    }
-    size={size}
-    url={model.$kind === 'experience' ? model.company.logoImageUrl : model.school.logoImageUrl}
-  />
-);
+}: ResumeModelImageProps<M, T>) => {
+  const icon: IconProp =
+    model.$kind === 'experience' ? { name: 'briefcase' } : { name: 'building-columns' };
+  return (
+    <Avatar
+      {...props}
+      fallbackIcon={icon}
+      icon={icon}
+      /* Company and school logos are squared off, where the avatar's own default is a circle. */
+      radius={props.radius ?? 'none'}
+      src={model.$kind === 'experience' ? model.company.logoImageUrl : model.school.logoImageUrl}
+    />
+  );
+};

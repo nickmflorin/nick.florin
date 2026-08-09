@@ -1,7 +1,6 @@
 import 'server-only';
 
-import { unstable_cache as unstableCache } from 'next/cache';
-import { cache } from 'react';
+import { cacheLife, cacheTag } from 'next/cache';
 
 import { db } from '~/database/prisma';
 
@@ -17,13 +16,6 @@ import { db } from '~/database/prisma';
 export const NavigationProjectsCacheTag = 'navigation-projects';
 
 /**
- * The number of seconds a cached navigation-projects read may serve before it is refreshed,
- * independent of the tag invalidation performed by the project mutations. It bounds staleness
- * against writes that do not go through those actions, such as seeding.
- */
-const NavigationProjectsCacheRevalidateSeconds = 3600;
-
-/**
  * A project as the `/projects/*` navigation needs it.
  *
  * Invisible projects are included rather than filtered out in the query, because the layout both
@@ -37,23 +29,16 @@ export type NavigationProject = {
   readonly visible: boolean;
 };
 
-/* The projection is deliberately narrow and must stay free of `Date` fields: `unstable_cache`
-   JSON-serializes what it stores, so a `Date` would come back as a string while its declared type
-   went on claiming `Date`. The ordering is fixed only so that the cached payload is deterministic;
-   the navigation orders itself by `ProjectSlugs`. */
-const readNavigationProjects = unstableCache(
-  async (): Promise<NavigationProject[]> =>
-    await db.project.findMany({
-      orderBy: { slug: 'asc' },
-      select: { name: true, shortName: true, slug: true, visible: true },
-    }),
-  ['navigation-projects'],
-  {
-    revalidate: NavigationProjectsCacheRevalidateSeconds,
-    tags: [NavigationProjectsCacheTag],
-  },
-);
+/* The ordering is fixed only so that the cached payload is deterministic; the navigation orders
+   itself by `ProjectSlugs`. The hour-long life bounds staleness against writes that do not go
+   through the project mutations, such as seeding. */
+export const getNavigationProjects = async (): Promise<NavigationProject[]> => {
+  'use cache';
+  cacheTag(NavigationProjectsCacheTag);
+  cacheLife('hours');
 
-export const getNavigationProjects = cache(
-  async (): Promise<NavigationProject[]> => await readNavigationProjects(),
-);
+  return await db.project.findMany({
+    orderBy: { slug: 'asc' },
+    select: { name: true, shortName: true, slug: true, visible: true },
+  });
+};

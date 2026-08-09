@@ -34,15 +34,37 @@ export const toDiscreteIconSize = (
  */
 export const toDiscreteSize = (
   size: types.ButtonSize | undefined,
-): types.ButtonDiscreteSize | undefined =>
-  size !== undefined && types.ButtonDiscreteSizes.contains(size) ? size : undefined;
+): types.ButtonDiscreteSize | undefined => {
+  const base = types.isResponsiveButtonSize(size) ? size.base : size;
+  return base !== undefined && types.ButtonDiscreteSizes.contains(base) ? base : undefined;
+};
+
+/**
+ * Returns the per-breakpoint size data attributes for a responsive size, which the stylesheet
+ * matches inside the corresponding media queries, and nothing for a size that does not vary.
+ *
+ * The `satisfies` clause is what keeps this in step with {@link types.ButtonResponsiveBreakpoints}:
+ * adding a breakpoint there fails to compile here until it is handled.
+ */
+export const getResponsiveButtonSizeAttributes = (size: types.ButtonSize | undefined) =>
+  types.isResponsiveButtonSize(size)
+    ? ({ sizeLg: size.lg, sizeMd: size.md, sizeSm: size.sm } satisfies Record<
+        `size${Capitalize<types.ButtonResponsiveBreakpoint>}`,
+        types.ButtonDiscreteSize | undefined
+      >)
+    : {};
 
 export type ButtonSizeStyleProps = {
   readonly size?: types.ButtonSize;
 };
 
+/* A discrete size is carried by a data attribute and styled from the `$button-sizes` map, and a
+   responsive size is carried by one attribute per breakpoint. Only a raw pixel size has to be
+   written as an inline style. */
 export const getButtonSizeStyle = (props: ButtonSizeStyleProps) =>
-  !types.ButtonDiscreteIconSizes.contains(props.size) && props.size !== undefined
+  props.size !== undefined &&
+  !types.isResponsiveButtonSize(props.size) &&
+  !types.ButtonDiscreteSizes.contains(props.size)
     ? {
         height: sizeToString(props.size, 'px'),
         minHeight: sizeToString(props.size, 'px'),
