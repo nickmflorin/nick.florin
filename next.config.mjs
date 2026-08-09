@@ -54,6 +54,10 @@ const ServerActionBodySizeLimit = '16mb';
 
 /** @type {import("next").NextConfig} */
 const config = {
+  /* Prerenders cached components into the static shell and streams only what is genuinely dynamic.
+     The site's routes have no per-request input left - the User-Agent viewport seed was the last of
+     it - so the shell, including the header, is served without waiting on a Suspense boundary. */
+  cacheComponents: true,
   experimental: {
     optimizePackageImports: ['@mantine/core', 'zod', '@mantine/dropzone', '@mantine/dates'],
     serverActions: {

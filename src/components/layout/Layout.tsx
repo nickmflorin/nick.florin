@@ -5,7 +5,6 @@ import { SiteNavMenu } from '~/features/site/components/SiteNavMenu';
 
 import { ContextDrawerWrapper, SiteNavMenuOverlay, ToastContainer } from './DynamicOverlays';
 import { Header } from './Header';
-import { HeaderSkeleton } from './Header/HeaderSkeleton';
 import { LayoutNavigation } from './LayoutNavigation';
 import { Navigating } from './Navigating';
 import { type ISidebarItem } from './types';
@@ -17,10 +16,10 @@ export interface LayoutProps {
 
 export const Layout = ({ children, nav }: LayoutProps): JSX.Element => (
   <div className='layout'>
+    {/* The header reads only cached, request-independent data, so it prerenders into the static
+        shell and needs no boundary of its own. */}
     <header className='header'>
-      <Suspense fallback={<HeaderSkeleton />}>
-        <Header />
-      </Suspense>
+      <Header />
     </header>
     <div className='layout__content'>
       <LayoutNavigation nav={nav}>

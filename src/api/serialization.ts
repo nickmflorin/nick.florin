@@ -16,29 +16,7 @@ export function convertToPlainObject<T>(value: T): T {
   return superjson.parse<T>(superjson.stringify(value));
 }
 
-/**
- * Serializes a value into a superjson payload string for storage in caches that JSON-serialize
- * their entries, such as `unstable_cache`.
- *
- * Storing a rich value in such a cache directly would silently downgrade values JSON cannot
- * represent — most notably `Date` fields, which come back as plain strings on a cache hit while
- * the declared types continue to claim `Date`. Round-tripping through superjson preserves them.
- */
-export function serializeForCache<T>(value: T): string {
-  /* eslint-disable-next-line @typescript-eslint/no-require-imports -- Temp workaround for tests. */
-  const superjson = require('superjson') as typeof SuperJSON;
-  return superjson.stringify(value);
-}
 
-/**
- * Deserializes a superjson payload string produced by {@link serializeForCache}, restoring the
- * rich values (for example `Date` fields) that a JSON-serializing cache cannot represent.
- */
-export function deserializeFromCache<T>(payload: string): T {
-  /* eslint-disable-next-line @typescript-eslint/no-require-imports -- Temp workaround for tests. */
-  const superjson = require('superjson') as typeof SuperJSON;
-  return superjson.parse<T>(payload);
-}
 
 const SuperJSONResultSchema = z.object({
   json: z.union([z.record(z.any()), z.array(z.any())]),

@@ -441,6 +441,16 @@ column's `calc()` and an 80px→50px padding swing.
       `updateTag` calls in the resume mutations keep working unchanged.
 - [ ] Remove the header's Suspense boundary in `src/components/layout/Layout.tsx` and delete
       `HeaderSkeleton`, once the header prerenders into the shell.
+- [ ] **Re-derive the project page skeletons — do this last, immediately before the branch is
+      committed and merged.** The prose on the `/projects/*` pages is being rewritten in parallel,
+      and each page's `loading.tsx` passes `ProjectPageSkeleton` line counts measured against the
+      _current_ copy (greenbudget 11 description lines plus a 10-line disclaimer callout, tooltrack
+      7, website 2, asset-visualizations 3). Those counts are the one part of the skeleton work that
+      was estimated rather than derived, so a copy change silently invalidates them — and a skeleton
+      that no longer matches what replaces it reintroduces exactly the layout shift the skeletons
+      were added to remove. Re-measure against the final copy once it has landed, and check the
+      disclaimer callout in particular, since its collapsed height now depends on the CSS collapse
+      rather than on a rendered subtree.
 - [ ] Verify: `next build` reports the `(site)` routes as prerendered rather than dynamic, and the
       header no longer flashes a skeleton on refresh.
 
