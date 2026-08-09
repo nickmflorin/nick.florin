@@ -282,9 +282,9 @@ wrapping:
   is disallowed.
 - Continuation lines are indented three spaces, so that their text aligns with the text following
   the `/* ` opener.
-- The closing `*/` sits at the end of the last line of text. It moves to a line of its own only
-  when appending ` */` would push that line past the 100-character limit; it is never given its own
-  line by default.
+- The closing `*/` sits at the end of the last line of text. It moves to a line of its own only when
+  appending ` */` would push that line past the 100-character limit; it is never given its own line
+  by default.
 
 ```typescript
 /* Correct: the text opens beside the opening delimiter, the continuation lines align with it, and

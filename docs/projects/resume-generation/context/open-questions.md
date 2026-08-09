@@ -98,10 +98,10 @@ and a newly authored record omits, and generated content-node slugs are stamped 
 once created (sticky), so a title edit never changes identity. The fixtures are bootstrapped from
 the TS data modules by `pnpm resume:fixtures`, which is also the interim parity mechanism.
 
-**Destructive-change safety — resolved 2026-08-04** (see decisions.md): destructive = deletions
-plus any change to a non-empty value; confirmation is per-batch with one itemized git-style diff
-and a `--yes` bypass, growing into a navigable terminal viewer (summary line per change, arrow
-keys to reveal each diff); conflicts are atomic per record in v1, with field-level merge deferred.
+**Destructive-change safety — resolved 2026-08-04** (see decisions.md): destructive = deletions plus
+any change to a non-empty value; confirmation is per-batch with one itemized git-style diff and a
+`--yes` bypass, growing into a navigable terminal viewer (summary line per change, arrow keys to
+reveal each diff); conflicts are atomic per record in v1, with field-level merge deferred.
 
 ## LinkedIn & GitHub integration scope
 

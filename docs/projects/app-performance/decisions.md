@@ -19,11 +19,11 @@ Format:
 ## 2026-08-09 — Skeletons approximate; they never query to become exact
 
 **Decision:** A loading skeleton reserves the shape of what it replaces only as far as that shape is
-derivable for free — from the components it stands in for, the typography scale, and the
-stylesheet. It never reads data in order to be accurate, and it is not expected to model a page in
-full. The `/projects/*` skeletons in particular model a prefix of each page (GreenBudget 2 of 3
-top-level sections, ToolTrack 3 of 6, Website 2 of 4) and flatten prose/media interleaving into all
-prose then all media; both are accepted, not defects to be fixed.
+derivable for free — from the components it stands in for, the typography scale, and the stylesheet.
+It never reads data in order to be accurate, and it is not expected to model a page in full. The
+`/projects/*` skeletons in particular model a prefix of each page (GreenBudget 2 of 3 top-level
+sections, ToolTrack 3 of 6, Website 2 of 4) and flatten prose/media interleaving into all prose then
+all media; both are accepted, not defects to be fixed.
 
 **Why:** A skeleton exists so that the page can be painted before its data arrives. A skeleton
 accurate enough to require that data would have to wait for it, which forfeits the only thing it is

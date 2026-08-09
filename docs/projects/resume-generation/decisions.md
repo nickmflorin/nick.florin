@@ -21,20 +21,20 @@ Format:
 **Decision:** Per-context text variation — both prose (the `Detail.shortDescription` successor
 question) and labels (`label`/`shortLabel` generalization) — is one mechanism, not two: a single
 variant table keyed by owner + field + context resolving to a string. The direction is committed
-now, but the table is **built only when the first real third context arrives** (LinkedIn wording
-or tailored per-application resumes); the existing nullable `shortX` columns remain the fast path
-for the two contexts that exist today. This resolves the standing "blocks the schema" flag:
+now, but the table is **built only when the first real third context arrives** (LinkedIn wording or
+tailored per-application resumes); the existing nullable `shortX` columns remain the fast path for
+the two contexts that exist today. This resolves the standing "blocks the schema" flag:
 `ContentNode` deliberately carries no `shortDescription` column, and nothing else waits on this.
 
 Deferred to the table's design, recorded here so they are not lost: whether the key is a
-`SyndicationChannel` or a finer-grained *surface* (the sidebar and main column are two surfaces
-of one channel), and whether a context can select a **set** of strings from one record — the
-three `Accessibility` competencies were kept separate precisely because one record cannot yet
-render as several pills.
+`SyndicationChannel` or a finer-grained _surface_ (the sidebar and main column are two surfaces of
+one channel), and whether a context can select a **set** of strings from one record — the three
+`Accessibility` competencies were kept separate precisely because one record cannot yet render as
+several pills.
 
-**Why:** Solving prose and label variation separately would leave two mechanisms for one idea,
-and building the table before any third context exists would be speculative schema with nothing
-to exercise it.
+**Why:** Solving prose and label variation separately would leave two mechanisms for one idea, and
+building the table before any third context exists would be speculative schema with nothing to
+exercise it.
 
 ## 2026-08-04 — Sync safety: what is destructive, how it is confirmed, atomic conflicts
 
@@ -43,31 +43,31 @@ to exercise it.
 1. **Destructive** means record deletions and any change to a non-empty value, including clearing
    it. Filling an empty/null field is additive and applies without confirmation.
 2. **Confirmation is per-batch and itemized.** A run prints one git-style diff of the whole change
-   set, with destructive changes in their own section, confirmed once as a group; a script
-   argument (`--yes`) bypasses confirmation globally for scripted runs. The review surface should
-   grow into a **navigable terminal viewer**: every change rendered as a single summary line, with
-   arrow-key navigation selecting a line to reveal that change's full diff. Per the charter's
-   keep-it-simple note, v1 is the plain printed diff plus a single confirmation; the navigable
-   viewer layers on after.
-3. **Conflicts are atomic per record in v1.** When both sides changed a record since the last
-   sync, the record's diff is shown and one side is chosen whole. Field-level merging is deferred
-   until real usage shows it is needed.
+   set, with destructive changes in their own section, confirmed once as a group; a script argument
+   (`--yes`) bypasses confirmation globally for scripted runs. The review surface should grow into a
+   **navigable terminal viewer**: every change rendered as a single summary line, with arrow-key
+   navigation selecting a line to reveal that change's full diff. Per the charter's keep-it-simple
+   note, v1 is the plain printed diff plus a single confirmation; the navigable viewer layers on
+   after.
+3. **Conflicts are atomic per record in v1.** When both sides changed a record since the last sync,
+   the record's diff is shown and one side is chosen whole. Field-level merging is deferred until
+   real usage shows it is needed.
 
 **Why:** Deletions and overwrites of authored values are exactly the two failure modes the sync
-exists to prevent happening silently; per-record prompting does not scale to 150+ records, while
-one itemized batch diff keeps the whole change set reviewable; and atomic conflict resolution
-keeps the v1 engine simple enough to trust.
+exists to prevent happening silently; per-record prompting does not scale to 150+ records, while one
+itemized batch diff keeps the whole change set reviewable; and atomic conflict resolution keeps the
+v1 engine simple enough to trust.
 
 ## 2026-08-04 — Sync parity is absolute: no soft delete between source and target
 
-**Decision:** The sync's invariant is **100% parity** between the fixture data and the database.
-The source of a run is the source of truth: a record present on the target but missing from the
-source — of ANY type, top-level or nested — is **hard deleted**, gated by the destructive-change
-confirmation above. There is no soft delete in the sync, ever. `isVisible: false` is exclusively
-an *authored* content state — used to hide content deliberately, temporarily or to keep it
-without displaying it — and is never written by the sync as a stand-in for deletion. (This
-clarifies the charter's "avoid hard deleting, hide visibility instead" line: that describes
-authoring practice — prefer hiding content in the data over removing it — not sync mechanics.)
+**Decision:** The sync's invariant is **100% parity** between the fixture data and the database. The
+source of a run is the source of truth: a record present on the target but missing from the source —
+of ANY type, top-level or nested — is **hard deleted**, gated by the destructive-change confirmation
+above. There is no soft delete in the sync, ever. `isVisible: false` is exclusively an _authored_
+content state — used to hide content deliberately, temporarily or to keep it without displaying it —
+and is never written by the sync as a stand-in for deletion. (This clarifies the charter's "avoid
+hard deleting, hide visibility instead" line: that describes authoring practice — prefer hiding
+content in the data over removing it — not sync mechanics.)
 
 One caveat of the parallel period: deleting a reused legacy row (`Company`, `School`, `Profile`)
 that legacy relations still reference will be blocked by foreign-key constraints; the attempted
@@ -88,23 +88,23 @@ slug back into the fixture, making it sticky exactly like content-node slugs. `R
 one exception: its slug doubles as the emitted filename and has no natural name, so it stays
 required (parse fails loudly without it).
 
-The load-bearing detail is **where** derivation happens: at parse time, not at database-write
-time. Every fixture consumer — the sync push *and* a fixture-only resume generation run — parses
-through the same binding and therefore sees the same slug for the same record, with no database
-involved. A generation run before the write-back has happened still agrees with what the push will
-eventually persist, because the derivation is deterministic. Type-wise, `parse` returns a
-`ParsedRecord` (slug guaranteed present), so nothing downstream ever handles a missing slug.
+The load-bearing detail is **where** derivation happens: at parse time, not at database-write time.
+Every fixture consumer — the sync push _and_ a fixture-only resume generation run — parses through
+the same binding and therefore sees the same slug for the same record, with no database involved. A
+generation run before the write-back has happened still agrees with what the push will eventually
+persist, because the derivation is deterministic. Type-wise, `parse` returns a `ParsedRecord` (slug
+guaranteed present), so nothing downstream ever handles a missing slug.
 
-**Why:** Slugs are the correlation key, but requiring one on every hand-authored record is
-friction with no information content when the record already has a name. Duplicate-derived slugs
-are caught by the set-level duplicate validation, and referencing a new record from elsewhere in
-the fixtures is still predictable, since the derived slug is just the slugified name.
+**Why:** Slugs are the correlation key, but requiring one on every hand-authored record is friction
+with no information content when the record already has a name. Duplicate-derived slugs are caught
+by the set-level duplicate validation, and referencing a new record from elsewhere in the fixtures
+is still predictable, since the derived slug is just the slugified name.
 
 Derivations deliberately favor **collision resistance over brevity**: `Role` and `Degree` prefix
-their parent's slug (`craft-education-system-staff-engineer`, not `staff-engineer`) so that the
-same title at two companies, or the same major at two schools, can never derive the same slug. A
-longer slug costs nothing; a collision costs a hard failure and a manual rename. Short slugs
-remain available by simply authoring one.
+their parent's slug (`craft-education-system-staff-engineer`, not `staff-engineer`) so that the same
+title at two companies, or the same major at two schools, can never derive the same slug. A longer
+slug costs nothing; a collision costs a hard failure and a manual rename. Short slugs remain
+available by simply authoring one.
 
 ## 2026-08-04 — Competency ordering is derived, never stored
 

@@ -1,9 +1,9 @@
 import 'server-only';
 
 import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
 
 import { getExperiencesOrdering } from '~/actions';
-import { logger } from '~/internal/logger';
 
 import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
 

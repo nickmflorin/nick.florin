@@ -1,9 +1,9 @@
 import 'server-only';
 
 import { db } from '~/database/prisma';
+import { logger } from '~/internal/logger';
 
 import { getEducationsOrdering } from '~/actions';
-import { logger } from '~/internal/logger';
 
 import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
 

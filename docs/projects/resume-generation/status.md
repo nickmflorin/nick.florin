@@ -80,14 +80,14 @@ entry in [decisions.md](./decisions.md).
   navigable terminal diff viewer; conflicts atomic in v1), sync parity (no soft delete between
   source and target — hard delete with confirmation; `isVisible` is authored state only), and
   per-context text (one variant table for prose + labels, built when the first third context
-  arrives). Still unaddressed, in walkthrough order: per-medium display configuration,
-  the `competenciesVisible`/pill-syndication flag shape, syndication participation of
+  arrives). Still unaddressed, in walkthrough order: per-medium display configuration, the
+  `competenciesVisible`/pill-syndication flag shape, syndication participation of
   `Project`/`Repository`/`Company`/`School` + `Competency`'s legacy m2m links, the competency
   bucketing/tagging design, resume delivery to readers, LinkedIn feasibility, and GitHub sync
   design.
 - 2026-08-04: Slug authoring made optional across the transfer layer (see
-  [decisions.md](./decisions.md)): bindings derive a missing slug from the entity's natural name
-  at parse time (deterministic, so fixture-only generation and the sync push always agree),
+  [decisions.md](./decisions.md)): bindings derive a missing slug from the entity's natural name at
+  parse time (deterministic, so fixture-only generation and the sync push always agree),
   serialization writes it back (sticky), and `parse` returns a `ParsedRecord` with the slug
   guaranteed. `ResumeSheet` slugs stay required (filename, no natural name). Competency ordering
   also decided the same day: derived per surface (prioritized + `createdAt`; sidebar via the
