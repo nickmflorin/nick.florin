@@ -16,6 +16,34 @@ Format:
 
 ---
 
+## 2026-08-09 — Chart filters stay client-state; URL-driven filters belong to skills-enhancements
+
+**Decision:** The dashboard chart's filters remain client-side state (`useFilterState` in
+`SkillsChartModule`, applied through the debounced form flow). The URL-driven proposal from
+2026-08-06 — uncontrolled fields writing to the URL's search parameters, with the `@chart` server
+page deriving its skills fetch from them — is not implemented for this surface. URL-driven filter
+state is instead adopted where it carries user-facing value: the skills-enhancements project's
+searchable master skills page (and global search), where deep-linkable filtered views are part of
+the feature itself. This closes the app-performance project's last open question.
+
+**Why:** Most of what motivated the proposal was solved by other means after it was filed. The
+select-option loading burst is gone (options are promise-streamed from the server, 2026-08-09); the
+debounce was built against the existing state flow with flush-on-close semantics that would need
+rebuilding as "batch locally, flush to the URL"; and the client refetch cycle already has a no-flash
+story (`keepPreviousData` + transitions + a deferred, memoized chart). Against that, the URL would
+convert every filter change from a client-side JSON fetch into a router navigation with an RSC round
+trip that server-renders the slot — strictly more latency and server work per interaction, on the
+metric this project exists to improve — and would need a `keepPreviousData`-equivalent for RSC to
+avoid fallback flashes. The remaining genuine benefit, shareable/refresh-surviving filter state, is
+worth close to nothing on an anonymous visitor's dashboard widget, and the consistency argument
+(admin tables derive filters from the URL) points at an area that is deliberately deferred.
+
+**Alternatives considered:** Implementing it now for consistency and to unify with the debounce —
+rejected for the reasons above, and because the select-simplification project is already queued to
+reshape this data flow once more; two planned reworks of the same seam is one too many.
+
+---
+
 ## 2026-08-09 — Skeletons approximate; they never query to become exact
 
 **Decision:** A loading skeleton reserves the shape of what it replaces only as far as that shape is

@@ -4,13 +4,13 @@ _Last updated: 2026-08-09_
 
 ## Phase
 
-**Implementation complete (as of 2026-08-09) — one open question remains.** Phases 1 through 8, the
-Phase 2b filters cluster (promise-streamed select options, the field-level `use()` restructure,
-transitions/deferred chart rendering, and the debounce), and the closing verifications are all done;
-see the Done log below and [backlog.md](./backlog.md). The only open item is the URL-driven filters
-question in [open-questions.md](./open-questions.md), and two follow-ups (sign-out, admin filter-bar
-select data) are deliberately parked under the admin-CMS deferral. Decision history is in
-[decisions.md](./decisions.md).
+**Closed (2026-08-09).** Phases 1 through 8, the Phase 2b filters cluster (promise-streamed select
+options, the field-level `use()` restructure, transitions/deferred chart rendering, and the
+debounce), and the closing verifications are all done, and the last open question — URL-driven chart
+filters — was resolved 2026-08-09 as won't-do for this surface (URL-driven filter state belongs to
+the skills-enhancements master skills page; see [decisions.md](./decisions.md)). The only remnants
+are two follow-ups deliberately parked under the admin-CMS deferral (sign-out, admin filter-bar
+select data), to be picked up when the admin CMS is next worked on.
 
 ## Done
 
@@ -298,12 +298,9 @@ select data) are deliberately parked under the admin-CMS deferral. Decision hist
 
 ## Next
 
-1. **The URL-driven filters question** in [open-questions.md](./open-questions.md) — the project's
-   only remaining open item. Deciding it no longer gates any implementation (the debounce was
-   applied to the existing state flow); if filters do move to the URL, the debounce becomes "batch
-   locally, flush to the URL" and the popover data flow gets revisited per the select-simplification
-   project.
-
-Everything else in [backlog.md](./backlog.md) is closed. The admin filter-bar select work and the
-sign-out affordance remain filed as unscheduled follow-ups under the admin-CMS deferral. Phase 5 is
-complete; Phase 7 (the closing Lighthouse pass) was dropped 2026-08-08.
+Nothing — the project is closed. The URL-driven filters question was resolved 2026-08-09 (chart
+filters stay client-state; URL-driven filter state moves to the skills-enhancements master skills
+page — see [decisions.md](./decisions.md)), which emptied [open-questions.md](./open-questions.md)
+and [backlog.md](./backlog.md) of active items. The admin filter-bar select work and the sign-out
+affordance remain filed as unscheduled follow-ups under the admin-CMS deferral. Phase 7 (the closing
+Lighthouse pass) was dropped 2026-08-08.

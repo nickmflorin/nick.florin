@@ -39,7 +39,11 @@ its own branch/PR.
       a dedicated detail view. The admin skills table's search/filtering
       (`src/features/skills/components/tables/SkillsTableFilterBar.tsx`, `use-filters.ts`, and the
       `GET /api/skills` query support) is prior art for the mechanics, but this page is a
-      public-facing browse/discovery surface, not a data table.
+      public-facing browse/discovery surface, not a data table. Decided 2026-08-09 (recorded in the
+      app-performance decision log): this page's search/filter state is **URL-driven** — the pattern
+      was evaluated for the dashboard chart filters and deliberately reserved for this surface
+      instead, where deep-linkable filtered views, back/forward navigation, and shareable URLs are
+      part of the feature rather than overhead.
 
 ## Global Search
 
