@@ -2,8 +2,8 @@ import { ProjectPageSkeleton } from '~/features/projects/components/ProjectPageS
 
 const Loading = () => (
   <ProjectPageSkeleton
-    numDescriptionLines={11}
-    numDisclaimerLines={10}
+    numDescriptionLines={10}
+    numDisclaimerLines={9}
     numRepositories={2}
     numSkills={72}
     sections={[

@@ -97,7 +97,6 @@
     "lodash-es": "^4.17.21",
     "luxon": "^3.4.4",
     "next": "16.2.12",
-    "next-client-cookies": "^2.1.1",
     "normalize.css": "^8.0.1",
     "pino": "^8.17.2",
     "pino-logflare": "^0.4.2",

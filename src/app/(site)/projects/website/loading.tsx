@@ -5,8 +5,8 @@ const Loading = () => (
     numDescriptionLines={2}
     numSkills={34}
     sections={[
-      { numDescriptionLines: 11, numMedia: 0 },
-      { numDescriptionLines: 7, numMedia: 2 },
+      { numDescriptionLines: 10, numMedia: 0 },
+      { numDescriptionLines: 6, numMedia: 3 },
     ]}
   />
 );

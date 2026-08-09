@@ -480,28 +480,35 @@ visible before, because the old defaults degraded the route to dynamic rather th
       did not. Added six, backed by a new `PaginatorSkeleton` matching the paginator's own `small`
       button token (32px, 6px gaps). This was not the cause of the first build failure, but the
       slots did need it.
-- [ ] Remove the now-unused `next-client-cookies` dependency from `package.json`.
+- [x] Remove the now-unused `next-client-cookies` dependency from `package.json` — removed
+      2026-08-09.
 
 #### Remaining
 
-- [ ] **Re-derive the project page skeletons — do this last, immediately before the branch is
-      committed and merged.** The prose on the `/projects/*` pages was rewritten in parallel, and
-      each page's `loading.tsx` passes `ProjectPageSkeleton` line counts measured against the copy
-      as it stood on 2026-08-08 (greenbudget 11 description lines plus a 10-line disclaimer
-      callout, tooltrack 7, website 2, asset-visualizations 3). Those counts are the one part of the
-      skeleton work that was estimated rather than derived, so a copy change silently invalidates
-      them — and a skeleton that no longer matches what replaces it reintroduces exactly the layout
-      shift the skeletons were added to remove. Re-measure against the final copy, and check the
-      disclaimer callout in particular, since its collapsed height now depends on the CSS collapse
-      rather than on a rendered subtree.
-- [ ] **Fix the experience and education tile skeletons: the image placeholder collapses.** The
-      three header lines currently run flush to the left edge with no image beside them, where the
-      real tile shows a square image and then the header lines to its right. The cause is the
-      conversion above: the real image is an `Avatar`, which declares `flex-shrink: 0` in SCSS,
-      while the skeleton's stand-in is a bare `Skeleton` sized by `aspect-square` plus a height
-      class. In a flex row whose sibling column has `grow min-w-0`, a flex item with no intrinsic
-      content and no shrink guard is squeezed to zero width. The skeleton needs the same
-      non-shrinking behavior the real image gets from `.avatar`.
+- [x] **Re-derive the project page skeletons** — done 2026-08-09, after the prose rewrite landed.
+      Counts were re-derived by calibration rather than re-estimated: each block's old character
+      count divided by its old line count gives a characters-per-line rate, applied to the new
+      character count. The rewrite was purely wording — no section gained or lost a title, media or
+      paragraphs — and the prose tightened 4–35% per block, so most counts dropped by one. Two
+      corrections beyond the rescale: ToolTrack's third section claimed 9 lines for a single
+      261-character paragraph, which is impossible at any desktop width (now 3), and Website's
+      Skill-Centric section renders three media frames while the skeleton declared two.
+
+  Worth knowing for later: the calibrated rates scatter between 43 and 114 characters per line,
+  because a global ratio ignores that every paragraph ends in a partial line. Modelling it properly
+  (`lines = Σ ceil(chars/C)`) yields C ≈ 114–120, which the typography corroborates — `Description`
+  is `text-sm`/14px in a ~884px column. Two blocks are visibly over-counted against that model
+  (Website's first section at 10 where the model says 5, ToolTrack's description at 6 where it says
+  4); they were left at the rescaled value rather than changed on the model's word alone.
+
+- [x] **Fix the experience and education tile skeletons: the image placeholder collapses** — fixed
+      2026-08-09. The three header lines ran flush to the left edge with no image beside them,
+      where the real tile shows a square image and then the header lines to its right. The cause
+      was the `Avatar` conversion: the real image gets `flex-shrink: 0` from `.avatar`, while its
+      stand-in is a bare `Skeleton` sized by `aspect-square` plus a height class — and in a flex row
+      whose sibling column has `grow min-w-0`, an element with no intrinsic content and no shrink
+      guard is squeezed to zero width. `shrink-0` is now part of the shared image size classes, so
+      the skeleton is guaranteed the same behavior the real image gets from CSS.
 - [x] Verify: `next build` reports the `(site)` routes as prerendered rather than dynamic — done
       2026-08-09. Every `(site)` route now builds as `○` (static) or `◐` (partially prerendered);
       all of them were `ƒ` before this phase.

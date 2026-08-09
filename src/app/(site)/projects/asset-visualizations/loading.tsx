@@ -7,8 +7,8 @@ const Loading = () => (
     numSkills={7}
     sections={[
       { hasTitle: false, numDescriptionLines: 1, numMedia: 0 },
-      { numDescriptionLines: 16, numMedia: 1 },
-      { numDescriptionLines: 13, numMedia: 1 },
+      { numDescriptionLines: 14, numMedia: 1 },
+      { numDescriptionLines: 12, numMedia: 1 },
       { hasTitle: false, numDescriptionLines: 0, numMedia: 2 },
     ]}
   />
