@@ -25,11 +25,10 @@ import { ClientConfig } from './ClientConfig';
 
 export interface AppConfigProps {
   readonly children: ReactNode;
-  readonly initialViewportWidth: number;
 }
 
-export const AppConfig = ({ children, initialViewportWidth }: AppConfigProps): JSX.Element => (
+export const AppConfig = ({ children }: AppConfigProps): JSX.Element => (
   <CookiesProvider>
-    <ClientConfig initialViewportWidth={initialViewportWidth}>{children}</ClientConfig>
+    <ClientConfig>{children}</ClientConfig>
   </CookiesProvider>
 );
