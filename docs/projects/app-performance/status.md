@@ -288,6 +288,23 @@ select data), to be picked up when the admin CMS is next worked on.
   `Header/index.tsx` the note had not listed) became `max-xs:`, verified at an emulated 390px (rail
   and resume actions hidden, hamburger shown).
 
+- 2026-08-09 (post-close): **The tile-skeleton image placeholder was still invisible — the true root
+  cause was that `aspect-square` did not exist in the compiled CSS.** `src/tailwind.config.ts`
+  disabled the core `aspectRatio` plugin (`corePlugins: { aspectRatio: false }`) in favor of the
+  legacy `@tailwindcss/aspect-ratio` plugin, which only provides the old `aspect-w-*`/`aspect-h-*`
+  padding-hack classes — so every modern `aspect-square`/`aspect-[...]` in the codebase (ten call
+  sites) was a dead class, and the skeleton image slot, whose width comes solely from `aspect-ratio`
+  × its height, collapsed to zero width. The earlier same-day `shrink-0` fix was necessary but not
+  sufficient: it stopped the flex squeeze but could not create width that no rule supplied. Fixed by
+  removing the legacy plugin (zero `aspect-w-*`/`aspect-h-*` usages exist) and the `corePlugins`
+  override, letting the theme's existing `aspectRatio` scale (`square: '1 / 1'`) generate the
+  utilities. Verified live: `aspect-square` computes `1 / 1`, and the `/resume/*` skeletons render
+  the square image placeholder beside the header lines. Side effects are all intent-restoring: the
+  dashboard condensed-tile skeletons regain their image squares, `Square`/input caret/filter-clear
+  buttons become the squares they declared, and `ProjectMediaSkeleton`'s `aspect-[760/420]` now
+  reserves its box. The `@tailwindcss/aspect-ratio` dependency is now unused and can be removed from
+  `package.json`.
+
 ## In Progress
 
 - Everything through the Phase 8 static shell is merged to `master`. The 2026-08-09 filters-cluster

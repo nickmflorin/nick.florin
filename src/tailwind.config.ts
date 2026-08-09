@@ -1,4 +1,3 @@
-import AspectRatioPlugin from '@tailwindcss/aspect-ratio';
 import ContainerQueriesPlugin from '@tailwindcss/container-queries';
 import { type Config } from 'tailwindcss';
 
@@ -16,13 +15,10 @@ const config = {
     './src/features/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  corePlugins: {
-    aspectRatio: false,
-  },
   // Can alternatively be set to 'class'.
   darkMode: 'media',
   important: true,
-  plugins: [ContainerQueriesPlugin, AspectRatioPlugin],
+  plugins: [ContainerQueriesPlugin],
   presets: [],
   theme: {
     ...BorderTheme,
