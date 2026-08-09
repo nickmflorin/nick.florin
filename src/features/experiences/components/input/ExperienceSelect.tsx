@@ -1,39 +1,45 @@
 import { type ForwardedRef, type JSX } from 'react';
 
-import { type ApiExperience, type ExperienceIncludes } from '~/database/model';
+import { type Company, type Experience } from '~/database/model';
 
 import { type DataSelectInstance, type SelectBehaviorType } from '~/components/input/select';
 import { DataSelect, type DataSelectProps } from '~/components/input/select/DataSelect';
 import { Description, Text } from '~/components/typography';
 
-const getModelValue = (m: ApiExperience) => m.id;
+/**
+ * The minimal experience shape the select renders. Callers may provide any superset — the full
+ * `ApiExperience` rows the admin tables fetch satisfy it structurally — while server fetchers that
+ * exist only to feed this select can project down to exactly these fields.
+ */
+export type ExperienceSelectModel = {
+  readonly company: Pick<Company, 'name'>;
+} & Pick<Experience, 'id' | 'shortTitle' | 'title'>;
 
-export type ExperienceSelectInstance<
-  B extends SelectBehaviorType,
-  I extends ExperienceIncludes,
-> = DataSelectInstance<ApiExperience<I>, { behavior: B; getModelValue: typeof getModelValue }>;
+const getModelValue = (m: ExperienceSelectModel) => m.id;
 
-export interface ExperienceSelectProps<
-  B extends SelectBehaviorType,
-  I extends ExperienceIncludes,
-> extends Omit<
-  DataSelectProps<ApiExperience<I>, { behavior: B; getModelValue: typeof getModelValue }>,
+export type ExperienceSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
+  ExperienceSelectModel,
+  { behavior: B; getModelValue: typeof getModelValue }
+>;
+
+export interface ExperienceSelectProps<B extends SelectBehaviorType> extends Omit<
+  DataSelectProps<ExperienceSelectModel, { behavior: B; getModelValue: typeof getModelValue }>,
   'getModelValueLabel' | 'itemIsDisabled' | 'itemRenderer' | 'options'
 > {
   readonly behavior: B;
   readonly hasAbbreviatedLabels?: boolean;
 }
 
-export const ExperienceSelect = <B extends SelectBehaviorType, I extends ExperienceIncludes = []>({
+export const ExperienceSelect = <B extends SelectBehaviorType>({
   behavior,
   hasAbbreviatedLabels,
   ref,
   shouldIncludeDescriptions = true,
   ...props
 }: {
-  readonly ref?: ForwardedRef<ExperienceSelectInstance<B, I>>;
-} & ExperienceSelectProps<B, I>): JSX.Element => (
-  <DataSelect<ApiExperience<I>, { behavior: B; getModelValue: typeof getModelValue }>
+  readonly ref?: ForwardedRef<ExperienceSelectInstance<B>>;
+} & ExperienceSelectProps<B>): JSX.Element => (
+  <DataSelect<ExperienceSelectModel, { behavior: B; getModelValue: typeof getModelValue }>
     {...props}
     getModelValueLabel={m => m.shortTitle ?? m.title}
     itemRenderer={m => (

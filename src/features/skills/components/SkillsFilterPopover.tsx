@@ -13,6 +13,8 @@ import { PopoverContent } from '~/components/floating/PopoverContent';
 import { Tooltip } from '~/components/floating/Tooltip';
 import { mergeFloatingEventHandlers } from '~/components/floating/util';
 import { useForm } from '~/components/forms-v2/hooks/use-form';
+import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
+import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
 import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
@@ -21,6 +23,8 @@ import {
 
 export interface SkillsFilterPopoverProps {
   readonly buttonProps?: Omit<ChartFilterButtonProps, 'isDisabled'>;
+  readonly educationsPromise: Promise<EducationSelectModel[] | null>;
+  readonly experiencesPromise: Promise<ExperienceSelectModel[] | null>;
   readonly filters: SkillsChartFilterFormValues;
   readonly hasFiltersChanged: boolean;
   readonly isDisabled?: boolean;
@@ -38,6 +42,8 @@ export interface SkillsFilterPopoverProps {
 
 export const SkillsFilterPopover = ({
   buttonProps,
+  educationsPromise,
+  experiencesPromise,
   filters,
   hasFiltersChanged,
   isDisabled = false,
@@ -64,6 +70,8 @@ export const SkillsFilterPopover = ({
       content={
         <PopoverContent className='p-[20px] rounded-md overflow-y-auto'>
           <SkillsChartFilterForm
+            educationsPromise={educationsPromise}
+            experiencesPromise={experiencesPromise}
             form={{ ...form, setValues }}
             isClearDisabled={!hasFiltersChanged}
             isScrollable={false}

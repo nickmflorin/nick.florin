@@ -1,38 +1,44 @@
 import { type ForwardedRef, type JSX } from 'react';
 
-import { type ApiEducation, type EducationIncludes } from '~/database/model';
+import { type Education, type School } from '~/database/model';
 
 import { type DataSelectInstance, type SelectBehaviorType } from '~/components/input/select';
 import { DataSelect, type DataSelectProps } from '~/components/input/select/DataSelect';
 import { Description, Text } from '~/components/typography';
 
-const getModelValue = (m: ApiEducation) => m.id;
+/**
+ * The minimal education shape the select renders. Callers may provide any superset — the full
+ * `ApiEducation` rows the admin tables fetch satisfy it structurally — while server fetchers that
+ * exist only to feed this select can project down to exactly these fields.
+ */
+export type EducationSelectModel = {
+  readonly school: Pick<School, 'name'>;
+} & Pick<Education, 'id' | 'major' | 'shortMajor'>;
 
-export type EducationSelectInstance<
-  B extends SelectBehaviorType,
-  I extends EducationIncludes,
-> = DataSelectInstance<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>;
+const getModelValue = (m: EducationSelectModel) => m.id;
 
-export interface EducationSelectProps<
-  B extends SelectBehaviorType,
-  I extends EducationIncludes,
-> extends Omit<
-  DataSelectProps<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>,
+export type EducationSelectInstance<B extends SelectBehaviorType> = DataSelectInstance<
+  EducationSelectModel,
+  { behavior: B; getModelValue: typeof getModelValue }
+>;
+
+export interface EducationSelectProps<B extends SelectBehaviorType> extends Omit<
+  DataSelectProps<EducationSelectModel, { behavior: B; getModelValue: typeof getModelValue }>,
   'getModelValueLabel' | 'itemIsDisabled' | 'itemRenderer' | 'options'
 > {
   readonly behavior: B;
   readonly hasAbbreviatedLabels?: boolean;
 }
 
-export const EducationSelect = <B extends SelectBehaviorType, I extends EducationIncludes = []>({
+export const EducationSelect = <B extends SelectBehaviorType>({
   behavior,
   hasAbbreviatedLabels = true,
   ref,
   ...props
 }: {
-  readonly ref?: ForwardedRef<EducationSelectInstance<B, I>>;
-} & EducationSelectProps<B, I>): JSX.Element => (
-  <DataSelect<ApiEducation<I>, { behavior: B; getModelValue: typeof getModelValue }>
+  readonly ref?: ForwardedRef<EducationSelectInstance<B>>;
+} & EducationSelectProps<B>): JSX.Element => (
+  <DataSelect<EducationSelectModel, { behavior: B; getModelValue: typeof getModelValue }>
     {...props}
     getModelValueLabel={m => m.shortMajor ?? m.major}
     itemRenderer={m => (

@@ -13,7 +13,8 @@ import { PortalDrawerWrapper } from '~/components/drawers/PortalDrawerWrapper';
 import { Tooltip } from '~/components/floating/Tooltip';
 import { mergeFloatingEventHandlers } from '~/components/floating/util';
 import { Loading } from '~/components/loading/Loading';
-import { preloadSkillsChartFilterData } from '~/features/skills/components/forms/preload-skills-chart-filter-data';
+import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
+import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
 import { type SkillsChartFilterFormValues } from '~/features/skills/components/forms/SkillsChartFilterForm';
 import { useScreenSizes } from '~/hooks';
 
@@ -35,6 +36,8 @@ const SkillsFilterDrawer = dynamic(
 );
 
 export interface SkillsFilterDropdownMenuProps {
+  readonly educationsPromise: Promise<EducationSelectModel[] | null>;
+  readonly experiencesPromise: Promise<ExperienceSelectModel[] | null>;
   readonly filters: SkillsChartFilterFormValues;
   readonly hasFiltersChanged: boolean;
   readonly isLoading: boolean;
@@ -44,6 +47,8 @@ export interface SkillsFilterDropdownMenuProps {
 }
 
 export const SkillsFilterDropdownMenu = ({
+  educationsPromise,
+  experiencesPromise,
   filters,
   hasFiltersChanged,
   isLoading,
@@ -61,10 +66,10 @@ export const SkillsFilterDropdownMenu = ({
      viewport has replaced whatever the screen-size hook started from. */
   const shouldUseMobileFiltersDrawer = () => isLessThan('md');
 
-  /* Fired on any signal of intent to open the filters. The select data is wanted either way; the
-     popover chunk is only worth fetching where the popover is what would open. */
+  /* Fired on any signal of intent to open the filters. The select data needs no preloading — it
+     streams from the server as unresolved promise props — so intent only kicks the popover chunk,
+     and only where the popover is what would open. */
   const preloadFilterControls = () => {
-    preloadSkillsChartFilterData();
     if (!shouldUseMobileFiltersDrawer()) {
       void loadSkillsFilterPopover();
     }
@@ -75,6 +80,8 @@ export const SkillsFilterDropdownMenu = ({
   if (popoverIsMounted) {
     return (
       <SkillsFilterPopover
+        educationsPromise={educationsPromise}
+        experiencesPromise={experiencesPromise}
         filters={filters}
         hasFiltersChanged={hasFiltersChanged}
         isInitiallyOpen
@@ -112,6 +119,8 @@ export const SkillsFilterDropdownMenu = ({
       >
         {drawerIsOpen ? (
           <SkillsFilterDrawer
+            educationsPromise={educationsPromise}
+            experiencesPromise={experiencesPromise}
             filters={filters}
             hasFiltersChanged={hasFiltersChanged}
             isLoading={isLoading}

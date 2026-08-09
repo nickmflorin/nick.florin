@@ -10,6 +10,8 @@ import { Empty } from '~/components/feedback/Empty';
 import { CircleNumber } from '~/components/icons/CircleNumber';
 import { Loading } from '~/components/loading/Loading';
 import { Module } from '~/components/structural/Module';
+import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
+import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
 import { useFilterState } from '~/hooks';
 import { useSkills } from '~/hooks/api';
 
@@ -35,6 +37,17 @@ const SkillsBarChartView = dynamic(
 
 export interface SkillsChartModuleProps {
   /**
+   * The education options for the filter form's educations select, started by the `@chart` server
+   * page without being awaited so the query runs ahead of any interaction and resolves over the
+   * page's own RSC stream. `null` indicates the server read failed.
+   */
+  readonly educationsPromise: Promise<EducationSelectModel[] | null>;
+  /**
+   * The experience options for the filter form's experiences select, with the same contract as
+   * `educationsPromise`.
+   */
+  readonly experiencesPromise: Promise<ExperienceSelectModel[] | null>;
+  /**
    * The skills matching the module's default (unmodified) filters, fetched on the server so that
    * the chart is present in the server-rendered HTML rather than popping in after hydration and
    * the initial SWR fetch. Seeds SWR as `fallbackData`; filter changes refetch client-side.
@@ -42,7 +55,11 @@ export interface SkillsChartModuleProps {
   readonly initialSkills: ApiSkill<[]>[];
 }
 
-export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => {
+export const SkillsChartModule = ({
+  educationsPromise,
+  experiencesPromise,
+  initialSkills,
+}: SkillsChartModuleProps) => {
   const [filters, setFilters, resetFilters, filtersHaveChanged, differingFilters] =
     useFilterState<SkillsChartFilterFormValues>(
       {
@@ -86,6 +103,8 @@ export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => 
       <Module.Header
         actions={[
           <SkillsFilterDropdownMenu
+            educationsPromise={educationsPromise}
+            experiencesPromise={experiencesPromise}
             filters={filters}
             hasFiltersChanged={filtersHaveChanged}
             isLoading={isLoading}

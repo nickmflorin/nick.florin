@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import { z } from 'zod';
 
 import {
@@ -10,8 +12,16 @@ import {
 import { Form, type FormProps } from '~/components/forms-v2/Form';
 import { RadioGroup } from '~/components/input/RadioGroup';
 import { ButtonFooter } from '~/components/structural/ButtonFooter';
-import { ClientEducationSelect } from '~/features/educations/components/input/ClientEducationSelect';
-import { ClientExperienceSelect } from '~/features/experiences/components/input/ClientExperienceSelect';
+import {
+  EducationSelect,
+  type EducationSelectModel,
+} from '~/features/educations/components/input/EducationSelect';
+import { StreamedEducationSelect } from '~/features/educations/components/input/StreamedEducationSelect';
+import {
+  ExperienceSelect,
+  type ExperienceSelectModel,
+} from '~/features/experiences/components/input/ExperienceSelect';
+import { StreamedExperienceSelect } from '~/features/experiences/components/input/StreamedExperienceSelect';
 import { ProgrammingDomainSelect } from '~/features/skills/components/input/ProgrammingDomainSelect';
 import { ProgrammingLanguageSelect } from '~/features/skills/components/input/ProgrammingLanguageSelect';
 import { SkillCategorySelect } from '~/features/skills/components/input/SkillCategorySelect';
@@ -50,6 +60,16 @@ export interface SkillsChartFilterFormProps extends Omit<
   FormProps<SkillsChartFilterFormValues>,
   'children'
 > {
+  /**
+   * The education options for the educations select, started on the server by the `@chart` page
+   * without being awaited and resolved by the select's `use()` inside its `Suspense` boundary.
+   */
+  readonly educationsPromise: Promise<EducationSelectModel[] | null>;
+  /**
+   * The experience options for the experiences select, started on the server by the `@chart` page
+   * without being awaited and resolved by the select's `use()` inside its `Suspense` boundary.
+   */
+  readonly experiencesPromise: Promise<ExperienceSelectModel[] | null>;
   readonly isClearDisabled?: boolean;
   readonly onClear: () => void;
   /**
@@ -62,6 +82,8 @@ export interface SkillsChartFilterFormProps extends Omit<
 }
 
 export const SkillsChartFilterForm = ({
+  educationsPromise,
+  experiencesPromise,
   form,
   isClearDisabled,
   onClear,
@@ -108,19 +130,38 @@ export const SkillsChartFilterForm = ({
       name='experiences'
     >
       {({ onChange, value }) => (
-        <ClientExperienceSelect
-          behavior='multi'
-          hasAbbreviatedLabels={false}
-          includes={[]}
-          inputClassName='w-full'
-          isClearable
-          isInPortal
-          onChange={onChange}
-          onError={() => form.setErrors('experiences', 'There was an error loading the data.')}
-          popoverPlacement='bottom'
-          value={value}
-          visibility='public'
-        />
+        /* The fallback is the select in its awaiting-data state, so an open that beats the
+           promise's resolution shows the menu's loading indicator instead of an inert input. */
+        <Suspense
+          fallback={
+            <ExperienceSelect
+              behavior='multi'
+              data={[]}
+              hasAbbreviatedLabels={false}
+              inputClassName='w-full'
+              isClearable
+              isInPortal
+              isInputLoading
+              isReady={false}
+              onChange={onChange}
+              popoverPlacement='bottom'
+              value={value}
+            />
+          }
+        >
+          <StreamedExperienceSelect
+            behavior='multi'
+            dataPromise={experiencesPromise}
+            hasAbbreviatedLabels={false}
+            inputClassName='w-full'
+            isClearable
+            isInPortal
+            onChange={onChange}
+            onError={() => form.setErrors('experiences', 'There was an error loading the data.')}
+            popoverPlacement='bottom'
+            value={value}
+          />
+        </Suspense>
       )}
     </Form.ControlledField>
     <Form.ControlledField
@@ -130,19 +171,36 @@ export const SkillsChartFilterForm = ({
       name='educations'
     >
       {({ onChange, value }) => (
-        <ClientEducationSelect
-          behavior='multi'
-          hasAbbreviatedLabels={false}
-          includes={['skills']}
-          inputClassName='w-full'
-          isClearable
-          isInPortal
-          onChange={onChange}
-          onError={() => form.setErrors('educations', 'There was an error loading the data.')}
-          popoverPlacement='bottom'
-          value={value}
-          visibility='public'
-        />
+        <Suspense
+          fallback={
+            <EducationSelect
+              behavior='multi'
+              data={[]}
+              hasAbbreviatedLabels={false}
+              inputClassName='w-full'
+              isClearable
+              isInPortal
+              isInputLoading
+              isReady={false}
+              onChange={onChange}
+              popoverPlacement='bottom'
+              value={value}
+            />
+          }
+        >
+          <StreamedEducationSelect
+            behavior='multi'
+            dataPromise={educationsPromise}
+            hasAbbreviatedLabels={false}
+            inputClassName='w-full'
+            isClearable
+            isInPortal
+            onChange={onChange}
+            onError={() => form.setErrors('educations', 'There was an error loading the data.')}
+            popoverPlacement='bottom'
+            value={value}
+          />
+        </Suspense>
       )}
     </Form.ControlledField>
     <Form.ControlledField

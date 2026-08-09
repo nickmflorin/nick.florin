@@ -234,18 +234,42 @@ today, established by reading the floating primitives:
       flush any pending changes when the popover closes. Interacts with the URL-driven-filters
       question in [open-questions.md](./open-questions.md) — if filters move to the URL, the
       debounce becomes "batch locally, flush to the URL".
-- [ ] **Filters popover select-data performance** — deferred 2026-08-06 (investigation item): the
-      trigger's hover/focus/click preload now warms the SWR keys, which covers the popover's own
-      needs in practice; revisit the promise-streaming pattern below together with the URL-driven
-      filters question in [open-questions.md](./open-questions.md), since both reshape the same data
-      flow. Original investigation: the React 19 promise-streaming pattern — the `@chart` server
-      page starts these fetches **without awaiting** and passes the promises as props across the
-      client boundary; the popover's selects `use()` them inside a `Suspense` boundary so the data
-      resolves in the background (started at request time, ahead of any interaction) and is awaited
-      only when the popover actually opens. Considerations: promise props must be started
-      per-request (no module-level caching), rejected promises need an error boundary in the
-      popover, and the win should be measured against simply prefetching the SWR keys on trigger
-      hover/focus (a much smaller change that composes with the restructure above).
+- [x] **Promise-stream the popover's select options** — decided and implemented 2026-08-09
+      (supersedes the 2026-08-06 deferred investigation, and no longer gated on the URL-driven
+      filters question): implement the React 19 promise-streaming pattern for the chart filter
+      popover's educations/experiences selects. The `@chart` server page starts trimmed option
+      fetches **without awaiting** and passes the promises as props across the client boundary; the
+      selects `use()` them inside per-select `Suspense` boundaries, so the data resolves in the
+      background — started at request time, ahead of any interaction — and is awaited only when the
+      popover actually opens. The trade recorded with the decision: the benefits are a request-time
+      fetch start (the only variant that helps touch devices, where hover preload cannot fire before
+      the tap), one network leg instead of two (the data rides the page's own RSC stream instead of
+      a post-hydration round trip through `/api/educations` + `/api/experiences`), payload trimming
+      that no longer has to touch the shared `/api` routes, and deletion of the
+      `preloadSkillsChartFilterData` shim. The costs are that every dashboard request runs the two
+      queries and streams the rows whether or not the popover ever opens (small, few-row data), new
+      per-select `Suspense` plumbing through the select loading states stabilized on 2026-08-08, and
+      a worse error story than SWR (an error path in the popover instead of per-select retry and
+      revalidation). Promise props must be started per-request (no module-level caching).
+      Implemented via trimmed `get-{education,experience}-select-options.ts` fetchers that resolve
+      `null` on failure (the promises never reject),
+      `StreamedEducationSelect`/`StreamedExperienceSelect` wrappers behind per-select `Suspense`,
+      and minimal `EducationSelectModel`/`ExperienceSelectModel` types on the base selects; the SWR
+      preload shim was deleted. Browser-verified on desktop and 390px — no
+      `/api/educations`/`/api/experiences` requests remain. Details in [status.md](./status.md).
+
+- [ ] **Later — admin table filter bar select data.** Filed 2026-08-09 under the standing direction
+      to leave the admin CMS alone and record admin-side candidates as follow-up tasks rather than
+      doing them alongside non-admin work. The six admin filter bars
+      (`src/app/(site)/admin/{resource}/{Resource}TableFilterBar.tsx`) each await a `Promise.all` of
+      full-collection fetches (`fetchEducations([])`, `fetchExperiences([])`, …) at admin visibility
+      and serialize entire model rows — plus a full school/company record per education/experience
+      row — across the client boundary, while the selects render only 2–4 fields per model. The two
+      changes decided for the popover apply here with more impact: trimmed select-option fetchers
+      (modeled on `get-page-project.ts`) and un-awaited promise props, so the bar's chrome paints
+      without waiting on the slowest of its queries and the RSC payload drops to the fields the
+      selects read. Deliberately not scheduled against any phase; pick it up when the admin CMS is
+      next worked on, alongside the Phase 3b sign-out follow-up.
 
 ## Phase 3 — Unblock Route Streaming (Caching)
 
@@ -425,11 +449,11 @@ column's `calc()` and an 80px→50px padding swing.
       stylesheet generating the rules from the same map inside media queries whose widths come from
       the Tailwind theme. Costs 3.2kb gzipped across the three supported breakpoints. Also corrected
       `getButtonSizeStyle`, which tested the size against the icon-size literals.
-- [x] Move `SkillsFilterDropdownMenu`'s drawer-vs-popover branch behind hydration — done
-      2026-08-08, and it turned out the two branches rendered the same trigger and the drawer
-      mounts nothing until opened, so the branch never reached server output at all. Deciding on
-      click reads a measured viewport and collapses the duplicated trigger markup. Intent-preloading
-      now fetches the popover chunk only where the popover is what would open.
+- [x] Move `SkillsFilterDropdownMenu`'s drawer-vs-popover branch behind hydration — done 2026-08-08,
+      and it turned out the two branches rendered the same trigger and the drawer mounts nothing
+      until opened, so the branch never reached server output at all. Deciding on click reads a
+      measured viewport and collapses the duplicated trigger markup. Intent-preloading now fetches
+      the popover chunk only where the popover is what would open.
 - [x] Decide and implement the `Disclaimer` approach — done 2026-08-08 with the CSS collapse. The
       content is always rendered; the stylesheet collapses it below the cutoff and hides the toggle
       above it. Animating grid rows between `0fr` and `1fr` collapses to the content's own height,
@@ -457,18 +481,17 @@ visible before, because the old defaults degraded the route to dynamic rather th
 
 - [x] **The root `CookiesProvider` made every route dynamic.** `next-client-cookies/server` reads
       Next's `cookies()` on the server to serialize them to the client, and it wrapped the entire
-      application from `AppConfig`. All 15 routes failed to prerender with a single identical
-      stack. Every consumer of cookies is the tour (`Tour`, `use-tour`, `TourProvider`,
-      `WelcomeDialog`), and the tour is client-only — `TourRoot` is `ssr: false` — so no cookie
-      value was ever used to produce server output. Replaced with a two-function client helper,
-      `src/lib/cookies.ts`; `CookiesProvider` deleted and the root layout now reads no request data
-      at all. `Tour` gained a `useIsHydrated()` gate so the server and the first client render
-      agree. Fixed in passing: `TourProvider` wrote `'nick.florin:suppress-tour'` while everything
-      else reads `'nick-florin-suppress-tour'`, so dismissing the tour from that step never
-      suppressed it.
+      application from `AppConfig`. All 15 routes failed to prerender with a single identical stack.
+      Every consumer of cookies is the tour (`Tour`, `use-tour`, `TourProvider`, `WelcomeDialog`),
+      and the tour is client-only — `TourRoot` is `ssr: false` — so no cookie value was ever used to
+      produce server output. Replaced with a two-function client helper, `src/lib/cookies.ts`;
+      `CookiesProvider` deleted and the root layout now reads no request data at all. `Tour` gained
+      a `useIsHydrated()` gate so the server and the first client render agree. Fixed in passing:
+      `TourProvider` wrote `'nick.florin:suppress-tour'` while everything else reads
+      `'nick-florin-suppress-tour'`, so dismissing the tour from that step never suppressed it.
 - [x] **The sign-in catch-all could not be prerendered.** `NavigationProvider` reads `usePathname()`
-      at the root, which is knowable at build time for a static route but not for
-      `[[...sign-in]]` — the app's only dynamic route. Route segment config is not an escape hatch:
+      at the root, which is knowable at build time for a static route but not for `[[...sign-in]]` —
+      the app's only dynamic route. Route segment config is not an escape hatch:
       `Route segment config "dynamic" is not compatible with nextConfig.cacheComponents`. Moving
       sign-in to its own route group was considered and rejected, because it would have cost the
       page the app chrome. Clerk needs a catch-all only for path-based routing of its sub-steps, so
@@ -502,13 +525,13 @@ visible before, because the old defaults degraded the route to dynamic rather th
   4); they were left at the rescaled value rather than changed on the model's word alone.
 
 - [x] **Fix the experience and education tile skeletons: the image placeholder collapses** — fixed
-      2026-08-09. The three header lines ran flush to the left edge with no image beside them,
-      where the real tile shows a square image and then the header lines to its right. The cause
-      was the `Avatar` conversion: the real image gets `flex-shrink: 0` from `.avatar`, while its
-      stand-in is a bare `Skeleton` sized by `aspect-square` plus a height class — and in a flex row
-      whose sibling column has `grow min-w-0`, an element with no intrinsic content and no shrink
-      guard is squeezed to zero width. `shrink-0` is now part of the shared image size classes, so
-      the skeleton is guaranteed the same behavior the real image gets from CSS.
+      2026-08-09. The three header lines ran flush to the left edge with no image beside them, where
+      the real tile shows a square image and then the header lines to its right. The cause was the
+      `Avatar` conversion: the real image gets `flex-shrink: 0` from `.avatar`, while its stand-in
+      is a bare `Skeleton` sized by `aspect-square` plus a height class — and in a flex row whose
+      sibling column has `grow min-w-0`, an element with no intrinsic content and no shrink guard is
+      squeezed to zero width. `shrink-0` is now part of the shared image size classes, so the
+      skeleton is guaranteed the same behavior the real image gets from CSS.
 - [x] Verify: `next build` reports the `(site)` routes as prerendered rather than dynamic — done
       2026-08-09. Every `(site)` route now builds as `○` (static) or `◐` (partially prerendered);
       all of them were `ƒ` before this phase.

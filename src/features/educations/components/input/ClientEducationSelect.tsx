@@ -18,7 +18,7 @@ import {
 export interface ClientEducationSelectProps<
   B extends SelectBehaviorType,
   I extends EducationIncludes,
-> extends Omit<EducationSelectProps<B, I>, 'data'> {
+> extends Omit<EducationSelectProps<B>, 'data'> {
   readonly includes: I;
   readonly onError?: (e: ApiError) => void;
   readonly visibility: ActionVisibility;
@@ -31,7 +31,7 @@ export const ClientEducationSelect = <B extends SelectBehaviorType, I extends Ed
   visibility,
   ...props
 }: {
-  readonly ref?: ForwardedRef<EducationSelectInstance<B, I>>;
+  readonly ref?: ForwardedRef<EducationSelectInstance<B>>;
 } & ClientEducationSelectProps<B, I>): JSX.Element => {
   const { data, error, isLoading } = useEducations({
     onError: e => {
@@ -41,7 +41,7 @@ export const ClientEducationSelect = <B extends SelectBehaviorType, I extends Ed
     query: { includes, visibility },
   });
   return (
-    <EducationSelect<B, I>
+    <EducationSelect<B>
       {...props}
       data={data ?? []}
       isDisabled={error !== undefined || props.isDisabled}

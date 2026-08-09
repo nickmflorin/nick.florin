@@ -1,6 +1,6 @@
 # Project Status
 
-_Last updated: 2026-08-08_
+_Last updated: 2026-08-09_
 
 ## Phase
 
@@ -221,6 +221,30 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
   `SkillsChartFilterForm` was missing `isInPortal`, so its menu was clipped by the popover's
   `overflow-y-auto`.
 
+- 2026-08-09: **Phase 2b — the chart filter popover's select data is now promise-streamed**,
+  implemented the same day the deferred investigation was decided (see [backlog.md](./backlog.md);
+  the developer also set a standing direction to leave the admin CMS alone and record admin-side
+  candidates as follow-up tasks — the admin filter-bar analog of this change is filed as an
+  unscheduled follow-up). The `@chart` page starts two new trimmed reads —
+  `get-education-select-options.ts` / `get-experience-select-options.ts` (id, label fields, and
+  school/company name only, ordered as the `/api/*` routes order them, resolving `null` on failure
+  so the promises never reject) — **without awaiting**, ahead of the awaited skills read, and the
+  promises thread through `SkillsChartModule` → `SkillsFilterDropdownMenu` → popover/drawer →
+  `SkillsChartFilterForm`, where new `StreamedEducationSelect`/`StreamedExperienceSelect` resolve
+  them with `use()` inside per-select `Suspense` boundaries whose fallbacks are the selects in their
+  awaiting-data state. Because the resolved select first mounts with data already in hand,
+  `modelValue` initializes synchronously in the `useState` initializer — the path the 2026-08-08
+  freeze fix identified as safe — rather than through the async `isReady` flip.
+  `EducationSelect`/`ExperienceSelect` were re-typed onto minimal
+  `EducationSelectModel`/`ExperienceSelectModel` shapes (the `ProjectSelectModel` precedent); admin
+  callers pass structural supersets and `useFilterRef` erases the model, so nothing admin-side
+  changed. `preload-skills-chart-filter-data.ts` was deleted — trigger intent now preloads only the
+  popover chunk. Verified in the browser at desktop and 390px widths: the popover and the drawer
+  selects render every option with **zero** `/api/educations` or `/api/experiences` requests (only
+  the chart's `/api/skills` SWR revalidation fires), selecting an experience refetches the chart
+  with the filter applied, and the console is clean apart from a pre-existing `/_next/image` 400 on
+  `/experience/craft.png`.
+
 ## In Progress
 
 - The 2026-08-06 batch — filters popover restructure, frozen-selects fix, `ConditionalPortal`
@@ -256,8 +280,9 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
 4. Manual signed-in verification: sign-in flow, admin CMS, tour/drawers/toasts — best done in a
    browser session. (The account section of the site menu no longer exists.)
 
-Everything else in [backlog.md](./backlog.md) is closed except Phase 8 (above) and the Phase 2b
-filters cluster — debounced filter changes, the select-data performance investigation, and the
-URL-driven filters question in [open-questions.md](./open-questions.md). The developer ranked Phase
-8 above that cluster on 2026-08-08; the cluster stays deferred until Phase 8 lands. Phase 5 is
-complete; Phase 7 (the closing Lighthouse pass) was dropped 2026-08-08.
+Everything else in [backlog.md](./backlog.md) is closed except the remainder of the Phase 2b filters
+cluster: the select-data item was implemented 2026-08-09 as promise streaming (see Done), leaving
+debounced filter changes and the URL-driven filters question in
+[open-questions.md](./open-questions.md). The admin filter-bar select work is filed as an
+unscheduled follow-up under the admin-CMS deferral. Phase 5 is complete; Phase 7 (the closing
+Lighthouse pass) was dropped 2026-08-08.

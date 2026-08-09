@@ -6,6 +6,8 @@ import { type ExtendingDrawerProps } from '~/components/drawers';
 import { Drawer } from '~/components/drawers/Drawer';
 import { useForm } from '~/components/forms-v2/hooks';
 import { Loading } from '~/components/loading/Loading';
+import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
+import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
 import {
   SkillsChartFilterForm,
   SkillsChartFilterFormSchema,
@@ -13,6 +15,8 @@ import {
 } from '~/features/skills/components/forms/SkillsChartFilterForm';
 
 export interface SkillsFilterDrawerProps extends ExtendingDrawerProps {
+  readonly educationsPromise: Promise<EducationSelectModel[] | null>;
+  readonly experiencesPromise: Promise<ExperienceSelectModel[] | null>;
   readonly filters: SkillsChartFilterFormValues;
   readonly hasFiltersChanged: boolean;
   readonly isLoading?: boolean;
@@ -22,6 +26,8 @@ export interface SkillsFilterDrawerProps extends ExtendingDrawerProps {
 }
 
 export const SkillsFilterDrawer = ({
+  educationsPromise,
+  experiencesPromise,
   filters,
   hasFiltersChanged,
   isLoading,
@@ -46,6 +52,8 @@ export const SkillsFilterDrawer = ({
       <Drawer.Content className='overflow-y-auto'>
         <Loading className='z-auto' isLoading={isLoading}>
           <SkillsChartFilterForm
+            educationsPromise={educationsPromise}
+            experiencesPromise={experiencesPromise}
             form={{ ...form, setValues }}
             isClearDisabled={!hasFiltersChanged}
             onClear={onClear}
