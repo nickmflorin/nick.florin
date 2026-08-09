@@ -14,7 +14,7 @@ const SignInFallbackRedirectUrl = '/admin/skills';
    code takes over, and the jump between the two positions reads as a flash. */
 const Page = () => (
   <div className='flex h-full w-full grow items-center justify-center'>
-    <SignIn fallbackRedirectUrl={SignInFallbackRedirectUrl} />
+    <SignIn fallbackRedirectUrl={SignInFallbackRedirectUrl} routing='hash' />
   </div>
 );
 
