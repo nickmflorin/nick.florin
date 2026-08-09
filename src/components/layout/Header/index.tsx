@@ -13,7 +13,7 @@ export const Header = (): JSX.Element => {
     <>
       <ProfileSection />
       <div className='header__right'>
-        <SiteResumeActions className='max-[450px]:hidden' />
+        <SiteResumeActions className='max-xs:hidden' />
         <LayoutMenuButton />
       </div>
     </>

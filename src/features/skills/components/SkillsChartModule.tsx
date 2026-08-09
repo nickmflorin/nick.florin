@@ -1,5 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
+import { memo, useCallback, useDeferredValue, useTransition } from 'react';
 
 import { type ApiSkill } from '~/database/model';
 import { arraysHaveSameElements } from '~/lib';
@@ -10,6 +11,8 @@ import { Empty } from '~/components/feedback/Empty';
 import { CircleNumber } from '~/components/icons/CircleNumber';
 import { Loading } from '~/components/loading/Loading';
 import { Module } from '~/components/structural/Module';
+import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
+import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
 import { useFilterState } from '~/hooks';
 import { useSkills } from '~/hooks/api';
 
@@ -25,15 +28,29 @@ const loadSkillsBarChartView = () => import('./charts/SkillsBarChartView');
 void loadSkillsBarChartView();
 
 /* The chunk-loading fallback is the same skeleton the view renders until it has mounted, so every
-   pre-chart state — streamed slot fallback, chunk load, pre-mount render — is pixel-identical. */
-const SkillsBarChartView = dynamic(
-  () => loadSkillsBarChartView().then(mod => mod.SkillsBarChartView),
-  {
+   pre-chart state — streamed slot fallback, chunk load, pre-mount render — is pixel-identical.
+
+   The view is memoized so that urgent renders — a filter interaction, or the render in which SWR
+   swaps `data` while `useDeferredValue` still returns the previous skills — bail out of the Nivo
+   subtree entirely; the chart redraws only in the deferred render that carries the new data. */
+const SkillsBarChartView = memo(
+  dynamic(() => loadSkillsBarChartView().then(mod => mod.SkillsBarChartView), {
     loading: () => <SkillsBarChartSkeleton />,
-  },
+  }),
 );
 
 export interface SkillsChartModuleProps {
+  /**
+   * The education options for the filter form's educations select, started by the `@chart` server
+   * page without being awaited so the query runs ahead of any interaction and resolves over the
+   * page's own RSC stream. `null` indicates the server read failed.
+   */
+  readonly educationsPromise: Promise<EducationSelectModel[] | null>;
+  /**
+   * The experience options for the filter form's experiences select, with the same contract as
+   * `educationsPromise`.
+   */
+  readonly experiencesPromise: Promise<ExperienceSelectModel[] | null>;
   /**
    * The skills matching the module's default (unmodified) filters, fetched on the server so that
    * the chart is present in the server-rendered HTML rather than popping in after hydration and
@@ -42,7 +59,16 @@ export interface SkillsChartModuleProps {
   readonly initialSkills: ApiSkill<[]>[];
 }
 
-export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => {
+export const SkillsChartModule = ({
+  educationsPromise,
+  experiencesPromise,
+  initialSkills,
+}: SkillsChartModuleProps) => {
+  /* Filter changes are applied inside a transition so the interaction that produced them — a
+     checkbox toggling in the filter menu — paints at urgent priority, while the module re-render
+     they trigger (and the chart redraw it contains) is non-urgent and interruptible. */
+  const [isPending, startTransition] = useTransition();
+
   const [filters, setFilters, resetFilters, filtersHaveChanged, differingFilters] =
     useFilterState<SkillsChartFilterFormValues>(
       {
@@ -81,17 +107,37 @@ export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => 
     },
   });
 
+  /* SWR swaps `data` in its own state update, outside the transition above, so the arrival of a
+     response would otherwise redraw the chart at urgent priority. Deferring the value the chart
+     renders from keeps that redraw in a background render that input interactions can interrupt. */
+  const deferredSkills = useDeferredValue(skills);
+
+  /* Stable identities matter beyond re-render hygiene: the popover and drawer debounce their
+     change propagation, and their debounce instances are keyed on the handler they wrap - a new
+     identity mid-window would orphan the pending timer along with its flush/cancel controls. */
+  const handleFiltersChange = useCallback(
+    (values: SkillsChartFilterFormValues) => startTransition(() => setFilters(values)),
+    [setFilters, startTransition],
+  );
+
+  const handleFiltersClear = useCallback(
+    () => startTransition(() => resetFilters()),
+    [resetFilters, startTransition],
+  );
+
   return (
     <>
       <Module.Header
         actions={[
           <SkillsFilterDropdownMenu
+            educationsPromise={educationsPromise}
+            experiencesPromise={experiencesPromise}
             filters={filters}
             hasFiltersChanged={filtersHaveChanged}
             isLoading={isLoading}
             key='0'
-            onChange={f => setFilters(f)}
-            onClear={() => resetFilters()}
+            onChange={handleFiltersChange}
+            onClear={handleFiltersClear}
             skills={skills ?? []}
           />,
           <Button.Solid
@@ -103,7 +149,7 @@ export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => 
             }
             isDisabled={!filtersHaveChanged}
             key='1'
-            onClick={() => resetFilters()}
+            onClick={handleFiltersClear}
             scheme='secondary'
             size={{ base: 'xsmall', md: 'small' }}
           >
@@ -117,8 +163,9 @@ export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => 
       <Module.Content className='xl:overflow-y-auto min-h-0 pr-[16px]'>
         {/* The overlay spinner is gated on refetches (filter changes), not the initial load: SWR
             reports `isLoading` while revalidating the server-seeded fallback data on mount, and a
-            spinner over the skeleton would double up the loading indication. */}
-        <Loading isLoading={isRefetching}>
+            spinner over the skeleton would double up the loading indication. `isPending` covers
+            the transition window between a filter interaction and SWR reporting the refetch. */}
+        <Loading isLoading={isPending || isRefetching}>
           <Empty
             content={
               differingFilters.length === 0
@@ -129,8 +176,8 @@ export const SkillsChartModule = ({ initialSkills }: SkillsChartModuleProps) => 
           >
             {error ? (
               <ErrorView error={error} />
-            ) : skills === undefined ? null : (
-              <SkillsBarChartView skills={skills} />
+            ) : deferredSkills === undefined ? null : (
+              <SkillsBarChartView skills={deferredSkills} />
             )}
           </Empty>
         </Loading>

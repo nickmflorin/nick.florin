@@ -26,6 +26,7 @@ Guides covering the code quality standards, conventions and tooling used in this
 | Avoid a data-fetching waterfall   | [React → Performance](./react/performance.md)                                    |
 | Reduce the client bundle          | [React → Performance](./react/performance.md)                                    |
 | Design a component's props        | [React → Composition](./react/composition.md)                                    |
+| Declare a component and its props | [React → Component Definitions](./react/component-definitions.md)                |
 
 ## Document Overview
 
@@ -83,9 +84,13 @@ Conventions specific to React and Next.js:
   boundary, and using a ternary rather than `&&` in JSX
 - [Composition](./react/composition.md): boolean props describe state rather than identity, explicit
   variant components, `children` over markup-only render props, and lifting state into a provider
+- [Component Definitions](./react/component-definitions.md): `FC`-typed `const` arrow functions,
+  props as an `interface` named `{Component}Props`, and inline props annotations for generic
+  components
 
-Both are deliberate subsets of Vercel Engineering's agent skills, which are vendored into
-`.claude/skills/` and consulted on demand — see [React → The Vercel Skills](./react/index.md).
+Performance and Composition are deliberate subsets of Vercel Engineering's agent skills, which are
+vendored into `.claude/skills/` and consulted on demand — see
+[React → The Vercel Skills](./react/index.md).
 
 ### [Markdown Formatting](./markdown-formatting.md)
 
@@ -173,6 +178,9 @@ The prescriptive, agent-facing versions of these standards live alongside the hu
   size, the server/client boundary, and re-renders
 - [React Composition](../../.claude/rules/code-quality/react/composition.md) - Boolean props,
   explicit variants, children over render props, and lifting state
+- [React Component Definitions](../../.claude/rules/code-quality/react/component-definitions.md) -
+  `FC`-typed `const` arrow functions, interface props named `{Component}Props`, and generic
+  components
 
 Each of these has a GitHub Copilot counterpart in
 [.github/instructions/code-quality/](../../.github/instructions/README.md).

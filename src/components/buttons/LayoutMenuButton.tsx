@@ -6,7 +6,7 @@ export const LayoutMenuButton = () => {
   const { isOpen, toggle } = useNavMenu();
   return (
     <IconButton.Solid
-      className='hidden max-[450px]:flex'
+      className='hidden max-xs:flex'
       element='button'
       icon={{ name: 'bars' }}
       isActive={isOpen}

@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import { z } from 'zod';
 
 import {
@@ -10,8 +12,10 @@ import {
 import { Form, type FormProps } from '~/components/forms-v2/Form';
 import { RadioGroup } from '~/components/input/RadioGroup';
 import { ButtonFooter } from '~/components/structural/ButtonFooter';
-import { ClientEducationSelect } from '~/features/educations/components/input/ClientEducationSelect';
-import { ClientExperienceSelect } from '~/features/experiences/components/input/ClientExperienceSelect';
+import { type EducationSelectModel } from '~/features/educations/components/input/EducationSelect';
+import { type ExperienceSelectModel } from '~/features/experiences/components/input/ExperienceSelect';
+import { SkillsChartEducationsField } from '~/features/skills/components/forms/SkillsChartEducationsField';
+import { SkillsChartExperiencesField } from '~/features/skills/components/forms/SkillsChartExperiencesField';
 import { ProgrammingDomainSelect } from '~/features/skills/components/input/ProgrammingDomainSelect';
 import { ProgrammingLanguageSelect } from '~/features/skills/components/input/ProgrammingLanguageSelect';
 import { SkillCategorySelect } from '~/features/skills/components/input/SkillCategorySelect';
@@ -39,6 +43,16 @@ export const SkillsChartFilterFormSchema = z.object({
 
 export type SkillsChartFilterFormValues = z.infer<typeof SkillsChartFilterFormSchema>;
 
+/**
+ * The pause in filter form activity after which pending changes are applied to the chart, so a
+ * burst of select toggles produces a single refetch rather than one per change.
+ *
+ * Both surfaces that render the form (`SkillsFilterPopover` and `SkillsFilterDrawer`) debounce
+ * their change propagation by this delay, and each flushes whatever is pending when it closes so
+ * no change is ever lost to the pause.
+ */
+export const SkillsChartFilterDebounceDelay = 500;
+
 const ShowTopSkillsLabels: Record<ShowTopSkillsString, string> = {
   '5': '5',
   '8': '8',
@@ -50,6 +64,16 @@ export interface SkillsChartFilterFormProps extends Omit<
   FormProps<SkillsChartFilterFormValues>,
   'children'
 > {
+  /**
+   * The education options for the educations select, started on the server by the `@chart` page
+   * without being awaited and resolved by the select's `use()` inside its `Suspense` boundary.
+   */
+  readonly educationsPromise: Promise<EducationSelectModel[] | null>;
+  /**
+   * The experience options for the experiences select, started on the server by the `@chart` page
+   * without being awaited and resolved by the select's `use()` inside its `Suspense` boundary.
+   */
+  readonly experiencesPromise: Promise<ExperienceSelectModel[] | null>;
   readonly isClearDisabled?: boolean;
   readonly onClear: () => void;
   /**
@@ -62,6 +86,8 @@ export interface SkillsChartFilterFormProps extends Omit<
 }
 
 export const SkillsChartFilterForm = ({
+  educationsPromise,
+  experiencesPromise,
   form,
   isClearDisabled,
   onClear,
@@ -101,50 +127,16 @@ export const SkillsChartFilterForm = ({
         />
       )}
     </Form.ControlledField>
-    <Form.ControlledField
-      form={form}
-      helpText='The professional experience(s) where the skills were acquired or used.'
-      label='Experiences'
-      name='experiences'
-    >
-      {({ onChange, value }) => (
-        <ClientExperienceSelect
-          behavior='multi'
-          hasAbbreviatedLabels={false}
-          includes={[]}
-          inputClassName='w-full'
-          isClearable
-          isInPortal
-          onChange={onChange}
-          onError={() => form.setErrors('experiences', 'There was an error loading the data.')}
-          popoverPlacement='bottom'
-          value={value}
-          visibility='public'
-        />
-      )}
-    </Form.ControlledField>
-    <Form.ControlledField
-      form={form}
-      helpText='The academic experience(s) where the skills were acquired or used.'
-      label='Educations'
-      name='educations'
-    >
-      {({ onChange, value }) => (
-        <ClientEducationSelect
-          behavior='multi'
-          hasAbbreviatedLabels={false}
-          includes={['skills']}
-          inputClassName='w-full'
-          isClearable
-          isInPortal
-          onChange={onChange}
-          onError={() => form.setErrors('educations', 'There was an error loading the data.')}
-          popoverPlacement='bottom'
-          value={value}
-          visibility='public'
-        />
-      )}
-    </Form.ControlledField>
+    {/* Each field owns the resolution of its streamed options, so the whole field — label,
+        select and error slot — is the unit that suspends, and the fallback is the same field in
+        its awaiting-data variant: an open that beats the promise's resolution shows the menu's
+        loading indicator instead of an inert input. */}
+    <Suspense fallback={<SkillsChartExperiencesField form={form} />}>
+      <SkillsChartExperiencesField dataPromise={experiencesPromise} form={form} />
+    </Suspense>
+    <Suspense fallback={<SkillsChartEducationsField form={form} />}>
+      <SkillsChartEducationsField dataPromise={educationsPromise} form={form} />
+    </Suspense>
     <Form.ControlledField
       form={form}
       helpText='The specific development stack(s) that the skill pertains to, if applicable.'

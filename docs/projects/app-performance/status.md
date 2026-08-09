@@ -1,15 +1,16 @@
 # Project Status
 
-_Last updated: 2026-08-08_
+_Last updated: 2026-08-09_
 
 ## Phase
 
-**Phase 1 — Restore SSR (started 2026-08-04).** Phase 0 (audit & project setup) is complete and all
-six open questions were resolved on 2026-08-04 — see [decisions.md](./decisions.md). Headline
-decisions: Clerk is scoped to authenticated routes entirely (Option B), FontAwesome migrates off the
-CDN kit (its own phase), layout fetches get cross-request caching, and project images are
-pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per the
-[backlog.md](./backlog.md) phases.
+**Implementation complete (as of 2026-08-09) — one open question remains.** Phases 1 through 8, the
+Phase 2b filters cluster (promise-streamed select options, the field-level `use()` restructure,
+transitions/deferred chart rendering, and the debounce), and the closing verifications are all done;
+see the Done log below and [backlog.md](./backlog.md). The only open item is the URL-driven filters
+question in [open-questions.md](./open-questions.md), and two follow-ups (sign-out, admin filter-bar
+select data) are deliberately parked under the admin-CMS deferral. Decision history is in
+[decisions.md](./decisions.md).
 
 ## Done
 
@@ -221,43 +222,88 @@ pre-converted to WebP/AVIF. Implementation proceeds on a dedicated branch per th
   `SkillsChartFilterForm` was missing `isInPortal`, so its menu was clipped by the popover's
   `overflow-y-auto`.
 
+- 2026-08-09: **Phase 2b — the chart filter popover's select data is now promise-streamed**,
+  implemented the same day the deferred investigation was decided (see [backlog.md](./backlog.md);
+  the developer also set a standing direction to leave the admin CMS alone and record admin-side
+  candidates as follow-up tasks — the admin filter-bar analog of this change is filed as an
+  unscheduled follow-up). The `@chart` page starts two new trimmed reads —
+  `get-education-select-options.ts` / `get-experience-select-options.ts` (id, label fields, and
+  school/company name only, ordered as the `/api/*` routes order them, resolving `null` on failure
+  so the promises never reject) — **without awaiting**, ahead of the awaited skills read, and the
+  promises thread through `SkillsChartModule` → `SkillsFilterDropdownMenu` → popover/drawer →
+  `SkillsChartFilterForm`, where new `StreamedEducationSelect`/`StreamedExperienceSelect` resolve
+  them with `use()` inside per-select `Suspense` boundaries whose fallbacks are the selects in their
+  awaiting-data state. Because the resolved select first mounts with data already in hand,
+  `modelValue` initializes synchronously in the `useState` initializer — the path the 2026-08-08
+  freeze fix identified as safe — rather than through the async `isReady` flip.
+  `EducationSelect`/`ExperienceSelect` were re-typed onto minimal
+  `EducationSelectModel`/`ExperienceSelectModel` shapes (the `ProjectSelectModel` precedent); admin
+  callers pass structural supersets and `useFilterRef` erases the model, so nothing admin-side
+  changed. `preload-skills-chart-filter-data.ts` was deleted — trigger intent now preloads only the
+  popover chunk. Verified in the browser at desktop and 390px widths: the popover and the drawer
+  selects render every option with **zero** `/api/educations` or `/api/experiences` requests (only
+  the chart's `/api/skills` SWR revalidation fires), selecting an experience refetches the chart
+  with the filter applied, and the console is clean apart from a pre-existing `/_next/image` 400 on
+  `/experience/craft.png`.
+
+- 2026-08-09 (follow-on, same day): The streamed selects were restructured so the **field** is the
+  suspending unit, and the chart re-render was deprioritized with transitions. The
+  `StreamedEducationSelect`/`StreamedExperienceSelect` wrappers (and their hand-duplicated fallback
+  twins plus the `onError` → `form.setErrors` effect) were replaced by
+  `SkillsChartExperiencesField`/`SkillsChartEducationsField` in
+  `src/features/skills/components/forms/`: each calls `use(dataPromise)` at the field level — `use`
+  may be called conditionally, so the same component renders its own awaiting-data variant when the
+  prop is omitted, which is exactly what the form mounts as the `Suspense` fallback — and a failed
+  load (`null`) is derived during render and displayed through the field's new direct `errors` prop.
+  Supporting that, forms-v2 connected fields now accept `errors` as props merged with (form-held)
+  field errors (`Field/index.tsx` + `FieldErrors.tsx`; previously `errors?: never`). Separately,
+  `SkillsChartModule` now applies filter changes inside a `useTransition` (menu interactions paint
+  at urgent priority; the module re-render is interruptible, with `isPending` feeding the loading
+  overlay), renders the chart from `useDeferredValue(skills)`, and memoizes the dynamic
+  `SkillsBarChartView` so urgent renders bail out of the Nivo subtree — SWR's data swap redraws the
+  chart only in the deferred render. Re-verified in the browser: options populated, zero
+  `/api/educations`//`/api/experiences` requests, filter selection refetches the chart, console
+  clean.
+
+- 2026-08-09: The outstanding verification items were closed out by the developer: `pnpm tsc` and
+  `pnpm lint` over the landed batches, the production build (the schema-drift blocker was resolved,
+  confirming the `@clerk/*` chunk situation for anonymous visitors), and the signed-in manual pass
+  (sign-in flow, admin CMS, tour/drawers/toasts). The Phase 8 static-shell work and the 2026-08-08
+  batch are merged to `master` (the `perf/static-shell` merge).
+
+- 2026-08-09: **Debounced filter form changes** (the last Phase 2b implementation item) plus the
+  Phase 8 cleanup. The popover and the drawer now propagate form changes through a
+  `useDebounceCallback` wrapper (`SkillsChartFilterDebounceDelay = 500` in
+  `SkillsChartFilterForm.tsx`), deliberately without the URL-driven filters restructure — the
+  debounce applies to the existing filter-state flow. The popover flushes pending changes via
+  `Popover`'s `onClose`; the drawer — which unmounts on close through several paths — flushes in a
+  `useUnmount` cleanup. Both surfaces cancel their pending call when the `filters` prop changes
+  externally (so a stale pending change can never apply on top of the module's Clear) and when the
+  form's own Clear runs. `SkillsChartModule`'s handlers moved into `useCallback`, since the debounce
+  instances are keyed on the handler identity they wrap. Verified in the browser: a three-toggle
+  burst in the experiences select produced **zero** requests mid-burst and exactly one `/api/skills`
+  refetch (carrying all three ids) after the pause, and closing the popover inside the debounce
+  window flushed the pending change immediately. The Phase 8 cleanup landed alongside: the three
+  bare `max-[450px]` literals (`LayoutNavigation`, `LayoutMenuButton`, and a third in
+  `Header/index.tsx` the note had not listed) became `max-xs:`, verified at an emulated 390px (rail
+  and resume actions hidden, hamburger shown).
+
 ## In Progress
 
-- The 2026-08-06 batch — filters popover restructure, frozen-selects fix, `ConditionalPortal`
-  Suspense-blink fix, button truncation, CSS-driven nav presence, scroll-viewport collapse fix,
-  header caching + skeleton, sign-in centering, and the orphan/env cleanups — is committed to
-  `master`, along with the drawer exit animation and the `CompaniesSchoolsDropdownMenu` trigger
-  alignment.
-- The 2026-08-08 batch is **uncommitted in the working tree** on `perf/skeletons`: the de-Clerk'd
-  header (Phase 3b), non-dashboard skeletons (Phase 2), and the GreenBudget server-component fix
-  plus project-page payload trim (Phase 4). None of it has been type-checked, linted, or run in a
-  browser yet.
+- Everything through the Phase 8 static shell is merged to `master`. The 2026-08-09 filters-cluster
+  work — promise-streamed select options, the field-level `use()` restructure, transitions/deferred
+  chart rendering, the debounce, and the `max-xs:` cleanup — lives on `perf/filters-cluster` (draft
+  PR [#4](https://github.com/nickmflorin/nick.florin/pull/4)); the promise-streaming commit is
+  pushed and the rest is in the working tree.
 
 ## Next
 
-0. **Phase 8 — static shell: `cacheComponents` and viewport seed removal.** The immediate priority,
-   ahead of the Phase 2b filters cluster. `await headers()` in `src/app/(site)/layout.tsx` is the
-   only dynamic-API call under `src/app` and forces every `(site)` route to render dynamically;
-   removing it unlocks `cacheComponents`, which is the only thing that will stop the header's
-   Suspense fallback flashing on refresh (caching shortens the boundary's life, it cannot remove
-   it). Full scope, the four SSR-divergent seed consumers, and the ordered items are in
-   [backlog.md](./backlog.md). Starts on its own branch.
-1. Review and verify the 2026-08-08 batch: `pnpm tsc`, `pnpm lint`, and a browser pass over
-   `/resume/*`, `/projects/*`, `/admin/*`, the header, and the site tour (whose first step was
-   retargeted from the removed dropdown onto `#site-resume-actions`).
-2. Sign-out: decided 2026-08-08 — not needed for now, and filed as an unscheduled follow-up under
-   Phase 3b in [backlog.md](./backlog.md), to be picked up when the admin CMS is next worked on.
-3. **Production-build chunk verification is blocked** on unrelated schema drift: `next build` fails
-   during page-data collection because `.env.production` points builds at the remote database, which
-   does not yet have the resume-generation migration (`Company.slug`). Until a production build
-   passes, the three `@clerk/*` wrapper chunks that appear in the dev script list (dev serves the
-   whole static module graph) cannot be confirmed pruned for anonymous visitors. The de-Clerk'd
-   header should make this moot for anonymous visitors, but it is still unconfirmed.
-4. Manual signed-in verification: sign-in flow, admin CMS, tour/drawers/toasts — best done in a
-   browser session. (The account section of the site menu no longer exists.)
+1. **The URL-driven filters question** in [open-questions.md](./open-questions.md) — the project's
+   only remaining open item. Deciding it no longer gates any implementation (the debounce was
+   applied to the existing state flow); if filters do move to the URL, the debounce becomes "batch
+   locally, flush to the URL" and the popover data flow gets revisited per the select-simplification
+   project.
 
-Everything else in [backlog.md](./backlog.md) is closed except Phase 8 (above) and the Phase 2b
-filters cluster — debounced filter changes, the select-data performance investigation, and the
-URL-driven filters question in [open-questions.md](./open-questions.md). The developer ranked Phase
-8 above that cluster on 2026-08-08; the cluster stays deferred until Phase 8 lands. Phase 5 is
+Everything else in [backlog.md](./backlog.md) is closed. The admin filter-bar select work and the
+sign-out affordance remain filed as unscheduled follow-ups under the admin-CMS deferral. Phase 5 is
 complete; Phase 7 (the closing Lighthouse pass) was dropped 2026-08-08.

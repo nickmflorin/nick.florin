@@ -18,7 +18,7 @@ import {
 export interface ClientExperienceSelectProps<
   B extends SelectBehaviorType,
   I extends ExperienceIncludes,
-> extends Omit<ExperienceSelectProps<B, I>, 'data'> {
+> extends Omit<ExperienceSelectProps<B>, 'data'> {
   readonly includes: I;
   readonly onError?: (e: ApiError) => void;
   readonly visibility: ActionVisibility;
@@ -31,7 +31,7 @@ export const ClientExperienceSelect = <B extends SelectBehaviorType, I extends E
   visibility,
   ...props
 }: {
-  readonly ref?: ForwardedRef<ExperienceSelectInstance<B, I>>;
+  readonly ref?: ForwardedRef<ExperienceSelectInstance<B>>;
 } & ClientExperienceSelectProps<B, I>): JSX.Element => {
   const { data, error, isLoading } = useExperiences({
     onError: e => {
