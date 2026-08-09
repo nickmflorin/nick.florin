@@ -32,3 +32,35 @@
     }
   }
 }
+
+/* The GreenBudget disclaimer is collapsible only below the cutoff. Above it the content is always
+   shown and the toggle is hidden, so the collapsed state cannot be reached. Expressing that in CSS
+   is what lets the whole disclaimer be server-rendered without knowing the viewport width. */
+.project-disclaimer {
+  display: flex;
+  flex-direction: column;
+
+  > .project-disclaimer__collapse {
+    display: grid;
+    // Animating grid rows between 0fr and 1fr collapses to the content's own height, so nothing
+    // has to be measured or capped at an arbitrary max-height.
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms ease;
+
+    > .project-disclaimer__collapse-inner {
+      overflow: hidden;
+    }
+
+    &[data-attr-state='expanded'] {
+      grid-template-rows: 1fr;
+    }
+
+    @media (min-width: theme('screens.md')) {
+      grid-template-rows: 1fr;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
