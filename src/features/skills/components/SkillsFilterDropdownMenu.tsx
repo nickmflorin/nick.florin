@@ -19,13 +19,6 @@ import { useScreenSizes } from '~/hooks';
 
 const loadSkillsFilterPopover = () => import('./SkillsFilterPopover');
 
-/* Fired on any signal of intent to open the filters (hover, focus, click): kicks both the popover
-   chunk and the select-data requests so they resolve in parallel, ahead of the form mounting. */
-const preloadFilterControls = () => {
-  void loadSkillsFilterPopover();
-  preloadSkillsChartFilterData();
-};
-
 const SkillsFilterPopover = dynamic(
   () => loadSkillsFilterPopover().then(mod => mod.SkillsFilterPopover),
   {
@@ -62,49 +55,37 @@ export const SkillsFilterDropdownMenu = ({
   const [popoverIsMounted, setPopoverIsMounted] = useState(false);
   const { isLessThan } = useScreenSizes();
 
-  const shouldUseMobileFiltersDrawer = isLessThan('md');
+  /* Which surface the filters open in is decided when they are opened, not while rendering. Both
+     surfaces present the same trigger and the drawer mounts nothing until it is opened, so the
+     choice never reaches the server-rendered output - and by the time it is made, the measured
+     viewport has replaced whatever the screen-size hook started from. */
+  const shouldUseMobileFiltersDrawer = () => isLessThan('md');
 
-  if (shouldUseMobileFiltersDrawer) {
+  /* Fired on any signal of intent to open the filters. The select data is wanted either way; the
+     popover chunk is only worth fetching where the popover is what would open. */
+  const preloadFilterControls = () => {
+    preloadSkillsChartFilterData();
+    if (!shouldUseMobileFiltersDrawer()) {
+      void loadSkillsFilterPopover();
+    }
+  };
+
+  /* Mounting the popover with 'isInitiallyOpen' opens it immediately, so the click that mounted it
+     does not need to be repeated. */
+  if (popoverIsMounted) {
     return (
-      <>
-        <Tooltip content='Filters' isInPortal offset={{ mainAxis: 4 }}>
-          {({ params, ref }) => (
-            <ChartFilterButton
-              {...params}
-              onClick={() => {
-                preloadSkillsChartFilterData();
-                setDrawerIsOpen(true);
-              }}
-              ref={ref}
-              size={{ base: 'xsmall', md: 'small' }}
-            />
-          )}
-        </Tooltip>
-        <PortalDrawerWrapper
-          drawerId={DrawerIds.SKILLS_FILTERS}
-          onClose={() => setDrawerIsOpen(false)}
-        >
-          {drawerIsOpen ? (
-            <SkillsFilterDrawer
-              filters={filters}
-              hasFiltersChanged={hasFiltersChanged}
-              isLoading={isLoading}
-              onChange={onChange}
-              onClear={onClear}
-              onClose={() => setDrawerIsOpen(false)}
-              skills={skills}
-            />
-          ) : null}
-        </PortalDrawerWrapper>
-      </>
+      <SkillsFilterPopover
+        filters={filters}
+        hasFiltersChanged={hasFiltersChanged}
+        isInitiallyOpen
+        onChange={onChange}
+        onClear={onClear}
+        skills={skills}
+      />
     );
   }
-  /* The trigger button renders eagerly - and server-side - while the popover chunk and the
-     select data are only fetched on intent: preloaded when the button is hovered or focused, and
-     mounted on the first click. Mounting with 'isInitiallyOpen' opens the popover immediately, so
-     the click that mounted it does not need to be repeated. */
-  if (!popoverIsMounted) {
-    return (
+  return (
+    <>
       <Tooltip content='Filters' isInPortal offset={{ mainAxis: 4 }}>
         {({ params, ref }) => (
           <ChartFilterButton
@@ -114,23 +95,33 @@ export const SkillsFilterDropdownMenu = ({
             })}
             onClick={() => {
               preloadFilterControls();
-              setPopoverIsMounted(true);
+              if (shouldUseMobileFiltersDrawer()) {
+                setDrawerIsOpen(true);
+              } else {
+                setPopoverIsMounted(true);
+              }
             }}
             ref={ref}
             size={{ base: 'xsmall', md: 'small' }}
           />
         )}
       </Tooltip>
-    );
-  }
-  return (
-    <SkillsFilterPopover
-      filters={filters}
-      hasFiltersChanged={hasFiltersChanged}
-      isInitiallyOpen
-      onChange={onChange}
-      onClear={onClear}
-      skills={skills}
-    />
+      <PortalDrawerWrapper
+        drawerId={DrawerIds.SKILLS_FILTERS}
+        onClose={() => setDrawerIsOpen(false)}
+      >
+        {drawerIsOpen ? (
+          <SkillsFilterDrawer
+            filters={filters}
+            hasFiltersChanged={hasFiltersChanged}
+            isLoading={isLoading}
+            onChange={onChange}
+            onClear={onClear}
+            onClose={() => setDrawerIsOpen(false)}
+            skills={skills}
+          />
+        ) : null}
+      </PortalDrawerWrapper>
+    </>
   );
 };
