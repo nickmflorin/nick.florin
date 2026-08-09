@@ -81,7 +81,7 @@ export type ButtonSize = ButtonDiscreteSize | ButtonResponsiveSize | Quantitativ
 
 export const isResponsiveButtonSize = (
   size: ButtonSize | undefined,
-): size is ButtonResponsiveSize => typeof size === 'object' && size !== null;
+): size is ButtonResponsiveSize => typeof size === 'object';
 
 export const ButtonDiscreteIconSizes = enumeratedLiterals(
   ['xsmall', 'small', 'medium', 'large', 'xlarge', 'full'] as const,

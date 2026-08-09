@@ -20,23 +20,32 @@ const JsxPascalCaseIgnore = ['*_Deprecated'];
  * rule - which would otherwise cause a collision between "prettier"'s formatting and ESLint's
  * stylistic rules.
  *
- * The pattern ignores five kinds of lines. The first is a single-line import or export statement
+ * The pattern ignores six kinds of lines. The first is a single-line import or export statement
  * whose file or module path is long enough to push the line past the limit, including the closing
  * '} from 'some-really-long-path';' line of a multi-line import or export whose named exports each
  * sit on their own line; the regex still flags any other line that includes the word 'from' (such
- * as a long string) but is not actually an import or export statement. The remaining four are
+ * as a long string) but is not actually an import or export statement. The next four are
  * dynamic imports using the 'import()' syntax; classes with 'implements' clauses, which commonly
  * appear on class definitions implementing interfaces with generic types; classes or interfaces
  * with 'extends' clauses, which commonly appear on class definitions extending base classes with
  * generic types or interfaces extending other interfaces with generic types; and anything that
  * looks like a path to a package, file or module.
  *
+ * The sixth is a line of JSX text that ends in the '{' '}' separator, and only when everything
+ * before that separator is itself within the limit. "prettier" emits the separator when it breaks
+ * a line before an inline element, to preserve a space that JSX would otherwise trim - and it does
+ * not count those five characters against its own 'printWidth'. The result is a line "prettier"
+ * considers correctly wrapped, will re-wrap identically if it is hand-split, and which 'max-len'
+ * reads as five characters too long. The length bound is what keeps this narrow: a line that would
+ * still be over the limit without the separator is genuinely too long and is still reported.
+ *
  * @see https://eslint.style/rules/max-len
  */
 const IgnoreMaxLengthRegexPattern =
   '^\\s*(import|export|\\}).*\\sfrom\\s.+;\\s*$|import\\(.+' +
   '|class\\s.+implements\\s.+|class\\s.+extends\\s.+' +
-  "|interface\\s.+extends\\s.+|\\s*[a-zA-Z0-9\\/\\-'@,]+\\/[a-zA-Z0-9\\/\\-'@,]+$";
+  "|interface\\s.+extends\\s.+|\\s*[a-zA-Z0-9\\/\\-'@,]+\\/[a-zA-Z0-9\\/\\-'@,]+$" +
+  "|^.{0,100}\\{' '\\}$";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
